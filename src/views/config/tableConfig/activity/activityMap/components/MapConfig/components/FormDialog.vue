@@ -21,10 +21,6 @@
       <el-form-item label="活动图标" required>
         <ImagePicker v-model="formData.Icon" />
       </el-form-item>
-      <el-form-item label="插入位置" required>
-        x:<el-input v-model.number="formData.Position.x" placeholder="X坐标" style="width: 150px; margin-right: 10px;" />
-        y:<el-input v-model.number="formData.Position.y" placeholder="Y坐标" style="width: 150px;" />
-      </el-form-item>
     </el-form>
     <template #footer>
       <span class="dialog-footer">
@@ -65,11 +61,7 @@ export default {
         Amount: 0,
         Page: [],
         Icon: '',
-        ActivityTime: [],
-        Position: {
-          x: 0,
-          y: 0
-        }
+        ActivityTime: []
       },
       pageOptions: [
         { label: 'all', value: 'all' },
@@ -133,10 +125,6 @@ export default {
         this.$message.error('活动图标不能为空')
         return false
       }
-      if (this.formData.Position.x === '' || this.formData.Position.y === '') {
-        this.$message.error('插入位置的X和Y坐标不能为空')
-        return false
-      }
       return true
     },
     handleSave() {
@@ -146,6 +134,8 @@ export default {
       const { ...formData } = this.formData
       // 日期/1000
       formData.ActivityTime = formData.ActivityTime.map(time => time / 1000)
+      // 金额转成数字类型
+      formData.Amount = parseInt(formData.Amount)
 
       this.$emit('update', formData)
       this.handleClose()
@@ -158,11 +148,7 @@ export default {
         Amount: 0,
         Page: [],
         Icon: '',
-        ActivityTime: [],
-        Position: {
-          x: 0,
-          y: 0
-        }
+        ActivityTime: []
       }
       this.$emit('update:visible', false)
     },

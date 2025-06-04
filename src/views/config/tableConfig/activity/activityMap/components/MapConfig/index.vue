@@ -113,8 +113,7 @@ export default {
         { label: '活动金额', prop: 'Amount', width: 200 },
         { label: '活动时间', prop: 'ActivityTime', width: 130 },
         { label: '分页', prop: 'Page' },
-        { label: '活动图标', prop: 'Icon', width: 120 },
-        { label: '插入位置', prop: 'Position', width: 120, formatter: (row) => `x:${row.Position.x}, y:${row.Position.y}` }
+        { label: '活动图标', prop: 'Icon', width: 120 }
       ],
       formDialog: {
         updateData: null,
