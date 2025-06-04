@@ -8,13 +8,13 @@
       <br>
       <el-tabs v-if="configData.Data" type="border-card">
         <el-tab-pane label="活动地图">
-          <MapConfig :map-list="configData.Data.MapConfig" @update="handleUpdateMap" @delete="handleDeleteMap" @reload="getConfigData" />
+          <MapConfig :map-list="configData.Data.MapConfig" :activity-options="activityOptions" @update="handleUpdateMap" @delete="handleDeleteMap" @reload="getConfigData" />
         </el-tab-pane>
         <el-tab-pane label="年终大奖侧栏">
-          <BonusConfig />
+          <BonusConfig :bonus-list="configData.Data.BounusConfig" @update="handleUpdateBonus" @delete="handleDeleteBonus" @reload="getConfigData" />
         </el-tab-pane>
         <el-tab-pane label="活动详情">
-          <DetailsConfig />
+          <DetailsConfig :details-list="configData.Data.DetailsConfig" :activity-options="activityOptions" @update="handleUpdateDetails" @delete="handleDeleteDetails" @reload="getConfigData" />
         </el-tab-pane>
         <el-tab-pane label="白名单配置">
           <WhiteListConfig :config="configData.Data.WhiteList" @update="handleUpdateConfigData" />
@@ -44,6 +44,16 @@ export default {
     return {
       // 主键
       subKey: 'map_task_cfg',
+      activityOptions: [
+        { name: 'slot背包', id: 5 },
+        { name: 'slot任务', id: 6 },
+        { name: '摇钱树活动', id: 7 },
+        { name: 'Poker乐园', id: 8 },
+        { name: 'Banargay', id: 9 },
+        { name: '复活节活动', id: 10 },
+        { name: '新手任务活动', id: 11 },
+        { name: '红包雨活动', id: 13 }
+      ],
       configData: {
         Data: {
           BounusConfig: [], // 年终大奖侧栏配置
@@ -80,14 +90,21 @@ export default {
         const Data = this.configData.Data
 
         // 确保配置数据的结构完整
+        // 根据ID进行排序
         if (!Data.BounusConfig) {
-          Data.BounusConfig = {}
+          Data.BounusConfig = []
+        } else {
+          Data.BounusConfig.sort((a, b) => b.ID - a.ID)
         }
         if (!Data.MapConfig) {
-          Data.MapConfig = {}
+          Data.MapConfig = []
+        } else {
+          Data.MapConfig.sort((a, b) => b.ID - a.ID)
         }
         if (!Data.DetailsConfig) {
-          Data.DetailsConfig = {}
+          Data.DetailsConfig = []
+        } else {
+          Data.DetailsConfig.sort((a, b) => b.ID - a.ID)
         }
         if (!Data.WhiteList) {
           Data.WhiteList = {}
@@ -129,6 +146,41 @@ export default {
       this.updateConfigData()
     },
     /**
+     * 处理年终大奖侧栏配置更新
+     * @param data 更新的配置数据
+     */
+    handleUpdateBonus(data) {
+      if (data.ID) {
+        // 更新已有的配置
+        const currentBonus = this.configData.Data.BounusConfig.find(item => item.ID === data.ID)
+        this.configData.Data.BounusConfig.splice(this.configData.Data.BounusConfig.indexOf(currentBonus), 1, { ...currentBonus, ...data })
+      } else {
+        // 添加新的配置
+        const newId = Date.now().toString() // 使用时间戳作为新ID
+        this.configData.Data.BounusConfig.push({ ...data, ID: newId })
+      }
+
+      this.handleUpdateConfigData('BounusConfig', this.configData.Data.BounusConfig)
+    },
+    /**
+     * 处理年终大奖侧栏配置删除
+     * @param id 要删除的配置ID
+     */
+    async handleDeleteBonus(id) {
+      try {
+        await this.$confirm(`确定删除ID为 ${id} 的配置吗？`, '警告', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+        this.configData.Data.BounusConfig = this.configData.Data.BounusConfig.filter(item => item.ID !== id)
+        this.$message.success('删除成功')
+        this.$emit('delete', id)
+      } catch (error) {
+        this.$message.info('已取消删除')
+      }
+    },
+    /**
      * 处理地图配置的更新
      * 如果ID存在则更新，否则添加新的地图配置
      * @param data {Object} 包含地图配置数据
@@ -152,6 +204,37 @@ export default {
      * 处理地图配置的删除
      * @param ID {String} 地图配置的ID
      */
+    /**
+     * 处理活动详情配置更新
+     * @param data 包含配置数据的对象
+     */
+    handleUpdateDetails(data) {
+      const DetailsConfig = this.configData.Data.DetailsConfig
+      if (data.ID) {
+        const current = DetailsConfig.find(item => item.ID === data.ID)
+        DetailsConfig.splice(DetailsConfig.indexOf(current), 1, { ...current, ...data })
+      } else {
+        const newId = Date.now().toString()
+        DetailsConfig.push({ ...data, ID: newId })
+      }
+      this.handleUpdateConfigData('DetailsConfig', DetailsConfig)
+    },
+
+    /**
+     * 处理活动详情配置删除
+     * @param ID 包含配置数据的对象
+     */
+    async handleDeleteDetails(ID) {
+      const DetailsConfig = this.configData.Data.DetailsConfig
+      const index = DetailsConfig.findIndex(item => item.ID === ID)
+      if (index !== -1) {
+        DetailsConfig.splice(index, 1)
+        this.handleUpdateConfigData('DetailsConfig', DetailsConfig)
+      } else {
+        this.$message.error('活动详情配置未找到')
+      }
+    },
+
     handleDeleteMap(ID) {
       const MapConfig = this.configData.Data.MapConfig
       const index = MapConfig.findIndex(item => item.ID === ID)

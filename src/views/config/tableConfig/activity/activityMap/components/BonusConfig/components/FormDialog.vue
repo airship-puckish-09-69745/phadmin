@@ -1,11 +1,8 @@
 <template>
-  <el-dialog title="添加/编辑配置" :visible.sync="dialogVisible" width="50%" @close="handleClose(false)">
+  <el-dialog :title="updateData && updateData.ID ? '编辑配置' : '新增配置'" :visible.sync="dialogVisible" width="540px" :close-on-click-modal="false" @close="handleClose(false)">
     <el-form :model="formData" label-width="100px">
-      <el-form-item label="配置ID" prop="ID" :rules="{ required: true, message: '请输入配置ID', trigger: 'blur' }">
-        <el-input v-model="formData.ID" />
-      </el-form-item>
-      <el-form-item label="年终大奖侧栏" :rules="{ required: true, message: '请输入年终大奖侧栏', trigger: 'blur' }">
-        <el-input v-model.number="formData.Amount" />
+      <el-form-item label="金额" :rules="{ required: true, message: '请输入金额', trigger: 'blur' }">
+        <el-input v-model="formData.Amount" type="number" />
       </el-form-item>
     </el-form>
     <template #footer>
@@ -33,7 +30,7 @@ export default {
     return {
       formData: {
         ID: '',
-        Sidebar: ''
+        Amount: 0
       }
     }
   },
@@ -62,18 +59,18 @@ export default {
     }
   },
   methods: {
+    onSearch() {
+      this.$emit('reload')
+    },
     handleSave() {
+      this.formData.Amount = parseInt(this.formData.Amount)
       this.$emit('save', this.formData)
       this.resetForm()
     },
     resetForm() {
       this.formData = {
         ID: '',
-        Name: '',
-        Amount: 0,
-        Page: '',
-        Icon: '',
-        Position: 0
+        Amount: 0
       }
       this.$emit('update:visible', false)
     },
