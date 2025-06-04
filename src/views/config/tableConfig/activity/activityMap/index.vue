@@ -90,14 +90,21 @@ export default {
         const Data = this.configData.Data
 
         // 确保配置数据的结构完整
+        // 根据ID进行排序
         if (!Data.BounusConfig) {
           Data.BounusConfig = []
+        } else {
+          Data.BounusConfig.sort((a, b) => b.ID - a.ID)
         }
         if (!Data.MapConfig) {
           Data.MapConfig = []
+        } else {
+          Data.MapConfig.sort((a, b) => b.ID - a.ID)
         }
         if (!Data.DetailsConfig) {
           Data.DetailsConfig = []
+        } else {
+          Data.DetailsConfig.sort((a, b) => b.ID - a.ID)
         }
         if (!Data.WhiteList) {
           Data.WhiteList = {}

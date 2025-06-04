@@ -1,13 +1,13 @@
 <template>
-  <el-dialog title="添加/编辑配置" :visible.sync="dialogVisible" width="50%" :close-on-click-modal="false" @close="handleClose(false)">
-    <el-form :model="formData" label-width="100px">
+  <el-dialog :title="updateData && updateData.ID ? '编辑配置' : '新增配置'" :visible.sync="dialogVisible" width="560px" :close-on-click-modal="false" @close="handleClose(false)">
+    <el-form :model="formData" label-width="120px">
       <el-form-item label="活动名称" required>
         <el-select v-model="formData.ActivityId" placeholder="请选择活动" style="width: 360px;" @change="onChangeActivityId">
           <el-option v-for="option in activityOptions" :key="option.id" :label="`${option.name}-${option.id}`" :value="option.id" />
         </el-select>
       </el-form-item>
       <el-form-item label="活动金额" :rules="{ required: true, message: '请输入活动金额', trigger: 'blur' }">
-        <el-input v-model="formData.Amount" type="number" />
+        <el-input v-model="formData.Amount" type="number" style="width: 360px;" />
       </el-form-item>
       <el-form-item label="活动图标" :rules="{ required: true, message: '请选择活动图标', trigger: 'blur' }">
         <ImagePicker v-model="formData.Icon" />

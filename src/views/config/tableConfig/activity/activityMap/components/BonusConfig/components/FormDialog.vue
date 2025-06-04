@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="updateData && updateData.ID ? '编辑配置' : '新增配置'" :visible.sync="dialogVisible" width="50%" :close-on-click-modal="false" @close="handleClose(false)">
+  <el-dialog :title="updateData && updateData.ID ? '编辑配置' : '新增配置'" :visible.sync="dialogVisible" width="540px" :close-on-click-modal="false" @close="handleClose(false)">
     <el-form :model="formData" label-width="100px">
       <el-form-item label="金额" :rules="{ required: true, message: '请输入金额', trigger: 'blur' }">
         <el-input v-model="formData.Amount" type="number" />
