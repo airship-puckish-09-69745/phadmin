@@ -311,7 +311,13 @@ export const asyncRoutes = [
                     component: () => import('@/views/config/tableConfig/tongitsCheat/tongitsCheat.vue'),
                     name: 'tongitsCheat',
                     meta: { title: '防作弊配置 ◐' }
-                  }
+                  },
+                  {
+                    path: 'tongitsQuickCheat',
+                    component: () => import('@/views/config/tableConfig/tongitsCheat/tongitsQuickCheat.vue'),
+                    name: 'tongitsQuickCheat',
+                    meta: { title: 'QUICK防作弊配置 ◐' }
+                  },
                 ]
               }
               /*{
@@ -920,6 +926,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/sweeperCfg'),
             name: 'sweeperCfg',
             meta: { title: 'M ines - 扫雷 ◐' }
+          },
+          {
+            path: 'MinesMagic_cfg',
+            component: () => import('@/views/config/tableConfig/minesMagicCfg'),
+            name: 'MinesMagicCfg',
+            meta: { title: 'M inesMagic - 新版扫雷 ◐' }
           },
           {
             path: 'MultiPlayerNiuNiu_cfg',
@@ -2433,7 +2445,20 @@ export const asyncRoutes = [
             meta: { title: 'L ive ColorGame - ◐', gid: 129 }
           },
 
-
+          /*
+          {
+            path: 'playlog_jackpotwheel',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_jackpotwheel',
+            meta: { title: 'J ackpot Wheel - ◐', gid: 124 }
+          },
+          {
+            path: 'playlog_freespin',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_freespin',
+            meta: { title: 'F ree Spin - ◐', gid: 125 }
+          },
+          */
 
         ]
       },

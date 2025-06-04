@@ -376,6 +376,11 @@ export default {
                 MaybeAdd: 3
               }
             }
+            if (!$this.CheatCfg.hasOwnProperty('SameName')) {
+              $this.CheatCfg.SameName = {
+                MaybeAdd: 3
+              }
+            }
             const maybeMin = $this.CheatCfg.MaybeMin
             $this.oldCheatMin = maybeMin
             const old = JSON.parse(response.Data.Data)
@@ -412,6 +417,10 @@ export default {
         MaybeAdd: parseInt(this.CheatCfg.DisAndGive.MaybeAdd)
       }
       this.CheatCfg.DisAndGive = DisAndGive
+      const SameName = {
+        MaybeAdd: parseInt(this.CheatCfg.SameName.MaybeAdd)
+      }
+      this.CheatCfg.SameName = SameName
       const PlayMoreTimes = {
         Count: parseInt(this.CheatCfg.PlayMoreTimes.Count),
         MaybeAdd: parseInt(this.CheatCfg.PlayMoreTimes.MaybeAdd)
@@ -534,35 +543,35 @@ export default {
       <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="CustomizeConfig" />
     </div>
     <el-tabs type="border-card">
-<!--      <el-tab-pane label="通用配置">-->
-<!--        <el-descriptions :column="2" :colon="false" border>-->
-<!--          <el-descriptions-item label="疑似度⻔槛" :content-style="{'text-align': 'center','width': '250px'}" :label-style="{'text-align': 'center'}">-->
-<!--            <el-input v-model.number="CheatCfg.MaybeMin" type="number" size="medium" style="width: 120px" />-->
-<!--          </el-descriptions-item>-->
-<!--          <el-descriptions-item label="踢人⻔槛" :content-style="{'text-align': 'center','width': '250px'}" :label-style="{'text-align': 'center'}">-->
-<!--            <el-input v-model.number="CheatCfg.TickScore" type="number" size="medium" style="width: 120px" />-->
-<!--          </el-descriptions-item>-->
-<!--          <el-descriptions-item label="⾃动疑似开关" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">-->
-<!--            <el-switch-->
-<!--              v-model="CheatCfg.IsAutoMaybe"-->
-<!--              active-color="#13ce66"-->
-<!--              inactive-color="#ff4949"-->
-<!--            />-->
-<!--          </el-descriptions-item>-->
-<!--          <el-descriptions-item label="疑似度降低值" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">-->
-<!--            <el-input v-model.number="CheatCfg.MaybeReduce" type="number" size="medium" style="width: 120px" />-->
-<!--          </el-descriptions-item>-->
-<!--          <el-descriptions-item label="防作弊机器⼈" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">-->
-<!--            <el-button-->
-<!--              type="primary"-->
-<!--              size="mini"-->
-<!--              icon="el-icon-document-copy"-->
-<!--              @click="handleAIUpdate()"-->
-<!--            >修改-->
-<!--            </el-button>-->
-<!--          </el-descriptions-item>-->
-<!--        </el-descriptions>-->
-<!--      </el-tab-pane>-->
+      <el-tab-pane label="通用配置">
+        <el-descriptions :column="2" :colon="false" border>
+          <el-descriptions-item label="疑似度⻔槛" :content-style="{'text-align': 'center','width': '250px'}" :label-style="{'text-align': 'center'}">
+            <el-input v-model.number="CheatCfg.MaybeMin" type="number" size="medium" style="width: 120px" />
+          </el-descriptions-item>
+          <el-descriptions-item label="踢人⻔槛" :content-style="{'text-align': 'center','width': '250px'}" :label-style="{'text-align': 'center'}">
+            <el-input v-model.number="CheatCfg.TickScore" type="number" size="medium" style="width: 120px" />
+          </el-descriptions-item>
+          <el-descriptions-item label="⾃动疑似开关" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
+            <el-switch
+              v-model="CheatCfg.IsAutoMaybe"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+            />
+          </el-descriptions-item>
+          <el-descriptions-item label="疑似度降低值" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
+            <el-input v-model.number="CheatCfg.MaybeReduce" type="number" size="medium" style="width: 120px" />
+          </el-descriptions-item>
+          <el-descriptions-item label="防作弊机器⼈" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
+            <el-button
+              type="primary"
+              size="mini"
+              icon="el-icon-document-copy"
+              @click="handleAIUpdate()"
+            >修改
+            </el-button>
+          </el-descriptions-item>
+        </el-descriptions>
+      </el-tab-pane>
       <el-tab-pane label="疑似度配置">
         <h3 class="title">操作异常配置</h3>
         <div class="table-container">
