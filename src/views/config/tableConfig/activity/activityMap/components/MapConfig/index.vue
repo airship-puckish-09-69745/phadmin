@@ -9,8 +9,8 @@
       <el-table
         :data="tableData"
         border
-        style="width: 100%"
         :cell-style="libShow.DefaultTableCell"
+        style="max-height: calc(100vh - 326px);width: 100%;overflow-y: auto;"
       >
         <!-- 序号 -->
         <el-table-column type="index" label="序号" width="60" align="center" />
@@ -41,6 +41,12 @@
               >
                 {{ item }}
               </el-tag>
+            </template>
+            <!-- 日期处理 -->
+            <template v-else-if="field.prop === 'ActivityTime'">
+              <span v-if="scope.row.ActivityTime">
+                {{ parseTime(scope.row.ActivityTime[0], '{y}-{m}-{d}') }} <br> {{ parseTime(scope.row.ActivityTime[1], '{y}-{m}-{d}') }}
+              </span>
             </template>
             <!-- 活动：格式为：活动名称-[活动ID] -->
             <template v-else-if="field.prop === 'ActivityName'">
@@ -81,6 +87,7 @@
 <script>
 import { $libShow } from '@/utils/common'
 import FormDialog from './components/FormDialog.vue'
+import { parseTime } from '@/utils/index'
 export default {
   name: 'MapConfig',
   components: {
@@ -104,8 +111,9 @@ export default {
         { label: '配置ID', prop: 'ID', width: 130 },
         { label: '活动名称', prop: 'ActivityName', width: 200 },
         { label: '活动金额', prop: 'Amount', width: 200 },
+        { label: '活动时间', prop: 'ActivityTime', width: 130 },
         { label: '分页', prop: 'Page' },
-        { label: '活动图标', prop: 'Icon', width: 150 },
+        { label: '活动图标', prop: 'Icon', width: 120 },
         { label: '插入位置', prop: 'Position', width: 120, formatter: (row) => `x:${row.Position.x}, y:${row.Position.y}` }
       ],
       formDialog: {
@@ -134,6 +142,7 @@ export default {
     }
   },
   methods: {
+    parseTime,
     getFullKey() {
       return 'CustomizeCfg_' + this.subKey
     },

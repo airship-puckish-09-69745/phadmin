@@ -1,14 +1,13 @@
 <template>
-  <el-dialog title="添加/编辑配置" :visible.sync="dialogVisible" width="50%" @close="handleClose(false)">
-    <el-form :model="formData" label-width="100px">
-      <el-form-item label="配置ID" prop="ID" :rules="{ required: true, message: '请输入配置ID', trigger: 'blur' }">
-        <el-input v-model="formData.ID" />
-      </el-form-item>
-      <el-form-item label="活动名称" prop="Name" :rules="{ required: true, message: '请输入活动名称', trigger: 'blur' }">
-        <el-input v-model="formData.Name" />
+  <el-dialog :title="updateData && updateData.ID ? '编辑配置' : '新增配置'" :visible.sync="dialogVisible" width="560px" :close-on-click-modal="false" @close="handleClose(false)">
+    <el-form :model="formData" label-width="120px">
+      <el-form-item label="活动名称" required>
+        <el-select v-model="formData.ActivityId" placeholder="请选择活动" style="width: 360px;" @change="onChangeActivityId">
+          <el-option v-for="option in activityOptions" :key="option.id" :label="`${option.name}-${option.id}`" :value="option.id" />
+        </el-select>
       </el-form-item>
       <el-form-item label="活动金额" :rules="{ required: true, message: '请输入活动金额', trigger: 'blur' }">
-        <el-input v-model.number="formData.Amount" />
+        <el-input v-model="formData.Amount" type="number" style="width: 360px;" />
       </el-form-item>
       <el-form-item label="活动图标" :rules="{ required: true, message: '请选择活动图标', trigger: 'blur' }">
         <ImagePicker v-model="formData.Icon" />
@@ -20,7 +19,7 @@
         <el-input v-model="formData.Description" type="textarea" />
       </el-form-item>
       <el-form-item label="活动时间" prop="ActivityTime" :rules="{ required: true, message: '请选择活动时间', trigger: 'blur' }">
-        <el-date-picker v-model="formData.ActivityTime" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" />
+        <el-date-picker v-model="formData.ActivityTime" value-format="timestamp" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" />
       </el-form-item>
       <el-form-item label="成就个数" prop="AchievementNumber" :rules="{ required: true, message: '请输入成就个数', trigger: 'blur' }">
         <el-input v-model.number="formData.AchievementNumber" />
@@ -55,6 +54,11 @@ export default {
     updateData: {
       type: Object,
       default: () => ({})
+    },
+    activityOptions: {
+      type: Array,
+      required: true,
+      default: () => []
     }
   },
   data() {
@@ -62,12 +66,13 @@ export default {
       // 和index列表组件保持一致的表单数据结构
       formData: {
         ID: '',
-        Name: '',
+        ActivityId: '',
+        ActivityName: '',
         Amount: 0,
         Icon: '',
         Avatar: '',
         Description: '',
-        ActivityTime: '',
+        ActivityTime: [],
         AchievementNumber: 0,
         AchievementName: '',
         AchievementCondition: ''
@@ -88,6 +93,10 @@ export default {
     updateData(newData) {
       if (newData) {
         this.formData = { ...newData }
+        this.formData.ActivityTime = [
+          newData.ActivityTime[0] * 1000,
+          newData.ActivityTime[1] * 1000
+        ]
       } else {
         this.resetForm()
       }
@@ -99,18 +108,38 @@ export default {
     }
   },
   methods: {
+    onChangeActivityId(val) {
+      const selectedActivity = this.activityOptions.find(option => option.id === val)
+      this.formData.ActivityName = selectedActivity ? selectedActivity.name : ''
+      console.log('onChangeActivityId', val, this.formData.ActivityName)
+    },
     handleSave() {
-      this.$emit('save', this.formData)
+      if (!this.formData.ActivityName) {
+        this.$message.error('请选择活动名称')
+        return
+      }
+      const { ...submitData } = this.formData
+      // 日期/1000
+      submitData.ActivityTime = [
+        Math.floor(submitData.ActivityTime[0] / 1000),
+        Math.floor(submitData.ActivityTime[1] / 1000)
+      ]
+      this.$emit('save', submitData)
       this.resetForm()
     },
     resetForm() {
       this.formData = {
         ID: '',
-        Name: '',
+        ActivityId: '',
+        ActivityName: '',
         Amount: 0,
-        Page: '',
         Icon: '',
-        Position: 0
+        Avatar: '',
+        Description: '',
+        ActivityTime: '',
+        AchievementNumber: 0,
+        AchievementName: '',
+        AchievementCondition: ''
       }
       this.$emit('update:visible', false)
     },

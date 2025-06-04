@@ -14,8 +14,10 @@
         :header-cell-style="libShow.DefaultTableHeadClass"
         :row-style="{height:'10px'}"
         :cell-style="libShow.DefaultTableCell"
-        style="width: 100%"
+        style="max-height: calc(100vh - 326px);width: 100%;overflow-y: auto;"
       >
+        <!-- 序号 -->
+        <el-table-column type="index" label="序号" width="60" align="center" />
         <el-table-column
           v-for="field in fields"
           :key="field.prop"
@@ -32,6 +34,17 @@
           </template>
         </el-table-column>
       </el-table>
+
+      <el-pagination
+        v-if="bonusList.length > 0"
+        :total="pagination.total"
+        :page-size="pagination.pageSize"
+        :current-page="pagination.currentPage"
+        layout="total, sizes, prev, pager, next, jumper"
+        style="margin-top: 20px; text-align: right;"
+        @size-change="handlePaginationSizeChange"
+        @current-change="handlePaginationCurrentChange"
+      />
     </el-row>
 
     <!-- 添加|编辑配置弹窗 -->
@@ -127,14 +140,20 @@ export default {
     },
     handleSave(data) {
       this.$emit('update', data)
-      // this.$message.success('保存成功')
-      this.formDialog.visible = false
       this.getList()
     },
     handleUpdateDialogVisible(visible) {
       this.formDialog.visible = visible
       this.formDialog.updateData = null
 
+      this.getList()
+    },
+    handlePaginationSizeChange(size) {
+      this.pagination.pageSize = size
+      this.getList()
+    },
+    handlePaginationCurrentChange(page) {
+      this.pagination.currentPage = page
       this.getList()
     }
   }
