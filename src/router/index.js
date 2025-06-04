@@ -928,6 +928,12 @@ export const asyncRoutes = [
             meta: { title: 'M ines - 扫雷 ◐' }
           },
           {
+            path: 'MinesMagic_cfg',
+            component: () => import('@/views/config/tableConfig/minesMagicCfg'),
+            name: 'MinesMagicCfg',
+            meta: { title: 'M inesMagic - 新版扫雷 ◐' }
+          },
+          {
             path: 'MultiPlayerNiuNiu_cfg',
             component: () => import('@/views/config/tableConfig/minigames/niuniu.vue'),
             name: 'MultiPlayerNiuNiu_cfg',
