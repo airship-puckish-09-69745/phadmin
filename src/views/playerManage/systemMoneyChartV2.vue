@@ -423,6 +423,8 @@ export default {
         127: 'SaBong',
         128: 'Tongits JP',
         129: 'Live Color',
+        130: 'Remi',
+        131: 'Remi Pro',
         1: 'Rummy',
         10000: '汇总'
       },
@@ -575,11 +577,11 @@ export default {
         }
       }
       if (this.showZoogame) {
-        this.defaultOrder.push(124, 125)
+        this.defaultOrder.push(124, 125, 130, 131)
       }
     },
     isPopType(o) {
-      const popTypes = [1, 9, 8, 14, 15, 21, 22, 29, 23, 28, 31, 34, 2032, 46, 47, 48, 35, 49, 113, 122]
+      const popTypes = [1, 9, 8, 14, 15, 21, 22, 29, 23, 28, 31, 34, 2032, 46, 47, 48, 35, 49, 113, 122, 130, 131]
       for (let i = 0; i < popTypes.length; i++) {
         if (popTypes[i] === o) {
           return false
