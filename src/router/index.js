@@ -2439,7 +2439,20 @@ export const asyncRoutes = [
             meta: { title: 'L ive ColorGame - ◐', gid: 129 }
           },
 
-
+          /*
+          {
+            path: 'playlog_jackpotwheel',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_jackpotwheel',
+            meta: { title: 'J ackpot Wheel - ◐', gid: 124 }
+          },
+          {
+            path: 'playlog_freespin',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_freespin',
+            meta: { title: 'F ree Spin - ◐', gid: 125 }
+          },
+          */
 
         ]
       },
