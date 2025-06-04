@@ -1570,6 +1570,12 @@ export const asyncRoutes = [
             meta: { title: '大奖记录' }
           },
           {
+            path: 'slots_prize_test',
+            component: () => import('@/views/config/tableConfig/slots/bigPrizeTest.vue'),
+            name: 'slots_prize_test',
+            meta: { title: '大奖模拟' }
+          },
+          {
             path: 'slots_act_configs',
             component: () => import('@/views/config/tableConfig/slots/slotsActConfig'),
             name: 'slots_act_configs',
