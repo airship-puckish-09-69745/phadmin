@@ -9,8 +9,8 @@
       <el-table
         :data="tableData"
         border
-        style="width: 100%"
         :cell-style="libShow.DefaultTableCell"
+        style="max-height: calc(100vh - 326px);width: 100%;overflow-y: auto;"
       >
         <!-- 序号 -->
         <el-table-column type="index" label="序号" width="60" align="center" />

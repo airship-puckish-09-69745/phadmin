@@ -12,7 +12,12 @@
     </el-row>
 
     <el-row>
-      <el-table :data="tableData" border style="width: 100%" :cell-style="libShow.DefaultTableCell">
+      <el-table
+        :data="tableData"
+        border
+        style="max-height: calc(100vh - 326px);width: 100%;overflow-y: auto;"
+        :cell-style="libShow.DefaultTableCell"
+      >
         <!-- 序号 -->
         <el-table-column type="index" label="序号" width="60" align="center" />
         <el-table-column
@@ -56,6 +61,17 @@
           </template>
         </el-table-column>
       </el-table>
+
+      <el-pagination
+        v-if="detailsList.length > 0"
+        :total="pagination.total"
+        :page-size="pagination.pageSize"
+        :current-page="pagination.currentPage"
+        layout="total, sizes, prev, pager, next, jumper"
+        style="margin-top: 20px; text-align: right;"
+        @size-change="handlePaginationSizeChange"
+        @current-change="handlePaginationCurrentChange"
+      />
     </el-row>
 
     <!-- 添加|编辑配置弹窗 -->
@@ -202,6 +218,14 @@ export default {
       this.formDialog.visible = visible
       this.formDialog.updateData = null
 
+      this.getList()
+    },
+    handlePaginationSizeChange(size) {
+      this.pagination.pageSize = size
+      this.getList()
+    },
+    handlePaginationCurrentChange(page) {
+      this.pagination.currentPage = page
       this.getList()
     }
   }
