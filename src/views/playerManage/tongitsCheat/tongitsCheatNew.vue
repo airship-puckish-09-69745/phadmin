@@ -35,7 +35,7 @@ export default {
       sortTypeOption: [
         { label: '按时间', value: 0 },
         { label: '按疑似度', value: 1 },
-        { label: '按异常局数', value: 2 }
+        { label: '按异常局占比', value: 2 }
       ],
       cheatType: -1,
       cheatTypeOption: [
@@ -57,8 +57,8 @@ export default {
   },
   created() {
     this.getOperator()
-    this.getCheatUserType()
     this.getDataCfg()
+    this.getCheatUserType()
     this.getData()
   },
   methods: {
@@ -83,14 +83,18 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           console.log('robotSetting', response.Data)
-          $this.form = response.Data || {}
+          // $this.form = response.Data || {}
           if (response.Data && response.Data.Data !== '' && response.Data.Data !== '{}') {
-            $this.maybeMin = response.Data.MaybeMin
+            const CheatCfg = JSON.parse(response.Data.Data)
+            $this.maybeMin = CheatCfg.MaybeMin
           }
         }
       })
     },
-
+    getCheatData() {
+      this.getCheatUserType()
+      this.getData()
+    },
     getData() {
       // console.log(ttt)
       const $this = this
@@ -172,7 +176,7 @@ export default {
           console.log(cheatLogs)
           this.totalCount = cheatLogs.length
           let sortName = 'EndTime'
-          if (this.sortType === 0) {
+          if (this.sortType === 1) {
             sortName = 'CheatScore'
           } else if (this.sortType === 2) {
             sortName = 'cheatPercent'
@@ -635,8 +639,8 @@ export default {
           <el-input v-model.number="Uid" />
         </el-form-item>
         <el-form-item>
-          <el-button size="mini" type="primary" icon="el-icon-plus" @click="getData">查询</el-button>
-          <el-button size="mini" type="primary" icon="el-icon-plus" @click="getData">刷新</el-button>
+          <el-button size="mini" type="primary" icon="el-icon-plus" @click="getCheatData">查询</el-button>
+          <el-button size="mini" type="primary" icon="el-icon-plus" @click="getCheatData">刷新</el-button>
         </el-form-item>
         <el-form-item label="排序方式：">
           <el-select v-model.number="sortType" placeholder="请选择">
