@@ -16,6 +16,8 @@
         :cell-style="libShow.DefaultTableCell"
         style="width: 100%"
       >
+        <!-- 序号 -->
+        <el-table-column type="index" label="序号" width="60" align="center" />
         <el-table-column
           v-for="field in fields"
           :key="field.prop"

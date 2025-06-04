@@ -8,7 +8,10 @@
         </el-select>
       </el-form-item>
       <el-form-item label="活动金额" required>
-        <el-input v-model.number="formData.Amount" type="number" />
+        <el-input v-model="formData.Amount" type="number" />
+      </el-form-item>
+      <el-form-item label="活动时间" prop="ActivityTime" :rules="{ required: true, message: '请选择活动时间', trigger: 'blur' }">
+        <el-date-picker v-model="formData.ActivityTime" value-format="timestamp" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" />
       </el-form-item>
       <el-form-item label="分页" required>
         <el-select v-model="formData.Page" placeholder="请选择分页" multiple style="width: 360px;">
@@ -57,12 +60,12 @@ export default {
     return {
       formData: {
         ID: '',
-        // Name: '',
         ActivityName: '',
         ActivityId: '',
         Amount: 0,
         Page: [],
         Icon: '',
+        ActivityTime: [],
         Position: {
           x: 0,
           y: 0
@@ -92,6 +95,8 @@ export default {
         this.formData = { ...newData }
         // 如果有ActivityId，则更新ActivityName
         this.onChangeActivityId(newData.ActivityId)
+        // 日期转为毫秒数
+        this.formData.ActivityTime = newData.ActivityTime.map(time => time * 1000)
       } else {
         this.resetForm()
       }
@@ -138,17 +143,22 @@ export default {
       if (!this.checkoutForm()) {
         return
       }
+      const { ...formData } = this.formData
+      // 日期/1000
+      formData.ActivityTime = formData.ActivityTime.map(time => time / 1000)
 
-      this.$emit('update', this.formData)
+      this.$emit('update', formData)
       this.handleClose()
     },
     resetForm() {
       this.formData = {
         ID: '',
-        Name: '',
+        ActivityName: '',
+        ActivityId: '',
         Amount: 0,
-        Page: '',
+        Page: [],
         Icon: '',
+        ActivityTime: [],
         Position: {
           x: 0,
           y: 0

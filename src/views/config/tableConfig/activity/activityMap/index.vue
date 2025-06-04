@@ -14,7 +14,7 @@
           <BonusConfig :bonus-list="configData.Data.BounusConfig" @update="handleUpdateBonus" @delete="handleDeleteBonus" @reload="getConfigData" />
         </el-tab-pane>
         <el-tab-pane label="活动详情">
-          <DetailsConfig />
+          <DetailsConfig :details-list="configData.Data.DetailsConfig" :activity-options="activityOptions" @update="handleUpdateDetails" @delete="handleDeleteDetails" @reload="getConfigData" />
         </el-tab-pane>
         <el-tab-pane label="白名单配置">
           <WhiteListConfig :config="configData.Data.WhiteList" @update="handleUpdateConfigData" />
@@ -197,6 +197,37 @@ export default {
      * 处理地图配置的删除
      * @param ID {String} 地图配置的ID
      */
+    /**
+     * 处理活动详情配置更新
+     * @param data 包含配置数据的对象
+     */
+    handleUpdateDetails(data) {
+      const DetailsConfig = this.configData.Data.DetailsConfig
+      if (data.ID) {
+        const current = DetailsConfig.find(item => item.ID === data.ID)
+        DetailsConfig.splice(DetailsConfig.indexOf(current), 1, { ...current, ...data })
+      } else {
+        const newId = Date.now().toString()
+        DetailsConfig.push({ ...data, ID: newId })
+      }
+      this.handleUpdateConfigData('DetailsConfig', DetailsConfig)
+    },
+
+    /**
+     * 处理活动详情配置删除
+     * @param ID 包含配置数据的对象
+     */
+    async handleDeleteDetails(ID) {
+      const DetailsConfig = this.configData.Data.DetailsConfig
+      const index = DetailsConfig.findIndex(item => item.ID === ID)
+      if (index !== -1) {
+        DetailsConfig.splice(index, 1)
+        this.handleUpdateConfigData('DetailsConfig', DetailsConfig)
+      } else {
+        this.$message.error('活动详情配置未找到')
+      }
+    },
+
     handleDeleteMap(ID) {
       const MapConfig = this.configData.Data.MapConfig
       const index = MapConfig.findIndex(item => item.ID === ID)
