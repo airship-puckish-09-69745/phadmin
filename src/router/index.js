@@ -311,7 +311,13 @@ export const asyncRoutes = [
                     component: () => import('@/views/config/tableConfig/tongitsCheat/tongitsCheat.vue'),
                     name: 'tongitsCheat',
                     meta: { title: '防作弊配置 ◐' }
-                  }
+                  },
+                  {
+                    path: 'tongitsQuickCheat',
+                    component: () => import('@/views/config/tableConfig/tongitsCheat/tongitsQuickCheat.vue'),
+                    name: 'tongitsQuickCheat',
+                    meta: { title: 'QUICK防作弊配置 ◐' }
+                  },
                 ]
               }
               /*{
