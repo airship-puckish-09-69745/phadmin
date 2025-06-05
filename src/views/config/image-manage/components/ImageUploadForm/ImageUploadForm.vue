@@ -346,6 +346,7 @@ export default {
       formData.append('file', this.formData.file)
 
       const url = process.env.VUE_APP_BASE_API + '/file/upload'
+      console.log("上传文件 ",url)
       const config = {
         headers: {
           'Content-Type': 'multipart/form-data'
