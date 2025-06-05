@@ -360,8 +360,8 @@ export default {
 
   created() {
     this.editAI = NewRobotAIItem()
-    this.getDataTongits()
     this.getData()
+    this.getDataTongits()
   },
   methods: {
     getFullKey() {
