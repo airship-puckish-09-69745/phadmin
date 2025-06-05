@@ -109,9 +109,10 @@ export default {
       libShow: $libShow,
       fields: [
         { label: '配置ID', prop: 'ID', width: 130 },
-        { label: '活动名称', prop: 'ActivityName', width: 200 },
+        { label: '活动名称', prop: 'ActivityName' },
         { label: '活动金额', prop: 'Amount', width: 200 },
         { label: '活动时间', prop: 'ActivityTime', width: 130 },
+        { label: '奖励', prop: 'Bonus', width: 130 },
         { label: '分页', prop: 'Page' },
         { label: '活动图标', prop: 'Icon', width: 120 }
       ],
