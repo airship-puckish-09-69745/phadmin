@@ -22,7 +22,7 @@
         <el-date-picker v-model="formData.ActivityTime" value-format="timestamp" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" />
       </el-form-item>
       <el-form-item label="成就个数" prop="AchievementNumber" :rules="{ required: true, message: '请输入成就个数', trigger: 'blur' }">
-        <el-input v-model.number="formData.AchievementNumber" />
+        <el-input v-model="formData.AchievementNumber" type="number" />
       </el-form-item>
       <el-form-item label="成就名称" prop="AchievementName" :rules="{ required: true, message: '请输入成就名称', trigger: 'blur' }">
         <el-input v-model="formData.AchievementName" />
@@ -124,6 +124,9 @@ export default {
         Math.floor(submitData.ActivityTime[0] / 1000),
         Math.floor(submitData.ActivityTime[1] / 1000)
       ]
+      // 金额和成就个数转换为整数类型
+      submitData.Amount = parseInt(submitData.Amount)
+      submitData.AchievementNumber = parseInt(submitData.AchievementNumber)
       this.$emit('save', submitData)
       this.resetForm()
     },
