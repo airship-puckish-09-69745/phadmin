@@ -52,7 +52,8 @@ export default {
         Reason: '',
         Operator: ''
       },
-      BlackOperator: ''
+      BlackOperator: '',
+      GameLogUidsMap: new Map()
     }
   },
   created() {
@@ -125,6 +126,16 @@ export default {
           })
           for (let i = 0; i < cheatLogRows.length; i++) {
             const row = cheatLogRows[i]
+            if (this.GameLogUidsMap.has(row.logId)) {
+              const arr = this.GameLogUidsMap.get(row.logId)
+              if (!arr.includes(row.uid)) {
+                arr.push(row.uid)
+                this.GameLogUidsMap.set(row.logId, arr)
+              }
+            } else {
+              this.GameLogUidsMap.set(row.logId, [row.uid])
+            }
+
             const cheatScoreRow = this.cheatUserType.get(row.uid)
             if (!cheatScoreRow) {
               continue
@@ -565,7 +576,21 @@ export default {
       if (!row.hasOwnProperty('otherUid')) {
         return '----'
       }
-      return row.otherUid.join()
+      const strArray = []
+      if (this.GameLogUidsMap.has(row.logId)) {
+        const uids = this.GameLogUidsMap.get(row.logId)
+        for (let i = 0; i < row.otherUid.length; i++) {
+          if (uids.includes(row.otherUid[i])) {
+            const redStr = '<span style="color: red">' + row.otherUid[i] + '</span>'
+            strArray.push(redStr)
+          } else {
+            strArray.push(row.otherUid[i])
+          }
+        }
+      } else {
+        return row.otherUid.join()
+      }
+      return strArray.join()
     },
     getDetail(id, dt) {
       const $this = this
@@ -783,7 +808,7 @@ export default {
           inline
         >
           <template slot-scope="scopeTid">
-<!--            <el-button type="text" size="small" @click="showTidCheatLogs(scope.row)">查看</el-button>-->
+            <!--            <el-button type="text" size="small" @click="showTidCheatLogs(scope.row)">查看</el-button>-->
             <el-table :data="scopeTid.row.TidCheatLogs" border>
               <el-table-column width="200" property="Tid" label="桌⼦id" />
               <el-table-column width="200" property="FirstCheatTime" label="该桌⾸次作弊实锤时间">
@@ -808,7 +833,7 @@ export default {
               </el-table-column>
               <el-table-column width="300" label="作弊局详情" type="expand" inline>
                 <template slot-scope="scopeCheat">
-<!--                  <el-button type="text" size="small" @click="showCheatLogs(scope.row)">查看</el-button>-->
+                  <!--                  <el-button type="text" size="small" @click="showCheatLogs(scope.row)">查看</el-button>-->
                   <el-table :data="scopeCheat.row.CheatInfos" border>
                     <el-table-column width="200" property="endTime" label="结束时间">
                       <template slot-scope="scopeInfo">
@@ -818,7 +843,8 @@ export default {
 
                     <el-table-column width="200" property="otherUid" label="在该桌其他真⼈玩家id">
                       <template slot-scope="scopeInfo">
-                        <span>{{ formatOtherUids(scopeInfo.row) }}</span>
+                        <!--                        <span>{{ formatOtherUids(scopeInfo.row) }}</span>-->
+                        <p v-html="formatOtherUids(scopeInfo.row)" />
                       </template>
                     </el-table-column>
                     <el-table-column width="100" property="cheatScore" label="疑似度增加" />
