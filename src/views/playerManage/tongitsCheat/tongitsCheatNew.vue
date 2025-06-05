@@ -681,7 +681,7 @@ export default {
       <el-table
         :data="cheatLogs"
         border
-        style="width: 1800px;"
+        style="width: 100%"
       >
         <el-table-column
           prop="Uid"
@@ -691,7 +691,7 @@ export default {
         />
         <el-table-column
           label="身份"
-          width="100"
+          width="80"
           align="center"
         >
           <template slot-scope="scope">
@@ -701,7 +701,7 @@ export default {
         <el-table-column
           prop="CheatScore"
           label="疑似度"
-          width="100"
+          width="80"
           align="center"
         >
           <template slot-scope="scope">
@@ -711,7 +711,7 @@ export default {
         <el-table-column
           prop="BlackTime"
           label="拉⿊时间"
-          width="200"
+          width="160"
           align="center"
         >
           <template slot-scope="scope">
@@ -720,7 +720,7 @@ export default {
         </el-table-column>
         <el-table-column
           label="拉⿊信息"
-          width="200"
+          width="160"
           align="center"
         >
           <template slot-scope="scope">
@@ -730,7 +730,7 @@ export default {
         <el-table-column
           prop="LastEndTime"
           label="最近牌局时间"
-          width="200"
+          width="160"
           align="center"
         >
           <template slot-scope="scope">
@@ -740,7 +740,7 @@ export default {
         <el-table-column
           prop="LastCheatTime"
           label="最近作弊时间"
-          width="200"
+          width="160"
           align="center"
         >
           <template slot-scope="scope">
@@ -849,7 +849,7 @@ export default {
         </el-table-column>
         <el-table-column
           label="操作"
-          width="400"
+          width="200"
           align="center"
         >
           <template slot-scope="scope">
