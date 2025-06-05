@@ -608,6 +608,11 @@ export default {
     getValueColor(value) {
       if (value >= this.maybeMin) return '#ff0000'
       return '#000000'
+    },
+    toggleExpand(index) {
+      const row = this.tableData[index]
+      this.$set(row, '_expanded', !row._expanded)
+      this.$refs.table.toggleRowExpansion(row, row._expanded)
     }
   }
 }
@@ -774,9 +779,72 @@ export default {
           label="作弊详情"
           width="100"
           align="center"
+          type="expand"
+          inline
         >
-          <template slot-scope="scope">
-            <el-button type="text" size="small" @click="showTidCheatLogs(scope.row)">查看</el-button>
+          <template slot-scope="scopeTid">
+<!--            <el-button type="text" size="small" @click="showTidCheatLogs(scope.row)">查看</el-button>-->
+            <el-table :data="scopeTid.row.TidCheatLogs" border>
+              <el-table-column width="200" property="Tid" label="桌⼦id" />
+              <el-table-column width="200" property="FirstCheatTime" label="该桌⾸次作弊实锤时间">
+                <template slot-scope="scope">
+                  <div>{{ formatTimeDate(scope.row.FirstCheatTime) }}</div>
+                </template>
+              </el-table-column>
+              <el-table-column width="100" property="TotalCheatScore" label="疑似度增加" />
+              <el-table-column width="300" property="Infos" label="作弊信息">
+                <template slot-scope="scope">
+                  <el-tooltip placement="right">
+                    <div slot="content" style="max-width: 300px">
+                      <div v-for="(member, index) in scope.row.Infos" :key="index">
+                        <!--                  {{ member.Desc }}-&#45;&#45;({{ member.count }})-->
+                        {{ formatCheatInfo(member) }}
+                      </div>
+                    </div>
+                    <!--              <span>{{ scope.row.Infos[0].Desc }}-&#45;&#45;({{ scope.row.Infos[0].count }})</span>-->
+                    <span>{{ formatCheatInfo(scope.row.Infos[0]) }}</span>
+                  </el-tooltip>
+                </template>
+              </el-table-column>
+              <el-table-column width="300" label="作弊局详情" type="expand" inline>
+                <template slot-scope="scopeCheat">
+<!--                  <el-button type="text" size="small" @click="showCheatLogs(scope.row)">查看</el-button>-->
+                  <el-table :data="scopeCheat.row.CheatInfos" border>
+                    <el-table-column width="200" property="endTime" label="结束时间">
+                      <template slot-scope="scopeInfo">
+                        <div>{{ formatTimeDate(scopeInfo.row.endTime) }}</div>
+                      </template>
+                    </el-table-column>
+
+                    <el-table-column width="200" property="otherUid" label="在该桌其他真⼈玩家id">
+                      <template slot-scope="scopeInfo">
+                        <span>{{ formatOtherUids(scopeInfo.row) }}</span>
+                      </template>
+                    </el-table-column>
+                    <el-table-column width="100" property="cheatScore" label="疑似度增加" />
+                    <el-table-column width="300" property="Infos" label="该局操作异常">
+                      <template slot-scope="scopeInfo">
+                        <el-tooltip placement="right">
+                          <div slot="content" style="max-width: 300px">
+                            <div v-for="(member, index) in scopeInfo.row.Infos" :key="index">
+                              <!--                  {{ member.Desc }}-&#45;&#45;({{ member.count }})-->
+                              {{ formatCheatInfo(member) }}
+                            </div>
+                          </div>
+                          <!--              <span>{{ scope.row.Infos[0].Desc }}-&#45;&#45;({{ scope.row.Infos[0].count }})</span>-->
+                          <span>{{ formatCheatInfo(scopeInfo.row.Infos[0]) }}</span>
+                        </el-tooltip>
+                      </template>
+                    </el-table-column>
+                    <el-table-column width="300" label="作弊局详情">
+                      <template slot-scope="scopeInfo">
+                        <el-button type="text" size="small" @click="getDetail(scopeInfo.row.logId,scopeInfo.row.endTime)">查看</el-button>
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                </template>
+              </el-table-column>
+            </el-table>
           </template>
         </el-table-column>
         <el-table-column
