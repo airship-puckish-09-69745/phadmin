@@ -438,12 +438,15 @@ export default {
         infosMap.get(row.tid).Infos = this.addInfos(infosMap.get(row.tid).Infos, row)
         // eslint-disable-next-line no-empty
       } else {
+        const tableMoney = (row.tableMoney / 1000).toFixed(1)
         infosMap.set(row.tid, {
           Tid: row.tid,
           CheatInfos: [row],
           TotalCheatScore: row.cheatScore,
           FirstCheatTime: row.endTime,
-          Infos: this.addInfos([], row)
+          Infos: this.addInfos([], row),
+          Gid: row.gid,
+          TableMoney: tableMoney // 桌子金额1000,
         })
       }
       return Array.from(infosMap.values())
@@ -638,7 +641,18 @@ export default {
       const row = this.tableData[index]
       this.$set(row, '_expanded', !row._expanded)
       this.$refs.table.toggleRowExpansion(row, row._expanded)
-    }
+    },
+    formatGameId(gameId) {
+      if (gameId == 22) {
+        return 'Tongits POT'
+      } else if (gameId == 28){
+        return 'Tongits JOKER'
+      }else if (gameId == 29){
+        return 'Tongits QUICK'
+      }else {
+        return '未知游戏'
+      }
+    },
   }
 }
 </script>
@@ -811,6 +825,12 @@ export default {
             <!--            <el-button type="text" size="small" @click="showTidCheatLogs(scope.row)">查看</el-button>-->
             <el-table :data="scopeTid.row.TidCheatLogs" border>
               <el-table-column width="200" property="Tid" label="桌⼦id" />
+              <el-table-column width="200" property="Gid" label="游戏">
+                <template slot-scope="scope">
+                  {{ formatGameId(scope.row.Gid) }}
+                </template>
+              </el-table-column>
+              <el-table-column width="200" property="TableMoney" label="场次" />
               <el-table-column width="200" property="FirstCheatTime" label="该桌⾸次作弊实锤时间">
                 <template slot-scope="scope">
                   <div>{{ formatTimeDate(scope.row.FirstCheatTime) }}</div>

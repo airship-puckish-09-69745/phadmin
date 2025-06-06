@@ -652,7 +652,7 @@ export default {
           <h5 class="title">打一局放弃pot离桌：</h5>
           <el-form v-model="CheatCfg" label-width="150px" style="margin-top: 10px">
             <el-form-item label="增加疑似分">
-              <el-input v-model.number="CheatCfg.LeaveFre[0].MaybeAdd" type="number" size="medium" style="width: 120px" />
+              <el-input v-model.number="CheatCfg.LeaveFre[1].MaybeAdd" type="number" size="medium" style="width: 120px" />
             </el-form-item>
           </el-form>
 <!--          <h5 class="title">频繁换桌：近五局换桌概率</h5>-->
