@@ -715,7 +715,7 @@ export default {
           <table class="support-table">
             <thead>
               <tr>
-                <th>Fight异常分数差区间</th>
+                <th>FOLD异常分数差区间</th>
                 <th v-for="(item, index) in CheatCfg.PreWinFold" :key="'h'+index">
                   <template>
                     <div style="display: flex; align-items: center; justify-content: center;">
