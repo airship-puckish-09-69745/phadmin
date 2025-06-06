@@ -2378,6 +2378,12 @@ export const asyncRoutes = [
             meta: { title: 'M ines - 扫雷◐', gid: 20 }
           },
           {
+            path: 'playlog_minesMagic',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_minesMagic',
+            meta: { title: 'M inesMagic - 新版扫雷◐', gid: 132 }
+          },
+          {
             path: 'playlog_multiplayeriuniu',
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_multiplayerniuniu',

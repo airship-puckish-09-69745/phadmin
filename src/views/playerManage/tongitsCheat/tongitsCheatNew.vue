@@ -52,7 +52,8 @@ export default {
         Reason: '',
         Operator: ''
       },
-      BlackOperator: ''
+      BlackOperator: '',
+      GameLogUidsMap: new Map()
     }
   },
   created() {
@@ -125,6 +126,16 @@ export default {
           })
           for (let i = 0; i < cheatLogRows.length; i++) {
             const row = cheatLogRows[i]
+            if (this.GameLogUidsMap.has(row.logId)) {
+              const arr = this.GameLogUidsMap.get(row.logId)
+              if (!arr.includes(row.uid)) {
+                arr.push(row.uid)
+                this.GameLogUidsMap.set(row.logId, arr)
+              }
+            } else {
+              this.GameLogUidsMap.set(row.logId, [row.uid])
+            }
+
             const cheatScoreRow = this.cheatUserType.get(row.uid)
             if (!cheatScoreRow) {
               continue
@@ -427,12 +438,15 @@ export default {
         infosMap.get(row.tid).Infos = this.addInfos(infosMap.get(row.tid).Infos, row)
         // eslint-disable-next-line no-empty
       } else {
+        const tableMoney = (row.tableMoney / 1000).toFixed(1)
         infosMap.set(row.tid, {
           Tid: row.tid,
           CheatInfos: [row],
           TotalCheatScore: row.cheatScore,
           FirstCheatTime: row.endTime,
-          Infos: this.addInfos([], row)
+          Infos: this.addInfos([], row),
+          Gid: row.gid,
+          TableMoney: tableMoney // 桌子金额1000,
         })
       }
       return Array.from(infosMap.values())
@@ -565,7 +579,21 @@ export default {
       if (!row.hasOwnProperty('otherUid')) {
         return '----'
       }
-      return row.otherUid.join()
+      const strArray = []
+      if (this.GameLogUidsMap.has(row.logId)) {
+        const uids = this.GameLogUidsMap.get(row.logId)
+        for (let i = 0; i < row.otherUid.length; i++) {
+          if (uids.includes(row.otherUid[i])) {
+            const redStr = '<span style="color: red">' + row.otherUid[i] + '</span>'
+            strArray.push(redStr)
+          } else {
+            strArray.push(row.otherUid[i])
+          }
+        }
+      } else {
+        return row.otherUid.join()
+      }
+      return strArray.join()
     },
     getDetail(id, dt) {
       const $this = this
@@ -608,7 +636,23 @@ export default {
     getValueColor(value) {
       if (value >= this.maybeMin) return '#ff0000'
       return '#000000'
-    }
+    },
+    toggleExpand(index) {
+      const row = this.tableData[index]
+      this.$set(row, '_expanded', !row._expanded)
+      this.$refs.table.toggleRowExpansion(row, row._expanded)
+    },
+    formatGameId(gameId) {
+      if (gameId == 22) {
+        return 'Tongits POT'
+      } else if (gameId == 28){
+        return 'Tongits JOKER'
+      }else if (gameId == 29){
+        return 'Tongits QUICK'
+      }else {
+        return '未知游戏'
+      }
+    },
   }
 }
 </script>
@@ -676,7 +720,7 @@ export default {
       <el-table
         :data="cheatLogs"
         border
-        style="width: 1800px;"
+        style="width: 100%"
       >
         <el-table-column
           prop="Uid"
@@ -686,7 +730,7 @@ export default {
         />
         <el-table-column
           label="身份"
-          width="100"
+          width="80"
           align="center"
         >
           <template slot-scope="scope">
@@ -696,7 +740,7 @@ export default {
         <el-table-column
           prop="CheatScore"
           label="疑似度"
-          width="100"
+          width="80"
           align="center"
         >
           <template slot-scope="scope">
@@ -706,7 +750,7 @@ export default {
         <el-table-column
           prop="BlackTime"
           label="拉⿊时间"
-          width="200"
+          width="160"
           align="center"
         >
           <template slot-scope="scope">
@@ -715,7 +759,7 @@ export default {
         </el-table-column>
         <el-table-column
           label="拉⿊信息"
-          width="200"
+          width="160"
           align="center"
         >
           <template slot-scope="scope">
@@ -725,7 +769,7 @@ export default {
         <el-table-column
           prop="LastEndTime"
           label="最近牌局时间"
-          width="200"
+          width="160"
           align="center"
         >
           <template slot-scope="scope">
@@ -735,7 +779,7 @@ export default {
         <el-table-column
           prop="LastCheatTime"
           label="最近作弊时间"
-          width="200"
+          width="160"
           align="center"
         >
           <template slot-scope="scope">
@@ -774,14 +818,84 @@ export default {
           label="作弊详情"
           width="100"
           align="center"
+          type="expand"
+          inline
         >
-          <template slot-scope="scope">
-            <el-button type="text" size="small" @click="showTidCheatLogs(scope.row)">查看</el-button>
+          <template slot-scope="scopeTid">
+            <!--            <el-button type="text" size="small" @click="showTidCheatLogs(scope.row)">查看</el-button>-->
+            <el-table :data="scopeTid.row.TidCheatLogs" border>
+              <el-table-column width="200" property="Tid" label="桌⼦id" />
+              <el-table-column width="200" property="Gid" label="游戏">
+                <template slot-scope="scope">
+                  {{ formatGameId(scope.row.Gid) }}
+                </template>
+              </el-table-column>
+              <el-table-column width="200" property="TableMoney" label="场次" />
+              <el-table-column width="200" property="FirstCheatTime" label="该桌⾸次作弊实锤时间">
+                <template slot-scope="scope">
+                  <div>{{ formatTimeDate(scope.row.FirstCheatTime) }}</div>
+                </template>
+              </el-table-column>
+              <el-table-column width="100" property="TotalCheatScore" label="疑似度增加" />
+              <el-table-column width="300" property="Infos" label="作弊信息">
+                <template slot-scope="scope">
+                  <el-tooltip placement="right">
+                    <div slot="content" style="max-width: 300px">
+                      <div v-for="(member, index) in scope.row.Infos" :key="index">
+                        <!--                  {{ member.Desc }}-&#45;&#45;({{ member.count }})-->
+                        {{ formatCheatInfo(member) }}
+                      </div>
+                    </div>
+                    <!--              <span>{{ scope.row.Infos[0].Desc }}-&#45;&#45;({{ scope.row.Infos[0].count }})</span>-->
+                    <span>{{ formatCheatInfo(scope.row.Infos[0]) }}</span>
+                  </el-tooltip>
+                </template>
+              </el-table-column>
+              <el-table-column width="300" label="作弊局详情" type="expand" inline>
+                <template slot-scope="scopeCheat">
+                  <!--                  <el-button type="text" size="small" @click="showCheatLogs(scope.row)">查看</el-button>-->
+                  <el-table :data="scopeCheat.row.CheatInfos" border>
+                    <el-table-column width="200" property="endTime" label="结束时间">
+                      <template slot-scope="scopeInfo">
+                        <div>{{ formatTimeDate(scopeInfo.row.endTime) }}</div>
+                      </template>
+                    </el-table-column>
+
+                    <el-table-column width="200" property="otherUid" label="在该桌其他真⼈玩家id">
+                      <template slot-scope="scopeInfo">
+                        <!--                        <span>{{ formatOtherUids(scopeInfo.row) }}</span>-->
+                        <p v-html="formatOtherUids(scopeInfo.row)" />
+                      </template>
+                    </el-table-column>
+                    <el-table-column width="100" property="cheatScore" label="疑似度增加" />
+                    <el-table-column width="300" property="Infos" label="该局操作异常">
+                      <template slot-scope="scopeInfo">
+                        <el-tooltip placement="right">
+                          <div slot="content" style="max-width: 300px">
+                            <div v-for="(member, index) in scopeInfo.row.Infos" :key="index">
+                              <!--                  {{ member.Desc }}-&#45;&#45;({{ member.count }})-->
+                              {{ formatCheatInfo(member) }}
+                            </div>
+                          </div>
+                          <!--              <span>{{ scope.row.Infos[0].Desc }}-&#45;&#45;({{ scope.row.Infos[0].count }})</span>-->
+                          <span>{{ formatCheatInfo(scopeInfo.row.Infos[0]) }}</span>
+                        </el-tooltip>
+                      </template>
+                    </el-table-column>
+                    <el-table-column width="300" label="作弊局详情">
+                      <template slot-scope="scopeInfo">
+                        <el-button type="text" size="small" @click="getDetail(scopeInfo.row.logId,scopeInfo.row.endTime)">查看</el-button>
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                </template>
+              </el-table-column>
+            </el-table>
           </template>
         </el-table-column>
         <el-table-column
           label="操作"
-          width="400"
+          width="200"
           align="center"
         >
           <template slot-scope="scope">
