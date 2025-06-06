@@ -24,11 +24,11 @@
             </el-input>
           </el-form-item>
 
-          <el-form-item label="购买免费模式中奖倍数分布V2">
-            <el-input v-model="cfg.BuyFreeDistributeV2" placeholder="请输入内容,如250,500,70,501,750,50">
-              <template slot="append">三个值一组用 , 连接。</template>
-            </el-input>
-          </el-form-item>
+<!--          <el-form-item label="购买免费模式中奖倍数分布V2">-->
+<!--            <el-input v-model="cfg.BuyFreeDistributeV2" placeholder="请输入内容,如250,500,70,501,750,50">-->
+<!--              <template slot="append">三个值一组用 , 连接。</template>-->
+<!--            </el-input>-->
+<!--          </el-form-item>-->
 
           <!--          <el-form-item label="wild图标出现倍率权重">-->
           <!--            <el-input v-model="cfg.WildOddsRate" placeholder="请输入内容,如7,8,9,10"> <template slot="append">分别对应1倍,2倍,3倍</template> </el-input>-->
