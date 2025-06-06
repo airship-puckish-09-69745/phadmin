@@ -2728,6 +2728,9 @@ export default {
       this.editForm.signExtra.reubyExtra.rebuyPropName = ''
     },
     reubyConfigCheck(){
+      if (this.editForm.signExtra.reubyExtra.supportRebuy === 0){
+        return true
+      }
       //免费赛配buy 规则不允许
       if (this.editForm.signExtra.reubyExtra.supportRebuy === 1 && this.editForm.data.signUpType === 1 ){
         this.rebuyConfigReset()
