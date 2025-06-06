@@ -510,6 +510,9 @@ export default {
           this.form = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
             const item = JSON.parse(response.Data.Data)
+            if (typeof item['BigPrizeGroups'] == 'undefined') {
+              item['BigPrizeGroups'] = []
+            }
             Object.assign(this.item, item)
             for (const itemElement of item.BetOddsPlans) {
               let str = ''
