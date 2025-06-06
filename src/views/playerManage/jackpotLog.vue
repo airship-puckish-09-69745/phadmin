@@ -400,7 +400,8 @@ export default {
         { 'value': 196, 'label': 'GoldMiner' },
         { 'value': 204, 'label': 'SpaceTreasure' },
         { 'value': 128, 'label': 'Tongits JP' },
-        { 'value': 129, 'label': 'Live Color' }
+        { 'value': 129, 'label': 'Live Color' },
+        { 'value': 132, 'label': '新版扫雷' },
       ],
       appConfig: [
         { 'value': 0, 'label': '全部' },

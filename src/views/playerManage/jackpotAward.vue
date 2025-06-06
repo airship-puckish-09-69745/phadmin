@@ -251,6 +251,7 @@ export default {
         { 'value': 204, 'label': 'SpaceTreasure' },
         { 'value': 128, 'label': 'Tongits JP' },
         { 'value': 129, 'label': 'Live Color' },
+        { 'value': 132, 'label': '新版扫雷' },
       ],
       userTypeConfig: [
         { 'value': -1, 'label': '全部' },
