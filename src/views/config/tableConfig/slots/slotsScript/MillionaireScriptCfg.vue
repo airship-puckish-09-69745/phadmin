@@ -495,7 +495,7 @@ export default {
     getData() {
       if (!this.subKeyMap[this.queryGid]) {
         Message.error('该游戏尚未配置key')
-        this.item = {}
+        this.item = {BigPrizeGroups: []}
         return
       }
       request({
