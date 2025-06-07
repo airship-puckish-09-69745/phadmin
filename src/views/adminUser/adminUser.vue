@@ -1,17 +1,42 @@
 <template>
   <div id="app" class="page-container" style="padding: 10px">
     <el-row style="padding-top: 5px">
-      <el-col :span="20">
-        <el-button
-          size="mini"
-          type="primary"
-          icon="el-icon-plus"
-          @click="handleCreate()"
-        >添加管理员
-        </el-button>
+      <el-col :span="16">
+        <el-row style="margin-bottom: 10px">
+          <el-col :span="4" style="padding-right: 10px">
+            <el-button
+              size="mini"
+              type="primary"
+              icon="el-icon-plus"
+              @click="handleCreate()"
+            >添加管理员</el-button>
+          </el-col>
+          <el-col :span="8" style="padding-right: 10px">
+            <el-input
+              placeholder="请输入登录名"
+              v-model="search.Name"
+              size="mini"
+              clearable>
+            </el-input>
+          </el-col>
+          <el-col :span="8">
+            <el-input
+              placeholder="请输入昵称"
+              v-model="search.Nick"
+              size="mini"
+              clearable>
+            </el-input>
+          </el-col>
+        </el-row>
       </el-col>
-      <el-col :span="2">
-        <el-button type="success" size="mini" icon="el-icon-refresh" @click="getList()">刷新</el-button>
+      <el-col :span="5">
+        <el-button
+          type="success"
+          size="mini"
+          icon="el-icon-refresh"
+          @click="getList()"
+          style="float: right"
+        >刷新</el-button>
       </el-col>
     </el-row>
     <div style="padding-top: 10px">
@@ -219,7 +244,10 @@ export default {
     return {
       tableData: [],
       clientDB: new ClientTableData([], 1),
-      search: '',
+      search: {
+        Name: '',
+        Nick: ''
+      },
       libShow: $libShow,
 
       edit: {
@@ -305,7 +333,9 @@ export default {
         url: '/adminuser/users',
         method: 'get',
         data: {
-          bRoleInfo: 1
+          bRoleInfo: 1,
+          name: this.search.Name,
+          nick: this.search.Nick
         }
       }).then(response => {
         if (response.RetCode === 0) {
