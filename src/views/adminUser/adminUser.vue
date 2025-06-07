@@ -1,42 +1,25 @@
 <template>
   <div id="app" class="page-container" style="padding: 10px">
     <el-row style="padding-top: 5px">
-      <el-col :span="16">
-        <el-row style="margin-bottom: 10px">
-          <el-col :span="4" style="padding-right: 10px">
-            <el-button
-              size="mini"
-              type="primary"
-              icon="el-icon-plus"
-              @click="handleCreate()"
-            >添加管理员</el-button>
-          </el-col>
-          <el-col :span="8" style="padding-right: 10px">
-            <el-input
-              placeholder="请输入登录名"
-              v-model="search.Name"
-              size="mini"
-              clearable>
-            </el-input>
-          </el-col>
-          <el-col :span="8">
-            <el-input
-              placeholder="请输入昵称"
-              v-model="search.Nick"
-              size="mini"
-              clearable>
-            </el-input>
-          </el-col>
-        </el-row>
-      </el-col>
-      <el-col :span="5">
+      <el-col :span="4">
         <el-button
-          type="success"
           size="mini"
-          icon="el-icon-refresh"
-          @click="getList()"
-          style="float: right"
-        >刷新</el-button>
+          type="primary"
+          icon="el-icon-plus"
+          @click="handleCreate()"
+        >添加管理员
+        </el-button>
+      </el-col>
+      <el-col :span="7" >
+        <el-input
+          v-model="search"
+          size="mini"
+          placeholder="输入关键字搜索"
+          @input="searchChange"
+        />
+      </el-col>
+      <el-col :span="10">
+        <el-button type="success" size="mini" style="float: right" icon="el-icon-refresh" @click="getList()">刷新</el-button>
       </el-col>
     </el-row>
     <div style="padding-top: 10px">
@@ -244,10 +227,7 @@ export default {
     return {
       tableData: [],
       clientDB: new ClientTableData([], 1),
-      search: {
-        Name: '',
-        Nick: ''
-      },
+      search: '',
       libShow: $libShow,
 
       edit: {
@@ -281,6 +261,11 @@ export default {
     },
     formatTime(ts) {
       return $libDate.FormateSecondStr(ts, 2)
+    },
+
+    searchChange() {
+      this.clientDB.Search(this.search, ['Name', 'Nick'])
+      this.refreshShow()
     },
 
     userRoleEdit(id, name) {
@@ -333,9 +318,7 @@ export default {
         url: '/adminuser/users',
         method: 'get',
         data: {
-          bRoleInfo: 1,
-          name: this.search.Name,
-          nick: this.search.Nick
+          bRoleInfo: 1
         }
       }).then(response => {
         if (response.RetCode === 0) {
