@@ -291,6 +291,15 @@ export default {
           return
         }
       }
+
+      // 检查
+      for (const item of this.buyFreeOddsConf.currentConf) {
+        if (item.MinOdds > item.MaxOdds) {
+          Message.error(`目标倍数开始(${item.MinOdds})不能大于目标倍数结束(${item.MaxOdds})`)
+          return
+        }
+      }
+
       if (this.buyFreeOddsConf.editIndex >= 0) {
         this.$set(this.cfg.BuyFreeOddsConf, this.buyFreeOddsConf.editIndex, {
           Bet: currentBets,

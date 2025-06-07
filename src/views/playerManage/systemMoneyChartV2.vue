@@ -423,6 +423,9 @@ export default {
         127: 'SaBong',
         128: 'Tongits JP',
         129: 'Live Color',
+        130: 'Remi',
+        131: 'Remi Pro',
+        132: 'MinesMagic',
         1: 'Rummy',
         10000: '汇总'
       },
@@ -431,7 +434,7 @@ export default {
       users: [],
       // 糖果传奇调用addGameNames特殊处理
       defaultOrder: [10000, 15, 22, 28, 29, 2031, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103, 104, 105, 106, 111, 6, 32, 2032,
-        35, 37, 107, 108, 110, 112, 115, 46, 47, 48, 49, 113, 118, 123, 117, 116, 126, 127, 128, 129], // 糖果传奇调用addGameNames特殊处理
+        35, 37, 107, 108, 110, 112, 115, 46, 47, 48, 49, 113, 118, 123, 117, 116, 126, 127, 128, 129,132], // 糖果传奇调用addGameNames特殊处理
       selectType: 1,
 
       selectOrder: 1,
@@ -575,11 +578,11 @@ export default {
         }
       }
       if (this.showZoogame) {
-        this.defaultOrder.push(124, 125)
+        this.defaultOrder.push(124, 125, 130, 131)
       }
     },
     isPopType(o) {
-      const popTypes = [1, 9, 8, 14, 15, 21, 22, 29, 23, 28, 31, 34, 2032, 46, 47, 48, 35, 49, 113, 122]
+      const popTypes = [1, 9, 8, 14, 15, 21, 22, 29, 23, 28, 31, 34, 2032, 46, 47, 48, 35, 49, 113, 122, 130, 131, 132]
       for (let i = 0; i < popTypes.length; i++) {
         if (popTypes[i] === o) {
           return false

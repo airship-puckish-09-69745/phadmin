@@ -170,27 +170,28 @@ export default {
       ]
     }
   },
-  async created() {
-    await this.getBlackData()
-    await this.getMaybeData()
+  created() {
+    this.getBlackData()
+    this.getMaybeData()
   },
   methods: {
-    async getDataInfo() {
+    getDataInfo() {
       // await this.getBlackData()
       // await this.getData()
-      await this.getMaybeData()
+      this.getMaybeData()
     },
-    async getDataInfoCredit() {
-      await this.getMaybeData()
-      await this.getDataCreditNew(1)
+    getDataInfoCredit() {
+      this.getBlackData()
+      this.getMaybeData()
+      this.getDataCreditNew(1)
     },
-    async getDataInfoNoCredit() {
+    getDataInfoNoCredit() {
       // await this.getBlackData()
       // await this.getData()
-      await this.getMaybeData()
-      await this.getDataCreditNew(0)
+      this.getMaybeData()
+      this.getDataCreditNew(0)
     },
-    async getBlackData() {
+    getBlackData() {
       const $this = this
       $this.blackuids = []
       request({
@@ -223,7 +224,7 @@ export default {
         }
       })
     },
-    async getData() {
+    getData() {
       const $this = this
       $this.cheatLogs = []
       $this.clientDB = new ClientTableData([], 1, {})

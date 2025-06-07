@@ -30,7 +30,7 @@ export default {
     return {
       formData: {
         ID: '',
-        Sidebar: ''
+        Amount: 0
       }
     }
   },
@@ -63,6 +63,7 @@ export default {
       this.$emit('reload')
     },
     handleSave() {
+      this.formData.Amount = parseInt(this.formData.Amount)
       this.$emit('save', this.formData)
       this.resetForm()
     },
