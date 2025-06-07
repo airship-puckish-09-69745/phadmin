@@ -27,6 +27,7 @@
         ref="filterTable"
         :data="tableData"
         stripe
+        max-height="700"
         border
         :header-cell-style="libShow.DefaultTableHeadClass"
         :row-style="{height:'10px'}"
@@ -98,7 +99,7 @@
         <div class="block">
           <el-pagination
             :current-page="clientDB.GetPage().GetCurrentPage()"
-            :page-sizes="[10, 20, 30, 40]"
+            :page-sizes="[40, 80, 120, 160]"
             :page-size="clientDB.GetPage().GetPageNum()"
             layout="total, sizes, prev, pager, next, jumper"
             :total="clientDB.GetPage().GetTotalCount()"
@@ -328,7 +329,7 @@ export default {
             users[i]['Role'] = roles[i]
           }
 
-          $this.clientDB = new ClientTableData(users, 10, {}, 'ID', -1)
+          $this.clientDB = new ClientTableData(users, 40, {}, 'ID', -1)
           $this.handleCurrentChange(1)
         }
       })
