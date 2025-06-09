@@ -2316,6 +2316,10 @@ export default {
         this.errmsg('提前进入时间 或者是提前显示时间不能配置为0')
         return false
       }
+
+      if (!this.reubyConfigCheck()){
+        return false
+      }
       return true
     },
 
@@ -2389,9 +2393,6 @@ export default {
             }
           }
         }
-      }
-      if (!this.reubyConfigCheck()){
-        return false
       }
       return true
     },
