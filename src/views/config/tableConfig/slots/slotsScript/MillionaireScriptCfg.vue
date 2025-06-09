@@ -395,7 +395,9 @@ export default {
         '100186': 'mahjongjackpot_x',
         '188': 'streetfighting',
         '194': 'goldtrain',
-        '192': 'bountyraid'
+        '192': 'bountyraid',
+        '196': 'goldminer',
+        '198': 'fortuneblessing'
       }
     }
   },
@@ -495,7 +497,7 @@ export default {
     getData() {
       if (!this.subKeyMap[this.queryGid]) {
         Message.error('该游戏尚未配置key')
-        this.item = {}
+        this.item = {BigPrizeGroups: []}
         return
       }
       request({
@@ -510,6 +512,9 @@ export default {
           this.form = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
             const item = JSON.parse(response.Data.Data)
+            if (typeof item['BigPrizeGroups'] == 'undefined') {
+              item['BigPrizeGroups'] = []
+            }
             Object.assign(this.item, item)
             for (const itemElement of item.BetOddsPlans) {
               let str = ''

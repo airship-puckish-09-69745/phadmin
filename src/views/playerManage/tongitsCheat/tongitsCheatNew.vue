@@ -2,7 +2,8 @@
 import request from '@/utils/request'
 import { $libDate, ClientTableData } from '@/utils/common'
 import TongitsGameLog from '@/views/playerManage/components/TongitsGameLog.vue'
-
+import { getInfo } from '@/api/user'
+import { sendLark } from '@/api/lark'
 export default {
   components: { TongitsGameLog },
   data() {
@@ -19,7 +20,11 @@ export default {
       GameLog: {},
       GameLogVisible: false,
       Gid: 22,
-
+      gidOption: [
+        { label: 'TONGITS POT', value: 22 },
+        { label: 'TONGITS JOKER', value: 28 },
+        { label: 'TONGITS QUICK', value: 29 }
+      ],
       isRobotMap: {},
       TidCheatLogVisible: false,
       TidCheatLogs: [],
@@ -29,7 +34,8 @@ export default {
       sortType: 1,
       sortTypeOption: [
         { label: '按时间', value: 0 },
-        { label: '按疑似度', value: 1 }
+        { label: '按疑似度', value: 1 },
+        { label: '按异常局占比', value: 2 }
       ],
       cheatType: -1,
       cheatTypeOption: [
@@ -37,14 +43,59 @@ export default {
         { label: '普通', value: 0 },
         { label: '疑似', value: 1 },
         { label: '黑子', value: 2 }
-      ]
+      ],
+      maybeMin: 100,
+
+      BlackVisible: false,
+      editBlack: {
+        Uid: 0,
+        Reason: '',
+        Operator: ''
+      },
+      BlackOperator: '',
+      GameLogUidsMap: new Map()
     }
   },
   created() {
+    this.getOperator()
+    this.getDataCfg()
     this.getCheatUserType()
     this.getData()
   },
   methods: {
+    getOperator() {
+      const $this = this
+      getInfo(this.$store.getters.token).then(function(response) {
+        if (response.RetCode === 0) {
+          $this.BlackOperator = response.Data.nick
+        }
+      }).catch((e) => {
+        console.log('getOperator failed', e)
+      })
+    },
+    getDataCfg() {
+      const $this = this
+      request({
+        url: '/customizeconfig/one',
+        method: 'get',
+        data: {
+          SubKey: 'tongits_cheat_cfg'
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          console.log('robotSetting', response.Data)
+          // $this.form = response.Data || {}
+          if (response.Data && response.Data.Data !== '' && response.Data.Data !== '{}') {
+            const CheatCfg = JSON.parse(response.Data.Data)
+            $this.maybeMin = CheatCfg.MaybeMin
+          }
+        }
+      })
+    },
+    getCheatData() {
+      this.getCheatUserType()
+      this.getData()
+    },
     getData() {
       // console.log(ttt)
       const $this = this
@@ -75,6 +126,16 @@ export default {
           })
           for (let i = 0; i < cheatLogRows.length; i++) {
             const row = cheatLogRows[i]
+            if (this.GameLogUidsMap.has(row.logId)) {
+              const arr = this.GameLogUidsMap.get(row.logId)
+              if (!arr.includes(row.uid)) {
+                arr.push(row.uid)
+                this.GameLogUidsMap.set(row.logId, arr)
+              }
+            } else {
+              this.GameLogUidsMap.set(row.logId, [row.uid])
+            }
+
             const cheatScoreRow = this.cheatUserType.get(row.uid)
             if (!cheatScoreRow) {
               continue
@@ -98,7 +159,8 @@ export default {
                 Infos: [],
                 TidCheatLogs: [],
                 userType: 0,
-                blackTime: 0
+                blackTime: 0,
+                cheatPercent: cheatScoreRow.cheatTimes * 100 / cheatScoreRow.allPlayTimes
               }
               cheatLog.Infos = this.addInfos([], row)
               cheatLog.TidCheatLogs = this.addTidInfos([], row)
@@ -107,6 +169,8 @@ export default {
                 cheatLog.userType = this.cheatUserType.get(row.uid).userType
                 cheatLog.blackTime = this.cheatUserType.get(row.uid).blackTime
                 cheatLog.CheatScore = this.cheatUserType.get(row.uid).cheatScore
+                cheatLog.blackOperator = this.cheatUserType.get(row.uid).blackOperator
+                cheatLog.blackReason = this.cheatUserType.get(row.uid).blackReason
               }
               cheatLogMap.set(cheatLog.Uid, cheatLog)
             } else {
@@ -115,6 +179,7 @@ export default {
               cheatLog.LastCheatTime = Math.max(cheatLog.LastCheatTime, row.endTime)
               cheatLog.Infos = this.addInfos(cheatLog.Infos, row)
               cheatLog.TidCheatLogs = this.addTidInfos(cheatLog.TidCheatLogs, row)
+              cheatLog.TidCheatLen = cheatLog.TidCheatLogs.length
             }
           }
           // eslint-disable-next-line prefer-const
@@ -122,8 +187,10 @@ export default {
           console.log(cheatLogs)
           this.totalCount = cheatLogs.length
           let sortName = 'EndTime'
-          if (this.sortType === 0) {
+          if (this.sortType === 1) {
             sortName = 'CheatScore'
+          } else if (this.sortType === 2) {
+            sortName = 'cheatPercent'
           }
           $this.clientDB = new ClientTableData(cheatLogs, $this.pageNum, {}, sortName, -1, 'Uid')
           $this.handleCurrentChange(1)
@@ -138,7 +205,8 @@ export default {
         method: 'get',
         data: {
           Env: this.env,
-          Path: '/misc/tongits/cheat/user/type'
+          Path: '/misc/tongits/cheat/user/type',
+          Gid: this.Gid
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -160,6 +228,16 @@ export default {
         const info = infos[i]
         infosMap.set(info.cheatType, info)
       }
+      row.disAndGive = row.cheatFields[1]
+      row.giveMoreTimes = row.cheatFields[2]
+      row.firstGiveMoreTimes = row.cheatFields[3]
+      row.preWinFight = row.cheatFields[4]
+      row.preWinFold = row.cheatFields[5]
+      row.leaveFre = row.cheatFields[6]
+      row.bigPotWin = row.cheatFields[7]
+      row.bigPotLeave = row.cheatFields[8]
+      row.playMoreTimes = row.cheatFields[9]
+      row.sameName = row.cheatFields[10]
       if (row.disAndGive >= 1) {
         if (infosMap.has(1)) {
           infosMap.get(1).count += row.disAndGive
@@ -324,6 +402,25 @@ export default {
           }
         }
       }
+
+      if (row.sameName >= 1) {
+        if (infosMap.has(10)) {
+          infosMap.get(10).count += row.sameName
+        } else {
+          infosMap.set(10, {
+            Desc: '名字相似度过高',
+            count: row.sameName,
+            cheatType: 10
+          })
+        }
+        if (row.hasOwnProperty('cheatScores')) {
+          if (infosMap.get(10).hasOwnProperty('cheatScore')) {
+            infosMap.get(10).cheatScore += row.cheatScores[10]
+          } else {
+            infosMap.get(10).cheatScore = row.cheatScores[10]
+          }
+        }
+      }
       return Array.from(infosMap.values())
     },
     addTidInfos(infos, row) {
@@ -341,12 +438,15 @@ export default {
         infosMap.get(row.tid).Infos = this.addInfos(infosMap.get(row.tid).Infos, row)
         // eslint-disable-next-line no-empty
       } else {
+        const tableMoney = (row.tableMoney / 1000).toFixed(1)
         infosMap.set(row.tid, {
           Tid: row.tid,
           CheatInfos: [row],
           TotalCheatScore: row.cheatScore,
           FirstCheatTime: row.endTime,
-          Infos: this.addInfos([], row)
+          Infos: this.addInfos([], row),
+          Gid: row.gid,
+          TableMoney: tableMoney // 桌子金额1000,
         })
       }
       return Array.from(infosMap.values())
@@ -366,16 +466,64 @@ export default {
       return $libDate.FormateSecondStr(ts, 2)
     },
     changeWhite(row, userType) {
-      const cheatUserType = this.cheatUserType.get(row.Uid)
-      cheatUserType.UserType = userType
+      let tips = '是否确认将玩家ID为' + row.Uid + '的玩家洗白?'
+      if (userType === 2) {
+        tips = '是否确认将玩家ID为' + row.Uid + '的玩家拉黑?'
+      }
+      this.$confirm(tips, '提示', { type: 'warning' }).then(() => {
+        const cheatUserType = this.cheatUserType.get(row.Uid)
+        cheatUserType.UserType = userType
+        this.cheatUserType.set(row.Uid, cheatUserType)
+        const ob = this.clientDB.GetDataByID(row.Uid)
+        if (ob.userType !== 2 && userType === 2) {
+          ob.blackTime = Math.floor(new Date().getTime() / 1000)
+        }
+        if (ob.userType !== 2) {
+          ob.blackTime = 0
+          ob.userType = userType
+        }
+        this.clientDB.UpdateData2('Uid', ob)
+        request({
+          url: '/dataProxy/info',
+          method: 'post',
+          data: {
+            Env: this.env,
+            Path: '/misc/tongits/cheat/update/user/type',
+            UserType: userType,
+            Uid: row.Uid,
+            Gid: row.Gid,
+            Reason: '',
+            Operator: ''
+          }
+        }).then(response => {
+        })
+        this.refreshShow()
+      }).catch(() => {
+        console.log('取消')
+      })
+    },
+    changeBlack(row) {
+      this.BlackVisible = true
+      this.editBlack.Uid = row.Uid
+      this.editBlack.Reason = 'no reason'
+      this.editBlack.Operator = this.BlackOperator
+    },
+    save(row) {
+      this.BlackVisible = false
+      console.log(this.editBlack)
+      const userType = 2
+      const cheatUserType = this.cheatUserType.get(this.editBlack.Uid)
+      cheatUserType.UserType = 2
       this.cheatUserType.set(row.Uid, cheatUserType)
-      const ob = this.clientDB.GetDataByID(row.Uid)
+      const ob = this.clientDB.GetDataByID(this.editBlack.Uid)
       if (ob.userType !== 2 && userType === 2) {
         ob.blackTime = Math.floor(new Date().getTime() / 1000)
       }
       if (ob.userType !== 2) {
         ob.blackTime = 0
-        ob.userType = userType
+        ob.userType = 2
+        ob.blackOperator = this.BlackOperator
+        ob.blackReason = this.editBlack.Reason
       }
       this.clientDB.UpdateData2('Uid', ob)
       request({
@@ -384,8 +532,11 @@ export default {
         data: {
           Env: this.env,
           Path: '/misc/tongits/cheat/update/user/type',
-          UserType: userType,
-          Uid: row.Uid
+          UserType: 2,
+          Uid: this.editBlack.Uid,
+          Gid: 22,
+          Reason: this.editBlack.Reason,
+          Operator: this.editBlack.Operator
         }
       }).then(response => {
       })
@@ -415,23 +566,34 @@ export default {
       } else {
         return '--'
       }
-      // const hasKey = this.cheatUserType.has(row.Uid)
-      // if (hasKey) {
-      //   const userType = this.cheatUserType.get(row.Uid)
-      //   if (userType === 2) {
-      //     return this.formatTimeDate(userType.blackTime)
-      //   } else {
-      //     return '--'
-      //   }
-      // } else {
-      //   return '--'
-      // }
+    },
+    formatUserBlackInfo(row) {
+      const userType = row.userType
+      if (userType === 2) {
+        return '拉黑原因：' + row.blackReason + '，拉黑人：' + row.blackOperator
+      } else {
+        return '--'
+      }
     },
     formatOtherUids(row) {
       if (!row.hasOwnProperty('otherUid')) {
         return '----'
       }
-      return row.otherUid.join()
+      const strArray = []
+      if (this.GameLogUidsMap.has(row.logId)) {
+        const uids = this.GameLogUidsMap.get(row.logId)
+        for (let i = 0; i < row.otherUid.length; i++) {
+          if (uids.includes(row.otherUid[i])) {
+            const redStr = '<span style="color: red">' + row.otherUid[i] + '</span>'
+            strArray.push(redStr)
+          } else {
+            strArray.push(row.otherUid[i])
+          }
+        }
+      } else {
+        return row.otherUid.join()
+      }
+      return strArray.join()
     },
     getDetail(id, dt) {
       const $this = this
@@ -470,7 +632,27 @@ export default {
     },
     showButton(row) {
       return row.userType === 2
-    }
+    },
+    getValueColor(value) {
+      if (value >= this.maybeMin) return '#ff0000'
+      return '#000000'
+    },
+    toggleExpand(index) {
+      const row = this.tableData[index]
+      this.$set(row, '_expanded', !row._expanded)
+      this.$refs.table.toggleRowExpansion(row, row._expanded)
+    },
+    formatGameId(gameId) {
+      if (gameId == 22) {
+        return 'Tongits POT'
+      } else if (gameId == 28){
+        return 'Tongits JOKER'
+      }else if (gameId == 29){
+        return 'Tongits QUICK'
+      }else {
+        return '未知游戏'
+      }
+    },
   }
 }
 </script>
@@ -501,8 +683,8 @@ export default {
           <el-input v-model.number="Uid" />
         </el-form-item>
         <el-form-item>
-          <el-button size="mini" type="primary" icon="el-icon-plus" @click="getData">查询</el-button>
-          <el-button size="mini" type="primary" icon="el-icon-plus" @click="getData">刷新</el-button>
+          <el-button size="mini" type="primary" icon="el-icon-plus" @click="getCheatData">查询</el-button>
+          <el-button size="mini" type="primary" icon="el-icon-plus" @click="getCheatData">刷新</el-button>
         </el-form-item>
         <el-form-item label="排序方式：">
           <el-select v-model.number="sortType" placeholder="请选择">
@@ -524,11 +706,21 @@ export default {
             />
           </el-select>
         </el-form-item>
+        <!--        <el-form-item label="游戏：">-->
+        <!--          <el-select v-model.number="Gid" placeholder="请选择">-->
+        <!--            <el-option-->
+        <!--              v-for="itemGid in gidOption"-->
+        <!--              :key="itemGid.value"-->
+        <!--              :label="itemGid.label"-->
+        <!--              :value="itemGid.value"-->
+        <!--            />-->
+        <!--          </el-select>-->
+        <!--        </el-form-item>-->
       </el-form>
       <el-table
         :data="cheatLogs"
         border
-        style="width: 1800px;"
+        style="width: 100%"
       >
         <el-table-column
           prop="Uid"
@@ -538,7 +730,7 @@ export default {
         />
         <el-table-column
           label="身份"
-          width="100"
+          width="80"
           align="center"
         >
           <template slot-scope="scope">
@@ -548,13 +740,17 @@ export default {
         <el-table-column
           prop="CheatScore"
           label="疑似度"
-          width="100"
+          width="80"
           align="center"
-        />
+        >
+          <template slot-scope="scope">
+            <span :style="{color: getValueColor(scope.row.CheatScore)}">{{ scope.row.CheatScore }}</span>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="BlackTime"
           label="拉⿊时间"
-          width="200"
+          width="160"
           align="center"
         >
           <template slot-scope="scope">
@@ -562,9 +758,18 @@ export default {
           </template>
         </el-table-column>
         <el-table-column
+          label="拉⿊信息"
+          width="160"
+          align="center"
+        >
+          <template slot-scope="scope">
+            <div>{{ formatUserBlackInfo(scope.row) }}</div>
+          </template>
+        </el-table-column>
+        <el-table-column
           prop="LastEndTime"
           label="最近牌局时间"
-          width="200"
+          width="160"
           align="center"
         >
           <template slot-scope="scope">
@@ -574,7 +779,7 @@ export default {
         <el-table-column
           prop="LastCheatTime"
           label="最近作弊时间"
-          width="200"
+          width="160"
           align="center"
         >
           <template slot-scope="scope">
@@ -613,19 +818,89 @@ export default {
           label="作弊详情"
           width="100"
           align="center"
+          type="expand"
+          inline
         >
-          <template slot-scope="scope">
-            <el-button type="text" size="small" @click="showTidCheatLogs(scope.row)">查看</el-button>
+          <template slot-scope="scopeTid">
+            <!--            <el-button type="text" size="small" @click="showTidCheatLogs(scope.row)">查看</el-button>-->
+            <el-table :data="scopeTid.row.TidCheatLogs" border>
+              <el-table-column width="200" property="Tid" label="桌⼦id" />
+              <el-table-column width="200" property="Gid" label="游戏">
+                <template slot-scope="scope">
+                  {{ formatGameId(scope.row.Gid) }}
+                </template>
+              </el-table-column>
+              <el-table-column width="200" property="TableMoney" label="场次" />
+              <el-table-column width="200" property="FirstCheatTime" label="该桌⾸次作弊实锤时间">
+                <template slot-scope="scope">
+                  <div>{{ formatTimeDate(scope.row.FirstCheatTime) }}</div>
+                </template>
+              </el-table-column>
+              <el-table-column width="100" property="TotalCheatScore" label="疑似度增加" />
+              <el-table-column width="300" property="Infos" label="作弊信息">
+                <template slot-scope="scope">
+                  <el-tooltip placement="right">
+                    <div slot="content" style="max-width: 300px">
+                      <div v-for="(member, index) in scope.row.Infos" :key="index">
+                        <!--                  {{ member.Desc }}-&#45;&#45;({{ member.count }})-->
+                        {{ formatCheatInfo(member) }}
+                      </div>
+                    </div>
+                    <!--              <span>{{ scope.row.Infos[0].Desc }}-&#45;&#45;({{ scope.row.Infos[0].count }})</span>-->
+                    <span>{{ formatCheatInfo(scope.row.Infos[0]) }}</span>
+                  </el-tooltip>
+                </template>
+              </el-table-column>
+              <el-table-column width="300" label="作弊局详情" type="expand" inline>
+                <template slot-scope="scopeCheat">
+                  <!--                  <el-button type="text" size="small" @click="showCheatLogs(scope.row)">查看</el-button>-->
+                  <el-table :data="scopeCheat.row.CheatInfos" border>
+                    <el-table-column width="200" property="endTime" label="结束时间">
+                      <template slot-scope="scopeInfo">
+                        <div>{{ formatTimeDate(scopeInfo.row.endTime) }}</div>
+                      </template>
+                    </el-table-column>
+
+                    <el-table-column width="200" property="otherUid" label="在该桌其他真⼈玩家id">
+                      <template slot-scope="scopeInfo">
+                        <!--                        <span>{{ formatOtherUids(scopeInfo.row) }}</span>-->
+                        <p v-html="formatOtherUids(scopeInfo.row)" />
+                      </template>
+                    </el-table-column>
+                    <el-table-column width="100" property="cheatScore" label="疑似度增加" />
+                    <el-table-column width="300" property="Infos" label="该局操作异常">
+                      <template slot-scope="scopeInfo">
+                        <el-tooltip placement="right">
+                          <div slot="content" style="max-width: 300px">
+                            <div v-for="(member, index) in scopeInfo.row.Infos" :key="index">
+                              <!--                  {{ member.Desc }}-&#45;&#45;({{ member.count }})-->
+                              {{ formatCheatInfo(member) }}
+                            </div>
+                          </div>
+                          <!--              <span>{{ scope.row.Infos[0].Desc }}-&#45;&#45;({{ scope.row.Infos[0].count }})</span>-->
+                          <span>{{ formatCheatInfo(scopeInfo.row.Infos[0]) }}</span>
+                        </el-tooltip>
+                      </template>
+                    </el-table-column>
+                    <el-table-column width="300" label="作弊局详情">
+                      <template slot-scope="scopeInfo">
+                        <el-button type="text" size="small" @click="getDetail(scopeInfo.row.logId,scopeInfo.row.endTime)">查看</el-button>
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                </template>
+              </el-table-column>
+            </el-table>
           </template>
         </el-table-column>
         <el-table-column
           label="操作"
-          width="400"
+          width="200"
           align="center"
         >
           <template slot-scope="scope">
             <el-button type="primary" size="small" :disabled="showButton(scope.row)" @click="changeWhite(scope.row,0)">洗白</el-button>
-            <el-button type="primary" size="small" :disabled="showButton(scope.row)" @click="changeWhite(scope.row,2)">拉黑</el-button>
+            <el-button type="primary" size="small" :disabled="showButton(scope.row)" @click="changeBlack(scope.row,2)">拉黑</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -707,6 +982,34 @@ export default {
           </template>
         </el-table-column>
       </el-table>
+    </el-dialog>
+    <el-dialog title="拉黑" :visible.sync="BlackVisible" width="100%">
+      <el-row>
+        <el-form :model="editBlack" label-width="150px" size="small">
+
+          <el-form-item
+            label="玩家id："
+            disabled="true"
+          >
+            {{ editBlack.Uid }}
+          </el-form-item>
+          <el-form-item
+            label="操作者："
+            disabled="true"
+          >
+            {{ editBlack.Operator }}
+          </el-form-item>
+          <el-form-item
+            label="拉黑原因："
+            disabled="true"
+          >
+            <el-input v-model="editBlack.Reason" />
+          </el-form-item>
+          <el-col :span="12" :offset="10">
+            <el-button type="primary" size="medium" @click="save">保存</el-button>
+          </el-col>
+        </el-form>
+      </el-row>
     </el-dialog>
   </el-col>
 

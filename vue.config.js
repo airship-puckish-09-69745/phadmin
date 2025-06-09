@@ -35,6 +35,7 @@ module.exports = {
   devServer: {
     port: port,
     open: true,
+    compress: true, //开发环境启用gzip压缩
     overlay: {
       warnings: false,
       errors: true

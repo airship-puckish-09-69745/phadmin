@@ -198,6 +198,7 @@ export default {
         IsAutoMaybe: false, // 是否自动调整
         MaybeMin: 0, // 最小可能性
         MaybeReduce: 0, // 减少可能性
+        TickScore:100,//踢人
         GiveMoreTimes: [
           {
             Count: 2,
@@ -220,8 +221,7 @@ export default {
           Count: 1,
           MaybeAdd: 3
         },
-        PlayMoreTimes: {
-          Count: 100,
+        SameName: {
           MaybeAdd: 3
         },
         LeaveFre: [
@@ -335,6 +335,20 @@ export default {
             Count: 6,
             MaybeAdd: 4
           }
+        ],
+        PlayMoreTimes: [
+          {
+            Count: 30,
+            MaybeAdd: 3
+          },
+          {
+            Count: 40,
+            MaybeAdd: 3
+          },
+          {
+            Count: 100,
+            MaybeAdd: 3
+          }
         ]
       },
       form: {
@@ -366,9 +380,24 @@ export default {
           $this.form = response.Data || {}
           if (response.Data && response.Data.Data !== '' && response.Data.Data !== '{}') {
             $this.CheatCfg = JSON.parse(response.Data.Data)
-            if (!$this.CheatCfg.hasOwnProperty('PlayMoreTimes')) {
-              $this.CheatCfg.PlayMoreTimes = {
-                Count: 100,
+            if (!$this.CheatCfg.hasOwnProperty('PlayMoreTimes') || !Array.isArray(this.CheatCfg.PlayMoreTimes)) {
+              $this.CheatCfg.PlayMoreTimes = [
+                {
+                  Count: 30,
+                  MaybeAdd: 3
+                },
+                {
+                  Count: 40,
+                  MaybeAdd: 3
+                },
+                {
+                  Count: 100,
+                  MaybeAdd: 3
+                }
+              ]
+            }
+            if (!$this.CheatCfg.hasOwnProperty('SameName')) {
+              $this.CheatCfg.SameName = {
                 MaybeAdd: 3
               }
             }
@@ -408,11 +437,19 @@ export default {
         MaybeAdd: parseInt(this.CheatCfg.DisAndGive.MaybeAdd)
       }
       this.CheatCfg.DisAndGive = DisAndGive
-      const PlayMoreTimes = {
-        Count: parseInt(this.CheatCfg.PlayMoreTimes.Count),
-        MaybeAdd: parseInt(this.CheatCfg.PlayMoreTimes.MaybeAdd)
+      const SameName = {
+        MaybeAdd: parseInt(this.CheatCfg.SameName.MaybeAdd)
       }
-      this.CheatCfg.PlayMoreTimes = PlayMoreTimes
+      this.CheatCfg.SameName = SameName
+      const playMoreTimes = []
+      for (let i = 0; i < this.CheatCfg.PlayMoreTimes.length; i++) {
+        const item = this.CheatCfg.PlayMoreTimes[i]
+        playMoreTimes.push({
+          Count: parseInt(item.Count),
+          MaybeAdd: parseInt(item.MaybeAdd)
+        })
+      }
+      this.CheatCfg.PlayMoreTimes = playMoreTimes
       const LeaveFre = []
       for (let i = 0; i < this.CheatCfg.LeaveFre.length; i++) {
         const item = this.CheatCfg.LeaveFre[i]
@@ -507,6 +544,13 @@ export default {
         return item.Count + '人'
       }
     },
+    getPlayMoreTimesTitle(item, index) {
+      if (index === this.CheatCfg.PlayMoreTimes.length - 1) {
+        return '>=' + item.Count
+      } else {
+        return item.Count
+      }
+    },
     updateCheatMin(maybeMin) {
       request({
         url: '/dataProxy/info',
@@ -514,7 +558,8 @@ export default {
         data: {
           Env: this.env,
           Path: '/misc/tongits/cheat/update/cheat/cfg',
-          MaybeMin: maybeMin
+          MaybeMin: maybeMin,
+          Gid: 22
         }
       }).then(response => {
       })
@@ -534,7 +579,10 @@ export default {
           <el-descriptions-item label="疑似度⻔槛" :content-style="{'text-align': 'center','width': '250px'}" :label-style="{'text-align': 'center'}">
             <el-input v-model.number="CheatCfg.MaybeMin" type="number" size="medium" style="width: 120px" />
           </el-descriptions-item>
-          <el-descriptions-item label="⾃动疑似开关" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
+          <el-descriptions-item label="踢人⻔槛" :content-style="{'text-align': 'center','width': '250px'}" :label-style="{'text-align': 'center'}">
+            <el-input v-model.number="CheatCfg.TickScore" type="number" size="medium" style="width: 120px" />
+          </el-descriptions-item>
+          <el-descriptions-item label="疑似踢人开关" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
             <el-switch
               v-model="CheatCfg.IsAutoMaybe"
               active-color="#13ce66"
@@ -556,7 +604,7 @@ export default {
         </el-descriptions>
       </el-tab-pane>
       <el-tab-pane label="疑似度配置">
-        <h3 class="title">操作异常配置</h3>
+        <h3 class="title">操作异常增加疑似度配置</h3>
         <div class="table-container">
           <h5 class="title">单局多次喂牌</h5>
           <table class="support-table">
@@ -579,25 +627,31 @@ export default {
           </table>
         </div>
         <div class="table-container">
-          <h5 class="title">频繁换桌：近五局换桌概率</h5>
-          <table class="support-table">
-            <thead>
-              <tr>
-                <th>频繁换桌概率</th>
-                <th v-for="(item, index) in CheatCfg.LeaveFre" :key="'h'+index">
-                  {{ item.Per }}%
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>增加疑似度</td>
-                <td v-for="(item, index) in CheatCfg.LeaveFre" :key="'h'+index">
-                  <el-input v-model="item.MaybeAdd" class="centered-input" type="number" size="medium" style="width: 120px" />
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <h5 class="title">打一局放弃pot离桌：</h5>
+          <el-form v-model="CheatCfg" label-width="150px" style="margin-top: 10px">
+            <el-form-item label="增加疑似分">
+              <el-input v-model.number="CheatCfg.LeaveFre[1].MaybeAdd" type="number" size="medium" style="width: 120px" />
+            </el-form-item>
+          </el-form>
+<!--          <h5 class="title">频繁换桌：近五局换桌概率</h5>-->
+<!--          <table class="support-table">-->
+<!--            <thead>-->
+<!--              <tr>-->
+<!--                <th>频繁换桌概率</th>-->
+<!--                <th v-for="(item, index) in CheatCfg.LeaveFre" :key="'h'+index">-->
+<!--                  {{ item.Per }}%-->
+<!--                </th>-->
+<!--              </tr>-->
+<!--            </thead>-->
+<!--            <tbody>-->
+<!--              <tr>-->
+<!--                <td>增加疑似度</td>-->
+<!--                <td v-for="(item, index) in CheatCfg.LeaveFre" :key="'h'+index">-->
+<!--                  <el-input v-model="item.MaybeAdd" class="centered-input" type="number" size="medium" style="width: 120px" />-->
+<!--                </td>-->
+<!--              </tr>-->
+<!--            </tbody>-->
+<!--          </table>-->
         </div>
         <div class="table-container">
           <h5 class="title">皇冠⾼分Fight：皇冠⽐Challenge玩家⾼多少分Fight</h5>
@@ -639,7 +693,7 @@ export default {
           <table class="support-table">
             <thead>
               <tr>
-                <th>Fight异常分数差区间</th>
+                <th>FOLD异常分数差区间</th>
                 <th v-for="(item, index) in CheatCfg.PreWinFold" :key="'h'+index">
                   <template>
                     <div style="display: flex; align-items: center; justify-content: center;">
@@ -676,7 +730,7 @@ export default {
               <el-input v-model.number="CheatCfg.DisAndGive.MaybeAdd" type="number" size="medium" style="width: 120px" />
             </el-form-item>
           </el-form>
-          <h5 class="title">首出牌被吃牌</h5>
+          <h5 class="title">多局⾸出被吃</h5>
           <table class="support-table">
             <thead>
               <tr>
@@ -696,12 +750,13 @@ export default {
             </tbody>
           </table>
         </div>
-        <h3 class="title">数据异常配置</h3>
+        <h3 class="title">数据异常增加疑似度配置</h3>
         <div class="table-container">
+          <h5 class="title">玩家在Pot累积局未被拿胜率超过50%</h5>
           <table class="support-table">
             <thead>
               <tr>
-                <th>连胜局数</th>
+                <th>玩家该桌总局数</th>
                 <th v-for="(item, index) in CheatCfg.BigPotWin" :key="'h'+index">
                   {{ getWinTimesTitle(item,index) }}
                 </th>
@@ -718,6 +773,7 @@ export default {
           </table>
         </div>
         <div class="table-container">
+          <h5 class="title">POT累积6局后～pot被拿期间有多少⼈⾃愿离开该桌</h5>
           <table class="support-table">
             <thead>
               <tr>
@@ -738,37 +794,33 @@ export default {
           </table>
         </div>
         <div class="table-container">
-          <h5 class="title">对局过多</h5>
+          <h5 class="title">对局过多并盈利</h5>
           <table class="support-table">
             <thead>
               <tr>
-                <th>对局次数</th>
-                <template>
-                  <div style="display: flex; align-items: center; justify-content: center;">
-                    <el-input
-                      v-model="CheatCfg.PlayMoreTimes.Count"
-                      style="width: 80px; margin-right: 5px;"
-                      type="number"
-                    />
-                  </div>
-                </template>
+                <th>对局过多并盈利</th>
+                <th v-for="(item, index) in CheatCfg.PlayMoreTimes" :key="'h'+index">
+                  <el-input v-model="item.Count" type="number" size="medium" style="width: 120px" />
+                </th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td>增加疑似度</td>
-                <template>
-                  <div style="display: flex; align-items: center; justify-content: center;">
-                    <el-input
-                      v-model="CheatCfg.PlayMoreTimes.MaybeAdd"
-                      style="width: 80px; margin-right: 5px;"
-                      type="number"
-                    />
-                  </div>
-                </template>
+                <td v-for="(item, index) in CheatCfg.PlayMoreTimes" :key="'h'+index">
+                  <el-input v-model="item.MaybeAdd" type="number" size="medium" style="width: 120px" />
+                </td>
               </tr>
             </tbody>
           </table>
+        </div>
+        <div class="table-container">
+          <h5 class="title">名字相似度</h5>
+          <el-form v-model="CheatCfg" label-width="150px" style="margin-top: 10px">
+            <el-form-item label="名字相似度高于70%">
+              <el-input v-model.number="CheatCfg.SameName.MaybeAdd" type="number" size="medium" style="width: 120px" />
+            </el-form-item>
+          </el-form>
         </div>
       </el-tab-pane>
       <!--      <el-tab-pane label="数据异常增加疑似度配置" />-->
