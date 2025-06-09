@@ -360,8 +360,8 @@ export default {
 
   created() {
     this.editAI = NewRobotAIItem()
-    this.getDataTongits()
     this.getData()
+    this.getDataTongits()
   },
   methods: {
     getFullKey() {
@@ -649,25 +649,31 @@ export default {
           </table>
         </div>
         <div class="table-container">
-          <h5 class="title">频繁换桌：近五局换桌概率</h5>
-          <table class="support-table">
-            <thead>
-              <tr>
-                <th>频繁换桌概率</th>
-                <th v-for="(item, index) in CheatCfg.LeaveFre" :key="'h'+index">
-                  {{ item.Per }}%
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>增加疑似度</td>
-                <td v-for="(item, index) in CheatCfg.LeaveFre" :key="'h'+index">
-                  <el-input v-model="item.MaybeAdd" class="centered-input" type="number" size="medium" style="width: 120px" />
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <h5 class="title">打一局放弃pot离桌：</h5>
+          <el-form v-model="CheatCfg" label-width="150px" style="margin-top: 10px">
+            <el-form-item label="增加疑似分">
+              <el-input v-model.number="CheatCfg.LeaveFre[1].MaybeAdd" type="number" size="medium" style="width: 120px" />
+            </el-form-item>
+          </el-form>
+<!--          <h5 class="title">频繁换桌：近五局换桌概率</h5>-->
+<!--          <table class="support-table">-->
+<!--            <thead>-->
+<!--              <tr>-->
+<!--                <th>频繁换桌概率</th>-->
+<!--                <th v-for="(item, index) in CheatCfg.LeaveFre" :key="'h'+index">-->
+<!--                  {{ item.Per }}%-->
+<!--                </th>-->
+<!--              </tr>-->
+<!--            </thead>-->
+<!--            <tbody>-->
+<!--              <tr>-->
+<!--                <td>增加疑似度</td>-->
+<!--                <td v-for="(item, index) in CheatCfg.LeaveFre" :key="'h'+index">-->
+<!--                  <el-input v-model="item.MaybeAdd" class="centered-input" type="number" size="medium" style="width: 120px" />-->
+<!--                </td>-->
+<!--              </tr>-->
+<!--            </tbody>-->
+<!--          </table>-->
         </div>
         <div class="table-container">
           <h5 class="title">皇冠⾼分Fight：皇冠⽐Challenge玩家⾼多少分Fight</h5>
@@ -709,7 +715,7 @@ export default {
           <table class="support-table">
             <thead>
               <tr>
-                <th>Fight异常分数差区间</th>
+                <th>FOLD异常分数差区间</th>
                 <th v-for="(item, index) in CheatCfg.PreWinFold" :key="'h'+index">
                   <template>
                     <div style="display: flex; align-items: center; justify-content: center;">
@@ -816,7 +822,7 @@ export default {
               <tr>
                 <th>对局过多并盈利</th>
                 <th v-for="(item, index) in CheatCfg.PlayMoreTimes" :key="'h'+index">
-                  {{ getPlayMoreTimesTitle(item,index) }}
+                  <el-input v-model="item.Count" type="number" size="medium" style="width: 120px" />
                 </th>
               </tr>
             </thead>

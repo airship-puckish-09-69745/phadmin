@@ -965,6 +965,7 @@ export default {
       reachOutNumCfgs: new Map(), // 定局晋级人数
       growTotalNumCfgs: new Map(), //打立阶段淘汰分轮数
       disuseScoreGrowDetail: new Map(),//打立阶段淘汰分配置
+      csIdCfg: [],      //赛制ID集合
       reubyGrowCfgs:[],
       tableData: [],
       limit: 100,
@@ -1136,8 +1137,10 @@ export default {
     this.name = store.getters.name
     this.env = store.getters.env || this.env
     this.getCsCfgs()
+     //this.getCsCfgsAsyncCheck()
     this.getGuideCfgs()
     this.getPrizeTemplateCfg()
+     //this.getPrizeTemplateCfgNew()
     if (this.env === 'pro') {
       // 正式环境暂时只开放以下选项
       // 返水金
@@ -1196,7 +1199,7 @@ export default {
               const stage_detail = JSON.parse(objs.list[i].stage_detail)
               //console.log("打立初级信息 ", stage_detail)
               for (var j = 0; j < stage_detail.length; j++) {
-                if (stage_detail[j].system_type == 1) { // 打立出局
+                if (stage_detail[j].system_type === 1) { // 打立出局
                   // console.log("id:" + objs.list[i].id + " min:" + stage_detail[j].system_strike_out.end_rule.match_minute)
                   // 存储打立出局的最大时长配置 用于配置检查
                   this.endMinuteCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.end_rule.match_minute)
@@ -1204,7 +1207,7 @@ export default {
                   this.promoteNumCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.promotion_rule.user_number)
                   this.growTotalNumCfgs.set(objs.list[i].id,stage_detail[j].system_strike_out.disuse_score_growth.grow_total)
                   this.disuseScoreGrowDetail.set(objs.list[i].id,stage_detail[j].system_strike_out.disuse_score_growth.disuse_score_grow_detail)
-                  console.log("disuseScoreGrowDetail",this.disuseScoreGrowDetail)
+                  //console.log("disuseScoreGrowDetail",this.disuseScoreGrowDetail)
                 } else if (stage_detail[j].system_type == 2) {
                   // 存储定局信息
                   this.reachOutNumCfgs.set(objs.list[i].id, stage_detail[j].system_reach_out.round_config[0].promotion_user)
@@ -2557,7 +2560,30 @@ export default {
                 'value': objs.list[i].ID
               })
             }
-            // console.log("收到数据",this.prizeTemplateCfg)
+          }
+        }
+      })
+    },
+
+    getPrizeTemplateCfgNew() {
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Env: this.env,
+          Path: '/match/prize/template',
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objs = response.Data || {}
+          if (objs.total > 0) {
+            this.prizeTemplateCfg = []
+            for (var i = 0; i < objs.total; i++) {
+              this.prizeTemplateCfg.push({
+                'label': objs.list[i].title,
+                'value': objs.list[i].id
+              })
+            }
           }
         }
       })
@@ -2702,6 +2728,10 @@ export default {
       this.editForm.signExtra.reubyExtra.rebuyPropName = ''
     },
     reubyConfigCheck(){
+      if (this.editForm.signExtra.reubyExtra.supportRebuy === 0){
+        this.rebuyConfigReset()
+        return true
+      }
       //免费赛配buy 规则不允许
       if (this.editForm.signExtra.reubyExtra.supportRebuy === 1 && this.editForm.data.signUpType === 1 ){
         this.rebuyConfigReset()
@@ -2766,8 +2796,88 @@ export default {
       }
       return true
     },
-    showLable(status, idx) {
-      return idx.includes(status);
+
+    async getCsCfgsAsyncCheck(){
+      await this.getCsIdCfgs()
+      await this.getCsCfgsAsync()
+    },
+    //异步获取赛制ID列表
+    async getCsIdCfgs() {
+      try {
+        const response = await request({
+          url: '/dataProxy/info',
+          method: 'get',
+          data: {
+            Env: this.env,
+            Path: '/match/rule/list',
+          }
+        })
+        if (response.RetCode === 0) {
+          const objs = response.Data || {}
+          for(let i = 0; i < objs.list.length; i++){
+              this.csIdCfg.push(objs.list[i])
+          }
+        }
+      } catch(error) {
+        console.log(error)
+      }finally{}
+    },
+
+    async getCsCfgsAsync() {
+      try {
+        const response = await request({
+          url: '/matchconfig/match/rule/list',
+          method: 'get',
+          data: {
+            Env: this.env,
+            Status: 0,
+            PageNum: 1,
+            PageSize: 200
+          }
+        })
+        if (response.RetCode === 0) {
+          const objs = response.Data || {}
+          if (objs.total > 0) {
+            for (var i = 0; i < objs.list.length; i++) {
+              if(!await this.checkRuleIdIsPublish(objs.list[i].id)){
+                continue
+              }
+              this.csCfgs.push({
+                'label': '[' + objs.list[i].id + ']' + objs.list[i].name,
+                'value': objs.list[i].id,
+                'gameId': [parseInt(objs.list[i].game_id, 10)],
+                'ruleType': objs.list[i].rule_type
+              })
+              const stage_detail = JSON.parse(objs.list[i].stage_detail)
+              //console.log("打立初级信息 ", stage_detail)
+              for (var j = 0; j < stage_detail.length; j++) {
+                if (stage_detail[j].system_type === 1) { // 打立出局
+                  // 存储打立出局的最大时长配置 用于配置检查
+                  this.endMinuteCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.end_rule.match_minute)
+                  this.endNumCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.end_rule.lave_user_number)
+                  this.promoteNumCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.promotion_rule.user_number)
+                  this.growTotalNumCfgs.set(objs.list[i].id,stage_detail[j].system_strike_out.disuse_score_growth.grow_total)
+                  this.disuseScoreGrowDetail.set(objs.list[i].id,stage_detail[j].system_strike_out.disuse_score_growth.disuse_score_grow_detail)
+                } else if (stage_detail[j].system_type=== 2) {
+                  // 存储定局信息
+                  this.reachOutNumCfgs.set(objs.list[i].id, stage_detail[j].system_reach_out.round_config[0].promotion_user)
+                }
+              }
+            }
+          }
+        }
+      } catch(error) {
+        console.log(error)
+      }finally{}
+    },
+    //校验赛制ID是否已经发布
+    async checkRuleIdIsPublish(ruleId){
+      for (var j = 0; j < this.csIdCfg.length; j++){
+        if(ruleId === this.csIdCfg[j]){
+          return true
+        }
+      }
+      return false
     },
   }
 }

@@ -290,6 +290,10 @@
           <!--   赔率配置弹窗  -->
     <el-dialog :visible.sync="editSlotsScriptOddsCfgVisible" title="倍率配置">
       <el-button @click="appendComment(editSlotsScriptOddsCfgFormData,newOddsCfg())" type="success" size="mini" v-if="!editVersionIsReady">添加</el-button>
+      <el-tooltip content="检查是否命中不存在倍数" effect="dark" placement="top">
+                <el-button type="primary" @click="checkAbnormalSteps2()" size="mini" style="background-color:#ec4580">检查
+                </el-button>
+              </el-tooltip>
       <el-tooltip content="检查剧本:最小倍数*出现次数<= 倍数总和 >=最大倍数*出现次数" class="item"
                   effect="dark" placement="top">
               <el-button type="primary" @click="validateDteOddsSum" size="mini" style="background: #ff9100">
@@ -1566,7 +1570,34 @@ export default {
         }
       }
     },
-
+    checkAbnormalSteps2() {
+      let gid = this.queryGid
+      if (gid > 100000) {
+        gid = gid - 100000
+      }
+      console.log(gid, this.slotCfg[gid].AbnormalSteps)
+      //
+      // console.log('this.editVersionFormData.ScriptCfg.OddsCfg.length',this.editVersionFormData.ScriptCfg.OddsCfg.length)
+      // console.log('this.queryGid', this.queryGid)
+      if (!this.slotCfg[gid].AbnormalSteps){
+        Message.error('请设置异常步数！')
+        return
+      }
+      var strings = this.slotCfg[gid].AbnormalSteps.split(",");
+      // console.log('this.editVersionFormData.ScriptCfg.OddsCfg:',this.editVersionFormData.ScriptCfg.OddsCfg)
+      for (const i in this.editVersionFormData.ScriptCfg.OddsCfg) {
+        let o = this.editVersionFormData.ScriptCfg.OddsCfg[i]
+        for (const strNum of strings) {
+          // console.log('strNum:',strNum);
+          if (o.OddsMax >parseInt(strNum) && o.OddsMin < parseInt(strNum)){
+            let ss = (parseInt(i)+1)
+            Message.error('第'+(ss)+'行异常步数【'+strings+'】包含在配置内,min:' + o.OddsMin  + ' max:' + o.OddsMax ,)
+            return
+          }
+        }
+      }
+      this.$message.success('无禁止倍数')
+    },
     checkBetPlansSum(idx) {
       let msgArr = []
       for (const o of this.editBetOddsPlansFormData[idx].OddsCfg) {
