@@ -50,6 +50,20 @@
                 {{ parseTime(scope.row.ActivityTime[0], '{y}-{m}-{d}') }} <br> {{ parseTime(scope.row.ActivityTime[1], '{y}-{m}-{d}') }}
               </span>
             </template>
+            <!-- 成就：格式为：[<序号>][名称]: [达成条件] -->
+            <template v-else-if="field.prop === 'AchievementList'">
+              <div v-if="scope.row.AchievementList.length > 0">
+                <div v-for="(achievement, index) in scope.row.AchievementList" :key="index">
+                  <span v-if="achievement.AchievementName">
+                    {{
+                      `[${index + 1}]`
+                    }}
+                    {{ achievement.AchievementName }}: {{ achievement.AchievementCondition }}</span>
+                  <span v-else>暂无</span>
+                </div>
+              </div>
+              <span v-else>暂无</span>
+            </template>
             <span v-else>{{ scope.row[field.prop] }}</span>
           </template>
         </el-table-column>
@@ -126,9 +140,10 @@ export default {
         { label: '活动图标', prop: 'Icon', width: 120 },
         { label: '玩法简要', prop: 'Description' },
         { label: '活动时间', prop: 'ActivityTime', width: 110 },
-        { label: '成就个数', prop: 'AchievementNumber' },
-        { label: '成就名称', prop: 'AchievementName' },
-        { label: '成就完成条件', prop: 'AchievementCondition', width: 120 }
+        { label: '成就', prop: 'AchievementList' }
+        // { label: '成就个数', prop: 'AchievementNumber' },
+        // { label: '成就名称', prop: 'AchievementName' },
+        // { label: '成就完成条件', prop: 'AchievementCondition', width: 120 }
       ],
       formDialog: {
         updateData: null,
