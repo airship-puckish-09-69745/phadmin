@@ -122,6 +122,15 @@
           </template>
         </el-table-column>
         <el-table-column
+          prop="OperateMsg"
+          label="操作信息"
+        >
+          <template slot-scope="scope">
+            {{ scope.row.OperateMsg }}
+          </template>
+        </el-table-column>
+
+        <el-table-column
           label="操作"
           column-key="op"
           width="250"
@@ -141,6 +150,15 @@
               @click="handlePreOn(scope.row)"
             >执行
             </el-button>
+            <el-button
+              v-if="scope.row.Status==0"
+              size="mini"
+              type="danger"
+              @click="handlePreDel(scope.row)"
+            >删除
+            </el-button>
+
+
             <el-button
               v-if="scope.row.Status==1"
               size="mini"
@@ -209,6 +227,7 @@ import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import { $libDate, $libShow, ClientTableData, DataRule, MoneyShow } from '@/utils/common'
+import store from '@/store'
 const filterMap = {
   currentTableMoney: 'all',
   allowTableMoney: 'all'
@@ -226,7 +245,7 @@ export default {
       }, // 奖励
       betMoneyList: '200,100',
       Ratio: 900,
-      statNames: {  0: '冻结', 1: '待执行', 2: '执行中',3: '成功',4:'异常'},
+      statNames: { 0: '冻结', 1: '待执行', 2: '执行中', 3: '成功', 4: '异常', 5: '删除' },
       walletNames: { 0: '转账钱包', 1: '单一钱包' },
       libShow: $libShow,
       showData: [],
@@ -307,6 +326,9 @@ export default {
     },
     handlePreOff(ob) {
       this.changeStatus(ob, 0, '您确定要将机器人修改为冻结状态吗？该记录将同步到外网。')
+    },
+    handlePreDel(ob) {
+      this.changeStatus(ob, 5, '您确定要将机器人删除吗？该记录将同步到外网。')
     },
     changeStatus(ob, status, msg) {
       console.log(status)
@@ -512,6 +534,7 @@ export default {
     createSave(postData) {
       postData.Env = this.env
       postData.Path = '/transferMoney/add/user'
+      postData.Operator = store.getters.name
       request({
         url: '/dataProxy/info',
         method: 'post',

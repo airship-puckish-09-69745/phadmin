@@ -258,6 +258,9 @@
             </el-table-column>
             <el-table-column  prop="ActLogObj.ScriptV3PlanId" label="数值方案ID" />
             <el-table-column  prop="ActLogObj.ScriptV3PlanVer" label="数值版本ID" />
+            <el-table-column  prop="ActLogObj.HitBigPrize" label="命中大奖"><template slot-scope="scope"><span v-if="scope.row.ActLogObj.HitBigPrize" style="color:red">是</span><span v-else>-</span></template></el-table-column>
+            <el-table-column  prop="ActLogObj.BigPrizeHitReason" label="大奖原因"><template slot-scope="scope">{{ showBigPrizeReason(scope.row.ActLogObj.BigPrizeHitReason) }}</template></el-table-column>
+            <el-table-column  prop="ActLogObj.BigPrizeCfgId" label="大奖用户群ID" />
 
           </el-table-column>
         </template>
@@ -483,6 +486,20 @@ export default {
           return '付费控制'
         default:
           return val
+      }
+    },
+    showBigPrizeReason(reason) {
+      switch (reason) {
+        case 0:
+          return '-'
+        case 1:
+          return '正常随机'
+        case 2:
+          return '用户群随机'
+        case 3:
+          return '固定间隔'
+        default:
+          return '-'
       }
     },
     toRupee(row, col, val, idx) {
