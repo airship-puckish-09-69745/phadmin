@@ -21,7 +21,7 @@
       <el-form-item label="活动时间" prop="ActivityTime" :rules="{ required: true, message: '请选择活动时间', trigger: 'blur' }">
         <el-date-picker v-model="formData.ActivityTime" value-format="timestamp" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" />
       </el-form-item>
-      <el-form-item label="成就个数" prop="AchievementNumber" :rules="{ required: true, message: '请输入成就个数', trigger: 'blur' }">
+      <!-- <el-form-item label="成就个数" prop="AchievementNumber" :rules="{ required: true, message: '请输入成就个数', trigger: 'blur' }">
         <el-input v-model="formData.AchievementNumber" type="number" />
       </el-form-item>
       <el-form-item label="成就名称" prop="AchievementName" :rules="{ required: true, message: '请输入成就名称', trigger: 'blur' }">
@@ -29,7 +29,28 @@
       </el-form-item>
       <el-form-item label="成就完成条件" prop="AchievementCondition" :rules="{ required: true, message: '请输入成就完成条件', trigger: 'blur' }">
         <el-input v-model="formData.AchievementCondition" type="textarea" />
-      </el-form-item>
+      </el-form-item> -->
+      <el-divider>
+        成就
+      </el-divider>
+      <div class="achievement-list">
+        <div v-for="(achievementItem, index) in formData.AchievementList" :key="index" class="achievement-list-item">
+          <div class="achievement-list-item-row">
+            <span class="achievement-list-item-row-name">成就名称</span>：
+            <el-input v-model="achievementItem.AchievementName" />
+          </div>
+          <div class="achievement-list-item-row">
+            <span class="achievement-list-item-row-name">完成条件</span>：
+            <el-input v-model="achievementItem.AchievementCondition" type="textarea" />
+          </div>
+
+          <div class="achievement-list-item-btns">
+            <el-button v-if="index < 2" type="success" icon="el-icon-plus" size="mini" class="btn-plus" @click="addAchievement(index)" />
+            <el-button v-if="index !== 0" type="danger" icon="el-icon-delete" size="mini" class="btn-delete" @click="deleteAchievement(index)" />
+          </div>
+        </div>
+      </div>
+
     </el-form>
     <template #footer>
       <span class="dialog-footer">
@@ -73,9 +94,12 @@ export default {
         Avatar: '',
         Description: '',
         ActivityTime: [],
-        AchievementNumber: 0,
-        AchievementName: '',
-        AchievementCondition: ''
+        // AchievementNumber: 0,
+        // AchievementName: '',
+        // AchievementCondition: ''
+        AchievementList: [
+          this.getBlankAchievementItem()
+        ]
       }
     }
   },
@@ -108,14 +132,33 @@ export default {
     }
   },
   methods: {
+    /**
+     * 点击按钮增加成就
+     * @param {*} index
+     */
+    addAchievement(index) {
+      this.formData.AchievementList.splice(index + 1, 0, this.getBlankAchievementItem())
+    },
+    /**
+     * 点击按钮删除成就
+     * @param {*} index
+     */
+    deleteAchievement(index) {
+      this.formData.AchievementList.splice(index, 1)
+    },
+    getBlankAchievementItem() {
+      return {
+        AchievementName: '',
+        AchievementCondition: ''
+      }
+    },
     onChangeActivityId(val) {
       const selectedActivity = this.activityOptions.find(option => option.id === val)
       this.formData.ActivityName = selectedActivity ? selectedActivity.name : ''
       console.log('onChangeActivityId', val, this.formData.ActivityName)
     },
     handleSave() {
-      if (!this.formData.ActivityName) {
-        this.$message.error('请选择活动名称')
+      if (!this.checkoutForm()) {
         return
       }
       const { ...submitData } = this.formData
@@ -126,7 +169,7 @@ export default {
       ]
       // 金额和成就个数转换为整数类型
       submitData.Amount = parseInt(submitData.Amount)
-      submitData.AchievementNumber = parseInt(submitData.AchievementNumber)
+      // submitData.AchievementNumber = parseInt(submitData.AchievementNumber)
       this.$emit('save', submitData)
       this.resetForm()
     },
@@ -140,16 +183,102 @@ export default {
         Avatar: '',
         Description: '',
         ActivityTime: '',
-        AchievementNumber: 0,
-        AchievementName: '',
-        AchievementCondition: ''
+        AchievementList: [
+          this.getBlankAchievementItem()
+        ]
       }
       this.$emit('update:visible', false)
     },
     handleClose(reload = false) {
       this.resetForm()
       this.$emit('update:visible', false)
+    },
+    /**
+     * 检查表单数据
+     * 所有的输入框都不能为空
+     * 成就必须1-3个，每个成就的名称和条件都不能为空
+     * @returns {boolean}
+     */
+    checkoutForm() {
+      if (!this.formData.ActivityName) {
+        this.$message.error('请选择活动名称')
+        return false
+      }
+      if (!this.formData.Amount) {
+        this.$message.error('请输入活动金额')
+        return false
+      }
+      if (!this.formData.Icon) {
+        this.$message.error('请选择活动图标')
+        return false
+      }
+      if (!this.formData.Avatar) {
+        this.$message.error('请选择头像框')
+        return false
+      }
+      if (!this.formData.Description) {
+        this.$message.error('请输入玩法简要')
+        return false
+      }
+      if (!this.formData.ActivityTime || this.formData.ActivityTime.length !== 2) {
+        this.$message.error('请选择活动时间')
+      }
+      for (let i = 0; i < this.formData.AchievementList.length; i++) {
+        const achievement = this.formData.AchievementList[i]
+        if (!achievement.AchievementName) {
+          this.$message.error(`请输入第${i + 1}个成就的名称`)
+          return false
+        } else if (!achievement.AchievementCondition) {
+          this.$message.error(`请输入第${i + 1}个成就的条件`)
+          return false
+        }
+      }
+      return true
     }
   }
 }
 </script>
+
+<style scoped lang="scss">
+.achievement-list {
+  &-item {
+    padding: 8px;
+    border: 1px solid #ccc;
+    width: calc(100% - 24px);
+    margin-left: 12px;
+    position: relative;
+    margin-bottom: 8px;
+
+    &-row {
+      display: flex;
+      margin-bottom: 8px;
+      &-name {
+        width: 80px;
+        text-align: right;
+        margin-right: 8px;
+        &::before {
+          content: '*';
+          color: red;
+          margin-right: 4px;
+        }
+      }
+    }
+
+    &-btns {
+      width: auto;
+      margin: 8px auto 0;
+      padding-left: calc(50% - 50px);
+    }
+
+    // .btn-delete,
+    // .btn-plus {
+
+    // }
+
+    .el-input,
+    .el-textarea {
+      width: calc(100% - 130px);
+    }
+  }
+}
+</style>

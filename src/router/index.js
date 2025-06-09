@@ -3125,6 +3125,12 @@ export const asyncRoutes = [
         name: 'thirdpartyManage',
         meta: { title: '第三方信息 ◐' }
       },
+      {
+        path: 'version_released',
+        component: () => import('@/views/thirdparty/versionReleased'),
+        name: 'version_released',
+        meta: { title: '客户端版本发布 ◐' }
+      },
       // {
       //   path: 'transfer',
       //   component: () => import('@/views/thirdparty/transfer'),
