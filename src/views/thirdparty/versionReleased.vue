@@ -40,11 +40,11 @@
       </el-col>
     </el-row>
     <el-form ref="edit.item" :model="edit.item" label-width="250px" size="small" style="margin-top: 20px">
-      <el-form-item label="账号：" :required="true" prop="Account">
-        <el-col :span="15">
-          <el-input v-model="edit.item.Account" :disabled="true"/>
-        </el-col>
-      </el-form-item>
+<!--      <el-form-item label="账号：" :required="true" prop="Account">-->
+<!--        <el-col :span="15">-->
+<!--          <el-input v-model="edit.item.Account" :disabled="true"/>-->
+<!--        </el-col>-->
+<!--      </el-form-item>-->
       <el-form-item label="描述：" :required="true" prop="Intro">
         <el-col :span="15">
           <el-input v-model="edit.item.Intro" />
@@ -163,9 +163,9 @@ export default {
         { value: 'vertical', label: '竖屏' }
       ],
       appid: [
-        { value: 1000002, label: '1000002' },
-        { value: 1000003, label: '1000003' },
-        { value: 1000005, label: '1000005' }
+        { value: 1000002, label: '' },
+        { value: 1000003, label: '' },
+        { value: 1000005, label: '' }
       ],
       clientType: 1,
       rules: {
@@ -267,7 +267,14 @@ export default {
           this.clientDB = new ClientTableData(this.libMoney.TransForShow(objs), 20, filterMap, 'ID', 1)
           this.handleCurrentChange(1)
           this.initFormData(true, this.search)
+          this.initAppIdLabel()
         }
+      })
+    },
+    initAppIdLabel() {
+      this.appid.forEach(item => {
+        const _data = this.clientDB.GetDataByID(item.value)
+        item.label = item.value + '-' + _data.Account
       })
     },
     configCheck() {
