@@ -169,7 +169,7 @@ export default {
       ]
       // 金额和成就个数转换为整数类型
       submitData.Amount = parseInt(submitData.Amount)
-      submitData.AchievementNumber = parseInt(submitData.AchievementNumber)
+      // submitData.AchievementNumber = parseInt(submitData.AchievementNumber)
       this.$emit('save', submitData)
       this.resetForm()
     },
