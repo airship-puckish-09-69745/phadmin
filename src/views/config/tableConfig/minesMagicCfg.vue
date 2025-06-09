@@ -1379,7 +1379,7 @@ export default {
         data: {
           Env: this.env,
           Path: '/game/minesmagic/show/area',
-          Gid: 20,
+          Gid: 132,
           Uid: this.showArea.uid
         }
       }).then(response => {

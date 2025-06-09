@@ -396,7 +396,8 @@ export default {
         '188': 'streetfighting',
         '194': 'goldtrain',
         '192': 'bountyraid',
-        '196': 'goldminer'
+        '196': 'goldminer',
+        '198': 'fortuneblessing'
       }
     }
   },
