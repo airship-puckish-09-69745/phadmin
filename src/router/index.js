@@ -1961,7 +1961,7 @@ export const asyncRoutes = [
     path: '/match',
     component: Layout,
     redirect: 'noRedirect',
-    meta: { title: '比赛管理', icon: 'example', perm: 'CFG_MANAGEMENT' },
+    meta: { title: '比赛管理', icon: 'example', perm: 'CFG_MANAGEMENT_GTCC' },
     children: [
       {
         path: 'matchConfig',
