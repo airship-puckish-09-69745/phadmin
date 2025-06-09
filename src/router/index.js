@@ -76,6 +76,20 @@ export const constantRoutes = [
     path: '/',
     component: Layout,
     redirect: '/dashboard',
+    meta: { title: 'Welcome', icon: 'el-icon-pie-chart' },
+    children: [
+      {
+        path: '/dashboard',
+        component: () => import('@/views/dashboard/index'),
+        name: 'dashboard',
+        meta: { title: 'Welcome', icon: 'el-icon-s-home' }
+      }
+    ]
+  },
+  {
+    path: '/systemMoneyChart',
+    component: Layout,
+    redirect: '/systemMoneyChart',
     meta: { title: '系统健康监测', icon: 'el-icon-pie-chart', perm: 'DATA_MONITOR' },
     children: [
       // {
@@ -85,9 +99,9 @@ export const constantRoutes = [
       //   meta: { title: '系统健康监测 ◐', icon: 'risk', perm: 'KEY_DATA_MONITOR' }
       // },
       {
-        path: '/dashboard',
+        path: '/systemMoneyChart',
         component: () => import('@/views/playerManage/systemMoneyChartV2.vue'),
-        name: 'dashboard',
+        name: 'systemMoneyChart',
         meta: { title: '系统健康监测 ◐', icon: 'risk', perm: 'KEY_DATA_MONITOR' }
       }
     ]
@@ -1893,7 +1907,7 @@ export const asyncRoutes = [
     path: '/player',
     component: Layout,
     redirect: 'noRedirect',
-    meta: { title: '玩家管理', icon: 'user' },
+    meta: { title: '玩家管理', icon: 'user', perm: 'CUTOMER' },
     children: [
       {
         path: 'userManage',
