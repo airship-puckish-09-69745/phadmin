@@ -42,7 +42,7 @@
     <el-form ref="edit.item" :model="edit.item" label-width="250px" size="small" style="margin-top: 20px">
       <el-form-item label="账号：" :required="true" prop="Account">
         <el-col :span="15">
-          <el-input v-model="edit.item.Account" :disabled="isDisabled"/>
+          <el-input v-model="edit.item.Account" :disabled="true"/>
         </el-col>
       </el-form-item>
       <el-form-item label="描述：" :required="true" prop="Intro">
@@ -50,11 +50,11 @@
           <el-input v-model="edit.item.Intro" />
         </el-col>
       </el-form-item>
-      <el-form-item v-if="clientType === 1" label="菲1IP白名单(多个之间用英文逗号分隔)：" prop="Ip">
-        <el-col :span="15">
-          <el-input v-model="edit.item.Ip" />
-        </el-col>
-      </el-form-item>
+<!--      <el-form-item v-if="clientType === 1" label="菲1IP白名单(多个之间用英文逗号分隔)：" prop="Ip">-->
+<!--        <el-col :span="15">-->
+<!--          <el-input v-model="edit.item.Ip" />-->
+<!--        </el-col>-->
+<!--      </el-form-item>-->
       <!--        <el-form-item label="菲1gamefun版本：" :required="true" prop="Ver">-->
       <!--          <el-col :span="15">-->
       <!--            <el-input v-model="edit.item.GamefunVer" />-->
@@ -90,11 +90,11 @@
           <el-input v-model="edit.item.TestUri" />
         </el-col>
       </el-form-item>
-      <el-form-item v-if="clientType === 1" label="菲1测试用户白名单（uid，多个用英文逗号分隔）：" prop="TestUids">
-        <el-col :span="15">
-          <el-input v-model="edit.item.TestUids" />
-        </el-col>
-      </el-form-item>
+<!--      <el-form-item v-if="clientType === 1" label="菲1测试用户白名单（uid，多个用英文逗号分隔）：" prop="TestUids">-->
+<!--        <el-col :span="15">-->
+<!--          <el-input v-model="edit.item.TestUids" />-->
+<!--        </el-col>-->
+<!--      </el-form-item>-->
       <el-form-item v-if="clientType === 2" label="德州客户端uri：" prop="TexasUri">
         <el-col :span="15">
           <el-input v-model="edit.item.TexasUri" />
@@ -105,13 +105,13 @@
           <el-input v-model="edit.item.LiveUri" />
         </el-col>
       </el-form-item>
-      <el-form-item label="横竖屏：" :required="true" prop="Screen">
-        <el-col :span="15">
-          <el-select v-model="edit.item.Screen" placeholder="请选择" required="true">
-            <el-option v-for="item in screens" :key="item.value" :label="item.label" :value="item.value" />
-          </el-select>
-        </el-col>
-      </el-form-item>
+<!--      <el-form-item label="横竖屏：" :required="true" prop="Screen">-->
+<!--        <el-col :span="15">-->
+<!--          <el-select v-model="edit.item.Screen" placeholder="请选择" required="true">-->
+<!--            <el-option v-for="item in screens" :key="item.value" :label="item.label" :value="item.value" />-->
+<!--          </el-select>-->
+<!--        </el-col>-->
+<!--      </el-form-item>-->
       <el-form-item>
         <el-row>
           <el-col :span="15" :offset="10">
@@ -157,7 +157,7 @@ export default {
         isEdit: false
       },
       remark: '',
-      isDisabled: false,
+      isDisabled: true,
       screens: [
         { value: 'horizontal', label: '横屏' },
         { value: 'vertical', label: '竖屏' }
@@ -195,7 +195,7 @@ export default {
   },
   created() {
     this.env = store.getters.env || this.env
-    this.isDisabled = false
+    this.isDisabled = true
     // this.getRemark()
     this.getList()
   },
@@ -330,7 +330,7 @@ export default {
     },
     //* * ********************** 修改/添加弹框相关 *****************
     getEditTitle() {
-      this.isDisabled = this.edit.isEdit
+      this.isDisabled = true
       return this.edit.isEdit ? '修改配置' : '新增配置'
     },
     initFormData(bEdit, ID) {
