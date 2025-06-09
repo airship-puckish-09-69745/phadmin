@@ -90,7 +90,7 @@ export const constantRoutes = [
     path: '/systemMoneyChart',
     component: Layout,
     redirect: '/systemMoneyChart',
-    meta: { title: '系统健康监测', icon: 'el-icon-pie-chart', perm: 'DATA_MONITOR' },
+    meta: { title: '系统健康监测', icon: 'el-icon-pie-chart', perm: 'KEY_DATA_MONITOR' },
     children: [
       // {
       //   path: 'dashboard',
