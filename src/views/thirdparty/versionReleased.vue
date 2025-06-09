@@ -1,0 +1,519 @@
+<template>
+  <div id="app" class="page-container" style="padding: 10px">
+    <el-row>
+      <publish primary-key="ID" key-id="ThirdpartiesConfig" :env-empty="false" :make-content="makeContent" :check="configCheck" :attr-names="AttrNames" />
+    </el-row>
+    <el-row style="padding-top: 5px; padding-left: 20px">
+      <el-col :span="10">
+        AppID:
+        <el-select v-model="search" placeholder="请选择" @change="changeItem">
+          <el-option
+            v-for="item in appid"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+      </el-col>
+      <el-col :span="10">
+        <el-radio-group v-model="clientType">
+          <el-radio-button :label="1">菲1</el-radio-button>
+          <el-radio-button :label="2">专业德州</el-radio-button>
+          <el-radio-button :label="3">直播</el-radio-button>
+        </el-radio-group>
+      </el-col>
+      <el-col :span="2">
+        <el-button type="success" size="mini" icon="el-icon-refresh" @click="getList()">刷新</el-button>
+      </el-col>
+    </el-row>
+    <el-row>
+      <el-col :span="20">
+        <el-descriptions
+          class="margin-top"
+          :column="1"
+          size="medium"
+          :label-style="{'text-align': 'right', 'font-weight':'bold','padding':'5px', 'color':'red'}"
+          border
+        >
+<!--          <el-descriptions-item label="备注：">{{ remark }}</el-descriptions-item>-->
+        </el-descriptions>
+      </el-col>
+    </el-row>
+    <el-form ref="edit.item" :model="edit.item" label-width="250px" size="small" style="margin-top: 20px">
+      <el-form-item label="账号：" :required="true" prop="Account">
+        <el-col :span="15">
+          <el-input v-model="edit.item.Account" :disabled="isDisabled"/>
+        </el-col>
+      </el-form-item>
+      <el-form-item label="描述：" :required="true" prop="Intro">
+        <el-col :span="15">
+          <el-input v-model="edit.item.Intro" />
+        </el-col>
+      </el-form-item>
+      <el-form-item v-if="clientType === 1" label="菲1IP白名单(多个之间用英文逗号分隔)：" prop="Ip">
+        <el-col :span="15">
+          <el-input v-model="edit.item.Ip" />
+        </el-col>
+      </el-form-item>
+      <!--        <el-form-item label="菲1gamefun版本：" :required="true" prop="Ver">-->
+      <!--          <el-col :span="15">-->
+      <!--            <el-input v-model="edit.item.GamefunVer" />-->
+      <!--          </el-col>-->
+      <!--          <el-col style="width: auto">-->
+      <!--            <el-tooltip class="item" effect="dark" content="返回gamefun链接时，增加 gv 参数" placement="left-start">-->
+      <!--              <i class="el-icon-info" />-->
+      <!--            </el-tooltip>-->
+      <!--          </el-col>-->
+      <!--        </el-form-item>-->
+      <el-form-item v-if="clientType === 1" label="菲1客户端子版本：" :required="true" prop="Ver">
+        <el-col :span="15">
+          <el-input v-model="edit.item.Ver" />
+        </el-col>
+      </el-form-item>
+      <el-form-item v-if="clientType === 1" label="菲1客户端uri：" :required="true" prop="GameUri">
+        <el-col :span="15">
+          <el-input v-model="edit.item.GameUri" />
+        </el-col>
+        <!--          <el-col style="width: auto">-->
+        <!--            <el-tooltip class="item" effect="dark" content="版本号占位符： ${ver}" placement="left-start">-->
+        <!--              <i class="el-icon-info" />-->
+        <!--            </el-tooltip>-->
+        <!--          </el-col>-->
+      </el-form-item>
+      <el-form-item v-if="clientType === 1" label="菲1客户端预发布子版本：" :required="true" prop="TestVer">
+        <el-col :span="15">
+          <el-input v-model="edit.item.TestVer" />
+        </el-col>
+      </el-form-item>
+      <el-form-item v-if="clientType === 1" label="菲1客户端预发布uri：" prop="TestUri">
+        <el-col :span="15">
+          <el-input v-model="edit.item.TestUri" />
+        </el-col>
+      </el-form-item>
+      <el-form-item v-if="clientType === 1" label="菲1测试用户白名单（uid，多个用英文逗号分隔）：" prop="TestUids">
+        <el-col :span="15">
+          <el-input v-model="edit.item.TestUids" />
+        </el-col>
+      </el-form-item>
+      <el-form-item v-if="clientType === 2" label="德州客户端uri：" prop="TexasUri">
+        <el-col :span="15">
+          <el-input v-model="edit.item.TexasUri" />
+        </el-col>
+      </el-form-item>
+      <el-form-item v-if="clientType === 3" label="直播客户端uri：" prop="LiveUri">
+        <el-col :span="15">
+          <el-input v-model="edit.item.LiveUri" />
+        </el-col>
+      </el-form-item>
+      <el-form-item label="横竖屏：" :required="true" prop="Screen">
+        <el-col :span="15">
+          <el-select v-model="edit.item.Screen" placeholder="请选择" required="true">
+            <el-option v-for="item in screens" :key="item.value" :label="item.label" :value="item.value" />
+          </el-select>
+        </el-col>
+      </el-form-item>
+      <el-form-item>
+        <el-row>
+          <el-col :span="15" :offset="10">
+            <el-button type="primary" size="medium" @click="save">保存</el-button>
+          </el-col>
+        </el-row>
+      </el-form-item>
+    </el-form>
+    <!--对比组件-->
+    <compare ref="compare" :attr-names="AttrNames" />
+  </div>
+</template>
+
+<script>
+import { $libDate, $libShow, ClientTableData, DataRule, MoneyShow } from '@/utils/common'
+import store from '@/store'
+import request from '@/utils/request'
+import Compare from '@/components/Compare'
+import { Message } from 'element-ui'
+import Publish from '@/components/Publish'
+
+const filterMap = {}
+
+function newItem() {
+  return { Account: '', Intro: '', Ip: '', Ver: '', GamefunVer: '0', GameUri: '', Screen: 'vertical', TestUri: '', TestUids: '', TexasUri: '', LiveUri: '', TestVer: '' }
+}
+
+export default {
+  components: { Compare, Publish },
+  data() {
+    return {
+      tableData: [],
+      statNames: { 0: '正常', 2: '上架', 6: '下架', 1: '关闭', 7: '预上架', 8: '预下架' },
+      screenNames: { 'horizontal': '横屏', 'vertical': '竖屏' },
+      clientDB: new ClientTableData([], 1, filterMap),
+      search: 1000002,
+      libShow: $libShow,
+      env: 'test',
+      libMoney: new MoneyShow(['CarryLower', 'CarryUpper', 'TableMoney', 'BetMoneyMax', 'TotalRecharge', 'MaxPayAmount']),
+      edit: {
+        visible: false,
+        item: newItem(),
+        isEdit: false
+      },
+      remark: '',
+      isDisabled: false,
+      screens: [
+        { value: 'horizontal', label: '横屏' },
+        { value: 'vertical', label: '竖屏' }
+      ],
+      appid: [
+        { value: 1000002, label: '1000002' },
+        { value: 1000003, label: '1000003' },
+        { value: 1000005, label: '1000005' }
+      ],
+      clientType: 1,
+      rules: {
+        account: [{ required: true, trigger: 'blur' }],
+        intro: [{ required: true, trigger: 'blur' }],
+        // ver: [{ required: true, trigger: 'blur' }],
+        game_uri: [{ required: true, trigger: 'blur' }],
+        screen: [{ required: true, trigger: ['blur', 'change', 'submit'] }]
+      },
+
+      AttrNames: {
+        Account: '账号',
+        Intro: '描述',
+        Secret: '密钥',
+        Ip: 'IP白名单',
+        Ver: '客户端子版本',
+        GamefunVer: '菲1gamefun版本',
+        GameUri: '菲1客户端uri',
+        Screen: '横竖屏',
+        TestUri: '菲1客户端预发布uri',
+        TestVer: '菲1客户端预发布子版本',
+        TestUids: '菲1测试用户uid白名单',
+        TexasUri: '德州客户端uri',
+        LiveUri: '直播客户端uri'
+      }
+    }
+  },
+  created() {
+    this.env = store.getters.env || this.env
+    this.isDisabled = false
+    // this.getRemark()
+    this.getList()
+  },
+  methods: {
+    formatNumber(n) {
+      return n.toLocaleString()
+    },
+    formatTime(ts) {
+      return $libDate.FormateSecondStr(ts, 2)
+    },
+    // 筛选相关逻辑
+    searchChange() {
+      this.clientDB.Search(this.search, ['ID'])
+      this.refreshShow()
+    },
+    clearFilter() {
+      this.clientDB.ClearFilterMap()
+      this.refreshShow()
+    },
+    handleFilter() {
+      this.clientDB.FilterData()
+      this.refreshShow()
+    },
+    // 分页处理
+    refreshShow() {
+      this.tableData = this.clientDB.GetCurrentPageData()
+    },
+    handleSizeChange(val) {
+      this.clientDB.GetPage().SetPageNum(val)
+      this.refreshShow()
+    },
+    handleCurrentChange(val) {
+      this.clientDB.GetPage().SetPageNo(val)
+      this.refreshShow()
+    },
+
+    sortChange(ob) {
+      this.clientDB.SortByProp(ob.prop, ob.order)
+      this.refreshShow()
+    },
+    // 操作类函数
+    clickData(row, column, event) {
+      if (column.label === 'ID' || column.label === '账号' || column.label === '密钥' || column.columnKey === 'op') {
+        return
+      }
+      this.initFormData(true, row.ID)
+      this.edit.visible = true
+    },
+    handleCreate() {
+      this.edit.item = newItem()
+      this.edit.isEdit = false
+      this.edit.visible = true
+    },
+    handleCopy(ob) {
+      this.initFormData(false, ob.ID)
+      this.edit.visible = true
+    },
+    changeItem() {
+      this.initFormData(true, this.search)
+    },
+    getList() {
+      request({
+        url: '/thirdparties/all',
+        method: 'get',
+        data: {}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objs = response.Data || []
+          this.clientDB = new ClientTableData(this.libMoney.TransForShow(objs), 20, filterMap, 'ID', 1)
+          this.handleCurrentChange(1)
+          this.initFormData(true, this.search)
+        }
+      })
+    },
+    configCheck() {
+      if (this.getPostData().account === '') {
+        this.$alert('账户不能为空')
+        return false
+      }
+      if (this.getPostData().intro === '') {
+        this.$alert('描述不能为空')
+        return false
+      }
+      if (this.getPostData().game_uri === '') {
+        this.$alert('客户端uri 不能为空')
+        return false
+      }
+      if (this.getPostData().screen === '') {
+        this.$alert('必须选择横竖屏')
+        return false
+      }
+      return true
+    },
+    handlePreOn(ob) {
+      this.changeStatus(ob.ID, 7, '您确定要将记录状态修改为"预备上架"吗？该记录将在发布后同步到外网。')
+    },
+    handleOn(ob) {
+      this.changeStatus(ob.ID, 2, '您确定要将记录状态修改为"上架"吗？该记录将在发布后同步到外网。')
+    },
+    handlePreOff(ob) {
+      this.changeStatus(ob.ID, 8, '您确定要将记录下架吗？下架的记录将在发布后从线上消失。')
+    },
+    handleOffline(ob) {
+      this.changeStatus(ob.ID, 6, '您确定要将记录下架吗？下架的记录将在发布后从线上消失。')
+    },
+    handleDelete(ob) {
+      this.changeStatus(ob.ID, 3, '您确定要将记录状态修改为废弃吗？')
+    },
+    changeStatus(id, status, msg) {
+      const $this = this
+      this.$confirm(msg, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        request({
+          url: '/thirdparties/update/status',
+          method: 'post',
+          data: {
+            ID: id,
+            status: status
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            Message.success('修改记录状态成功！')
+            $this.clientDB.UpdateData({ ID: id, Status: status })
+          }
+        })
+      }).catch(() => {
+        console.log('取消')
+      })
+    },
+    //* * ********************** 修改/添加弹框相关 *****************
+    getEditTitle() {
+      this.isDisabled = this.edit.isEdit
+      return this.edit.isEdit ? '修改配置' : '新增配置'
+    },
+    initFormData(bEdit, ID) {
+      this.edit.isEdit = bEdit
+      if (ID) {
+        const _data = this.clientDB.GetDataByID(ID)
+        if (_data) {
+          Object.assign(this.edit.item, _data)
+          if (bEdit) {
+            // 设置修改之前数据
+            this.$refs.compare.SetOldVal(_data)
+          }
+        }
+      }
+    },
+    dataRule(required, config) {
+      return DataRule(required, config)
+    },
+    createSave(postData) {
+      request({
+        url: '/thirdparties/create',
+        method: 'post',
+        data: postData
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.edit.item.ID = response.Data.ID
+          this.clientDB.AddData(this.edit.item)
+          this.refreshShow()
+          this.getList()
+          Message.success('保存成功！')
+        }
+      })
+    },
+    editSave(postData) {
+      request({
+        url: 'thirdparties/update',
+        method: 'post',
+        data: postData
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.clientDB.UpdateData(this.edit.item)
+          this.refreshShow()
+          Message.success('保存成功！')
+        }
+      })
+    },
+    makeContent(key, addData, delData, editData) {
+      let str = ''
+      if (addData.length > 0) {
+        for (const i in addData) {
+          str += `\r\nappid:【${addData[i].Head.ID}】`
+          for (const j in addData[i].Rows) {
+            const rawValue = addData[i].Rows[j].newVal
+            // 使用正则移除所有HTML标签i
+            const decodedValue = this.decodeHtmlEntities(rawValue)
+            const cleanValue = decodedValue.replace(/<[^>]+>/g, '').replace(/\\/g, '\\\\')
+            const attrName = this.AttrNames[addData[i].Rows[j].key]
+            if (attrName) {
+              str += `\r\n${attrName}:【${cleanValue}】`
+            }
+          }
+        }
+      }
+      if (delData.length > 0) {
+        for (const i in delData) {
+          if (str === '') {
+            str += `appid:【${delData[i].Head.ID}】`
+          } else {
+            str += `\r\nappid:【${delData[i].Head.ID}】`
+          }
+          for (const j in delData[i].Rows) {
+            const rawValue = delData[i].Rows[j].newVal
+            // 使用正则移除所有HTML标签i
+            const decodedValue = this.decodeHtmlEntities(rawValue)
+            const cleanValue = decodedValue.replace(/<[^>]+>/g, '').replace(/\\/g, '\\\\')
+            const attrName = this.AttrNames[delData[i].Rows[j].key]
+            if (attrName) {
+              str += `\r\n${attrName}:【${cleanValue}】`
+            }
+          }
+        }
+      }
+      if (editData.length > 0) {
+        for (const i in editData) {
+          if (str === '') {
+            str += `appid:【${editData[i].Head.ID}】`
+          } else {
+            str += `\r\nappid:【${editData[i].Head.ID}】`
+          }
+          for (const j in editData[i].Rows) {
+            const rawValue = editData[i].Rows[j].newVal
+            const decodedValue = this.decodeHtmlEntities(rawValue)
+            const cleanValue = decodedValue.replace(/<[^>]+>/g, '').replace(/\\/g, '\\\\')
+            const attrName = this.AttrNames[editData[i].Rows[j].key]
+            if (attrName) {
+              str += `\r\n${attrName}:【${cleanValue}】`
+            }
+          }
+        }
+      }
+      if (str === '') {
+        str = '没有修改!'
+      }
+      return str
+    },
+    decodeHtmlEntities(str) {
+      const txt = document.createElement('textarea')
+      txt.innerHTML = str.replace(/&#(\d+);/g, function(match, dec) {
+        return String.fromCharCode(dec)
+      }).replace(/&#x([\da-fA-F]+);/g, function(match, hex) {
+        return String.fromCharCode(parseInt(hex, 16))
+      })
+      return txt.value
+    },
+    getPostData() {
+      this.trimData()
+      const postData = this.libMoney.TransForStore(this.edit.item)
+      console.log('postData', postData)
+      return postData
+    },
+    trimData() {
+      const itemArr = ['Account', 'Intro', 'Ip', 'Ver', 'GamefunVer', 'GameUri', 'Screen', 'TestUri', 'TestUids', 'TexasUri', 'LiveUri', 'TestVer']
+      for (const i in itemArr) {
+        this.edit.item[itemArr[i]] = this.edit.item[itemArr[i]].trim()
+      }
+    },
+    checkData() {
+      this.$refs['edit.item'].validate(valid => {})
+      if (this.getPostData().Account === '') {
+        this.$alert('账户不能为空')
+        return false
+      }
+      if (this.getPostData().Intro === '') {
+        this.$alert('描述不能为空')
+        return false
+      }
+      if (this.getPostData().GameUri === '') {
+        this.$alert('客户端uri 不能为空')
+        return false
+      }
+      if (this.getPostData().Screen === '') {
+        this.$alert('必须横竖屏选择')
+        return false
+      }
+      return true
+    },
+    save() {
+      if (!this.checkData()) return
+      if (this.edit.isEdit) {
+        // 设置修改后数据
+        this.$refs.compare.SetNewVal(this.edit.item)
+        const $this = this
+        this.$refs.compare.Compare(function(isEdit) {
+          if (!isEdit) {
+            Message.error('没有任何修改，不需要提交')
+            return
+          } else {
+            $this.editSave($this.getPostData())
+          }
+        })
+      } else {
+        this.createSave(this.getPostData())
+      }
+    },
+    getRemark() {
+      if (process.env.NODE_ENV === 'production') {
+        if (process.env.VUE_APP_PROJECT === 'ph') {
+          this.remark = '1. 内部正式包，路径配置: 1000002->客户端 uri。 2. 内部预发布，路径配置: 1000002->客户端测试 uri'
+        } else {
+          this.remark = '1. 正式审核包，路径配置: 1000002->客户端 uri。 2. 正式 UAT 环境，路径配置: 1000002->客户端测试 uri'
+        }
+      } else {
+        if (process.env.VUE_APP_PROJECT === 'ph') {
+          this.remark = '开发包，路径配置: 1000002->客户端 uri。'
+        } else {
+          this.remark = '开发审核包，路径配置: 1000002->客户端 uri'
+        }
+      }
+    }
+  }
+}
+</script>
+
+<style scoped>
+
+</style>
