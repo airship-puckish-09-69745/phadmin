@@ -87,26 +87,6 @@ export const constantRoutes = [
     ]
   },
   {
-    path: '/systemMoneyChart',
-    component: Layout,
-    redirect: '/systemMoneyChart',
-    meta: { title: '系统健康监测', icon: 'el-icon-pie-chart', perm: 'KEY_DATA_MONITOR' },
-    children: [
-      // {
-      //   path: 'dashboard',
-      //   component: () => import('@/views/playerManage/systemMoneyChart'),
-      //   name: 'dashboard',
-      //   meta: { title: '系统健康监测 ◐', icon: 'risk', perm: 'KEY_DATA_MONITOR' }
-      // },
-      {
-        path: '/systemMoneyChart',
-        component: () => import('@/views/playerManage/systemMoneyChartV2.vue'),
-        name: 'systemMoneyChart',
-        meta: { title: '系统健康监测 ◐', icon: 'risk', perm: 'KEY_DATA_MONITOR' }
-      }
-    ]
-  },
-  {
     path: '/profile',
     component: Layout,
     redirect: '/profile/index',
@@ -128,6 +108,26 @@ export const constantRoutes = [
  */
 export const asyncRoutes = [
   /** when your routing map is too long, you can split it into small modules **/
+  {
+    path: '/systemMoneyChart',
+    component: Layout,
+    redirect: '/systemMoneyChart',
+    meta: { title: '系统健康监测', icon: 'el-icon-pie-chart', perm: 'KEY_DATA_MONITOR' },
+    children: [
+      // {
+      //   path: 'dashboard',
+      //   component: () => import('@/views/playerManage/systemMoneyChart'),
+      //   name: 'dashboard',
+      //   meta: { title: '系统健康监测 ◐', icon: 'risk', perm: 'KEY_DATA_MONITOR' }
+      // },
+      {
+        path: '/systemMoneyChart',
+        component: () => import('@/views/playerManage/systemMoneyChartV2.vue'),
+        name: 'systemMoneyChart',
+        meta: { title: '系统健康监测 ◐', icon: 'risk', perm: 'KEY_DATA_MONITOR' }
+      }
+    ]
+  },
   {
     path: '/online',
     component: Layout,
