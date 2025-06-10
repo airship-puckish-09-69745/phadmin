@@ -71,5 +71,8 @@ export const PROP_SOURCE_OPTIONS = [
   { value: 8, label: 'tongits报名取消' },
   { value: 9, label: 'texas报名取消' },
   { value: 10, label: '头像框激活' },
-  { value: 11, label: '道具过期' }
+  { value: 11, label: '道具过期' },
+  { value: 12, label: '红包活动' },
+  { value: 13, label: 'rebuy' },
+  { value: 14, label: 'rebuy回退' }
 ]
