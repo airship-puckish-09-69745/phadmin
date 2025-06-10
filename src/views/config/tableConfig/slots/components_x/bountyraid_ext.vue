@@ -44,7 +44,7 @@
             <span style="margin-left:10px;color:#909399">(Bet为单线下注大小，Bet=0为默认配置，配置的倍数不能出现0倍的情况)</span>
 
             <el-table :data="cfg.BuyFreeOddsConf">
-              <el-table-column prop="bet" label="Bet值" width="120">
+              <el-table-column prop="bet" label="Bet值" width="500">
                 <template slot-scope="scope">
                   <el-button type="text" @click="editConfig(scope.row)">{{ scope.row.Bet.map(b => b/1000).join(', ') }}</el-button>
                 </template>
