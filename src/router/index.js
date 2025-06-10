@@ -76,19 +76,13 @@ export const constantRoutes = [
     path: '/',
     component: Layout,
     redirect: '/dashboard',
-    meta: { title: '系统健康监测', icon: 'el-icon-pie-chart', perm: 'DATA_MONITOR' },
+    meta: { title: 'Welcome', icon: 'el-icon-pie-chart' },
     children: [
-      // {
-      //   path: 'dashboard',
-      //   component: () => import('@/views/playerManage/systemMoneyChart'),
-      //   name: 'dashboard',
-      //   meta: { title: '系统健康监测 ◐', icon: 'risk', perm: 'KEY_DATA_MONITOR' }
-      // },
       {
         path: '/dashboard',
-        component: () => import('@/views/playerManage/systemMoneyChartV2.vue'),
+        component: () => import('@/views/dashboard/index'),
         name: 'dashboard',
-        meta: { title: '系统健康监测 ◐', icon: 'risk', perm: 'KEY_DATA_MONITOR' }
+        meta: { title: 'Welcome', icon: 'el-icon-s-home' }
       }
     ]
   },
@@ -114,6 +108,26 @@ export const constantRoutes = [
  */
 export const asyncRoutes = [
   /** when your routing map is too long, you can split it into small modules **/
+  {
+    path: '/systemMoneyChart',
+    component: Layout,
+    redirect: '/systemMoneyChart',
+    meta: { title: '系统健康监测', icon: 'el-icon-pie-chart', perm: 'DATA_MONITOR' },
+    children: [
+      // {
+      //   path: 'dashboard',
+      //   component: () => import('@/views/playerManage/systemMoneyChart'),
+      //   name: 'dashboard',
+      //   meta: { title: '系统健康监测 ◐', icon: 'risk', perm: 'KEY_DATA_MONITOR' }
+      // },
+      {
+        path: '/systemMoneyChart',
+        component: () => import('@/views/playerManage/systemMoneyChartV2.vue'),
+        name: 'systemMoneyChart',
+        meta: { title: '系统健康监测 ◐', icon: 'risk', perm: 'KEY_DATA_MONITOR' }
+      }
+    ]
+  },
   {
     path: '/online',
     component: Layout,
@@ -1893,7 +1907,7 @@ export const asyncRoutes = [
     path: '/player',
     component: Layout,
     redirect: 'noRedirect',
-    meta: { title: '玩家管理', icon: 'user' },
+    meta: { title: '玩家管理', icon: 'user', perm: 'CUTOMER' },
     children: [
       {
         path: 'userManage',
@@ -1961,7 +1975,7 @@ export const asyncRoutes = [
     path: '/match',
     component: Layout,
     redirect: 'noRedirect',
-    meta: { title: '比赛管理', icon: 'example', perm: 'CFG_MANAGEMENT' },
+    meta: { title: '比赛管理', icon: 'example', perm: 'CFG_MANAGEMENT_GTCC' },
     children: [
       {
         path: 'matchConfig',
@@ -2050,6 +2064,26 @@ export const asyncRoutes = [
         component: () => import('@/views/matchManage/matchGtccConfig.vue'),
         name: 'matchGtccConfig',
         meta: { title: 'Gtcc赛事配置', noCache: true }
+      },
+      {
+        path: 'selfBuildMatch',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: '自建房管理', noCache: true },
+        children: [
+          {
+            path: 'selfBuildMatchRule',
+            component: () => import('@/views/matchManage/selfBuildManage/selfBuildMatchRule.vue'),
+            name : 'selfBuildMatchRule',
+            meta: {title:'赛制管理', noCache: true }
+          },
+          {
+            path: 'selfBuildMatchReward',
+            component: () => import('@/views/matchManage/selfBuildManage/selfBuildMatchReward.vue'),
+            name : 'selfBuildMatchReward',
+            meta: {title:'奖励配置', noCache: true }
+          },
+        ]
       }
     ]
   },
