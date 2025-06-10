@@ -2064,6 +2064,26 @@ export const asyncRoutes = [
         component: () => import('@/views/matchManage/matchGtccConfig.vue'),
         name: 'matchGtccConfig',
         meta: { title: 'Gtcc赛事配置', noCache: true }
+      },
+      {
+        path: 'selfBuildMatch',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: '自建房管理', noCache: true },
+        children: [
+          {
+            path: 'selfBuildMatchRule',
+            component: () => import('@/views/matchManage/selfBuildManage/selfBuildMatchRule.vue'),
+            name : 'selfBuildMatchRule',
+            meta: {title:'赛制管理', noCache: true }
+          },
+          {
+            path: 'selfBuildMatchReward',
+            component: () => import('@/views/matchManage/selfBuildManage/selfBuildMatchReward.vue'),
+            name : 'selfBuildMatchReward',
+            meta: {title:'奖励配置', noCache: true }
+          },
+        ]
       }
     ]
   },

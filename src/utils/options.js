@@ -73,3 +73,25 @@ export const PROP_SOURCE_OPTIONS = [
   { value: 10, label: '头像框激活' },
   { value: 11, label: '道具过期' }
 ]
+
+//奖励分类
+export const REWARD_CURRENCY_OPTIONS = [
+  { 'value': 1, 'label': '金币' },
+  { 'value': 2, 'label': '投注金' },
+  { 'value': 3, 'label': '返水金' }
+]
+
+
+// 返水金
+export const REBATE_SCENES_CFG_OPTIONS = [
+  { 'value': 5, 'label': '没有任何限制的返水金' },
+  { 'value': 6, 'label': '有限制倍数的返水金（10倍）' }
+]
+
+//投注金
+export const  BET_SCENES_CFG_OPTIONS = [
+  { 'value': 1, 'label': '任意游戏投注' },
+  { 'value': 2, 'label': '仅限Poker类游戏投注' },
+  { 'value': 3, 'label': '仅限Slots类游戏投注' },
+  { 'value': 4, 'label': '仅限Tongits游戏投注' }
+]
