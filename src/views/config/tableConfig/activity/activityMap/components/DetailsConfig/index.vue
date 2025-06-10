@@ -200,15 +200,7 @@ export default {
       this.$emit('update', data)
     },
     handleEdit(row = null) {
-      this.formData = row ? {
-        ...row,
-        Content: typeof row.Content === 'string' ? JSON.parse(row.Content) : row.Content
-      } : {
-        ActivityId: '',
-        ActivityName: '',
-        ConfigName: '',
-        Content: {}
-      }
+      this.formDialog.updateData = row
       this.formDialog.visible = true
     },
     handleDelete(row) {
