@@ -3771,7 +3771,7 @@ export default {
             if (item.Gid === 10) {
               objs[o].RandVal = (item.RandVal / 100).toFixed(2)
               objs[o].WinRate = (item.WinRate / 100).toFixed(2)
-            } else if (item.Gid == 20) {
+            } else if (item.Gid == 20 || item.Gid==132) {
               objs[o].WinRate /= 100
               objs[o].ServiceFee *= 1000
             }
