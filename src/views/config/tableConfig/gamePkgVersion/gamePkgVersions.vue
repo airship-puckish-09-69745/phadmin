@@ -5,14 +5,14 @@
     </el-row>
     <el-row>
       <template>
-        <el-alert type="error">
+        <div>
           修改了：framework、app/main、proto、resources、app/yy.ts 内容，需要修改链接版本<br>
           其他 bundle 包含有：lobby、common、solitaire_pokers、游戏公共bundle、游戏bundle<br>
           <br>
           如有版本修改后未生效，请刷新界面检查是否为最新链接版本<br>
           <br>
           遇到其他问题请找：宏威
-        </el-alert>
+        </div>
       </template>
     </el-row>
     <el-row style="padding-top: 5px">
@@ -590,12 +590,13 @@ export default {
       lobbyVersionData: [],
       orgLobbyVersions: [],
       LobbyVersionID: 0,
+      subMaxLobbyVersion: 0,
       LobbyVersion: '',
       LobbyVersionStatus: 0,
       LobbyVersionTag: 0,
       statNames: { 0: '正常', 2: '上架', 6: '下架', 1: '关闭', 7: '预上架', 8: '预下架' },
       tagOptions: [
-        { value:0, label:'预发布'}, 
+        { value:0, label:'预发布'},
         { value:1, label:'线上版本'},
       ],
       stepNames: { 1: '原始状态', 2: '发布测试', 3: '预发布', 4: '提交审核', 5: '待发布', 6: '已发布'},
@@ -834,6 +835,21 @@ export default {
         $this.loadingShow = false
         if (response.RetCode === 0) {
           const objs = response.Data.Data || []
+          // 筛选obj里面的最新的版本
+          let maxVersion = '1.0.0.0'
+          let maxVersionArr = maxVersion.split('.')
+          objs.filter(function(obj) {
+            // 按.切分版本号
+            const versionArr = obj.GamePkgVersion.split('.')
+            for (let i = 0; i < 4; i++) {
+              if (versionArr[i] > maxVersionArr[i]) {
+                maxVersionArr = versionArr
+                maxVersion = obj.GamePkgVersion
+                break
+              }
+            }
+          })
+          this.subMaxLobbyVersion = maxVersion
           this.clientDB = new ClientTableData(objs, 100, filterMap, 'ID', -1)
           this.handleCurrentChange(1)
           this.historyMap = response.Data.HistoryMap || {}
@@ -1392,7 +1408,8 @@ export default {
       }
     },
     getLobbyVersionAlert() {
-      return "       "+ this.LobbyVersion+" 版本必须是整包！包含所有 bundle！"
+      // 获取当前列表下的最大版本号
+      return "       "+ this.subMaxLobbyVersion+" 版本必须是整包！包含所有 bundle！"
     },
     onStepChange(step, key, addData, delData, editData) {
       if (this.env === 'test' && !this.configData.lark) {
@@ -1441,7 +1458,7 @@ export default {
       if (addData) {
         // console.log("addData",addData)
         for (var i=0; i<addData.length; i++) {
-          let item = {} 
+          let item = {}
           for (let ele of addData[i]) {
             item[ele.key] = ele.newVal
           }
@@ -1452,7 +1469,7 @@ export default {
       if (delData) {
         // console.log("delData",delData)
         for (var i=0; i<delData.length; i++) {
-          let item = {} 
+          let item = {}
           for (let ele of delData[i]) {
             item[ele.key.toString()] = ele.oldVal
           }
@@ -1512,7 +1529,7 @@ export default {
         console.log("no change return")
         return
       }
-    
+
       var msg = ''
       for (const key in change) {
         let str = key
@@ -1521,7 +1538,7 @@ export default {
         }
         msg += str + '\r\n'
       }
-      
+
       // 正式发布才@相关人员
       if (step === 5 && this.env === 'pro') {
         msg += '***需检查 uat 03 是否同步版本内容***\r\n'
