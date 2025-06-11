@@ -291,6 +291,18 @@
           label="站点标识"
           width="80"
         />
+        <el-table-column
+          prop="tx_id"
+          label="钱包交易ID"
+          width="250"
+        />
+
+        <el-table-column
+          prop="round_id"
+          label="钱包回合ID"
+          width="250"
+        />
+
       </el-table>
     </el-row>
     <el-row type="flex" justify="end">
