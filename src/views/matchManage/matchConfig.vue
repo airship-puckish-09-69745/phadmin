@@ -1140,7 +1140,7 @@ export default {
      this.getCsCfgsAsyncCheck()
     this.getGuideCfgs()
     //this.getPrizeTemplateCfg()
-     //this.getPrizeTemplateCfgNew()
+     this.getPrizeTemplateCfgNew()
     if (this.env === 'pro') {
       // 正式环境暂时只开放以下选项
       // 返水金
