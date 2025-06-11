@@ -64,6 +64,21 @@
               </div>
               <span v-else>暂无</span>
             </template>
+            <!-- 游戏列表，格式为：名称(id)-热度 -->
+            <template v-else-if="field.prop === 'GameList'">
+              <div v-if="scope.row.GameList.length > 0">
+                <div v-for="(game, index) in scope.row.GameList" :key="index">
+                  <span v-if="game.label">
+                    {{
+                      `${game.label}(${game.id})`
+                    }}：
+                    <span style="color: #1890FF">{{ game.hot }}</span>
+                  </span>
+                  <span v-else>暂无</span>
+                </div>
+              </div>
+              <span v-else>暂无</span>
+            </template>
             <span v-else>{{ scope.row[field.prop] }}</span>
           </template>
         </el-table-column>
@@ -138,9 +153,10 @@ export default {
         { label: '活动金额', prop: 'Amount', width: 100 },
         { label: '头像框', prop: 'Avatar', width: 120 },
         { label: '活动图标', prop: 'Icon', width: 120 },
-        { label: '玩法简要', prop: 'Description' },
+        { label: '玩法简要', prop: 'Description', width: 150 },
         { label: '活动时间', prop: 'ActivityTime', width: 110 },
-        { label: '成就', prop: 'AchievementList' }
+        { label: '游戏热度', prop: 'GameList', width: 200 },
+        { label: '成就', prop: 'AchievementList', width: 180 }
         // { label: '成就个数', prop: 'AchievementNumber' },
         // { label: '成就名称', prop: 'AchievementName' },
         // { label: '成就完成条件', prop: 'AchievementCondition', width: 120 }
