@@ -21,15 +21,21 @@
       <el-form-item label="活动时间" prop="ActivityTime" :rules="{ required: true, message: '请选择活动时间', trigger: 'blur' }">
         <el-date-picker v-model="formData.ActivityTime" value-format="timestamp" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" />
       </el-form-item>
-      <!-- <el-form-item label="成就个数" prop="AchievementNumber" :rules="{ required: true, message: '请输入成就个数', trigger: 'blur' }">
-        <el-input v-model="formData.AchievementNumber" type="number" />
+      <el-form-item label="选择游戏">
+        <GameTreeSelector :selected-games-id="selectedGamesId" @change="handleGamesChange" />
       </el-form-item>
-      <el-form-item label="成就名称" prop="AchievementName" :rules="{ required: true, message: '请输入成就名称', trigger: 'blur' }">
-        <el-input v-model="formData.AchievementName" />
+      <!-- 通过表格的方式显示游戏列表，可以编辑游戏热度 -->
+      <el-form-item label="游戏热度">
+        <el-table :data="formData.GameList" border style="width: 100%;">
+          <el-table-column prop="id" label="游戏ID" width="80" />
+          <el-table-column prop="label" label="游戏名称" width="180" />
+          <el-table-column prop="hot" label="热度">
+            <template slot-scope="scope">
+              <el-input v-model="scope.row.hot" type="number" style="width: 100%;" @blur="onGameHotChange" />
+            </template>
+          </el-table-column>
+        </el-table>
       </el-form-item>
-      <el-form-item label="成就完成条件" prop="AchievementCondition" :rules="{ required: true, message: '请输入成就完成条件', trigger: 'blur' }">
-        <el-input v-model="formData.AchievementCondition" type="textarea" />
-      </el-form-item> -->
       <el-divider>
         成就
       </el-divider>
@@ -63,9 +69,11 @@
 
 <script>
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
+import GameTreeSelector from './GamesTreeSelector.vue'
 export default {
   components: {
-    ImagePicker
+    ImagePicker,
+    GameTreeSelector
   },
   props: {
     visible: {
@@ -99,8 +107,10 @@ export default {
         // AchievementCondition: ''
         AchievementList: [
           this.getBlankAchievementItem()
-        ]
-      }
+        ],
+        GameList: [] // 选择的游戏列表，回传过来之后会添加热度属性hot,
+      },
+      selectedGamesId: []
     }
   },
   computed: {
@@ -121,6 +131,8 @@ export default {
           newData.ActivityTime[0] * 1000,
           newData.ActivityTime[1] * 1000
         ]
+        this.selectedGamesId = newData.GameList.map(game => game.id)
+        console.log('updateData', this.selectedGamesId)
       } else {
         this.resetForm()
       }
@@ -133,11 +145,37 @@ export default {
   },
   methods: {
     /**
+     * 游戏热度改变时对列表进行排序，热度大的排前面
+     * 将热度转化为整数类型
+     */
+    onGameHotChange() {
+      this.$nextTick(() => {
+        this.formData.GameList.sort((a, b) => b.hot - a.hot)
+        // 遍历GameList，将hot转化为整数类型
+        for (let i = 0; i < this.formData.GameList.length; i++) {
+          this.formData.GameList[i].hot = parseInt(this.formData.GameList[i].hot)
+        }
+      })
+    },
+    /**
      * 点击按钮增加成就
      * @param {*} index
      */
     addAchievement(index) {
       this.formData.AchievementList.splice(index + 1, 0, this.getBlankAchievementItem())
+    },
+    handleGamesChange(selectedGames) {
+      const gameList = selectedGames.map(game => {
+        // 判断GameList是不是已经含有这个游戏，如果有则直接返回，否则添加热度属性
+        const existingGame = this.formData.GameList ? this.formData.GameList.find(g => g.id === game.id) : null
+        return {
+          ...game,
+          hot: existingGame ? existingGame.hot : 0
+        }
+      })
+      this.formData.GameList = gameList || []
+      this.onGameHotChange()
+      // console.log('handleGamesChange', this.formData.GameList)
     },
     /**
      * 点击按钮删除成就

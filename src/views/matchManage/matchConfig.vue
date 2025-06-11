@@ -1136,11 +1136,11 @@ export default {
    created() {
     this.name = store.getters.name
     this.env = store.getters.env || this.env
-    this.getCsCfgs()
-     //this.getCsCfgsAsyncCheck()
+    //this.getCsCfgs()
+     this.getCsCfgsAsyncCheck()
     this.getGuideCfgs()
-    this.getPrizeTemplateCfg()
-     //this.getPrizeTemplateCfgNew()
+    //this.getPrizeTemplateCfg()
+     this.getPrizeTemplateCfgNew()
     if (this.env === 'pro') {
       // 正式环境暂时只开放以下选项
       // 返水金
