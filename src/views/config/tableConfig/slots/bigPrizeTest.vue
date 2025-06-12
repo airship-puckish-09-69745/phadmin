@@ -29,7 +29,7 @@
       <el-table :data="statData" stripe border style="width: 100%; margin: 10px auto;">
         <el-table-column prop="date"  label="日期" width="200" />
         <el-table-column prop="days" label="天数" width="200" />
-        <el-table-column prop="bet" label="单注金额" width="200"><template slot-scope="scope">{{number2money(scope.row.bet)}}</template></el-table-column>
+        <el-table-column prop="bet" label="单注金额" width="200"><template slot-scope="scope">{{number2money(scope.row.bet)}}</template> * {{baseBet}}</el-table-column>
         <el-table-column prop="user_bet" label="用户下注" width="200"><template slot-scope="scope">{{number2money(scope.row.user_bet)}}</template></el-table-column>
         <el-table-column prop="user_win" label="用户赢取" width="200"><template slot-scope="scope">{{number2money(scope.row.user_win)}}</template></el-table-column>
         <el-table-column prop="user_play" label="玩牌局数" width="200" />
@@ -61,6 +61,7 @@ export default {
         reason: 0,
         cfgId: 0
       },
+      baseBet: 0,
       queryUid: 0,
       queryGid: 0,
       gameOptions: [], //游戏列表
@@ -117,8 +118,9 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           let obj = {}, arr = []
-          for (const k in response.Data) {
-            const v = response.Data[k]
+          $this.baseBet = response.Data.base_bet
+          for (const k in response.Data.stat) {
+            const v = response.Data.stat[k]
             for (const kk in v.data) {
               const vv = v.data[kk]
               const objKey = vv.date + "_" + vv.bet
