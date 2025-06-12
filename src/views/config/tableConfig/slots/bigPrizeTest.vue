@@ -29,7 +29,7 @@
       <el-table :data="statData" stripe border style="width: 100%; margin: 10px auto;">
         <el-table-column prop="date"  label="日期" width="200" />
         <el-table-column prop="days" label="天数" width="200" />
-        <el-table-column prop="bet" label="单注金额" width="200"><template slot-scope="scope">{{number2money(scope.row.bet)}}</template></el-table-column>
+        <el-table-column prop="bet" label="单注金额" width="200"><template slot-scope="scope">{{betMoneyStr(scope.row.bet)}}</template></el-table-column>
         <el-table-column prop="user_bet" label="用户下注" width="200"><template slot-scope="scope">{{number2money(scope.row.user_bet)}}</template></el-table-column>
         <el-table-column prop="user_win" label="用户赢取" width="200"><template slot-scope="scope">{{number2money(scope.row.user_win)}}</template></el-table-column>
         <el-table-column prop="user_play" label="玩牌局数" width="200" />
