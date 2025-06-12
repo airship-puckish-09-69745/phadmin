@@ -1136,11 +1136,14 @@ export default {
    created() {
     this.name = store.getters.name
     this.env = store.getters.env || this.env
-    this.getCsCfgs()
-     //this.getCsCfgsAsyncCheck()
+     if(!IsMars()) {
+       this.getCsCfgsAsyncCheck()
+       this.getPrizeTemplateCfgNew()
+     }else{
+       this.getCsCfgs()
+       this.getPrizeTemplateCfg()
+     }
     this.getGuideCfgs()
-    this.getPrizeTemplateCfg()
-     //this.getPrizeTemplateCfgNew()
     if (this.env === 'pro') {
       // 正式环境暂时只开放以下选项
       // 返水金
@@ -2316,6 +2319,10 @@ export default {
         this.errmsg('提前进入时间 或者是提前显示时间不能配置为0')
         return false
       }
+
+      if (!this.reubyConfigCheck()){
+        return false
+      }
       return true
     },
 
@@ -2389,9 +2396,6 @@ export default {
             }
           }
         }
-      }
-      if (!this.reubyConfigCheck()){
-        return false
       }
       return true
     },
