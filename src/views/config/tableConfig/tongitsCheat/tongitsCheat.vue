@@ -12,7 +12,6 @@ import Compare from '@/components/Compare/index.vue'
 function NewRobotAIItem() {
   const configLevel = 1
   const configName = '防作弊机器⼈'
-
   return {
     AiConfigId: configLevel,
     AiConfigLevel: configLevel,
@@ -191,6 +190,10 @@ export default {
       subKey: 'tongits_cheat_cfg', // 子key
       editAIVisible: false,
       editAI: {},
+      editJokerVisible: false,
+      editJokerAI: {},
+      editQuickVisible: false,
+      editQuickAI: {},
       IsAutoMaybe: false,
       MaybeMin: 0,
       MaybeReduce: 0,
@@ -198,7 +201,7 @@ export default {
         IsAutoMaybe: false, // 是否自动调整
         MaybeMin: 0, // 最小可能性
         MaybeReduce: 0, // 减少可能性
-        TickScore:100,//踢人
+        TickScore: 100, // 踢人
         GiveMoreTimes: [
           {
             Count: 2,
@@ -349,7 +352,10 @@ export default {
             Count: 100,
             MaybeAdd: 3
           }
-        ]
+        ],
+        AiConfigRow: {},
+        JokerAiConfigRow: {},
+        QuickAiConfigRow: {}
       },
       form: {
         Data: {}
@@ -359,7 +365,7 @@ export default {
   },
 
   created() {
-    this.editAI = NewRobotAIItem()
+    // this.editAI = NewRobotAIItem()
     this.getData()
   },
   methods: {
@@ -401,6 +407,26 @@ export default {
                 MaybeAdd: 3
               }
             }
+            if (!$this.CheatCfg.hasOwnProperty('AiConfigRow')) {
+              this.CheatCfg.AiConfigRow = NewRobotAIItem()
+            }
+            if (!$this.CheatCfg.hasOwnProperty('AiConfigRow')) {
+              this.CheatCfg.AiConfigRow = NewRobotAIItem()
+            }
+            if (!$this.CheatCfg.hasOwnProperty('AiConfigRow')) {
+              this.CheatCfg.AiConfigRow = NewRobotAIItem()
+            }
+            this.editAI = this.CheatCfg.AiConfigRow
+            if (!$this.CheatCfg.hasOwnProperty('JokerAiConfigRow')) {
+              this.CheatCfg.JokerAiConfigRow = NewRobotAIItem()
+            }
+            this.editAI = this.CheatCfg.AiConfigRow
+            if (!$this.CheatCfg.hasOwnProperty('QuickAiConfigRow')) {
+              this.CheatCfg.QuickAiConfigRow = NewRobotAIItem()
+            }
+            this.editAI = this.CheatCfg.AiConfigRow
+            this.editJokerAI = this.CheatCfg.JokerAiConfigRow
+            this.editQuickAI = this.CheatCfg.QuickAiConfigRow
             const maybeMin = $this.CheatCfg.MaybeMin
             $this.oldCheatMin = maybeMin
             const old = JSON.parse(response.Data.Data)
@@ -497,10 +523,16 @@ export default {
         })
       }
       this.CheatCfg.BigPotLeave = BigPotLeave
+      this.CheatCfg.AiConfigRow = this.editAI
+      this.CheatCfg.JokerAiConfigRow = this.editJokerAI
+      this.CheatCfg.QuickAiConfigRow = this.editQuickAI
       Object.assign(cpy, this.CheatCfg)
       return JSON.stringify(cpy)
     },
     setData() {
+      this.editAIVisible = false
+      this.editJokerVisible = false
+      this.editQuickVisible = false
       console.log('setData', this.CheatCfg)
       const $this = this
       this.form.Data = this.encodeData()
@@ -529,6 +561,12 @@ export default {
     },
     handleAIUpdate() {
       this.editAIVisible = true
+    },
+    handleJokerUpdate() {
+      this.editJokerVisible = true
+    },
+    handleQuickUpdate() {
+      this.editQuickVisible = true
     },
     getWinTimesTitle(item, index) {
       if (index === this.CheatCfg.BigPotWin.length - 1) {
@@ -592,12 +630,30 @@ export default {
           <el-descriptions-item label="疑似度降低值" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
             <el-input v-model.number="CheatCfg.MaybeReduce" type="number" size="medium" style="width: 120px" />
           </el-descriptions-item>
-          <el-descriptions-item label="防作弊机器⼈" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
+          <el-descriptions-item label="POT防作弊机器⼈" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
             <el-button
               type="primary"
               size="mini"
               icon="el-icon-document-copy"
               @click="handleAIUpdate()"
+            >修改
+            </el-button>
+          </el-descriptions-item>
+          <el-descriptions-item label="JOKER防作弊机器⼈" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
+            <el-button
+              type="primary"
+              size="mini"
+              icon="el-icon-document-copy"
+              @click="handleJokerUpdate()"
+            >修改
+            </el-button>
+          </el-descriptions-item>
+          <el-descriptions-item label="QUICK防作弊机器⼈" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
+            <el-button
+              type="primary"
+              size="mini"
+              icon="el-icon-document-copy"
+              @click="handleQuickUpdate()"
             >修改
             </el-button>
           </el-descriptions-item>
@@ -633,25 +689,6 @@ export default {
               <el-input v-model.number="CheatCfg.LeaveFre[1].MaybeAdd" type="number" size="medium" style="width: 120px" />
             </el-form-item>
           </el-form>
-<!--          <h5 class="title">频繁换桌：近五局换桌概率</h5>-->
-<!--          <table class="support-table">-->
-<!--            <thead>-->
-<!--              <tr>-->
-<!--                <th>频繁换桌概率</th>-->
-<!--                <th v-for="(item, index) in CheatCfg.LeaveFre" :key="'h'+index">-->
-<!--                  {{ item.Per }}%-->
-<!--                </th>-->
-<!--              </tr>-->
-<!--            </thead>-->
-<!--            <tbody>-->
-<!--              <tr>-->
-<!--                <td>增加疑似度</td>-->
-<!--                <td v-for="(item, index) in CheatCfg.LeaveFre" :key="'h'+index">-->
-<!--                  <el-input v-model="item.MaybeAdd" class="centered-input" type="number" size="medium" style="width: 120px" />-->
-<!--                </td>-->
-<!--              </tr>-->
-<!--            </tbody>-->
-<!--          </table>-->
         </div>
         <div class="table-container">
           <h5 class="title">皇冠⾼分Fight：皇冠⽐Challenge玩家⾼多少分Fight</h5>
@@ -829,7 +866,7 @@ export default {
       <el-button type="primary" @click="setData">保存信息</el-button>
     </div>
     <el-dialog
-      title="机器人配置"
+      title="pot贴防机器人配置"
       :visible.sync="editAIVisible"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
@@ -851,6 +888,76 @@ export default {
             </el-tab-pane>
             <el-tab-pane label="好牌配置">
               <robot-ai-setting-build-card v-model="editAI" />
+            </el-tab-pane>
+          </el-tabs>
+        </el-row>
+        <el-form-item>
+          <el-row>
+            <el-col :span="12" :offset="10">
+              <el-button type="primary" size="medium" @click="setData">保存</el-button>
+            </el-col>
+          </el-row>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+    <el-dialog
+      title="quick贴防机器人配置"
+      :visible.sync="editQuickVisible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-form ref="edit" :model="editQuickAI" width="70%" label-position="top">
+        <el-row>
+          <el-tabs type="border-card">
+            <el-tab-pane label="机器人挑战">
+              <robot-ai-setting-fight v-model="editQuickAI" />
+            </el-tab-pane>
+            <el-tab-pane label="机器人面对挑战">
+              <robot-ai-setting-challenge v-model="editQuickAI" />
+            </el-tab-pane>
+            <el-tab-pane label="放牌配置">
+              <robot-ai-setting-drop v-model="editQuickAI" />
+            </el-tab-pane>
+            <el-tab-pane label="出牌配置">
+              <robot-ai-setting-out-card v-model="editQuickAI" />
+            </el-tab-pane>
+            <el-tab-pane label="好牌配置">
+              <robot-ai-setting-build-card v-model="editQuickAI" game-type="joker" />
+            </el-tab-pane>
+          </el-tabs>
+        </el-row>
+        <el-form-item>
+          <el-row>
+            <el-col :span="12" :offset="10">
+              <el-button type="primary" size="medium" @click="setData">保存</el-button>
+            </el-col>
+          </el-row>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+    <el-dialog
+      title="joker贴防机器人配置"
+      :visible.sync="editJokerVisible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-form ref="edit" :model="editJokerAI" width="70%" label-position="top">
+        <el-row>
+          <el-tabs type="border-card">
+            <el-tab-pane label="机器人挑战">
+              <robot-ai-setting-fight v-model="editJokerAI" />
+            </el-tab-pane>
+            <el-tab-pane label="机器人面对挑战">
+              <robot-ai-setting-challenge v-model="editJokerAI" />
+            </el-tab-pane>
+            <el-tab-pane label="放牌配置">
+              <robot-ai-setting-drop v-model="editJokerAI" />
+            </el-tab-pane>
+            <el-tab-pane label="出牌配置">
+              <robot-ai-setting-out-card v-model="editJokerAI" />
+            </el-tab-pane>
+            <el-tab-pane label="好牌配置">
+              <robot-ai-setting-build-card v-model="editJokerAI" game-type="joker" />
             </el-tab-pane>
           </el-tabs>
         </el-row>
