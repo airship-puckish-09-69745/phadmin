@@ -1,8 +1,17 @@
 <template>
   <el-dialog :title="updateData && updateData.ID ? '编辑配置' : '新增配置'" :visible.sync="dialogVisible" width="540px" :close-on-click-modal="false" @close="handleClose(false)">
     <el-form :model="formData" label-width="100px">
-      <el-form-item label="金额" :rules="{ required: true, message: '请输入金额', trigger: 'blur' }">
-        <el-input v-model="formData.Amount" type="number" />
+      <el-form-item label="年终大奖初始奖金" :rules="{ required: true, message: '请输入金额', trigger: 'blur' }">
+        <el-input v-model="formData.InitBonus" type="number" />
+      </el-form-item>
+      <el-form-item label="活动值转化比例" :rules="{ required: true, message: '请输入金额', trigger: 'blur' }">
+        <el-input v-model="formData.ActivityTransformRate" type="number" />
+      </el-form-item>
+      <el-form-item label="奖金增加转化比例" :rules="{ required: true, message: '请输入金额', trigger: 'blur' }">
+        <el-input v-model="formData.IncreaseTransformRate" type="number" />
+      </el-form-item>
+      <el-form-item label="年终奖保底奖金" :rules="{ required: true, message: '请输入金额', trigger: 'blur' }">
+        <el-input v-model="formData.GuaranteedBonus" type="number" />
       </el-form-item>
     </el-form>
     <template #footer>
@@ -30,7 +39,10 @@ export default {
     return {
       formData: {
         ID: '',
-        Amount: 0
+        InitBonus: 0, // 年终大奖初始奖金
+        GuaranteedBonus: 0, // 年终奖保底奖金
+        ActivityTransformRate: 0, // 活动值转化比例
+        IncreaseTransformRate: 0 // 奖金增加转化比例
       }
     }
   },
@@ -63,14 +75,14 @@ export default {
       this.$emit('reload')
     },
     handleSave() {
-      this.formData.Amount = parseInt(this.formData.Amount)
+      this.formData.InitBonus = parseInt(this.formData.InitBonus)
       this.$emit('save', this.formData)
       this.resetForm()
     },
     resetForm() {
       this.formData = {
         ID: '',
-        Amount: 0
+        InitBonus: 0
       }
       this.$emit('update:visible', false)
     },
