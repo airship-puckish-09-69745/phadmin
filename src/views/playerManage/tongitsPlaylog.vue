@@ -647,6 +647,8 @@ export default {
           return '机器人--弱杀'
         case 5:
           return '机器人--强杀'
+        case 6:
+          return '机器人--贴防'
         case 8:
           return '一级杀手机器人'
         case 9:
