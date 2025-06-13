@@ -348,58 +348,58 @@
                 <el-input v-model="edit.item.CommCodePath" placeholder="开发提供" />
               </el-col>
             </el-form-item>
-            <el-form-item label="只白名单可见：" :required="true">
-              <el-radio-group v-model.number="edit.item.IsWhite">
-                <el-radio :label="1">是</el-radio>
-                <el-radio :label="0">否</el-radio>
-              </el-radio-group>
-            </el-form-item>
-            <el-form-item label="非真实用户是否显示：" :required="true">
-              <el-radio-group v-model.number="edit.item.IsPlaying">
-                <el-radio :label="1">是</el-radio>
-                <el-radio :label="0">否</el-radio>
-              </el-radio-group>
-            </el-form-item>
+<!--            <el-form-item label="只白名单可见：" :required="true">-->
+<!--              <el-radio-group v-model.number="edit.item.IsWhite">-->
+<!--                <el-radio :label="1">是</el-radio>-->
+<!--                <el-radio :label="0">否</el-radio>-->
+<!--              </el-radio-group>-->
+<!--            </el-form-item>-->
+<!--            <el-form-item label="非真实用户是否显示：" :required="true">-->
+<!--              <el-radio-group v-model.number="edit.item.IsPlaying">-->
+<!--                <el-radio :label="1">是</el-radio>-->
+<!--                <el-radio :label="0">否</el-radio>-->
+<!--              </el-radio-group>-->
+<!--            </el-form-item>-->
             <el-form-item v-if="false" label="最低版本限制：" :required="true">
               <el-col :span="11">
                 <el-input v-model="edit.item.VersionLower" placeholder="开发提供" />
               </el-col>
             </el-form-item>
-            <el-form-item label="new 标识：" :required="true">
-              <el-radio-group v-model.number="edit.item.IsNew">
-                <el-radio :label="1">是</el-radio>
-                <el-radio :label="0">否</el-radio>
-              </el-radio-group>
-            </el-form-item>
-            <el-form-item label="hot 标识：" :required="true">
-              <el-radio-group v-model.number="edit.item.IsHot">
-                <el-radio :label="1">是</el-radio>
-                <el-radio :label="0">否</el-radio>
-              </el-radio-group>
-            </el-form-item>
+<!--            <el-form-item label="new 标识：" :required="true">-->
+<!--              <el-radio-group v-model.number="edit.item.IsNew">-->
+<!--                <el-radio :label="1">是</el-radio>-->
+<!--                <el-radio :label="0">否</el-radio>-->
+<!--              </el-radio-group>-->
+<!--            </el-form-item>-->
+<!--            <el-form-item label="hot 标识：" :required="true">-->
+<!--              <el-radio-group v-model.number="edit.item.IsHot">-->
+<!--                <el-radio :label="1">是</el-radio>-->
+<!--                <el-radio :label="0">否</el-radio>-->
+<!--              </el-radio-group>-->
+<!--            </el-form-item>-->
           </el-tab-pane>
-          <el-tab-pane label="游戏名称多语言" name="second">
-            <el-form-item label="图片内容：" :required="true">
-              <template v-for="(o) in langTypes">
-                <el-col :span="6">{{ getLangName(o) }}:</el-col>
-                <el-col :span="18">
-                  <el-upload
-                    class="avatar-uploader"
-                    drag
-                    :action="actionURL2"
-                    :with-credentials="true"
-                    :show-file-list="false"
-                    :data="getUploadParam(o)"
-                    :on-success="Succ"
-                    :before-upload="beforeAvatarUpload"
-                  >
-                    <img v-if="edit.langPic[o]" :src="getFullPath(edit.langPic[o])">
-                    <i v-else class="el-icon-plus avatar-uploader-icon" />
-                  </el-upload>
-                </el-col>
-              </template>
-            </el-form-item>
-          </el-tab-pane>
+<!--          <el-tab-pane label="游戏名称多语言" name="second">-->
+<!--            <el-form-item label="图片内容：" :required="true">-->
+<!--              <template v-for="(o) in langTypes">-->
+<!--                <el-col :span="6">{{ getLangName(o) }}:</el-col>-->
+<!--                <el-col :span="18">-->
+<!--                  <el-upload-->
+<!--                    class="avatar-uploader"-->
+<!--                    drag-->
+<!--                    :action="actionURL2"-->
+<!--                    :with-credentials="true"-->
+<!--                    :show-file-list="false"-->
+<!--                    :data="getUploadParam(o)"-->
+<!--                    :on-success="Succ"-->
+<!--                    :before-upload="beforeAvatarUpload"-->
+<!--                  >-->
+<!--                    <img v-if="edit.langPic[o]" :src="getFullPath(edit.langPic[o])">-->
+<!--                    <i v-else class="el-icon-plus avatar-uploader-icon" />-->
+<!--                  </el-upload>-->
+<!--                </el-col>-->
+<!--              </template>-->
+<!--            </el-form-item>-->
+<!--          </el-tab-pane>-->
         </el-tabs>
 
         <el-form-item>
