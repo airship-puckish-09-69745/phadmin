@@ -356,7 +356,7 @@ export default {
         source: 'glife.bingoplus.com',
         activity: '',
         live_id: '',
-        gp_ext: '{"vip_level":1}',
+        gp_ext: '{"vip":1}',
         kyc: '0',
         r_time: Date.parse(new Date())
       },
