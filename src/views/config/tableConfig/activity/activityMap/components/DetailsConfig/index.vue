@@ -37,10 +37,10 @@
               :preview-src-list="[scope.row[field.prop]]"
               class="image-manage-item__image"
             />
-            <!-- 活动：格式为：活动名称-[活动ID] -->
-            <template v-else-if="field.prop === 'ActivityName'">
+            <!-- 活动配置：格式为：活动名称-[活动ID] -->
+            <template v-else-if="field.prop === 'ActivityConfig'">
               <span v-if="scope.row.ActivityName">{{
-                `${scope.row.ActivityName}-[${scope.row.ActivityId}]`
+                `${getActivityConfigNasme(scope.row)}-[${scope.row.ActivityConfigId}]`
               }}</span>
               <span v-else>暂无</span>
             </template>
@@ -63,8 +63,8 @@
                       class="image-manage-item__image"
                       style="width: 60px;"
                     />
-                    <div style="display: inline-block; width: 260px;">
-                      <div style="position: relative; display: -webkit-box; width: 100%; vertical-align: top; overflow: hidden; text-overflow: ellipsis; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
+                    <div style="display: inline-block; width: 260px; vertical-align: top;position: relative; top: 6px">
+                      <div style="display: -webkit-box; width: 100%; overflow: hidden; text-overflow: ellipsis; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
                         <!-- {{
                           `[${index + 1}]`
                         }} -->
@@ -163,6 +163,7 @@ export default {
       fields: [
         { label: '配置ID', prop: 'ID', width: 100, required: true },
         { label: '活动名称', prop: 'ActivityName', width: 200, required: true },
+        { label: '活动配置', prop: 'ActivityConfig', width: 200, required: true },
         { label: '活动金额', prop: 'Amount', width: 100 },
         // { label: '头像框', prop: 'Avatar', width: 120 },
         { label: '活动图标', prop: 'Icon', width: 120 },
@@ -249,6 +250,10 @@ export default {
           message: '已取消删除'
         })
       })
+    },
+    getActivityConfigNasme(row) {
+      const selectedActivity = this.activityOptions.find(option => option.id === row.ActivityConfigId)
+      return (selectedActivity ? selectedActivity.name : '')
     },
     handleUpdateDialogVisible(visible) {
       this.formDialog.visible = visible

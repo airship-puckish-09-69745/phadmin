@@ -1,8 +1,11 @@
 <template>
   <el-dialog :title="updateData && updateData.ID ? '编辑配置' : '新增配置'" :visible.sync="dialogVisible" width="560px" :close-on-click-modal="false" @close="handleClose(false)">
     <el-form :model="formData" label-width="120px">
+      <el-form-item label="活动名称" required>
+        <el-input v-model="formData.ActivityName" style="width: 360px;" />
+      </el-form-item>
       <el-form-item label="活动配置" required>
-        <el-select v-model="formData.ActivityId" placeholder="请选择活动" style="width: 360px;" @change="onChangeActivityId">
+        <el-select v-model="formData.ActivityConfigId" placeholder="请选择活动" style="width: 360px;" @change="onChangeActivityConfigId">
           <el-option v-for="option in activityOptions" :key="option.id" :label="`${option.name}-${option.id}`" :value="option.id" />
         </el-select>
       </el-form-item>
@@ -101,7 +104,7 @@ export default {
       // 和index列表组件保持一致的表单数据结构
       formData: {
         ID: '',
-        ActivityId: '',
+        ActivityConfigId: '',
         ActivityName: '',
         Amount: 0,
         Icon: '',
@@ -197,10 +200,10 @@ export default {
         Avatar: ''
       }
     },
-    onChangeActivityId(val) {
-      const selectedActivity = this.activityOptions.find(option => option.id === val)
-      this.formData.ActivityName = selectedActivity ? selectedActivity.name : ''
-      console.log('onChangeActivityId', val, this.formData.ActivityName)
+    onChangeActivityConfigId(val) {
+      // const selectedActivity = this.activityOptions.find(option => option.id === val)
+      // this.formData.ActivityName = selectedActivity ? selectedActivity.name : ''
+      console.log('onChangeActivityConfigId', val, this.formData.ActivityName)
     },
     handleSave() {
       if (!this.checkoutForm()) {
@@ -221,7 +224,7 @@ export default {
     resetForm() {
       this.formData = {
         ID: '',
-        ActivityId: '',
+        ActivityConfigId: '',
         ActivityName: '',
         Amount: 0,
         Icon: '',
@@ -247,6 +250,10 @@ export default {
      */
     checkoutForm() {
       if (!this.formData.ActivityName) {
+        this.$message.error('请输入活动名称')
+        return false
+      }
+      if (!this.formData.ActivityConfigId) {
         this.$message.error('请选择活动配置')
         return false
       }
