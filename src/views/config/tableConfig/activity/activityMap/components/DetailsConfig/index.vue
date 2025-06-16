@@ -15,7 +15,7 @@
       <el-table
         :data="tableData"
         border
-        style="max-height: calc(100vh - 326px);width: 100%;overflow-y: auto;"
+        style="width: 100%;"
         :cell-style="libShow.DefaultTableCell"
       >
         <!-- 序号 -->
@@ -66,7 +66,7 @@
             </template>
             <!-- 游戏列表，格式为：名称(id)-热度 -->
             <template v-else-if="field.prop === 'GameList'">
-              <div v-if="scope.row.GameList.length > 0">
+              <div v-if="scope.row.GameList && scope.row.GameList.length > 0">
                 <div v-for="(game, index) in scope.row.GameList" :key="index">
                   <span v-if="game.label">
                     {{
