@@ -31,7 +31,7 @@
           <template slot-scope="scope">
             <!-- 活动图标和头像框 -->
             <el-image
-              v-if="field.prop === 'Icon' || field.prop === 'Avatar'"
+              v-if="field.prop === 'Icon'"
               :src="scope.row[field.prop]"
               fit="contain"
               :preview-src-list="[scope.row[field.prop]]"
@@ -50,15 +50,28 @@
                 {{ parseTime(scope.row.ActivityTime[0], '{y}-{m}-{d}') }} <br> {{ parseTime(scope.row.ActivityTime[1], '{y}-{m}-{d}') }}
               </span>
             </template>
-            <!-- 成就：格式为：[<序号>][名称]: [达成条件] -->
+            <!-- 成就：格式为：[头像框][名称]: [达成条件] -->
             <template v-else-if="field.prop === 'AchievementList'">
-              <div v-if="scope.row.AchievementList.length > 0">
+              <div v-if="scope.row.AchievementList && scope.row.AchievementList.length > 0">
                 <div v-for="(achievement, index) in scope.row.AchievementList" :key="index">
-                  <span v-if="achievement.AchievementName">
-                    {{
-                      `[${index + 1}]`
-                    }}
-                    {{ achievement.AchievementName }}: {{ achievement.AchievementCondition }}</span>
+                  <div v-if="achievement.AchievementName">
+                    <el-image
+                      v-if="achievement.Avatar"
+                      :src="achievement.Avatar"
+                      fit="contain"
+                      :preview-src-list="[achievement.Avatar]"
+                      class="image-manage-item__image"
+                      style="width: 60px;"
+                    />
+                    <div style="display: inline-block; width: 260px;">
+                      <div style="position: relative; display: -webkit-box; width: 100%; vertical-align: top; overflow: hidden; text-overflow: ellipsis; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
+                        <!-- {{
+                          `[${index + 1}]`
+                        }} -->
+                        {{ achievement.AchievementName }}: {{ achievement.AchievementCondition }}
+                      </div>
+                    </div>
+                  </div>
                   <span v-else>暂无</span>
                 </div>
               </div>
@@ -151,12 +164,12 @@ export default {
         { label: '配置ID', prop: 'ID', width: 100, required: true },
         { label: '活动名称', prop: 'ActivityName', width: 200, required: true },
         { label: '活动金额', prop: 'Amount', width: 100 },
-        { label: '头像框', prop: 'Avatar', width: 120 },
+        // { label: '头像框', prop: 'Avatar', width: 120 },
         { label: '活动图标', prop: 'Icon', width: 120 },
         { label: '玩法简要', prop: 'Description', width: 150 },
         { label: '活动时间', prop: 'ActivityTime', width: 110 },
         { label: '游戏热度', prop: 'GameList', width: 200 },
-        { label: '成就', prop: 'AchievementList', width: 180 }
+        { label: '成就', prop: 'AchievementList', width: 360 }
         // { label: '成就个数', prop: 'AchievementNumber' },
         // { label: '成就名称', prop: 'AchievementName' },
         // { label: '成就完成条件', prop: 'AchievementCondition', width: 120 }
