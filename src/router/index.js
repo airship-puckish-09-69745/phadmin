@@ -871,6 +871,20 @@ export const asyncRoutes = [
                     meta: { title: 'RemiPro配桌 ◐' }
 				          }
                 ]
+          },
+          {
+            path: '/trucoVersion',
+            component: () => import('@/views/empty'),
+            redirect: 'noRedirect',
+            meta: { title: 'truco ◐' },
+            children: [
+                  {
+                    path: 'trucoTable',
+                    component: () => import('@/views/config/tableConfig/trucoTable'),
+                    name: 'trucoTable',
+                    meta: { title: 'truco配桌 ◐' }
+				          }
+                ]
           }
         ]
       },
