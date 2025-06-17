@@ -888,7 +888,7 @@ export const asyncRoutes = [
                     path: 'trucoTable',
                     component: () => import('@/views/config/tableConfig/trucoTable'),
                     name: 'trucoTable',
-                    meta: { title: 'truco配桌 ◐' }
+                    meta: { title: 'Truco配桌 ◐' }
 				          }
                 ]
               }
