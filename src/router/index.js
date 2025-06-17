@@ -856,7 +856,7 @@ export const asyncRoutes = [
             path: '/remiVersion',
             component: () => import('@/views/empty'),
             redirect: 'noRedirect',
-            meta: { title: 'remi ◐' },
+            meta: { title: 'Remi ◐' },
             children: [
                   {
                     path: 'remiTable',
@@ -876,7 +876,7 @@ export const asyncRoutes = [
             path: '/trucoVersion',
             component: () => import('@/views/empty'),
             redirect: 'noRedirect',
-            meta: { title: 'T ruco ◐' },
+            meta: { title: 'Truco ◐' },
             children: [
               {
                 path: 'trucoTable',
