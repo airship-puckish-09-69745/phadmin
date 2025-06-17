@@ -856,7 +856,7 @@ export const asyncRoutes = [
             path: '/remiVersion',
             component: () => import('@/views/empty'),
             redirect: 'noRedirect',
-            meta: { title: 'remi ◐' },
+            meta: { title: 'Remi ◐' },
             children: [
                   {
                     path: 'remiTable',
@@ -871,6 +871,28 @@ export const asyncRoutes = [
                     meta: { title: 'RemiPro配桌 ◐' }
 				          }
                 ]
+          },
+          {
+            path: '/trucoVersion',
+            component: () => import('@/views/empty'),
+            redirect: 'noRedirect',
+            meta: { title: 'Truco ◐' },
+            children: [
+              {
+                path: 'trucoTable',
+                component: () => import('@/views/empty'),
+                redirect: 'noRedirect',
+                meta: { title: 'Truco配桌 ◐', noCache: true },
+                children: [
+                  {
+                    path: 'trucoTable',
+                    component: () => import('@/views/config/tableConfig/trucoTable'),
+                    name: 'trucoTable',
+                    meta: { title: 'Truco配桌 ◐' }
+				          }
+                ]
+              }
+            ]
           }
         ]
       },
