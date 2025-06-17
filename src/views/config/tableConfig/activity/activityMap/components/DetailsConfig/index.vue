@@ -81,11 +81,11 @@
             <template v-else-if="field.prop === 'GameList'">
               <div v-if="scope.row.GameList && scope.row.GameList.length > 0">
                 <div v-for="(game, index) in scope.row.GameList" :key="index">
-                  <span v-if="game.label">
+                  <span v-if="game">
                     {{
-                      `${game.label}(${game.id})`
+                      `${game.Label}(${game.Id})`
                     }}：
-                    <span style="color: #1890FF">{{ game.hot }}</span>
+                    <span style="color: #1890FF">{{ game.Hot }}</span>
                   </span>
                   <span v-else>暂无</span>
                 </div>

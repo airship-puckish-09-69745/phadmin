@@ -30,11 +30,11 @@
       <!-- 通过表格的方式显示游戏列表，可以编辑游戏热度 -->
       <el-form-item label="游戏热度">
         <el-table :data="formData.GameList" border style="width: 100%;">
-          <el-table-column prop="id" label="游戏ID" width="80" />
-          <el-table-column prop="label" label="游戏名称" width="180" />
-          <el-table-column prop="hot" label="热度">
+          <el-table-column prop="Id" label="游戏ID" width="80" />
+          <el-table-column prop="Label" label="游戏名称" width="180" />
+          <el-table-column prop="Hot" label="热度">
             <template slot-scope="scope">
-              <el-input v-model="scope.row.hot" type="number" style="width: 100%;" @blur="onGameHotChange" />
+              <el-input v-model="scope.row.Hot" type="number" style="width: 100%;" @blur="onGameHotChange" />
             </template>
           </el-table-column>
         </el-table>
@@ -140,7 +140,7 @@ export default {
           newData.ActivityTime[0] * 1000,
           newData.ActivityTime[1] * 1000
         ]
-        this.selectedGamesId = newData.GameList.map(game => game.id)
+        this.selectedGamesId = newData.GameList.map(game => game.Id)
         console.log('updateData', this.selectedGamesId)
       } else {
         this.resetForm()
@@ -159,10 +159,10 @@ export default {
      */
     onGameHotChange() {
       this.$nextTick(() => {
-        this.formData.GameList.sort((a, b) => b.hot - a.hot)
+        this.formData.GameList.sort((a, b) => b.Hot - a.Hot)
         // 遍历GameList，将hot转化为整数类型
         for (let i = 0; i < this.formData.GameList.length; i++) {
-          this.formData.GameList[i].hot = parseInt(this.formData.GameList[i].hot)
+          this.formData.GameList[i].Hot = parseInt(this.formData.GameList[i].Hot)
         }
       })
     },
@@ -176,10 +176,11 @@ export default {
     handleGamesChange(selectedGames) {
       const gameList = selectedGames.map(game => {
         // 判断GameList是不是已经含有这个游戏，如果有则直接返回，否则添加热度属性
-        const existingGame = this.formData.GameList ? this.formData.GameList.find(g => g.id === game.id) : null
+        const existingGame = this.formData.GameList ? this.formData.GameList.find(g => g.Id === game.id) : null
         return {
-          ...game,
-          hot: existingGame ? existingGame.hot : 0
+          Id: game.id,
+          Label: game.label,
+          Hot: existingGame ? existingGame.Hot : 0
         }
       })
       this.formData.GameList = gameList || []
