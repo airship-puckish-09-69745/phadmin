@@ -876,8 +876,14 @@ export const asyncRoutes = [
             path: '/trucoVersion',
             component: () => import('@/views/empty'),
             redirect: 'noRedirect',
-            meta: { title: 'truco ◐' },
+            meta: { title: 'T ruco ◐' },
             children: [
+              {
+                path: 'trucoTable',
+                component: () => import('@/views/empty'),
+                redirect: 'noRedirect',
+                meta: { title: 'Truco配桌 ◐', noCache: true },
+                children: [
                   {
                     path: 'trucoTable',
                     component: () => import('@/views/config/tableConfig/trucoTable'),
@@ -885,6 +891,8 @@ export const asyncRoutes = [
                     meta: { title: 'truco配桌 ◐' }
 				          }
                 ]
+              }
+            ]
           }
         ]
       },
