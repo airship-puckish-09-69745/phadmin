@@ -68,10 +68,9 @@
                width="400"
              >
                <template slot-scope="scope">
-                 <ul style="list-style: none;padding-inline-start: 0;">
-                   <li  v-for="gItem in scope.row.rewardItems" :key="gItem.index" style="list-style: none;">
+                 <li v-if="scope.row.rewardItems != null" style="list-style: none;">
                      <span>金币奖励：</span>
-                     <el-select v-model="gItem.getType" placeholder="请选择" size="mini" style="width:80px">
+                     <el-select v-model="scope.row.rewardItems.getType" placeholder="请选择" size="mini" style="width:80px">
                        <el-option
                          v-for="item in REWARD_CURRENCY_OPTIONS"
                          :key="item.value"
@@ -79,7 +78,7 @@
                          :value="item.value"
                        />
                      </el-select>
-                     <el-select v-if="gItem.getType === 2" v-model="gItem.sceneId" placeholder="请选择投注金" size="mini" style="width:150px">
+                     <el-select v-if="scope.row.rewardItems.getType === 2" v-model="scope.row.rewardItems.sceneId" placeholder="请选择投注金" size="mini" style="width:150px">
                        <el-option
                          v-for="scene in BET_SCENES_CFG_OPTIONS"
                          :key="scene.value"
@@ -87,7 +86,7 @@
                          :value="scene.value"
                        />
                      </el-select>
-                     <el-select v-if="gItem.getType === 3" v-model="gItem.sceneId" placeholder="请选择返水金" size="mini" style="width:150px">
+                     <el-select v-if="scope.row.rewardItems.getType === 3" v-model="scope.row.rewardItems.sceneId" placeholder="请选择返水金" size="mini" style="width:150px">
                        <el-option
                          v-for="scene in REBATE_SCENES_CFG_OPTIONS"
                          :key="scene.value"
@@ -95,7 +94,7 @@
                          :value="scene.value"
                        />
                      </el-select>
-                     <el-input v-model.number="gItem.getNum" style="width: 80px;" size="mini" placeholder="请填写获得数量" />
+                     <el-input v-model.number="scope.row.rewardItems.getNum" style="width: 80px;" size="mini" placeholder="请填写获得数量" />
                    </li>
                   <li v-if="scope.row.propsReward != null" style="list-style: none;">
                      <span>道具奖励：</span>
@@ -174,15 +173,12 @@ function newItem() {
         index: 1,
         startRank: 1,
         endRank: 1,
-        rewardItems: [
-          {
-            index: 1,
+        rewardItems: {
             getType: 1,
             getPid: 0,
             getNum: 0,
             sceneId: 0 // 返水金投注金场景类型（调用营销接口时用）
-          }
-        ],
+          },
         propsReward: {
           propsId: 0,
           propsType: 0,
@@ -305,15 +301,12 @@ export default {
         index: index,
         startRank: maxRank,
         endRank: maxRank,
-        rewardItems: [
-          {
-            index: 1,
+        rewardItems:{
             getType: 1,
             getPid: 0,
             getNum: 0,
             sceneId: 0 // 返水金投注金场景类型（调用营销接口时用）
-          }
-        ],
+          },
         propsReward: {
           propsId: 0,
           propsType: 0,
@@ -378,7 +371,7 @@ export default {
           Message.success('奖励前三名需要单独配，名次区间请配置成：1-1  2-2 3-3')
           return false
         }
-        if (element.hasOwnProperty('propsReward') && element.hasOwnProperty('rewardItems') && element.propsReward.propsId <= 0 && element.rewardItems[0].getNum <= 0) {
+        if (element.hasOwnProperty('propsReward') && element.hasOwnProperty('rewardItems') && element.propsReward.propsId <= 0 && element.rewardItems.getNum <= 0) {
           Message.success("当前名次没有配任何奖励,请检查")
           return false
         }
@@ -398,28 +391,25 @@ export default {
             return false
           }
         }
-        if (element.rewardItems.length === 0) {
+        if (element.rewardItems === undefined) {
           Message.success('请添加奖励配置')
           return false
         }
         // 遍历奖励配置项
-        for (let i = 0; i < element.rewardItems.length; i++) {
-          const rewardItem = element.rewardItems[i]
-          if (rewardItem.getType === 1) {
-            element.rewardItems[i].sceneId = 0
-          } else if (rewardItem.getType === 2) {
-            if (!this.isInBetScenes(rewardItem.sceneId)) {
-              Message.success('名次[' + element.startRank + '-' + element.endRank + ']第' + rewardItem.index + '项请正确选择投注金')
+          if (element.rewardItems.getType === 1) {
+            element.rewardItems.sceneId = 0
+          } else if (element.rewardItems.getType === 2) {
+            if (!this.isInBetScenes(element.rewardItems.sceneId)) {
+              Message.success('名次[' + element.startRank + '-' + element.endRank + ']第' +'请正确选择投注金')
               return false
             }
-          } else if (rewardItem.getType === 3) {
-            if (!this.isInRebateScenes(rewardItem.sceneId)) {
-              Message.success('名次[' + element.startRank + '-' + element.endRank + ']第' + rewardItem.index + '项请正确选择返水金')
+          } else if (element.rewardItems.getType === 3) {
+            if (!this.isInRebateScenes(element.rewardItems.sceneId)) {
+              Message.success('名次[' + element.startRank + '-' + element.endRank + ']第' + '请正确选择返水金')
               return false
             }
           }
         }
-      }
       return true
     },
     //检测投注金
@@ -465,6 +455,15 @@ export default {
       if (!await this.configCheck()) {
         return
       }
+
+      // 修复道具
+      for (let i = 0; i < this.edit.item.reward_content.length; i++) {
+        const element = this.edit.item.reward_content[i]
+        if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0) {
+          element.propsReward = this.getPropsRewardItem(element.propsReward.propsId, element.propsReward.propsNum,element.propsReward.propExpireDays)
+        }
+      }
+
       if (this.edit.isEdit === false) {
         this.tableData.push({
           "reward_id": this.edit.item.reward_id,

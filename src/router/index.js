@@ -2083,6 +2083,13 @@ export const asyncRoutes = [
             name : 'selfBuildMatchReward',
             meta: {title:'奖励配置', noCache: true }
           },
+          {
+            path: 'selfBuildMatchWatcherList',
+            component: () => import('@/views/matchManage/selfBuildManage/selfBuildMatchWatcherList.vue'),
+            name: 'selfBuildMatchWatcherList',
+            meta: { title: '主播名单', noCache: true, hidden: true },
+
+          }
         ]
       }
     ]
