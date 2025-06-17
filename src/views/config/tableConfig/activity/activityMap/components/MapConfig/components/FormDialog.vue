@@ -1,6 +1,11 @@
 <template>
   <el-dialog :title="updateData && updateData.ID ? '编辑配置' : '新增配置'" :visible.sync="dialogVisible" width="540px" :close-on-click-modal="false" @close="handleClose(false)">
     <el-form :model="formData" label-width="100px">
+      <el-form-item label="活动开关" required>
+        <el-switch
+          v-model="formData.Status"
+        />
+      </el-form-item>
       <el-form-item label="活动名称" required>
         <!-- <el-input v-model="formData.Name" /> -->
         <el-select v-model="formData.ActivityId" placeholder="请选择活动" style="width: 360px;" @change="onChangeActivityId">
@@ -58,6 +63,7 @@ export default {
   data() {
     return {
       formData: {
+        Status: false,
         ID: '',
         ActivityName: '',
         ActivityId: '',
@@ -151,6 +157,7 @@ export default {
     },
     resetForm() {
       this.formData = {
+        Status: false,
         ID: '',
         ActivityName: '',
         ActivityId: '',
