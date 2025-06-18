@@ -405,7 +405,7 @@
             <el-row>
               <el-descriptions :column="3" :colon="false">
                 <el-descriptions-item label="原点">
-                  {{ editGameControl.GameControl.ControlRange[3].Ratio/100}} %
+                  {{ editGameControl.GameControl.ControlRange[3].Ratio}} %
                 </el-descriptions-item>
               </el-descriptions>
             </el-row>
