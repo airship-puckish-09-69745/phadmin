@@ -18,7 +18,7 @@
           />
         </el-form-item>
         <el-form-item label="应用：">
-          <el-select v-model="searchForm.App" size="mini">
+          <el-select v-model="searchForm.appId" size="mini">
             <el-option v-for="row of apps" :label="row.label" :value="row.value" />
           </el-select>
         </el-form-item>
