@@ -20,6 +20,7 @@
         <p style="color: red; ">dayusenlin或者1000002 代表内部正式环境</p>
         <p style="color: red; ">BingoPlusTongits或者1000005 代表生产正式环境</p>
         <p style="color: red; ">如需内部验证配置只需改内部正式环境配置即可，验证完后需同步到生产正式环境配置</p>
+        <p style="color: red; ">备注：先内部正式环境验证逻辑，如无问题则同步配置到生产正式环境</p>
         <p style="color: red; ">同步步骤：</p>
         <p style="color: red; ">1. 点击“同步应用配置”按键</p>
         <p style="color: red; ">2. 下拉框选择原应用</p>
