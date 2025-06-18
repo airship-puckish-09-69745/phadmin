@@ -6,11 +6,17 @@
     <el-row style="padding-top: 5px">
       <h3 style="text-align:center;">EGame游戏控制配置</h3>
       <el-row style="margin: 10px 0;">
-        AppId <el-select v-model="editAppId" filterable placeholder="请选择" size="small" style="margin-right: 12px; width: 300px" @change="handleUpdateAppid">
-          <el-option v-for="item in appidInfoCfgs" :key="item.appId" :label="`${item.appName}-${item.appId}`" :value="item.appId" />
+        AppId <el-select v-model="editAppId" filterable placeholder="请选择应用id" size="small" style="margin-right: 12px; width: 300px" @change="handleUpdateAppid">
+          <el-option
+            v-for="item in APPID_OPTIONS"
+            :key="item.value"
+            :label="`${item.label}-${item.value}`"
+            :value="item.value"
+          />
         </el-select>
         <el-button size="mini" type="primary" icon="el-icon-search" @click="onSearch" />
-        <el-button size="mini" type="primary" @click="handleShowCopyDialog">增加</el-button>
+        <el-button size="mini" type="primary" @click="handleShowCopyDialog">同步渠道配置到正式配置</el-button>
+        <p style="color: red; font-weight: bold;">⚠️ 警告：若配置改动不是正式环境的渠道，则需要同步到正式环境渠道（1000005或其他渠道）！</p>
         <!-- <el-button size="mini" type="success" @click="handleShowModifyDialog">修改</el-button> -->
       </el-row>
     </el-row>
@@ -491,7 +497,7 @@
       </el-form>
     </el-dialog>
     <el-dialog
-      title="新增渠道"
+      title="同步配置到指定渠道"
       :visible.sync="copyDialog.visible"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
@@ -499,34 +505,30 @@
       <el-form ref="copyForm" :model="copyDialog.form" label-width="200px" size="small" inline>
         <el-tabs type="card">
           <el-row>
-          <el-form-item label="App列表" :required="true">
+          <el-form-item label="源渠道" :required="true">
             <el-select v-model="copyDialog.form.srcAppId" style="width: 210px" placeholder="请选择" size="mini">
-              <el-option v-for="item in appidInfoCfgs" :key="item.appId" :label="`${item.appName}-${item.appId}`" :value="item.appId" />
+              <el-option v-for="item in APPID_OPTIONS" :key="item.value" :label="`${item.label}-${item.value}`" :value="item.value" />
             </el-select>
           </el-form-item>
           </el-row>
         
           <el-row style="padding-top: 20px">
-          <el-form-item label="新增AppId" :required="true">
-            <template>
-              <el-input v-model.number="copyDialog.form.targetAppId" type="number"  placeholder="请输入" />
-            </template>
-          </el-form-item>
+            <el-form-item label="目标渠道" :required="true">
+              <el-select v-model="copyDialog.form.targetAppId" style="width: 210px" placeholder="请选择" size="mini">
+                <el-option v-for="item in APPID_OPTIONS" :key="item.value" :label="`${item.label}-${item.value}`" :value="item.value" />
+              </el-select>
+            </el-form-item>
 
-          <el-form-item label="新增AppName" :required="true">
-            <template>
-              <el-input v-model="copyDialog.form.targetAppName"  placeholder="请输入" />
-            </template>
-          </el-form-item>
+        
           </el-row>
           <el-row style="padding-top: 20px">
             <el-col>
-              <span style="padding: 15px 20px 15px 0; border: 1px #0a76a4;">注意：新增渠道将从app列表中选择的某一个需要复制的app，之后再配置页面选择新渠道在进行具体改动</span>
+              <span style="color: red; padding: 15px 20px 15px 0; border: 1px #0a76a4;">注意：同步渠道配置将从复制源渠道配的配置到目标渠道，之后再配置页面选择保存</span>
             </el-col>
           </el-row>
           <el-row style="padding-top: 50px;">
             <el-col :span="12" :offset="10">
-              <el-button type="primary" size="medium" @click="handleCopy">新增渠道</el-button>
+              <el-button type="primary" size="medium" @click="handleCopy">确认同步</el-button>
             </el-col>
           </el-row>
         </el-tabs>
@@ -641,6 +643,7 @@ import Compare from '@/components/Compare'
 import request from '@/utils/request'
 import {DataRule } from '@/utils/common'
 import robotAiSettingBuildCard from './tongits/robotAiSettingBuildCard'
+import { APPID_OPTIONS } from '@/utils/options'
 
 export default {
   components: {
@@ -650,6 +653,7 @@ export default {
   },
   data() {
     return {
+      APPID_OPTIONS,
       gameId: 128,
       playMode: 4, // 经典玩法
    
@@ -657,7 +661,7 @@ export default {
       edit: {},
       tableData: [],
       egameData: {},
-      editAppId: 0,
+      editAppId: 1000005,
       copyDialog: {
         visible: false,
         form: {
@@ -1040,24 +1044,29 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           this.form = response.Data || {}
-          //console.log("this.form ", this.form)
+          console.log("this.form ",APPID_OPTIONS)
           // eslint-disable-next-line no-empty
           if (response.Data && response.Data.Data !== '') {
             this.egameData = JSON.parse(response.Data.Data)
           
-      
+            let appidIndex = 0
             for (let i = 0; i < this.egameData.AppControlConfig.length; i++) {
               this.appidInfoCfgs.push({appId: this.egameData.AppControlConfig[i].AppId, appName: this.egameData.AppControlConfig[i].AppName})
+              if (this.egameData.AppControlConfig[i].AppId == this.editAppId) {
+                 appidIndex = i;
+              }
             }
+
+
             if (this.appidInfoCfgs.length > 0) {
-              this.copyDataToEidt(this.egameData.AppControlConfig[0])
+              this.copyDataToEidt(this.egameData.AppControlConfig[appidIndex])
             } else {
               this.editAppId = 0
             }
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data)
 
-           // console.log("begin", this.egameData)
+            console.log("editAppId", this.editAppId)
 
           } else {
             Message.error('保存失败')
@@ -1402,16 +1411,12 @@ export default {
         Message.error('请输入目标AppId')
         return
       }
-      if (!this.copyDialog.form.targetAppName) {
-        Message.error('请输入目标AppName')
+ 
+      if (this.copyDialog.form.targetAppId == this.editAppId) {
+        Message.error('源渠道和目标渠道相同')
         return
       }
-      for (let i = 0; i < this.appidInfoCfgs.length; i++) {
-        if (this.copyDialog.form.targetAppId == this.appidInfoCfgs[i].appId) {
-          Message.error('app已经存在')
-          return
-        }
-      }
+      
       let isFind = false 
       for (let i = 0; i < this.egameData.AppControlConfig.length; i++) {
         const tmp = this.egameData.AppControlConfig[i]
