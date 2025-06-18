@@ -6,7 +6,7 @@
     <el-row style="padding-top: 5px">
       <h3 style="text-align:center;">EGame游戏控制配置</h3>
       <el-row style="margin: 10px 0;">
-        AppId <el-select v-model="editAppId" filterable placeholder="请选择应用id" size="small" style="margin-right: 12px; width: 300px" @change="handleUpdateAppid">
+        应用 <el-select v-model="editAppId" filterable placeholder="请选择应用id" size="small" style="margin-right: 12px; width: 300px" @change="handleUpdateAppid">
           <el-option
             v-for="item in APPID_OPTIONS"
             :key="item.value"
@@ -15,8 +15,20 @@
           />
         </el-select>
         <el-button size="mini" type="primary" icon="el-icon-search" @click="onSearch" />
-        <el-button size="mini" type="primary" @click="handleShowCopyDialog">同步渠道配置到正式配置</el-button>
-        <p style="color: red; font-weight: bold;">⚠️ 警告：若配置改动不是正式环境的渠道，则需要同步到正式环境渠道（1000005或其他渠道）！</p>
+        <el-button size="mini" type="primary" @click="handleShowCopyDialog">同步应用配置</el-button>
+        <p style="color: red; font-weight: bold;">⚠️配置更新说明：</p>
+        <p style="color: red; ">dayusenlin或者1000002 代表内部正式环境</p>
+        <p style="color: red; ">BingoPlusTongits或者1000005 代表生产正式环境</p>
+        <p style="color: red; ">如需内部验证配置只需改内部正式环境配置即可，验证完后需同步到生产正式环境配置</p>
+        <p style="color: red; ">同步步骤：</p>
+        <p style="color: red; ">1. 点击“同步应用配置”按键</p>
+        <p style="color: red; ">2. 下拉框选择原应用</p>
+        <p style="color: red; ">3. 下拉框选择目标应用（如：1000005）</p>
+        <p style="color: red; ">4. 点击“确认同步”按键</p>
+        <p style="color: red; ">5. 关闭弹窗</p>
+        <p style="color: red; ">6. 选择“保存信息”按键</p>
+        <p style="color: red; ">7. 对比配置</p>
+        <p style="color: red; ">8. 发布配置</p>
         <!-- <el-button size="mini" type="success" @click="handleShowModifyDialog">修改</el-button> -->
       </el-row>
     </el-row>
@@ -497,7 +509,7 @@
       </el-form>
     </el-dialog>
     <el-dialog
-      title="同步配置到指定渠道"
+      title="同步应用配置"
       :visible.sync="copyDialog.visible"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
@@ -505,7 +517,7 @@
       <el-form ref="copyForm" :model="copyDialog.form" label-width="200px" size="small" inline>
         <el-tabs type="card">
           <el-row>
-          <el-form-item label="源渠道" :required="true">
+          <el-form-item label="原应用" :required="true">
             <el-select v-model="copyDialog.form.srcAppId" style="width: 210px" placeholder="请选择" size="mini">
               <el-option v-for="item in APPID_OPTIONS" :key="item.value" :label="`${item.label}-${item.value}`" :value="item.value" />
             </el-select>
@@ -513,7 +525,7 @@
           </el-row>
         
           <el-row style="padding-top: 20px">
-            <el-form-item label="目标渠道" :required="true">
+            <el-form-item label="目标应用" :required="true">
               <el-select v-model="copyDialog.form.targetAppId" style="width: 210px" placeholder="请选择" size="mini">
                 <el-option v-for="item in APPID_OPTIONS" :key="item.value" :label="`${item.label}-${item.value}`" :value="item.value" />
               </el-select>
@@ -523,7 +535,7 @@
           </el-row>
           <el-row style="padding-top: 20px">
             <el-col>
-              <span style="color: red; padding: 15px 20px 15px 0; border: 1px #0a76a4;">注意：同步渠道配置将从复制源渠道配的配置到目标渠道，之后再配置页面选择保存</span>
+              <span style="color: red; padding: 15px 20px 15px 0; border: 1px #0a76a4;">注意：确认同步后，需要点击下面的保存信息，则会生效</span>
             </el-col>
           </el-row>
           <el-row style="padding-top: 50px;">
@@ -535,43 +547,6 @@
       </el-form>
     </el-dialog>
 
-    <el-dialog
-      title="修改配置"
-      :visible.sync="modifyDialog.visible"
-      :close-on-click-modal="false"
-      :close-on-press-escape="false"
-    >
-      <el-form ref="updateForm" :model="modifyDialog.form" label-width="200px" size="small" inline>
-        <el-tabs type="card">
-          <el-form-item label="从原始AppId" :required="true">
-            <el-select v-model="modifyDialog.form.srcAppId" style="width: 210px" placeholder="请选择" size="mini">
-              <el-option v-for="item in appidInfoCfgs" :key="item.appId" :label="`${item.appName}-${item.appId}`" :value="item.appId" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="修改至AppId" :required="true">
-            <template>
-              <el-input v-model.number="modifyDialog.form.targetAppId"  placeholder="请输入" />
-            </template>
-          </el-form-item>
-
-          <el-form-item label="修改至AppName" :required="true">
-            <template>
-              <el-input v-model.number="modifyDialog.form.targetAppName"  placeholder="请输入" />
-            </template>
-          </el-form-item>
-          <el-row>
-            <el-col>
-              <span style="padding: 15px 20px 15px 0; border: 1px #0a76a4;">注意：修改操作完成后，需要点击保按钮</span>
-            </el-col>
-          </el-row>
-          <el-row style="padding-top: 20px;">
-            <el-col :span="12" :offset="10">
-              <el-button type="primary" size="medium" @click="handleModify">修改</el-button>
-            </el-col>
-          </el-row>
-        </el-tabs>
-      </el-form>
-    </el-dialog>
 
     <el-dialog
       title="修改配置"
@@ -606,30 +581,6 @@
       </el-form>
     </el-dialog>
 
-    <el-dialog
-      title="玩家配置"
-      :visible.sync="editVisible"
-      :close-on-click-modal="false"
-      :close-on-press-escape="false"
-    >
-      <el-form ref="edit" :model="edit" width="70%" label-position="top">
-        <el-row>
-          <el-tabs type="border-card">
-            <el-tab-pane label="好牌配置">
-              <robot-ai-setting-build-card v-model="edit" />
-            </el-tab-pane>
-          </el-tabs>
-        </el-row>
-        <el-form-item>
-          <el-row>
-            <el-col :span="12" :offset="10">
-              <el-button type="primary" size="medium" @click="setData">保存</el-button>
-            </el-col>
-          </el-row>
-        </el-form-item>
-      </el-form>
-    </el-dialog>
-
     <compare ref="compare" />
   </div>
 </template>
@@ -657,7 +608,6 @@ export default {
       gameId: 128,
       playMode: 4, // 经典玩法
    
-      appidInfoCfgs: [],
       edit: {},
       tableData: [],
       egameData: {},
@@ -1044,25 +994,36 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           this.form = response.Data || {}
-          console.log("this.form ",APPID_OPTIONS)
+          //console.log("this.form ",response.Data.Data)
           // eslint-disable-next-line no-empty
           if (response.Data && response.Data.Data !== '') {
-            this.egameData = JSON.parse(response.Data.Data)
+            let dataList = JSON.parse(response.Data.Data)
+            this.egameData =  structuredClone(dataList)
+            this.egameData.AppControlConfig = []
+
+            for (let i = 0; i < dataList.AppControlConfig.length; i++) {
+              let isSame = false;
+              for (let j = i+1; j < dataList.AppControlConfig.length; j++) {
+                if (dataList.AppControlConfig[i].AppId == dataList.AppControlConfig[j].AppId) {
+                  isSame = true;
+                  break;
+                }
+              }
+              if (isSame) {
+                continue;
+              }
+              this.egameData.AppControlConfig.push(dataList.AppControlConfig[i])
+
+            }
+          //  console.log("egameDataa", this.egameData)
           
             let appidIndex = 0
             for (let i = 0; i < this.egameData.AppControlConfig.length; i++) {
-              this.appidInfoCfgs.push({appId: this.egameData.AppControlConfig[i].AppId, appName: this.egameData.AppControlConfig[i].AppName})
               if (this.egameData.AppControlConfig[i].AppId == this.editAppId) {
                  appidIndex = i;
               }
             }
-
-
-            if (this.appidInfoCfgs.length > 0) {
-              this.copyDataToEidt(this.egameData.AppControlConfig[appidIndex])
-            } else {
-              this.editAppId = 0
-            }
+            this.copyDataToEidt(this.egameData.AppControlConfig[appidIndex])
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data)
 
@@ -1412,7 +1373,7 @@ export default {
         return
       }
  
-      if (this.copyDialog.form.targetAppId == this.editAppId) {
+      if (this.copyDialog.form.targetAppId == this.copyDialog.form.srcAppId) {
         Message.error('源渠道和目标渠道相同')
         return
       }
@@ -1421,61 +1382,43 @@ export default {
       for (let i = 0; i < this.egameData.AppControlConfig.length; i++) {
         const tmp = this.egameData.AppControlConfig[i]
         if (tmp.AppId == this.copyDialog.form.srcAppId) {
-
           let copyData = structuredClone(this.egameData.AppControlConfig[i])
           copyData.AppId = this.copyDialog.form.targetAppId
-          copyData.AppName = this.copyDialog.form.targetAppName
 
-          this.appidInfoCfgs.push({appId: this.copyDialog.form.targetAppId, appName: this.copyDialog.form.targetAppName})
-          this.egameData.AppControlConfig.push(copyData)
-          this.copyDataToEidt(copyData)
-          isFind = true
+          let name = ""
+          for (let k = 0; k < APPID_OPTIONS.length; k++) {
+            if (this.copyDialog.form.targetAppId == APPID_OPTIONS[k].value) {
+              name = APPID_OPTIONS[k].label
+            }
+          }
+    
+          copyData.AppName = name
+
+          for (let j = 0; j < this.egameData.AppControlConfig.length; j++) {
+            const target = this.egameData.AppControlConfig[j];
+            if (target.AppId  == this.copyDialog.form.targetAppId) {
+                isFind = true;
+                this.egameData.AppControlConfig[j] = copyData
+                break
+            }
+          }
+          if (!isFind) {
+            this.egameData.AppControlConfig.push(copyData)
+            this.copyDataToEidt(copyData)
+            isFind = true
+          }
           break
         }
       }
       if (!isFind) {
-        Message.error('复制出错appid未找到')
+        Message.error('同步失败')
         return
+      } else {
+        Message.info('同步成功')
       }
       this.copyDialog.visible = false
     },
-    handleModify() {
-      if (this.modifyDialog.form.targetAppId == 0) {
-        Message.error('请输入目标AppId')
-        return
-      }
-      if (!this.modifyDialog.form.targetAppName) {
-        Message.error('请输入目标AppName')
-        return
-      }
-      let isFind = false 
-      for (let i = 0; i < this.appidInfoCfgs.length; i++) {
-        if (this.modifyDialog.form.srcAppId == this.appidInfoCfgs[i].appId) {
-          isFind = true
-          this.appidInfoCfgs[i].appId = this.modifyDialog.form.targetAppId
-          this.appidInfoCfgs[i].appName = this.modifyDialog.form.targetAppName
-          return
-        }
-      }
-      if (!isFind) {
-        Message.error('appid不存在')
-        return
-      }
-      
-      for (let i = 0; i < this.egameData.AppControlConfig.length; i++) {
-        const tmp = this.egameData.AppControlConfig[i]
-        if (tmp.AppId == this.modifyDialog.form.srcAppId) {
-          this.egameData.AppControlConfig[i].AppId = this.modifyDialog.form.targetAppId
-          this.egameData.AppControlConfig[i].AppName = this.modifyDialog.form.targetAppName
-          this.editGameControl.AppId = this.modifyDialog.form.targetAppId
-          this.editGameControl.AppName = this.modifyDialog.form.targetAppName
 
-          this.editAppId = this.modifyDialog.form.targetAppId
-          break
-        }
-      }
-      this.modifyDialog.visible = false
-    },
     getRobotName(aiLevel) {
       let name = ""
       for (let i = 0; i < this.robotlvl.length; i++) {
