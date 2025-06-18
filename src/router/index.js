@@ -1525,12 +1525,12 @@ export const asyncRoutes = [
                 name: 'pirateshipmars_slots_cfg',
                 meta: { title: 'PirateShip(审)' }
               },
-              /*{
+              {
                 path: 'pumpkincashmars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/pumpkincashmars_slots_cfg'),
                 name: 'pumpkincashmars_slots_cfg',
                 meta: { title: 'PumpkinCash(审)' }
-              },*/
+              },
               {
                 path: 'dancelionmars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/dancelionmars_slots_cfg'),
@@ -3070,6 +3070,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'pharaohtreasuremars_slots_cfg',
             meta: { title: 'Pharaoh\'s Treasure(审)', gid: 169 }
+          },
+          {
+            path: 'pumpkincashmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'pumpkincashmars_slots_log',
+            meta: { title: 'PumpkinCash(审)', gid: 215 }
           }
         ]
       },
