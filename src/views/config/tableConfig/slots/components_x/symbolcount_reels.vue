@@ -174,14 +174,7 @@ export default {
     },
     initData() {
       this.cols = []
-      let num = 0
-      for (const i in this.cfg.PayTable) {
-        for (const j in this.cfg.PayTable[i].Rates) {
-          if (num < this.cfg.PayTable[i].Rates[j].SymbolNumber) {
-            num = this.cfg.PayTable[i].Rates[j].SymbolNumber
-          }
-        }
-      }
+      let num = this.cfg.Rows
       for (let c = 1; c <= num; c++) {
         this.cols.push(c)
       }

@@ -1418,9 +1418,9 @@ export default {
           $this.resetQueryDevice()
           $this.item = $this.libShowMoney.TransForShow(response.Data || $this.item)
           $this.$EventBus.$emit('uid-change', $this.item.Uid)
+          $this.getCredit()
         }
       })
-      this.getCredit()
     },
     getCredit(refresh) {
       // if (this.env!='test') {
@@ -1491,6 +1491,7 @@ export default {
           $this.item.Uid = response.Data.Uid || 0
           $this.$refs.uidInput.saveUid($this.item.Uid)
           $this.getTags()
+          $this.getCredit()
         }
       })
     },

@@ -669,8 +669,16 @@ export default {
           label: '内部1000002'
         },
         {
+          value: 1000003,
+          label: 'GP-BP测试1000003'
+        },
+        {
           value: 1000005,
           label: '正式1000005'
+        },
+        {
+          value: 1000006,
+          label: 'BingoPlus测试1000006'
         },
       ],
 

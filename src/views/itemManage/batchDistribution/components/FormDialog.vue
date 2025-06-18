@@ -73,7 +73,7 @@
 </template>
 
 <script>
-import { ITEM_TYPE_OPTIONS, APPID_OPTIONS, ITEM_DAY_TYPE_OPTIONS } from '@/utils/options'
+import {ITEM_TYPE_OPTIONS, APPID_OPTIONS, ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS} from '@/utils/options'
 import request from '@/utils/request'
 import { Message } from 'element-ui'
 export default {
@@ -177,6 +177,8 @@ export default {
             }
           })
           this.form.SendDetails.account_details = account_details
+          console.log("11111",this.form.SendDetails.account_details)
+
           // 调用新增或者编辑接口
           if (this.updateForm) {
             this.updateBatchDistribution()
@@ -273,7 +275,12 @@ export default {
         this.$message.error('请使用英文逗号分隔id')
         return false
       }
-
+      let accountArr = this.account.split(',')
+      let repeatArray = this.hasDuplicates(accountArr)
+      if (repeatArray.length > 0) {
+        this.$message.error( repeatArray.join(',') + " 账号重复请检查")
+        return false
+      }
       return true
     },
     /**
@@ -293,10 +300,19 @@ export default {
         if (response.RetCode === 0) {
           const objs = response.Data || {}
           if (objs.total > 0) {
+            var timestamp = Date.parse(new Date()) / 1000
             this.total = objs.total
             this.itemList = []
-            this.itemList = objs.list
-            console.log('道具列表', this.itemList)
+            for (let i = 0; i < objs.total; i++) {
+              if (objs.list[i].status === 1 &&  (objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET ||
+                objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET)  && objs.list[i].expire_time > timestamp) {
+                this.itemList.push(objs.list[i])
+              }
+              if (objs.list[i].status === 1 &&  (objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME ||
+                objs.list[i].item_type ===  PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR)){
+                this.itemList.push(objs.list[i])
+              }
+            }
           }
         } else {
           this.total = 0
@@ -358,7 +374,18 @@ export default {
       if (val === 2) {
         this.form.SendDetails.app_id = ''
       }
+    },
+    hasDuplicates(arr) {
+    const map = new Map()
+    let emptyArr = []
+    for (let item of arr) {
+      if (map.has(item)) {
+        emptyArr.push(item)
+      }
+      map.set(item, true)
     }
+    return emptyArr
+  }
   }
 }
 </script>

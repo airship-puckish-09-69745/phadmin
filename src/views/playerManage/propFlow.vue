@@ -42,6 +42,8 @@
       </el-form>
     </el-row>
 
+    <div style="color: red; margin: 12px">数据有五分钟延迟</div>
+
     <!-- 数据表格 -->
     <el-row>
       <el-table :data="tableData" border stripe style="width: 100%">
@@ -63,11 +65,15 @@
         <!-- 道具数量如果是-1就是无限 -->
         <el-table-column prop="propNum" label="道具数量" width="80">
           <template slot-scope="scope">
-            {{ scope.row.propNum === -1 ? '无限' : scope.row.propNum }}
+            {{ scope.row.propNum === -1 && !scope.row.propName.includes('门票') && !scope.row.propName.includes('Ticket')? '永久' : scope.row.propNum }}
           </template>
         </el-table-column>
         <el-table-column prop="propCost" label="道具价值" width="80" />
-        <el-table-column prop="opType" label="变化类型" />
+        <el-table-column prop="channelType" label="变化类型" width="160">
+          <template slot-scope="scope">
+            {{ getOptionTypeText(scope.row.channelType) }}
+          </template>
+        </el-table-column>
         <el-table-column prop="gid" label="玩法ID" width="80" />
         <el-table-column prop="upTime" label="更新时间" width="160">
           <template slot-scope="scope">
@@ -110,6 +116,7 @@
 import { $libDate, $libShow } from '@/utils/common'
 import { PROP_SOURCE_OPTIONS, ITEM_TYPE_OPTIONS, APPID_OPTIONS } from '@/utils/options' // 引入操作类型等常量配置
 import request from '@/utils/request'
+import { Message } from 'element-ui'
 
 export default {
   data() {
@@ -157,6 +164,10 @@ export default {
      */
     getItemTypeText(type) {
       const item = this.itemTypeOptions.find(item => item.value === type)
+      return item ? item.label : ''
+    },
+    getOptionTypeText(type) {
+      const item = this.opTypeOptions.find(item => item.value === type)
       return item ? item.label : ''
     },
     /**
@@ -226,6 +237,11 @@ export default {
           this.pagination.total = 0
           const data = response.Data
           console.log('道具流水数据', data.list)
+          if (data === 'no Data') {
+            this.pagination.total = 0
+            Message.success('查询结果为空')
+            return
+          }
           if (data.list.length > 0) {
             this.pagination.total = data.total
             this.tableData = data.list || []

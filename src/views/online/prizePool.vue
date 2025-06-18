@@ -241,6 +241,9 @@ export default {
             }
             // $this.tableData.push(response.Data[i])
           }
+          $this.slotsData.sort(function(a, b) {
+            return $this.getSlotsName(a.Gid).localeCompare($this.getSlotsName(b.Gid))
+          })
           // $this.tableData.splice(0, 0)
         } else {
           $this.$message.error(response.Data)

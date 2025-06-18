@@ -185,6 +185,12 @@ export const asyncRoutes = [
         component: () => import('@/views/playerManage/bigprizelog'),
         name: '大奖日志',
         meta: { title: 'slots - 大奖日志 ◐' }
+      },
+      {
+        path: 'egame-control',
+        component: () => import('@/views/online/egameControl/index.vue'),
+        name: 'EGame控制监控',
+        meta: { title: 'EGame控制监控' }
       }
     ]
   },
@@ -293,6 +299,20 @@ export const asyncRoutes = [
                 ]
                 // name: 'tongitsTableQuick',
                 // meta: { title: 'Tongits-Quick ◐' }
+              },
+              {
+                path: 'TongitsCheat',
+                component: () => import('@/views/empty'),
+                redirect: 'noRedirect',
+                meta: { title: '防作弊配置', noCache: true },
+                children: [
+                  {
+                    path: 'tongitsCheat',
+                    component: () => import('@/views/config/tableConfig/tongitsCheat/tongitsCheat.vue'),
+                    name: 'tongitsCheat',
+                    meta: { title: '防作弊配置 ◐' }
+                  }
+                ]
               }
               /*{
                 path: 'tongitsswapTable',
@@ -978,14 +998,14 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/freespinConfig'),
             name: 'freespin_cfg',
             meta: { title: 'F reeSpin ◐' }
-          },
+          }
         ]
       },
       {
         path: 'slotsCfg',
         component: () => import('@/views/empty'),
         redirect: 'noRedirect',
-        meta: { title: 'Slots - 老虎机', noCache: true },
+        meta: { title: 'Slots - 老虎机', perm: 'SLOTS_PROCESS' },
         children: [
           {
             path: 'slotsProCfg',
@@ -1121,6 +1141,12 @@ export const asyncRoutes = [
                 meta: { title: 'G randAce' }
               },
               {
+                path: 'luckyspirits_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/luckyspirits_slots_cfg'),
+                name: 'luckyspirits_slots_cfg',
+                meta: { title: 'L uckySpirits' }
+              },
+              {
                 path: 'luckywineglass_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/luckywineglass_slots_cfg'),
                 name: 'luckywineglass_slots_cfg',
@@ -1132,7 +1158,6 @@ export const asyncRoutes = [
                 name: 'crazy777_slots_cfg',
                 meta: { title: 'L ucky777' }
               },
-
               {
                 path: 'mahjongfortune_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/mahjongfortune_slots_cfg'),
@@ -1174,6 +1199,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/pirateship_slots_cfg'),
                 name: 'pirateship_slots_cfg',
                 meta: { title: 'P irateShip' }
+              },
+              {
+                path: 'pumpkincash_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/pumpkincash_slots_cfg'),
+                name: 'pumpkincash_slots_cfg',
+                meta: { title: 'P umpkinCash' }
               },
               {
                 path: 'puppyhome_slots_cfg',
@@ -1250,24 +1281,12 @@ export const asyncRoutes = [
                 meta: { title: 'W ild Buffalo' }
               },
 
-
-
-
-
-
-
               {
                 path: 'wrathofzeus_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/wrathofzeus_slots_cfg'),
                 name: 'wrathofzeus_slots_cfg',
                 meta: { title: 'W rathOfZeus' }
               },
-
-
-
-
-
-
 
             ]
           },
@@ -1458,6 +1477,12 @@ export const asyncRoutes = [
                 name: 'pirateshipmars_slots_cfg',
                 meta: { title: 'PirateShip(审)' }
               },
+              /*{
+                path: 'pumpkincashmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/pumpkincashmars_slots_cfg'),
+                name: 'pumpkincashmars_slots_cfg',
+                meta: { title: 'PumpkinCash(审)' }
+              },*/
               {
                 path: 'dancelionmars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/dancelionmars_slots_cfg'),
@@ -1815,6 +1840,34 @@ export const asyncRoutes = [
             meta: { title: '空投活动配置', noCache: true }
           }
         ]
+      },
+      {
+        path: 'redBagConfig',
+        component: () => import('@/views/empty'),
+        name: 'redBagConfig',
+        meta: { title: '红包雨活动配置', noCache: true },
+        children: [
+          {
+            path: 'redBagConfig',
+            component: () => import('@/views/config/tableConfig/activity/redBagConfig'),
+            name: 'redBagConfig',
+            meta: { title: '红包雨活动配置', noCache: true }
+          }
+        ]
+      },
+      {
+        path: 'activityMap',
+        component: () => import('@/views/empty'),
+        name: 'activityMap',
+        meta: { title: '活动地图配置', noCache: true },
+        children: [
+          {
+            path: 'activityMap',
+            component: () => import('@/views/config/tableConfig/activity/activityMap/index.vue'),
+            name: 'activityMap',
+            meta: { title: '活动地图配置', noCache: true }
+          }
+        ]
       }
     ]
   },
@@ -1930,14 +1983,14 @@ export const asyncRoutes = [
         meta: { title: '主播名单', noCache: true, hidden: true },
 
       },
-      // {
-      //   path: 'obMatchRecordConfig',
-      //   component: () => import('@/views/matchManage/obMatchRecord.vue'),
-      //   hidden: !IsMars(),
-      //   name: 'obMatchRecordConfig',
-      //   meta: { title: '赛事记录', noCache: true, hidden: true },
-      //
-      // },
+      {
+        path: 'obMatchRecordConfig',
+        component: () => import('@/views/matchManage/obMatchRecord.vue'),
+        hidden: !IsMars(),
+        name: 'obMatchRecordConfig',
+        meta: { title: '赛事记录', noCache: true, hidden: true },
+
+      },
       {
         path: 'matchPosterList',
         component: () => import('@/views/matchManage/posterList.vue'),
@@ -2222,7 +2275,18 @@ export const asyncRoutes = [
             name: 'playlog_TongitsJP',
             meta: { title: 'T ongits JP ◐', gid: 128 }
           },
-
+          {
+            path: 'playlog_Remi',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_Remi',
+            meta: { title: 'R emi ◐', gid: 130 }
+          },
+          {
+            path: 'playlog_RemiPro',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_RemiPro',
+            meta: { title: 'R emi Pro ◐', gid: 131 }
+          },
         ]
       },
 
@@ -2516,6 +2580,12 @@ export const asyncRoutes = [
             meta: { title: 'G oldTrain', gid: 194 }
           },
           {
+            path: 'luckyspirits_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'luckyspirits_slots_log',
+            meta: { title: 'L uckySpirits', gid: 210 }
+          },
+          {
             path: 'luckywineglass_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'luckywineglass_slots_log',
@@ -2575,6 +2645,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'puppyhome_slots_log',
             meta: { title: 'P uppyHome', gid: 176 }
+          },
+          {
+            path: 'pumpkincash_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'pumpkincash_slots_log',
+            meta: { title: 'P umpkinCash', gid: 214 }
           },
           {
             path: 'romanarena_slots_log',
@@ -2888,6 +2964,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'spacetreasuremars_slots_cfg',
             meta: { title: 'SpaceTreasure(审)', gid: 205 }
+          },
+          {
+            path: 'pharaohtreasuremars_slots_cfg',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'pharaohtreasuremars_slots_cfg',
+            meta: { title: 'Pharaoh\'s Treasure(审)', gid: 169 }
           }
         ]
       },
@@ -2977,6 +3059,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/tongitsUpdateMoneylog'),
             name: 'tongits_blackuserlog',
             meta: { title: '机器人资产变更日志 ◐' }
+          },
+          {
+            path: 'tongitsCheatLog',
+            component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatNew.vue'),
+            name: 'tongitsCheatLog',
+            meta: { title: '作弊日志（新） ◐' }
           }
         ]
       },

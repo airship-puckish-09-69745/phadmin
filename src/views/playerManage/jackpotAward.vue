@@ -249,7 +249,8 @@ export default {
         { 'value': 196, 'label': 'GoldMiner' },
         { 'value': 186, 'label': 'MahjongJackpot' },
         { 'value': 204, 'label': 'SpaceTreasure' },
-        { 'value': 128, 'label': 'Tongits JP' }
+        { 'value': 128, 'label': 'Tongits JP' },
+        { 'value': 129, 'label': 'Live Color' },
       ],
       userTypeConfig: [
         { 'value': -1, 'label': '全部' },

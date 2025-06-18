@@ -89,6 +89,9 @@
         <el-form-item v-model="item.live_id" label="直播ID：" label-width="100px">
           <el-input v-model="item.live_id" />
         </el-form-item>
+        <el-form-item v-model="item.gp_ext" label="GP扩展字段：" label-width="100px">
+          <el-input v-model="item.gp_ext" />
+        </el-form-item>
         <!-- <el-form-item label="KYC状态" label-width="100px">
           <el-select v-model="item.kyc" placeholder="请选择" size="mini">
             <el-option label="否" value='0' />
@@ -353,6 +356,7 @@ export default {
         source: 'glife.bingoplus.com',
         activity: '',
         live_id: '',
+        gp_ext: '{"vip_level":1}',
         kyc: '0',
         r_time: Date.parse(new Date())
       },
@@ -487,7 +491,8 @@ export default {
           path: this.item.path,
           source: this.item.source,
           activity: this.item.activity,
-          live_id: this.item.live_id
+          live_id: this.item.live_id,
+          gp_ext: this.item.gp_ext
           // kyc: this.item.kyc,
           // r_time: this.item.r_time/1000
         }

@@ -1,10 +1,10 @@
 <template>
-  <el-dialog v-if="showGameLog.gid===126" title="PusoyWild牌局详情" :visible.sync="pusoyWildDetailVisible" width="1600px">
-<!--    <div class="tag-group">-->
-<!--      <span class="tag-group__title">赖子：</span>-->
-<!--      <div v-html="showWildCard()" />-->
-<!--    </div>-->
-    <el-descriptions>
+<!--  <el-dialog v-if="showGameLog.gid===126" title="PusoyWild牌局详情" :visible.sync="pusoyWildDetailVisible" width="1600px">-->
+  <el-dialog :visible.sync="pusoyWildDetailVisible" width="1600px">
+    <template #title>
+      <span style="color: red">{{ title }}</span>
+    </template>
+    <el-descriptions v-show="showGameLog.gid===126">
       <el-descriptions-item label="赖子"><div v-html="showWildCard()" /></el-descriptions-item>
     </el-descriptions>
     <br>
@@ -131,7 +131,8 @@ export default {
       pusoyWildDetail: {},
       pusoyShootOneShow: false,
       pusoyWildDetailVisible: false,
-      wildCard: 0
+      wildCard: 0,
+      title: 'Pusoy牌局详情'
     }
   },
   watch: {
@@ -169,6 +170,13 @@ export default {
       }
       return $libShow.CardShow(card)
     },
+    // showTitle() {
+    //   if (this.gameLog.gid === 126) {
+    //     return 'PusoyWild牌局详情'
+    //   } else {
+    //     return 'Pusoy牌局详情'
+    //   }
+    // },
     showIndexes(indexes) {
       if (indexes === null || indexes === undefined) {
         return ''
@@ -225,6 +233,10 @@ export default {
     },
     initData(val) {
       this.showGameLog = JSON.parse(JSON.stringify(val))
+      this.title = 'Pusoy牌局详情'
+      if (this.showGameLog.gid === 126) {
+        this.title = 'PusoyWild牌局详情'
+      }
       this.showPusoyGame(this.showGameLog.detail)
     },
     pusoyShowChangeCardString(change) {
@@ -236,6 +248,9 @@ export default {
     },
     showPusoyGame(obj) {
       console.log(obj)
+      if (obj === null || obj === undefined) {
+        return
+      }
       this.pusoyShootOneShow = false
 
       let isInvalid = true

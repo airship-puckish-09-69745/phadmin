@@ -12,10 +12,6 @@
             <el-input v-model="cfg.MultiWeightStr" :required="true" placeholder="请输入内容,如1,2,3,5"> <template slot="append">多个值用 , 连接</template> </el-input>
           </el-form-item>
 
-          <el-form-item label="购买免费-购买倍数" prop="BuyFreeOdds" :rules="dataRule(true,{type:'n'})">
-            <el-input v-model.number="cfg.BuyFreeOdds" :required="true" />
-          </el-form-item>
-
           <el-form-item label="Minor Major Grand Joker 对应的JP奖项中奖倍数范围">
             <el-input v-model="cfg.JPMultiStr" :required="true" placeholder="请输入内容,如1-10,30-50,100-150,200">
               <template slot="append">四个值用 , 连接。</template>
@@ -86,7 +82,6 @@ export default {
     submitFrm() {
       if (!ValidateVueItem(this.$refs['frm2'])) return false
       const $this = this
-      this.jpMultiWeightsToStrList()
       this.$refs.compare.SetNewVal(this.getDiffData())
       this.$refs.compare.Compare(function(isEdit) {
         if (!isEdit) {

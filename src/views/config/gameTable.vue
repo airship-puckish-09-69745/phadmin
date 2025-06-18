@@ -93,6 +93,9 @@ export default {
       }, {
         value: 34,
         label: 'PusoyDos'
+      }, {
+        value: 126,
+        label: 'PusoyWild'
       }
       ],
       tableData: [],
