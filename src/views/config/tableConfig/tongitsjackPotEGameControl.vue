@@ -582,6 +582,30 @@
       </el-form>
     </el-dialog>
 
+    <el-dialog
+      title="玩家配置"
+      :visible.sync="editVisible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-form ref="edit" :model="edit" width="70%" label-position="top">
+        <el-row>
+          <el-tabs type="border-card">
+            <el-tab-pane label="好牌配置">
+              <robot-ai-setting-build-card v-model="edit" />
+            </el-tab-pane>
+          </el-tabs>
+        </el-row>
+        <el-form-item>
+          <el-row>
+            <el-col :span="12" :offset="10">
+              <el-button type="primary" size="medium" @click="setData">保存</el-button>
+            </el-col>
+          </el-row>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+
     <compare ref="compare" />
   </div>
 </template>
