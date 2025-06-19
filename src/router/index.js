@@ -2111,6 +2111,13 @@ export const asyncRoutes = [
             name: 'selfBuildMatchWatcherList',
             meta: { title: '主播名单', noCache: true, hidden: true },
 
+          },
+          {
+            path: 'selfBuildMatchAppConfig',
+            component: () => import('@/views/matchManage/selfBuildManage/selfBuildMatchAppConfig.vue'),
+            name: 'selfBuildMatchAppConfig',
+            meta: { title: '渠道配置', noCache: true, hidden: true },
+
           }
         ]
       }
