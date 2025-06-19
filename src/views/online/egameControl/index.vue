@@ -17,6 +17,11 @@
             align="right"
           />
         </el-form-item>
+        <el-form-item label="应用：">
+          <el-select v-model="searchForm.appId" size="mini">
+            <el-option v-for="row of apps" :label="row.label" :value="row.value" />
+          </el-select>
+        </el-form-item>
         <el-form-item label="游戏">
           <el-select v-model="searchForm.gid" placeholder="请选择游戏" style="width: 150px" clearable filterable>
             <el-option v-for="game in gameOptions" :key="game.value" :label="game.label" :value="game.value" />
@@ -107,7 +112,8 @@ export default {
       searchForm: {
         gid: 128, // 默认游戏：Tongits JP
         timeRange: this.getDefaultDate(), // 默认时间：七天前的00:00:00到今天的23:59:59
-        tableMoney: 0 // 默认场次：全部=0
+        tableMoney: 0, // 默认场次：全部=0
+        appId: 0
       },
 
       /**
@@ -137,6 +143,12 @@ export default {
        */
       ratioData: [],
       chartData: {},
+      apps: [
+        { 'value': 0, 'label': '全部' },
+        { 'value': 1000002, 'label': '内部用[1000002]' },
+        { 'value': 1000003, 'label': 'BP-测试[1000003]' },
+        { 'value': 1000005, 'label': 'BP-正式[1000005]' }
+      ],
 
       // pagination: {
       //   limit: 20,
@@ -195,6 +207,7 @@ export default {
     getRequestParams() {
       const params = {
         Path: '/log/egamelog',
+        appId: this.searchForm.appId,
         gid: this.searchForm.gid,
         tableMoney: this.searchForm.tableMoney,
         startTime: this.searchForm.timeRange[0] ? Math.round(this.searchForm.timeRange[0] / 1000) : 0,

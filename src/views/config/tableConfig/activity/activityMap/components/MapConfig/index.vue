@@ -42,6 +42,10 @@
                 {{ item }}
               </el-tag>
             </template>
+            <!-- 开关 -->
+            <!-- <template v-else-if="field.prop === 'Status'">
+              <el-switch v-model="scope.row.Status" @change="onUpdateStatus(scope.row)" />
+            </template> -->
             <!-- 日期处理 -->
             <template v-else-if="field.prop === 'ActivityTime'">
               <span v-if="scope.row.ActivityTime">
@@ -110,6 +114,7 @@ export default {
       fields: [
         { label: '配置ID', prop: 'ID', width: 130 },
         { label: '活动名称', prop: 'ActivityName' },
+        // { label: '活动开关', prop: 'Status', width: 80 },
         { label: '活动金额', prop: 'Amount', width: 200 },
         { label: '活动时间', prop: 'ActivityTime', width: 130 },
         { label: '奖励', prop: 'Bonus', width: 130 },
@@ -149,6 +154,16 @@ export default {
     onSearch() {
       this.$emit('reload')
     },
+    // onUpdateStatus(row) {
+    //   this.$nextTick(() => {
+    //     // console.log(row)
+    //     this.handleUpdateConfig(row)
+    //     // this.$message({
+    //     //   message: `成功${row.Status ? '开启' : '关闭'}${row.ActivityName}`,
+    //     //   type: row.Status ? 'success' : 'info'
+    //     // })
+    //   })
+    // },
     /**
      * 从mapList中获取分页数据
      */
