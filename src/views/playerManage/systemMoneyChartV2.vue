@@ -1094,8 +1094,11 @@ export default {
 
       .card-panel-text {
         line-height: 18px;
-        font-size: 15px;
+        font-size: 18px;
         margin-bottom: 12px;
+        @media screen and (max-width: 992px) {
+          font-size: 15px;
+        }
       }
 
       .card-panel-normal {
