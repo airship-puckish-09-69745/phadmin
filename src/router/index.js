@@ -3178,6 +3178,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatNew.vue'),
             name: 'tongitsCheatLog',
             meta: { title: '作弊日志（新） ◐' }
+          },
+          {
+            path: 'tongitsCheatLogDev',
+            component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatNewDev.vue'),
+            name: 'tongitsCheatLog',
+            meta: { title: '作弊日志（新）dev ◐' }
           }
         ]
       },
