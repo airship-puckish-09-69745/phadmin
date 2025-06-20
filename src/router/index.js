@@ -1525,12 +1525,12 @@ export const asyncRoutes = [
                 name: 'pirateshipmars_slots_cfg',
                 meta: { title: 'PirateShip(审)' }
               },
-              /*{
+              {
                 path: 'pumpkincashmars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/pumpkincashmars_slots_cfg'),
                 name: 'pumpkincashmars_slots_cfg',
                 meta: { title: 'PumpkinCash(审)' }
-              },*/
+              },
               {
                 path: 'dancelionmars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/dancelionmars_slots_cfg'),
@@ -2110,6 +2110,13 @@ export const asyncRoutes = [
             component: () => import('@/views/matchManage/selfBuildManage/selfBuildMatchWatcherList.vue'),
             name: 'selfBuildMatchWatcherList',
             meta: { title: '主播名单', noCache: true, hidden: true },
+
+          },
+          {
+            path: 'selfBuildMatchAppConfig',
+            component: () => import('@/views/matchManage/selfBuildManage/selfBuildMatchAppConfig.vue'),
+            name: 'selfBuildMatchAppConfig',
+            meta: { title: '渠道配置', noCache: true, hidden: true },
 
           }
         ]
@@ -3070,6 +3077,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'pharaohtreasuremars_slots_cfg',
             meta: { title: 'Pharaoh\'s Treasure(审)', gid: 169 }
+          },
+          {
+            path: 'pumpkincashmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'pumpkincashmars_slots_log',
+            meta: { title: 'PumpkinCash(审)', gid: 215 }
           }
         ]
       },
@@ -3165,6 +3178,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatNew.vue'),
             name: 'tongitsCheatLog',
             meta: { title: '作弊日志（新） ◐' }
+          },
+          {
+            path: 'tongitsCheatLogDev',
+            component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatNewDev.vue'),
+            name: 'tongitsCheatLog',
+            meta: { title: '作弊日志（新）dev ◐' }
           }
         ]
       },

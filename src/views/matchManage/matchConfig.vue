@@ -54,7 +54,7 @@
           <el-select v-model="form.appId" placeholder="请选择" size="mini">
             <el-option label="全部" :value="-1" />
             <el-option
-              v-for="item in appidInfoCfgs"
+              v-for="item in APPID_OPTIONS"
               :key="item.value"
               :label="item.label"
               :value="item.value"
@@ -237,7 +237,7 @@
               <template slot-scope="scope">
                 <el-select v-model="scope.row.appId" placeholder="请选择" size="mini" @change="selectShowGuieds()">
                   <el-option
-                    v-for="item in appidInfoCfgs"
+                    v-for="item in APPID_OPTIONS"
                     :key="item.value"
                     :label="item.label"
                     :value="item.value"
@@ -252,7 +252,7 @@
             >
               <template slot-scope="scope">
                 <el-checkbox-group v-model="scope.row.channelId">
-                  <el-checkbox v-for="item in channelIdCfgs" :key="item.value" :label="item.value">{{ item.label }}</el-checkbox>
+                  <el-checkbox v-for="item in CHANNEL_OPTIONS" :key="item.value" :label="item.value">{{ item.label }}</el-checkbox>
                 </el-checkbox-group>
               </template>
             </el-table-column>
@@ -828,7 +828,7 @@ import { log } from 'console'
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
 import { getAllCommonGameConfig, getAllMatchGuidesConfig } from '@/utils/common-game-config'
 import {IsMars} from "@/utils/env";
-import { ITEM_TYPE_OPTIONS, APPID_OPTIONS, ITEM_DAY_TYPE_OPTIONS,PROP_TYPE_OPTIONS } from '@/utils/options'
+import { CHANNEL_OPTIONS, APPID_OPTIONS, ITEM_DAY_TYPE_OPTIONS,PROP_TYPE_OPTIONS } from '@/utils/options'
 
 export default {
   name: 'MatchConfig',
@@ -842,6 +842,8 @@ export default {
       imagePickerVisible: false,
       PROP_TYPE_OPTIONS,
       ITEM_DAY_TYPE_OPTIONS,
+      APPID_OPTIONS,
+      CHANNEL_OPTIONS,
       form: {
         gameId: -1,
         status: -1,
@@ -849,27 +851,9 @@ export default {
         repeatType: -1,
         appId: -1
       },
-      appidInfoCfgs: [
-        { 'value': 1000002, 'label': 'dayusenlin' },
-        { 'value': 1000003, 'label': 'testaccount' },
-        { 'value': 1000004, 'label': 'testkey' },
-        { 'value': 1000005, 'label': 'BingoPlusTongits' },
-        { 'value': 1000006, 'label': 'BingoPlusTest' },
-        { 'value': 1000007, 'label': 'br' },
-        { 'value': 1000008, 'label': 'gli' },
-        { 'value': 1100000, 'label': 'xworld' }
-      ],
       gameCfgs: [
         { 'value': 2031, 'label': 'tongits' }
         // {"value": 15, "label":"德州"}
-      ],
-      channelIdCfgs: [
-        { 'value': 'BP', 'label': 'BP' },
-        { 'value': 'AP', 'label': 'AP' },
-        { 'value': 'GP', 'label': 'GP' },
-        { 'value': 'TP', 'label': 'TP' },
-        { 'value': 'PG', 'label': 'PG' },
-        { 'value': 'Dev', 'label': 'Dev' }
       ],
       statusCfgs: [
         { 'value': 0, 'label': '启用' },

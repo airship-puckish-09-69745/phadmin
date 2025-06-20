@@ -89,7 +89,7 @@
     </el-row> -->
 
     <el-row>
-      <line-chart :chart-data="chartData" height="600px" />
+      <line-chart :chart-data="chartData" :y-show-percentage-sign="true" height="600px" />
     </el-row>
   </div>
 </template>
