@@ -684,7 +684,7 @@ export default {
       this.BlackVisible = false
       console.log(this.editBlack)
       const ob = this.clientDB.GetDataByID(this.editBlack.Uid)
-      ob.BlackTime = 0
+      ob.BlackTime = Math.floor(Date.now() / 1000)
       ob.UserType = 2
       ob.BlackOperator = this.BlackOperator
       ob.BlackReason = this.editBlack.Reason
