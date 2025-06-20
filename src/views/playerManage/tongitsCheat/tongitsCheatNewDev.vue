@@ -649,22 +649,11 @@ export default {
       return $libDate.FormateSecondStr(ts, 2)
     },
     changeWhite(row, userType) {
-      let tips = '是否确认将玩家ID为' + row.Uid + '的玩家洗白?'
-      if (userType === 2) {
-        tips = '是否确认将玩家ID为' + row.Uid + '的玩家拉黑?'
-      }
+      const tips = '是否确认将玩家ID为' + row.Uid + '的玩家洗白?'
       this.$confirm(tips, '提示', { type: 'warning' }).then(() => {
-        const cheatUserType = this.cheatUserType.get(row.Uid)
-        cheatUserType.UserType = userType
-        this.cheatUserType.set(row.Uid, cheatUserType)
         const ob = this.clientDB.GetDataByID(row.Uid)
-        if (ob.userType !== 2 && userType === 2) {
-          ob.blackTime = Math.floor(new Date().getTime() / 1000)
-        }
-        if (ob.userType !== 2) {
-          ob.blackTime = 0
-          ob.userType = userType
-        }
+        ob.UserType = 0
+        ob.CheatScore = 0
         this.clientDB.UpdateData2('Uid', ob)
         request({
           url: '/dataProxy/info',
@@ -694,20 +683,11 @@ export default {
     save(row) {
       this.BlackVisible = false
       console.log(this.editBlack)
-      const userType = 2
-      const cheatUserType = this.cheatUserType.get(this.editBlack.Uid)
-      cheatUserType.UserType = 2
-      this.cheatUserType.set(row.Uid, cheatUserType)
       const ob = this.clientDB.GetDataByID(this.editBlack.Uid)
-      if (ob.userType !== 2 && userType === 2) {
-        ob.blackTime = Math.floor(new Date().getTime() / 1000)
-      }
-      if (ob.userType !== 2) {
-        ob.blackTime = 0
-        ob.userType = 2
-        ob.blackOperator = this.BlackOperator
-        ob.blackReason = this.editBlack.Reason
-      }
+      ob.BlackTime = 0
+      ob.UserType = 2
+      ob.BlackOperator = this.BlackOperator
+      ob.BlackReason = this.editBlack.Reason
       this.clientDB.UpdateData2('Uid', ob)
       request({
         url: '/dataProxy/info',
