@@ -310,7 +310,7 @@
               </el-col>
             </el-form-item>
             <el-form-item label="图片：" :required="true">
-              <ImagePicker v-model="formDialog.form.game.image_path" />
+              <ImagePicker v-model="formDialog.form.game.image_path" category="subConfig" />
             </el-form-item>
 <!--            <el-form-item label="背景图片：" :required="true">-->
 <!--              <el-upload-->
