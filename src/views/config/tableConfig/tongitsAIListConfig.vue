@@ -56,8 +56,12 @@
           <el-table-column
             prop="initMoney"
             label="成本"
-            width="100"
-          />
+            width="150"
+          >
+            <template slot-scope="scope">
+              {{ formatNumber(scope.row.initMoney) }}
+            </template>
+          </el-table-column>
           <el-table-column
             prop="money"
             label="当前金额"
@@ -69,10 +73,10 @@
           >
             <template slot-scope="scope">
                <span v-if="scope.row.money > scope.row.initMoney" style="color:red">
-              {{ (scope.row.money - scope.row.initMoney).toFixed(2) }}
+              {{ formatNumber(scope.row.money - scope.row.initMoney) }}
             </span>
               <span v-else style="color:green">
-              {{ (scope.row.money - scope.row.initMoney).toFixed(2) }}
+              {{ formatNumber(scope.row.money - scope.row.initMoney) }}
             </span>
             </template>
           </el-table-column>
