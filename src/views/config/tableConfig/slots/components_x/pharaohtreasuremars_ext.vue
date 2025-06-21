@@ -5,15 +5,7 @@
         <el-form ref="frm2" :model="cfg" label-width="230px">
 
           <el-form-item label="免费模式购买倍数">
-            <el-input v-model.number="cfg.BuyFreeOdds" placeholder="请输入内容" />
-          </el-form-item>
-
-          <el-form-item label="普通游戏多倍符号值">
-            <el-input v-model="cfg.MultiOddsValInNormal"> <template slot="append">从小到大排列,用逗号分割</template> </el-input>
-          </el-form-item>
-
-          <el-form-item label="普通游戏多倍符号值权重">
-            <el-input v-model="cfg.MultiOddsWeightInNormal"> <template slot="append">从大到小排列,用逗号分割,对应普通多倍符号值</template> </el-input>
+            <el-input v-model.number="cfg.BuyFreeOdds" placeholder="请输入内容"/>
           </el-form-item>
 
         </el-form>
@@ -27,20 +19,20 @@
     </el-row>
 
     <!--对比组件-->
-    <compare ref="compare" />
+    <compare ref="compare"/>
   </div>
 </template>
 
 <script>
 import RatioInput from '@/components/RatioInput'
 import Compare from '@/components/Compare'
-import { DataRule } from '@/utils/common'
+import {DataRule} from '@/utils/common'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
   name: 'SlotsPharaohTreasureMarsExt',
   // eslint-disable-next-line vue/no-unused-components
-  components: { RatioInput, Compare },
+  components: {RatioInput, Compare},
   model: {
     prop: 'slotsData',
     event: 'cc'
@@ -48,15 +40,14 @@ export default {
   props: {
     slotsData: {
       type: Object,
-      default: function() {
+      default: function () {
         return {}
       }
     }
   },
   data() {
     return {
-      cfg: {
-      }
+      cfg: {}
     }
   },
   created() {
@@ -82,7 +73,7 @@ export default {
         return
       }
       this.$refs.compare.SetNewVal(this.getDiffData())
-      this.$refs.compare.Compare(function(isEdit) {
+      this.$refs.compare.Compare(function (isEdit) {
         if (!isEdit) {
           $this.$message.error('没有任何修改，不需要提交')
           return

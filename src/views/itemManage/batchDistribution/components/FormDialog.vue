@@ -277,7 +277,7 @@ export default {
       }
       let accountArr = this.account.split(',')
       let repeatArray = this.hasDuplicates(accountArr)
-      if (repeatArray.length >= 0) {
+      if (repeatArray.length > 0) {
         this.$message.error( repeatArray.join(',') + " 账号重复请检查")
         return false
       }

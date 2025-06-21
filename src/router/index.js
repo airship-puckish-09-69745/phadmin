@@ -998,7 +998,7 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/freespinConfig'),
             name: 'freespin_cfg',
             meta: { title: 'F reeSpin ◐' }
-          },
+          }
         ]
       },
       {
@@ -1854,6 +1854,20 @@ export const asyncRoutes = [
             meta: { title: '红包雨活动配置', noCache: true }
           }
         ]
+      },
+      {
+        path: 'activityMap',
+        component: () => import('@/views/empty'),
+        name: 'activityMap',
+        meta: { title: '活动地图配置', noCache: true },
+        children: [
+          {
+            path: 'activityMap',
+            component: () => import('@/views/config/tableConfig/activity/activityMap/index.vue'),
+            name: 'activityMap',
+            meta: { title: '活动地图配置', noCache: true }
+          }
+        ]
       }
     ]
   },
@@ -2261,7 +2275,18 @@ export const asyncRoutes = [
             name: 'playlog_TongitsJP',
             meta: { title: 'T ongits JP ◐', gid: 128 }
           },
-
+          {
+            path: 'playlog_Remi',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_Remi',
+            meta: { title: 'R emi ◐', gid: 130 }
+          },
+          {
+            path: 'playlog_RemiPro',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_RemiPro',
+            meta: { title: 'R emi Pro ◐', gid: 131 }
+          },
         ]
       },
 
@@ -2939,6 +2964,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'spacetreasuremars_slots_cfg',
             meta: { title: 'SpaceTreasure(审)', gid: 205 }
+          },
+          {
+            path: 'pharaohtreasuremars_slots_cfg',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'pharaohtreasuremars_slots_cfg',
+            meta: { title: 'Pharaoh\'s Treasure(审)', gid: 169 }
           }
         ]
       },

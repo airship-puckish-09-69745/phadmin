@@ -175,7 +175,7 @@ export default {
         const odds = this.baseCfg.OddsStr.split(',')
         this.baseCfg.BetOddsList = []
         for (const i in odds) {
-          this.baseCfg.BetOddsList.push(parseFloat(odds[i])*1000)
+          this.baseCfg.BetOddsList.push(parseFloat(odds[i]))
         }
       }
       this.baseForm.Data = JSON.stringify(this.baseCfg)
