@@ -166,6 +166,9 @@
               inactive-text="否">
             </el-switch>
         </el-form-item>
+        <el-form-item v-if="editForm.data.rule_type===0" label="MTT开赛人数:" :required="true">
+          <el-input style="width: 200px;" v-model.number="editForm.data.start_num" placeholder="请填写开赛人数" />
+        </el-form-item>
         <fieldset v-for="stageItem in editForm.data.stage_detail"  :key="stageItem.stage_index" style="margin:20px auto;max-height: max-content;min-width: inherit;">
           <legend>比赛{{ stageItem.stage_index }}阶段</legend>
           <div v-if="stageItem.system_type == 1 && editForm.data.rule_type==0">
@@ -193,7 +196,7 @@
               </el-form-item>
             </div>
           </div>
-         
+
           <!-- 此处是专配置打立出局相关配置 -->
           <div v-if="stageItem.system_type == 1 && editForm.data.rule_type==0">
             <!-- 底分增长配置 -->
@@ -474,6 +477,7 @@ export default {
       limit: 10,
       total: 0,
       page: 1,
+      selfBuild:1, //是否是自建赛
       editForm: {
         visable: false,
         title: "",
@@ -518,8 +522,14 @@ export default {
         if (response.RetCode === 0) {
           let objs = response.Data || []
           if (objs.total > 0) {
-            this.total=objs.total;
-            this.tableData = objs.list;
+            this.tableData = []
+            this.total = 0
+            for(let i=0;i<objs.list.length;i++) {
+              if (objs.list[i].self_build >  0) {
+                this.total = this.total + 1
+                this.tableData.push(objs.list[i])
+              }
+            }
             if (this.tableData.length > 0) {
               for (let i=0;i<this.tableData.length;i++) {
                 if (this.tableData[i].status == 0) {
@@ -639,6 +649,7 @@ export default {
           "status": 0,
           "modifier": "",
           "update_time": 0,
+          "start_num":0 //开赛人数
         }
         this.editForm.isAdd = true
         this.addStage()
@@ -761,7 +772,7 @@ export default {
             "type": 3,              //增长类型:1固定，2倍数增长,3定值增长
             "grow_total": 1,        //细节数量
             "init_score_grow_detail": [  //底分增长细节
-              { 
+              {
                 "index": 1,                //阶段
                 "duration": 80,            //时长
                 "init_score": 100,          //底分
@@ -773,7 +784,7 @@ export default {
               "type": 3,              //增长类型:1固定，2倍数增长,3定值增长
               "grow_total": 1,        //细节数量
               "disuse_score_grow_detail": [  //底分增长细节
-              { 
+              {
                 "index": 1,                //阶段
                 "duration": 80,            //时长
                 "disuse_score": 100,       //淘汰分
@@ -879,6 +890,8 @@ export default {
           GameId: gameId,
           InitScore: this.editForm.data.init_score,
           RuleType:this.editForm.data.rule_type,
+          SelfBuild:this.selfBuild,
+          StartNum:this.editForm.data.start_num,
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -976,6 +989,22 @@ export default {
         this.errmsg('阶段1的类型只能是【打立出局】！')
         return false
       }
+      if(this.editForm.data.rule_type == 0  && (this.editForm.data.start_num <= 0 || this.editForm.data.start_num %3 != 0)) {
+         this.errmsg("开赛人数不对,请检查")
+         return false
+      }
+      if(this.editForm.data.rule_type == 0 && this.editForm.data.start_num < this.editForm.data.stage_detail[0].system_strike_out.end_rule.lave_user_number) {
+        this.errmsg('开赛人数不能小于打立出局的结束规则的剩余人数')
+        return false
+      }
+      if(this.editForm.data.rule_type == 0 && this.editForm.data.start_num < this.editForm.data.stage_detail[0].system_strike_out.promotion_rule.user_number) {
+        this.errmsg('开赛人数不能小于打立出局的晋级规则的晋级人数')
+        return false
+      }
+      if(this.editForm.data.rule_type == 1){
+        this.editForm.data.start_num =0
+      }
+
       for (let i=0; i<this.editForm.data.stage_detail.length; i++) {
         //打立出局阶段配置检查
         if (this.editForm.data.stage_detail[i].system_type == 1) {
