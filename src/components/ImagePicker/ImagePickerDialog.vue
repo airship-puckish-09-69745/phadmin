@@ -133,7 +133,7 @@
             </el-button-group>
           </div>
           <div class="image-picker-dialog-block-search-item">
-            <el-button type="primary" icon="el-icon-search" @click="handleSearch" />
+            <el-button type="primary" size="small" icon="el-icon-search" @click="handleSearch" />
           </div>
         </div>
         <el-scrollbar wrap-class="scrollbar-wrapper">
@@ -162,6 +162,7 @@
                 <div class="image-picker-dialog-item__text">
                   {{ item.file_name }}
                 </div>
+                <div>{{ item.create_time }}</div>
                 <span
                   v-if="item.url === active.value"
                   class="image-picker-dialog-item__selected"
@@ -292,6 +293,7 @@ export default {
      * 点击按钮通过前端搜索条件过滤图片
      */
     handleSearch() {
+      this.condition.current = 1
       this.fetchList({ category: this.condition.category }).then((data) => {
         this.setList(data)
         this.getFilterList(this.condition)
@@ -393,7 +395,7 @@ export default {
       if (this.searchFilter.order) {
         filteredList.sort((a, b) => {
           if (this.searchFilter.order === 'uploadTime') {
-            return new Date(b.uploadTime) - new Date(a.uploadTime)
+            return new Date(b.create_time) - new Date(a.create_time)
           }
         })
       }
