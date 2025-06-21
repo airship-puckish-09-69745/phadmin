@@ -22,12 +22,12 @@
           :width="field.width"
         >
           <template slot-scope="scope">
-            <!-- 活动图标 -->
+            <!-- 活动图标 || 过期图标 -->
             <el-image
-              v-if="field.prop === 'Icon'"
-              :src="scope.row.Icon"
+              v-if="field.prop === 'Icon' || field.prop === 'TimeoutIcon'"
+              :src="scope.row[field.prop]"
               fit="contain"
-              :preview-src-list="[scope.row.Icon]"
+              :preview-src-list="[scope.row[field.prop]]"
               class="image-manage-item__image"
             />
             <!-- 分页 -->
@@ -119,7 +119,8 @@ export default {
         { label: '活动时间', prop: 'ActivityTime', width: 130 },
         { label: '奖励', prop: 'Bonus', width: 130 },
         { label: '分页', prop: 'Page' },
-        { label: '活动图标', prop: 'Icon', width: 120 }
+        { label: '活动图标', prop: 'Icon', width: 120 },
+        { label: '过期图标', prop: 'TimeoutIcon', width: 120 }
       ],
       formDialog: {
         updateData: null,

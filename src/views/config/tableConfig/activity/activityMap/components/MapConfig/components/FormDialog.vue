@@ -29,6 +29,9 @@
       <el-form-item label="活动图标" required>
         <ImagePicker v-model="formData.Icon" />
       </el-form-item>
+      <el-form-item label="过期图标" required>
+        <ImagePicker v-model="formData.TimeoutIcon" />
+      </el-form-item>
     </el-form>
     <template #footer>
       <span class="dialog-footer">
@@ -71,7 +74,8 @@ export default {
         Page: [],
         Icon: '',
         ActivityTime: [],
-        Bonus: 0
+        Bonus: 0,
+        TimeoutIcon: ''
       },
       pageOptions: [
         { label: 'all', value: 'all' },
@@ -139,6 +143,10 @@ export default {
         this.$message.error('活动图标不能为空')
         return false
       }
+      if (!this.formData.TimeoutIcon) {
+        this.$message.error('过期图标不能为空')
+        return false
+      }
       return true
     },
     handleSave() {
@@ -165,7 +173,8 @@ export default {
         Page: [],
         Icon: '',
         ActivityTime: [],
-        Bonus: 0
+        Bonus: 0,
+        TimeoutIcon: ''
       }
       this.$emit('update:visible', false)
     },
