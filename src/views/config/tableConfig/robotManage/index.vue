@@ -35,6 +35,7 @@
 
 <script>
 import AddRobotDialog from './components/AddRobotDialog.vue'
+
 export default {
   components: {
     AddRobotDialog
