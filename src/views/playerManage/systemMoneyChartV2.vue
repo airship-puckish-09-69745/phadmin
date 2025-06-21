@@ -54,7 +54,7 @@
         >
           <div class="card-panel-description">
             <div class="card-panel-text">
-              {{ gameNames[o] }}：<span :class="getSummaryClass(summary[o], false)"> {{
+              {{ getGameName(o) }}：<span :class="getSummaryClass(summary[o], false)"> {{
                 getSummaryResult(summary[o], false).toFixed(2)
               }}%</span>
             </div>
@@ -583,6 +583,14 @@ export default {
         this.defaultOrder.push(124, 125, 130, 131)
       }
     },
+    getGameName(o) {
+      let name = this.gameNames[o]
+      if (name == '') {
+        console.log('unknown game: ', o)
+        return o
+      }
+      return name
+    },
     isPopType(o) {
       const popTypes = [1, 9, 8, 14, 15, 21, 22, 29, 23, 28, 31, 34, 2032, 46, 47, 48, 35, 49, 113, 122, 130, 131]
       for (let i = 0; i < popTypes.length; i++) {
@@ -602,7 +610,7 @@ export default {
       return false
     },
     isSlots(o) {
-      if (o > 50 && o < 100 || o > 149 && o < 500) {
+      if ((o > 50 && o < 100) || (o > 149 && o < 500)) {
         return true
       } else {
         return false
