@@ -583,7 +583,7 @@ export default {
               }
             }
           }
-
+          this.statItems=[]
           for (const o in statMap) {
             this.statItems.push(statMap[o])
           }
