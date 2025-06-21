@@ -1163,7 +1163,8 @@ export default {
       request({
         url: '/thirdpartygames/all',
         method: 'get',
-        data: {}
+        data: {},
+        params: {status : 2}
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []

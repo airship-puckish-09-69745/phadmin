@@ -44,6 +44,20 @@ export default {
         { label: '疑似', value: 1 },
         { label: '黑子', value: 2 }
       ],
+      CheatType: 0,
+      CheatTypeOption: [
+        { label: '全部', value: 0 },
+        { label: '拆牌喂牌', value: 1 },
+        { label: '单局多次喂牌', value: 2 },
+        { label: '近5局首出喂牌局数>=3', value: 3 },
+        { label: '皇冠FIGHT', value: 4 },
+        { label: '皇冠FOLD', value: 5 },
+        { label: '打一局不拿pot就离开', value: 6 },
+        { label: '大POT高胜率', value: 7 },
+        { label: '大POT多人离开', value: 8 },
+        { label: '玩超多局数且盈利', value: 9 },
+        { label: '名字相似度过高', value: 10 }
+      ],
       maybeMin: 100,
 
       BlackVisible: false,
@@ -93,7 +107,7 @@ export default {
       })
     },
     getCheatData() {
-      this.getCheatUserType()
+      // this.getCheatUserType()
       this.getData()
     },
     getCheatTotalInfo(fileds, fieldsCount, fieldsScore) {
@@ -153,7 +167,7 @@ export default {
         return []
       }
       const infos = []
-      if (fieldsCount === null || fieldsCount.length === 0) {
+      if (fieldsCount === undefined || fieldsCount.length === 0) {
         fieldsCount = []
         for (let i = 0; i < fileds.length; i++) {
           fieldsCount.push(0)
@@ -228,10 +242,14 @@ export default {
           const data = response.Data || {}
           const cheatLogRows = data.Items || []
 
-          let cheatLogs = []
+          const cheatLogs = []
           // /////////////
           for (let i = 0; i < cheatLogRows.length; i++) {
             const row = cheatLogRows[i]
+            if (this.CheatType !== 0 && row.historyCheatField !== undefined && row.historyCheatField.length > this.CheatType && row.historyCheatField[this.CheatType] === 0) {
+              console.log('跳过', row)
+              continue
+            }
             const cheatLog = {
               Uid: row.uid,
               CheatScore: row.cheatScore,
@@ -243,9 +261,10 @@ export default {
               UpdateTime: row.updateTime,
               LastEndTime: row.lastEndTime,
               CheatInfos: this.getCheatTotalInfo(row.historyCheatField, row.historyCheatFieldCount, row.historyCheatFieldScore),
-              TidCheatLogs: []
+              TidCheatLogs: [],
+              Nick: new Set()
             }
-            if (row.hasOwnProperty("datas")) {
+            if (row.hasOwnProperty('datas')) {
               for (let j = 0; j < row.datas.length; j++) {
                 const tidRow = row.datas[j]
                 const tidCheatLog = {
@@ -257,11 +276,11 @@ export default {
                   CheatInfos: this.getCheatTotalInfo(tidRow.historyCheatField, tidRow.historyCheatFieldCount, tidRow.historyCheatFieldScore),
                   PlayCheatLogs: []
                 }
-                if (tidRow.hasOwnProperty("datas")) {
+                if (tidRow.hasOwnProperty('datas')) {
                   for (let k = 0; k < tidRow.datas.length; k++) {
                     const cheatRow = tidRow.datas[k]
                     const playCheatLog = {
-                      EndTime : cheatRow.endTime,
+                      EndTime: cheatRow.endTime,
                       CheatScore: cheatRow.cheatScore,
                       LogId: cheatRow.logId,
                       OtherUid: cheatRow.otherUid,
@@ -270,6 +289,7 @@ export default {
                       TableMoney: cheatRow.tableMoney,
                       CheatInfos: this.getCheatInfo(cheatRow.cheatFields, cheatRow.cheatFieldsCount, cheatRow.cheatScores)
                     }
+                    cheatLog.Nick.add(cheatRow.nick)
                     tidCheatLog.PlayCheatLogs.push(playCheatLog)
                   }
                 }
@@ -349,13 +369,13 @@ export default {
           // cheatLogs = Array.from(cheatLogMap.values())
           // console.log(cheatLogs)
           // this.totalCount = cheatLogs.length
-          // let sortName = 'EndTime'
-          // if (this.sortType === 1) {
-          //   sortName = 'CheatScore'
-          // } else if (this.sortType === 2) {
-          //   sortName = 'cheatPercent'
-          // }
-          $this.clientDB = new ClientTableData(cheatLogs, $this.pageNum, {}, "UpdateTime", -1, 'Uid')
+          let sortName = 'UpdateTime'
+          if (this.sortType === 1) {
+            sortName = 'CheatScore'
+          } else if (this.sortType === 2) {
+            sortName = 'cheatRadio'
+          }
+          $this.clientDB = new ClientTableData(cheatLogs, $this.pageNum, {}, sortName, -1, 'Uid')
           $this.handleCurrentChange(1)
         }
       })
@@ -629,22 +649,11 @@ export default {
       return $libDate.FormateSecondStr(ts, 2)
     },
     changeWhite(row, userType) {
-      let tips = '是否确认将玩家ID为' + row.Uid + '的玩家洗白?'
-      if (userType === 2) {
-        tips = '是否确认将玩家ID为' + row.Uid + '的玩家拉黑?'
-      }
+      const tips = '是否确认将玩家ID为' + row.Uid + '的玩家洗白?'
       this.$confirm(tips, '提示', { type: 'warning' }).then(() => {
-        const cheatUserType = this.cheatUserType.get(row.Uid)
-        cheatUserType.UserType = userType
-        this.cheatUserType.set(row.Uid, cheatUserType)
         const ob = this.clientDB.GetDataByID(row.Uid)
-        if (ob.userType !== 2 && userType === 2) {
-          ob.blackTime = Math.floor(new Date().getTime() / 1000)
-        }
-        if (ob.userType !== 2) {
-          ob.blackTime = 0
-          ob.userType = userType
-        }
+        ob.UserType = 0
+        ob.CheatScore = 0
         this.clientDB.UpdateData2('Uid', ob)
         request({
           url: '/dataProxy/info',
@@ -674,20 +683,11 @@ export default {
     save(row) {
       this.BlackVisible = false
       console.log(this.editBlack)
-      const userType = 2
-      const cheatUserType = this.cheatUserType.get(this.editBlack.Uid)
-      cheatUserType.UserType = 2
-      this.cheatUserType.set(row.Uid, cheatUserType)
       const ob = this.clientDB.GetDataByID(this.editBlack.Uid)
-      if (ob.userType !== 2 && userType === 2) {
-        ob.blackTime = Math.floor(new Date().getTime() / 1000)
-      }
-      if (ob.userType !== 2) {
-        ob.blackTime = 0
-        ob.userType = 2
-        ob.blackOperator = this.BlackOperator
-        ob.blackReason = this.editBlack.Reason
-      }
+      ob.BlackTime = Math.floor(Date.now() / 1000)
+      ob.UserType = 2
+      ob.BlackOperator = this.BlackOperator
+      ob.BlackReason = this.editBlack.Reason
       this.clientDB.UpdateData2('Uid', ob)
       request({
         url: '/dataProxy/info',
@@ -705,6 +705,14 @@ export default {
       })
       this.refreshShow()
     },
+    formatUserNick(row) {
+      if (row.Nick.size === 0) {
+        return '--'
+      } else {
+        const array = Array.from(row.Nick)
+        return (array[0] === '' ? '--' : array[0])
+      }
+    },
     formatUserType(row) {
       const userType = row.UserType
       if (userType === 0) {
@@ -716,12 +724,12 @@ export default {
       }
     },
     formatCheatInfo(row) {
-      if (row === undefined){
+      if (row === undefined) {
         return '--'
       }
       if (row.length === 0) {
         return '--'
-      }else {
+      } else {
         return row[0]
       }
     },
@@ -729,7 +737,7 @@ export default {
       return CheatRadio + '%'
     },
     formatUserBlackTime(row) {
-      const userType = row.userType
+      const userType = row.UserType
       if (userType === 2) {
         return this.formatTimeDate(row.BlackTime)
       } else {
@@ -737,7 +745,7 @@ export default {
       }
     },
     formatUserBlackInfo(row) {
-      const userType = row.userType
+      const userType = row.UserType
       if (userType === 2) {
         return '拉黑原因：' + row.BlackReason + '，拉黑人：' + row.BlackOperator
       } else {
@@ -890,6 +898,16 @@ export default {
             />
           </el-select>
         </el-form-item>
+        <el-form-item label="作弊类型：">
+          <el-select v-model.number="CheatType" placeholder="请选择">
+            <el-option
+              v-for="itemCheatType in CheatTypeOption"
+              :key="itemCheatType.value"
+              :label="itemCheatType.label"
+              :value="itemCheatType.value"
+            />
+          </el-select>
+        </el-form-item>
       </el-form>
       <el-table
         :data="cheatLogs"
@@ -902,6 +920,15 @@ export default {
           width="100"
           align="center"
         />
+        <el-table-column
+          label="名字"
+          width="80"
+          align="center"
+        >
+          <template slot-scope="scope">
+            <span>{{ formatUserNick(scope.row) }}</span>
+          </template>
+        </el-table-column>
         <el-table-column
           label="身份"
           width="80"
@@ -1014,7 +1041,7 @@ export default {
                   <div>{{ formatTimeDate(scope.row.FirstCheatTime) }}</div>
                 </template>
               </el-table-column>
-              <el-table-column width="100" property="TotalCheatScore" label="疑似度增加" />
+              <el-table-column width="100" property="CheatScore" label="疑似度增加" />
               <el-table-column width="300" property="Infos" label="作弊信息">
                 <template slot-scope="scope">
                   <el-tooltip placement="right">
@@ -1042,7 +1069,6 @@ export default {
                       </template>
                     </el-table-column>
                     <el-table-column width="100" property="CheatScore" label="疑似度增加" />
-                    <el-table-column width="100" property="Nick" label="疑似度增加" />
                     <el-table-column width="300" property="Infos" label="该局操作异常">
                       <template slot-scope="scopeInfo">
                         <el-tooltip placement="right">
