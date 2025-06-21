@@ -143,7 +143,7 @@
         <el-form-item label="统计步数">
           <el-input-number v-model.number="item.StepCfg"></el-input-number>
         </el-form-item>
-        <el-form-item label="不存在的步数(英文逗号分割)">
+        <el-form-item label="不存在的倍数(英文逗号分割)">
           <el-input v-model="item.AbnormalSteps" style="width: 350px"></el-input>
         </el-form-item>
         <el-form-item label="">
@@ -428,7 +428,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           for (let i = 0; i < response.Data.length; i++) {
-            if (response.Data[i].Gid < 50 || response.Data[i].Gid > 100 && response.Data[i].Gid < 150 || response.Data[i].Gid > 200) {
+            if (response.Data[i].Gid < 50 || response.Data[i].Gid > 100 && response.Data[i].Gid < 150 || response.Data[i].Gid > 499) {
               continue
             }
             this.gameOptions.push({

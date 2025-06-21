@@ -76,19 +76,13 @@ export const constantRoutes = [
     path: '/',
     component: Layout,
     redirect: '/dashboard',
-    meta: { title: '系统健康监测', icon: 'el-icon-pie-chart', perm: 'DATA_MONITOR' },
+    meta: { title: 'Welcome', icon: 'el-icon-pie-chart' },
     children: [
-      // {
-      //   path: 'dashboard',
-      //   component: () => import('@/views/playerManage/systemMoneyChart'),
-      //   name: 'dashboard',
-      //   meta: { title: '系统健康监测 ◐', icon: 'risk', perm: 'KEY_DATA_MONITOR' }
-      // },
       {
         path: '/dashboard',
-        component: () => import('@/views/playerManage/systemMoneyChartV2.vue'),
+        component: () => import('@/views/dashboard/index'),
         name: 'dashboard',
-        meta: { title: '系统健康监测 ◐', icon: 'risk', perm: 'KEY_DATA_MONITOR' }
+        meta: { title: 'Welcome', icon: 'el-icon-s-home' }
       }
     ]
   },
@@ -114,6 +108,26 @@ export const constantRoutes = [
  */
 export const asyncRoutes = [
   /** when your routing map is too long, you can split it into small modules **/
+  {
+    path: '/systemMoneyChart',
+    component: Layout,
+    redirect: '/systemMoneyChart',
+    meta: { title: '系统健康监测', icon: 'el-icon-pie-chart', perm: 'DATA_MONITOR' },
+    children: [
+      // {
+      //   path: 'dashboard',
+      //   component: () => import('@/views/playerManage/systemMoneyChart'),
+      //   name: 'dashboard',
+      //   meta: { title: '系统健康监测 ◐', icon: 'risk', perm: 'KEY_DATA_MONITOR' }
+      // },
+      {
+        path: '/systemMoneyChart',
+        component: () => import('@/views/playerManage/systemMoneyChartV2.vue'),
+        name: 'systemMoneyChart',
+        meta: { title: '系统健康监测 ◐', icon: 'risk', perm: 'KEY_DATA_MONITOR' }
+      }
+    ]
+  },
   {
     path: '/online',
     component: Layout,
@@ -311,7 +325,13 @@ export const asyncRoutes = [
                     component: () => import('@/views/config/tableConfig/tongitsCheat/tongitsCheat.vue'),
                     name: 'tongitsCheat',
                     meta: { title: '防作弊配置 ◐' }
-                  }
+                  },
+                  {
+                    path: 'tongitsQuickCheat',
+                    component: () => import('@/views/config/tableConfig/tongitsCheat/tongitsQuickCheat.vue'),
+                    name: 'tongitsQuickCheat',
+                    meta: { title: 'QUICK防作弊配置 ◐' }
+                  },
                 ]
               }
               /*{
@@ -836,7 +856,7 @@ export const asyncRoutes = [
             path: '/remiVersion',
             component: () => import('@/views/empty'),
             redirect: 'noRedirect',
-            meta: { title: 'remi ◐' },
+            meta: { title: 'Remi ◐' },
             children: [
                   {
                     path: 'remiTable',
@@ -851,6 +871,28 @@ export const asyncRoutes = [
                     meta: { title: 'RemiPro配桌 ◐' }
 				          }
                 ]
+          },
+          {
+            path: '/trucoVersion',
+            component: () => import('@/views/empty'),
+            redirect: 'noRedirect',
+            meta: { title: 'Truco ◐' },
+            children: [
+              {
+                path: 'trucoTable',
+                component: () => import('@/views/empty'),
+                redirect: 'noRedirect',
+                meta: { title: 'Truco配桌 ◐', noCache: true },
+                children: [
+                  {
+                    path: 'trucoTable',
+                    component: () => import('@/views/config/tableConfig/trucoTable'),
+                    name: 'trucoTable',
+                    meta: { title: 'Truco配桌 ◐' }
+				          }
+                ]
+              }
+            ]
           }
         ]
       },
@@ -920,6 +962,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/sweeperCfg'),
             name: 'sweeperCfg',
             meta: { title: 'M ines - 扫雷 ◐' }
+          },
+          {
+            path: 'MinesMagic_cfg',
+            component: () => import('@/views/config/tableConfig/minesMagicCfg'),
+            name: 'MinesMagicCfg',
+            meta: { title: 'M inesMagic - 新版扫雷 ◐' }
           },
           {
             path: 'MultiPlayerNiuNiu_cfg',
@@ -1477,12 +1525,12 @@ export const asyncRoutes = [
                 name: 'pirateshipmars_slots_cfg',
                 meta: { title: 'PirateShip(审)' }
               },
-              /*{
+              {
                 path: 'pumpkincashmars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/pumpkincashmars_slots_cfg'),
                 name: 'pumpkincashmars_slots_cfg',
                 meta: { title: 'PumpkinCash(审)' }
-              },*/
+              },
               {
                 path: 'dancelionmars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/dancelionmars_slots_cfg'),
@@ -1568,6 +1616,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/slots/slots_winner_record'),
             name: 'slots_winner_record',
             meta: { title: '大奖记录' }
+          },
+          {
+            path: 'slots_prize_test',
+            component: () => import('@/views/config/tableConfig/slots/bigPrizeTest.vue'),
+            name: 'slots_prize_test',
+            meta: { title: '大奖模拟' }
           },
           {
             path: 'slots_act_configs',
@@ -1875,7 +1929,7 @@ export const asyncRoutes = [
     path: '/player',
     component: Layout,
     redirect: 'noRedirect',
-    meta: { title: '玩家管理', icon: 'user' },
+    meta: { title: '玩家管理', icon: 'user', perm: 'CUTOMER' },
     children: [
       {
         path: 'userManage',
@@ -1943,7 +1997,7 @@ export const asyncRoutes = [
     path: '/match',
     component: Layout,
     redirect: 'noRedirect',
-    meta: { title: '比赛管理', icon: 'example', perm: 'CFG_MANAGEMENT' },
+    meta: { title: '比赛管理', icon: 'example', perm: 'CFG_MANAGEMENT_GTCC' },
     children: [
       {
         path: 'matchConfig',
@@ -2032,6 +2086,40 @@ export const asyncRoutes = [
         component: () => import('@/views/matchManage/matchGtccConfig.vue'),
         name: 'matchGtccConfig',
         meta: { title: 'Gtcc赛事配置', noCache: true }
+      },
+      {
+        path: 'selfBuildMatch',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: '自建房管理', noCache: true },
+        children: [
+          {
+            path: 'selfBuildMatchRule',
+            component: () => import('@/views/matchManage/selfBuildManage/selfBuildMatchRule.vue'),
+            name : 'selfBuildMatchRule',
+            meta: {title:'赛制管理', noCache: true }
+          },
+          {
+            path: 'selfBuildMatchReward',
+            component: () => import('@/views/matchManage/selfBuildManage/selfBuildMatchReward.vue'),
+            name : 'selfBuildMatchReward',
+            meta: {title:'奖励配置', noCache: true }
+          },
+          {
+            path: 'selfBuildMatchWatcherList',
+            component: () => import('@/views/matchManage/selfBuildManage/selfBuildMatchWatcherList.vue'),
+            name: 'selfBuildMatchWatcherList',
+            meta: { title: '主播名单', noCache: true, hidden: true },
+
+          },
+          {
+            path: 'selfBuildMatchAppConfig',
+            component: () => import('@/views/matchManage/selfBuildManage/selfBuildMatchAppConfig.vue'),
+            name: 'selfBuildMatchAppConfig',
+            meta: { title: '渠道配置', noCache: true, hidden: true },
+
+          }
+        ]
       }
     ]
   },
@@ -2360,6 +2448,12 @@ export const asyncRoutes = [
             meta: { title: 'M ines - 扫雷◐', gid: 20 }
           },
           {
+            path: 'playlog_minesMagic',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_minesMagic',
+            meta: { title: 'M inesMagic - 新版扫雷◐', gid: 132 }
+          },
+          {
             path: 'playlog_multiplayeriuniu',
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_multiplayerniuniu',
@@ -2427,7 +2521,20 @@ export const asyncRoutes = [
             meta: { title: 'L ive ColorGame - ◐', gid: 129 }
           },
 
-
+          /*
+          {
+            path: 'playlog_jackpotwheel',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_jackpotwheel',
+            meta: { title: 'J ackpot Wheel - ◐', gid: 124 }
+          },
+          {
+            path: 'playlog_freespin',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_freespin',
+            meta: { title: 'F ree Spin - ◐', gid: 125 }
+          },
+          */
 
         ]
       },
@@ -2970,6 +3077,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'pharaohtreasuremars_slots_cfg',
             meta: { title: 'Pharaoh\'s Treasure(审)', gid: 169 }
+          },
+          {
+            path: 'pumpkincashmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'pumpkincashmars_slots_log',
+            meta: { title: 'PumpkinCash(审)', gid: 215 }
           }
         ]
       },
@@ -3065,6 +3178,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatNew.vue'),
             name: 'tongitsCheatLog',
             meta: { title: '作弊日志（新） ◐' }
+          },
+          {
+            path: 'tongitsCheatLogDev',
+            component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatNewDev.vue'),
+            name: 'tongitsCheatLog',
+            meta: { title: '作弊日志（新）dev ◐' }
           }
         ]
       },
@@ -3087,6 +3206,12 @@ export const asyncRoutes = [
         component: () => import('@/views/thirdparty/thirdparty'),
         name: 'thirdpartyManage',
         meta: { title: '第三方信息 ◐' }
+      },
+      {
+        path: 'version_released',
+        component: () => import('@/views/thirdparty/versionReleased'),
+        name: 'version_released',
+        meta: { title: '客户端版本发布 ◐' }
       },
       // {
       //   path: 'transfer',

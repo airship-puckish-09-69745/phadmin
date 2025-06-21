@@ -2,7 +2,10 @@
   <el-dialog :title="updateData && updateData.ID ? '编辑配置' : '新增配置'" :visible.sync="dialogVisible" width="560px" :close-on-click-modal="false" @close="handleClose(false)">
     <el-form :model="formData" label-width="120px">
       <el-form-item label="活动名称" required>
-        <el-select v-model="formData.ActivityId" placeholder="请选择活动" style="width: 360px;" @change="onChangeActivityId">
+        <el-input v-model="formData.ActivityName" style="width: 360px;" />
+      </el-form-item>
+      <el-form-item label="活动配置" required>
+        <el-select v-model="formData.ActivityConfigId" placeholder="请选择活动" style="width: 360px;" @change="onChangeActivityConfigId">
           <el-option v-for="option in activityOptions" :key="option.id" :label="`${option.name}-${option.id}`" :value="option.id" />
         </el-select>
       </el-form-item>
@@ -12,24 +15,57 @@
       <el-form-item label="活动图标" :rules="{ required: true, message: '请选择活动图标', trigger: 'blur' }">
         <ImagePicker v-model="formData.Icon" />
       </el-form-item>
-      <el-form-item label="头像框" :rules="{ required: true, message: '请选择头像框', trigger: 'blur' }">
+      <!-- <el-form-item label="头像框" :rules="{ required: true, message: '请选择头像框', trigger: 'blur' }">
         <ImagePicker v-model="formData.Avatar" />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="玩法简要" prop="Description" :rules="{ required: true, message: '请输入玩法简要', trigger: 'blur' }">
         <el-input v-model="formData.Description" type="textarea" />
       </el-form-item>
       <el-form-item label="活动时间" prop="ActivityTime" :rules="{ required: true, message: '请选择活动时间', trigger: 'blur' }">
         <el-date-picker v-model="formData.ActivityTime" value-format="timestamp" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" />
       </el-form-item>
-      <el-form-item label="成就个数" prop="AchievementNumber" :rules="{ required: true, message: '请输入成就个数', trigger: 'blur' }">
-        <el-input v-model.number="formData.AchievementNumber" />
+      <el-form-item label="选择游戏">
+        <GameTreeSelector :selected-games-id="selectedGamesId" @change="handleGamesChange" />
       </el-form-item>
-      <el-form-item label="成就名称" prop="AchievementName" :rules="{ required: true, message: '请输入成就名称', trigger: 'blur' }">
-        <el-input v-model="formData.AchievementName" />
+      <!-- 通过表格的方式显示游戏列表，可以编辑游戏热度 -->
+      <el-form-item label="游戏热度">
+        <el-table :data="formData.GameList" border style="width: 100%;">
+          <el-table-column prop="Id" label="游戏ID" width="80" />
+          <el-table-column prop="Label" label="游戏名称" width="180" />
+          <el-table-column prop="Hot" label="热度">
+            <template slot-scope="scope">
+              <el-input v-model="scope.row.Hot" type="number" style="width: 100%;" @blur="onGameHotChange" />
+            </template>
+          </el-table-column>
+        </el-table>
       </el-form-item>
-      <el-form-item label="成就完成条件" prop="AchievementCondition" :rules="{ required: true, message: '请输入成就完成条件', trigger: 'blur' }">
-        <el-input v-model="formData.AchievementCondition" type="textarea" />
-      </el-form-item>
+
+      <el-button v-if="formData.AchievementList.length === 0 || !formData.AchievementList" type="success" icon="el-icon-plus" size="mini" style="padding: 3px; float: right;position: relative;top: -8px; z-index: 3;" @click="addAchievement(0)" />
+      <el-divider>
+        成就
+      </el-divider>
+      <div class="achievement-list">
+        <div v-for="(achievementItem, index) in formData.AchievementList" :key="index" class="achievement-list-item">
+          <div class="achievement-list-item-row">
+            <span class="achievement-list-item-row-name">成就名称</span>
+            <el-input v-model="achievementItem.AchievementName" />
+          </div>
+          <div class="achievement-list-item-row">
+            <span class="achievement-list-item-row-name">完成条件</span>
+            <el-input v-model="achievementItem.AchievementCondition" type="textarea" />
+          </div>
+          <div class="achievement-list-item-row">
+            <span class="achievement-list-item-row-name">头像框</span>
+            <ImagePicker v-model="achievementItem.Avatar" />
+          </div>
+
+          <div class="achievement-list-item-btns">
+            <el-button v-if="index < 2 && formData.AchievementList.length < 3" type="success" icon="el-icon-plus" size="mini" class="btn-plus" @click="addAchievement(index)" />
+            <el-button v-if="index !== 0" type="danger" icon="el-icon-delete" size="mini" class="btn-delete" @click="deleteAchievement(index)" />
+          </div>
+        </div>
+      </div>
+
     </el-form>
     <template #footer>
       <span class="dialog-footer">
@@ -42,9 +78,11 @@
 
 <script>
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
+import GameTreeSelector from './GamesTreeSelector.vue'
 export default {
   components: {
-    ImagePicker
+    ImagePicker,
+    GameTreeSelector
   },
   props: {
     visible: {
@@ -66,17 +104,22 @@ export default {
       // 和index列表组件保持一致的表单数据结构
       formData: {
         ID: '',
-        ActivityId: '',
+        ActivityConfigId: '',
         ActivityName: '',
         Amount: 0,
         Icon: '',
         Avatar: '',
         Description: '',
         ActivityTime: [],
-        AchievementNumber: 0,
-        AchievementName: '',
-        AchievementCondition: ''
-      }
+        // AchievementNumber: 0,
+        // AchievementName: '',
+        // AchievementCondition: ''
+        AchievementList: [
+          // this.getBlankAchievementItem()
+        ],
+        GameList: [] // 选择的游戏列表，回传过来之后会添加热度属性hot,
+      },
+      selectedGamesId: []
     }
   },
   computed: {
@@ -97,6 +140,8 @@ export default {
           newData.ActivityTime[0] * 1000,
           newData.ActivityTime[1] * 1000
         ]
+        this.selectedGamesId = newData.GameList.map(game => game.Id)
+        console.log('updateData', this.selectedGamesId)
       } else {
         this.resetForm()
       }
@@ -108,14 +153,61 @@ export default {
     }
   },
   methods: {
-    onChangeActivityId(val) {
-      const selectedActivity = this.activityOptions.find(option => option.id === val)
-      this.formData.ActivityName = selectedActivity ? selectedActivity.name : ''
-      console.log('onChangeActivityId', val, this.formData.ActivityName)
+    /**
+     * 游戏热度改变时对列表进行排序，热度大的排前面
+     * 将热度转化为整数类型
+     */
+    onGameHotChange() {
+      this.$nextTick(() => {
+        this.formData.GameList.sort((a, b) => b.Hot - a.Hot)
+        // 遍历GameList，将hot转化为整数类型
+        for (let i = 0; i < this.formData.GameList.length; i++) {
+          this.formData.GameList[i].Hot = parseInt(this.formData.GameList[i].Hot)
+        }
+      })
+    },
+    /**
+     * 点击按钮增加成就
+     * @param {*} index
+     */
+    addAchievement(index) {
+      this.formData.AchievementList.splice(index + 1, 0, this.getBlankAchievementItem())
+    },
+    handleGamesChange(selectedGames) {
+      const gameList = selectedGames.map(game => {
+        // 判断GameList是不是已经含有这个游戏，如果有则直接返回，否则添加热度属性
+        const existingGame = this.formData.GameList ? this.formData.GameList.find(g => g.Id === game.id) : null
+        return {
+          Id: game.id,
+          Label: game.label,
+          Hot: existingGame ? existingGame.Hot : 0
+        }
+      })
+      this.formData.GameList = gameList || []
+      this.onGameHotChange()
+      // console.log('handleGamesChange', this.formData.GameList)
+    },
+    /**
+     * 点击按钮删除成就
+     * @param {*} index
+     */
+    deleteAchievement(index) {
+      this.formData.AchievementList.splice(index, 1)
+    },
+    getBlankAchievementItem() {
+      return {
+        AchievementName: '',
+        AchievementCondition: '',
+        Avatar: ''
+      }
+    },
+    onChangeActivityConfigId(val) {
+      // const selectedActivity = this.activityOptions.find(option => option.id === val)
+      // this.formData.ActivityName = selectedActivity ? selectedActivity.name : ''
+      console.log('onChangeActivityConfigId', val, this.formData.ActivityName)
     },
     handleSave() {
-      if (!this.formData.ActivityName) {
-        this.$message.error('请选择活动名称')
+      if (!this.checkoutForm()) {
         return
       }
       const { ...submitData } = this.formData
@@ -124,29 +216,128 @@ export default {
         Math.floor(submitData.ActivityTime[0] / 1000),
         Math.floor(submitData.ActivityTime[1] / 1000)
       ]
+      // 金额和成就个数转换为整数类型
+      submitData.Amount = parseInt(submitData.Amount)
+      // submitData.AchievementNumber = parseInt(submitData.AchievementNumber)
       this.$emit('save', submitData)
       this.resetForm()
     },
     resetForm() {
       this.formData = {
         ID: '',
-        ActivityId: '',
+        ActivityConfigId: '',
         ActivityName: '',
         Amount: 0,
         Icon: '',
         Avatar: '',
         Description: '',
         ActivityTime: '',
-        AchievementNumber: 0,
-        AchievementName: '',
-        AchievementCondition: ''
+        AchievementList: [
+          // this.getBlankAchievementItem()
+        ]
       }
       this.$emit('update:visible', false)
     },
     handleClose(reload = false) {
       this.resetForm()
+      this.selectedGamesId = []
       this.$emit('update:visible', false)
+    },
+    /**
+     * 检查表单数据
+     * 所有的输入框都不能为空
+     * 成就必须1-3个，每个成就的名称和条件都不能为空
+     * @returns {boolean}
+     */
+    checkoutForm() {
+      if (!this.formData.ActivityName) {
+        this.$message.error('请输入活动名称')
+        return false
+      }
+      if (!this.formData.ActivityConfigId) {
+        this.$message.error('请选择活动配置')
+        return false
+      }
+      if (!this.formData.Amount) {
+        this.$message.error('请输入活动金额')
+        return false
+      }
+      if (!this.formData.Icon) {
+        this.$message.error('请选择活动图标')
+        return false
+      }
+      // if (!this.formData.Avatar) {
+      //   this.$message.error('请选择头像框')
+      //   return false
+      // }
+      if (!this.formData.Description) {
+        this.$message.error('请输入玩法简要')
+        return false
+      }
+      if (!this.formData.ActivityTime || this.formData.ActivityTime.length !== 2) {
+        this.$message.error('请选择活动时间')
+      }
+      for (let i = 0; i < this.formData.AchievementList.length; i++) {
+        const achievement = this.formData.AchievementList[i]
+        if (!achievement.AchievementName) {
+          this.$message.error(`请输入第${i + 1}个成就的名称`)
+          return false
+        } else if (!achievement.AchievementCondition) {
+          this.$message.error(`请输入第${i + 1}个成就的完成条件`)
+          return false
+        } else if (!achievement.Avatar) {
+          this.$message.error(`请选择第${i + 1}个成就的头像框`)
+          return false
+        }
+      }
+      return true
     }
   }
 }
 </script>
+
+<style scoped lang="scss">
+.achievement-list {
+  &-item {
+    padding: 8px;
+    border: 1px solid #ccc;
+    width: calc(100% - 24px);
+    margin-left: 12px;
+    position: relative;
+    margin-bottom: 8px;
+
+    &-row {
+      display: flex;
+      margin-bottom: 8px;
+      &-name {
+        width: 80px;
+        text-align: right;
+        margin-right: 8px;
+        position: relative;
+        top: 10px;
+        &::before {
+         content: '*';
+         color: red;
+         margin-right: 4px;
+        }
+      }
+    }
+
+    &-btns {
+      width: auto;
+      margin: 8px auto 0;
+      padding-left: calc(50% - 50px);
+    }
+
+    // .btn-delete,
+    // .btn-plus {
+
+    // }
+
+    .el-input,
+    .el-textarea {
+      width: calc(100% - 130px);
+    }
+  }
+}
+</style>

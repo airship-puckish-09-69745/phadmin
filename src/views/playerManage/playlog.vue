@@ -27,7 +27,7 @@
           <el-button type="success" size="mini" @click="showChart">输赢图表</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button v-if="gid==20 && dataArr.length!=0" type="warning" size="mini" @click="checkSweeperRate">扫雷概率
+          <el-button v-if="(gid==20 || gid==132) && dataArr.length!=0" type="warning" size="mini" @click="checkSweeperRate">扫雷概率
           </el-button>
         </el-form-item>
       </el-form>
@@ -212,7 +212,7 @@
           width="100"
         >
           <template slot-scope="scope">
-            <span v-if="gid===20 && scope.row.WinRate!==0">
+            <span v-if="(gid===20 || gid===132) && scope.row.WinRate!==0">
               {{ formatNumber(scope.row.WinRate * 100) }}
             </span>
             <span v-else>
@@ -262,10 +262,10 @@
           width="100"
         >
           <template slot-scope="scope">
-            <span v-if="gid==20&& scope.row.LuckyVal>0">
+            <span v-if="(gid==20 || gid==132) && scope.row.LuckyVal>0">
               {{ scope.row.LuckyVal / 100 }}
             </span>
-            <span v-else-if="gid==20&& scope.row.LuckyVal===0">
+            <span v-else-if="(gid==20 || gid==132) && scope.row.LuckyVal===0">
               {{ 0 }}
             </span>
             <span v-else>
@@ -3771,7 +3771,7 @@ export default {
             if (item.Gid === 10) {
               objs[o].RandVal = (item.RandVal / 100).toFixed(2)
               objs[o].WinRate = (item.WinRate / 100).toFixed(2)
-            } else if (item.Gid == 20) {
+            } else if (item.Gid == 20 || item.Gid==132) {
               objs[o].WinRate /= 100
               objs[o].ServiceFee *= 1000
             }
@@ -3854,7 +3854,7 @@ export default {
             $this.showTexasGame(obj)
           } else if (gid == 16) {
             $this.showBaccaratGame(obj)
-          } else if (gid == 20) {
+          } else if (gid == 20 || gid==132) {
             $this.showSweeperGame(obj)
           } else if (gid == 1) {
             $this.showRummyGame(obj)
@@ -5052,7 +5052,7 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
     },
 
     getServiceFeeName() {
-      if (this.gid == 20) {
+      if (this.gid == 20 || this.gid==132) {
         return '下注炸弹数'
         // } else if (this.gid == 10) {
         //   return '结果'
@@ -5157,7 +5157,7 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
       return name
     },
     getWinRateName() {
-      if (this.gid == 20) {
+      if (this.gid == 20 || this.gid==132) {
         return '领奖倍率'
       } else if (this.gid == 10) {
         return '下注值'

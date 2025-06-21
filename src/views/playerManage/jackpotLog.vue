@@ -177,7 +177,8 @@
     </el-row>
 
     <el-dialog
-      v-if="(searchForm.gameId === 150 || searchForm.gameId === 156 || searchForm.gameId === 166|| searchForm.gameId === 174 || searchForm.gameId === 196 || searchForm.gameId === 204) && searchForm.level === 0"
+      v-if="(searchForm.gameId === 150 || searchForm.gameId === 156 || searchForm.gameId === 166|| searchForm.gameId === 174 || searchForm.gameId === 196 || searchForm.gameId === 204 ||
+        searchForm.gameId === 210) && searchForm.level === 0"
       title="奖池信息"
       :modal="false"
       :visible.sync="prizeVisible"
@@ -365,7 +366,8 @@ export default {
   name: 'RocketRet',
   data() {
     return {
-      submap: { 90: 'moneycoming_slots_base', 150: 'supergemiii_slots_base', 166: 'firelink_slots_base', 174: 'treasurebowl_slots_base', 196: 'goldminer_slots_base', 204: 'spacetreasure_slots_base' },
+      submap: { 90: 'moneycoming_slots_base', 150: 'supergemiii_slots_base', 166: 'firelink_slots_base', 174: 'treasurebowl_slots_base', 196: 'goldminer_slots_base', 204: 'spacetreasure_slots_base',
+        210: 'luckyspirits_slots_base' },
       searchForm: {
         date: $libDate.GetDayBegin(new Date().getTime()),
         gameId: 25,
@@ -400,7 +402,9 @@ export default {
         { 'value': 196, 'label': 'GoldMiner' },
         { 'value': 204, 'label': 'SpaceTreasure' },
         { 'value': 128, 'label': 'Tongits JP' },
-        { 'value': 129, 'label': 'Live Color' }
+        { 'value': 129, 'label': 'Live Color' },
+        { 'value': 132, 'label': '新版扫雷' },
+        { 'value': 210, 'label': 'LuckySpirits' }
       ],
       appConfig: [
         { 'value': 0, 'label': '全部' },
@@ -572,7 +576,7 @@ export default {
           console.error('Error processing BetList:', error)
           this.levelConfig = [{ 'value': 0, 'label': '全部' }]
         })
-      } else if (this.searchForm.gameId === 150 || this.searchForm.gameId === 166 || this.searchForm.gameId === 196 || this.searchForm.gameId === 204) {
+      } else if (this.searchForm.gameId === 150 || this.searchForm.gameId === 166 || this.searchForm.gameId === 196 || this.searchForm.gameId === 204 || this.searchForm.gameId === 210) {
         // 调用 getData() 获取 BetList 数组
         this.getData().then(cfg => {
           this.levelConfig = [{ 'value': 0, 'label': '全部' }]
@@ -632,7 +636,7 @@ export default {
     showInfo() {
       const _this = this
       // 检查是否 gameId 为 150 且 level 为 0
-      const gameIds = [150, 90, 156, 166, 174, 196, 204] // 定义一个数组存储需要检查的 gameId
+      const gameIds = [150, 90, 156, 166, 174, 196, 204, 210] // 定义一个数组存储需要检查的 gameId
       if (gameIds.includes(this.searchForm.gameId) && this.searchForm.level === 0) {
         // 循环所有 levelConfig 值（除 value === 0）
         const promises = this.levelConfig
@@ -804,7 +808,7 @@ export default {
     },
     // 转行卢比
     toRupee(amount) {
-      const gameIds = [150, 90, 156, 166, 174, 196, 204] // 定义一个数组存储需要检查的 gameId
+      const gameIds = [150, 90, 156, 166, 174, 196, 204, 210] // 定义一个数组存储需要检查的 gameId
       const parsedAmount = parseInt(amount) // 先将 amount 转换为整数
       if (gameIds.includes(this.searchForm.gameId)) {
         return parsedAmount / 100000

@@ -1,6 +1,11 @@
 <template>
   <el-dialog :title="updateData && updateData.ID ? '编辑配置' : '新增配置'" :visible.sync="dialogVisible" width="540px" :close-on-click-modal="false" @close="handleClose(false)">
     <el-form :model="formData" label-width="100px">
+      <!-- <el-form-item label="活动开关" required>
+        <el-switch
+          v-model="formData.Status"
+        />
+      </el-form-item> -->
       <el-form-item label="活动名称" required>
         <!-- <el-input v-model="formData.Name" /> -->
         <el-select v-model="formData.ActivityId" placeholder="请选择活动" style="width: 360px;" @change="onChangeActivityId">
@@ -13,6 +18,9 @@
       <el-form-item label="活动时间" prop="ActivityTime" :rules="{ required: true, message: '请选择活动时间', trigger: 'blur' }">
         <el-date-picker v-model="formData.ActivityTime" value-format="timestamp" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" />
       </el-form-item>
+      <el-form-item label="奖励" required>
+        <el-input v-model="formData.Bonus" type="number" style="width: 360px;" />
+      </el-form-item>
       <el-form-item label="分页" required>
         <el-select v-model="formData.Page" placeholder="请选择分页" multiple style="width: 360px;">
           <el-option v-for="option in pageOptions" :key="option.value" :label="option.label" :value="option.value" />
@@ -21,9 +29,8 @@
       <el-form-item label="活动图标" required>
         <ImagePicker v-model="formData.Icon" />
       </el-form-item>
-      <el-form-item label="插入位置" required>
-        x:<el-input v-model.number="formData.Position.x" placeholder="X坐标" style="width: 150px; margin-right: 10px;" />
-        y:<el-input v-model.number="formData.Position.y" placeholder="Y坐标" style="width: 150px;" />
+      <el-form-item label="过期图标" required>
+        <ImagePicker v-model="formData.TimeoutIcon" />
       </el-form-item>
     </el-form>
     <template #footer>
@@ -59,6 +66,7 @@ export default {
   data() {
     return {
       formData: {
+        // Status: false,
         ID: '',
         ActivityName: '',
         ActivityId: '',
@@ -66,10 +74,8 @@ export default {
         Page: [],
         Icon: '',
         ActivityTime: [],
-        Position: {
-          x: 0,
-          y: 0
-        }
+        Bonus: 0,
+        TimeoutIcon: ''
       },
       pageOptions: [
         { label: 'all', value: 'all' },
@@ -125,6 +131,10 @@ export default {
         this.$message.error('活动金额必须大于0')
         return false
       }
+      if (this.formData.Bonus <= 0) {
+        this.$message.error('活动金额必须大于0')
+        return false
+      }
       if (this.formData.Page.length === 0) {
         this.$message.error('请选择分页')
         return false
@@ -133,8 +143,8 @@ export default {
         this.$message.error('活动图标不能为空')
         return false
       }
-      if (this.formData.Position.x === '' || this.formData.Position.y === '') {
-        this.$message.error('插入位置的X和Y坐标不能为空')
+      if (!this.formData.TimeoutIcon) {
+        this.$message.error('过期图标不能为空')
         return false
       }
       return true
@@ -146,12 +156,16 @@ export default {
       const { ...formData } = this.formData
       // 日期/1000
       formData.ActivityTime = formData.ActivityTime.map(time => time / 1000)
+      // 金额转成数字类型
+      formData.Amount = parseInt(formData.Amount)
+      formData.Bonus = parseInt(formData.Bonus)
 
       this.$emit('update', formData)
       this.handleClose()
     },
     resetForm() {
       this.formData = {
+        // Status: false,
         ID: '',
         ActivityName: '',
         ActivityId: '',
@@ -159,10 +173,8 @@ export default {
         Page: [],
         Icon: '',
         ActivityTime: [],
-        Position: {
-          x: 0,
-          y: 0
-        }
+        Bonus: 0,
+        TimeoutIcon: ''
       }
       this.$emit('update:visible', false)
     },

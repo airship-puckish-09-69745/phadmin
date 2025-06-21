@@ -128,7 +128,7 @@
       </el-dialog>
   </div>
 </template>
-<style>
+<style scoped>
 .scroll-area {
   overflow: auto;
   max-width: 100%;

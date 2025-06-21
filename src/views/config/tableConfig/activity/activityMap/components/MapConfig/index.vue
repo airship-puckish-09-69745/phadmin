@@ -22,12 +22,12 @@
           :width="field.width"
         >
           <template slot-scope="scope">
-            <!-- 活动图标 -->
+            <!-- 活动图标 || 过期图标 -->
             <el-image
-              v-if="field.prop === 'Icon'"
-              :src="scope.row.Icon"
+              v-if="field.prop === 'Icon' || field.prop === 'TimeoutIcon'"
+              :src="scope.row[field.prop]"
               fit="contain"
-              :preview-src-list="[scope.row.Icon]"
+              :preview-src-list="[scope.row[field.prop]]"
               class="image-manage-item__image"
             />
             <!-- 分页 -->
@@ -42,6 +42,10 @@
                 {{ item }}
               </el-tag>
             </template>
+            <!-- 开关 -->
+            <!-- <template v-else-if="field.prop === 'Status'">
+              <el-switch v-model="scope.row.Status" @change="onUpdateStatus(scope.row)" />
+            </template> -->
             <!-- 日期处理 -->
             <template v-else-if="field.prop === 'ActivityTime'">
               <span v-if="scope.row.ActivityTime">
@@ -109,12 +113,14 @@ export default {
       libShow: $libShow,
       fields: [
         { label: '配置ID', prop: 'ID', width: 130 },
-        { label: '活动名称', prop: 'ActivityName', width: 200 },
+        { label: '活动名称', prop: 'ActivityName' },
+        // { label: '活动开关', prop: 'Status', width: 80 },
         { label: '活动金额', prop: 'Amount', width: 200 },
         { label: '活动时间', prop: 'ActivityTime', width: 130 },
+        { label: '奖励', prop: 'Bonus', width: 130 },
         { label: '分页', prop: 'Page' },
         { label: '活动图标', prop: 'Icon', width: 120 },
-        { label: '插入位置', prop: 'Position', width: 120, formatter: (row) => `x:${row.Position.x}, y:${row.Position.y}` }
+        { label: '过期图标', prop: 'TimeoutIcon', width: 120 }
       ],
       formDialog: {
         updateData: null,
@@ -149,6 +155,16 @@ export default {
     onSearch() {
       this.$emit('reload')
     },
+    // onUpdateStatus(row) {
+    //   this.$nextTick(() => {
+    //     // console.log(row)
+    //     this.handleUpdateConfig(row)
+    //     // this.$message({
+    //     //   message: `成功${row.Status ? '开启' : '关闭'}${row.ActivityName}`,
+    //     //   type: row.Status ? 'success' : 'info'
+    //     // })
+    //   })
+    // },
     /**
      * 从mapList中获取分页数据
      */

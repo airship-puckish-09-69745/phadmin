@@ -32,6 +32,11 @@ export default {
     chartData: {
       type: Object,
       required: true
+    },
+    // y轴是否加上%
+    yShowPercentageSign: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -95,6 +100,18 @@ export default {
         })
       }
 
+      const yAxis = {
+        show: yShow,
+        axisTick: {
+          show: false
+        }
+      }
+      if (this.yShowPercentageSign) {
+        yAxis.axisLabel = {
+          formatter: '{value} %'
+        }
+      }
+      console.log(yAxis)
       this.chart.setOption({
         xAxis: {
           data: chartData.xData,
@@ -118,12 +135,7 @@ export default {
           },
           padding: [5, 10]
         },
-        yAxis: {
-          show: yShow,
-          axisTick: {
-            show: false
-          }
-        },
+        yAxis,
         legend: {
           data: yNames
         },

@@ -3,7 +3,7 @@
 
     <el-row :gutter="10" style="margin-top: 30px">
       <el-col :span="24">
-        <el-form inline label-width="90px" :inline="true" size="small">
+        <el-form inline label-width="60px" :inline="true" size="small">
           <el-form-item label="日期：">
             <el-date-picker
               :default-time="['00:00:00', '23:59:59']"
@@ -16,6 +16,7 @@
               end-placeholder="结束日期"
               align="right"
               size="mini"
+              style="width: 330px;"
             />
           </el-form-item>
           <el-form-item label="Uid">
@@ -30,6 +31,8 @@
           <el-form-item>
             <el-button type="primary" size="mini" @click="getData">查询</el-button>
             <el-button type="success" size="mini" @click="createData">创建申请</el-button>
+            <el-button type="warning" size="mini" :disabled="disabledBatchApplyBtn" @click="showBatchDialog('申请')">批量发起申请</el-button>
+            <el-button type="warning" size="mini" :disabled="disabledBatchCompensationBtn" @click="showBatchDialog('补偿')">批量发起补偿</el-button>
           </el-form-item>
         </el-form>
 
@@ -44,7 +47,13 @@
           :header-cell-style="libShow.DefaultTableHeadClass"
           :row-style="{height:'10px'}"
           :cell-style="libShow.TableCell(0)"
+          @selection-change="handleSelectionChange"
         >
+          <el-table-column
+            type="selection"
+            width="55"
+            :selectable="selectable"
+          />
           <el-table-column label="AppId" width="75px">
             <template slot-scope="scope">
               {{ scope.row.app_id }}
@@ -229,6 +238,27 @@
         </el-col>
       </el-row>
     </el-dialog>
+
+    <!-- 批量处理 -->
+    <el-dialog
+      :title="batchDialog.title"
+      :visible.sync="batchDialog.visible"
+      width="460px"
+      :before-close="onCloseBatchDialog"
+    >
+      <div>
+        确定要发起申请
+        <span style="color: dodgerblue">{{ batchDialog.title === '批量发起申请' ? batchDialog.rowsApply.length : batchDialog.rowsCompensation.length }}</span>
+        条数据，总金额为
+        <span style="color: red">{{ selectedTotal }}</span>
+        ?
+        <div v-show="invalidRowsCount" style="margin-top: 12px;color: #999;">不符合发起申请的选中数据<span style="color: red">{{ invalidRowsCount }}</span>条</div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="mini" @click="onCloseBatchDialog">取消</el-button>
+        <el-button size="mini" type="primary" @click="onConfirmBatch">确定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -283,6 +313,39 @@ export default {
       visibleData: false,
       appInfo: [],
       isEdit: false,
+      selectedRows: [], // 多选框选中的行
+      // 批量发起申请或者补偿的对话框
+      batchDialog: {
+        visible: false,
+        title: '批量发起申请',
+        rowsApply: [], // 选择的数据中发起申请的行
+        rowsCompensation: [] // 选择的数据中发起补偿的行
+      }
+    }
+  },
+  computed: {
+    // 计算发起申请或者补偿的金额总和
+    selectedTotal() {
+      // return this.selectedRows.reduce((total, row) => total + row.amount, 0) / 1000
+      if (this.batchDialog.title === '批量发起申请') {
+        return this.batchDialog.rowsApply.reduce((total, row) => total + row.amount, 0) / 1000
+      } else {
+        return this.batchDialog.rowsCompensation.reduce((total, row) => total + row.amount, 0) / 1000
+      }
+    },
+    // 计算不符合发起申请或者补偿的数据的数量
+    invalidRowsCount() {
+      if (this.batchDialog.title === '批量发起申请') {
+        return this.selectedRows.length - this.batchDialog.rowsApply.length
+      } else {
+        return this.selectedRows.length - this.batchDialog.rowsCompensation.length
+      }
+    },
+    disabledBatchApplyBtn() {
+      return this.batchDialog.rowsApply.length === 0
+    },
+    disabledBatchCompensationBtn() {
+      return this.batchDialog.rowsCompensation.length === 0
     }
   },
   created() {
@@ -291,6 +354,101 @@ export default {
     this.getData()
   },
   methods: {
+    /**
+     * 多选条件下的选择框是否可用
+     * @param row
+     * @param index
+     * @returns {function(*): boolean}
+     */
+    selectable(row) {
+      return row.status === 3 || row.status === 6 || row.status === 2 || row.status === 8
+    },
+    /**
+     * 批量发起申请
+     */
+    showBatchDialog(type = '申请') {
+      // console.log('batchApply', this.selectedRows)
+      // 过滤出未审批的行
+      // this.batchDialog.rowsApply = this.selectedRows.filter(row => row.status === 3)
+      this.batchDialog.title = `批量发起${type}`
+      this.batchDialog.total = this.batchDialog.rowsApply.reduce((total, row) => total + row.amount, 0) / 1000
+      this.batchDialog.visible = true
+    },
+    /**
+     * 批量发起申请或者补偿的确认按钮
+     * 批量调用接口发起申请或者补偿
+     * 全部请求成功后，刷新表格
+     */
+    async onConfirmBatch() {
+      // 记录成功的请求数量和失败的请求数量
+      let successCount = 0
+      let failCount = 0
+      let requests = []
+      // 发起申请
+      if (this.batchDialog.title === '批量发起申请') {
+        requests = this.batchDialog.rowsApply.map(row => {
+          return request({
+            url: '/applycompensation/update/status',
+            method: 'post',
+            data: {
+              ID: row.id,
+              Status: 0
+            }
+          }).then(response => {
+            if (response.RetCode === 0) {
+              successCount += 1
+            } else {
+              failCount += 1
+            }
+          }).catch(() => {
+            failCount += 1
+          })
+        })
+      } else {
+        // 发起补偿
+        requests = this.batchDialog.rowsCompensation.map(row => {
+          return request({
+            url: '/applycompensation/wallet/damage',
+            method: 'Post',
+            data: {
+              ID: row.id,
+              Uid: row.uid,
+              Amount: row.amount,
+              GameId: row.game_id,
+              App: row.app_id,
+              Detail: row.detail,
+              AbnormalTime: row.abnormal_time,
+              Reason: row.description + '|操作人:' + row.applicant_user
+            }
+          }).then(response => {
+            if (response.RetCode === 0) {
+              successCount += 1
+            } else {
+              failCount += 1
+            }
+          }).catch(() => {
+            failCount += 1
+          })
+        })
+      }
+      Promise.all(requests).finally(() => {
+        this.$message({
+          message: `处理完成，成功${successCount}条，失败${failCount}条`,
+          type: 'success'
+        })
+        this.batchDialog.visible = false
+        this.batchDialog.rowsApply = []
+        this.getData()
+      })
+    },
+    onCloseBatchDialog() {
+      this.batchDialog.visible = false
+    },
+    handleSelectionChange(rows) {
+      this.selectedRows = rows
+      this.batchDialog.rowsApply = this.selectedRows.filter(row => row.status === 3)
+      this.batchDialog.rowsCompensation = this.selectedRows.filter(row => row.status === 6 || row.status === 2 || row.status === 8)
+    },
     formatTime(ts) {
       return $libDate.FormateSecondStr(ts, 2)
     },

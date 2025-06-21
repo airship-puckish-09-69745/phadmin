@@ -219,7 +219,7 @@
               <el-input v-model.number="edit.item.WatchTimesMax" />
             </el-form-item>
           </el-col>
-          -->
+         
           <el-col :span="11">
             <el-form-item
               label="最小玩牌金额："
@@ -230,6 +230,7 @@
               <el-input v-model="edit.item.MinPlayMoney" placeholder="请输入" />
             </el-form-item>
           </el-col>
+          -->
         </el-row>
 
         <el-form-item>

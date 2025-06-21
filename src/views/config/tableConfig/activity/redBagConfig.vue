@@ -471,12 +471,12 @@
           <el-form ref="item" label-width="220px">
             <el-row>
               <el-col>
-                <el-form-item label="白名单开关：" :rules="dataRule(true,{type:'n',range:'0'})">
+                <el-form-item label="白名单开关:" :rules="dataRule(true,{type:'n',range:'0'})">
                   <el-switch v-model="item.IsWhite" :active-value="true" :inactive-value="false" />
                 </el-form-item>
               </el-col>
               <el-col :span="11">
-                <el-form-item label="AppId白名单：" prop="item.WhitelistCfg.AppIdList">
+                <el-form-item label="AppId白名单:" prop="item.WhitelistCfg.AppIdList">
                   <el-select v-model="item.WhitelistCfg.AppIdList" multiple placeholder="请选择" style="width: 400px" @change="onAppIdOptionsChange">
                     <el-option
                       v-for="item in appIdOptions"
@@ -1338,7 +1338,8 @@ export default {
       request({
         url: '/thirdpartygames/all',
         method: 'get',
-        data: {}
+        data: {},
+        params: {status : 2}
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
