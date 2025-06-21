@@ -430,7 +430,8 @@ export default {
       },
       statItems: [],
       txt: '',
-      subKey: 'tongits_ai_list_cfg'
+      subKey: '',
+      cgiPath: ''
     }
   },
 
@@ -440,9 +441,12 @@ export default {
     }
   },
   created() {
+    this.subKey = this.$route.meta.cfgSubKey
+    this.cgiPath = this.$route.meta.cgiPath
     this.getData()
     this.getList()
     this.isDisabled = false
+
     console.log(1)
   },
   methods: {
@@ -533,7 +537,7 @@ export default {
             Env: $this.env,
             uid: ob.uid,
             status: status,
-            Path: '/tongitsrobotlist/update/status'
+            Path: '/' + this.cgiPath + '/update/status'
           }
         }).then(response => {
           if (response.RetCode === 0) {
@@ -553,7 +557,7 @@ export default {
         method: 'get',
         data: {
           Env: _this.env,
-          Path: '/tongitsrobotlist/list',
+          Path: '/' + this.cgiPath + '/list',
           Page: 1,
           PageNum: 400
         }
@@ -723,7 +727,7 @@ export default {
     },
     editSave(postData) {
       postData.Env = this.env
-      postData.Path = '/tongitsrobotlist/update/item'
+      postData.Path = '/' + this.cgiPath + '/update/item'
       request({
         url: '/dataProxy/info',
         method: 'post',
@@ -742,7 +746,7 @@ export default {
     },
     createSave(postData) {
       postData.Env = this.env
-      postData.Path = '/tongitsrobotlist/add/user'
+      postData.Path = '/' + this.cgiPath + '/add/user'
       request({
         url: '/dataProxy/info',
         method: 'post',
