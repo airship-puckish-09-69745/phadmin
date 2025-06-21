@@ -3,18 +3,14 @@
     <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" />
     <el-row :gutter="10" style="margin-top: 30px">
       <el-col :offset="3" :span="16">
-        <el-button size="mini" type="primary" @click="setData">保存</el-button>
         <el-form ref="form" :model="item" label-position="left" style="margin-top: 30px">
-          <el-row>
-            <el-col>
-              <el-form-item label="下注额度(值用 , 连接如 200,100,50,20,10,5,1,11)" :required="true">
-                <el-col>
-                  <el-input v-model="betMoneyList" size="mini" :required="true" />
-                </el-col>
-              </el-form-item>
-            </el-col>
-          </el-row>
+          <el-form-item label="下注额度(值用 , 连接如 200,100,50,20,10,5,1)" :required="true">
+            <el-input v-model="betMoneyList" size="mini" :required="true" />
+          </el-form-item>
         </el-form>
+      </el-col>
+      <el-col :span="5">
+        <el-button size="mini" type="primary" @click="setData">保存</el-button>
       </el-col>
     </el-row>
     <el-row style="padding-top: 5px">
@@ -39,22 +35,77 @@
       </el-col> -->
     </el-row>
     <div style="padding-top: 10px">
-      <el-col span="16">
-        <el-descriptions
-          class="margin-top"
-          :column="4"
-          size="medium"
-          :label-style="{'text-align': 'right', 'font-weight':'bold','padding':'5px'}"
+      <el-col span="16" :offset="3">
+        <el-table
+          ref="filterTable"
+          :data="statItems"
+          stripe
           border
+          :header-cell-style="libShow.DefaultTableHeadClass"
+          :row-style="{height:'10px'}"
+          :cell-style="libShow.DefaultTableCell"
+          style="width: 100%"
+          @row-click="clickData"
+          @sort-change="sortChange"
         >
-          <el-descriptions-item label="总成本：">{{ formatNumber(statItem.initMoney) }}</el-descriptions-item>
-          <el-descriptions-item label="当前金额："> {{ formatNumber(statItem.money) }}</el-descriptions-item>
-          <el-descriptions-item label="输赢：">{{ formatNumber((statItem.money - statItem.initMoney)) }}</el-descriptions-item>
-          <el-descriptions-item label="比例：">
-            <span v-if="statItem.initMoney==0">0</span>
-            <el-span v-else>  {{ formatNumber((statItem.money - statItem.initMoney)*100/statItem.initMoney) }}%</el-span>
-          </el-descriptions-item>
-        </el-descriptions>
+          <el-table-column
+            prop="tableMoney"
+            label="场次"
+            width="90"
+          />
+          <el-table-column
+            prop="initMoney"
+            label="成本"
+            width="100"
+          />
+          <el-table-column
+            prop="money"
+            label="当前金额"
+            width="100"
+          />
+          <el-table-column
+            label="输赢"
+            width="100"
+          >
+            <template slot-scope="scope">
+               <span v-if="scope.row.money > scope.row.initMoney" style="color:red">
+              {{ (scope.row.money - scope.row.initMoney).toFixed(2) }}
+            </span>
+              <span v-else style="color:green">
+              {{ (scope.row.money - scope.row.initMoney).toFixed(2) }}
+            </span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="比例"
+            width="100"
+          >
+            <template slot-scope="scope">
+              <span v-if="scope.row.money > scope.row.initMoney" style="color:red">
+              {{ ((scope.row.money - scope.row.initMoney)*100/scope.row.initMoney).toFixed(2) }}%
+            </span>
+              <span v-else style="color:green">
+              {{ ((scope.row.money - scope.row.initMoney)*100/scope.row.initMoney).toFixed(2) }}%
+            </span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="游戏中"
+            width="100"
+          >
+            <template slot-scope="scope">
+              {{ scope.row.gameCount }}/ {{ scope.row.gameCount + scope.row.workCount}}
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="冻结中"
+            width="100"
+          >
+            <template slot-scope="scope">
+              {{ scope.row.coldCount }}
+            </template>
+          </el-table-column>
+        </el-table>
       </el-col>
 
       <el-table
@@ -369,7 +420,7 @@ export default {
       isDisabled: false,
       form: {
       },
-      statItem: { money: 0, initMoney: 0 },
+      statItems: [],
       txt: '',
       subKey: 'tongitsQuick_ai_list_cfg'
     }
@@ -514,12 +565,27 @@ export default {
           })
           this.clientDB = new ClientTableData(objs, 20, filterMap, 'status', -1)
           this.handleCurrentChange(1)
-          _this.statItem = { money: 0, initMoney: 0 }
+          const statMap = {}
           for (let i = 0; i < objs.length; i++) {
-            if (objs[i].status !== 0) {
-              _this.statItem.money += objs[i].money
-              _this.statItem.initMoney += objs[i].initMoney
+            const item = objs[i]
+            if (statMap[item.allowTableMoney] == null) {
+              statMap[item.allowTableMoney] = { tableMoney: item.allowTableMoney, initMoney: 0, money: 0, gameCount: 0, workCount: 0, coldCount: 0 }
             }
+            if (item.status == 0) {
+              statMap[item.allowTableMoney].coldCount++
+            } else {
+              statMap[item.allowTableMoney].initMoney += item.initMoney
+              statMap[item.allowTableMoney].money += item.money
+              if (item.status == 1) {
+                statMap[item.allowTableMoney].workCount++
+              } else if (item.status == 2) {
+                statMap[item.allowTableMoney].gameCount++
+              }
+            }
+          }
+
+          for (const o in statMap) {
+            this.statItems.push(statMap[o])
           }
         }
         // loading.close()
@@ -530,15 +596,6 @@ export default {
     },
     formatTime(ts) {
       return $libDate.FormateSecondStr(ts, 2)
-    },
-    refreshStat() {
-      this.statItem = { money: 0, initMoney: 0 }
-      for (let i = 0; i < this.clientDB.ShowData.length; i++) {
-        if (this.clientDB.ShowData[i].status !== 0) {
-          this.statItem.money += this.clientDB.ShowData[i].money
-          this.statItem.initMoney += this.clientDB.ShowData[i].initMoney
-        }
-      }
     },
     clearFilter() {
       this.clientDB.ClearFilterMap()
@@ -552,7 +609,6 @@ export default {
     // 分页处理
     refreshShow() {
       this.tableData = this.clientDB.GetCurrentPageData()
-      this.refreshStat()
     },
     handleSizeChange(val) {
       this.clientDB.GetPage().SetPageNum(val)
