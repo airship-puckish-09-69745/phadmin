@@ -65,11 +65,15 @@
           <el-table-column
             prop="money"
             label="当前金额"
-            width="100"
-          />
+            width="150"
+          >
+            <template slot-scope="scope">
+              {{ formatNumber(scope.row.money) }}
+            </template>
+          </el-table-column>
           <el-table-column
             label="输赢"
-            width="100"
+            width="150"
           >
             <template slot-scope="scope">
                <span v-if="scope.row.money > scope.row.initMoney" style="color:red">
