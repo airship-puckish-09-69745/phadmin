@@ -272,102 +272,114 @@
       :close-on-press-escape="false"
     >
       <el-form ref="edit" :model="edit" label-width="150px" size="small">
-        <el-tabs type="card">
-          <el-tab-pane label="基础信息">
-            <el-form-item label="AppId" :required="true">
-              <el-select v-model="edit.item.AppId" style="width: 230px" :disabled="!edit.isCopy" placeholder="请选择" size="mini">
-                <el-option
-                  v-for="item in appInfo"
-                  :key="item.key"
-                  :label="appInfoLabel(item.key, item.label)"
-                  :value="item.key"
-                />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="名称：" :required="true">
-              <el-row>
-                <el-col :span="2">英文: </el-col><el-col :span="16"><el-input v-model="edit.itemNames['en']" /></el-col>
-              </el-row>
-              <el-row>
-                <el-col :span="2">印地: </el-col><el-col :span="16"><el-input v-model="edit.itemNames['hi']" /></el-col>
-              </el-row>
-            </el-form-item>
-            <el-form-item label="分类：" :required="true" prop="item.Type">
-              <el-col :span="11">
-                <el-select v-model.number="edit.item.Type" placeholder="分类">
-                  <el-option
-                    v-for="item in typeOption"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  />
-                </el-select>
-              </el-col>
-            </el-form-item>
-            <el-form-item label="游戏Key：" :required="true" prop="item.GameKey" :rules="dataRule(true,{type:'s',range:'2'})">
-              <el-col :span="11">
-                <el-input v-model="edit.item.GameKey" placeholder="开发提供" />
-              </el-col>
-            </el-form-item>
-            <el-form-item label="图片：" :required="true">
-              <ImagePicker v-model="formDialog.form.game.image_path" category="subConfig" />
-            </el-form-item>
-<!--            <el-form-item label="背景图片：" :required="true">-->
-<!--              <el-upload-->
-<!--                class="avatar-uploader"-->
-<!--                :action="actionURL"-->
-<!--                :show-file-list="false"-->
-<!--                :with-credentials="true"-->
-<!--                :on-success="SuccUploadBack"-->
-<!--                :before-upload="beforeAvatarUpload"-->
-<!--              >-->
-<!--                <img v-if="edit.item.IconBack" :src="getFullPath(edit.item.IconBack)" class="avatar" height="100px">-->
-<!--                <i v-else class="el-icon-plus avatar-uploader-icon" />-->
-<!--              </el-upload>-->
-<!--            </el-form-item>-->
-            <el-form-item v-if="false" label="图片(客户端内置)：" :required="true" prop="item.GameKey" :rules="dataRule(true,{type:'s',range:'2'})">
-              <el-input v-model="edit.item.IconInner" placeholder="开发提供" />
-            </el-form-item>
-            <el-form-item v-if="false" label="是否支持单一钱包：" :required="true">
-              <el-col :span="11">
-                <el-input v-model="edit.item.CodePath" placeholder="开发提供" />
-              </el-col>
-            </el-form-item>
-            <el-form-item v-if="false" label="公共包路径：" :required="true">
-              <el-col :span="11">
-                <el-input v-model="edit.item.CommCodePath" placeholder="开发提供" />
-              </el-col>
-            </el-form-item>
-<!--            <el-form-item label="只白名单可见：" :required="true">-->
-<!--              <el-radio-group v-model.number="edit.item.IsWhite">-->
-<!--                <el-radio :label="1">是</el-radio>-->
-<!--                <el-radio :label="0">否</el-radio>-->
-<!--              </el-radio-group>-->
-<!--            </el-form-item>-->
-<!--            <el-form-item label="非真实用户是否显示：" :required="true">-->
-<!--              <el-radio-group v-model.number="edit.item.IsPlaying">-->
-<!--                <el-radio :label="1">是</el-radio>-->
-<!--                <el-radio :label="0">否</el-radio>-->
-<!--              </el-radio-group>-->
-<!--            </el-form-item>-->
-            <el-form-item v-if="false" label="最低版本限制：" :required="true">
-              <el-col :span="11">
-                <el-input v-model="edit.item.VersionLower" placeholder="开发提供" />
-              </el-col>
-            </el-form-item>
-<!--            <el-form-item label="new 标识：" :required="true">-->
-<!--              <el-radio-group v-model.number="edit.item.IsNew">-->
-<!--                <el-radio :label="1">是</el-radio>-->
-<!--                <el-radio :label="0">否</el-radio>-->
-<!--              </el-radio-group>-->
-<!--            </el-form-item>-->
-<!--            <el-form-item label="hot 标识：" :required="true">-->
-<!--              <el-radio-group v-model.number="edit.item.IsHot">-->
-<!--                <el-radio :label="1">是</el-radio>-->
-<!--                <el-radio :label="0">否</el-radio>-->
-<!--              </el-radio-group>-->
-<!--            </el-form-item>-->
-          </el-tab-pane>
+            <el-tabs type="card">
+              <el-tab-pane label="基础信息">
+                <el-form-item label="AppId" :required="true">
+                  <el-select v-model="edit.item.AppId" style="width: 230px" :disabled="!edit.isCopy" placeholder="请选择" size="mini">
+                    <el-option
+                      v-for="item in appInfo"
+                      :key="item.key"
+                      :label="appInfoLabel(item.key, item.label)"
+                      :value="item.key"
+                    />
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="站点：">
+                  <el-checkbox-group v-model="edit.item.Channel" :required="true">
+                    <el-checkbox label="BP">BP</el-checkbox>
+                    <el-checkbox label="AP">AP</el-checkbox>
+                    <el-checkbox label="GP">GP</el-checkbox>
+                    <el-checkbox label="TP">TP</el-checkbox>
+                    <el-checkbox label="PG">PG</el-checkbox>
+                    <el-checkbox label="Dev">DEV</el-checkbox>
+                  </el-checkbox-group>
+                </el-form-item>
+                <el-form-item label="名称：" :required="true">
+                  <el-row>
+                    <el-col :span="2">英文: </el-col><el-col :span="16"><el-input v-model="edit.itemNames['en']" /></el-col>
+                  </el-row>
+                  <el-row>
+                    <el-col :span="2">印地: </el-col><el-col :span="16"><el-input v-model="edit.itemNames['hi']" /></el-col>
+                  </el-row>
+                </el-form-item>
+                <el-form-item label="分类：" :required="true" prop="item.Type">
+                  <el-col :span="11">
+                    <el-select v-model.number="edit.item.Type" placeholder="分类">
+                      <el-option
+                        v-for="item in typeOption"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      />
+                    </el-select>
+                  </el-col>
+                </el-form-item>
+                <el-form-item label="游戏Key：" :required="true" prop="item.GameKey" :rules="dataRule(true,{type:'s',range:'2'})">
+                  <el-col :span="11">
+                    <el-input v-model="edit.item.GameKey" placeholder="开发提供" />
+                  </el-col>
+                </el-form-item>
+                <el-form-item label="图片：" :required="true">
+                  <ImagePicker v-model="formDialog.form.game.image_path" category="subConfig" />
+                </el-form-item>
+                <!--            <el-form-item label="背景图片：" :required="true">-->
+                <!--              <el-upload-->
+                <!--                class="avatar-uploader"-->
+                <!--                :action="actionURL"-->
+                <!--                :show-file-list="false"-->
+                <!--                :with-credentials="true"-->
+                <!--                :on-success="SuccUploadBack"-->
+                <!--                :before-upload="beforeAvatarUpload"-->
+                <!--              >-->
+                <!--                <img v-if="edit.item.IconBack" :src="getFullPath(edit.item.IconBack)" class="avatar" height="100px">-->
+                <!--                <i v-else class="el-icon-plus avatar-uploader-icon" />-->
+                <!--              </el-upload>-->
+                <!--            </el-form-item>-->
+                <el-form-item v-if="false" label="图片(客户端内置)：" :required="true" prop="item.GameKey" :rules="dataRule(true,{type:'s',range:'2'})">
+                  <el-input v-model="edit.item.IconInner" placeholder="开发提供" />
+                </el-form-item>
+                <el-form-item v-if="false" label="是否支持单一钱包：" :required="true">
+                  <el-col :span="11">
+                    <el-input v-model="edit.item.CodePath" placeholder="开发提供" />
+                  </el-col>
+                </el-form-item>
+                <el-form-item v-if="false" label="公共包路径：" :required="true">
+                  <el-col :span="11">
+                    <el-input v-model="edit.item.CommCodePath" placeholder="开发提供" />
+                  </el-col>
+                </el-form-item>
+                <!--            <el-form-item label="只白名单可见：" :required="true">-->
+                <!--              <el-radio-group v-model.number="edit.item.IsWhite">-->
+                <!--                <el-radio :label="1">是</el-radio>-->
+                <!--                <el-radio :label="0">否</el-radio>-->
+                <!--              </el-radio-group>-->
+                <!--            </el-form-item>-->
+                <!--            <el-form-item label="非真实用户是否显示：" :required="true">-->
+                <!--              <el-radio-group v-model.number="edit.item.IsPlaying">-->
+                <!--                <el-radio :label="1">是</el-radio>-->
+                <!--                <el-radio :label="0">否</el-radio>-->
+                <!--              </el-radio-group>-->
+                <!--            </el-form-item>-->
+                <el-form-item v-if="false" label="最低版本限制：" :required="true">
+                  <el-col :span="11">
+                    <el-input v-model="edit.item.VersionLower" placeholder="开发提供" />
+                  </el-col>
+                </el-form-item>
+                <!--            <el-form-item label="new 标识：" :required="true">-->
+                <!--              <el-radio-group v-model.number="edit.item.IsNew">-->
+                <!--                <el-radio :label="1">是</el-radio>-->
+                <!--                <el-radio :label="0">否</el-radio>-->
+                <!--              </el-radio-group>-->
+                <!--            </el-form-item>-->
+                <!--            <el-form-item label="hot 标识：" :required="true">-->
+                <!--              <el-radio-group v-model.number="edit.item.IsHot">-->
+                <!--                <el-radio :label="1">是</el-radio>-->
+                <!--                <el-radio :label="0">否</el-radio>-->
+                <!--              </el-radio-group>-->
+                <!--            </el-form-item>-->
+              </el-tab-pane>
+            </el-tabs>
+
 <!--          <el-tab-pane label="游戏名称多语言" name="second">-->
 <!--            <el-form-item label="图片内容：" :required="true">-->
 <!--              <template v-for="(o) in langTypes">-->
@@ -390,7 +402,7 @@
 <!--              </template>-->
 <!--            </el-form-item>-->
 <!--          </el-tab-pane>-->
-        </el-tabs>
+
 
         <el-form-item>
           <el-row>
@@ -482,7 +494,8 @@ function newItem() {
     IsPlaying: 0,
     IsHot: 0,
     IsNew: 0,
-    AppId: 0
+    AppId: 0,
+    Channel: ''
   }
 }
 
@@ -934,6 +947,12 @@ export default {
           Object.assign(this.edit.item, _data)
           this.edit.itemNames = JSON.parse(this.edit.item.Name)
           this.edit.langPic = JSON.parse(this.edit.item.NameIcon)
+          if (this.edit.item.Channel.length > 0 && typeof this.edit.item.Channel === 'string') {
+            this.edit.item.Channel = this.edit.item.Channel.split(',')
+          } else {
+            this.edit.item.Channel = []
+          }
+          console.log('initFormData', this.edit.item.Channel)
           this.formDialog.form.game.image_path = this.edit.item.Icon
           if (bEdit) {
             // 设置修改之前数据
@@ -969,8 +988,7 @@ export default {
         data: postData
       }).then(response => {
         if (response.RetCode === 0) {
-          this.clientDB.UpdateData(this.edit.item)
-          this.refreshShow()
+          this.getList()
           Message.success('保存成功！')
         }
       })
