@@ -274,7 +274,7 @@ export const asyncRoutes = [
                     path: 'tongitsJokerAIList',
                     component: () => import('@/views/config/tableConfig/tongitsAIListConfig'),
                     name: 'tongitsJokerAIList',
-                    meta: { title: 'AI-List ◐', cfgSubKey: 'pusoywild_ai_list_cfg', cgiPath: 'pusoywildrobot' }
+                    meta: { title: 'AI-List ◐', cfgSubKey: 'tongitsJoker_ai_list_cfg', cgiPath: 'tongitsjokerrobotlist' }
                   }
                 ]
               },

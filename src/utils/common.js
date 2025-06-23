@@ -409,13 +409,15 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
 
   // 处理筛选相关的逻辑
   this.ClearFilterMap = function() {
-    for (var o in $this.FilterMap) {
-      $this.FilterValueMap[o] = 0
-      if ($this.FilterMap[o] === 'all') {
-        $this.FilterMap[o] = getDefaultFilterValues(o)
+    if ($this.TotalData.length > 0) {
+      for (var o in $this.FilterMap) {
+        $this.FilterValueMap[o] = 0
+        if ($this.FilterMap[o] === 'all') {
+          $this.FilterMap[o] = getDefaultFilterValues(o)
+        }
       }
+      $this.FilterData()
     }
-    $this.FilterData()
   }
 
   // 处理没有映射关系，直接使用值作筛选的情况
