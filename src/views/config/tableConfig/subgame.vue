@@ -756,6 +756,7 @@ export default {
 
     handleCreate() {
       this.edit.item = newItem()
+      this.edit.item.Channel = []
       this.edit.item.AppId = this.appId
       this.edit.isEdit = false
       this.edit.isCopy = false
