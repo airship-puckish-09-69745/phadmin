@@ -226,13 +226,6 @@
             </span>
           </template>
         </el-table-column>
-
-        <el-table-column
-          prop="currentGame"
-          label="游戏"
-          width="80"
-        />
-
         <el-table-column
           prop="allowTableMoney"
           label="允许出现场次"
@@ -263,6 +256,15 @@
         >
           <template slot-scope="scope">
             {{ statNames[scope.row.status] }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="lastLogin"
+          label="更新时间"
+          sortable="custom"
+          width="150">
+          <template slot-scope="scope">
+            {{ formatTime(scope.row.lastLogin) }}
           </template>
         </el-table-column>
         <el-table-column
