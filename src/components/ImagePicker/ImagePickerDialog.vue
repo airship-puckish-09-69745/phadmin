@@ -484,7 +484,7 @@ export default {
      */
     reset() {
       this.setActive({ value: '', url: '', name: '' })
-      this.setCondition({ category: IMAGE_CATEGORIES[0]?.value, current: 1, pageSize: DEFAULT_PAGE_SIZE })
+      this.setCondition({ category: this.category || IMAGE_CATEGORIES[0]?.value, current: 1, pageSize: DEFAULT_PAGE_SIZE })
       this.setList([])
       this.setFilteredList([])
       this.setTotal(0)
