@@ -14,7 +14,8 @@
           </el-col>
           <el-col :span="8">
             <el-form-item>
-              <el-button type="danger" size="mini" @click="open('是否清除下注状态',1)">清除下注状态</el-button>
+              <el-button type="danger" size="mini" @click="open('是否执行bet下注回退',1)">bet下注回退</el-button>
+              <el-button type="danger" size="mini" @click="open('是否清除下注状态',4)">只清除下注状态</el-button>
               <el-button type="warning" size="mini" @click="open('是否清除玩牌异常注状态',2)">清除玩牌异常状态</el-button>
               <el-button type="warning" size="mini" @click="open('是否执行Rollin操作',3)">执行Rollin操作</el-button>
             </el-form-item>
@@ -141,6 +142,25 @@ export default {
         }
       })
     },
+    cleanBetStatus() {
+      const $this = this
+      if ($this.item.uid === '' || $this.item.uid === 0 || $this.item.uid === 'NaN'|| $this.item.uid ===NaN) {
+        Message.error('请输入正确的Uid')
+        return
+      }
+      request({
+        url: '/dataProxy/info',
+        method: 'post',
+        data: {
+          Path: '/wallet/clean/user/status',
+          Uid: $this.item.uid,
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          Message.success("清除用户状态成功！")
+        }
+      })
+    },
     cleanPlayStatus() {
       const $this = this
       if ($this.item.uid === '' || $this.item.uid === 0 || $this.item.uid === 'NaN'|| $this.item.uid ===NaN) {
@@ -194,6 +214,8 @@ export default {
             this.cleanPlayStatus()
         }else if (type==3){
           this.Rollin()
+        }else if (type==4){
+          this.cleanBetStatus()
         }
       }).catch(() => {
         this.$message({
