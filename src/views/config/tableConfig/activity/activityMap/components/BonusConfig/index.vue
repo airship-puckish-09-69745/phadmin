@@ -1,160 +1,106 @@
 <template>
   <div>
-    <el-row style="padding-bottom: 12px;">
-      <el-button size="mini" type="primary" icon="el-icon-search" @click="onSearch()">查询</el-button>
-      <el-button size="mini" type="success" icon="el-icon-plus" style="float: right;" @click="handleEdit()">添加配置</el-button>
-    </el-row>
-
     <el-row>
-      <el-table
-        ref="filterTable"
-        :data="tableData"
-        stripe
-        border
-        :header-cell-style="libShow.DefaultTableHeadClass"
-        :row-style="{height:'10px'}"
-        :cell-style="libShow.DefaultTableCell"
-        style="max-height: calc(100vh - 326px);width: 100%;overflow-y: auto;"
-      >
-        <!-- 序号 -->
-        <el-table-column type="index" label="序号" width="60" align="center" />
-        <el-table-column
-          v-for="field in fields"
-          :key="field.prop"
-          :label="field.label"
-          :prop="field.prop"
-          :width="field.width"
-          :required="field.required"
-        />
-        <!-- 操作 -->
-        <el-table-column label="操作" width="250">
-          <template #default="scope">
-            <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
-            <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+      <el-descriptions border direction="vertical" :column="4">
+        <el-descriptions-item v-for="item in fields" :key="item.prop">
+          <template slot="label">
+            {{ item.label }}
           </template>
-        </el-table-column>
-      </el-table>
-
-      <el-pagination
-        v-if="bonusList.length > 0"
-        :total="pagination.total"
-        :page-size="pagination.pageSize"
-        :current-page="pagination.currentPage"
-        layout="total, sizes, prev, pager, next, jumper"
-        style="margin-top: 20px; text-align: right;"
-        @size-change="handlePaginationSizeChange"
-        @current-change="handlePaginationCurrentChange"
-      />
+          <el-input v-model="bonusData[item.prop]" type="number" />
+        </el-descriptions-item>
+      </el-descriptions>
     </el-row>
 
-    <!-- 添加|编辑配置弹窗 -->
-    <FormDialog :update-data="formDialog.updateData" :visible="formDialog.visible" @update:visible="handleUpdateDialogVisible" @save="handleSave" />
+    <el-button type="primary" style="margin-top: 12px;" @click="onSave">保存配置</el-button>
   </div>
 </template>
 
 <script>
 
-import { $libShow } from '@/utils/common'
-import FormDialog from './components/FormDialog.vue'
 export default {
   name: 'BonusConfig',
-  components: {
-    FormDialog
-  },
   props: {
-    bonusList: {
-      type: Array,
-      default: () => []
+    updateData: {
+      type: Object,
+      default: () => {
+        return {}
+      }
     }
   },
   data() {
     return {
-      libShow: $libShow,
-      fields: [
-        { label: '配置ID', prop: 'ID', required: true },
-        { label: '金额', prop: 'Amount', required: true }
-      ],
-      formDialog: {
-        updateData: null,
-        visible: false
+      bonusData: {
+        ...this.generateBlankData()
       },
-      // 主键
-      subKey: 'activity_map_task_cfg',
-      tableData: [],
-      pagination: {
-        total: 0,
-        currentPage: 1,
-        pageSize: 10
-      }
+      fields: [
+        { label: '年终大奖初始奖金', prop: 'InitBonus' },
+        { label: '活动值转化比例(%)', prop: 'ActivityTransformRate', formatter: (row) => row.ActivityTransformRate.toFixed(2) + '%' },
+        { label: '奖金增加转化比例(%)', prop: 'IncreaseTransformRate', formatter: (row) => row.IncreaseTransformRate.toFixed(2) + '%' },
+        { label: '年终奖保底奖金', prop: 'GuaranteedBonus' }
+      ]
     }
   },
   watch: {
-    bonusList: {
+    updateData: {
       handler(newVal) {
-        this.$nextTick(() => this.getList())
+        this.$nextTick(() => this.getData())
       },
       immediate: true
     }
   },
   methods: {
-    getFullKey() {
-      return 'CustomizeCfg_' + this.subKey
-    },
-    getList() {
-      if (!this.bonusList || this.bonusList.length === 0) {
-        this.tableData = []
-        this.pagination.total = 0
-        return
+    /**
+     * 检查所有数据必填
+     * 可以是0
+     */
+    checkoutData() {
+      if (this.bonusData.InitBonus !== 0 && !this.bonusData.InitBonus) {
+        this.$message.error('年终大奖初始奖金不能为空')
+        return false
+      } else if (!this.bonusData.ActivityTransformRate !== 0 && !this.bonusData.ActivityTransformRate) {
+        this.$message.error('活动值转化比例不能为空')
+        return false
+      } else if (!this.bonusData.IncreaseTransformRate !== 0 && !this.bonusData.IncreaseTransformRate) {
+        this.$message.error('奖金增加转化比例不能为空')
+        return false
+      } else if (!this.bonusData.GuaranteedBonus !== 0 && !this.bonusData.GuaranteedBonus) {
+        this.$message.error('年终奖保底奖金不能为空')
+        return false
       }
-      this.tableData = this.bonusList.slice(
-        (this.pagination.currentPage - 1) * this.pagination.pageSize,
-        this.pagination.currentPage * this.pagination.pageSize
-      )
-      this.pagination.total = this.bonusList.length
+
+      if (this.bonusData.InitBonus < 0 || this.bonusData.InitBonus > 9999999999) {
+        this.$message.error('年终大奖初始奖金必须在0到9999999999之间')
+        return false
+      }
+      return true
+    },
+    generateBlankData() {
+      return {
+        InitBonus: 0,
+        ActivityTransformRate: 0,
+        IncreaseTransformRate: 0,
+        GuaranteedBonus: 0
+      }
+    },
+    getData() {
+      this.bonusData = (this.updateData.InitBonus === 0 || this.updateData.InitBonus)
+        ? { ...this.updateData }
+        : this.generateBlankData()
     },
     onSearch() {
       this.$emit('reload')
     },
-    /**
-     * 新增或编辑配置
-     * @param row
-     */
-    handleEdit(row = null) {
-      this.formDialog.updateData = row ? { ...row } : null
-      this.formDialog.visible = true
-    },
-    handleDelete(row) {
-      this.$confirm(
-        `确定要删除[ 金额配置${row.ID} ]吗？`,
-        '删除提示',
-        {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }
-      ).then(() => {
-        this.$emit('delete', row.ID)
-      }).catch(() => {
-        this.$message({ type: 'info', message: '已取消删除' })
-      })
-    },
-    handleSave(data) {
-      this.$emit('update', data)
-      this.getList()
-    },
-    handleUpdateDialogVisible(visible) {
-      this.formDialog.visible = visible
-      this.formDialog.updateData = null
+    onSave() {
+      if (!this.checkoutData()) {
+        return false
+      }
 
-      this.getList()
-    },
-    handlePaginationSizeChange(size) {
-      this.pagination.pageSize = size
-      this.getList()
-    },
-    handlePaginationCurrentChange(page) {
-      this.pagination.currentPage = page
-      this.getList()
+      const form = { ...this.bonusData }
+      // 转换为数字
+      for (const key in form) {
+        form[key] = Number(form[key])
+      }
+      this.$emit('update', form)
     }
   }
 }

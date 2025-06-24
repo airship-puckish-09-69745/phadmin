@@ -1,6 +1,11 @@
 <template>
   <el-dialog :title="updateData && updateData.ID ? '编辑配置' : '新增配置'" :visible.sync="dialogVisible" width="540px" :close-on-click-modal="false" @close="handleClose(false)">
     <el-form :model="formData" label-width="100px">
+      <!-- <el-form-item label="活动开关" required>
+        <el-switch
+          v-model="formData.Status"
+        />
+      </el-form-item> -->
       <el-form-item label="活动名称" required>
         <!-- <el-input v-model="formData.Name" /> -->
         <el-select v-model="formData.ActivityId" placeholder="请选择活动" style="width: 360px;" @change="onChangeActivityId">
@@ -23,6 +28,9 @@
       </el-form-item>
       <el-form-item label="活动图标" required>
         <ImagePicker v-model="formData.Icon" />
+      </el-form-item>
+      <el-form-item label="过期图标" required>
+        <ImagePicker v-model="formData.TimeoutIcon" />
       </el-form-item>
     </el-form>
     <template #footer>
@@ -58,6 +66,7 @@ export default {
   data() {
     return {
       formData: {
+        // Status: false,
         ID: '',
         ActivityName: '',
         ActivityId: '',
@@ -65,7 +74,8 @@ export default {
         Page: [],
         Icon: '',
         ActivityTime: [],
-        Bonus: 0
+        Bonus: 0,
+        TimeoutIcon: ''
       },
       pageOptions: [
         { label: 'all', value: 'all' },
@@ -133,6 +143,10 @@ export default {
         this.$message.error('活动图标不能为空')
         return false
       }
+      if (!this.formData.TimeoutIcon) {
+        this.$message.error('过期图标不能为空')
+        return false
+      }
       return true
     },
     handleSave() {
@@ -151,6 +165,7 @@ export default {
     },
     resetForm() {
       this.formData = {
+        // Status: false,
         ID: '',
         ActivityName: '',
         ActivityId: '',
@@ -158,7 +173,8 @@ export default {
         Page: [],
         Icon: '',
         ActivityTime: [],
-        Bonus: 0
+        Bonus: 0,
+        TimeoutIcon: ''
       }
       this.$emit('update:visible', false)
     },

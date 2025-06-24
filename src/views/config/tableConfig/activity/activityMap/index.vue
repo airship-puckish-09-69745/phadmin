@@ -5,13 +5,16 @@
     </el-row>
 
     <el-row>
+      <div style="margin-top: 16px">
+        启用开关：<el-switch v-model="configData.Data.Status" active-color="#13ce66" @change="onUpdateStatus" />
+      </div>
       <br>
       <el-tabs v-if="configData.Data" type="border-card">
         <el-tab-pane label="活动地图">
           <MapConfig :map-list="configData.Data.MapConfig" :activity-options="activityOptions" @update="handleUpdateMap" @delete="handleDeleteMap" @reload="getConfigData" />
         </el-tab-pane>
         <el-tab-pane label="年终大奖侧栏">
-          <BonusConfig :bonus-list="configData.Data.BounusConfig" @update="handleUpdateBonus" @delete="handleDeleteBonus" @reload="getConfigData" />
+          <BonusConfig :update-data="configData.Data.BounusConfig" @update="handleUpdateBonus" @delete="handleDeleteBonus" @reload="getConfigData" />
         </el-tab-pane>
         <el-tab-pane label="活动详情">
           <DetailsConfig :details-list="configData.Data.DetailsConfig" :activity-options="activityOptions" @update="handleUpdateDetails" @delete="handleDeleteDetails" @reload="getConfigData" />
@@ -56,7 +59,8 @@ export default {
       ],
       configData: {
         Data: {
-          BounusConfig: [], // 年终大奖侧栏配置
+          Status: false,
+          BounusConfig: {}, // 年终大奖侧栏配置
           MapConfig: [], // 活动地图配置
           DetailsConfig: [], // 活动详情配置
           WhiteList: {} // 白名单配置
@@ -70,6 +74,11 @@ export default {
   methods: {
     getFullKey() {
       return 'CustomizeCfg_' + this.subKey
+    },
+    onUpdateStatus() {
+      this.$nextTick(() => {
+        this.updateConfigData()
+      })
     },
     /**
      * 获取配置数据
@@ -91,10 +100,11 @@ export default {
 
         // 确保配置数据的结构完整
         // 根据ID进行排序
+        if (!Data.Status) {
+          Data.Status = false
+        }
         if (!Data.BounusConfig) {
-          Data.BounusConfig = []
-        } else {
-          Data.BounusConfig.sort((a, b) => b.ID - a.ID)
+          Data.BounusConfig = {}
         }
         if (!Data.MapConfig) {
           Data.MapConfig = []
@@ -113,6 +123,7 @@ export default {
         this.$message.error('获取配置数据失败: ' + res.RetMsg)
         this.configData.Data = {}
       }
+      console.log('conf: ', this.configData.Data)
     },
     /**
      * 更新配置数据
@@ -150,17 +161,7 @@ export default {
      * @param data 更新的配置数据
      */
     handleUpdateBonus(data) {
-      if (data.ID) {
-        // 更新已有的配置
-        const currentBonus = this.configData.Data.BounusConfig.find(item => item.ID === data.ID)
-        this.configData.Data.BounusConfig.splice(this.configData.Data.BounusConfig.indexOf(currentBonus), 1, { ...currentBonus, ...data })
-      } else {
-        // 添加新的配置
-        const newId = Date.now().toString() // 使用时间戳作为新ID
-        this.configData.Data.BounusConfig.push({ ...data, ID: newId })
-      }
-
-      this.handleUpdateConfigData('BounusConfig', this.configData.Data.BounusConfig)
+      this.handleUpdateConfigData('BounusConfig', data)
     },
     /**
      * 处理年终大奖侧栏配置删除

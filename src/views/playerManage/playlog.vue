@@ -2922,6 +2922,125 @@
       </el-table>
     </el-dialog>
 
+    <el-dialog title="Truco详情" :visible.sync="TrucoDetailVisible" width="1200px">
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:red; ">
+        <span style="float:left;">{{ '底分:' + TrucoDetail.tableMoney/1000 }}</span>
+      </div>
+      <el-table ref="filterTable" :data="TrucoDetail.players" border>
+        <el-table-column prop="uid" label="uid" width="128px">
+          <template slot-scope="scope">{{ scope.row.uid }}</template>
+        </el-table-column>
+        <el-table-column prop="nick" label="nick"  width="180px">
+          <template slot-scope="scope">{{ scope.row.nick }}</template>
+        </el-table-column>
+        <el-table-column prop="seat" label="seat" width="64px">
+          <template slot-scope="scope">{{ scope.row.seat }}</template>
+        </el-table-column>
+        <el-table-column label="team" width="64px">
+          <template slot-scope="scope">
+              <div 
+                :style="{ 
+                  backgroundColor: getTrucoTeamColor(scope.row.team), 
+                  width: '100px', 
+                  height: '100px',
+                  display: 'inline-block'
+                }"
+              ></div>
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="settle" label="结算">
+          <template slot-scope="scope">
+            {{ scope.row.moneyChange }}
+          </template>
+        </el-table-column>
+      </el-table>
+      <br>
+
+      <el-table ref="filterTable" :data="TrucoDetail.roundDetail" border>
+        <el-table-column prop="vsScore" label="红 vs 绿" width="100px" align="center">
+          <template slot-scope="scope">{{ scope.row.vsScore[0] + ' vs ' + scope.row.vsScore[1]}}</template>
+        </el-table-column>
+        <el-table-column label="viradaCard牌" width="80">
+          <template slot-scope="scope">
+            <el-image
+              style="width: 37px; height: 50px"
+              :src="getCardUrl(scope.row.viradaCard)"
+            />
+          </template>                      
+        </el-table-column>
+        <el-table-column prop="roundScore" label="本轮底分" width="50px"/>
+
+        <el-table-column prop="players" label="牌局" width="320px" >
+          <template slot-scope="scope">
+            <el-table ref="filterTable" :data="scope.row.players" border :cell-style="libShow.DefaultTableCell" style="width: 100%">
+              <el-table-column prop="uid" label="uid" width="100"/>
+              <el-table-column label="team" width="60">
+                <template slot-scope="scope">
+                  <div 
+                    :style="{ 
+                      backgroundColor: getTrucoTeamColor(scope.row.team), 
+                      width: '100px', 
+                      height: '100px',
+                      display: 'inline-block'
+                    }"
+                  ></div>
+                </template>
+              </el-table-column>
+
+              <el-table-column prop="handCards" label="手牌" width="150">
+                <template slot-scope="scope">
+                  <div v-for="(item) in scope.row.handCards" class="block">
+                    <el-image style="width: 37px; height: 50px" :src="getCardUrl(item)" />
+                  </div>
+                </template>
+              </el-table-column>
+            </el-table>
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="turns" label="比牌" width="800px" >
+          <template slot-scope="scope">
+            <el-table ref="filterTable" :data="scope.row.turns" border :cell-style="libShow.DefaultTableCell" style="width: 100%">
+              <el-table-column prop="count" label="回合" width="100"/>
+              <el-table-column label="回合结果" width="100">
+                <template slot-scope="scope">
+                  <div 
+                    :style="{ 
+                      backgroundColor: getTrucoTeamColor(scope.row.result), 
+                      width: '100px', 
+                      height: '100px',
+                      display: 'inline-block'
+                    }"
+                  ></div>
+                </template>
+              </el-table-column>
+              <el-table-column prop="cards" label="cards" width="800px" >
+                <template slot-scope="scope">
+                  <el-table ref="filterTable" :data="scope.row.cards" border :cell-style="libShow.DefaultTableCell" style="width: 100%">
+                    <el-table-column prop="uid" label="uid" width="100"/>
+                    <el-table-column prop="Count" label="顺序" width="100"/>
+                    <el-table-column prop="Covered" label="暗牌" width="100"/>
+                    <el-table-column label="牌" width="100">
+                      <template slot-scope="scope">
+                        <el-image
+                          style="width: 37px; height: 50px"
+                          :src="getCardUrl(scope.row.Card)"
+                        />
+                      </template>                      
+                    </el-table-column>
+                    
+                  </el-table>
+                </template>
+              </el-table-column>
+            </el-table>
+          </template>
+        </el-table-column>
+        
+      </el-table>
+
+    </el-dialog>
+
     <el-dialog title="TeenPatti详情" :visible.sync="ZJHDetailVisible" width="1600px">
       <div style=" font-size:14px; line-height: 36px; height: 50px; color:red; ">
         <span style="float:left;">{{ '底分:' + ZJHDetail.antes/1000 }}</span>
@@ -3358,6 +3477,10 @@ export default {
 
       RemiDetail: {},
       RemiDetailVisible: false,
+
+      TrucoDetail: {},
+      TrucoRoundDetail: {},
+      TrucoDetailVisible: false,
 
       jackpotWheelDetail: {},
       jackpotWheelData: {},
@@ -3913,6 +4036,8 @@ export default {
             $this.showMiniSaBongGame(obj)
           } else if (gid === 130 || gid === 131) {
             $this.showRemiGame(obj)
+          } else if (gid === 11) {
+            $this.showTrucoGame(obj)
           } else {
             $this.showSmallGame(obj)
           }
@@ -4034,8 +4159,15 @@ export default {
     },
     showRemiGame(obj) {
       this.RemiDetail = obj
-      console.log('this.remiData => ', this.RemiDetail)
+      //console.log('this.remiData => ', this.RemiDetail)
       this.RemiDetailVisible = true
+    },
+    showTrucoGame(obj){
+      this.TrucoDetail = obj
+      console.log('this.TrucoData => ', this.TrucoDetail)
+      //this.TrucoRoundDetail = obj.roundDetail.roundDetail
+      //console.log('this.TrucoRoundDetail => ', this.TrucoRoundDetail)
+      this.TrucoDetailVisible = true
     },
     showFilipinoMahjongGame(obj, log) {
       this.FilipinoMahjongDetail = log// obj
@@ -5174,6 +5306,14 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
         return '机器人--要赢'
       }
       return '机器人'
+    },
+    getTrucoTeamColor(teamId) {
+      if (teamId == 1) {
+        return 'red'
+      }else if (teamId == 2) {
+        return 'green'
+      }
+      return 'yellow'
     }
   }
 }

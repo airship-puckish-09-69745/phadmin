@@ -66,7 +66,7 @@ export default {
     },
     handleCheckChange(data, checked, indeterminate) {
       // 处理选中状态变化的逻辑
-      // console.log('Checked nodes:', data)
+      console.log('Checked nodes:', data)
       // console.log('Checked:', this.$refs.tree.getCheckedKeys())
       this.$nextTick(() => {
         const selectedGames = this.$refs.tree.getCheckedNodes()

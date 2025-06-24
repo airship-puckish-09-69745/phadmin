@@ -96,7 +96,7 @@
               <span>输赢：{{ one.moneyChange/1000 }}</span><br>
               <!--              <span>机器人级别：{{ showRobotLevel(one.Character) }}</span><br>-->
               <span>机器人级别：{{ one.isRobot?'机器人':'真人' }} {{ getRobotLevel(one.RobotLevel) }}</span>
-              
+
               <template v-if="Gid === 128"> <!-- control信息 -->
                 <br>
                 <span>库存：{{ one.gameRatio/100 }}%</span><br>
@@ -418,7 +418,7 @@ export default {
         return '三等奖'
       }  else if (level == 4) {
         return '5Bet中奖'
-      } 
+      }
       return '-'
     },
     getRobotLevel(level) {
@@ -434,6 +434,8 @@ export default {
         return '-- 弱杀'
       } else if (level == 5) {
         return '-- 强杀'
+      }else if (level == 6) {
+        return '-- 贴防'
       }
     },
     getControlLevel(lv) {

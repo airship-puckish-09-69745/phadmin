@@ -248,7 +248,7 @@ export const asyncRoutes = [
                     path: 'tongitsAIList',
                     component: () => import('@/views/config/tableConfig/tongitsAIListConfig'),
                     name: 'tongitsAIList',
-                    meta: { title: 'AI-List ◐' }
+                    meta: { title: 'AI-List ◐', cfgSubKey: 'tongits_ai_list_cfg', cgiPath: 'tongitsrobotlist' }
                   }
                 ]
               },
@@ -272,9 +272,9 @@ export const asyncRoutes = [
                   },
                   {
                     path: 'tongitsJokerAIList',
-                    component: () => import('@/views/config/tableConfig/tongitsJokerAIListConfig'),
+                    component: () => import('@/views/config/tableConfig/tongitsAIListConfig'),
                     name: 'tongitsJokerAIList',
-                    meta: { title: 'AI-List ◐' }
+                    meta: { title: 'AI-List ◐', cfgSubKey: 'tongitsJoker_ai_list_cfg', cgiPath: 'tongitsjokerrobotlist' }
                   }
                 ]
               },
@@ -306,9 +306,9 @@ export const asyncRoutes = [
                   },
                   {
                     path: 'tongitsQuickAIList',
-                    component: () => import('@/views/config/tableConfig/tongitsQuick/tongitsQuickAIListConfig'),
+                    component: () => import('@/views/config/tableConfig/tongitsAIListConfig'),
                     name: 'tongitsQuickAIList',
-                    meta: { title: 'AI-List ◐' }
+                    meta: { title: 'AI-List ◐', cfgSubKey: 'tongitsQuick_ai_list_cfg', cgiPath: 'tongitsquickrobotlist'}
                   }
                 ]
                 // name: 'tongitsTableQuick',
@@ -856,7 +856,7 @@ export const asyncRoutes = [
             path: '/remiVersion',
             component: () => import('@/views/empty'),
             redirect: 'noRedirect',
-            meta: { title: 'remi ◐' },
+            meta: { title: 'Remi ◐' },
             children: [
                   {
                     path: 'remiTable',
@@ -871,6 +871,28 @@ export const asyncRoutes = [
                     meta: { title: 'RemiPro配桌 ◐' }
 				          }
                 ]
+          },
+          {
+            path: '/trucoVersion',
+            component: () => import('@/views/empty'),
+            redirect: 'noRedirect',
+            meta: { title: 'Truco ◐' },
+            children: [
+              {
+                path: 'trucoTable',
+                component: () => import('@/views/empty'),
+                redirect: 'noRedirect',
+                meta: { title: 'Truco配桌 ◐', noCache: true },
+                children: [
+                  {
+                    path: 'trucoTable',
+                    component: () => import('@/views/config/tableConfig/trucoTable'),
+                    name: 'trucoTable',
+                    meta: { title: 'Truco配桌 ◐' }
+				          }
+                ]
+              }
+            ]
           }
         ]
       },
@@ -1031,7 +1053,7 @@ export const asyncRoutes = [
         path: 'slotsCfg',
         component: () => import('@/views/empty'),
         redirect: 'noRedirect',
-        meta: { title: 'Slots - 老虎机', perm: 'SLOTS_PROCESS' },
+        meta: { title: 'Slots - 老虎机', noCache: true, perm: 'SLOTS_SCRIPT_MNG' },
         children: [
           {
             path: 'slotsProCfg',
@@ -1503,12 +1525,12 @@ export const asyncRoutes = [
                 name: 'pirateshipmars_slots_cfg',
                 meta: { title: 'PirateShip(审)' }
               },
-              /*{
+              {
                 path: 'pumpkincashmars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/pumpkincashmars_slots_cfg'),
                 name: 'pumpkincashmars_slots_cfg',
                 meta: { title: 'PumpkinCash(审)' }
-              },*/
+              },
               {
                 path: 'dancelionmars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/dancelionmars_slots_cfg'),
@@ -2083,6 +2105,20 @@ export const asyncRoutes = [
             name : 'selfBuildMatchReward',
             meta: {title:'奖励配置', noCache: true }
           },
+          {
+            path: 'selfBuildMatchWatcherList',
+            component: () => import('@/views/matchManage/selfBuildManage/selfBuildMatchWatcherList.vue'),
+            name: 'selfBuildMatchWatcherList',
+            meta: { title: '主播名单', noCache: true, hidden: true },
+
+          },
+          {
+            path: 'selfBuildMatchAppConfig',
+            component: () => import('@/views/matchManage/selfBuildManage/selfBuildMatchAppConfig.vue'),
+            name: 'selfBuildMatchAppConfig',
+            meta: { title: '渠道配置', noCache: true, hidden: true },
+
+          }
         ]
       }
     ]
@@ -2338,6 +2374,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_RemiPro',
             meta: { title: 'R emi Pro ◐', gid: 131 }
+          },
+          {
+            path: 'playlog_Truco',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_Truco',
+            meta: { title: 'T ruco ◐', gid: 11 }
           },
         ]
       },
@@ -3041,6 +3083,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'pharaohtreasuremars_slots_cfg',
             meta: { title: 'Pharaoh\'s Treasure(审)', gid: 169 }
+          },
+          {
+            path: 'pumpkincashmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'pumpkincashmars_slots_log',
+            meta: { title: 'PumpkinCash(审)', gid: 215 }
           }
         ]
       },
@@ -3136,6 +3184,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatNew.vue'),
             name: 'tongitsCheatLog',
             meta: { title: '作弊日志（新） ◐' }
+          },
+          {
+            path: 'tongitsCheatLogDev',
+            component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatNewDev.vue'),
+            name: 'tongitsCheatLog',
+            meta: { title: '作弊日志（新）dev ◐' }
           }
         ]
       },

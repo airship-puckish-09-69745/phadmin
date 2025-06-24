@@ -17,6 +17,11 @@
             align="right"
           />
         </el-form-item>
+        <el-form-item label="应用：">
+          <el-select v-model="searchForm.appId" size="mini">
+            <el-option v-for="row of apps" :label="row.label" :value="row.value" />
+          </el-select>
+        </el-form-item>
         <el-form-item label="游戏">
           <el-select v-model="searchForm.gid" placeholder="请选择游戏" style="width: 150px" clearable filterable>
             <el-option v-for="game in gameOptions" :key="game.value" :label="game.label" :value="game.value" />
@@ -107,7 +112,8 @@ export default {
       searchForm: {
         gid: 128, // 默认游戏：Tongits JP
         timeRange: this.getDefaultDate(), // 默认时间：七天前的00:00:00到今天的23:59:59
-        tableMoney: 0 // 默认场次：全部=0
+        tableMoney: 0, // 默认场次：全部=0
+        appId: 1000005
       },
 
       /**
@@ -137,6 +143,12 @@ export default {
        */
       ratioData: [],
       chartData: {},
+      apps: [
+        { 'value': 0, 'label': '全部' },
+        { 'value': 1000002, 'label': '内部用[1000002]' },
+        { 'value': 1000003, 'label': 'BP-测试[1000003]' },
+        { 'value': 1000005, 'label': 'BP-正式[1000005]' }
+      ],
 
       // pagination: {
       //   limit: 20,
@@ -195,6 +207,7 @@ export default {
     getRequestParams() {
       const params = {
         Path: '/log/egamelog',
+        appId: this.searchForm.appId,
         gid: this.searchForm.gid,
         tableMoney: this.searchForm.tableMoney,
         startTime: this.searchForm.timeRange[0] ? Math.round(this.searchForm.timeRange[0] / 1000) : 0,
@@ -264,15 +277,15 @@ export default {
               // 胜率计算公式：胜利局数 / 总局数 * 100 + '%'，例如
               // 强杀区间玩家胜率 = 强杀 / 无偏移总局数 + '%'， 保留两位小数
               // 强杀区间玩家胜率
-              forced_kill_rate: item.no_offset_num === 0 ? '0.00%' : (item.forced_kill / item.no_offset_num * 100).toFixed(2) + '%',
+              forced_kill_rate: item.forced_kill_num === 0 ? '0.00%' : (item.forced_kill / item.forced_kill_num * 100).toFixed(2) + '%',
               // 弱杀区间玩家胜率
-              weak_kill_rate: item.no_offset_num === 0 ? '0.00%' : (item.weak_kill / item.no_offset_num * 100).toFixed(2) + '%',
+              weak_kill_rate: item.weak_kill_num === 0 ? '0.00%' : (item.weak_kill / item.weak_kill_num * 100).toFixed(2) + '%',
               // 陪玩区间玩家胜率
-              play_along_rate: item.no_offset_num === 0 ? '0.00%' : (item.play_along / item.no_offset_num * 100).toFixed(2) + '%',
+              play_along_rate: item.play_along_num === 0 ? '0.00%' : (item.play_along / item.play_along_num * 100).toFixed(2) + '%',
               // 弱放区间玩家胜率
-              weak_release_rate: item.no_offset_num === 0 ? '0.00%' : (item.weak_release / item.no_offset_num * 100).toFixed(2) + '%',
+              weak_release_rate: item.weak_release_num === 0 ? '0.00%' : (item.weak_release / item.weak_release_num * 100).toFixed(2) + '%',
               // 强放区间玩家胜率
-              forced_rate: item.no_offset_num === 0 ? '0.00%' : (item.forced / item.no_offset_num * 100).toFixed(2) + '%',
+              forced_rate: item.forced_num === 0 ? '0.00%' : (item.forced / item.forced_num * 100).toFixed(2) + '%',
               // 总胜局数 / 总局数 * 100 + '%'
               no_offset_rate: (item.total_win / item.total_num * 100).toFixed(2) + '%'
             }))
