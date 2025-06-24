@@ -149,6 +149,8 @@ export default {
           newData.ActivityTime[0] * 1000,
           newData.ActivityTime[1] * 1000
         ]
+        // 金额/100
+        this.formData.Amount = parseFloat((newData.Amount / 100).toFixed(2))
         this.selectedGamesId = newData.GameList.map(game => game.Id)
         console.log('updateData', this.selectedGamesId)
       } else {
@@ -226,7 +228,10 @@ export default {
         Math.floor(submitData.ActivityTime[1] / 1000)
       ]
       // 金额和成就个数转换为整数类型
-      submitData.Amount = parseInt(submitData.Amount)
+      // submitData.Amount = parseInt(submitData.Amount)
+
+      submitData.Amount = parseInt(submitData.Amount * 100)
+
       // submitData.AchievementNumber = parseInt(submitData.AchievementNumber)
       this.$emit('save', submitData)
       this.resetForm()
