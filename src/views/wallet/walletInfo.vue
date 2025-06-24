@@ -152,7 +152,7 @@ export default {
         url: '/dataProxy/info',
         method: 'post',
         data: {
-          Path: '/wallet/clean/user/status',
+          Path: '/wallet/clean/bet/status',
           Uid: $this.item.uid,
         }
       }).then(response => {
