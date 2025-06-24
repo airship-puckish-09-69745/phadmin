@@ -30,7 +30,7 @@
           </el-select>
         </el-form-item>
         <el-form-item v-model="item.site_id" label="渠道：" :required="true" label-width="100px">
-          <el-select v-model="item.site_id" filterable placeholder="请选择渠道" size="mini">
+          <el-select v-model="item.site_id" filterable allow-create default-first-option placeholder="请选择渠道" size="mini">
             <el-option
               v-for="c in channels"
               :label="c"
