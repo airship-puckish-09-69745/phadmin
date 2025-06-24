@@ -2967,7 +2967,7 @@
               style="width: 37px; height: 50px"
               :src="getCardUrl(scope.row.viradaCard)"
             />
-            <span>{{ '==>' }}</span>
+            <span>{{ '=>' }}</span>
             <el-image
               style="width: 37px; height: 50px"
               :src="setTrucoMaxCard(scope.row.viradaCard)"
@@ -5338,7 +5338,7 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
           }
         }
       }
-      let cards = [0x12, 0x11, 0x13, 0x11, 0x12, 0x13]
+      let cards = [0x1c, 0x1b, 0x1d, 0x11, 0x12, 0x13]
       return this.getCardUrl(cards[trucoRoundMaxCardIndex])
     },
   }
