@@ -47,7 +47,7 @@
             <!-- 日期处理 -->
             <template v-else-if="field.prop === 'ActivityTime'">
               <span v-if="scope.row.ActivityTime">
-                {{ parseTime(scope.row.ActivityTime[0], '{y}-{m}-{d}') }} <br> {{ parseTime(scope.row.ActivityTime[1], '{y}-{m}-{d}') }}
+                {{ parseTime(scope.row.ActivityTime[0], '{y}-{m}-{d} {h}:{i}:{s}') }} <br> {{ parseTime(scope.row.ActivityTime[1], '{y}-{m}-{d} {h}:{i}:{s}') }}
               </span>
             </template>
             <!-- 成就：格式为：[头像框][名称]: [达成条件] -->
@@ -168,7 +168,7 @@ export default {
         // { label: '头像框', prop: 'Avatar', width: 120 },
         { label: '活动图标', prop: 'Icon', width: 120 },
         { label: '玩法简要', prop: 'Description', width: 150 },
-        { label: '活动时间', prop: 'ActivityTime', width: 110 },
+        { label: '活动时间', prop: 'ActivityTime', width: 160 },
         { label: '游戏热度', prop: 'GameList', width: 200 },
         { label: '成就', prop: 'AchievementList', width: 360 }
         // { label: '成就个数', prop: 'AchievementNumber' },

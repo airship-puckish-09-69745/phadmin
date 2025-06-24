@@ -16,7 +16,15 @@
         <el-input v-model="formData.Amount" type="number" style="width: 360px;" />
       </el-form-item>
       <el-form-item label="活动时间" prop="ActivityTime" :rules="{ required: true, message: '请选择活动时间', trigger: 'blur' }">
-        <el-date-picker v-model="formData.ActivityTime" value-format="timestamp" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" />
+        <el-date-picker
+          v-model="formData.ActivityTime"
+          value-format="timestamp"
+          type="datetimerange"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          :default-time="['00:00:00', '23:59:59']"
+          style="width: 360px;"
+        />
       </el-form-item>
       <el-form-item label="奖励" required>
         <el-input v-model="formData.Bonus" type="number" style="width: 360px;" />
