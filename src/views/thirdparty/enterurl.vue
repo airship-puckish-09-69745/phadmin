@@ -69,7 +69,7 @@
           <el-input v-model="item.cashier" />
         </el-form-item>
         <el-form-item v-model="item.source" label="用户来源：" :required="true" label-width="110px">
-          <el-select v-model="item.source" filterable placeholder="请选择" size="mini">
+          <el-select v-model="item.source" filterable allow-create default-first-option placeholder="请选择" size="mini">
             <el-option
               v-for="row in sources"
               :label="row.name"
@@ -305,6 +305,10 @@ export default {
         {
           name: 'bingoplus.com',
           val: 'bingoplus.com'
+        },
+        {
+          name: 'bingopluspoker.ph',
+          val: 'bingopluspoker.ph'
         }
       ],
       activities: [
