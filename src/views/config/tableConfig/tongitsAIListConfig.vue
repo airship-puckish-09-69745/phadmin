@@ -3,18 +3,14 @@
     <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" />
     <el-row :gutter="10" style="margin-top: 30px">
       <el-col :offset="3" :span="16">
-        <el-button size="mini" type="primary" @click="setData">保存</el-button>
         <el-form ref="form" :model="item" label-position="left" style="margin-top: 30px">
-          <el-row>
-            <el-col>
-              <el-form-item label="下注额度(值用 , 连接如 200,100,50,20,10,5,1,11)" :required="true">
-                <el-col>
-                  <el-input v-model="betMoneyList" size="mini" :required="true" />
-                </el-col>
-              </el-form-item>
-            </el-col>
-          </el-row>
+          <el-form-item label="下注额度(值用 , 连接如 200,100,50,20,10,5,1)" :required="true">
+            <el-input v-model="betMoneyList" size="mini" :required="true" />
+          </el-form-item>
         </el-form>
+      </el-col>
+      <el-col :span="5">
+        <el-button size="mini" type="primary" @click="setData">保存</el-button>
       </el-col>
     </el-row>
     <el-row style="padding-top: 5px">
@@ -39,22 +35,85 @@
       </el-col> -->
     </el-row>
     <div style="padding-top: 10px">
-      <el-col span="16">
-        <el-descriptions
-          class="margin-top"
-          :column="4"
-          size="medium"
-          :label-style="{'text-align': 'right', 'font-weight':'bold','padding':'5px'}"
+      <el-col span="16" :offset="3">
+        <el-table
+          ref="filterTable"
+          :data="statItems"
+          stripe
           border
+          :header-cell-style="libShow.DefaultTableHeadClass"
+          :row-style="{height:'10px'}"
+          :cell-style="libShow.DefaultTableCell"
+          style="width: 100%"
+          @row-click="clickData"
+          @sort-change="sortChange"
         >
-          <el-descriptions-item label="总成本：">{{ formatNumber(statItem.initMoney) }}</el-descriptions-item>
-          <el-descriptions-item label="当前金额："> {{ formatNumber(statItem.money) }}</el-descriptions-item>
-          <el-descriptions-item label="输赢：">{{ formatNumber((statItem.money - statItem.initMoney)) }}</el-descriptions-item>
-          <el-descriptions-item label="比例：">
-            <span v-if="statItem.initMoney==0">0</span>
-            <el-span v-else>  {{ formatNumber((statItem.money - statItem.initMoney)*100/statItem.initMoney) }}%</el-span>
-          </el-descriptions-item>
-        </el-descriptions>
+          <el-table-column
+            prop="tableMoney"
+            label="场次"
+            width="90"
+          />
+          <el-table-column
+            prop="initMoney"
+            label="成本"
+            width="150"
+          >
+            <template slot-scope="scope">
+              {{ formatNumber(scope.row.initMoney) }}
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="money"
+            label="当前金额"
+            width="150"
+          >
+            <template slot-scope="scope">
+              {{ formatNumber(scope.row.money) }}
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="输赢"
+            width="150"
+          >
+            <template slot-scope="scope">
+               <span v-if="scope.row.money > scope.row.initMoney" style="color:red">
+              {{ formatNumber(scope.row.money - scope.row.initMoney) }}
+            </span>
+              <span v-else style="color:green">
+              {{ formatNumber(scope.row.money - scope.row.initMoney) }}
+            </span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="比例"
+            width="100"
+          >
+            <template slot-scope="scope">
+              <span v-if="scope.row.money > scope.row.initMoney" style="color:red">
+              {{ ((scope.row.money - scope.row.initMoney)*100/scope.row.initMoney).toFixed(2) }}%
+            </span>
+              <span v-else style="color:green">
+              {{ ((scope.row.money - scope.row.initMoney)*100/scope.row.initMoney).toFixed(2) }}%
+            </span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="游戏中"
+            width="100"
+          >
+            <template slot-scope="scope">
+              {{ scope.row.gameCount }}/ {{ scope.row.gameCount + scope.row.workCount}}
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="冻结中"
+            width="100"
+          >
+            <template slot-scope="scope">
+              {{ scope.row.coldCount }}
+            </template>
+          </el-table-column>
+        </el-table>
       </el-col>
 
       <el-table
@@ -154,26 +213,19 @@
               强杀
             </span>
             <span v-if="scope.row.level==4" style="color:green">
-             弱杀
+              弱杀
             </span>
             <span v-if="scope.row.level==3" style="color:red">
               陪玩
             </span>
             <span v-if="scope.row.level==2" style="color:red">
-               弱放
+              弱放
             </span>
             <span v-if="scope.row.level==1" style="color:red">
               强放
             </span>
           </template>
         </el-table-column>
-
-        <el-table-column
-          prop="currentGame"
-          label="游戏"
-          width="80"
-        />
-
         <el-table-column
           prop="allowTableMoney"
           label="允许出现场次"
@@ -204,6 +256,15 @@
         >
           <template slot-scope="scope">
             {{ statNames[scope.row.status] }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="lastLogin"
+          label="更新时间"
+          sortable="custom"
+          width="150">
+          <template slot-scope="scope">
+            {{ formatTime(scope.row.lastLogin) }}
           </template>
         </el-table-column>
         <el-table-column
@@ -369,9 +430,10 @@ export default {
       isDisabled: false,
       form: {
       },
-      statItem: { money: 0, initMoney: 0 },
+      statItems: [],
       txt: '',
-      subKey: 'tongits_ai_list_cfg'
+      subKey: '',
+      cgiPath: ''
     }
   },
 
@@ -381,9 +443,12 @@ export default {
     }
   },
   created() {
+    this.subKey = this.$route.meta.cfgSubKey
+    this.cgiPath = this.$route.meta.cgiPath
     this.getData()
     this.getList()
     this.isDisabled = false
+
     console.log(1)
   },
   methods: {
@@ -474,7 +539,7 @@ export default {
             Env: $this.env,
             uid: ob.uid,
             status: status,
-            Path: '/tongitsrobotlist/update/status'
+            Path: '/' + this.cgiPath + '/update/status'
           }
         }).then(response => {
           if (response.RetCode === 0) {
@@ -494,7 +559,7 @@ export default {
         method: 'get',
         data: {
           Env: _this.env,
-          Path: '/tongitsrobotlist/list',
+          Path: '/' + this.cgiPath + '/list',
           Page: 1,
           PageNum: 400
         }
@@ -514,12 +579,27 @@ export default {
           })
           this.clientDB = new ClientTableData(objs, 20, filterMap, 'status', -1)
           this.handleCurrentChange(1)
-          _this.statItem = { money: 0, initMoney: 0 }
+          const statMap = {}
           for (let i = 0; i < objs.length; i++) {
-            if (objs[i].status != 0) {
-              _this.statItem.money += objs[i].money
-              _this.statItem.initMoney += objs[i].initMoney
+            const item = objs[i]
+            if (statMap[item.allowTableMoney] == null) {
+              statMap[item.allowTableMoney] = { tableMoney: item.allowTableMoney, initMoney: 0, money: 0, gameCount: 0, workCount: 0, coldCount: 0 }
             }
+            if (item.status == 0) {
+              statMap[item.allowTableMoney].coldCount++
+            } else {
+              statMap[item.allowTableMoney].initMoney += item.initMoney
+              statMap[item.allowTableMoney].money += item.money
+              if (item.status == 1) {
+                statMap[item.allowTableMoney].workCount++
+              } else if (item.status == 2) {
+                statMap[item.allowTableMoney].gameCount++
+              }
+            }
+          }
+          this.statItems=[]
+          for (const o in statMap) {
+            this.statItems.push(statMap[o])
           }
         }
         // loading.close()
@@ -531,15 +611,7 @@ export default {
     formatTime(ts) {
       return $libDate.FormateSecondStr(ts, 2)
     },
-    refreshStat() {
-      this.statItem = { money: 0, initMoney: 0 }
-      for (let i = 0; i < this.clientDB.ShowData.length; i++) {
-        if (this.clientDB.ShowData[i].status !== 0) {
-          this.statItem.money += this.clientDB.ShowData[i].money
-          this.statItem.initMoney += this.clientDB.ShowData[i].initMoney
-        }
-      }
-    },
+
     clearFilter() {
       this.clientDB.ClearFilterMap()
       this.refreshShow()
@@ -552,7 +624,6 @@ export default {
     // 分页处理
     refreshShow() {
       this.tableData = this.clientDB.GetCurrentPageData()
-      this.refreshStat()
     },
     handleSizeChange(val) {
       this.clientDB.GetPage().SetPageNum(val)
@@ -658,7 +729,7 @@ export default {
     },
     editSave(postData) {
       postData.Env = this.env
-      postData.Path = '/tongitsrobotlist/update/item'
+      postData.Path = '/' + this.cgiPath + '/update/item'
       request({
         url: '/dataProxy/info',
         method: 'post',
@@ -677,7 +748,7 @@ export default {
     },
     createSave(postData) {
       postData.Env = this.env
-      postData.Path = '/tongitsrobotlist/add/user'
+      postData.Path = '/' + this.cgiPath + '/add/user'
       request({
         url: '/dataProxy/info',
         method: 'post',

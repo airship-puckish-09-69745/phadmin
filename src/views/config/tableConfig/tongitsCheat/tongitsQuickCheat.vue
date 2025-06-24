@@ -423,6 +423,14 @@ export default {
                 MaybeAdd: 3
               }
             }
+            if ($this.CheatCfg.hasOwnProperty('GiveMoreTimes') && Array.isArray($this.CheatCfg.GiveMoreTimes)) {
+              if ($this.CheatCfg.GiveMoreTimes[0] !== undefined && $this.CheatCfg.GiveMoreTimes[0].Count !== 1) {
+                $this.CheatCfg.GiveMoreTimes.unshift({
+                  Count: 1,
+                  MaybeAdd: 3
+                })
+              }
+            }
             const maybeMin = $this.CheatCfg.MaybeMin
             $this.oldCheatMin = maybeMin
             const old = JSON.parse(response.Data.Data)
