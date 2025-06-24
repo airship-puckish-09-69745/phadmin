@@ -2361,6 +2361,12 @@ export const asyncRoutes = [
             name: 'playlog_RemiPro',
             meta: { title: 'R emi Pro ◐', gid: 131 }
           },
+          {
+            path: 'playlog_Truco',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_Truco',
+            meta: { title: 'T ruco ◐', gid: 11 }
+          },
         ]
       },
 
