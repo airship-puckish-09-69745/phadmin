@@ -285,7 +285,7 @@
                   </el-select>
                 </el-form-item>
                 <el-form-item label="站点：">
-                  <el-checkbox-group v-model="edit.item.Channel" :required="true">
+                  <el-checkbox-group v-model="edit.item.Channel">
                     <el-checkbox label="BP">BP</el-checkbox>
                     <el-checkbox label="AP">AP</el-checkbox>
                     <el-checkbox label="GP">GP</el-checkbox>
@@ -293,6 +293,7 @@
                     <el-checkbox label="PG">PG</el-checkbox>
                     <el-checkbox label="Dev">DEV</el-checkbox>
                   </el-checkbox-group>
+                  <span style="color: red">站点不勾等于全勾选</span>
                 </el-form-item>
                 <el-form-item label="名称：" :required="true">
                   <el-row>
