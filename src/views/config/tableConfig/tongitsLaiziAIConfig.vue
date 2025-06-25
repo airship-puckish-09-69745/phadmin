@@ -458,7 +458,7 @@ export default {
         url: '/tongitstable/all',
         method: 'get',
         data: {
-          PlayMode: 4
+          PlayMode: 2
         }
       }).then(response => {
         let tableList = ''
