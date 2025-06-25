@@ -1711,16 +1711,19 @@ export default {
         if (this.tableData[i].item_type === 4) {
           console.log(this.tableData[i])
         }
+        let str = this.tableData[i].item_name
+        if (this.tableData[i].show_name.length > 0) {
+          str = str + '(' + this.tableData[i].show_name + ')'
+        }
         if (this.tableData[i].item_type === id && this.tableData[i].status === 1) {
           if (this.tableData[i].item_type !== 2 && this.tableData[i].item_type !== 4) {
             let expTime = this.tableData[i].expire_time * 1000
             if (currTime < expTime) {
-              var dataList = { 'value': this.tableData[i].id, 'label': this.tableData[i].item_name, disabled: false }
+              var dataList = { 'value': this.tableData[i].id, 'label': str, disabled: false }
               this.tableItemData.push(dataList)
             }
-
           } else {
-            var dList = { 'value': this.tableData[i].id, 'label': this.tableData[i].item_name, disabled: false }
+            var dList = { 'value': this.tableData[i].id, 'label': str, disabled: false }
             this.tableItemData.push(dList)
           }
         }

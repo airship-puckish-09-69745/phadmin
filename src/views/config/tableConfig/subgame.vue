@@ -148,7 +148,8 @@
           min-width="150"
         >
           <template slot-scope="scope">
-            <img :src="getFullPath(scope.row.Icon)" height="80px">
+            <img v-if="scope.row.Icon" :src="getFullPath(scope.row.Icon)" height="80px">
+            <span v-else>无</span>
           </template>
         </el-table-column>
 <!--        <el-table-column-->
@@ -320,8 +321,9 @@
                     <el-input v-model="edit.item.GameKey" placeholder="开发提供" />
                   </el-col>
                 </el-form-item>
-                <el-form-item label="图片：" :required="true">
+                <el-form-item label="图片：" :required="true" style="position: relative">
                   <ImagePicker v-model="formDialog.form.game.image_path" category="subConfig" />
+                  <el-button type="danger" size="mini" style="position: absolute; left: 138px; top: 60px" @click="formDialog.form.game.image_path = ''">清除图片</el-button>
                 </el-form-item>
                 <!--            <el-form-item label="背景图片：" :required="true">-->
                 <!--              <el-upload-->

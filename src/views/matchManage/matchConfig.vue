@@ -2070,7 +2070,7 @@ export default {
             this.matchTicketsCfgs = []
             var timestamp = Date.parse(new Date()) / 1000
             for (let i = 0; i < objs.list.length; i++) {
-              if(this.propsTypeList.includes(objs.list[i].item_type)) {
+              if (this.propsTypeList.includes(objs.list[i].item_type)) {
                 if (objs.list[i].status === 1 && ((objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET && objs.list[i].expire_time > timestamp) ||
                   objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME)){
                   this.matchPropsCfgs.push({
@@ -2079,12 +2079,16 @@ export default {
                     'propsName': objs.list[i].item_name,
                     'propsIcon': objs.list[i].image,
                     'propsAttr': objs.list[i].item_describe,
-                    'propsCost': objs.list[i].item_cost,
+                    'propsCost': objs.list[i].item_cost
                   })
                   if (objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET) { //Tongits 门票
+                    let str = objs.list[i].item_name
+                    if (objs.list[i].show_name.length > 0) {
+                      str = str + '(' + objs.list[i].show_name + ')'
+                    }
                     this.matchTicketsCfgs.push({
-                      'label': objs.list[i].item_name,
-                      'value': objs.list[i].id,
+                      'label': str,
+                      'value': objs.list[i].id
                     })
                   }
                 }
