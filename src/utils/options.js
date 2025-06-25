@@ -12,6 +12,14 @@ export const APPID_OPTIONS = [
   { 'value': 1100000, 'label': 'xworld' }
 ]
 
+export const CHANNEL_OPTIONS = [
+  { 'value': 'BP', 'label': 'BP' },
+  { 'value': 'AP', 'label': 'AP' },
+  { 'value': 'GP', 'label': 'GP' },
+  { 'value': 'TP', 'label': 'TP' },
+  { 'value': 'PG', 'label': 'PG' },
+  { 'value': 'Dev', 'label': 'Dev' }
+]
 // 道具类型
 export const ITEM_TYPE_OPTIONS = [
   { 'value': 1, 'label': 'Tongits门票', disabled: false },
