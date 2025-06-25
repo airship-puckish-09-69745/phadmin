@@ -141,6 +141,14 @@ export default {
       this.setData()
 
       const $this = this
+      if (this.cfg.RowsSymSameRateNormal > 500){
+        this.$message.error(`首行符号相同概率(普通) 不能大于500‰ 防止无限旋转`);
+        return;
+      }
+      if (this.cfg.RowsSymSameRateFree > 500){
+        this.$message.error(`首行符号相同概率(免费) 不能大于500‰ 防止无限旋转`);
+        return;
+      }
       this.$refs.compare.SetNewVal(this.getDiffData())
       this.$refs.compare.Compare(function(isEdit) {
         if (!isEdit) {
