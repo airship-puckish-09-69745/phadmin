@@ -426,6 +426,7 @@ export default {
         'PlayingJoinCfg':[newPlayingJoinCfg(20000,5,10,1,4),newPlayingJoinCfg(50000,10,20,1,4),newPlayingJoinCfg(100000,20,30,1,4),newPlayingJoinCfg(200000,30,40,1,4)],
         
       },
+      gameId: 23,
       edit: {},
       tableMoneys: [],
       form: {},

@@ -168,11 +168,11 @@
           </template>
         </el-table-column>
 
-        <el-table-column
+        <!-- <el-table-column
           prop="currentGame"
           label="游戏"
           width="80"
-        />
+        /> -->
 
         <el-table-column
           prop="allowTableMoney"
