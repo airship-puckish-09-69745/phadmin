@@ -33,7 +33,7 @@
                     width="200"
                   >
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.PlayerLosePro" size="mini" type="number" ><template slot="append">%</template></el-input>
+                      <el-input-number v-model.number="scope.row.PlayerLosePro" size="mini" type="number"  :precision="0"><template slot="append">%</template></el-input-number>
                     </template>
                   </el-table-column>
                   <el-table-column
@@ -41,7 +41,7 @@
                     width="200"
                   >
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.BankerLosePro" size="mini" type="number"><template slot="append">%</template></el-input>
+                      <el-input-number v-model.number="scope.row.BankerLosePro" size="mini" type="number"  :precision="0"><template slot="append">%</template></el-input-number>
                     </template>
                   </el-table-column>
                   <el-table-column
@@ -49,7 +49,7 @@
                     width="200"
                   >
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.PlayerWinPro" size="mini" type="number"><template slot="append">%</template></el-input>
+                      <el-input-number v-model.number="scope.row.PlayerWinPro" size="mini" type="number"  :precision="0"><template slot="append">%</template></el-input-number>
                     </template>
                   </el-table-column>
                   <el-table-column
@@ -57,7 +57,7 @@
                     width="200"
                   >
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.BankerWinPro" size="mini" type="number"><template slot="append">%</template></el-input>
+                      <el-input-number v-model.number="scope.row.BankerWinPro" size="mini" type="number"  :precision="0"><template slot="append">%</template></el-input-number>
                     </template>
                   </el-table-column>
                 </el-table>
@@ -71,7 +71,7 @@
           <el-row style="padding-top: 5px">
     
               <fieldset>
-                <legend>机器人入桌</legend>
+                <legend>场次单桌最大机器人数</legend>
                 <el-alert
                   title="警告：每个场次单独配置，配置范围0～7，最大机器人数=0时，以下功能全部关闭"
                   type="error"
@@ -95,15 +95,15 @@
                     width="200"
                   >
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.RobotCnt" size="mini"  type="number" :min="0" :max="7"></el-input>
+                      <el-input-number  v-model.number="scope.row.RobotCnt" size="mini"  type="number" :min="0" :max="7"  :precision="0"></el-input-number >
                     </template>
                   </el-table-column>
                 </el-table>
               </fieldset>
               <fieldset>
-                <legend>场次入桌时间配置</legend>
+                <legend>场次人数=0时开桌配置</legend>
                 <el-table
-                  :data="item.JoinCfg"
+                  :data="item.ZeroJoinCfg"
                   border
                   style="width: 100%"
                 >
@@ -114,40 +114,118 @@
                     :formatter="(row) => (row.TableMoney / 1000)"
                   />
                   <el-table-column
-                    label="入场间隔时间最小"
+                    label="入场间隔时间最小（秒）"
                     width="200"
                   >
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.JoinMinTime" size="mini"  type="number" :min="0"></el-input>
+                      <el-input-number v-model.number="scope.row.JoinMinTime" size="mini"  type="number" :min="0"  :precision="0"></el-input-number>
                     </template>
                   </el-table-column>
                   <el-table-column
-                    label="入场间隔时间最大"
+                    label="入场间隔时间最大（秒）"
                     width="200"
                   >
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.JoinMaxTime" size="mini"  type="number" :min="0"></el-input>
+                      <el-input-number v-model.number="scope.row.JoinMaxTime" size="mini"  type="number" :min="0"  :precision="0"></el-input-number>
                     </template>
                   </el-table-column>
                   <el-table-column
-                    label="等人时间最小"
+                    label="等人时间最小（秒）"
                     width="200"
                   >
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.WaitMinTime" size="mini"  type="number" :min="0"></el-input>
+                      <el-input-number v-model.number="scope.row.WaitMinTime" size="mini"  type="number" :min="0"  :precision="0"></el-input-number>
                     </template>
                   </el-table-column>
                   <el-table-column
-                    label="等人时间最大"
+                    label="等人时间最大（秒）"
                     width="200"
                   >
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.WaitMaxTime" size="mini"  type="number" :min="0"></el-input>
+                      <el-input-number v-model.number="scope.row.WaitMaxTime" size="mini"  type="number" :min="0"  :precision="0"></el-input-number>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </fieldset>
+              <fieldset>
+                <legend>场次有桌不满最小开局人数时入桌</legend>
+                <el-table
+                  :data="item.WaitPlayJoinCfg"
+                  border
+                  style="width: 100%"
+                >
+                  <el-table-column
+                    label="场次"
+                    prop="TableMoney"
+                    width="200"
+                    :formatter="(row) => (row.TableMoney / 1000)"
+                  />
+                  <el-table-column
+                    label="协助开局时间最小（秒）"
+                    width="200"
+                  >
+                    <template slot-scope="scope">
+                      <el-input-number v-model.number="scope.row.JoinMinTime" size="mini"  type="number" :min="0"  :precision="0"></el-input-number>
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    label="协助开局时间最大（秒）"
+                    width="200"
+                  >
+                    <template slot-scope="scope">
+                      <el-input-number v-model.number="scope.row.JoinMaxTime" size="mini"  type="number" :min="0"  :precision="0"></el-input-number>
                     </template>
                   </el-table-column>
                 </el-table>
               </fieldset>
 
+              <fieldset>
+                <legend>场次有正在玩的桌子入桌</legend>
+                <el-table
+                  :data="item.PlayingJoinCfg"
+                  border
+                  style="width: 100%"
+                >
+                  <el-table-column
+                    label="场次"
+                    prop="TableMoney"
+                    width="200"
+                    :formatter="(row) => (row.TableMoney / 1000)"
+                  />
+                  <el-table-column
+                    label="机器人入桌间隔最小（秒）"
+                    width="200"
+                  >
+                    <template slot-scope="scope">
+                      <el-input-number v-model.number="scope.row.JoinMinTime" size="mini"  type="number" :min="0"  :precision="0"></el-input-number>
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    label="机器人入桌间隔最大（秒）"
+                    width="200"
+                  >
+                    <template slot-scope="scope">
+                      <el-input-number v-model.number="scope.row.JoinMaxTime" size="mini"  type="number" :min="0"  :precision="0"></el-input-number>
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    label="场次最大机器人比"
+                    width="200"
+                  >
+                    <template slot-scope="scope">
+                      <el-input v-model.number="scope.row.MaxRobotRate" size="mini"  type="number" :min="0" ></el-input>
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    label="机器人可加入桌子总人数上限"
+                    width="200"
+                  >
+                    <template slot-scope="scope">
+                      <el-input-number v-model.number="scope.row.MaxRobotCnt" size="mini"  type="number" :min="0"  :precision="0"></el-input-number>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </fieldset>
             </el-row>
         </el-tab-pane>
 
@@ -170,7 +248,7 @@
                     width="200"
                   >
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.BetTimes" size="mini"  type="number" :min="0"/>
+                      <el-input-number v-model.number="scope.row.BetTimes" size="mini"  type="number" :min="0"  :precision="0"/>
                     </template>
                   </el-table-column>
                   <el-table-column
@@ -178,7 +256,7 @@
                     width="200"
                   >
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.BetWeight" size="mini"  type="number" :min="0"/>
+                      <el-input-number v-model.number="scope.row.BetWeight" size="mini"  type="number" :min="0"  :precision="0"/>
                     </template>
                   </el-table-column>
                   <el-table-column
@@ -218,7 +296,7 @@
                     width="200"
                   >
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.BetWeight" size="mini"  type="number" :min="0"/>
+                      <el-input-number v-model.number="scope.row.BetWeight" size="mini"  type="number" :min="0"  :precision="0"/>
                     </template>
                   </el-table-column>
                 </el-table>
@@ -245,7 +323,7 @@
                     width="200"
                   >
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.Probability" size="mini"  type="number" :min="0"><template slot="append">%</template></el-input>
+                      <el-input-number v-model.number="scope.row.Probability" size="mini"  type="number" :min="0"  :precision="0"><template slot="append">%</template></el-input-number>
                     </template>
                   </el-table-column>
                 </el-table>
@@ -305,7 +383,7 @@ function newAiLevelCfg(x, y,z,k,v) {
   }
 }
 
-function newJoinCfg(x, y,z,k,v) {
+function newZeroJoinCfg(x, y,z,k,v) {
   return {
     TableMoney:x,
     JoinMinTime: y,
@@ -313,6 +391,25 @@ function newJoinCfg(x, y,z,k,v) {
     WaitMinTime: k,
     WaitMaxTime: v,
     
+  }
+}
+
+
+function newWaitPlayJoinCfg(x, y,z) {
+  return {
+    TableMoney:x,
+    JoinMinTime: y,
+    JoinMaxTime: z,
+  }
+}
+
+function newPlayingJoinCfg(x, y,z,k, v) {
+  return {
+    TableMoney:x,
+    JoinMinTime: y,
+    JoinMaxTime: z,
+    MaxRobotRate: k,
+    MaxRobotCnt: v,
   }
 }
 
@@ -340,9 +437,11 @@ export default {
         "BetHabitsCfg": [BetHabitsCfg(0, 20, true), BetHabitsCfg(1, 10, false), BetHabitsCfg(5, 30, false)],
         'TakeCardCfg': [newTakeCardCfg(0, 100), newTakeCardCfg(1, 100), newTakeCardCfg(2, 100), newTakeCardCfg(3, 100), newTakeCardCfg(4, 95), newTakeCardCfg(5, 50), newTakeCardCfg(6, 5), newTakeCardCfg(7, 0), newTakeCardCfg(8, 0), newTakeCardCfg(9, 0)],
         'AiLevelCfg':[newAiLevelCfg(5,20, 50, 0, 0),newAiLevelCfg(4,10, 10, 0, 0),newAiLevelCfg(3,0, 0, 0, 0),newAiLevelCfg(2,0, 0, 10, 10),newAiLevelCfg(1,0, 0, 20, 50)],
-        'JoinCfg':[newJoinCfg(20000, 10, 20, 5, 20),newJoinCfg(50000, 20, 40, 5, 20),newJoinCfg(100000, 40, 60, 5, 20),newJoinCfg(200000, 60, 120, 20, 30)],
-        'RobotCntCfg':[newRobotCntCfg(20000, 1),newRobotCntCfg(50000, 2),newRobotCntCfg(100000, 4),newRobotCntCfg(200000, 6)]
-
+        'ZeroJoinCfg':[newZeroJoinCfg(20000, 10, 20, 5, 20),newZeroJoinCfg(50000, 20, 40, 5, 20),newZeroJoinCfg(100000, 40, 60, 5, 20),newZeroJoinCfg(200000, 60, 120, 20, 30)],
+        'RobotCntCfg':[newRobotCntCfg(20000, 1),newRobotCntCfg(50000, 2),newRobotCntCfg(100000, 4),newRobotCntCfg(200000, 6)],
+        'WaitPlayJoinCfg':[newWaitPlayJoinCfg(20000,8,12),newWaitPlayJoinCfg(50000,8,12),newWaitPlayJoinCfg(100000,10,15),newWaitPlayJoinCfg(200000,15,20)],
+        'PlayingJoinCfg':[newPlayingJoinCfg(20000,5,10,1,4),newPlayingJoinCfg(50000,10,20,1,4),newPlayingJoinCfg(100000,20,30,1,4),newPlayingJoinCfg(200000,30,40,1,4)],
+        
       },
       edit: {},
       tableMoneys: [],
@@ -443,14 +542,14 @@ export default {
           for (let i = 0; i < this.tableMoneys.length; i++) {
 
             let isFind = false 
-            for (let j = 0; j < this.item.JoinCfg.length; j++) {
-              if (this.tableMoneys[i] == this.item.JoinCfg[j].TableMoney) {
+            for (let j = 0; j < this.item.ZeroJoinCfg.length; j++) {
+              if (this.tableMoneys[i] == this.item.ZeroJoinCfg[j].TableMoney) {
                 isFind = true;
                 break;
               }
             }
             if (!isFind) {
-              this.item.JoinCfg.push(newJoinCfg(this.tableMoneys[i], 0, 0, 0, 0))
+              this.item.ZeroJoinCfg.push(newZeroJoinCfg(this.tableMoneys[i], 0, 0, 0, 0))
             }
             isFind = false 
             for (let j = 0; j < this.item.RobotCntCfg.length; j++) {
@@ -463,27 +562,35 @@ export default {
               this.item.RobotCntCfg.push(newRobotCntCfg(this.tableMoneys[i], 0))
             }
 
-          }
-          for (let i = 0; i < this.item.JoinCfg.length; i++) {
-            for (let j = i+1; j < this.item.JoinCfg.length; j++) {
-              if ( this.item.JoinCfg[i].TableMoney >  this.item.JoinCfg[j].TableMoney) {
-                let tmp =  this.item.JoinCfg[i];
-                this.item.JoinCfg[i] = this.item.JoinCfg[j];
-                this.item.JoinCfg[j] = tmp;
+            isFind = false 
+            for (let j = 0; j < this.item.WaitPlayJoinCfg.length; j++) {
+              if (this.tableMoneys[i] == this.item.WaitPlayJoinCfg[j].TableMoney) {
+                isFind = true;
+                break;
               }
             }
-          }
+            if (!isFind) {
+              this.item.WaitPlayJoinCfg.push(newWaitPlayJoinCfg(this.tableMoneys[i], 0, 0))
+            }
 
-          for (let i = 0; i < this.item.RobotCntCfg.length; i++) {
-            for (let j = i+1; j < this.item.RobotCntCfg.length; j++) {
-              if ( this.item.RobotCntCfg[i].TableMoney >  this.item.RobotCntCfg[j].TableMoney) {
-                let tmp =  this.item.RobotCntCfg[i];
-                this.item.RobotCntCfg[i] = this.item.RobotCntCfg[j];
-                this.item.RobotCntCfg[j] = tmp;
+            isFind = false 
+            for (let j = 0; j < this.item.PlayingJoinCfg.length; j++) {
+              if (this.tableMoneys[i] == this.item.PlayingJoinCfg[j].TableMoney) {
+                isFind = true;
+                break;
               }
             }
+            if (!isFind) {
+              this.item.PlayingJoinCfg.push(newPlayingJoinCfg(this.tableMoneys[i], 0, 0,0,0))
+            }
+
           }
-        
+          this.item.ZeroJoinCfg.sort((a, b) => a.TableMoney - b.TableMoney);
+          this.item.RobotCntCfg.sort((a, b) => a.TableMoney - b.TableMoney);
+          this.item.WaitPlayJoinCfg.sort((a, b) => a.TableMoney - b.TableMoney);
+          this.item.PlayingJoinCfg.sort((a, b) => a.TableMoney - b.TableMoney);
+
+          
         }
       })
     },
@@ -525,6 +632,36 @@ export default {
         this.$delete(this.item.BetTimesCfg, idx)
       })
     },
+
+    // handleDecimalInput(row, key) {
+    //   // 1. 过滤非法字符（只保留数字和小数点）
+    //   let value = row[key] ? row[key].toString() : '0'
+    //   value = value.replace(/[^\d.]/g, '').replace(/^0+(\d)/, '$1').replace(/^\./, '0.').replace(/(\..*)\./g, '$1')
+    //   // 2. 禁止以小数点开头（如 ".5" → "0.5"）
+    //   if (value.startsWith('.')) {
+    //     value = '0' + value
+    //   }
+
+    //   // 3. 确保最多一个小数点
+    //   const parts = value.split('.')
+    //   if (parts.length > 2) {
+    //     value = parts[0] + '.' + parts.slice(1).join('')
+    //   }
+
+    //   // 4. 限制小数点后最多两位（百分比通常只需两位小数）
+    //   if (parts.length === 2 && parts[1].length > 2) {
+    //     value = parts[0] + '.' + parts[1].slice(0, 2)
+    //   }
+    //   const numValue = parseFloat(value) || 0
+    //   if (numValue < 0) {
+    //     value = '0'
+    //   } else if (isNaN(numValue)) {
+    //     value = '0' // 异常值重置为 0
+    //   }
+    //   // 5. 更新绑定的值（保留字符串类型，避免自动转换问题）
+    //   row[key] = value === '' ? null : value
+    // },
+    
  
   },
   
