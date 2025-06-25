@@ -4,15 +4,10 @@
       <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="CustomizeConfig" />
     </div>
    
-      <el-tabs type="border-card" @tab-click="handleTabClick">
+      <el-tabs type="border-card">
 
         <el-tab-pane label="机器人等级">
-          <el-row style="padding-top: 5px">
-              <fieldset>
-                <legend style="color: red; font-size: 20px; font-weight: bold;" >机器人开关</legend>
-                <el-switch v-model.number="item.EnableRobot" :active-value="true" :inactive-value="false" />
-                </fieldset>
-            </el-row>
+         
 
           <el-row style="padding-top: 5px">
               <fieldset>
@@ -229,11 +224,6 @@
             </el-row>
         </el-tab-pane>
 
-        <el-tab-pane label="机器人离桌">
-            <el-row style="padding-top: 5px">
-            </el-row>
-        </el-tab-pane>
-
           <el-tab-pane label="机器人下注">
             <el-row style="padding-top: 5px">
               <fieldset>
@@ -248,7 +238,8 @@
                     width="200"
                   >
                     <template slot-scope="scope">
-                      <el-input-number v-model.number="scope.row.BetTimes" size="mini"  type="number" :min="0"  :precision="0"/>
+                      <span>{{ scope.row.BetTimes }}</span>
+                     
                     </template>
                   </el-table-column>
                   <el-table-column
@@ -267,14 +258,6 @@
                       <div style="display: flex; align-items: center;">
                       <span style="margin-right: 10px;">是否可随机到max</span>
                       <el-switch v-model.number="scope.row.BetCanMax" :active-value="true" :inactive-value="false" />
-                    </div>
-                    </template>
-                  </el-table-column>
-                  <el-table-column label="操作" width="200">
-                    <template slot-scope="scope">
-                      <div style="display: flex; align-items: center;">
-                      <el-button  type="primary" size="mini" @click="delBetTimesCfg(scope.$index)">增加</el-button>
-                      <el-button type="danger" size="mini" @click="delBetTimesCfg(scope.$index)">删除</el-button>
                     </div>
                     </template>
                   </el-table-column>
@@ -345,10 +328,11 @@
 </style>
 <script>
 import { Message } from 'element-ui'
-import Publish from '@/components/Publish'
 import Compare from '@/components/Compare'
+import Publish from '@/components/Publish'
 import request from '@/utils/request'
-import {DataRule } from '@/utils/common'
+import { DataRule } from '@/utils/common'
+
 
 function newBetTimesCfg(x, y, z) {
   return {
@@ -432,7 +416,6 @@ export default {
     return {
    
       item:{
-        'EnableRobot':false,
         "BetTimesCfg": [newBetTimesCfg(1, 50, true), newBetTimesCfg(2, 20, false), newBetTimesCfg(3, 20, false),newBetTimesCfg(4, 10, false)],
         "BetHabitsCfg": [BetHabitsCfg(0, 20, true), BetHabitsCfg(1, 10, false), BetHabitsCfg(5, 30, false)],
         'TakeCardCfg': [newTakeCardCfg(0, 100), newTakeCardCfg(1, 100), newTakeCardCfg(2, 100), newTakeCardCfg(3, 100), newTakeCardCfg(4, 95), newTakeCardCfg(5, 50), newTakeCardCfg(6, 5), newTakeCardCfg(7, 0), newTakeCardCfg(8, 0), newTakeCardCfg(9, 0)],
@@ -469,7 +452,7 @@ export default {
         }
       ],
     
-      subKey: 'luck9RobotAiConfig',
+      subKey: 'lucky9_robot_cfg',
 
     }
   },
@@ -484,10 +467,10 @@ export default {
 
     setData() {
      
-      this.form.Data = JSON.stringify(this.egameData)
+      this.form.Data = JSON.stringify(this.item)
       const $this = this
 
-      // console.log("this.form.Data",  this.form.Data)
+       console.log("this.form.Data",  this.form.Data)
       // 设置修改后数据
       this.$refs.compare.SetNewVal(this.form)
       this.$refs.compare.Compare(function(isEdit) {
@@ -507,6 +490,7 @@ export default {
       })
     },
     getData() {
+      const $this = this
       request({
         url: '/customizeconfig/one',
         method: 'get',
@@ -516,9 +500,14 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           this.form = response.Data || {}
-          //console.log("this.form ",response.Data.Data)
-          // eslint-disable-next-line no-empty
           if (response.Data && response.Data.Data !== '') {
+            const data = JSON.parse(response.Data.Data)
+            
+            console.log('data: ', data)
+
+            this.item = this.DeepCopy(data)
+             // 设置修改之前数据
+             $this.$refs.compare.SetOldVal(response.Data)
           }
         }
       })
@@ -595,15 +584,7 @@ export default {
       })
     },
 
-    handleTabClick(tab) {
-      if (tab.name === 'gameMoneyQuery') {
-        this.handleRefreshGameMoney()
-      } else if (tab.name === 'gameInfoQuery') {
-        this.showGameMoney()
-      } else if (tab.name === 'playerInfoQuery') {
-        this.handleRefreshPlayerLevels()
-      }
-    },
+
 
     dataRule(required, config) {
       return DataRule(required, config)
