@@ -10,7 +10,7 @@
         :data="tableData"
         border
         :cell-style="libShow.DefaultTableCell"
-        style="max-height: calc(100vh - 326px);width: 100%;overflow-y: auto;"
+        style="width: 100%;overflow-y: auto;"
       >
         <!-- 序号 -->
         <el-table-column type="index" label="序号" width="60" align="center" />
@@ -22,12 +22,12 @@
           :width="field.width"
         >
           <template slot-scope="scope">
-            <!-- 活动图标 -->
+            <!-- 活动图标 || 过期图标 -->
             <el-image
-              v-if="field.prop === 'Icon'"
-              :src="scope.row.Icon"
+              v-if="field.prop === 'Icon' || field.prop === 'TimeoutIcon'"
+              :src="scope.row[field.prop]"
               fit="contain"
-              :preview-src-list="[scope.row.Icon]"
+              :preview-src-list="[scope.row[field.prop]]"
               class="image-manage-item__image"
             />
             <!-- 分页 -->
@@ -49,7 +49,7 @@
             <!-- 日期处理 -->
             <template v-else-if="field.prop === 'ActivityTime'">
               <span v-if="scope.row.ActivityTime">
-                {{ parseTime(scope.row.ActivityTime[0], '{y}-{m}-{d}') }} <br> {{ parseTime(scope.row.ActivityTime[1], '{y}-{m}-{d}') }}
+                {{ parseTime(scope.row.ActivityTime[0], '{y}-{m}-{d} {h}:{i}:{s}') }} <br> {{ parseTime(scope.row.ActivityTime[1], '{y}-{m}-{d} {h}:{i}:{s}') }}
               </span>
             </template>
             <!-- 活动：格式为：活动名称-[活动ID] -->
@@ -58,6 +58,12 @@
                 `${scope.row.ActivityName}-[${scope.row.ActivityId}]`
               }}</span>
               <span v-else>暂无</span>
+            </template>
+            <!-- 金额/100保留2位小数 -->
+            <template v-else-if="field.prop === 'Amount' || field.prop === 'Bonus'">
+              <span>
+                {{ parseFloat((scope.row[field.prop] / 100).toFixed(2)) }}
+              </span>
             </template>
             <span v-else>{{ scope.row[field.prop] }}</span>
           </template>
@@ -116,10 +122,11 @@ export default {
         { label: '活动名称', prop: 'ActivityName' },
         // { label: '活动开关', prop: 'Status', width: 80 },
         { label: '活动金额', prop: 'Amount', width: 200 },
-        { label: '活动时间', prop: 'ActivityTime', width: 130 },
+        { label: '活动时间', prop: 'ActivityTime', width: 160 },
         { label: '奖励', prop: 'Bonus', width: 130 },
         { label: '分页', prop: 'Page' },
-        { label: '活动图标', prop: 'Icon', width: 120 }
+        { label: '活动图标', prop: 'Icon', width: 120 },
+        { label: '过期图标', prop: 'TimeoutIcon', width: 120 }
       ],
       formDialog: {
         updateData: null,

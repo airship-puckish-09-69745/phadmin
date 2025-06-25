@@ -22,7 +22,16 @@
         <el-input v-model="formData.Description" type="textarea" />
       </el-form-item>
       <el-form-item label="活动时间" prop="ActivityTime" :rules="{ required: true, message: '请选择活动时间', trigger: 'blur' }">
-        <el-date-picker v-model="formData.ActivityTime" value-format="timestamp" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" />
+        <!-- <el-date-picker v-model="formData.ActivityTime" value-format="timestamp" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" /> -->
+        <el-date-picker
+          v-model="formData.ActivityTime"
+          value-format="timestamp"
+          type="datetimerange"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          :default-time="['00:00:00', '23:59:59']"
+          style="width: 360px;"
+        />
       </el-form-item>
       <el-form-item label="选择游戏">
         <GameTreeSelector :selected-games-id="selectedGamesId" @change="handleGamesChange" />
@@ -140,6 +149,8 @@ export default {
           newData.ActivityTime[0] * 1000,
           newData.ActivityTime[1] * 1000
         ]
+        // 金额/100
+        this.formData.Amount = parseFloat((newData.Amount / 100).toFixed(2))
         this.selectedGamesId = newData.GameList.map(game => game.Id)
         console.log('updateData', this.selectedGamesId)
       } else {
@@ -217,7 +228,10 @@ export default {
         Math.floor(submitData.ActivityTime[1] / 1000)
       ]
       // 金额和成就个数转换为整数类型
-      submitData.Amount = parseInt(submitData.Amount)
+      // submitData.Amount = parseInt(submitData.Amount)
+
+      submitData.Amount = parseInt(submitData.Amount * 100)
+
       // submitData.AchievementNumber = parseInt(submitData.AchievementNumber)
       this.$emit('save', submitData)
       this.resetForm()

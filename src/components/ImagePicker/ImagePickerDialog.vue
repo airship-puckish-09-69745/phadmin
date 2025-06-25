@@ -110,6 +110,7 @@
             <div class="image-picker-dialog-category__inner">
               <ImageCategoryMenu
                 v-model="condition.category"
+                :category="category"
                 :options="IMAGE_CATEGORIES"
                 @change="handleCategoryChange"
               />
@@ -121,6 +122,20 @@
         </div>
       </div>
       <div class="image-picker-dialog-block">
+        <div class="image-picker-dialog-block-search">
+          <div class="image-picker-dialog-block-search-item">
+            <el-input v-model="searchFilter.fileName" placeholder="请输入图片名称" clearable />
+          </div>
+          <div class="image-picker-dialog-block-search-item">
+            排序：
+            <el-button-group size="small">
+              <el-button v-for="item in filterOderOptions" :key="item.value" :type="searchFilter.order === item.value ? 'primary' : 'grey'" size="small" @click="handleChangeOrder(item.value)">{{ item.label }}</el-button>
+            </el-button-group>
+          </div>
+          <div class="image-picker-dialog-block-search-item">
+            <el-button type="primary" size="small" icon="el-icon-search" @click="handleSearch" />
+          </div>
+        </div>
         <el-scrollbar wrap-class="scrollbar-wrapper">
           <div class="image-picker-dialog-container">
             <div
@@ -147,6 +162,7 @@
                 <div class="image-picker-dialog-item__text">
                   {{ item.file_name }}
                 </div>
+                <div>{{ item.create_time }}</div>
                 <span
                   v-if="item.url === active.value"
                   class="image-picker-dialog-item__selected"
@@ -199,6 +215,11 @@ export default {
       type: Boolean,
       default: false
     },
+    // 默认选择分类
+    category: {
+      type: String,
+      default: 'match'
+    },
 
     // 图片 URL (v-model)
     value: {
@@ -218,8 +239,27 @@ export default {
         url: '' // 图片 URL
       },
 
+      searchFilter: {
+        fileName: '',
+        order: '' // 排序字段: uploadTime-上传时间, 默认是空按照文件名
+      },
+      filterOderOptions: [
+        {
+          label: '文件名',
+          value: ''
+        },
+        // {
+        //   label: '文件名',
+        //   value: 'fileName'
+        // },
+        {
+          label: '上传时间',
+          value: 'uploadTime'
+        }
+      ],
+
       condition: {
-        category: IMAGE_CATEGORIES[0]?.value,
+        category: this.category || IMAGE_CATEGORIES[0]?.value,
         current: 1,
         pageSize: DEFAULT_PAGE_SIZE
       },
@@ -243,6 +283,22 @@ export default {
   },
 
   methods: {
+    /**
+     * 改变排序
+     */
+    handleChangeOrder(order) {
+      this.searchFilter.order = order
+    },
+    /**
+     * 点击按钮通过前端搜索条件过滤图片
+     */
+    handleSearch() {
+      this.condition.current = 1
+      this.fetchList({ category: this.condition.category }).then((data) => {
+        this.setList(data)
+        this.getFilterList(this.condition)
+      })
+    },
     /**
      * @description 设置当前选中的图片
      * @param {object} image 选中的图片对象
@@ -328,7 +384,21 @@ export default {
 
       const { current = 1, pageSize = DEFAULT_PAGE_SIZE } = query || {}
 
-      const filteredList = list
+      let filteredList = list
+
+      // 前端搜索条件过滤
+      if (this.searchFilter.fileName) {
+        filteredList = filteredList.filter(item => item.file_name.includes(this.searchFilter.fileName))
+      }
+
+      // 排序
+      if (this.searchFilter.order) {
+        filteredList.sort((a, b) => {
+          if (this.searchFilter.order === 'uploadTime') {
+            return new Date(b.create_time) - new Date(a.create_time)
+          }
+        })
+      }
 
       // 计算总数
       const total = filteredList.length
@@ -414,7 +484,7 @@ export default {
      */
     reset() {
       this.setActive({ value: '', url: '', name: '' })
-      this.setCondition({ category: IMAGE_CATEGORIES[0]?.value, current: 1, pageSize: DEFAULT_PAGE_SIZE })
+      this.setCondition({ category: this.category || IMAGE_CATEGORIES[0]?.value, current: 1, pageSize: DEFAULT_PAGE_SIZE })
       this.setList([])
       this.setFilteredList([])
       this.setTotal(0)
@@ -582,6 +652,16 @@ export default {
   &-block {
     flex: 1;
     margin-left: 20px;
+
+    &-search {
+      margin-top: 8px;
+      margin-left: 8px;
+      &-item {
+        display: inline-block;
+        width: auto;
+        margin-right: 24px;
+      }
+    }
   }
 
   &-container {

@@ -54,7 +54,7 @@
         >
           <div class="card-panel-description">
             <div class="card-panel-text">
-              {{ gameNames[o] }}：<span :class="getSummaryClass(summary[o], false)"> {{
+              {{ getGameName(o) }}：<span :class="getSummaryClass(summary[o], false)"> {{
                 getSummaryResult(summary[o], false).toFixed(2)
               }}%</span>
             </div>
@@ -416,6 +416,7 @@ export default {
         196: 'GoldMiner',
         200: 'AtlantisTreasure',
         204: 'Space Treasure',
+        208: 'Candy Burst',
         210: 'Lucky Spirits',
         214: 'PumpkinCash',
         9: 'Teen Patti',
@@ -573,14 +574,22 @@ export default {
         this.defaultOrder.push(76, 77, 78, 81, 79, 80, 82, 83, 175, 165, 169)
       } else {
         if (IsProd()) { // 线上
-          this.defaultOrder.push(76, 80, 78, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162, 164, 166, 170, 172, 174, 176, 178, 180, 182, 168, 186, 184, 188, 190, 192, 194, 196, 198, 200, 202, 204)
+          this.defaultOrder.push(76, 80, 78, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162, 164, 166, 170, 172, 174, 176, 178, 180, 182, 168, 186, 184, 188, 190, 192, 194, 196, 198, 200, 202, 204, 208, 210)
         } else {
-          this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162, 164, 172, 188, 202, 198, 192, 180, 166, 170, 176, 182, 174, 186, 178, 194, 184, 168, 196, 190, 200, 204, 206, 210, 212, 214)
+          this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162, 164, 172, 188, 202, 198, 192, 180, 166, 170, 176, 182, 174, 186, 178, 194, 184, 168, 196, 190, 200, 204, 206, 208, 210, 212, 214)
         }
       }
       if (this.showZoogame) {
         this.defaultOrder.push(124, 125, 130, 131)
       }
+    },
+    getGameName(o) {
+      let name = this.gameNames[o]
+      if (name == '') {
+        console.log('unknown game: ', o)
+        return o
+      }
+      return name
     },
     isPopType(o) {
       const popTypes = [1, 9, 8, 14, 15, 21, 22, 29, 23, 28, 31, 34, 2032, 46, 47, 48, 35, 49, 113, 122, 130, 131]
@@ -601,7 +610,7 @@ export default {
       return false
     },
     isSlots(o) {
-      if (o > 50 && o < 100 || o > 149 && o < 500) {
+      if ((o > 50 && o < 100) || (o > 149 && o < 500)) {
         return true
       } else {
         return false

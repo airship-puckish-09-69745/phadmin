@@ -193,7 +193,7 @@
               </el-form-item>
             </div>
           </div>
-         
+
           <!-- 此处是专配置打立出局相关配置 -->
           <div v-if="stageItem.system_type == 1 && editForm.data.rule_type==0">
             <!-- 底分增长配置 -->
@@ -474,6 +474,7 @@ export default {
       limit: 10,
       total: 0,
       page: 1,
+      selfBuild:0, //普通比赛的赛制
       editForm: {
         visable: false,
         title: "",
@@ -518,8 +519,14 @@ export default {
         if (response.RetCode === 0) {
           let objs = response.Data || []
           if (objs.total > 0) {
-            this.total=objs.total;
-            this.tableData = objs.list;
+            this.tableData = []
+            this.total = 0
+            for(let i=0;i<objs.list.length;i++) {
+              if (objs.list[i].self_build ==  0) {
+                this.total = this.total + 1
+                this.tableData.push(objs.list[i])
+              }
+            }
             if (this.tableData.length > 0) {
               for (let i=0;i<this.tableData.length;i++) {
                 if (this.tableData[i].status == 0) {
@@ -761,7 +768,7 @@ export default {
             "type": 3,              //增长类型:1固定，2倍数增长,3定值增长
             "grow_total": 1,        //细节数量
             "init_score_grow_detail": [  //底分增长细节
-              { 
+              {
                 "index": 1,                //阶段
                 "duration": 80,            //时长
                 "init_score": 100,          //底分
@@ -773,7 +780,7 @@ export default {
               "type": 3,              //增长类型:1固定，2倍数增长,3定值增长
               "grow_total": 1,        //细节数量
               "disuse_score_grow_detail": [  //底分增长细节
-              { 
+              {
                 "index": 1,                //阶段
                 "duration": 80,            //时长
                 "disuse_score": 100,       //淘汰分
@@ -879,6 +886,7 @@ export default {
           GameId: gameId,
           InitScore: this.editForm.data.init_score,
           RuleType:this.editForm.data.rule_type,
+          SelfBuild:this.selfBuild,
         }
       }).then(response => {
         if (response.RetCode === 0) {

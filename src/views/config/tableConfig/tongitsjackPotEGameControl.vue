@@ -42,41 +42,41 @@
             <p style="color: red; font-weight: bold;">⚠️ 正数：玩家输给系统， 负数：系统输给玩家！</p>
             <el-descriptions :column="4" :colon="false" direction="vertical" border>
               <el-descriptions-item label="强杀" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center' }">
-                  <el-input 
-                  v-model.number="editGameControl.PlayerControl.CriticalPoint[0]" 
-                  type="number" 
+                  <el-input
+                  v-model.number="editGameControl.PlayerControl.CriticalPoint[0]"
+                  type="number"
                   placeholder="请输入整数"
                   />
               </el-descriptions-item>
               <el-descriptions-item label="弱杀" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-                <el-input 
-                v-model.number="editGameControl.PlayerControl.CriticalPoint[1]" 
-                type="number" 
-                placeholder="请输入整数" 
+                <el-input
+                v-model.number="editGameControl.PlayerControl.CriticalPoint[1]"
+                type="number"
+                placeholder="请输入整数"
                 />
               </el-descriptions-item>
               <el-descriptions-item label="弱放" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-                <el-input 
-                v-model.number="editGameControl.PlayerControl.CriticalPoint[2]" 
-                type="number" 
-                placeholder="请输入整数" 
+                <el-input
+                v-model.number="editGameControl.PlayerControl.CriticalPoint[2]"
+                type="number"
+                placeholder="请输入整数"
                 />
               </el-descriptions-item>
               <el-descriptions-item label="强放" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-                <el-input 
-                v-model.number="editGameControl.PlayerControl.CriticalPoint[3]" 
-                type="number"  
-                placeholder="请输入整数" 
+                <el-input
+                v-model.number="editGameControl.PlayerControl.CriticalPoint[3]"
+                type="number"
+                placeholder="请输入整数"
                 />
               </el-descriptions-item>
             </el-descriptions>
             <h4 style="text-align:left;">个⼈控制周期局数</h4>
             <el-descriptions :column="1" :colon="false" direction="vertical" border>
               <el-descriptions-item label="个⼈控制周期局数" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-                <el-input 
-                v-model.number="editGameControl.PlayerControl.PlayerControlRound" 
-                type="number"  
-                placeholder="请输入整数" 
+                <el-input
+                v-model.number="editGameControl.PlayerControl.PlayerControlRound"
+                type="number"
+                placeholder="请输入整数"
                 />
               </el-descriptions-item>
             </el-descriptions>
@@ -97,7 +97,7 @@
                     style="width: 100%"
                   >
                     <el-table-column
-                      prop="AiConfigLevel"  
+                      prop="AiConfigLevel"
                       label="级别"
                       width="250"
                       :formatter="(row) => getRobotName(row.AiConfigLevel)"
@@ -108,10 +108,10 @@
                       width="250"
                     >
                       <template slot-scope="scope">
-                        <el-input 
-                        v-model.number="scope.row.AiWeight[0]" 
-                        type="number"  
-                        placeholder="请输入整数" 
+                        <el-input
+                        v-model.number="scope.row.AiWeight[0]"
+                        type="number"
+                        placeholder="请输入整数"
                         />
                       </template>
                     </el-table-column>
@@ -121,9 +121,9 @@
                       width="250"
                     >
                       <template slot-scope="scope">
-                        <el-input v-model.number="scope.row.AiWeight[1]" 
-                        type="number"  
-                        placeholder="请输入整数" 
+                        <el-input v-model.number="scope.row.AiWeight[1]"
+                        type="number"
+                        placeholder="请输入整数"
                         />
                       </template>
                     </el-table-column>
@@ -133,9 +133,9 @@
                       width="250"
                     >
                       <template slot-scope="scope">
-                        <el-input v-model.number="scope.row.AiWeight[2]" 
-                        type="number"  
-                        placeholder="请输入整数" 
+                        <el-input v-model.number="scope.row.AiWeight[2]"
+                        type="number"
+                        placeholder="请输入整数"
                         />
                       </template>
                     </el-table-column>
@@ -145,9 +145,9 @@
                       width="250"
                     >
                       <template slot-scope="scope">
-                        <el-input v-model.number="scope.row.AiWeight[3]" 
-                        type="number"  
-                        placeholder="请输入整数" 
+                        <el-input v-model.number="scope.row.AiWeight[3]"
+                        type="number"
+                        placeholder="请输入整数"
                         />
                       </template>
                     </el-table-column>
@@ -157,10 +157,10 @@
                       width="250"
                     >
                       <template slot-scope="scope">
-                        <el-input 
-                          v-model.number="scope.row.AiWeight[4]" 
-                          type="number"  
-                          placeholder="请输入整数" 
+                        <el-input
+                          v-model.number="scope.row.AiWeight[4]"
+                          type="number"
+                          placeholder="请输入整数"
                         />
                       </template>
                     </el-table-column>
@@ -271,7 +271,7 @@
                   v-model="editGameControl.GameControl.ControlRange[0].Ratio"
                   @input="handlePercentInput(editGameControl.GameControl.ControlRange[0], 'Ratio', 0, 100)"
                   placeholder="0-100"
-                  type="number" 
+                  type="number"
                 >
                   <template #append>%</template>
                 </el-input>
@@ -281,7 +281,7 @@
                   v-model="editGameControl.GameControl.ControlRange[1].Ratio"
                   @input="handlePercentInput(editGameControl.GameControl.ControlRange[1], 'Ratio')"
                   placeholder="0-100"
-                  type="number" 
+                  type="number"
                   >
                   <template #append>%</template>
                 </el-input>
@@ -291,7 +291,7 @@
                   v-model="editGameControl.GameControl.ControlRange[2].Ratio"
                   @input="handlePercentInput(editGameControl.GameControl.ControlRange[2], 'Ratio')"
                   placeholder="0-100"
-                  type="number" 
+                  type="number"
                   ><template #append>%</template>
                 </el-input>
               </el-descriptions-item>
@@ -300,7 +300,7 @@
                   v-model="editGameControl.GameControl.ControlRange[3].Ratio"
                   @input="handlePercentInput(editGameControl.GameControl.ControlRange[3], 'Ratio')"
                   placeholder="0-100"
-                  type="number" 
+                  type="number"
                   ><template #append>%</template>
                 </el-input>
               </el-descriptions-item>
@@ -309,7 +309,7 @@
                   v-model="editGameControl.GameControl.ControlRange[4].Ratio"
                   @input="handlePercentInput(editGameControl.GameControl.ControlRange[4], 'Ratio')"
                   placeholder="0-100"
-                  type="number" 
+                  type="number"
                   ><template #append>%</template>
                 </el-input>
               </el-descriptions-item>
@@ -318,7 +318,7 @@
                   v-model="editGameControl.GameControl.ControlRange[5].Ratio"
                   @input="handlePercentInput(editGameControl.GameControl.ControlRange[5], 'Ratio')"
                   placeholder="0-100"
-                  type="number" 
+                  type="number"
                   ><template #append>%</template>
                 </el-input>
               </el-descriptions-item>
@@ -327,7 +327,7 @@
                   v-model="editGameControl.GameControl.ControlRange[6].Ratio"
                   @input="handlePercentInput(editGameControl.GameControl.ControlRange[6], 'Ratio')"
                   placeholder="0-100"
-                  type="number" 
+                  type="number"
                 >
                   <template #append>%</template>
                 </el-input>
@@ -402,7 +402,7 @@
                 </el-descriptions-item>
               </el-descriptions>
             </el-row>
-     
+
             <el-row>
               <el-descriptions :column="3" :colon="false">
                 <el-descriptions-item label="原点">
@@ -415,7 +415,7 @@
                 <el-descriptions-item label="系统游戏库存:">
                   {{ gameRatio /100}} %
                 </el-descriptions-item>
-              
+
               </el-descriptions>
               <el-alert
               title="⚠️ 系统游戏库存= （前7日每日平均有效下注*2.5%+最新累积待调整金额）/（前7日每日平局有效下注+今日有效下注）"
@@ -451,7 +451,7 @@
                         <el-input
                           v-model="scope.row.Ratio"
                           placeholder="0-100"
-                          type="number" 
+                          type="number"
                           @input="handleDecimalInput(scope.row, 'Ratio')" >
                           <template #append>%</template>
                         </el-input>
@@ -524,7 +524,7 @@
             </el-select>
           </el-form-item>
           </el-row>
-        
+
           <el-row style="padding-top: 20px">
             <el-form-item label="目标应用" :required="true">
               <el-select v-model="copyDialog.form.targetAppId" style="width: 210px" placeholder="请选择" size="mini">
@@ -532,7 +532,7 @@
               </el-select>
             </el-form-item>
 
-        
+
           </el-row>
           <el-row style="padding-top: 20px">
             <el-col>
@@ -632,7 +632,7 @@ export default {
       APPID_OPTIONS,
       gameId: 128,
       playMode: 4, // 经典玩法
-   
+
       edit: {},
       tableData: [],
       egameData: {},
@@ -808,9 +808,9 @@ export default {
 
 
       editGameControl: {
-        appid: 1000002, 
-        name: 'dayusenlin' , 
-        PlayerControl: 
+        appid: 1000002,
+        name: 'dayusenlin' ,
+        PlayerControl:
         {
           CriticalPoint: [100, 200, 300, 400],
           PlayerControlRound: 0,
@@ -968,8 +968,8 @@ export default {
             const tmp = this.editGameControl.GameControl.ControlRange[i]
             saveData.GameControl.ControlRange.push({ MoveRange: tmp.MoveRange, Ratio: this.convertToFloat(tmp.Ratio) })
           }
-     
-        
+
+
           saveData.GameControl.GameAcceptance = []
           for (let i = 0; i < this.editGameControl.GameControl.GameAcceptance.length; i++) {
             const tmp = this.editGameControl.GameControl.GameAcceptance[i]
@@ -981,8 +981,8 @@ export default {
           }
           saveData.TongitsJackpotBuildCardInfo = this.editGoodCard
           this.egameData.AppControlConfig[j] = structuredClone(saveData)
-          
-        } 
+
+        }
       }
 
 
@@ -1041,7 +1041,7 @@ export default {
 
             }
           //  console.log("egameDataa", this.egameData)
-          
+
             let appidIndex = 0
             for (let i = 0; i < this.egameData.AppControlConfig.length; i++) {
               if (this.egameData.AppControlConfig[i].AppId == this.editAppId) {
@@ -1159,7 +1159,7 @@ export default {
           }
           this.VisibleUid = true
           Message.success('刷新成功！')
-      
+
           if (objs.list === undefined) {
             objs.list = []
           }
@@ -1255,7 +1255,7 @@ export default {
           this.sevenDayMoneyBet = objs.sevenDayMoneyBet  /= 1000
           this.gameRatio = objs.gameRatio
           this.moveRange = objs.moveRange
-          this.addWeightRatio = objs.addWeightRatio 
+          this.addWeightRatio = objs.addWeightRatio
 
 
           if (objs.gameAreaId < 0) {
@@ -1348,7 +1348,7 @@ export default {
       // 5. 更新绑定的值（保留字符串类型，避免自动转换问题）
       row[key] = value === '' ? null : value
     },
-    
+
     // 处理百分比输入（0-100%）
     handlePercentInput(obj, key, min = 0, max = 100) {
       let value = obj[key]?.toString() || '0'
@@ -1397,13 +1397,13 @@ export default {
         Message.error('请输入目标AppId')
         return
       }
- 
+
       if (this.copyDialog.form.targetAppId == this.copyDialog.form.srcAppId) {
         Message.error('源渠道和目标渠道相同')
         return
       }
-      
-      let isFind = false 
+
+      let isFind = false
       for (let i = 0; i < this.egameData.AppControlConfig.length; i++) {
         const tmp = this.egameData.AppControlConfig[i]
         if (tmp.AppId == this.copyDialog.form.srcAppId) {
@@ -1416,7 +1416,7 @@ export default {
               name = APPID_OPTIONS[k].label
             }
           }
-    
+
           copyData.AppName = name
 
           for (let j = 0; j < this.egameData.AppControlConfig.length; j++) {
@@ -1463,9 +1463,9 @@ export default {
       this.editVisible = true
       this.edit = row
     },
- 
+
   },
-  
+
 }
 </script>
 

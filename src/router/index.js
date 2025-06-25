@@ -248,7 +248,7 @@ export const asyncRoutes = [
                     path: 'tongitsAIList',
                     component: () => import('@/views/config/tableConfig/tongitsAIListConfig'),
                     name: 'tongitsAIList',
-                    meta: { title: 'AI-List ◐' }
+                    meta: { title: 'AI-List ◐', cfgSubKey: 'tongits_ai_list_cfg', cgiPath: 'tongitsrobotlist' }
                   }
                 ]
               },
@@ -272,9 +272,9 @@ export const asyncRoutes = [
                   },
                   {
                     path: 'tongitsJokerAIList',
-                    component: () => import('@/views/config/tableConfig/tongitsJokerAIListConfig'),
+                    component: () => import('@/views/config/tableConfig/tongitsAIListConfig'),
                     name: 'tongitsJokerAIList',
-                    meta: { title: 'AI-List ◐' }
+                    meta: { title: 'AI-List ◐', cfgSubKey: 'tongitsJoker_ai_list_cfg', cgiPath: 'tongitsjokerrobotlist' }
                   }
                 ]
               },
@@ -306,9 +306,9 @@ export const asyncRoutes = [
                   },
                   {
                     path: 'tongitsQuickAIList',
-                    component: () => import('@/views/config/tableConfig/tongitsQuick/tongitsQuickAIListConfig'),
+                    component: () => import('@/views/config/tableConfig/tongitsAIListConfig'),
                     name: 'tongitsQuickAIList',
-                    meta: { title: 'AI-List ◐' }
+                    meta: { title: 'AI-List ◐', cfgSubKey: 'tongitsQuick_ai_list_cfg', cgiPath: 'tongitsquickrobotlist'}
                   }
                 ]
                 // name: 'tongitsTableQuick',
@@ -1065,7 +1065,7 @@ export const asyncRoutes = [
         path: 'slotsCfg',
         component: () => import('@/views/empty'),
         redirect: 'noRedirect',
-        meta: { title: 'Slots - 老虎机', perm: 'SLOTS_PROCESS' },
+        meta: { title: 'Slots - 老虎机', noCache: true, perm: 'SLOTS_SCRIPT_MNG' },
         children: [
           {
             path: 'slotsProCfg',
@@ -2386,6 +2386,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_RemiPro',
             meta: { title: 'R emi Pro ◐', gid: 131 }
+          },
+          {
+            path: 'playlog_Truco',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_Truco',
+            meta: { title: 'T ruco ◐', gid: 11 }
           },
         ]
       },
