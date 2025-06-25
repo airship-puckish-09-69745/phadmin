@@ -46,11 +46,11 @@
           label="道具名称"
           show-overflow-tooltip
         />
-        <el-table-column
-          prop="show_name"
-          label="后台名称"
-          show-overflow-tooltip
-        />
+        <el-table-column prop="show_name" label="后台名称">
+          <template slot-scope="scope">
+            {{ getItemShowName(scope.row.item_extra) }}
+          </template>
+        </el-table-column>
 
         <el-table-column prop="item_type" label="道具分类" >
           <template slot-scope="scope">
@@ -150,7 +150,7 @@
           </el-form-item>
 
           <el-form-item label="后台名称：" :required="true">
-            <el-input v-model="editForm.data.showName" style="width: 200px;" placeholder="请填写后台名称" />
+            <el-input v-model="editForm.itemExtra.showName" style="width: 200px;" placeholder="请填写后台名称" />
           </el-form-item>
 
           <el-form-item v-if="editForm.data.itemType != 2  && editForm.data.itemType != 4" label="道具价值：" :required="true">
@@ -293,6 +293,7 @@ export default {
         },
         itemExtra: {
           specialAttr: 0,
+          showName: ''
         },
         itemEndDate: $libDate.GetDayBegin(new Date().setSeconds(0))
       },
@@ -379,7 +380,8 @@ export default {
           timeType: []
         }
         this.editForm.itemExtra = {
-          specialAttr:0
+          specialAttr: 0,
+          showName: ''
         }
         this.checkAll()
         this.editForm.itemEndDate = $libDate.GetDayBegin(new Date().setSeconds(0))
@@ -409,7 +411,6 @@ export default {
         this.editForm.data = {
           ID: editData.id,
           itemName: editData.item_name,
-          showName: editData.show_name,
           itemCost: editData.item_cost,
           itemType: editData.item_type,
           describe: editData.item_describe,
@@ -432,6 +433,17 @@ export default {
         }
       }
       return itemTypeName
+    },
+
+    getItemShowName(item_type) {
+      if (item_type === null) {
+        return ''
+      }
+      let exitData = JSON.parse(item_type)
+      if (exitData.showName === null) {
+        return ''
+      }
+      return exitData.showName
     },
 
     getStatusName(status) {
@@ -512,7 +524,6 @@ export default {
             Env: this.env,
             ID: editData.id,
             ItemName: editData.item_name,
-            ShowName: editData.show_name,
             ItemCost: editData.item_cost,
             ItemType: editData.item_type,
             Describe: editData.item_describe,
@@ -656,7 +667,6 @@ export default {
             Env: this.env,
             ID: this.editForm.data.ID,
             ItemName: this.editForm.data.itemName,
-            ShowName: this.editForm.data.showName,
             ItemCost: this.editForm.data.itemCost,
             ItemType: this.editForm.data.itemType,
             Describe: this.editForm.data.describe,
@@ -666,7 +676,7 @@ export default {
             Status: this.editForm.data.status,
             Quality: this.editForm.data.quality,
             TimeType: timeList,
-            ItemExtra: JSON.stringify(this.editForm.itemExtra),
+            ItemExtra: JSON.stringify(this.editForm.itemExtra)
           }
         }).then(response => {
           if (response.RetCode === 0) {
