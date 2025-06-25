@@ -46,6 +46,12 @@
           label="道具名称"
           show-overflow-tooltip
         />
+        <el-table-column
+          prop="show_name"
+          label="后台名称"
+          show-overflow-tooltip
+        />
+
         <el-table-column prop="item_type" label="道具分类" >
           <template slot-scope="scope">
             {{ getItemTypeName(scope.row.item_type) }}
@@ -141,6 +147,10 @@
           <legend>道具信息</legend>
           <el-form-item label="道具名称：" :required="true">
             <el-input v-model="editForm.data.itemName" style="width: 200px;" placeholder="请填写道具名称" />
+          </el-form-item>
+
+          <el-form-item label="后台名称：" :required="true">
+            <el-input v-model="editForm.data.showName" style="width: 200px;" placeholder="请填写后台名称" />
           </el-form-item>
 
           <el-form-item v-if="editForm.data.itemType != 2  && editForm.data.itemType != 4" label="道具价值：" :required="true">
@@ -267,9 +277,10 @@ export default {
         visable: false,
         title: '',
         isAdd: false,
-        data:{
+        data: {
           ID: 0,
           itemName: '',
+          showName: '',
           itemCost: 0,
           itemType: 0,
           describe: '',
@@ -278,9 +289,9 @@ export default {
           sort: 0,
           status: 0,
           quality: 0,
-          timeType: [],
+          timeType: []
         },
-        itemExtra:{
+        itemExtra: {
           specialAttr: 0,
         },
         itemEndDate: $libDate.GetDayBegin(new Date().setSeconds(0))
@@ -356,6 +367,7 @@ export default {
         this.editForm.data = {
           ID: 0,
           itemName: '',
+          showName: '',
           itemCost: '',
           itemType: '',
           describe: '',
@@ -397,6 +409,7 @@ export default {
         this.editForm.data = {
           ID: editData.id,
           itemName: editData.item_name,
+          showName: editData.show_name,
           itemCost: editData.item_cost,
           itemType: editData.item_type,
           describe: editData.item_describe,
@@ -499,6 +512,7 @@ export default {
             Env: this.env,
             ID: editData.id,
             ItemName: editData.item_name,
+            ShowName: editData.show_name,
             ItemCost: editData.item_cost,
             ItemType: editData.item_type,
             Describe: editData.item_describe,
@@ -642,6 +656,7 @@ export default {
             Env: this.env,
             ID: this.editForm.data.ID,
             ItemName: this.editForm.data.itemName,
+            ShowName: this.editForm.data.showName,
             ItemCost: this.editForm.data.itemCost,
             ItemType: this.editForm.data.itemType,
             Describe: this.editForm.data.describe,
@@ -672,6 +687,7 @@ export default {
             Env: this.env,
             ID: this.editForm.data.ID,
             ItemName: this.editForm.data.itemName,
+            ShowName: this.editForm.data.showName,
             ItemCost: this.editForm.data.itemCost,
             ItemType: this.editForm.data.itemType,
             Describe: this.editForm.data.describe,
