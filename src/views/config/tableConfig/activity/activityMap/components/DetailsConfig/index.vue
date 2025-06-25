@@ -92,6 +92,12 @@
               </div>
               <span v-else>暂无</span>
             </template>
+            <!-- 金额/100保留2位小数 -->
+            <template v-else-if="field.prop === 'Amount'">
+              <span>
+                {{ parseFloat((scope.row[field.prop] / 100).toFixed(2)) }}
+              </span>
+            </template>
             <span v-else>{{ scope.row[field.prop] }}</span>
           </template>
         </el-table-column>
