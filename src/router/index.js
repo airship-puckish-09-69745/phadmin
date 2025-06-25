@@ -461,11 +461,23 @@ export const asyncRoutes = [
                 name: 'lucky9Table',
                 meta: { title: 'Lucky9 ◐' }
               },
+              // {
+              //   path: 'lucky9RobotSetting',
+              //   component: () => import('@/views/config/tableConfig/lucky9RobotSetting'),
+              //   name: 'lucky9RobotSetting',
+              //   meta: { title: 'Lucky9 AI◐' }
+              // },
               {
-                path: 'lucky9RobotSetting',
-                component: () => import('@/views/config/tableConfig/lucky9RobotSetting'),
-                name: 'lucky9RobotSetting',
-                meta: { title: 'Lucky9 AI◐' }
+                path: 'lucky9TableAiConfig',
+                component: () => import('@/views/config/tableConfig/lucky9TableAiConfig'),
+                name: 'lucky9TableAiConfig',
+                meta: { title: 'AI配置◐' }
+              },
+              {
+                path: 'lucky9AIListConfig',
+                component: () => import('@/views/config/tableConfig/lucky9AIListConfig'),
+                name: 'lucky9AIListConfig',
+                meta: { title: 'AI-List ◐' }
               }
             ]
           },
@@ -3180,16 +3192,10 @@ export const asyncRoutes = [
             meta: { title: '机器人资产变更日志 ◐' }
           },
           {
-            path: 'tongitsCheatLog',
-            component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatNew.vue'),
-            name: 'tongitsCheatLog',
-            meta: { title: '作弊日志（新） ◐' }
-          },
-          {
             path: 'tongitsCheatLogDev',
             component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatNewDev.vue'),
             name: 'tongitsCheatLog',
-            meta: { title: '作弊日志（新）dev ◐' }
+            meta: { title: '作弊日志（新) ◐' }
           }
         ]
       },
