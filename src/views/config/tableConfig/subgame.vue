@@ -294,7 +294,7 @@
                     <el-checkbox label="PG">PG</el-checkbox>
                     <el-checkbox label="Dev">DEV</el-checkbox>
                   </el-checkbox-group>
-                  <span style="color: red">站点不勾等于全勾选</span>
+                  <span style="color: red">全部不勾 等于 任意站点都可见。下架入口则不可见</span>
                 </el-form-item>
                 <el-form-item label="名称：" :required="true">
                   <el-row>
