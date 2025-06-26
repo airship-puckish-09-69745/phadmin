@@ -2961,17 +2961,19 @@
         <el-table-column prop="vsScore" label="红 vs 绿" width="100px" align="center">
           <template slot-scope="scope">{{ scope.row.vsScore[0] + ' vs ' + scope.row.vsScore[1]}}</template>
         </el-table-column>
-        <el-table-column label="viradaCard牌 => 最大牌" width="120">
+        <el-table-column label="viradaCard牌 => 最大牌" width="200">
           <template slot-scope="scope">
             <el-image
               style="width: 37px; height: 50px"
               :src="getCardUrl(scope.row.viradaCard)"
             />
-            <span>{{ '=>' }}</span>
+            <span>{{ ' => ' }}</span>
             <el-image
               style="width: 37px; height: 50px"
-              :src="setTrucoMaxCard(scope.row.viradaCard)"
+              :src="trucoMaxCardUrl(scope.row.viradaCard)"
             />
+            <br>
+            <span>{{trucoCardNumSort(scope.row.viradaCard)}}</span>
           </template>                      
         </el-table-column>
 
@@ -5320,7 +5322,7 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
       }
       return 'yellow'
     },
-    setTrucoMaxCard(viradaCard) {
+    getTrucoMaxCard(viradaCard) {
       let cardNumberOrder = [12, 11, 13, 1, 2, 3] //牌的数字大小：[Q < J < K < A < 2 < 3]
 	    let point = viradaCard & 0x0f
       let trucoRoundMaxCardIndex = 0
@@ -5334,8 +5336,36 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
         }
       }
       let cards = [0x1c, 0x1b, 0x1d, 0x11, 0x12, 0x13]
-      return this.getCardUrl(cards[trucoRoundMaxCardIndex])
+      return cards[trucoRoundMaxCardIndex]
     },
+    trucoMaxCardUrl(viradaCard) {
+      return this.getCardUrl(this.getTrucoMaxCard(viradaCard))
+    },
+    trucoCardNumSort(viradaCard) {
+      let cardNumberOrder = [12, 11, 13, 1, 2, 3] //牌的数字大小：[Q < J < K < A < 2 < 3]
+      let maxCard = this.getTrucoMaxCard(viradaCard)
+	    let point = maxCard & 0x0f
+      let txt = ['Q','J','K','A','2','3']
+      for (let i = 0; i < cardNumberOrder.length; i ++) {
+        if (cardNumberOrder[i] == point) {
+          let mx = txt[i]
+          txt.splice(i, 1)
+          txt.push('♦'+mx)
+          txt.push('♠'+mx)
+          txt.push('♥'+mx)
+          txt.push('♣'+mx)
+          break
+        }
+      }
+      let msg = ""
+      for (let i = 0; i < txt.length; i ++) {
+        if (i > 0){
+          msg += '<'
+        }
+        msg += txt[i]
+      }
+      return msg
+    }
   }
 }
 </script>
