@@ -705,7 +705,7 @@
                         :value="item.propsId"
                       >
                         <img v-if="item.propsIcon != '' " :src="item.propsIcon" style="height:36px;vertical-align: middle;"/>
-                        <span>{{ item.propsName }}</span>
+                        <span>{{ item.propsShowName }}</span>
                       </el-option>
                     </el-select>
                     <el-input v-model.number="scope.row.propsReward.propsNum" style="width: 100px;" size="mini" placeholder="填数量" />
@@ -2067,6 +2067,7 @@ export default {
                 'propsIcon': '',
                 'propsAttr': '',
                 'propsCost': '',
+                'propsShowName': ''
               }
             ]
             this.matchTicketsCfgs = []
@@ -2075,19 +2076,20 @@ export default {
               if (this.propsTypeList.includes(objs.list[i].item_type)) {
                 if (objs.list[i].status === 1 && ((objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET && objs.list[i].expire_time > timestamp) ||
                   objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME)){
+                  let str = objs.list[i].item_name
+                  if (objs.list[i].show_name.length > 0) {
+                    str = str + '(' + objs.list[i].show_name + ')'
+                  }
                   this.matchPropsCfgs.push({
                     'propsType': objs.list[i].item_type,
                     'propsId': objs.list[i].id,
                     'propsName': objs.list[i].item_name,
                     'propsIcon': objs.list[i].image,
                     'propsAttr': objs.list[i].item_describe,
-                    'propsCost': objs.list[i].item_cost
+                    'propsCost': objs.list[i].item_cost,
+                    'propsShowName': str
                   })
                   if (objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET) { //Tongits 门票
-                    let str = objs.list[i].item_name
-                    if (objs.list[i].show_name.length > 0) {
-                      str = str + '(' + objs.list[i].show_name + ')'
-                    }
                     this.matchTicketsCfgs.push({
                       'label': str,
                       'value': objs.list[i].id
@@ -2505,26 +2507,28 @@ export default {
       }
       return false
     },
-    getPropsRewardItem(pid,propsNum,expireDays) {
+    getPropsRewardItem(pid, propsNum, expireDays) {
       const one = {
         propsId: 0,
         propsType: 0,
         propsName: '',
         propsIcon: '',
         propsAttr: '',
-        propsNum:propsNum,
+        propsNum: propsNum,
         propCost: 0,
-        propExpireDays:expireDays,
+        propExpireDays: expireDays,
+        propsShowName: ''
       }
       for (let i = 0; i < this.matchPropsCfgs.length; i++) {
         const element = this.matchPropsCfgs[i]
-        if (element.propsId == pid) {
+        if (element.propsId === pid) {
           one.propsId = element.propsId
           one.propsType = element.propsType
           one.propsName = element.propsName
           one.propsIcon = element.propsIcon
           one.propsAttr = element.propsAttr
           one.propCost = element.propsCost
+          one.propsShowName = element.propsShowName
           break
         }
       }
