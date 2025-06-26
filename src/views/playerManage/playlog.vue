@@ -2961,7 +2961,7 @@
         <el-table-column prop="vsScore" label="红 vs 绿" width="100px" align="center">
           <template slot-scope="scope">{{ scope.row.vsScore[0] + ' vs ' + scope.row.vsScore[1]}}</template>
         </el-table-column>
-        <el-table-column label="viradaCard牌 => 最大牌" width="200">
+        <el-table-column label="viradaCard牌 => 最大牌" width="220">
           <template slot-scope="scope">
             <el-image
               style="width: 37px; height: 50px"
