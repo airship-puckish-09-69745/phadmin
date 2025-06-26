@@ -44,16 +44,7 @@
           sortable="custom"
           width="70"
         />
-        <el-table-column
-          prop="IsPractice"
-          label="练习场"
-          width="70"
-        >
-          <template slot-scope="scope">
-            <span v-if="scope.row.IsPractice === 1" style="color:#ff0000;">是</span>
-            <span v-else style="color:#999999;">否</span>
-          </template>
-        </el-table-column>
+
         <el-table-column
           prop="Level"
           label="Level"
@@ -541,7 +532,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
-          this.clientDB = new ClientTableData(this.libMoney.TransForShow(objs), 10, filterMap, 'ID', -1)
+          this.clientDB = new ClientTableData(this.libMoney.TransForShow(objs), 10, filterMap, 'TableMoney', 1)
           this.handleCurrentChange(1)
         }
       })
