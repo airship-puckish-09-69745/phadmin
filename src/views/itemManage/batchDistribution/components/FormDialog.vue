@@ -127,17 +127,15 @@ export default {
             Remark: this.updateForm.remark,
             SendDetails: this.updateForm.send_details
           }
-          console.log('编辑发放：', this.form)
           // 解析account
           this.account = this.form.SendDetails.account_details.map(item => item.account).join(',')
           // 根据prop_id从itemList获取道具类型
           this.itemType = this.itemList.find(item => item.id === this.form.PropDetails.prop_id)?.item_type
           // 根据道具类型筛选道具下拉框选项
           const filteredItems = this.itemList.filter(item => item.item_type === this.itemType)
-          this.itemOptions = filteredItems.map(item => ({
-            value: item.id,
-            label: item.item_name
-          }))
+          this.updateItemOption(filteredItems)
+          console.log(this.itemOptions)
+
         } else {
           this.form = {
             AccountType: 2,
@@ -237,6 +235,29 @@ export default {
       this.$emit('close')
       this.$emit('reload')
     },
+    updateItemOption(filteredItems) {
+      if (filteredItems === null) {
+        return
+      }
+      this.itemOptions = []
+      for (let i = 0; i < filteredItems.length; i++) {
+        let str = filteredItems[i].item_name
+        if (filteredItems[i].item_extra.length > 0) {
+          let exitData = JSON.parse(filteredItems[i].item_extra)
+          if (exitData != null) {
+            if (exitData.showName != null) {
+              if (exitData.showName.length > 0) {
+                str = str + '(' + exitData.showName + ')'
+              }
+            }
+          }
+        }
+        this.itemOptions.push({
+          value: filteredItems[i].id,
+          label: str
+        })
+      }
+    },
     /**
      * 校验表单各项输入
      */
@@ -331,10 +352,7 @@ export default {
       this.form.PropDetails.prop_num = 1
       this.form.PropDetails.prop_expire_days = 1
       const filteredItems = this.itemList.filter(item => item.item_type === value)
-      this.itemOptions = filteredItems.map(item => ({
-        value: item.id,
-        label: item.item_name
-      }))
+      this.updateItemOption(filteredItems)
       console.log('道具下拉框选项', this.itemOptions)
     },
     /**
