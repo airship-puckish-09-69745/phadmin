@@ -78,6 +78,8 @@ export default {
             file: base64
           }
         }).then(response => {
+          // 情况input的value
+          this.uploadedFile = null
           if (response.RetCode === 0) {
             // console.log(response.Data)
             this.$message({

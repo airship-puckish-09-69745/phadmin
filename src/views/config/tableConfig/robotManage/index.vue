@@ -10,7 +10,7 @@
           <el-button type="primary" icon="el-icon-search" size="small" @click="onSearch">搜索</el-button>
         </div>
         <div class="serach-filter-item float-right">
-          <el-button type="warning" size="small" :disabled="selectedRows.length === 0" @click="handleLaunchRobot">投放选中的机器人</el-button>
+          <el-button type="warning" size="small" :disabled="selectedRobots.length === 0" @click="handleLaunchRobot">投放选中的机器人</el-button>
         </div>
         <div class="serach-filter-item float-right">
           <el-button type="success" icon="el-icon-plus" size="small" @click="handleShowImportRobotDialog">添加机器人</el-button>
@@ -39,16 +39,25 @@
     </el-row>
 
     <AddRobotDialog :visible="importDialogVisible" @reload-list="onSearch" @close="handleImportRobotDialogClose" />
+    <LaunchRobotsDialog
+      :visible="launchRobotsDialogVisible"
+      :selected-robots="selectedRobots"
+      :game-options="gameOptions"
+      @close="handleLaunchRobotsDialogClose"
+      @reload-list="onSearch"
+    />
   </div>
 </template>
 
 <script>
 import AddRobotDialog from './components/AddRobotDialog.vue'
 import request from '@/utils/request'
+import LaunchRobotsDialog from './components/LaunchRobotsDialog.vue'
 
 export default {
   components: {
-    AddRobotDialog
+    AddRobotDialog,
+    LaunchRobotsDialog
   },
   data() {
     return {
@@ -72,21 +81,47 @@ export default {
           prop: 'money'
         }
       ],
-      selectedRows: [], // 选中的机器人
+      selectedRobots: [], // 列表选中的机器人
       pagination: {
         total: 0,
         currentPage: 1,
         pageSize: 10
-      }
+      },
+      /**
+       * 数组对象结构
+       * @param gameName 游戏名称
+       * @param gid 游戏id
+       * @param {Number[]} sessions 场次
+       */
+      gameOptions: [],
+      launchRobotsDialogVisible: false // 投放机器人弹窗
     }
   },
   mounted() {
+    this.getGameOptions()
     this.onSearch()
   },
   methods: {
     onSearch() {
       this.pagination.currentPage = 1
       this.getRobotList()
+    },
+    getGameOptions() {
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Env: this.env,
+          Path: '/usercommonrobot/session/option'
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          // console.log(response.Data)
+          this.gameOptions = response.Data.game
+        } else {
+          this.gameOptions = []
+        }
+      })
     },
     getRobotList() {
       const { moneyLowerLimit, moneyUpperLimit } = this.searchFilter
@@ -119,36 +154,22 @@ export default {
       })
     },
     handleSelectionChange(val) {
-      this.selectedRows = val
-      console.log(this.selectedRows)
+      this.selectedRobots = val
+      console.log(this.selectedRobots)
     },
     /**
      * 投放机器人
      * 二次弹窗提示投放的机器人数量
      */
     handleLaunchRobot() {
-      if (this.selectedRows.length === 0) {
+      if (this.selectedRobots.length === 0) {
         this.$message({
           message: '请选择机器人',
           type: 'warning'
         })
         return
       }
-      this.$confirm(`确定投放选中的${this.selectedRows.length}个机器人吗？`, '投放机器人', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '投放成功!'
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消投放'
-        })
-      })
+      this.launchRobotsDialogVisible = true
     },
     handleShowImportRobotDialog() {
       this.importDialogVisible = true
@@ -163,6 +184,9 @@ export default {
     handleSizeChange(val) {
       this.pagination.pageSize = val
       this.getRobotList()
+    },
+    handleLaunchRobotsDialogClose() {
+      this.launchRobotsDialogVisible = false
     }
   }
 }
