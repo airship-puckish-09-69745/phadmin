@@ -120,7 +120,7 @@
             width="100"
           >
             <template slot-scope="scope">
-               <span v-if="scope.row.coldCount > 0" style="color:red">
+               <span v-if="scope.row.coldCount > 0">
               {{ scope.row.coldCount }}
                </span>
             </template>
