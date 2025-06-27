@@ -264,7 +264,12 @@
           sortable="custom"
           width="150">
           <template slot-scope="scope">
+            <span v-if="scope.row.status===2 && scope.row.lastLogin < timeYesterday" style="color:red">
             {{ formatTime(scope.row.lastLogin) }}
+            </span>
+            <span v-else>
+              {{ formatTime(scope.row.lastLogin) }}
+            </span>
           </template>
         </el-table-column>
         <el-table-column
@@ -399,6 +404,7 @@ import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import { $libDate, $libShow, ClientTableData, DataRule, MoneyShow } from '@/utils/common'
+import { getTime } from '@/utils'
 const filterMap = {
   currentTableMoney: 'all',
   allowTableMoney: 'all'
@@ -433,7 +439,8 @@ export default {
       statItems: [],
       txt: '',
       subKey: '',
-      cgiPath: ''
+      cgiPath: '',
+      timeYesterday: new Date().getTime() - 86400
     }
   },
 
