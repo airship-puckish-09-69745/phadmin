@@ -113,6 +113,7 @@ export default {
         Limit: 20,
         Skip: 0,
         currentPage: 1,
+        TotalCount: 0
       },
       libShow: $libShow,
       showSetResultPage: false,
@@ -137,30 +138,41 @@ export default {
       ],
       pickerOptions: {
         shortcuts: [{
-          text: '最近三天',
+          text: '最近3天',
           onClick(picker) {
             const end = new Date();
             const start = new Date();
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 3);
-            end.setTime(end.getTime() - 3600 * 1000 * 24 * 1);
+            start.setDate(start.getDate() - 4);
+            end.setDate(end.getDate() - 1);
             picker.$emit('pick', [start, end]);
           }
         },{
-          text: '最近一周',
+          text: '最近1周',
           onClick(picker) {
             const end = new Date();
             const start = new Date();
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-            end.setTime(end.getTime() - 3600 * 1000 * 24 * 1);
+            start.setDate(start.getDate() - 8);
+            end.setDate(end.getDate() - 1);
             picker.$emit('pick', [start, end]);
           }
         }, {
-          text: '最近一个月',
+          text: '最近1个月',
           onClick(picker) {
             const end = new Date();
             const start = new Date();
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-            end.setTime(end.getTime() - 3600 * 1000 * 24 * 1);
+            start.setMonth(start.getMonth() - 1);
+            start.setDate(end.getDate() - 1);
+            end.setDate(end.getDate() - 1);
+            picker.$emit('pick', [start, end]);
+          }
+        }, {
+          text: '最近3个月',
+          onClick(picker) {
+            const end = new Date();
+            const start = new Date();
+            start.setMonth(start.getMonth() - 3);
+            start.setDate(end.getDate() - 1);
+            end.setDate(end.getDate() - 1);
             picker.$emit('pick', [start, end]);
           }
         }]
@@ -235,6 +247,7 @@ export default {
                 break
               }
             }
+            $this.TotalCount = $this.item.length
           }
         }
       })
