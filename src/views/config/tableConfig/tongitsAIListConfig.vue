@@ -76,12 +76,12 @@
             width="150"
           >
             <template slot-scope="scope">
-               <span v-if="scope.row.money > scope.row.initMoney" style="color:red">
-              {{ formatNumber(scope.row.money - scope.row.initMoney) }}
-            </span>
+              <span v-if="scope.row.money > scope.row.initMoney" style="color:red">
+                {{ formatNumber(scope.row.money - scope.row.initMoney) }}
+              </span>
               <span v-else style="color:green">
-              {{ formatNumber(scope.row.money - scope.row.initMoney) }}
-            </span>
+                {{ formatNumber(scope.row.money - scope.row.initMoney) }}
+              </span>
             </template>
           </el-table-column>
           <el-table-column
@@ -90,11 +90,11 @@
           >
             <template slot-scope="scope">
               <span v-if="scope.row.money > scope.row.initMoney" style="color:red">
-              {{ ((scope.row.money - scope.row.initMoney)*100/scope.row.initMoney).toFixed(2) }}%
-            </span>
+                {{ ((scope.row.money - scope.row.initMoney)*100/scope.row.initMoney).toFixed(2) }}%
+              </span>
               <span v-else style="color:green">
-              {{ ((scope.row.money - scope.row.initMoney)*100/scope.row.initMoney).toFixed(2) }}%
-            </span>
+                {{ ((scope.row.money - scope.row.initMoney)*100/scope.row.initMoney).toFixed(2) }}%
+              </span>
             </template>
           </el-table-column>
           <el-table-column
@@ -102,7 +102,17 @@
             width="100"
           >
             <template slot-scope="scope">
-              {{ scope.row.gameCount }}/ {{ scope.row.gameCount + scope.row.workCount}}
+              {{ scope.row.gameCount }}/ {{ scope.row.gameCount + scope.row.workCount }}
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="输异常"
+            width="100"
+          >
+            <template slot-scope="scope">
+              <span v-if="scope.row.loserCount > 0" style="color:red">
+                {{ scope.row.loserCount}}
+              </span>
             </template>
           </el-table-column>
           <el-table-column
@@ -110,7 +120,9 @@
             width="100"
           >
             <template slot-scope="scope">
+               <span v-if="scope.row.coldCount > 0" style="color:red">
               {{ scope.row.coldCount }}
+               </span>
             </template>
           </el-table-column>
         </el-table>
@@ -262,10 +274,11 @@
           prop="lastLogin"
           label="更新时间"
           sortable="custom"
-          width="150">
+          width="150"
+        >
           <template slot-scope="scope">
             <span v-if="(scope.row.status===2 || scope.row.currentTid ===0) && scope.row.lastLogin * 1000 < timeYesterday" style="color:red">
-            {{ formatTime(scope.row.lastLogin) }}
+              {{ formatTime(scope.row.lastLogin) }}
             </span>
             <span v-else>
               {{ formatTime(scope.row.lastLogin) }}
@@ -590,7 +603,7 @@ export default {
           for (let i = 0; i < objs.length; i++) {
             const item = objs[i]
             if (statMap[item.allowTableMoney] == null) {
-              statMap[item.allowTableMoney] = { tableMoney: item.allowTableMoney, initMoney: 0, money: 0, gameCount: 0, workCount: 0, coldCount: 0 }
+              statMap[item.allowTableMoney] = { tableMoney: item.allowTableMoney, initMoney: 0, money: 0, gameCount: 0, workCount: 0, coldCount: 0, loserCount: 0 }
             }
             if (item.status == 0) {
               statMap[item.allowTableMoney].coldCount++
@@ -603,8 +616,11 @@ export default {
                 statMap[item.allowTableMoney].gameCount++
               }
             }
+            if (item.money / item.initMoney < 0.2) {
+              statMap[item.allowTableMoney].loserCount++
+            }
           }
-          this.statItems=[]
+          this.statItems = []
           for (const o in statMap) {
             this.statItems.push(statMap[o])
           }
