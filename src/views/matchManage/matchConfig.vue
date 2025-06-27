@@ -54,7 +54,7 @@
           <el-select v-model="form.appId" placeholder="请选择" size="mini">
             <el-option label="全部" :value="-1" />
             <el-option
-              v-for="item in appidInfoCfgs"
+              v-for="item in APPID_OPTIONS"
               :key="item.value"
               :label="item.label"
               :value="item.value"
@@ -237,7 +237,7 @@
               <template slot-scope="scope">
                 <el-select v-model="scope.row.appId" placeholder="请选择" size="mini" @change="selectShowGuieds()">
                   <el-option
-                    v-for="item in appidInfoCfgs"
+                    v-for="item in APPID_OPTIONS"
                     :key="item.value"
                     :label="item.label"
                     :value="item.value"
@@ -252,7 +252,7 @@
             >
               <template slot-scope="scope">
                 <el-checkbox-group v-model="scope.row.channelId">
-                  <el-checkbox v-for="item in channelIdCfgs" :key="item.value" :label="item.value">{{ item.label }}</el-checkbox>
+                  <el-checkbox v-for="item in CHANNEL_OPTIONS" :key="item.value" :label="item.value">{{ item.label }}</el-checkbox>
                 </el-checkbox-group>
               </template>
             </el-table-column>
@@ -310,6 +310,13 @@
           <el-form-item label="排序值：" :required="true">
             <el-input v-model.number="editForm.data.sort" style="width: 200px;" placeholder="值越高排序越在前" @input="checkListSort(editForm.data.sort)" />
             <span v-show="showTip" style="color:red; margin-left:10px">注意有相同的排序值</span>
+            <el-tooltip  class="item" effect="light"  placement="right-start">
+              <template #content>
+                <div>排序相同，时间相同则会同时展示。排序相同时间不同则大于30分钟的会展示</div>
+                <div>否则会在当前之后按顺序展示</div>
+              </template>
+              <i class="el-icon-info" />
+            </el-tooltip>
           </el-form-item>
 
           <el-form-item label="比赛全局ID：" :required="true">
@@ -698,7 +705,7 @@
                         :value="item.propsId"
                       >
                         <img v-if="item.propsIcon != '' " :src="item.propsIcon" style="height:36px;vertical-align: middle;"/>
-                        <span>{{ item.propsName }}</span>
+                        <span>{{ item.propsShowName }}</span>
                       </el-option>
                     </el-select>
                     <el-input v-model.number="scope.row.propsReward.propsNum" style="width: 100px;" size="mini" placeholder="填数量" />
@@ -821,7 +828,7 @@ import { log } from 'console'
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
 import { getAllCommonGameConfig, getAllMatchGuidesConfig } from '@/utils/common-game-config'
 import {IsMars} from "@/utils/env";
-import { ITEM_TYPE_OPTIONS, APPID_OPTIONS, ITEM_DAY_TYPE_OPTIONS,PROP_TYPE_OPTIONS } from '@/utils/options'
+import { CHANNEL_OPTIONS, APPID_OPTIONS, ITEM_DAY_TYPE_OPTIONS,PROP_TYPE_OPTIONS } from '@/utils/options'
 
 export default {
   name: 'MatchConfig',
@@ -835,6 +842,8 @@ export default {
       imagePickerVisible: false,
       PROP_TYPE_OPTIONS,
       ITEM_DAY_TYPE_OPTIONS,
+      APPID_OPTIONS,
+      CHANNEL_OPTIONS,
       form: {
         gameId: -1,
         status: -1,
@@ -842,27 +851,9 @@ export default {
         repeatType: -1,
         appId: -1
       },
-      appidInfoCfgs: [
-        { 'value': 1000002, 'label': 'dayusenlin' },
-        { 'value': 1000003, 'label': 'testaccount' },
-        { 'value': 1000004, 'label': 'testkey' },
-        { 'value': 1000005, 'label': 'BingoPlusTongits' },
-        { 'value': 1000006, 'label': 'BingoPlusTest' },
-        { 'value': 1000007, 'label': 'br' },
-        { 'value': 1000008, 'label': 'gli' },
-        { 'value': 1100000, 'label': 'xworld' }
-      ],
       gameCfgs: [
         { 'value': 2031, 'label': 'tongits' }
         // {"value": 15, "label":"德州"}
-      ],
-      channelIdCfgs: [
-        { 'value': 'BP', 'label': 'BP' },
-        { 'value': 'AP', 'label': 'AP' },
-        { 'value': 'GP', 'label': 'GP' },
-        { 'value': 'TP', 'label': 'TP' },
-        { 'value': 'PG', 'label': 'PG' },
-        { 'value': 'Dev', 'label': 'Dev' }
       ],
       statusCfgs: [
         { 'value': 0, 'label': '启用' },
@@ -905,14 +896,16 @@ export default {
       // 返水金
       rebateScenesCfgs: [
         { 'value': 5, 'label': '没有任何限制的返水金' },
-        { 'value': 6, 'label': '有限制倍数的返水金（10倍）' }
+        { 'value': 6, 'label': '有限制倍数的返水金（10倍）' },
+        { 'value': 16, 'label': '没有任何限制的返水金【Tongits免费赛】' }
       ],
       // 投注金
       betScenesCfgs: [
         { 'value': 1, 'label': '任意游戏投注' },
         { 'value': 2, 'label': '仅限Poker类游戏投注' },
         { 'value': 3, 'label': '仅限Slots类游戏投注' },
-        { 'value': 4, 'label': '仅限Tongits游戏投注' }
+        { 'value': 4, 'label': '仅限Tongits游戏投注' },
+        { 'value': 15, 'label': '仅限GZ任意游戏投注金【Tongits免费赛】' }
       ],
       propsInfo: [ // 道具信息，暂时写死
         {
@@ -958,6 +951,7 @@ export default {
       reachOutNumCfgs: new Map(), // 定局晋级人数
       growTotalNumCfgs: new Map(), //打立阶段淘汰分轮数
       disuseScoreGrowDetail: new Map(),//打立阶段淘汰分配置
+      csIdCfg: [],      //赛制ID集合
       reubyGrowCfgs:[],
       tableData: [],
       limit: 100,
@@ -1128,9 +1122,14 @@ export default {
    created() {
     this.name = store.getters.name
     this.env = store.getters.env || this.env
-    this.getCsCfgs()
+     if(!IsMars()) {
+       this.getCsCfgsAsyncCheck()
+       this.getPrizeTemplateCfgNew()
+     }else{
+       this.getCsCfgs()
+       this.getPrizeTemplateCfg()
+     }
     this.getGuideCfgs()
-    this.getPrizeTemplateCfg()
     if (this.env === 'pro') {
       // 正式环境暂时只开放以下选项
       // 返水金
@@ -1189,7 +1188,7 @@ export default {
               const stage_detail = JSON.parse(objs.list[i].stage_detail)
               //console.log("打立初级信息 ", stage_detail)
               for (var j = 0; j < stage_detail.length; j++) {
-                if (stage_detail[j].system_type == 1) { // 打立出局
+                if (stage_detail[j].system_type === 1) { // 打立出局
                   // console.log("id:" + objs.list[i].id + " min:" + stage_detail[j].system_strike_out.end_rule.match_minute)
                   // 存储打立出局的最大时长配置 用于配置检查
                   this.endMinuteCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.end_rule.match_minute)
@@ -1197,7 +1196,7 @@ export default {
                   this.promoteNumCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.promotion_rule.user_number)
                   this.growTotalNumCfgs.set(objs.list[i].id,stage_detail[j].system_strike_out.disuse_score_growth.grow_total)
                   this.disuseScoreGrowDetail.set(objs.list[i].id,stage_detail[j].system_strike_out.disuse_score_growth.disuse_score_grow_detail)
-                  console.log("disuseScoreGrowDetail",this.disuseScoreGrowDetail)
+                  //console.log("disuseScoreGrowDetail",this.disuseScoreGrowDetail)
                 } else if (stage_detail[j].system_type == 2) {
                   // 存储定局信息
                   this.reachOutNumCfgs.set(objs.list[i].id, stage_detail[j].system_reach_out.round_config[0].promotion_user)
@@ -2068,14 +2067,19 @@ export default {
                 'propsIcon': '',
                 'propsAttr': '',
                 'propsCost': '',
+                'propsShowName': ''
               }
             ]
             this.matchTicketsCfgs = []
             var timestamp = Date.parse(new Date()) / 1000
             for (let i = 0; i < objs.list.length; i++) {
-              if(this.propsTypeList.includes(objs.list[i].item_type)) {
+              if (this.propsTypeList.includes(objs.list[i].item_type)) {
                 if (objs.list[i].status === 1 && ((objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET && objs.list[i].expire_time > timestamp) ||
                   objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME)){
+                  let str = objs.list[i].item_name
+                  if (objs.list[i].show_name.length > 0) {
+                    str = str + '(' + objs.list[i].show_name + ')'
+                  }
                   this.matchPropsCfgs.push({
                     'propsType': objs.list[i].item_type,
                     'propsId': objs.list[i].id,
@@ -2083,11 +2087,12 @@ export default {
                     'propsIcon': objs.list[i].image,
                     'propsAttr': objs.list[i].item_describe,
                     'propsCost': objs.list[i].item_cost,
+                    'propsShowName': str
                   })
                   if (objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET) { //Tongits 门票
                     this.matchTicketsCfgs.push({
-                      'label': objs.list[i].item_name,
-                      'value': objs.list[i].id,
+                      'label': str,
+                      'value': objs.list[i].id
                     })
                   }
                 }
@@ -2306,6 +2311,10 @@ export default {
         this.errmsg('提前进入时间 或者是提前显示时间不能配置为0')
         return false
       }
+
+      if (!this.reubyConfigCheck()){
+        return false
+      }
       return true
     },
 
@@ -2379,9 +2388,6 @@ export default {
             }
           }
         }
-      }
-      if (!this.reubyConfigCheck()){
-        return false
       }
       return true
     },
@@ -2501,26 +2507,28 @@ export default {
       }
       return false
     },
-    getPropsRewardItem(pid,propsNum,expireDays) {
+    getPropsRewardItem(pid, propsNum, expireDays) {
       const one = {
         propsId: 0,
         propsType: 0,
         propsName: '',
         propsIcon: '',
         propsAttr: '',
-        propsNum:propsNum,
+        propsNum: propsNum,
         propCost: 0,
-        propExpireDays:expireDays,
+        propExpireDays: expireDays,
+        propsShowName: ''
       }
       for (let i = 0; i < this.matchPropsCfgs.length; i++) {
         const element = this.matchPropsCfgs[i]
-        if (element.propsId == pid) {
+        if (element.propsId === pid) {
           one.propsId = element.propsId
           one.propsType = element.propsType
           one.propsName = element.propsName
           one.propsIcon = element.propsIcon
           one.propsAttr = element.propsAttr
           one.propCost = element.propsCost
+          one.propsShowName = element.propsShowName
           break
         }
       }
@@ -2550,7 +2558,30 @@ export default {
                 'value': objs.list[i].ID
               })
             }
-            // console.log("收到数据",this.prizeTemplateCfg)
+          }
+        }
+      })
+    },
+
+    getPrizeTemplateCfgNew() {
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Env: this.env,
+          Path: '/match/prize/template',
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objs = response.Data || {}
+          if (objs.total > 0) {
+            this.prizeTemplateCfg = []
+            for (var i = 0; i < objs.total; i++) {
+              this.prizeTemplateCfg.push({
+                'label': objs.list[i].title,
+                'value': objs.list[i].id
+              })
+            }
           }
         }
       })
@@ -2695,6 +2726,10 @@ export default {
       this.editForm.signExtra.reubyExtra.rebuyPropName = ''
     },
     reubyConfigCheck(){
+      if (this.editForm.signExtra.reubyExtra.supportRebuy === 0){
+        this.rebuyConfigReset()
+        return true
+      }
       //免费赛配buy 规则不允许
       if (this.editForm.signExtra.reubyExtra.supportRebuy === 1 && this.editForm.data.signUpType === 1 ){
         this.rebuyConfigReset()
@@ -2759,8 +2794,88 @@ export default {
       }
       return true
     },
-    showLable(status, idx) {
-      return idx.includes(status);
+
+    async getCsCfgsAsyncCheck(){
+      await this.getCsIdCfgs()
+      await this.getCsCfgsAsync()
+    },
+    //异步获取赛制ID列表
+    async getCsIdCfgs() {
+      try {
+        const response = await request({
+          url: '/dataProxy/info',
+          method: 'get',
+          data: {
+            Env: this.env,
+            Path: '/match/rule/list',
+          }
+        })
+        if (response.RetCode === 0) {
+          const objs = response.Data || {}
+          for(let i = 0; i < objs.list.length; i++){
+              this.csIdCfg.push(objs.list[i])
+          }
+        }
+      } catch(error) {
+        console.log(error)
+      }finally{}
+    },
+
+    async getCsCfgsAsync() {
+      try {
+        const response = await request({
+          url: '/matchconfig/match/rule/list',
+          method: 'get',
+          data: {
+            Env: this.env,
+            Status: 0,
+            PageNum: 1,
+            PageSize: 200
+          }
+        })
+        if (response.RetCode === 0) {
+          const objs = response.Data || {}
+          if (objs.total > 0) {
+            for (var i = 0; i < objs.list.length; i++) {
+              if(!await this.checkRuleIdIsPublish(objs.list[i].id)){
+                continue
+              }
+              this.csCfgs.push({
+                'label': '[' + objs.list[i].id + ']' + objs.list[i].name,
+                'value': objs.list[i].id,
+                'gameId': [parseInt(objs.list[i].game_id, 10)],
+                'ruleType': objs.list[i].rule_type
+              })
+              const stage_detail = JSON.parse(objs.list[i].stage_detail)
+              //console.log("打立初级信息 ", stage_detail)
+              for (var j = 0; j < stage_detail.length; j++) {
+                if (stage_detail[j].system_type === 1) { // 打立出局
+                  // 存储打立出局的最大时长配置 用于配置检查
+                  this.endMinuteCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.end_rule.match_minute)
+                  this.endNumCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.end_rule.lave_user_number)
+                  this.promoteNumCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.promotion_rule.user_number)
+                  this.growTotalNumCfgs.set(objs.list[i].id,stage_detail[j].system_strike_out.disuse_score_growth.grow_total)
+                  this.disuseScoreGrowDetail.set(objs.list[i].id,stage_detail[j].system_strike_out.disuse_score_growth.disuse_score_grow_detail)
+                } else if (stage_detail[j].system_type=== 2) {
+                  // 存储定局信息
+                  this.reachOutNumCfgs.set(objs.list[i].id, stage_detail[j].system_reach_out.round_config[0].promotion_user)
+                }
+              }
+            }
+          }
+        }
+      } catch(error) {
+        console.log(error)
+      }finally{}
+    },
+    //校验赛制ID是否已经发布
+    async checkRuleIdIsPublish(ruleId){
+      for (var j = 0; j < this.csIdCfg.length; j++){
+        if(ruleId === this.csIdCfg[j]){
+          return true
+        }
+      }
+      return false
     },
   }
 }

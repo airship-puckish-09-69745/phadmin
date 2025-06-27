@@ -683,7 +683,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
-          this.clientDB = new ClientTableData(this.libMoney.TransForShow(objs), 10, filterMap, 'ID', -1)
+          this.clientDB = new ClientTableData(this.libMoney.TransForShow(objs), 10, filterMap, 'TableMoney', 1)
           this.handleCurrentChange(1)
         }
       })

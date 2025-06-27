@@ -110,7 +110,7 @@
               <el-button @click="addGroup">添加新的用户群大奖配置</el-button>
             </el-row>
             <el-table :data="item.BigPrizeGroups" stripe border :header-cell-style="libShow.DefaultTableHeadClass" :row-style="{height:'10px'}" :cell-style="libShow.DefaultTableCell" style="width: 100%; margin: 10px auto;">
-              <el-table-column prop="GroupId"  label="分组ID" width="200"><template slot-scope="scope"><el-input v-model="scope.row.GroupId" size="mini" /></template></el-table-column>
+              <el-table-column prop="GroupId"  label="分组ID" width="200"><template slot-scope="scope"><el-input v-model.number="scope.row.GroupId" size="mini" /></template></el-table-column>
               <el-table-column prop="GroupName" label="分组名" width="400"><template slot-scope="scope"><el-input v-model="scope.row.GroupName" size="mini" /></template></el-table-column>
               <el-table-column prop="GroupDesc" label="描述" width="400"><template slot-scope="scope"><el-input type="textarea" :rows="3" v-model="scope.row.GroupDesc" size="mini" /></template></el-table-column>
               <el-table-column prop="HitPerMillion" label="中奖率(百万分之一)" width="300"><template slot-scope="scope"><el-input v-model.number="scope.row.HitPerMillion" size="mini" /></template></el-table-column>
@@ -212,14 +212,14 @@
       <el-table :data="editGroupRulesData" stripe border :header-cell-style="libShow.DefaultTableHeadClass" :row-style="{height:'10px'}" style="width: 100%; margin: 10px auto;">
         <el-table-column prop="Days" label="天数" width="100">
           <template slot-scope="scope">
-            <el-select v-model="scope.row.Days" size="mini" default-first-option>
+            <el-select v-model.number="scope.row.Days" size="mini" default-first-option>
               <el-option v-for="o in groupDays" :key="o.key" :label="o.label" :value="o.value"/>
             </el-select>
           </template>
         </el-table-column>
         <el-table-column prop="Field" label="字段" width="200">
           <template slot-scope="scope">
-            <el-select v-model="scope.row.Field" size="mini" default-first-option>
+            <el-select v-model.number="scope.row.Field" size="mini" default-first-option>
               <el-option v-for="o in groupFields" :key="o.key" :label="o.label" :value="o.value"/>
             </el-select>
           </template>
@@ -236,7 +236,7 @@
         </el-table-column>
         <el-table-column prop="Operator" label="运算符" width="100">
           <template slot-scope="scope">
-            <el-select v-model="scope.row.Operator" size="mini" default-first-option>
+            <el-select v-model.number="scope.row.Operator" size="mini" default-first-option>
               <el-option v-for="o in groupOperators" :key="o.key" :label="o.label" :value="o.value"/>
             </el-select>
           </template>
@@ -395,7 +395,9 @@ export default {
         '100186': 'mahjongjackpot_x',
         '188': 'streetfighting',
         '194': 'goldtrain',
-        '192': 'bountyraid'
+        '192': 'bountyraid',
+        '196': 'goldminer',
+        '198': 'fortuneblessing'
       }
     }
   },
@@ -495,7 +497,7 @@ export default {
     getData() {
       if (!this.subKeyMap[this.queryGid]) {
         Message.error('该游戏尚未配置key')
-        this.item = {}
+        this.item = {BigPrizeGroups: []}
         return
       }
       request({
@@ -510,6 +512,9 @@ export default {
           this.form = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
             const item = JSON.parse(response.Data.Data)
+            if (typeof item['BigPrizeGroups'] == 'undefined') {
+              item['BigPrizeGroups'] = []
+            }
             Object.assign(this.item, item)
             for (const itemElement of item.BetOddsPlans) {
               let str = ''

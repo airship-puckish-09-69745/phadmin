@@ -276,6 +276,7 @@ export default {
         this.dialogVisible = true
         return true
       } else {
+        funcSucc(false)
         return false
       }
     }

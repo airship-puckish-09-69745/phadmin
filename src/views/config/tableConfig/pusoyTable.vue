@@ -45,16 +45,6 @@
           width="70"
         />
         <el-table-column
-          prop="IsPractice"
-          label="练习场"
-          width="70"
-        >
-          <template slot-scope="scope">
-            <span v-if="scope.row.IsPractice === 1" style="color:#ff0000;">是</span>
-            <span v-else style="color:#999999;">否</span>
-          </template>
-        </el-table-column>
-        <el-table-column
           prop="Level"
           label="Level"
           sortable="custom"
@@ -118,19 +108,31 @@
           width="100"
         />
         <el-table-column
-          prop="RoomLevel"
           label="房间类型"
-          width="100"
+          width="150"
         >
+
+          <template v-slot:header>
+            <el-select v-model="clientDB.FilterValueMap['RoomLevelNew']" size="mini" @change="handleFilter">
+              <el-option label="房间类型" :value="0" />
+              <el-option v-for="(o,key) in clientDB.FilterMap['RoomLevelNew']" :key="key" :label="o" :value="key" />
+            </el-select>
+          </template>
           <template slot-scope="scope">
-            {{ RoomLevelMap[scope.row.RoomLevel] }}
+            {{ showRoomLevel(scope.row.RoomLevel) }}
           </template>
         </el-table-column>
         <el-table-column
-          prop="Status"
           label="状态"
-          width="70"
+          width="150"
         >
+
+          <template v-slot:header>
+            <el-select v-model="clientDB.FilterValueMap['Status']" size="mini" @change="handleFilter">
+              <el-option label="状态" :value="0" />
+              <el-option v-for="(o,key) in clientDB.FilterMap['Status']" :key="key" :label="o" :value="key" />
+            </el-select>
+          </template>
           <template slot-scope="scope">
             {{ statNames[scope.row.Status] }}
           </template>
@@ -395,7 +397,10 @@ import SelectGoods from '@/components/SelectGoods'
 import GameLevel from '@/components/GameLevel'
 import MoneyInput from '@/components/MoneyInput'
 
-const filterMap = {}
+const filterMap = {
+  RoomLevelNew: { 11: '普通房', 100: '好友房' },
+  Status: { 2: '上架', 6: '下架', 7: '预上架', 8: '预下架' }
+}
 
 function newItem() {
   return {
@@ -537,6 +542,12 @@ export default {
       this.initFormData(false, ob.ID)
       this.edit.visible = true
     },
+    showRoomLevel(n) {
+      if (n === 100) {
+        return '好友房'
+      }
+      return '普通房'
+    },
     getList() {
       request({
         url: '/pusoytable/all',
@@ -545,7 +556,14 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
-          this.clientDB = new ClientTableData(this.libMoney.TransForShow(objs), 10, filterMap, 'ID', -1)
+          for (let i = 0; i < objs.length; i++) {
+            if (objs[i].RoomLevel == 0) {
+              objs[i]['RoomLevelNew'] = 11
+            } else {
+              objs[i]['RoomLevelNew'] = objs[i].RoomLevel
+            }
+          }
+          this.clientDB = new ClientTableData(this.libMoney.TransForShow(objs), 10, filterMap, 'TableMoney', 1)
           this.handleCurrentChange(1)
         }
       })

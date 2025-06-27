@@ -27,7 +27,7 @@
           <el-button type="success" size="mini" @click="showChart">输赢图表</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button v-if="gid==20 && dataArr.length!=0" type="warning" size="mini" @click="checkSweeperRate">扫雷概率
+          <el-button v-if="(gid==20 || gid==132) && dataArr.length!=0" type="warning" size="mini" @click="checkSweeperRate">扫雷概率
           </el-button>
         </el-form-item>
       </el-form>
@@ -212,7 +212,7 @@
           width="100"
         >
           <template slot-scope="scope">
-            <span v-if="gid===20 && scope.row.WinRate!==0">
+            <span v-if="(gid===20 || gid===132) && scope.row.WinRate!==0">
               {{ formatNumber(scope.row.WinRate * 100) }}
             </span>
             <span v-else>
@@ -262,10 +262,10 @@
           width="100"
         >
           <template slot-scope="scope">
-            <span v-if="gid==20&& scope.row.LuckyVal>0">
+            <span v-if="(gid==20 || gid==132) && scope.row.LuckyVal>0">
               {{ scope.row.LuckyVal / 100 }}
             </span>
-            <span v-else-if="gid==20&& scope.row.LuckyVal===0">
+            <span v-else-if="(gid==20 || gid==132) && scope.row.LuckyVal===0">
               {{ 0 }}
             </span>
             <span v-else>
@@ -2922,6 +2922,132 @@
       </el-table>
     </el-dialog>
 
+    <el-dialog title="Truco详情" :visible.sync="TrucoDetailVisible" width="1200px">
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:red; ">
+        <span style="float:left;">{{ '底分:' + TrucoDetail.tableMoney/1000 }}</span>
+      </div>
+      <el-table ref="filterTable" :data="TrucoDetail.players" border>
+        <el-table-column prop="uid" label="uid" width="128px">
+          <template slot-scope="scope">{{ scope.row.uid }}</template>
+        </el-table-column>
+        <el-table-column prop="nick" label="nick"  width="180px">
+          <template slot-scope="scope">{{ scope.row.nick }}</template>
+        </el-table-column>
+        <el-table-column prop="seat" label="seat" width="64px">
+          <template slot-scope="scope">{{ scope.row.seat }}</template>
+        </el-table-column>
+        <el-table-column label="team" width="100px">
+          <template slot-scope="scope">
+              <div 
+                :style="{ 
+                  backgroundColor: getTrucoTeamColor(scope.row.team), 
+                  width: '50px', 
+                  height: '50px',
+                  display: 'inline-block'
+                }"
+              ></div>
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="settle" label="结算">
+          <template slot-scope="scope">
+            {{ scope.row.moneyChange }}
+          </template>
+        </el-table-column>
+      </el-table>
+      <br>
+
+      <el-table ref="filterTable" :data="TrucoDetail.roundDetail" border>
+        <el-table-column prop="vsScore" label="红 vs 绿" width="100px" align="center">
+          <template slot-scope="scope">{{ scope.row.vsScore[0] + ' vs ' + scope.row.vsScore[1]}}</template>
+        </el-table-column>
+        <el-table-column label="viradaCard牌 => 最大牌" width="220">
+          <template slot-scope="scope">
+            <el-image
+              style="width: 37px; height: 50px"
+              :src="getCardUrl(scope.row.viradaCard)"
+            />
+            <span>{{ ' => ' }}</span>
+            <el-image
+              style="width: 37px; height: 50px"
+              :src="trucoMaxCardUrl(scope.row.viradaCard)"
+            />
+            <br>
+            <span>{{trucoCardNumSort(scope.row.viradaCard)}}</span>
+          </template>                      
+        </el-table-column>
+
+        <el-table-column prop="roundScore" label="本轮底分" width="50px"/>
+
+        <el-table-column prop="players" label="牌局" width="320px" >
+          <template slot-scope="scope">
+            <el-table ref="filterTable" :data="scope.row.players" border :cell-style="libShow.DefaultTableCell" style="width: 100%">
+              <el-table-column prop="uid" label="uid" width="100"/>
+              <el-table-column label="team" width="60">
+                <template slot-scope="scope">
+                  <div 
+                    :style="{ 
+                      backgroundColor: getTrucoTeamColor(scope.row.team), 
+                      width: '50px', 
+                      height: '50px',
+                      display: 'inline-block'
+                    }"
+                  ></div>
+                </template>
+              </el-table-column>
+
+              <el-table-column prop="handCards" label="手牌" width="150">
+                <template slot-scope="scope">
+                  <div v-for="(item) in scope.row.handCards" class="block">
+                    <el-image style="width: 37px; height: 50px" :src="getCardUrl(item)" />
+                  </div>
+                </template>
+              </el-table-column>
+            </el-table>
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="turns" label="比牌" width="800px" >
+          <template slot-scope="scope">
+            <el-table ref="filterTable" :data="scope.row.turns" border :cell-style="libShow.DefaultTableCell" style="width: 100%">
+              <el-table-column prop="count" label="回合" width="50"/>
+              <el-table-column label="回合结果" width="80">
+                <template slot-scope="scope">
+                  <div 
+                    :style="{ 
+                      backgroundColor: getTrucoTeamColor(scope.row.result), 
+                      width: '50px', 
+                      height: '50px',
+                      display: 'inline-block'
+                    }"
+                  ></div>
+                </template>
+              </el-table-column>
+              <el-table-column prop="cards" label="cards" width="800px" >
+                <template slot-scope="scope">
+                  <el-table ref="filterTable" :data="scope.row.cards" border :cell-style="libShow.DefaultTableCell" style="width: 100%">
+                    <el-table-column prop="Count" label="顺序" width="50"/>
+                    <el-table-column prop="uid" label="uid" width="100"/>
+                    <el-table-column label="牌" width="100">
+                      <template slot-scope="scope">
+                          <el-image
+                            style="width: 37px; height: 50px"
+                            :src="getCardUrl(scope.row.Card)"
+                          />
+                      </template>                      
+                    </el-table-column>
+                    <el-table-column prop="Covered" label="暗牌" width="100"/>
+                  </el-table>
+                </template>
+              </el-table-column>
+            </el-table>
+          </template>
+        </el-table-column>
+        
+      </el-table>
+
+    </el-dialog>
+
     <el-dialog title="TeenPatti详情" :visible.sync="ZJHDetailVisible" width="1600px">
       <div style=" font-size:14px; line-height: 36px; height: 50px; color:red; ">
         <span style="float:left;">{{ '底分:' + ZJHDetail.antes/1000 }}</span>
@@ -3359,6 +3485,10 @@ export default {
       RemiDetail: {},
       RemiDetailVisible: false,
 
+      TrucoDetail: {},
+      TrucoRoundDetail: {},
+      TrucoDetailVisible: false,
+
       jackpotWheelDetail: {},
       jackpotWheelData: {},
       jackpotWheelDetailVisible: false,
@@ -3771,7 +3901,7 @@ export default {
             if (item.Gid === 10) {
               objs[o].RandVal = (item.RandVal / 100).toFixed(2)
               objs[o].WinRate = (item.WinRate / 100).toFixed(2)
-            } else if (item.Gid == 20) {
+            } else if (item.Gid == 20 || item.Gid==132) {
               objs[o].WinRate /= 100
               objs[o].ServiceFee *= 1000
             }
@@ -3854,7 +3984,7 @@ export default {
             $this.showTexasGame(obj)
           } else if (gid == 16) {
             $this.showBaccaratGame(obj)
-          } else if (gid == 20) {
+          } else if (gid == 20 || gid==132) {
             $this.showSweeperGame(obj)
           } else if (gid == 1) {
             $this.showRummyGame(obj)
@@ -3913,6 +4043,8 @@ export default {
             $this.showMiniSaBongGame(obj)
           } else if (gid === 130 || gid === 131) {
             $this.showRemiGame(obj)
+          } else if (gid === 11) {
+            $this.showTrucoGame(obj)
           } else {
             $this.showSmallGame(obj)
           }
@@ -4034,8 +4166,15 @@ export default {
     },
     showRemiGame(obj) {
       this.RemiDetail = obj
-      console.log('this.remiData => ', this.RemiDetail)
+      //console.log('this.remiData => ', this.RemiDetail)
       this.RemiDetailVisible = true
+    },
+    showTrucoGame(obj){
+      this.TrucoDetail = obj
+      console.log('this.TrucoData => ', this.TrucoDetail)
+      //this.TrucoRoundDetail = obj.roundDetail.roundDetail
+      //console.log('this.TrucoRoundDetail => ', this.TrucoRoundDetail)
+      this.TrucoDetailVisible = true
     },
     showFilipinoMahjongGame(obj, log) {
       this.FilipinoMahjongDetail = log// obj
@@ -5052,7 +5191,7 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
     },
 
     getServiceFeeName() {
-      if (this.gid == 20) {
+      if (this.gid == 20 || this.gid==132) {
         return '下注炸弹数'
         // } else if (this.gid == 10) {
         //   return '结果'
@@ -5157,7 +5296,7 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
       return name
     },
     getWinRateName() {
-      if (this.gid == 20) {
+      if (this.gid == 20 || this.gid==132) {
         return '领奖倍率'
       } else if (this.gid == 10) {
         return '下注值'
@@ -5174,6 +5313,58 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
         return '机器人--要赢'
       }
       return '机器人'
+    },
+    getTrucoTeamColor(teamId) {
+      if (teamId == 1) {
+        return 'red'
+      }else if (teamId == 2) {
+        return 'green'
+      }
+      return 'yellow'
+    },
+    getTrucoMaxCard(viradaCard) {
+      let cardNumberOrder = [12, 11, 13, 1, 2, 3] //牌的数字大小：[Q < J < K < A < 2 < 3]
+	    let point = viradaCard & 0x0f
+      let trucoRoundMaxCardIndex = 0
+      for (let i = 0; i < cardNumberOrder.length; i ++) {
+        if (cardNumberOrder[i] == point) {
+          if (i == cardNumberOrder.length-1) {
+            trucoRoundMaxCardIndex = 0// = cardNumberOrder[0]
+          } else {
+            trucoRoundMaxCardIndex = i+1// = cardNumberOrder[i+1]
+          }
+        }
+      }
+      let cards = [0x2c, 0x2b, 0x2d, 0x21, 0x22, 0x23]
+      return cards[trucoRoundMaxCardIndex]
+    },
+    trucoMaxCardUrl(viradaCard) {
+      return this.getCardUrl(this.getTrucoMaxCard(viradaCard))
+    },
+    trucoCardNumSort(viradaCard) {
+      let cardNumberOrder = [12, 11, 13, 1, 2, 3] //牌的数字大小：[Q < J < K < A < 2 < 3]
+      let maxCard = this.getTrucoMaxCard(viradaCard)
+	    let point = maxCard & 0x0f
+      let txt = ['Q','J','K','A','2','3']
+      for (let i = 0; i < cardNumberOrder.length; i ++) {
+        if (cardNumberOrder[i] == point) {
+          let mx = txt[i]
+          txt.splice(i, 1)
+          txt.push('♦'+mx)
+          txt.push('♠'+mx)
+          txt.push('♥'+mx)
+          txt.push('♣'+mx)
+          break
+        }
+      }
+      let msg = ""
+      for (let i = 0; i < txt.length; i ++) {
+        if (i > 0){
+          msg += '<'
+        }
+        msg += txt[i]
+      }
+      return msg
     }
   }
 }

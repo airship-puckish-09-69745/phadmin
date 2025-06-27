@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="page-container" style="padding: 10px">
     <el-row style="padding-top: 5px">
-      <el-col :span="20">
+      <el-col :span="4">
         <el-button
           size="mini"
           type="primary"
@@ -10,8 +10,16 @@
         >添加管理员
         </el-button>
       </el-col>
-      <el-col :span="2">
-        <el-button type="success" size="mini" icon="el-icon-refresh" @click="getList()">刷新</el-button>
+      <el-col :span="7" >
+        <el-input
+          v-model="search"
+          size="mini"
+          placeholder="输入关键字搜索"
+          @input="searchChange"
+        />
+      </el-col>
+      <el-col :span="10">
+        <el-button type="success" size="mini" style="float: right" icon="el-icon-refresh" @click="getList()">刷新</el-button>
       </el-col>
     </el-row>
     <div style="padding-top: 10px">
@@ -19,6 +27,7 @@
         ref="filterTable"
         :data="tableData"
         stripe
+        max-height="700"
         border
         :header-cell-style="libShow.DefaultTableHeadClass"
         :row-style="{height:'10px'}"
@@ -90,7 +99,7 @@
         <div class="block">
           <el-pagination
             :current-page="clientDB.GetPage().GetCurrentPage()"
-            :page-sizes="[10, 20, 30, 40]"
+            :page-sizes="[40, 80, 120, 160]"
             :page-size="clientDB.GetPage().GetPageNum()"
             layout="total, sizes, prev, pager, next, jumper"
             :total="clientDB.GetPage().GetTotalCount()"
@@ -255,6 +264,11 @@ export default {
       return $libDate.FormateSecondStr(ts, 2)
     },
 
+    searchChange() {
+      this.clientDB.Search(this.search, ['Name', 'Nick'])
+      this.refreshShow()
+    },
+
     userRoleEdit(id, name) {
       this.getUserRoles(id)
       this.role.name = name
@@ -315,7 +329,7 @@ export default {
             users[i]['Role'] = roles[i]
           }
 
-          $this.clientDB = new ClientTableData(users, 10, {}, 'ID', -1)
+          $this.clientDB = new ClientTableData(users, 40, {}, 'ID', -1)
           $this.handleCurrentChange(1)
         }
       })

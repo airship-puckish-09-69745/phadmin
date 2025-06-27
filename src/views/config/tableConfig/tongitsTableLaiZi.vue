@@ -105,10 +105,32 @@
         <el-table-column
           prop="RoomLevel"
           label="房间类型"
-          width="100"
+          width="150"
         >
+
+          <template v-slot:header>
+            <el-select v-model="clientDB.FilterValueMap['RoomLevelNew']" size="mini" @change="handleFilter">
+              <el-option label="房间类型" :value="0" />
+              <el-option v-for="(o,key) in clientDB.FilterMap['RoomLevelNew']" :key="key" :label="o" :value="key" />
+            </el-select>
+          </template>
           <template slot-scope="scope">
             {{ showRoomLevel(scope.row.RoomLevel) }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="状态"
+          width="150"
+        >
+
+          <template v-slot:header>
+            <el-select v-model="clientDB.FilterValueMap['Status']" size="mini" @change="handleFilter">
+              <el-option label="状态" :value="0" />
+              <el-option v-for="(o,key) in clientDB.FilterMap['Status']" :key="key" :label="o" :value="key" />
+            </el-select>
+          </template>
+          <template slot-scope="scope">
+             {{ showStatus(scope.row.Status) }}
           </template>
         </el-table-column>
         <el-table-column
@@ -454,8 +476,10 @@ import tongitsRobotCommon from './tongits/robotCommon'
 import tongitsRobotControl from './tongits/robotControl'
 import tongitsRobotBuildCard from './tongits/robotBuildCard'
 
-const filterMap = {}
-
+const filterMap = {
+  RoomLevelNew: { 11: '普通房', 100: '好友房' },
+  Status: { 1: '未上', 2: '上架中', 3: '废弃', 6: '下架' }
+}
 function NewRobotConfig() {
   return {
     Common: {
@@ -625,6 +649,17 @@ export default {
       }
       return '普通房'
     },
+    showStatus(n) {
+      if (n === 1) {
+        return '未上'
+      } else if (n === 2) {
+        return '已上架'
+      } else if (n === 3) {
+        return '废弃'
+      }else{
+        return '下架'
+      }
+    },
     formatNumber(n) {
       return n.toLocaleString()
     },
@@ -683,7 +718,14 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
-          this.clientDB = new ClientTableData(this.libMoney.TransForShow(objs), 10, filterMap, 'ID', -1)
+          for (let i = 0; i < objs.length; i++) {
+            if (objs[i].RoomLevel == 0) {
+              objs[i]['RoomLevelNew'] = 11
+            } else {
+              objs[i]['RoomLevelNew'] = objs[i].RoomLevel
+            }
+          }
+          this.clientDB = new ClientTableData(this.libMoney.TransForShow(objs), 10, filterMap, 'TableMoney', 1)
           this.handleCurrentChange(1)
         }
       })
