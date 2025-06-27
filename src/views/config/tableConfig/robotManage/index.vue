@@ -38,7 +38,7 @@
       />
     </el-row>
 
-    <AddRobotDialog :visible="importDialogVisible" @reload="onSearch" @close="handleImportRobotDialogClose" />
+    <AddRobotDialog :visible="importDialogVisible" @reload-list="onSearch" @close="handleImportRobotDialogClose" />
   </div>
 </template>
 
@@ -111,7 +111,7 @@ export default {
         if (response.RetCode === 0) {
           // console.log(response.Data)
           this.robotList = response.Data.user
-          this.pagination.total = response.Data.Total
+          this.pagination.total = response.Data.total
         } else {
           this.robotList = []
           this.pagination.total = 0

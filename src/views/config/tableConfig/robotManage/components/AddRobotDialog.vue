@@ -7,11 +7,14 @@
     </el-row>
     <el-row style="margin-top: 24px;">
       <el-button style="width: 100%;" type="success" size="small" @click="openUploadDirectory">上传机器人资料</el-button>
+      <!-- <div v-if="uploadedFile && uploadedFile.name" style="margin-top: 8px; color: #666; text-align: right;">{{ uploadedFile.name }}</div> -->
     </el-row>
   </el-dialog>
 </template>
 
 <script>
+import request from '@/utils/request'
+
 export default {
   props: {
     visible: {
@@ -21,10 +24,7 @@ export default {
   },
   data() {
     return {
-      uploadedFile: {
-        name: '',
-        raw: null
-      }
+      uploadedFile: null
     }
   },
   computed: {
@@ -44,14 +44,51 @@ export default {
     openUploadDirectory() {
       this.$refs.uploadFileInput.click()
     },
+    handleClose() {
+      this.dialogVisible = false
+      this.uploadedFile = null
+    },
     handleFileChange(e) {
       const file = e.target.files[0]
       if (!file) {
+        this.uploadedFile = null
         return
       }
 
       this.uploadedFile = e.target.files[0]
-      console.log(this.uploadedFile)
+      // console.log(this.uploadedFile)
+      // 将文件读取为base64格式, 去掉前缀
+      const reader = new FileReader()
+      reader.readAsDataURL(file)
+      reader.onload = () => {
+        let base64 = reader.result
+        base64 = base64.replace('data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,', '')
+        // console.log(base64)
+        // const data = new FormData()
+        // data.append('file', base64)
+        // data.append('Env', this.env)
+        // data.append('Path', '/usercommonrobot/import/excel')
+
+        request({
+          url: '/dataProxy/info',
+          method: 'POST',
+          data: {
+            Env: this.env,
+            Path: '/usercommonrobot/import/excel',
+            file: base64
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            // console.log(response.Data)
+            this.$message({
+              message: '上传成功',
+              type: 'success'
+            })
+            this.handleClose()
+            this.$emit('reload-list')
+          }
+        })
+      }
     }
   }
 }
