@@ -445,7 +445,7 @@ export default {
       },
       statItems: [],
       txt: '',
-      subKey: 'pusoy_ai_list_cfg'
+      subKey: 'pusoy_ai_list_cfg',
       timeYesterday: new Date().getTime() - 86400 * 1000
     }
   },
