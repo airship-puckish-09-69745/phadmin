@@ -36,6 +36,7 @@
     <ImagePickerDialog
       :visible.sync="visible"
       :value="value"
+      :category="category"
       @change="handleValueChange"
       @pick="handlePick"
     />
@@ -55,6 +56,12 @@ export default {
     value: {
       type: String,
       default: ''
+    },
+
+    // 默认选择分类
+    category: {
+      type: String,
+      default: 'match'
     },
 
     // 图片宽度

@@ -26,34 +26,6 @@
           </template>
         </el-table-column>
       </el-table>
-
-      <!-- <el-table v-if="appGuideData" :data="appGuideData.scheme_records" border stripe :header-cell-style="libShow.DefaultTableHeadClass" :cell-style="libShow.TableCell(10)">
-        <el-table-column prop="label" label="推荐场景" width="200" />
-        <el-table-column label="游戏">
-          <template slot-scope="scope">
-            <div>
-              <el-card v-for="(game, index) in scope.row.records" :key="index" class="box-card" style="width: 136px; display: inline-block; margin-right: 6px;" :body-style="{padding: '8px'}">
-                <img :src="game.image_path" width="120">
-                <div class="clearfix text-center">
-                  <span>{{ GetGameName(game.game_id) }}</span>
-                </div>
-              </el-card>
-            </div>
-          </template>
-        </el-table-column>
-
-        <el-table-column label="开赛剩余时间(秒)" prop="left_time" width="200" />
-
-        <el-table-column fixed="right" label="操作" width="100px">
-          <template slot-scope="scope">
-            <el-button size="mini" type="primary" icon="el-icon-edit" @click="showEditSchemeDialog(scope.$index)" />
-          </template>
-        </el-table-column>
-      </el-table>
-
-      <div v-else>
-        <div style="text-align: center; color: red;padding: 20px;">暂无数据！</div>
-      </div> -->
     </el-row>
 
     <el-dialog :title="editForm.title" :visible.sync="editForm.visible" :close-on-click-modal="false" width="80%" :close-on-press-escape="false">
@@ -113,46 +85,6 @@
         </el-form-item>
       </el-form>
     </el-dialog>
-
-    <!-- <el-dialog v-if="appGuideData && (schemeDialog.updateIndex || schemeDialog.updateIndex === 0)" :title="`编辑场景【${appGuideData.scheme_records[schemeDialog.updateIndex].label}】`" :visible.sync="schemeDialog.visible" :close-on-click-modal="false" :close-on-press-escape="false">
-      <el-button style="margin-bottom: 8px;" type="success" size="mini" @click="addGameGuideCfg(schemeDialog.form)">添加游戏</el-button>
-      <div v-if="schemeDialog.form.scene_id == 3 || schemeDialog.form.scene_id == 4" style="margin-bottom: 8px;">
-        开赛剩余时间(秒):
-        <el-input v-model.number="schemeDialog.form.left_time" style="width: 200px;" size="mini" placeholder="填写时间(秒):" />
-      </div>
-      <el-table :data="schemeDialog.form.records" border stripe :header-cell-style="libShow.DefaultTableHeadClass" :row-style="{ height: '35px' }" :cell-style="libShow.TableCell(0)" style="width: 100%;line-height:35px;">
-        <el-table-column prop="index" label="序号" width="50" />
-        <el-table-column prop="game_id" label="游戏名">
-          <template slot-scope="scope">
-            <el-select v-model="scope.row.game_id" placeholder="请选择" size="mini" @change="handleUpdateSchemeGame(scope.row.game_id, scope.$index)">
-              <el-option v-for="game in appGameOptions" :key="game.value" :label="GetGameName(game.game_id)" :value="game.game_id" />
-            </el-select>
-          </template>
-        </el-table-column>
-        <el-table-column prop="sort_id" label="排序" width="100">
-          <template slot-scope="scope">
-            <el-input v-model.number="scope.row.sort_id" style="width: 80px;" size="mini" placeholder="填写排序值" />
-          </template>
-        </el-table-column>
-
-        <el-table-column label="游戏图标URL" prop="image_path" width="130" :required="true">
-          <template slot-scope="scope">
-            <img :src="scope.row.image_path" width="100%">
-          </template>
-        </el-table-column>
-
-        <el-table-column label="操作" width="100">
-          <template slot-scope="scope">
-            <el-button type="danger" size="mini" @click="removeSchemeGameGuideItme(scope.$index)">移除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <el-row style="padding-top: 20px;">
-        <el-col :span="12" :offset="10">
-          <el-button type="primary" size="medium" @click="handleSaveScheme">保存</el-button>
-        </el-col>
-      </el-row>
-    </el-dialog> -->
     <!--对比组件-->
     <compare ref="compare" />
   </div>
@@ -566,45 +498,6 @@ export default {
       if (!this.configCheck()) {
         return
       }
-      // var record_name = '['
-      // var record_key = ''
-      // if (this.guideRecord.length > 0) {
-      //   for (var i = 0; i < this.guideRecord.length; i++) {
-      //     record_name = record_name + this.GetGameName(this.guideRecord[i].game_id)
-      //     record_key = record_key + (this.guideRecord[i].game_id).toString()
-
-      //     if (i !== this.guideRecord.length - 1) {
-      //       record_name += ','
-      //     }
-      //   }
-      // }
-      // record_name = record_name + ']'
-      // if (this.editForm.isAdd === false) {
-      //   for (let i = 0; i < this.guideList.length; i++) {
-      //     if (this.guideList[i].id === this.editForm.data.id) {
-      //       this.guideList[i].record_name = record_name
-      //       this.guideList[i].scene_id = this.editForm.scene_id || 1
-      //       this.guideList[i].left_time = this.editForm.left_time || 0
-      //       break
-      //     }
-      //   }
-      // } else {
-      //   this.guideList.push(
-      //     {
-      //       'id': new Date().setSeconds(0),
-      //       'records': this.guideRecord,
-      //       'record_name': record_name,
-      //       'associate_key': (new Date().setSeconds(0)).toString(),
-      //       'scene_id': this.editForm.scene_id || 1,
-      //       'left_time': this.editForm.left_time || 0
-      //     }
-      //   )
-      // }
-
-      // console.log(this.editForm)
-      // if (!this.configCheck()) {
-      //   return
-      // }
       let data = null
       if (this.editForm.isAdd === true) {
         data = {
@@ -707,16 +600,14 @@ export default {
      * 提交保存之前检查表单中至少有一个场景填写了完整的游戏信息
      */
     configCheck() {
-      let gameChecked = false
+      let gameChecked = true
       let timeChecked = true
 
       const data = this.editForm.data
-      console.log('configCheck: ', data.scheme_records)
       data.scheme_records.forEach(item => {
         item.records.find(game => {
-          // console.log(game)
-          if (game.sort_id !== '' && game.image_path !== '' && game.game_id !== '') {
-            gameChecked = true
+          if (game.sort_id === '' || game.image_path === '' || game.game_id === '') {
+            gameChecked = false
             return true
           }
         })
@@ -730,7 +621,7 @@ export default {
         return false
       }
       if (!gameChecked) {
-        this.errmsg('需要填写至少一项场景的游戏配置信息')
+        this.errmsg('有空白的配置信息,请检查配置')
         return false
       }
       if (!timeChecked) {

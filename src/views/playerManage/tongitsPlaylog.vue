@@ -261,7 +261,7 @@
         fixed="right"
       >
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="clickData2(scope.row)">牌局</el-button>
+          <el-button :type="clickedRowsID.includes(scope.row.ID) ? 'warning' : 'primary'" size="mini" @click="clickData2(scope.row)">牌局</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -607,7 +607,8 @@ export default {
       uids: [],
       uidMap: {},
       isRobotMap: {},
-      itemKey: ''
+      itemKey: '',
+      clickedRowsID: [] // 点击过的数据ID，牌局按钮变黄色
     }
   },
   computed: {},
@@ -646,6 +647,8 @@ export default {
           return '机器人--弱杀'
         case 5:
           return '机器人--强杀'
+        case 6:
+          return '机器人--贴防'
         case 8:
           return '一级杀手机器人'
         case 9:
@@ -894,6 +897,10 @@ export default {
       }
     },
     clickData2(row) {
+      console.log('clickData2', row)
+      if (!this.clickedRowsID.includes(row.ID)) {
+        this.clickedRowsID.push(row.ID)
+      }
       this.getDetail(row.LogID, row.FinishTime)
     },
 

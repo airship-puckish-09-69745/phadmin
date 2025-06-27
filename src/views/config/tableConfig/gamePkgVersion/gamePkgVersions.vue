@@ -5,14 +5,14 @@
     </el-row>
     <el-row>
       <template>
-        <el-alert type="error">
+        <div style="font-size: 14px;">
           修改了：framework、app/main、proto、resources、app/yy.ts 内容，需要修改链接版本<br>
           其他 bundle 包含有：lobby、common、solitaire_pokers、游戏公共bundle、游戏bundle<br>
           <br>
           如有版本修改后未生效，请刷新界面检查是否为最新链接版本<br>
           <br>
           遇到其他问题请找：宏威
-        </el-alert>
+        </div>
       </template>
     </el-row>
     <el-row style="padding-top: 5px">
@@ -57,7 +57,7 @@
           </el-button>
         </el-form-item>
         <el-form-item v-if="LobbyVersionStatus>0" label="版本状态:">
-          <el-select :value="LobbyVersionTag" filterable size="small" @change="lobbyTagChange" :disabled="(LobbyVersionTag===1)" :width="100">
+          <el-select :value="LobbyVersionTag" filterable size="small" :disabled="(LobbyVersionTag===1)" :width="100" @change="lobbyTagChange">
             <el-option
               v-for="item in tagOptions"
               :key="item.value"
@@ -70,8 +70,7 @@
     </el-row>
     <el-row>
       <template>
-        <el-alert style="font-size: 24px" type="error" :closable=false :title="getLobbyVersionAlert()">
-        </el-alert>
+        <el-alert style="font-size: 24px; white-space: pre-wrap;" type="error" :closable="false" :title="getLobbyVersionAlert()" />
       </template>
     </el-row>
     <el-row>
@@ -116,12 +115,12 @@
       </el-form>
     </el-row>
     <el-dialog
-        title="同步配置到CDN"
-        :visible.sync="syncConfig"
-        :close-on-click-modal="false"
-        :close-on-press-escape="false"
+      title="同步配置到CDN"
+      :visible.sync="syncConfig"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
     >
-      <SyncConfig v-model="syncConfig" :data="clientDB.ShowData" :lobby="LobbyVersion"></SyncConfig>
+      <SyncConfig v-model="syncConfig" :data="clientDB.ShowData" :lobby="LobbyVersion" />
     </el-dialog>
     <div style="padding-top: 10px">
       <el-table
@@ -140,9 +139,9 @@
         @sort-change="sortChange"
       >
         <el-table-column
+          v-if="canEdit"
           label="selectBox"
           type="selection"
-          v-if="canEdit"
           :reserve-selection="true"
           width="55"
         />
@@ -398,8 +397,7 @@
           </el-tag>
         </el-col>
       </el-row>
-      <el-row>
-      </el-row>
+      <el-row />
       <el-form label-width="250px" size="small">
         <el-form-item label="白名单版本号：" :required="true">
           <el-col :span="11">
@@ -438,8 +436,7 @@
           </el-tag>
         </el-col>
       </el-row>
-      <el-row>
-      </el-row>
+      <el-row />
       <el-form label-width="250px" size="small">
         <el-form-item>
           <el-row>
@@ -459,9 +456,9 @@
       <el-row>
         <el-col>
           <el-tag
-            type="danger"
             v-for="tag in edit.dynamicNoWhiteversionTags"
             :key="tag"
+            type="danger"
             :disable-transitions="false"
           >
             {{ tag }}
@@ -590,15 +587,16 @@ export default {
       lobbyVersionData: [],
       orgLobbyVersions: [],
       LobbyVersionID: 0,
+      subMaxLobbyVersion: 0,
       LobbyVersion: '',
       LobbyVersionStatus: 0,
       LobbyVersionTag: 0,
       statNames: { 0: '正常', 2: '上架', 6: '下架', 1: '关闭', 7: '预上架', 8: '预下架' },
       tagOptions: [
-        { value:0, label:'预发布'}, 
-        { value:1, label:'线上版本'},
+        { value: 0, label: '预发布' },
+        { value: 1, label: '线上版本' }
       ],
-      stepNames: { 1: '原始状态', 2: '发布测试', 3: '预发布', 4: '提交审核', 5: '待发布', 6: '已发布'},
+      stepNames: { 1: '原始状态', 2: '发布测试', 3: '预发布', 4: '提交审核', 5: '待发布', 6: '已发布' },
       isOptions: [
         { value: 0, label: '否' },
         { value: 1, label: '是' }
@@ -610,7 +608,7 @@ export default {
       env: 'test',
       edit: {
         visible: false,
-        gameName: "",
+        gameName: '',
         item: this.newItem(),
         isEdit: false,
         lobbyVisible: false,
@@ -693,7 +691,7 @@ export default {
     },
     // 操作类函数
     clickData(row, column, event) {
-      if (column.label === 'selectBox' || column.label === 'ID' || column.label === '包名' || column.label === '操作' ) {
+      if (column.label === 'selectBox' || column.label === 'ID' || column.label === '包名' || column.label === '操作') {
         return
       }
       if (!this.canEdit) {
@@ -787,7 +785,7 @@ export default {
         }
       }
       this.getList()
-      this.$refs.filterTable.clearSelection();
+      this.$refs.filterTable.clearSelection()
     },
     lobbyTagChange(targetTag) {
       const $this = this
@@ -821,7 +819,7 @@ export default {
         loading.close()
       })
     },
-    getList(loading=undefined) {
+    getList(loading = undefined) {
       this.loadingShow = true
       const $this = this
       request({
@@ -834,6 +832,21 @@ export default {
         $this.loadingShow = false
         if (response.RetCode === 0) {
           const objs = response.Data.Data || []
+          // 筛选obj里面的最新的版本
+          let maxVersion = '1.0.0.0'
+          let maxVersionArr = maxVersion.split('.')
+          objs.filter(function(obj) {
+            // 按.切分版本号
+            const versionArr = obj.GamePkgVersion.split('.')
+            for (let i = 0; i < 4; i++) {
+              if (versionArr[i] > maxVersionArr[i]) {
+                maxVersionArr = versionArr
+                maxVersion = obj.GamePkgVersion
+                break
+              }
+            }
+          })
+          this.subMaxLobbyVersion = maxVersion
           this.clientDB = new ClientTableData(objs, 100, filterMap, 'ID', -1)
           this.handleCurrentChange(1)
           this.historyMap = response.Data.HistoryMap || {}
@@ -1342,8 +1355,8 @@ export default {
       this.copyLobbySave(this.getCopyLobbyPostData())
       this.edit.copyLobbyVisible = false
     },
-    getLobbyVersions(loading=undefined) {
-      console.log("getLobbyVersions", loading === undefined)
+    getLobbyVersions(loading = undefined) {
+      console.log('getLobbyVersions', loading === undefined)
       request({
         url: '/gamepkgversions/lobbyversions',
         method: 'get',
@@ -1392,57 +1405,60 @@ export default {
       }
     },
     getLobbyVersionAlert() {
-      return "       "+ this.LobbyVersion+" 版本必须是整包！包含所有 bundle！"
+      // 获取当前列表下的最大版本号
+      return '     需要将    ' +
+        this.LobbyVersion + '    url 对应的【菲1客户端子版本】更新为下面子版本的最新版本号： ' +
+        this.subMaxLobbyVersion
     },
     onStepChange(step, key, addData, delData, editData) {
       if (this.env === 'test' && !this.configData.lark) {
         return
       }
       // 1原始状态 2发布到测试环境 3发布到预发布 4提交审核 5审核完成待发布 6发布到正式环境
-      console.log("publish success", step, key, JSON.stringify(addData), JSON.stringify(delData), JSON.stringify(editData))
+      console.log('publish success', step, key, JSON.stringify(addData), JSON.stringify(delData), JSON.stringify(editData))
       // 同步到正式
       if (this.env === 'pro' && step != 3 && step != 5) {
-        console.log("生产环境只在审核和同步正式发送通知")
+        console.log('生产环境只在审核和同步正式发送通知')
         return
       }
       this.makeMessage(step, addData, delData, editData)
     },
-    getLobbyStr(lobbyVer,step){
+    getLobbyStr(lobbyVer, step) {
       let lobby = ''
       if (this.env === 'test') {
-        lobby=`【已发布】F1客户端开发版本【${lobbyVer}】`
+        lobby = `【已发布】F1客户端开发版本【${lobbyVer}】`
         if (this.LobbyVersionTag === 1) {
           this.setEdit(false)
         }
       } else if (step === 3) {
-        lobby=`【待审核】F1客户端线上版本【${lobbyVer}】`
+        lobby = `【待审核】F1客户端线上版本【${lobbyVer}】`
       } else if (step === 5) {
-        lobby=`【已发布】F1客户端线上版本【${lobbyVer}】`
+        lobby = `【已发布】F1客户端线上版本【${lobbyVer}】`
         if (this.LobbyVersionTag === 1) {
           this.setEdit(false)
         }
       }
       return lobby
     },
-    getLobbyTagOn(lobbyVer){
-    for (let i = 0; i < this.orgLobbyVersions.length; i++) {
+    getLobbyTagOn(lobbyVer) {
+      for (let i = 0; i < this.orgLobbyVersions.length; i++) {
         if (lobbyVer === this.orgLobbyVersions[i].LobbyVersion) {
-          console.log("hit lobby", lobbyVer, JSON.stringify(this.orgLobbyVersions[i]))
+          console.log('hit lobby', lobbyVer, JSON.stringify(this.orgLobbyVersions[i]))
           return this.orgLobbyVersions[i].Tag === 1
         }
       }
       return false
     },
-    async makeMessage(step,addData, delData, editData) {
-      let adds = new Map()
-      let dels = new Map()
-      let change = {}
+    async makeMessage(step, addData, delData, editData) {
+      const adds = new Map()
+      const dels = new Map()
+      const change = {}
       // 新增取newVal
       if (addData) {
         // console.log("addData",addData)
-        for (var i=0; i<addData.length; i++) {
-          let item = {} 
-          for (let ele of addData[i]) {
+        for (var i = 0; i < addData.length; i++) {
+          const item = {}
+          for (const ele of addData[i]) {
             item[ele.key] = ele.newVal
           }
           adds.set(item.BundleKey, item)
@@ -1451,9 +1467,9 @@ export default {
       }
       if (delData) {
         // console.log("delData",delData)
-        for (var i=0; i<delData.length; i++) {
-          let item = {} 
-          for (let ele of delData[i]) {
+        for (var i = 0; i < delData.length; i++) {
+          const item = {}
+          for (const ele of delData[i]) {
             item[ele.key.toString()] = ele.oldVal
           }
           dels.set(item.BundleKey, item)
@@ -1461,9 +1477,9 @@ export default {
         }
       }
       // console.log("adds",adds)
-      for (const [key,value] of adds) {
+      for (const [key, value] of adds) {
         const value2 = dels.get(key)
-        console.log("key",key, value, value2)
+        console.log('key', key, value, value2)
         if (value2 === undefined || value === undefined) {
           continue
         }
@@ -1478,7 +1494,7 @@ export default {
           str += `${value.WhiteVersion}【白名单】`
         }
         const lobby = this.getLobbyStr(value.LobbyVersion, step)
-        change[lobby]? change[lobby].push(str): change[lobby]=[str]
+        change[lobby] ? change[lobby].push(str) : change[lobby] = [str]
       }
       if (editData) {
         for (const edit of editData) {
@@ -1486,11 +1502,11 @@ export default {
           console.log(id)
           for (const ele of edit.Rows) {
             if (ele.key === 'GamePkgVersion' || ele.key === 'WhiteVersion') {
-              let _data = {}//this.clientDB.GetDataByID(id)
+              let _data = {}// this.clientDB.GetDataByID(id)
               if (_data.ID === undefined) {
                 _data = await this.getItemData(edit.Head.ID)
                 if (_data.ID === undefined) {
-                  console.log("continue", edit.Head.ID)
+                  console.log('continue', edit.Head.ID)
                   continue
                 }
               }
@@ -1502,39 +1518,39 @@ export default {
               if (_data.WhiteVersion !== '') {
                 str += `${_data.WhiteVersion}【白名单】`
               }
-              change[lobby]? change[lobby].push(str): change[lobby]=[str]
+              change[lobby] ? change[lobby].push(str) : change[lobby] = [str]
               break
             }
           }
         }
       }
       if (Object.keys(change).length === 0) {
-        console.log("no change return")
+        console.log('no change return')
         return
       }
-    
+
       var msg = ''
       for (const key in change) {
         let str = key
         for (const ver of change[key]) {
-          str += '\r\n'+ver
+          str += '\r\n' + ver
         }
         msg += str + '\r\n'
       }
-      
+
       // 正式发布才@相关人员
       if (step === 5 && this.env === 'pro') {
         msg += '***需检查 uat 03 是否同步版本内容***\r\n'
         msg += '<at user_id="ou_dacc382512738a049ab4f32d6db9f82e">xiong</at><at user_id="ou_2b283f529fc901b97b443b946f692efd">SamYe</at><at user_id="ou_932b1ed1e7064b512199b77ce83236c1">高勋</at>\r\n'
       }
-      console.log("change content", msg)
+      console.log('change content', msg)
       request({
         url: '/dataProxy/info',
         method: 'post',
         data: {
           Path: '/misc/warn',
           Env: this.env,
-          Text: msg,
+          Text: msg
           // Warn: "shit",
         }
       }).then(response => {
@@ -1550,7 +1566,7 @@ export default {
         method: 'get',
         data: {
           Env: this.env,
-          ID: Id,
+          ID: Id
         }
       })
       if (response.RetCode === 0) {
@@ -1559,11 +1575,11 @@ export default {
       }
       return {}
     },
-    setEdit(canEdit){
+    setEdit(canEdit) {
       this.canEdit = canEdit
-      this.$refs.filterTable.clearSelection();
+      this.$refs.filterTable.clearSelection()
     },
-    getMessgeStatus(){
+    getMessgeStatus() {
       request({
         url: '/customizeconfig/one',
         method: 'get',
@@ -1580,13 +1596,13 @@ export default {
         }
       })
     },
-    setMessgeStatus(){
+    setMessgeStatus() {
       this.configData.lark = !this.configData.lark
       this.config.Data = JSON.stringify(this.configData)
       console.log(this.config.Data)
       this.updateConfig()
     },
-    setGameName(){
+    setGameName() {
       this.configData[this.edit.item.BundleKey] = this.edit.gameName
       this.config.Data = JSON.stringify(this.configData)
       console.log(this.config.Data)
@@ -1596,7 +1612,7 @@ export default {
       request({
         url: '/customizeconfig/update',
         method: 'post',
-        data: this.config,
+        data: this.config
       }).then(response => {
         if (response.RetCode === 0) {
           Message.success(`更新游戏名成功!：[${this.edit.gameName}]`)

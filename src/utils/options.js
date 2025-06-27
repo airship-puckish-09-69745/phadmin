@@ -12,6 +12,14 @@ export const APPID_OPTIONS = [
   { 'value': 1100000, 'label': 'xworld' }
 ]
 
+export const CHANNEL_OPTIONS = [
+  { 'value': 'BP', 'label': 'BP' },
+  { 'value': 'AP', 'label': 'AP' },
+  { 'value': 'GP', 'label': 'GP' },
+  { 'value': 'TP', 'label': 'TP' },
+  { 'value': 'PG', 'label': 'PG' },
+  { 'value': 'Dev', 'label': 'Dev' }
+]
 // 道具类型
 export const ITEM_TYPE_OPTIONS = [
   { 'value': 1, 'label': 'Tongits门票', disabled: false },
@@ -71,5 +79,30 @@ export const PROP_SOURCE_OPTIONS = [
   { value: 8, label: 'tongits报名取消' },
   { value: 9, label: 'texas报名取消' },
   { value: 10, label: '头像框激活' },
-  { value: 11, label: '道具过期' }
+  { value: 11, label: '道具过期' },
+  { value: 12, label: '红包活动' },
+  { value: 13, label: 'rebuy' },
+  { value: 14, label: 'rebuy回退' }
+]
+
+//奖励分类
+export const REWARD_CURRENCY_OPTIONS = [
+  { 'value': 1, 'label': '金币' },
+  { 'value': 2, 'label': '投注金' },
+  { 'value': 3, 'label': '返水金' }
+]
+
+
+// 返水金
+export const REBATE_SCENES_CFG_OPTIONS = [
+  { 'value': 5, 'label': '没有任何限制的返水金' },
+  { 'value': 6, 'label': '有限制倍数的返水金（10倍）' }
+]
+
+//投注金
+export const  BET_SCENES_CFG_OPTIONS = [
+  { 'value': 1, 'label': '任意游戏投注' },
+  { 'value': 2, 'label': '仅限Poker类游戏投注' },
+  { 'value': 3, 'label': '仅限Slots类游戏投注' },
+  { 'value': 4, 'label': '仅限Tongits游戏投注' }
 ]

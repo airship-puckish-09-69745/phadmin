@@ -15,7 +15,7 @@
       <el-table
         :data="tableData"
         border
-        style="max-height: calc(100vh - 326px);width: 100%;overflow-y: auto;"
+        style="width: 100%;"
         :cell-style="libShow.DefaultTableCell"
       >
         <!-- 序号 -->
@@ -31,31 +31,80 @@
           <template slot-scope="scope">
             <!-- 活动图标和头像框 -->
             <el-image
-              v-if="field.prop === 'Icon' || field.prop === 'Avatar'"
+              v-if="field.prop === 'Icon'"
               :src="scope.row[field.prop]"
               fit="contain"
               :preview-src-list="[scope.row[field.prop]]"
               class="image-manage-item__image"
             />
-            <!-- 活动：格式为：活动名称-[活动ID] -->
-            <template v-else-if="field.prop === 'ActivityName'">
+            <!-- 活动配置：格式为：活动名称-[活动ID] -->
+            <template v-else-if="field.prop === 'ActivityConfig'">
               <span v-if="scope.row.ActivityName">{{
-                `${scope.row.ActivityName}-[${scope.row.ActivityId}]`
+                `${getActivityConfigNasme(scope.row)}-[${scope.row.ActivityConfigId}]`
               }}</span>
               <span v-else>暂无</span>
             </template>
             <!-- 日期处理 -->
             <template v-else-if="field.prop === 'ActivityTime'">
               <span v-if="scope.row.ActivityTime">
-                {{ parseTime(scope.row.ActivityTime[0], '{y}-{m}-{d}') }} <br> {{ parseTime(scope.row.ActivityTime[1], '{y}-{m}-{d}') }}
+                {{ parseTime(scope.row.ActivityTime[0], '{y}-{m}-{d} {h}:{i}:{s}') }} <br> {{ parseTime(scope.row.ActivityTime[1], '{y}-{m}-{d} {h}:{i}:{s}') }}
+              </span>
+            </template>
+            <!-- 成就：格式为：[头像框][名称]: [达成条件] -->
+            <template v-else-if="field.prop === 'AchievementList'">
+              <div v-if="scope.row.AchievementList && scope.row.AchievementList.length > 0">
+                <div v-for="(achievement, index) in scope.row.AchievementList" :key="index">
+                  <div v-if="achievement.AchievementName">
+                    <el-image
+                      v-if="achievement.Avatar"
+                      :src="achievement.Avatar"
+                      fit="contain"
+                      :preview-src-list="[achievement.Avatar]"
+                      class="image-manage-item__image"
+                      style="width: 60px;"
+                    />
+                    <div style="display: inline-block; width: 260px; vertical-align: top;position: relative; top: 6px">
+                      <div style="display: -webkit-box; width: 100%; overflow: hidden; text-overflow: ellipsis; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
+                        <!-- {{
+                          `[${index + 1}]`
+                        }} -->
+                        {{ achievement.AchievementName }}: {{ achievement.AchievementCondition }}
+                      </div>
+                    </div>
+                  </div>
+                  <span v-else>暂无</span>
+                </div>
+              </div>
+              <span v-else>暂无</span>
+            </template>
+            <!-- 游戏列表，格式为：名称(id)-热度 -->
+            <template v-else-if="field.prop === 'GameList'">
+              <div v-if="scope.row.GameList && scope.row.GameList.length > 0">
+                <div v-for="(game, index) in scope.row.GameList" :key="index">
+                  <span v-if="game">
+                    {{
+                      `${game.Label}(${game.Id})`
+                    }}：
+                    <span style="color: #1890FF">{{ game.Hot }}</span>
+                  </span>
+                  <span v-else>暂无</span>
+                </div>
+              </div>
+              <span v-else>暂无</span>
+            </template>
+            <!-- 金额/100保留2位小数 -->
+            <template v-else-if="field.prop === 'Amount'">
+              <span>
+                {{ parseFloat((scope.row[field.prop] / 100).toFixed(2)) }}
               </span>
             </template>
             <span v-else>{{ scope.row[field.prop] }}</span>
           </template>
         </el-table-column>
         <!-- 操作 -->
-        <el-table-column label="操作" width="160">
+        <el-table-column label="操作" width="220">
           <template #default="scope">
+            <el-button size="mini" type="success" @click="handleCopy(scope.row)">复制</el-button>
             <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
             <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
           </template>
@@ -121,14 +170,17 @@ export default {
       fields: [
         { label: '配置ID', prop: 'ID', width: 100, required: true },
         { label: '活动名称', prop: 'ActivityName', width: 200, required: true },
+        { label: '活动配置', prop: 'ActivityConfig', width: 200, required: true },
         { label: '活动金额', prop: 'Amount', width: 100 },
-        { label: '头像框', prop: 'Avatar', width: 120 },
+        // { label: '头像框', prop: 'Avatar', width: 120 },
         { label: '活动图标', prop: 'Icon', width: 120 },
-        { label: '玩法简要', prop: 'Description' },
-        { label: '活动时间', prop: 'ActivityTime', width: 110 },
-        { label: '成就个数', prop: 'AchievementNumber' },
-        { label: '成就名称', prop: 'AchievementName' },
-        { label: '成就完成条件', prop: 'AchievementCondition', width: 120 }
+        { label: '玩法简要', prop: 'Description', width: 150 },
+        { label: '活动时间', prop: 'ActivityTime', width: 160 },
+        { label: '游戏热度', prop: 'GameList', width: 200 },
+        { label: '成就', prop: 'AchievementList', width: 360 }
+        // { label: '成就个数', prop: 'AchievementNumber' },
+        // { label: '成就名称', prop: 'AchievementName' },
+        // { label: '成就完成条件', prop: 'AchievementCondition', width: 120 }
       ],
       formDialog: {
         updateData: null,
@@ -185,15 +237,7 @@ export default {
       this.$emit('update', data)
     },
     handleEdit(row = null) {
-      this.formData = row ? {
-        ...row,
-        Content: typeof row.Content === 'string' ? JSON.parse(row.Content) : row.Content
-      } : {
-        ActivityId: '',
-        ActivityName: '',
-        ConfigName: '',
-        Content: {}
-      }
+      this.formDialog.updateData = row
       this.formDialog.visible = true
     },
     handleDelete(row) {
@@ -214,6 +258,10 @@ export default {
         })
       })
     },
+    getActivityConfigNasme(row) {
+      const selectedActivity = this.activityOptions.find(option => option.id === row.ActivityConfigId)
+      return (selectedActivity ? selectedActivity.name : '')
+    },
     handleUpdateDialogVisible(visible) {
       this.formDialog.visible = visible
       this.formDialog.updateData = null
@@ -227,6 +275,10 @@ export default {
     handlePaginationCurrentChange(page) {
       this.pagination.currentPage = page
       this.getList()
+    },
+    handleCopy(row) {
+      // ID=0会在父组件重新生成
+      this.handleSave({ ...row, ID: 0 })
     }
   }
 }

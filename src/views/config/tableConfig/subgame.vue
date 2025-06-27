@@ -148,26 +148,27 @@
           min-width="150"
         >
           <template slot-scope="scope">
-            <img :src="getFullPath(scope.row.Icon)" height="80px">
+            <img v-if="scope.row.Icon" :src="getFullPath(scope.row.Icon)" height="80px">
+            <span v-else>无</span>
           </template>
         </el-table-column>
-        <el-table-column
-          prop="IsWhite"
-          label="白名单"
-          width="70"
-        >
-          <template slot-scope="scope">
-            <span v-text="scope.row.IsWhite==1?'是':'否'" />
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="免费可玩"
-          width="90"
-        >
-          <template slot-scope="scope">
-            <span v-text="scope.row.IsPlaying==1?'是':'否'" />
-          </template>
-        </el-table-column>
+<!--        <el-table-column-->
+<!--          prop="IsWhite"-->
+<!--          label="白名单"-->
+<!--          width="70"-->
+<!--        >-->
+<!--          <template slot-scope="scope">-->
+<!--            <span v-text="scope.row.IsWhite==1?'是':'否'" />-->
+<!--          </template>-->
+<!--        </el-table-column>-->
+<!--        <el-table-column-->
+<!--          label="免费可玩"-->
+<!--          width="90"-->
+<!--        >-->
+<!--          <template slot-scope="scope">-->
+<!--            <span v-text="scope.row.IsPlaying==1?'是':'否'" />-->
+<!--          </template>-->
+<!--        </el-table-column>-->
         <el-table-column
           prop="LastModify"
           label="最近修改"
@@ -272,135 +273,139 @@
       :close-on-press-escape="false"
     >
       <el-form ref="edit" :model="edit" label-width="150px" size="small">
-        <el-tabs type="card">
-          <el-tab-pane label="基础信息">
-            <el-form-item label="AppId" :required="true">
-              <el-select v-model="edit.item.AppId" style="width: 230px" :disabled="!edit.isCopy" placeholder="请选择" size="mini">
-                <el-option
-                  v-for="item in appInfo"
-                  :key="item.key"
-                  :label="appInfoLabel(item.key, item.label)"
-                  :value="item.key"
-                />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="名称：" :required="true">
-              <el-row>
-                <el-col :span="2">英文: </el-col><el-col :span="16"><el-input v-model="edit.itemNames['en']" /></el-col>
-              </el-row>
-              <el-row>
-                <el-col :span="2">印地: </el-col><el-col :span="16"><el-input v-model="edit.itemNames['hi']" /></el-col>
-              </el-row>
-            </el-form-item>
-            <el-form-item label="分类：" :required="true" prop="item.Type">
-              <el-col :span="11">
-                <el-select v-model.number="edit.item.Type" placeholder="分类">
-                  <el-option
-                    v-for="item in typeOption"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  />
-                </el-select>
-              </el-col>
-            </el-form-item>
-            <el-form-item label="游戏Key：" :required="true" prop="item.GameKey" :rules="dataRule(true,{type:'s',range:'2'})">
-              <el-col :span="11">
-                <el-input v-model="edit.item.GameKey" placeholder="开发提供" />
-              </el-col>
-            </el-form-item>
-            <el-form-item label="图片：" :required="true">
-              <el-upload
-                class="avatar-uploader"
-                :action="actionURL"
-                :with-credentials="true"
-                :show-file-list="false"
-                :on-success="SuccUpload1"
-                :before-upload="beforeAvatarUpload"
-              >
-                <img v-if="edit.item.Icon" :src="getFullPath(edit.item.Icon)" class="avatar" height="100px">
-                <i v-else class="el-icon-plus avatar-uploader-icon" />
-              </el-upload>
-            </el-form-item>
-            <el-form-item label="背景图片：" :required="true">
-              <el-upload
-                class="avatar-uploader"
-                :action="actionURL"
-                :show-file-list="false"
-                :with-credentials="true"
-                :on-success="SuccUploadBack"
-                :before-upload="beforeAvatarUpload"
-              >
-                <img v-if="edit.item.IconBack" :src="getFullPath(edit.item.IconBack)" class="avatar" height="100px">
-                <i v-else class="el-icon-plus avatar-uploader-icon" />
-              </el-upload>
-            </el-form-item>
-            <el-form-item v-if="false" label="图片(客户端内置)：" :required="true" prop="item.GameKey" :rules="dataRule(true,{type:'s',range:'2'})">
-              <el-input v-model="edit.item.IconInner" placeholder="开发提供" />
-            </el-form-item>
-            <el-form-item v-if="false" label="是否支持单一钱包：" :required="true">
-              <el-col :span="11">
-                <el-input v-model="edit.item.CodePath" placeholder="开发提供" />
-              </el-col>
-            </el-form-item>
-            <el-form-item v-if="false" label="公共包路径：" :required="true">
-              <el-col :span="11">
-                <el-input v-model="edit.item.CommCodePath" placeholder="开发提供" />
-              </el-col>
-            </el-form-item>
-            <el-form-item label="只白名单可见：" :required="true">
-              <el-radio-group v-model.number="edit.item.IsWhite">
-                <el-radio :label="1">是</el-radio>
-                <el-radio :label="0">否</el-radio>
-              </el-radio-group>
-            </el-form-item>
-            <el-form-item label="非真实用户是否显示：" :required="true">
-              <el-radio-group v-model.number="edit.item.IsPlaying">
-                <el-radio :label="1">是</el-radio>
-                <el-radio :label="0">否</el-radio>
-              </el-radio-group>
-            </el-form-item>
-            <el-form-item v-if="false" label="最低版本限制：" :required="true">
-              <el-col :span="11">
-                <el-input v-model="edit.item.VersionLower" placeholder="开发提供" />
-              </el-col>
-            </el-form-item>
-            <el-form-item label="new 标识：" :required="true">
-              <el-radio-group v-model.number="edit.item.IsNew">
-                <el-radio :label="1">是</el-radio>
-                <el-radio :label="0">否</el-radio>
-              </el-radio-group>
-            </el-form-item>
-            <el-form-item label="hot 标识：" :required="true">
-              <el-radio-group v-model.number="edit.item.IsHot">
-                <el-radio :label="1">是</el-radio>
-                <el-radio :label="0">否</el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-tab-pane>
-          <el-tab-pane label="游戏名称多语言" name="second">
-            <el-form-item label="图片内容：" :required="true">
-              <template v-for="(o) in langTypes">
-                <el-col :span="6">{{ getLangName(o) }}:</el-col>
-                <el-col :span="18">
-                  <el-upload
-                    class="avatar-uploader"
-                    drag
-                    :action="actionURL2"
-                    :with-credentials="true"
-                    :show-file-list="false"
-                    :data="getUploadParam(o)"
-                    :on-success="Succ"
-                    :before-upload="beforeAvatarUpload"
-                  >
-                    <img v-if="edit.langPic[o]" :src="getFullPath(edit.langPic[o])">
-                    <i v-else class="el-icon-plus avatar-uploader-icon" />
-                  </el-upload>
-                </el-col>
-              </template>
-            </el-form-item>
-          </el-tab-pane>
-        </el-tabs>
+            <el-tabs type="card">
+              <el-tab-pane label="基础信息">
+                <el-form-item label="AppId" :required="true">
+                  <el-select v-model="edit.item.AppId" style="width: 230px" :disabled="!edit.isCopy" placeholder="请选择" size="mini">
+                    <el-option
+                      v-for="item in appInfo"
+                      :key="item.key"
+                      :label="appInfoLabel(item.key, item.label)"
+                      :value="item.key"
+                    />
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="站点：">
+                  <el-checkbox-group v-model="edit.item.Channel">
+                    <el-checkbox label="BP">BP</el-checkbox>
+                    <el-checkbox label="AP">AP</el-checkbox>
+                    <el-checkbox label="GP">GP</el-checkbox>
+                    <el-checkbox label="TP">TP</el-checkbox>
+                    <el-checkbox label="PG">PG</el-checkbox>
+                    <el-checkbox label="Dev">DEV</el-checkbox>
+                  </el-checkbox-group>
+                  <span style="color: red">全部不勾 等于 任意站点都可见。下架入口则不可见</span>
+                </el-form-item>
+                <el-form-item label="名称：" :required="true">
+                  <el-row>
+                    <el-col :span="2">英文: </el-col><el-col :span="16"><el-input v-model="edit.itemNames['en']" /></el-col>
+                  </el-row>
+                  <el-row>
+                    <el-col :span="2">印地: </el-col><el-col :span="16"><el-input v-model="edit.itemNames['hi']" /></el-col>
+                  </el-row>
+                </el-form-item>
+                <el-form-item label="分类：" :required="true" prop="item.Type">
+                  <el-col :span="11">
+                    <el-select v-model.number="edit.item.Type" placeholder="分类">
+                      <el-option
+                        v-for="item in typeOption"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      />
+                    </el-select>
+                  </el-col>
+                </el-form-item>
+                <el-form-item label="游戏Key：" :required="true" prop="item.GameKey" :rules="dataRule(true,{type:'s',range:'2'})">
+                  <el-col :span="11">
+                    <el-input v-model="edit.item.GameKey" placeholder="开发提供" />
+                  </el-col>
+                </el-form-item>
+                <el-form-item label="图片：" :required="true" style="position: relative">
+                  <ImagePicker v-model="formDialog.form.game.image_path" category="subConfig" />
+                  <el-button type="danger" size="mini" style="position: absolute; left: 138px; top: 60px" @click="formDialog.form.game.image_path = ''">清除图片</el-button>
+                </el-form-item>
+                <!--            <el-form-item label="背景图片：" :required="true">-->
+                <!--              <el-upload-->
+                <!--                class="avatar-uploader"-->
+                <!--                :action="actionURL"-->
+                <!--                :show-file-list="false"-->
+                <!--                :with-credentials="true"-->
+                <!--                :on-success="SuccUploadBack"-->
+                <!--                :before-upload="beforeAvatarUpload"-->
+                <!--              >-->
+                <!--                <img v-if="edit.item.IconBack" :src="getFullPath(edit.item.IconBack)" class="avatar" height="100px">-->
+                <!--                <i v-else class="el-icon-plus avatar-uploader-icon" />-->
+                <!--              </el-upload>-->
+                <!--            </el-form-item>-->
+                <el-form-item v-if="false" label="图片(客户端内置)：" :required="true" prop="item.GameKey" :rules="dataRule(true,{type:'s',range:'2'})">
+                  <el-input v-model="edit.item.IconInner" placeholder="开发提供" />
+                </el-form-item>
+                <el-form-item v-if="false" label="是否支持单一钱包：" :required="true">
+                  <el-col :span="11">
+                    <el-input v-model="edit.item.CodePath" placeholder="开发提供" />
+                  </el-col>
+                </el-form-item>
+                <el-form-item v-if="false" label="公共包路径：" :required="true">
+                  <el-col :span="11">
+                    <el-input v-model="edit.item.CommCodePath" placeholder="开发提供" />
+                  </el-col>
+                </el-form-item>
+                <!--            <el-form-item label="只白名单可见：" :required="true">-->
+                <!--              <el-radio-group v-model.number="edit.item.IsWhite">-->
+                <!--                <el-radio :label="1">是</el-radio>-->
+                <!--                <el-radio :label="0">否</el-radio>-->
+                <!--              </el-radio-group>-->
+                <!--            </el-form-item>-->
+                <!--            <el-form-item label="非真实用户是否显示：" :required="true">-->
+                <!--              <el-radio-group v-model.number="edit.item.IsPlaying">-->
+                <!--                <el-radio :label="1">是</el-radio>-->
+                <!--                <el-radio :label="0">否</el-radio>-->
+                <!--              </el-radio-group>-->
+                <!--            </el-form-item>-->
+                <el-form-item v-if="false" label="最低版本限制：" :required="true">
+                  <el-col :span="11">
+                    <el-input v-model="edit.item.VersionLower" placeholder="开发提供" />
+                  </el-col>
+                </el-form-item>
+                <!--            <el-form-item label="new 标识：" :required="true">-->
+                <!--              <el-radio-group v-model.number="edit.item.IsNew">-->
+                <!--                <el-radio :label="1">是</el-radio>-->
+                <!--                <el-radio :label="0">否</el-radio>-->
+                <!--              </el-radio-group>-->
+                <!--            </el-form-item>-->
+                <!--            <el-form-item label="hot 标识：" :required="true">-->
+                <!--              <el-radio-group v-model.number="edit.item.IsHot">-->
+                <!--                <el-radio :label="1">是</el-radio>-->
+                <!--                <el-radio :label="0">否</el-radio>-->
+                <!--              </el-radio-group>-->
+                <!--            </el-form-item>-->
+              </el-tab-pane>
+            </el-tabs>
+
+<!--          <el-tab-pane label="游戏名称多语言" name="second">-->
+<!--            <el-form-item label="图片内容：" :required="true">-->
+<!--              <template v-for="(o) in langTypes">-->
+<!--                <el-col :span="6">{{ getLangName(o) }}:</el-col>-->
+<!--                <el-col :span="18">-->
+<!--                  <el-upload-->
+<!--                    class="avatar-uploader"-->
+<!--                    drag-->
+<!--                    :action="actionURL2"-->
+<!--                    :with-credentials="true"-->
+<!--                    :show-file-list="false"-->
+<!--                    :data="getUploadParam(o)"-->
+<!--                    :on-success="Succ"-->
+<!--                    :before-upload="beforeAvatarUpload"-->
+<!--                  >-->
+<!--                    <img v-if="edit.langPic[o]" :src="getFullPath(edit.langPic[o])">-->
+<!--                    <i v-else class="el-icon-plus avatar-uploader-icon" />-->
+<!--                  </el-upload>-->
+<!--                </el-col>-->
+<!--              </template>-->
+<!--            </el-form-item>-->
+<!--          </el-tab-pane>-->
+
 
         <el-form-item>
           <el-row>
@@ -466,6 +471,7 @@ import Compare from '@/components/Compare'
 import { Message } from 'element-ui'
 import Publish from '@/components/Publish'
 import TableSort from '@/components/TableSort'
+import ImagePicker from "@/components/ImagePicker/ImagePicker";
 
 const filterMap = {
   'Status': { 1: '草稿', 2: '上架', 3: '废弃', 6: '下架' }
@@ -491,12 +497,13 @@ function newItem() {
     IsPlaying: 0,
     IsHot: 0,
     IsNew: 0,
-    AppId: 0
+    AppId: 0,
+    Channel: ''
   }
 }
 
 export default {
-  components: { Compare, Publish, TableSort },
+  components: { Compare, Publish, TableSort, ImagePicker },
   data() {
     return {
       tableData: [],
@@ -517,6 +524,20 @@ export default {
         isCopy: false,
         langPic: NewLangObj(),
         itemNames: NewLangObj()
+      },
+
+      formDialog: {
+        visible: false,
+        title: '添加游戏',
+        form: {
+          app_id: '',
+          game: {
+            game_id: '',
+            image_path: ''
+          },
+          update_index: 0, // 仅编辑时需要，确定修改的是哪一条数据
+          isedit: false
+        }
       },
 
       copyListDialog: {
@@ -729,6 +750,7 @@ export default {
     // 操作类函数
     clickData(row, column, event) {
       if (column.columnKey !== 'op') {
+        console.log('clickData ', row)
         this.initFormData(true, row.ID)
         this.edit.isCopy = false
         this.edit.visible = true
@@ -737,6 +759,7 @@ export default {
 
     handleCreate() {
       this.edit.item = newItem()
+      this.edit.item.Channel = []
       this.edit.item.AppId = this.appId
       this.edit.isEdit = false
       this.edit.isCopy = false
@@ -928,7 +951,13 @@ export default {
           Object.assign(this.edit.item, _data)
           this.edit.itemNames = JSON.parse(this.edit.item.Name)
           this.edit.langPic = JSON.parse(this.edit.item.NameIcon)
-
+          if (this.edit.item.Channel.length > 0 && typeof this.edit.item.Channel === 'string') {
+            this.edit.item.Channel = this.edit.item.Channel.split(',')
+          } else {
+            this.edit.item.Channel = []
+          }
+          console.log('initFormData', this.edit.item.Channel)
+          this.formDialog.form.game.image_path = this.edit.item.Icon
           if (bEdit) {
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(_data)
@@ -941,6 +970,7 @@ export default {
     },
     createSave(postData) {
       postData.Platform = this.platform
+      postData.Icon = this.formDialog.form.game.image_path
       request({
         url: '/subgame/create',
         method: 'post',
@@ -954,14 +984,15 @@ export default {
       })
     },
     editSave(postData) {
+      postData.Icon = this.formDialog.form.game.image_path
+      console.log('editSave', postData)
       request({
         url: 'subgame/update',
         method: 'post',
         data: postData
       }).then(response => {
         if (response.RetCode === 0) {
-          this.clientDB.UpdateData(this.edit.item)
-          this.refreshShow()
+          this.getList()
           Message.success('保存成功！')
         }
       })
@@ -969,7 +1000,7 @@ export default {
     save() {
       this.edit.item.Name = JSON.stringify(this.edit.itemNames)
       this.edit.item.NameIcon = JSON.stringify(this.edit.langPic)
-
+      this.edit.item.Icon = this.formDialog.form.game.image_path
       if (this.edit.isEdit) {
         // 设置修改后数据
         this.$refs.compare.SetNewVal(this.edit.item)

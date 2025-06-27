@@ -1,10 +1,10 @@
 <template xmlns="http://www.w3.org/1999/html">
   <div class="app-container">
-    <el-row>
-      <el-col :offset="8" :span="2">
+    <el-row class="search-filter">
+      <div class="search-filter-item search-filter-item-btn">
         <el-button size="mini" @click="getInfo(10000, 1)">刷新</el-button>
-      </el-col>
-      <el-col :span="6">
+      </div>
+      <div class="search-filter-item search-filter-item-type">
         筛选：
         <el-button-group>
           <el-button type="success" size="mini" @click="changeType(1)">默认</el-button>
@@ -12,18 +12,18 @@
           <el-button type="success" size="mini" @click="changeType(3)">Slots</el-button>
           <el-button type="success" size="mini" @click="changeType(4)">其他</el-button>
         </el-button-group>
-      </el-col>
-      <el-col :span="6">
+      </div>
+      <div class="search-filter-item search-filter-item-order">
         排序：
         <el-button-group>
           <el-button type="primary" size="mini" @click="changeOrder(1)">默认</el-button>
           <el-button type="primary" size="mini" @click="changeOrder(2)">按收益</el-button>
           <el-button type="primary" size="mini" @click="changeOrder(3)">按流水</el-button>
         </el-button-group>
-      </el-col>
+      </div>
     </el-row>
     <el-row class="panel-group" :gutter="10">
-      <el-col v-if="HasACC()" :span="4" class="card-panel-col">
+      <el-col v-if="HasACC()" :span="4" :xs="6" class="card-panel-col">
         <div
           :class="gid===10000?'card-panel card-panel_selected':'card-panel card-panel_selected_not'"
           @click="getInfo(10000,2)"
@@ -46,7 +46,7 @@
           </div>
         </div>
       </el-col>
-      <el-col v-for="(o,k) in sortOrder" v-if="o!=10000" :key="k" :span="4" class="card-panel-col">
+      <el-col v-for="(o,k) in sortOrder" v-if="o!=10000" :key="k" :span="4" :xs="6" class="card-panel-col">
         <div
           v-if="!isPopType(o)"
           :class="gid===o?'card-panel card-panel_selected':'card-panel card-panel_selected_not'"
@@ -54,7 +54,7 @@
         >
           <div class="card-panel-description">
             <div class="card-panel-text">
-              {{ gameNames[o] }}：<span :class="getSummaryClass(summary[o], false)"> {{
+              {{ getGameName(o) }}：<span :class="getSummaryClass(summary[o], false)"> {{
                 getSummaryResult(summary[o], false).toFixed(2)
               }}%</span>
             </div>
@@ -416,6 +416,8 @@ export default {
         196: 'GoldMiner',
         200: 'AtlantisTreasure',
         204: 'Space Treasure',
+        208: 'Candy Burst',
+        210: 'Lucky Spirits',
         214: 'PumpkinCash',
         9: 'Teen Patti',
         126: 'Pusoy Wild',
@@ -423,6 +425,9 @@ export default {
         127: 'SaBong',
         128: 'Tongits JP',
         129: 'Live Color',
+        130: 'Remi',
+        131: 'Remi Pro',
+        132: 'MinesMagic',
         1: 'Rummy',
         10000: '汇总'
       },
@@ -431,7 +436,7 @@ export default {
       users: [],
       // 糖果传奇调用addGameNames特殊处理
       defaultOrder: [10000, 15, 22, 28, 29, 2031, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103, 104, 105, 106, 111, 6, 32, 2032,
-        35, 37, 107, 108, 110, 112, 115, 46, 47, 48, 49, 113, 118, 123, 117, 116, 126, 127, 128, 129], // 糖果传奇调用addGameNames特殊处理
+        35, 37, 107, 108, 110, 112, 115, 46, 47, 48, 49, 113, 118, 123, 117, 116, 126, 127, 128, 129, 132], // 糖果传奇调用addGameNames特殊处理
       selectType: 1,
 
       selectOrder: 1,
@@ -566,20 +571,28 @@ export default {
     },
     addGameNames() {
       if (IsMars()) { // 审核
-        this.defaultOrder.push(76, 77, 78, 81, 79, 80, 82, 83, 175, 165,169)
+        this.defaultOrder.push(76, 77, 78, 81, 79, 80, 82, 83, 175, 165, 169)
       } else {
         if (IsProd()) { // 线上
-          this.defaultOrder.push(76, 80, 78, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162, 164, 166, 170, 172, 174, 176, 178, 180, 182, 168, 186, 184, 188, 190, 192, 194, 196, 198, 200, 204)
+          this.defaultOrder.push(76, 80, 78, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162, 164, 166, 170, 172, 174, 176, 178, 180, 182, 168, 186, 184, 188, 190, 192, 194, 196, 198, 200, 202, 204, 208, 210)
         } else {
-          this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162, 164, 172, 188, 202, 198, 192, 180, 166, 170, 176, 182, 174, 186, 178, 194, 184, 168, 196, 190, 200, 204, 206, 212, 214)
+          this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162, 164, 172, 188, 202, 198, 192, 180, 166, 170, 176, 182, 174, 186, 178, 194, 184, 168, 196, 190, 200, 204, 206, 208, 210, 212, 214)
         }
       }
       if (this.showZoogame) {
-        this.defaultOrder.push(124, 125)
+        this.defaultOrder.push(124, 125, 130, 131)
       }
     },
+    getGameName(o) {
+      let name = this.gameNames[o]
+      if (name == '') {
+        console.log('unknown game: ', o)
+        return o
+      }
+      return name
+    },
     isPopType(o) {
-      const popTypes = [1, 9, 8, 14, 15, 21, 22, 29, 23, 28, 31, 34, 2032, 46, 47, 48, 35, 49, 113, 122]
+      const popTypes = [1, 9, 8, 14, 15, 21, 22, 29, 23, 28, 31, 34, 2032, 46, 47, 48, 35, 49, 113, 122, 130, 131]
       for (let i = 0; i < popTypes.length; i++) {
         if (popTypes[i] === o) {
           return false
@@ -597,7 +610,7 @@ export default {
       return false
     },
     isSlots(o) {
-      if (o > 50 && o < 100 || o > 149 && o < 500) {
+      if ((o > 50 && o < 100) || (o > 149 && o < 500)) {
         return true
       } else {
         return false
@@ -1073,6 +1086,10 @@ export default {
     color: #666;
     box-shadow: 4px 4px 40px rgba(0, 0, 0, .05);
     border-color: rgba(0, 0, 0, .05);
+    // 移动端高度改为128px
+    @media screen and (max-width: 992px) {
+      height: 118px;
+    }
 
     .card-panel-description {
       float: left;
@@ -1080,11 +1097,17 @@ export default {
       font-weight: bold;
       margin: 18px 26px 26px 26px;
       margin-left: 0px;
+      @media screen and (max-width: 992px) {
+        margin: 6px;
+      }
 
       .card-panel-text {
         line-height: 18px;
         font-size: 18px;
         margin-bottom: 12px;
+        @media screen and (max-width: 992px) {
+          font-size: 15px;
+        }
       }
 
       .card-panel-normal {
@@ -1106,4 +1129,18 @@ export default {
   }
 }
 
+.search-filter {
+  display: block;
+  width: fit-content;
+  margin: 0 auto;
+  &-item {
+    display: inline-block;
+    width: auto;
+    margin-right: 32px;
+    margin-bottom: 6px;
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
 </style>

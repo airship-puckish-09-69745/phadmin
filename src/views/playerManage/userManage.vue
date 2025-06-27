@@ -1707,20 +1707,30 @@ export default {
     ShowItemList(id) {
       this.tableItemData = []
       let currTime = new Date().getTime()
+      console.log("++++++++++++++++++1333333+++++++++++++++++++++")
+      console.log(this.tableData)
       for (let i = 0; i < this.tableData.length; i++) {
         if (this.tableData[i].item_type === 4) {
           console.log(this.tableData[i])
+        }
+        let str = this.tableData[i].item_name
+        if (this.tableData[i].item_extra.length > 0) {
+          let exitData = JSON.parse(this.tableData[i].item_extra)
+          if (exitData != null) {
+            if (exitData.showName != null) {
+              str = str + '(' + exitData.showName + ')'
+            }
+          }
         }
         if (this.tableData[i].item_type === id && this.tableData[i].status === 1) {
           if (this.tableData[i].item_type !== 2 && this.tableData[i].item_type !== 4) {
             let expTime = this.tableData[i].expire_time * 1000
             if (currTime < expTime) {
-              var dataList = { 'value': this.tableData[i].id, 'label': this.tableData[i].item_name, disabled: false }
+              var dataList = { 'value': this.tableData[i].id, 'label': str, disabled: false }
               this.tableItemData.push(dataList)
             }
-
           } else {
-            var dList = { 'value': this.tableData[i].id, 'label': this.tableData[i].item_name, disabled: false }
+            var dList = { 'value': this.tableData[i].id, 'label': str, disabled: false }
             this.tableItemData.push(dList)
           }
         }
