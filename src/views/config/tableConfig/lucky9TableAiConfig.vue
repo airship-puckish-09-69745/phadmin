@@ -24,7 +24,7 @@
                     :formatter="(row) => getRobotName(row.AiLevel)"
                   />
                   <el-table-column
-                    label="闲家输时帮赢概率"
+                    label="闲家输时帮赢概率（%）"
                     width="200"
                   >
                     <template slot-scope="scope">
@@ -32,7 +32,7 @@
                     </template>
                   </el-table-column>
                   <el-table-column
-                    label="闲家输时帮赢概率"
+                    label="闲家输时帮赢概率（%）"
                     width="200"
                   >
                     <template slot-scope="scope">
@@ -40,7 +40,7 @@
                     </template>
                   </el-table-column>
                   <el-table-column
-                    label="闲家赢时帮输概率"
+                    label="闲家赢时帮输概率（%）"
                     width="200"
                   >
                     <template slot-scope="scope">
@@ -48,7 +48,7 @@
                     </template>
                   </el-table-column>
                   <el-table-column
-                    label="庄家赢时帮输概率"
+                    label="庄家赢时帮输概率（%）"
                     width="200"
                   >
                     <template slot-scope="scope">
@@ -216,7 +216,7 @@
                     width="200"
                   >
                     <template slot-scope="scope">
-                      <el-input-number v-model.number="scope.row.MaxRobotCnt" size="mini"  type="number" :min="0"  :precision="0"></el-input-number>
+                      <el-input-number v-model.number="scope.row.MaxPlayerCnt" size="mini"  type="number" :min="0"  :precision="0"></el-input-number>
                     </template>
                   </el-table-column>
                 </el-table>
@@ -290,7 +290,7 @@
           <el-tab-pane label="机器人要牌">
             <el-row style="padding-top: 5px">
               <fieldset>
-                <legend>要牌概率配置</legend>
+                <legend>要牌概率（%）配置</legend>
                 <el-table
                   :data="item.TakeCardCfg"
                   border
@@ -302,7 +302,7 @@
                     width="200"
                   />
                   <el-table-column
-                    label="要牌概率(%)"
+                    label="要牌概率（%）(%)"
                     width="200"
                   >
                     <template slot-scope="scope">
@@ -393,7 +393,7 @@ function newPlayingJoinCfg(x, y,z,k, v) {
     JoinMinTime: y,
     JoinMaxTime: z,
     MaxRobotRate: k,
-    MaxRobotCnt: v,
+    MaxPlayerCnt: v,
   }
 }
 
@@ -416,14 +416,14 @@ export default {
     return {
    
       item:{
-        "BetTimesCfg": [newBetTimesCfg(1, 50, true), newBetTimesCfg(2, 20, false), newBetTimesCfg(3, 20, false),newBetTimesCfg(4, 10, false)],
-        "BetHabitsCfg": [BetHabitsCfg(0, 20, true), BetHabitsCfg(1, 10, false), BetHabitsCfg(5, 30, false)],
-        'TakeCardCfg': [newTakeCardCfg(0, 100), newTakeCardCfg(1, 100), newTakeCardCfg(2, 100), newTakeCardCfg(3, 100), newTakeCardCfg(4, 95), newTakeCardCfg(5, 50), newTakeCardCfg(6, 5), newTakeCardCfg(7, 0), newTakeCardCfg(8, 0), newTakeCardCfg(9, 0)],
-        'AiLevelCfg':[newAiLevelCfg(5,20, 50, 0, 0),newAiLevelCfg(4,10, 10, 0, 0),newAiLevelCfg(3,0, 0, 0, 0),newAiLevelCfg(2,0, 0, 10, 10),newAiLevelCfg(1,0, 0, 20, 50)],
-        'ZeroJoinCfg':[newZeroJoinCfg(20000, 10, 20, 5, 20),newZeroJoinCfg(50000, 20, 40, 5, 20),newZeroJoinCfg(100000, 40, 60, 5, 20),newZeroJoinCfg(200000, 60, 120, 20, 30)],
-        'RobotCntCfg':[newRobotCntCfg(20000, 1),newRobotCntCfg(50000, 2),newRobotCntCfg(100000, 4),newRobotCntCfg(200000, 6)],
-        'WaitPlayJoinCfg':[newWaitPlayJoinCfg(20000,8,12),newWaitPlayJoinCfg(50000,8,12),newWaitPlayJoinCfg(100000,10,15),newWaitPlayJoinCfg(200000,15,20)],
-        'PlayingJoinCfg':[newPlayingJoinCfg(20000,5,10,1,4),newPlayingJoinCfg(50000,10,20,1,4),newPlayingJoinCfg(100000,20,30,1,4),newPlayingJoinCfg(200000,30,40,1,4)],
+        "betTimesCfg": [newBetTimesCfg(1, 50, true), newBetTimesCfg(2, 20, false), newBetTimesCfg(3, 20, false),newBetTimesCfg(4, 10, false)],
+        "betHabitsCfg": [BetHabitsCfg(0, 20, true), BetHabitsCfg(1, 10, false), BetHabitsCfg(5, 30, false)],
+        'takeCardCfg': [newTakeCardCfg(0, 100), newTakeCardCfg(1, 100), newTakeCardCfg(2, 100), newTakeCardCfg(3, 100), newTakeCardCfg(4, 95), newTakeCardCfg(5, 50), newTakeCardCfg(6, 5), newTakeCardCfg(7, 0), newTakeCardCfg(8, 0), newTakeCardCfg(9, 0)],
+        'aiLevelCfg':[newAiLevelCfg(5,20, 50, 0, 0),newAiLevelCfg(4,10, 10, 0, 0),newAiLevelCfg(3,0, 0, 0, 0),newAiLevelCfg(2,0, 0, 10, 10),newAiLevelCfg(1,0, 0, 20, 50)],
+        'zeroJoinCfg':[newZeroJoinCfg(20000, 10, 20, 5, 20),newZeroJoinCfg(50000, 20, 40, 5, 20),newZeroJoinCfg(100000, 40, 60, 5, 20),newZeroJoinCfg(200000, 60, 120, 20, 30)],
+        'robotCntCfg':[newRobotCntCfg(20000, 1),newRobotCntCfg(50000, 2),newRobotCntCfg(100000, 4),newRobotCntCfg(200000, 6)],
+        'waitPlayJoinCfg':[newWaitPlayJoinCfg(20000,8,12),newWaitPlayJoinCfg(50000,8,12),newWaitPlayJoinCfg(100000,10,15),newWaitPlayJoinCfg(200000,15,20)],
+        'playingJoinCfg':[newPlayingJoinCfg(20000,5,10,1,4),newPlayingJoinCfg(50000,10,20,1,4),newPlayingJoinCfg(100000,20,30,1,4),newPlayingJoinCfg(200000,30,40,1,4)],
         
       },
       gameId: 23,
