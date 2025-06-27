@@ -5335,7 +5335,7 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
           }
         }
       }
-      let cards = [0x1c, 0x1b, 0x1d, 0x11, 0x12, 0x13]
+      let cards = [0x2c, 0x2b, 0x2d, 0x21, 0x22, 0x23]
       return cards[trucoRoundMaxCardIndex]
     },
     trucoMaxCardUrl(viradaCard) {
