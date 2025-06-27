@@ -1129,21 +1129,6 @@ export default {
       this.getPrizeTemplateCfg()
     }
     this.getGuideCfgs()
-    if (this.env === 'pro') {
-      // 正式环境暂时只开放以下选项
-      // 返水金
-      this.rebateScenesCfgs = [
-        { 'value': 5, 'label': '没有任何限制的返水金' }
-        // { 'value': 6, 'label': '有限制倍数的返水金（10倍）' }
-      ]
-      // 投注金
-      this.betScenesCfgs = [
-        { 'value': 1, 'label': '任意游戏投注' }
-        // { 'value': 2, 'label': '仅限Poker类游戏投注' },
-        // { 'value': 3, 'label': '仅限Slots类游戏投注' },
-        // { 'value': 4, 'label': '仅限Tongits游戏投注' }
-      ]
-    }
     if (!IsMars()) {
       this.getMatchProps()
     }
@@ -1168,7 +1153,6 @@ export default {
       } else {
         // 新增，判断当前时间是否大于 2025-07-01
         const now = new Date().getTime()
-        console.log('now: ', now)
         if (this.env === 'pro' && now > 1751299200000) {
           this.getUpdatedSceneSelection()
         } else {
@@ -1206,27 +1190,16 @@ export default {
       }
     },
     getBeforeUpdatedSceneSelection() {
-      if (this.env === 'pro') {
-        // 投注金
-        this.betScenesCfgs = [
-          { 'value': 1, 'label': '任意游戏投注' },
-          { 'value': 15, 'label': '仅限GZ任意游戏投注金【Tongits免费赛】' }
-        ]
-        // 返水金
-        this.rebateScenesCfgs = [
-          { 'value': 5, 'label': '没有任何限制的返水金' },
-          { 'value': 16, 'label': '没有任何限制的返水金【Tongits免费赛】' }
-        ]
-      } else {
-        this.betScenesCfgs = [{ 'value': 1, 'label': '任意游戏投注' },
-          // { 'value': 2, 'label': '仅限Poker类游戏投注' },
-          // { 'value': 3, 'label': '仅限Slots类游戏投注' },
-          // { 'value': 4, 'label': '仅限Tongits游戏投注' },
-          { 'value': 15, 'label': '仅限GZ任意游戏投注金【Tongits免费赛】' }]
-        this.rebateScenesCfgs = [{ 'value': 5, 'label': '没有任何限制的返水金' },
-          { 'value': 6, 'label': '有限制倍数的返水金（10倍）' },
-          { 'value': 16, 'label': '没有任何限制的返水金【Tongits免费赛】' }]
-      }
+      // 投注金
+      this.betScenesCfgs = [
+        { 'value': 1, 'label': '任意游戏投注' },
+        { 'value': 15, 'label': '仅限GZ任意游戏投注金【Tongits免费赛】' }
+      ]
+      // 返水金
+      this.rebateScenesCfgs = [
+        { 'value': 5, 'label': '没有任何限制的返水金' },
+        { 'value': 16, 'label': '没有任何限制的返水金【Tongits免费赛】' }
+      ]
     },
     resetSearch() {
       this.form.gameId = -1
@@ -2368,13 +2341,19 @@ export default {
         }
 
         if (this.editForm.prizeExtra.awardType == 1) {
+          // 分成免费赛和付费赛
           // 目前动态奖池只有真金和返水金
           if (this.editForm.prizeExtra.rewardType == 2) {
             this.editForm.prizeExtra.rewardType = 3
           }
           // 动态奖池奖励里诶行如果是返水金，填充返水金类型
           if (this.editForm.prizeExtra.rewardType == 3) {
-            this.editForm.prizeExtra.sceneId = 5 // 没有任何限制的返水金
+            // 分成免费赛和付费赛
+            if (this.editForm.data.signUpType == 1) { // 免费赛使用免费赛专属返水金
+              this.editForm.prizeExtra.sceneId = 16
+            } else {// 付费赛使用付费赛专属返水金
+              this.editForm.prizeExtra.sceneId = 5 // 没有任何限制的返水金
+            }
           }
         }
       }
