@@ -264,7 +264,7 @@
           sortable="custom"
           width="150">
           <template slot-scope="scope">
-            <span v-if="scope.row.status===2 && scope.row.lastLogin < timeYesterday" style="color:red">
+            <span v-if="scope.row.status===2 && scope.row.lastLogin * 1000 < timeYesterday" style="color:red">
             {{ formatTime(scope.row.lastLogin) }}
             </span>
             <span v-else>
