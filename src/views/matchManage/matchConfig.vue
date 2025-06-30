@@ -663,7 +663,7 @@
             <el-table-column
               prop="rewardItems"
               label="奖励"
-              width="400"
+              width="450"
             >
               <template slot-scope="scope">
                 <ul style="list-style: none;padding-inline-start: 0;">
@@ -677,7 +677,7 @@
                         :value="item.value"
                       />
                     </el-select>
-                    <el-select v-if="gItem.getType === 2" v-model="gItem.sceneId" placeholder="请选择投注金" size="mini" style="width:150px">
+                    <el-select v-if="gItem.getType === 2" v-model="gItem.sceneId" placeholder="请选择投注金" size="mini" style="width:200px">
                       <el-option
                         v-for="scene in betScenesCfgs"
                         :key="scene.value"
@@ -685,7 +685,7 @@
                         :value="scene.value"
                       />
                     </el-select>
-                    <el-select v-if="gItem.getType === 3" v-model="gItem.sceneId" placeholder="请选择返水金" size="mini" style="width:150px">
+                    <el-select v-if="gItem.getType === 3" v-model="gItem.sceneId" placeholder="请选择返水金" size="mini" style="width:200px">
                       <el-option
                         v-for="scene in rebateScenesCfgs"
                         :key="scene.value"
