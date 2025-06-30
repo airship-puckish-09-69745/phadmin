@@ -106,11 +106,23 @@
             </template>
           </el-table-column>
           <el-table-column
+            label="输异常"
+            width="100"
+          >
+            <template slot-scope="scope">
+              <span v-if="scope.row.loserCount > 0" style="color:red">
+                {{ scope.row.loserCount}}
+              </span>
+            </template>
+          </el-table-column>
+          <el-table-column
             label="冻结中"
             width="100"
           >
             <template slot-scope="scope">
+               <span v-if="scope.row.coldCount > 0">
               {{ scope.row.coldCount }}
+               </span>
             </template>
           </el-table-column>
         </el-table>
@@ -256,7 +268,12 @@
           sortable="custom"
           width="150">
           <template slot-scope="scope">
-            {{ formatTime(scope.row.lastLogin) }}
+            <span v-if="(scope.row.status===2 || scope.row.currentTid ===0) && scope.row.lastLogin * 1000 < timeYesterday" style="color:red">
+              {{ formatTime(scope.row.lastLogin) }}
+            </span>
+            <span v-else>
+              {{ formatTime(scope.row.lastLogin) }}
+            </span>
           </template>
         </el-table-column>
         <el-table-column
@@ -428,7 +445,8 @@ export default {
       },
       statItems: [],
       txt: '',
-      subKey: 'pusoy_ai_list_cfg'
+      subKey: 'pusoy_ai_list_cfg',
+      timeYesterday: new Date().getTime() - 86400 * 1000
     }
   },
 
@@ -573,7 +591,7 @@ export default {
           for (let i = 0; i < objs.length; i++) {
             const item = objs[i]
             if (statMap[item.allowTableMoney] == null) {
-              statMap[item.allowTableMoney] = { tableMoney: item.allowTableMoney, initMoney: 0, money: 0, gameCount: 0, workCount: 0, coldCount: 0 }
+              statMap[item.allowTableMoney] = { tableMoney: item.allowTableMoney, initMoney: 0, money: 0, gameCount: 0, workCount: 0, coldCount: 0, loserCount:0 }
             }
             if (item.status == 0) {
               statMap[item.allowTableMoney].coldCount++
@@ -585,6 +603,10 @@ export default {
               } else if (item.status == 2) {
                 statMap[item.allowTableMoney].gameCount++
               }
+            }
+
+            if (item.money / item.initMoney < 0.2) {
+              statMap[item.allowTableMoney].loserCount++
             }
           }
           this.statItems=[]

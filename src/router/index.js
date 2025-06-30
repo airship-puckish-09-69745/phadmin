@@ -1356,7 +1356,12 @@ export const asyncRoutes = [
             redirect: 'noRedirect',
             meta: { title: '审核环境', noCache: true },
             children: [
-
+              {
+                path: 'bountyraidmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/bountyraidmars_slots_cfg'),
+                name: 'bountyraidmars_slots_cfg',
+                meta: { title: 'Bounty Raid(审)' }
+              },
               {
                 path: 'candypartyallline_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/candypartyallline_slots_cfg'),
@@ -1368,6 +1373,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/candycandymars_slots_cfg'),
                 name: 'candycandymars_slots_cfg',
                 meta: { title: 'Candy Crazy(审)' }
+              },
+              {
+                path: 'candyburstmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/candyburstmars_slots_cfg'),
+                name: 'candyburstmars_slots_cfg',
+                meta: { title: 'Candy Burst(审)' }
               },
               {
                 path: 'supergemmars_slots_cfg',
@@ -1590,13 +1601,13 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/spacetreasuremars_slots_cfg'),
                 name: 'spacetreasuremars_slots_cfg',
                 meta: { title: 'SpaceTreasure(审)' }
+              },
+              {
+                path: 'treasurebowlmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/treasurebowlmars_slots_cfg'),
+                name: 'treasurebowlmars_slots_cfg',
+                meta: { title: 'TreasureBowl(审)' }
               }
-              // {
-              //   path: 'treasurebowlmars_slots_cfg',
-              //   component: () => import('@/views/config/tableConfig/slots/treasurebowlmars_slots_cfg'),
-              //   name: 'treasurebowlmars_slots_cfg',
-              //   meta: { title: 'TreasureBowl(审)' }
-              // }
             ]
           },
           {
@@ -2863,6 +2874,12 @@ export const asyncRoutes = [
         meta: { title: 'Slots-老虎机(审）', noCache: true },
         children: [
           {
+            path: 'bountyraidmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'bountyraidmars_slots_log',
+            meta: { title: 'BountyRaid(审)', gid: 193 }
+          },
+          {
             path: 'candypartyallline_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'candypartyallline_slots_log',
@@ -2879,6 +2896,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'candycandymars_slots_log',
             meta: { title: 'CandyCraze(审)', gid: 79 }
+          },
+          {
+            path: 'candyburstmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'candyburstmars_slots_log',
+            meta: { title: 'C andyBurst(审)', gid: 209 }
           },
           {
             path: 'millionairemars_slots_log',
