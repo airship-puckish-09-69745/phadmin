@@ -2321,26 +2321,13 @@ export default {
         }
 
         if (this.editForm.prizeExtra.awardType == 1) {
-          // 分成免费赛和付费赛
           // 目前动态奖池只有真金和返水金
           if (this.editForm.prizeExtra.rewardType == 2) {
             this.editForm.prizeExtra.rewardType = 3
           }
           // 动态奖池奖励里诶行如果是返水金，填充返水金类型
-          if (this.editForm.data.id == 0) {
-            if (this.editForm.prizeExtra.rewardType == 3) {
-              // TODO 上线时需要去掉这个环境变量判断
-              if (this.env === 'pro') {
-                this.editForm.prizeExtra.sceneId = 5 // 没有任何限制的返水金
-              } else {
-                // 分成免费赛和付费赛
-                if (this.editForm.data.signUpType == 1) { // 免费赛使用免费赛专属返水金
-                  this.editForm.prizeExtra.sceneId = 16
-                } else { // 付费赛使用付费赛专属返水金
-                  this.editForm.prizeExtra.sceneId = 5 // 没有任何限制的返水金
-                }
-              }
-            }
+          if (this.editForm.prizeExtra.rewardType == 3) {
+            this.editForm.prizeExtra.sceneId = 5 // 没有任何限制的返水金
           }
         }
       }
