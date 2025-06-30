@@ -323,7 +323,7 @@
             >冻结
             </el-button>
 
-            <RobotRecycleBtn v-if="scope.row.status==0" :uid="scope.row.uid" :gid="22" :current-money="scope.row.money * 1000" @success="refresh" />
+            <RobotRecycleBtn v-if="scope.row.status==0" :uid="scope.row.uid" :gid="gid" :current-money="scope.row.money * 1000" @success="refresh" />
           </template>
         </el-table-column>
       </el-table>
@@ -433,6 +433,7 @@ export default {
   components: { Compare, Publish, RobotRecycleBtn },
   data() {
     return {
+      gid: 22, // 机器人回收需要传gid
       item: {
         TableMoneyList: []
       }, // 奖励
@@ -466,6 +467,7 @@ export default {
     }
   },
   created() {
+    this.gid = this.$route.meta.gid
     this.subKey = this.$route.meta.cfgSubKey
     this.cgiPath = this.$route.meta.cgiPath
     this.getData()

@@ -248,7 +248,7 @@ export const asyncRoutes = [
                     path: 'tongitsAIList',
                     component: () => import('@/views/config/tableConfig/tongitsAIListConfig'),
                     name: 'tongitsAIList',
-                    meta: { title: 'AI-List ◐', cfgSubKey: 'tongits_ai_list_cfg', cgiPath: 'tongitsrobotlist' }
+                    meta: { title: 'AI-List ◐', cfgSubKey: 'tongits_ai_list_cfg', gid: 22, cgiPath: 'tongitsrobotlist' }
                   }
                 ]
               },
@@ -274,7 +274,7 @@ export const asyncRoutes = [
                     path: 'tongitsJokerAIList',
                     component: () => import('@/views/config/tableConfig/tongitsAIListConfig'),
                     name: 'tongitsJokerAIList',
-                    meta: { title: 'AI-List ◐', cfgSubKey: 'tongitsJoker_ai_list_cfg', cgiPath: 'tongitsjokerrobotlist' }
+                    meta: { title: 'AI-List ◐', cfgSubKey: 'tongitsJoker_ai_list_cfg', gid: 28, cgiPath: 'tongitsjokerrobotlist' }
                   }
                 ]
               },
@@ -308,7 +308,7 @@ export const asyncRoutes = [
                     path: 'tongitsQuickAIList',
                     component: () => import('@/views/config/tableConfig/tongitsAIListConfig'),
                     name: 'tongitsQuickAIList',
-                    meta: { title: 'AI-List ◐', cfgSubKey: 'tongitsQuick_ai_list_cfg', cgiPath: 'tongitsquickrobotlist'}
+                    meta: { title: 'AI-List ◐', cfgSubKey: 'tongitsQuick_ai_list_cfg', gid: 29, cgiPath: 'tongitsquickrobotlist'}
                   }
                 ]
                 // name: 'tongitsTableQuick',
