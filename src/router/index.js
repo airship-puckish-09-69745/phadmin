@@ -1683,6 +1683,12 @@ export const asyncRoutes = [
         component: () => import('@/views/config/tableConfig/gameAuditConfig.vue'),
         name: 'gameAuditConfig',
         meta: { title: 'GP审核配置 ◐' }
+      },
+      {
+        path: 'robotManage',
+        component: () => import('@/views/config/tableConfig/robotManage/index.vue'),
+        name: 'robotManage',
+        meta: { title: '机器人管理' }
       }
     ]
   },
