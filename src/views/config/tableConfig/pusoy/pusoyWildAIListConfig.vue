@@ -315,7 +315,7 @@
             >冻结
             </el-button>
 
-            <RobotRecycleBtn v-if="scope.row.status==0" :row="scope.row" :gid="126" @success="refresh" />
+            <RobotRecycleBtn :row="scope.row" :gid="126" @success="refresh" />
           </template>
         </el-table-column>
       </el-table>
