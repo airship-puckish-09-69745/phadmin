@@ -40,15 +40,12 @@ export default {
             currentMoney: this.currentMoney
           }
         }).then(response => {
-          // 情况input的value
-          this.uploadedFile = null
           if (response.RetCode === 0) {
             // console.log(response.Data)
             this.$message({
               message: '回收成功',
               type: 'success'
             })
-            this.handleClose()
             this.$emit('success')
           }
         })

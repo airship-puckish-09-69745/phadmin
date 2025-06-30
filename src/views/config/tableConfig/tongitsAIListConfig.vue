@@ -244,7 +244,7 @@
             >冻结
             </el-button>
 
-            <RobotRecycleBtn v-if="scope.row.status==0" :uid="scope.row.uid" :gid="22" :current-money="scope.row.money * 1000" />
+            <RobotRecycleBtn v-if="scope.row.status==0" :uid="scope.row.uid" :gid="22" :current-money="scope.row.money * 1000" @success="refresh" />
           </template>
         </el-table-column>
       </el-table>
