@@ -2257,9 +2257,6 @@ export default {
       } else if ((this.editForm.data.repeatType == 0) && ((Math.floor(this.editForm.loopDetail.onceTime[1] / 1000) - Math.floor(this.editForm.loopDetail.onceTime[0] / 1000)) < 600)) {
         this.errmsg('比赛开始结束间隔要大于10分钟！')
         return false
-      } else if ((this.editForm.data.repeatType != 0) && ((Math.floor(this.editForm.loopDetail.loopEndDate / 1000) - Math.floor(this.editForm.loopDetail.loopStartDate / 1000)) < 86400)) {
-        // this.errmsg('循环赛开始结束时间不能为同一天！')  //循环赛去掉同一天检测
-        // return false
       } else if (this.editForm.data.signUpNum < 0) {
         this.errmsg('报名费数值不能小于零')
         return false
@@ -2297,38 +2294,39 @@ export default {
           this.errmsg('sng比赛必须开赛后消失')
           return false
         }
-        // 验证固定奖励的配置项
-        this.editForm.prizeExtra.rewardType = parseInt(this.editForm.prizeExtra.rewardType)
-        if (this.editForm.prizeExtra.awardType === 0) {
-          this.editForm.prizeExtra.rewardType = 1
-          this.editForm.prizeExtra.sceneId = 0
-          if (!await this.checkRewardCfg(this.editForm.rankRewards)) {
-            return false
-          }
-        }
-        if (this.editForm.prizeExtra.awardType === 1) {
-          if (!await this.checkDynamicRewardCfg(this.editForm.rankRewards)) {
-            return false
-          }
-        }
-        if (this.editForm.prizeExtra.awardType == 1 && this.editForm.prizeExtra.prizeTemplateId == 0) {
-          this.errmsg('当前是动态奖池，请选择模板')
-          return false
-        }
-        if ((this.editForm.prizeExtra.awardType == 1) && (this.editForm.prizeExtra.prizeRate < 1 || this.editForm.prizeExtra.prizeRate >= 100)) {
-          this.errmsg('当前是动态奖池手续费率范围是[1-100)')
-          return false
-        }
+      }
 
-        if (this.editForm.prizeExtra.awardType == 1) {
-          // 目前动态奖池只有真金和返水金
-          if (this.editForm.prizeExtra.rewardType == 2) {
-            this.editForm.prizeExtra.rewardType = 3
-          }
-          // 动态奖池奖励里诶行如果是返水金，填充返水金类型
-          if (this.editForm.prizeExtra.rewardType == 3) {
-            this.editForm.prizeExtra.sceneId = 5 // 没有任何限制的返水金
-          }
+      // 验证固定奖励的配置项
+      this.editForm.prizeExtra.rewardType = parseInt(this.editForm.prizeExtra.rewardType)
+      if (this.editForm.prizeExtra.awardType === 0) {
+        this.editForm.prizeExtra.rewardType = 1
+        this.editForm.prizeExtra.sceneId = 0
+        if (!await this.checkRewardCfg(this.editForm.rankRewards)) {
+          return false
+        }
+      }
+      if (this.editForm.prizeExtra.awardType === 1) {
+        if (!await this.checkDynamicRewardCfg(this.editForm.rankRewards)) {
+          return false
+        }
+      }
+      if (this.editForm.prizeExtra.awardType == 1 && this.editForm.prizeExtra.prizeTemplateId == 0) {
+        this.errmsg('当前是动态奖池，请选择模板')
+        return false
+      }
+      if ((this.editForm.prizeExtra.awardType == 1) && (this.editForm.prizeExtra.prizeRate < 1 || this.editForm.prizeExtra.prizeRate >= 100)) {
+        this.errmsg('当前是动态奖池手续费率范围是[1-100)')
+        return false
+      }
+
+      if (this.editForm.prizeExtra.awardType === 1) {
+        // 目前动态奖池只有真金和返水金
+        if (this.editForm.prizeExtra.rewardType === 2) {
+          this.editForm.prizeExtra.rewardType = 3
+        }
+        // 动态奖池奖励里诶行如果是返水金，填充返水金类型
+        if (this.editForm.prizeExtra.rewardType === 3) {
+          this.editForm.prizeExtra.sceneId = 5 // 没有任何限制的返水金
         }
       }
 
