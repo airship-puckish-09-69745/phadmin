@@ -1146,60 +1146,41 @@ export default {
       if (this.editForm.data.id > 0) {
         // 判断修改时间 > 2025-07-01
         if (this.editForm.data.update_time > 1751299200) {
-          this.getUpdatedSceneSelection()
+          this.getExistedSelections()
         } else {
-          this.getBeforeUpdatedSceneSelection()
+          this.getAfterUpdatedSceneSelection()
         }
       } else {
-        // 新增，判断当前时间是否大于 2025-07-01
-        const now = new Date().getTime()
-        if (this.env === 'pro' && now > 1751299200000) {
-          this.getUpdatedSceneSelection()
-        } else {
-          this.getBeforeUpdatedSceneSelection()
-        }
+        this.getAfterUpdatedSceneSelection()
       }
     },
-    getUpdatedSceneSelection() {
+    getExistedSelections() {
+      this.betScenesCfgs = [{ 'value': 1, 'label': '任意游戏投注' },
+        { 'value': 15, 'label': '仅限GZ任意游戏投注金【Tongits免费赛】' }]
+      this.rebateScenesCfgs = [{ 'value': 5, 'label': '没有任何限制的返水金' },
+        { 'value': 16, 'label': '没有任何限制的返水金【Tongits免费赛】' }]
+      }
+    },
+    getAfterUpdatedSceneSelection() {
       if (this.editForm.data.signUpType === 1) { // 免费报名
-        this.betScenesCfgs = [{ 'value': 15, 'label': '仅限GZ任意游戏投注金【Tongits免费赛】' }]
-        this.rebateScenesCfgs = [{ 'value': 16, 'label': '没有任何限制的返水金【Tongits免费赛】' }]
-      } else {
-        // 非免费报名
-        if (this.env === 'pro') {
-          // 投注金
-          this.betScenesCfgs = [
-            { 'value': 1, 'label': '任意游戏投注' }
-            // { 'value': 2, 'label': '仅限Poker类游戏投注' },
-            // { 'value': 3, 'label': '仅限Slots类游戏投注' },
-            // { 'value': 4, 'label': '仅限Tongits游戏投注' }
-          ]
-          // 返水金
-          this.rebateScenesCfgs = [
-            { 'value': 5, 'label': '没有任何限制的返水金' }
-            // { 'value': 6, 'label': '有限制倍数的返水金（10倍）' }
-          ]
-        } else {
-          this.betScenesCfgs = [{ 'value': 1, 'label': '任意游戏投注' },
-            { 'value': 2, 'label': '仅限Poker类游戏投注' },
-            { 'value': 3, 'label': '仅限Slots类游戏投注' },
-            { 'value': 4, 'label': '仅限Tongits游戏投注' }]
-          this.rebateScenesCfgs = [{ 'value': 5, 'label': '没有任何限制的返水金' },
-            { 'value': 6, 'label': '有限制倍数的返水金（10倍）' }]
-        }
+        // 投注金
+        this.betScenesCfgs = [
+          { 'value': 15, 'label': '仅限GZ任意游戏投注金【Tongits免费赛】' }
+        ]
+        // 返水金
+        this.rebateScenesCfgs = [
+          { 'value': 16, 'label': '没有任何限制的返水金【Tongits免费赛】' }
+        ]
+      } else { // 付费报名
+        // 投注金
+        this.betScenesCfgs = [
+          { 'value': 1, 'label': '任意游戏投注' }
+        ]
+        // 返水金
+        this.rebateScenesCfgs = [
+          { 'value': 5, 'label': '没有任何限制的返水金' }
+        ]
       }
-    },
-    getBeforeUpdatedSceneSelection() {
-      // 投注金
-      this.betScenesCfgs = [
-        { 'value': 1, 'label': '任意游戏投注' },
-        { 'value': 15, 'label': '仅限GZ任意游戏投注金【Tongits免费赛】' }
-      ]
-      // 返水金
-      this.rebateScenesCfgs = [
-        { 'value': 5, 'label': '没有任何限制的返水金' },
-        { 'value': 16, 'label': '没有任何限制的返水金【Tongits免费赛】' }
-      ]
     },
     resetSearch() {
       this.form.gameId = -1
@@ -2393,8 +2374,6 @@ export default {
           return false
         }
       }
-      console.log('rewards', rewards)
-      return false
       // 遍历配置项
       for (let index = 0; index < rewards.length; index++) {
         const element = rewards[index]
