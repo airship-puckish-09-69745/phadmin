@@ -3,6 +3,24 @@
     <el-row :gutter="10" style="margin-top: 30px">
       <el-col :span="12" :offset="3">
         <el-form ref="frm2" :model="cfg" label-width="250px">
+
+          <el-form-item label="普通模式中奖倍数">
+            <el-input v-model="cfg.MultiStr" placeholder="请输入内容,如1,2,4,8,..."> <template slot="append">10个值用 , 连接</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="普通模式中奖倍数权重">
+            <el-input v-model="cfg.MultiStrWeight" placeholder="请输入内容,如10,10,10,10,10"> <template slot="append">10个值用 , 连接</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="免费模式中奖倍数">
+            <el-input v-model="cfg.FreeMultiStr" placeholder="请输入内容,如8,16,32,..."> <template slot="append">7个值用 , 连接</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="免费模式中奖倍数权重">
+            <el-input v-model="cfg.FreeMultiStrWeight" placeholder="请输入内容,如10,10,10,10,10"> <template slot="append">7个值用 , 连接</template> </el-input>
+          </el-form-item>
+
+
           <el-form-item label="免费模式购买倍数" prop="BuyFreeOdds" :rules="dataRule(true,{type:'n'})">
             <el-input v-model.number="cfg.BuyFreeOdds" :required="true" />
           </el-form-item>

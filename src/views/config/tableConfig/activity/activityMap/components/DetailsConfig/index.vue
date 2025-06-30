@@ -102,8 +102,9 @@
           </template>
         </el-table-column>
         <!-- 操作 -->
-        <el-table-column label="操作" width="160">
+        <el-table-column label="操作" width="220">
           <template #default="scope">
+            <el-button size="mini" type="success" @click="handleCopy(scope.row)">复制</el-button>
             <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
             <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
           </template>
@@ -274,6 +275,10 @@ export default {
     handlePaginationCurrentChange(page) {
       this.pagination.currentPage = page
       this.getList()
+    },
+    handleCopy(row) {
+      // ID=0会在父组件重新生成
+      this.handleSave({ ...row, ID: 0 })
     }
   }
 }

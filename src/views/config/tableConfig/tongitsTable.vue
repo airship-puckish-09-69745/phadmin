@@ -113,6 +113,21 @@
           </template>
         </el-table-column>
         <el-table-column
+          label="状态"
+          width="150"
+        >
+
+          <template v-slot:header>
+            <el-select v-model="clientDB.FilterValueMap['Status']" size="mini" @change="handleFilter">
+              <el-option label="状态" :value="0" />
+              <el-option v-for="(o,key) in clientDB.FilterMap['Status']" :key="key" :label="o" :value="key" />
+            </el-select>
+          </template>
+          <template slot-scope="scope">
+             {{ showStatus(scope.row.Status) }}
+          </template>
+        </el-table-column>
+        <el-table-column
           prop="LastModify"
           label="最近修改"
           width="150"
@@ -352,85 +367,6 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <!--
-        <el-row>
-          <el-col :span="11">
-            <el-form-item
-              label="默认胜率："
-              :required="true"
-              prop="item.DefaultWinRate"
-              :rules="dataRule(true,{type:'n',range:'0'})"
-            >
-              <el-input v-model.number="edit.item.DefaultWinRate" placeholder="默认胜率" style="width:200px;">
-                <template slot="append">%</template>
-              </el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="11">
-            <el-form-item
-              label="在玩人数倍数："
-              :required="true"
-              prop="item.PlayingMul"
-              :rules="dataRule(true,{type:'n',range:'1'})"
-            >
-              <el-input v-model.number="edit.item.PlayingMul" placeholder="在玩人数倍数" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        -->
-        <!--
-        <el-row>
-          <el-col :span="11">
-            <el-form-item
-              label="在玩人数最小随机数："
-              :required="true"
-              prop="item.PlayingRandMin"
-              :rules="dataRule(true,{type:'n',range:'1'})"
-            >
-              <el-input v-model.number="edit.item.PlayingRandMin" placeholder="在玩人数最小随机数" />
-            </el-form-item>
-          </el-col>
-
-          <el-col :span="11">
-            <el-form-item
-              label="在玩人数最大随机数："
-              :required="true"
-              prop="item.PlayingRandMax"
-              :rules="dataRule(true,{type:'n',range:'1'})"
-            >
-              <el-input v-model.number="edit.item.PlayingRandMax" placeholder="在玩人数最大随机数" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        -->
-        <!--
-        <el-row>
-          <el-col :span="11">
-            <el-form-item
-              label="幸运级别最大值(0不限制)："
-              :required="true"
-              prop="item.LuckyLevelLimitMax"
-              :rules="dataRule(true,{type:'n',range:'0'})"
-            >
-              <el-input v-model.number="edit.item.LuckyLevelLimitMax" placeholder="0即不限制" />
-            </el-form-item>
-          </el-col>
-
-          <el-col :span="11">
-            <el-form-item
-              label="幸运级别限制生效最低资产(0不限制)："
-              :required="true"
-              prop="item.LuckyLevelLimitMoney"
-              :rules="dataRule(true,{type:'n',range:'0'})"
-            >
-              <el-input v-model.number="edit.item.LuckyLevelLimitMoney" placeholder="0即不限制" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        -->
-        <!-- <tongits-robot-common v-model="edit" /> -->
-        <!-- <tongits-robot-control v-model="edit" /> -->
-        <!-- <tongits-robot-build-card v-model="edit"></tongits-robot-build-card> -->
 
         <el-form-item>
           <el-row>
@@ -458,7 +394,8 @@ import tongitsRobotControl from './tongits/robotControl'
 import tongitsRobotBuildCard from './tongits/robotBuildCard'
 
 const filterMap = {
-  RoomLevelNew: {11:'普通房', 100: '好友房'}
+  RoomLevelNew: { 11: '普通房', 100: '好友房' },
+  Status: { 1: '未上', 2: '上架中', 3: '废弃', 6: '下架' }
 }
 function NewRobotConfig() {
   return {
@@ -629,6 +566,17 @@ export default {
       }
       return '普通房'
     },
+    showStatus(n) {
+      if (n === 1) {
+        return '未上'
+      } else if (n === 2) {
+        return '已上架'
+      } else if (n === 3) {
+        return '废弃'
+      }else{
+        return '下架'
+      }
+    },
     formatNumber(n) {
       return n.toLocaleString()
     },
@@ -687,14 +635,14 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
-          for(let i=0;i<objs.length;i++){
-            if(objs[i].RoomLevel == 0){
+          for (let i = 0; i < objs.length; i++) {
+            if (objs[i].RoomLevel == 0) {
               objs[i]['RoomLevelNew'] = 11
-            }else{
+            } else {
               objs[i]['RoomLevelNew'] = objs[i].RoomLevel
             }
           }
-          this.clientDB = new ClientTableData(this.libMoney.TransForShow(objs), 10, filterMap, 'ID', -1)
+          this.clientDB = new ClientTableData(this.libMoney.TransForShow(objs), 10, filterMap, 'TableMoney', 1)
           this.handleCurrentChange(1)
         }
       })

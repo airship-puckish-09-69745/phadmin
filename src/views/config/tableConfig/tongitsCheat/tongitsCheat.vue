@@ -538,7 +538,8 @@ export default {
       this.form.Data = this.encodeData()
       if (this.oldCheatMin !== this.CheatCfg.MaybeMin) {
         // 更新玩家疑似身份
-        this.updateCheatMin(this.CheatCfg.MaybeMin)
+        // this.updateCheatMin(this.CheatCfg.MaybeMin)
+        Message.error('修改疑似度最小值。请求程序脚本操作')
       }
       // 设置修改后数据
       this.$refs.compare.SetNewVal(this.form.Data)

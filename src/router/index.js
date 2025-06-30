@@ -248,7 +248,7 @@ export const asyncRoutes = [
                     path: 'tongitsAIList',
                     component: () => import('@/views/config/tableConfig/tongitsAIListConfig'),
                     name: 'tongitsAIList',
-                    meta: { title: 'AI-List ◐', cfgSubKey: 'tongits_ai_list_cfg', cgiPath: 'tongitsrobotlist' }
+                    meta: { title: 'AI-List ◐', cfgSubKey: 'tongits_ai_list_cfg', gid: 22, cgiPath: 'tongitsrobotlist' }
                   }
                 ]
               },
@@ -274,7 +274,7 @@ export const asyncRoutes = [
                     path: 'tongitsJokerAIList',
                     component: () => import('@/views/config/tableConfig/tongitsAIListConfig'),
                     name: 'tongitsJokerAIList',
-                    meta: { title: 'AI-List ◐', cfgSubKey: 'tongitsJoker_ai_list_cfg', cgiPath: 'tongitsjokerrobotlist' }
+                    meta: { title: 'AI-List ◐', cfgSubKey: 'tongitsJoker_ai_list_cfg', gid: 28, cgiPath: 'tongitsjokerrobotlist' }
                   }
                 ]
               },
@@ -308,7 +308,7 @@ export const asyncRoutes = [
                     path: 'tongitsQuickAIList',
                     component: () => import('@/views/config/tableConfig/tongitsAIListConfig'),
                     name: 'tongitsQuickAIList',
-                    meta: { title: 'AI-List ◐', cfgSubKey: 'tongitsQuick_ai_list_cfg', cgiPath: 'tongitsquickrobotlist'}
+                    meta: { title: 'AI-List ◐', cfgSubKey: 'tongitsQuick_ai_list_cfg', gid: 29, cgiPath: 'tongitsquickrobotlist'}
                   }
                 ]
                 // name: 'tongitsTableQuick',
@@ -905,6 +905,28 @@ export const asyncRoutes = [
                 ]
               }
             ]
+          },
+          {
+            path: '/buracoVersion',
+            component: () => import('@/views/empty'),
+            redirect: 'noRedirect',
+            meta: { title: 'Buraco ◐' },
+            children: [
+              {
+                path: 'BuracoTable',
+                component: () => import('@/views/empty'),
+                redirect: 'noRedirect',
+                meta: { title: 'Buraco配桌 ◐', noCache: true },
+                children: [
+                  {
+                    path: 'buracoTable',
+                    component: () => import('@/views/config/tableConfig/buracoTable'),
+                    name: 'buraTable',
+                    meta: { title: 'Buraco配桌 ◐' }
+				          }
+                ]
+              }
+            ]
           }
         ]
       },
@@ -1356,7 +1378,12 @@ export const asyncRoutes = [
             redirect: 'noRedirect',
             meta: { title: '审核环境', noCache: true },
             children: [
-
+              {
+                path: 'bountyraidmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/bountyraidmars_slots_cfg'),
+                name: 'bountyraidmars_slots_cfg',
+                meta: { title: 'Bounty Raid(审)' }
+              },
               {
                 path: 'candypartyallline_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/candypartyallline_slots_cfg'),
@@ -1368,6 +1395,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/candycandymars_slots_cfg'),
                 name: 'candycandymars_slots_cfg',
                 meta: { title: 'Candy Crazy(审)' }
+              },
+              {
+                path: 'candyburstmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/candyburstmars_slots_cfg'),
+                name: 'candyburstmars_slots_cfg',
+                meta: { title: 'Candy Burst(审)' }
               },
               {
                 path: 'supergemmars_slots_cfg',
@@ -1590,13 +1623,13 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/spacetreasuremars_slots_cfg'),
                 name: 'spacetreasuremars_slots_cfg',
                 meta: { title: 'SpaceTreasure(审)' }
+              },
+              {
+                path: 'treasurebowlmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/treasurebowlmars_slots_cfg'),
+                name: 'treasurebowlmars_slots_cfg',
+                meta: { title: 'TreasureBowl(审)' }
               }
-              // {
-              //   path: 'treasurebowlmars_slots_cfg',
-              //   component: () => import('@/views/config/tableConfig/slots/treasurebowlmars_slots_cfg'),
-              //   name: 'treasurebowlmars_slots_cfg',
-              //   meta: { title: 'TreasureBowl(审)' }
-              // }
             ]
           },
           {
@@ -1672,6 +1705,12 @@ export const asyncRoutes = [
         component: () => import('@/views/config/tableConfig/gameAuditConfig.vue'),
         name: 'gameAuditConfig',
         meta: { title: 'GP审核配置 ◐' }
+      },
+      {
+        path: 'robotManage',
+        component: () => import('@/views/config/tableConfig/robotManage/index.vue'),
+        name: 'robotManage',
+        meta: { title: '机器人管理' }
       }
     ]
   },
@@ -2863,6 +2902,12 @@ export const asyncRoutes = [
         meta: { title: 'Slots-老虎机(审）', noCache: true },
         children: [
           {
+            path: 'bountyraidmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'bountyraidmars_slots_log',
+            meta: { title: 'BountyRaid(审)', gid: 193 }
+          },
+          {
             path: 'candypartyallline_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'candypartyallline_slots_log',
@@ -2879,6 +2924,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'candycandymars_slots_log',
             meta: { title: 'CandyCraze(审)', gid: 79 }
+          },
+          {
+            path: 'candyburstmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'candyburstmars_slots_log',
+            meta: { title: 'C andyBurst(审)', gid: 209 }
           },
           {
             path: 'millionairemars_slots_log',
@@ -3192,16 +3243,10 @@ export const asyncRoutes = [
             meta: { title: '机器人资产变更日志 ◐' }
           },
           {
-            path: 'tongitsCheatLog',
-            component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatNew.vue'),
-            name: 'tongitsCheatLog',
-            meta: { title: '作弊日志（新） ◐' }
-          },
-          {
             path: 'tongitsCheatLogDev',
             component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatNewDev.vue'),
             name: 'tongitsCheatLog',
-            meta: { title: '作弊日志（新）dev ◐' }
+            meta: { title: '作弊日志（新) ◐' }
           }
         ]
       },
