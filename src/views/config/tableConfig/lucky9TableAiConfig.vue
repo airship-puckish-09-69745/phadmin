@@ -339,7 +339,42 @@
             </el-col>
           </el-row>
         </el-tab-pane>
-         
+        <el-tab-pane label="展示资产配置">
+          <el-row>
+            <el-col :span="20" :offset="1">
+              <el-button type="text" @click="addShowMoneyCfg">添加一项</el-button>
+              <el-table :data="item.showMoneyCfg" border>
+                <el-table-column label="场次" prop="TableMoney" width="200" >
+                  <template slot-scope="scope">
+<!--                    <el-input v-model.number="scope.row.TableMoney/1000" size="mini" />-->
+                    <el-select v-model="scope.row.TableMoney" placeholder="请选择">
+                      <el-option
+                        v-for="itemTableMoney in AllTableMoneyList"
+                        :key="itemTableMoney"
+                        :label="itemTableMoney/1000"
+                        :value="itemTableMoney/1000"/>
+                    </el-select>
+                  </template>
+                </el-table-column>
+                <el-table-column label="最小值" width="200">
+                  <template slot-scope="scope">
+                    <el-input v-model.number="scope.row.ShowMoneyMin" size="mini"></el-input>
+                  </template>
+                </el-table-column>
+                <el-table-column label="最大值" width="200">
+                  <template slot-scope="scope">
+                    <el-input v-model.number="scope.row.ShowMoneyMax" size="mini"></el-input>
+                  </template>
+                </el-table-column>
+                <el-table-column label="操作" width="100">
+                  <template slot-scope="scope">
+                    <el-button type="danger" size="mini" @click="delShowMoneyCfg(scope.$index)">删除</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-col>
+          </el-row>
+        </el-tab-pane>
     </el-tabs>
     <div style="margin-bottom: 20px;">
       <el-button type="primary" @click="setData">保存信息</el-button>
@@ -436,6 +471,14 @@ function newNick(nick, probability) {
   }
 }
 
+function newShowMoneyCfg() {
+  return {
+    TableMoney: 1,
+    ShowMoneyMin: 30,
+    ShowMoneyMax: 100
+  }
+}
+
 export default {
   components: {
     Publish,
@@ -453,7 +496,8 @@ export default {
         'robotCntCfg':[newRobotCntCfg(20000, 1),newRobotCntCfg(50000, 2),newRobotCntCfg(100000, 4),newRobotCntCfg(200000, 6)],
         'waitPlayJoinCfg':[newWaitPlayJoinCfg(20000,8,12),newWaitPlayJoinCfg(50000,8,12),newWaitPlayJoinCfg(100000,10,15),newWaitPlayJoinCfg(200000,15,20)],
         'playingJoinCfg':[newPlayingJoinCfg(20000,5,10,1,4),newPlayingJoinCfg(50000,10,20,1,4),newPlayingJoinCfg(100000,20,30,1,4),newPlayingJoinCfg(200000,30,40,1,4)],
-        'nickCfg':[newNick("BingoPlus", 20),newNick("ArenaPlus", 10),newNick("GZone", 70)]
+        'nickCfg':[newNick("BingoPlus", 20),newNick("ArenaPlus", 10),newNick("GZone", 70)],
+        'showMoneyCfg':[]
       },
       gameId: 23,
       edit: {},
@@ -483,7 +527,7 @@ export default {
       ],
     
       subKey: 'lucky9_robot_cfg',
-
+      AllTableMoneyList: [],
     }
   },
   created() {
@@ -537,6 +581,7 @@ export default {
 
             this.item = this.DeepCopy(data)
             this.item.nickCfg = this.item.nickCfg || []
+            this.item.showMoneyCfg = this.item.showMoneyCfg || []
              // 设置修改之前数据
              $this.$refs.compare.SetOldVal(response.Data)
           }
@@ -558,9 +603,9 @@ export default {
           this.tableMoneys = Array.from(new Set(this.tableMoneys))
           this.tableMoneys.sort((x, y) => x - y)
           console.log('tableMoneys: ', this.tableMoneys)
-
+      
           for (let i = 0; i < this.tableMoneys.length; i++) {
-
+            this.AllTableMoneyList.push(this.tableMoneys[i])
             let isFind = false 
             for (let j = 0; j < this.item.ZeroJoinCfg.length; j++) {
               if (this.tableMoneys[i] == this.item.ZeroJoinCfg[j].TableMoney) {
@@ -609,7 +654,9 @@ export default {
           this.item.RobotCntCfg.sort((a, b) => a.TableMoney - b.TableMoney);
           this.item.WaitPlayJoinCfg.sort((a, b) => a.TableMoney - b.TableMoney);
           this.item.PlayingJoinCfg.sort((a, b) => a.TableMoney - b.TableMoney);
-
+          this.AllTableMoneyList.sort((a, b) => {
+            return a - b
+          })
           
         }
       })
@@ -646,6 +693,18 @@ export default {
     },
     addNickCfg() {
       this.item.nickCfg.push(newNick('', 0))
+    },
+    addShowMoneyCfg() {
+      this.item.showMoneyCfg.push(newShowMoneyCfg())
+    },
+    delShowMoneyCfg(idx) {
+      this.$confirm('要删除该项吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$delete(this.showMoneyCfg, idx)
+      })
     },
     // handleDecimalInput(row, key) {
     //   // 1. 过滤非法字符（只保留数字和小数点）
