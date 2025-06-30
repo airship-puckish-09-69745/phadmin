@@ -1146,9 +1146,9 @@ export default {
       if (this.editForm.data.id > 0) {
         // 判断修改时间 > 2025-07-01
         if (this.editForm.data.update_time > 1751299200) {
-          this.getExistedSelections()
-        } else {
           this.getAfterUpdatedSceneSelection()
+        } else {
+          this.getExistedSelections()
         }
       } else {
         this.getAfterUpdatedSceneSelection()
