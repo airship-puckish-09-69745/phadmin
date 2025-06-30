@@ -51,11 +51,6 @@ export default {
             this.handleClose()
             this.$emit('success')
           }
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消操作'
-          })
         })
       })
     }

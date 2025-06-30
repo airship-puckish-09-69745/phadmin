@@ -23,7 +23,7 @@
         style="width: 100%"
         @selection-change="handleSelectionChange"
       >
-        <el-table-column v-for="(item, index) in columns" :key="index" :prop="item.prop" :label="item.label" />
+        <el-table-column v-for="(item, index) in columns" :key="index" :prop="item.prop" :label="item.label" :formatter="item.formatter" />
         <el-table-column type="selection" width="100" />
       </el-table>
     </el-row>
@@ -78,7 +78,10 @@ export default {
         },
         {
           label: '当前资产',
-          prop: 'money'
+          prop: 'money',
+          formatter: (row, column, cellValue) => {
+            return this.transformMoney(cellValue)
+          }
         }
       ],
       selectedRobots: [], // 列表选中的机器人
@@ -102,6 +105,9 @@ export default {
     this.onSearch()
   },
   methods: {
+    transformMoney(money) {
+      return parseFloat(money / 1000)
+    },
     onSearch() {
       this.pagination.currentPage = 1
       this.getRobotList()
