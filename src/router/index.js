@@ -905,6 +905,28 @@ export const asyncRoutes = [
                 ]
               }
             ]
+          },
+          {
+            path: '/buracoVersion',
+            component: () => import('@/views/empty'),
+            redirect: 'noRedirect',
+            meta: { title: 'Buraco ◐' },
+            children: [
+              {
+                path: 'BuracoTable',
+                component: () => import('@/views/empty'),
+                redirect: 'noRedirect',
+                meta: { title: 'Buraco配桌 ◐', noCache: true },
+                children: [
+                  {
+                    path: 'buracoTable',
+                    component: () => import('@/views/config/tableConfig/buracoTable'),
+                    name: 'buraTable',
+                    meta: { title: 'Buraco配桌 ◐' }
+				          }
+                ]
+              }
+            ]
           }
         ]
       },
