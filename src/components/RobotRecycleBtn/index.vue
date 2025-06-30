@@ -1,6 +1,6 @@
 <!-- 机器人回收按钮：用于将【场次配置】中多个AI-List列表的机器人回收到机器人管理页面 -->
 <template>
-  <el-button type="warning" @click="handleRecycleRobot">
+  <el-button type="warning" size="mini" @click="handleRecycleRobot">
     回收
   </el-button>
 </template>
