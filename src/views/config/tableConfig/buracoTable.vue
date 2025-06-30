@@ -276,15 +276,23 @@
             </el-form-item>
           </el-col>
           <el-col :span="11">
-            <el-form-item
-              label="操作时长(秒)："
-              :required="true"
-              prop="item.ActionSeconds"
-              :rules="dataRule(true,{type:'n',range:'5'})"
-            >
+            <el-form-item label="操作时长(秒)：" :required="true" prop="item.ActionSeconds" :rules="dataRule(true,{type:'n',range:'5'})">
               <el-input v-model.number="edit.item.ActionSeconds" placeholder="操作时长" />
             </el-form-item>
           </el-col>
+
+          <el-col :span="11">
+            <el-form-item label="扩展牌型增加时间(秒)：" :required="true" prop="item.ExtendsAddSeconds" :rules="dataRule(true,{type:'n',range:'5'})">
+              <el-input v-model.number="edit.item.ExtendsAddSeconds" placeholder="操作时长" />
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="11">
+            <el-form-item label="摸弃牌堆增加时间(秒)：" :required="true" prop="item.DrawAndDropAddSeconds" :rules="dataRule(true,{type:'n',range:'5'})">
+              <el-input v-model.number="edit.item.DrawAndDropAddSeconds" placeholder="操作时长" />
+            </el-form-item>
+          </el-col>
+
         </el-row>
 
         <el-row>
@@ -334,6 +342,8 @@ function newItem() {
     ObjectCount: '',
     FlowRate: '',
     ActionSeconds: '',
+    ExtendsAddSeconds: '',
+    DrawAndDropAddSeconds: '',
     IsPractice: 0,
     Level: 1,
     MinPlayMoney: 0,
@@ -367,6 +377,8 @@ export default {
         ObjectCount: '桌子数',
         FlowRate: '抽水率',
         ActionSeconds: '操作时间',
+        ExtendsAddSeconds: '扩展牌型增加时间',
+        DrawAndDropAddSeconds: '摸弃牌堆增加时间',
         IsPractice: '是否练习场',
         Level: '等级',
         MinPlayMoney: '最小玩牌金额',
