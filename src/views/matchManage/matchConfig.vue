@@ -489,7 +489,7 @@
         <fieldset>
           <legend>报名条件</legend>
           <el-form-item label="报名条件：" :required="true">
-            <el-select v-model="editForm.data.signUpType" placeholder="请选择" size="mini" @change="changeScenesCfg">
+            <el-select v-model="editForm.data.signUpType" placeholder="请选择" size="mini" @change="changeRewardCfg">
               <el-option
                 v-for="item in signUpTypeCfgs"
                 :key="item.value"
@@ -1141,16 +1141,19 @@ export default {
     // 自动清理过期配置
   },
   methods: {
-    changeScenesCfg() {
+    changeRewardCfg() {
       // 判断是否是编辑
       if (this.editForm.data.id > 0) {
         // 判断修改时间 > 2025-07-01
         if (this.editForm.data.update_time > 1751299200) {
+          this.getAfterTypeCfgOptions()
           this.getAfterUpdatedSceneSelection()
         } else {
+          this.getExistedTypeCfgOptions()
           this.getExistedSelections()
         }
       } else {
+        this.getAfterTypeCfgOptions()
         this.getAfterUpdatedSceneSelection()
       }
     },
@@ -1178,6 +1181,27 @@ export default {
         // 返水金
         this.rebateScenesCfgs = [
           { 'value': 5, 'label': '没有任何限制的返水金' }
+        ]
+      }
+    },
+    getExistedTypeCfgOptions() {
+      this.getTypeCfgs = [
+        { 'value': 1, 'label': '金币' },
+        { 'value': 2, 'label': '投注金' },
+        { 'value': 3, 'label': '返水金' }
+      ]
+    },
+    getAfterTypeCfgOptions() {
+      if (this.editForm.data.signUpType === 1) { // 免费报名
+        this.getTypeCfgs = [
+          { 'value': 1, 'label': '金币' },
+          { 'value': 2, 'label': '投注金' }
+        ]
+      } else { // 付费报名
+        this.getTypeCfgs = [
+          { 'value': 1, 'label': '金币' },
+          { 'value': 2, 'label': '投注金' },
+          { 'value': 3, 'label': '返水金' }
         ]
       }
     },
@@ -1806,7 +1830,7 @@ export default {
         }
       }
       this.getCurrCsGrowInfo()
-      this.changeScenesCfg()
+      this.changeRewardCfg()
     },
     checkHaveGame(gid, gameArr) {
       let flag = false
