@@ -2932,6 +2932,12 @@ export const asyncRoutes = [
             meta: { title: 'C andyBurst(审)', gid: 209 }
           },
           {
+            path: 'dancelionmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'dancelionmars_slots_log',
+            meta: { title: 'D ance of the Lion(审)', gid: 185 }
+          },
+          {
             path: 'millionairemars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'millionairemars_slots_log',
