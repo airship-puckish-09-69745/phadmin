@@ -322,6 +322,8 @@
               @click="handlePreOff(scope.row)"
             >冻结
             </el-button>
+
+            <RobotRecycleBtn :row="scope.row" :gid="gid" @success="refresh" />
           </template>
         </el-table-column>
       </el-table>
@@ -418,6 +420,7 @@ import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import { $libDate, $libShow, ClientTableData, DataRule, MoneyShow } from '@/utils/common'
 import { getTime } from '@/utils'
+import RobotRecycleBtn from '@/components/RobotRecycleBtn'
 const filterMap = {
   currentTableMoney: 'all',
   allowTableMoney: 'all'
@@ -427,9 +430,10 @@ function newItem() {
 }
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: { Compare, Publish },
+  components: { Compare, Publish, RobotRecycleBtn },
   data() {
     return {
+      gid: 22, // 机器人回收需要传gid
       item: {
         TableMoneyList: []
       }, // 奖励
@@ -463,6 +467,7 @@ export default {
     }
   },
   created() {
+    this.gid = this.$route.meta.gid
     this.subKey = this.$route.meta.cfgSubKey
     this.cgiPath = this.$route.meta.cgiPath
     this.getData()
