@@ -980,7 +980,8 @@ export default {
           openDaysLimit: 0,
           sort: 0,
           associateKey: '0',
-          dcReport: 0
+          dcReport: 0,
+          updateTime: 0
         },
         loopDetail: {
           // 只有一场
@@ -1145,7 +1146,7 @@ export default {
       // 判断是否是编辑
       if (this.editForm.data.id > 0) {
         // 判断修改时间 > 2025-07-01
-        if (this.editForm.data.update_time > 1751299200) {
+        if (this.editForm.data.updateTime > 1751299200) {
           this.getAfterTypeCfgOptions()
           this.getAfterUpdatedSceneSelection()
         } else {
@@ -1164,7 +1165,7 @@ export default {
         { 'value': 16, 'label': '没有任何限制的返水金【Tongits免费赛】' }]
     },
     getAfterUpdatedSceneSelection() {
-      if (this.editForm.data.signUpType === 1) { // 免费报名
+      if (this.editForm.data.signUpType == 1) { // 免费报名
         // 投注金
         this.betScenesCfgs = [
           { 'value': 15, 'label': '仅限GZ任意游戏投注金【Tongits免费赛】' }
@@ -1764,7 +1765,8 @@ export default {
           openDaysLimit: editData.open_days_limit,
           sort: editData.sort,
           associateKey: editData.associate_key,
-          dcReport: editData.dc_report
+          dcReport: editData.dc_report,
+          updateTime: editData.update_time
         }
         /* 如果在本地找不到值 则显示0 */
         let isfind = false
