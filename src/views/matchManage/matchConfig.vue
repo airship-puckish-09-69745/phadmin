@@ -1004,31 +1004,7 @@ export default {
             }
           ]
         },
-        rankRewards: [
-          {
-            index: 1,
-            startRank: 1,
-            endRank: 1,
-            rewardItems: [
-              {
-                index: 1,
-                getType: 1,
-                getPid: 0,
-                getNum: 0,
-                sceneId: 0 // 返水金投注金场景类型（调用营销接口时用）
-              }
-            ],
-            propsReward: {
-              propsId: 0,
-              propsType: 0,
-              propsName: '',
-              propsIcon: '',
-              propsAttr: '',
-              propsNum: 0,
-              propExpireDays: -1
-            }
-          }
-        ],
+        rankRewards: this.initRankRewards(),
         appInfo: [
           {
             index: 1,
@@ -1142,6 +1118,33 @@ export default {
     // 自动清理过期配置
   },
   methods: {
+    initRankRewards() {
+      return [
+        {
+          index: 1,
+          startRank: 1,
+          endRank: 1,
+          rewardItems: [
+            {
+              index: 1,
+              getType: 1,
+              getPid: 0,
+              getNum: 0,
+              sceneId: 0 // 返水金投注金场景类型（调用营销接口时用）
+            }
+          ],
+          propsReward: {
+            propsId: 0,
+            propsType: 0,
+            propsName: '',
+            propsIcon: '',
+            propsAttr: '',
+            propsNum: 0,
+            propExpireDays: -1
+          }
+        }
+      ]
+    },
     changeRewardCfg() {
       // 判断是否是编辑
       if (this.editForm.data.id > 0) {
@@ -1156,6 +1159,8 @@ export default {
       } else {
         this.getAfterTypeCfgOptions()
         this.getAfterUpdatedSceneSelection()
+        // 新增的配置，把奖励信息重置
+        this.editForm.rankRewards = this.initRankRewards()
       }
     },
     getExistedSelections() {
