@@ -375,6 +375,73 @@
             </el-col>
           </el-row>
         </el-tab-pane>
+
+        <el-tab-pane label="随机离桌配置" name="randomLeaveConfig">
+          <el-form ref="item" :model="item" width="70%">
+          <!-- 离桌对局数配置 - 单行展示 -->
+          <el-form-item label="机器人随机离桌局数范围：" :required="true">
+            <el-row :gutter="16">
+              <el-col :span="6">
+                <template>
+                  <el-input-number
+                    v-model="item.leaveCfg.beginPlayCnt" 
+                    :min="1"
+                    :precision="0"
+                    placeholder="开始局数"
+                    style="width: 100%"> 
+      
+                  </el-input-number>
+                </template>
+              </el-col>
+              <el-col :span="2" class="text-center">
+                <span class="divider">至</span>
+              </el-col>
+              <el-col :span="6">
+                <template>
+                  <el-input-number 
+                    v-model="item.leaveCfg.endPlayCnt"
+                    :min="1"
+                    :precision="0"
+                    placeholder="结束局数"
+                    style="width: 100%">
+                  </el-input-number>
+                </template>
+              </el-col>
+            </el-row>
+          </el-form-item>
+            
+          <el-form-item label="离桌判定失败在触发判断局数范围：" :required="true">
+            <el-row :gutter="16">
+              <el-col :span="6">
+                <template>
+                  <el-input-number
+                    v-model="item.leaveCfg.beginLosePlayCnt" 
+                    :min="1"
+                    :precision="0"
+                    placeholder="开始局数"
+                    style="width: 100%"> 
+                  </el-input-number>
+                </template>
+              </el-col>
+              <el-col :span="2" class="text-center">
+                <span class="divider">至</span>
+              </el-col>
+              <el-col :span="6">
+                <template>
+                  <el-input-number 
+                    v-model="item.leaveCfg.endLosePlayCnt"
+                    :min="1"
+                    :precision="0"
+                    placeholder="结束局数"
+                    style="width: 100%">
+                  </el-input-number>
+                </template>
+              </el-col>
+            </el-row>
+          </el-form-item> 
+ 
+          </el-form>
+        </el-tab-pane>
     </el-tabs>
     <div style="margin-bottom: 20px;">
       <el-button type="primary" @click="setData">保存信息</el-button>
@@ -479,6 +546,16 @@ function newShowMoneyCfg() {
   }
 }
 
+function newLeaveCfg() {
+  return {
+    beginPlayCnt: 5,
+    endPlayCnt: 5,
+    beginLosePlayCnt: 1,
+    endLosePlayCnt: 5
+  }
+}
+
+
 export default {
   components: {
     Publish,
@@ -497,7 +574,8 @@ export default {
         'waitPlayJoinCfg':[newWaitPlayJoinCfg(20000,8,12),newWaitPlayJoinCfg(50000,8,12),newWaitPlayJoinCfg(100000,10,15),newWaitPlayJoinCfg(200000,15,20)],
         'playingJoinCfg':[newPlayingJoinCfg(20000,5,10,1,4),newPlayingJoinCfg(50000,10,20,1,4),newPlayingJoinCfg(100000,20,30,1,4),newPlayingJoinCfg(200000,30,40,1,4)],
         'nickCfg':[newNick("BingoPlus", 20),newNick("ArenaPlus", 10),newNick("GZone", 70)],
-        'showMoneyCfg':[]
+        'showMoneyCfg':[],
+        'leaveCfg':{'beginPlayCnt': 5, 'endPlayCnt':19, 'beginLosePlayCnt': 3, 'endLosePlayCnt': 5 }
       },
       gameId: 23,
       edit: {},
@@ -540,7 +618,16 @@ export default {
     },
 
     setData() {
-     
+      if (this.item.leaveCfg.endPlayCnt < this.item.leaveCfg.beginPlayCnt) {
+        Message.error('机器人随机离桌对局数，区间配置错误')
+        return 
+      }
+      if (this.item.leaveCfg.endLosePlayCnt < this.item.leaveCfg.beginLosePlayCnt) {
+        Message.error('离桌判定失败在触发判断局数，区间配置错误')
+        return 
+      }
+
+
       this.form.Data = JSON.stringify(this.item)
       const $this = this
 
@@ -577,11 +664,14 @@ export default {
           if (response.Data && response.Data.Data !== '') {
             const data = JSON.parse(response.Data.Data)
             
-            console.log('data: ', data)
+            //console.log('data: ', data)
 
             this.item = this.DeepCopy(data)
             this.item.nickCfg = this.item.nickCfg || []
             this.item.showMoneyCfg = this.item.showMoneyCfg || []
+
+
+            console.log(" this.item.leaveCfg", this.item.leaveCfg)
              // 设置修改之前数据
              $this.$refs.compare.SetOldVal(response.Data)
           }
