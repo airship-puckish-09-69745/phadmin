@@ -13,6 +13,23 @@ function hasPermission(pers, route) {
     }*/
   // 至少拥有可读权限
   if (route.meta && route.meta.perm) {
+    // 是否有英文逗号(多个权限可控)
+    if (route.meta.perm.indexOf(',') >= 0) {
+      // 获取权限列表
+      const persList = route.meta.perm.split(',')
+      // 遍历权限列表
+      for (let i = 0; i < persList.length; i++) {
+        // 检测权限
+        const persSingle = persList[i].trim()
+        if (persSingle === '') {
+          continue
+        }
+        if (pers[persSingle] & 1 > 0) {
+          return hasProject(route)
+        }
+      }
+      return false
+    }
     if (pers[route.meta.perm] & 1 > 0) {
       return hasProject(route)
     } else {
