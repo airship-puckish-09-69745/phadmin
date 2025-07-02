@@ -64,7 +64,7 @@ export default {
       BlackVisible: false,
       editBlack: {
         Uid: 0,
-        Reason: '',
+        Reason: '疑似度超过100分',
         Operator: ''
       },
       BlackOperator: '',
