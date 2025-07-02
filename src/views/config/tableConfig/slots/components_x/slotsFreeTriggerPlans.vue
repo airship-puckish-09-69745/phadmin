@@ -4,17 +4,23 @@
       <el-col :span="12" :offset="3">
         <el-tabs v-model="activeTab">
           <el-tab-pane label="进入免费方案配置" name="script">
-            <el-button type="primary" @click="showDialog">局数配置</el-button>
+            <el-button type="primary" @click="showDialog">今日已玩牌次数配置</el-button>
             <span style="margin-left:10px;color:#909399"></span>
 
             <el-table :data="cfg.ScatterTriggerPlans">
-              <el-table-column prop="bet" label="局数" width="120">
+              <el-table-column prop="bet" label="今日已玩牌次数范围" width="240">
                 <template slot-scope="scope">
                   <el-button type="text" @click="editConfig(scope.row)">
                     {{ scope.row.PlayTimesMin }}
                     至
                     {{ scope.row.PlayTimesMax }}
                   </el-button>
+                </template>
+              </el-table-column>
+              <el-table-column prop="bet" label="今日已进入免费次数" width="240">
+                <template slot-scope="scope">
+                  {{ scope.row.FreeTimesCompareOperator === 1 ? '小于等于' : '大于等于' }}
+                  {{ scope.row.FreeTimesCompareValue }}
                 </template>
               </el-table-column>
               <el-table-column label="操作" width="180" header-align="center">
@@ -37,10 +43,10 @@
       width="40%"
     >
       <el-form label-width="180px">
-        <el-form-item label="局数配置">
+        <el-form-item label="今日已玩牌次数配置">
           <template #label>
             <span>
-              局数配置
+              今日已玩牌次数配置
               <el-tooltip
                 content="设置最小和最大旋转次数范围;前面一栏设置最小旋转次数,后面一栏设置最大旋转次数"
                 placement="top"
@@ -70,7 +76,7 @@
               <el-option label="小于等于" :value="1"></el-option>
               <el-option label="大于等于" :value="2"></el-option>
             </el-select>
-            <el-input v-model="ScatterTriggerPlans.FreeTimesCompareValue" placeholder="请输入内容" class="input-with-select"
+            <el-input v-model.number="ScatterTriggerPlans.FreeTimesCompareValue" placeholder="请输入内容" class="input-with-select"
                       style="width: 200px"/>
           </div>
         </el-form-item>
