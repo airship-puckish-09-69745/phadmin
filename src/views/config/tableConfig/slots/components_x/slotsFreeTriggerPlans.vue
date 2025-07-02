@@ -4,7 +4,7 @@
       <el-col :span="12" :offset="3">
         <el-tabs v-model="activeTab">
           <el-tab-pane label="进入免费方案配置" name="script">
-            <el-button type="primary" @click="showDialog">局数配置</el-button>
+            <el-button type="primary" @click="showDialog">今日已玩牌次数配置</el-button>
             <span style="margin-left:10px;color:#909399"></span>
 
             <el-table :data="cfg.ScatterTriggerPlans">
@@ -43,10 +43,10 @@
       width="40%"
     >
       <el-form label-width="180px">
-        <el-form-item label="局数配置">
+        <el-form-item label="今日已玩牌次数配置">
           <template #label>
             <span>
-              局数配置
+              今日已玩牌次数配置
               <el-tooltip
                 content="设置最小和最大旋转次数范围;前面一栏设置最小旋转次数,后面一栏设置最大旋转次数"
                 placement="top"
