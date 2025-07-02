@@ -8,13 +8,19 @@
             <span style="margin-left:10px;color:#909399"></span>
 
             <el-table :data="cfg.ScatterTriggerPlans">
-              <el-table-column prop="bet" label="局数" width="120">
+              <el-table-column prop="bet" label="今日已玩牌次数范围" width="240">
                 <template slot-scope="scope">
                   <el-button type="text" @click="editConfig(scope.row)">
                     {{ scope.row.PlayTimesMin }}
                     至
                     {{ scope.row.PlayTimesMax }}
                   </el-button>
+                </template>
+              </el-table-column>
+              <el-table-column prop="bet" label="今日已进入免费次数" width="240">
+                <template slot-scope="scope">
+                  {{ scope.row.FreeTimesCompareOperator === 1 ? '小于等于' : '大于等于' }}
+                  {{ scope.row.FreeTimesCompareValue }}
                 </template>
               </el-table-column>
               <el-table-column label="操作" width="180" header-align="center">
