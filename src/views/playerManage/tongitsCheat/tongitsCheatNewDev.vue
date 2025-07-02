@@ -678,7 +678,7 @@ export default {
     changeBlack(row) {
       this.BlackVisible = true
       this.editBlack.Uid = row.Uid
-      this.editBlack.Reason = ''
+      this.editBlack.Reason = '疑似度超过100分'
       this.editBlack.Operator = this.BlackOperator
     },
     save(row) {
