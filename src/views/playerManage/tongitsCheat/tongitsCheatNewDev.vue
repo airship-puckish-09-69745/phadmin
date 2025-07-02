@@ -8,6 +8,7 @@ export default {
   components: { TongitsGameLog },
   data() {
     return {
+      blackReason:1,
       cheatLogs: [],
       userCheatLogs: [],
       Uid: 0,
@@ -1117,7 +1118,7 @@ export default {
       </div>
     </el_row>
     <tongits-game-log :game-log="GameLog" :game-log-visible="GameLogVisible" :gid="Gid" :is-robot-map="isRobotMap" @closeDialog="closeDialog" />
-    <el-dialog title="拉黑" :visible.sync="BlackVisible" width="100%">
+    <el-dialog title="拉黑" :visible.sync="BlackVisible" width="50%">
       <el-row>
         <el-form :model="editBlack" label-width="150px" size="small">
 
@@ -1138,6 +1139,15 @@ export default {
             disabled="true"
           >
             <el-input v-model="editBlack.Reason" />
+          </el-form-item>
+          <el-form-item
+            label=""
+          >
+            <el-button @click="editBlack.Reason='疯狂首出喂牌'">疯狂首出喂牌</el-button>
+            <el-button @click="editBlack.Reason='拆牌狂喂'">拆牌狂喂</el-button>
+            <el-button @click="editBlack.Reason='带同伙喂牌'">带同伙喂牌</el-button>
+            <el-button @click="editBlack.Reason='同名或类似名称团伙'">同名或类似名称团伙</el-button>
+
           </el-form-item>
           <el-col :span="12" :offset="10">
             <el-button type="primary" size="medium" @click="save">保存</el-button>
