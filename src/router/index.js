@@ -212,7 +212,7 @@ export const asyncRoutes = [
     path: '/tableConfig',
     component: Layout,
     redirect: 'noRedirect',
-    meta: { title: '场次配置', icon: 'example', perm: 'CFG_MANAGEMENT' },
+    meta: { title: '场次配置', icon: 'example', perm: 'CFG_MANAGEMENT_GAME' },
     children: [
       {
         path: 'CorePokersCfg',
