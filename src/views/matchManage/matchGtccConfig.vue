@@ -20,10 +20,9 @@
         :cell-style="libShow.TableCell(10)"
         style="width: 80%"
       >
-        <el-table-column prop="id" label="赛事配置ID" />
-        <el-table-column prop="name" label="赛事标题" />
+        <el-table-column prop="name" label="阶段名称" />
 
-        <el-table-column prop="match_type" label="赛事类型">
+        <el-table-column prop="match_type" label="阶段类型">
           <template slot-scope="scope">
             {{ getAppName(scope.row.match_type) }}
           </template>
@@ -71,11 +70,11 @@
         <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
           <legend>赛事配置</legend>
 
-          <el-form-item label="配置标题：" :required="true">
-            <el-input v-model="editForm.data.name" style="width: 200px;" placeholder="填写配置标题" />
+          <el-form-item label="阶段标题：" :required="true">
+            <el-input v-model="editForm.data.name" style="width: 200px;" placeholder="填写阶段标题" />
           </el-form-item>
 
-          <el-form-item label="赛事类型：" :required="true">
+          <el-form-item label="阶段类型：" :required="true">
             <el-select v-model="editForm.data.match_type" placeholder="请选择" size="mini" :disabled="!editForm.isAdd" @change="selectMatchName()">
               <el-option
                 v-for="item in matchInfoCfgs"
@@ -171,38 +170,15 @@ export default {
         { 'value': 2031, 'label': 'tongits' }
       ],
 
-      appidInfoCfgs: [
-        { 'value': 1000002, 'label': 'dayusenlin' },
-        { 'value': 1000003, 'label': 'testaccount' },
-        { 'value': 1000004, 'label': 'testkey' },
-        { 'value': 1000005, 'label': 'BingoPlusTongits' },
-        { 'value': 1000006, 'label': 'BingoPlusTest' },
-        { 'value': 1000007, 'label': 'br' },
-        { 'value': 1100000, 'label': 'xworld' }
-      ],
       matchInfoCfgs: [
-        { 'value': 1, 'label': 'Gtcc' },
-        { 'value': 2, 'label': '资格赛' },
-        { 'value': 3, 'label': '线上决赛' }
-      ],
-      jumpCfgs: [
-        { 'value': 1, 'label': 'Events' },
-        { 'value': 2, 'label': 'Free' },
-        { 'value': 3, 'label': 'Master' }
+        { 'value': 1, 'label': 'GTCC周赛' },
+        { 'value': 2, 'label': 'GTCC预选赛' }
       ],
       statusCfgs: [
         { 'value': 0, 'label': '关闭' },
         { 'value': 1, 'label': '开启' }
       ],
 
-      channelIdCfgs: [
-        { 'value': 'BP', 'label': 'BP' },
-        { 'value': 'AP', 'label': 'AP' },
-        { 'value': 'GP', 'label': 'GP' },
-        { 'value': 'TP', 'label': 'TP' },
-        { 'value': 'PG', 'label': 'PG' },
-        { 'value': 'Dev', 'label': 'Dev' }
-      ],
       guideShowCfgs: [], // 赛事推荐相关 跟AppId 关联
 
       subKey: 'match_gt_list_cfg'
@@ -223,10 +199,6 @@ export default {
       return 'CustomizeCfg_' + this.subKey
     },
 
-    resetSearch() {
-      this.form.app_id = -1
-      this.form.status = -1
-    },
 
     getGameAll() {
       request({
@@ -267,58 +239,6 @@ export default {
       })
     },
 
-    getListCheck() {
-      request({
-        url: '/customizeconfig/one',
-        method: 'get',
-        data: {
-          SubKey: this.subKey
-        }
-      }).then(response => {
-        if (response.RetCode === 0) {
-          if (response.Data && response.Data.Data !== '' && response.Data.Data !== '{}') {
-            const cfg = JSON.parse(response.Data.Data)
-            if (cfg.tableData.length > 0) {
-              this.posterList.tableData = []
-              if (this.form.app_id < 0 && this.form.status >= 0) {
-                for (var i = 0; i < cfg.tableData.length; i++) {
-                  if (this.form.status == 1 && cfg.tableData[i].switch == true) {
-                    this.posterList.tableData.push(cfg.tableData[i])
-                  }
-                  if (this.form.status == 0 && cfg.tableData[i].switch == false) {
-                    this.posterList.tableData.push(cfg.tableData[i])
-                  }
-                }
-
-              } else if (this.form.app_id > 0 && this.form.status < 0) {
-                for (var i = 0; i < cfg.tableData.length; i++) {
-                  if (cfg.tableData[i].app_id == this.form.app_id) {
-                    this.posterList.tableData.push(cfg.tableData[i])
-                  }
-                }
-              } else if (this.form.app_id > 0 && this.form.status >= 0) {
-                for (var i = 0; i < cfg.tableData.length; i++) {
-                  if (cfg.tableData[i].app_id == this.form.app_id && (this.form.status == 1 && cfg.tableData[i].switch == true)) {
-                    this.posterList.tableData.push(cfg.tableData[i])
-                  }
-
-                  if (cfg.tableData[i].app_id == this.form.app_id && (this.form.status == 0 && cfg.tableData[i].switch == false)) {
-                    this.posterList.tableData.push(cfg.tableData[i])
-                  }
-                }
-              } else {
-                this.posterList = JSON.parse(response.Data.Data)
-              }
-            }
-
-            // 设置修改之前数据
-            this.$refs.compare.SetOldVal(response.Data.Data)
-            this.raw = response.Data
-          }
-          this.raw = response.Data
-        }
-      })
-    },
     selectMatchName() {
       this.showCsCfgs = []
       if (this.matchCfg.length > 0) {
@@ -340,39 +260,7 @@ export default {
       }
     },
 
-    saveSwitch() {
-      this.raw.Data = JSON.stringify(this.posterList)
-      request({
-        url: 'customizeconfig/update',
-        method: 'post',
-        data: this.raw
-      }).then(response => {
-        if (response.RetCode === 0) {
-          const showMsg = '保存成功'
-          Message.success(showMsg)
-          this.getList()
-          this.editForm.visable = false
-          return
-        } else {
-          const errMsg = '保存成功失败！'
-          Message.error(errMsg + response.Data)
-          return
-        }
-      })
-    },
-    formatTime(ts) {
-      return $libDate.FormateSecondStr(ts, 2)
-    },
-    getStatusName(status) {
-      var statusName = ''
-      for (var i = 0; i < this.statusCfgs.length; i++) {
-        if (this.statusCfgs[i].value == status) {
-          statusName = this.statusCfgs[i].label
-          break
-        }
-      }
-      return statusName
-    },
+
 
     getAppName(id) {
       var appName = ''
@@ -500,27 +388,6 @@ export default {
         center: true,
         showConfirmButton: false
       })
-    },
-
-    selectPosterJumpType() {
-      //1 分类跳转 2:跳转子游戏
-      if (this.editForm.data.jump_id === 2) {
-        this.editForm.data.match_cfg_id = 0
-        this.editForm.data.game_id = 0
-      } else if (this.editForm.data.jump_id === 1) {
-        this.editForm.data.match_cfg_id = 0
-        this.editForm.data.game_id = 0
-      }
-    },
-
-    removeDuplicate(arr) {
-      const newArr = []
-      arr.forEach(item => {
-        if (newArr.indexOf(item) === -1) {
-          newArr.push(item)
-        }
-      })
-      return newArr // 返回一个新数组
     },
 
     configCheck() {
