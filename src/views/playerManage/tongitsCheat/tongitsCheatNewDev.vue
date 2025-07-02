@@ -64,7 +64,7 @@ export default {
       BlackVisible: false,
       editBlack: {
         Uid: 0,
-        Reason: '疑似度超过100分',
+        Reason: '疑似度超过50分',
         Operator: ''
       },
       BlackOperator: '',
@@ -678,7 +678,7 @@ export default {
     changeBlack(row) {
       this.BlackVisible = true
       this.editBlack.Uid = row.Uid
-      this.editBlack.Reason = '疑似度超过100分'
+      this.editBlack.Reason = '疑似度超过50分'
       this.editBlack.Operator = this.BlackOperator
     },
     save(row) {
@@ -1152,9 +1152,11 @@ export default {
             <el-button @click="editBlack.Reason+='，累计N个pot胜率过50'"> 累计N个pot胜率过50%</el-button>
 
           </el-form-item>
+          <el-form-item>
           <el-col :span="12" :offset="10">
             <el-button type="primary" size="medium" @click="save" autofocus="true">保存</el-button>
           </el-col>
+          </el-form-item>
         </el-form>
       </el-row>
     </el-dialog>
