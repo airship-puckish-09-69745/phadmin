@@ -1143,8 +1143,9 @@ export default {
           <el-form-item
             label=""
           >
+            <el-button @click="editBlack.Reason+='疑似度超过100分'">疑似度超过100分</el-button>
             <el-button @click="editBlack.Reason+='，疯狂首出喂牌'">疯狂首出喂牌</el-button>
-            <el-button @click="editBlack.Reason+='拆牌狂喂'">拆牌狂喂</el-button>
+            <el-button @click="editBlack.Reason+='，拆牌狂喂'">拆牌狂喂</el-button>
             <el-button @click="editBlack.Reason+='，带同伙喂牌'">带同伙喂牌</el-button>
             <el-button @click="editBlack.Reason+='，同名或类似名称团伙'">同名或类似名称团伙</el-button>
             <el-button @click="editBlack.Reason+='，1分FOLD'">1分FOLD</el-button>
