@@ -76,7 +76,7 @@
               <el-option label="小于等于" :value="1"></el-option>
               <el-option label="大于等于" :value="2"></el-option>
             </el-select>
-            <el-input v-model="ScatterTriggerPlans.FreeTimesCompareValue" placeholder="请输入内容" class="input-with-select"
+            <el-input v-model.number="ScatterTriggerPlans.FreeTimesCompareValue" placeholder="请输入内容" class="input-with-select"
                       style="width: 200px"/>
           </div>
         </el-form-item>
