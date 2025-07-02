@@ -381,7 +381,7 @@
           <!-- 离桌对局数配置 - 单行展示 -->
           <el-form-item label="机器人随机离桌局数范围：" :required="true">
             <el-row :gutter="16">
-              <el-col :span="8">
+              <el-col :span="6">
                 <template>
                   <el-input-number
                     v-model="item.leaveCfg.beginPlayCnt" 
@@ -396,7 +396,7 @@
               <el-col :span="2" class="text-center">
                 <span class="divider">至</span>
               </el-col>
-              <el-col :span="8">
+              <el-col :span="6">
                 <template>
                   <el-input-number 
                     v-model="item.leaveCfg.endPlayCnt"
@@ -412,7 +412,7 @@
             
           <el-form-item label="离桌判定失败在触发判断局数范围：" :required="true">
             <el-row :gutter="16">
-              <el-col :span="8">
+              <el-col :span="6">
                 <template>
                   <el-input-number
                     v-model="item.leaveCfg.beginLosePlayCnt" 
@@ -426,7 +426,7 @@
               <el-col :span="2" class="text-center">
                 <span class="divider">至</span>
               </el-col>
-              <el-col :span="8">
+              <el-col :span="6">
                 <template>
                   <el-input-number 
                     v-model="item.leaveCfg.endLosePlayCnt"
