@@ -3249,10 +3249,16 @@ export const asyncRoutes = [
             meta: { title: '机器人资产变更日志 ◐' }
           },
           {
-            path: 'tongitsCheatLogDev',
-            component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatNewDev.vue'),
+            path: 'tongitsCheatLog',
+            component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatNew.vue'),
             name: 'tongitsCheatLog',
             meta: { title: '作弊日志（新) ◐' }
+          },
+          {
+            path: 'tongitsCheatLogDev',
+            component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatNewDev.vue'),
+            name: 'tongitsCheatLogDev',
+            meta: { title: '作弊日志（老) ◐' }
           }
         ]
       },
