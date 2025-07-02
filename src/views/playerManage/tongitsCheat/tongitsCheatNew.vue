@@ -8,6 +8,7 @@ export default {
   components: { TongitsGameLog },
   data() {
     return {
+      blackReason: 1,
       cheatLogs: [],
       userCheatLogs: [],
       Uid: 0,
@@ -44,12 +45,26 @@ export default {
         { label: '疑似', value: 1 },
         { label: '黑子', value: 2 }
       ],
+      CheatType: 0,
+      CheatTypeOption: [
+        { label: '全部', value: 0 },
+        { label: '拆牌喂牌', value: 1 },
+        { label: '单局多次喂牌', value: 2 },
+        { label: '近5局首出喂牌局数>=3', value: 3 },
+        { label: '皇冠FIGHT', value: 4 },
+        { label: '皇冠FOLD', value: 5 },
+        { label: '打一局不拿pot就离开', value: 6 },
+        { label: '大POT高胜率', value: 7 },
+        { label: '大POT多人离开', value: 8 },
+        { label: '玩超多局数且盈利', value: 9 },
+        { label: '名字相似度过高', value: 10 }
+      ],
       maybeMin: 100,
 
       BlackVisible: false,
       editBlack: {
         Uid: 0,
-        Reason: '',
+        Reason: '疑似度超过50分',
         Operator: ''
       },
       BlackOperator: '',
@@ -59,7 +74,7 @@ export default {
   created() {
     this.getOperator()
     this.getDataCfg()
-    this.getCheatUserType()
+    // this.getCheatUserType()
     this.getData()
   },
   methods: {
@@ -93,8 +108,115 @@ export default {
       })
     },
     getCheatData() {
-      this.getCheatUserType()
+      // this.getCheatUserType()
       this.getData()
+    },
+    getCheatTotalInfo(fileds, fieldsCount, fieldsScore) {
+      const infos = []
+      if (fieldsCount === null || fieldsCount.length === 0) {
+        fieldsCount = []
+        for (let i = 0; i < fileds.length; i++) {
+          fieldsCount.push(0)
+        }
+      }
+      for (let i = 1; i < fileds.length; i++) {
+        if (fileds[i] === 0) {
+          continue
+        }
+        let info = ''
+        switch (i) {
+          case 1:
+            info = '拆牌喂牌:' + '  加分=' + fieldsScore[i]
+            break
+          case 2:
+            info = '单局多次喂牌：' + '  加分=' + fieldsScore[i]
+            break
+          case 3:
+            info = '近5局首出喂牌局数>=3:' + '  加分=' + fieldsScore[i]
+            break
+          case 4:
+            info = '皇冠FIGHT:' + '  加分=' + fieldsScore[i]
+            break
+          case 5:
+            info = '皇冠FOLD:' + '  加分=' + fieldsScore[i]
+            break
+          case 6:
+            info = '打一局不拿pot就离开:' + '  加分=' + fieldsScore[i]
+            break
+          case 7:
+            info = '大POT高胜率:' + '  加分=' + fieldsScore[i]
+            break
+          case 8:
+            info = '大POT多人离开:' + '  加分=' + fieldsScore[i]
+            break
+          case 9:
+            info = '玩超多局数且盈利:' + '  加分=' + fieldsScore[i]
+            break
+          case 10:
+            info = '名字相似度过高:' + '  加分=' + fieldsScore[i]
+            break
+          default:
+            info = ''
+            break
+        }
+        infos.push(info)
+      }
+      return infos
+    },
+    getCheatInfo(fileds, fieldsCount, fieldsScore) {
+      if (fileds === undefined) {
+        return []
+      }
+      const infos = []
+      if (fieldsCount === undefined || fieldsCount.length === 0) {
+        fieldsCount = []
+        for (let i = 0; i < fileds.length; i++) {
+          fieldsCount.push(0)
+        }
+      }
+      for (let i = 1; i < fileds.length; i++) {
+        if (fileds[i] === 0) {
+          continue
+        }
+        let info = ''
+        switch (i) {
+          case 1:
+            info = '拆牌喂牌:' + '  次数=' + fieldsCount[i] + '  加分=' + fieldsScore[i]
+            break
+          case 2:
+            info = '单局' + fieldsCount[i] + '次喂牌：' + '  加分' + fieldsScore[i]
+            break
+          case 3:
+            info = '近5局首出喂牌局数>=3:' + '  加分' + fieldsScore[i]
+            break
+          case 4:
+            info = '皇冠FIGHT:' + '  加分' + fieldsScore[i]
+            break
+          case 5:
+            info = '皇冠FOLD:' + '  加分' + fieldsScore[i]
+            break
+          case 6:
+            info = '打一局不拿pot就离开:' + '  加分' + fieldsScore[i]
+            break
+          case 7:
+            info = '累积' + fieldsCount[i] + 'POT胜率超过50%:' + '  加分' + fieldsScore[i]
+            break
+          case 8:
+            info = '大POT多人离开:' + '  加分' + fieldsScore[i]
+            break
+          case 9:
+            info = '玩的局数>' + fieldsCount[i] + '且盈利:' + '  加分' + fieldsScore[i]
+            break
+          case 10:
+            info = '名字相似度过高:' + '  加分' + fieldsScore[i]
+            break
+          default:
+            info = ''
+            break
+        }
+        infos.push(info)
+      }
+      return infos
     },
     getData() {
       // console.log(ttt)
@@ -111,6 +233,67 @@ export default {
           Limit: 9999,
           Gid: this.Gid,
           Uid: this.Uid,
+          SortType: this.sortType,
+          UserType: this.cheatType,
+          Start: this.checkTime.start / 1000,
+          End: this.checkTime.end / 1000,
+          IsNew: true
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const data = response.Data || {}
+          const cheatLogRows = data.Items || []
+
+          const cheatLogs = []
+          // /////////////
+          for (let i = 0; i < cheatLogRows.length; i++) {
+            const row = cheatLogRows[i]
+            // if (this.CheatType !== 0 && row.historyCheatField !== undefined && row.historyCheatField.length > this.CheatType && row.historyCheatField[this.CheatType] === 0) {
+            //   console.log('跳过', row)
+            //   continue
+            // }
+            const cheatLog = {
+              Uid: row.uid,
+              CheatScore: row.cheatScore,
+              UserType: row.userType,
+              CheatRadio: row.cheatRadio, // row.lastEndTime,
+              BlackOperator: row.blackOperator,
+              BlackReason: row.blackReason,
+              BlackTime: row.blackTime,
+              UpdateTime: row.updateTime,
+              LastEndTime: row.lastEndTime || 0,
+              CheatInfos: [],
+              TidCheatLogs: [],
+              Nick: new Set()
+            }
+            cheatLogs.push(cheatLog)
+          }
+          let sortName = 'UpdateTime'
+          if (this.sortType === 1) {
+            sortName = 'CheatScore'
+          } else if (this.sortType === 2) {
+            sortName = 'cheatRadio'
+          }
+          $this.clientDB = new ClientTableData(cheatLogs, $this.pageNum, {}, sortName, -1, 'Uid')
+          $this.handleCurrentChange(1)
+        }
+      })
+    },
+    getUidLogs(row) {
+      // console.log(ttt)
+      const $this = this
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Env: this.env,
+          Path: '/misc/tongits/cheat/log/new/log',
+          Page: 1,
+          Limit: 9999,
+          Gid: this.Gid,
+          Uid: row.Uid,
+          SortType: this.sortType,
+          UserType: this.cheatType,
           Start: this.checkTime.start / 1000,
           End: this.checkTime.end / 1000
         }
@@ -118,82 +301,51 @@ export default {
         if (response.RetCode === 0) {
           const data = response.Data || {}
           const cheatLogRows = data.Items || []
-          let cheatLogs
-          const cheatLogMap = new Map()
-          $this.totalCount = data.Total || 0
-          cheatLogRows.sort(function(a, b) {
-            return b.EndTime - a.EndTime
-          })
-          for (let i = 0; i < cheatLogRows.length; i++) {
-            const row = cheatLogRows[i]
-            if (this.GameLogUidsMap.has(row.logId)) {
-              const arr = this.GameLogUidsMap.get(row.logId)
-              if (!arr.includes(row.uid)) {
-                arr.push(row.uid)
-                this.GameLogUidsMap.set(row.logId, arr)
+          if (cheatLogRows.length > 0) {
+            const tidCheatLogs = []
+            const rowLog = cheatLogRows[0]
+            const nick = new Set()
+            if (rowLog.hasOwnProperty('datas')) {
+              for (let j = 0; j < rowLog.datas.length; j++) {
+                const tidRow = rowLog.datas[j]
+                const tidCheatLog = {
+                  Tid: tidRow.tid,
+                  Gid: tidRow.gid,
+                  TableMoney: tidRow.tableMoney,
+                  CheatScore: tidRow.cheatScore,
+                  FirstCheatTime: tidRow.firstCheatTime,
+                  CheatInfos: this.getCheatTotalInfo(tidRow.historyCheatField, tidRow.historyCheatFieldCount, tidRow.historyCheatFieldScore),
+                  PlayCheatLogs: []
+                }
+                if (tidRow.hasOwnProperty('datas')) {
+                  for (let k = 0; k < tidRow.datas.length; k++) {
+                    const cheatRow = tidRow.datas[k]
+                    const playCheatLog = {
+                      EndTime: cheatRow.endTime,
+                      CheatScore: cheatRow.cheatScore,
+                      LogId: cheatRow.logId,
+                      OtherUid: cheatRow.otherUid,
+                      CheatOtherUids: cheatRow.cheatOtherUids,
+                      Gid: cheatRow.gid,
+                      TableMoney: cheatRow.tableMoney,
+                      CheatInfos: this.getCheatInfo(cheatRow.cheatFields, cheatRow.cheatFieldsCount, cheatRow.cheatScores)
+                    }
+                    if (cheatRow.hasOwnProperty('nick')) {
+                      nick.add(cheatRow.nick)
+                    }
+                    tidCheatLog.PlayCheatLogs.push(playCheatLog)
+                  }
+                }
+
+                tidCheatLogs.push(tidCheatLog)
               }
-            } else {
-              this.GameLogUidsMap.set(row.logId, [row.uid])
             }
 
-            const cheatScoreRow = this.cheatUserType.get(row.uid)
-            if (!cheatScoreRow) {
-              continue
-            }
-            if (this.cheatType === 0 && cheatScoreRow.userType !== 0) {
-              continue
-            } else if (this.cheatType === 1 && cheatScoreRow.userType !== 1) {
-              continue
-            } else if (this.cheatType === 2 && cheatScoreRow.userType !== 2) {
-              continue
-            }
-            row.Infos = this.addInfos([], row)
-            if (!cheatLogMap.has(row.uid)) {
-              // eslint-disable-next-line no-empty
-              const cheatLog = {
-                Uid: row.uid,
-                Gid: row.gid,
-                CheatScore: 0,
-                LastEndTime: row.lastEndTime,
-                LastCheatTime: row.endTime,
-                Infos: [],
-                TidCheatLogs: [],
-                userType: 0,
-                blackTime: 0,
-                cheatPercent: cheatScoreRow.cheatTimes * 100 / cheatScoreRow.allPlayTimes
-              }
-              cheatLog.Infos = this.addInfos([], row)
-              cheatLog.TidCheatLogs = this.addTidInfos([], row)
-              const hasKey = this.cheatUserType.has(row.uid)
-              if (hasKey) {
-                cheatLog.userType = this.cheatUserType.get(row.uid).userType
-                cheatLog.blackTime = this.cheatUserType.get(row.uid).blackTime
-                cheatLog.CheatScore = this.cheatUserType.get(row.uid).cheatScore
-                cheatLog.blackOperator = this.cheatUserType.get(row.uid).blackOperator
-                cheatLog.blackReason = this.cheatUserType.get(row.uid).blackReason
-              }
-              cheatLogMap.set(cheatLog.Uid, cheatLog)
-            } else {
-              const cheatLog = cheatLogMap.get(row.uid)
-              // cheatLog.CheatScore += row.cheatScore
-              cheatLog.LastCheatTime = Math.max(cheatLog.LastCheatTime, row.endTime)
-              cheatLog.Infos = this.addInfos(cheatLog.Infos, row)
-              cheatLog.TidCheatLogs = this.addTidInfos(cheatLog.TidCheatLogs, row)
-              cheatLog.TidCheatLen = cheatLog.TidCheatLogs.length
-            }
+            const ob = this.clientDB.GetDataByID(row.Uid)
+            ob.TidCheatLogs = tidCheatLogs
+            ob.Nick = nick
+            this.clientDB.UpdateData2('Uid', ob)
           }
-          // eslint-disable-next-line prefer-const
-          cheatLogs = Array.from(cheatLogMap.values())
-          console.log(cheatLogs)
-          this.totalCount = cheatLogs.length
-          let sortName = 'EndTime'
-          if (this.sortType === 1) {
-            sortName = 'CheatScore'
-          } else if (this.sortType === 2) {
-            sortName = 'cheatPercent'
-          }
-          $this.clientDB = new ClientTableData(cheatLogs, $this.pageNum, {}, sortName, -1, 'Uid')
-          $this.handleCurrentChange(1)
         }
       })
     },
@@ -279,7 +431,7 @@ export default {
           infosMap.get(3).count += row.firstGiveMoreTimes
         } else {
           infosMap.set(3, {
-            Desc: '首出喂牌',
+            Desc: '近5局首出喂牌局数>=3',
             count: row.firstGiveMoreTimes,
             cheatType: 3
           })
@@ -333,7 +485,7 @@ export default {
           infosMap.get(6).count += row.leaveFre
         } else {
           infosMap.set(6, {
-            Desc: '频繁离开',
+            Desc: '打一局不拿pot就离开',
             count: row.leaveFre,
             cheatType: 6
           })
@@ -466,22 +618,11 @@ export default {
       return $libDate.FormateSecondStr(ts, 2)
     },
     changeWhite(row, userType) {
-      let tips = '是否确认将玩家ID为' + row.Uid + '的玩家洗白?'
-      if (userType === 2) {
-        tips = '是否确认将玩家ID为' + row.Uid + '的玩家拉黑?'
-      }
-      this.$confirm(tips, '提示', { type: 'warning' }).then(() => {
-        const cheatUserType = this.cheatUserType.get(row.Uid)
-        cheatUserType.UserType = userType
-        this.cheatUserType.set(row.Uid, cheatUserType)
+      const tips = '是否确认将玩家ID为' + row.Uid + '的玩家洗白?'
+      this.$confirm(tips, '提示', {type: 'warning'}).then(() => {
         const ob = this.clientDB.GetDataByID(row.Uid)
-        if (ob.userType !== 2 && userType === 2) {
-          ob.blackTime = Math.floor(new Date().getTime() / 1000)
-        }
-        if (ob.userType !== 2) {
-          ob.blackTime = 0
-          ob.userType = userType
-        }
+        ob.UserType = 0
+        ob.CheatScore = 0
         this.clientDB.UpdateData2('Uid', ob)
         request({
           url: '/dataProxy/info',
@@ -505,26 +646,17 @@ export default {
     changeBlack(row) {
       this.BlackVisible = true
       this.editBlack.Uid = row.Uid
-      this.editBlack.Reason = 'no reason'
+      this.editBlack.Reason = '疑似度超过50分'
       this.editBlack.Operator = this.BlackOperator
     },
     save(row) {
       this.BlackVisible = false
       console.log(this.editBlack)
-      const userType = 2
-      const cheatUserType = this.cheatUserType.get(this.editBlack.Uid)
-      cheatUserType.UserType = 2
-      this.cheatUserType.set(row.Uid, cheatUserType)
       const ob = this.clientDB.GetDataByID(this.editBlack.Uid)
-      if (ob.userType !== 2 && userType === 2) {
-        ob.blackTime = Math.floor(new Date().getTime() / 1000)
-      }
-      if (ob.userType !== 2) {
-        ob.blackTime = 0
-        ob.userType = 2
-        ob.blackOperator = this.BlackOperator
-        ob.blackReason = this.editBlack.Reason
-      }
+      ob.BlackTime = Math.floor(Date.now() / 1000)
+      ob.UserType = 2
+      ob.BlackOperator = this.BlackOperator
+      ob.BlackReason = this.editBlack.Reason
       this.clientDB.UpdateData2('Uid', ob)
       request({
         url: '/dataProxy/info',
@@ -542,8 +674,16 @@ export default {
       })
       this.refreshShow()
     },
+    formatUserNick(row) {
+      if (row.Nick.size === 0) {
+        return '--'
+      } else {
+        const array = Array.from(row.Nick)
+        return (array[0] === '' ? '--' : array[0])
+      }
+    },
     formatUserType(row) {
-      const userType = row.userType
+      const userType = row.UserType
       if (userType === 0) {
         return '信誉'
       } else if (userType === 1) {
@@ -553,46 +693,64 @@ export default {
       }
     },
     formatCheatInfo(row) {
-      if (row.hasOwnProperty('cheatScore')) {
-        return row.Desc + '---(' + row.count + '次)---(加' + row.cheatScore + '分)'
+      if (row === undefined) {
+        return '--'
+      }
+      if (row.length === 0) {
+        return '--'
       } else {
-        return row.Desc + '---(' + row.count + '次)'
+        return row[0]
       }
     },
+    formatCheatRadio(CheatRadio) {
+      return CheatRadio + '%'
+    },
     formatUserBlackTime(row) {
-      const userType = row.userType
+      const userType = row.UserType
       if (userType === 2) {
-        return this.formatTimeDate(row.blackTime)
+        return this.formatTimeDate(row.BlackTime)
       } else {
         return '--'
       }
     },
     formatUserBlackInfo(row) {
-      const userType = row.userType
+      const userType = row.UserType
       if (userType === 2) {
-        return '拉黑原因：' + row.blackReason + '，拉黑人：' + row.blackOperator
+        return '拉黑原因：' + row.BlackReason + '，拉黑人：' + row.BlackOperator
       } else {
         return '--'
       }
     },
     formatOtherUids(row) {
-      if (!row.hasOwnProperty('otherUid')) {
+      if (!row.hasOwnProperty('OtherUid') || !row.hasOwnProperty('CheatOtherUids')) {
+        return '----'
+      }
+      if (!row.OtherUid || !row.CheatOtherUids) {
         return '----'
       }
       const strArray = []
-      if (this.GameLogUidsMap.has(row.logId)) {
-        const uids = this.GameLogUidsMap.get(row.logId)
-        for (let i = 0; i < row.otherUid.length; i++) {
-          if (uids.includes(row.otherUid[i])) {
-            const redStr = '<span style="color: red">' + row.otherUid[i] + '</span>'
-            strArray.push(redStr)
-          } else {
-            strArray.push(row.otherUid[i])
-          }
+      for (let i = 0; i < row.OtherUid.length; i++) {
+        const uid = row.OtherUid[i]
+        if (row.CheatOtherUids.includes(uid)) {
+          const redStr = '<span style="color: red">' + row.OtherUid[i] + '</span>'
+          strArray.push(redStr)
+        } else {
+          strArray.push(row.OtherUid[i])
         }
-      } else {
-        return row.otherUid.join()
       }
+      // if (this.GameLogUidsMap.has(row.logId)) {
+      //   const uids = this.GameLogUidsMap.get(row.logId)
+      //   for (let i = 0; i < row.otherUid.length; i++) {
+      //     if (uids.includes(row.otherUid[i])) {
+      //       const redStr = '<span style="color: red">' + row.otherUid[i] + '</span>'
+      //       strArray.push(redStr)
+      //     } else {
+      //       strArray.push(row.otherUid[i])
+      //     }
+      //   }
+      // } else {
+      //   return row.otherUid.join()
+      // }
       return strArray.join()
     },
     getDetail(id, dt) {
@@ -622,6 +780,9 @@ export default {
     closeDialog() {
       this.GameLogVisible = false
     },
+    showTableMoney(tableMoney) {
+      return (tableMoney / 1000).toFixed(1)
+    },
     showTidCheatLogs(row) {
       this.TidCheatLogVisible = true
       this.TidCheatLogs = row.TidCheatLogs
@@ -645,46 +806,49 @@ export default {
     formatGameId(gameId) {
       if (gameId == 22) {
         return 'Tongits POT'
-      } else if (gameId == 28){
+      } else if (gameId == 28) {
         return 'Tongits JOKER'
-      }else if (gameId == 29){
+      } else if (gameId == 29) {
         return 'Tongits QUICK'
-      }else {
+      } else {
         return '未知游戏'
       }
-    },
+    }
   }
 }
 </script>
 
 <template>
   <el-col class="app-container">
+    <h5 class="title" style="color: red;">uid是0查询的是选择日期的最近3000个玩家</h5>
+    <h5 class="title" style="color: red;">每个玩家获取的最近的100条作弊记录</h5>
+    <h5 class="title" style="color: red;">查看详情的话先查询，再展开</h5>
     <el_row>
       <el-form :model="checkTime" label-width="90px" :inline="true" size="small">
-        <el-form-item label="开始日期：">
+        <el-form-item label="选择日期：">
           <el-date-picker
             v-model="checkTime.start"
             value-format="timestamp"
-            type="datetime"
+            type="date"
             placeholder="选择日期"
             size="mini"
           />
         </el-form-item>
-        <el-form-item label="结束日期：">
-          <el-date-picker
-            v-model="checkTime.end"
-            value-format="timestamp"
-            type="datetime"
-            placeholder="选择日期"
-            size="mini"
-          />
-        </el-form-item>
+        <!--        <el-form-item label="结束日期：">-->
+        <!--          <el-date-picker-->
+        <!--            v-model="checkTime.end"-->
+        <!--            value-format="timestamp"-->
+        <!--            type="datetime"-->
+        <!--            placeholder="选择日期"-->
+        <!--            size="mini"-->
+        <!--          />-->
+        <!--        </el-form-item>-->
         <el-form-item label="UID：">
-          <el-input v-model.number="Uid" />
+          <el-input v-model.number="Uid"/>
         </el-form-item>
         <el-form-item>
           <el-button size="mini" type="primary" icon="el-icon-plus" @click="getCheatData">查询</el-button>
-          <el-button size="mini" type="primary" icon="el-icon-plus" @click="getCheatData">刷新</el-button>
+          <!--          <el-button size="mini" type="primary" icon="el-icon-plus" @click="getCheatData">刷新</el-button>-->
         </el-form-item>
         <el-form-item label="排序方式：">
           <el-select v-model.number="sortType" placeholder="请选择">
@@ -696,23 +860,23 @@ export default {
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="身份：">
-          <el-select v-model.number="cheatType" placeholder="请选择">
-            <el-option
-              v-for="itemCheatType in cheatTypeOption"
-              :key="itemCheatType.value"
-              :label="itemCheatType.label"
-              :value="itemCheatType.value"
-            />
-          </el-select>
-        </el-form-item>
-        <!--        <el-form-item label="游戏：">-->
-        <!--          <el-select v-model.number="Gid" placeholder="请选择">-->
+        <!--        <el-form-item label="身份：">-->
+        <!--          <el-select v-model.number="cheatType" placeholder="请选择">-->
         <!--            <el-option-->
-        <!--              v-for="itemGid in gidOption"-->
-        <!--              :key="itemGid.value"-->
-        <!--              :label="itemGid.label"-->
-        <!--              :value="itemGid.value"-->
+        <!--              v-for="itemCheatType in cheatTypeOption"-->
+        <!--              :key="itemCheatType.value"-->
+        <!--              :label="itemCheatType.label"-->
+        <!--              :value="itemCheatType.value"-->
+        <!--            />-->
+        <!--          </el-select>-->
+        <!--        </el-form-item>-->
+        <!--        <el-form-item label="作弊类型：">-->
+        <!--          <el-select v-model.number="CheatType" placeholder="请选择">-->
+        <!--            <el-option-->
+        <!--              v-for="itemCheatType in CheatTypeOption"-->
+        <!--              :key="itemCheatType.value"-->
+        <!--              :label="itemCheatType.label"-->
+        <!--              :value="itemCheatType.value"-->
         <!--            />-->
         <!--          </el-select>-->
         <!--        </el-form-item>-->
@@ -728,6 +892,15 @@ export default {
           width="100"
           align="center"
         />
+        <el-table-column
+          label="名字"
+          width="80"
+          align="center"
+        >
+          <template slot-scope="scope">
+            <span>{{ formatUserNick(scope.row) }}</span>
+          </template>
+        </el-table-column>
         <el-table-column
           label="身份"
           width="80"
@@ -745,6 +918,17 @@ export default {
         >
           <template slot-scope="scope">
             <span :style="{color: getValueColor(scope.row.CheatScore)}">{{ scope.row.CheatScore }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="CheatRadio"
+          label="异常局占比"
+          width="100"
+          align="center"
+        >
+          <template slot-scope="scope">
+            <div>{{ formatCheatRadio(scope.row.CheatRadio) }}</div>
+
           </template>
         </el-table-column>
         <el-table-column
@@ -777,42 +961,28 @@ export default {
           </template>
         </el-table-column>
         <el-table-column
-          prop="LastCheatTime"
+          prop="UpdateTime"
           label="最近作弊时间"
           width="160"
           align="center"
         >
           <template slot-scope="scope">
-            <div>{{ formatTimeDate(scope.row.LastCheatTime) }}</div>
+            <div>{{ formatTimeDate(scope.row.UpdateTime) }}</div>
           </template>
         </el-table-column>
         <el-table-column
-          label="历史作弊实锤"
+          label="详情"
           width="300"
           align="center"
         >
-          <template slot-scope="scope">
-            <el-tooltip placement="right">
-              <div slot="content" style="max-width: 300px">
-                <div v-for="(member, index) in scope.row.Infos" :key="index">
-                  <!--                  {{ member.Desc }}-&#45;&#45;({{ member.count }})-&#45;&#45;({{ member.cheatScore }})-->
-                  {{ formatCheatInfo(member) }}
-                </div>
-              </div>
-              <!--              <span>{{ scope.row.Infos[0].Desc }}-&#45;&#45;({{ scope.row.Infos[0].count }})</span>-->
-              <span>{{ formatCheatInfo(scope.row.Infos[0]) }}</span>
-            </el-tooltip>
+          <template #default="scope">
+            <el-button
+              size="mini"
+              @click="getUidLogs(scope.row)"
+            >
+              查询
+            </el-button>
           </template>
-          <!--          <template slot-scope="scope">-->
-          <!--            <div>-->
-          <!--              <el-tooltip placement="right">-->
-          <!--                <template #content>-->
-          <!--                  <div v-for="(item, index) in scope.row.Infos" :key="index">{{ item }}</div>-->
-          <!--                </template>-->
-          <!--                <span>{{ scope.row.Infos[0] }}</span>-->
-          <!--              </el-tooltip>-->
-          <!--            </div>-->
-          <!--          </template>-->
         </el-table-column>
         <el-table-column
           label="作弊详情"
@@ -822,69 +992,69 @@ export default {
           inline
         >
           <template slot-scope="scopeTid">
-            <!--            <el-button type="text" size="small" @click="showTidCheatLogs(scope.row)">查看</el-button>-->
             <el-table :data="scopeTid.row.TidCheatLogs" border>
-              <el-table-column width="200" property="Tid" label="桌⼦id" />
+              <el-table-column width="200" property="Tid" label="桌⼦id"/>
               <el-table-column width="200" property="Gid" label="游戏">
                 <template slot-scope="scope">
                   {{ formatGameId(scope.row.Gid) }}
                 </template>
               </el-table-column>
-              <el-table-column width="200" property="TableMoney" label="场次" />
+              <el-table-column width="200" property="TableMoney" label="场次">
+                <template slot-scope="scope">
+                  <div>{{ showTableMoney(scope.row.TableMoney) }}</div>
+                </template>
+              </el-table-column>
               <el-table-column width="200" property="FirstCheatTime" label="该桌⾸次作弊实锤时间">
                 <template slot-scope="scope">
                   <div>{{ formatTimeDate(scope.row.FirstCheatTime) }}</div>
                 </template>
               </el-table-column>
-              <el-table-column width="100" property="TotalCheatScore" label="疑似度增加" />
+              <el-table-column width="100" property="CheatScore" label="疑似度增加"/>
               <el-table-column width="300" property="Infos" label="作弊信息">
                 <template slot-scope="scope">
                   <el-tooltip placement="right">
                     <div slot="content" style="max-width: 300px">
-                      <div v-for="(member, index) in scope.row.Infos" :key="index">
-                        <!--                  {{ member.Desc }}-&#45;&#45;({{ member.count }})-->
-                        {{ formatCheatInfo(member) }}
+                      <div v-for="(member, index) in scope.row.CheatInfos" :key="index">
+                        {{ member }}
                       </div>
                     </div>
-                    <!--              <span>{{ scope.row.Infos[0].Desc }}-&#45;&#45;({{ scope.row.Infos[0].count }})</span>-->
-                    <span>{{ formatCheatInfo(scope.row.Infos[0]) }}</span>
+                    <span>{{ formatCheatInfo(scope.row.CheatInfos) }}</span>
                   </el-tooltip>
                 </template>
               </el-table-column>
               <el-table-column width="300" label="作弊局详情" type="expand" inline>
                 <template slot-scope="scopeCheat">
-                  <!--                  <el-button type="text" size="small" @click="showCheatLogs(scope.row)">查看</el-button>-->
-                  <el-table :data="scopeCheat.row.CheatInfos" border>
+                  <el-table :data="scopeCheat.row.PlayCheatLogs" border>
                     <el-table-column width="200" property="endTime" label="结束时间">
                       <template slot-scope="scopeInfo">
-                        <div>{{ formatTimeDate(scopeInfo.row.endTime) }}</div>
+                        <div>{{ formatTimeDate(scopeInfo.row.EndTime) }}</div>
                       </template>
                     </el-table-column>
 
-                    <el-table-column width="200" property="otherUid" label="在该桌其他真⼈玩家id">
+                    <el-table-column width="200" label="在该桌其他真⼈玩家id">
                       <template slot-scope="scopeInfo">
-                        <!--                        <span>{{ formatOtherUids(scopeInfo.row) }}</span>-->
-                        <p v-html="formatOtherUids(scopeInfo.row)" />
+                        <p v-html="formatOtherUids(scopeInfo.row)"/>
                       </template>
                     </el-table-column>
-                    <el-table-column width="100" property="cheatScore" label="疑似度增加" />
+                    <el-table-column width="100" property="CheatScore" label="疑似度增加"/>
                     <el-table-column width="300" property="Infos" label="该局操作异常">
                       <template slot-scope="scopeInfo">
                         <el-tooltip placement="right">
                           <div slot="content" style="max-width: 300px">
-                            <div v-for="(member, index) in scopeInfo.row.Infos" :key="index">
-                              <!--                  {{ member.Desc }}-&#45;&#45;({{ member.count }})-->
-                              {{ formatCheatInfo(member) }}
+                            <div v-for="(member, index) in scopeInfo.row.CheatInfos" :key="index">
+                              {{ member }}
                             </div>
                           </div>
                           <!--              <span>{{ scope.row.Infos[0].Desc }}-&#45;&#45;({{ scope.row.Infos[0].count }})</span>-->
-                          <span>{{ formatCheatInfo(scopeInfo.row.Infos[0]) }}</span>
+                          <span>{{ formatCheatInfo(scopeInfo.row.CheatInfos) }}</span>
                         </el-tooltip>
                       </template>
                     </el-table-column>
                     <el-table-column width="300" label="作弊局详情">
                       <template slot-scope="scopeInfo">
-                        <el-button type="text" size="small" @click="getDetail(scopeInfo.row.logId,scopeInfo.row.endTime)">查看</el-button>
+                        <el-button type="text" size="small"
+                                   @click="getDetail(scopeInfo.row.LogId,scopeInfo.row.EndTime)">查看
+                        </el-button>
                       </template>
                     </el-table-column>
                   </el-table>
@@ -899,8 +1069,12 @@ export default {
           align="center"
         >
           <template slot-scope="scope">
-            <el-button type="primary" size="small" :disabled="showButton(scope.row)" @click="changeWhite(scope.row,0)">洗白</el-button>
-            <el-button type="primary" size="small" :disabled="showButton(scope.row)" @click="changeBlack(scope.row,2)">拉黑</el-button>
+            <el-button type="primary" size="small" :disabled="showButton(scope.row)" @click="changeWhite(scope.row,0)">
+              洗白
+            </el-button>
+            <el-button type="primary" size="small" :disabled="showButton(scope.row)" @click="changeBlack(scope.row,2)">
+              拉黑
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -916,74 +1090,9 @@ export default {
         />
       </div>
     </el_row>
-    <tongits-game-log :game-log="GameLog" :game-log-visible="GameLogVisible" :gid="Gid" :is-robot-map="isRobotMap" @closeDialog="closeDialog" />
-    <el-dialog title="桌子作弊详情" :visible.sync="TidCheatLogVisible" width="100%">
-      <el-table :data="TidCheatLogs" border>
-        <el-table-column width="200" property="Tid" label="桌⼦id" />
-        <el-table-column width="200" property="FirstCheatTime" label="该桌⾸次作弊实锤时间">
-          <template slot-scope="scope">
-            <div>{{ formatTimeDate(scope.row.FirstCheatTime) }}</div>
-          </template>
-        </el-table-column>
-        <el-table-column width="100" property="TotalCheatScore" label="疑似度增加" />
-        <el-table-column width="300" property="Infos" label="作弊信息">
-          <template slot-scope="scope">
-            <el-tooltip placement="right">
-              <div slot="content" style="max-width: 300px">
-                <div v-for="(member, index) in scope.row.Infos" :key="index">
-                  <!--                  {{ member.Desc }}-&#45;&#45;({{ member.count }})-->
-                  {{ formatCheatInfo(member) }}
-                </div>
-              </div>
-              <!--              <span>{{ scope.row.Infos[0].Desc }}-&#45;&#45;({{ scope.row.Infos[0].count }})</span>-->
-              <span>{{ formatCheatInfo(scope.row.Infos[0]) }}</span>
-            </el-tooltip>
-          </template>
-        </el-table-column>
-        <el-table-column width="300" label="作弊局详情">
-          <template slot-scope="scope">
-            <el-button type="text" size="small" @click="showCheatLogs(scope.row)">查看</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-    </el-dialog>
-    <el-dialog title="具体作弊详情" :visible.sync="CheatLogVisible" width="100%">
-      <el-table :data="CheatLogs" border>
-        <el-table-column width="200" property="endTime" label="结束时间">
-          <template slot-scope="scope">
-            <div>{{ formatTimeDate(scope.row.endTime) }}</div>
-          </template>
-        </el-table-column>
-
-        <el-table-column width="200" property="otherUid" label="在该桌其他真⼈玩家id">
-          formatOtherUids
-          <template slot-scope="scope">
-            <span>{{ formatOtherUids(scope.row) }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column width="100" property="cheatScore" label="疑似度增加" />
-        <el-table-column width="300" property="Infos" label="该局操作异常">
-          <template slot-scope="scope">
-            <el-tooltip placement="right">
-              <div slot="content" style="max-width: 300px">
-                <div v-for="(member, index) in scope.row.Infos" :key="index">
-                  <!--                  {{ member.Desc }}-&#45;&#45;({{ member.count }})-->
-                  {{ formatCheatInfo(member) }}
-                </div>
-              </div>
-              <!--              <span>{{ scope.row.Infos[0].Desc }}-&#45;&#45;({{ scope.row.Infos[0].count }})</span>-->
-              <span>{{ formatCheatInfo(scope.row.Infos[0]) }}</span>
-            </el-tooltip>
-          </template>
-        </el-table-column>
-        <el-table-column width="300" label="作弊局详情">
-          <template slot-scope="scope">
-            <el-button type="text" size="small" @click="getDetail(scope.row.logId,scope.row.endTime)">查看</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-    </el-dialog>
-    <el-dialog title="拉黑" :visible.sync="BlackVisible" width="100%">
+    <tongits-game-log :game-log="GameLog" :game-log-visible="GameLogVisible" :gid="Gid" :is-robot-map="isRobotMap"
+                      @closeDialog="closeDialog"/>
+    <el-dialog title="拉黑" :visible.sync="BlackVisible" width="50%">
       <el-row>
         <el-form :model="editBlack" label-width="150px" size="small">
 
@@ -1003,11 +1112,25 @@ export default {
             label="拉黑原因："
             disabled="true"
           >
-            <el-input v-model="editBlack.Reason" />
+            <el-input v-model="editBlack.Reason"/>
           </el-form-item>
-          <el-col :span="12" :offset="10">
-            <el-button type="primary" size="medium" @click="save">保存</el-button>
-          </el-col>
+          <el-form-item
+            label=""
+          >
+            <el-button @click="editBlack.Reason+='疑似度超过50分'">疑似度超过50分</el-button>
+            <el-button @click="editBlack.Reason+='，疯狂首出喂牌'">疯狂首出喂牌</el-button>
+            <el-button @click="editBlack.Reason+='，拆牌狂喂'">拆牌狂喂</el-button>
+            <el-button @click="editBlack.Reason+='，带同伙喂牌'">带同伙喂牌</el-button>
+            <el-button @click="editBlack.Reason+='，同名或类似名称团伙'">同名或类似名称团伙</el-button>
+            <el-button @click="editBlack.Reason+='，1分FOLD'">1分FOLD</el-button>
+            <el-button @click="editBlack.Reason+='，累计N个pot胜率过50'"> 累计N个pot胜率过50%</el-button>
+
+          </el-form-item>
+          <el-form-item>
+            <el-col :span="12" :offset="10">
+              <el-button type="primary" size="medium" autofocus="true" @click="save">保存</el-button>
+            </el-col>
+          </el-form-item>
         </el-form>
       </el-row>
     </el-dialog>
