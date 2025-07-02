@@ -176,6 +176,8 @@ export default {
     editConfig(row) {
       this.ScatterTriggerPlans.PlayTimesMin = row.PlayTimesMin
       this.ScatterTriggerPlans.PlayTimesMax = row.PlayTimesMax
+      this.ScatterTriggerPlans.FreeTimesCompareOperator = row.FreeTimesCompareOperator
+      this.ScatterTriggerPlans.FreeTimesCompareValue = row.FreeTimesCompareValue
       this.ScatterTriggerPlans.dialogTitle = '编辑配置'
       this.ScatterTriggerPlans.currentConf = JSON.parse(JSON.stringify(row.Ranges))
       // eslint-disable-next-line no-self-compare
@@ -183,8 +185,6 @@ export default {
       this.ScatterTriggerPlans.dialogVisible = true
     },
     submitFrm() {
-      // if (!ValidateVueItem(this.$refs['frm2'])) return false
-      console.log('聚宝盆的this.slotsData:', this.slotsData)
       const $this = this
       this.$refs.compare.SetNewVal(this.getDiffData())
       this.$refs.compare.Compare(function(isEdit) {
