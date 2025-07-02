@@ -236,7 +236,8 @@ export default {
           SortType: this.sortType,
           UserType: this.cheatType,
           Start: this.checkTime.start / 1000,
-          End: this.checkTime.end / 1000
+          End: this.checkTime.end / 1000,
+          IsNew: true
         }
       }).then(response => {
         if (response.RetCode === 0) {
