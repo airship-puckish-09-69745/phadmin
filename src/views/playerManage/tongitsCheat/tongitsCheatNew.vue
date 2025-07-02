@@ -819,9 +819,9 @@ export default {
 
 <template>
   <el-col class="app-container">
-    <h5 class="title">uid是0查询的是选择日期的最近3000个玩家</h5>
-    <h5 class="title">每个玩家获取的最近的100条作弊记录</h5>
-    <h5 class="title">查看详情的话先查询，再展开</h5>
+    <h5 class="title" style="color: red;">uid是0查询的是选择日期的最近3000个玩家</h5>
+    <h5 class="title" style="color: red;">每个玩家获取的最近的100条作弊记录</h5>
+    <h5 class="title" style="color: red;">查看详情的话先查询，再展开</h5>
     <el_row>
       <el-form :model="checkTime" label-width="90px" :inline="true" size="small">
         <el-form-item label="选择日期：">
