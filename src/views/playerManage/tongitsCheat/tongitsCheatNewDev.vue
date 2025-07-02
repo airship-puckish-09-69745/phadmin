@@ -678,7 +678,7 @@ export default {
     changeBlack(row) {
       this.BlackVisible = true
       this.editBlack.Uid = row.Uid
-      this.editBlack.Reason = 'no reason'
+      this.editBlack.Reason = ''
       this.editBlack.Operator = this.BlackOperator
     },
     save(row) {
@@ -1143,12 +1143,12 @@ export default {
           <el-form-item
             label=""
           >
-            <el-button @click="editBlack.Reason='疯狂首出喂牌'">疯狂首出喂牌</el-button>
-            <el-button @click="editBlack.Reason='拆牌狂喂'">拆牌狂喂</el-button>
-            <el-button @click="editBlack.Reason='带同伙喂牌'">带同伙喂牌</el-button>
-            <el-button @click="editBlack.Reason='同名或类似名称团伙'">同名或类似名称团伙</el-button>
-            <el-button @click="editBlack.Reason='1分FOLD'">1分FOLD</el-button>
-            <el-button @click="editBlack.Reason='累计N个pot胜率过50'"> 累计N个pot胜率过50%</el-button>
+            <el-button @click="editBlack.Reason+='，疯狂首出喂牌'">疯狂首出喂牌</el-button>
+            <el-button @click="editBlack.Reason+='拆牌狂喂'">拆牌狂喂</el-button>
+            <el-button @click="editBlack.Reason+='，带同伙喂牌'">带同伙喂牌</el-button>
+            <el-button @click="editBlack.Reason+='，同名或类似名称团伙'">同名或类似名称团伙</el-button>
+            <el-button @click="editBlack.Reason+='，1分FOLD'">1分FOLD</el-button>
+            <el-button @click="editBlack.Reason+='，累计N个pot胜率过50'"> 累计N个pot胜率过50%</el-button>
 
           </el-form-item>
           <el-col :span="12" :offset="10">
