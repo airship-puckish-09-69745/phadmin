@@ -161,11 +161,11 @@
           label="应用ID"
           width="90"
         />
-        <el-table-column
+        <!-- <el-table-column
           prop="channel"
           label="渠道"
           width="80"
-        />
+        /> -->
         <el-table-column
           prop="money"
           label="当前资产"
@@ -356,11 +356,11 @@
             <el-input v-model="edit.item.app" :disabled="isDisabled" />
           </el-col>
         </el-form-item>
-        <el-form-item label="渠道：" :required="true" prop="channel">
+        <!-- <el-form-item label="渠道：" :required="true" prop="channel">
           <el-col :span="15">
             <el-input v-model="edit.item.channel" :disabled="isDisabled" />
           </el-col>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="当前资产：" :required="true" prop="money">
           <el-col :span="15">
             <el-input v-model="edit.item.money" :disabled="isDisabled" />
@@ -421,7 +421,7 @@ const filterMap = {
   allowTableMoney: 'all'
 }
 function newItem() {
-  return { 'nick': '', 'money': 0, 'initMoney': 0, 'channel': '', 'account': '', 'icon': '', 'app': '', 'allowTableMoney': 0, 'WalletType': 1 }
+  return { 'nick': '', 'money': 0, 'initMoney': 0, 'account': '', 'icon': '', 'app': '', 'allowTableMoney': 0, 'WalletType': 1 }
 }
 export default {
   // eslint-disable-next-line vue/no-unused-components

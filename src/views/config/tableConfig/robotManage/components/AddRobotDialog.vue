@@ -50,6 +50,7 @@ export default {
     },
     handleFileChange(e) {
       const file = e.target.files[0]
+      console.log(file)
       if (!file) {
         this.uploadedFile = null
         return
@@ -80,6 +81,7 @@ export default {
         }).then(response => {
           // 情况input的value
           this.uploadedFile = null
+          this.$refs.uploadFileInput.value = ''
           if (response.RetCode === 0) {
             // console.log(response.Data)
             this.$message({
