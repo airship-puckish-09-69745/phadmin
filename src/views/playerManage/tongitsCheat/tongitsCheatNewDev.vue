@@ -1143,7 +1143,7 @@ export default {
           <el-form-item
             label=""
           >
-            <el-button @click="editBlack.Reason+='疑似度超过100分'">疑似度超过100分</el-button>
+            <el-button @click="editBlack.Reason+='疑似度超过50分'">疑似度超过50分</el-button>
             <el-button @click="editBlack.Reason+='，疯狂首出喂牌'">疯狂首出喂牌</el-button>
             <el-button @click="editBlack.Reason+='，拆牌狂喂'">拆牌狂喂</el-button>
             <el-button @click="editBlack.Reason+='，带同伙喂牌'">带同伙喂牌</el-button>
@@ -1153,7 +1153,7 @@ export default {
 
           </el-form-item>
           <el-col :span="12" :offset="10">
-            <el-button type="primary" size="medium" @click="save">保存</el-button>
+            <el-button type="primary" size="medium" @click="save" autofocus="true">保存</el-button>
           </el-col>
         </el-form>
       </el-row>
