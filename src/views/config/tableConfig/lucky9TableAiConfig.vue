@@ -343,7 +343,7 @@
           <el-row>
             <el-col :span="20" :offset="1">
               <el-button type="text" @click="addShowMoneyCfg">添加一项</el-button>
-              <el-table :data="item.showMoneyCfg" border>
+              <el-table :data="ShowMoneyCfg" border>
                 <el-table-column label="场次" prop="TableMoney" width="200" >
                   <template slot-scope="scope">
 <!--                    <el-input v-model.number="scope.row.TableMoney/1000" size="mini" />-->
@@ -358,12 +358,12 @@
                 </el-table-column>
                 <el-table-column label="最小值" width="200">
                   <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.ShowMoneyMin" size="mini"></el-input>
+                    <el-input v-model.number="scope.row.ShowMoneyMin" size="mini"  type="number"></el-input>
                   </template>
                 </el-table-column>
                 <el-table-column label="最大值" width="200">
                   <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.ShowMoneyMax" size="mini"></el-input>
+                    <el-input v-model.number="scope.row.ShowMoneyMax" size="mini"  type="number" ></el-input>
                   </template>
                 </el-table-column>
                 <el-table-column label="操作" width="100">
@@ -606,11 +606,14 @@ export default {
     
       subKey: 'lucky9_robot_cfg',
       AllTableMoneyList: [],
+      ShowMoneyCfg: [],
     }
   },
   created() {
+   
     this.getData()
     this.getList();
+    
   },
   methods: {
     getFullKey() {
@@ -626,7 +629,14 @@ export default {
         Message.error('离桌判定失败在触发判断局数，区间配置错误')
         return 
       }
-
+      this.item.showMoneyCfg = []
+      for (const o in this.ShowMoneyCfg) {
+        const obj = {}
+        obj.TableMoney = parseInt(this.ShowMoneyCfg[o].TableMoney) * 1000
+        obj.ShowMoneyMin = parseInt(this.ShowMoneyCfg[o].ShowMoneyMin) * 1000
+        obj.ShowMoneyMax = parseInt(this.ShowMoneyCfg[o].ShowMoneyMax) * 1000
+        this.item.showMoneyCfg.push(obj)
+      }
 
       this.form.Data = JSON.stringify(this.item)
       const $this = this
@@ -671,7 +681,13 @@ export default {
             this.item.showMoneyCfg = this.item.showMoneyCfg || []
 
 
-            console.log(" this.item.leaveCfg", this.item.leaveCfg)
+            for (const o in $this.item.showMoneyCfg) {
+              const one = Object.assign({}, $this.item.showMoneyCfg[o])
+              one.TableMoney /= 1000
+              one.ShowMoneyMin /= 1000
+              one.ShowMoneyMax /= 1000
+              $this.ShowMoneyCfg.push(one)
+            }
              // 设置修改之前数据
              $this.$refs.compare.SetOldVal(response.Data)
           }
@@ -747,6 +763,7 @@ export default {
           this.AllTableMoneyList.sort((a, b) => {
             return a - b
           })
+          console.log("aaaaaa", this.AllTableMoneyList)
           
         }
       })
@@ -785,7 +802,7 @@ export default {
       this.item.nickCfg.push(newNick('', 0))
     },
     addShowMoneyCfg() {
-      this.item.showMoneyCfg.push(newShowMoneyCfg())
+      this.ShowMoneyCfg.push(newShowMoneyCfg())
     },
     delShowMoneyCfg(idx) {
       this.$confirm('要删除该项吗？', '提示', {
@@ -793,7 +810,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$delete(this.showMoneyCfg, idx)
+        this.$delete(this.ShowMoneyCfg, idx)
       })
     },
     // handleDecimalInput(row, key) {
