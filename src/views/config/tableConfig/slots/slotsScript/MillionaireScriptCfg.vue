@@ -397,7 +397,8 @@ export default {
         '194': 'goldtrain',
         '192': 'bountyraid',
         '196': 'goldminer',
-        '198': 'fortuneblessing'
+        '198': 'fortuneblessing',
+        '200': 'atlantistreasure'
       }
     }
   },
