@@ -173,7 +173,8 @@ export default {
       matchInfoCfgs: [
         { 'value': 1, 'label': 'GTCC入口' },
         { 'value': 2, 'label': 'GTCC周赛' },
-        { 'value': 3, 'label': 'GTCC预选赛' }
+        { 'value': 3, 'label': 'GTCC预选赛' },
+        { 'value': 4, 'label': 'GTCC线上决赛' }
       ],
       statusCfgs: [
         { 'value': 0, 'label': '关闭' },
