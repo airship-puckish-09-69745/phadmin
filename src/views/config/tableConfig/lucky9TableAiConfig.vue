@@ -661,20 +661,44 @@ export default {
     },
 
     setData() {
-      // if (this.item.LeaveCfg.EndPlayCnt < this.item.LeaveCfg.BeginPlayCnt) {
-      //   Message.error('机器人随机离桌对局数，区间配置错误')
-      //   return 
-      // }
-      // if (this.item.LeaveCfg.EndLosePlayCnt < this.item.LeaveCfg.BeginLosePlayCnt) {
-      //   Message.error('离桌判定失败在触发判断局数，区间配置错误')
-      //   return 
-      // }
-      // for (const o in this.ShowMoneyCfg) {
-      //   if (this.ShowMoneyCfg[o].ShowMoneyMin >= this.ShowMoneyCfg[o].ShowMoneyMax) {
-      //     Message.error('展示资产区间配置错误')
-      //     return 
-      //   }
-      // }
+      if (this.item.LeaveCfg.EndPlayCnt < this.item.LeaveCfg.BeginPlayCnt) {
+        Message.error('机器人随机离桌对局数，区间配置错误')
+        return 
+      }
+      if (this.item.LeaveCfg.EndLosePlayCnt < this.item.LeaveCfg.BeginLosePlayCnt) {
+        Message.error('离桌判定失败在触发判断局数，区间配置错误')
+        return 
+      }
+      for (const o in this.ShowMoneyCfg) {
+        if (this.ShowMoneyCfg[o].ShowMoneyMin >= this.ShowMoneyCfg[o].ShowMoneyMax) {
+          Message.error('展示资产区间配置错误')
+          return 
+        }
+      }
+      for (let j = 0; j < this.item.ZeroJoinCfg.length; j++) {
+          if (this.item.ZeroJoinCfg[j].JoinMinTime > this.item.ZeroJoinCfg[j].JoinMaxTime) {
+            Message.error('场次人数=0时开桌配置:最小时间大于最大时间')
+            return 
+          }
+          if (this.item.ZeroJoinCfg[j].WaitMinTime > this.item.ZeroJoinCfg[j].WaitMaxTime) {
+            Message.error('场次人数=0时开桌配置:最小时间大于最大时间')
+            return 
+          }
+      }
+
+      for (let j = 0; j < this.item.WaitPlayJoinCfg.length; j++) {
+          if (this.item.WaitPlayJoinCfg[j].JoinMinTime > this.item.WaitPlayJoinCfg[j].JoinMaxTime) {
+            Message.error('场次有桌不满最小开局人数时入桌配置:最小时间大于最大时间')
+            return 
+          }
+      }
+
+      for (let j = 0; j < this.item.PlayingJoinCfg.length; j++) {
+          if (this.item.PlayingJoinCfg[j].JoinMinTime > this.item.PlayingJoinCfg[j].JoinMaxTime) {
+            Message.error('场次有正在玩的桌子入配置:最小时间大于最大时间')
+            return 
+          }
+      }
 
       this.item.ShowMoneyCfg = []
       for (const o in this.ShowMoneyCfg) {
