@@ -284,6 +284,45 @@
                   </el-table-column>
                 </el-table>
                 </fieldset>
+
+              <fieldset>
+                <legend>偶尔违反习惯下注行文方案</legend>
+                <el-form ref="item" :model="item" width="70%">
+                  <!-- 离桌对局数配置 - 单行展示 -->
+                  <el-form-item label="修正概率(%):" :required="true">
+                    <el-row :gutter="16">
+                      <el-col :span="6">
+                        <template>
+                          <el-input-number
+                            v-model="item.BetReviseCfg.Probability" 
+                            :min="1"
+                            :precision="0"
+                            style="width: 100%"> 
+                          </el-input-number>
+                        </template>
+                      </el-col>
+                    
+                    </el-row>
+                  </el-form-item>
+             
+                  
+                    <el-form-item label="次数">
+                    <el-table :data="item.BetReviseCfg.ReviseCnt" border style="width: 300px">
+                      <el-table-column prop="value" label="次数">
+                        <template #default="{row, $index}">
+                          <el-input-number v-model="item.BetReviseCfg.ReviseCnt[$index]" size="small"></el-input-number>
+                        </template>
+                      </el-table-column>
+                      <el-table-column label="操作" width="80">
+                        <template #default="{$index}">
+                          <el-button size="small" type="danger" @click="removeReviseCnt($index)">删除</el-button>
+                        </template>
+                      </el-table-column>
+                    </el-table>
+                    <el-button @click="addReviseCnt" size="small" style="margin-top: 10px;">添加新值</el-button>
+                  </el-form-item>
+                </el-form>
+              </fieldset>
             </el-row>
           </el-tab-pane>
 
@@ -318,7 +357,7 @@
           <el-row>
             <el-col :span="20" :offset="1">
               <h5>机器人昵称配置 <el-button type="text" @click="addNickCfg">添加一项</el-button></h5>
-              <el-table :data="item.nickCfg" border>
+              <el-table :data="item.NickCfg" border>
                 <el-table-column label="昵称" prop="Nick" width="200">
                   <template slot-scope="scope">
                     <el-input v-model="scope.row.Nick" size="mini" /></template>
@@ -384,7 +423,7 @@
               <el-col :span="6">
                 <template>
                   <el-input-number
-                    v-model="item.leaveCfg.beginPlayCnt" 
+                    v-model="item.LeaveCfg.BeginPlayCnt" 
                     :min="1"
                     :precision="0"
                     placeholder="开始局数"
@@ -399,7 +438,7 @@
               <el-col :span="6">
                 <template>
                   <el-input-number 
-                    v-model="item.leaveCfg.endPlayCnt"
+                    v-model="item.LeaveCfg.EndPlayCnt"
                     :min="1"
                     :precision="0"
                     placeholder="结束局数"
@@ -415,7 +454,7 @@
               <el-col :span="6">
                 <template>
                   <el-input-number
-                    v-model="item.leaveCfg.beginLosePlayCnt" 
+                    v-model="item.LeaveCfg.BeginLosePlayCnt" 
                     :min="1"
                     :precision="0"
                     placeholder="开始局数"
@@ -429,7 +468,7 @@
               <el-col :span="6">
                 <template>
                   <el-input-number 
-                    v-model="item.leaveCfg.endLosePlayCnt"
+                    v-model="item.LeaveCfg.EndLosePlayCnt"
                     :min="1"
                     :precision="0"
                     placeholder="结束局数"
@@ -548,13 +587,12 @@ function newShowMoneyCfg() {
 
 function newLeaveCfg() {
   return {
-    beginPlayCnt: 5,
-    endPlayCnt: 5,
-    beginLosePlayCnt: 1,
-    endLosePlayCnt: 5
+    BeginPlayCnt: 5,
+    EndPlayCnt: 5,
+    BeginLosePlayCnt: 1,
+    EndLosePlayCnt: 5
   }
 }
-
 
 export default {
   components: {
@@ -565,17 +603,18 @@ export default {
     return {
    
       item:{
-        "betTimesCfg": [newBetTimesCfg(1, 50, true), newBetTimesCfg(2, 20, false), newBetTimesCfg(3, 20, false),newBetTimesCfg(4, 10, false)],
-        "betHabitsCfg": [BetHabitsCfg(0, 20, true), BetHabitsCfg(1, 10, false), BetHabitsCfg(5, 30, false)],
-        'takeCardCfg': [newTakeCardCfg(0, 100), newTakeCardCfg(1, 100), newTakeCardCfg(2, 100), newTakeCardCfg(3, 100), newTakeCardCfg(4, 95), newTakeCardCfg(5, 50), newTakeCardCfg(6, 5), newTakeCardCfg(7, 0), newTakeCardCfg(8, 0), newTakeCardCfg(9, 0)],
-        'aiLevelCfg':[newAiLevelCfg(5,20, 50, 0, 0),newAiLevelCfg(4,10, 10, 0, 0),newAiLevelCfg(3,0, 0, 0, 0),newAiLevelCfg(2,0, 0, 10, 10),newAiLevelCfg(1,0, 0, 20, 50)],
-        'zeroJoinCfg':[newZeroJoinCfg(20000, 10, 20, 5, 20),newZeroJoinCfg(50000, 20, 40, 5, 20),newZeroJoinCfg(100000, 40, 60, 5, 20),newZeroJoinCfg(200000, 60, 120, 20, 30)],
-        'robotCntCfg':[newRobotCntCfg(20000, 1),newRobotCntCfg(50000, 2),newRobotCntCfg(100000, 4),newRobotCntCfg(200000, 6)],
-        'waitPlayJoinCfg':[newWaitPlayJoinCfg(20000,8,12),newWaitPlayJoinCfg(50000,8,12),newWaitPlayJoinCfg(100000,10,15),newWaitPlayJoinCfg(200000,15,20)],
-        'playingJoinCfg':[newPlayingJoinCfg(20000,5,10,1,4),newPlayingJoinCfg(50000,10,20,1,4),newPlayingJoinCfg(100000,20,30,1,4),newPlayingJoinCfg(200000,30,40,1,4)],
-        'nickCfg':[newNick("BingoPlus", 20),newNick("ArenaPlus", 10),newNick("GZone", 70)],
-        'showMoneyCfg':[],
-        'leaveCfg':{'beginPlayCnt': 5, 'endPlayCnt':19, 'beginLosePlayCnt': 3, 'endLosePlayCnt': 5 }
+        "BetTimesCfg": [newBetTimesCfg(1, 50, true), newBetTimesCfg(2, 20, false), newBetTimesCfg(3, 20, false),newBetTimesCfg(4, 10, false)],
+        "BetHabitsCfg": [BetHabitsCfg(0, 20, true), BetHabitsCfg(1, 10, false), BetHabitsCfg(5, 30, false)],
+        'TakeCardCfg': [newTakeCardCfg(0, 100), newTakeCardCfg(1, 100), newTakeCardCfg(2, 100), newTakeCardCfg(3, 100), newTakeCardCfg(4, 95), newTakeCardCfg(5, 50), newTakeCardCfg(6, 5), newTakeCardCfg(7, 0), newTakeCardCfg(8, 0), newTakeCardCfg(9, 0)],
+        'AiLevelCfg':[newAiLevelCfg(5,20, 50, 0, 0),newAiLevelCfg(4,10, 10, 0, 0),newAiLevelCfg(3,0, 0, 0, 0),newAiLevelCfg(2,0, 0, 10, 10),newAiLevelCfg(1,0, 0, 20, 50)],
+        'ZeroJoinCfg':[newZeroJoinCfg(20000, 10, 20, 5, 20),newZeroJoinCfg(50000, 20, 40, 5, 20),newZeroJoinCfg(100000, 40, 60, 5, 20),newZeroJoinCfg(200000, 60, 120, 20, 30)],
+        'RobotCntCfg':[newRobotCntCfg(20000, 1),newRobotCntCfg(50000, 2),newRobotCntCfg(100000, 4),newRobotCntCfg(200000, 6)],
+        'WaitPlayJoinCfg':[newWaitPlayJoinCfg(20000,8,12),newWaitPlayJoinCfg(50000,8,12),newWaitPlayJoinCfg(100000,10,15),newWaitPlayJoinCfg(200000,15,20)],
+        'PlayingJoinCfg':[newPlayingJoinCfg(20000,5,10,1,4),newPlayingJoinCfg(50000,10,20,1,4),newPlayingJoinCfg(100000,20,30,1,4),newPlayingJoinCfg(200000,30,40,1,4)],
+        'NickCfg':[newNick("BingoPlus", 20),newNick("ArenaPlus", 10),newNick("GZone", 70)],
+        'ShowMoneyCfg':[],
+        'LeaveCfg':newLeaveCfg() ,
+        'BetReviseCfg': {'Probability':20, "ReviseCnt":[1,-1,2,-2]}
       },
       gameId: 23,
       edit: {},
@@ -621,28 +660,28 @@ export default {
     },
 
     setData() {
-      if (this.item.leaveCfg.endPlayCnt < this.item.leaveCfg.beginPlayCnt) {
-        Message.error('机器人随机离桌对局数，区间配置错误')
-        return 
-      }
-      if (this.item.leaveCfg.endLosePlayCnt < this.item.leaveCfg.beginLosePlayCnt) {
-        Message.error('离桌判定失败在触发判断局数，区间配置错误')
-        return 
-      }
-      for (const o in this.ShowMoneyCfg) {
-        if (this.ShowMoneyCfg[o].ShowMoneyMin >= this.ShowMoneyCfg[o].ShowMoneyMax) {
-          Message.error('展示资产区间配置错误')
-          return 
-        }
-      }
+      // if (this.item.LeaveCfg.EndPlayCnt < this.item.LeaveCfg.BeginPlayCnt) {
+      //   Message.error('机器人随机离桌对局数，区间配置错误')
+      //   return 
+      // }
+      // if (this.item.LeaveCfg.EndLosePlayCnt < this.item.LeaveCfg.BeginLosePlayCnt) {
+      //   Message.error('离桌判定失败在触发判断局数，区间配置错误')
+      //   return 
+      // }
+      // for (const o in this.ShowMoneyCfg) {
+      //   if (this.ShowMoneyCfg[o].ShowMoneyMin >= this.ShowMoneyCfg[o].ShowMoneyMax) {
+      //     Message.error('展示资产区间配置错误')
+      //     return 
+      //   }
+      // }
 
-      this.item.showMoneyCfg = []
+      this.item.ShowMoneyCfg = []
       for (const o in this.ShowMoneyCfg) {
         const obj = {}
         obj.TableMoney = parseInt(this.ShowMoneyCfg[o].TableMoney) * 1000
         obj.ShowMoneyMin = parseInt(this.ShowMoneyCfg[o].ShowMoneyMin) * 1000
         obj.ShowMoneyMax = parseInt(this.ShowMoneyCfg[o].ShowMoneyMax) * 1000
-        this.item.showMoneyCfg.push(obj)
+        this.item.ShowMoneyCfg.push(obj)
       }
 
       this.form.Data = JSON.stringify(this.item)
@@ -684,12 +723,12 @@ export default {
             //console.log('data: ', data)
 
             this.item = this.DeepCopy(data)
-            this.item.nickCfg = this.item.nickCfg || []
-            this.item.showMoneyCfg = this.item.showMoneyCfg || []
-            this.item.ZeroJoinCfg = this.item.ZeroJoinCfg || []
+            this.item.NickCfg = this.item.NickCfg || []
+            this.item.ShowMoneyCfg = this.item.ShowMoneyCfg || []
+            this.item.BetReviseCfg = this.item.BetReviseCfg || {'Probability':20, "ReviseCnt":[1,-1,2,-2]}
 
-            for (const o in $this.item.showMoneyCfg) {
-              const one = Object.assign({}, $this.item.showMoneyCfg[o])
+            for (const o in $this.item.ShowMoneyCfg) {
+              const one = Object.assign({}, $this.item.ShowMoneyCfg[o])
               one.TableMoney /= 1000
               one.ShowMoneyMin /= 1000
               one.ShowMoneyMax /= 1000
@@ -715,7 +754,7 @@ export default {
           }
           this.tableMoneys = Array.from(new Set(this.tableMoneys))
           this.tableMoneys.sort((x, y) => x - y)
-          console.log('tableMonaaaeys: ', this.tableMoneys)
+        //  console.log('tableMonaaaeys: ', this.tableMoneys)
       
           for (let i = 0; i < this.tableMoneys.length; i++) {
             this.AllTableMoneyList.push(this.tableMoneys[i])
@@ -806,7 +845,7 @@ export default {
       })
     },
     addNickCfg() {
-      this.item.nickCfg.push(newNick('', 0))
+      this.item.NickCfg.push(newNick('', 0))
     },
     addShowMoneyCfg() {
       this.ShowMoneyCfg.push(newShowMoneyCfg())
@@ -820,6 +859,13 @@ export default {
         this.$delete(this.ShowMoneyCfg, idx)
       })
     },
+    addReviseCnt() {
+      this.item.BetReviseCfg.ReviseCnt.push(0);
+    },
+    removeReviseCnt(index) {
+      console.log("aaaaa")
+      this.item.BetReviseCfg.ReviseCnt.splice(index, 1);
+    }
     // handleDecimalInput(row, key) {
     //   // 1. 过滤非法字符（只保留数字和小数点）
     //   let value = row[key] ? row[key].toString() : '0'
