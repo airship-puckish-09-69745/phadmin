@@ -306,9 +306,9 @@
                   </el-form-item>
              
                   
-                    <el-form-item label="次数">
+                    <el-form-item >
                     <el-table :data="item.BetReviseCfg.ReviseCnt" border style="width: 300px">
-                      <el-table-column prop="value" label="次数">
+                      <el-table-column prop="value" label="修正偏移量">
                         <template #default="{row, $index}">
                           <el-input-number v-model="item.BetReviseCfg.ReviseCnt[$index]" size="small"></el-input-number>
                         </template>
