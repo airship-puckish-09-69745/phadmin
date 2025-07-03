@@ -64,7 +64,7 @@ export default {
       BlackVisible: false,
       editBlack: {
         Uid: 0,
-        Reason: '疑似度超过100分',
+        Reason: '疑似度超过50分',
         Operator: ''
       },
       BlackOperator: '',
@@ -236,7 +236,8 @@ export default {
           SortType: this.sortType,
           UserType: this.cheatType,
           Start: this.checkTime.start / 1000,
-          End: this.checkTime.end / 1000
+          End: this.checkTime.end / 1000,
+          IsNew: false
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -678,7 +679,7 @@ export default {
     changeBlack(row) {
       this.BlackVisible = true
       this.editBlack.Uid = row.Uid
-      this.editBlack.Reason = ''
+      this.editBlack.Reason = '疑似度超过50分'
       this.editBlack.Operator = this.BlackOperator
     },
     save(row) {
@@ -1143,7 +1144,7 @@ export default {
           <el-form-item
             label=""
           >
-            <el-button @click="editBlack.Reason+='疑似度超过100分'">疑似度超过100分</el-button>
+            <el-button @click="editBlack.Reason+='疑似度超过50分'">疑似度超过50分</el-button>
             <el-button @click="editBlack.Reason+='，疯狂首出喂牌'">疯狂首出喂牌</el-button>
             <el-button @click="editBlack.Reason+='，拆牌狂喂'">拆牌狂喂</el-button>
             <el-button @click="editBlack.Reason+='，带同伙喂牌'">带同伙喂牌</el-button>
@@ -1152,9 +1153,11 @@ export default {
             <el-button @click="editBlack.Reason+='，累计N个pot胜率过50'"> 累计N个pot胜率过50%</el-button>
 
           </el-form-item>
+          <el-form-item>
           <el-col :span="12" :offset="10">
-            <el-button type="primary" size="medium" @click="save">保存</el-button>
+            <el-button type="primary" size="medium" @click="save" autofocus="true">保存</el-button>
           </el-col>
+          </el-form-item>
         </el-form>
       </el-row>
     </el-dialog>

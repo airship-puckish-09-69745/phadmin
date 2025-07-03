@@ -6,7 +6,7 @@ Vue.use(Router)
 /* Layout */
 import Layout from '@/layout'
 import Watermark from '@/utils/watermark'
-import {IsMars} from "@/utils/env";
+import { IsMars } from '@/utils/env'
 // import {IsMars} from "@/utils/env";
 /* Router Modules */
 // import componentsRouter from './modules/components'
@@ -152,7 +152,7 @@ export const asyncRoutes = [
         name: 'rocketRandom',
         meta: { title: 'Crash - 概率监控 ◐' }
       },
-      {//TODO 该页面准备废弃，功能移动到下面的slotsScriptStatisticsNew
+      { // TODO 该页面准备废弃，功能移动到下面的slotsScriptStatisticsNew
         path: 'slotsScriptStatistics',
         component: () => import('@/views/online/slotsScriptStatistics.vue'),
         name: 'slotsScriptStatistics',
@@ -212,13 +212,13 @@ export const asyncRoutes = [
     path: '/tableConfig',
     component: Layout,
     redirect: 'noRedirect',
-    meta: { title: '场次配置', icon: 'example', perm: 'CFG_MANAGEMENT' },
+    meta: { title: '场次配置', icon: 'example', perm: 'CFG_MANAGEMENT,CFG_MANAGEMENT_GAME,SLOTS_SCRIPT_MNG' },
     children: [
       {
         path: 'CorePokersCfg',
         component: () => import('@/views/empty'),
         redirect: 'noRedirect',
-        meta: { title: 'Poker 核心', noCache: true },
+        meta: { title: 'Poker 核心', noCache: true, perm: 'CFG_MANAGEMENT_GAME' },
         children: [
           {
             path: 'TongitsCfg',
@@ -308,7 +308,7 @@ export const asyncRoutes = [
                     path: 'tongitsQuickAIList',
                     component: () => import('@/views/config/tableConfig/tongitsAIListConfig'),
                     name: 'tongitsQuickAIList',
-                    meta: { title: 'AI-List ◐', cfgSubKey: 'tongitsQuick_ai_list_cfg', gid: 29, cgiPath: 'tongitsquickrobotlist'}
+                    meta: { title: 'AI-List ◐', cfgSubKey: 'tongitsQuick_ai_list_cfg', gid: 29, cgiPath: 'tongitsquickrobotlist' }
                   }
                 ]
                 // name: 'tongitsTableQuick',
@@ -331,10 +331,10 @@ export const asyncRoutes = [
                     component: () => import('@/views/config/tableConfig/tongitsCheat/tongitsQuickCheat.vue'),
                     name: 'tongitsQuickCheat',
                     meta: { title: 'QUICK防作弊配置 ◐' }
-                  },
+                  }
                 ]
               }
-              /*{
+              /* {
                 path: 'tongitsswapTable',
                 component: () => import('@/views/config/tableConfig/tongitsTableSwap'),
                 name: 'tongitsSwapTable',
@@ -420,7 +420,7 @@ export const asyncRoutes = [
                 ]
               }
 
-              /*{
+              /* {
                 path: 'PusoySwapTable',
                 component: () => import('@/views/config/tableConfig/pusoySwapTable'),
                 name: 'pusoySwapTable',
@@ -621,7 +621,7 @@ export const asyncRoutes = [
         path: 'PokersCfg',
         component: () => import('@/views/empty'),
         redirect: 'noRedirect',
-        meta: { title: 'Poker 非核心', noCache: true },
+        meta: { title: 'Poker 非核心', noCache: true, perm: 'CFG_MANAGEMENT_GAME' },
         children: [
           {
             path: 'dominoTable',
@@ -667,7 +667,7 @@ export const asyncRoutes = [
             name: 'ginrummyTable',
             meta: { title: 'GinRummy ◐' }
           },
-         {
+          {
             path: 'DominoQiuQiu',
             component: () => import('@/views/config/tableConfig/qiuqiuTable'),
             name: 'DominoQiuQiu',
@@ -675,7 +675,7 @@ export const asyncRoutes = [
           },
           {
             path: 'Uno',
-            component: () => import('@/views/empty'), //import('@/views/config/tableConfig/uno/unoTable'),
+            component: () => import('@/views/empty'), // import('@/views/config/tableConfig/uno/unoTable'),
             redirect: 'noRedirect',
             meta: { title: 'Uno', noCache: true },
             children: [
@@ -829,39 +829,39 @@ export const asyncRoutes = [
             redirect: 'noRedirect',
             meta: { title: 'TongitsJackpot ◐' },
             children: [
-              //{
+              // {
               //  path: 'tongitsJackpotTable',
               //  component: () => import('@/views/empty'),
               //  redirect: 'noRedirect',
               //  meta: { title: 'TongitsJackpot配桌 ◐', noCache: true },
               //  children: [
-                  {
-                    path: 'tongitsJackpotTable',
-                    component: () => import('@/views/config/tableConfig/tongitsTableJackpot'),
-                    name: 'tongitsJackpotTable',
-                    meta: { title: 'TongitsJP配桌 ◐' }
-                    // eslint-disable-next-line no-mixed-spaces-and-tabs
+              {
+                path: 'tongitsJackpotTable',
+                component: () => import('@/views/config/tableConfig/tongitsTableJackpot'),
+                name: 'tongitsJackpotTable',
+                meta: { title: 'TongitsJP配桌 ◐' }
+                // eslint-disable-next-line no-mixed-spaces-and-tabs
 				          },
-                  {
-                    path: 'tongitsJackpotAIConfig',
-                    component: () => import('@/views/config/tableConfig/tongitsJackpotAIConfig'),
-                    name: 'tongitsJackpotAIConfig',
-                    meta: { title: 'TongitsJP AI配置 ◐' }
-                  },
-                  {
-                    path: 'tongitsJackpotCfg',
-                    component: () => import('@/views/config/tableConfig/tongitsJackpotCfg'),
-                    name: 'tongitsJackpotCfg',
-                    meta: { title: 'Jackpot配置' }
-                  },
-                  {
-                    path: 'tongitsjackPotEGameControl',
-                    component: () => import('@/views/config/tableConfig/tongitsjackPotEGameControl'),
-                    name: 'tongitsjackPotEGameControl',
-                    meta: { title: 'EGame控制配置 ◐' }
-                  }
+              {
+                path: 'tongitsJackpotAIConfig',
+                component: () => import('@/views/config/tableConfig/tongitsJackpotAIConfig'),
+                name: 'tongitsJackpotAIConfig',
+                meta: { title: 'TongitsJP AI配置 ◐' }
+              },
+              {
+                path: 'tongitsJackpotCfg',
+                component: () => import('@/views/config/tableConfig/tongitsJackpotCfg'),
+                name: 'tongitsJackpotCfg',
+                meta: { title: 'Jackpot配置' }
+              },
+              {
+                path: 'tongitsjackPotEGameControl',
+                component: () => import('@/views/config/tableConfig/tongitsjackPotEGameControl'),
+                name: 'tongitsjackPotEGameControl',
+                meta: { title: 'EGame控制配置 ◐' }
+              }
               //  ]
-              //}
+              // }
             ]
           },
           {
@@ -870,19 +870,19 @@ export const asyncRoutes = [
             redirect: 'noRedirect',
             meta: { title: 'Remi ◐' },
             children: [
-                  {
-                    path: 'remiTable',
-                    component: () => import('@/views/config/tableConfig/remiTable'),
-                    name: 'remiTable',
-                    meta: { title: 'Remi配桌 ◐' }
-				          },
-                  {
-                    path: 'remiProTable',
-                    component: () => import('@/views/config/tableConfig/remiProTable'),
-                    name: 'remiProTable',
-                    meta: { title: 'RemiPro配桌 ◐' }
-				          }
-                ]
+              {
+                path: 'remiTable',
+                component: () => import('@/views/config/tableConfig/remiTable'),
+                name: 'remiTable',
+                meta: { title: 'Remi配桌 ◐' }
+              },
+              {
+                path: 'remiProTable',
+                component: () => import('@/views/config/tableConfig/remiProTable'),
+                name: 'remiProTable',
+                meta: { title: 'RemiPro配桌 ◐' }
+              }
+            ]
           },
           {
             path: '/trucoVersion',
@@ -901,7 +901,7 @@ export const asyncRoutes = [
                     component: () => import('@/views/config/tableConfig/trucoTable'),
                     name: 'trucoTable',
                     meta: { title: 'Truco配桌 ◐' }
-				          }
+                  }
                 ]
               }
             ]
@@ -923,7 +923,7 @@ export const asyncRoutes = [
                     component: () => import('@/views/config/tableConfig/buracoTable'),
                     name: 'buraTable',
                     meta: { title: 'Buraco配桌 ◐' }
-				          }
+                  }
                 ]
               }
             ]
@@ -1368,7 +1368,7 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/wrathofzeus_slots_cfg'),
                 name: 'wrathofzeus_slots_cfg',
                 meta: { title: 'W rathOfZeus' }
-              },
+              }
 
             ]
           },
@@ -2085,7 +2085,7 @@ export const asyncRoutes = [
         component: () => import('@/views/matchManage/watcherList.vue'),
         hidden: !IsMars(),
         name: 'matchWatcherList',
-        meta: { title: '主播名单', noCache: true, hidden: true },
+        meta: { title: '主播名单', noCache: true, hidden: true }
 
       },
       {
@@ -2093,7 +2093,7 @@ export const asyncRoutes = [
         component: () => import('@/views/matchManage/obMatchRecord.vue'),
         hidden: !IsMars(),
         name: 'obMatchRecordConfig',
-        meta: { title: '赛事记录', noCache: true, hidden: true },
+        meta: { title: '赛事记录', noCache: true, hidden: true }
 
       },
       {
@@ -2136,7 +2136,7 @@ export const asyncRoutes = [
         path: 'matchGtccConfig',
         component: () => import('@/views/matchManage/matchGtccConfig.vue'),
         name: 'matchGtccConfig',
-        meta: { title: 'Gtcc赛事配置', noCache: true }
+        meta: { title: 'GTCC配置', noCache: true }
       },
       {
         path: 'selfBuildMatch',
@@ -2147,27 +2147,27 @@ export const asyncRoutes = [
           {
             path: 'selfBuildMatchRule',
             component: () => import('@/views/matchManage/selfBuildManage/selfBuildMatchRule.vue'),
-            name : 'selfBuildMatchRule',
-            meta: {title:'赛制管理', noCache: true }
+            name: 'selfBuildMatchRule',
+            meta: { title: '赛制管理', noCache: true }
           },
           {
             path: 'selfBuildMatchReward',
             component: () => import('@/views/matchManage/selfBuildManage/selfBuildMatchReward.vue'),
-            name : 'selfBuildMatchReward',
-            meta: {title:'奖励配置', noCache: true }
+            name: 'selfBuildMatchReward',
+            meta: { title: '奖励配置', noCache: true }
           },
           {
             path: 'selfBuildMatchWatcherList',
             component: () => import('@/views/matchManage/selfBuildManage/selfBuildMatchWatcherList.vue'),
             name: 'selfBuildMatchWatcherList',
-            meta: { title: '主播名单', noCache: true, hidden: true },
+            meta: { title: '主播名单', noCache: true, hidden: true }
 
           },
           {
             path: 'selfBuildMatchAppConfig',
             component: () => import('@/views/matchManage/selfBuildManage/selfBuildMatchAppConfig.vue'),
             name: 'selfBuildMatchAppConfig',
-            meta: { title: '渠道配置', noCache: true, hidden: true },
+            meta: { title: '渠道配置', noCache: true, hidden: true }
 
           }
         ]
@@ -2376,11 +2376,6 @@ export const asyncRoutes = [
                         meta: { title: 'PusoySwap ◐', gid: 113 }
                       },
 
-
-
-
-
-
                     {
                       path: 'playlog_ZJH',
                       component: () => import('@/views/playerManage/playlog'),
@@ -2408,7 +2403,7 @@ export const asyncRoutes = [
              meta: { title: 'Tongits - Swap ◐', gid: 120 }
            },*/
 
-           {
+          {
             path: 'playlog_TongitsJP',
             component: () => import('@/views/playerManage/tongitsPlaylog'),
             name: 'playlog_TongitsJP',
@@ -2431,7 +2426,7 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_Truco',
             meta: { title: 'T ruco ◐', gid: 11 }
-          },
+          }
         ]
       },
 
@@ -2472,7 +2467,6 @@ export const asyncRoutes = [
             name: 'playlog_colorgame',
             meta: { title: 'C olorGame - ◐', gid: 25 }
           },
-
 
           {
             path: 'playlog_crash',
@@ -2576,7 +2570,7 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_livecolorgame',
             meta: { title: 'L ive ColorGame - ◐', gid: 129 }
-          },
+          }
 
           /*
           {
@@ -2890,8 +2884,6 @@ export const asyncRoutes = [
             name: 'wrathofzeus_slots_log',
             meta: { title: 'WrathOfZeus', gid: 172 }
           }
-
-
 
         ]
       },
@@ -3249,10 +3241,16 @@ export const asyncRoutes = [
             meta: { title: '机器人资产变更日志 ◐' }
           },
           {
-            path: 'tongitsCheatLogDev',
-            component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatNewDev.vue'),
+            path: 'tongitsCheatLog',
+            component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatNew.vue'),
             name: 'tongitsCheatLog',
             meta: { title: '作弊日志（新) ◐' }
+          },
+          {
+            path: 'tongitsCheatLogDev',
+            component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatNewDev.vue'),
+            name: 'tongitsCheatLogDev',
+            meta: { title: '作弊日志（老) ◐' }
           }
         ]
       },
@@ -3702,7 +3700,7 @@ export const asyncRoutes = [
         component: () => import('@/views/devTools/allocTools'),
         name: 'allocTools',
         meta: { title: 'Alloc开发工具' }
-      },
+      }
     ]
   },
   {
