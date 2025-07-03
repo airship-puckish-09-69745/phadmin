@@ -38,6 +38,11 @@
             <publish primary-key="ID" :key-id="getFullKey('fortunateebisu_slots_ext')" :env-empty="false" compare-type="Object" />
             <slots-row-symbols-same v-if="extCfgBool" v-model="extCfg" :symbol-list="ruleCfg.SymbolList" @saveData="saveExtCfg" />
           </el-tab-pane>
+          <el-tab-pane label="进入免费方案配置" name="scatter_trigger_plans">
+            <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布】</h3>
+            <publish primary-key="ID" :key-id="getFullKey('fortunateebisu_slots_ext')" :env-empty="false" compare-type="Object" />
+            <slots-free-trigger-plans v-if="baseCfgBool" v-model="baseCfg" :odds-str="false" :scatter-trigger-plans="baseCfg.scatterTriggerPlans" @saveData="saveBaseCfg" />
+          </el-tab-pane>
           <el-tab-pane label="拓展配置" name="scatter">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，发布即生效】</h3>
             <publish primary-key="ID" :key-id="getFullKey('fortunateebisu_slots_ext')" :env-empty="false" compare-type="Object" />
@@ -72,10 +77,11 @@ import slotsReelsDouble from './components_x/reels_double'
 import slotsRowReelsDouble from './components_x/row_reels_double'
 import slotsRowSymbolsSame from './components_x/row_symbols_same'
 import slotsScript from './components_x/slots_script'
+import SlotsFreeTriggerPlans from "@/views/config/tableConfig/slots/components_x/slotsFreeTriggerPlans.vue";
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: { Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotsFortunateebisuExt, slotsRowReelsDouble,slotsRowSymbolsSame, slotsReelsDouble, slotsScript },
+  components: {SlotsFreeTriggerPlans, Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotsFortunateebisuExt, slotsRowReelsDouble,slotsRowSymbolsSame, slotsReelsDouble, slotsScript },
   data() {
     return {
       activeTab: 'base',
