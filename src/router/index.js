@@ -2136,7 +2136,7 @@ export const asyncRoutes = [
         path: 'matchGtccConfig',
         component: () => import('@/views/matchManage/matchGtccConfig.vue'),
         name: 'matchGtccConfig',
-        meta: { title: 'Gtcc赛事配置', noCache: true }
+        meta: { title: 'GTCC配置', noCache: true }
       },
       {
         path: 'selfBuildMatch',

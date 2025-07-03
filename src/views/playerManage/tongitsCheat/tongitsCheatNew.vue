@@ -236,7 +236,8 @@ export default {
           SortType: this.sortType,
           UserType: this.cheatType,
           Start: this.checkTime.start / 1000,
-          End: this.checkTime.end / 1000
+          End: this.checkTime.end / 1000,
+          IsNew: true
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -271,7 +272,7 @@ export default {
           if (this.sortType === 1) {
             sortName = 'CheatScore'
           } else if (this.sortType === 2) {
-            sortName = 'cheatRadio'
+            sortName = 'CheatRadio'
           }
           $this.clientDB = new ClientTableData(cheatLogs, $this.pageNum, {}, sortName, -1, 'Uid')
           $this.handleCurrentChange(1)

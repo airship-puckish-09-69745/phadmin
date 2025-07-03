@@ -2889,10 +2889,15 @@ export default {
         if (response.RetCode === 0) {
           const objs = response.Data || {}
           if (objs.total > 0) {
+            let total = 0
             for (var i = 0; i < objs.list.length; i++) {
               if (!await this.checkRuleIdIsPublish(objs.list[i].id)) {
                 continue
               }
+              if (objs.list[i].self_build >  0) {
+                continue
+              }
+              total = total +1
               this.csCfgs.push({
                 'label': '[' + objs.list[i].id + ']' + objs.list[i].name,
                 'value': objs.list[i].id,
