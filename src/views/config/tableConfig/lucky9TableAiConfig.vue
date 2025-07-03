@@ -629,6 +629,13 @@ export default {
         Message.error('离桌判定失败在触发判断局数，区间配置错误')
         return 
       }
+      for (const o in this.ShowMoneyCfg) {
+        if (this.ShowMoneyCfg[o].ShowMoneyMin >= this.ShowMoneyCfg[o].ShowMoneyMax) {
+          Message.error('展示资产区间配置错误')
+          return 
+        }
+      }
+
       this.item.showMoneyCfg = []
       for (const o in this.ShowMoneyCfg) {
         const obj = {}
