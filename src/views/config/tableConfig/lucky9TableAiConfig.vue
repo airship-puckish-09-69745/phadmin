@@ -686,7 +686,7 @@ export default {
             this.item = this.DeepCopy(data)
             this.item.nickCfg = this.item.nickCfg || []
             this.item.showMoneyCfg = this.item.showMoneyCfg || []
-
+            this.item.ZeroJoinCfg = this.item.ZeroJoinCfg || []
 
             for (const o in $this.item.showMoneyCfg) {
               const one = Object.assign({}, $this.item.showMoneyCfg[o])
@@ -715,7 +715,7 @@ export default {
           }
           this.tableMoneys = Array.from(new Set(this.tableMoneys))
           this.tableMoneys.sort((x, y) => x - y)
-          console.log('tableMoneys: ', this.tableMoneys)
+          console.log('tableMonaaaeys: ', this.tableMoneys)
       
           for (let i = 0; i < this.tableMoneys.length; i++) {
             this.AllTableMoneyList.push(this.tableMoneys[i])
