@@ -918,7 +918,8 @@ export default {
       matchEvents: [
         { 'value': 0, 'label': 'All' },
         { 'value': 1, 'label': 'Events' },
-        { 'value': 4, 'label': 'GTCC' } // notice 2,3 空着
+        { 'value': 4, 'label': 'GTCC周赛' }, // notice 2,3 空着
+        { 'value': 5, 'label': 'GTCC预选赛' }
       ],
       prizeModleCfgs: [
         { 'value': 0, 'label': '固定奖励' },
