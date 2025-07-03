@@ -918,7 +918,8 @@ export default {
       matchEvents: [
         { 'value': 0, 'label': 'All' },
         { 'value': 1, 'label': 'Events' },
-        { 'value': 4, 'label': 'GTCC' } // notice 2,3 空着
+        { 'value': 4, 'label': 'GTCC周赛' }, // notice 2,3 空着
+        { 'value': 5, 'label': 'GTCC预选赛' }
       ],
       prizeModleCfgs: [
         { 'value': 0, 'label': '固定奖励' },
@@ -2889,10 +2890,15 @@ export default {
         if (response.RetCode === 0) {
           const objs = response.Data || {}
           if (objs.total > 0) {
+            let total = 0
             for (var i = 0; i < objs.list.length; i++) {
               if (!await this.checkRuleIdIsPublish(objs.list[i].id)) {
                 continue
               }
+              if (objs.list[i].self_build >  0) {
+                continue
+              }
+              total = total +1
               this.csCfgs.push({
                 'label': '[' + objs.list[i].id + ']' + objs.list[i].name,
                 'value': objs.list[i].id,

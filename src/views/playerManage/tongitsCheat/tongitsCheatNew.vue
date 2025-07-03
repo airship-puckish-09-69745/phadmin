@@ -248,10 +248,9 @@ export default {
           // /////////////
           for (let i = 0; i < cheatLogRows.length; i++) {
             const row = cheatLogRows[i]
-            // if (this.CheatType !== 0 && row.historyCheatField !== undefined && row.historyCheatField.length > this.CheatType && row.historyCheatField[this.CheatType] === 0) {
-            //   console.log('跳过', row)
-            //   continue
-            // }
+            if (this.cheatType !== -1 && row.userType !== this.cheatType) {
+              continue
+            }
             const cheatLog = {
               Uid: row.uid,
               CheatScore: row.cheatScore,
@@ -272,7 +271,7 @@ export default {
           if (this.sortType === 1) {
             sortName = 'CheatScore'
           } else if (this.sortType === 2) {
-            sortName = 'cheatRadio'
+            sortName = 'CheatRadio'
           }
           $this.clientDB = new ClientTableData(cheatLogs, $this.pageNum, {}, sortName, -1, 'Uid')
           $this.handleCurrentChange(1)
@@ -860,16 +859,16 @@ export default {
             />
           </el-select>
         </el-form-item>
-        <!--        <el-form-item label="身份：">-->
-        <!--          <el-select v-model.number="cheatType" placeholder="请选择">-->
-        <!--            <el-option-->
-        <!--              v-for="itemCheatType in cheatTypeOption"-->
-        <!--              :key="itemCheatType.value"-->
-        <!--              :label="itemCheatType.label"-->
-        <!--              :value="itemCheatType.value"-->
-        <!--            />-->
-        <!--          </el-select>-->
-        <!--        </el-form-item>-->
+        <el-form-item label="身份：">
+          <el-select v-model.number="cheatType" placeholder="请选择">
+            <el-option
+              v-for="itemCheatType in cheatTypeOption"
+              :key="itemCheatType.value"
+              :label="itemCheatType.label"
+              :value="itemCheatType.value"
+            />
+          </el-select>
+        </el-form-item>
         <!--        <el-form-item label="作弊类型：">-->
         <!--          <el-select v-model.number="CheatType" placeholder="请选择">-->
         <!--            <el-option-->
