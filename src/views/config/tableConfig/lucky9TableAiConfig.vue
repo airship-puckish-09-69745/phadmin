@@ -295,7 +295,8 @@
                         <template>
                           <el-input-number
                             v-model="item.BetReviseCfg.Probability" 
-                            :min="1"
+                            :min="0"
+                            :max="100"
                             :precision="0"
                             style="width: 100%"> 
                           </el-input-number>
