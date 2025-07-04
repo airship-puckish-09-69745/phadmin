@@ -39,7 +39,25 @@ export default {
   },
   methods: {
     downloadTemplate() {
-      window.location.href = '/robot-template.zip'
+      // 使用fetch API获取文件
+      fetch('/robot-template.xlsx')
+        .then(res => res.blob())
+        .then(blob => {
+          // 创建临时URL
+          const url = URL.createObjectURL(blob)
+          const a = document.createElement('a')
+          a.style.display = 'none'
+          a.href = url
+          a.download = 'robot-template.xlsx'
+          document.body.appendChild(a)
+          a.click()
+          // 清理资源
+          URL.revokeObjectURL(url)
+          document.body.removeChild(a)
+        })
+        .catch(() => {
+          this.$message.error('模板下载失败')
+        })
     },
     openUploadDirectory() {
       this.$refs.uploadFileInput.click()
