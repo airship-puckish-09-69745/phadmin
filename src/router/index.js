@@ -1553,6 +1553,12 @@ export const asyncRoutes = [
                 meta: { title: 'MahjongJackpot(审)' }
               },
               {
+                path: 'mayantotemmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/mayantotemmars_slots_cfg'),
+                name: 'mayantotemmars_slots_cfg',
+                meta: { title: 'MayanTotem(审)' }
+              },
+              {
                 path: 'pharaohtreasuremars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/pharaohtreasuremars_slots_cfg'),
                 name: 'pharaohtreasuremars_slots_cfg',
@@ -2063,12 +2069,6 @@ export const asyncRoutes = [
         meta: { title: '赛事监控', noCache: true }
       },
       {
-        path: 'matchTcc',
-        component: () => import('@/views/matchManage/matchTcc'),
-        name: 'matchTcc',
-        meta: { title: 'Tcc名单配置', noCache: true }
-      },
-      {
         path: 'matchLimitWhite',
         component: () => import('@/views/matchManage/matchLimitWhite'),
         name: 'matchLimitWhite',
@@ -2091,52 +2091,66 @@ export const asyncRoutes = [
 
       },
       {
-        path: 'matchPosterList',
-        component: () => import('@/views/matchManage/posterList.vue'),
-        name: 'matchPosterList',
-        meta: { title: '赛事海报', noCache: true }
-      },
-      {
-        path: 'matchHomePosterList',
-        component: () => import('@/views/matchManage/homePosterList.vue'),
-        name: 'matchHomePosterList',
-        meta: { title: 'home海报', noCache: true }
-      },
-      {
-        path: 'matchGuideList',
-        component: () => import('@/views/matchManage/matchGuide.vue'),
-        name: 'matchPosterList',
-        meta: { title: '赛事引导', noCache: true }
-      },
-      {
-        path: 'matchMapConfig',
-        component: () => import('@/views/matchManage/matchMapConfig.vue'),
-        name: 'matchMapConfig',
-        meta: { title: '比赛map配置', noCache: true }
-      },
-      {
-        path: 'matchOther',
-        component: () => import('@/views/matchManage/matchOther.vue'),
-        name: 'matchOther',
-        meta: { title: '赛事Other配置', noCache: true }
-      },
-      {
         path: 'matchJackPot',
         component: () => import('@/views/matchManage/matchJackPot.vue'),
         name: 'matchJackPot',
         meta: { title: '赛事奖池配置', noCache: true }
       },
       {
-        path: 'matchGtccConfig',
-        component: () => import('@/views/matchManage/matchGtccConfig.vue'),
-        name: 'matchGtccConfig',
-        meta: { title: 'GTCC配置', noCache: true }
+        path: 'matchOperations',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: '比赛运营管理', noCache: true },
+        children: [
+          {
+            path: 'matchPosterList',
+            component: () => import('@/views/matchManage/matchOperations/posterList.vue'),
+            name: 'matchPosterList',
+            meta: { title: '赛事海报', noCache: true }
+          },
+          {
+            path: 'matchHomePosterList',
+            component: () => import('@/views/matchManage/matchOperations/homePosterList.vue'),
+            name: 'matchHomePosterList',
+            meta: { title: 'home海报', noCache: true }
+          },
+          {
+            path: 'matchGuideList',
+            component: () => import('@/views/matchManage/matchOperations/matchGuide.vue'),
+            name: 'matchPosterList',
+            meta: { title: '赛事引导', noCache: true }
+          },
+          {
+            path: 'matchMapConfig',
+            component: () => import('@/views/matchManage/matchOperations/matchMapConfig.vue'),
+            name: 'matchMapConfig',
+            meta: { title: '比赛map配置', noCache: true }
+          },
+          {
+            path: 'matchOther',
+            component: () => import('@/views/matchManage/matchOperations/matchOther.vue'),
+            name: 'matchOther',
+            meta: { title: '赛事Other配置', noCache: true }
+          },
+          {
+            path: 'matchTcc',
+            component: () => import('@/views/matchManage/matchOperations/matchTcc.vue'),
+            name: 'matchTcc',
+            meta: { title: 'Tcc名单配置', noCache: true }
+          },
+          {
+            path: 'matchGtccConfig',
+            component: () => import('@/views/matchManage/matchOperations/matchGtccConfig.vue'),
+            name: 'matchGtccConfig',
+            meta: { title: 'GTCC配置', noCache: true }
+          }
+        ]
       },
       {
         path: 'selfBuildMatch',
         component: () => import('@/views/empty'),
         redirect: 'noRedirect',
-        meta: { title: '自建房管理', noCache: true },
+        meta: { title: '自建赛管理', noCache: true },
         children: [
           {
             path: 'selfBuildMatchRule',
@@ -2166,6 +2180,7 @@ export const asyncRoutes = [
           }
         ]
       }
+
     ]
   },
   {
@@ -3030,6 +3045,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'mahjongjackpotmars_slots_log',
             meta: { title: 'MahjongJackpot(审)', gid: 187 }
+          },
+          {
+            path: 'mayantotemtmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'mayantotemtmars_slots_log',
+            meta: { title: 'MayanTotem(审)', gid: 179 }
           },
           {
             path: 'firelinkmars_slots_log',
