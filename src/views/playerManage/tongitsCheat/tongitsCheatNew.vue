@@ -944,7 +944,6 @@ export default {
           prop="CheatScore"
           label="疑似度"
           width="80"
-          sortable
           align="center"
         >
           <template slot-scope="scope">
@@ -955,7 +954,6 @@ export default {
           prop="CheatRadio"
           label="异常占比"
           width="100"
-          sortable
           align="center"
         >
           <template slot-scope="scope">
@@ -967,7 +965,6 @@ export default {
           prop="BlackTime"
           label="拉⿊时间"
           width="160"
-          sortable
           align="center"
         >
           <template slot-scope="scope">
@@ -986,7 +983,6 @@ export default {
         <el-table-column
           prop="LastEndTime"
           label="最近牌局时间"
-          sortable
           width="160"
           align="center"
         >
@@ -997,7 +993,6 @@ export default {
         <el-table-column
           prop="UpdateTime"
           label="最近作弊时间"
-          sortable
           width="160"
           align="center"
         >
