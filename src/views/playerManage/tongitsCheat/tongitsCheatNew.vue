@@ -36,7 +36,8 @@ export default {
       sortTypeOption: [
         { label: '按时间', value: 0 },
         { label: '按疑似度', value: 1 },
-        { label: '按异常局占比', value: 2 }
+        { label: '按异常局占比', value: 2 },
+        { label: '按拉黑时间', value: 3 }
       ],
       cheatType: -1,
       cheatTypeOption: [
@@ -295,6 +296,8 @@ export default {
             sortName = 'CheatScore'
           } else if (this.sortType === 2) {
             sortName = 'CheatRadio'
+          }else if (this.sortType === 3) {
+            sortName = 'BlackTime'
           }
           $this.clientDB = new ClientTableData(cheatLogs, $this.pageNum, {}, sortName, -1, 'Uid')
           $this.handleCurrentChange(1)
