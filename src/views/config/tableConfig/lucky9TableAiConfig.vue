@@ -59,7 +59,72 @@
               </fieldset>
             </el-row>
 
-          
+            <el-row style="padding-top: 5px">
+            <h3 style="text-align:center;">机器人输赢配置</h3>
+            <el-col :span="24">
+              <div style="padding-top: 10px">
+                <el-table
+                  :data="control"
+                  stripe
+                  border
+                  style="width: 100%"
+                >
+
+                  <el-table-column
+                    prop="ControlId"
+                    label="行号"
+                    width="70"
+                  />
+
+                  <el-table-column
+                    label="输赢最小(%)"
+                    width="120"
+                  >
+                    <template scope="subScope">
+                      <el-input v-model.number="subScope.row.PerStartPool" />
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column
+                    label="输赢最大(%)"
+                    width="120"
+                  >
+                    <template scope="subScope">
+                      <el-input v-model.number="subScope.row.PerEndPool" />
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column label="机器人级别" width="120">
+                    <template scope="subScope">
+                      <el-select v-model="subScope.row.AiConfigLevel" placeholder="请选择">
+                        <el-option
+                          v-for="item in robotlvl"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value"
+                        />
+                      </el-select>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="操作">
+                    <template scope="subScope">
+                      <el-button
+                        size="mini"
+                        type="danger"
+                        @click="delControlRow(subScope.$index,subScope.row)"
+                      >删除</el-button>
+                    </template>
+                  </el-table-column>
+
+                </el-table>
+                <el-button @click="addControlButton" size="small" style="margin-top: 10px;" type="primary">添加新值</el-button>
+              </div>
+            </el-col>
+          </el-row>
+
+          <el-row style="padding-top: 5px"></el-row>
+             <el-row style="padding-top: 5px"></el-row>
+             <el-row style="padding-top: 5px"></el-row>
         </el-tab-pane>
 
         <el-tab-pane label="机器人入桌">
@@ -642,6 +707,7 @@ export default {
       edit: {},
       tableMoneys: [],
       form: {},
+      control: [],
       robotlvl: [
         {
           value: 1,
@@ -723,7 +789,7 @@ export default {
             return 
           }
       }
-
+      this.item.Control = this.control
       this.item.ShowMoneyCfg = []
       for (const o in this.ShowMoneyCfg) {
         const obj = {}
@@ -775,7 +841,9 @@ export default {
             this.item.NickCfg = this.item.NickCfg || []
             this.item.ShowMoneyCfg = this.item.ShowMoneyCfg || []
             this.item.BetReviseCfg = this.item.BetReviseCfg || {'Probability':20, "ReviseCnt":[1,-1,2,-2]}
-
+            if (this.item.Control) {
+              this.control = this.item.Control
+            }
             for (const o in $this.item.ShowMoneyCfg) {
               const one = Object.assign({}, $this.item.ShowMoneyCfg[o])
               one.TableMoney /= 1000
@@ -966,7 +1034,25 @@ export default {
       }).then(() => {
         this.$delete(this.item.NickCfg, idx)
       })
-    }
+    },
+    delControlRow(mine, row) {
+      console.log('mine:' + mine, row)
+      this.control.splice(mine, 1)
+    },
+    addControlButton() {
+      console.log('control')
+      const Id = this.control.length + 1
+      this.control.push(
+        {
+          PerStartPool: 0,
+          PerEndPool: 0,
+          AiConfigLevel: 1,
+          ControlId: Id
+        }
+      )
+    },
+
+
  
   },
   
