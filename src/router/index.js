@@ -1505,12 +1505,6 @@ export const asyncRoutes = [
                 meta: { title: 'StreetFighting(审)' }
               },
               {
-                path: 'bountyraidmars_slots_cfg',
-                component: () => import('@/views/config/tableConfig/slots/bountyraidmars_slots_cfg'),
-                name: 'bountyraidmars_slots_cfg',
-                meta: { title: 'BountyRaid(审)' }
-              },
-              {
                 path: 'fishingmastermars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/fishingmastermars_slots_cfg'),
                 name: 'fishingmastermars_slots_cfg',
@@ -3102,12 +3096,6 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'streetfightingmars_slots_log',
             meta: { title: 'StreetFighting(审)', gid: 189 }
-          },
-          {
-            path: 'bountyraidmars_slots_log',
-            component: () => import('@/views/playerManage/slotsLog'),
-            name: 'bountyraidmars_slots_log',
-            meta: { title: 'BountyRaid(审)', gid: 193 }
           },
           {
             path: 'goldtrain_slots_log',
