@@ -1553,6 +1553,12 @@ export const asyncRoutes = [
                 meta: { title: 'MahjongJackpot(审)' }
               },
               {
+                path: 'mayantotemmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/mayantotemmars_slots_cfg'),
+                name: 'mayantotemmars_slots_cfg',
+                meta: { title: 'MayanTotem(审)' }
+              },
+              {
                 path: 'pharaohtreasuremars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/pharaohtreasuremars_slots_cfg'),
                 name: 'pharaohtreasuremars_slots_cfg',
@@ -3030,6 +3036,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'mahjongjackpotmars_slots_log',
             meta: { title: 'MahjongJackpot(审)', gid: 187 }
+          },
+          {
+            path: 'mayantotemtmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'mayantotemtmars_slots_log',
+            meta: { title: 'MayanTotem(审)', gid: 179 }
           },
           {
             path: 'firelinkmars_slots_log',
