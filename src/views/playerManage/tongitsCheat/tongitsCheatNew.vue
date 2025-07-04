@@ -68,7 +68,8 @@ export default {
         Operator: ''
       },
       BlackOperator: '',
-      GameLogUidsMap: new Map()
+      GameLogUidsMap: new Map(),
+      uidNickMap: {}
     }
   },
   created() {
@@ -76,8 +77,30 @@ export default {
     this.getDataCfg()
     // this.getCheatUserType()
     this.getData()
+    this.getNicks()
+    console.log(1)
   },
   methods: {
+    getNicks() {
+      const tmp = localStorage.getItem('uid-nicks')
+      if (tmp) {
+        if (tmp != null) {
+          this.uidNickMap = JSON.parse(tmp)
+        }
+      }
+    },
+    getNick(uid) {
+      const nick = this.uidNickMap[uid]
+      if (nick) {
+        return nick
+      }
+    },
+    setNick(uid, nick) {
+      this.uidNickMap[uid] = nick
+    },
+    saveNicks() {
+      localStorage.setItem('uid-nicks', JSON.stringify(this.uidNickMap))
+    },
     getOperator() {
       const $this = this
       getInfo(this.$store.getters.token).then(function(response) {
@@ -331,6 +354,8 @@ export default {
                     }
                     if (cheatRow.hasOwnProperty('nick')) {
                       nick.add(cheatRow.nick)
+                      this.setNick(row.Uid, cheatRow.nick)
+                      this.saveNicks()
                     }
                     tidCheatLog.PlayCheatLogs.push(playCheatLog)
                   }
@@ -618,7 +643,7 @@ export default {
     },
     changeWhite(row, userType) {
       const tips = '是否确认将玩家ID为' + row.Uid + '的玩家洗白?'
-      this.$confirm(tips, '提示', {type: 'warning'}).then(() => {
+      this.$confirm(tips, '提示', { type: 'warning' }).then(() => {
         const ob = this.clientDB.GetDataByID(row.Uid)
         ob.UserType = 0
         ob.CheatScore = 0
@@ -675,7 +700,13 @@ export default {
     },
     formatUserNick(row) {
       if (row.Nick.size === 0) {
-        return '--'
+        const _nick = this.getNick(row.Uid)
+        if (_nick){
+          return _nick
+        }else {
+          return '--'
+        }
+
       } else {
         const array = Array.from(row.Nick)
         return (array[0] === '' ? '--' : array[0])
@@ -843,7 +874,7 @@ export default {
         <!--          />-->
         <!--        </el-form-item>-->
         <el-form-item label="UID：">
-          <el-input v-model.number="Uid"/>
+          <el-input v-model.number="Uid" />
         </el-form-item>
         <el-form-item>
           <el-button size="mini" type="primary" icon="el-icon-plus" @click="getCheatData">查询</el-button>
@@ -913,6 +944,7 @@ export default {
           prop="CheatScore"
           label="疑似度"
           width="80"
+          sortable
           align="center"
         >
           <template slot-scope="scope">
@@ -921,8 +953,9 @@ export default {
         </el-table-column>
         <el-table-column
           prop="CheatRadio"
-          label="异常局占比"
+          label="异常占比"
           width="100"
+          sortable
           align="center"
         >
           <template slot-scope="scope">
@@ -934,6 +967,7 @@ export default {
           prop="BlackTime"
           label="拉⿊时间"
           width="160"
+          sortable
           align="center"
         >
           <template slot-scope="scope">
@@ -942,7 +976,7 @@ export default {
         </el-table-column>
         <el-table-column
           label="拉⿊信息"
-          width="160"
+          width="300"
           align="center"
         >
           <template slot-scope="scope">
@@ -952,6 +986,7 @@ export default {
         <el-table-column
           prop="LastEndTime"
           label="最近牌局时间"
+          sortable
           width="160"
           align="center"
         >
@@ -962,6 +997,7 @@ export default {
         <el-table-column
           prop="UpdateTime"
           label="最近作弊时间"
+          sortable
           width="160"
           align="center"
         >
@@ -971,7 +1007,7 @@ export default {
         </el-table-column>
         <el-table-column
           label="详情"
-          width="300"
+          width="100"
           align="center"
         >
           <template #default="scope">
@@ -992,7 +1028,7 @@ export default {
         >
           <template slot-scope="scopeTid">
             <el-table :data="scopeTid.row.TidCheatLogs" border>
-              <el-table-column width="200" property="Tid" label="桌⼦id"/>
+              <el-table-column width="200" property="Tid" label="桌⼦id" />
               <el-table-column width="200" property="Gid" label="游戏">
                 <template slot-scope="scope">
                   {{ formatGameId(scope.row.Gid) }}
@@ -1008,7 +1044,7 @@ export default {
                   <div>{{ formatTimeDate(scope.row.FirstCheatTime) }}</div>
                 </template>
               </el-table-column>
-              <el-table-column width="100" property="CheatScore" label="疑似度增加"/>
+              <el-table-column width="100" property="CheatScore" label="疑似度增加" />
               <el-table-column width="300" property="Infos" label="作弊信息">
                 <template slot-scope="scope">
                   <el-tooltip placement="right">
@@ -1032,10 +1068,10 @@ export default {
 
                     <el-table-column width="200" label="在该桌其他真⼈玩家id">
                       <template slot-scope="scopeInfo">
-                        <p v-html="formatOtherUids(scopeInfo.row)"/>
+                        <p v-html="formatOtherUids(scopeInfo.row)" />
                       </template>
                     </el-table-column>
-                    <el-table-column width="100" property="CheatScore" label="疑似度增加"/>
+                    <el-table-column width="100" property="CheatScore" label="疑似度增加" />
                     <el-table-column width="300" property="Infos" label="该局操作异常">
                       <template slot-scope="scopeInfo">
                         <el-tooltip placement="right">
@@ -1051,8 +1087,11 @@ export default {
                     </el-table-column>
                     <el-table-column width="300" label="作弊局详情">
                       <template slot-scope="scopeInfo">
-                        <el-button type="text" size="small"
-                                   @click="getDetail(scopeInfo.row.LogId,scopeInfo.row.EndTime)">查看
+                        <el-button
+                          type="text"
+                          size="small"
+                          @click="getDetail(scopeInfo.row.LogId,scopeInfo.row.EndTime)"
+                        >查看
                         </el-button>
                       </template>
                     </el-table-column>
@@ -1089,8 +1128,13 @@ export default {
         />
       </div>
     </el_row>
-    <tongits-game-log :game-log="GameLog" :game-log-visible="GameLogVisible" :gid="Gid" :is-robot-map="isRobotMap"
-                      @closeDialog="closeDialog"/>
+    <tongits-game-log
+      :game-log="GameLog"
+      :game-log-visible="GameLogVisible"
+      :gid="Gid"
+      :is-robot-map="isRobotMap"
+      @closeDialog="closeDialog"
+    />
     <el-dialog title="拉黑" :visible.sync="BlackVisible" width="50%">
       <el-row>
         <el-form :model="editBlack" label-width="150px" size="small">
@@ -1111,7 +1155,7 @@ export default {
             label="拉黑原因："
             disabled="true"
           >
-            <el-input v-model="editBlack.Reason"/>
+            <el-input v-model="editBlack.Reason" />
           </el-form-item>
           <el-form-item
             label=""
