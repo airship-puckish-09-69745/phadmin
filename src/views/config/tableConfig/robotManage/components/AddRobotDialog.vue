@@ -39,7 +39,7 @@ export default {
   },
   methods: {
     downloadTemplate() {
-      window.location.href = '/robot-template.xlsx'
+      window.location.href = '/robot-template.zip'
     },
     openUploadDirectory() {
       this.$refs.uploadFileInput.click()
