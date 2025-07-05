@@ -3667,12 +3667,6 @@ export const asyncRoutes = [
         meta: { title: '错误日志处理' }
       },
       {
-        path: 'gameTable',
-        component: () => import('@/views/config/gameTable'),
-        name: 'gameTable',
-        meta: { title: '空闲游戏桌子' }
-      },
-      {
         path: 'gameCustomConfig',
         component: () => import('@/views/devTools/devTools'),
         redirect: 'noRedirect',
