@@ -106,11 +106,23 @@
             </template>
           </el-table-column>
           <el-table-column
+            label="输异常"
+            width="100"
+          >
+            <template slot-scope="scope">
+              <span v-if="scope.row.loserCount > 0" style="color:red">
+                {{ scope.row.loserCount}}
+              </span>
+            </template>
+          </el-table-column>
+          <el-table-column
             label="冻结中"
             width="100"
           >
             <template slot-scope="scope">
+               <span v-if="scope.row.coldCount > 0">
               {{ scope.row.coldCount }}
+               </span>
             </template>
           </el-table-column>
         </el-table>
@@ -254,9 +266,15 @@
           prop="lastLogin"
           label="更新时间"
           sortable="custom"
-          width="150">
+          width="150"
+        >
           <template slot-scope="scope">
-            {{ formatTime(scope.row.lastLogin) }}
+            <span v-if="(scope.row.status===2 || scope.row.currentTid ===0) && scope.row.lastLogin * 1000 < timeYesterday" style="color:red">
+              {{ formatTime(scope.row.lastLogin) }}
+            </span>
+            <span v-else>
+              {{ formatTime(scope.row.lastLogin) }}
+            </span>
           </template>
         </el-table-column>
         <el-table-column
@@ -296,6 +314,8 @@
               @click="handlePreOff(scope.row)"
             >冻结
             </el-button>
+
+            <RobotRecycleBtn :row="scope.row" :gid="126" @success="refresh" />
           </template>
         </el-table-column>
       </el-table>
@@ -395,6 +415,7 @@ import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import { $libDate, $libShow, ClientTableData, DataRule, MoneyShow } from '@/utils/common'
+import RobotRecycleBtn from '@/components/RobotRecycleBtn'
 const filterMap = {
   currentTableMoney: 'all',
   allowTableMoney: 'all'
@@ -404,7 +425,7 @@ function newItem() {
 }
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: { Compare, Publish },
+  components: { Compare, Publish, RobotRecycleBtn },
   data() {
     return {
       item: {
@@ -427,7 +448,8 @@ export default {
       form: {
       },
       statItems: [],
-      subKey: 'pusoywild_ai_list_cfg'
+      subKey: 'pusoywild_ai_list_cfg',
+      timeYesterday: new Date().getTime() - 86400 * 1000
     }
   },
 
@@ -572,7 +594,7 @@ export default {
           for (let i = 0; i < objs.length; i++) {
             const item = objs[i]
             if (statMap[item.allowTableMoney] == null) {
-              statMap[item.allowTableMoney] = { tableMoney: item.allowTableMoney, initMoney: 0, money: 0, gameCount: 0, workCount: 0, coldCount: 0 }
+              statMap[item.allowTableMoney] = { tableMoney: item.allowTableMoney, initMoney: 0, money: 0, gameCount: 0, workCount: 0, coldCount: 0, loserCount:0 }
             }
             if (item.status == 0) {
               statMap[item.allowTableMoney].coldCount++
@@ -584,6 +606,10 @@ export default {
               } else if (item.status == 2) {
                 statMap[item.allowTableMoney].gameCount++
               }
+            }
+
+            if (item.money / item.initMoney < 0.2) {
+              statMap[item.allowTableMoney].loserCount++
             }
           }
           this.statItems=[]

@@ -46,6 +46,12 @@
           label="道具名称"
           show-overflow-tooltip
         />
+        <el-table-column prop="show_name" label="后台名称">
+          <template slot-scope="scope">
+            {{ getItemShowName(scope.row.item_extra) }}
+          </template>
+        </el-table-column>
+
         <el-table-column prop="item_type" label="道具分类" >
           <template slot-scope="scope">
             {{ getItemTypeName(scope.row.item_type) }}
@@ -105,7 +111,7 @@
             <el-button  size="mini" icon="el-icon-edit" @click="showForm(scope.row.id)">编辑</el-button>
             <el-button v-if="scope.row.status==2" size="mini" type="success" @click="handleUpdate(scope.row.id)">上架</el-button>
             <el-button v-if="scope.row.status==1" size="mini" type="danger" @click="handleUpdate(scope.row.id)">下架</el-button>
-            <!-- <el-button v-if="scope.row.status==2" size="mini" type="danger" @click="handleDelete(scope.row.id, false)">删除</el-button> -->
+            <el-button v-if="itemEnv=='development' &&  scope.row.status==2" size="mini" type="danger" @click="handleDelete(scope.row.id, false)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -141,6 +147,10 @@
           <legend>道具信息</legend>
           <el-form-item label="道具名称：" :required="true">
             <el-input v-model="editForm.data.itemName" style="width: 200px;" placeholder="请填写道具名称" />
+          </el-form-item>
+
+          <el-form-item label="后台名称：" :required="true">
+            <el-input v-model="editForm.itemExtra.showName" style="width: 200px;" placeholder="请填写后台名称" />
           </el-form-item>
 
           <el-form-item v-if="editForm.data.itemType != 2  && editForm.data.itemType != 4" label="道具价值：" :required="true">
@@ -237,10 +247,14 @@ export default {
       pickerOptions: $libShow.DefaultDatePickerOptions(),
       selectTime: [$libDate.GetDayBegin(new Date().setSeconds(0)), $libDate.GetDayEnd(new Date().setSeconds(0))],
       imagePickerVisible: false,
-
+      itemEnv: process.env.NODE_ENV, // 项目环境
       itemSpecialAttrCfgs: [
-        { 'value': 1, 'label': '邀请函', disabled: false },
+        { 'value': 1, 'label': 'GTCC邀请函', disabled: false },
         { 'value': 2, 'label': 'GTCC线上决赛门票', disabled: false },
+        { 'value': 3, 'label': 'GTCC周赛门票', disabled: false },
+        { 'value': 4, 'label': 'Qualifying Round One 预选赛回合1', disabled: false },
+        { 'value': 5, 'label': 'Qualifying Round Two 预选赛回合 2', disabled: false },
+        { 'value': 6, 'label': 'Qualifying Round Three 预选赛回合3', disabled: false },
       ],
 
       statusCfgs: [
@@ -267,9 +281,10 @@ export default {
         visable: false,
         title: '',
         isAdd: false,
-        data:{
+        data: {
           ID: 0,
           itemName: '',
+          showName: '',
           itemCost: 0,
           itemType: 0,
           describe: '',
@@ -278,10 +293,11 @@ export default {
           sort: 0,
           status: 0,
           quality: 0,
-          timeType: [],
+          timeType: []
         },
-        itemExtra:{
+        itemExtra: {
           specialAttr: 0,
+          showName: ''
         },
         itemEndDate: $libDate.GetDayBegin(new Date().setSeconds(0))
       },
@@ -356,6 +372,7 @@ export default {
         this.editForm.data = {
           ID: 0,
           itemName: '',
+          showName: '',
           itemCost: '',
           itemType: '',
           describe: '',
@@ -367,7 +384,8 @@ export default {
           timeType: []
         }
         this.editForm.itemExtra = {
-          specialAttr:0
+          specialAttr: 0,
+          showName: ''
         }
         this.checkAll()
         this.editForm.itemEndDate = $libDate.GetDayBegin(new Date().setSeconds(0))
@@ -419,6 +437,17 @@ export default {
         }
       }
       return itemTypeName
+    },
+
+    getItemShowName(item_type) {
+      if (item_type === null) {
+        return ''
+      }
+      let exitData = JSON.parse(item_type)
+      if (exitData.showName === null) {
+        return ''
+      }
+      return exitData.showName
     },
 
     getStatusName(status) {
@@ -626,6 +655,41 @@ export default {
         console.log('取消')
       })
     },
+    dataUpdateRequest(isCreate,expireTime,timeList){
+      let showMsg = isCreate  ? '新增道具配置成功': '编辑道具配置成功！'
+      let errMsg = isCreate ? '新增道具配置失败！' : '修改道具配置失败！'
+      let url = isCreate ? '/propsconfig/props/config/create' : '/propsconfig/props/config/update'
+
+      request({
+        url: url,
+        method: 'POST',
+        data: {
+          Env: this.env,
+          ID: this.editForm.data.ID,
+          ItemName: this.editForm.data.itemName,
+          ItemCost: this.editForm.data.itemCost,
+          ItemType: this.editForm.data.itemType,
+          Describe: this.editForm.data.describe,
+          Image: this.editForm.data.image,
+          ExpireTime: expireTime,
+          Sort: this.editForm.data.sort,
+          Status: this.editForm.data.status,
+          Quality: this.editForm.data.quality,
+          TimeType: timeList,
+          ItemExtra: JSON.stringify(this.editForm.itemExtra),
+          ShowName: this.editForm.data.showName,
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          Message.success(showMsg)
+          this.getList()
+          this.editForm.visable = false
+        } else {
+          Message.error(errMsg + response.Data)
+        }
+      })
+    },
+
     saveItemConfig() {
       if (!this.configCheck()) {
         return
@@ -633,67 +697,22 @@ export default {
       let expireTime = 0
       expireTime = (Math.floor(this.editForm.itemEndDate / 1000))
       const timeList = JSON.stringify(this.editForm.data.timeType)
-      if (this.editForm.data.ID == 0) {
+      if (this.editForm.data.ID === 0) {
         this.editForm.data.status = 1
-        request({
-          url: '/propsconfig/props/config/create',
-          method: 'POST',
-          data: {
-            Env: this.env,
-            ID: this.editForm.data.ID,
-            ItemName: this.editForm.data.itemName,
-            ItemCost: this.editForm.data.itemCost,
-            ItemType: this.editForm.data.itemType,
-            Describe: this.editForm.data.describe,
-            Image: this.editForm.data.image,
-            ExpireTime: expireTime,
-            Sort: this.editForm.data.sort,
-            Status: this.editForm.data.status,
-            Quality: this.editForm.data.quality,
-            TimeType: timeList,
-            ItemExtra: JSON.stringify(this.editForm.itemExtra),
-          }
-        }).then(response => {
-          if (response.RetCode === 0) {
-            let showMsg = '新增道具配置成功！'
-            Message.success(showMsg)
-            this.getList()
-            this.editForm.visable = false
-          } else {
-            let errMsg = '新增道具配置失败！'
-            Message.error(errMsg + response.Data)
-          }
-        })
+        if(this.editForm.data.itemType === 1 && this.editForm.itemExtra.specialAttr ===0){
+          this.$confirm('当前配置的是Tongits门票,没有配道具子属性,确定是否需要配道具子属性', '提醒')
+            .then(()=>{
+              this.dataUpdateRequest(true,expireTime, timeList)
+            }).catch(()=>{
+
+          })
+
+        }else{
+          this.dataUpdateRequest(true,expireTime, timeList)
+        }
+
       } else {
-        request({
-          url: '/propsconfig/props/config/update',
-          method: 'POST',
-          data: {
-            Env: this.env,
-            ID: this.editForm.data.ID,
-            ItemName: this.editForm.data.itemName,
-            ItemCost: this.editForm.data.itemCost,
-            ItemType: this.editForm.data.itemType,
-            Describe: this.editForm.data.describe,
-            Image: this.editForm.data.image,
-            ExpireTime: expireTime,
-            Sort: this.editForm.data.sort,
-            Status: this.editForm.data.status,
-            Quality: this.editForm.data.quality,
-            TimeType: timeList,
-            ItemExtra: JSON.stringify(this.editForm.itemExtra),
-          }
-        }).then(response => {
-          if (response.RetCode === 0) {
-            let showMsg = '修改道具配置成功！'
-            Message.success(showMsg)
-            this.getList()
-            this.editForm.visable = false
-          } else {
-            let errMsg = '修改道具配置失败！'
-            Message.error(errMsg + response.Data)
-          }
-        })
+        this.dataUpdateRequest(false,expireTime, timeList)
       }
     },
     selectPageData()

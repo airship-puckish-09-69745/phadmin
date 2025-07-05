@@ -185,15 +185,22 @@
     data() {
       return {
         gameIds: [
-            //目前只支持pusoydos
-            // {
-            //     value: 22,
-            //     label: 'Tongits-pot'
-            // },
-            // {
-            //     value: 31,
-            //     label: 'Tongits 经典'
-            // }, 
+            {
+                value: 22,
+                label: 'Tongits-pot'
+            },
+            {
+                value: 28,
+                label: 'Tongits-Joker'
+            },
+            {
+                value: 29,
+                label: 'Tongits-Quick'
+            },
+            {
+                value: 31,
+                label: 'Tongits 经典'
+            }, 
             // {
             //     value: 23,
             //     label: 'Lucky9'
@@ -202,10 +209,10 @@
             //     value: 15,
             //     label: ' 德州扑克'
             // }, 
-            // {
-            //     value: 21,
-            //     label: 'Pusoy'
-            // }, 
+            {
+                value: 21,
+                label: 'Pusoy'
+            }, 
             {
                 value: 34,
                 label: 'PusoyDos'

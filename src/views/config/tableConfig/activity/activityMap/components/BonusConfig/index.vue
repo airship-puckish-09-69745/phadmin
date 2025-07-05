@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-row>
-      <el-descriptions border direction="vertical" :column="4">
+      <el-descriptions border direction="vertical" :column="3">
         <el-descriptions-item v-for="item in fields" :key="item.prop">
           <template slot="label">
             {{ item.label }}
@@ -36,7 +36,8 @@ export default {
         { label: '年终大奖初始奖金', prop: 'InitBonus' },
         { label: '活动值转化比例(%)', prop: 'ActivityTransformRate', formatter: (row) => row.ActivityTransformRate.toFixed(2) + '%' },
         { label: '奖金增加转化比例(%)', prop: 'IncreaseTransformRate', formatter: (row) => row.IncreaseTransformRate.toFixed(2) + '%' },
-        { label: '年终奖保底奖金', prop: 'GuaranteedBonus' }
+        { label: '年终奖保底奖金', prop: 'GuaranteedBonus' },
+        { label: '年终大奖发奖上限', prop: 'MaxBonus' }
       ]
     }
   },
@@ -66,6 +67,12 @@ export default {
       } else if (!this.bonusData.GuaranteedBonus !== 0 && !this.bonusData.GuaranteedBonus) {
         this.$message.error('年终奖保底奖金不能为空')
         return false
+      } else if (!this.bonusData.MaxBonus !== 0 && !this.bonusData.MaxBonus) {
+        this.$message.error('年终大奖发奖上限不能为空')
+        return false
+      } else if (this.bonusData.MaxBonus < 0 || this.bonusData.MaxBonus > 9999999999) {
+        this.$message.error('年终大奖发奖上限必须在0到9999999999之间')
+        return false
       }
 
       if (this.bonusData.InitBonus < 0 || this.bonusData.InitBonus > 9999999999) {
@@ -79,7 +86,8 @@ export default {
         InitBonus: 0,
         ActivityTransformRate: 0,
         IncreaseTransformRate: 0,
-        GuaranteedBonus: 0
+        GuaranteedBonus: 0,
+        MaxBonus: 0
       }
     },
     getData() {

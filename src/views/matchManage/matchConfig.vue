@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-row>
-      <publish primary-key="matchCfgId" key-id="MatchConfig" :env-empty="true" :attr-names="AttrNames" :makeContent="makeContent" :head-attrs="['matchCfgId','title']" />
+      <publish primary-key="matchCfgId" key-id="MatchConfig" :env-empty="true" :attr-names="AttrNames" :make-content="makeContent" :head-attrs="['matchCfgId','title']" />
     </el-row>
     <el-row>
       <el-form :model="form" label-width="100px" :inline="true" size="mini">
@@ -274,7 +274,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="赛制选择：" :required="true">
-            <el-select v-model="editForm.data.csId" placeholder="请选择" size="mini" @change="getCurrCsGrowInfo()" filterable>
+            <el-select v-model="editForm.data.csId" placeholder="请选择" size="mini" filterable @change="getCurrCsGrowInfo()">
               <el-option
                 v-for="item in showCsCfgs"
                 :key="item.value"
@@ -310,7 +310,7 @@
           <el-form-item label="排序值：" :required="true">
             <el-input v-model.number="editForm.data.sort" style="width: 200px;" placeholder="值越高排序越在前" @input="checkListSort(editForm.data.sort)" />
             <span v-show="showTip" style="color:red; margin-left:10px">注意有相同的排序值</span>
-            <el-tooltip  class="item" effect="light"  placement="right-start">
+            <el-tooltip class="item" effect="light" placement="right-start">
               <template #content>
                 <div>排序相同，时间相同则会同时展示。排序相同时间不同则大于30分钟的会展示</div>
                 <div>否则会在当前之后按顺序展示</div>
@@ -489,7 +489,7 @@
         <fieldset>
           <legend>报名条件</legend>
           <el-form-item label="报名条件：" :required="true">
-            <el-select v-model="editForm.data.signUpType" placeholder="请选择" size="mini">
+            <el-select v-model="editForm.data.signUpType" placeholder="请选择" size="mini" @change="changeRewardCfg">
               <el-option
                 v-for="item in signUpTypeCfgs"
                 :key="item.value"
@@ -537,7 +537,7 @@
             <el-input v-model.number="editForm.signExtra.matchMaxLimit" style="width: 180px;" size="mini" placeholder="请填写最大数量" />
           </el-form-item>
 
-          <el-form-item v-if="editForm.data.signUpType === 3"  label="电子钱包报表是否上报:" :required="true">
+          <el-form-item v-if="editForm.data.signUpType === 3" label="电子钱包报表是否上报:" :required="true">
             <el-radio-group v-model.number="editForm.signExtra.walletReport">
               <el-radio :label="0">是</el-radio>
               <el-radio :label="1">否</el-radio>
@@ -549,7 +549,7 @@
           <legend>Rebuy报名条件</legend>
           <el-row>
             <el-col :span="11">
-              <el-form-item  label="是否支持rebuy:" :required="true">
+              <el-form-item label="是否支持rebuy:" :required="true">
                 <el-radio-group v-model.number="editForm.signExtra.reubyExtra.supportRebuy">
                   <el-radio :label="1">是</el-radio>
                   <el-radio :label="0">否</el-radio>
@@ -590,8 +590,8 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            </el-row>
-            <el-row>
+          </el-row>
+          <el-row>
             <el-col :span="11">
               <el-form-item v-if="editForm.signExtra.reubyExtra.supportRebuy===1 && (editForm.signExtra.reubyExtra.rebuySignType === 2 || editForm.signExtra.reubyExtra.rebuySignType === 3)" label="Rebuy门票数量：" :required="true">
                 <el-input v-model.number="editForm.signExtra.reubyExtra.rebuyPropNum" style="width: 180px;" size="mini" placeholder="请填写门票数量" />
@@ -615,7 +615,7 @@
           <el-row>
             <el-col :span="11">
               <el-form-item v-if="editForm.signExtra.reubyExtra.supportRebuy===1" label="Rebuy次数:" :required="false">
-                <el-input  v-model.number="editForm.signExtra.reubyExtra.reubyCount" style="width: 200px;" size="mini" placeholder="请填写次数" />
+                <el-input v-model.number="editForm.signExtra.reubyExtra.reubyCount" style="width: 200px;" size="mini" placeholder="请填写次数" />
               </el-form-item>
             </el-col>
 
@@ -644,7 +644,7 @@
           <el-form-item label="奖励模型：" :required="true">
             <el-radio v-for="item in prizeModleCfgs" :key="item.value" v-model="editForm.prizeExtra.awardType" :label="item.value">{{ item.label }} </el-radio>
           </el-form-item>
-          <el-button  style="margin-bottom: 10px;" type="normal" size="mini" @click="addRankRewards()">添加</el-button>
+          <el-button style="margin-bottom: 10px;" type="normal" size="mini" @click="addRankRewards()">添加</el-button>
           <el-table
 
             :data="editForm.rankRewards"
@@ -663,11 +663,11 @@
             <el-table-column
               prop="rewardItems"
               label="奖励"
-              width="400"
+              width="450"
             >
               <template slot-scope="scope">
                 <ul style="list-style: none;padding-inline-start: 0;">
-                  <li v-if="editForm.prizeExtra.awardType===0" v-for="gItem in scope.row.rewardItems" :key="gItem.index" style="list-style: none;">
+                  <li v-for="gItem in scope.row.rewardItems" v-if="editForm.prizeExtra.awardType===0" :key="gItem.index" style="list-style: none;">
                     <span>金币奖励：</span>
                     <el-select v-model="gItem.getType" placeholder="请选择" size="mini" style="width:80px">
                       <el-option
@@ -677,7 +677,7 @@
                         :value="item.value"
                       />
                     </el-select>
-                    <el-select v-if="gItem.getType === 2" v-model="gItem.sceneId" placeholder="请选择投注金" size="mini" style="width:150px">
+                    <el-select v-if="gItem.getType === 2" v-model="gItem.sceneId" placeholder="请选择投注金" size="mini" style="width:200px">
                       <el-option
                         v-for="scene in betScenesCfgs"
                         :key="scene.value"
@@ -685,7 +685,7 @@
                         :value="scene.value"
                       />
                     </el-select>
-                    <el-select v-if="gItem.getType === 3" v-model="gItem.sceneId" placeholder="请选择返水金" size="mini" style="width:150px">
+                    <el-select v-if="gItem.getType === 3" v-model="gItem.sceneId" placeholder="请选择返水金" size="mini" style="width:200px">
                       <el-option
                         v-for="scene in rebateScenesCfgs"
                         :key="scene.value"
@@ -704,22 +704,21 @@
                         :label="item.propsName"
                         :value="item.propsId"
                       >
-                        <img v-if="item.propsIcon != '' " :src="item.propsIcon" style="height:36px;vertical-align: middle;"/>
-                        <span>{{ item.propsName }}</span>
+                        <img v-if="item.propsIcon != '' " :src="item.propsIcon" style="height:36px;vertical-align: middle;">
+                        <span>{{ item.propsShowName }}</span>
                       </el-option>
                     </el-select>
                     <el-input v-model.number="scope.row.propsReward.propsNum" style="width: 100px;" size="mini" placeholder="填数量" />
                   </li>
                   <li v-if="scope.row.propsReward != null && getPropsRewardItem(scope.row.propsReward.propsId,0,0).propsType === 2" style="list-style: none;">
                     <span>过期天数：</span>
-                    <el-select  v-model="scope.row.propsReward.propExpireDays" placeholder="过期天数" size="mini" style="width:200px">
+                    <el-select v-model="scope.row.propsReward.propExpireDays" placeholder="过期天数" size="mini" style="width:200px">
                       <el-option
                         v-for="item in ITEM_DAY_TYPE_OPTIONS"
                         :key="item.value"
                         :label="item.label"
                         :value="item.value"
-                      >
-                      </el-option>
+                      />
                     </el-select>
                   </li>
                 </ul>
@@ -827,8 +826,8 @@ import AppInfo from '../devTools/appInfo.vue'
 import { log } from 'console'
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
 import { getAllCommonGameConfig, getAllMatchGuidesConfig } from '@/utils/common-game-config'
-import {IsMars} from "@/utils/env";
-import { CHANNEL_OPTIONS, APPID_OPTIONS, ITEM_DAY_TYPE_OPTIONS,PROP_TYPE_OPTIONS } from '@/utils/options'
+import { IsMars } from '@/utils/env'
+import { CHANNEL_OPTIONS, APPID_OPTIONS, ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS } from '@/utils/options'
 
 export default {
   name: 'MatchConfig',
@@ -896,19 +895,21 @@ export default {
       // 返水金
       rebateScenesCfgs: [
         { 'value': 5, 'label': '没有任何限制的返水金' },
-        { 'value': 6, 'label': '有限制倍数的返水金（10倍）' }
+        { 'value': 6, 'label': '有限制倍数的返水金（10倍）' },
+        { 'value': 16, 'label': '没有任何限制的返水金【Tongits免费赛】' }
       ],
       // 投注金
       betScenesCfgs: [
         { 'value': 1, 'label': '任意游戏投注' },
         { 'value': 2, 'label': '仅限Poker类游戏投注' },
         { 'value': 3, 'label': '仅限Slots类游戏投注' },
-        { 'value': 4, 'label': '仅限Tongits游戏投注' }
+        { 'value': 4, 'label': '仅限Tongits游戏投注' },
+        { 'value': 15, 'label': '仅限GZ任意游戏投注金【Tongits免费赛】' }
       ],
       propsInfo: [ // 道具信息，暂时写死
         {
           'propsId': 0,
-          'propsType': 0,    //1:门票 2:头像框 3:德州参数券 4:德州头像框
+          'propsType': 0, // 1:门票 2:头像框 3:德州参数券 4:德州头像框
           'propsName': '无',
           'propsIcon': '',
           'propsAttr': ''
@@ -917,13 +918,14 @@ export default {
       matchEvents: [
         { 'value': 0, 'label': 'All' },
         { 'value': 1, 'label': 'Events' },
-        { 'value': 4, 'label': 'GTCC' }, //notice 2,3 空着
+        { 'value': 4, 'label': 'GTCC周赛' }, // notice 2,3 空着
+        { 'value': 5, 'label': 'GTCC预选赛' }
       ],
       prizeModleCfgs: [
         { 'value': 0, 'label': '固定奖励' },
         { 'value': 1, 'label': '动态奖励' }
       ],
-      //比赛全局ID集合
+      // 比赛全局ID集合
       matchUniqueIdCfgs: [
         { 'value': 0, 'label': '无' },
         { 'value': 10001, 'label': '188Free' },
@@ -937,7 +939,7 @@ export default {
         { 'value': 10009, 'label': 'Yamaha Moto' }
       ],
       prizeTemplateCfg: [],
-      matchPropsCfgs: [],   //比赛道具信息
+      matchPropsCfgs: [], // 比赛道具信息
       matchTicketsCfgs: [],
       csCfgs: [],
       showCsCfgs: [],
@@ -947,10 +949,10 @@ export default {
       endNumCfgs: new Map(), // 打立阶段结束规则剩余人数 用于配置检查
       promoteNumCfgs: new Map(), // 打立阶段晋级规则晋级人数 用于配置检查
       reachOutNumCfgs: new Map(), // 定局晋级人数
-      growTotalNumCfgs: new Map(), //打立阶段淘汰分轮数
-      disuseScoreGrowDetail: new Map(),//打立阶段淘汰分配置
-      csIdCfg: [],      //赛制ID集合
-      reubyGrowCfgs:[],
+      growTotalNumCfgs: new Map(), // 打立阶段淘汰分轮数
+      disuseScoreGrowDetail: new Map(), // 打立阶段淘汰分配置
+      csIdCfg: [], // 赛制ID集合
+      reubyGrowCfgs: [],
       tableData: [],
       limit: 100,
       total: 0,
@@ -979,7 +981,8 @@ export default {
           openDaysLimit: 0,
           sort: 0,
           associateKey: '0',
-          dcReport: 0
+          dcReport: 0,
+          updateTime: 0
         },
         loopDetail: {
           // 只有一场
@@ -1002,31 +1005,7 @@ export default {
             }
           ]
         },
-        rankRewards: [
-          {
-            index: 1,
-            startRank: 1,
-            endRank: 1,
-            rewardItems: [
-              {
-                index: 1,
-                getType: 1,
-                getPid: 0,
-                getNum: 0,
-                sceneId: 0 // 返水金投注金场景类型（调用营销接口时用）
-              }
-            ],
-            propsReward: {
-              propsId: 0,
-              propsType: 0,
-              propsName: '',
-              propsIcon: '',
-              propsAttr: '',
-              propsNum: 0,
-              propExpireDays:-1
-            }
-          }
-        ],
+        rankRewards: this.initRankRewards(),
         appInfo: [
           {
             index: 1,
@@ -1042,28 +1021,28 @@ export default {
           betCnt: 0,
           matchEvents: 0,
           matchUniqueId: 0,
-          propId: 0,    //门票道具ID,
-          propType: 0, //道具类型,
-          propCost: 0,  //道具价值
-          propNum: 1,  //数量
-          propName: '', //道具名称
+          propId: 0, // 门票道具ID,
+          propType: 0, // 道具类型,
+          propCost: 0, // 道具价值
+          propNum: 1, // 数量
+          propName: '', // 道具名称
           matchMaxLimit: 0,
-          walletReport: 0, //电子钱包报表上报 0:上报 1:不上报
+          walletReport: 0, // 电子钱包报表上报 0:上报 1:不上报
           reubyExtra: {
-            supportRebuy:0,
-            reubyFree :0,
-            reubyCount:0,
-            reubyRound:0,
-            reubyScores:0,
-            reubySecs:0,
-            rebuySignType:0,
-            rebuyPropId:0,
-            rebuyPropNum:0,
-            rebuyPropCost:0,
-            rebuyPropType:0,
-            rebuyPropName:'',
-            walletReport: 0, //电子钱包报表上报 0:上报 1:不上报
-          },
+            supportRebuy: 0,
+            reubyFree: 0,
+            reubyCount: 0,
+            reubyRound: 0,
+            reubyScores: 0,
+            reubySecs: 0,
+            rebuySignType: 0,
+            rebuyPropId: 0,
+            rebuyPropNum: 0,
+            rebuyPropCost: 0,
+            rebuyPropType: 0,
+            rebuyPropName: '',
+            walletReport: 0 // 电子钱包报表上报 0:上报 1:不上报
+          }
         },
         prizeExtra: {
           awardType: 0,
@@ -1071,7 +1050,7 @@ export default {
           prizeTemplateId: 0,
           rewardType: 1,
           sceneId: 0
-        },
+        }
       },
 
       AttrNames: {
@@ -1112,49 +1091,127 @@ export default {
       },
       showDevTool: false,
       showTip: false,
-      propsTypeList:[1,2], //门票 头像框
+      propsTypeList: [1, 2] // 门票 头像框
     }
   },
   computed: {
   },
-   created() {
+  created() {
     this.name = store.getters.name
     this.env = store.getters.env || this.env
-     if(!IsMars()) {
-       this.getCsCfgsAsyncCheck()
-       this.getPrizeTemplateCfgNew()
-     }else{
-       this.getCsCfgs()
-       this.getPrizeTemplateCfg()
-     }
-    this.getGuideCfgs()
-    if (this.env === 'pro') {
-      // 正式环境暂时只开放以下选项
-      // 返水金
-      this.rebateScenesCfgs = [
-        { 'value': 5, 'label': '没有任何限制的返水金' }
-        // { 'value': 6, 'label': '有限制倍数的返水金（10倍）' }
-      ]
-      // 投注金
-      this.betScenesCfgs = [
-        { 'value': 1, 'label': '任意游戏投注' }
-        // { 'value': 2, 'label': '仅限Poker类游戏投注' },
-        // { 'value': 3, 'label': '仅限Slots类游戏投注' },
-        // { 'value': 4, 'label': '仅限Tongits游戏投注' }
-      ]
+    if (!IsMars()) {
+      this.getCsCfgsAsyncCheck()
+      this.getPrizeTemplateCfgNew()
+    } else {
+      this.getCsCfgs()
+      this.getPrizeTemplateCfg()
     }
-     if(!IsMars()){
-       this.getMatchProps()
-     }
+    this.getGuideCfgs()
+    if (!IsMars()) {
+      this.getMatchProps()
+    }
   },
   mounted() {
     this.getList()
-    if(!IsMars()) {
+    if (!IsMars()) {
       this.getMatchProps()
     }
     // 自动清理过期配置
   },
   methods: {
+    initRankRewards() {
+      return [
+        {
+          index: 1,
+          startRank: 1,
+          endRank: 1,
+          rewardItems: [
+            {
+              index: 1,
+              getType: 1,
+              getPid: 0,
+              getNum: 0,
+              sceneId: 0 // 返水金投注金场景类型（调用营销接口时用）
+            }
+          ],
+          propsReward: {
+            propsId: 0,
+            propsType: 0,
+            propsName: '',
+            propsIcon: '',
+            propsAttr: '',
+            propsNum: 0,
+            propExpireDays: -1
+          }
+        }
+      ]
+    },
+    changeRewardCfg() {
+      // 判断是否是编辑
+      if (this.editForm.data.id > 0) {
+        // 判断修改时间 > 2025-07-01
+        if (this.editForm.data.updateTime > 1751299200) {
+          this.getAfterTypeCfgOptions()
+          this.getAfterUpdatedSceneSelection()
+        } else {
+          this.getExistedTypeCfgOptions()
+          this.getExistedSelections()
+        }
+      } else {
+        this.getAfterTypeCfgOptions()
+        this.getAfterUpdatedSceneSelection()
+        // 新增的配置，把奖励信息重置
+        this.editForm.rankRewards = this.initRankRewards()
+      }
+    },
+    getExistedSelections() {
+      this.betScenesCfgs = [{ 'value': 1, 'label': '任意游戏投注' },
+        { 'value': 15, 'label': '仅限GZ任意游戏投注金【Tongits免费赛】' }]
+      this.rebateScenesCfgs = [{ 'value': 5, 'label': '没有任何限制的返水金' },
+        { 'value': 16, 'label': '没有任何限制的返水金【Tongits免费赛】' }]
+    },
+    getAfterUpdatedSceneSelection() {
+      if (this.editForm.data.signUpType == 1) { // 免费报名
+        // 投注金
+        this.betScenesCfgs = [
+          { 'value': 15, 'label': '仅限GZ任意游戏投注金【Tongits免费赛】' }
+        ]
+        // 返水金
+        this.rebateScenesCfgs = [
+          { 'value': 16, 'label': '没有任何限制的返水金【Tongits免费赛】' }
+        ]
+      } else { // 付费报名
+        // 投注金
+        this.betScenesCfgs = [
+          { 'value': 1, 'label': '任意游戏投注' }
+        ]
+        // 返水金
+        this.rebateScenesCfgs = [
+          { 'value': 5, 'label': '没有任何限制的返水金' }
+        ]
+      }
+    },
+    getExistedTypeCfgOptions() {
+      this.getTypeCfgs = [
+        { 'value': 1, 'label': '金币' },
+        { 'value': 2, 'label': '投注金' },
+        { 'value': 3, 'label': '返水金' }
+      ]
+    },
+    getAfterTypeCfgOptions() {
+      if (this.editForm.data.signUpType === 1) { // 免费报名
+        this.getTypeCfgs = [
+          { 'value': 1, 'label': '金币' },
+          { 'value': 2, 'label': '投注金' }
+        ]
+      } else { // 付费报名
+        this.getTypeCfgs = [
+          { 'value': 1, 'label': '金币' },
+          { 'value': 2, 'label': '投注金' },
+          { 'value': 3, 'label': '返水金' }
+        ]
+      }
+    },
     resetSearch() {
       this.form.gameId = -1
       this.form.status = -1
@@ -1184,7 +1241,7 @@ export default {
                 'ruleType': objs.list[i].rule_type
               })
               const stage_detail = JSON.parse(objs.list[i].stage_detail)
-              //console.log("打立初级信息 ", stage_detail)
+              // console.log("打立初级信息 ", stage_detail)
               for (var j = 0; j < stage_detail.length; j++) {
                 if (stage_detail[j].system_type === 1) { // 打立出局
                   // console.log("id:" + objs.list[i].id + " min:" + stage_detail[j].system_strike_out.end_rule.match_minute)
@@ -1192,9 +1249,9 @@ export default {
                   this.endMinuteCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.end_rule.match_minute)
                   this.endNumCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.end_rule.lave_user_number)
                   this.promoteNumCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.promotion_rule.user_number)
-                  this.growTotalNumCfgs.set(objs.list[i].id,stage_detail[j].system_strike_out.disuse_score_growth.grow_total)
-                  this.disuseScoreGrowDetail.set(objs.list[i].id,stage_detail[j].system_strike_out.disuse_score_growth.disuse_score_grow_detail)
-                  //console.log("disuseScoreGrowDetail",this.disuseScoreGrowDetail)
+                  this.growTotalNumCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.disuse_score_growth.grow_total)
+                  this.disuseScoreGrowDetail.set(objs.list[i].id, stage_detail[j].system_strike_out.disuse_score_growth.disuse_score_grow_detail)
+                  // console.log("disuseScoreGrowDetail",this.disuseScoreGrowDetail)
                 } else if (stage_detail[j].system_type == 2) {
                   // 存储定局信息
                   this.reachOutNumCfgs.set(objs.list[i].id, stage_detail[j].system_reach_out.round_config[0].promotion_user)
@@ -1277,17 +1334,17 @@ export default {
     },
     makeContent(key, addData, delData, editData) {
       // console.log(key, JSON.stringify(addData), JSON.stringify(delData), JSON.stringify(editData))
-      let change = new Set()
-      let add = new Set()
-      let del = new Set()
+      const change = new Set()
+      const add = new Set()
+      const del = new Set()
       // 新增取newVal
       if (addData) {
         // console.log("addData",addData)
         for (var i = 0; i < addData.length; i++) {
-          for (let ele of addData[i]) {
-            if (ele.key == "matchCfgId") {
+          for (const ele of addData[i]) {
+            if (ele.key == 'matchCfgId') {
               add.add(ele.newVal)
-              console.log("add", ele.newVal)
+              console.log('add', ele.newVal)
             }
           }
         }
@@ -1295,10 +1352,10 @@ export default {
       if (delData) {
         // console.log("delData",delData)
         for (var i = 0; i < delData.length; i++) {
-          for (let ele of delData[i]) {
-            if (ele.key == "matchCfgId") {
+          for (const ele of delData[i]) {
+            if (ele.key == 'matchCfgId') {
               del.add(ele.oldVal)
-              console.log("del", ele.oldVal)
+              console.log('del', ele.oldVal)
             }
           }
         }
@@ -1311,17 +1368,17 @@ export default {
         }
       }
       if (change.size + del.size + add.size == 0) {
-        console.log("no change return")
-        return "没有修改!"
+        console.log('no change return')
+        return '没有修改!'
       }
 
-      let str = ""
+      let str = ''
       let has = false
       for (let i = 0; i < this.tableData.length; i++) {
         const row = this.tableData[i]
         if (change.has(row.id)) {
           // console.log(JSON.stringify(row))
-          has && (str += "\r\n---");
+          has && (str += '\r\n---')
           has = true
           str += `\r\n修改： appid:【${row.show_appinfo}】。赛事ID:【${row.id}】`
           str += `\r\n${this.getGameName(row.game_id)} - ${this.getRepeatTypeShow(row.repeat_type)} - ${row.name}`
@@ -1329,7 +1386,7 @@ export default {
         }
         if (del.has(row.id)) {
           // console.log(JSON.stringify(row))
-          has && (str += "\r\n---");
+          has && (str += '\r\n---')
           has = true
           str += `\r\n下架： appid:【${row.show_appinfo}】。赛事ID:【${row.id}】`
           str += `\r\n${this.getGameName(row.game_id)} - ${this.getRepeatTypeShow(row.repeat_type)} - ${row.name}`
@@ -1337,7 +1394,7 @@ export default {
         }
         if (add.has(row.id)) {
           // console.log(JSON.stringify(row))
-          has && (str += "\r\n---");
+          has && (str += '\r\n---')
           has = true
           str += `\r\n上架： appid:【${row.show_appinfo}】。赛事ID:【${row.id}】`
           str += `\r\n${this.getGameName(row.game_id)} - ${this.getRepeatTypeShow(row.repeat_type)} - ${row.name}`
@@ -1393,7 +1450,7 @@ export default {
       return show
     },
     selectMatchGame() {
-      console.log("selectMatchGame")
+      console.log('selectMatchGame')
       this.showCsCfgs = []
       // 循环遍历是否存在gameId
       if (this.csCfgs.length > 0) {
@@ -1457,7 +1514,7 @@ export default {
           propsName: '',
           propsIcon: '',
           propsAttr: '',
-          propExpireDays:-1,
+          propExpireDays: -1
         }
       })
     },
@@ -1633,7 +1690,7 @@ export default {
               propsIcon: '',
               propsAttr: '',
               propsNum: 0,
-              propExpireDays:-1,
+              propExpireDays: -1
             }
           }
         ]
@@ -1654,19 +1711,19 @@ export default {
           matchMaxLimit: 0,
           walletReport: 0,
           reubyExtra: {
-            supportRebuy:0,
-            reubyFree :0,
-            reubyCount:0,
-            reubyRound:0,
-            reubyScores:0,
-            reubySecs:0,
-            rebuySignType:0,
-            rebuyPropId:0,
-            rebuyPropNum:0,
-            rebuyPropCost:0,
-            rebuyPropType:0,
-            rebuyPropName:'',
-          },
+            supportRebuy: 0,
+            reubyFree: 0,
+            reubyCount: 0,
+            reubyRound: 0,
+            reubyScores: 0,
+            reubySecs: 0,
+            rebuySignType: 0,
+            rebuyPropId: 0,
+            rebuyPropNum: 0,
+            rebuyPropCost: 0,
+            rebuyPropType: 0,
+            rebuyPropName: ''
+          }
         }
 
         this.editForm.prizeExtra = {
@@ -1714,7 +1771,8 @@ export default {
           openDaysLimit: editData.open_days_limit,
           sort: editData.sort,
           associateKey: editData.associate_key,
-          dcReport: editData.dc_report
+          dcReport: editData.dc_report,
+          updateTime: editData.update_time
         }
         /* 如果在本地找不到值 则显示0 */
         let isfind = false
@@ -1780,6 +1838,7 @@ export default {
         }
       }
       this.getCurrCsGrowInfo()
+      this.changeRewardCfg()
     },
     checkHaveGame(gid, gameArr) {
       let flag = false
@@ -1813,7 +1872,7 @@ export default {
       for (let i = 0; i < this.editForm.rankRewards.length; i++) {
         const element = this.editForm.rankRewards[i]
         if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0) {
-          element.propsReward = this.getPropsRewardItem(element.propsReward.propsId, element.propsReward.propsNum,element.propsReward.propExpireDays)
+          element.propsReward = this.getPropsRewardItem(element.propsReward.propsId, element.propsReward.propsNum, element.propsReward.propExpireDays)
         }
       }
       for (let i = 0; i < this.matchPropsCfgs.length; i++) {
@@ -1844,7 +1903,7 @@ export default {
         if (this.editForm.loopDetail.onceTime) {
           bTime = Math.floor(this.editForm.loopDetail.onceTime[0] / 1000)
           eTime = Math.floor(this.editForm.loopDetail.onceTime[1] / 1000)
-          repeatDetail = JSON.stringify({startTime: bTime, endTime: eTime})
+          repeatDetail = JSON.stringify({ startTime: bTime, endTime: eTime })
         }
       } else {
         // 循环
@@ -1898,7 +1957,7 @@ export default {
           AssociateKey: this.editForm.data.associateKey,
           DcReport: this.editForm.data.dcReport,
           SignExtra: JSON.stringify(this.editForm.signExtra),
-          PrizeExtra: JSON.stringify(this.editForm.prizeExtra),
+          PrizeExtra: JSON.stringify(this.editForm.prizeExtra)
 
         }
       }).then(response => {
@@ -2051,7 +2110,7 @@ export default {
           data: {
             Env: this.env,
             Path: '/match/props/config/list',
-            PropType: 0,
+            PropType: 0
           }
         })
         if (response.RetCode === 0) {
@@ -2065,14 +2124,19 @@ export default {
                 'propsIcon': '',
                 'propsAttr': '',
                 'propsCost': '',
+                'propsShowName': ''
               }
             ]
             this.matchTicketsCfgs = []
             var timestamp = Date.parse(new Date()) / 1000
             for (let i = 0; i < objs.list.length; i++) {
-              if(this.propsTypeList.includes(objs.list[i].item_type)) {
+              if (this.propsTypeList.includes(objs.list[i].item_type)) {
                 if (objs.list[i].status === 1 && ((objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET && objs.list[i].expire_time > timestamp) ||
-                  objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME)){
+                  objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME)) {
+                  let str = objs.list[i].item_name
+                  if (objs.list[i].show_name.length > 0) {
+                    str = str + '(' + objs.list[i].show_name + ')'
+                  }
                   this.matchPropsCfgs.push({
                     'propsType': objs.list[i].item_type,
                     'propsId': objs.list[i].id,
@@ -2080,22 +2144,23 @@ export default {
                     'propsIcon': objs.list[i].image,
                     'propsAttr': objs.list[i].item_describe,
                     'propsCost': objs.list[i].item_cost,
+                    'propsShowName': str
                   })
-                  if (objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET) { //Tongits 门票
+                  if (objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET) { // Tongits 门票
                     this.matchTicketsCfgs.push({
-                      'label': objs.list[i].item_name,
-                      'value': objs.list[i].id,
+                      'label': str,
+                      'value': objs.list[i].id
                     })
                   }
                 }
               }
+            }
           }
         }
-      }
-    } catch(error) {
-      console.log(error)
-    }finally{}
-  },
+      } catch (error) {
+        console.log(error)
+      } finally {}
+    },
     errmsg(txt) {
       this.$alert(txt, '', {
         type: 'error',
@@ -2143,9 +2208,9 @@ export default {
       if (this.editForm.data.openDaysLimit > 0 && this.editForm.data.signUpType != 0) {
         this.errmsg('每日限制已经开启')
       }
-      //付费赛
+      // 付费赛
       if (this.editForm.data.signUpType === 0) {
-        if  (this.editForm.data.signUpNum === 0){
+        if (this.editForm.data.signUpNum === 0) {
           this.errmsg('付费赛报名费不能为0')
           return false
         }
@@ -2158,7 +2223,7 @@ export default {
         this.errmsg('当前选择的是免费赛,不能选择动态奖池分配模式')
         return false
       }
-      if(!await this.propCheck()){
+      if (!await this.propCheck()) {
         return false
       }
 
@@ -2218,15 +2283,12 @@ export default {
       } else if (this.editForm.data.opentMatchMember % 3 != 0) {
         this.errmsg('开赛人数值必须是3的倍数！')
         return false
-      } else if(this.editForm.signExtra.matchMaxLimit > 0 && this.editForm.signExtra.matchMaxLimit < this.editForm.data.opentMatchMember) {
+      } else if (this.editForm.signExtra.matchMaxLimit > 0 && this.editForm.signExtra.matchMaxLimit < this.editForm.data.opentMatchMember) {
         this.errmsg('报名最大限制必须大于最低开赛人数')
         return false
-      }else if ((this.editForm.data.repeatType == 0) && ((Math.floor(this.editForm.loopDetail.onceTime[1] / 1000) - Math.floor(this.editForm.loopDetail.onceTime[0] / 1000)) < 600)) {
+      } else if ((this.editForm.data.repeatType == 0) && ((Math.floor(this.editForm.loopDetail.onceTime[1] / 1000) - Math.floor(this.editForm.loopDetail.onceTime[0] / 1000)) < 600)) {
         this.errmsg('比赛开始结束间隔要大于10分钟！')
         return false
-      } else if ((this.editForm.data.repeatType != 0) && ((Math.floor(this.editForm.loopDetail.loopEndDate / 1000) - Math.floor(this.editForm.loopDetail.loopStartDate / 1000)) < 86400)) {
-        // this.errmsg('循环赛开始结束时间不能为同一天！')  //循环赛去掉同一天检测
-        // return false
       } else if (this.editForm.data.signUpNum < 0) {
         this.errmsg('报名费数值不能小于零')
         return false
@@ -2264,38 +2326,39 @@ export default {
           this.errmsg('sng比赛必须开赛后消失')
           return false
         }
-        // 验证固定奖励的配置项
-        this.editForm.prizeExtra.rewardType = parseInt(this.editForm.prizeExtra.rewardType)
-        if (this.editForm.prizeExtra.awardType === 0) {
-          this.editForm.prizeExtra.rewardType = 1
-          this.editForm.prizeExtra.sceneId = 0
-          if (!await this.checkRewardCfg(this.editForm.rankRewards)) {
-            return false
-          }
-        }
-        if (this.editForm.prizeExtra.awardType === 1){
-          if(!await this.checkDynamicRewardCfg(this.editForm.rankRewards)){
-            return false
-          }
-        }
-        if (this.editForm.prizeExtra.awardType == 1 && this.editForm.prizeExtra.prizeTemplateId == 0) {
-          this.errmsg('当前是动态奖池，请选择模板')
-          return false
-        }
-        if ((this.editForm.prizeExtra.awardType == 1) && (this.editForm.prizeExtra.prizeRate < 1 || this.editForm.prizeExtra.prizeRate >= 100)) {
-          this.errmsg('当前是动态奖池手续费率范围是[1-100)')
-          return false
-        }
+      }
 
-        if (this.editForm.prizeExtra.awardType == 1) {
-          // 目前动态奖池只有真金和返水金
-          if (this.editForm.prizeExtra.rewardType == 2) {
-            this.editForm.prizeExtra.rewardType = 3
-          }
-          // 动态奖池奖励里诶行如果是返水金，填充返水金类型
-          if (this.editForm.prizeExtra.rewardType == 3) {
-            this.editForm.prizeExtra.sceneId = 5 // 没有任何限制的返水金
-          }
+      // 验证固定奖励的配置项
+      this.editForm.prizeExtra.rewardType = parseInt(this.editForm.prizeExtra.rewardType)
+      if (this.editForm.prizeExtra.awardType === 0) {
+        this.editForm.prizeExtra.rewardType = 1
+        this.editForm.prizeExtra.sceneId = 0
+        if (!await this.checkRewardCfg(this.editForm.rankRewards)) {
+          return false
+        }
+      }
+      if (this.editForm.prizeExtra.awardType === 1) {
+        if (!await this.checkDynamicRewardCfg(this.editForm.rankRewards)) {
+          return false
+        }
+      }
+      if (this.editForm.prizeExtra.awardType == 1 && this.editForm.prizeExtra.prizeTemplateId == 0) {
+        this.errmsg('当前是动态奖池，请选择模板')
+        return false
+      }
+      if ((this.editForm.prizeExtra.awardType == 1) && (this.editForm.prizeExtra.prizeRate < 1 || this.editForm.prizeExtra.prizeRate >= 100)) {
+        this.errmsg('当前是动态奖池手续费率范围是[1-100)')
+        return false
+      }
+
+      if (this.editForm.prizeExtra.awardType === 1) {
+        // 目前动态奖池只有真金和返水金
+        if (this.editForm.prizeExtra.rewardType === 2) {
+          this.editForm.prizeExtra.rewardType = 3
+        }
+        // 动态奖池奖励里诶行如果是返水金，填充返水金类型
+        if (this.editForm.prizeExtra.rewardType === 3) {
+          this.editForm.prizeExtra.sceneId = 5 // 没有任何限制的返水金
         }
       }
 
@@ -2304,7 +2367,7 @@ export default {
         return false
       }
 
-      if (!this.reubyConfigCheck()){
+      if (!this.reubyConfigCheck()) {
         return false
       }
       return true
@@ -2315,11 +2378,11 @@ export default {
         this.errmsg('请添加固定奖励配置')
         return false
       }
-      //前三名单独检测
-      var topThree=[]
-      for(let index = 0; index < rewards.length; index++) {
+      // 前三名单独检测
+      var topThree = []
+      for (let index = 0; index < rewards.length; index++) {
         const element = rewards[index]
-        if (element.startRank === element.endRank && element.startRank <= 3){
+        if (element.startRank === element.endRank && element.startRank <= 3) {
           topThree.push(element.startRank)
         }
         if (element.startRank >= 4 && topThree.length < 3) {
@@ -2327,7 +2390,6 @@ export default {
           return false
         }
       }
-      console.log("rewards",rewards)
       // 遍历配置项
       for (let index = 0; index < rewards.length; index++) {
         const element = rewards[index]
@@ -2335,26 +2397,26 @@ export default {
           this.errmsg('请填写正确的排名')
           return false
         }
-        if (element.startRank <= 3 &&  element.startRank != element.endRank) {
+        if (element.startRank <= 3 && element.startRank != element.endRank) {
           this.errmsg('奖励前三名需要单独配，名次区间请配置成：1-1  2-2 3-3')
           return false
         }
-        if(element.hasOwnProperty('propsReward') && element.hasOwnProperty('rewardItems') && element.propsReward.propsId <= 0 && element.rewardItems[0].getNum <=0){
-          this.errmsg("当前名次没有配任何奖励,请检查")
+        if (element.hasOwnProperty('propsReward') && element.hasOwnProperty('rewardItems') && element.propsReward.propsId <= 0 && element.rewardItems[0].getNum <= 0) {
+          this.errmsg('当前名次没有配任何奖励,请检查')
           return false
         }
-        if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0 && (element.propsReward.propsNum === 0 || element.propsReward.propsNum === undefined)){
+        if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0 && (element.propsReward.propsNum === 0 || element.propsReward.propsNum === undefined)) {
           this.errmsg('名次[' + element.startRank + '-' + element.endRank + ']' + '项请填写道具数量')
           return false
         }
         if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0 &&
-          this.getPropsRewardItem(element.propsReward.propsId,0,0).propsType === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME && element.propsReward.propExpireDays < 0){
+          this.getPropsRewardItem(element.propsReward.propsId, 0, 0).propsType === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME && element.propsReward.propExpireDays < 0) {
           this.errmsg('请选择头像框过期时间')
           return false
         }
 
-        if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0){
-          if(! await this.propTakeEffectCheck(element.propsReward.propsId)){
+        if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0) {
+          if (!await this.propTakeEffectCheck(element.propsReward.propsId)) {
             this.errmsg('所选择的道具不生效,请检查')
             return false
           }
@@ -2384,12 +2446,12 @@ export default {
       return true
     },
 
-    async checkDynamicRewardCfg(rewards){
-      //前三名单独检测
-      var topThree=[]
-      for(let index = 0; index < rewards.length; index++) {
+    async checkDynamicRewardCfg(rewards) {
+      // 前三名单独检测
+      var topThree = []
+      for (let index = 0; index < rewards.length; index++) {
         const element = rewards[index]
-        if (element.startRank === element.endRank && element.startRank <= 3){
+        if (element.startRank === element.endRank && element.startRank <= 3) {
           topThree.push(element.startRank)
         }
         if (element.startRank >= 4 && topThree.length < 3) {
@@ -2399,30 +2461,31 @@ export default {
       }
       for (let index = 0; index < rewards.length; index++) {
         const element = rewards[index]
-        if (element.hasOwnProperty('propsReward') && element.propsReward.propsId <=0 ) {
+        if (element.hasOwnProperty('propsReward') && element.propsReward.propsId <= 0) {
           this.errmsg('当前名次没有配道具奖励')
           return false
         }
-        if(element.propsReward.propsId)
-        if (element.startRank <= 0 || element.endRank < element.startRank) {
-          this.errmsg('请填写正确的排名')
-          return false
+        if (element.propsReward.propsId) {
+          if (element.startRank <= 0 || element.endRank < element.startRank) {
+            this.errmsg('请填写正确的排名')
+            return false
+          }
         }
-        if (element.startRank <= 3 &&  element.startRank != element.endRank) {
+        if (element.startRank <= 3 && element.startRank != element.endRank) {
           this.errmsg('奖励前三名需要单独配，名次区间请配置成：1-1  2-2   3-3')
           return false
         }
-        if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0 && (element.propsReward.propsNum ===0 || element.propsReward.propsNum === undefined) ){
-          this.errmsg("请选择道具或者填写道具数量")
+        if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0 && (element.propsReward.propsNum === 0 || element.propsReward.propsNum === undefined)) {
+          this.errmsg('请选择道具或者填写道具数量')
           return false
         }
         if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0 &&
-          this.getPropsRewardItem(element.propsReward.propsId,0,0).propsType === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME  && element.propsReward.propExpireDays < 0){
+          this.getPropsRewardItem(element.propsReward.propsId, 0, 0).propsType === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME && element.propsReward.propExpireDays < 0) {
           this.errmsg('请选择头像框过期时间')
           return false
         }
-        if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0){
-          if(! await this.propTakeEffectCheck(element.propsReward.propsId)){
+        if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0) {
+          if (!await this.propTakeEffectCheck(element.propsReward.propsId)) {
             this.errmsg('所选择的道具不生效,请检查')
             return false
           }
@@ -2499,26 +2562,28 @@ export default {
       }
       return false
     },
-    getPropsRewardItem(pid,propsNum,expireDays) {
+    getPropsRewardItem(pid, propsNum, expireDays) {
       const one = {
         propsId: 0,
         propsType: 0,
         propsName: '',
         propsIcon: '',
         propsAttr: '',
-        propsNum:propsNum,
+        propsNum: propsNum,
         propCost: 0,
-        propExpireDays:expireDays,
+        propExpireDays: expireDays,
+        propsShowName: ''
       }
       for (let i = 0; i < this.matchPropsCfgs.length; i++) {
         const element = this.matchPropsCfgs[i]
-        if (element.propsId == pid) {
+        if (element.propsId === pid) {
           one.propsId = element.propsId
           one.propsType = element.propsType
           one.propsName = element.propsName
           one.propsIcon = element.propsIcon
           one.propsAttr = element.propsAttr
           one.propCost = element.propsCost
+          one.propsShowName = element.propsShowName
           break
         }
       }
@@ -2559,7 +2624,7 @@ export default {
         method: 'get',
         data: {
           Env: this.env,
-          Path: '/match/prize/template',
+          Path: '/match/prize/template'
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -2603,53 +2668,52 @@ export default {
       }
       return show_appinfo
     },
-    //道具检测
-    async propCheck(){
+    // 道具检测
+    async propCheck() {
       if (this.editForm.data.signUpType === 2 || this.editForm.data.signUpType === 3) {
-        if(this.editForm.signExtra.propId > 0){
-          if(! await this.propTakeEffectCheck(this.editForm.signExtra.propId)){
-            this.errmsg("所选择的道具不生效")
+        if (this.editForm.signExtra.propId > 0) {
+          if (!await this.propTakeEffectCheck(this.editForm.signExtra.propId)) {
+            this.errmsg('所选择的道具不生效')
             return false
           }
         }
       }
-      //金币or门票报名
-      if (this.editForm.data.signUpType === 3){
-        if (this.editForm.data.signUpNum === 0){
+      // 金币or门票报名
+      if (this.editForm.data.signUpType === 3) {
+        if (this.editForm.data.signUpNum === 0) {
           this.errmsg('付费赛报名费不能为0')
           return false
         }
-        if(this.editForm.signExtra.propId === 0){
-          this.errmsg("金币or门票报名 必须选择门票")
+        if (this.editForm.signExtra.propId === 0) {
+          this.errmsg('金币or门票报名 必须选择门票')
           return false
         }
       }
-      //纯门票报名
-      if(this.editForm.data.signUpType === 2)
-      {
+      // 纯门票报名
+      if (this.editForm.data.signUpType === 2) {
         this.editForm.data.signUpNum = 0
-        if(this.editForm.signExtra.propId === 0){
-          this.errmsg("门票报名 必须选择门票")
+        if (this.editForm.signExtra.propId === 0) {
+          this.errmsg('门票报名 必须选择门票')
           return false
         }
       }
-      //reuby 道具检测
-      if ((this.editForm.signExtra.reubyExtra.rebuySignType === 2 || this.editForm.signExtra.reubyExtra.rebuySignType === 3 ) && this.editForm.signExtra.reubyExtra.rebuyPropId > 0){
-        if(! await this.propTakeEffectCheck(this.editForm.signExtra.reubyExtra.rebuyPropId)){
-          this.errmsg("Reuby所选择的道具不生效")
+      // reuby 道具检测
+      if ((this.editForm.signExtra.reubyExtra.rebuySignType === 2 || this.editForm.signExtra.reubyExtra.rebuySignType === 3) && this.editForm.signExtra.reubyExtra.rebuyPropId > 0) {
+        if (!await this.propTakeEffectCheck(this.editForm.signExtra.reubyExtra.rebuyPropId)) {
+          this.errmsg('Reuby所选择的道具不生效')
           return false
         }
       }
       return true
     },
 
-    async propTakeEffectCheck(propId){
-      await this.getMatchProps();
+    async propTakeEffectCheck(propId) {
+      await this.getMatchProps()
       return await this.PropIsPublish(propId)
     },
-    async PropIsPublish(propId){
-      if (propId > 0 ){
-        for(let i = 0;i<this.matchPropsCfgs.length; i++ ){
+    async PropIsPublish(propId) {
+      if (propId > 0) {
+        for (let i = 0; i < this.matchPropsCfgs.length; i++) {
           if (propId === this.matchPropsCfgs[i].propsId) {
             return true
           }
@@ -2657,50 +2721,50 @@ export default {
       }
       return false
     },
-    getSignUpName(signUpType,signUpNum,sign_extra) {
+    getSignUpName(signUpType, signUpNum, sign_extra) {
       // console.log(signUpType,signUpNum,sign_extra)
       for (const i in this.signUpTypeCfgs) {
         if (this.signUpTypeCfgs[i].value === signUpType) {
-          if (signUpType === 0) {// 付费报名
+          if (signUpType === 0) { // 付费报名
             return this.signUpTypeCfgs[i].label + this.getCostName(signUpNum)
-          } else if (signUpType === 1) {// 免费报名
+          } else if (signUpType === 1) { // 免费报名
             return this.signUpTypeCfgs[i].label
-          } else if (signUpType === 2) {// 纯门票
+          } else if (signUpType === 2) { // 纯门票
             return this.signUpTypeCfgs[i].label + this.getTicketName(sign_extra)
-          } else if (signUpType === 3) {// 金币or门票
+          } else if (signUpType === 3) { // 金币or门票
             return this.signUpTypeCfgs[i].label + this.getCostName(signUpNum) + this.getTicketName(sign_extra)
           }
         }
       }
-      return "未知报名方式"
+      return '未知报名方式'
     },
     getCostName(signUpNum) {
       if (signUpNum > 0) {
         return `，₱${signUpNum}`
       }
-      return ""
+      return ''
     },
     getTicketName(sign_extra) {
       const data = JSON.parse(sign_extra)
-      return " " + data.propName + "x" + data.propNum
+      return ' ' + data.propName + 'x' + data.propNum
     },
-    //根据赛制ID 取打立出局的轮数信息
-    getCurrCsGrowInfo(){
+    // 根据赛制ID 取打立出局的轮数信息
+    getCurrCsGrowInfo() {
       var grow_total = this.growTotalNumCfgs.get(this.editForm.data.csId)
       this.reubyGrowCfgs = []
-      for(let i=0;i<grow_total-1;i++){
+      for (let i = 0; i < grow_total - 1; i++) {
         this.reubyGrowCfgs.push({
-            "label": i+1 +"轮",
-            "value": i+1
-          }
+          'label': i + 1 + '轮',
+          'value': i + 1
+        }
         )
       }
       // var disuseScores = this.disuseScoreGrowDetail.get(this.editForm.data.csId)
       // console.log("disuseScores",disuseScores)
       // console.log("reubyGrowCfgs",this.reubyGrowCfgs)
     },
-    //reuby 配置检测
-    rebuyConfigReset(){
+    // reuby 配置检测
+    rebuyConfigReset() {
       this.editForm.signExtra.reubyExtra = {}
       this.editForm.signExtra.reubyExtra.supportRebuy = 0
       this.editForm.signExtra.reubyExtra.reubyFree = 0
@@ -2708,88 +2772,88 @@ export default {
       this.editForm.signExtra.reubyExtra.reubyScores = 0
       this.editForm.signExtra.reubyExtra.reubySecs = 0
       this.editForm.signExtra.reubyExtra.reubyCount = 0
-      this.editForm.signExtra.reubyExtra.rebuySignType=0
+      this.editForm.signExtra.reubyExtra.rebuySignType = 0
       this.editForm.signExtra.reubyExtra.rebuyPropId = 0
       this.editForm.signExtra.reubyExtra.rebuyPropNum = 0
       this.editForm.signExtra.reubyExtra.rebuyPropCost = 0
       this.editForm.signExtra.reubyExtra.rebuyPropType = 0
       this.editForm.signExtra.reubyExtra.rebuyPropName = ''
     },
-    reubyConfigCheck(){
-      if (this.editForm.signExtra.reubyExtra.supportRebuy === 0){
+    reubyConfigCheck() {
+      if (this.editForm.signExtra.reubyExtra.supportRebuy === 0) {
         this.rebuyConfigReset()
         return true
       }
-      //免费赛配buy 规则不允许
-      if (this.editForm.signExtra.reubyExtra.supportRebuy === 1 && this.editForm.data.signUpType === 1 ){
+      // 免费赛配buy 规则不允许
+      if (this.editForm.signExtra.reubyExtra.supportRebuy === 1 && this.editForm.data.signUpType === 1) {
         this.rebuyConfigReset()
-        this.errmsg("免费报名不支持rebuy")
+        this.errmsg('免费报名不支持rebuy')
         return false
       }
-      //纯门票报名比赛 不支持rebuy
-      if (this.editForm.signExtra.reubyExtra.supportRebuy === 1 && this.editForm.data.signUpType === 2 ){
+      // 纯门票报名比赛 不支持rebuy
+      if (this.editForm.signExtra.reubyExtra.supportRebuy === 1 && this.editForm.data.signUpType === 2) {
         this.rebuyConfigReset()
-        this.errmsg("纯门票报名比赛不支持rebuy")
+        this.errmsg('纯门票报名比赛不支持rebuy')
         return false
       }
-      if (this.editForm.signExtra.reubyExtra.supportRebuy === 0 ||  this.editForm.data.signUpType === 1){
+      if (this.editForm.signExtra.reubyExtra.supportRebuy === 0 || this.editForm.data.signUpType === 1) {
         this.rebuyConfigReset()
       }
 
-      if (this.editForm.signExtra.reubyExtra.supportRebuy === 1){
-        if(this.editForm.signExtra.reubyExtra.rebuySignType === 0){
+      if (this.editForm.signExtra.reubyExtra.supportRebuy === 1) {
+        if (this.editForm.signExtra.reubyExtra.rebuySignType === 0) {
           this.editForm.signExtra.reubyExtra.rebuyPropNum = 0
           this.editForm.signExtra.reubyExtra.rebuyPropId = 0
           this.editForm.signExtra.reubyExtra.rebuyPropCost = 0
         }
-        if(this.editForm.signExtra.reubyExtra.rebuySignType === 2){
+        if (this.editForm.signExtra.reubyExtra.rebuySignType === 2) {
           this.editForm.signExtra.reubyExtra.reubyFree = 0
         }
         if (this.editForm.signExtra.reubyExtra.reubyRound === 0 ||
           this.editForm.signExtra.reubyExtra.reubyScores === 0 || this.editForm.signExtra.reubyExtra.reubySecs === 0 ||
-          this.editForm.signExtra.reubyExtra.reubyCount===0){
-          this.errmsg("reuby配置有错,请检查")
+          this.editForm.signExtra.reubyExtra.reubyCount === 0) {
+          this.errmsg('reuby配置有错,请检查')
           return false
         }
-        //付费 或者金币or门票
-        if (this.editForm.signExtra.reubyExtra.rebuySignType === 0 ||  this.editForm.signExtra.reubyExtra.rebuySignType === 3){
-          if (this.editForm.signExtra.reubyExtra.reubyFree <= 0){
-            this.errmsg("当前是付费或者金币or门票reuby 报名费用不能为0")
+        // 付费 或者金币or门票
+        if (this.editForm.signExtra.reubyExtra.rebuySignType === 0 || this.editForm.signExtra.reubyExtra.rebuySignType === 3) {
+          if (this.editForm.signExtra.reubyExtra.reubyFree <= 0) {
+            this.errmsg('当前是付费或者金币or门票reuby 报名费用不能为0')
             return false
           }
-          if ((this.editForm.data.signUpType === 0 ||  this.editForm.data.signUpType === 3) && this.editForm.data.signUpNum !== this.editForm.signExtra.reubyExtra.reubyFree ){
-            this.errmsg("当前是付费或者金币or门票reuby rebuy费用跟报名费不一致,请检查")
+          if ((this.editForm.data.signUpType === 0 || this.editForm.data.signUpType === 3) && this.editForm.data.signUpNum !== this.editForm.signExtra.reubyExtra.reubyFree) {
+            this.errmsg('当前是付费或者金币or门票reuby rebuy费用跟报名费不一致,请检查')
             return false
           }
         }
-        //纯门票 或者金币or门票
-        if (this.editForm.signExtra.reubyExtra.rebuySignType === 2 ||  this.editForm.signExtra.reubyExtra.rebuySignType === 3) {
-          if (this.editForm.signExtra.reubyExtra.rebuyPropId <= 0 || this.editForm.signExtra.reubyExtra.rebuyPropNum <= 0){
-            this.errmsg("当前是纯门票或者 金币or门票reuby 请选择门票或者填门票数量")
+        // 纯门票 或者金币or门票
+        if (this.editForm.signExtra.reubyExtra.rebuySignType === 2 || this.editForm.signExtra.reubyExtra.rebuySignType === 3) {
+          if (this.editForm.signExtra.reubyExtra.rebuyPropId <= 0 || this.editForm.signExtra.reubyExtra.rebuyPropNum <= 0) {
+            this.errmsg('当前是纯门票或者 金币or门票reuby 请选择门票或者填门票数量')
             return false
           }
         }
       }
-      //买入积分检测
+      // 买入积分检测
       var disuseScores = this.disuseScoreGrowDetail.get(this.editForm.data.csId)
-      for(var i = 0;i < disuseScores.length; i++){
-        if(disuseScores[i].index === this.editForm.signExtra.reubyExtra.reubyRound  && this.editForm.signExtra.reubyExtra.reubyScores < disuseScores[i].disuse_score) {
-            this.errmsg("买入积分小于当前打立阶段轮数淘汰分["+disuseScores[i].disuse_score +"],请检查配置")
+      for (var i = 0; i < disuseScores.length; i++) {
+        if (disuseScores[i].index === this.editForm.signExtra.reubyExtra.reubyRound && this.editForm.signExtra.reubyExtra.reubyScores < disuseScores[i].disuse_score) {
+          this.errmsg('买入积分小于当前打立阶段轮数淘汰分[' + disuseScores[i].disuse_score + '],请检查配置')
           return false
         }
       }
-      if (this.reubyGrowCfgs.length <= this.editForm.signExtra.reubyExtra.reubyRound){
-        this.errmsg("rebuy截止轮次大于当前赛制打立阶段的最大轮次,请检查配置")
+      if (this.reubyGrowCfgs.length <= this.editForm.signExtra.reubyExtra.reubyRound) {
+        this.errmsg('rebuy截止轮次大于当前赛制打立阶段的最大轮次,请检查配置')
         return false
       }
       return true
     },
 
-    async getCsCfgsAsyncCheck(){
+    async getCsCfgsAsyncCheck() {
       await this.getCsIdCfgs()
       await this.getCsCfgsAsync()
     },
-    //异步获取赛制ID列表
+    // 异步获取赛制ID列表
     async getCsIdCfgs() {
       try {
         const response = await request({
@@ -2797,18 +2861,18 @@ export default {
           method: 'get',
           data: {
             Env: this.env,
-            Path: '/match/rule/list',
+            Path: '/match/rule/list'
           }
         })
         if (response.RetCode === 0) {
           const objs = response.Data || {}
-          for(let i = 0; i < objs.list.length; i++){
-              this.csIdCfg.push(objs.list[i])
+          for (let i = 0; i < objs.list.length; i++) {
+            this.csIdCfg.push(objs.list[i])
           }
         }
-      } catch(error) {
+      } catch (error) {
         console.log(error)
-      }finally{}
+      } finally {}
     },
 
     async getCsCfgsAsync() {
@@ -2826,10 +2890,15 @@ export default {
         if (response.RetCode === 0) {
           const objs = response.Data || {}
           if (objs.total > 0) {
+            let total = 0
             for (var i = 0; i < objs.list.length; i++) {
-              if(!await this.checkRuleIdIsPublish(objs.list[i].id)){
+              if (!await this.checkRuleIdIsPublish(objs.list[i].id)) {
                 continue
               }
+              if (objs.list[i].self_build >  0) {
+                continue
+              }
+              total = total +1
               this.csCfgs.push({
                 'label': '[' + objs.list[i].id + ']' + objs.list[i].name,
                 'value': objs.list[i].id,
@@ -2837,16 +2906,16 @@ export default {
                 'ruleType': objs.list[i].rule_type
               })
               const stage_detail = JSON.parse(objs.list[i].stage_detail)
-              //console.log("打立初级信息 ", stage_detail)
+              // console.log("打立初级信息 ", stage_detail)
               for (var j = 0; j < stage_detail.length; j++) {
                 if (stage_detail[j].system_type === 1) { // 打立出局
                   // 存储打立出局的最大时长配置 用于配置检查
                   this.endMinuteCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.end_rule.match_minute)
                   this.endNumCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.end_rule.lave_user_number)
                   this.promoteNumCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.promotion_rule.user_number)
-                  this.growTotalNumCfgs.set(objs.list[i].id,stage_detail[j].system_strike_out.disuse_score_growth.grow_total)
-                  this.disuseScoreGrowDetail.set(objs.list[i].id,stage_detail[j].system_strike_out.disuse_score_growth.disuse_score_grow_detail)
-                } else if (stage_detail[j].system_type=== 2) {
+                  this.growTotalNumCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.disuse_score_growth.grow_total)
+                  this.disuseScoreGrowDetail.set(objs.list[i].id, stage_detail[j].system_strike_out.disuse_score_growth.disuse_score_grow_detail)
+                } else if (stage_detail[j].system_type === 2) {
                   // 存储定局信息
                   this.reachOutNumCfgs.set(objs.list[i].id, stage_detail[j].system_reach_out.round_config[0].promotion_user)
                 }
@@ -2854,19 +2923,19 @@ export default {
             }
           }
         }
-      } catch(error) {
+      } catch (error) {
         console.log(error)
-      }finally{}
+      } finally {}
     },
-    //校验赛制ID是否已经发布
-    async checkRuleIdIsPublish(ruleId){
-      for (var j = 0; j < this.csIdCfg.length; j++){
-        if(ruleId === this.csIdCfg[j]){
+    // 校验赛制ID是否已经发布
+    async checkRuleIdIsPublish(ruleId) {
+      for (var j = 0; j < this.csIdCfg.length; j++) {
+        if (ruleId === this.csIdCfg[j]) {
           return true
         }
       }
       return false
-    },
+    }
   }
 }
 </script>

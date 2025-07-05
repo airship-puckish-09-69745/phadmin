@@ -5,6 +5,18 @@
     :before-close="closeView"
     width="85%"
   >
+
+    <table  border="1" style="width:70%">
+      <tr>
+        <td colspan="3">桌子ID：{{tid}}</td>
+      </tr>
+      <tr>
+        <td v-for="one in FinishArray">
+          用户：{{ one.Uid }} - {{ one.Nick }}<br>
+          {{ one.isRobot?'机器人':'真人' }} {{ getRobotLevel(one.RobotLevel) }}
+        </td>
+      </tr>
+    </table>
     <el-table
       :data="actions"
       border
@@ -171,7 +183,9 @@ export default {
         0x1008: '补发庄家牌-换牌玩法'
       },
       UidMap: {},
-      UidStyleMap: {}
+      UidStyleMap: {},
+      tid:0,
+      FinishArray:{},
     }
   },
   watch: {
@@ -212,6 +226,7 @@ export default {
       console.log(1)
       this.actions = []
       console.log('val===>', val)
+      this.tid = val.tid
       const stepArr = val.actionLogs.split('|')
       let stepIdx = 1
       this.UidMap = {}
@@ -354,6 +369,7 @@ export default {
           })
         }
       }
+      this.FinishArray = finishArray
       this.actions.push({
         Index: 9999,
         Uid: this.getRealUid(val.winUid),
@@ -485,3 +501,4 @@ export default {
 		padding-left:10px;
 	}
 </style>
+

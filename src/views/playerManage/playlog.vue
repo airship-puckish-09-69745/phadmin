@@ -632,7 +632,7 @@
         <el-descriptions-item label="桌子ID">{{ lucky9Detail.tid }}</el-descriptions-item>
         <el-descriptions-item label="Server日志ID">{{ lucky9Detail.logId }}</el-descriptions-item>
         <el-descriptions-item label="HitPot奖池">{{ lucky9Detail.hitPotPool / 1000 }}</el-descriptions-item>
-        <el-descriptions-item label="POT机器人">{{ lucky9Detail.potRobot }}</el-descriptions-item>
+        <!-- <el-descriptions-item label="POT机器人">{{ lucky9Detail.potRobot }}</el-descriptions-item>
         <el-descriptions-item label="POT机器人保护">{{
           lucky9Detail.potRobotProtected ? '是' : '-'
         }}
@@ -644,7 +644,7 @@
         <el-descriptions-item label="机器人庄家保护">{{
           lucky9Detail.robotDealerProtected ? '是' : '-'
         }}
-        </el-descriptions-item>
+        </el-descriptions-item> -->
       </el-descriptions>
     </el-dialog>
 
@@ -2936,13 +2936,13 @@
         <el-table-column prop="seat" label="seat" width="64px">
           <template slot-scope="scope">{{ scope.row.seat }}</template>
         </el-table-column>
-        <el-table-column label="team" width="64px">
+        <el-table-column label="team" width="100px">
           <template slot-scope="scope">
               <div 
                 :style="{ 
                   backgroundColor: getTrucoTeamColor(scope.row.team), 
-                  width: '100px', 
-                  height: '100px',
+                  width: '50px', 
+                  height: '50px',
                   display: 'inline-block'
                 }"
               ></div>
@@ -2961,14 +2961,22 @@
         <el-table-column prop="vsScore" label="红 vs 绿" width="100px" align="center">
           <template slot-scope="scope">{{ scope.row.vsScore[0] + ' vs ' + scope.row.vsScore[1]}}</template>
         </el-table-column>
-        <el-table-column label="viradaCard牌" width="80">
+        <el-table-column label="viradaCard牌 => 最大牌" width="220">
           <template slot-scope="scope">
             <el-image
               style="width: 37px; height: 50px"
               :src="getCardUrl(scope.row.viradaCard)"
             />
+            <span>{{ ' => ' }}</span>
+            <el-image
+              style="width: 37px; height: 50px"
+              :src="trucoMaxCardUrl(scope.row.viradaCard)"
+            />
+            <br>
+            <span>{{trucoCardNumSort(scope.row.viradaCard)}}</span>
           </template>                      
         </el-table-column>
+
         <el-table-column prop="roundScore" label="本轮底分" width="50px"/>
 
         <el-table-column prop="players" label="牌局" width="320px" >
@@ -2980,8 +2988,8 @@
                   <div 
                     :style="{ 
                       backgroundColor: getTrucoTeamColor(scope.row.team), 
-                      width: '100px', 
-                      height: '100px',
+                      width: '50px', 
+                      height: '50px',
                       display: 'inline-block'
                     }"
                   ></div>
@@ -3002,14 +3010,14 @@
         <el-table-column prop="turns" label="比牌" width="800px" >
           <template slot-scope="scope">
             <el-table ref="filterTable" :data="scope.row.turns" border :cell-style="libShow.DefaultTableCell" style="width: 100%">
-              <el-table-column prop="count" label="回合" width="100"/>
-              <el-table-column label="回合结果" width="100">
+              <el-table-column prop="count" label="回合" width="50"/>
+              <el-table-column label="回合结果" width="80">
                 <template slot-scope="scope">
                   <div 
                     :style="{ 
                       backgroundColor: getTrucoTeamColor(scope.row.result), 
-                      width: '100px', 
-                      height: '100px',
+                      width: '50px', 
+                      height: '50px',
                       display: 'inline-block'
                     }"
                   ></div>
@@ -3018,18 +3026,17 @@
               <el-table-column prop="cards" label="cards" width="800px" >
                 <template slot-scope="scope">
                   <el-table ref="filterTable" :data="scope.row.cards" border :cell-style="libShow.DefaultTableCell" style="width: 100%">
+                    <el-table-column prop="Count" label="顺序" width="50"/>
                     <el-table-column prop="uid" label="uid" width="100"/>
-                    <el-table-column prop="Count" label="顺序" width="100"/>
-                    <el-table-column prop="Covered" label="暗牌" width="100"/>
                     <el-table-column label="牌" width="100">
                       <template slot-scope="scope">
-                        <el-image
-                          style="width: 37px; height: 50px"
-                          :src="getCardUrl(scope.row.Card)"
-                        />
+                          <el-image
+                            style="width: 37px; height: 50px"
+                            :src="getCardUrl(scope.row.Card)"
+                          />
                       </template>                      
                     </el-table-column>
-                    
+                    <el-table-column prop="Covered" label="暗牌" width="100"/>
                   </el-table>
                 </template>
               </el-table-column>
@@ -5314,6 +5321,50 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
         return 'green'
       }
       return 'yellow'
+    },
+    getTrucoMaxCard(viradaCard) {
+      let cardNumberOrder = [12, 11, 13, 1, 2, 3] //牌的数字大小：[Q < J < K < A < 2 < 3]
+	    let point = viradaCard & 0x0f
+      let trucoRoundMaxCardIndex = 0
+      for (let i = 0; i < cardNumberOrder.length; i ++) {
+        if (cardNumberOrder[i] == point) {
+          if (i == cardNumberOrder.length-1) {
+            trucoRoundMaxCardIndex = 0// = cardNumberOrder[0]
+          } else {
+            trucoRoundMaxCardIndex = i+1// = cardNumberOrder[i+1]
+          }
+        }
+      }
+      let cards = [0x2c, 0x2b, 0x2d, 0x21, 0x22, 0x23]
+      return cards[trucoRoundMaxCardIndex]
+    },
+    trucoMaxCardUrl(viradaCard) {
+      return this.getCardUrl(this.getTrucoMaxCard(viradaCard))
+    },
+    trucoCardNumSort(viradaCard) {
+      let cardNumberOrder = [12, 11, 13, 1, 2, 3] //牌的数字大小：[Q < J < K < A < 2 < 3]
+      let maxCard = this.getTrucoMaxCard(viradaCard)
+	    let point = maxCard & 0x0f
+      let txt = ['Q','J','K','A','2','3']
+      for (let i = 0; i < cardNumberOrder.length; i ++) {
+        if (cardNumberOrder[i] == point) {
+          let mx = txt[i]
+          txt.splice(i, 1)
+          txt.push('♦'+mx)
+          txt.push('♠'+mx)
+          txt.push('♥'+mx)
+          txt.push('♣'+mx)
+          break
+        }
+      }
+      let msg = ""
+      for (let i = 0; i < txt.length; i ++) {
+        if (i > 0){
+          msg += '<'
+        }
+        msg += txt[i]
+      }
+      return msg
     }
   }
 }

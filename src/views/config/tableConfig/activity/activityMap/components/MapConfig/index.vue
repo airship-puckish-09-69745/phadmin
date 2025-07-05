@@ -10,7 +10,7 @@
         :data="tableData"
         border
         :cell-style="libShow.DefaultTableCell"
-        style="max-height: calc(100vh - 326px);width: 100%;overflow-y: auto;"
+        style="width: 100%;overflow-y: auto;"
       >
         <!-- 序号 -->
         <el-table-column type="index" label="序号" width="60" align="center" />
@@ -49,7 +49,7 @@
             <!-- 日期处理 -->
             <template v-else-if="field.prop === 'ActivityTime'">
               <span v-if="scope.row.ActivityTime">
-                {{ parseTime(scope.row.ActivityTime[0], '{y}-{m}-{d}') }} <br> {{ parseTime(scope.row.ActivityTime[1], '{y}-{m}-{d}') }}
+                {{ parseTime(scope.row.ActivityTime[0], '{y}-{m}-{d} {h}:{i}:{s}') }} <br> {{ parseTime(scope.row.ActivityTime[1], '{y}-{m}-{d} {h}:{i}:{s}') }}
               </span>
             </template>
             <!-- 活动：格式为：活动名称-[活动ID] -->
@@ -59,12 +59,19 @@
               }}</span>
               <span v-else>暂无</span>
             </template>
+            <!-- 金额/100保留2位小数 -->
+            <template v-else-if="field.prop === 'Amount' || field.prop === 'Bonus'">
+              <span>
+                {{ parseFloat((scope.row[field.prop] / 100).toFixed(2)) }}
+              </span>
+            </template>
             <span v-else>{{ scope.row[field.prop] }}</span>
           </template>
         </el-table-column>
         <!-- 操作 -->
-        <el-table-column label="操作" width="160">
+        <el-table-column label="操作" width="220">
           <template #default="scope">
+            <el-button size="mini" type="success" @click="handleCopy(scope.row)">复制</el-button>
             <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
             <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
           </template>
@@ -116,7 +123,7 @@ export default {
         { label: '活动名称', prop: 'ActivityName' },
         // { label: '活动开关', prop: 'Status', width: 80 },
         { label: '活动金额', prop: 'Amount', width: 200 },
-        { label: '活动时间', prop: 'ActivityTime', width: 130 },
+        { label: '活动时间', prop: 'ActivityTime', width: 160 },
         { label: '奖励', prop: 'Bonus', width: 130 },
         { label: '分页', prop: 'Page' },
         { label: '活动图标', prop: 'Icon', width: 120 },
@@ -221,6 +228,10 @@ export default {
     handlePaginationCurrentChange(page) {
       this.pagination.currentPage = page
       this.getList()
+    },
+    handleCopy(row) {
+      // ID=0会在父组件重新生成
+      this.handleUpdateConfig({ ...row, ID: 0 })
     }
   }
 }
