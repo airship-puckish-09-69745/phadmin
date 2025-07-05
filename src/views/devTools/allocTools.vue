@@ -201,10 +201,10 @@
                 value: 31,
                 label: 'Tongits 经典'
             }, 
-            // {
-            //     value: 23,
-            //     label: 'Lucky9'
-            // }, 
+            {
+                value: 23,
+                label: 'Lucky9'
+            }, 
             // {
             //     value: 15,
             //     label: ' 德州扑克'
