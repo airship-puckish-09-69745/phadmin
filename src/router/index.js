@@ -1822,7 +1822,7 @@ export const asyncRoutes = [
         path: 'pokerTopic',
         component: () => import('@/views/empty'),
         name: 'pokerTopic',
-        meta: { title: 'Poker专题活动配置', noCache: true },
+        meta: { title: 'Poker乐园配置', noCache: true },
         children: [
           {
             path: 'activityConfig',
