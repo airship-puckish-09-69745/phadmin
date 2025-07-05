@@ -59,7 +59,72 @@
               </fieldset>
             </el-row>
 
-          
+            <el-row style="padding-top: 5px">
+            <h3 style="text-align:center;">机器人输赢配置</h3>
+            <el-col :span="24">
+              <div style="padding-top: 10px">
+                <el-table
+                  :data="control"
+                  stripe
+                  border
+                  style="width: 100%"
+                >
+
+                  <el-table-column
+                    prop="ControlId"
+                    label="行号"
+                    width="70"
+                  />
+
+                  <el-table-column
+                    label="输赢最小(%)"
+                    width="120"
+                  >
+                    <template scope="subScope">
+                      <el-input v-model.number="subScope.row.PerStartPool" />
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column
+                    label="输赢最大(%)"
+                    width="120"
+                  >
+                    <template scope="subScope">
+                      <el-input v-model.number="subScope.row.PerEndPool" />
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column label="机器人级别" width="120">
+                    <template scope="subScope">
+                      <el-select v-model="subScope.row.AiConfigLevel" placeholder="请选择">
+                        <el-option
+                          v-for="item in robotlvl"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value"
+                        />
+                      </el-select>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="操作">
+                    <template scope="subScope">
+                      <el-button
+                        size="mini"
+                        type="danger"
+                        @click="delControlRow(subScope.$index,subScope.row)"
+                      >删除</el-button>
+                    </template>
+                  </el-table-column>
+
+                </el-table>
+                <el-button @click="addControlButton" size="small" style="margin-top: 10px;" type="primary">添加新值</el-button>
+              </div>
+            </el-col>
+          </el-row>
+
+          <el-row style="padding-top: 5px"></el-row>
+             <el-row style="padding-top: 5px"></el-row>
+             <el-row style="padding-top: 5px"></el-row>
         </el-tab-pane>
 
         <el-tab-pane label="机器人入桌">
@@ -95,6 +160,9 @@
                   </el-table-column>
                 </el-table>
               </fieldset>
+              <el-row style="padding-top: 5px"></el-row>
+             <el-row style="padding-top: 5px"></el-row>
+             <el-row style="padding-top: 5px"></el-row>
               <fieldset>
                 <legend>场次人数=0时开桌配置</legend>
                 <el-table
@@ -142,6 +210,9 @@
                   </el-table-column>
                 </el-table>
               </fieldset>
+              <el-row style="padding-top: 5px"></el-row>
+             <el-row style="padding-top: 5px"></el-row>
+             <el-row style="padding-top: 5px"></el-row>
               <fieldset>
                 <legend>场次有桌不满最小开局人数时入桌</legend>
                 <el-table
@@ -173,7 +244,9 @@
                   </el-table-column>
                 </el-table>
               </fieldset>
-
+              <el-row style="padding-top: 5px"></el-row>
+             <el-row style="padding-top: 5px"></el-row>
+             <el-row style="padding-top: 5px"></el-row>
               <fieldset>
                 <legend>场次有正在玩的桌子入桌</legend>
                 <el-table
@@ -227,7 +300,7 @@
           <el-tab-pane label="机器人下注">
             <el-row style="padding-top: 5px">
               <fieldset>
-                <legend>下注次数配置 </legend>
+                <legend>习惯下注次数配置 </legend>
                 <el-table
                   :data="item.BetTimesCfg"
                   border
@@ -238,8 +311,7 @@
                     width="200"
                   >
                     <template slot-scope="scope">
-                      <span>{{ scope.row.BetTimes }}</span>
-                     
+                      <el-input-number v-model.number="scope.row.BetTimes" size="mini"  type="number" :min="1"  :precision="0"/>
                     </template>
                   </el-table-column>
                   <el-table-column
@@ -261,9 +333,19 @@
                     </div>
                     </template>
                   </el-table-column>
+                  <el-table-column label="操作" width="80">
+                    <template #default="{$index}">
+                      <el-button size="small" type="danger" @click="delBetTimesCfg($index)">删除</el-button>
+                    </template>
+                  </el-table-column>
                 </el-table>
+                <el-button @click="addBetTimesCfg" size="small" style="margin-top: 10px;" type="primary">添加新值</el-button>
+       
               </fieldset>
              </el-row>
+             <el-row style="padding-top: 5px"></el-row>
+             <el-row style="padding-top: 5px"></el-row>
+             <el-row style="padding-top: 5px"></el-row>
               <el-row style="padding-top: 5px">
               <fieldset>
                 <legend>习惯Bet配置 </legend>
@@ -284,7 +366,9 @@
                   </el-table-column>
                 </el-table>
                 </fieldset>
-
+                <el-row style="padding-top: 5px"></el-row>
+             <el-row style="padding-top: 5px"></el-row>
+             <el-row style="padding-top: 5px"></el-row>
               <fieldset>
                 <legend>偶尔违反习惯下注行文方案</legend>
                 <el-form ref="item" :model="item" width="70%">
@@ -320,7 +404,7 @@
                         </template>
                       </el-table-column>
                     </el-table>
-                    <el-button @click="addReviseCnt" size="small" style="margin-top: 10px;">添加新值</el-button>
+                    <el-button @click="addReviseCnt" size="small" style="margin-top: 10px;" type="primary">添加新值</el-button>
                   </el-form-item>
                 </el-form>
               </fieldset>
@@ -357,7 +441,7 @@
         <el-tab-pane label="机器人名字">
           <el-row>
             <el-col :span="20" :offset="1">
-              <h5>机器人昵称配置 <el-button type="text" @click="addNickCfg">添加一项</el-button></h5>
+              <h5>机器人默认昵称配置</h5>
               <el-table :data="item.NickCfg" border>
                 <el-table-column label="昵称" prop="Nick" width="200">
                   <template slot-scope="scope">
@@ -376,13 +460,14 @@
                   </template>
                 </el-table-column>
               </el-table>
+              <el-button @click="addNickCfg" size="small" style="margin-top: 10px;" type="primary">添加一项</el-button>
             </el-col>
           </el-row>
         </el-tab-pane>
         <el-tab-pane label="展示资产配置">
           <el-row>
             <el-col :span="20" :offset="1">
-              <el-button type="text" @click="addShowMoneyCfg">添加一项</el-button>
+           
               <el-table :data="ShowMoneyCfg" border>
                 <el-table-column label="场次" prop="TableMoney" width="200" >
                   <template slot-scope="scope">
@@ -412,6 +497,7 @@
                   </template>
                 </el-table-column>
               </el-table>
+              <el-button @click="addShowMoneyCfg" size="small" style="margin-top: 10px;" type="primary">添加一项</el-button>
             </el-col>
           </el-row>
         </el-tab-pane>
@@ -621,6 +707,7 @@ export default {
       edit: {},
       tableMoneys: [],
       form: {},
+      control: [],
       robotlvl: [
         {
           value: 1,
@@ -661,6 +748,9 @@ export default {
     },
 
     setData() {
+      if (!this.checkSaveBetTimes()) {
+        return 
+      }
       if (this.item.LeaveCfg.EndPlayCnt < this.item.LeaveCfg.BeginPlayCnt) {
         Message.error('机器人随机离桌对局数，区间配置错误')
         return 
@@ -699,7 +789,7 @@ export default {
             return 
           }
       }
-
+      this.item.Control = this.control
       this.item.ShowMoneyCfg = []
       for (const o in this.ShowMoneyCfg) {
         const obj = {}
@@ -751,7 +841,9 @@ export default {
             this.item.NickCfg = this.item.NickCfg || []
             this.item.ShowMoneyCfg = this.item.ShowMoneyCfg || []
             this.item.BetReviseCfg = this.item.BetReviseCfg || {'Probability':20, "ReviseCnt":[1,-1,2,-2]}
-
+            if (this.item.Control) {
+              this.control = this.item.Control
+            }
             for (const o in $this.item.ShowMoneyCfg) {
               const one = Object.assign({}, $this.item.ShowMoneyCfg[o])
               one.TableMoney /= 1000
@@ -858,7 +950,7 @@ export default {
     },
 
     addBetTimesCfg() {
-      this.item.BetTimesCfg.push(newBetTimesCfg(0, 0, 0))
+      this.item.BetTimesCfg.push(newBetTimesCfg(1, 0, 0))
     },
     delBetTimesCfg(idx) {
       this.$confirm('要删除该项吗？', '提示', {
@@ -888,38 +980,79 @@ export default {
       this.item.BetReviseCfg.ReviseCnt.push(0);
     },
     removeReviseCnt(index) {
-      console.log("aaaaa")
-      this.item.BetReviseCfg.ReviseCnt.splice(index, 1);
-    }
-    // handleDecimalInput(row, key) {
-    //   // 1. 过滤非法字符（只保留数字和小数点）
-    //   let value = row[key] ? row[key].toString() : '0'
-    //   value = value.replace(/[^\d.]/g, '').replace(/^0+(\d)/, '$1').replace(/^\./, '0.').replace(/(\..*)\./g, '$1')
-    //   // 2. 禁止以小数点开头（如 ".5" → "0.5"）
-    //   if (value.startsWith('.')) {
-    //     value = '0' + value
-    //   }
+      this.$confirm('要删除该项吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.item.BetReviseCfg.ReviseCnt.splice(index, 1);
+      })
+     
+    },
+   
+     checkSaveBetTimes() {
+        if (this.item.BetTimesCfg.length == 0) {
+          Message.error('下注次数配置错误，需要配置数据')
+          return false 
+        }
+        this.item.BetTimesCfg.sort((a, b) => a.BetTimes - b.BetTimes);
+        for (let i = 0; i < this.item.BetTimesCfg.length; i++) {
+          if (i > 0 && this.item.BetTimesCfg[i-1].BetTimes == this.item.BetTimesCfg[i].BetTimes) {
+            Message.error('下注次数配置错误')
+            return false 
+          }
+          if (this.item.BetTimesCfg[i].BetTimes == 0) {
+            Message.error('下注次数配置错误')
+            return false 
+          }
+        }
 
-    //   // 3. 确保最多一个小数点
-    //   const parts = value.split('.')
-    //   if (parts.length > 2) {
-    //     value = parts[0] + '.' + parts.slice(1).join('')
-    //   }
+        if (this.item.BetReviseCfg.ReviseCnt.length == 0) {
+          Message.error('修正偏移量配置错误,需要配置数据')
+          return false 
+        }
+        if (this.item.NickCfg.length == 0) {
+          Message.error('机器人昵称配置配置错误，需要配置数据')
+          return false 
+        }
 
-    //   // 4. 限制小数点后最多两位（百分比通常只需两位小数）
-    //   if (parts.length === 2 && parts[1].length > 2) {
-    //     value = parts[0] + '.' + parts[1].slice(0, 2)
-    //   }
-    //   const numValue = parseFloat(value) || 0
-    //   if (numValue < 0) {
-    //     value = '0'
-    //   } else if (isNaN(numValue)) {
-    //     value = '0' // 异常值重置为 0
-    //   }
-    //   // 5. 更新绑定的值（保留字符串类型，避免自动转换问题）
-    //   row[key] = value === '' ? null : value
-    // },
-    
+        for (let i = 1; i < this.item.NickCfg.length; i++) {
+          if (this.item.NickCfg[i].Nick.length == 0) {
+            Message.error('机器人昵称配置配置错误')
+            return false 
+          }
+        }
+        
+
+        return true
+     },
+     delNickCfg(idx) {
+      this.$confirm('要删除该项吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$delete(this.item.NickCfg, idx)
+      })
+    },
+    delControlRow(mine, row) {
+      console.log('mine:' + mine, row)
+      this.control.splice(mine, 1)
+    },
+    addControlButton() {
+      console.log('control')
+      const Id = this.control.length + 1
+      this.control.push(
+        {
+          PerStartPool: 0,
+          PerEndPool: 0,
+          AiConfigLevel: 1,
+          ControlId: Id
+        }
+      )
+    },
+
+
  
   },
   
