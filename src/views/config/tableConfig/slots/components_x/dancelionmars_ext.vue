@@ -3,15 +3,6 @@
     <el-row :gutter="10" style="margin-top: 30px">
       <el-col :span="12" :offset="3">
         <el-form ref="frm2" :model="cfg" label-width="230px">
-
-          <el-form-item label="免费模式购买倍数" prop="BuyFreeOdds" :rules="dataRule(true,{type:'n'})">
-            <el-input v-model.number="cfg.BuyFreeOdds" :required="true"/>
-          </el-form-item>
-
-          <el-form-item label="进入免费模式的最小赔率" prop="ScatterOdds" :rules="dataRule(true,{type:'n'})">
-            <el-input v-model.number="cfg.ScatterOdds" :required="true"/>
-          </el-form-item>
-
           <el-form-item label="红色财字每个倍率的权重">
             <el-input v-model="cfg.redCaiOddsRate" placeholder="用,号分割,共12个值">
               <template slot="append">分别对应0.1×,0.2×,0.3×,0.5×,0.8×,1×,2×,3×,5×,8×,10×,12×</template>
