@@ -528,6 +528,7 @@ export default {
         EntryCloseTime: '入口关闭时间',
         AppWhitelist: 'AppId白名单',
         SiteWhitelist: 'SiteId站点',
+        MarqueeMiniReward: '跑马灯最小金额',
         AchievementRewards: '成就奖励',
         GameAnteScoreCoefficients: '底注场次积分系数'
       },
