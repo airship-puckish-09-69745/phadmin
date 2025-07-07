@@ -1834,7 +1834,7 @@ export const asyncRoutes = [
         path: 'pokerTopic',
         component: () => import('@/views/empty'),
         name: 'pokerTopic',
-        meta: { title: 'Poker专题活动配置', noCache: true },
+        meta: { title: 'Poker乐园配置', noCache: true },
         children: [
           {
             path: 'activityConfig',
@@ -3671,12 +3671,6 @@ export const asyncRoutes = [
         component: () => import('@/views/devTools/logDeal'),
         name: 'logDeal',
         meta: { title: '错误日志处理' }
-      },
-      {
-        path: 'gameTable',
-        component: () => import('@/views/config/gameTable'),
-        name: 'gameTable',
-        meta: { title: '空闲游戏桌子' }
       },
       {
         path: 'gameCustomConfig',

@@ -236,6 +236,9 @@
             <span v-if="scope.row.level==1" style="color:red">
               强放
             </span>
+            <span v-if="scope.row.level==0" style="color:red">
+              陪玩
+            </span>
           </template>
         </el-table-column>
         <el-table-column

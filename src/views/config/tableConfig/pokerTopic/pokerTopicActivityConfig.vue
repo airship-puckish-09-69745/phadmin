@@ -12,7 +12,15 @@
       </el-col>
     </el-row>
     <div style="padding-top: 10px">
-      <el-table ref="filterTable" :data="tableData" stripe border :header-cell-style="libShow.DefaultTableHeadClass" :row-style="{height:'10px'}" :cell-style="libShow.DefaultTableCell" style="width: 100%" @row-click="clickData" @sort-change="sortChange">
+      <el-table ref="filterTable"
+        :data="tableData"
+        stripe border
+        :header-cell-style="libShow.DefaultTableHeadClass"
+        :row-style="{height:'10px'}"
+        :cell-style="libShow.DefaultTableCell"
+        style="width: 100%"
+        @row-click="clickData"
+        @sort-change="sortChange">
         <el-table-column prop="ID" label="ID" sortable="custom" width="80" />
         <el-table-column prop="TopicName" label="主题名称" width="200" />
         <el-table-column prop="CycleNumber" label="周期编号" width="100" />
@@ -26,7 +34,7 @@
             {{ formatTime(scope.row.EndTime) }}
           </template>
         </el-table-column>
-        <el-table-column prop="EndTime" label="入口关闭时间" sortable="custom" width="180">
+        <el-table-column prop="EndTime" label="展示结束时间" sortable="custom" width="180">
           <template slot-scope="scope">
             {{ formatTime(scope.row.EntryCloseTime) }}
           </template>
@@ -48,95 +56,315 @@
             <!--
             <el-button type="primary" size="mini" icon="el-icon-document-copy" @click="handleCopy(scope.row)" >复制 </el-button>
             -->
-            <el-button v-if="scope.row.Status!=2" size="mini" type="success" icon="el-icon-upload2" @click="handlePrepare(scope.row)">上架 </el-button>
-            <el-button v-if="scope.row.Status!=2" size="mini" icon="el-icon-delete" @click="handleDelete(scope.row)" />
-            <el-button v-if="scope.row.Status==2" size="mini" type="danger" icon="el-icon-download" @click="handleOffline(scope.row)">下架 </el-button>
-            <!--<el-button type="primary" size="mini" icon="el-icon-document-copy" @click="showCyclesDialog(scope.row)">周期 </el-button>-->
+            <el-button v-if="scope.row.Status!==2" size="mini" type="success" icon="el-icon-upload2" @click="handlePrepare(scope.row)">上架 </el-button>
+            <el-button v-if="scope.row.Status!==2" size="mini" icon="el-icon-delete" @click="handleDelete(scope.row)" />
+            <el-button v-if="scope.row.Status===2" size="mini" type="danger" icon="el-icon-download" @click="handleOffline(scope.row)">下架 </el-button>
           </template>
         </el-table-column>
       </el-table>
       <el-col :offset="16" :span="8">
         <div class="block">
-          <el-pagination :current-page="clientDB.GetPage().GetCurrentPage()" :page-sizes="[10, 20, 30, 40]" :page-size="clientDB.GetPage().GetPageNum()" layout="total, sizes, prev, pager, next, jumper" :total="clientDB.GetPage().GetTotalCount()" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
+          <el-pagination
+            :current-page="clientDB.GetPage().GetCurrentPage()"
+            :page-sizes="[10, 20, 30, 40]"
+            :page-size="clientDB.GetPage().GetPageNum()"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="clientDB.GetPage().GetTotalCount()"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange" />
         </div>
       </el-col>
     </div>
-    <el-dialog :title="getEditTitle()" :visible.sync="edit.visible" :close-on-click-modal="false" :close-on-press-escape="false">
+    <el-dialog :title="getEditTitle()"
+       :visible.sync="edit.visible"
+       :close-on-click-modal="false"
+       :close-on-press-escape="false"
+       @opened="handleEditDialogOpened"
+       width="60%"
+    >
       <el-form ref="edit" :model="edit" label-width="180px" size="small">
-        <el-row>
-          <el-col :span="11">
-            <el-form-item label="活动名称：" :required="true" prop="item.TopicName">
-              <el-input v-model="edit.item.TopicName" placeholder="请输入" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="11">
-            <el-form-item label="开始时间：">
-              <el-date-picker v-model="startTime" type="datetime" placeholder="选择开始时间" value-format="timestamp" size="mini" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="11">
-            <el-form-item label="结束时间：">
-              <el-date-picker v-model="endTime" type="datetime" placeholder="选择结束时间" value-format="timestamp" size="mini" @change="onEndTimeChange" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="11">
-            <el-form-item label="入口关闭时间：">
-              <el-date-picker v-model="entryCloseTime" type="datetime" placeholder="选择关闭时间" value-format="timestamp" size="mini" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="11">
-            <el-form-item label="周期天数：" prop="item.ResetCycle" :rules="dataRule(true,{type:'n',range:'0'})">
-              <el-input v-model.number="edit.item.ResetCycle" readonly>
-                <template slot="append">天</template>
-              </el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="11">
-            <el-form-item label="AppId白名单：" prop="item.AppWhitelist">
-              <el-input v-model="edit.item.AppWhitelist" placeholder="每个AppId以英文逗号相隔" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="11">
-            <el-form-item label="SiteId站点：" prop="item.SiteWhitelist">
-              <el-input v-model="edit.item.SiteWhitelist" placeholder="每个SiteId以英文逗号相隔" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="11">
-            <el-form-item label="活动游戏ID：" :required="true" prop="item.Games">
-              <el-select v-model="games" multiple placeholder="请选择" style="width: 400px" @change="onGameOptionsChange">
-                <el-option
-                  v-for="item in gameOptions"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
+        <el-tabs type="border-card" @tab-click="handleTabClick">
+          <el-tab-pane label="活动信息配置">
+            <el-row>
+              <el-col :span="11">
+                <el-form-item label="活动名称：" :required="true" prop="item.TopicName">
+                  <el-input v-model="edit.item.TopicName" placeholder="请输入" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="11">
+                <el-form-item label="开始时间：">
+                  <el-date-picker v-model="edit.item.StartTime" type="datetime" placeholder="选择开始时间" value-format="timestamp" size="mini" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="11">
+                <el-form-item label="结束时间：">
+                  <el-date-picker v-model="edit.item.EndTime" type="datetime" placeholder="选择结束时间" value-format="timestamp" size="mini" @change="onEndTimeChange" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="11">
+                <el-form-item label="展示结束时间：">
+                  <el-date-picker v-model="edit.item.EntryCloseTime" type="datetime" placeholder="选择展示结束时间" value-format="timestamp" size="mini" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="11">
+                <el-form-item label="周期天数：" prop="item.ResetCycle" :rules="dataRule(true,{type:'n',range:'0'})">
+                  <el-input v-model.number="edit.item.ResetCycle" readonly>
+                    <template slot="append">天</template>
+                  </el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="11">
+                <el-form-item label="跑马灯最小金额：" prop="item.MarqueeMiniReward" :rules="dataRule(true,{type:'n',range:'0'})">
+                  <el-input v-model.number="edit.item.MarqueeMiniReward">
+                    <template slot="append">₱</template>
+                  </el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row style="display: none">
+              <el-col :span="11">
+                <el-form-item label="参与活动的游戏：" :required="true" prop="item.Games">
+                  <el-select v-model="games" multiple placeholder="请选择" style="width: 400px" @change="onGameOptionsChange">
+                    <el-option
+                      v-for="item in gameOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="11">
+                <el-form-item label="勾选支持的游戏：" :required="true">
+                  <el-input
+                    placeholder="输入关键字进行过滤"
+                    v-model="filterText">
+                  </el-input>
+                  <el-tree
+                    :data="treeData"
+                    show-checkbox
+                    default-expand-all
+                    node-key="id"
+                    ref="tree"
+                    highlight-current
+                    :props="defaultProps"
+                    :filter-node-method="filterNode"
+                    @check-change="handleGameCheckChange"
+                  >
+                  </el-tree>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-tab-pane>
 
-        <el-form-item>
-          <el-row style="margin-top: 10px;">
-            <el-col :span="12" :offset="7">
-              <el-button type="primary" size="medium" @click="save">保存</el-button>
-            </el-col>
-          </el-row>
-        </el-form-item>
+          <el-tab-pane label="底注场次积分系数配置" name="ScoreCoefficient">
+            <el-row>
+              <el-col>
+                <el-table
+                  :data="edit.item.GameAnteScoreCoefficients"
+                >
+                  <el-table-column
+                    prop="GameId"
+                    label="游戏ID"
+                    width="80"
+                  />
+                  <el-table-column
+                    prop="GameId"
+                    label="游戏名称"
+                    width="180"
+                  >
+                    <template slot-scope="scope">
+                      {{ getGameName(scope.row.GameId) }}
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    label="底注场次积分系数"
+                  >
+                    <template slot-scope="scope">
+                      <el-table :data="scope.row.AnteScoreCoefficients">
+                        <el-table-column
+                          prop="Ante"
+                          label="底注场次"
+                        >
+                          <template slot-scope="scope">
+                            {{ scope.row.Ante / 1000}}
+                          </template>
+                        </el-table-column>
+                        <el-table-column
+                          prop="Score"
+                          label="积分系数"
+                        >
+                          <template slot-scope="scope">
+                            <el-input v-model="scope.row.ScoreCoefficient" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
+                          </template>
+                        </el-table-column>
+                      </el-table>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </el-col>
+            </el-row>
+          </el-tab-pane>
+
+          <el-tab-pane label="成就奖励配置">
+            <el-row>
+              <el-col>
+                <el-button type="primary" @click="addAchievementRewards()" size="mini">添加配置</el-button>
+                <el-table
+                    :data="edit.item.AchievementRewards"
+                    border
+                    style="width: 100%"
+                    :cell-style="libShow.DefaultTableCell"
+                >
+                  <el-table-column
+                    prop="ID"
+                    label="成就ID"
+                    width="80"
+                  >
+                    <template slot-scope="scope">
+                      <el-input v-model.number="scope.row.ID" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    prop="ID"
+                    label="成就名称"
+                  >
+                    <template slot-scope="scope">
+                      <el-input v-model="scope.row.Name" oninput=" if(value === '' || value == null){value = '';} "/>
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    prop="ID"
+                    label="成就描述"
+                    width="200"
+                  >
+                    <template slot-scope="scope">
+                      <el-input v-model="scope.row.Description" oninput=" if(value === '' || value == null){value = '';} "/>
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    prop="ScoreRequired"
+                    label="积分要求"
+                  >
+                    <template slot-scope="scope">
+                      <el-input v-model.number="scope.row.ScoreRequired" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    prop="propType"
+                    label="道具类型"
+                    width="120"
+                  >
+                    <template slot-scope="scope">
+                      <el-select v-model.number="scope.row.PropType" placeholder="请选择道具类型" @change="updatePropOptions(scope.row.PropType, scope.$index)">
+                        <el-option
+                          v-for="item in propTypeOptions"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value"
+                        />
+                      </el-select>
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    prop="propId"
+                    label="道具名称"
+                    width="180"
+                  >
+                    <template slot-scope="scope">
+                      <el-select v-model.number="scope.row.PropId" placeholder="请选择道具">
+                        <el-option
+                          v-for="item in propOptions[scope.$index]"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value"
+                        />
+                      </el-select>
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    prop="propExpireDays"
+                    label="可用时间"
+                  >
+                    <template slot-scope="scope">
+                      <el-select v-model.number="scope.row.PropExpireDays" v-if="scope.row.PropType === 2" placeholder="请选择可用时间">
+                        <el-option
+                          v-for="item in propDayTypeOptions"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value"
+                        />
+                      </el-select>
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    prop="propNum"
+                    label="道具数量"
+                    width="80"
+                  >
+                    <template slot-scope="scope">
+                      <el-input v-model.number="scope.row.PropNum" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="操作" column-key="op" width="75">
+                    <template slot-scope="scope">
+                      <el-button size="mini" icon="el-icon-delete" @click="removeAchievementRewards(scope.$index)" />
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </el-col>
+            </el-row>
+          </el-tab-pane>
+
+          <el-tab-pane label="白名单配置">
+            <el-row>
+              <el-col :span="11">
+                <el-form-item label="AppId白名单：" prop="item.AppWhitelist">
+                  <el-select v-model="edit.item.AppWhitelist" placeholder="请选择" style="width: 400px">
+                    <el-option
+                      v-for="item in appIdOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="11">
+                <el-form-item label="SiteId白名单：" prop="item.SiteWhitelist">
+                  <el-select v-model="edit.item.SiteWhitelist" multiple placeholder="请选择" style="width: 400px">
+                    <el-option
+                      v-for="item in siteIdOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-tab-pane>
+        </el-tabs>
       </el-form>
+      <el-row style="margin-top: 10px;">
+        <el-col :span="12">
+          <el-button type="primary" size="medium" @click="save">保存配置</el-button>
+        </el-col>
+      </el-row>
     </el-dialog>
 
     <el-dialog :title="getCycleDialogTitle()" width="65%" :visible.sync="edit.cyclesVisible" :close-on-click-modal="false">
@@ -201,11 +429,14 @@ function newItem() {
     StartTime: Date.parse(new Date().toString()),
     EndTime: Date.parse(new Date().toString()),
     ResetCycle: 7,
+    MarqueeMiniReward: 0,
     Games: '',
     CycleNumber: '',
     EntryCloseTime: Date.parse(new Date().toString()),
-    AppWhitelist: '',
-    SiteWhitelist: ''
+    AppWhitelist: [],
+    SiteWhitelist: [],
+    AchievementRewards: [],
+    GameAnteScoreCoefficients: []
   }
 }
 
@@ -237,29 +468,49 @@ export default {
       env: 'test',
       libMoney: new MoneyShow([]),
 
-      gameOptions: [{
-        value: 15,
-        label: 'TEXAS POKER'
-      }, {
-        value: 21,
-        label: 'PUSOY'
-      }, {
-        value: 22,
-        label: 'TONGITS'
-      }, {
-        value: 28,
-        label: 'TONGITS JOKER'
-      }, {
-        value: 23,
-        label: 'LUCKY9'
-      }],
+      gameOptions: [
+        {
+          value: 37,
+          label: 'BlackJack'
+        },
+        {
+          value: 23,
+          label: 'Lucky9'
+        },
+        {
+          value: 21,
+          label: 'Pusoy'
+        },
+        {
+          value: 126,
+          label: 'Pusoy Wild'
+        },
+        {
+          value: 15,
+          label: 'Texas Poker'
+        },
+        {
+          value: 22,
+          label: 'Tongits'
+        },
+        {
+          value: 28,
+          label: 'Tongits Joker'
+        },
+        {
+          value: 29,
+          label: 'Tongits Quick'
+        }
+      ],
 
       edit: {
         visible: false,
         cyclesVisible: false,
         activityId: 0,
         item: newItem(),
-        isEdit: false
+        isEdit: false,
+        selectedGamesText: '',
+        gameAnteMap: {},
       },
       startTime: Date.parse(new Date().toString()),
       endTime: Date.parse(new Date().toString()) + 86400 * 7 * 1000,
@@ -276,7 +527,10 @@ export default {
         CycleNumber: '周期编号',
         EntryCloseTime: '入口关闭时间',
         AppWhitelist: 'AppId白名单',
-        SiteWhitelist: 'SiteId站点'
+        SiteWhitelist: 'SiteId站点',
+        MarqueeMiniReward: '跑马灯最小金额',
+        AchievementRewards: '成就奖励',
+        GameAnteScoreCoefficients: '底注场次积分系数'
       },
       CyclesAttrNames: {
         ID: 'ID',
@@ -286,14 +540,100 @@ export default {
         Period: '时长（天）',
         StartTime: '开始时间',
         EndTime: '结束时间'
-      }
+      },
+      appIdOptions: [
+        {
+          value: 1000002,
+          label: '内部1000002'
+        },
+        {
+          value: 1000003,
+          label: 'GP-BP测试1000003'
+        },
+        {
+          value: 1000005,
+          label: '正式1000005'
+        }
+      ],
+
+      siteIdOptions: [
+        { value: 'BP', label: 'BP' },
+        { value: 'AP', label: 'AP' },
+        { value: 'GP', label: 'GP' },
+        { value: 'TP', label: 'TP' },
+        { value: 'PG', label: 'PG' },
+        { value: 'Dev', label: 'Dev' }
+      ],
+
+      filterText: '',
+
+      defaultProps: {
+        label: 'label',
+        children: 'children',
+        disabled: 'disabled',
+      },
+
+      filterGameIds: [ 2031, 10002 ],
+
+      GamesSorted: [
+        {
+          GameId: 1, Name: '测试游戏1', OrderNo: 1
+        }
+      ],
+
+      treeData: [{
+        id: 1,
+        label: '一级 1',
+        children: [{
+          id: 4,
+          label: '二级 1-1',
+          children: [{
+            id: 9,
+            label: '三级 1-1-1'
+          }, {
+            id: 10,
+            label: '三级 1-1-2'
+          }]
+        }]
+      }],
+
+      // 道具数据列表
+      propList: [],
+      // 道具有效时长列表
+      propTimeList: [],
+      // 道具选项列表
+      propOptions: {},
+
+      // 道具类型选项列表
+      propTypeOptions: [
+        //{ 'value': 1, 'label': 'Tongits门票', disabled: false },
+        { 'value': 2, 'label': '头像框', disabled: false },
+        //{ 'value': 3, 'label': '德州门票', disabled: false },
+        //{ 'value': 4, 'label': '德州头像框', disabled: false }
+      ],
+      // 道具有效时长选项列表
+      propDayTypeOptions: [
+        { 'value': 1, 'label': '1天', disabled: false },
+        { 'value': 3, 'label': '3天', disabled: false },
+        { 'value': 7, 'label': '7天', disabled: false },
+        { 'value': 30, 'label': '30天', disabled: false },
+        { 'value': 365, 'label': '365天', disabled: false },
+        { 'value': 0, 'label': '永久', disabled: false }
+      ]
     }
   },
   created() {
     this.env = store.getters.env || this.env
     this.getList()
   },
+  mounted() {
+    this.getGameAll()
+    this.getPropList()
+  },
   methods: {
+    getGameName(id) {
+      return this.gameOptions.find(item => item.value === id)?.label
+    },
     formatNumber(n) {
       return n.toLocaleString()
     },
@@ -324,6 +664,7 @@ export default {
     onGameOptionsChange() {
       console.log('selected games', this.games)
       this.edit.item.Games = this.games.join(',')
+      this.$refs.tree.setCheckedKeys(this.games)
     },
 
     onEndTimeChange(val) {
@@ -351,7 +692,15 @@ export default {
         this.edit.visible = true
       }
     },
-
+    handleEditDialogOpened() {
+      console.log('handleEditDialogOpened edit:' + this.edit.isEdit)
+      if (this.edit.isEdit) {
+        const gameIds = this.edit.item.Games.split(',')
+        this.$refs.tree.setCheckedKeys(gameIds)
+      } else {
+        this.$refs.tree.setCheckedKeys([])
+      }
+    },
     handleCreate() {
       this.edit.item = newItem()
       this.edit.isEdit = false
@@ -623,15 +972,37 @@ export default {
       if (ID) {
         const _data = this.clientDB.GetDataByID(ID)
         if (_data) {
-          Object.assign(this.edit.item, _data)
-          this.startTime = this.edit.item.StartTime * 1000
-          this.endTime = this.edit.item.EndTime * 1000
-          this.entryCloseTime = this.edit.item.EntryCloseTime * 1000
+          const item = JSON.parse(JSON.stringify(_data))
+          item.StartTime *= 1000
+          item.EndTime *= 1000
+          item.EntryCloseTime *= 1000
+          item.MarqueeMiniReward /= 1000
+
           this.games = []
-          const games = this.edit.item.Games.split(',')
+          const games = item.Games.split(',')
           for (const i in games) {
             this.games.push(parseInt(games[i]))
           }
+
+          item.AppWhitelist = item.AppWhitelist?.split(',').map(item => parseInt(item))[0] ?? 0
+          item.SiteWhitelist = item.SiteWhitelist.split(',')
+          item.AchievementRewards = item.AchievementRewards ? JSON.parse(item.AchievementRewards) : []
+          item.GameAnteScoreCoefficients = item.GameAnteScoreCoefficients ? JSON.parse(item.GameAnteScoreCoefficients) : []
+
+          for (let i = 0; i < item.AchievementRewards.length; i++) {
+            const achievementReward = item.AchievementRewards[i]
+            this.updatePropOptions(achievementReward.PropType, i)
+          }
+
+          for (const i in item.GameAnteScoreCoefficients) {
+            const obj = item.GameAnteScoreCoefficients[i]
+            for (const j in obj.AnteScoreCoefficients) {
+              const anteObj = obj.AnteScoreCoefficients[j]
+              anteObj.ScoreCoefficient = anteObj.ScoreCoefficient / 10
+            }
+          }
+
+          this.edit.item = item
           if (bEdit) {
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(_data)
@@ -675,11 +1046,26 @@ export default {
     },
     getPostData() {
       const postData = this.libMoney.TransForStore(this.edit.item)
-      postData.StartTime = this.startTime / 1000
-      postData.EndTime = this.endTime / 1000
-      postData.EntryCloseTime = this.entryCloseTime / 1000
-      postData.CycleNumber = new Date(this.startTime).Format('yyyyMMdd')
-      postData.Games = this.games
+      postData.StartTime /= 1000
+      postData.EndTime /= 1000
+      postData.EntryCloseTime /= 1000
+      postData.CycleNumber = new Date(postData.StartTime*1000).Format('yyyyMMdd')
+      postData.MarqueeMiniReward *= 1000
+      postData.Games = this.games.join(',')
+      postData.AppWhitelist = this.edit.item.AppWhitelist
+      postData.SiteWhitelist = this.edit.item.SiteWhitelist.join(',')
+      postData.AchievementRewards = JSON.stringify(this.edit.item.AchievementRewards)
+
+      for (const i in postData.GameAnteScoreCoefficients) {
+        const obj = postData.GameAnteScoreCoefficients[i]
+        for (const j in obj.AnteScoreCoefficients) {
+          const anteObj = obj.AnteScoreCoefficients[j]
+          anteObj.ScoreCoefficient = parseInt(parseFloat(anteObj.ScoreCoefficient) * 10)
+        }
+      }
+
+      postData.GameAnteScoreCoefficients = JSON.stringify(this.edit.item.GameAnteScoreCoefficients)
+
       console.log('dataToPost ', postData)
       return postData
     },
@@ -688,33 +1074,448 @@ export default {
         Message.warning('开始时间不能大于结束时间，请检查数值正确性！')
         return false
       }
+
+      const achievementRewardIDs = []
+      for (const i in this.edit.item.AchievementRewards) {
+        const obj = this.edit.item.AchievementRewards[i]
+        if (achievementRewardIDs.indexOf(obj.ID) >= 0) {
+          Message.warning('不能重复添加相同成就ID的配置！')
+          return false
+        }
+        achievementRewardIDs.push(obj.ID)
+
+        if (obj.ScoreRequired <= 0) {
+          Message.warning('积分要求不能小于等于0，请检查数值正确性！成就ID：' + obj.ID + '，成就名称：' + obj.Name + '')
+          return false
+        }
+        if (obj.PropNum <= 0) {
+          Message.warning('道具数量不能小于等于0，请检查数值正确性！成就ID：' + obj.ID + '，成就名称：' + obj.Name + '')
+          return false
+        }
+      }
+
+      for (const i in this.edit.item.GameAnteScoreCoefficients) {
+        const obj = this.edit.item.GameAnteScoreCoefficients[i]
+        for (const j in obj.AnteScoreCoefficients) {
+          const anteObj = obj.AnteScoreCoefficients[j]
+          if (anteObj.ScoreCoefficient <= 0) {
+            Message.warning('积分系数不能小于等于0，请检查数值正确性！游戏：' + this.getGameName(obj.GameId) + '， 底注场次：' + anteObj.Ante/1000 + '')
+            return false
+          }
+        }
+      }
       return true
     },
     save() {
       if (!this.checkData()) return
       if (!ValidateVueItem(this.$refs['edit'])) return false
 
-      this.edit.item.StartTime = this.startTime / 1000
-      this.edit.item.EndTime = this.endTime / 1000
-      this.edit.item.EntryCloseTime = this.entryCloseTime / 1000
-      this.edit.item.Games = this.games.join(',')
+      const postData = this.getPostData()
       if (this.edit.isEdit) {
         // 设置修改后数据
-        this.$refs.compare.SetNewVal(this.edit.item)
+        this.$refs.compare.SetNewVal(postData)
         const $this = this
         this.$refs.compare.Compare(function(isEdit) {
           if (!isEdit) {
             Message.error('没有任何修改，不需要提交')
             return
           } else {
-            $this.editSave($this.getPostData())
+            $this.editSave(postData)
           }
         })
       } else {
-        this.createSave(this.getPostData())
+        this.createSave(postData)
       }
       this.edit.visible = false
-    }
+    },
+    //************************ 游戏列表相关 ************************
+    async getTongitsAnteList(playMode) {
+      const response = await request({
+        url: '/tongitstable/all',
+        method: 'get',
+        data: {
+          PlayMode: playMode
+        }
+      })
+
+      let anteTables = []
+      if (response.RetCode === 0) {
+        const objs = response.Data || []
+        for (const i in objs) {
+          anteTables.push(objs[i].TableMoney)
+        }
+        anteTables = Array.from(new Set(anteTables)) // 去重
+        anteTables.sort((x, y) => x - y)
+      }
+
+      console.log('getTongitsAnteList anteTables: ', anteTables)
+      return anteTables
+    },
+    async getLucky9AnteList() {
+      const response = await request({
+        url: '/lucky9table/all',
+        method: 'get',
+        data: {}
+      })
+
+      let anteTables = []
+      if (response.RetCode === 0) {
+        const objs = response.Data || []
+        for (const i in objs) {
+          anteTables.push(objs[i].TableMoney) // 去重
+        }
+        anteTables = Array.from(new Set(anteTables))
+        anteTables.sort((x, y) => x - y)
+      }
+
+      console.log('getLucky9AnteList anteTables: ', anteTables)
+      return anteTables
+    },
+    async getBlackjackAnteList() {
+      const response = await request({
+        url: '/blackjacktable/all',
+        method: 'get',
+        data: {}
+      })
+
+      let anteTables = []
+      if (response.RetCode === 0) {
+        const objs = response.Data || []
+        for (const i in objs) {
+          anteTables.push(objs[i].TableMoney)
+        }
+        anteTables = Array.from(new Set(anteTables))
+        anteTables.sort((x, y) => x - y)
+      }
+
+      console.log('getBlackjackAnteList anteTables: ', anteTables)
+      return anteTables
+    },
+    async getPusoyAnteList() {
+      const response = await request({
+        url: '/pusoytable/all',
+        method: 'get',
+        data: {}
+      })
+
+      let anteTables = []
+      if (response.RetCode === 0) {
+        const objs = response.Data || []
+        for (const i in objs) {
+          anteTables.push(objs[i].TableMoney)
+        }
+        anteTables = Array.from(new Set(anteTables))
+        anteTables.sort((x, y) => x - y)
+      }
+
+      console.log('getPusoyAnteList anteTables: ', anteTables)
+      return anteTables
+    },
+    async getPusoyWildAnteList() {
+      const response = await request({
+        url: '/pusoywildtable/all',
+        method: 'get',
+        data: {}
+      })
+
+      let anteTables = []
+      if (response.RetCode === 0) {
+        const objs = response.Data || []
+        for (const i in objs) {
+          anteTables.push(objs[i].TableMoney)
+        }
+        anteTables = Array.from(new Set(anteTables))
+        anteTables.sort((x, y) => x - y)
+      }
+
+      console.log('getPusoyAnteList anteTables: ', anteTables)
+      return anteTables
+    },
+    async getTexasAnteList() {
+      const response = await request({
+        url: '/texastable/all',
+        method: 'get',
+        data: {}
+      })
+
+      let anteTables = []
+      if (response.RetCode === 0) {
+        const objs = response.Data || []
+        for (const i in objs) {
+          anteTables.push(objs[i].SmallBlind)
+        }
+        anteTables = Array.from(new Set(anteTables))
+        anteTables.sort((x, y) => x - y)
+      }
+
+      console.log('getTexasAnteList anteTables: ', anteTables)
+      return anteTables
+    },
+    async getGameAnteTables(gameId) {
+      switch (gameId) {
+        case 22:
+          return await this.getTongitsAnteList(1)
+        case 28:
+          return await this.getTongitsAnteList(2)
+        case 29:
+          return await this.getTongitsAnteList(3)
+        case 23:
+          return await this.getLucky9AnteList()
+        case 37:
+          return await this.getBlackjackAnteList()
+        case 21:
+          return await this.getPusoyAnteList()
+        case 126:
+          return await this.getPusoyWildAnteList()
+        case 15:
+          return await this.getTexasAnteList()
+      }
+      console.log('getGameAnteTables gameId: ', gameId, ' not supported',)
+      return []
+    },
+    async addGameAnteScoreCoefficients(gameId) {
+      const index = this.edit.item.GameAnteScoreCoefficients.findIndex(item => item.GameId === gameId)
+      if (index >= 0) {
+        return
+      }
+
+      const anteTables = await this.getGameAnteTables(gameId)
+
+      const item = {
+        GameId: gameId,
+        AnteScoreCoefficients: []
+      }
+
+      console.log('addGameAnteScoreCoefficients gameId: ', gameId, ' anteTables: ', anteTables)
+
+      for (let i = 0; i < anteTables.length; i++) {
+        const anteTable = anteTables[i]
+        item.AnteScoreCoefficients.push({
+          Ante: anteTable,
+          ScoreCoefficient: 1
+        })
+      }
+
+      this.edit.item.GameAnteScoreCoefficients.push(item)
+      // 按游戏名首字母排序
+      this.edit.item.GameAnteScoreCoefficients.sort((x, y) => {
+        const xName = this.getGameName(x.GameId)
+        const yName = this.getGameName(y.GameId)
+        return xName.charCodeAt(0) - yName.charCodeAt(0)
+      })
+    },
+    removeGameAnteScoreCoefficients(gameId) {
+      const index = this.edit.item.GameAnteScoreCoefficients.findIndex(item => item.GameId === gameId)
+      if (index >= 0) {
+        this.edit.item.GameAnteScoreCoefficients.splice(index, 1)
+      }
+    },
+    async initGameAnteScoreCoefficients() {
+      for (const i in this.games) {
+        await this.addGameAnteScoreCoefficients(this.games[i])
+      }
+    },
+    handleTabClick(tab) {
+      console.log('handleTabClick tab: ', tab.name)
+      if (tab.name === 'ScoreCoefficient') {
+        this.initGameAnteScoreCoefficients()
+      }
+    },
+    filterNode(value, data) {
+      if (!value) return true;
+      return data.label.indexOf(value) !== -1;
+    },
+    getGameAll() {
+      request({
+        url: '/thirdpartygames/all',
+        method: 'get',
+        data: {},
+        params: {status : 2}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objs = response.Data || []
+          const data = {}
+          for (let i = 0; i < objs.length; i++) {
+            const obj = objs[i]
+            const index = this.gameOptions.findIndex(item => item.value === obj.Gid)
+            if (index < 0) {
+              continue
+            }
+            if (obj.Status !== 2 || // obj.Status 2=上架
+              obj.CategoryID !== 2 || // obj.CategoryID 2=Poker类游戏
+              obj.ShowDatacenter !== 1 ||
+              this.filterGameIds.indexOf(obj.Gid) >= 0) {
+              continue
+            }
+
+            const game = {Gid: obj.Gid, Name: obj.Name, Description: obj.Description}
+            if (data.hasOwnProperty(obj.CategoryID)) {
+              data[obj.CategoryID].push(game)
+            } else {
+              data[obj.CategoryID] = [game]
+            }
+          }
+
+          this.treeData = []
+          const categories = {1: 'Slot', 2: 'Poker', 3: 'Casino'}
+
+          for (const key in data) {
+            const games = data[key]
+            const cty = {id: 'p-' + key, label: categories[key], children: []}
+
+            for (let i = 0; i < games.length; i++) {
+              const game = games[i]
+              cty.children.push({id: game.Gid, label: game.Name})
+            }
+            cty.children.sort(function(a, b) {
+              return a.label.localeCompare(b.label)
+            })
+            this.treeData.push(cty)
+          }
+
+          console.log(data)
+        }
+      })
+    },
+    updateGamesSorted() {
+      this.GamesSorted = []
+      this.edit.selectedGamesText = ''
+      if (this.games === undefined || this.games.length === 0) {
+        return
+      }
+
+      const gameTextList = []
+
+      for (let i = 0; i < this.games.length; i++) {
+        const gameId = this.games[i]
+        let name = ''
+        for (let j = 0; j < this.treeData.length; j++) {
+          const cty = this.treeData[j]
+          for (let k = 0; k < cty.children.length; k++) {
+            const game = cty.children[k]
+            if (game.id === gameId) {
+              name = game.label
+              break
+            }
+          }
+        }
+        this.GamesSorted.push({GameId: gameId, Name: name, OrderNo: i+1})
+        gameTextList.push(name + '[' + gameId + ']')
+      }
+
+      this.edit.selectedGamesText = gameTextList.join(' ')
+    },
+    async handleGameCheckChange(data, checked, indeterminate) {
+      console.log('handleGameCheckChange', data, checked, indeterminate)
+      if (data.label === 'Slot' || data.label === 'Poker' || data.label === 'Casino') {
+        console.log('handleGameCheckChange', 'Slot/Poker/Casino')
+        return
+      }
+
+      const idIndex = this.games.indexOf(data.id)
+      if (checked) {
+        if (idIndex < 0) {
+          this.games.push(data.id)
+        }
+      } else {
+        if (idIndex >= 0) {
+          this.games.splice(idIndex, 1)
+        }
+        this.removeGameAnteScoreCoefficients(data.id)
+      }
+
+      // 更新选中游戏的排序
+      this.updateGamesSorted()
+
+      console.log('this.games:', this.games)
+    },
+    showGamesSortDialog() {
+      this.edit.gamesSortDialogVisible = true
+    },
+    saveGamesSort() {
+      this.edit.gamesSortDialogVisible = false
+      // 根据排序编号重新排序
+      this.GamesSorted.sort((a, b) => {
+        return a.OrderNo - b.OrderNo
+      })
+      // 保存排序
+      this.games = []
+      this.GamesSorted.forEach(item => {
+        this.games.push(item.GameId)
+      })
+    },
+    onOrderNoChange() {
+      this.GamesSorted.sort((a, b) => {
+        return a.OrderNo - b.OrderNo
+      })
+    },
+    //************************ 游戏列表相关 ************************
+    //************************ 成就奖励相关 ************************
+    getPropList() {
+      request({
+        url: '/propsconfig/props/config/list',
+        method: 'get',
+        data: {
+          Env: this.env,
+          PageNum: 1,
+          PageSize: 1000
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objs = response.Data || {}
+          if (objs.total > 0) {
+            //this.propTotal = objs.total
+            this.propList = []
+            this.propList = objs.list
+          }
+        } else {
+          //this.propTotal = objs.total
+          this.propList = []
+        }
+      })
+    },
+    updatePropOptions(propType, index) {
+      this.propOptions[index] = []
+      let currTime = new Date().getTime()
+      for (let i = 0; i < this.propList.length; i++) {
+        if (this.propList[i].item_type === 4) {
+          console.log(this.propList[i])
+        }
+        if (this.propList[i].item_type === propType && this.propList[i].status === 1) {
+          if (this.propList[i].item_type !== 2 && this.propList[i].item_type !== 4) {
+            let expTime = this.propList[i].expire_time * 1000
+            if (currTime < expTime) {
+              let dataList = { 'value': this.propList[i].id, 'label': this.propList[i].item_name, disabled: false }
+              this.propOptions[index].push(dataList)
+            }
+
+          } else {
+            let dList = { 'value': this.propList[i].id, 'label': this.propList[i].item_name, disabled: false }
+            this.propOptions[index].push(dList)
+          }
+        }
+      }
+    },
+    addAchievementRewards() {
+      const item = {
+        ID: 0,
+        Name: '',
+        Description: '',
+        ScoreRequired: 0,
+        PropId: 0,
+        PropType: 2,
+        PropNum: 0,
+        PropNumMax: 0,
+        PropExpireDays: 1
+      }
+      this.edit.item.AchievementRewards.push(item)
+      const index = this.edit.item.AchievementRewards.length - 1
+      this.updatePropOptions(item.PropType, index)
+    },
+    removeAchievementRewards(index) {
+      this.edit.item.AchievementRewards.splice(index, 1)
+    },
+    //************************ 成就奖励相关 ************************
   }
 }
 </script>

@@ -289,6 +289,12 @@ export default {
               TidCheatLogs: [],
               Nick: new Set()
             }
+            // eslint-disable-next-line no-prototype-builtins
+            if (row.hasOwnProperty('maxCheatScore')) {
+              cheatLog.MaxCheatScore = row.maxCheatScore
+            } else {
+              cheatLog.MaxCheatScore = 0
+            }
             cheatLogs.push(cheatLog)
           }
           let sortName = 'UpdateTime'
@@ -951,6 +957,16 @@ export default {
         >
           <template slot-scope="scope">
             <span :style="{color: getValueColor(scope.row.CheatScore)}">{{ scope.row.CheatScore }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="MaxCheatScore"
+          label="历史最高疑似度"
+          width="80"
+          align="center"
+        >
+          <template slot-scope="scope">
+            <span :style="{color: getValueColor(scope.row.MaxCheatScore)}">{{ scope.row.MaxCheatScore }}</span>
           </template>
         </el-table-column>
         <el-table-column
