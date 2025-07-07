@@ -277,7 +277,7 @@
                     </template>
                   </el-table-column>
                   <el-table-column
-                    label="场次最大机器人比"
+                    label="每1个真人对应的机器人数比"
                     width="200"
                   >
                     <template slot-scope="scope">
