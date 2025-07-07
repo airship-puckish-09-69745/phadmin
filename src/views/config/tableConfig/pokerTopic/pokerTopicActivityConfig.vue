@@ -122,6 +122,15 @@
                 </el-form-item>
               </el-col>
             </el-row>
+            <el-row>
+              <el-col :span="11">
+                <el-form-item label="跑马灯最小金额：" prop="item.MarqueeMiniReward" :rules="dataRule(true,{type:'n',range:'0'})">
+                  <el-input v-model.number="edit.item.MarqueeMiniReward">
+                    <template slot="append">₱</template>
+                  </el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
             <el-row style="display: none">
               <el-col :span="11">
                 <el-form-item label="参与活动的游戏：" :required="true" prop="item.Games">
@@ -420,6 +429,7 @@ function newItem() {
     StartTime: Date.parse(new Date().toString()),
     EndTime: Date.parse(new Date().toString()),
     ResetCycle: 7,
+    MarqueeMiniReward: 0,
     Games: '',
     CycleNumber: '',
     EntryCloseTime: Date.parse(new Date().toString()),
@@ -965,6 +975,7 @@ export default {
           item.StartTime *= 1000
           item.EndTime *= 1000
           item.EntryCloseTime *= 1000
+          item.MarqueeMiniReward /= 1000
 
           this.games = []
           const games = item.Games.split(',')
@@ -1038,6 +1049,7 @@ export default {
       postData.EndTime /= 1000
       postData.EntryCloseTime /= 1000
       postData.CycleNumber = new Date(postData.StartTime*1000).Format('yyyyMMdd')
+      postData.MarqueeMiniReward *= 1000
       postData.Games = this.games.join(',')
       postData.AppWhitelist = this.edit.item.AppWhitelist
       postData.SiteWhitelist = this.edit.item.SiteWhitelist.join(',')
