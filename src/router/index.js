@@ -1613,6 +1613,12 @@ export const asyncRoutes = [
                 meta: { title: 'GoldMiner(审)' }
               },
               {
+                path: 'goldtrainmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/goldtrainmars_slots_cfg.vue'),
+                name: 'goldtrainmars_slots_cfg',
+                meta: { title: 'GoldTrain(审)' }
+              },
+              {
                 path: 'atlantistreasuremars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/atlantistreasuremars_slots_cfg'),
                 name: 'atlantistreasuremars_slots_cfg',
@@ -3119,9 +3125,9 @@ export const asyncRoutes = [
             meta: { title: 'StreetFighting(审)', gid: 189 }
           },
           {
-            path: 'goldtrain_slots_log',
+            path: 'goldtrainmars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
-            name: 'goldtrain_slots_log',
+            name: 'goldtrainmars_slots_log',
             meta: { title: 'GoldTrain(审)', gid: 195 }
           },
           {
