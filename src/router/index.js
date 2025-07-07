@@ -2179,8 +2179,13 @@ export const asyncRoutes = [
 
           }
         ]
+      },
+      {
+        path: 'matchBroadcast',
+        component: () => import('@/views/matchManage/matchBroadcast/index.vue'),
+        name: 'matchBroadcast',
+        meta: { title: '赛事播报', noCache: true }
       }
-
     ]
   },
   {
