@@ -245,10 +245,9 @@ export default {
         36: '[Texas]开出「Straight Flush」',
         41: '[BlackJack]参与游戏',
         42: '[BlackJack]获胜',
-        43: '[BlackJack]赢得庄家保险赌注',
-        44: '[BlackJack]通过「Double Down」双倍下注获胜',
-        45: '[BlackJack]使用「Split」切割后两幅牌均获胜',
-        46: '[BlackJack]获胜时以「BlackJack」获胜',
+        43: '[BlackJack]通过「Double Down」双倍下注获胜',
+        44: '[BlackJack]使用「Split」切割后两幅牌均获胜',
+        45: '[BlackJack]获胜时以「BlackJack」获胜',
       },
       gameOptions: {
         37: 'BlackJack',
