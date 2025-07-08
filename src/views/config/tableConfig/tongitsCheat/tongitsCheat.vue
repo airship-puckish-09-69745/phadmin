@@ -202,6 +202,7 @@ export default {
         MaybeMin: 0, // 最小可能性
         MaybeReduce: 0, // 减少可能性
         TickScore: 100, // 踢人
+        PotPercent: 20, // pot百分比
         GiveMoreTimes: [
           {
             Count: 2,
@@ -425,6 +426,10 @@ export default {
               this.CheatCfg.QuickAiConfigRow = NewRobotAIItem()
             }
             this.editAI = this.CheatCfg.AiConfigRow
+
+            if (!$this.CheatCfg.hasOwnProperty('PotPercent')) {
+              this.CheatCfg.PotPercent = 0
+            }
             this.editJokerAI = this.CheatCfg.JokerAiConfigRow
             this.editQuickAI = this.CheatCfg.QuickAiConfigRow
             const maybeMin = $this.CheatCfg.MaybeMin
@@ -439,6 +444,7 @@ export default {
     encodeData() {
       const cpy = {}
       this.CheatCfg.MaybeMin = parseInt(this.CheatCfg.MaybeMin)
+      this.CheatCfg.PotPercent = parseInt(this.CheatCfg.PotPercent)
       this.CheatCfg.MaybeReduce = parseInt(this.CheatCfg.MaybeReduce)
       const GiveMoreTimes = []
       for (let i = 0; i < this.CheatCfg.GiveMoreTimes.length; i++) {
@@ -606,6 +612,7 @@ export default {
   }
 }
 </script>
+</script>
 
 <template>
   <div id="app" class="page-container" style="padding: 10px">
@@ -630,6 +637,9 @@ export default {
           </el-descriptions-item>
           <el-descriptions-item label="疑似度降低值" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
             <el-input v-model.number="CheatCfg.MaybeReduce" type="number" size="medium" style="width: 120px" />
+          </el-descriptions-item>
+          <el-descriptions-item label="机器人pot百分比" :content-style="{'text-align': 'center','width': '250px'}" :label-style="{'text-align': 'center'}">
+            <el-input v-model.number="CheatCfg.PotPercent" type="number" size="medium" style="width: 120px" />
           </el-descriptions-item>
           <el-descriptions-item label="POT防作弊机器⼈" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
             <el-button
