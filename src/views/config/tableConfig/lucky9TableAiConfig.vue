@@ -32,7 +32,7 @@
                     </template>
                   </el-table-column>
                   <el-table-column
-                    label="闲家输时帮赢概率（%）"
+                    label="庄家输时帮赢概率（%）"
                     width="200"
                   >
                     <template slot-scope="scope">
