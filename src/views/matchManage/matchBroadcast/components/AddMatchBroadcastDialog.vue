@@ -2,7 +2,12 @@
   <el-dialog :title="updateData && updateData.ID ? '编辑配置' : '新增配置'" :visible.sync="dialogVisible" width="540px" :close-on-click-modal="false" @close="handleClose(false)">
     <el-form :model="formData" label-width="100px">
       <el-form-item label="标题" required>
-        <el-input v-model="formData.Amount" style="width: 360px;" />
+        <el-input v-model="formData.Title" style="width: 360px;" />
+      </el-form-item>
+      <el-form-item label="渠道" required>
+        <el-select v-model="formData.Channel" placeholder="请选择渠道" style="width: 360px;" multiple>
+          <el-option v-for="option in channelOptions" :key="option.value" :label="option.label" :value="option.value" />
+        </el-select>
       </el-form-item>
       <el-form-item label="内容" required>
         <el-input v-model="formData.Content" type="textarea" style="width: 360px;" />
@@ -13,13 +18,13 @@
         </el-select>
       </el-form-item>
       <el-form-item label="播报来源" required>
-        <el-select v-model="formData.BroadcastType" placeholder="请选择播报来源" style="width: 360px;">
-          <el-option v-for="option in broadcastTypeOptions" :key="option.value" :label="option.label" :value="option.value" />
+        <el-select v-model="formData.Origin" placeholder="请选择播报来源" style="width: 360px;" multiple>
+          <el-option v-for="option in matchUniqueIdCfgs" :key="option.value" :label="option.label" :value="option.value" />
         </el-select>
       </el-form-item>
-      <el-form-item label="类型" required>
-        <el-select v-model="formData.BroadcastType" placeholder="请选择类型" style="width: 360px;">
-          <el-option v-for="option in broadcastTypeOptions" :key="option.value" :label="option.label" :value="option.value" />
+      <el-form-item label="显示位置" required>
+        <el-select v-model="formData.ShowPosition" placeholder="请选择显示位置" style="width: 360px;">
+          <el-option v-for="option in positionOptions" :key="option.value" :label="option.label" :value="option.value" />
         </el-select>
       </el-form-item>
       <el-form-item label="有效期" required>
@@ -32,7 +37,7 @@
           style="width: 360px;"
         />
       </el-form-item>
-      <el-form-item label="频率" required>
+      <el-form-item label="频率(秒)" required>
         <el-input v-model="formData.BroadcastFrequency" style="width: 360px;" />
       </el-form-item>
     </el-form>
@@ -47,6 +52,8 @@
 
 <script>
 // import request from '@/utils/request'
+
+import store from '@/store'
 export default {
   props: {
     visible: {
@@ -63,12 +70,31 @@ export default {
     broadcastTypeOptions: {
       type: Array,
       default: () => []
+    },
+    channelOptions: {
+      type: Array,
+      default: () => []
+    },
+    positionOptions: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
     return {
       // 字段参考resetForm
-      formData: {}
+      formData: {},
+      matchUniqueIdCfgs: [
+        { 'value': 10001, 'label': '188Free' },
+        { 'value': 10002, 'label': '12888Free' },
+        { 'value': 10003, 'label': 'P10' },
+        { 'value': 10004, 'label': 'P20' },
+        { 'value': 10005, 'label': 'P40' },
+        { 'value': 10006, 'label': 'P100' },
+        { 'value': 10007, 'label': 'P300' },
+        { 'value': 10008, 'label': 'GTCC 2005' },
+        { 'value': 10009, 'label': 'Yamaha Moto' }
+      ]
     }
   },
   computed: {
@@ -82,16 +108,22 @@ export default {
     }
   },
   watch: {
-    updateData(newData) {
-      if (newData) {
-        this.formData = { ...newData }
-      } else {
-        this.resetForm()
-      }
-    },
+    // updateData(newData) {
+    //   if (newData) {
+    //     this.formData = { ...newData }
+    //   }
+    // },
     visible(val) {
       if (!val) {
         this.resetForm()
+      } else {
+        if (this.updateData) {
+          this.formData = { ...this.updateData }
+          console.log('this.updateData', this.updateData)
+        } else {
+          this.resetForm()
+          console.log('this.formData', this.formData)
+        }
       }
     }
   },
@@ -112,14 +144,40 @@ export default {
         this.$message.warning('类型不能为空!')
         return false
       }
+      if (!this.formData.Origin) {
+        this.$message.warning('播报来源不能为空!')
+        return false
+      }
+      if (!this.formData.ShowPosition) {
+        this.$message.warning('展示位置不能为空!')
+        return false
+      }
+      if (!this.formData.BroadcastTimeRange) {
+        this.$message.warning('有效期不能为空!')
+        return false
+      }
+      // 频率必须大于0
+      if (!this.formData.BroadcastFrequency || this.formData.BroadcastFrequency < 0) {
+        this.$message.warning('频率不能为空，且大于0秒!')
+        return false
+      }
 
       return true
     },
-    handleSave() {
+    async handleSave() {
       if (!this.checkoutForm()) {
         return
       }
-      console.log(this.formData)
+
+      const data = { ...this.formData }
+      data.Operator = store.getters.name
+      if (!data.ID) {
+        // data.ID = Date.now().toString()
+        data.CreateTime = Date.now()
+      } else {
+        data.UpdateTime = Date.now()
+      }
+      this.$emit('save', data)
       this.handleClose()
     },
     resetForm() {
@@ -129,13 +187,13 @@ export default {
         // 渠道
         Channel: '',
         // 播报类型
-        BroadcastType: 1,
+        BroadcastType: [],
         // 内容
         Content: '',
         // 标题
         Title: '',
         // 播报来源
-        Origin: [],
+        Origin: '',
         // 展示位置
         ShowPosition: 1,
         // 状态
@@ -143,7 +201,13 @@ export default {
         // 播报有效期
         BroadcastTimeRange: [],
         // 频率：单位秒
-        BroadcastFrequency: 60
+        BroadcastFrequency: 60,
+        // 创建时间
+        CreateTime: 0,
+        // 修改时间
+        UpdateTime: 0,
+        // 操作人
+        Operator: ''
       }
     },
     handleClose(reload = false) {

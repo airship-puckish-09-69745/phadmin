@@ -17,3 +17,10 @@ export const broadcastTypeOptions = [
     condition: '自定义循环展示频率'
   }
 ]
+
+export const positionOptions = [
+  {
+    label: '大厅',
+    value: 1
+  }
+]
