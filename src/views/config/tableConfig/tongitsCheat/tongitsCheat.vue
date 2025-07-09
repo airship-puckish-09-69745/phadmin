@@ -641,9 +641,9 @@ export default {
           <el-descriptions-item label="机器人pot百分比" :content-style="{'text-align': 'center','width': '250px'}" :label-style="{'text-align': 'center'}">
 <!--            <el-input v-model.number="CheatCfg.PotPercent" type="number" size="medium" style="width: 120px" />-->
             <template>
-              <div class="percentage-input">
+              <div>
                 <el-input v-model.number="CheatCfg.PotPercent" type="number" size="medium" style="width: 120px" />
-                <span class="percent-symbol">%</span>
+                <span>%</span>
               </div>
             </template>
           </el-descriptions-item>
@@ -1024,21 +1024,5 @@ export default {
   text-align: center;
   font-size: 16px;
   padding: 10px 15px;
-}
-.percentage-input {
-  position: relative;
-  display: inline-block;
-}
-
-.percentage-input input {
-  padding-right: 20px; /* 为百分号留出空间 */
-}
-
-.percent-symbol {
-  position: absolute;
-  right: 8px;
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: none;
 }
 </style>
