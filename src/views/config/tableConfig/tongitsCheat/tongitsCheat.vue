@@ -387,6 +387,7 @@ export default {
           $this.form = response.Data || {}
           if (response.Data && response.Data.Data !== '' && response.Data.Data !== '{}') {
             $this.CheatCfg = JSON.parse(response.Data.Data)
+            // eslint-disable-next-line no-prototype-builtins
             if (!$this.CheatCfg.hasOwnProperty('PlayMoreTimes') || !Array.isArray(this.CheatCfg.PlayMoreTimes)) {
               $this.CheatCfg.PlayMoreTimes = [
                 {
@@ -403,30 +404,37 @@ export default {
                 }
               ]
             }
+            // eslint-disable-next-line no-prototype-builtins
             if (!$this.CheatCfg.hasOwnProperty('SameName')) {
               $this.CheatCfg.SameName = {
                 MaybeAdd: 3
               }
             }
+            // eslint-disable-next-line no-prototype-builtins
             if (!$this.CheatCfg.hasOwnProperty('AiConfigRow')) {
               this.CheatCfg.AiConfigRow = NewRobotAIItem()
             }
+            // eslint-disable-next-line no-prototype-builtins
             if (!$this.CheatCfg.hasOwnProperty('AiConfigRow')) {
               this.CheatCfg.AiConfigRow = NewRobotAIItem()
             }
+            // eslint-disable-next-line no-prototype-builtins
             if (!$this.CheatCfg.hasOwnProperty('AiConfigRow')) {
               this.CheatCfg.AiConfigRow = NewRobotAIItem()
             }
             this.editAI = this.CheatCfg.AiConfigRow
+            // eslint-disable-next-line no-prototype-builtins
             if (!$this.CheatCfg.hasOwnProperty('JokerAiConfigRow')) {
               this.CheatCfg.JokerAiConfigRow = NewRobotAIItem()
             }
             this.editAI = this.CheatCfg.AiConfigRow
+            // eslint-disable-next-line no-prototype-builtins
             if (!$this.CheatCfg.hasOwnProperty('QuickAiConfigRow')) {
               this.CheatCfg.QuickAiConfigRow = NewRobotAIItem()
             }
             this.editAI = this.CheatCfg.AiConfigRow
 
+            // eslint-disable-next-line no-prototype-builtins
             if (!$this.CheatCfg.hasOwnProperty('PotPercent')) {
               this.CheatCfg.PotPercent = 0
             }
@@ -612,7 +620,6 @@ export default {
   }
 }
 </script>
-</script>
 
 <template>
   <div id="app" class="page-container" style="padding: 10px">
@@ -639,7 +646,7 @@ export default {
             <el-input v-model.number="CheatCfg.MaybeReduce" type="number" size="medium" style="width: 120px" />
           </el-descriptions-item>
           <el-descriptions-item label="机器人pot百分比" :content-style="{'text-align': 'center','width': '250px'}" :label-style="{'text-align': 'center'}">
-<!--            <el-input v-model.number="CheatCfg.PotPercent" type="number" size="medium" style="width: 120px" />-->
+<!--            <el-input v-model.number="CheatCfg.PotPercent" type="number" size="medium" style="width: 120px"><span>%</span></el-input>-->
             <template>
               <div>
                 <el-input v-model.number="CheatCfg.PotPercent" type="number" size="medium" style="width: 120px" />
