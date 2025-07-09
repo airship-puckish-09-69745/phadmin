@@ -435,7 +435,7 @@ export default {
             this.editAI = this.CheatCfg.AiConfigRow
 
             // eslint-disable-next-line no-prototype-builtins
-            if (!$this.CheatCfg.hasOwnProperty('PotPercent')) {
+            if (!this.CheatCfg.PotPercent) {
               this.CheatCfg.PotPercent = 0
             }
             this.editJokerAI = this.CheatCfg.JokerAiConfigRow
