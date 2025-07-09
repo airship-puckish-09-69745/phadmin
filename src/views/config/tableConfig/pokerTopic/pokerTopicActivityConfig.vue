@@ -231,7 +231,7 @@
                   <el-table-column
                     prop="ID"
                     label="成就ID"
-                    width="80"
+                    width="70"
                   >
                     <template slot-scope="scope">
                       <el-input v-model.number="scope.row.ID" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
@@ -248,7 +248,7 @@
                   <el-table-column
                     prop="ID"
                     label="成就描述"
-                    width="200"
+                    width="260"
                   >
                     <template slot-scope="scope">
                       <el-input v-model="scope.row.Description" oninput=" if(value === '' || value == null){value = '';} "/>
@@ -311,8 +311,8 @@
                   </el-table-column>
                   <el-table-column
                     prop="propNum"
-                    label="道具数量"
-                    width="80"
+                    label="数量"
+                    width="70"
                   >
                     <template slot-scope="scope">
                       <el-input v-model.number="scope.row.PropNum" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
@@ -668,15 +668,14 @@ export default {
     },
 
     onEndTimeChange(val) {
-      if (val < this.startTime) {
-        this.endTime = this.edit.item.EndTime * 1000
-        this.$alert('结束时间不能小于开始时间：' + new Date(this.startTime).Format('yyyy-MM-dd HH:mm:ss'), '活动周期')
+      if (val < this.edit.item.StartTime) {
+        this.$alert('结束时间不能小于开始时间：' + new Date(this.edit.item.StartTime).Format('yyyy-MM-dd HH:mm:ss'), '活动周期')
         return
       }
-      if (val > this.entryCloseTime) {
-        this.entryCloseTime = val
+      if (val > this.edit.item.EntryCloseTime) {
+        this.edit.item.EntryCloseTime = val
       }
-      this.edit.item.ResetCycle = parseInt((this.endTime - this.startTime + 1000) / 1000 / 86400)
+      this.edit.item.ResetCycle = parseInt((this.edit.item.EndTime - this.edit.item.StartTime + 1000) / 1000 / 86400)
       console.log('onEndTimeChange', val)
     },
 
