@@ -6,6 +6,7 @@ import robotAiSettingDrop from '@/views/config/tableConfig/tongits/robotAiSettin
 import robotAiSettingFight from '@/views/config/tableConfig/tongits/robotAiSettingFight.vue'
 import robotAiSettingBuildCard from '@/views/config/tableConfig/tongits/robotAiSettingBuildCard.vue'
 import robotAiSettingChallenge from '@/views/config/tableConfig/tongits/robotAiSettingChallenge.vue'
+import robotAiSettingDecision from '@/views/config/tableConfig/tongits/robotAiSettingDecision.vue'
 import { Message } from 'element-ui'
 import request from '@/utils/request'
 import Compare from '@/components/Compare/index.vue'
@@ -183,7 +184,7 @@ export default {
   components: {
     Compare,
     robotAiSettingChallenge, robotAiSettingBuildCard, robotAiSettingFight,
-    robotAiSettingDrop, robotAiSettingOutCard, Publish },
+    robotAiSettingDrop, robotAiSettingOutCard, Publish,robotAiSettingDecision },
   data() {
     return {
       GameType: 'normal', // 游戏类型
@@ -913,6 +914,9 @@ export default {
             <el-tab-pane label="好牌配置">
               <robot-ai-setting-build-card v-model="editAI" />
             </el-tab-pane>
+            <el-tab-pane label="决策配置">
+              <robot-ai-setting-decision v-model="editAI" />
+            </el-tab-pane>
           </el-tabs>
         </el-row>
         <el-form-item>
@@ -948,6 +952,9 @@ export default {
             <el-tab-pane label="好牌配置">
               <robot-ai-setting-build-card v-model="editQuickAI" game-type="joker" />
             </el-tab-pane>
+            <el-tab-pane label="决策配置">
+              <robot-ai-setting-decision v-model="editQuickAI" />
+            </el-tab-pane>
           </el-tabs>
         </el-row>
         <el-form-item>
@@ -982,6 +989,9 @@ export default {
             </el-tab-pane>
             <el-tab-pane label="好牌配置">
               <robot-ai-setting-build-card v-model="editJokerAI" game-type="joker" />
+            </el-tab-pane>
+            <el-tab-pane label="决策配置">
+              <robot-ai-setting-decision v-model="editJokerAI" />
             </el-tab-pane>
           </el-tabs>
         </el-row>
