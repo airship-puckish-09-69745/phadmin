@@ -201,6 +201,12 @@ export const asyncRoutes = [
         meta: { title: 'slots - 大奖日志 ◐' }
       },
       {
+        path: 'slotsGrandPrize',
+        component: () => import('@/views/online/slotsGrandPrize'),
+        name: '大奖实时统计',
+        meta: { title: 'slots - 大奖实时统计 ◐' }
+      },
+      {
         path: 'egame-control',
         component: () => import('@/views/online/egameControl/index.vue'),
         name: 'EGame控制监控',
