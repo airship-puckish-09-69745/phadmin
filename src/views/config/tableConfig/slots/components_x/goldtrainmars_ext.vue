@@ -8,65 +8,10 @@
             <el-input v-model.number="cfg.BuyFreeOdds" :required="true" />
           </el-form-item>
 
-          <el-form-item label="普通模式FWild在第2和4列出现概率">
-            <el-input v-model="FWildTwoFourColRateStr" placeholder="请输入内容,如25,50"> <template slot="append">% 两个值一组用 , 连接。</template> </el-input>
-          </el-form-item>
-
         </el-form>
       </el-col>
     </el-row>
 
-    <el-row>
-      <el-col :span="15" :offset="3">
-        <el-tabs v-model="activeTab">
-          <el-tab-pane label="特殊符号配置" name="normal">
-            <el-button type="primary" @click="cfg.SpecialSymbols.push({Name:'',Value:0,WeightNormal:0,WeightFree:0,EventRate:0,EventOdds:0,EventSort:0})">添加</el-button>
-            <el-table :data="cfg.SpecialSymbols">
-              <el-table-column prop="Name" label="符号名称">
-                <template slot-scope="scope">
-                  <el-input v-model="scope.row.Name" :required="true" placeholder="请输入内容"/>
-                </template>
-              </el-table-column>
-              <el-table-column prop="Value" label="符号值">
-                <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.Value" :required="true" placeholder="请输入内容"/>
-                </template>
-              </el-table-column>
-              <el-table-column prop="WeightNormal" label="普通模式权重">
-                <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.WeightNormal" :required="true" placeholder="请输入内容"/>
-                </template>
-              </el-table-column>
-              <el-table-column prop="WeightFree" label="免费模式权重">
-                <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.WeightFree" :required="true" placeholder="请输入内容"/>
-                </template>
-              </el-table-column>
-              <el-table-column prop="EventRate" label="事件触发的概率‰">
-                <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.EventRate" :required="true" placeholder="请输入内容"/>
-                </template>
-              </el-table-column>
-              <el-table-column prop="EventOdds" label="事件触发的倍数(放大100倍)">
-                <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.EventOdds" :required="true" placeholder="请输入内容"/>
-                </template>
-              </el-table-column>
-              <el-table-column prop="EventSort" label="事件展示排序号">
-                <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.EventSort" :required="true" placeholder="请输入内容"/>
-                </template>
-              </el-table-column>
-              <el-table-column label="操作">
-                <template slot-scope="scope">
-                  <el-button type="danger" @click="onSpecialSymbolRemove(scope.$index)">删除</el-button>
-                </template>
-              </el-table-column>
-            </el-table>
-          </el-tab-pane>
-        </el-tabs>
-      </el-col>
-    </el-row>
 
     <el-row style="margin-top: 30px">
       <el-col :offset="3">
