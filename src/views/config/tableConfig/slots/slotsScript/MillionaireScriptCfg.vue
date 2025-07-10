@@ -397,7 +397,8 @@ export default {
         '194': 'goldtrain',
         '192': 'bountyraid',
         '196': 'goldminer',
-        '198': 'fortuneblessing'
+        '198': 'fortuneblessing',
+        '200': 'atlantistreasure'
       }
     }
   },
@@ -571,7 +572,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           for (let i = 0; i < response.Data.length; i++) {
-            if (response.Data[i].Gid < 50 || response.Data[i].Gid > 100 && response.Data[i].Gid < 150 || response.Data[i].Gid > 199) {
+            if (response.Data[i].Gid < 50 || response.Data[i].Gid > 100 && response.Data[i].Gid < 150 || response.Data[i].Gid > 499) {
               continue
             }
             this.gameOptions.push({

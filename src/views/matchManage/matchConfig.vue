@@ -489,7 +489,7 @@
         <fieldset>
           <legend>报名条件</legend>
           <el-form-item label="报名条件：" :required="true">
-            <el-select v-model="editForm.data.signUpType" placeholder="请选择" size="mini" @change="changeScenesCfg">
+            <el-select v-model="editForm.data.signUpType" placeholder="请选择" size="mini" @change="changeRewardCfg">
               <el-option
                 v-for="item in signUpTypeCfgs"
                 :key="item.value"
@@ -663,7 +663,7 @@
             <el-table-column
               prop="rewardItems"
               label="奖励"
-              width="400"
+              width="450"
             >
               <template slot-scope="scope">
                 <ul style="list-style: none;padding-inline-start: 0;">
@@ -677,7 +677,7 @@
                         :value="item.value"
                       />
                     </el-select>
-                    <el-select v-if="gItem.getType === 2" v-model="gItem.sceneId" placeholder="请选择投注金" size="mini" style="width:150px">
+                    <el-select v-if="gItem.getType === 2" v-model="gItem.sceneId" placeholder="请选择投注金" size="mini" style="width:200px">
                       <el-option
                         v-for="scene in betScenesCfgs"
                         :key="scene.value"
@@ -685,7 +685,7 @@
                         :value="scene.value"
                       />
                     </el-select>
-                    <el-select v-if="gItem.getType === 3" v-model="gItem.sceneId" placeholder="请选择返水金" size="mini" style="width:150px">
+                    <el-select v-if="gItem.getType === 3" v-model="gItem.sceneId" placeholder="请选择返水金" size="mini" style="width:200px">
                       <el-option
                         v-for="scene in rebateScenesCfgs"
                         :key="scene.value"
@@ -918,7 +918,8 @@ export default {
       matchEvents: [
         { 'value': 0, 'label': 'All' },
         { 'value': 1, 'label': 'Events' },
-        { 'value': 4, 'label': 'GTCC' } // notice 2,3 空着
+        { 'value': 4, 'label': 'GTCC周赛' }, // notice 2,3 空着
+        { 'value': 5, 'label': 'GTCC预选赛' }
       ],
       prizeModleCfgs: [
         { 'value': 0, 'label': '固定奖励' },
@@ -980,7 +981,8 @@ export default {
           openDaysLimit: 0,
           sort: 0,
           associateKey: '0',
-          dcReport: 0
+          dcReport: 0,
+          updateTime: 0
         },
         loopDetail: {
           // 只有一场
@@ -1003,31 +1005,7 @@ export default {
             }
           ]
         },
-        rankRewards: [
-          {
-            index: 1,
-            startRank: 1,
-            endRank: 1,
-            rewardItems: [
-              {
-                index: 1,
-                getType: 1,
-                getPid: 0,
-                getNum: 0,
-                sceneId: 0 // 返水金投注金场景类型（调用营销接口时用）
-              }
-            ],
-            propsReward: {
-              propsId: 0,
-              propsType: 0,
-              propsName: '',
-              propsIcon: '',
-              propsAttr: '',
-              propsNum: 0,
-              propExpireDays: -1
-            }
-          }
-        ],
+        rankRewards: this.initRankRewards(),
         appInfo: [
           {
             index: 1,
@@ -1141,17 +1119,49 @@ export default {
     // 自动清理过期配置
   },
   methods: {
-    changeScenesCfg() {
+    initRankRewards() {
+      return [
+        {
+          index: 1,
+          startRank: 1,
+          endRank: 1,
+          rewardItems: [
+            {
+              index: 1,
+              getType: 1,
+              getPid: 0,
+              getNum: 0,
+              sceneId: 0 // 返水金投注金场景类型（调用营销接口时用）
+            }
+          ],
+          propsReward: {
+            propsId: 0,
+            propsType: 0,
+            propsName: '',
+            propsIcon: '',
+            propsAttr: '',
+            propsNum: 0,
+            propExpireDays: -1
+          }
+        }
+      ]
+    },
+    changeRewardCfg() {
       // 判断是否是编辑
       if (this.editForm.data.id > 0) {
         // 判断修改时间 > 2025-07-01
-        if (this.editForm.data.update_time > 1751299200) {
+        if (this.editForm.data.updateTime > 1751299200) {
+          this.getAfterTypeCfgOptions()
           this.getAfterUpdatedSceneSelection()
         } else {
+          this.getExistedTypeCfgOptions()
           this.getExistedSelections()
         }
       } else {
+        this.getAfterTypeCfgOptions()
         this.getAfterUpdatedSceneSelection()
+        // 新增的配置，把奖励信息重置
+        this.editForm.rankRewards = this.initRankRewards()
       }
     },
     getExistedSelections() {
@@ -1161,7 +1171,7 @@ export default {
         { 'value': 16, 'label': '没有任何限制的返水金【Tongits免费赛】' }]
     },
     getAfterUpdatedSceneSelection() {
-      if (this.editForm.data.signUpType === 1) { // 免费报名
+      if (this.editForm.data.signUpType == 1) { // 免费报名
         // 投注金
         this.betScenesCfgs = [
           { 'value': 15, 'label': '仅限GZ任意游戏投注金【Tongits免费赛】' }
@@ -1178,6 +1188,27 @@ export default {
         // 返水金
         this.rebateScenesCfgs = [
           { 'value': 5, 'label': '没有任何限制的返水金' }
+        ]
+      }
+    },
+    getExistedTypeCfgOptions() {
+      this.getTypeCfgs = [
+        { 'value': 1, 'label': '金币' },
+        { 'value': 2, 'label': '投注金' },
+        { 'value': 3, 'label': '返水金' }
+      ]
+    },
+    getAfterTypeCfgOptions() {
+      if (this.editForm.data.signUpType === 1) { // 免费报名
+        this.getTypeCfgs = [
+          { 'value': 1, 'label': '金币' },
+          { 'value': 2, 'label': '投注金' }
+        ]
+      } else { // 付费报名
+        this.getTypeCfgs = [
+          { 'value': 1, 'label': '金币' },
+          { 'value': 2, 'label': '投注金' },
+          { 'value': 3, 'label': '返水金' }
         ]
       }
     },
@@ -1740,7 +1771,8 @@ export default {
           openDaysLimit: editData.open_days_limit,
           sort: editData.sort,
           associateKey: editData.associate_key,
-          dcReport: editData.dc_report
+          dcReport: editData.dc_report,
+          updateTime: editData.update_time
         }
         /* 如果在本地找不到值 则显示0 */
         let isfind = false
@@ -1806,7 +1838,7 @@ export default {
         }
       }
       this.getCurrCsGrowInfo()
-      this.changeScenesCfg()
+      this.changeRewardCfg()
     },
     checkHaveGame(gid, gameArr) {
       let flag = false
@@ -2257,9 +2289,6 @@ export default {
       } else if ((this.editForm.data.repeatType == 0) && ((Math.floor(this.editForm.loopDetail.onceTime[1] / 1000) - Math.floor(this.editForm.loopDetail.onceTime[0] / 1000)) < 600)) {
         this.errmsg('比赛开始结束间隔要大于10分钟！')
         return false
-      } else if ((this.editForm.data.repeatType != 0) && ((Math.floor(this.editForm.loopDetail.loopEndDate / 1000) - Math.floor(this.editForm.loopDetail.loopStartDate / 1000)) < 86400)) {
-        // this.errmsg('循环赛开始结束时间不能为同一天！')  //循环赛去掉同一天检测
-        // return false
       } else if (this.editForm.data.signUpNum < 0) {
         this.errmsg('报名费数值不能小于零')
         return false
@@ -2297,51 +2326,39 @@ export default {
           this.errmsg('sng比赛必须开赛后消失')
           return false
         }
-        // 验证固定奖励的配置项
-        this.editForm.prizeExtra.rewardType = parseInt(this.editForm.prizeExtra.rewardType)
-        if (this.editForm.prizeExtra.awardType === 0) {
-          this.editForm.prizeExtra.rewardType = 1
-          this.editForm.prizeExtra.sceneId = 0
-          if (!await this.checkRewardCfg(this.editForm.rankRewards)) {
-            return false
-          }
-        }
-        if (this.editForm.prizeExtra.awardType === 1) {
-          if (!await this.checkDynamicRewardCfg(this.editForm.rankRewards)) {
-            return false
-          }
-        }
-        if (this.editForm.prizeExtra.awardType == 1 && this.editForm.prizeExtra.prizeTemplateId == 0) {
-          this.errmsg('当前是动态奖池，请选择模板')
-          return false
-        }
-        if ((this.editForm.prizeExtra.awardType == 1) && (this.editForm.prizeExtra.prizeRate < 1 || this.editForm.prizeExtra.prizeRate >= 100)) {
-          this.errmsg('当前是动态奖池手续费率范围是[1-100)')
-          return false
-        }
+      }
 
-        if (this.editForm.prizeExtra.awardType == 1) {
-          // 分成免费赛和付费赛
-          // 目前动态奖池只有真金和返水金
-          if (this.editForm.prizeExtra.rewardType == 2) {
-            this.editForm.prizeExtra.rewardType = 3
-          }
-          // 动态奖池奖励里诶行如果是返水金，填充返水金类型
-          if (this.editForm.data.id == 0) {
-            if (this.editForm.prizeExtra.rewardType == 3) {
-              // TODO 上线时需要去掉这个环境变量判断
-              if (this.env === 'pro') {
-                this.editForm.prizeExtra.sceneId = 5 // 没有任何限制的返水金
-              } else {
-                // 分成免费赛和付费赛
-                if (this.editForm.data.signUpType == 1) { // 免费赛使用免费赛专属返水金
-                  this.editForm.prizeExtra.sceneId = 16
-                } else { // 付费赛使用付费赛专属返水金
-                  this.editForm.prizeExtra.sceneId = 5 // 没有任何限制的返水金
-                }
-              }
-            }
-          }
+      // 验证固定奖励的配置项
+      this.editForm.prizeExtra.rewardType = parseInt(this.editForm.prizeExtra.rewardType)
+      if (this.editForm.prizeExtra.awardType === 0) {
+        this.editForm.prizeExtra.rewardType = 1
+        this.editForm.prizeExtra.sceneId = 0
+        if (!await this.checkRewardCfg(this.editForm.rankRewards)) {
+          return false
+        }
+      }
+      if (this.editForm.prizeExtra.awardType === 1) {
+        if (!await this.checkDynamicRewardCfg(this.editForm.rankRewards)) {
+          return false
+        }
+      }
+      if (this.editForm.prizeExtra.awardType == 1 && this.editForm.prizeExtra.prizeTemplateId == 0) {
+        this.errmsg('当前是动态奖池，请选择模板')
+        return false
+      }
+      if ((this.editForm.prizeExtra.awardType == 1) && (this.editForm.prizeExtra.prizeRate < 1 || this.editForm.prizeExtra.prizeRate >= 100)) {
+        this.errmsg('当前是动态奖池手续费率范围是[1-100)')
+        return false
+      }
+
+      if (this.editForm.prizeExtra.awardType === 1) {
+        // 目前动态奖池只有真金和返水金
+        if (this.editForm.prizeExtra.rewardType === 2) {
+          this.editForm.prizeExtra.rewardType = 3
+        }
+        // 动态奖池奖励里诶行如果是返水金，填充返水金类型
+        if (this.editForm.prizeExtra.rewardType === 3) {
+          this.editForm.prizeExtra.sceneId = 5 // 没有任何限制的返水金
         }
       }
 
@@ -2873,10 +2890,15 @@ export default {
         if (response.RetCode === 0) {
           const objs = response.Data || {}
           if (objs.total > 0) {
+            let total = 0
             for (var i = 0; i < objs.list.length; i++) {
               if (!await this.checkRuleIdIsPublish(objs.list[i].id)) {
                 continue
               }
+              if (objs.list[i].self_build >  0) {
+                continue
+              }
+              total = total +1
               this.csCfgs.push({
                 'label': '[' + objs.list[i].id + ']' + objs.list[i].name,
                 'value': objs.list[i].id,

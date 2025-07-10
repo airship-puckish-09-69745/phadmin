@@ -313,6 +313,8 @@
               @click="handlePreOff(scope.row)"
             >冻结
             </el-button>
+
+            <RobotRecycleBtn :row="scope.row" :gid="21" @success="refresh" />
           </template>
         </el-table-column>
       </el-table>
@@ -412,6 +414,7 @@ import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import { $libDate, $libShow, ClientTableData, DataRule, MoneyShow } from '@/utils/common'
+import RobotRecycleBtn from '@/components/RobotRecycleBtn'
 const filterMap = {
   currentTableMoney: 'all',
   allowTableMoney: 'all'
@@ -421,7 +424,7 @@ function newItem() {
 }
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: { Compare, Publish },
+  components: { Compare, Publish, RobotRecycleBtn },
   data() {
     return {
       item: {

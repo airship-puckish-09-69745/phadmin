@@ -8,6 +8,7 @@ export default {
   components: { TongitsGameLog },
   data() {
     return {
+      blackReason:1,
       cheatLogs: [],
       userCheatLogs: [],
       Uid: 0,
@@ -63,7 +64,7 @@ export default {
       BlackVisible: false,
       editBlack: {
         Uid: 0,
-        Reason: '',
+        Reason: '疑似度超过50分',
         Operator: ''
       },
       BlackOperator: '',
@@ -235,7 +236,8 @@ export default {
           SortType: this.sortType,
           UserType: this.cheatType,
           Start: this.checkTime.start / 1000,
-          End: this.checkTime.end / 1000
+          End: this.checkTime.end / 1000,
+          IsNew: false
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -677,7 +679,7 @@ export default {
     changeBlack(row) {
       this.BlackVisible = true
       this.editBlack.Uid = row.Uid
-      this.editBlack.Reason = 'no reason'
+      this.editBlack.Reason = '疑似度超过50分'
       this.editBlack.Operator = this.BlackOperator
     },
     save(row) {
@@ -1117,7 +1119,7 @@ export default {
       </div>
     </el_row>
     <tongits-game-log :game-log="GameLog" :game-log-visible="GameLogVisible" :gid="Gid" :is-robot-map="isRobotMap" @closeDialog="closeDialog" />
-    <el-dialog title="拉黑" :visible.sync="BlackVisible" width="100%">
+    <el-dialog title="拉黑" :visible.sync="BlackVisible" width="50%">
       <el-row>
         <el-form :model="editBlack" label-width="150px" size="small">
 
@@ -1139,9 +1141,23 @@ export default {
           >
             <el-input v-model="editBlack.Reason" />
           </el-form-item>
+          <el-form-item
+            label=""
+          >
+            <el-button @click="editBlack.Reason+='疑似度超过50分'">疑似度超过50分</el-button>
+            <el-button @click="editBlack.Reason+='，疯狂首出喂牌'">疯狂首出喂牌</el-button>
+            <el-button @click="editBlack.Reason+='，拆牌狂喂'">拆牌狂喂</el-button>
+            <el-button @click="editBlack.Reason+='，带同伙喂牌'">带同伙喂牌</el-button>
+            <el-button @click="editBlack.Reason+='，同名或类似名称团伙'">同名或类似名称团伙</el-button>
+            <el-button @click="editBlack.Reason+='，1分FOLD'">1分FOLD</el-button>
+            <el-button @click="editBlack.Reason+='，累计N个pot胜率过50'"> 累计N个pot胜率过50%</el-button>
+
+          </el-form-item>
+          <el-form-item>
           <el-col :span="12" :offset="10">
-            <el-button type="primary" size="medium" @click="save">保存</el-button>
+            <el-button type="primary" size="medium" @click="save" autofocus="true">保存</el-button>
           </el-col>
+          </el-form-item>
         </el-form>
       </el-row>
     </el-dialog>

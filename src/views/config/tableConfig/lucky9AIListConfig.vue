@@ -76,12 +76,12 @@
             width="150"
           >
             <template slot-scope="scope">
-               <span v-if="scope.row.money > scope.row.initMoney" style="color:red">
-              {{ formatNumber(scope.row.money - scope.row.initMoney) }}
-            </span>
+              <span v-if="scope.row.money > scope.row.initMoney" style="color:red">
+                {{ formatNumber(scope.row.money - scope.row.initMoney) }}
+              </span>
               <span v-else style="color:green">
-              {{ formatNumber(scope.row.money - scope.row.initMoney) }}
-            </span>
+                {{ formatNumber(scope.row.money - scope.row.initMoney) }}
+              </span>
             </template>
           </el-table-column>
           <el-table-column
@@ -90,11 +90,11 @@
           >
             <template slot-scope="scope">
               <span v-if="scope.row.money > scope.row.initMoney" style="color:red">
-              {{ ((scope.row.money - scope.row.initMoney)*100/scope.row.initMoney).toFixed(2) }}%
-            </span>
+                {{ ((scope.row.money - scope.row.initMoney)*100/scope.row.initMoney).toFixed(2) }}%
+              </span>
               <span v-else style="color:green">
-              {{ ((scope.row.money - scope.row.initMoney)*100/scope.row.initMoney).toFixed(2) }}%
-            </span>
+                {{ ((scope.row.money - scope.row.initMoney)*100/scope.row.initMoney).toFixed(2) }}%
+              </span>
             </template>
           </el-table-column>
           <el-table-column
@@ -102,7 +102,17 @@
             width="100"
           >
             <template slot-scope="scope">
-              {{ scope.row.gameCount }}/ {{ scope.row.gameCount + scope.row.workCount}}
+              {{ scope.row.gameCount }}/ {{ scope.row.gameCount + scope.row.workCount }}
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="输异常"
+            width="100"
+          >
+            <template slot-scope="scope">
+              <span v-if="scope.row.loserCount > 0" style="color:red">
+                {{ scope.row.loserCount}}
+              </span>
             </template>
           </el-table-column>
           <el-table-column
@@ -110,7 +120,9 @@
             width="100"
           >
             <template slot-scope="scope">
+               <span v-if="scope.row.coldCount > 0">
               {{ scope.row.coldCount }}
+               </span>
             </template>
           </el-table-column>
         </el-table>
@@ -224,6 +236,9 @@
             <span v-if="scope.row.level==1" style="color:red">
               强放
             </span>
+            <span v-if="scope.row.level==0" style="color:red">
+              陪玩
+            </span>
           </template>
         </el-table-column>
         <el-table-column
@@ -262,9 +277,15 @@
           prop="lastLogin"
           label="更新时间"
           sortable="custom"
-          width="150">
+          width="150"
+        >
           <template slot-scope="scope">
-            {{ formatTime(scope.row.lastLogin) }}
+            <span v-if="(scope.row.status===2 || scope.row.currentTid ===0) && scope.row.lastLogin * 1000 < timeYesterday" style="color:red">
+              {{ formatTime(scope.row.lastLogin) }}
+            </span>
+            <span v-else>
+              {{ formatTime(scope.row.lastLogin) }}
+            </span>
           </template>
         </el-table-column>
         <el-table-column
@@ -304,6 +325,8 @@
               @click="handlePreOff(scope.row)"
             >冻结
             </el-button>
+
+            <RobotRecycleBtn :row="scope.row" :gid="23" @success="refresh" />
           </template>
         </el-table-column>
       </el-table>
@@ -399,6 +422,8 @@ import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import { $libDate, $libShow, ClientTableData, DataRule, MoneyShow } from '@/utils/common'
+import { getTime } from '@/utils'
+import RobotRecycleBtn from '@/components/RobotRecycleBtn'
 const filterMap = {
   currentTableMoney: 'all',
   allowTableMoney: 'all'
@@ -408,9 +433,10 @@ function newItem() {
 }
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: { Compare, Publish },
+  components: { Compare, Publish, RobotRecycleBtn },
   data() {
     return {
+      gid: 23, // 机器人回收需要传gid
       item: {
         TableMoneyList: []
       }, // 奖励
@@ -433,7 +459,8 @@ export default {
       statItems: [],
       txt: '',
       subKey: 'lucky9_ai_list_cfg',
-      cgiPath: 'lucky9robotlist'
+      cgiPath: 'lucky9robotlist',
+      timeYesterday: new Date().getTime() - 86400 * 1000
     }
   },
 
@@ -443,8 +470,9 @@ export default {
     }
   },
   created() {
-   // this.subKey = this.$route.meta.cfgSubKey
-   // this.cgiPath = this.$route.meta.cgiPath
+    // this.gid = this.$route.meta.gid
+    // this.subKey = this.$route.meta.cfgSubKey
+    // this.cgiPath = this.$route.meta.cgiPath
     this.getData()
     this.getList()
     this.isDisabled = false
@@ -583,7 +611,7 @@ export default {
           for (let i = 0; i < objs.length; i++) {
             const item = objs[i]
             if (statMap[item.allowTableMoney] == null) {
-              statMap[item.allowTableMoney] = { tableMoney: item.allowTableMoney, initMoney: 0, money: 0, gameCount: 0, workCount: 0, coldCount: 0 }
+              statMap[item.allowTableMoney] = { tableMoney: item.allowTableMoney, initMoney: 0, money: 0, gameCount: 0, workCount: 0, coldCount: 0, loserCount: 0 }
             }
             if (item.status == 0) {
               statMap[item.allowTableMoney].coldCount++
@@ -596,8 +624,11 @@ export default {
                 statMap[item.allowTableMoney].gameCount++
               }
             }
+            if (item.money / item.initMoney < 0.2) {
+              statMap[item.allowTableMoney].loserCount++
+            }
           }
-          this.statItems=[]
+          this.statItems = []
           for (const o in statMap) {
             this.statItems.push(statMap[o])
           }
@@ -757,7 +788,7 @@ export default {
         if (response.RetCode === 0) {
           this.clientDB.AddData(this.edit.item)
           this.refreshShow()
-          this.getList()
+         // this.getList()
           Message.success('添加成功！')
         }
       })
