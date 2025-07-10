@@ -3,33 +3,28 @@
         <el-row>
             <el-form :model="item" label-width="90px" :inline="true" size="small">
                 <el-form-item label="游戏：">
-                    <el-select v-model="item.Gid" size="mini" clearable>
-                        <el-option v-for="row of games" :label="row.label" :value="row.value" />
+                    <el-select v-model="item.Gid" size="mini">
+                        <el-option v-for="row of games" :key="row.value" :label="row.label" :value="row.value" />
                     </el-select>
                 </el-form-item>
                 <el-form-item label="日期：" :required="true">
-                    <el-date-picker
-                        v-model="item.date"
-                        value-format="timestamp"
-                        type="daterange"
-                        range-separator="至"
-                        start-placeholder="开始日期"
-                        end-placeholder="结束日期"
-                    />
+                    <el-date-picker v-model="item.date" value-format="timestamp" type="daterange" range-separator="至"
+                        start-placeholder="开始日期" end-placeholder="结束日期" />
                 </el-form-item>
                 <el-form-item label="类型：">
-                    <el-select v-model="item.BetType" size="mini" >  
-                        <el-option v-for="row of betType" :label="row.label" :value="row.value" />
+                    <el-select v-model="item.BetType" size="mini">
+                        <el-option v-for="row of betType" :key="row.value" :label="row.label" :value="row.value" />
                     </el-select>
                 </el-form-item>
                 <el-form-item label="倍数：">
-                    <el-select v-model="item.RewardMultiple" size="mini" >
-                        <el-option v-for="row of rewardMultiple" :label="row.label" :value="row.value" />
+                    <el-select v-model="item.RewardMultiple" size="mini">
+                        <el-option v-for="row of rewardMultiple" :key="row.value" :label="row.label"
+                            :value="row.value" />
                     </el-select>
                 </el-form-item>
                 <el-form-item label="站点：">
-                    <el-select v-model="item.SiteId" size="mini" >
-                        <el-option v-for="row of siteOptions" :label="row.label" :value="row.value" />
+                    <el-select v-model="item.SiteId" size="mini">
+                        <el-option v-for="row of siteOptions" :key="row.value" :label="row.label" :value="row.value" />
                     </el-select>
                 </el-form-item>
 
@@ -38,90 +33,53 @@
                 </el-form-item>
             </el-form>
         </el-row>
-        <el-row> 
-            <el-table
-                :data="tableData"
-                stripe
-                min-height="700"
-                border
-                :row-style="{height:'10px'}"
-                style="width: 100%;margin-top:10px;"
-            >
-            <el-table-column
-                prop="rec_time"
-                label="日期/时间"
-                sortable
-                >
-                <template slot-scope="scope">
-                    <DateTimeShow :show-type="2" :timestamp="scope.row.rec_time" />
-                </template>
-            </el-table-column>
-            <el-table-column
-                prop="uid"
-                label="用户ID"
-                />
-            <el-table-column
-                prop="gid"
-                label="游戏名称"
-                >
-                <template slot-scope="scope">
-                    {{ getGameName(scope.row) }}
-                </template>
-            </el-table-column>
-            <el-table-column
-                prop="site_id"
-                label="平台"
-                >
-                <template slot-scope="scope">
-                    {{ getSiteName(scope.row) }}
-                </template>
-            </el-table-column>
-            <el-table-column
-                prop="bet_type"
-                label="下注类型"
-                >
-                <template slot-scope="scope">
-                    {{ getBetType(scope.row) }}
-                </template>
-            </el-table-column>
-            <el-table-column
-                prop="bet"
-                label="bet"
-                >
-                <template slot-scope="scope">
-                    {{ formatNumber(scope.row.bet / 1000) }}
-                </template>
-            </el-table-column>
-            <el-table-column
-                prop="reward_multiple"
-                label="返奖倍数"
-                >
-                <template slot-scope="scope">
-                    {{ formatNumber(scope.row.reward_multiple / 1000) }}
-                </template>
-            </el-table-column>
-            <el-table-column
-                prop="reward_money"
-                label="返奖金额"
-                >
-                <template slot-scope="scope">
-                    {{ formatNumber(scope.row.reward_money/1000) }}
-                </template>
+        <el-row>
+            <el-table :data="tableData" stripe min-height="700" border :row-style="{ height: '10px' }"
+                style="width: 100%;margin-top:10px;">
+                <el-table-column prop="rec_time" label="日期/时间" sortable>
+                    <template slot-scope="scope">
+                        <DateTimeShow :show-type="2" :timestamp="scope.row.rec_time" />
+                    </template>
+                </el-table-column>
+                <el-table-column prop="uid" label="用户ID" />
+                <el-table-column prop="gid" label="游戏名称">
+                    <template slot-scope="scope">
+                        {{ getGameName(scope.row) }}
+                    </template>
+                </el-table-column>
+                <el-table-column prop="site_id" label="平台">
+                    <template slot-scope="scope">
+                        {{ getSiteName(scope.row) }}
+                    </template>
+                </el-table-column>
+                <el-table-column prop="bet_type" label="下注类型">
+                    <template slot-scope="scope">
+                        {{ getBetType(scope.row) }}
+                    </template>
+                </el-table-column>
+                <el-table-column prop="bet" label="bet">
+                    <template slot-scope="scope">
+                        {{ formatNumber(scope.row.bet / 1000) }}
+                    </template>
+                </el-table-column>
+                <el-table-column prop="reward_multiple" label="返奖倍数">
+                    <template slot-scope="scope">
+                        {{ formatNumber(scope.row.reward_multiple / 1000) }}
+                    </template>
+                </el-table-column>
+                <el-table-column prop="reward_money" label="返奖金额">
+                    <template slot-scope="scope">
+                        {{ formatNumber(scope.row.reward_money / 1000) }}
+                    </template>
                 </el-table-column>
             </el-table>
         </el-row>
         <el-row type="flex" justify="end">
             <el-col :span="12">
                 <div class="block">
-                <el-pagination
-                    :current-page="currentPage"
-                    :page-sizes="[20, 40, 80, 120]"
-                    :page-size="pageNum"
-                    layout="total, sizes, prev, pager, next, jumper"
-                    :total="totalCount"
-                    @size-change="handleSizeChange"
-                    @current-change="handleCurrentChange"
-                />
+                    <el-pagination :current-page="currentPage" :page-sizes="[20, 40, 80, 120]" :page-size="pageNum"
+                        layout="total, sizes, prev, pager, next, jumper" :total="totalCount"
+                        @size-change="handleSizeChange" @current-change="handleCurrentChange" />
                 </div>
             </el-col>
         </el-row>
@@ -143,6 +101,7 @@ export default {
                 BetType: -1,
                 RewardMultiple: 80,
             },
+            timer: null,
             games: [],
             totalCount: 0,
             tableData: [],
@@ -205,6 +164,10 @@ export default {
     created() {
         this.getGameList()
         this.getList()
+        this.timer = setInterval(() => {
+            console.log('执行了定时刷新')
+            this.getList()
+        }, 300000)
     },
 
     methods: {
@@ -217,13 +180,13 @@ export default {
                 if (response.RetCode === 0) {
                     for (let i = 0; i < response.Data.length; i++) {
                         if (response.Data[i].CategoryID == 1) {
-                            this.games.push({   
+                            this.games.push({
                                 value: response.Data[i].Gid,
                                 label: response.Data[i].Name
                             })
                         }
                     }
-                     // 对gameList按名称排序
+                    // 对gameList按名称排序
                     this.games.sort((a, b) => {
                         if (a.label < b.label) {
                             return -1
@@ -243,6 +206,10 @@ export default {
         },
 
         getList() {
+            if (this.item.date === null || this.item.date.length < 2) {
+                Message.error('请选择时间')
+                return
+            }
             const $this = this
             request({
                 url: '/dataProxy/info',
@@ -261,15 +228,15 @@ export default {
                 }
             }).then(response => {
                 if (response.RetCode === 0) {
-                $this.totalCount = response.Data.Count
-                const objs = response.Data.List || []
-                $this.ret = response.Data
-                $this.tableData = objs
-                if (objs.length === 0) {
-                    Message.success('查询结果为空')
-                    return
-                }
-                $this.tableData = objs
+                    $this.totalCount = response.Data.Count
+                    const objs = response.Data.List || []
+                    $this.ret = response.Data
+                    $this.tableData = objs
+                    if (objs.length === 0) {
+                        Message.success('查询结果为空')
+                        return
+                    }
+                    $this.tableData = objs
                 }
             })
         },
@@ -279,7 +246,6 @@ export default {
         },
 
         getGameName(row) {
-            console.log(row.gid)
             let name = '' + row.gid
             for (const i in this.games) {
                 if (this.games[i].value === row.gid) {
