@@ -190,6 +190,9 @@
 <script>
 import tongitsTableRange from '@/components/TongitsTableRange'
 import { DataRule } from '@/utils/common'
+
+
+
 export default {
   name: 'RobotAiSettingDecision',
   components: { tongitsTableRange },
@@ -198,14 +201,12 @@ export default {
 		    event: 'cc'
   },
   props: {
-    AiConfig: {
-      type: Object,
-      default: function() {
-        return {
-        }
-      }
-      
-    },
+		    AiConfig: {
+		      type: Object,
+		      default: function() {
+		        return {}
+		      }
+		    }
   },
   data(){
    
@@ -282,14 +283,35 @@ export default {
         RobotCorrect:{
           FightRatio: 60, ChallengeRatio:60
         },
-      }
+      },
+      editDecision:{}
     }
+   
   },
 
   created() {
+  
     this.$nextTick(() => {
-      console.log('common plugin tongitsConfig:', this.AiConfig)       
+      // if (!this.AiConfig.hasOwnProperty('Decision')) {
+      //   this.AiConfig.Decision = this.Decision
+      // }
+
+      console.log('common plugin decision tongitsConfig:', this.AiConfig)       
+      
     })
+  },
+  watch: {
+    AiConfig: {
+      immediate: true,
+      deep: true,
+      handler(newVal) {
+        if (!newVal.Decision) {
+          this.editDecision = JSON.parse(JSON.stringify(this.Decision)) 
+          newVal.Decision = this.editDecision 
+          console.log('common plugin ffffff tongitsConfig:', this.AiConfig)       
+        }
+      }
+    }
   },
   methods: {
     dataRule(required, config) {
