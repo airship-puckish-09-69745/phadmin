@@ -81,7 +81,7 @@
                     width="120"
                   >
                     <template scope="subScope">
-                      <el-input v-model.number="subScope.row.PerStartPool" />
+                      <el-input v-model.number="subScope.row.PerStartPool"  type="number"  />
                     </template>
                   </el-table-column>
 
@@ -90,7 +90,7 @@
                     width="120"
                   >
                     <template scope="subScope">
-                      <el-input v-model.number="subScope.row.PerEndPool" />
+                      <el-input v-model.number="subScope.row.PerEndPool"  type="number" />
                     </template>
                   </el-table-column>
 
@@ -377,13 +377,13 @@
                     <el-row :gutter="16">
                       <el-col :span="6">
                         <template>
-                          <el-input-number
-                            v-model="item.BetReviseCfg.Probability" 
+                          <el-input
+                            v-model="item.BetReviseCfg.Probability"  type="number" 
                             :min="0"
                             :max="100"
                             :precision="0"
-                            style="width: 100%"> 
-                          </el-input-number>
+                            style="width: 50%"> <template slot="append">%</template>
+                          </el-input>
                         </template>
                       </el-col>
                     
@@ -426,11 +426,11 @@
                     width="200"
                   />
                   <el-table-column
-                    label="要牌概率（%）(%)"
+                    label="要牌概率（%)"
                     width="200"
                   >
                     <template slot-scope="scope">
-                      <el-input-number v-model.number="scope.row.Probability" size="mini"  type="number" :min="0"  :precision="0"><template slot="append">%</template></el-input-number>
+                      <el-input v-model.number="scope.row.Probability" size="mini"  type="number" :min="0"  :precision="0"><template slot="append">%</template></el-input>
                     </template>
                   </el-table-column>
                 </el-table>
@@ -449,7 +449,7 @@
                 </el-table-column>
                 <el-table-column label="概率(%)" width="200">
                   <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.Probability" size="mini"><template
+                    <el-input v-model.number="scope.row.Probability" size="mini"  type="number"  :min="0"  :precision="0"><template
                       slot="append"
                     >%</template></el-input>
                   </template>
