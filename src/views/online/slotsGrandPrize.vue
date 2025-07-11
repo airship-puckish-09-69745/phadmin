@@ -9,7 +9,7 @@
                 </el-form-item>
                 <el-form-item label="日期：" :required="true">
                     <el-date-picker v-model="item.date" value-format="timestamp" type="daterange" range-separator="至"
-                        start-placeholder="开始日期" end-placeholder="结束日期" />
+                        start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions" />
                 </el-form-item>
                 <el-form-item label="类型：">
                     <el-select v-model="item.BetType" size="mini">
@@ -34,7 +34,7 @@
             </el-form>
         </el-row>
         <el-row>
-            <el-table :data="tableData" stripe min-height="700" border :row-style="{ height: '10px' }"
+            <el-table :data="tableData" stripe max-height="850" border :row-style="{ height: '10px' }"
                 style="width: 100%;margin-top:10px;">
                 <el-table-column prop="rec_time" label="日期/时间" sortable>
                     <template slot-scope="scope">
@@ -107,6 +107,17 @@ export default {
             tableData: [],
             currentPage: 1,
             pageNum: 20,
+            pickerOptions: {
+                shortcuts: [{
+                    text: '最近15天',
+                    onClick(picker) {
+                        const end = new Date();
+                        const start = new Date();
+                        start.setTime(start.getTime() - 3600 * 1000 * 24 * 15);
+                        picker.$emit('pick', [start, end]);
+                    }
+                }]
+            },
             betType: [{
                 value: -1,
                 label: '所有'
