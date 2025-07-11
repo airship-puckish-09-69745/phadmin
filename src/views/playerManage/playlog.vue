@@ -5546,9 +5546,9 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
       } else if (actionType == 8) {
         return '拿morto牌堆'
       } else if (actionType == 9) {
-        return '赢家结束'
+        return '出完手牌Batida'
       } else if (actionType == 10) {
-        return '流局结束'
+        return '流局'
       } else if (actionType == 11) {
         return 'morto牌给牌堆'
       } else if (actionType == 12) {
