@@ -620,6 +620,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/gameWaitQueue.vue'),
             name: 'gameWaitQueue',
             meta: { title: '排队入桌配置 ◐' }
+          },
+          {
+            path: 'trustScore',
+            component: () => import('@/views/config/tableConfig/trustScore.vue'),
+            name: 'trustScore',
+            meta: { title: '信任分配置 ◐' }
           }
         ]
       },
