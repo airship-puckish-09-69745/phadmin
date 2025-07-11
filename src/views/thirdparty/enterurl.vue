@@ -86,6 +86,9 @@
             />
           </el-select>
         </el-form-item>
+        <el-form-item v-if="item.activity === 'tournament' || item.activity === 'matchjoin'" v-model="item.activity_val" label="活动附加值：" label-width="100px">
+          <el-input v-model="item.activity_val" />
+        </el-form-item>
         <el-form-item v-model="item.live_id" label="直播ID：" label-width="100px">
           <el-input v-model="item.live_id" />
         </el-form-item>
@@ -325,6 +328,10 @@ export default {
           val: 'tournament'
         },
         {
+          name: '进入比赛',
+          val: 'matchjoin'
+        },
+        {
           name: '进入免费赛列表',
           val: 'tournament_-1'
         },
@@ -362,6 +369,7 @@ export default {
         live_id: '',
         gp_ext: '{"vip":1}',
         kyc: '0',
+        activity_val: '',
         r_time: Date.parse(new Date())
       },
       libShow: $libShow,
@@ -475,6 +483,10 @@ export default {
         spinner: 'el-icon-loading',
         background: 'rgba(0, 0, 0, 0.7)'
       })
+      let activityVal = this.item.activity
+      if (activityVal === 'tournament' || activityVal === 'matchjoin' && this.item.activity_val !== '') {
+        activityVal += '_' + this.item.activity_val
+      }
       request({
         url: '/dataProxy/info',
         method: 'post',
@@ -494,7 +506,7 @@ export default {
           cashier: this.item.cashier,
           path: this.item.path,
           source: this.item.source,
-          activity: this.item.activity,
+          activity: activityVal,
           live_id: this.item.live_id,
           gp_ext: this.item.gp_ext
           // kyc: this.item.kyc,
