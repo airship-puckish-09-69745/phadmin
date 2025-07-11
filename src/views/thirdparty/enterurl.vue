@@ -324,7 +324,7 @@ export default {
           val: 'playgamelandactivity'
         },
         {
-          name: '比赛场景',
+          name: '比赛选场（打开详情）',
           val: 'tournament'
         },
         {
