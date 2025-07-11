@@ -34,7 +34,7 @@
             </el-form>
         </el-row>
         <el-row>
-            <el-table :data="tableData" stripe min-height="700" border :row-style="{ height: '10px' }"
+            <el-table :data="tableData" stripe max-height="850" border :row-style="{ height: '10px' }"
                 style="width: 100%;margin-top:10px;">
                 <el-table-column prop="rec_time" label="日期/时间" sortable>
                     <template slot-scope="scope">
