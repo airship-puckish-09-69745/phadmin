@@ -18,6 +18,12 @@ export const broadcastTypeOptions = [
   }
 ]
 
+// 獲取播报类型名称
+export function getBroadcastTypeName(value) {
+  const item = broadcastTypeOptions.find(item => item.value === value)
+  return item ? item.label : value
+}
+
 export const positionOptions = [
   {
     label: '大厅',

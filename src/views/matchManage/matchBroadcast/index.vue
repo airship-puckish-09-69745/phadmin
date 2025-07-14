@@ -6,7 +6,7 @@
 
     <div class="search-filter">
       <div class="search-filter-item">
-        appid: <el-select v-model="searchFilter.app_id" placeholder="请选择应用id" size="mini">
+        appid: <el-select v-model="searchFilter.app_id" placeholder="请选择应用id" size="mini" @change="onSearch">
           <el-option
             v-for="item in APPID_OPTIONS"
             :key="item.value"
@@ -32,16 +32,17 @@
 
     <div style="margin-top: 12px;">
       <el-table
-        :data="tableData"
+        :data="FilterableBroadcastList"
         border
         :cell-style="libShow.DefaultTableCell"
         style="width: 100%;overflow-y: auto;"
       >
-        <el-table-column v-for="(item, index) in columns" :key="index" :prop="item.prop" :label="item.label" :width="item.width" />
+        <el-table-column v-for="(item, index) in columns" :key="index" :prop="item.prop" :label="item.label" :width="item.width" :formatter="item.formatter" />
         <el-table-column
           label="操作"
-          width="120"
+          width="160"
           align="center"
+          fixed="right"
         >
           <template slot-scope="scope">
             <el-button
@@ -60,11 +61,13 @@
     </div>
 
     <AddMatchBroadcastDialog
+      :app-id="searchFilter.app_id"
       :broadcast-type-options="broadcastTypeOptions"
       :channel-options="CHANNEL_OPTIONS"
       :visible="broadcastDialog.visible"
       :update-data="broadcastDialog.updateData"
       :position-options="positionOptions"
+      :match-unique-id-cfgs="matchUniqueIdCfgs"
       @close="handleCloseBroadcastDialog"
       @reload="onSearch"
       @save="handleUpdateConfig"
@@ -75,8 +78,9 @@
 <script>
 import Publish from '@/components/Publish/index.vue'
 import request from '@/utils/request'
+import { parseTime } from '@/utils'
 import { APPID_OPTIONS, CHANNEL_OPTIONS } from '@/utils/options'
-import { broadcastTypeOptions, positionOptions } from '@/views/matchManage/matchBroadcast/options'
+import { broadcastTypeOptions, positionOptions, getBroadcastTypeName } from './options'
 import AddMatchBroadcastDialog from './components/AddMatchBroadcastDialog.vue'
 import { $libShow } from '@/utils/common'
 
@@ -92,6 +96,7 @@ export default {
       subKey: 'match_broadcast_cfg',
       libShow: $libShow,
       configData: {},
+      FilterableBroadcastList: [], // 通过appId过滤之后展示到列表
       broadcastTypeOptions,
       APPID_OPTIONS,
       CHANNEL_OPTIONS,
@@ -105,46 +110,86 @@ export default {
         updateData: null
       },
       columns: [
-        {
-          prop: 'ID',
-          label: 'ID',
-          width: 100
-        },
+        // {
+        //   prop: 'ID',
+        //   label: 'ID',
+        //   width: 130
+        // },
         {
           prop: 'Title',
-          label: '标题',
-          width: 200
+          label: '标题'
         },
         {
           prop: 'Channel',
           label: '渠道',
-          width: 200
+          width: 160,
+          formatter: (row) => {
+            return row.Channel.join(', ')
+          }
         },
         {
           prop: 'BroadcastType',
           label: '类型',
-          width: 100
+          width: 100,
+          formatter: (row) => {
+            return getBroadcastTypeName(row.BroadcastType)
+          }
         },
         {
           prop: 'Origin',
           label: '来源',
-          width: 100
+          width: 160,
+          formatter: (row) => {
+            const originNames = []
+            row.Origin.forEach(item => {
+              originNames.push(this.getMatchUniqueIdName(item))
+            })
+            return originNames.join(', ')
+          }
         },
         {
           prop: 'Content',
-          label: '内容',
-          width: 300
+          label: '内容'
+        },
+        // 有效期
+        {
+          prop: 'BroadcastTimeRange',
+          label: '有效期',
+          width: 170,
+          formatter: (row) => {
+            const dateRange = []
+            dateRange.push(this.parseTime(row.BroadcastTimeRange[0], '{y}/{m}/{d}'))
+            dateRange.push(this.parseTime(row.BroadcastTimeRange[1], '{y}/{m}/{d}'))
+            return dateRange.join('-')
+          }
         },
         {
           prop: 'CreateTime',
           label: '创建时间',
-          width: 200
+          width: 150,
+          formatter: (row) => {
+            return this.parseTime(row.CreateTime)
+          }
         },
         {
           prop: 'UpdateTime',
           label: '更新时间',
-          width: 200
+          width: 150,
+          formatter: (row) => {
+            return this.parseTime(row.UpdateTime)
+          }
         }
+      ],
+      matchUniqueIdCfgs: [
+        { 'value': 10001, 'label': '188Free' },
+        { 'value': 10002, 'label': '12888Free' },
+        { 'value': 10003, 'label': 'P10' },
+        { 'value': 10004, 'label': 'P20' },
+        { 'value': 10005, 'label': 'P40' },
+        { 'value': 10006, 'label': 'P100' },
+        { 'value': 10007, 'label': 'P300' },
+        { 'value': 10008, 'label': 'GTCC 2005' },
+        { 'value': 10009, 'label': 'Yamaha Moto' }
       ]
     }
   },
@@ -152,11 +197,19 @@ export default {
     this.onSearch()
   },
   methods: {
+    parseTime(timestamp, format = '{y}-{m}-{d} {h}:{i}:{s}') {
+      return timestamp ? parseTime(timestamp, format) : '--'
+    },
     getFullKey() {
       return 'CustomizeCfg_' + this.subKey
     },
     onSearch() {
       this.getConfigData()
+    },
+    // 获取赛事来源名称
+    getMatchUniqueIdName(value) {
+      const matchUniqueIdCfg = this.matchUniqueIdCfgs.find(item => item.value === value)
+      return matchUniqueIdCfg ? matchUniqueIdCfg.label : value
     },
     handleCloseBroadcastDialog() {
       this.broadcastDialog.visible = false
@@ -192,8 +245,10 @@ export default {
         // 根据ID进行排序
         if (!Data.BroadcastList) {
           Data.BroadcastList = []
+          this.FilterableBroadcastList = []
         } else {
-          // Data.BroadcastList.sort((a, b) => a.ID - b.ID)
+          // 通过应用id进行筛选
+          this.FilterableBroadcastList = Data.BroadcastList.filter(item => item.AppId === this.searchFilter.app_id)
         }
         this.tableData = Data.BroadcastList
       } else {
@@ -233,6 +288,7 @@ export default {
         } else {
           this.$message.error('更新配置数据失败: ' + res.RetMsg)
         }
+        this.onSearch()
       })
     },
     /**
@@ -240,7 +296,7 @@ export default {
      * @param row 要删除的行数据
      */
     onDeleteBroadcastConfirm(row) {
-      this.$confirm('确认删除该条数据吗？', '删除确认', {
+      this.$confirm(`确认删除[ ${row.Title} ]吗？`, '删除确认', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

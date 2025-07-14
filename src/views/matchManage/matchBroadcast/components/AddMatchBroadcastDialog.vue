@@ -35,6 +35,8 @@
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           style="width: 360px;"
+          value-format="timestamp"
+          :default-time="['00:00:00', '23:59:59']"
         />
       </el-form-item>
       <el-form-item label="频率(秒)" required>
@@ -56,6 +58,10 @@
 import store from '@/store'
 export default {
   props: {
+    appId: {
+      type: Number,
+      required: true
+    },
     visible: {
       type: Boolean,
       default: false
@@ -78,23 +84,16 @@ export default {
     positionOptions: {
       type: Array,
       default: () => []
+    },
+    matchUniqueIdCfgs: {
+      type: Array,
+      required: true
     }
   },
   data() {
     return {
       // 字段参考resetForm
-      formData: {},
-      matchUniqueIdCfgs: [
-        { 'value': 10001, 'label': '188Free' },
-        { 'value': 10002, 'label': '12888Free' },
-        { 'value': 10003, 'label': 'P10' },
-        { 'value': 10004, 'label': 'P20' },
-        { 'value': 10005, 'label': 'P40' },
-        { 'value': 10006, 'label': 'P100' },
-        { 'value': 10007, 'label': 'P300' },
-        { 'value': 10008, 'label': 'GTCC 2005' },
-        { 'value': 10009, 'label': 'Yamaha Moto' }
-      ]
+      formData: {}
     }
   },
   computed: {
@@ -170,6 +169,7 @@ export default {
       }
 
       const data = { ...this.formData }
+      data.AppId = this.appId
       data.Operator = store.getters.name
       if (!data.ID) {
         // data.ID = Date.now().toString()
@@ -182,6 +182,7 @@ export default {
     },
     resetForm() {
       this.formData = {
+        ID: 0,
         // 应用id
         AppId: '',
         // 渠道
