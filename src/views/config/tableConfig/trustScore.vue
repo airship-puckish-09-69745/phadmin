@@ -6,10 +6,10 @@
         <el-col :span="16" :offset="3">
           <fieldset style="margin-top:10px">
             <legend>授信线配置</legend>
-            <el-input placeholder="请输入内容" v-model.number="item.tongits" style="margin-top:10px">
+            <el-input placeholder="请输入内容" v-model.number="item[22]" style="margin-top:10px">
               <template slot="prepend">Tongits类游戏授信线</template>
             </el-input>
-            <el-input placeholder="请输入内容" v-model.number="item.pusoy" style="margin-top:20px">
+            <el-input placeholder="请输入内容" v-model.number="item[21]" style="margin-top:20px">
               <template slot="prepend">Pusoy 类游戏授信线</template>
             </el-input>
           </fieldset>
@@ -41,8 +41,8 @@ export default {
   data() {
     return {
       item: {
-        tongits: 0,
-        pusoy: 0,
+        21: 0,
+        22: 0
       },
       isHidden: true, // 默认隐藏
       form: {},
