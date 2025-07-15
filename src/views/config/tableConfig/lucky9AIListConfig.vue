@@ -326,7 +326,7 @@
             >冻结
             </el-button>
 
-            <RobotRecycleBtn :row="scope.row" :gid="23" @success="refresh" />
+            <RobotRecycleBtn :row="scope.row" :gid="23" />
           </template>
         </el-table-column>
       </el-table>
