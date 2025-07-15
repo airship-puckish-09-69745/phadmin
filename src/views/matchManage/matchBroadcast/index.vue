@@ -39,6 +39,19 @@
       >
         <el-table-column v-for="(item, index) in columns" :key="index" :prop="item.prop" :label="item.label" :width="item.width" :formatter="item.formatter" />
         <el-table-column
+          label="状态"
+          width="100"
+          align="center"
+        >
+          <template slot-scope="scope">
+            <el-switch
+              v-model="scope.row.Status"
+              active-color="#13ce66"
+              @change="handleSwitchChange(scope.row)"
+            />
+          </template>
+        </el-table-column>
+        <el-table-column
           label="操作"
           width="160"
           align="center"
@@ -151,6 +164,12 @@ export default {
           prop: 'Content',
           label: '内容'
         },
+        // 频率
+        {
+          prop: 'BroadcastFrequency',
+          label: '频率',
+          width: 100
+        },
         // 有效期
         {
           prop: 'BroadcastTimeRange',
@@ -158,8 +177,8 @@ export default {
           width: 170,
           formatter: (row) => {
             const dateRange = []
-            dateRange.push(this.parseTime(row.BroadcastTimeRange[0], '{y}/{m}/{d}'))
-            dateRange.push(this.parseTime(row.BroadcastTimeRange[1], '{y}/{m}/{d}'))
+            dateRange.push(this.parseTime(row.BroadcastTimeRange[0] * 1000, '{y}/{m}/{d}'))
+            dateRange.push(this.parseTime(row.BroadcastTimeRange[1] * 1000, '{y}/{m}/{d}'))
             return dateRange.join('-')
           }
         },
@@ -168,7 +187,7 @@ export default {
           label: '创建时间',
           width: 150,
           formatter: (row) => {
-            return this.parseTime(row.CreateTime)
+            return this.parseTime(row.CreateTime * 1000)
           }
         },
         {
@@ -176,7 +195,7 @@ export default {
           label: '更新时间',
           width: 150,
           formatter: (row) => {
-            return this.parseTime(row.UpdateTime)
+            return this.parseTime(row.UpdateTime * 1000)
           }
         }
       ],
@@ -197,6 +216,24 @@ export default {
     this.onSearch()
   },
   methods: {
+    // 弹窗二次确认上架和下架操作
+    handleSwitchChange(row) {
+      this.$nextTick(() => {
+        this.$confirm(`确认${!row.Status ? '下架' : '上架'}[ ${row.Title} ]吗？`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          // 确认操作
+          row.UpdateTime = parseInt(Date.now() / 1000)
+          this.handleUpdateConfig(row)
+        }).catch(() => {
+          // 取消操作
+          row.Status = !row.Status
+          this.$message.info('操作已取消')
+        })
+      })
+    },
     parseTime(timestamp, format = '{y}-{m}-{d} {h}:{i}:{s}') {
       return timestamp ? parseTime(timestamp, format) : '--'
     },
@@ -249,15 +286,6 @@ export default {
         } else {
           // 通过应用id进行筛选
           this.FilterableBroadcastList = Data.BroadcastList.filter(item => item.AppId === this.searchFilter.app_id)
-          // 日期*1000
-          this.FilterableBroadcastList.forEach(item => {
-            item.CreateTime *= 1000
-            item.UpdateTime *= 1000
-            item.BroadcastTimeRange.forEach(range => {
-              range[0] *= 1000
-              range[1] *= 1000
-            })
-          })
         }
         this.tableData = Data.BroadcastList
       } else {
@@ -269,15 +297,10 @@ export default {
     async handleUpdateConfig(data) {
       // 判断是否存在ID
       // 存在ID，更新已有项， 不存在就生成ID插入到最前面
-      if (data.ID) {
-        const index = this.configData.Data.BroadcastList.findIndex(item => item.ID === data.ID)
-        if (index !== -1) {
-          this.configData.Data.BroadcastList[index] = data
-        }
+      const index = this.configData.Data.BroadcastList.findIndex(item => item.ID === data.ID)
+      if (index !== -1) {
+        this.configData.Data.BroadcastList[index] = data
       } else {
-        // 不存在ID，新增项
-        const ID = Date.now().toString()
-        data.ID = ID
         this.configData.Data.BroadcastList.unshift(data)
       }
       this.handleSaveConfig()
