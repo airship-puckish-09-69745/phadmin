@@ -620,6 +620,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/gameWaitQueue.vue'),
             name: 'gameWaitQueue',
             meta: { title: '排队入桌配置 ◐' }
+          },
+          {
+            path: 'trustScore',
+            component: () => import('@/views/config/tableConfig/trustScore.vue'),
+            name: 'trustScore',
+            meta: { title: '信任分配置 ◐' }
           }
         ]
       },
@@ -2191,8 +2197,13 @@ export const asyncRoutes = [
 
           }
         ]
+      },
+      {
+        path: 'matchBroadcast',
+        component: () => import('@/views/matchManage/matchBroadcast/index.vue'),
+        name: 'matchBroadcast',
+        meta: { title: '赛事播报', noCache: true }
       }
-
     ]
   },
   {
@@ -2447,6 +2458,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_Truco',
             meta: { title: 'T ruco ◐', gid: 11 }
+          },
+          {
+            path: 'playlog_Buraco',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_Buraco',
+            meta: { title: 'B uraco ◐', gid: 12 }
           }
         ]
       },
