@@ -12,8 +12,13 @@ export const broadcastTypeOptions = [
     condition: '玩家在金币场获得JP，区分玩法'
   },
   {
-    label: '自定义',
+    label: '活动播报',
     value: 3,
+    condition: '玩家在活动中获得大奖（根据活动为准）'
+  },
+  {
+    label: '自定义',
+    value: 4,
     condition: '自定义循环展示频率'
   }
 ]
