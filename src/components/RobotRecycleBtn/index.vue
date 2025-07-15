@@ -59,6 +59,7 @@ export default {
           }
         }).then(response => {
           if (response.RetCode === 0) {
+            this.row.status = 2
             // console.log(response.Data)
             this.$message({
               message: '回收成功',
