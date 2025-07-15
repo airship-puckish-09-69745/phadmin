@@ -118,6 +118,10 @@ export default {
       } else {
         if (this.updateData) {
           this.formData = { ...this.updateData }
+          // 日期 * 1000
+          this.formData.BroadcastTimeRange = this.formData.BroadcastTimeRange.map(item => item * 1000)
+          this.formData.CreateTime *= 1000
+          this.formData.UpdateTime *= 1000
           console.log('this.updateData', this.updateData)
         } else {
           this.resetForm()
@@ -173,9 +177,10 @@ export default {
       data.Operator = store.getters.name
       data.BroadcastTimeRange = data.BroadcastTimeRange.map(item => parseInt(item / 1000))
       if (!data.ID) {
-        // data.ID = Date.now().toString()
+        data.ID = Date.now().toString()
         data.CreateTime = parseInt(Date.now() / 1000)
       } else {
+        data.CreateTime = parseInt(data.CreateTime / 1000)
         data.UpdateTime = parseInt(Date.now() / 1000)
       }
       this.$emit('save', data)
