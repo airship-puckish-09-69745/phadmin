@@ -185,6 +185,17 @@
         <el-tab-pane label="信息配置">
           <el-row>
             <el-col :span="20" :offset="1">
+              <h5>机器人离桌配置</h5>
+              <el-descriptions :column="2" :colon="false" border>
+                <el-descriptions-item label="最小离桌玩牌次数槛" :content-style="{'text-align': 'center','width': '250px'}" :label-style="{'text-align': 'center'}">
+                  <el-input v-model.number="RobotExitCfg.PlayTimeMin" type="number" size="medium" style="width: 120px" />
+                </el-descriptions-item>
+                <el-descriptions-item label="最大离桌玩牌次数" :content-style="{'text-align': 'center','width': '250px'}" :label-style="{'text-align': 'center'}">
+                  <el-input v-model.number="RobotExitCfg.PlayTimeMax" type="number" size="medium" style="width: 120px" />
+                </el-descriptions-item>
+              </el-descriptions>
+            </el-col>
+            <el-col :span="20" :offset="1">
               <h5>机器人昵称配置 <el-button type="text" @click="addNameCfg">添加一项</el-button></h5>
               <el-table :data="NameCfg" border>
                 <el-table-column label="昵称" prop="Nick" width="200">
@@ -341,6 +352,12 @@ function newShowMoneyCfg() {
     ShowMoneyMax: 100
   }
 }
+function newRobotExitCfg() {
+  return {
+    PlayTimeMin: 10,
+    PlayTimeMax: 20
+  }
+}
 export default {
   components: { Compare, Publish, robotAiSettingFight, robotAiSettingChallenge, robotAiSettingDrop, robotAiSettingOutCard, robotAiSettingBuildCard, MoneyInput,robotAiSettingDecision },
   data() {
@@ -394,7 +411,11 @@ export default {
 
       NameCfg: [], // 启动机器人名字配置
       ShowMoneyCfg: [], // 机器人展示资产配置
-      AllTableMoneyList: []
+      AllTableMoneyList: [],
+      RobotExitCfg: { //机器人离桌配置
+        PlayTimeMin: 10,
+        PlayTimeMax: 20
+      }
     }
   },
   created() {
@@ -436,6 +457,7 @@ export default {
             this.tableData = this.item.Config
             this.actionList = this.item.Action
             this.NameCfg = this.item.NameCfg || []
+            this.RobotExitCfg = this.item.RobotExitCfg || newRobotExitCfg()
             const ShowMoneyCfg = this.item.ShowMoneyCfg || []
             if (this.item.Control) {
               this.control = this.item.Control
@@ -566,13 +588,24 @@ export default {
       }
       return true
     },
+    checkRobotExitCfg() {
+      if (this.RobotExitCfg.PlayTimeMin >= this.RobotExitCfg.PlayTimeMax) {
+        Message.error('离桌玩牌次数槛错误,最小次数不能大于最大次数')
+        return false
+      }
+      return true
+    },
     setData() {
       if (!this.checkShowMoneyCfg()) {
+        return
+      }
+      if (!this.checkRobotExitCfg()) {
         return
       }
       this.moneyProc(true)
       this.item.Control = this.control
       this.item.NameCfg = this.NameCfg
+      this.item.RobotExitCfg = this.RobotExitCfg
       this.item.ShowMoneyCfg = []
       for (const o in this.ShowMoneyCfg) {
         const obj = {}

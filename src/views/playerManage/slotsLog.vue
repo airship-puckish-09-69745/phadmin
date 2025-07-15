@@ -590,6 +590,7 @@ export default {
           const objs = response.Data.List || []
           $this.ret = response.Data
           $this.tableData = objs
+          console.log(this.tableData)
           if (objs.length === 0) {
             Message.success('查询结果为空')
             return
