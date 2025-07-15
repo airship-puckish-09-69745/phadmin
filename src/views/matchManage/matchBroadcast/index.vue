@@ -249,6 +249,15 @@ export default {
         } else {
           // 通过应用id进行筛选
           this.FilterableBroadcastList = Data.BroadcastList.filter(item => item.AppId === this.searchFilter.app_id)
+          // 日期*1000
+          this.FilterableBroadcastList.forEach(item => {
+            item.CreateTime *= 1000
+            item.UpdateTime *= 1000
+            item.BroadcastTimeRange.forEach(range => {
+              range[0] *= 1000
+              range[1] *= 1000
+            })
+          })
         }
         this.tableData = Data.BroadcastList
       } else {

@@ -171,11 +171,12 @@ export default {
       const data = { ...this.formData }
       data.AppId = this.appId
       data.Operator = store.getters.name
+      data.BroadcastTimeRange = data.BroadcastTimeRange.map(item => parseInt(item / 1000))
       if (!data.ID) {
         // data.ID = Date.now().toString()
-        data.CreateTime = Date.now()
+        data.CreateTime = parseInt(Date.now() / 1000)
       } else {
-        data.UpdateTime = Date.now()
+        data.UpdateTime = parseInt(Date.now() / 1000)
       }
       this.$emit('save', data)
       this.handleClose()
