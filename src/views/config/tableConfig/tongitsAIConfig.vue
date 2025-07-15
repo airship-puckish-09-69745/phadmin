@@ -176,13 +176,24 @@
                 </el-table>
               </div>
             </el-col>
-<!--            <el-col :offset="16" :span="8">-->
-<!--              <el-button type="primary" @click="setData">保存分配信息</el-button>-->
-<!--            </el-col>-->
+            <!--            <el-col :offset="16" :span="8">-->
+            <!--              <el-button type="primary" @click="setData">保存分配信息</el-button>-->
+            <!--            </el-col>-->
           </el-row>
         </el-tab-pane>
         <el-tab-pane label="信息配置">
           <el-row>
+            <el-col :span="20" :offset="1">
+              <h5>机器人离桌配置</h5>
+              <el-descriptions :column="2" :colon="false" border>
+                <el-descriptions-item label="最小离桌玩牌次数槛" :content-style="{'text-align': 'center','width': '250px'}" :label-style="{'text-align': 'center'}">
+                  <el-input v-model.number="RobotExitCfg.PlayTimeMin" type="number" size="medium" style="width: 120px" />
+                </el-descriptions-item>
+                <el-descriptions-item label="最大离桌玩牌次数" :content-style="{'text-align': 'center','width': '250px'}" :label-style="{'text-align': 'center'}">
+                  <el-input v-model.number="RobotExitCfg.PlayTimeMax" type="number" size="medium" style="width: 120px" />
+                </el-descriptions-item>
+              </el-descriptions>
+            </el-col>
             <el-col :span="20" :offset="1">
               <h5>机器人昵称配置 <el-button type="text" @click="addNameCfg">添加一项</el-button></h5>
               <el-table :data="NameCfg" border>
@@ -272,6 +283,9 @@
             <el-tab-pane label="好牌配置">
               <robot-ai-setting-build-card v-model="edit" />
             </el-tab-pane>
+            <el-tab-pane label="决策配置">
+              <robot-ai-setting-decision v-model="edit" />
+            </el-tab-pane>
           </el-tabs>
         </el-row>
         <el-form-item>
@@ -323,6 +337,7 @@ import robotAiSettingChallenge from './tongits/robotAiSettingChallenge'
 import robotAiSettingDrop from './tongits/robotAiSettingDrop'
 import robotAiSettingOutCard from './tongits/robotAiSettingOutCard'
 import robotAiSettingBuildCard from './tongits/robotAiSettingBuildCard'
+import robotAiSettingDecision from './tongits/robotAiSettingDecision'
 function newNameCfgItem(nick, probability) {
   return {
     Nick: nick,
@@ -336,8 +351,14 @@ function newShowMoneyCfg() {
     ShowMoneyMax: 100
   }
 }
+function newRobotExitCfg() {
+  return {
+    PlayTimeMin: 10,
+    PlayTimeMax: 20
+  }
+}
 export default {
-  components: { Compare, Publish, robotAiSettingFight, robotAiSettingChallenge, robotAiSettingDrop, robotAiSettingOutCard, robotAiSettingBuildCard, MoneyInput },
+  components: { Compare, Publish, robotAiSettingFight, robotAiSettingChallenge, robotAiSettingDrop, robotAiSettingOutCard, robotAiSettingBuildCard, robotAiSettingDecision, MoneyInput },
   data() {
     return {
       subKey: 'tongits_ai',
@@ -389,90 +410,10 @@ export default {
       NameCfg: [], // 启动机器人名字配置
       ShowMoneyCfg: [], // 机器人展示资产配置
       AllTableMoneyList: [],
-      robotDecision:{ // 机器人决策配置
-        Priority:{
-          WinRatio: 90,
-          LoseRato: 90,
-          TwoRoundFightRatio: 90,
-          ThreeRoundFightRatio: 90,
-        },
-        Standard:[
-          { RoundId: 2, RoundName: "第2轮决策" ,List:[
-            {
-              Score: 60,
-              FightRatio: 60,
-              ChallengeRatio:60
-
-            }]
-          },
-          { RoundId: 3, RoundName: "第3轮决策" ,List:[
-            {
-              Score: 60,
-              FightRatio: 60,
-              ChallengeRatio:60
-
-            }]
-          },
-          { RoundId: 4, RoundName: "第4轮决策" ,List:[
-            {
-              Score: 60,
-              FightRatio: 60,
-              ChallengeRatio:60
-
-            }]
-          },
-          { RoundId: 5, RoundName: "第5轮决策" , List:[
-            {
-              Score: 60,
-              FightRatio: 60,
-              ChallengeRatio:60
-
-            }]
-          },
-          { RoundId: 6, RoundName: "第>=6轮决策" ,List:[
-            {
-              Score: 60,
-              FightRatio: 60,
-              ChallengeRatio:60
-
-            }]
-          },
-        ],
-        Other:[
-          {Type: 1, Name: "敌人手牌比自己的散牌少（每少1张）",FightRatio: 60, ChallengeRatio:60},
-          {Type: 2, Name: "敌人手牌比自己的散牌多（每多1张）",FightRatio: 60, ChallengeRatio:60},
-          {Type: 3, Name: "手中Bonus牌数",FightRatio: 60, ChallengeRatio:60},
-          {Type: 4, Name: "每个未放牌敌人",FightRatio: 60, ChallengeRatio:60}
-        ],
-        RobotCorrect:[
-          {
-            AiConfigLevel: 1,
-            label: '强放修正',
-            FightRatio: 60, ChallengeRatio:60
-          },
-          {
-            AiConfigLevel: 2,
-            label: '弱放修正',
-            FightRatio: 60, ChallengeRatio:60
-          },
-          {
-            AiConfigLevel: 3,
-            label: '普通修正',
-            FightRatio: 60, ChallengeRatio:60
-          },
-          {
-            AiConfigLevel: 4,
-            label: '弱杀修正',
-            FightRatio: 60, ChallengeRatio:60
-          },
-          {
-            AiConfigLevel: 5,
-            label: '强杀修正',
-            FightRatio: 60, ChallengeRatio:60
-          }
-        ]
-        
-      },
+      RobotExitCfg: { //机器人离桌配置
+        PlayTimeMin: 10,
+        PlayTimeMax: 20
+      }
     }
   },
   created() {
@@ -514,6 +455,7 @@ export default {
             this.tableData = this.item.Config
             this.actionList = this.item.Action
             this.NameCfg = this.item.NameCfg || []
+            this.RobotExitCfg = this.item.RobotExitCfg || newRobotExitCfg()
             const ShowMoneyCfg = this.item.ShowMoneyCfg || []
             if (this.item.Control) {
               this.control = this.item.Control
@@ -641,15 +583,25 @@ export default {
       }
       return true
     },
+    checkRobotExitCfg() {
+      if (this.RobotExitCfg.PlayTimeMin >= this.RobotExitCfg.PlayTimeMax) {
+        Message.error('离桌玩牌次数槛错误,最小次数不能大于最大次数')
+        return false
+      }
+      return true
+    },
     setData() {
       if (!this.checkShowMoneyCfg()) {
+        return
+      }
+      if (!this.checkRobotExitCfg()) {
         return
       }
       this.moneyProc(true)
       this.item.Control = this.control
       this.item.NameCfg = this.NameCfg
+      this.item.RobotExitCfg = this.RobotExitCfg
       this.item.ShowMoneyCfg = []
-      this.item.RobotDecision = this.robotDecision
       for (const o in this.ShowMoneyCfg) {
         const obj = {}
         obj.TableMoney = parseInt(this.ShowMoneyCfg[o].TableMoney) * 1000
@@ -797,9 +749,8 @@ export default {
     },
     dataRule(required, config) {
       return DataRule(required, config)
-    },
+    }
 
-    
   }
 }
 </script>

@@ -12,13 +12,13 @@
             <el-input v-model="cfg.MultiWeightStr" :required="true" placeholder="请输入内容,如1,2,3,5"> <template slot="append">多个值用 , 连接</template> </el-input>
           </el-form-item>
 
-          <el-form-item label="Minor Major Grand Joker 对应的JP奖项中奖倍数范围">
+          <el-form-item label="Mini Minor Major Grand 对应的JP奖项中奖倍数范围">
             <el-input v-model="cfg.JPMultiStr" :required="true" placeholder="请输入内容,如1-10,30-50,100-150,200">
               <template slot="append">四个值用 , 连接。</template>
             </el-input>
           </el-form-item>
 
-          <el-form-item label="Minor Major Grand Joker 对应的JP奖项中奖倍数权重">
+          <el-form-item label="Mini Minor Major Grand 对应的JP奖项中奖倍数权重">
             <el-input v-model="cfg.JPMultiWeightStr" :required="true" placeholder="请输入内容,如10,50,150,200">
               <template slot="append">四个值用 , 连接。</template>
             </el-input>

@@ -201,6 +201,12 @@ export const asyncRoutes = [
         meta: { title: 'slots - 大奖日志 ◐' }
       },
       {
+        path: 'slotsGrandPrize',
+        component: () => import('@/views/online/slotsGrandPrize'),
+        name: '大奖实时统计',
+        meta: { title: 'slots - 大奖实时统计 ◐' }
+      },
+      {
         path: 'egame-control',
         component: () => import('@/views/online/egameControl/index.vue'),
         name: 'EGame控制监控',
@@ -614,6 +620,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/gameWaitQueue.vue'),
             name: 'gameWaitQueue',
             meta: { title: '排队入桌配置 ◐' }
+          },
+          {
+            path: 'trustScore',
+            component: () => import('@/views/config/tableConfig/trustScore.vue'),
+            name: 'trustScore',
+            meta: { title: '信任分配置 ◐' }
           }
         ]
       },
@@ -1613,6 +1625,12 @@ export const asyncRoutes = [
                 meta: { title: 'GoldMiner(审)' }
               },
               {
+                path: 'goldtrainmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/goldtrainmars_slots_cfg.vue'),
+                name: 'goldtrainmars_slots_cfg',
+                meta: { title: 'GoldTrain(审)' }
+              },
+              {
                 path: 'atlantistreasuremars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/atlantistreasuremars_slots_cfg'),
                 name: 'atlantistreasuremars_slots_cfg',
@@ -2440,6 +2458,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_Truco',
             meta: { title: 'T ruco ◐', gid: 11 }
+          },
+          {
+            path: 'playlog_Buraco',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_Buraco',
+            meta: { title: 'B uraco ◐', gid: 12 }
           }
         ]
       },
@@ -3124,9 +3148,9 @@ export const asyncRoutes = [
             meta: { title: 'StreetFighting(审)', gid: 189 }
           },
           {
-            path: 'goldtrain_slots_log',
+            path: 'goldtrainmars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
-            name: 'goldtrain_slots_log',
+            name: 'goldtrainmars_slots_log',
             meta: { title: 'GoldTrain(审)', gid: 195 }
           },
           {

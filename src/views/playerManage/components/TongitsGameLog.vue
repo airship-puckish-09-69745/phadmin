@@ -13,7 +13,7 @@
       <tr>
         <td v-for="one in FinishArray">
           用户：{{ one.Uid }} - {{ one.Nick }}<br>
-          {{ one.isRobot?'机器人':'真人' }} {{ getRobotLevel(one.RobotLevel) }}
+          {{ one.isRobot?'机器人':getUserType(one.UserType) }} {{ one.RobotDefenceLevel?getRobotDefenceLevel(one.RobotDefenceLevel): getRobotLevel(one.RobotLevel) }}
         </td>
       </tr>
     </table>
@@ -107,7 +107,7 @@
               </template>
               <span>输赢：{{ one.moneyChange/1000 }}</span><br>
               <!--              <span>机器人级别：{{ showRobotLevel(one.Character) }}</span><br>-->
-              <span>机器人级别：{{ one.isRobot?'机器人':'真人' }} {{ getRobotLevel(one.RobotLevel) }}</span>
+              <span>机器人级别：{{ one.isRobot?'机器人':getUserType(one.UserType) }} {{ one.RobotDefenceLevel?getRobotDefenceLevel(one.RobotDefenceLevel): getRobotLevel(one.RobotLevel) }}</span>
 
               <template v-if="Gid === 128"> <!-- control信息 -->
                 <br>
@@ -342,7 +342,9 @@ export default {
           ctrlAreaId: val.players[j].CtrlAreaId,
           isRobot: val.players[j].character > 0,
           RobotLevel: val.players[j].RobotLevel,
-          RobotWeight: val.players[j].RobotWeight
+          RobotWeight: val.players[j].RobotWeight,
+          RobotDefenceLevel: val.players[j].RobotDefenceLevel,
+          UserType: val.players[j].UserType
         })
         console.log("uid:", val.players[j].uid, " ; isRobot:", val.players[j].character > 0)
       }
@@ -452,6 +454,36 @@ export default {
         return '-- 强杀'
       }else if (level == 6) {
         return '-- 贴防'
+      }
+    },
+    getRobotDefenceLevel(level) {
+      if (level === 0) {
+        return ''
+      } else if (level === 3) {
+        return '贴防 -- 陪玩'
+      } else if (level === 4) {
+        return '贴防 -- 弱杀'
+      } else if (level === 5) {
+        return '贴防 -- 强杀'
+      } else if (level === 6) {
+        return '贴防 -- 防作弊'
+      } else if (level === 7) {
+        return '预贴防 -- 陪玩'
+      } else if (level === 8) {
+        return '预贴防 -- 弱杀'
+      } else if (level === 9) {
+        return '预贴防 -- 强杀'
+      } else if (level === 10) {
+        return '贴防 -- 锁血强杀'
+      } else if (level === 11) {
+        return '预贴防 --  锁血强杀'
+      }
+    },
+    getUserType(userType) {
+      if (userType === 0) {
+        return '真人'
+      } else if (userType === 2) {
+        return '真人--黑'
       }
     },
     getControlLevel(lv) {
