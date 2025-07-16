@@ -424,6 +424,26 @@ export const asyncRoutes = [
                     meta: { title: 'AI-List ◐' }
                   }
                 ]
+              },
+              {
+                path: 'PusoyCheatCfg',
+                component: () => import('@/views/empty'),
+                redirect: 'noRedirect',
+                meta: { title: '防作弊配置', noCache: true },
+                children: [
+                  {
+                    path: 'pusoyCheatCfg',
+                    component: () => import('@/views/config/tableConfig/pusoyCheat/pusoyCheat.vue'),
+                    name: 'pusoyCheatCfg',
+                    meta: { title: 'pusoy配置 ◐' }
+                  },
+                  {
+                    path: 'pusoyWildCheatCfg',
+                    component: () => import('@/views/config/tableConfig/pusoyCheat/pusoywildCheat.vue'),
+                    name: 'pusoyWildCheatCfg',
+                    meta: { title: 'pusoyWild配置 ◐' }
+                  }
+                ]
               }
 
               /* {
@@ -3221,6 +3241,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/pusoyCheat/pusoyCheatLogNew'),
             name: 'pusoy_cheat_log_new',
             meta: { title: 'pusoy新作弊记录 ◐' }
+          },
+          {
+            path: 'pusoy_cheat_log_new_V1',
+            component: () => import('@/views/playerManage/pusoyCheat/pusoyCheatlogV1'),
+            name: 'pusoy_cheat_log_new_V1',
+            meta: { title: 'pusoy新作弊记录V1 ◐' }
           }
         ]
       },
