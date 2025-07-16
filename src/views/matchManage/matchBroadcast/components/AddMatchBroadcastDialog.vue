@@ -17,7 +17,7 @@
           <el-option v-for="option in broadcastTypeOptions" :key="option.value" :label="option.label" :value="option.value" />
         </el-select>
       </el-form-item>
-      <el-form-item label="播报来源" required>
+      <el-form-item v-if="formData.BroadcastType !== 4" label="播报来源" required>
         <el-select v-model="formData.Origin" placeholder="请选择播报来源" style="width: 360px;" multiple>
           <el-option v-for="option in matchUniqueIdCfgs" :key="option.value" :label="option.label" :value="option.value" />
         </el-select>
@@ -118,6 +118,10 @@ export default {
       } else {
         if (this.updateData) {
           this.formData = { ...this.updateData }
+          // 日期 * 1000
+          this.formData.BroadcastTimeRange = this.formData.BroadcastTimeRange.map(item => item * 1000)
+          this.formData.CreateTime *= 1000
+          this.formData.UpdateTime *= 1000
           console.log('this.updateData', this.updateData)
         } else {
           this.resetForm()
@@ -143,7 +147,8 @@ export default {
         this.$message.warning('类型不能为空!')
         return false
       }
-      if (!this.formData.Origin) {
+      // 类型为自定义时可以不选播报来源
+      if (this.formData.BroadcastType === 4 && !this.formData.Origin) {
         this.$message.warning('播报来源不能为空!')
         return false
       }
@@ -173,10 +178,15 @@ export default {
       data.Operator = store.getters.name
       data.BroadcastTimeRange = data.BroadcastTimeRange.map(item => parseInt(item / 1000))
       if (!data.ID) {
-        // data.ID = Date.now().toString()
+        data.ID = Date.now().toString()
         data.CreateTime = parseInt(Date.now() / 1000)
       } else {
+        data.CreateTime = parseInt(data.CreateTime / 1000)
         data.UpdateTime = parseInt(Date.now() / 1000)
+      }
+      // 如果自定义类型，清空播报来源
+      if (data.BroadcastType === 4) {
+        data.Origin = []
       }
       this.$emit('save', data)
       this.handleClose()
@@ -195,7 +205,7 @@ export default {
         // 标题
         Title: '',
         // 播报来源
-        Origin: '',
+        Origin: [],
         // 展示位置
         ShowPosition: 1,
         // 状态
