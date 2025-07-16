@@ -157,7 +157,7 @@ export default {
             row.Origin.forEach(item => {
               originNames.push(this.getMatchUniqueIdName(item))
             })
-            return originNames.join(', ')
+            return originNames && originNames.length > 0 ? originNames.join(', ') : '--'
           }
         },
         {
