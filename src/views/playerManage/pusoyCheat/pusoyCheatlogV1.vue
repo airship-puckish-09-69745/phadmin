@@ -283,6 +283,9 @@ export default {
       this.cheatLogs = this.clientDB.GetCurrentPageData()
     },
     formatTimeDate(ts) {
+      if (ts === 0) {
+        return '--'
+      }
       return $libDate.FormateSecondStr(ts, 2)
     },
     changeWhite(row, userType) {
