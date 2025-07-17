@@ -242,7 +242,7 @@
           prop="RobotDefenceLevel"
           label="贴防等级"
           sortable="custom"
-          width="80"
+          width="100"
         >
           <template slot-scope="scope">
             <span>{{ getRobotDefenceLevel(scope.row.RobotDefenceLevel) }}</span>
@@ -250,7 +250,7 @@
         </el-table-column>
         <el-table-column
           prop="allowTableMoney"
-          label="允许出现场次"
+          label="场次"
           width="100"
         >
 
