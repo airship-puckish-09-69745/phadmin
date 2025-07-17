@@ -610,7 +610,7 @@ function newItem() {
     WaitAddRobotMaxTimes:0,
     WaitUserEnterTimes:0,
     AllocScheme:0,
-    AutoEnterRoomCount
+    AutoEnterRoomCount:0
   }
 }
 
