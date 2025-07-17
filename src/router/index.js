@@ -3253,6 +3253,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/pusoyCheat/pusoyCheatlogV1'),
             name: 'pusoy_cheat_log_new_V1',
             meta: { title: 'pusoy新作弊记录V1 ◐' }
+          },
+          {
+            path: 'pusoy_cheat_black_new_V1',
+            component: () => import('@/views/playerManage/pusoyCheat/pusoyBlackV1'),
+            name: 'pusoy_cheat_log_new_V1',
+            meta: { title: 'pusoy黑名单V1 ◐' }
           }
         ]
       },
