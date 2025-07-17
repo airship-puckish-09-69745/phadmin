@@ -387,6 +387,23 @@
               <el-input v-model.number="edit.item.AutoEnterRoomCount" />
             </el-form-item>
           </el-col>
+
+
+          <el-col :span="11">
+            <el-form-item
+              label="是否允许两低信用户同桌："
+              :required="true"
+              prop="item.HideCarry"
+              :rules="dataRule(true,{type:'n',range:'0'})"
+            >
+              <el-switch
+                v-model="edit.item.IsAllowTowLowTrustSit"
+                :active-value="1"
+                :inactive-value="0"
+              />
+            </el-form-item>
+          </el-col>
+
         </el-row>
 
         <el-row>
@@ -583,7 +600,8 @@ function newItem() {
     WaitAddRobotMaxTimes:0,
     WaitUserEnterTimes:0,
     AllocScheme:0,
-    AutoEnterRoomCount:0
+    AutoEnterRoomCount:0,
+    IsAllowTowLowTrustSit:0
   }
 }
 
@@ -647,6 +665,7 @@ export default {
         WaitAddRobotMaxTimes:'匹配机器人最高等待时间',
         WaitUserEnterTimes:'匹配玩家入桌等待时间',
         AutoEnterRoomCount:'自动满桌匹配人数要求',
+        IsAllowTowLowTrustSit:'是否允许两低信用户同桌',
         // 'RobotConfig.Common.RobotCarryMoneyStart': '机器人最小携带',
         // 'RobotConfig.Common.RobotCarryMoneyEnd': '机器人最大携带',
         // 'RobotConfig.Common.RobotMaxPlayTimesStart': '机器人玩牌次数下限',
