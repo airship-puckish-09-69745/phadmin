@@ -528,7 +528,7 @@ export default {
             this.actionList = this.item.Action
             this.NameCfg = this.item.NameCfg || []
             this.RobotExitCfg = this.item.RobotExitCfg || newRobotExitCfg()
-            this.RobotTableMoneyExitCfg = this.item.RobotTableMoneyExitCfg || []
+            const RobotTableMoneyExitCfg = this.item.RobotTableMoneyExitCfg || []
             const ShowMoneyCfg = this.item.ShowMoneyCfg || []
             if (this.item.Control) {
               this.control = this.item.Control
@@ -539,6 +539,12 @@ export default {
               one.ShowMoneyMin /= 1000
               one.ShowMoneyMax /= 1000
               this.ShowMoneyCfg.push(one)
+            }
+            this.RobotTableMoneyExitCfg = []
+            for (const o in RobotTableMoneyExitCfg) {
+              const one = Object.assign({}, RobotTableMoneyExitCfg[o])
+              one.TableMoney /= 1000
+              this.RobotTableMoneyExitCfg.push(one)
             }
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data.Data)
