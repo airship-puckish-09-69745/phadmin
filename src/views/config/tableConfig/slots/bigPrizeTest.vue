@@ -265,6 +265,7 @@ export default {
     getEnterFreeModeRates() {
       const $this = this
       $this.loading = true
+      this.cleanFreeModeResult()
       request({
         url: '/dataProxy/info',
         method: 'get',
@@ -285,6 +286,11 @@ export default {
       }).catch(function() {
         $this.loading = false
       })
+    },
+
+    cleanFreeModeResult() {
+      this.freeModeResult.found = false
+      this.freeModeResult.rates = 0
     },
 
     showFreeModeRates(found, rates) {
