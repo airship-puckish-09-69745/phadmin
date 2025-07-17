@@ -41,11 +41,9 @@
         </el-table-column>
 
         <el-table-column
-          fixed="right"
           width="200px"
           label="操作"
         >
-
           <template slot-scope="scope">
             <el-button
               size="mini"
@@ -53,6 +51,17 @@
               @click="showForm(scope.row.id)"
             >编辑</el-button>
             <el-button size="mini" type="danger" @click="handleDelete(scope.row.id, false)">删除</el-button>
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          prop="status"
+          label="开关"
+          width="100px"
+        >
+          <template slot-scope="scope">
+            <el-button v-if="scope.row.status==0" size="mini" type="success" @click="updateStatus(scope.row.id, 1)">上架</el-button>
+            <el-button v-if="scope.row.status==1" size="mini" type="danger" @click="updateStatus(scope.row.id, 0)">下架</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -161,7 +170,8 @@ export default {
           switch: 'true',
           channelId: [],
           game_id: 0,
-          match_typ: 0
+          match_typ: 0,
+          status:1, //1:上架状态 0:下架
         }
       },
       AttrNames: {
@@ -174,7 +184,8 @@ export default {
         { 'value': 1, 'label': 'GTCC入口' },
         { 'value': 2, 'label': 'GTCC周赛' },
         { 'value': 3, 'label': 'GTCC预选赛' },
-        { 'value': 4, 'label': 'GTCC线上决赛' }
+        { 'value': 4, 'label': 'GTCC线上决赛' },
+        { 'value': 5, 'label': 'GTCC日赛' }
       ],
       statusCfgs: [
         { 'value': 0, 'label': '关闭' },
@@ -231,11 +242,17 @@ export default {
         if (response.RetCode === 0) {
           if (response.Data && response.Data.Data !== '' && response.Data.Data !== '{}') {
             this.posterList = JSON.parse(response.Data.Data)
+            this.posterList.tableData.sort((a, b) => {
+              if (a.status === b.status) {
+                return a.match_type - b.match_type; // 金额降序
+              }else {
+                return b.status - a.status;
+              }
+            });
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data.Data)
             this.raw = response.Data
           }
-          console.log(response.Data)
           this.raw = response.Data
         }
       })
@@ -261,7 +278,32 @@ export default {
         }
       }
     },
+    updateStatus(id,status){
+      let msg = '您确定要将该比赛配置上架吗？'
+      if(status == 0) {
+        msg = '您确定要将该比赛配置下架吗？'
+      }
+      this.$confirm(msg, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        let editData = {}
+        for (let i = 0; i < this.posterList.tableData.length; i++) {
+          if (this.posterList.tableData[i].id === id) {
+            editData = this.posterList.tableData[i]
+            break
+          }
+        }
+        this.editForm.onceTime = [new Date(editData.start_time * 1000), new Date(editData.end_time * 1000)]
+        editData.status = status
+        this.editForm.data = editData
+        this.savePosetCfg()
+        this.getList()
 
+      }).catch()
+
+    },
 
 
     getAppName(id) {
@@ -320,6 +362,7 @@ export default {
             this.posterList.tableData[i].match_type = this.editForm.data.match_type
             this.posterList.tableData[i].start_time = bTime
             this.posterList.tableData[i].end_time = eTime
+            this.posterList.tableData[i].statsu = this.editForm.data.statsu
           }
         }
       } else {
@@ -329,7 +372,8 @@ export default {
             'name': this.editForm.data.name,
             'match_type': this.editForm.data.match_type,
             'start_time': bTime,
-            'end_time': eTime
+            'end_time': eTime,
+            'status': 1,
           }
         )
       }

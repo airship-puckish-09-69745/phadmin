@@ -112,6 +112,9 @@
             {{ showRoomLevel(scope.row.RoomLevel) }}
           </template>
         </el-table-column>
+        <el-table-column prop="AllocScheme" label="配桌方案" width="150" >
+          <template slot-scope="scope"> {{ getAllocSchemeName(scope.row.AllocScheme ) }} </template>
+        </el-table-column>
         <el-table-column
           label="状态"
           width="150"
@@ -127,6 +130,7 @@
              {{ showStatus(scope.row.Status) }}
           </template>
         </el-table-column>
+
         <el-table-column
           prop="LastModify"
           label="最近修改"
@@ -372,6 +376,122 @@
           </el-col>
         </el-row>
 
+
+
+        <el-row>
+          <el-col :span="11">
+            <el-form-item
+              label="匹配机器人最高等待时间："
+              prop="item.WaitAddRobotMaxTimes"
+              :rules="dataRule(true,{type:'n',range:'0'})"
+            >
+              <el-input v-model.number="edit.item.WaitAddRobotMaxTimes" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item
+              label="匹配玩家入桌等待时间："
+              prop="item.WaitUserEnterTimes"
+              :rules="dataRule(true,{type:'n',range:'0'})"
+            >
+              <el-input v-model.number="edit.item.WaitUserEnterTimes" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="20">
+            <el-form-item label="配桌方案：" :required="true">
+              <el-radio-group v-model.number="edit.item.AllocScheme">
+                <el-radio :label="0">常规</el-radio>
+                <el-radio :label="1">班车</el-radio>
+                <el-radio :label="2">信誉分</el-radio>
+                <el-radio :label="3">动态匹配</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <!--
+        <el-row>
+          <el-col :span="11">
+            <el-form-item
+              label="默认胜率："
+              :required="true"
+              prop="item.DefaultWinRate"
+              :rules="dataRule(true,{type:'n',range:'0'})"
+            >
+              <el-input v-model.number="edit.item.DefaultWinRate" placeholder="默认胜率" style="width:200px;">
+                <template slot="append">%</template>
+              </el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item
+              label="在玩人数倍数："
+              :required="true"
+              prop="item.PlayingMul"
+              :rules="dataRule(true,{type:'n',range:'1'})"
+            >
+              <el-input v-model.number="edit.item.PlayingMul" placeholder="在玩人数倍数" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        -->
+        <!--
+        <el-row>
+          <el-col :span="11">
+            <el-form-item
+              label="在玩人数最小随机数："
+              :required="true"
+              prop="item.PlayingRandMin"
+              :rules="dataRule(true,{type:'n',range:'1'})"
+            >
+              <el-input v-model.number="edit.item.PlayingRandMin" placeholder="在玩人数最小随机数" />
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="11">
+            <el-form-item
+              label="在玩人数最大随机数："
+              :required="true"
+              prop="item.PlayingRandMax"
+              :rules="dataRule(true,{type:'n',range:'1'})"
+            >
+              <el-input v-model.number="edit.item.PlayingRandMax" placeholder="在玩人数最大随机数" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        -->
+        <!--
+        <el-row>
+          <el-col :span="11">
+            <el-form-item
+              label="幸运级别最大值(0不限制)："
+              :required="true"
+              prop="item.LuckyLevelLimitMax"
+              :rules="dataRule(true,{type:'n',range:'0'})"
+            >
+              <el-input v-model.number="edit.item.LuckyLevelLimitMax" placeholder="0即不限制" />
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="11">
+            <el-form-item
+              label="幸运级别限制生效最低资产(0不限制)："
+              :required="true"
+              prop="item.LuckyLevelLimitMoney"
+              :rules="dataRule(true,{type:'n',range:'0'})"
+            >
+              <el-input v-model.number="edit.item.LuckyLevelLimitMoney" placeholder="0即不限制" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        -->
+        <!-- <tongits-robot-common v-model="edit" /> -->
+        <!-- <tongits-robot-control v-model="edit" /> -->
+        <!-- <tongits-robot-build-card v-model="edit"></tongits-robot-build-card> -->
+
         <el-form-item>
           <el-row>
             <el-col :span="12" :offset="10">
@@ -471,7 +591,10 @@ function newItem() {
     LuckyLevelLimitMoney: 0,
     MinPlayMoney: 0,
     Anticheating: 0,
-    RoomLevel: 0
+    RoomLevel: 0,
+    WaitAddRobotMaxTimes:0,
+    WaitUserEnterTimes:0,
+    AllocScheme:0
   }
 }
 
@@ -531,6 +654,10 @@ export default {
         RobotCardBuildConfig: '机器人好牌配置',
         Anticheating: '是否防作弊',
         RoomLevel: '房间类型',
+        AllocScheme:'配桌方案',
+        WaitAddRobotMaxTimes:'匹配机器人最高等待时间',
+        WaitUserEnterTimes:'匹配玩家入桌等待时间',
+
         // 'RobotConfig.Common.RobotCarryMoneyStart': '机器人最小携带',
         // 'RobotConfig.Common.RobotCarryMoneyEnd': '机器人最大携带',
         // 'RobotConfig.Common.RobotMaxPlayTimesStart': '机器人玩牌次数下限',
@@ -811,6 +938,17 @@ export default {
         this.createSave(this.getPostData())
       }
       this.edit.visible = false
+    },
+    getAllocSchemeName(plan){
+      if(plan==1) {
+        return "班车"
+      }else if(plan==2){
+        return "信誉分"
+      }else if(plan==3){
+        return "动态匹配"
+      }else{
+        return "常规"
+      }
     }
   }
 }

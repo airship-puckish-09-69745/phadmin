@@ -217,39 +217,48 @@ export default {
         Gid: 0,
         Type: 0,
         Score: 0,
+        GameName: '',
         Description: ''
       },
       selectGid: 0,
       taskOptions: {
-        1: '参与游戏 Tongits',
-        2: '获胜',
-        3: '发起「Fight」并获胜',
-        4: '获胜时持有「A」或「K」',
-        5: '结算时手牌持有「Special Meld」（同花顺、四条）',
-        6: '通过「Tongits」获胜',
-        11: '参与游戏 Pusoy',
-        12: '获胜',
-        13: 'PUSOY其他玩家并获胜',
-        14: '获胜时持有「Straight Flush」或「Four of a Kind」',
-        15: '透过「NATURALS」获胜（Three Straight、Three Flush、6 Pairs、Dragon）',
-        16: '以「全垒打」获胜',
-        21: '参与游戏 Lucky9',
-        22: '获胜',
-        23: '获胜时以3张手牌9点获胜',
-        24: '以「Lucky9 」获胜',
-        31: '参与游戏 Texas',
-        32: '获胜',
-        33: '透过「High Card」获胜',
-        34: '开出「Flush」或「Straight」',
-        35: '开出「Four of a Kind」或「Full House」',
-        36: '开出「Straight Flush」'
+        1: '[Tongits]参与游戏',
+        2: '[Tongits]获胜',
+        3: '[Tongits]发起「Fight」并获胜',
+        4: '[Tongits]获胜时持有「A」或「K」',
+        5: '[Tongits]结算时手牌持有「Special Meld」（同花顺、四条）',
+        6: '[Tongits]通过「Tongits」获胜',
+        11: '[Pusoy]参与游戏',
+        12: '[Pusoy]获胜',
+        13: '[Pusoy]PUSOY其他玩家并获胜',
+        14: '[Pusoy]获胜时持有「Straight Flush」或「Four of a Kind」',
+        15: '[Pusoy]透过「NATURALS」获胜（Three Straight、Three Flush、6 Pairs、Dragon）',
+        16: '[Pusoy]以「全垒打」获胜',
+        21: '[Lucky9]参与游戏',
+        22: '[Lucky9]获胜',
+        23: '[Lucky9]获胜时以3张手牌9点获胜',
+        24: '[Lucky9]以「Lucky9 」获胜',
+        31: '[Texas]参与游戏',
+        32: '[Texas]获胜',
+        33: '[Texas]透过「High Card」获胜',
+        34: '[Texas]开出「Flush」或「Straight」',
+        35: '[Texas]开出「Four of a Kind」或「Full House」',
+        36: '[Texas]开出「Straight Flush」',
+        41: '[BlackJack]参与游戏',
+        42: '[BlackJack]获胜',
+        43: '[BlackJack]通过「Double Down」双倍下注获胜',
+        44: '[BlackJack]使用「Split」切割后两幅牌均获胜',
+        45: '[BlackJack]获胜时以「BlackJack」获胜',
       },
       gameOptions: {
-        22: 'TONGITS',
-        21: 'PUSOY',
-        23: 'LUCKY9',
-        15: 'TEXAS POKER',
-        28: 'TONGITS JOKER'
+        37: 'BlackJack',
+        23: 'Lucky9',
+        21: 'Pusoy',
+        126: 'Pusoy Wild',
+        15: 'Texas Poker',
+        22: 'Tongits',
+        28: 'Tongits Joker',
+        29: 'Tongits Quick'
       }
     }
   },
@@ -301,7 +310,9 @@ export default {
     },
     saveOne() {
       console.log(this.clientDB.TotalData,this.clientDB.GetPage().GetPageNum())
-      this.clientDB.TotalData.push(JSON.parse(JSON.stringify(this.item)))
+      const item = JSON.parse(JSON.stringify(this.item))
+      item.GameName = this.gameOptions[item.Gid]
+      this.clientDB.TotalData.push()
       this.clientDB = new ClientTableData(this.clientDB.TotalData, this.clientDB.GetPage().GetPageNum(), filterMap, 'Gid', -1)
       this.refreshShow()
       this.showAdd=false
@@ -355,6 +366,13 @@ export default {
           $this.postData = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
             const cfg = JSON.parse(response.Data.Data)
+
+            for (const i in cfg) {
+              if (!cfg[i].hasOwnProperty('GameName')) {
+                cfg[i].GameName = this.gameOptions[cfg[i].Gid]
+              }
+            }
+
             $this.allCfg = cfg
             $this.clientDB = new ClientTableData(cfg, 10, filterMap, 'Gid', -1)
             this.$refs.compare.SetOldVal(response.Data.Data)

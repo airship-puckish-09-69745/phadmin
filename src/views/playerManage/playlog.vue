@@ -3045,7 +3045,135 @@
         </el-table-column>
         
       </el-table>
+    </el-dialog>
 
+    <el-dialog title="Buraco详情" :visible.sync="BuracoDetailVisible" width="1600px">
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:red; ">
+        <span style="float:left;">{{ '底分:' + BuracoDetail.tableMoney/1000 }}</span>
+      </div>
+      <el-table ref="filterTable" :data="BuracoDetail.players" border>
+        <el-table-column prop="uid" label="uid" width="128px">
+          <template slot-scope="scope">{{ scope.row.uid }}</template>
+        </el-table-column>
+        <el-table-column prop="nick" label="nick"  width="180px">
+          <template slot-scope="scope">{{ scope.row.nick }}</template>
+        </el-table-column>
+        <el-table-column prop="seat" label="seat" width="64px">
+          <template slot-scope="scope">{{ scope.row.seat }}</template>
+        </el-table-column>
+        <el-table-column label="team" width="60px">
+          <template slot-scope="scope">
+              <div 
+                :style="{ 
+                  backgroundColor: getBuracoTeamColor(scope.row.team), 
+                  width: '30px', 
+                  height: '30px',
+                  display: 'inline-block'
+                }"
+              ></div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="settle" label="结算">
+          <template slot-scope="scope">
+            {{ scope.row.moneyChange }}
+          </template>
+        </el-table-column>
+      </el-table>
+      <br>
+      <el-table ref="filterTable" :data="BuracoDetail.teamDetail" border>
+        <el-table-column label="team" width="60">
+          <template slot-scope="scope">
+            <div 
+              :style="{ 
+                backgroundColor: getBuracoTeamColor(scope.row.teamId), 
+                width: '30px', 
+                height: '30px',
+                display: 'inline-block'
+              }"
+            ></div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="canastrasSujas" label="Canastras Sujas" width="160px">
+          <template slot-scope="scope">{{ scope.row.canastrasSujas }}</template>
+        </el-table-column>
+        <el-table-column prop="canastrasLimpas" label="Canastras Limpas" width="160px">
+          <template slot-scope="scope">{{ scope.row.canastrasLimpas }}</template>
+        </el-table-column>
+        <el-table-column prop="canastrasMeia" label="Canastras de 500" width="160px">
+          <template slot-scope="scope">{{ scope.row.canastrasMeia }}</template>
+        </el-table-column>
+        <el-table-column prop="canastrasReals" label="Canastras Real 1000" width="160px">
+          <template slot-scope="scope">{{ scope.row.canastrasReals }}</template>
+        </el-table-column>
+        <el-table-column prop="mesa" label="Mesa" width="128px">
+          <template slot-scope="scope">{{ scope.row.mesa }}</template>
+        </el-table-column>
+        <el-table-column prop="batida" label="Batida" width="128px">
+          <template slot-scope="scope">{{ scope.row.batida }}</template>
+        </el-table-column>
+        <el-table-column prop="hands" label="Maos" width="128px">
+          <template slot-scope="scope">{{ scope.row.hands }}</template>
+        </el-table-column>
+        <el-table-column prop="morto" label="Morto" width="128px">
+          <template slot-scope="scope">{{ scope.row.morto }}</template>
+        </el-table-column>
+        <el-table-column prop="total" label="Total" width="128px">
+          <template slot-scope="scope">{{ scope.row.total }}</template>
+        </el-table-column>
+      </el-table>
+      <br>
+      <el-table ref="filterTable" :data="BuracoDetail.actionLogs" border>
+        <el-table-column prop="idx" label="步骤" width="80px">
+          <template slot-scope="scope">{{ '第'+scope.row.idx+'步' }}</template>
+        </el-table-column>
+        <el-table-column label="team" width="60">
+          <template slot-scope="scope">
+            <div 
+              :style="{ 
+                backgroundColor: getBuracoTeamColor(scope.row.teamId), 
+                width: '30px', 
+                height: '30px',
+                display: 'inline-block'
+              }"
+            ></div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="uid" label="uid" width="80px">
+          <template slot-scope="scope">{{ scope.row.uid > 0 ? scope.row.uid : '' }}</template>
+        </el-table-column>
+        <el-table-column prop="actionType" label="actionType" width="100px">
+          <template slot-scope="scope">{{ getBuracoActionDec(scope.row.actionType) }}</template>
+        </el-table-column>
+        <el-table-column prop="opCards" label="opCards" width="750px" >
+          <template slot-scope="scope">
+            <span v-if="scope.row.appendsCards"><!--组合追加牌-->
+              <div v-for="(item) in scope.row.appendsCards" class="block">
+                <el-image style="width: 37px; height: 50px" :src="getBuracoCardUrl(item)" />
+              </div>
+              <span>{{ ' + ' }}</span>
+              <div v-for="(item) in scope.row.opCards" class="block">
+                <span v-if="IstBuracoAppendsCards(item, scope.row.appendsCards)">
+                  <el-image style="width: 37px; height: 50px" :src="getBuracoCardUrl(item)" />
+                </span>
+              </div>
+            </span>
+            <span v-else>
+              <div v-for="(item) in scope.row.opCards" class="block">
+                <el-image style="width: 37px; height: 50px" :src="getBuracoCardUrl(item)" />
+              </div>
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="groups" label="groups" width="650px" >
+          <template slot-scope="scope">
+            <el-card v-for="g in scope.row.groups" class="box-card">
+              <div v-for="(item) in g" class="block">
+                <el-image style="width: 37px; height: 50px" :src="getBuracoCardUrl(item)" />
+              </div>
+            </el-card>
+          </template>
+        </el-table-column>
+      </el-table>
     </el-dialog>
 
     <el-dialog title="TeenPatti详情" :visible.sync="ZJHDetailVisible" width="1600px">
@@ -3486,8 +3614,10 @@ export default {
       RemiDetailVisible: false,
 
       TrucoDetail: {},
-      TrucoRoundDetail: {},
       TrucoDetailVisible: false,
+
+      BuracoDetail: {},
+      BuracoDetailVisible: false,
 
       jackpotWheelDetail: {},
       jackpotWheelData: {},
@@ -4045,6 +4175,8 @@ export default {
             $this.showRemiGame(obj)
           } else if (gid === 11) {
             $this.showTrucoGame(obj)
+          } else if (gid === 12){
+            $this.showBuracoGame(obj)
           } else {
             $this.showSmallGame(obj)
           }
@@ -4172,9 +4304,29 @@ export default {
     showTrucoGame(obj){
       this.TrucoDetail = obj
       console.log('this.TrucoData => ', this.TrucoDetail)
-      //this.TrucoRoundDetail = obj.roundDetail.roundDetail
-      //console.log('this.TrucoRoundDetail => ', this.TrucoRoundDetail)
       this.TrucoDetailVisible = true
+    },
+    showBuracoGame(obj){
+      this.BuracoDetail = obj
+      let teamGroupMap = new Map()
+      teamGroupMap.set(1, new Map())
+      teamGroupMap.set(2, new Map())
+      for (let i = 0; i < this.BuracoDetail.actionLogs.length; i ++) {
+        this.BuracoDetail.actionLogs[i].idx = i+1
+        if (this.BuracoDetail.actionLogs[i].actionType == 3 
+            || this.BuracoDetail.actionLogs[i].actionType == 6 
+            || this.BuracoDetail.actionLogs[i].actionType == 12) {
+              let teamId = this.BuracoDetail.actionLogs[i].teamId
+            let tg = teamGroupMap.get(teamId)
+            tg.set(this.BuracoDetail.actionLogs[i].groupIndex, this.BuracoDetail.actionLogs[i].opCards)
+            this.BuracoDetail.actionLogs[i].groups = new Array()
+            for (let [key, val] of tg){
+              this.BuracoDetail.actionLogs[i].groups.push(val)
+            }
+        }
+      }
+      console.log('this.BuracoData => ', this.BuracoDetail)
+      this.BuracoDetailVisible = true
     },
     showFilipinoMahjongGame(obj, log) {
       this.FilipinoMahjongDetail = log// obj
@@ -5365,6 +5517,59 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
         msg += txt[i]
       }
       return msg
+    },
+    getBuracoTeamColor(teamId) {
+      if (teamId == 1) {
+        return 'red'
+      } else if (teamId == 2) {
+        return 'green'
+      }
+      return ''
+    },
+    getBuracoActionDec(actionType){
+      if (actionType == 0) {
+        return '发牌'
+      } else if (actionType == 1) {
+        return '发弃牌'
+      } else if (actionType == 2) {
+        return '摸牌堆'
+      } else if (actionType == 3) {
+        return '摸/组弃牌堆'
+      } else if (actionType == 4) {
+        return '弃牌堆发给玩家'
+      } else if (actionType == 5) {
+        return '弃牌'
+      } else if (actionType == 6) {
+        return '手牌扩牌组'
+      } else if (actionType == 7) {
+        return '出完手牌'
+      } else if (actionType == 8) {
+        return '拿morto牌堆'
+      } else if (actionType == 9) {
+        return '出完手牌Batida'
+      } else if (actionType == 10) {
+        return '流局'
+      } else if (actionType == 11) {
+        return 'morto牌给牌堆'
+      } else if (actionType == 12) {
+        return '放手牌'
+      } else if (actionType == 13) {
+        return '剩余手牌'
+      }
+      return ''
+    },
+    getBuracoCardUrl(card) {
+      let c = (card & 0x0ff)
+      let color = (c >> 4) & 0xf
+      if (color == 5) {//王
+        c = 2
+      }
+      return require('@/assets/poker/' + c + '.png')
+    },
+    IstBuracoAppendsCards(card, appendsCards) {
+      if (appendsCards != undefined && appendsCards.length > 0) {
+        return -1 == appendsCards.indexOf(card)
+      }
     }
   }
 }

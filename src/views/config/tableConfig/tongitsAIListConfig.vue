@@ -239,6 +239,15 @@
           </template>
         </el-table-column>
         <el-table-column
+          prop="RobotDefenceLevel"
+          label="贴防等级"
+          width="80"
+        >
+          <template slot-scope="scope">
+            <span>{{ getRobotDefenceLevel(scope.row.RobotDefenceLevel) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
           prop="allowTableMoney"
           label="允许出现场次"
           width="120"
@@ -323,7 +332,7 @@
             >冻结
             </el-button>
 
-            <RobotRecycleBtn :row="scope.row" :gid="gid" @success="refresh" />
+            <RobotRecycleBtn :row="scope.row" :gid="gid" />
           </template>
         </el-table-column>
       </el-table>
@@ -571,6 +580,9 @@ export default {
             Message.success('修改记录状态成功！')
             ob.status = status
             $this.clientDB.UpdateData2('uid', ob)
+          } else {
+            Message.error('修改记录状态失败！')
+            $this.refresh()
           }
         })
       }).catch(() => {
@@ -842,7 +854,30 @@ export default {
     },
     beforeRemove(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`)
-    }
+    },
+    getRobotDefenceLevel(level) {
+      if (level === 0) {
+        return '非贴防'
+      } else if (level === 3) {
+        return '贴防 -- 陪玩'
+      } else if (level === 4) {
+        return '贴防 -- 弱杀'
+      } else if (level === 5) {
+        return '贴防 -- 强杀'
+      } else if (level === 6) {
+        return '贴防 -- 防作弊'
+      } else if (level === 7) {
+        return '预贴防 -- 陪玩'
+      } else if (level === 8) {
+        return '预贴防 -- 弱杀'
+      } else if (level === 9) {
+        return '预贴防 -- 强杀'
+      } else if (level === 10) {
+        return '贴防 -- 锁血强杀'
+      } else if (level === 11) {
+        return '预贴防 --  锁血强杀'
+      }
+    },
   }
 }
 </script>
