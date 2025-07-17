@@ -462,13 +462,7 @@ export default {
         PlayTimeMin: 10,
         PlayTimeMax: 20
       },
-      RobotTableMoneyExitCfg:[
-        { //机器人离桌配置
-          TableMoney: 1000,
-          PlayTimeMin: 10,
-          PlayTimeMax: 20
-        }
-      ],
+      RobotTableMoneyExitCfg: []
     }
   },
   created() {
