@@ -57,7 +57,7 @@
           <el-input v-model.number="freeModeQuery.freeTimes" autosize></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" size="mini" @click="getSlotsStat">计算进入免费模式概率</el-button>
+          <el-button type="primary" size="mini" @click="getEnterFreeModeRates">计算进入免费模式概率</el-button>
         </el-form-item>
       </el-form>
       <br />
