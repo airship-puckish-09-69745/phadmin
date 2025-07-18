@@ -58,12 +58,12 @@
             <el-table :data="bonusCfg">
               <el-table-column prop="BonusSign" label="Bonus标识" width="120">
                 <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.BonusSign" :required="true" placeholder="请输入内容"></el-input>
+                  <el-input v-model="scope.row.BonusSign" :required="true" placeholder="请输入内容"></el-input>
                 </template>
               </el-table-column>
-              <el-table-column prop="MinOdds" label="Bonus倍数" width="120">
+              <el-table-column prop="MinOdds" label="Bonus倍数" width="240">
                 <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.BonusOdds" :required="true" placeholder="请输入内容,如10,100"></el-input>
+                  <el-input v-model="scope.row.BonusOdds" :required="true" placeholder="请输入内容,如10,100"></el-input>
                 </template>
               </el-table-column>
               <el-table-column prop="WeightStr" label="倍数权重">
