@@ -5555,6 +5555,10 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
         return '放手牌'
       } else if (actionType == 13) {
         return '剩余手牌'
+      } else if (actionType == 14) {
+        return 'morto牌'
+      } else if (actionType == 15) {
+        return '剩余牌堆'
       }
       return ''
     },

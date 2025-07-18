@@ -62,6 +62,7 @@
       </el-form>
       <br />
       <p>概率：{{showFreeModeRates(freeModeResult.found, freeModeResult.rates)}}</p>
+      <p>匹配规则：{{freeModeResult.rule}}</p>
     </el-row>
   </div>
 </template>
@@ -102,7 +103,8 @@ export default {
       },
       freeModeResult: {
         found: false,
-        rates: 0
+        rates: 0,
+        rule: ''
       }
     }
   },
@@ -281,6 +283,7 @@ export default {
         if (response.RetCode === 0) {
           this.freeModeResult.found = response.Data.found || false
           this.freeModeResult.rates = response.Data.rates || 0
+          this.freeModeResult.rule = response.Data.rule
         }
         $this.loading = false
       }).catch(function() {
@@ -291,6 +294,7 @@ export default {
     cleanFreeModeResult() {
       this.freeModeResult.found = false
       this.freeModeResult.rates = 0
+      this.freeModeResult.rule = ''
     },
 
     showFreeModeRates(found, rates) {

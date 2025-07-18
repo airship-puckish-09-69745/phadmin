@@ -185,9 +185,9 @@
         <el-tab-pane label="信息配置">
           <el-row>
             <el-col :span="20" :offset="1">
-              <h5>机器人离桌配置</h5>
+              <h5>机器人默认离桌配置</h5>
               <el-descriptions :column="2" :colon="false" border>
-                <el-descriptions-item label="最小离桌玩牌次数槛" :content-style="{'text-align': 'center','width': '250px'}" :label-style="{'text-align': 'center'}">
+                <el-descriptions-item label="最小离桌玩牌次数" :content-style="{'text-align': 'center','width': '250px'}" :label-style="{'text-align': 'center'}">
                   <el-input v-model.number="RobotExitCfg.PlayTimeMin" type="number" size="medium" style="width: 120px" />
                 </el-descriptions-item>
                 <el-descriptions-item label="最大离桌玩牌次数" :content-style="{'text-align': 'center','width': '250px'}" :label-style="{'text-align': 'center'}">
@@ -195,6 +195,41 @@
                 </el-descriptions-item>
               </el-descriptions>
             </el-col>
+
+            <el-col :span="20" :offset="1">
+              <h5>机器人场次离桌配置</h5>
+              <el-button type="text" @click="addRobotTableMoneyExitCfg">添加一项</el-button>
+              <el-table :data="RobotTableMoneyExitCfg" border>
+                <el-table-column label="场次" prop="TableMoney" width="200">
+                  <template slot-scope="scope">
+                    <el-select v-model="scope.row.TableMoney" placeholder="请选择">
+                      <el-option
+                        v-for="itemTableMoney in AllTableMoneyList"
+                        :key="itemTableMoney"
+                        :label="itemTableMoney/1000"
+                        :value="itemTableMoney/1000"
+                      />
+                    </el-select>
+                  </template>
+                </el-table-column>
+                <el-table-column label="最小离桌玩牌次数" width="200">
+                  <template slot-scope="scope">
+                    <el-input v-model.number="scope.row.PlayTimeMin" size="mini" />
+                  </template>
+                </el-table-column>
+                <el-table-column label="最大离桌玩牌次数" width="200">
+                  <template slot-scope="scope">
+                    <el-input v-model.number="scope.row.PlayTimeMax" size="mini" />
+                  </template>
+                </el-table-column>
+                <el-table-column label="操作" width="100">
+                  <template slot-scope="scope">
+                    <el-button type="danger" size="mini" @click="delRobotTableMoneyExitCfg(scope.$index)">删除</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-col>
+
             <el-col :span="20" :offset="1">
               <h5>机器人昵称配置 <el-button type="text" @click="addNameCfg">添加一项</el-button></h5>
               <el-table :data="NameCfg" border>
@@ -358,6 +393,13 @@ function newRobotExitCfg() {
     PlayTimeMax: 20
   }
 }
+function newRobotTableMoneyExitCfg() {
+  return {
+    TableMoney: 1,
+    PlayTimeMin: 10,
+    PlayTimeMax: 20
+  }
+}
 export default {
   components: { Compare, Publish, robotAiSettingFight, robotAiSettingChallenge, robotAiSettingDrop, robotAiSettingOutCard, robotAiSettingBuildCard, MoneyInput,robotAiSettingDecision },
   data() {
@@ -412,10 +454,11 @@ export default {
       NameCfg: [], // 启动机器人名字配置
       ShowMoneyCfg: [], // 机器人展示资产配置
       AllTableMoneyList: [],
-      RobotExitCfg: { //机器人离桌配置
+      RobotExitCfg: { //机器人默认离桌配置
         PlayTimeMin: 10,
         PlayTimeMax: 20
-      }
+      },
+      RobotTableMoneyExitCfg: []
     }
   },
   created() {
@@ -458,6 +501,7 @@ export default {
             this.actionList = this.item.Action
             this.NameCfg = this.item.NameCfg || []
             this.RobotExitCfg = this.item.RobotExitCfg || newRobotExitCfg()
+            const RobotTableMoneyExitCfg = this.item.RobotTableMoneyExitCfg || []
             const ShowMoneyCfg = this.item.ShowMoneyCfg || []
             if (this.item.Control) {
               this.control = this.item.Control
@@ -468,6 +512,12 @@ export default {
               one.ShowMoneyMin /= 1000
               one.ShowMoneyMax /= 1000
               this.ShowMoneyCfg.push(one)
+            }
+            this.RobotTableMoneyExitCfg = []
+            for (const o in RobotTableMoneyExitCfg) {
+              const one = Object.assign({}, RobotTableMoneyExitCfg[o])
+              one.TableMoney /= 1000
+              this.RobotTableMoneyExitCfg.push(one)
             }
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data.Data)
@@ -614,6 +664,15 @@ export default {
         obj.ShowMoneyMax = parseInt(this.ShowMoneyCfg[o].ShowMoneyMax) * 1000
         this.item.ShowMoneyCfg.push(obj)
       }
+
+      this.item.RobotTableMoneyExitCfg = []
+      for (const o in this.RobotTableMoneyExitCfg) {
+        const obj = {}
+        obj.TableMoney = parseInt(this.RobotTableMoneyExitCfg[o].TableMoney) * 1000
+        obj.PlayTimeMin = parseInt(this.RobotTableMoneyExitCfg[o].PlayTimeMin)
+        obj.PlayTimeMax = parseInt(this.RobotTableMoneyExitCfg[o].PlayTimeMax)
+        this.item.RobotTableMoneyExitCfg.push(obj)
+      }
       this.form.Data = JSON.stringify(this.item)
       console.log('this.form.Data:', this.form.Data)
       this.moneyProc(false)
@@ -733,6 +792,9 @@ export default {
     addShowMoneyCfg() {
       this.ShowMoneyCfg.push(newShowMoneyCfg())
     },
+    addRobotTableMoneyExitCfg() {
+      this.RobotTableMoneyExitCfg.push(newRobotTableMoneyExitCfg())
+    },
     delNameCfg(idx) {
       this.$confirm('要删除该项吗？', '提示', {
         confirmButtonText: '确定',
@@ -749,6 +811,15 @@ export default {
         type: 'warning'
       }).then(() => {
         this.$delete(this.ShowMoneyCfg, idx)
+      })
+    },
+    delRobotTableMoneyExitCfg(idx) {
+      this.$confirm('要删除该项吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$delete(this.RobotTableMoneyExitCfg, idx)
       })
     }
   }
