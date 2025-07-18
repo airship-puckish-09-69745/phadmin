@@ -7,6 +7,10 @@
             <el-input v-model.number="cfg.BuyFreeOdds" :required="true" />
           </el-form-item>
 
+          <el-form-item label="进入免费模式 scatter个数的权重" :rules="dataRule(true)">
+            <el-input v-model="cfg.ScatterNum" :required="true" placeholder="请输入内容,如3,4,5,6,7"> <template slot="append">如3,4,5,6,7 代表出现3个的权重为3 </template> </el-input>
+          </el-form-item>
+
           <el-form-item label="普通模式中奖倍数">
             <el-input v-model="cfg.MultiStr" placeholder="请输入内容,如1,2,3,5"> <template slot="append">用,连接 从掉落第1个矩阵开始</template> </el-input>
           </el-form-item>
@@ -23,6 +27,9 @@
             <el-input v-model="cfg.FreeMultiStrWeight" placeholder="请输入内容,如10,10,10,10,10"> <template slot="append">用 , 连接</template> </el-input>
           </el-form-item>
 
+          <el-form-item label="免费模式 新增特殊符号权重">
+            <el-input v-model="cfg.BonusSymbolWt" placeholder="100,1,2,3"> <template slot="append">用,连接 每个格子中出现空/乘数/红包/金红包符号的权重</template> </el-input>
+          </el-form-item>
         </el-form>
       </el-col>
     </el-row>
