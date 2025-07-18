@@ -432,6 +432,24 @@
 
 
         <el-row>
+          <el-col :span="11">
+            <el-form-item
+              label="是否开启信任分配桌："
+              :required="true"
+              prop="item.HideCarry"
+              :rules="dataRule(true,{type:'n',range:'0'})"
+            >
+              <el-switch
+                v-model="edit.item.IsTrustScoreEnterRoom"
+                :active-value="1"
+                :inactive-value="0"
+              />
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+
+        <el-row>
           <el-col :span="20">
             <el-form-item label="配桌方案：" :required="true">
               <el-radio-group v-model.number="edit.item.AllocScheme">
@@ -628,7 +646,8 @@ function newItem() {
     WaitUserEnterTimes:0,
     AllocScheme:0,
     AutoEnterRoomCount:0,
-    IsAllowTowLowTrustSit:0
+    IsAllowTowLowTrustSit:0,
+    IsTrustScoreEnterRoom:0
   }
 }
 
@@ -693,7 +712,7 @@ export default {
         WaitUserEnterTimes:'匹配玩家入桌等待时间',
         AutoEnterRoomCount:'自动满桌匹配人数要求',
         IsAllowTowLowTrustSit:'是否允许两低信用户同桌',
-
+        IsTrustScoreEnterRoom:'是否信任分配桌',
         // 'RobotConfig.Common.RobotCarryMoneyStart': '机器人最小携带',
         // 'RobotConfig.Common.RobotCarryMoneyEnd': '机器人最大携带',
         // 'RobotConfig.Common.RobotMaxPlayTimesStart': '机器人玩牌次数下限',
