@@ -414,7 +414,7 @@
           <el-tab-pane label="机器人要牌">
             <el-row style="padding-top: 5px">
               <fieldset>
-                <legend>要牌概率（%）配置</legend>
+                <legend>要牌概率配置</legend>
                 <el-table
                   :data="item.TakeCardCfg"
                   border
@@ -433,7 +433,58 @@
                       <el-input-number v-model.number="scope.row.Probability" size="mini"  type="number" :min="0"  :precision="0"></el-input-number>
                     </template>
                   </el-table-column>
+
                 </el-table>
+              </fieldset>
+
+              <el-row style="padding-top: 5px"></el-row>
+             <el-row style="padding-top: 5px"></el-row>
+             <el-row style="padding-top: 5px"></el-row>
+              <fieldset>
+                <legend>庄家搏一搏要牌概率配置</legend>
+                <el-form ref="item" :model="item" width="70%">
+          
+                  <el-form-item label="庄家搏一搏门槛(%):" :required="true">
+                      <el-row :gutter="16">
+                        <el-col :span="6">
+                          <template>
+                            <el-input-number 
+                              v-model="item.DealerRiskCfg.Probability"  type="number" 
+                              :min="0"
+                              :max="100"
+                              :precision="0"
+                              style="width: 50%">
+                            </el-input-number>
+                          </template>
+                        </el-col>
+                      
+                      </el-row>
+                      <div style="color: red; font-size: 12px; margin-top: 5px;">
+                        提示：场上闲家2张牌人数/场上闲家总人数>=庄家搏一搏门槛&&场上闲家总人数>3 生效
+                      </div>
+                    </el-form-item>
+
+
+                  <el-table
+                    :data="item.DealerRiskCfg.TakeCardCfg"
+                    border
+                    style="width: 100%"
+                  >
+                    <el-table-column
+                      label="手牌点数"
+                      prop="Points"
+                      width="200"
+                    />
+                    <el-table-column
+                      label="庄家搏一搏要牌概率（%)"
+                      width="200"
+                    >
+                      <template slot-scope="scope">
+                        <el-input-number v-model.number="scope.row.Probability" size="mini"  type="number" :min="0"  :precision="0"></el-input-number>
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                </el-form>
               </fieldset>
             </el-row>
         </el-tab-pane>
@@ -604,7 +655,7 @@ function BetHabitsCfg(x, y, z) {
 function newTakeCardCfg(x, y) {
   return {
     Points: x,
-    Probability: y
+    Probability: y,
   }
 }
 
@@ -688,7 +739,6 @@ export default {
   },
   data() {
     return {
-   
       item:{
         "BetTimesCfg": [newBetTimesCfg(1, 50, true), newBetTimesCfg(2, 20, false), newBetTimesCfg(3, 20, false),newBetTimesCfg(4, 10, false)],
         "BetHabitsCfg": [BetHabitsCfg(0, 20, true), BetHabitsCfg(1, 10, false), BetHabitsCfg(5, 30, false)],
@@ -701,7 +751,8 @@ export default {
         'NickCfg':[newNick("BingoPlus", 20),newNick("ArenaPlus", 10),newNick("GZone", 70)],
         'ShowMoneyCfg':[],
         'LeaveCfg':newLeaveCfg() ,
-        'BetReviseCfg': {'Probability':20, "ReviseCnt":[1,-1,2,-2]}
+        'BetReviseCfg': {'Probability':20, "ReviseCnt":[1,-1,2,-2]},
+        'DealerRiskCfg':{'Probability':20, 'TakeCardCfg':[newTakeCardCfg(0, 100), newTakeCardCfg(1, 100), newTakeCardCfg(2, 100), newTakeCardCfg(3, 100), newTakeCardCfg(4, 95), newTakeCardCfg(5, 50), newTakeCardCfg(6, 5), newTakeCardCfg(7, 0), newTakeCardCfg(8, 0), newTakeCardCfg(9, 0)]}
       },
       gameId: 23,
       edit: {},
@@ -841,6 +892,7 @@ export default {
             this.item.NickCfg = this.item.NickCfg || []
             this.item.ShowMoneyCfg = this.item.ShowMoneyCfg || []
             this.item.BetReviseCfg = this.item.BetReviseCfg || {'Probability':20, "ReviseCnt":[1,-1,2,-2]}
+            this.item.DealerRiskCfg = this.item.DealerRiskCfg ||{'Probability':20, 'TakeCardCfg':[newTakeCardCfg(0, 100), newTakeCardCfg(1, 100), newTakeCardCfg(2, 100), newTakeCardCfg(3, 100), newTakeCardCfg(4, 95), newTakeCardCfg(5, 50), newTakeCardCfg(6, 5), newTakeCardCfg(7, 0), newTakeCardCfg(8, 0), newTakeCardCfg(9, 0)]}
             if (this.item.Control) {
               this.control = this.item.Control
             }
