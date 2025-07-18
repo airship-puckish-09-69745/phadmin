@@ -297,8 +297,18 @@ export default {
             BonusOdds: bonus.BonusOdds.join(','),
             BonusOddsWeight: bonus.BonusOddsWeight.join(',')
           })
-          bonus = { BonusSign: '', BonusOdds: [], BonusOddsWeight: [] }
+          bonus = { BonusSign: this.cfg.BonusCfg[i].BonusSign,
+            BonusOdds: [this.cfg.BonusCfg[i].BonusOdds],
+            BonusOddsWeight: [this.cfg.BonusCfg[i].BonusOddsWeight] }
         }
+      }
+      // 处理最后一条数据
+      if(bonus.BonusSign !== '') {
+        this.bonusCfg.push({
+          BonusSign: bonus.BonusSign,
+          BonusOdds: bonus.BonusOdds.join(','),
+          BonusOddsWeight: bonus.BonusOddsWeight.join(',')
+        })
       }
     },
     setBonusConfigRow() {
@@ -309,8 +319,8 @@ export default {
         for (let j = 0; j < bonusOdds.length; j++) {
           this.cfg.BonusCfg.push({
             BonusSign: this.bonusCfg[i].BonusSign,
-            BonusOdds: bonusOdds[j],
-            BonusOddsWeight: bonusOddsWeight[j]
+            BonusOdds: parseInt(bonusOdds[j]),
+            BonusOddsWeight: parseInt(bonusOddsWeight[j])
           })
         }
       }
