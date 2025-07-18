@@ -217,6 +217,7 @@ export default {
         Gid: 0,
         Type: 0,
         Score: 0,
+        GameName: '',
         Description: ''
       },
       selectGid: 0,
@@ -309,7 +310,9 @@ export default {
     },
     saveOne() {
       console.log(this.clientDB.TotalData,this.clientDB.GetPage().GetPageNum())
-      this.clientDB.TotalData.push(JSON.parse(JSON.stringify(this.item)))
+      const item = JSON.parse(JSON.stringify(this.item))
+      item.GameName = this.gameOptions[item.Gid]
+      this.clientDB.TotalData.push()
       this.clientDB = new ClientTableData(this.clientDB.TotalData, this.clientDB.GetPage().GetPageNum(), filterMap, 'Gid', -1)
       this.refreshShow()
       this.showAdd=false
@@ -363,6 +366,13 @@ export default {
           $this.postData = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
             const cfg = JSON.parse(response.Data.Data)
+
+            for (const i in cfg) {
+              if (!cfg[i].hasOwnProperty('GameName')) {
+                cfg[i].GameName = this.gameOptions[cfg[i].Gid]
+              }
+            }
+
             $this.allCfg = cfg
             $this.clientDB = new ClientTableData(cfg, 10, filterMap, 'Gid', -1)
             this.$refs.compare.SetOldVal(response.Data.Data)

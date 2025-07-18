@@ -1309,6 +1309,12 @@ export const asyncRoutes = [
                 meta: { title: 'P haraoh\'sTreasure' }
               },
               {
+                path: 'phoenix_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/phoenix_slots_cfg'),
+                name: 'phoenix_slots_cfg',
+                meta: { title: 'P hoenix' }
+              },
+              {
                 path: 'pirateship_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/pirateship_slots_cfg'),
                 name: 'pirateship_slots_cfg',
@@ -3247,6 +3253,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/pusoyCheat/pusoyCheatlogV1'),
             name: 'pusoy_cheat_log_new_V1',
             meta: { title: 'pusoy新作弊记录V1 ◐' }
+          },
+          {
+            path: 'pusoy_cheat_black_new_V1',
+            component: () => import('@/views/playerManage/pusoyCheat/pusoyBlackV1'),
+            name: 'pusoy_cheat_log_new_V1',
+            meta: { title: 'pusoy黑名单V1 ◐' }
           }
         ]
       },
