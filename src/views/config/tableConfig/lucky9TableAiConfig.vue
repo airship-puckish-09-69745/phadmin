@@ -181,7 +181,7 @@
                     width="200"
                   >
                     <template slot-scope="scope">
-                      <el-input-number v-model.number="scope.row.JoinMinTime" size="mini"  type="number" :min="0"  :precision="0"></el-input-number>
+                      <el-input-number v-model.number="scope.row.JoinMinTime" size="mini"  type="number" :min="1"  :precision="0"></el-input-number>
                     </template>
                   </el-table-column>
                   <el-table-column
@@ -189,7 +189,7 @@
                     width="200"
                   >
                     <template slot-scope="scope">
-                      <el-input-number v-model.number="scope.row.JoinMaxTime" size="mini"  type="number" :min="0"  :precision="0"></el-input-number>
+                      <el-input-number v-model.number="scope.row.JoinMaxTime" size="mini"  type="number" :min="1"  :precision="0"></el-input-number>
                     </template>
                   </el-table-column>
                   <el-table-column
@@ -197,7 +197,7 @@
                     width="200"
                   >
                     <template slot-scope="scope">
-                      <el-input-number v-model.number="scope.row.WaitMinTime" size="mini"  type="number" :min="0"  :precision="0"></el-input-number>
+                      <el-input-number v-model.number="scope.row.WaitMinTime" size="mini"  type="number" :min="1"  :precision="0"></el-input-number>
                     </template>
                   </el-table-column>
                   <el-table-column
@@ -205,7 +205,7 @@
                     width="200"
                   >
                     <template slot-scope="scope">
-                      <el-input-number v-model.number="scope.row.WaitMaxTime" size="mini"  type="number" :min="0"  :precision="0"></el-input-number>
+                      <el-input-number v-model.number="scope.row.WaitMaxTime" size="mini"  type="number" :min="1"  :precision="0"></el-input-number>
                     </template>
                   </el-table-column>
                 </el-table>
@@ -231,7 +231,7 @@
                     width="200"
                   >
                     <template slot-scope="scope">
-                      <el-input-number v-model.number="scope.row.JoinMinTime" size="mini"  type="number" :min="0"  :precision="0"></el-input-number>
+                      <el-input-number v-model.number="scope.row.JoinMinTime" size="mini"  type="number" :min="1"  :precision="0"></el-input-number>
                     </template>
                   </el-table-column>
                   <el-table-column
@@ -239,7 +239,7 @@
                     width="200"
                   >
                     <template slot-scope="scope">
-                      <el-input-number v-model.number="scope.row.JoinMaxTime" size="mini"  type="number" :min="0"  :precision="0"></el-input-number>
+                      <el-input-number v-model.number="scope.row.JoinMaxTime" size="mini"  type="number" :min="1"  :precision="0"></el-input-number>
                     </template>
                   </el-table-column>
                 </el-table>
@@ -265,7 +265,7 @@
                     width="200"
                   >
                     <template slot-scope="scope">
-                      <el-input-number v-model.number="scope.row.JoinMinTime" size="mini"  type="number" :min="0"  :precision="0"></el-input-number>
+                      <el-input-number v-model.number="scope.row.JoinMinTime" size="mini"  type="number" :min="1"  :precision="0"></el-input-number>
                     </template>
                   </el-table-column>
                   <el-table-column
@@ -273,7 +273,7 @@
                     width="200"
                   >
                     <template slot-scope="scope">
-                      <el-input-number v-model.number="scope.row.JoinMaxTime" size="mini"  type="number" :min="0"  :precision="0"></el-input-number>
+                      <el-input-number v-model.number="scope.row.JoinMaxTime" size="mini"  type="number" :min="1"  :precision="0"></el-input-number>
                     </template>
                   </el-table-column>
                   <el-table-column
@@ -825,6 +825,15 @@ export default {
             Message.error('场次人数=0时开桌配置:最小时间大于最大时间')
             return 
           }
+          if (this.item.ZeroJoinCfg[j].JoinMinTime <= 0 || this.item.ZeroJoinCfg[j].JoinMaxTime <= 0) {
+            Message.error('场次人数=0时开桌配置:时间配置不能小于等于0')
+            return 
+          }
+
+          if (this.item.ZeroJoinCfg[j].WaitMinTime <= 0 || this.item.ZeroJoinCfg[j].WaitMaxTime <= 0) {
+            Message.error('场次人数=0时开桌配置:时间配置不能小于等于0')
+            return 
+          }
       }
 
       for (let j = 0; j < this.item.WaitPlayJoinCfg.length; j++) {
@@ -832,11 +841,19 @@ export default {
             Message.error('场次有桌不满最小开局人数时入桌配置:最小时间大于最大时间')
             return 
           }
+          if (this.item.WaitPlayJoinCfg[j].JoinMinTime <= 0 ||  this.item.WaitPlayJoinCfg[j].JoinMaxTime <= 0) {
+            Message.error('场次有桌不满最小开局人数时入桌配置:时间配置不能小于等于0')
+            return 
+          }
       }
 
       for (let j = 0; j < this.item.PlayingJoinCfg.length; j++) {
           if (this.item.PlayingJoinCfg[j].JoinMinTime > this.item.PlayingJoinCfg[j].JoinMaxTime) {
             Message.error('场次有正在玩的桌子入配置:最小时间大于最大时间')
+            return 
+          }
+          if (this.item.PlayingJoinCfg[j].JoinMinTime <= 0 ||  this.item.PlayingJoinCfg[j].JoinMaxTime <= 0) {
+            Message.error('场次有正在玩的桌子入配置:时间配置不能小于等于0')
             return 
           }
       }
