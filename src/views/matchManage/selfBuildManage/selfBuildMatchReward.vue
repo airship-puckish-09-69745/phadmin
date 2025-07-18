@@ -218,7 +218,7 @@ export default {
         isEdit: false
       },
       selfBuildBetScenesCfgs: [
-        { 'value': 18, 'label': '仅限GZ任意游戏投注【Tongits自建赛奖励'}
+        { 'value': 18, 'label': '仅限GZ任意游戏投注【Tongits自建赛奖励】'}
       ],
     }
 
