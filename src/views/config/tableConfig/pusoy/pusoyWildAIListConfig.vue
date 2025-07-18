@@ -315,7 +315,7 @@
             >冻结
             </el-button>
 
-            <RobotRecycleBtn :row="scope.row" :gid="126" @success="refresh" />
+            <RobotRecycleBtn :row="scope.row" :gid="126" />
           </template>
         </el-table-column>
       </el-table>
@@ -558,6 +558,9 @@ export default {
             Message.success('修改记录状态成功！')
             ob.status = status
             $this.clientDB.UpdateData2('uid', ob)
+          } else {
+            Message.error('修改记录状态失败！')
+            $this.refresh()
           }
         })
       }).catch(() => {

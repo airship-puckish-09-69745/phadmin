@@ -89,7 +89,10 @@
             width="100"
           >
             <template slot-scope="scope">
-              <span v-if="scope.row.money > scope.row.initMoney" style="color:red">
+              <span v-if="scope.row.initMoney === 0">
+                0.00%
+              </span>
+              <span v-else-if="scope.row.money > scope.row.initMoney" style="color:red">
                 {{ ((scope.row.money - scope.row.initMoney)*100/scope.row.initMoney).toFixed(2) }}%
               </span>
               <span v-else style="color:green">
@@ -326,7 +329,7 @@
             >冻结
             </el-button>
 
-            <RobotRecycleBtn :row="scope.row" :gid="23" @success="refresh" />
+            <RobotRecycleBtn :row="scope.row" :gid="23" />
           </template>
         </el-table-column>
       </el-table>
@@ -574,6 +577,9 @@ export default {
             Message.success('修改记录状态成功！')
             ob.status = status
             $this.clientDB.UpdateData2('uid', ob)
+          } else {
+            Message.error('修改记录状态失败！')
+            $this.refresh()
           }
         })
       }).catch(() => {
