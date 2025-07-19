@@ -203,7 +203,7 @@
           <el-row>
             <el-col :span="11">
               <el-form-item   v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN" label="关联SlotGame:" :required="true">
-                <el-select v-model="editForm.itemExtra.slogGameId" placeholder="请选择" size="mini">
+                <el-select v-model="editForm.itemExtra.gid" placeholder="请选择" size="mini">
                   <el-option
                     v-for="item in slotGameConfig"
                     :key="item.value"
@@ -230,7 +230,7 @@
               </el-col>
           </el-row>
           <el-form-item v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN" label="免费次数：" :required="true">
-            <el-input v-model.number="editForm.itemExtra.count" style="width: 200px;" placeholder="请填次数" size="mini" />
+            <el-input v-model.number="editForm.itemExtra.betCount" style="width: 200px;" placeholder="请填次数" size="mini" />
           </el-form-item>
           <el-form-item v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET || editForm.data.itemType ===PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET"  label="道具过期时间：" :required="true">
             <el-date-picker
@@ -352,9 +352,9 @@ export default {
         itemExtra: {
           specialAttr: 0,
           showName: '',
-          slogGameId:0,
+          gid:0,
           betAmount: 0,
-          count:0
+          betCount:0
         },
         itemEndDate: $libDate.GetDayBegin(new Date().setSeconds(0))
       },
@@ -533,7 +533,7 @@ export default {
       var name = ''
       let extraData = JSON.parse(itemExtra)
       for(var i = 0; i < this.slotGameConfig.length;i++){
-          if (this.slotGameConfig[i].value === extraData.slogGameId) {
+          if (this.slotGameConfig[i].value === extraData.gid) {
             name = this.slotGameConfig[i].label
             break
           }
@@ -813,8 +813,8 @@ export default {
 
     slotFreeSpinPropReset(){
       this.editForm.itemExtra.betAmount = 0
-      this.editForm.itemExtra.count = 0
-      this.editForm.itemExtra.slogGameId = 0
+      this.editForm.itemExtra.betCount = 0
+      this.editForm.itemExtra.gid = 0
     },
 
     configCheck() {
@@ -857,7 +857,7 @@ export default {
       }
 
       if(this.editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN){
-        if(this.editForm.itemExtra.slogGameId === 0) {
+        if(this.editForm.itemExtra.gid === 0) {
           this.errmsg('请选择具体SlotGame')
           return false
         }
@@ -865,7 +865,7 @@ export default {
           this.errmsg('请选择下注金额')
           return false
         }
-        if(this.editForm.itemExtra.count === 0) {
+        if(this.editForm.itemExtra.betCount === 0) {
           this.errmsg('请填写免费次数')
           return false
         }
