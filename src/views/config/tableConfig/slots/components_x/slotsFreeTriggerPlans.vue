@@ -304,11 +304,27 @@ export default {
       }
       // eslint-disable-next-line no-undef
       let isNumError = false
+      let isNumNeg = false
+      let isRatesGte100 = false
       this.ScatterTriggerPlans.currentConf.forEach((item) => {
         if (item.OddsMin > item.OddsMax) {
           isNumError = true
         }
+        if (item.OddsMin < 0 || item.Rates < 0 || item.OddsMax < 0) {
+          isNumNeg = true
+        }
+        if (item.Rates > 100) {
+          isRatesGte100 = true
+        }
       })
+      if (isNumNeg) {
+        Message.error('配置的数值小于0')
+        return false
+      }
+      if (isRatesGte100) {
+        Message.error('触发scatter的概率大于100')
+        return false
+      }
       if (isNumError) {
         Message.error('最小倍数不能大于最大倍数,请检查')
         return false
