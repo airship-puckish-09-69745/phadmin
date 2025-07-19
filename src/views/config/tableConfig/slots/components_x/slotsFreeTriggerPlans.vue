@@ -155,13 +155,13 @@ export default {
   props: {
     slotsData: {
       type: Object,
-      default: function() {
+      default: function () {
         return {}
       }
     },
     scatterTriggerPlans: {
       type: Array,
-      default: function() {
+      default: function () {
         return []
       }
     }
@@ -191,6 +191,8 @@ export default {
   },
   methods: {
     handleFileUpload(event) {
+      this.removeAllConfig()
+      this.resetScatterTriggerPlans();
       const file = event.target.files[0];
       if (file) {
         const reader = new FileReader();
@@ -252,7 +254,7 @@ export default {
     submitFrm() {
       const $this = this
       this.$refs.compare.SetNewVal(this.getDiffData())
-      this.$refs.compare.Compare(function(isEdit) {
+      this.$refs.compare.Compare(function (isEdit) {
         if (!isEdit) {
           $this.$message.error('没有任何修改，不需要提交')
           return
@@ -267,6 +269,9 @@ export default {
     },
     removeConfigRow(index) {
       this.ScatterTriggerPlans.currentConf.splice(index, 1)
+    },
+    removeAllConfig() {
+      this.cfg.ScatterTriggerPlans = []
     },
     removeConfig(index) {
       this.cfg.ScatterTriggerPlans.splice(index, 1)
