@@ -191,11 +191,14 @@ export default {
   },
   methods: {
     handleFileUpload(event) {
-      this.removeAllConfig()
-      this.resetScatterTriggerPlans();
       const file = event.target.files[0];
+      // eslint-disable-next-line no-empty
+      if (file !== undefined) {
+        this.removeAllConfig()
+        this.resetScatterTriggerPlans()
+      }
       if (file) {
-        const reader = new FileReader();
+        const reader = new FileReader()
         reader.onload = (e) => {
           const data = new Uint8Array(e.target.result);
           const workbook = XLSX.read(data, {type: 'array'});
@@ -206,8 +209,6 @@ export default {
             this.resetScatterTriggerPlans()
             json.forEach((row, index) => {
               if (index > 0) {
-                let idx = index - 1
-                console.log(index, idx, row)
                 this.ScatterTriggerPlans.PlayTimesMin = json[1][0]
                 this.ScatterTriggerPlans.PlayTimesMax = json[1][1]
                 this.ScatterTriggerPlans.FreeTimesCompareOperator = json[1][2]
@@ -215,6 +216,7 @@ export default {
                 this.ScatterTriggerPlans.currentConf.push({OddsMin: row[4], OddsMax: row[5], Rates: row[6]})
               }
             })
+            this.ScatterTriggerPlans.editIndex = undefined//
             this.saveConfig()
           })
         }
@@ -322,7 +324,7 @@ export default {
       if (!this.checkConfig()) {
         return
       }
-      if (this.ScatterTriggerPlans.editIndex >= 0) {
+      if (this.ScatterTriggerPlans.editIndex >= 0) { // 编辑模式的保存
         this.$set(this.cfg.ScatterTriggerPlans, this.ScatterTriggerPlans.editIndex, {
           PlayTimesMin: this.ScatterTriggerPlans.PlayTimesMin,
           PlayTimesMax: this.ScatterTriggerPlans.PlayTimesMax,
@@ -330,7 +332,7 @@ export default {
           FreeTimesCompareValue: this.ScatterTriggerPlans.FreeTimesCompareValue,
           Ranges: this.ScatterTriggerPlans.currentConf
         })
-      } else {
+      } else { // 新增模式的保存
         this.cfg.ScatterTriggerPlans.push({
           PlayTimesMin: this.ScatterTriggerPlans.PlayTimesMin,
           PlayTimesMax: this.ScatterTriggerPlans.PlayTimesMax,
