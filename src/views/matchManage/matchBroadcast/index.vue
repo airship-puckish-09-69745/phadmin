@@ -81,6 +81,7 @@
       :update-data="broadcastDialog.updateData"
       :position-options="positionOptions"
       :match-unique-id-cfgs="matchUniqueIdCfgs"
+      :match-first-rank-cfgs="broadcastDialog.matchFirstRankCfgs"
       @close="handleCloseBroadcastDialog"
       @reload="onSearch"
       @save="handleUpdateConfig"
@@ -120,14 +121,15 @@ export default {
       positionOptions,
       broadcastDialog: {
         visible: false,
-        updateData: null
+        updateData: null,
+        matchFirstRankCfgs: []
       },
       columns: [
-        // {
-        //   prop: 'ID',
-        //   label: 'ID',
-        //   width: 130
-        // },
+        {
+          prop: 'ID',
+          label: '配置ID',
+          width: 126
+        },
         {
           prop: 'Title',
           label: '标题'
@@ -251,14 +253,23 @@ export default {
     handleCloseBroadcastDialog() {
       this.broadcastDialog.visible = false
       this.broadcastDialog.updateData = null
+      this.broadcastDialog.matchFirstRankCfgs = []
     },
     /**
      * 展示新增/编辑对话框
      * @param data 编辑数据，null则为新增
      */
     handleShowBroadcastDialog(data = null) {
-      this.broadcastDialog.visible = true
       this.broadcastDialog.updateData = data
+      let matchFirstRankCfgs = []
+      // 除了编辑的数据之外的所有比赛第一名的配置
+      if (data) {
+        matchFirstRankCfgs = this.tableData.filter(item => item.ID !== data.ID && item.BroadcastType === 1)
+      } else {
+        matchFirstRankCfgs = this.tableData.filter(item => item.BroadcastType === 1)
+      }
+      this.broadcastDialog.matchFirstRankCfgs = matchFirstRankCfgs
+      this.broadcastDialog.visible = true
     },
     /**
      * 获取配置数据
