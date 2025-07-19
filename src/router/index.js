@@ -2851,10 +2851,16 @@ export const asyncRoutes = [
             meta: { title: 'M illionaire', gid: 82 }
           },
           {
-            path: ' pharaohtreasure_slots_log',
+            path: 'pharaohtreasure_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'pharaohtreasure_slots_log',
             meta: { title: 'P haraoh\'s Treasure', gid: 168 }
+          },
+          {
+            path: 'Phoenix_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'Phoenix_slots_log',
+            meta: { title: 'P hoenix', gid: 216 }
           },
           {
             path: 'pirateship_slots_log',

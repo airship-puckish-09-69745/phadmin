@@ -303,7 +303,7 @@ export default {
         }
       }
       // 处理最后一条数据
-      if(bonus.BonusSign !== '') {
+      if (bonus.BonusSign !== '') {
         this.bonusCfg.push({
           BonusSign: bonus.BonusSign,
           BonusOdds: bonus.BonusOdds.join(','),
