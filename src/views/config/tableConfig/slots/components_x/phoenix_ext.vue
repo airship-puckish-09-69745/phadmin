@@ -55,6 +55,7 @@
           </el-tab-pane>
           <el-tab-pane label="Bonus配置" name="script1">
             <el-button type="primary" @click="addBonusConfigRow(bonusCfg)">添加</el-button>
+            <span style="margin-left:10px;color:#909399">(MINOR、MAJOR、GRAND的标识需要放到最后并从小到大排序)</span>
             <el-table :data="bonusCfg">
               <el-table-column prop="BonusSign" label="Bonus标识" width="120">
                 <template slot-scope="scope">
