@@ -1357,7 +1357,7 @@ export default {
         msg = '确定扣除物品吗?'
       }
       let tmpTime = 0
-      if (this.item.ItemType === 2 || this.item.ItemType === 4) {
+      if (this.item.ItemType === 2 || this.item.ItemType === 4 || this.item.ItemType === 5) {
         tmpTime = this.item.ItemUseTime
       }
       this.$confirm(msg, '提示', {
