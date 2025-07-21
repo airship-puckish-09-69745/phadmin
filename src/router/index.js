@@ -1417,6 +1417,12 @@ export const asyncRoutes = [
             meta: { title: '审核环境', noCache: true },
             children: [
               {
+                path: 'arcaneegypt_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/arcaneegyptmars_slots_cfg.vue'),
+                name: 'arcaneegypt_slots_cfg',
+                meta: { title: 'Arcane Egypt(审)' }
+              },
+              {
                 path: 'bountyraidmars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/bountyraidmars_slots_cfg'),
                 name: 'bountyraidmars_slots_cfg',
@@ -2957,6 +2963,12 @@ export const asyncRoutes = [
         redirect: 'noRedirect',
         meta: { title: 'Slots-老虎机(审）', noCache: true },
         children: [
+          {
+            path: 'arcaneegyptmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'arcaneegyptmars_slots_log',
+            meta: { title: 'ArcaneEgypt(审)', gid: 191 }
+          },
           {
             path: 'bountyraidmars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
