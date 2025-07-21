@@ -86,18 +86,22 @@
       :close-on-press-escape="false"
       width="1000px"
     >
-      <el-form ref="edit.item" label-width="150px" size="small">
-        <el-form-item label="角色名：" :required="true">
-          <el-col :span="12">
-            <el-input v-model="edit.item.Name" />
-          </el-col>
-        </el-form-item>
-        <el-form-item label="描述：" :required="true">
-          <el-col :span="12">
-            <el-input v-model="edit.item.Description" />
-          </el-col>
-        </el-form-item>
-        <el-form-item v-if="edit.isEdit" label="权限：" :required="true">
+      <el-tabs type="border-card">
+        <el-tab-pane label="基本信息">
+          <el-form ref="edit.item" label-width="150px" size="small">
+            <el-form-item label="角色名：" :required="true">
+              <el-col :span="12">
+                <el-input v-model="edit.item.Name" />
+              </el-col>
+            </el-form-item>
+            <el-form-item label="描述：" :required="true">
+              <el-col :span="12">
+                <el-input v-model="edit.item.Description" />
+              </el-col>
+            </el-form-item>
+          </el-form>
+        </el-tab-pane>
+        <el-tab-pane label="权限配置">
           <table class="table table-border table-bordered table-bg table-striped" cellspacing="0" cellpadding="0">
             <tr v-for="(o,idx) in edit.permissions" :key="idx">
               <td>
@@ -114,13 +118,27 @@
               </td>
             </tr>
           </table>
-        </el-form-item>
-        <el-form-item>
-          <el-col :span="12" :offset="10">
-            <el-button type="primary" size="mini" @click="save">保存</el-button>
+        </el-tab-pane>
+        <el-tab-pane label="APP配置">
+          <el-col>
+            <el-checkbox-group v-model="edit.item.AppIds">
+              <table class="table  table-bg table-striped" width="100%" cellspacing="0" cellpadding="0">
+                <tr v-for="(o,idx) in appInfos" :key="idx">
+                  <td>
+                    <el-checkbox :label="o.ID" :key="o.ID">{{ o.ID }}-{{ o.Account }}</el-checkbox>
+                  </td>
+                </tr>
+              </table>
+            </el-checkbox-group>
           </el-col>
-        </el-form-item>
-      </el-form>
+        </el-tab-pane>
+      </el-tabs>
+      <el-row style="padding-top: 16px">
+        <el-col :span="12" :offset="11">
+          <el-button type="primary" size="mini" @click="save">保存</el-button>
+        </el-col>
+      </el-row>
+
     </el-dialog>
 
   </div>
@@ -160,7 +178,7 @@ import request from '@/utils/request'
 import { Message } from 'element-ui'
 
 function newItem() {
-  return { Name: '', Description: '' }
+  return { Name: '', Description: '', AppIds: [] }
 }
 
 export default {
@@ -177,12 +195,15 @@ export default {
         item: newItem(),
         isEdit: false,
         permissions: []
-      }
+      },
+
+      appInfos: []
     }
   },
   created() {
     this.env = store.getters.env || this.env
     this.getList()
+    this.getAppInfos()
     console.log(1)
   },
   methods: {
@@ -257,7 +278,8 @@ export default {
         method: 'post',
         data: {
           name: this.edit.item.Name,
-          description: this.edit.item.Description
+          description: this.edit.item.Description,
+          appIds: this.edit.item.AppIds ? this.edit.item.AppIds.join(',') : ''
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -284,7 +306,8 @@ export default {
           roleID: this.edit.item.ID,
           name: this.edit.item.Name,
           description: this.edit.item.Description,
-          ps: JSON.stringify(pers)
+          ps: JSON.stringify(pers),
+          appIds: this.edit.item.AppIds ? this.edit.item.AppIds.join(',') : '',
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -337,7 +360,26 @@ export default {
           }
         }
       })
-    }
+    },
+    getAppInfos() {
+      request({
+        url: '/thirdparties/all',
+        method: 'get',
+        data: {}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          for (let i = 0; i < response.Data.length; i++) {
+            if (response.Data[i].Status !== 2) {
+              continue
+            }
+            this.appInfos.push({
+              ID: response.Data[i].ID,
+              Account: response.Data[i].Account
+            })
+          }
+        }
+      })
+    },
   }
 }
 </script>
