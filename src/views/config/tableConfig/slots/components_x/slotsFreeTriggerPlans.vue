@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="slots_free_trigger_plans">
     <el-row>
       <el-col :span="12" :offset="3">
         <el-tabs v-model="activeTab">
@@ -372,5 +372,7 @@ export default {
 </script>
 
 <style scoped>
-
+.slots_free_trigger_plans {
+  margin-top: 60px;
+}
 </style>
