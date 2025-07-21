@@ -84,17 +84,17 @@
                   <el-input v-model.number="scope.row.OddsMax" type="number"></el-input>
                 </template>
               </el-table-column>
-              <el-table-column prop="NumMin" label="触发bonus概率" width="100">
+              <el-table-column prop="TriggerRates" label="触发bonus概率" width="100">
                 <template slot-scope="scope">
                   <el-input v-model.number="scope.row.TriggerRates" type="number"></el-input>
                 </template>
               </el-table-column>
-              <el-table-column prop="NumMax" label="bonus图案最小赔率" width="105">
+              <el-table-column prop="BonusOddsMin" label="bonus图案最小赔率" width="105">
                 <template slot-scope="scope">
                   <el-input v-model.number="scope.row.BonusOddsMin" type="number"></el-input>
                 </template>
               </el-table-column>
-              <el-table-column prop="HitMin" label="bonus图案最大数量" width="105">
+              <el-table-column prop="BonusNumberMax" label="bonus图案最大数量" width="105">
                 <!--                <template slot="header">-->
                 <!--                  <span>-->
                 <!--                    <el-tooltip effect="dark" content="bonus图案最大数量" placement="top-end">-->
