@@ -17,7 +17,7 @@
           <el-option v-for="option in broadcastTypeOptions" :key="option.value" :label="option.label" :value="option.value" />
         </el-select>
       </el-form-item>
-      <el-form-item v-if="formData.BroadcastType !== 4" label="播报来源" required>
+      <el-form-item v-if="formData.BroadcastType === 1" label="播报来源" required>
         <el-select v-model="formData.Origin" placeholder="请选择播报来源" style="width: 360px;" multiple>
           <el-option v-for="option in matchUniqueIdCfgs" :key="option.value" :label="option.label" :value="option.value" />
         </el-select>
@@ -88,6 +88,12 @@ export default {
     matchUniqueIdCfgs: {
       type: Array,
       required: true
+    },
+    // 比赛第一名的配置列表，用于保存时校验有效期不能有交叉
+    // 不包含updateData的数据
+    matchFirstRankCfgs: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
@@ -116,6 +122,7 @@ export default {
       if (!val) {
         this.resetForm()
       } else {
+        console.log(this.matchFirstRankCfgs)
         if (this.updateData) {
           this.formData = { ...this.updateData }
           // 日期 * 1000
@@ -147,8 +154,8 @@ export default {
         this.$message.warning('类型不能为空!')
         return false
       }
-      // 类型为自定义时可以不选播报来源
-      if (this.formData.BroadcastType === 4 && !this.formData.Origin) {
+      // 播报来源只在类型为比赛第一名时才需要
+      if (this.formData.BroadcastType === 1 && !this.formData.Origin) {
         this.$message.warning('播报来源不能为空!')
         return false
       }
@@ -164,6 +171,22 @@ export default {
       if (!this.formData.BroadcastFrequency || this.formData.BroadcastFrequency < 0) {
         this.$message.warning('频率不能为空，且大于0秒!')
         return false
+      }
+      // 如果是比赛第一名类型，必须校验有效期不能有交叉
+      if (this.formData.BroadcastType === 1) {
+        const matchFirstRankCfgs = this.matchFirstRankCfgs.filter(item => item.ID !== this.formData.ID)
+        const isCross = matchFirstRankCfgs.some(item => {
+          let [start, end] = item.BroadcastTimeRange
+          start *= 1000
+          end *= 1000
+          const [start2, end2] = this.formData.BroadcastTimeRange
+          // console.log(start, start2, end, end2)
+          return (start <= start2 && end >= start2) || (start <= end2 && end >= end2)
+        })
+        if (isCross) {
+          this.$message.warning('比赛第一名类型的有效期冲突!')
+          return false
+        }
       }
 
       return true
@@ -184,8 +207,8 @@ export default {
         data.CreateTime = parseInt(data.CreateTime / 1000)
         data.UpdateTime = parseInt(Date.now() / 1000)
       }
-      // 如果自定义类型，清空播报来源
-      if (data.BroadcastType === 4) {
+      // 如果不是比赛第一名类型，清空播报来源
+      if (data.BroadcastType !== 1) {
         data.Origin = []
       }
       this.$emit('save', data)

@@ -55,15 +55,16 @@
           </el-tab-pane>
           <el-tab-pane label="Bonus配置" name="script1">
             <el-button type="primary" @click="addBonusConfigRow(bonusCfg)">添加</el-button>
+            <span style="margin-left:10px;color:#909399">(MINOR、MAJOR、GRAND的标识需要放到最后并从小到大排序)</span>
             <el-table :data="bonusCfg">
               <el-table-column prop="BonusSign" label="Bonus标识" width="120">
                 <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.BonusSign" :required="true" placeholder="请输入内容"></el-input>
+                  <el-input v-model="scope.row.BonusSign" :required="true" placeholder="请输入内容"></el-input>
                 </template>
               </el-table-column>
-              <el-table-column prop="MinOdds" label="Bonus倍数" width="120">
+              <el-table-column prop="MinOdds" label="Bonus倍数" width="240">
                 <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.BonusOdds" :required="true" placeholder="请输入内容,如10,100"></el-input>
+                  <el-input v-model="scope.row.BonusOdds" :required="true" placeholder="请输入内容,如10,100"></el-input>
                 </template>
               </el-table-column>
               <el-table-column prop="WeightStr" label="倍数权重">
@@ -297,8 +298,18 @@ export default {
             BonusOdds: bonus.BonusOdds.join(','),
             BonusOddsWeight: bonus.BonusOddsWeight.join(',')
           })
-          bonus = { BonusSign: '', BonusOdds: [], BonusOddsWeight: [] }
+          bonus = { BonusSign: this.cfg.BonusCfg[i].BonusSign,
+            BonusOdds: [this.cfg.BonusCfg[i].BonusOdds],
+            BonusOddsWeight: [this.cfg.BonusCfg[i].BonusOddsWeight] }
         }
+      }
+      // 处理最后一条数据
+      if (bonus.BonusSign !== '') {
+        this.bonusCfg.push({
+          BonusSign: bonus.BonusSign,
+          BonusOdds: bonus.BonusOdds.join(','),
+          BonusOddsWeight: bonus.BonusOddsWeight.join(',')
+        })
       }
     },
     setBonusConfigRow() {
@@ -309,8 +320,8 @@ export default {
         for (let j = 0; j < bonusOdds.length; j++) {
           this.cfg.BonusCfg.push({
             BonusSign: this.bonusCfg[i].BonusSign,
-            BonusOdds: bonusOdds[j],
-            BonusOddsWeight: bonusOddsWeight[j]
+            BonusOdds: parseInt(bonusOdds[j]),
+            BonusOddsWeight: parseInt(bonusOddsWeight[j])
           })
         }
       }

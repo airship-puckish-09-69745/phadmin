@@ -25,11 +25,17 @@ export const ITEM_TYPE_OPTIONS = [
   { 'value': 1, 'label': 'Tongits门票', disabled: false },
   { 'value': 2, 'label': '头像框', disabled: false },
   { 'value': 3, 'label': '德州门票', disabled: false },
-  { 'value': 4, 'label': '德州头像框', disabled: false }
+  { 'value': 4, 'label': '德州头像框', disabled: false },
+  {'value': 5, 'label': 'SlotFreeSpin', disabled: false}
 ]
 
 // 道具过期时间下拉框
 export const ITEM_DAY_TYPE_OPTIONS = [
+  { 'value': 1, 'label': '1天', disabled: false },
+  { 'value': 2, 'label': '2天', disabled: false },
+  { 'value': 3, 'label': '3天', disabled: false },
+  { 'value': 4, 'label': '4天', disabled: false },
+  { 'value': 5, 'label': '5天', disabled: false },
   { 'value': 7, 'label': '7天', disabled: false },
   { 'value': 30, 'label': '30天', disabled: false },
   { 'value': 365, 'label': '365天', disabled: false },
@@ -66,6 +72,7 @@ export const PROP_TYPE_OPTIONS = {
   PROP_TYPE_AVATAR_FRAME:2,    //头像框
   PROP_TYPE_TEXAS_TICKET:3,    //德州参赛券
   PROP_TYPE_TEXAS_AVATAR:4,    //德州头像框
+  PROP_TYPE_SLOT_FREE_SPIN:5,  //slot freespin
 }
 // 操作类型
 export const PROP_SOURCE_OPTIONS = [
@@ -104,5 +111,21 @@ export const  BET_SCENES_CFG_OPTIONS = [
   { 'value': 1, 'label': '任意游戏投注' },
   { 'value': 2, 'label': '仅限Poker类游戏投注' },
   { 'value': 3, 'label': '仅限Slots类游戏投注' },
-  { 'value': 4, 'label': '仅限Tongits游戏投注' }
+  { 'value': 4, 'label': '仅限Tongits游戏投注' },
+
+]
+
+
+// 比赛全局ID集合
+export const MATCH_UNIQUE_ID_CFG =[
+  { 'value': 0, 'label': '无' },
+  { 'value': 10001, 'label': '188Free' },
+  { 'value': 10002, 'label': '12888Free' },
+  { 'value': 10003, 'label': 'P10' },
+  { 'value': 10004, 'label': 'P20' },
+  { 'value': 10005, 'label': 'P40' },
+  { 'value': 10006, 'label': 'P100' },
+  { 'value': 10007, 'label': 'P300' },
+  { 'value': 10008, 'label': 'GTCC 2005' },
+  { 'value': 10009, 'label': 'Yamaha Moto' }
 ]
