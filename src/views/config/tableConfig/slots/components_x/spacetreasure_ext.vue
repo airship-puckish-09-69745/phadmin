@@ -84,12 +84,12 @@
                   <el-input v-model.number="scope.row.OddsMax" type="number"></el-input>
                 </template>
               </el-table-column>
-              <el-table-column prop="TriggerRates" label="触发bonus概率" width="100">
+              <el-table-column prop="TriggerRates" label="触发bonus概率" width="95">
                 <template slot-scope="scope">
                   <el-input v-model.number="scope.row.TriggerRates" type="number"></el-input>
                 </template>
               </el-table-column>
-              <el-table-column prop="BonusOddsMin" label="bonus图案最小赔率" width="105">
+              <el-table-column prop="BonusOddsMin" label="bonus图案最小赔率" width="115">
                 <template slot-scope="scope">
                   <el-input v-model.number="scope.row.BonusOddsMin" type="number"></el-input>
                 </template>
@@ -107,7 +107,7 @@
                   <el-input v-model.number="scope.row.BonusNumberMax" type="number"/>
                 </template>
               </el-table-column>
-              <el-table-column label="操作" width="67">
+              <el-table-column label="操作" width="63">
                 <template slot-scope="scope">
                   <el-button size="mini" type="danger" @click="handleDelete(scope.$index)">删除</el-button>
                 </template>
