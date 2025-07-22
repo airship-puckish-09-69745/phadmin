@@ -352,7 +352,7 @@
                 <el-table :data="item.BetHabitsCfg" border style="width: 100%">
                   <el-table-column label="bet方案" width="120">
                     <template slot-scope="scope">
-                      <span v-if="!scope.row.BetIsMax">{{ scope.row.BetBase }} bet</span>
+                      <span v-if="!scope.row.BetIsMax">Button {{ scope.row.BtnIndex }} </span>
                       <span v-else>直接max</span> <!-- 或者直接留空 "" -->
                     </template>
                   </el-table-column>
@@ -407,6 +407,30 @@
                     <el-button @click="addReviseCnt" size="small" style="margin-top: 10px;" type="primary">添加新值</el-button>
                   </el-form-item>
                 </el-form>
+              </fieldset>
+              <fieldset>
+                <legend>机器人类型单轮下注配置</legend>
+                <el-table
+                  :data="item.AiLevelCfg"
+                  border
+                  style="width: 100%"
+                >
+                  <el-table-column
+                    label="机器人类型"
+                    prop="AiLevel"
+                    width="200"
+                    :formatter="(row) => getRobotName(row.AiLevel)"
+                  />
+                  <el-table-column
+                    label="单轮下注配置（%）"
+                    width="200"
+                  >
+                    <template slot-scope="scope">
+                      <el-input-number v-model.number="scope.row.SingleBetPro" size="mini" type="number"  :precision="0"><template slot="append">%</template></el-input-number>
+                    </template>
+                  </el-table-column>
+
+                </el-table>
               </fieldset>
             </el-row>
           </el-tab-pane>
@@ -645,11 +669,12 @@ function newBetTimesCfg(x, y, z) {
   }
 }
 
-function BetHabitsCfg(x, y, z) {
+function BetHabitsCfg(x, y, z, k) {
   return {
     BetBase: x,
     BetWeight: y,
-    BetIsMax: z
+    BetIsMax: z,
+    BtnIndex: k,
   }
 }
 function newTakeCardCfg(x, y) {
@@ -659,13 +684,14 @@ function newTakeCardCfg(x, y) {
   }
 }
 
-function newAiLevelCfg(x, y,z,k,v) {
+function newAiLevelCfg(x, y,z,k,v, m) {
   return {
     AiLevel:x,
     PlayerLosePro: y,
     BankerLosePro: z,
     PlayerWinPro: k,
     BankerWinPro: v,
+    SingleBetPro: m,
     
   }
 }
@@ -741,9 +767,9 @@ export default {
     return {
       item:{
         "BetTimesCfg": [newBetTimesCfg(1, 50, true), newBetTimesCfg(2, 20, false), newBetTimesCfg(3, 20, false),newBetTimesCfg(4, 10, false)],
-        "BetHabitsCfg": [BetHabitsCfg(0, 20, true), BetHabitsCfg(1, 10, false), BetHabitsCfg(5, 30, false)],
+        "BetHabitsCfg": [BetHabitsCfg(0, 20, true,1), BetHabitsCfg(1, 10, false,1), BetHabitsCfg(5, 30, false,2)],
         'TakeCardCfg': [newTakeCardCfg(0, 100), newTakeCardCfg(1, 100), newTakeCardCfg(2, 100), newTakeCardCfg(3, 100), newTakeCardCfg(4, 95), newTakeCardCfg(5, 50), newTakeCardCfg(6, 5), newTakeCardCfg(7, 0), newTakeCardCfg(8, 0), newTakeCardCfg(9, 0)],
-        'AiLevelCfg':[newAiLevelCfg(5,20, 50, 0, 0),newAiLevelCfg(4,10, 10, 0, 0),newAiLevelCfg(3,0, 0, 0, 0),newAiLevelCfg(2,0, 0, 10, 10),newAiLevelCfg(1,0, 0, 20, 50)],
+        'AiLevelCfg':[newAiLevelCfg(5,20, 50, 0, 0,0),newAiLevelCfg(4,10, 10, 0, 0,0),newAiLevelCfg(3,0, 0, 0, 0,0),newAiLevelCfg(2,0, 0, 10, 10,0),newAiLevelCfg(1,0, 0, 20, 50,0)],
         'ZeroJoinCfg':[newZeroJoinCfg(20000, 10, 20, 5, 20),newZeroJoinCfg(50000, 20, 40, 5, 20),newZeroJoinCfg(100000, 40, 60, 5, 20),newZeroJoinCfg(200000, 60, 120, 20, 30)],
         'RobotCntCfg':[newRobotCntCfg(20000, 1),newRobotCntCfg(50000, 2),newRobotCntCfg(100000, 4),newRobotCntCfg(200000, 6)],
         'WaitPlayJoinCfg':[newWaitPlayJoinCfg(20000,8,12),newWaitPlayJoinCfg(50000,8,12),newWaitPlayJoinCfg(100000,10,15),newWaitPlayJoinCfg(200000,15,20)],
