@@ -1309,6 +1309,12 @@ export const asyncRoutes = [
                 meta: { title: 'P haraoh\'sTreasure' }
               },
               {
+                path: 'phoenix_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/phoenix_slots_cfg'),
+                name: 'phoenix_slots_cfg',
+                meta: { title: 'P hoenix' }
+              },
+              {
                 path: 'pirateship_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/pirateship_slots_cfg'),
                 name: 'pirateship_slots_cfg',
@@ -1410,6 +1416,12 @@ export const asyncRoutes = [
             redirect: 'noRedirect',
             meta: { title: '审核环境', noCache: true },
             children: [
+              {
+                path: 'arcaneegypt_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/arcaneegyptmars_slots_cfg.vue'),
+                name: 'arcaneegypt_slots_cfg',
+                meta: { title: 'Arcane Egypt(审)' }
+              },
               {
                 path: 'bountyraidmars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/bountyraidmars_slots_cfg'),
@@ -2845,10 +2857,16 @@ export const asyncRoutes = [
             meta: { title: 'M illionaire', gid: 82 }
           },
           {
-            path: ' pharaohtreasure_slots_log',
+            path: 'pharaohtreasure_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'pharaohtreasure_slots_log',
             meta: { title: 'P haraoh\'s Treasure', gid: 168 }
+          },
+          {
+            path: 'Phoenix_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'Phoenix_slots_log',
+            meta: { title: 'P hoenix', gid: 216 }
           },
           {
             path: 'pirateship_slots_log',
@@ -2951,6 +2969,12 @@ export const asyncRoutes = [
         redirect: 'noRedirect',
         meta: { title: 'Slots-老虎机(审）', noCache: true },
         children: [
+          {
+            path: 'arcaneegyptmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'arcaneegyptmars_slots_log',
+            meta: { title: 'ArcaneEgypt(审)', gid: 191 }
+          },
           {
             path: 'bountyraidmars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
@@ -3247,6 +3271,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/pusoyCheat/pusoyCheatlogV1'),
             name: 'pusoy_cheat_log_new_V1',
             meta: { title: 'pusoy新作弊记录V1 ◐' }
+          },
+          {
+            path: 'pusoy_cheat_black_new_V1',
+            component: () => import('@/views/playerManage/pusoyCheat/pusoyBlackV1'),
+            name: 'pusoy_cheat_log_new_V1',
+            meta: { title: 'pusoy黑名单V1 ◐' }
           }
         ]
       },

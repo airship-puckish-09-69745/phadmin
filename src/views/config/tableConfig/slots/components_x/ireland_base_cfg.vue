@@ -84,6 +84,8 @@
               <el-option label="209:CandyBurstMars" :value="209" />
               <el-option label="210:LuckySpirits" :value="210" />
               <el-option label="211:LuckySpiritsMars" :value="211" />
+              <el-option label="216:Phoenix" :value="216" />
+              <el-option label="217:PhoenixMars" :value="217" />
             </el-select>
           </el-form-item>
 
