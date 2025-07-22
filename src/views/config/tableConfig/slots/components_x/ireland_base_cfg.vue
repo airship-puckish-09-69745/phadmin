@@ -276,7 +276,7 @@ export default {
       if (this.winTypeMinOddsCheck() === false) {
         return
       }
-      if (this.slotsData.SlotsType === 180 || this.slotsData.SlotsType === 186 || this.slotsData.SlotsType === 208) {
+      if (this.slotsData.SlotsType === 180 || this.slotsData.SlotsType === 186) {
         const bets = this.slotsData.Bets.split(',')
         for (const i in bets) {
           let betFlot = parseFloat(bets[i])
