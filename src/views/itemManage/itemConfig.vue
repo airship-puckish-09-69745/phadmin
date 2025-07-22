@@ -202,7 +202,7 @@
 
           <el-row>
             <el-col :span="11">
-              <el-form-item   v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN" label="关联SlotGame:" :required="true">
+              <el-form-item   v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN" label="SlotGame:" :required="true">
                 <el-select v-model="editForm.itemExtra.gid" placeholder="请选择" size="mini">
                   <el-option
                     v-for="item in slotGameConfig"
@@ -229,9 +229,6 @@
                 </el-form-item>
               </el-col>
           </el-row>
-          <el-form-item v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN" label="免费次数：" :required="true">
-            <el-input v-model.number="editForm.itemExtra.betCount" style="width: 200px;" placeholder="请填次数" size="mini" />
-          </el-form-item>
           <el-form-item v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET || editForm.data.itemType ===PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET"  label="道具过期时间：" :required="true">
             <el-date-picker
               v-model="editForm.itemEndDate"
@@ -354,7 +351,6 @@ export default {
           showName: '',
           gid:0,
           betAmount: 0,
-          betCount:0
         },
         itemEndDate: $libDate.GetDayBegin(new Date().setSeconds(0))
       },
@@ -813,7 +809,6 @@ export default {
 
     slotFreeSpinPropReset(){
       this.editForm.itemExtra.betAmount = 0
-      this.editForm.itemExtra.betCount = 0
       this.editForm.itemExtra.gid = 0
     },
 
@@ -863,10 +858,6 @@ export default {
         }
         if(this.editForm.itemExtra.betAmount === 0) {
           this.errmsg('请选择下注金额')
-          return false
-        }
-        if(this.editForm.itemExtra.betCount === 0) {
-          this.errmsg('请填写免费次数')
           return false
         }
       }
