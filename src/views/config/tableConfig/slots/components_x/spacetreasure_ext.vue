@@ -197,7 +197,7 @@ export default {
         for (const index in this.cfg.FreeModeBonusCfg) {
           // eslint-disable-next-line no-empty
           const fmbc = this.cfg.FreeModeBonusCfg[index]
-          if (fmbc.OddsMin >= fmbc.BonusOddsMin) {
+          if (fmbc.OddsMin >= fmbc.OddsMax) {
             checkValue1 = false
           }
           // eslint-disable-next-line no-empty
@@ -216,7 +216,7 @@ export default {
         }
       })
       if (!checkValue1) {
-        this.$message.error('"最小倍数"应该小于"bonus图案最小赔率"')
+        this.$message.error('"最小倍数"应该小于"最大倍数"')
         return
       }
       if (!checkValue2) {
