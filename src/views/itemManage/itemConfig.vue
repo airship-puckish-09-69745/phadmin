@@ -73,11 +73,14 @@
           label="扩展信息"
         >
           <template slot-scope="scope">
-            <span v-if="scope.row.item_type == 1 || scope.row.item_type === 3">
+            <span v-if="scope.row.item_type ===PROP_TYPE_OPTIONS.PROP_TYPE_TICKET || scope.row.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET">
               创建时间:{{ formatTime(scope.row.create_time)}} / 结束时间:{{ formatTime(scope.row.expire_time)}}
             </span>
-            <span v-if="scope.row.item_type == 2 ||scope.row.item_type === 4">
+            <span v-if="scope.row.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME ||scope.row.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR">
               品质:{{getQualityName(scope.row.quality)}} 可用时间:{{getShowText(scope.row.id)}} 描述:这是一个头像框
+            </span>
+            <span v-if="scope.row.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN">
+              slot:{{getSlotFreSpinPropDescReturnGameName(scope.row.item_extra)}} betAmount:{{getSlotFreSpinPropDescReturnBetAmount(scope.row.item_extra)}}
             </span>
           </template>
 
@@ -109,9 +112,9 @@
         >
           <template slot-scope="scope">
             <el-button  size="mini" icon="el-icon-edit" @click="showForm(scope.row.id)">编辑</el-button>
-            <el-button v-if="scope.row.status==2" size="mini" type="success" @click="handleUpdate(scope.row.id)">上架</el-button>
-            <el-button v-if="scope.row.status==1" size="mini" type="danger" @click="handleUpdate(scope.row.id)">下架</el-button>
-            <el-button v-if="itemEnv=='development' &&  scope.row.status==2" size="mini" type="danger" @click="handleDelete(scope.row.id, false)">删除</el-button>
+            <el-button v-if="scope.row.status===2" size="mini" type="success" @click="handleUpdate(scope.row.id)">上架</el-button>
+            <el-button v-if="scope.row.status===1" size="mini" type="danger" @click="handleUpdate(scope.row.id)">下架</el-button>
+            <el-button v-if="itemEnv==='development' &&  scope.row.status===2" size="mini" type="danger" @click="handleDelete(scope.row.id, false)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -153,11 +156,11 @@
             <el-input v-model="editForm.itemExtra.showName" style="width: 200px;" placeholder="请填写后台名称" />
           </el-form-item>
 
-          <el-form-item v-if="editForm.data.itemType != 2  && editForm.data.itemType != 4" label="道具价值：" :required="true">
+          <el-form-item v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET  && editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET" label="道具价值：" :required="true">
             <el-input v-model.number="editForm.data.itemCost" style="width: 200px;" placeholder="请填写道具价值" />
           </el-form-item>
 
-          <el-form-item v-if="editForm.data.itemType === 2 || editForm.data.itemType === 4" label="品质：" :required="true">
+          <el-form-item v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME || editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR" label="品质：" :required="true">
             <el-select v-model="editForm.data.quality" style="width: 200px;" :disabled="!editForm.isAdd" placeholder="请选择道具品质分类">
               <el-option
                 v-for="item in qualityTypeCfgs"
@@ -185,7 +188,7 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item v-if="editForm.data.itemType === 1" label="道具特殊属性：" :required="true">
+          <el-form-item v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET" label="道具特殊属性：" :required="true">
             <el-select  v-model="editForm.itemExtra.specialAttr" style="width: 200px;" :disabled="!editForm.isAdd" placeholder="请选择道具特殊属性">
               <el-option
                 v-for="item in itemSpecialAttrCfgs"
@@ -196,7 +199,37 @@
               />
             </el-select>
           </el-form-item>
-          <el-form-item v-if="editForm.data.itemType != 2 && editForm.data.itemType != 4"  label="道具过期时间：" :required="true">
+
+          <el-row>
+            <el-col :span="11">
+              <el-form-item   v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN" label="SlotGame:" :required="true">
+                <el-select v-model="editForm.itemExtra.gid" placeholder="请选择" size="mini">
+                  <el-option
+                    v-for="item in slotGameConfig"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                    :disabled="item.disabled"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+
+              <el-col :span="11">
+                <el-form-item   v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN" label="betAmount:" :required="true">
+                  <el-select v-model="editForm.itemExtra.betAmount" placeholder="请选择" size="mini">
+                    <el-option
+                      v-for="item in slotDefaultBetAmount"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                      :disabled="item.disabled"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+          </el-row>
+          <el-form-item v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET || editForm.data.itemType ===PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET"  label="道具过期时间：" :required="true">
             <el-date-picker
               v-model="editForm.itemEndDate"
               style="width: 200px;"
@@ -234,10 +267,15 @@ import request from '@/utils/request'
 import DateTimeShow from '@/components/DatetimeShow'
 import { $libDate, $libShow } from '@/utils/common'
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
-import { ITEM_TYPE_OPTIONS, ITEM_DAY_TYPE_OPTIONS } from '@/utils/options'
+import {ITEM_TYPE_OPTIONS, ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS} from '@/utils/options'
 
 export default {
   name: 'PropsConfig',
+  computed: {
+    PROP_TYPE_OPTIONS() {
+      return PROP_TYPE_OPTIONS
+    }
+  },
   components: { Compare, Publish, DateTimeShow, ImagePicker },
   data() {
     return {
@@ -268,6 +306,19 @@ export default {
         { 'value': 4, 'label': 'C', disabled: false },
         { 'value': 5, 'label': '无品质', disabled: false }
       ],
+      slotGameConfig:[
+        { 'value': 82, 'label': '百万富翁(Millionire)', disabled: false },
+        { 'value': 160, 'label': '千兆王牌(Ultra Ace)', disabled: false },
+        { 'value': 76, 'label': '糖果1(Candy Rush)', disabled: false },
+      ],
+      slotDefaultBetAmount:[
+        { 'value': 300, 'label': 'bet-0.3', disabled: false },
+        { 'value': 1000, 'label': 'bet-1', disabled: false },
+        { 'value': 2000, 'label': 'bet-2', disabled: false },
+        { 'value': 3000, 'label': 'bet-3', disabled: false },
+        { 'value': 5000, 'label': 'bet-5', disabled: false },
+      ],
+
       raw: {},
       tableData: [],
       deleteData: [],
@@ -297,7 +348,9 @@ export default {
         },
         itemExtra: {
           specialAttr: 0,
-          showName: ''
+          showName: '',
+          gid:0,
+          betAmount: 0,
         },
         itemEndDate: $libDate.GetDayBegin(new Date().setSeconds(0))
       },
@@ -398,7 +451,7 @@ export default {
         this.editForm.visable = true
 
         for (let i = 0; i < this.tableData.length; i++) {
-          if (this.tableData[i].id == id) {
+          if (this.tableData[i].id === id) {
             editData = this.tableData[i]
             break
           }
@@ -471,11 +524,36 @@ export default {
       }
       return name
     },
+
+    getSlotFreSpinPropDescReturnGameName(itemExtra){
+      var name = ''
+      let extraData = JSON.parse(itemExtra)
+      for(var i = 0; i < this.slotGameConfig.length;i++){
+          if (this.slotGameConfig[i].value === extraData.gid) {
+            name = this.slotGameConfig[i].label
+            break
+          }
+      }
+      return name
+    },
+
+    getSlotFreSpinPropDescReturnBetAmount(itemExtra) {
+      var name = ''
+      let extraData = JSON.parse(itemExtra)
+      for(var i = 0; i < this.slotDefaultBetAmount.length;i++){
+        if (this.slotDefaultBetAmount[i].value === extraData.betAmount) {
+          name = this.slotDefaultBetAmount[i].label
+          break
+        }
+      }
+      return name
+    },
+
     getShowText(id) {
       var showTextName = ''
       let editData = {}
       for (let i = 0; i < this.tableData.length; i++) {
-        if (this.tableData[i].id == id) {
+        if (this.tableData[i].id === id) {
           editData = this.tableData[i]
           break
         }
@@ -483,7 +561,7 @@ export default {
       const time_type = JSON.parse(editData.time_type)
       for (var i = 0; i < this.ITEM_DAY_TYPE_OPTIONS.length; i++) {
         for (var j = 0; j < time_type.length; j++) {
-          if (this.ITEM_DAY_TYPE_OPTIONS[i].value == time_type[j]) {
+          if (this.ITEM_DAY_TYPE_OPTIONS[i].value === time_type[j]) {
             showTextName += this.ITEM_DAY_TYPE_OPTIONS[i].label
             if (j < time_type.length - 1) {
               showTextName += ','
@@ -728,41 +806,38 @@ export default {
         showConfirmButton: false
       })
     },
-    timeToSec(time) {
-      var s = ''
-      var hour = time.split(':')[0]
-      var min = time.split(':')[1]
-      var sec = time.split(':')[2]
 
-      s = Number(hour * 3600) + Number(min * 60) + Number(sec)
-
-      return s
+    slotFreeSpinPropReset(){
+      this.editForm.itemExtra.betAmount = 0
+      this.editForm.itemExtra.gid = 0
     },
 
     configCheck() {
-      if (this.editForm.data.itemName == '') {
+      if (this.editForm.data.itemName === '') {
         this.errmsg('请填写道具名称')
         return false
       }
 
-      if (this.editForm.data.itemType == 0) {
+      if (this.editForm.data.itemType === 0) {
         this.errmsg('请选择道具分类')
         return false
       }
-      if (this.editForm.data.itemType != 1){
+      if (this.editForm.data.itemType !== 1){
         this.editForm.itemExtra.specialAttr = 0
       }
 
       if (this.editForm.data.itemType === 2 || this.editForm.data.itemType === 4) {
         this.editForm.data.itemCost = 0
-      } else {
+        this.slotFreeSpinPropReset()
+      } else if  (this.editForm.data.itemType === 1 || this.editForm.data.itemType === 3){
+        this.slotFreeSpinPropReset()
         if (typeof this.editForm.data.itemCost === 'undefined' || this.editForm.data.itemCost === null || this.editForm.data.itemCost === '') {
           this.errmsg('请填写道具价值')
           return false
         }
       }
 
-      if (this.editForm.data.describe == '') {
+      if (this.editForm.data.describe === '') {
         this.errmsg('请填写道具描述')
         return false
       }
@@ -771,18 +846,28 @@ export default {
         return false
       }
 
-      if (this.editForm.data.image == '') {
+      if (this.editForm.data.image === '') {
         this.errmsg('请上传Icon图')
         return false
       }
 
-      if (this.editForm.data.itemType == 2 || this.editForm.data.itemType === 4) {
-        if (this.editForm.data.itemType == 2  && this.editForm.data.quality === 0) {
+      if(this.editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN){
+        if(this.editForm.itemExtra.gid === 0) {
+          this.errmsg('请选择具体SlotGame')
+          return false
+        }
+        if(this.editForm.itemExtra.betAmount === 0) {
+          this.errmsg('请选择下注金额')
+          return false
+        }
+      }
+      if (this.editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR || this.editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME) {
+        if (this.editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME  && this.editForm.data.quality === 0) {
           this.errmsg('请选择品质')
           return false
         }
-      } else {
-        if (this.editForm.data.ID == 0) {
+      } else if (this.editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET || this.editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET) {
+        if (this.editForm.data.ID === 0) {
           let expireTime = 0
           expireTime = (Math.floor(this.editForm.itemEndDate / 1000))
           let currTime = new Date().getTime()

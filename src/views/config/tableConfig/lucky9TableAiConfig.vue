@@ -181,7 +181,7 @@
                     width="200"
                   >
                     <template slot-scope="scope">
-                      <el-input-number v-model.number="scope.row.JoinMinTime" size="mini"  type="number" :min="0"  :precision="0"></el-input-number>
+                      <el-input-number v-model.number="scope.row.JoinMinTime" size="mini"  type="number" :min="1"  :precision="0"></el-input-number>
                     </template>
                   </el-table-column>
                   <el-table-column
@@ -189,7 +189,7 @@
                     width="200"
                   >
                     <template slot-scope="scope">
-                      <el-input-number v-model.number="scope.row.JoinMaxTime" size="mini"  type="number" :min="0"  :precision="0"></el-input-number>
+                      <el-input-number v-model.number="scope.row.JoinMaxTime" size="mini"  type="number" :min="1"  :precision="0"></el-input-number>
                     </template>
                   </el-table-column>
                   <el-table-column
@@ -197,7 +197,7 @@
                     width="200"
                   >
                     <template slot-scope="scope">
-                      <el-input-number v-model.number="scope.row.WaitMinTime" size="mini"  type="number" :min="0"  :precision="0"></el-input-number>
+                      <el-input-number v-model.number="scope.row.WaitMinTime" size="mini"  type="number" :min="1"  :precision="0"></el-input-number>
                     </template>
                   </el-table-column>
                   <el-table-column
@@ -205,7 +205,7 @@
                     width="200"
                   >
                     <template slot-scope="scope">
-                      <el-input-number v-model.number="scope.row.WaitMaxTime" size="mini"  type="number" :min="0"  :precision="0"></el-input-number>
+                      <el-input-number v-model.number="scope.row.WaitMaxTime" size="mini"  type="number" :min="1"  :precision="0"></el-input-number>
                     </template>
                   </el-table-column>
                 </el-table>
@@ -231,7 +231,7 @@
                     width="200"
                   >
                     <template slot-scope="scope">
-                      <el-input-number v-model.number="scope.row.JoinMinTime" size="mini"  type="number" :min="0"  :precision="0"></el-input-number>
+                      <el-input-number v-model.number="scope.row.JoinMinTime" size="mini"  type="number" :min="1"  :precision="0"></el-input-number>
                     </template>
                   </el-table-column>
                   <el-table-column
@@ -239,7 +239,7 @@
                     width="200"
                   >
                     <template slot-scope="scope">
-                      <el-input-number v-model.number="scope.row.JoinMaxTime" size="mini"  type="number" :min="0"  :precision="0"></el-input-number>
+                      <el-input-number v-model.number="scope.row.JoinMaxTime" size="mini"  type="number" :min="1"  :precision="0"></el-input-number>
                     </template>
                   </el-table-column>
                 </el-table>
@@ -265,7 +265,7 @@
                     width="200"
                   >
                     <template slot-scope="scope">
-                      <el-input-number v-model.number="scope.row.JoinMinTime" size="mini"  type="number" :min="0"  :precision="0"></el-input-number>
+                      <el-input-number v-model.number="scope.row.JoinMinTime" size="mini"  type="number" :min="1"  :precision="0"></el-input-number>
                     </template>
                   </el-table-column>
                   <el-table-column
@@ -273,7 +273,7 @@
                     width="200"
                   >
                     <template slot-scope="scope">
-                      <el-input-number v-model.number="scope.row.JoinMaxTime" size="mini"  type="number" :min="0"  :precision="0"></el-input-number>
+                      <el-input-number v-model.number="scope.row.JoinMaxTime" size="mini"  type="number" :min="1"  :precision="0"></el-input-number>
                     </template>
                   </el-table-column>
                   <el-table-column
@@ -352,7 +352,7 @@
                 <el-table :data="item.BetHabitsCfg" border style="width: 100%">
                   <el-table-column label="bet方案" width="120">
                     <template slot-scope="scope">
-                      <span v-if="!scope.row.BetIsMax">{{ scope.row.BetBase }} bet</span>
+                      <span v-if="!scope.row.BetIsMax">Button {{ scope.row.BtnIndex }} bet </span>
                       <span v-else>直接max</span> <!-- 或者直接留空 "" -->
                     </template>
                   </el-table-column>
@@ -408,13 +408,37 @@
                   </el-form-item>
                 </el-form>
               </fieldset>
+              <fieldset>
+                <legend>机器人类型单轮下注配置</legend>
+                <el-table
+                  :data="item.AiLevelCfg"
+                  border
+                  style="width: 100%"
+                >
+                  <el-table-column
+                    label="机器人类型"
+                    prop="AiLevel"
+                    width="200"
+                    :formatter="(row) => getRobotName(row.AiLevel)"
+                  />
+                  <el-table-column
+                    label="单轮下注配置（%）"
+                    width="200"
+                  >
+                    <template slot-scope="scope">
+                      <el-input-number v-model.number="scope.row.SingleBetPro" size="mini" type="number"  :precision="0"><template slot="append">%</template></el-input-number>
+                    </template>
+                  </el-table-column>
+
+                </el-table>
+              </fieldset>
             </el-row>
           </el-tab-pane>
 
           <el-tab-pane label="机器人要牌">
             <el-row style="padding-top: 5px">
               <fieldset>
-                <legend>要牌概率（%）配置</legend>
+                <legend>要牌概率配置</legend>
                 <el-table
                   :data="item.TakeCardCfg"
                   border
@@ -433,7 +457,58 @@
                       <el-input-number v-model.number="scope.row.Probability" size="mini"  type="number" :min="0"  :precision="0"></el-input-number>
                     </template>
                   </el-table-column>
+
                 </el-table>
+              </fieldset>
+
+              <el-row style="padding-top: 5px"></el-row>
+             <el-row style="padding-top: 5px"></el-row>
+             <el-row style="padding-top: 5px"></el-row>
+              <fieldset>
+                <legend>庄家搏一搏要牌概率配置</legend>
+                <el-form ref="item" :model="item" width="70%">
+          
+                  <el-form-item label="庄家搏一搏门槛(%):" :required="true">
+                      <el-row :gutter="16">
+                        <el-col :span="6">
+                          <template>
+                            <el-input-number 
+                              v-model="item.DealerRiskCfg.Probability"  type="number" 
+                              :min="0"
+                              :max="100"
+                              :precision="0"
+                              style="width: 50%">
+                            </el-input-number>
+                          </template>
+                        </el-col>
+                      
+                      </el-row>
+                      <div style="color: red; font-size: 12px; margin-top: 5px;">
+                        提示：1. 场上闲家2张牌人数/场上闲家总人数>=庄家搏一搏门槛 && 2. 场上闲家总人数>3 生效
+                      </div>
+                    </el-form-item>
+
+
+                  <el-table
+                    :data="item.DealerRiskCfg.TakeCardCfg"
+                    border
+                    style="width: 100%"
+                  >
+                    <el-table-column
+                      label="手牌点数"
+                      prop="Points"
+                      width="200"
+                    />
+                    <el-table-column
+                      label="庄家搏一搏要牌概率（%)"
+                      width="200"
+                    >
+                      <template slot-scope="scope">
+                        <el-input-number v-model.number="scope.row.Probability" size="mini"  type="number" :min="0"  :precision="0"></el-input-number>
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                </el-form>
               </fieldset>
             </el-row>
         </el-tab-pane>
@@ -594,27 +669,29 @@ function newBetTimesCfg(x, y, z) {
   }
 }
 
-function BetHabitsCfg(x, y, z) {
+function BetHabitsCfg(x, y, z, k) {
   return {
     BetBase: x,
     BetWeight: y,
-    BetIsMax: z
+    BetIsMax: z,
+    BtnIndex: k,
   }
 }
 function newTakeCardCfg(x, y) {
   return {
     Points: x,
-    Probability: y
+    Probability: y,
   }
 }
 
-function newAiLevelCfg(x, y,z,k,v) {
+function newAiLevelCfg(x, y,z,k,v, m) {
   return {
     AiLevel:x,
     PlayerLosePro: y,
     BankerLosePro: z,
     PlayerWinPro: k,
     BankerWinPro: v,
+    SingleBetPro: m,
     
   }
 }
@@ -688,12 +765,11 @@ export default {
   },
   data() {
     return {
-   
       item:{
         "BetTimesCfg": [newBetTimesCfg(1, 50, true), newBetTimesCfg(2, 20, false), newBetTimesCfg(3, 20, false),newBetTimesCfg(4, 10, false)],
-        "BetHabitsCfg": [BetHabitsCfg(0, 20, true), BetHabitsCfg(1, 10, false), BetHabitsCfg(5, 30, false)],
+        "BetHabitsCfg": [BetHabitsCfg(0, 20, true,1), BetHabitsCfg(1, 10, false,1), BetHabitsCfg(5, 30, false,2)],
         'TakeCardCfg': [newTakeCardCfg(0, 100), newTakeCardCfg(1, 100), newTakeCardCfg(2, 100), newTakeCardCfg(3, 100), newTakeCardCfg(4, 95), newTakeCardCfg(5, 50), newTakeCardCfg(6, 5), newTakeCardCfg(7, 0), newTakeCardCfg(8, 0), newTakeCardCfg(9, 0)],
-        'AiLevelCfg':[newAiLevelCfg(5,20, 50, 0, 0),newAiLevelCfg(4,10, 10, 0, 0),newAiLevelCfg(3,0, 0, 0, 0),newAiLevelCfg(2,0, 0, 10, 10),newAiLevelCfg(1,0, 0, 20, 50)],
+        'AiLevelCfg':[newAiLevelCfg(5,20, 50, 0, 0,0),newAiLevelCfg(4,10, 10, 0, 0,0),newAiLevelCfg(3,0, 0, 0, 0,0),newAiLevelCfg(2,0, 0, 10, 10,0),newAiLevelCfg(1,0, 0, 20, 50,0)],
         'ZeroJoinCfg':[newZeroJoinCfg(20000, 10, 20, 5, 20),newZeroJoinCfg(50000, 20, 40, 5, 20),newZeroJoinCfg(100000, 40, 60, 5, 20),newZeroJoinCfg(200000, 60, 120, 20, 30)],
         'RobotCntCfg':[newRobotCntCfg(20000, 1),newRobotCntCfg(50000, 2),newRobotCntCfg(100000, 4),newRobotCntCfg(200000, 6)],
         'WaitPlayJoinCfg':[newWaitPlayJoinCfg(20000,8,12),newWaitPlayJoinCfg(50000,8,12),newWaitPlayJoinCfg(100000,10,15),newWaitPlayJoinCfg(200000,15,20)],
@@ -701,7 +777,8 @@ export default {
         'NickCfg':[newNick("BingoPlus", 20),newNick("ArenaPlus", 10),newNick("GZone", 70)],
         'ShowMoneyCfg':[],
         'LeaveCfg':newLeaveCfg() ,
-        'BetReviseCfg': {'Probability':20, "ReviseCnt":[1,-1,2,-2]}
+        'BetReviseCfg': {'Probability':20, "ReviseCnt":[1,-1,2,-2]},
+        'DealerRiskCfg':{'Probability':20, 'TakeCardCfg':[newTakeCardCfg(0, 100), newTakeCardCfg(1, 100), newTakeCardCfg(2, 100), newTakeCardCfg(3, 100), newTakeCardCfg(4, 95), newTakeCardCfg(5, 50), newTakeCardCfg(6, 5), newTakeCardCfg(7, 0), newTakeCardCfg(8, 0), newTakeCardCfg(9, 0)]}
       },
       gameId: 23,
       edit: {},
@@ -774,6 +851,15 @@ export default {
             Message.error('场次人数=0时开桌配置:最小时间大于最大时间')
             return 
           }
+          if (this.item.ZeroJoinCfg[j].JoinMinTime <= 0 || this.item.ZeroJoinCfg[j].JoinMaxTime <= 0) {
+            Message.error('场次人数=0时开桌配置:时间配置不能小于等于0')
+            return 
+          }
+
+          if (this.item.ZeroJoinCfg[j].WaitMinTime <= 0 || this.item.ZeroJoinCfg[j].WaitMaxTime <= 0) {
+            Message.error('场次人数=0时开桌配置:时间配置不能小于等于0')
+            return 
+          }
       }
 
       for (let j = 0; j < this.item.WaitPlayJoinCfg.length; j++) {
@@ -781,11 +867,19 @@ export default {
             Message.error('场次有桌不满最小开局人数时入桌配置:最小时间大于最大时间')
             return 
           }
+          if (this.item.WaitPlayJoinCfg[j].JoinMinTime <= 0 ||  this.item.WaitPlayJoinCfg[j].JoinMaxTime <= 0) {
+            Message.error('场次有桌不满最小开局人数时入桌配置:时间配置不能小于等于0')
+            return 
+          }
       }
 
       for (let j = 0; j < this.item.PlayingJoinCfg.length; j++) {
           if (this.item.PlayingJoinCfg[j].JoinMinTime > this.item.PlayingJoinCfg[j].JoinMaxTime) {
             Message.error('场次有正在玩的桌子入配置:最小时间大于最大时间')
+            return 
+          }
+          if (this.item.PlayingJoinCfg[j].JoinMinTime <= 0 ||  this.item.PlayingJoinCfg[j].JoinMaxTime <= 0) {
+            Message.error('场次有正在玩的桌子入配置:时间配置不能小于等于0')
             return 
           }
       }
@@ -841,6 +935,7 @@ export default {
             this.item.NickCfg = this.item.NickCfg || []
             this.item.ShowMoneyCfg = this.item.ShowMoneyCfg || []
             this.item.BetReviseCfg = this.item.BetReviseCfg || {'Probability':20, "ReviseCnt":[1,-1,2,-2]}
+            this.item.DealerRiskCfg = this.item.DealerRiskCfg ||{'Probability':20, 'TakeCardCfg':[newTakeCardCfg(0, 100), newTakeCardCfg(1, 100), newTakeCardCfg(2, 100), newTakeCardCfg(3, 100), newTakeCardCfg(4, 95), newTakeCardCfg(5, 50), newTakeCardCfg(6, 5), newTakeCardCfg(7, 0), newTakeCardCfg(8, 0), newTakeCardCfg(9, 0)]}
             if (this.item.Control) {
               this.control = this.item.Control
             }

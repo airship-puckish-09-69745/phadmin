@@ -159,12 +159,19 @@
             <el-tag v-if="credit.blackList.length > 0" type="danger">高危</el-tag>
             <el-button type="success" size="mini" style="margin-left: 10px;" @click="TagCreditDetail=true">详情</el-button>
           </el-descriptions-item>
+          <el-descriptions-item label="tongits信任分：" :span="1" v-if="env=='test'" >
+            <el-tag>{{ formatNumber(item.TrustScore) }}</el-tag>
+            <el-tag v-if="item.TrustType == 0" type="success">低信用户</el-tag>
+            <el-tag v-if="item.TrustType == 1" type="success">高信用户</el-tag>
+            <el-tag v-if="item.TrustType == 2" type="success">疑似用户</el-tag>
+            <el-tag v-if="item.TrustType == 3" type="success">黑子用户</el-tag>
+          </el-descriptions-item>
           <el-descriptions-item label="手动添加道具:">
             <el-col :span="2"> {{'道具类型:'}} </el-col>
             <el-col  :span="3">
               <el-select v-model.number="item.ItemType" size="mini" placeholder="请选择" @change="ShowItemList(item.ItemType)">
                 <el-option
-                  v-for="option in itemTypeCfgs"
+                  v-for="option in ITEM_TYPE_OPTIONS"
                   :key="option.value"
                   :label="option.label"
                   :value="option.value"
@@ -190,12 +197,12 @@
             <el-col :span="2">
               <el-input v-model.number="item.ItemNum" size="mini" />
             </el-col>
-            <el-col v-show="item.ItemType === 2 || item.ItemType === 4" :span="1" :offset="1"> {{'可用时间:'}} </el-col>
-            <el-col v-show="item.ItemType === 2 ||item.ItemType === 4" :span="2">
+            <el-col v-show="item.ItemType === 2 || item.ItemType === 4 || item.ItemType === 5" :span="1" :offset="1"> {{'可用时间:'}} </el-col>
+            <el-col v-show="item.ItemType === 2 ||item.ItemType === 4 || item.ItemType === 5" :span="2">
               <template>
                 <el-select v-model="item.ItemUseTime" size="mini" placeholder="请选择">
                   <el-option
-                    v-for="option in dayTypeCfgs"
+                    v-for="option in ITEM_DAY_TYPE_OPTIONS"
                     :key="option.value"
                     :label="option.label"
                     :value="option.value"
@@ -387,6 +394,7 @@ import store from '@/store'
 import { Message } from 'element-ui'
 import { toRupee, numberFormat } from '@/utils'
 import DateTimeShow from '@/components/DatetimeShow'
+import {ITEM_TYPE_OPTIONS, ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS} from '@/utils/options'
 
 function NewRelationSummary() {
   return {
@@ -525,19 +533,6 @@ export default {
         { 'label': 'Tongits Laizi', 'value': 28 },
         { 'label': 'Tongits Quick', 'value': 29 }
       ],
-      itemTypeCfgs: [
-        { 'value': 1, 'label': 'Tongits门票', disabled: false },
-        { 'value': 2, 'label': '头像框', disabled: false },
-        { 'value': 3, 'label': '德州门票', disabled: false },
-        { 'value': 4, 'label': '德州头像框', disabled: false }
-      ],
-      dayTypeCfgs: [
-        { 'value': 1, 'label': '1天', disabled: false },
-        { 'value': 7, 'label': '7天', disabled: false },
-        { 'value': 30, 'label': '30天', disabled: false },
-        { 'value': 365, 'label': '365天', disabled: false },
-        { 'value': 0, 'label': '永久', disabled: false }
-      ],
       // 修改调控结果
       paySchemaDialog: false,
       paySchemaEdit: {
@@ -572,7 +567,9 @@ export default {
       RelationSummary: NewRelationSummary(),
       UserIpDevice: [], // 用户IP设备
       SameIp: [], // 同IP
-      SameDevice: [] // 同设备
+      SameDevice: [], // 同设备
+      ITEM_TYPE_OPTIONS,
+      ITEM_DAY_TYPE_OPTIONS,
     }
   },
   computed: {
@@ -1348,7 +1345,7 @@ export default {
         Message.error('请输入道具数量')
         return
       }
-      if (this.item.ItemType === 2 || this.item.ItemType === 4) {
+      if (this.item.ItemType === 2 || this.item.ItemType === 4 || this.item.ItemType === 5) {
         if (typeof this.item.ItemUseTime === 'undefined') {
           Message.error('请选择时间')
           return
@@ -1360,7 +1357,7 @@ export default {
         msg = '确定扣除物品吗?'
       }
       let tmpTime = 0
-      if (this.item.ItemType === 2 || this.item.ItemType === 4) {
+      if (this.item.ItemType === 2 || this.item.ItemType === 4 || this.item.ItemType === 5) {
         tmpTime = this.item.ItemUseTime
       }
       this.$confirm(msg, '提示', {
@@ -1707,12 +1704,8 @@ export default {
     ShowItemList(id) {
       this.tableItemData = []
       let currTime = new Date().getTime()
-      console.log("++++++++++++++++++1333333+++++++++++++++++++++")
       console.log(this.tableData)
       for (let i = 0; i < this.tableData.length; i++) {
-        if (this.tableData[i].item_type === 4) {
-          console.log(this.tableData[i])
-        }
         let str = this.tableData[i].item_name
         if (this.tableData[i].item_extra.length > 0) {
           let exitData = JSON.parse(this.tableData[i].item_extra)
@@ -1723,7 +1716,7 @@ export default {
           }
         }
         if (this.tableData[i].item_type === id && this.tableData[i].status === 1) {
-          if (this.tableData[i].item_type !== 2 && this.tableData[i].item_type !== 4) {
+          if (this.tableData[i].item_type === 1 && this.tableData[i].item_type === 3) {
             let expTime = this.tableData[i].expire_time * 1000
             if (currTime < expTime) {
               var dataList = { 'value': this.tableData[i].id, 'label': str, disabled: false }

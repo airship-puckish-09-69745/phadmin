@@ -84,6 +84,8 @@
               <el-option label="209:CandyBurstMars" :value="209" />
               <el-option label="210:LuckySpirits" :value="210" />
               <el-option label="211:LuckySpiritsMars" :value="211" />
+              <el-option label="216:Phoenix" :value="216" />
+              <el-option label="217:PhoenixMars" :value="217" />
             </el-select>
           </el-form-item>
 
@@ -274,7 +276,7 @@ export default {
       if (this.winTypeMinOddsCheck() === false) {
         return
       }
-      if (this.slotsData.SlotsType === 180 || this.slotsData.SlotsType === 186 || this.slotsData.SlotsType === 208) {
+      if (this.slotsData.SlotsType === 180 || this.slotsData.SlotsType === 186) {
         const bets = this.slotsData.Bets.split(',')
         for (const i in bets) {
           let betFlot = parseFloat(bets[i])

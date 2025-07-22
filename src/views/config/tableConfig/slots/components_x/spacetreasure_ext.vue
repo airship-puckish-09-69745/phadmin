@@ -71,7 +71,52 @@
           <el-form-item label="购买免费模式中奖倍数分布V2">
             <el-input v-model="cfg.BuyFreeDistributeV2" placeholder="请输入内容,如250,500,70,501,750,50"> <template slot="append">三个值一组用 , 连接。</template> </el-input>
           </el-form-item>
+          <!---->
+          <el-form-item label="bonus配置">
+            <el-table :data="cfg.FreeModeBonusCfg" border style="width: 100%">
+              <el-table-column prop="OddsMin" label="最小倍数" width="120">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.OddsMin" type="number"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column prop="OddsMax" label="最大倍数" width="120">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.OddsMax" type="number"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column prop="TriggerRates" label="触发bonus概率" width="95">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.TriggerRates" type="number"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column prop="BonusOddsMin" label="bonus图案最小赔率" width="115">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.BonusOddsMin" type="number"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column prop="BonusNumberMax" label="bonus图案最大数量" width="105">
+                <!--                <template slot="header">-->
+                <!--                  <span>-->
+                <!--                    <el-tooltip effect="dark" content="bonus图案最大数量" placement="top-end">-->
+                <!--                      <i class="el-icon-question" style="margin-left:5px;cursor:pointer"/>-->
+                <!--                    </el-tooltip>-->
+                <!--                  </span>-->
+                <!--                </template>-->
 
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.BonusNumberMax" type="number"/>
+                </template>
+              </el-table-column>
+              <el-table-column label="操作" width="63">
+                <template slot-scope="scope">
+                  <el-button size="mini" type="danger" @click="handleDelete(scope.$index)">删除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+            <el-button style="margin-top: 10px;" type="primary" @click="handleAdd">新增一行</el-button>
+          </el-form-item>
+
+          <!---->
         </el-form>
       </el-col>
     </el-row>
@@ -90,7 +135,7 @@
 <script>
 import RatioInput from '@/components/RatioInput'
 import Compare from '@/components/Compare'
-import { DataRule } from '@/utils/common'
+import {DataRule, ValidateVueItem} from '@/utils/common'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
@@ -112,6 +157,7 @@ export default {
   data() {
     return {
       cfg: {
+        FreeModeBonusCfg: []
       }
     }
   },
@@ -121,6 +167,19 @@ export default {
     })
   },
   methods: {
+    handleDelete(index) {
+      this.cfg.FreeModeBonusCfg.splice(index, 1)
+    },
+    handleAdd() {
+      const newRow = {
+        OddsMin: 0,
+        OddsMax: 0,
+        TriggerRates: 0,
+        BonusOddsMin: 0,
+        BonusNumberMax: 0
+      }
+      this.cfg.FreeModeBonusCfg.push(newRow)
+    },
     dataRule(required, config) {
       return DataRule(required, config)
     },
@@ -128,9 +187,55 @@ export default {
       return JSON.parse(JSON.stringify(this.slotsData))
     },
     submitFrm() {
+      // 校验
+      let checkValue1 = true
+      let checkValue2 = true
+      let checkValue3 = true
+      let checkValue4 = true
+      this.$refs['frm2'].validate((valid) => {
+        // eslint-disable-next-line no-empty
+        for (const index in this.cfg.FreeModeBonusCfg) {
+          // eslint-disable-next-line no-empty
+          const fmbc = this.cfg.FreeModeBonusCfg[index]
+          if (fmbc.OddsMin >= fmbc.OddsMax) {
+            checkValue1 = false
+          }
+          // eslint-disable-next-line no-empty
+          if (fmbc.BonusOddsMin >= fmbc.OddsMax) {
+            checkValue2 = false
+          }
+          //
+          if (fmbc.TriggerRates < 0 || fmbc.TriggerRates > 100) {
+            checkValue3 = false
+          }
+          //
+          // eslint-disable-next-line no-empty
+          if (fmbc.BonusOddsMin < 0 || fmbc.BonusNumberMax < 0) {
+            checkValue4 = false
+          }
+        }
+      })
+      if (!checkValue1) {
+        this.$message.error('"最小倍数"应该小于"最大倍数"')
+        return
+      }
+      if (!checkValue2) {
+        this.$message.error('"bonus图案最小赔率"应该小于"最大倍数"')
+        return
+      }
+      if (!checkValue3) {
+        this.$message.error('"触发bonus概率"的概率值应该大于等于0,小于等于100')
+        return
+      }
+      if (!checkValue4) {
+        this.$message.error('数值小于0,请检查')
+        return
+      }
+      if (!ValidateVueItem(this.$refs['frm2'])) return false
+      //
       const $this = this
       this.$refs.compare.SetNewVal(this.getDiffData())
-      this.$refs.compare.Compare(function(isEdit) {
+      this.$refs.compare.Compare(function (isEdit) {
         if (!isEdit) {
           $this.$message.error('没有任何修改，不需要提交')
           return
@@ -147,6 +252,9 @@ export default {
       // this.initSymbolMap()
       if (this.slotsData) {
         this.cfg = this.slotsData
+        if (!this.cfg.FreeModeBonusCfg) {
+          this.cfg.FreeModeBonusCfg = []
+        }
         this.$refs.compare.SetOldVal(this.getDiffData())
         this.lock = true
       }

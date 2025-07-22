@@ -4,25 +4,15 @@
       <el-form :model="item" label-width="80px" :inline="true" size="small">
 
         <el-form-item label="UID：" :required="true">
-          <UidInput @setUid="function(iUid){item.Uid=iUid}" />
+          <UidInput @setUid="function (iUid) { item.Uid = iUid }" />
         </el-form-item>
         <el-form-item>
-          <el-date-picker
-            v-model="timeRange"
-            :default-time="['00:00:00', '23:59:59']"
-            type="datetimerange"
-            value-format="timestamp"
-            :picker-options="pickerOptions"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            align="right"
-          />
+          <el-date-picker v-model="timeRange" :default-time="['00:00:00', '23:59:59']" type="datetimerange"
+            value-format="timestamp" :picker-options="pickerOptions" range-separator="至" start-placeholder="开始日期"
+            end-placeholder="结束日期" align="right" />
         </el-form-item>
         <el-form-item label="历史数据">
-          <el-switch
-            v-model="isHistory"
-          />
+          <el-switch v-model="isHistory" />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" size="mini" @click="getInfo">查询</el-button>
@@ -46,42 +36,20 @@
         <el-button type="success" size="mini" @click="showDrawer">概要时间线</el-button>
       </el-col>
     </el-row>
-    <el-table
-      ref="filterTable"
-      :data="tableData"
-      stripe
-      border
-      :header-cell-style="libShow.DefaultTableHeadClass"
-      :row-style="{height:'10px'}"
-      :cell-style="libShow.DefaultTableCell"
-      style="padding:10px;width: 100%"
-      @sort-change="sortChange"
-    >
-      <el-table-column
-        prop="ID"
-        label="ID"
-        sortable="custom"
-        width="100"
-      />
-      <el-table-column
-        prop="UpdateTime"
-        label="时间"
-        sortable
-        width="200"
-      >
+    <el-table ref="filterTable" :data="tableData" stripe border :header-cell-style="libShow.DefaultTableHeadClass"
+      :row-style="{ height: '10px' }" :cell-style="libShow.DefaultTableCell" style="padding:10px;width: 100%"
+      @sort-change="sortChange">
+      <el-table-column prop="ID" label="ID" sortable="custom" width="100" />
+      <el-table-column prop="UpdateTime" label="时间" sortable width="200">
         <template slot-scope="scope">
           <DateTimeShow :show-type="2" :timestamp="scope.row.UpdateTime" />
         </template>
       </el-table-column>
-      <el-table-column
-        prop="MoneyType"
-        label="货币类型"
-        width="100"
-      >
+      <el-table-column prop="MoneyType" label="货币类型" width="100">
         <template v-slot:header>
           <el-select v-model="clientDB.FilterValueMap['MoneyType']" size="mini" @change="handleFilter">
             <el-option label="货币类型" :value="0" />
-            <el-option v-for="(o,key) in clientDB.FilterMap['MoneyType']" :key="key" :label="o" :value="key" />
+            <el-option v-for="(o, key) in clientDB.FilterMap['MoneyType']" :key="key" :label="o" :value="key" />
           </el-select>
         </template>
         <template slot-scope="scope">
@@ -90,61 +58,42 @@
           <span v-else> {{ clientDB.GetShowValue('MoneyType', scope.row.MoneyType) }}</span>
         </template>
       </el-table-column>
-      <el-table-column
-        prop="Before"
-        label="前值"
-        width="200"
-      >
+      <el-table-column prop="Before" label="前值" width="200">
         <template slot-scope="scope">
-          <span v-if="scope.row.ActType===2009 ">{{ formatNumber(scope.row.MoneyNow) }}</span>
-          <span v-else-if="scope.row.ActType===2008">  {{ formatNumber(scope.row.MoneyNow) }}</span>
-          <span v-else-if="scope.row.ActType===3001">  {{ formatNumber(scope.row.MoneyNow) }}</span>
-          <span v-else-if="scope.row.ActType===2006">  {{
+          <span v-if="scope.row.ActType === 2009">{{ formatNumber(scope.row.MoneyNow) }}</span>
+          <span v-else-if="scope.row.ActType === 2008"> {{ formatNumber(scope.row.MoneyNow) }}</span>
+          <span v-else-if="scope.row.ActType === 3001"> {{ formatNumber(scope.row.MoneyNow) }}</span>
+          <span v-else-if="scope.row.ActType === 2006"> {{
             formatNumber(scope.row.MoneyNow - scope.row.MoneyChanged)
-          }}</span>
+            }}</span>
           <span v-else-if="isMarketType(scope.row.ActType)"></span>
           <span v-else> {{ formatNumber(scope.row.MoneyNow - scope.row.MoneyChanged) }}</span>
         </template>
       </el-table-column>
-      <el-table-column
-        prop="Changed"
-        label="变化值"
-        width="200"
-      >
+      <el-table-column prop="Changed" label="变化值" width="200">
         <template slot-scope="scope">
-          <span
-            v-if="scope.row.MoneyType===1||scope.row.MoneyType===2"
-            :style="scope.row.MoneyChanged>0?'color:red':'color:green'"
-          >{{
+          <span v-if="scope.row.MoneyType === 1 || scope.row.MoneyType === 2"
+            :style="scope.row.MoneyChanged > 0 ? 'color:red' : 'color:green'">{{
+              formatNumber(scope.row.MoneyChanged)
+            }}</span>
+          <span v-else-if="isMarketType(scope.row.ActType)">{{
             formatNumber(scope.row.MoneyChanged)
-          }}</span>
-          <span
-            v-else-if="isMarketType(scope.row.ActType)"
-          >{{
-            formatNumber(scope.row.MoneyChanged)
-          }}</span>
+            }}</span>
           <span v-else>
             {{ formatNumber(scope.row.MoneyChanged) }}x
           </span>
         </template>
       </el-table-column>
-      <el-table-column
-        prop="MoneyAll"
-        label="账户总额"
-        width="200"
-      >
+      <el-table-column prop="MoneyAll" label="账户总额" width="200">
         <template slot-scope="scope">
-          <span v-if="scope.row.ActType===2006">{{ formatNumber(scope.row.MoneyNow - scope.row.MoneyChanged) }}</span>
-          <span v-else-if="scope.row.MoneyType==1 || scope.row.MoneyType==2">{{
+          <span v-if="scope.row.ActType === 2006">{{ formatNumber(scope.row.MoneyNow - scope.row.MoneyChanged) }}</span>
+          <span v-else-if="scope.row.MoneyType == 1 || scope.row.MoneyType == 2">{{
             formatNumber(scope.row.MoneyAll)
-          }}</span>
-          <span v-else-if="scope.row.MoneyType==5">{{ formatNumber(scope.row.MoneyNow) }}</span>
+            }}</span>
+          <span v-else-if="scope.row.MoneyType == 5">{{ formatNumber(scope.row.MoneyNow) }}</span>
         </template>
       </el-table-column>
-      <el-table-column
-        prop="ActType"
-        width="200"
-      >
+      <el-table-column prop="ActType" width="200">
         <template v-slot:header>
           <el-select v-model="clientDB.FilterValueMap['ActType']" multiple size="mini" @change="handleFilter2">
             <el-option label="操作类型" :value="0" />
@@ -155,25 +104,17 @@
           {{ clientDB.GetShowValue('ActType', scope.row.ActType) }}
         </template>
       </el-table-column>
-      <el-table-column
-        prop="ActMsg"
-        label="操作说明"
-        min-width="300"
-      >
+      <el-table-column prop="ActMsg" label="操作说明" min-width="300">
         <template slot-scope="scope">
           {{ getActName(scope.row.ActType, scope.row.ActMsg) }}
         </template>
       </el-table-column>
-      <el-table-column
-        prop="ExtInfo"
-        label="备注"
-        width="200"
-      >
+      <el-table-column prop="ExtInfo" label="备注" width="200">
         <template slot-scope="scope">
-          <span v-if="scope.row.MoneyType==5 && scope.row.ActType==38">
+          <span v-if="scope.row.MoneyType == 5 && scope.row.ActType == 38">
             {{ libShow.GameNames[scope.row.ExtData] }}
           </span>
-          <span v-if="scope.row.ActType>=2000">
+          <span v-if="scope.row.ActType >= 2000">
             {{ scope.row.ExtData }}
           </span>
         </template>
@@ -182,29 +123,22 @@
     <el-row type="flex" justify="end">
       <el-col :span="12">
         <div class="block">
-          <el-pagination
-            :current-page="clientDB.GetPage().GetCurrentPage()"
-            :page-sizes="[10, 20, 30, 40]"
-            :page-size="clientDB.GetPage().GetPageNum()"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="clientDB.GetPage().GetTotalCount()"
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-          />
+          <el-pagination :current-page="clientDB.GetPage().GetCurrentPage()" :page-sizes="[10, 20, 30, 40]"
+            :page-size="clientDB.GetPage().GetPageNum()" layout="total, sizes, prev, pager, next, jumper"
+            :total="clientDB.GetPage().GetTotalCount()" @size-change="handleSizeChange"
+            @current-change="handleCurrentChange" />
         </div>
       </el-col>
     </el-row>
 
     <el-dialog title="玩牌金流" :visible.sync="gamePanelVisible">
-      <el-table
-        :data="gameTableData"
-        stripe
-        border
-        :header-cell-style="libShow.DefaultTableHeadClass"
-        :row-style="{height:'10px'}"
-        :cell-style="libShow.DefaultTableCell"
-      >
-        <el-table-column property="Name" label="操作说明" width="200" />
+      <el-table :data="gameTableData" stripe border :header-cell-style="libShow.DefaultTableHeadClass"
+        :row-style="{ height: '10px' }" :cell-style="libShow.DefaultTableCell">
+        <el-table-column property="Name" label="操作说明" width="200">
+          <template slot-scope="scope">
+            {{ getActName(scope.row.ActType, scope.row.Name) }}
+          </template>
+        </el-table-column>
         <el-table-column property="Win" label="赢流水" width="150">
           <template slot-scope="scope">
             {{ formatNumber(scope.row.Win) }}
@@ -227,19 +161,10 @@
     <el-row>
       <line-chart :chart-data="chartData" height="600px" />
     </el-row>
-    <el-drawer
-      title="概要时间线"
-      :visible.sync="drawer.visible"
-      direction="ltr"
-      size="600px"
-    >
+    <el-drawer title="概要时间线" :visible.sync="drawer.visible" direction="ltr" size="600px">
       <el-timeline>
-        <el-timeline-item
-          v-for="(ob, index) in drawer.lines"
-          :key="index"
-          :timestamp="ob.timestamp"
-        >
-          <span v-if="index!=0" :style="'color:' + ob.color">{{ ob.content }}</span>
+        <el-timeline-item v-for="(ob, index) in drawer.lines" :key="index" :timestamp="ob.timestamp">
+          <span v-if="index != 0" :style="'color:' + ob.color">{{ ob.content }}</span>
           <div v-else>
             <el-row>
               总览
@@ -254,32 +179,15 @@
                 提现额度：{{ -ob.Withdraw }} ，付费次数：{{ ob.WithdrawCount }}
               </div>
             </el-row>
-            <el-table
-              :data="ob.Games"
-              stripe
-              border
-              :header-cell-style="libShow.DefaultTableHeadClass"
-              :row-style="{height:'10px'}"
-              :cell-style="libShow.DefaultTableCell"
-              style="padding:10px;width: 100%"
-            >
-              <el-table-column
-                prop="Game"
-                label="游戏"
-                width="150"
-              />
-              <el-table-column
-                label="总局数"
-                width="80"
-              >
+            <el-table :data="ob.Games" stripe border :header-cell-style="libShow.DefaultTableHeadClass"
+              :row-style="{ height: '10px' }" :cell-style="libShow.DefaultTableCell" style="padding:10px;width: 100%">
+              <el-table-column prop="Game" label="游戏" width="150" />
+              <el-table-column label="总局数" width="80">
                 <template slot-scope="scope">
                   {{ scope.row.WinCount + scope.row.LoseCount }}
                 </template>
               </el-table-column>
-              <el-table-column
-                label="输赢"
-                width="150"
-              >
+              <el-table-column label="输赢" width="150">
                 <template slot-scope="scope">
                   {{ formatNumber(scope.row.Win + scope.row.Lose) }}
                 </template>
@@ -477,7 +385,7 @@ export default {
     getActName(type, msg) {
       // 单一钱包类型
       if (this.isWalletType(type)) {
-        return this.gameMap[msg]
+        return this.gameMap[msg] !== undefined ? this.gameMap[msg] : msg
       }
       // 营销权益金
       if (this.isMarketType(type)) {
@@ -511,7 +419,7 @@ export default {
     handleFilter() {
       if (this.clientDB.FilterValueMap['MoneyType'] == 10) {
         this.clientDB.ShowData = this.clientDB.TotalData.filter(
-          function(data) {
+          function (data) {
             if (data.MoneyType == 1 || data.MoneyType == 2) {
               return true
             } else {
@@ -615,7 +523,8 @@ export default {
           for (let i = 0; i < objs.length; i++) {
             gameName = objs[i].ActMsg === 'sweeper' ? 'Sweeper' : objs[i].ActMsg
             if (winInfo[gameName] === undefined) {
-              winInfo[gameName] = { Name: gameName, Win: 0, Lose: 0, WinTimes: 0, LoseTimes: 0 }
+              console.log('============actMsg====gameName======', objs[i].ActMsg, gameName)
+              winInfo[gameName] = { Name: gameName, Win: 0, Lose: 0, WinTimes: 0, LoseTimes: 0, ActType: objs[i].ActType }
             }
             const t = objs[i].UpdateTime
             if (winInfo[gameName] && $this.isSlotInfo(objs[i])) {
@@ -698,6 +607,7 @@ export default {
           }
           this.gameTableData = []
           for (const o in winInfo) {
+            console.log('====', o, winInfo[o])
             this.gameTableData.push(winInfo[o])
           }
         }
@@ -721,7 +631,7 @@ export default {
     },
     showDrawer() {
       this.drawer.visible = true
-      const objs = this.moneyData.sort(function(a, b) {
+      const objs = this.moneyData.sort(function (a, b) {
         return a.ID - b.ID
       })
       const timeArr = []
