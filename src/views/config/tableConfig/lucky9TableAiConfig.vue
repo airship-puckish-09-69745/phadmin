@@ -352,7 +352,7 @@
                 <el-table :data="item.BetHabitsCfg" border style="width: 100%">
                   <el-table-column label="bet方案" width="120">
                     <template slot-scope="scope">
-                      <span v-if="!scope.row.BetIsMax">Button {{ scope.row.BtnIndex }} </span>
+                      <span v-if="!scope.row.BetIsMax">Button {{ scope.row.BtnIndex }} bet </span>
                       <span v-else>直接max</span> <!-- 或者直接留空 "" -->
                     </template>
                   </el-table-column>
