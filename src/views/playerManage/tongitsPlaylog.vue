@@ -194,10 +194,11 @@
       <el-table-column
         prop="IsRobot"
         label="玩家类型"
-        width="120px"
+        width="150px"
       >
         <template slot-scope="scope">
-          {{ showRobotLevel(scope.row.IsRobot,scope.row.RobotLevel) }}
+            <el-tag>{{ showRobotLevel(scope.row.IsRobot,scope.row.RobotLevel) }}</el-tag>
+            <el-tag v-if="scope.row.UserType" :type="scope.row.UserType <= 1 ? 'primary' : 'danger'">{{ showUserType(scope.row.UserType) }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column
@@ -658,6 +659,18 @@ export default {
         default:
           return level <= 7 ? '陪玩机器人' : level
       }
+    },
+    showUserType(userType) {
+      if (userType === 0) {
+        return '低信用户'
+      } else if (userType === 1) {
+        return '高信用户'
+      } else if (userType === 2) {
+        return "疑似用户"
+      } else if (userType === 3) {
+        return "黑子用户"
+      }
+      return "未知用户"
     },
     showRoomLevel(level) {
       switch (level) {
