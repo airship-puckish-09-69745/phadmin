@@ -54,6 +54,7 @@
         </template>
         <template slot-scope="scope">
           <span v-if="isWalletType(scope.row.ActType)">/</span>
+          <span v-else-if="isMarketType(scope.row.ActType)">营销权益金</span>
           <span v-else> {{ clientDB.GetShowValue('MoneyType', scope.row.MoneyType) }}</span>
         </template>
       </el-table-column>
@@ -333,7 +334,13 @@ export default {
         3002,
         3003,
         3004,
-        3005
+        3005,
+        3005,
+        3006,
+        3007,
+        3008,
+        3009,
+        3010,
       ]
     }
   },
@@ -379,6 +386,25 @@ export default {
       // 单一钱包类型
       if (this.isWalletType(type)) {
         return this.gameMap[msg] !== undefined ? this.gameMap[msg] : msg
+      }
+      // 营销权益金
+      if (this.isMarketType(type)) {
+        if (msg !== '') {
+          const strArr = msg.split('_')
+          switch (strArr[0]) {
+            case 'BoxReward':
+              return `等级 ${strArr[2]} 积分宝箱奖金`
+            case 'RankReward':
+              const gid = parseInt(strArr[2])
+              let gameName = ''
+              if (gid === 0) {
+                gameName = '总榜'
+              } else {
+                gameName = this.gameMap[gid]
+              }
+              return `${gameName} 积分排行排名榜奖金`
+          }
+        }
       }
       return msg
     },
