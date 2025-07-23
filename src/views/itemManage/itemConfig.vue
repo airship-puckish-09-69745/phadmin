@@ -203,7 +203,7 @@
           <el-row>
             <el-col :span="11">
               <el-form-item   v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN" label="SlotGame:" :required="true">
-                  <el-select v-model="editForm.itemExtra.gid" placeholder="请选择" size="mini" @change="setSlotBetAmountStyle(editForm.itemExtra.gid)">
+                  <el-select v-model="editForm.itemExtra.gid" placeholder="请选择" size="mini" :disabled="!editForm.isAdd" @change="setSlotBetAmountStyle(editForm.itemExtra.gid)">
                     <el-option v-for="item in SLOT_GAME_CONFIG" :key="item.value" :label="item.label" :value="item.value" :disabled="item.disabled"/>
                   </el-select>
               </el-form-item>
@@ -211,14 +211,8 @@
 
               <el-col :span="11">
                 <el-form-item   v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN" label="betAmount:" :required="true">
-                  <el-select v-model="editForm.itemExtra.betAmount" placeholder="请选择" size="mini">
-                    <el-option
-                      v-for="item in slotDefaultBetAmount"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                      :disabled="item.disabled"
-                    />
+                  <el-select v-model="editForm.itemExtra.betAmount" placeholder="请选择" size="mini" :disabled="!editForm.isAdd">
+                    <el-option v-for="item in slotDefaultBetAmount" :key="item.value" :label="item.label" :value="item.value" :disabled="item.disabled"/>
                   </el-select>
                 </el-form-item>
               </el-col>
