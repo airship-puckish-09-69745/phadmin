@@ -39,52 +39,52 @@
         <el-table-column
           prop="date"
           label="日期"
-          width="120"
+          width="100"
         />
         <el-table-column
           prop="high_score_cnt"
           label="现存高信用户"
-          width="150"
+          width="120"
         />
         <el-table-column
           prop="login_high_score_cnt"
           label="今日登录高信用户"
-          width="100"
+          width="150"
         >
         </el-table-column>
         <el-table-column
           prop="low_score_cnt"
           label="现存低信用户"
-          width="100"
+          width="120"
         >
         </el-table-column>
         <el-table-column
           prop="login_low_score_cnt"
           label="今日登录低信用户"
-          width="100"
+          width="150"
         >
         </el-table-column>
         <el-table-column
           prop="suspect_cnt"
           label="现存疑似用户"
-          width="100"
+          width="120"
         >
         </el-table-column>
         <el-table-column
           prop="login_suspect_cnt"
           label="今日登录疑似用户"
-          width="100"
+          width="150"
         />
         <el-table-column
           prop="black_cnt"
           label="现存黑子用户"
-          width="180"
+          width="120"
         >
         </el-table-column>
         <el-table-column
           prop="login_black_cnt"
           label="今日登录黑子用户"
-          width="180"
+          width="150"
         >
         </el-table-column>
       </el-table>
@@ -202,11 +202,12 @@ export default {
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          const objs = response.Data.Items || []
-          $this.ret = response.Data.Items
+          const objs = response.Data || []
+          $this.ret = response.Data
           $this.tableData = objs
-          this.totalCount = response.Data.Total
+          this.totalCount = response.Data.length
           $this.tableData = objs
+          console.log(objs)
           if (objs.length === 0) {
             Message.success('查询结果为空')
             return
