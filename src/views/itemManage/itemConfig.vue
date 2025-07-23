@@ -156,7 +156,7 @@
             <el-input v-model="editForm.itemExtra.showName" style="width: 200px;" placeholder="请填写后台名称" />
           </el-form-item>
 
-          <el-form-item v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET  && editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET" label="道具价值：" :required="true">
+          <el-form-item v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET  || editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET" label="道具价值：" :required="true">
             <el-input v-model.number="editForm.data.itemCost" style="width: 200px;" placeholder="请填写道具价值" />
           </el-form-item>
 
