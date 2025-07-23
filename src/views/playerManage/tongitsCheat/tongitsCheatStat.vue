@@ -193,13 +193,12 @@ export default {
         method: 'get',
         data: {
           Env: this.env,
-          Path: '/log/tongits/robotlog/list',
-          Uid: this.item.Uid || 0,
-          CheatType: this.item.cheatType || 0,
-          StartTime: this.item.start / 1000,
-          EndTime: this.item.end / 1000,
-          Page: this.currentPage,
-          Limit: this.pageNum
+          Path: '/misc/tongits/cheat/stat',
+          gid: 22,
+          from: this.item.start / 1000,
+          to: this.item.end / 1000,
+          page: this.currentPage,
+          limit: this.pageNum
         }
       }).then(response => {
         if (response.RetCode === 0) {
