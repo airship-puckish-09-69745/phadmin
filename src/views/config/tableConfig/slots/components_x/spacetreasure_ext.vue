@@ -382,6 +382,20 @@ export default {
         this.lock = true
       }
     },
+    showDialog() {
+      this.buyFreeOddsConf.dialogTitle = '添加配置'
+      this.buyFreeOddsConf.currentBet = '0'
+      this.buyFreeOddsConf.currentConf = [{ MinOdds: 0, MaxOdds: 0, InWeight: 0 }]
+      this.buyFreeOddsConf.editIndex = -1
+      this.buyFreeOddsConf.dialogVisible = true
+    },
+    editConfig(row) {
+      this.buyFreeOddsConf.dialogTitle = '编辑配置'
+      this.buyFreeOddsConf.currentBet = row.Bet.map(b => b / 1000).join(',')
+      this.buyFreeOddsConf.currentConf = JSON.parse(JSON.stringify(row.Items))
+      this.buyFreeOddsConf.editIndex = this.cfg.BuyFreeOddsConf.findIndex(item => item.Bet === row.Bet)
+      this.buyFreeOddsConf.dialogVisible = true
+    },
     addConfigRow() {
       this.buyFreeOddsConf.currentConf.push({ MinOdds: 0, MaxOdds: 0, InWeight: 0 })
     },
