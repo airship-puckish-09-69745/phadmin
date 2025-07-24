@@ -320,6 +320,7 @@ export default {
       const params = {
         ...this.configData
       }
+      params.Data.UpdateTimes = (this.configData.Data.UpdateTimes || 0) + 1
       params.Data = JSON.stringify(this.configData.Data)
       request({
         url: 'customizeconfig/update',
