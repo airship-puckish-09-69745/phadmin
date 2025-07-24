@@ -211,6 +211,8 @@ export default {
       if (data.BroadcastType !== 1) {
         data.Origin = []
       }
+      // 频率转换为数字类型
+      data.BroadcastFrequency = parseInt(data.BroadcastFrequency)
       this.$emit('save', data)
       this.handleClose()
     },
