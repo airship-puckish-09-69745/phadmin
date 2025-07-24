@@ -1200,6 +1200,11 @@ export default {
           return false
         }
       }
+      //sng 不支持GTCC赛制
+      if(this.editForm.data.rule_type == 1 ||this.editForm.data.rule_extra.is_gtcc == 0){
+        this.editForm.data.rule_extra.is_gtcc = 0
+        this.editForm.data.rule_extra.pause_time = 0
+      }
       return true
     }
   }
