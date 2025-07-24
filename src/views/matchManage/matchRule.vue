@@ -1111,10 +1111,12 @@ export default {
               return false
             }
           }
-          if (strikeOutStage.system_strike_out.end_rule.end_method == 2 || strikeOutStage.system_strike_out.end_rule.end_method == 3) {
-            if (strikeOutStage.system_strike_out.end_rule.match_minute <= 0 || strikeOutStage.system_strike_out.end_rule.match_minute > 1440) {
-              // this.errmsg('打立出局阶段的结束时长值无效！')
-              // return false
+          if (this.editForm.data.rule_extra.is_gtcc === 0) { //gtcc 赛制不检查人数数值
+            if (strikeOutStage.system_strike_out.end_rule.end_method == 2 || strikeOutStage.system_strike_out.end_rule.end_method == 3) {
+              if (strikeOutStage.system_strike_out.end_rule.match_minute <= 0 || strikeOutStage.system_strike_out.end_rule.match_minute > 1440) {
+                this.errmsg('打立出局阶段的结束时长值无效！')
+                return false
+              }
             }
           }
           //晋级规则检查
