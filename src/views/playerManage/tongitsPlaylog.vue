@@ -197,7 +197,7 @@
         width="150px"
       >
         <template slot-scope="scope">
-            <el-tag>{{ showRobotLevel(scope.row.IsRobot,scope.row.RobotLevel) }}</el-tag>
+            <el-tag>{{ showRobotLevel(scope.row.IsRobot,scope.row.RobotLevel) }}{{showTrustLevel(scope.row.TrustLevel)}}</el-tag>
             <el-tag v-if="scope.row.UserType" :type="scope.row.UserType <= 1 ? 'primary' : 'danger'">{{ showUserType(scope.row.UserType) }}</el-tag>
         </template>
       </el-table-column>
@@ -658,6 +658,20 @@ export default {
           return '收割机器人'
         default:
           return level <= 7 ? '陪玩机器人' : level
+      }
+    },
+    showTrustLevel(level) {
+      switch (level) {
+        case 2:
+          return '--疑似用户'
+        case 3:
+          return '--黑子用户'
+        case 4:
+          return '--低信用户'
+        case 5:
+          return '--高信用户'
+        default:
+          return ''
       }
     },
     showUserType(userType) {
