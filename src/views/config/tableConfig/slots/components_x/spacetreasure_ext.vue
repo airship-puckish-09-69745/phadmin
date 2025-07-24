@@ -201,7 +201,7 @@ export default {
             checkValue1 = false
           }
           // eslint-disable-next-line no-empty
-          if (fmbc.BonusOddsMin >= fmbc.OddsMax) {
+          if (fmbc.BonusOddsMin >= fmbc.OddsMin) {
             checkValue2 = false
           }
           //
@@ -220,7 +220,7 @@ export default {
         return
       }
       if (!checkValue2) {
-        this.$message.error('"bonus图案最小赔率"应该小于"最大倍数"')
+        this.$message.error('"bonus图案最小赔率"应该小于"最小倍数"')
         return
       }
       if (!checkValue3) {

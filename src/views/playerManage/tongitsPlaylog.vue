@@ -675,16 +675,16 @@ export default {
       }
     },
     showUserType(userType) {
-      if (userType === 0) {
+      if (userType === 4) {
         return '低信用户'
-      } else if (userType === 1) {
+      } else if (userType === 5) {
         return '高信用户'
       } else if (userType === 2) {
         return "疑似用户"
       } else if (userType === 3) {
         return "黑子用户"
       }
-      return "未知用户"
+      return ""
     },
     showRoomLevel(level) {
       switch (level) {
