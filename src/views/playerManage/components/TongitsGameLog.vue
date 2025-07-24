@@ -14,7 +14,7 @@
         <td v-for="one in FinishArray">
           用户：{{ one.Uid }} - {{ one.Nick }}<br>
           {{ one.isRobot?'机器人':getUserType(one.UserType) }} {{ one.RobotDefenceLevel?getRobotDefenceLevel(one.RobotDefenceLevel): getRobotLevel(one.RobotLevel) }}<br>
-          {{ showCheatType(one.UserType) }}
+          {{ showCheatType(one.TrustLevel) }}
         </td>
       </tr>
     </table>
@@ -346,7 +346,7 @@ export default {
           RobotLevel: val.players[j].RobotLevel,
           RobotWeight: val.players[j].RobotWeight,
           RobotDefenceLevel: val.players[j].RobotDefenceLevel,
-          UserType: val.players[j].UserType
+          TrustLevel: val.players[j].TrustLevel
         })
         console.log("uid:", val.players[j].uid, " ; isRobot:", val.players[j].character > 0)
       }
