@@ -496,6 +496,9 @@ export default {
         gid: "支持的游戏id",
         initScore: "初始积分",
         stages: "比赛阶段配置",
+        self_build:"是否是自建赛",
+        start_num:"开赛人数",
+        rule_extra:"拓展信息",
       },
       showDevTool: false
     }
