@@ -1417,9 +1417,9 @@ export const asyncRoutes = [
             meta: { title: '审核环境', noCache: true },
             children: [
               {
-                path: 'arcaneegypt_slots_cfg',
+                path: 'arcaneegyptmars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/arcaneegyptmars_slots_cfg.vue'),
-                name: 'arcaneegypt_slots_cfg',
+                name: 'arcaneegyptmars_slots_cfg',
                 meta: { title: 'Arcane Egypt(审)' }
               },
               {
