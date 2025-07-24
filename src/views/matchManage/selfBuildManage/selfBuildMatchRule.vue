@@ -154,6 +154,10 @@
         <el-form-item label="初始积分：" :required="true">
           <el-input style="width: 200px;" v-model.number="editForm.data.init_score" placeholder="请填写初始积分，默认0" />
         </el-form-item>
+        <el-form-item label="比赛开局暂停时长(秒)：" :required="false">
+          <el-input style="width: 200px;" v-model.number="editForm.data.rule_extra.pause_time" placeholder="默认0,请慎重填写" />
+          <span style="color:red; margin-left:10px">[特殊字段,开局暂停才填数值,请慎重填写,有疑问请联系开发]</span>
+        </el-form-item>
         <el-form-item label="是否SNG：" :required="true">
           <el-switch
               style="display: block"
@@ -483,7 +487,7 @@ export default {
         title: "",
         isAdd: false,
         data: {
-
+          rule_extra:{'pause_time':0},
         }
       },
       AttrNames: {
@@ -630,6 +634,15 @@ export default {
 
             this.editForm.data.game_id = [gameId]
             this.tableData[i].game_id = [gameId]
+            //fix rule_extra
+            const ruleExtraStr = this.tableData[i].RuleExtra;
+            let rule_extra
+            try {
+              rule_extra = ruleExtraStr ? JSON.parse(ruleExtraStr) : { pause_time: 0 };
+            } catch (e) {
+              rule_extra = { pause_time: 0 }; // 解析失败时使用默认值
+            }
+            this.editForm.data.rule_extra = rule_extra;
 
             break
         }
@@ -649,7 +662,11 @@ export default {
           "status": 0,
           "modifier": "",
           "update_time": 0,
-          "start_num":0 //开赛人数
+          "start_num":0, //开赛人数
+          "rule_extra":{
+            "pause_time":0,
+          }
+
         }
         this.editForm.isAdd = true
         this.addStage()
@@ -669,6 +686,16 @@ export default {
 
             this.editForm.data.game_id = [gameId]
             this.tableData[i].game_id = [gameId]
+
+            //fix rule_extra
+            const ruleExtraStr = this.tableData[i].RuleExtra;
+            let rule_extra
+            try {
+              rule_extra = ruleExtraStr ? JSON.parse(ruleExtraStr) : { pause_time: 0 };
+            } catch (e) {
+              rule_extra = { pause_time: 0 }; // 解析失败时使用默认值
+            }
+            this.editForm.data.rule_extra = rule_extra;
 
             break
           }
@@ -867,6 +894,9 @@ export default {
           }
         }
       })
+      this.editForm.data.rule_extra = {
+        'pause_time':0,
+      }
     },
     saveStage() {
       let stageDetail = JSON.stringify(this.editForm.data.stage_detail)
@@ -892,6 +922,7 @@ export default {
           RuleType:this.editForm.data.rule_type,
           SelfBuild:this.selfBuild,
           StartNum:this.editForm.data.start_num,
+          RuleExtra:JSON.stringify(this.editForm.data.rule_extra),
         }
       }).then(response => {
         if (response.RetCode === 0) {
