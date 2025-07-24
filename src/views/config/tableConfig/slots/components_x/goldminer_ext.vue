@@ -195,6 +195,7 @@
       </el-form>
 
       <el-button type="primary" @click="addBuyFreeConfigRow">添加</el-button>
+      <el-button type="primary" @click="buyFreeOddsRtp">检测RTP</el-button>
       <el-table :data="buyFreeOddsConf.currentConf">
         <el-table-column prop="MinOdds" label="目标倍数开始[" width="120">
           <template slot-scope="scope">
@@ -460,6 +461,18 @@ export default {
         return false
       }
       return true
+    },
+    buyFreeOddsRtp() {
+      let weightTotal = 0
+      for (const item of this.buyFreeOddsConf.currentConf) {
+        weightTotal += item.InWeight
+      }
+      // rtp
+      let rtp = 0
+      for (const item of this.buyFreeOddsConf.currentConf) {
+        rtp += (item.MinOdds + item.MaxOdds) / 2 * item.InWeight / weightTotal / this.cfg.BuyFreeOdds / this.baseBet * 100
+      }
+      Message.info(`当前RTP(${rtp})`)
     }
   }
 }
