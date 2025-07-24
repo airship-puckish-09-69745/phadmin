@@ -635,7 +635,7 @@ export default {
             this.editForm.data.game_id = [gameId]
             this.tableData[i].game_id = [gameId]
             //fix rule_extra
-            const ruleExtraStr = this.tableData[i].RuleExtra;
+            const ruleExtraStr = this.tableData[i].rule_extra;
             let rule_extra
             try {
               rule_extra = ruleExtraStr ? JSON.parse(ruleExtraStr) : { pause_time: 0 };
@@ -688,7 +688,7 @@ export default {
             this.tableData[i].game_id = [gameId]
 
             //fix rule_extra
-            const ruleExtraStr = this.tableData[i].RuleExtra;
+            const ruleExtraStr = this.tableData[i].rule_extra;
             let rule_extra
             try {
               rule_extra = ruleExtraStr ? JSON.parse(ruleExtraStr) : { pause_time: 0 };

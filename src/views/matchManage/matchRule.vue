@@ -632,10 +632,12 @@ export default {
             this.editForm.data.game_id = [gameId]
             this.tableData[i].game_id = [gameId]
             //fix rule_extra
-            const ruleExtraStr = this.tableData[i].RuleExtra;
+            const ruleExtraStr = this.tableData[i].rule_extra;
+            console.log("ruleExtraStr ",ruleExtraStr)
             let rule_extra
             try {
               rule_extra = ruleExtraStr ? JSON.parse(ruleExtraStr) : { pause_time: 0 };
+              console.log("rule_extra  ",rule_extra)
             } catch (e) {
               rule_extra = { pause_time: 0 }; // 解析失败时使用默认值
             }
@@ -681,7 +683,7 @@ export default {
             this.tableData[i].game_id = [gameId]
 
             //fix rule_extra
-            const ruleExtraStr = this.tableData[i].RuleExtra;
+            const ruleExtraStr = this.tableData[i].rule_extra;
             let rule_extra
             try {
               rule_extra = ruleExtraStr ? JSON.parse(ruleExtraStr) : { pause_time: 0 };
