@@ -103,32 +103,6 @@ export default {
           { RoundId: 2,
             ContributeCardList: [ 
               {
-                NoContributeCardNum: 0,
-                List:[
-                  {
-                    CardNumBegin: 3, // 除以10 实际是1/3
-                    CardNumEnd: 5,
-                    FightRatio: 60,
-                  },
-                  {
-                    CardNumBegin: 5,
-                    CardNumEnd: 10,
-                    FightRatio: 60,
-                  },
-                  {
-                    CardNumBegin: 10,
-                    CardNumEnd: 20,
-                    FightRatio: 60,
-                  },
-                  {
-                    CardNumBegin: 20,
-                    CardNumEnd: 100,
-                    FightRatio: 60,
-                  }
-
-                ]
-              },
-              {
                 NoContributeCardNum: 1,
                 List:[
                   {
@@ -236,32 +210,6 @@ export default {
           { RoundId:3,
             ContributeCardList: [ 
               {
-                NoContributeCardNum: 0,
-                List:[
-                  {
-                    CardNumBegin: 3, // 除以10 实际是1/3
-                    CardNumEnd: 5,
-                    FightRatio: 60,
-                  },
-                  {
-                    CardNumBegin: 5,
-                    CardNumEnd: 10,
-                    FightRatio: 60,
-                  },
-                  {
-                    CardNumBegin: 10,
-                    CardNumEnd: 20,
-                    FightRatio: 60,
-                  },
-                  {
-                    CardNumBegin: 20,
-                    CardNumEnd: 100,
-                    FightRatio: 60,
-                  }
-
-                ]
-              },
-              {
                 NoContributeCardNum: 1,
                 List:[
                   {
@@ -367,32 +315,6 @@ export default {
             ]
           },{ RoundId: 4,
             ContributeCardList: [ 
-              {
-                NoContributeCardNum: 0,
-                List:[
-                  {
-                    CardNumBegin: 3, // 除以10 实际是1/3
-                    CardNumEnd: 5,
-                    FightRatio: 60,
-                  },
-                  {
-                    CardNumBegin: 5,
-                    CardNumEnd: 10,
-                    FightRatio: 60,
-                  },
-                  {
-                    CardNumBegin: 10,
-                    CardNumEnd: 20,
-                    FightRatio: 60,
-                  },
-                  {
-                    CardNumBegin: 20,
-                    CardNumEnd: 100,
-                    FightRatio: 60,
-                  }
-
-                ]
-              },
               {
                 NoContributeCardNum: 1,
                 List:[
@@ -500,32 +422,6 @@ export default {
           },{ RoundId: 5,
             ContributeCardList: [ 
               {
-                NoContributeCardNum: 0,
-                List:[
-                  {
-                    CardNumBegin: 3, // 除以10 实际是1/3
-                    CardNumEnd: 5,
-                    FightRatio: 60,
-                  },
-                  {
-                    CardNumBegin: 5,
-                    CardNumEnd: 10,
-                    FightRatio: 60,
-                  },
-                  {
-                    CardNumBegin: 10,
-                    CardNumEnd: 20,
-                    FightRatio: 60,
-                  },
-                  {
-                    CardNumBegin: 20,
-                    CardNumEnd: 100,
-                    FightRatio: 60,
-                  }
-
-                ]
-              },
-              {
                 NoContributeCardNum: 1,
                 List:[
                   {
@@ -631,32 +527,6 @@ export default {
             ]
           },{ RoundId: 6,
             ContributeCardList: [ 
-              {
-                NoContributeCardNum: 0,
-                List:[
-                  {
-                    CardNumBegin: 3, // 除以10 实际是1/3
-                    CardNumEnd: 5,
-                    FightRatio: 60,
-                  },
-                  {
-                    CardNumBegin: 5,
-                    CardNumEnd: 10,
-                    FightRatio: 60,
-                  },
-                  {
-                    CardNumBegin: 10,
-                    CardNumEnd: 20,
-                    FightRatio: 60,
-                  },
-                  {
-                    CardNumBegin: 20,
-                    CardNumEnd: 100,
-                    FightRatio: 60,
-                  }
-
-                ]
-              },
               {
                 NoContributeCardNum: 1,
                 List:[
