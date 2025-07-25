@@ -6,7 +6,7 @@
       <el-col :span="24">
         <div style="padding-top: 10px">
           <el-table
-            :data="AiConfig.DecisionFightCfg"
+            :data="AiConfig.Decision.DecisionFight"
             stripe
             border
             style="width: 100%"
@@ -23,7 +23,7 @@
 
             <el-table-column label="牌张配置" align="center" >
               <template slot-scope="scope">
-                <el-table :data="scope.row.ContributeCardCfg" border style="width: 100%">
+                <el-table :data="scope.row.ContributeCardList" border style="width: 100%">
                   <el-table-column
                     label="非可贴散牌张数"
                     width="120"
@@ -34,7 +34,7 @@
                     </template>
                   </el-table-column>
                 
-                  <el-table-column label="有效牌张数" >
+                  <el-table-column label="有效牌张数" align="center">
                     <el-table-column prop="range1" label="[1/3,1/2)" width="170" align="center">
                       <template slot-scope="subScope">
                         <el-input-number v-model="subScope.row.List[0].FightRatio" size="mini" :min="0" :max="100"></el-input-number>
@@ -99,26 +99,30 @@ export default {
         { RoundId: 5, RoundName: "第5轮决策"},
         { RoundId: 6, RoundName: "第>=6轮决策"},
       ],
-      DecisionFightCfg:[
+      DecisionFight:[
           { RoundId: 2,
-            ContributeCardCfg: [ 
+            ContributeCardList: [ 
               {
                 NoContributeCardNum: 0,
                 List:[
                   {
-                    CardNum: 3, // 除以10 实际是1/3
+                    CardNumBegin: 3, // 除以10 实际是1/3
+                    CardNumEnd: 5,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 5,
+                    CardNumBegin: 5,
+                    CardNumEnd: 10,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 10,
+                    CardNumBegin: 10,
+                    CardNumEnd: 20,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 20,
+                    CardNumBegin: 20,
+                    CardNumEnd: 100,
                     FightRatio: 60,
                   }
 
@@ -128,19 +132,23 @@ export default {
                 NoContributeCardNum: 1,
                 List:[
                   {
-                    CardNum: 3,
+                    CardNumBegin: 3, // 除以10 实际是1/3
+                    CardNumEnd: 5,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 5,
+                    CardNumBegin: 5,
+                    CardNumEnd: 10,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 10,
+                    CardNumBegin: 10,
+                    CardNumEnd: 20,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 20,
+                    CardNumBegin: 20,
+                    CardNumEnd: 100,
                     FightRatio: 60,
                   }
 
@@ -150,19 +158,23 @@ export default {
                 NoContributeCardNum: 2,
                 List:[
                   {
-                    CardNum: 3,
+                    CardNumBegin: 3, // 除以10 实际是1/3
+                    CardNumEnd: 5,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 5,
+                    CardNumBegin: 5,
+                    CardNumEnd: 10,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 10,
+                    CardNumBegin: 10,
+                    CardNumEnd: 20,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 20,
+                    CardNumBegin: 20,
+                    CardNumEnd: 100,
                     FightRatio: 60,
                   }
 
@@ -172,19 +184,23 @@ export default {
                 NoContributeCardNum: 3,
                 List:[
                   {
-                    CardNum: 3,
+                    CardNumBegin: 3, // 除以10 实际是1/3
+                    CardNumEnd: 5,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 5,
+                    CardNumBegin: 5,
+                    CardNumEnd: 10,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 10,
+                    CardNumBegin: 10,
+                    CardNumEnd: 20,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 20,
+                    CardNumBegin: 20,
+                    CardNumEnd: 100,
                     FightRatio: 60,
                   }
 
@@ -193,19 +209,23 @@ export default {
                 NoContributeCardNum: 4,
                 List:[
                   {
-                    CardNum: 3,
+                    CardNumBegin: 3, // 除以10 实际是1/3
+                    CardNumEnd: 5,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 5,
+                    CardNumBegin: 5,
+                    CardNumEnd: 10,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 10,
+                    CardNumBegin: 10,
+                    CardNumEnd: 20,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 20,
+                    CardNumBegin: 20,
+                    CardNumEnd: 100,
                     FightRatio: 60,
                   }
 
@@ -214,24 +234,28 @@ export default {
             ]
           },
           { RoundId:3,
-            ContributeCardCfg: [ 
+            ContributeCardList: [ 
               {
                 NoContributeCardNum: 0,
                 List:[
                   {
-                    CardNum: 3,
+                    CardNumBegin: 3, // 除以10 实际是1/3
+                    CardNumEnd: 5,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 5,
+                    CardNumBegin: 5,
+                    CardNumEnd: 10,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 10,
+                    CardNumBegin: 10,
+                    CardNumEnd: 20,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 20,
+                    CardNumBegin: 20,
+                    CardNumEnd: 100,
                     FightRatio: 60,
                   }
 
@@ -241,19 +265,23 @@ export default {
                 NoContributeCardNum: 1,
                 List:[
                   {
-                    CardNum: 3,
+                    CardNumBegin: 3, // 除以10 实际是1/3
+                    CardNumEnd: 5,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 5,
+                    CardNumBegin: 5,
+                    CardNumEnd: 10,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 10,
+                    CardNumBegin: 10,
+                    CardNumEnd: 20,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 20,
+                    CardNumBegin: 20,
+                    CardNumEnd: 100,
                     FightRatio: 60,
                   }
 
@@ -263,19 +291,23 @@ export default {
                 NoContributeCardNum: 2,
                 List:[
                   {
-                    CardNum: 3,
+                    CardNumBegin: 3, // 除以10 实际是1/3
+                    CardNumEnd: 5,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 5,
+                    CardNumBegin: 5,
+                    CardNumEnd: 10,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 10,
+                    CardNumBegin: 10,
+                    CardNumEnd: 20,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 20,
+                    CardNumBegin: 20,
+                    CardNumEnd: 100,
                     FightRatio: 60,
                   }
 
@@ -285,19 +317,23 @@ export default {
                 NoContributeCardNum: 3,
                 List:[
                   {
-                    CardNum: 3,
+                    CardNumBegin: 3, // 除以10 实际是1/3
+                    CardNumEnd: 5,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 5,
+                    CardNumBegin: 5,
+                    CardNumEnd: 10,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 10,
+                    CardNumBegin: 10,
+                    CardNumEnd: 20,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 20,
+                    CardNumBegin: 20,
+                    CardNumEnd: 100,
                     FightRatio: 60,
                   }
 
@@ -306,19 +342,23 @@ export default {
                 NoContributeCardNum: 4,
                 List:[
                   {
-                    CardNum: 3,
+                    CardNumBegin: 3, // 除以10 实际是1/3
+                    CardNumEnd: 5,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 5,
+                    CardNumBegin: 5,
+                    CardNumEnd: 10,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 10,
+                    CardNumBegin: 10,
+                    CardNumEnd: 20,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 20,
+                    CardNumBegin: 20,
+                    CardNumEnd: 100,
                     FightRatio: 60,
                   }
 
@@ -326,24 +366,28 @@ export default {
               },
             ]
           },{ RoundId: 4,
-            ContributeCardCfg: [ 
+            ContributeCardList: [ 
               {
                 NoContributeCardNum: 0,
                 List:[
                   {
-                    CardNum: 3,
+                    CardNumBegin: 3, // 除以10 实际是1/3
+                    CardNumEnd: 5,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 5,
+                    CardNumBegin: 5,
+                    CardNumEnd: 10,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 10,
+                    CardNumBegin: 10,
+                    CardNumEnd: 20,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 20,
+                    CardNumBegin: 20,
+                    CardNumEnd: 100,
                     FightRatio: 60,
                   }
 
@@ -353,19 +397,23 @@ export default {
                 NoContributeCardNum: 1,
                 List:[
                   {
-                    CardNum: 3,
+                    CardNumBegin: 3, // 除以10 实际是1/3
+                    CardNumEnd: 5,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 5,
+                    CardNumBegin: 5,
+                    CardNumEnd: 10,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 10,
+                    CardNumBegin: 10,
+                    CardNumEnd: 20,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 20,
+                    CardNumBegin: 20,
+                    CardNumEnd: 100,
                     FightRatio: 60,
                   }
 
@@ -375,19 +423,23 @@ export default {
                 NoContributeCardNum: 2,
                 List:[
                   {
-                    CardNum: 3,
+                    CardNumBegin: 3, // 除以10 实际是1/3
+                    CardNumEnd: 5,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 5,
+                    CardNumBegin: 5,
+                    CardNumEnd: 10,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 10,
+                    CardNumBegin: 10,
+                    CardNumEnd: 20,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 20,
+                    CardNumBegin: 20,
+                    CardNumEnd: 100,
                     FightRatio: 60,
                   }
 
@@ -397,19 +449,23 @@ export default {
                 NoContributeCardNum: 3,
                 List:[
                   {
-                    CardNum: 3,
+                    CardNumBegin: 3, // 除以10 实际是1/3
+                    CardNumEnd: 5,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 5,
+                    CardNumBegin: 5,
+                    CardNumEnd: 10,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 10,
+                    CardNumBegin: 10,
+                    CardNumEnd: 20,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 20,
+                    CardNumBegin: 20,
+                    CardNumEnd: 100,
                     FightRatio: 60,
                   }
 
@@ -418,19 +474,23 @@ export default {
                 NoContributeCardNum: 4,
                 List:[
                   {
-                    CardNum: 3,
+                    CardNumBegin: 3, // 除以10 实际是1/3
+                    CardNumEnd: 5,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 5,
+                    CardNumBegin: 5,
+                    CardNumEnd: 10,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 10,
+                    CardNumBegin: 10,
+                    CardNumEnd: 20,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 20,
+                    CardNumBegin: 20,
+                    CardNumEnd: 100,
                     FightRatio: 60,
                   }
 
@@ -438,24 +498,28 @@ export default {
               },
             ]
           },{ RoundId: 5,
-            ContributeCardCfg: [ 
+            ContributeCardList: [ 
               {
                 NoContributeCardNum: 0,
                 List:[
                   {
-                    CardNum: 3,
+                    CardNumBegin: 3, // 除以10 实际是1/3
+                    CardNumEnd: 5,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 5,
+                    CardNumBegin: 5,
+                    CardNumEnd: 10,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 10,
+                    CardNumBegin: 10,
+                    CardNumEnd: 20,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 20,
+                    CardNumBegin: 20,
+                    CardNumEnd: 100,
                     FightRatio: 60,
                   }
 
@@ -465,19 +529,23 @@ export default {
                 NoContributeCardNum: 1,
                 List:[
                   {
-                    CardNum: 3,
+                    CardNumBegin: 3, // 除以10 实际是1/3
+                    CardNumEnd: 5,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 5,
+                    CardNumBegin: 5,
+                    CardNumEnd: 10,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 10,
+                    CardNumBegin: 10,
+                    CardNumEnd: 20,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 20,
+                    CardNumBegin: 20,
+                    CardNumEnd: 100,
                     FightRatio: 60,
                   }
 
@@ -487,19 +555,23 @@ export default {
                 NoContributeCardNum: 2,
                 List:[
                   {
-                    CardNum: 3,
+                    CardNumBegin: 3, // 除以10 实际是1/3
+                    CardNumEnd: 5,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 5,
+                    CardNumBegin: 5,
+                    CardNumEnd: 10,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 10,
+                    CardNumBegin: 10,
+                    CardNumEnd: 20,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 20,
+                    CardNumBegin: 20,
+                    CardNumEnd: 100,
                     FightRatio: 60,
                   }
 
@@ -509,19 +581,23 @@ export default {
                 NoContributeCardNum: 3,
                 List:[
                   {
-                    CardNum: 3,
+                    CardNumBegin: 3, // 除以10 实际是1/3
+                    CardNumEnd: 5,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 5,
+                    CardNumBegin: 5,
+                    CardNumEnd: 10,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 10,
+                    CardNumBegin: 10,
+                    CardNumEnd: 20,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 20,
+                    CardNumBegin: 20,
+                    CardNumEnd: 100,
                     FightRatio: 60,
                   }
 
@@ -530,19 +606,23 @@ export default {
                 NoContributeCardNum: 4,
                 List:[
                   {
-                    CardNum: 3,
+                    CardNumBegin: 3, // 除以10 实际是1/3
+                    CardNumEnd: 5,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 50,
+                    CardNumBegin: 5,
+                    CardNumEnd: 10,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 10,
+                    CardNumBegin: 10,
+                    CardNumEnd: 20,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 20,
+                    CardNumBegin: 20,
+                    CardNumEnd: 100,
                     FightRatio: 60,
                   }
 
@@ -550,24 +630,28 @@ export default {
               },
             ]
           },{ RoundId: 6,
-            ContributeCardCfg: [ 
+            ContributeCardList: [ 
               {
                 NoContributeCardNum: 0,
                 List:[
                   {
-                    CardNum: 3,
+                    CardNumBegin: 3, // 除以10 实际是1/3
+                    CardNumEnd: 5,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 5,
+                    CardNumBegin: 5,
+                    CardNumEnd: 10,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 10,
+                    CardNumBegin: 10,
+                    CardNumEnd: 20,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 20,
+                    CardNumBegin: 20,
+                    CardNumEnd: 100,
                     FightRatio: 60,
                   }
 
@@ -577,19 +661,23 @@ export default {
                 NoContributeCardNum: 1,
                 List:[
                   {
-                    CardNum: 3,
+                    CardNumBegin: 3, // 除以10 实际是1/3
+                    CardNumEnd: 5,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 5,
+                    CardNumBegin: 5,
+                    CardNumEnd: 10,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 10,
+                    CardNumBegin: 10,
+                    CardNumEnd: 20,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 20,
+                    CardNumBegin: 20,
+                    CardNumEnd: 100,
                     FightRatio: 60,
                   }
 
@@ -599,19 +687,23 @@ export default {
                 NoContributeCardNum: 2,
                 List:[
                   {
-                    CardNum: 3,
+                    CardNumBegin: 3, // 除以10 实际是1/3
+                    CardNumEnd: 5,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 5,
+                    CardNumBegin: 5,
+                    CardNumEnd: 10,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 10,
+                    CardNumBegin: 10,
+                    CardNumEnd: 20,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 20,
+                    CardNumBegin: 20,
+                    CardNumEnd: 100,
                     FightRatio: 60,
                   }
 
@@ -621,19 +713,19 @@ export default {
                 NoContributeCardNum: 3,
                 List:[
                   {
-                    CardNum: 3,
+                    CardNumBegin: 3,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 5,
+                    CardNumBegin: 5,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 10,
+                    CardNumBegin: 10,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 20,
+                    CardNumBegin: 20,
                     FightRatio: 60,
                   }
 
@@ -642,19 +734,23 @@ export default {
                 NoContributeCardNum: 4,
                 List:[
                   {
-                    CardNum: 3,
+                    CardNumBegin: 3, // 除以10 实际是1/3
+                    CardNumEnd: 5,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 5,
+                    CardNumBegin: 5,
+                    CardNumEnd: 10,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 10,
+                    CardNumBegin: 10,
+                    CardNumEnd: 20,
                     FightRatio: 60,
                   },
                   {
-                    CardNum: 20,
+                    CardNumBegin: 20,
+                    CardNumEnd: 100,
                     FightRatio: 60,
                   }
 
@@ -677,7 +773,7 @@ export default {
       //   this.AiConfig.Decision = this.Decision
       // }
 
-      console.log('common plugin decision tongitsConfig:', this.AiConfig)       
+     // console.log('common plugin decision tongitsConfig:', this.AiConfig)       
       
     })
   },
@@ -686,10 +782,11 @@ export default {
       immediate: true,
       deep: true,
       handler(newVal) {
-        if (!newVal.DecisionFightCfg) {
-          this.editFightCfg = JSON.parse(JSON.stringify(this.DecisionFightCfg)) 
-          newVal.DecisionFightCfg = this.editFightCfg 
-          console.log('common plugin ffffff tongitsConfig:', this.AiConfig)       
+
+        if (!newVal.Decision.DecisionFight) {
+          this.editDecision = JSON.parse(JSON.stringify(this.DecisionFight)) 
+          newVal.Decision.DecisionFight = this.DecisionFight 
+          console.log('common DecisionFight:', this.AiConfig)       
         }
       }
     }
