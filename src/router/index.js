@@ -487,12 +487,12 @@ export const asyncRoutes = [
                 name: 'lucky9Table',
                 meta: { title: 'Lucky9 ◐' }
               },
-              {
-                path: 'lucky9RobotSetting',
-                component: () => import('@/views/config/tableConfig/lucky9RobotSetting'),
-                name: 'lucky9RobotSetting',
-                meta: { title: 'Lucky9 AI◐' }
-              },
+              // {
+              //   path: 'lucky9RobotSetting',
+              //   component: () => import('@/views/config/tableConfig/lucky9RobotSetting'),
+              //   name: 'lucky9RobotSetting',
+              //   meta: { title: 'Lucky9 AI◐' }
+              // },
               {
                 path: 'lucky9TableAiConfig',
                 component: () => import('@/views/config/tableConfig/lucky9TableAiConfig'),
