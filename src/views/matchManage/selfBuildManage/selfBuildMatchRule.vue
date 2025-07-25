@@ -186,10 +186,6 @@
           </el-tooltip>
           <span style="color:red; margin-left:10px">[gtcc赛制字段,请慎重勾选,有疑问请联系开发]</span>
         </el-form-item>
-        <el-form-item v-if="editForm.data.rule_extra.is_gtcc===1" label="比赛开局暂停时长(秒)：" :required="false">
-          <el-input style="width: 200px;" v-model.number="editForm.data.rule_extra.pause_time" placeholder="默认0,请慎重填写" />
-          <span style="color:red; margin-left:10px">[特殊字段,开局暂停才填数值,请慎重填写,有疑问请联系开发]</span>
-        </el-form-item>
         <el-form-item v-if="editForm.data.rule_type===0" label="MTT开赛人数:" :required="true">
           <el-input style="width: 200px;" v-model.number="editForm.data.start_num" placeholder="请填写开赛人数" />
         </el-form-item>
@@ -507,7 +503,7 @@ export default {
         title: "",
         isAdd: false,
         data: {
-          rule_extra:{'pause_time':0,'is_gtcc':0},
+          rule_extra:{'is_gtcc':0},
         }
       },
       AttrNames: {
@@ -661,9 +657,9 @@ export default {
             const ruleExtraStr = this.tableData[i].rule_extra;
             let rule_extra
             try {
-              rule_extra = ruleExtraStr ? JSON.parse(ruleExtraStr) : { pause_time: 0,is_gtcc:0 };
+              rule_extra = ruleExtraStr ? JSON.parse(ruleExtraStr) : { is_gtcc:0 };
             } catch (e) {
-              rule_extra = { pause_time: 0,is_gtcc: 0 }; // 解析失败时使用默认值
+              rule_extra = { is_gtcc: 0 }; // 解析失败时使用默认值
             }
             this.editForm.data.rule_extra = rule_extra;
 
@@ -687,7 +683,6 @@ export default {
           "update_time": 0,
           "start_num":0, //开赛人数
           "rule_extra":{
-            "pause_time":0,
             "is_gtcc":0,
           }
 
@@ -715,9 +710,9 @@ export default {
             const ruleExtraStr = this.tableData[i].rule_extra;
             let rule_extra
             try {
-              rule_extra = ruleExtraStr ? JSON.parse(ruleExtraStr) : { pause_time: 0,is_gtcc:0 };
+              rule_extra = ruleExtraStr ? JSON.parse(ruleExtraStr) : { is_gtcc:0 };
             } catch (e) {
-              rule_extra = { pause_time: 0,is_gtcc:0 }; // 解析失败时使用默认值
+              rule_extra = { is_gtcc:0 }; // 解析失败时使用默认值
             }
             this.editForm.data.rule_extra = rule_extra;
 
@@ -919,7 +914,6 @@ export default {
         }
       })
       this.editForm.data.rule_extra = {
-        'pause_time':0,
         'is_gtcc':0,
       }
     },
