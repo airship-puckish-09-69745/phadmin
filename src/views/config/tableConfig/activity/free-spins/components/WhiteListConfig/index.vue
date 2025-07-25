@@ -98,7 +98,7 @@ export default {
       this.formData.AppId = value
     },
     onSiteIdOptionsChange(value) {
-      this.formData.Sites = value
+      this.formData.SiteId = value
     },
     dataRule(required, config) {
       return DataRule(required, config)
