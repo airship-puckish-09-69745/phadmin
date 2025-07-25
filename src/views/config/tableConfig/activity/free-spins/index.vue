@@ -5,9 +5,9 @@
     </el-row>
 
     <el-row>
-      <div style="margin-top: 16px">
+      <!-- <div style="margin-top: 16px">
         启用开关：<el-switch v-model="configData.Data.Status" active-color="#13ce66" @change="onUpdateStatus" />
-      </div>
+      </div> -->
       <br>
       <el-tabs v-if="configData.Data" type="border-card">
         <el-tab-pane label="Free Spins发放配置">
@@ -39,7 +39,7 @@ export default {
       subKey: 'free_spin_cfg',
       configData: {
         Data: {
-          Status: false,
+          // Status: false,
           FreeSpinsConfig: {
             // "Status": false,
             // "PersonQuotaLimit": 0, 每日单人道具总额度发放限制
@@ -88,10 +88,9 @@ export default {
         const Data = this.configData.Data
 
         // 确保配置数据的结构完整
-        // 根据ID进行排序
-        if (!Data.Status) {
-          Data.Status = false
-        }
+        // if (!Data.Status) {
+        //   Data.Status = false
+        // }
         if (!Data.FreeSpinsConfig) {
           Data.FreeSpinsConfig = {}
         }
