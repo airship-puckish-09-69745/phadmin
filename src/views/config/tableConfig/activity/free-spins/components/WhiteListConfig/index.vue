@@ -23,6 +23,7 @@
           <el-select
             v-model="formData.SiteId"
             placeholder="请选择"
+            multiple
             style="width: 400px"
             @change="onSiteIdOptionsChange"
           >
@@ -50,7 +51,7 @@ export default {
         // AppId白名单
         AppId: [],
         // SiteId白名单
-        SiteId: ''
+        SiteId: []
       })
     }
   },
@@ -59,7 +60,7 @@ export default {
       formData: {
         IsWhite: false,
         AppId: '',
-        SiteId: ''
+        SiteId: []
       },
       appIdOptions: [
         {
