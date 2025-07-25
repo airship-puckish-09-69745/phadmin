@@ -154,21 +154,42 @@
         <el-form-item label="初始积分：" :required="true">
           <el-input style="width: 200px;" v-model.number="editForm.data.init_score" placeholder="请填写初始积分，默认0" />
         </el-form-item>
-        <el-form-item label="比赛开局暂停时长(秒)：" :required="false">
-          <el-input style="width: 200px;" v-model.number="editForm.data.rule_extra.pause_time" placeholder="默认0,请慎重填写" />
-          <span style="color:red; margin-left:10px">[特殊字段,开局暂停才填数值,请慎重填写,有疑问请联系开发]</span>
-        </el-form-item>
         <el-form-item label="是否SNG：" :required="true">
           <el-switch
-              style="display: block"
-              v-model="editForm.data.rule_type"
-              active-color="#13ce66"
-              inactive-color="#ff4949"
-              :active-value='1'
-              :inactive-value='0'
-              active-text="是"
-              inactive-text="否">
-            </el-switch>
+            style="display: block"
+            v-model="editForm.data.rule_type"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+            :active-value='1'
+            :inactive-value='0'
+            active-text="是"
+            inactive-text="否">
+          </el-switch>
+        </el-form-item>
+        <el-form-item v-if="editForm.data.rule_type===0" label="是否GTCC：" :required="true">
+          <el-switch
+            style="display: block"
+            v-model="editForm.data.rule_extra.is_gtcc"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+            :active-value='1'
+            :inactive-value='0'
+            active-text="是"
+            inactive-text="否">
+          </el-switch>
+          <span v-show="showTip" style="color:red; margin-left:10px"></span>
+          <el-tooltip class="item" effect="light" placement="right-start">
+            <template #content>
+              <div>一个特殊的字段开关,是基于MTT SNG赛制下的一个独立字段</div>
+            </template>
+            <i class="el-icon-info" />
+          </el-tooltip>
+          <span style="color:red; margin-left:10px">[gtcc赛制字段,请慎重勾选,有疑问请联系开发]</span>
+
+        </el-form-item>
+        <el-form-item v-if="editForm.data.rule_extra.is_gtcc===1" label="比赛开局暂停时长(秒)：" :required="false">
+          <el-input style="width: 200px;" v-model.number="editForm.data.rule_extra.pause_time" placeholder="默认0,请慎重填写" />
+          <span style="color:red; margin-left:10px">[特殊字段,开局暂停才填数值,请慎重填写,有疑问请联系开发]</span>
         </el-form-item>
         <fieldset v-for="stageItem in editForm.data.stage_detail"  :key="stageItem.stage_index" style="margin:20px auto;max-height: max-content;min-width: inherit;">
           <legend>比赛{{ stageItem.stage_index }}阶段</legend>
@@ -484,7 +505,7 @@ export default {
         title: "",
         isAdd: false,
         data: {
-          rule_extra:{'pause_time':0},
+          rule_extra:{'pause_time':0,is_gtcc:0},
         }
       },
       AttrNames: {
@@ -636,13 +657,11 @@ export default {
             this.tableData[i].game_id = [gameId]
             //fix rule_extra
             const ruleExtraStr = this.tableData[i].rule_extra;
-            console.log("ruleExtraStr ",ruleExtraStr)
             let rule_extra
             try {
-              rule_extra = ruleExtraStr ? JSON.parse(ruleExtraStr) : { pause_time: 0 };
-              console.log("rule_extra  ",rule_extra)
+              rule_extra = ruleExtraStr ? JSON.parse(ruleExtraStr) : { pause_time: 0,is_gtcc:0 };
             } catch (e) {
-              rule_extra = { pause_time: 0 }; // 解析失败时使用默认值
+              rule_extra = { pause_time: 0,is_gtcc:0 }; // 解析失败时使用默认值
             }
             this.editForm.data.rule_extra = rule_extra;
             break
@@ -665,6 +684,7 @@ export default {
           "update_time": 0,
           "rule_extra":{
             "pause_time":0,
+            "is_gtcc":0,
           }
         }
         this.editForm.isAdd = true
@@ -689,9 +709,9 @@ export default {
             const ruleExtraStr = this.tableData[i].rule_extra;
             let rule_extra
             try {
-              rule_extra = ruleExtraStr ? JSON.parse(ruleExtraStr) : { pause_time: 0 };
+              rule_extra = ruleExtraStr ? JSON.parse(ruleExtraStr) : { pause_time: 0,is_gtcc:0 };
             } catch (e) {
-              rule_extra = { pause_time: 0 }; // 解析失败时使用默认值
+              rule_extra = { pause_time: 0,is_gtcc:0 }; // 解析失败时使用默认值
             }
             this.editForm.data.rule_extra = rule_extra;
 
@@ -894,6 +914,7 @@ export default {
       })
       this.editForm.data.rule_extra = {
         'pause_time':0,
+        'is_gtcc':0,
       }
     },
     saveStage() {
@@ -1090,10 +1111,12 @@ export default {
               return false
             }
           }
-          if (strikeOutStage.system_strike_out.end_rule.end_method == 2 || strikeOutStage.system_strike_out.end_rule.end_method == 3) {
-            if (strikeOutStage.system_strike_out.end_rule.match_minute <= 0 || strikeOutStage.system_strike_out.end_rule.match_minute > 1440) {
-              this.errmsg('打立出局阶段的结束时长值无效！')
-              return false
+          if (this.editForm.data.rule_extra.is_gtcc === 0) { //gtcc 赛制不检查人数数值
+            if (strikeOutStage.system_strike_out.end_rule.end_method == 2 || strikeOutStage.system_strike_out.end_rule.end_method == 3) {
+              if (strikeOutStage.system_strike_out.end_rule.match_minute <= 0 || strikeOutStage.system_strike_out.end_rule.match_minute > 1440) {
+                this.errmsg('打立出局阶段的结束时长值无效！')
+                return false
+              }
             }
           }
           //晋级规则检查
@@ -1176,6 +1199,11 @@ export default {
           this.errmsg('阶段'+(i+1)+'的类型不支持！')
           return false
         }
+      }
+      //sng 不支持GTCC赛制
+      if(this.editForm.data.rule_type == 1 ||this.editForm.data.rule_extra.is_gtcc == 0){
+        this.editForm.data.rule_extra.is_gtcc = 0
+        this.editForm.data.rule_extra.pause_time = 0
       }
       return true
     }
