@@ -439,8 +439,8 @@ export default {
             if ($this.CheatCfg.LeaveFre.length === 3) {
               const LeaveFre = []
               for (let i = 1; i <= 10; i++) {
-                const maybeAdd = 3
-                if ($this.CheatCfg.LeaveFre[i].MaybeAdd !== undefined){
+                let maybeAdd = 3
+                if ($this.CheatCfg.LeaveFre[i] !== undefined) {
                   maybeAdd = $this.CheatCfg.LeaveFre[i].MaybeAdd
                 }
                 LeaveFre.push({
