@@ -951,6 +951,7 @@ export default {
       reachOutNumCfgs: new Map(), // 定局晋级人数
       growTotalNumCfgs: new Map(), // 打立阶段淘汰分轮数
       disuseScoreGrowDetail: new Map(), // 打立阶段淘汰分配置
+      csExtraCfgs:new Map(),          //赛制拓展信息
       csIdCfg: [], // 赛制ID集合
       reubyGrowCfgs: [],
       tableData: [],
@@ -966,7 +967,7 @@ export default {
           name: '',
           gameId: 0,
           csId: 0,
-          opentMatchType: 0,
+          opentMatchType: 0,  //1:SNG 2:MTT
           opentMatchMember: 0,
           repeatType: 0,
           repeatDetail: '',
@@ -1238,7 +1239,7 @@ export default {
                 'label': '[' + objs.list[i].id + ']' + objs.list[i].name,
                 'value': objs.list[i].id,
                 'gameId': [parseInt(objs.list[i].game_id, 10)],
-                'ruleType': objs.list[i].rule_type
+                'ruleType': objs.list[i].rule_type,
               })
               const stage_detail = JSON.parse(objs.list[i].stage_detail)
               // console.log("打立初级信息 ", stage_detail)
@@ -2305,15 +2306,20 @@ export default {
 
         const endNum = this.endNumCfgs.get(this.editForm.data.csId)
         const promoteNum = this.promoteNumCfgs.get(this.editForm.data.csId)
+        const ruleExtra = this.csExtraCfgs.get(this.editForm.data.csId)
 
         if (this.editForm.data.opentMatchType == 2 && this.editForm.data.opentMatchMember < endNum) {
-          this.errmsg('开赛人数不能小于打立出局的结束规则的剩余人数')
-          return false
+          if(ruleExtra == null || ruleExtra.is_gtcc == 0) { //gtcc 赛事不做数值检查
+            this.errmsg('开赛人数不能小于打立出局的结束规则的剩余人数')
+            return false
+          }
         }
 
         if (this.editForm.data.opentMatchType == 2 && this.editForm.data.opentMatchMember < promoteNum) {
-          this.errmsg('开赛人数不能小于打立出局的晋级规则的晋级人数')
-          return false
+          if(ruleExtra == null || ruleExtra.is_gtcc == 0) { //gtcc 赛事不做数值检查
+            this.errmsg('开赛人数不能小于打立出局的晋级规则的晋级人数')
+            return false
+          }
         }
         if (this.editForm.data.opentMatchType == 1) {
           const promotion_user_num = this.reachOutNumCfgs.get(this.editForm.data.csId)
@@ -2919,6 +2925,10 @@ export default {
                   // 存储定局信息
                   this.reachOutNumCfgs.set(objs.list[i].id, stage_detail[j].system_reach_out.round_config[0].promotion_user)
                 }
+              }
+              const csExtra = JSON.parse(objs.list[i].rule_extra)
+              if (csExtra != null) {
+                this.csExtraCfgs.set(objs.list[i].id, csExtra)
               }
             }
           }
