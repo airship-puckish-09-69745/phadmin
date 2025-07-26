@@ -329,6 +329,14 @@
               />
             </el-select>
           </el-form-item>
+
+          <el-form-item label="GTCC线上决赛补位白名单:" :required="true">
+            <el-radio v-for="item in whileListCfgs" :key="item.value" v-model="editForm.signExtra.gtccWhiteList.type" :label="item.value">{{ item.label }}</el-radio>
+          </el-form-item>
+          <el-form-item v-if="editForm.signExtra.gtccWhiteList.type==1" label="白名单设置：" :required="true">
+            <el-input v-model="editForm.signExtra.gtccWhiteList.data" style="width: 400px;" placeholder="多个uid用,分开" />
+          </el-form-item>
+
         </fieldset>
         <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
           <legend>开赛时间</legend>
@@ -1043,7 +1051,11 @@ export default {
             rebuyPropType: 0,
             rebuyPropName: '',
             walletReport: 0 // 电子钱包报表上报 0:上报 1:不上报
-          }
+          },
+          gtccWhiteList: {
+            type: 0,
+            data: ''
+          },
         },
         prizeExtra: {
           awardType: 0,
@@ -1051,7 +1063,7 @@ export default {
           prizeTemplateId: 0,
           rewardType: 1,
           sceneId: 0
-        }
+        },
       },
 
       AttrNames: {
@@ -1724,6 +1736,10 @@ export default {
             rebuyPropCost: 0,
             rebuyPropType: 0,
             rebuyPropName: ''
+          },
+          gtccWhiteList:{
+            type:0,
+            data:''
           }
         }
 
@@ -1792,6 +1808,7 @@ export default {
           this.editForm.whileList.type = whileList.type
           this.editForm.whileList.data = whileList.data
         }
+
         if (editData.repeat_type == 0) {
           this.editForm.loopDetail.onceTime = [new Date(editData.start_time * 1000), new Date(editData.end_time * 1000)]
         } else {
@@ -1811,6 +1828,11 @@ export default {
         this.editForm.signExtra = JSON.parse(editData.sign_extra)
         if (this.editForm.signExtra.reubyExtra === undefined) {
           this.rebuyConfigReset()
+        }
+        if(this.editForm.signExtra.gtccWhiteList === undefined) {
+          this.editForm.signExtra.gtccWhiteList={}
+          this.editForm.signExtra.gtccWhiteList.type = 0
+          this.editForm.signExtra.gtccWhiteList.data=''
         }
         this.editForm.prizeExtra = JSON.parse(editData.prize_extra)
         this.showCsCfgs = []
@@ -2231,9 +2253,17 @@ export default {
       if (this.editForm.whileList.type == 1) {
         // 如果开启白名单，则白名单不可为空
         if (this.editForm.whileList.data == '') {
-          this.errMsg('白名单不可为空！')
+          this.errmsg('白名单不可为空！')
           return false
         }
+      }
+      if(this.editForm.signExtra.gtccWhiteList.type === 1) {
+        if (this.editForm.signExtra.gtccWhiteList.data === '') {
+          this.errmsg('白名单不可为空')
+          return false
+        }
+      }else{
+        this.editForm.signExtra.gtccWhiteList.data = ''
       }
 
       if (this.editForm.data.repeatType == 1) {
