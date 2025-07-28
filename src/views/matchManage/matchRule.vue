@@ -1099,9 +1099,11 @@ export default {
               this.errmsg('打立出局阶段的结束人数值无效！')
               return false
             }
-            if (strikeOutStage.system_strike_out.end_rule.lave_user_number < strikeOutStage.system_strike_out.promotion_rule.user_number) {
-              this.errmsg('打立出局阶段的结束人数不能小于晋级人数！')
-              return false
+            if (this.editForm.data.rule_type == 0 && this.editForm.data.rule_extra.is_gtcc == 0){
+              if (strikeOutStage.system_strike_out.end_rule.lave_user_number < strikeOutStage.system_strike_out.promotion_rule.user_number) {
+                this.errmsg('打立出局阶段的结束人数不能小于晋级人数！')
+                return false
+              }
             }
           }
             if (strikeOutStage.system_strike_out.end_rule.end_method == 2 || strikeOutStage.system_strike_out.end_rule.end_method == 3) {
@@ -1152,23 +1154,23 @@ export default {
             this.errmsg('定局积分阶段的轮次配置不能为空！')
             return false
           }
-          let lastUserNum = reachOutStage.system_reach_out.round_config[0].promotion_user
-          if (this.editForm.data.stage_detail.length > 1) {
+          let lastUserNum = 0
+          if (this.editForm.data.stage_detail.length > 1 && this.editForm.data.rule_type == 0 && this.editForm.data.rule_extra.is_gtcc == 0) {
             lastUserNum = this.editForm.data.stage_detail[0].system_strike_out.promotion_rule.user_number
+            if (lastUserNum < reachOutStage.system_reach_out.round_config[0].promotion_user){
+              this.errmsg('定局积分第1轮人数不能大于打立出局晋级人数')
+              return false
+            }
           }
+          lastUserNum = reachOutStage.system_reach_out.round_config[0].promotion_user
           for (let i=0; i<reachOutStage.system_reach_out.round_config.length; i++) {
             const round = reachOutStage.system_reach_out.round_config[i]
             if (round.play_round <= 0 || round.play_round > 1000) {
               this.errmsg('定局积分第' + round.index + '轮的局数值无效!')
               return false
             }
-            if (i < reachOutStage.system_reach_out.round_config.length - 1) {
               if (round.promotion_user > lastUserNum) {
-                if (i == 0) {
-                  this.errmsg('定局积分第' + round.index + '轮的晋级人数无效!')
-                } else {
-                  this.errmsg('定局积分第' + round.index + '轮的晋级人数不能大于前一轮的晋级人数!')
-                }
+                this.errmsg('定局积分第' + round.index + '轮的晋级人数不能大于前一轮的晋级人数!')
                 return false
               } else if (round.promotion_user % 3 != 0) {
                 this.errmsg('定局积分第' + round.index + '轮的晋级人数必须是3的倍数!')
@@ -1176,7 +1178,6 @@ export default {
               } else {
                 lastUserNum = round.promotion_user
               }
-            }
             if (reachOutStage.system_reach_out.score_method == 1 && round.score_multiple <= 0) {
               this.errmsg('定局积分第' + round.index + '轮的底分开方加倍数无效!')
               return false
