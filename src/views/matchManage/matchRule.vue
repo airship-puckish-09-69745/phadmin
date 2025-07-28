@@ -184,11 +184,11 @@
             </template>
             <i class="el-icon-info" />
           </el-tooltip>
-          <span style="color:red; margin-left:10px">[gtcc赛制字段,请慎重勾选,有疑问请联系开发]</span>
+          <span style="color:red; margin-left:10px">[gtcc赛制字段,请慎重勾选,有疑问请联系开发 勾选会跳过比赛阶段1]</span>
         </el-form-item>
         <fieldset v-for="stageItem in editForm.data.stage_detail"  :key="stageItem.stage_index" style="margin:20px auto;max-height: max-content;min-width: inherit;">
           <legend>比赛{{ stageItem.stage_index }}阶段</legend>
-          <div v-if="stageItem.system_type == 1 && editForm.data.rule_type==0">
+          <div v-if="stageItem.system_type == 1 && (editForm.data.rule_type==0 && editForm.data.rule_extra.is_gtcc == 0)">
             <el-form-item label="赛制类型：" :required="true">
               <el-select v-model="stageItem.system_type" :disabled="true" placeholder="请选择" size="mini">
                 <el-option
@@ -215,7 +215,7 @@
           </div>
 
           <!-- 此处是专配置打立出局相关配置 -->
-          <div v-if="stageItem.system_type == 1 && editForm.data.rule_type==0">
+          <div v-if="stageItem.system_type == 1 && (editForm.data.rule_type==0 && editForm.data.rule_extra.is_gtcc == 0)">
             <!-- 底分增长配置 -->
             <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
               <legend>底分增长配置</legend>
@@ -1104,14 +1104,12 @@ export default {
               return false
             }
           }
-          if (this.editForm.data.rule_extra.is_gtcc === 0) { //gtcc 赛制不检查人数数值
             if (strikeOutStage.system_strike_out.end_rule.end_method == 2 || strikeOutStage.system_strike_out.end_rule.end_method == 3) {
               if (strikeOutStage.system_strike_out.end_rule.match_minute <= 0 || strikeOutStage.system_strike_out.end_rule.match_minute > 1440) {
                 this.errmsg('打立出局阶段的结束时长值无效！')
                 return false
               }
             }
-          }
           //晋级规则检查
           if (strikeOutStage.system_strike_out.promotion_rule.score_sort_type != 1) {
             this.errmsg('打立出局阶段的晋级排行规则不支持！')
