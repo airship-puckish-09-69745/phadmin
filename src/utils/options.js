@@ -26,7 +26,7 @@ export const ITEM_TYPE_OPTIONS = [
   { 'value': 2, 'label': '头像框', disabled: false },
   { 'value': 3, 'label': '德州门票', disabled: false },
   { 'value': 4, 'label': '德州头像框', disabled: false },
-  {'value': 5, 'label': 'SlotFreeSpin', disabled: false}
+  { 'value': 5, 'label': 'SlotFreeSpin', disabled: false }
 ]
 
 // 道具过期时间下拉框
@@ -68,11 +68,11 @@ export const ITEM_STATUS_OPTIONS = [
 
 //头像框常量枚举定义
 export const PROP_TYPE_OPTIONS = {
-  PROP_TYPE_TICKET : 1,        //门票
-  PROP_TYPE_AVATAR_FRAME:2,    //头像框
-  PROP_TYPE_TEXAS_TICKET:3,    //德州参赛券
-  PROP_TYPE_TEXAS_AVATAR:4,    //德州头像框
-  PROP_TYPE_SLOT_FREE_SPIN:5,  //slot freespin
+  PROP_TYPE_TICKET: 1,        //门票
+  PROP_TYPE_AVATAR_FRAME: 2,    //头像框
+  PROP_TYPE_TEXAS_TICKET: 3,    //德州参赛券
+  PROP_TYPE_TEXAS_AVATAR: 4,    //德州头像框
+  PROP_TYPE_SLOT_FREE_SPIN: 5,  //slot freespin
 }
 // 操作类型
 export const PROP_SOURCE_OPTIONS = [
@@ -127,5 +127,4 @@ export const MATCH_UNIQUE_ID_CFG =[
   { 'value': 10006, 'label': 'P100' },
   { 'value': 10007, 'label': 'P300' },
   { 'value': 10008, 'label': 'GTCC 2005' },
-  { 'value': 10009, 'label': 'Yamaha Moto' }
 ]

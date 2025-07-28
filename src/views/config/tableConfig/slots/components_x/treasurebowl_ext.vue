@@ -132,6 +132,7 @@
       </el-form>
 
       <el-button type="primary" @click="addConfigRow">添加</el-button>
+      <el-button type="primary" @click="buyFreeOddsRtp">检测RTP</el-button>
       <el-table :data="buyFreeOddsConf.currentConf">
         <el-table-column prop="MinOdds" label="目标倍数开始[" width="120">
           <template slot-scope="scope">
@@ -193,7 +194,8 @@ export default {
       default: function() {
         return {}
       }
-    }
+    },
+    baseBet: Number
   },
   data() {
     return {
@@ -272,8 +274,26 @@ export default {
         .split(',')
         .map(b => parseFloat(b.trim()) * 1000)
         .filter(b => !isNaN(b))
+
+      if (this.checkBuyFreeOdds(currentBets) === false) {
+        return
+      }
+      if (this.buyFreeOddsConf.editIndex >= 0) {
+        this.$set(this.cfg.BuyFreeOddsConf, this.buyFreeOddsConf.editIndex, {
+          Bet: currentBets,
+          Items: this.buyFreeOddsConf.currentConf
+        })
+      } else {
+        this.cfg.BuyFreeOddsConf.push({
+          Bet: currentBets,
+          Items: this.buyFreeOddsConf.currentConf
+        })
+      }
+      this.buyFreeOddsConf.dialogVisible = false
+    },
+    checkBuyFreeOdds(currentBets) {
+      let weightTotal = 0
       const existingBets = new Set()
-      console.log('currentBets', currentBets)
       if (!this.cfg.BuyFreeOddsConf) {
         this.cfg.BuyFreeOddsConf = []
       }
@@ -288,30 +308,41 @@ export default {
       for (const bet of currentBets) {
         if (existingBets.has(bet)) {
           Message.error(`已经存在相同的${bet / 1000}Bet值`)
-          return
+          return false
         }
       }
 
-      // 检查
+      // 检查Odds
       for (const item of this.buyFreeOddsConf.currentConf) {
         if (item.MinOdds > item.MaxOdds) {
           Message.error(`目标倍数开始(${item.MinOdds})不能大于目标倍数结束(${item.MaxOdds})`)
-          return
+          return false
         }
+        weightTotal += item.InWeight
       }
 
-      if (this.buyFreeOddsConf.editIndex >= 0) {
-        this.$set(this.cfg.BuyFreeOddsConf, this.buyFreeOddsConf.editIndex, {
-          Bet: currentBets,
-          Items: this.buyFreeOddsConf.currentConf
-        })
-      } else {
-        this.cfg.BuyFreeOddsConf.push({
-          Bet: currentBets,
-          Items: this.buyFreeOddsConf.currentConf
-        })
+      // 检查rtp
+      let rtp = 0
+      for (const item of this.buyFreeOddsConf.currentConf) {
+        rtp += (item.MinOdds + item.MaxOdds) / 2 * item.InWeight / weightTotal / this.cfg.BuyFreeOdds / this.baseBet * 100
       }
-      this.buyFreeOddsConf.dialogVisible = false
+      if (rtp >= 100) {
+        Message.error(`当前RTP(${rtp})大于等于100%`)
+        return false
+      }
+      return true
+    },
+    buyFreeOddsRtp() {
+      let weightTotal = 0
+      for (const item of this.buyFreeOddsConf.currentConf) {
+        weightTotal += item.InWeight
+      }
+      // rtp
+      let rtp = 0
+      for (const item of this.buyFreeOddsConf.currentConf) {
+        rtp += (item.MinOdds + item.MaxOdds) / 2 * item.InWeight / weightTotal / this.cfg.BuyFreeOdds / this.baseBet * 100
+      }
+      Message.info(`当前RTP(${rtp})`)
     }
   }
 }

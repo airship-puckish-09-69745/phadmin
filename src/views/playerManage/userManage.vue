@@ -159,7 +159,7 @@
             <el-tag v-if="credit.blackList.length > 0" type="danger">高危</el-tag>
             <el-button type="success" size="mini" style="margin-left: 10px;" @click="TagCreditDetail=true">详情</el-button>
           </el-descriptions-item>
-          <el-descriptions-item label="tongits信任分：" :span="1" v-if="env=='test'" >
+          <el-descriptions-item label="tongits信任分：" :span="1" >
             <el-tag>{{ formatNumber(item.TrustScore) }}</el-tag>
             <el-tag v-if="item.TrustType == 4" type="success">低信用户</el-tag>
             <el-tag v-if="item.TrustType == 5" type="success">高信用户</el-tag>

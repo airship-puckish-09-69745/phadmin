@@ -2029,6 +2029,20 @@ export const asyncRoutes = [
             meta: { title: '活动地图配置', noCache: true }
           }
         ]
+      },
+      {
+        path: 'freeSpins',
+        component: () => import('@/views/empty'),
+        name: 'freeSpins',
+        meta: { title: 'Free Spins配置', noCache: true },
+        children: [
+          {
+            path: 'freeSpins',
+            component: () => import('@/views/config/tableConfig/activity/free-spins/index.vue'),
+            name: 'freeSpins',
+            meta: { title: 'Free Spins配置', noCache: true }
+          }
+        ]
       }
     ]
   },
