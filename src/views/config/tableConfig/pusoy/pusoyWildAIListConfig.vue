@@ -18,6 +18,7 @@
         添加机器人
       </el-button>
       <el-button type="success" size="mini" icon="el-icon-refresh" @click="refresh">刷新</el-button>
+      <el-button type="info" size="mini" icon="el-icon-data-analysis" @click="showChartDialog">图表查询</el-button>
       <!--   <el-col :span="2" :offset="1">
       <el-upload
         class="upload-demo"
@@ -406,6 +407,36 @@
     <!--对比组件-->
     <compare ref="compare" />
 
+    <el-dialog title="机器人数据图表" :visible.sync="chartDialog.visible" width="80%" @close="closeChartDialog">
+      <el-form :model="chartDialog.form" label-width="100px" style="margin-bottom: 20px;">
+        <el-form-item label="场次:">
+          <el-select v-model="chartDialog.form.tableMoney" placeholder="请选择场次" style="width: 100%;">
+            <el-option
+              v-for="item in tableMoneyOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="时间范围:">
+          <el-date-picker
+            v-model="chartDialog.form.dateRange"
+            type="datetimerange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            value-format="timestamp"            style="width: 100%;">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="getRobotList">查询</el-button>
+        </el-form-item>
+      </el-form>
+      <el-row>
+        <line-chart :chart-data="chartData" :max="maxy"  height="600px" />
+      </el-row>
+    </el-dialog>
   </div>
 </template>
 
@@ -414,6 +445,7 @@ import { Message } from 'element-ui'
 import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import request from '@/utils/request'
+import LineChart from '../../../playerManage/components/LineChart'
 import { $libDate, $libShow, ClientTableData, DataRule, MoneyShow } from '@/utils/common'
 import RobotRecycleBtn from '@/components/RobotRecycleBtn'
 const filterMap = {
@@ -425,7 +457,7 @@ function newItem() {
 }
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: { Compare, Publish, RobotRecycleBtn },
+  components: { Compare, Publish, RobotRecycleBtn, LineChart },
   data() {
     return {
       item: {
@@ -433,6 +465,7 @@ export default {
       }, // 奖励
       betMoneyList: '5,1',
       Ratio: 900,
+      gid: 126,
       statNames: { 0: '冻结', 1: '正常', 2: '游戏中' },
       walletNames: { 0: '转账钱包', 1: '单一钱包' },
       libShow: $libShow,
@@ -449,7 +482,18 @@ export default {
       },
       statItems: [],
       subKey: 'pusoywild_ai_list_cfg',
-      timeYesterday: new Date().getTime() - 86400 * 1000
+      timeYesterday: new Date().getTime() - 86400 * 1000,
+      chartData: {},
+      maxy: 0,
+      ratioData: [],
+      tableMoneyOptions: [], // 场次选项
+      chartDialog: {
+        visible: false,
+        form: {
+          tableMoney: [],
+          dateRange: []
+        }
+      }
     }
   },
 
@@ -527,6 +571,103 @@ export default {
           }
         })
       })
+    },
+    showChartDialog() {
+      this.chartDialog.visible = true
+      this.initChartDialog()
+    },
+    initChartDialog() {
+      // 初始化场次选项
+      this.tableMoneyOptions = []
+      if (this.statItems && this.statItems.length > 0) {
+        this.statItems.forEach(item => {
+          this.tableMoneyOptions.push({
+            value: item.tableMoney,
+            label: `${item.tableMoney}`
+          })
+        })
+      }
+
+      // 初始化时间范围为今天
+      const now = new Date()
+      const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+      const endOfDay = new Date(startOfDay)
+      endOfDay.setDate(startOfDay.getDate() + 1)
+
+      this.chartDialog.form.dateRange = [startOfDay.getTime(), endOfDay.getTime()]
+    },
+    // 关闭图表弹窗
+    closeChartDialog() {
+      if (this.chartInstance) {
+        this.chartInstance.dispose()
+        this.chartInstance = null
+      }
+    },
+    getRequestParams() {
+      const startTime = Math.floor(this.chartDialog.form.dateRange[0] / 1000)
+      const endTime = Math.floor(this.chartDialog.form.dateRange[1] / 1000)
+
+      const params = {
+        Path: '/log/robotlog',
+        gid: this.gid,
+        tableMoney: this.chartDialog.form.tableMoney * 1000,
+        startTime: startTime,
+        endTime: endTime
+      }
+      return params
+    },
+    getRobotList() {
+      const params = this.getRequestParams()
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: params
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.tableData = []
+          // this.pagination.total = 0
+          const {
+            list,
+            max,
+          } = response.Data
+          // console.log('表格数据', list)
+          // console.log('折线图数据', max)
+
+          if (list && list.length > 0) {
+            this.ratioData = list
+            this.maxy = max
+            this.drawLineChart()
+          } else {
+            this.$message.warning('没有折线图数据')
+          }
+        }
+      })
+    },
+    drawLineChart() {
+      function addZero(num) {
+        return num < 10 ? '0' + num : num
+      }
+
+      const yData = [
+        { Name: '机器人数量', Data: [] }
+      ]
+      const xData = []
+      this.ratioData.forEach(item => {
+        // 计算库存百分比
+        yData[0].Data.push(item.count)
+        // 横轴时间：MM-DD HH:mm
+        const date = new Date(item.send_time * 1000)
+        xData.push(`${addZero(date.getMonth() + 1)}-${addZero(date.getDate())} ${addZero(date.getHours())}:${addZero(date.getMinutes())}`)
+      })
+
+      // console.log('折线图数据-yData ', yData)
+      // console.log('折线图数据', this.maxy)
+
+      this.chartData = {
+        xData,
+        yData,
+        yShow: true
+      }
     },
     handlePreOn(ob) {
       console.log(ob.uid)
