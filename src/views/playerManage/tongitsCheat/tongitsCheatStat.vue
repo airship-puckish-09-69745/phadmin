@@ -48,7 +48,7 @@
         />
         <el-table-column
           prop="login_high_score_cnt"
-          label="今日登录高信用户"
+          label="今日游戏高信用户"
           width="150"
         >
         </el-table-column>
@@ -60,7 +60,7 @@
         </el-table-column>
         <el-table-column
           prop="login_low_score_cnt"
-          label="今日登录低信用户"
+          label="今日游戏低信用户"
           width="150"
         >
         </el-table-column>
@@ -72,7 +72,7 @@
         </el-table-column>
         <el-table-column
           prop="login_suspect_cnt"
-          label="今日登录疑似用户"
+          label="今日游戏疑似用户"
           width="150"
         />
         <el-table-column
@@ -83,7 +83,7 @@
         </el-table-column>
         <el-table-column
           prop="login_black_cnt"
-          label="今日登录黑子用户"
+          label="今日游戏黑子用户"
           width="150"
         >
         </el-table-column>
