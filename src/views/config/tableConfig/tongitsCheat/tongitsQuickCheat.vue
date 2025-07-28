@@ -390,6 +390,7 @@ export default {
       })
     },
     getData() {
+      // console.log(getData)
       const $this = this
       request({
         url: '/customizeconfig/one',
@@ -419,6 +420,52 @@ export default {
                 }
               ]
             }
+            if ($this.CheatCfg.GiveMoreTimes[0].BlackAdd === undefined) {
+              for (let i = 0; i < $this.CheatCfg.GiveMoreTimes.length; i++) {
+                $this.CheatCfg.GiveMoreTimes[i].BlackAdd = 3
+              }
+            }
+            if ($this.CheatCfg.DisAndGive.BlackAdd === undefined) {
+              $this.CheatCfg.DisAndGive.BlackAdd = 3
+            }
+            if ($this.CheatCfg.FirstGiveMoreTimes[0].BlackAdd === undefined) {
+              for (let i = 0; i < $this.CheatCfg.FirstGiveMoreTimes.length; i++) {
+                $this.CheatCfg.FirstGiveMoreTimes[i].BlackAdd = 3
+              }
+            }
+            if ($this.CheatCfg.BigPotWin[0].BlackAdd === undefined) {
+              for (let i = 0; i < $this.CheatCfg.BigPotWin.length; i++) {
+                $this.CheatCfg.BigPotWin[i].BlackAdd = 3
+              }
+            }
+            if ($this.CheatCfg.BigPotLeave[0].BlackAdd === undefined) {
+              for (let i = 0; i < $this.CheatCfg.BigPotLeave.length; i++) {
+                $this.CheatCfg.BigPotLeave[i].BlackAdd = 3
+              }
+            }
+            if ($this.CheatCfg.PlayMoreTimes[0].BlackAdd === undefined) {
+              for (let i = 0; i < $this.CheatCfg.PlayMoreTimes.length; i++) {
+                $this.CheatCfg.PlayMoreTimes[i].BlackAdd = 3
+              }
+            }
+            if ($this.CheatCfg.SameName.BlackAdd === undefined) {
+              $this.CheatCfg.SameName.BlackAdd = 3
+            }
+            if ($this.CheatCfg.LeaveFre.length === 3) {
+              const LeaveFre = []
+              for (let i = 1; i <= 10; i++) {
+                let maybeAdd = 3
+                if ($this.CheatCfg.LeaveFre[i] !== undefined) {
+                  maybeAdd = $this.CheatCfg.LeaveFre[i].MaybeAdd
+                }
+                LeaveFre.push({
+                  Per: i * 10,
+                  MaybeAdd: maybeAdd
+                })
+              }
+              $this.CheatCfg.LeaveFre = LeaveFre
+            }
+            // eslint-disable-next-line no-prototype-builtins
             if (!$this.CheatCfg.hasOwnProperty('SameName')) {
               $this.CheatCfg.SameName = {
                 MaybeAdd: 3
@@ -450,7 +497,8 @@ export default {
         const item = this.CheatCfg.GiveMoreTimes[i]
         GiveMoreTimes.push({
           Count: parseInt(item.Count),
-          MaybeAdd: parseInt(item.MaybeAdd)
+          MaybeAdd: parseInt(item.MaybeAdd),
+          BlackAdd: parseInt(item.BlackAdd)
         })
       }
       this.CheatCfg.GiveMoreTimes = GiveMoreTimes
@@ -459,17 +507,20 @@ export default {
         const item = this.CheatCfg.FirstGiveMoreTimes[i]
         FirstGiveMoreTimes.push({
           Per: parseInt(item.Per),
-          MaybeAdd: parseInt(item.MaybeAdd)
+          MaybeAdd: parseInt(item.MaybeAdd),
+          BlackAdd: parseInt(item.BlackAdd)
         })
       }
       this.CheatCfg.FirstGiveMoreTimes = FirstGiveMoreTimes
       const DisAndGive = {
         Count: parseInt(this.CheatCfg.DisAndGive.Count),
-        MaybeAdd: parseInt(this.CheatCfg.DisAndGive.MaybeAdd)
+        MaybeAdd: parseInt(this.CheatCfg.DisAndGive.MaybeAdd),
+        BlackAdd: parseInt(this.CheatCfg.DisAndGive.BlackAdd)
       }
       this.CheatCfg.DisAndGive = DisAndGive
       const SameName = {
-        MaybeAdd: parseInt(this.CheatCfg.SameName.MaybeAdd)
+        MaybeAdd: parseInt(this.CheatCfg.SameName.MaybeAdd),
+        BlackAdd: parseInt(this.CheatCfg.SameName.BlackAdd)
       }
       this.CheatCfg.SameName = SameName
       const playMoreTimes = []
@@ -477,7 +528,8 @@ export default {
         const item = this.CheatCfg.PlayMoreTimes[i]
         playMoreTimes.push({
           Count: parseInt(item.Count),
-          MaybeAdd: parseInt(item.MaybeAdd)
+          MaybeAdd: parseInt(item.MaybeAdd),
+          BlackAdd: parseInt(item.BlackAdd)
         })
       }
       this.CheatCfg.PlayMoreTimes = playMoreTimes
@@ -515,7 +567,8 @@ export default {
         const item = this.CheatCfg.BigPotWin[i]
         BigPotWin.push({
           Count: parseInt(item.Count),
-          MaybeAdd: parseInt(item.MaybeAdd)
+          MaybeAdd: parseInt(item.MaybeAdd),
+          BlackAdd: parseInt(item.BlackAdd)
         })
       }
       this.CheatCfg.BigPotWin = BigPotWin
@@ -524,7 +577,8 @@ export default {
         const item = this.CheatCfg.BigPotLeave[i]
         BigPotLeave.push({
           Count: parseInt(item.Count),
-          MaybeAdd: parseInt(item.MaybeAdd)
+          MaybeAdd: parseInt(item.MaybeAdd),
+          BlackAdd: parseInt(item.BlackAdd)
         })
       }
       this.CheatCfg.BigPotLeave = BigPotLeave
@@ -655,34 +709,41 @@ export default {
                 </td>
               </tr>
             </tbody>
+            <tbody>
+              <tr>
+                <td>和黑子额外加分</td>
+                <td v-for="(item, index) in CheatCfg.GiveMoreTimes" :key="'h'+index">
+                  <el-input v-model="item.BlackAdd" type="number" size="medium" style="width: 120px" />
+                </td>
+              </tr>
+            </tbody>
           </table>
         </div>
         <div class="table-container">
           <h5 class="title">打一局放弃pot离桌：</h5>
-          <el-form v-model="CheatCfg" label-width="150px" style="margin-top: 10px">
-            <el-form-item label="增加疑似分">
-              <el-input v-model.number="CheatCfg.LeaveFre[1].MaybeAdd" type="number" size="medium" style="width: 120px" />
-            </el-form-item>
-          </el-form>
-<!--          <h5 class="title">频繁换桌：近五局换桌概率</h5>-->
-<!--          <table class="support-table">-->
-<!--            <thead>-->
-<!--              <tr>-->
-<!--                <th>频繁换桌概率</th>-->
-<!--                <th v-for="(item, index) in CheatCfg.LeaveFre" :key="'h'+index">-->
-<!--                  {{ item.Per }}%-->
-<!--                </th>-->
-<!--              </tr>-->
-<!--            </thead>-->
-<!--            <tbody>-->
-<!--              <tr>-->
-<!--                <td>增加疑似度</td>-->
-<!--                <td v-for="(item, index) in CheatCfg.LeaveFre" :key="'h'+index">-->
-<!--                  <el-input v-model="item.MaybeAdd" class="centered-input" type="number" size="medium" style="width: 120px" />-->
-<!--                </td>-->
-<!--              </tr>-->
-<!--            </tbody>-->
-<!--          </table>-->
+          <table class="support-table">
+            <thead>
+              <tr>
+                <th>连续触发局数</th>
+                <th v-for="(item, index) in CheatCfg.LeaveFre" :key="'h'+index">
+                  {{ item.Per*10/100 }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>增加疑似度</td>
+                <td v-for="(item, index) in CheatCfg.LeaveFre" :key="'h'+index">
+                  <el-input v-model="item.MaybeAdd" type="number" size="medium" style="width: 120px" />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <!--          <el-form v-model="CheatCfg" label-width="150px" style="margin-top: 10px">-->
+          <!--            <el-form-item label="增加疑似分">-->
+          <!--              <el-input v-model.number="CheatCfg.LeaveFre[1].MaybeAdd" type="number" size="medium" style="width: 120px" />-->
+          <!--            </el-form-item>-->
+          <!--          </el-form>-->
         </div>
         <div class="table-container">
           <h5 class="title">皇冠⾼分Fight：皇冠⽐Challenge玩家⾼多少分Fight</h5>
@@ -760,6 +821,9 @@ export default {
             <el-form-item label="拆成牌喂牌">
               <el-input v-model.number="CheatCfg.DisAndGive.MaybeAdd" type="number" size="medium" style="width: 120px" />
             </el-form-item>
+            <el-form-item label="和黑子额外加分">
+              <el-input v-model.number="CheatCfg.DisAndGive.BlackAdd" type="number" size="medium" style="width: 120px" />
+            </el-form-item>
           </el-form>
           <h5 class="title">多局⾸出被吃</h5>
           <table class="support-table">
@@ -778,6 +842,14 @@ export default {
                   <el-input v-model="item.MaybeAdd" class="center-input" type="number" />
                 </td>
               </tr>
+            </tbody>
+            <tbody>
+            <tr>
+              <td>和黑子额外疑似度</td>
+              <td v-for="(item, index) in CheatCfg.FirstGiveMoreTimes" :key="'h'+index">
+                <el-input v-model="item.BlackAdd" class="center-input" type="number" />
+              </td>
+            </tr>
             </tbody>
           </table>
         </div>
@@ -801,6 +873,14 @@ export default {
                 </td>
               </tr>
             </tbody>
+            <tbody>
+            <tr>
+              <td>和黑子额外加分</td>
+              <td v-for="(item, index) in CheatCfg.BigPotWin" :key="'h'+index">
+                <el-input v-model="item.BlackAdd" type="number" size="medium" style="width: 120px" />
+              </td>
+            </tr>
+            </tbody>
           </table>
         </div>
         <div class="table-container">
@@ -821,6 +901,14 @@ export default {
                   <el-input v-model="item.MaybeAdd" type="number" size="medium" style="width: 120px" />
                 </td>
               </tr>
+            </tbody>
+            <tbody>
+            <tr>
+              <td>和黑子额外加分</td>
+              <td v-for="(item, index) in CheatCfg.BigPotLeave" :key="'h'+index">
+                <el-input v-model="item.BlackAdd" type="number" size="medium" style="width: 120px" />
+              </td>
+            </tr>
             </tbody>
           </table>
         </div>
@@ -843,6 +931,14 @@ export default {
                 </td>
               </tr>
             </tbody>
+            <tbody>
+            <tr>
+              <td>和黑子额外加分</td>
+              <td v-for="(item, index) in CheatCfg.PlayMoreTimes" :key="'h'+index">
+                <el-input v-model="item.BlackAdd" type="number" size="medium" style="width: 120px" />
+              </td>
+            </tr>
+            </tbody>
           </table>
         </div>
         <div class="table-container">
@@ -850,6 +946,9 @@ export default {
           <el-form v-model="CheatCfg" label-width="150px" style="margin-top: 10px">
             <el-form-item label="名字相似度高于70%">
               <el-input v-model.number="CheatCfg.SameName.MaybeAdd" type="number" size="medium" style="width: 120px" />
+            </el-form-item>
+            <el-form-item label="和黑子额外加分">
+              <el-input v-model.number="CheatCfg.SameName.BlackAdd" type="number" size="medium" style="width: 120px" />
             </el-form-item>
           </el-form>
         </div>

@@ -329,6 +329,14 @@
               />
             </el-select>
           </el-form-item>
+
+          <el-form-item label="GTCC线上决赛补位白名单:" :required="true">
+            <el-radio v-for="item in whileListCfgs" :key="item.value" v-model="editForm.signExtra.gtccWhiteList.type" :label="item.value">{{ item.label }}</el-radio>
+          </el-form-item>
+          <el-form-item v-if="editForm.signExtra.gtccWhiteList.type==1" label="白名单设置：" :required="true">
+            <el-input v-model="editForm.signExtra.gtccWhiteList.data" style="width: 400px;" placeholder="多个uid用,分开" />
+          </el-form-item>
+
         </fieldset>
         <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
           <legend>开赛时间</legend>
@@ -951,6 +959,7 @@ export default {
       reachOutNumCfgs: new Map(), // 定局晋级人数
       growTotalNumCfgs: new Map(), // 打立阶段淘汰分轮数
       disuseScoreGrowDetail: new Map(), // 打立阶段淘汰分配置
+      csExtraCfgs:new Map(),          //赛制拓展信息
       csIdCfg: [], // 赛制ID集合
       reubyGrowCfgs: [],
       tableData: [],
@@ -966,7 +975,7 @@ export default {
           name: '',
           gameId: 0,
           csId: 0,
-          opentMatchType: 0,
+          opentMatchType: 0,  //1:SNG 2:MTT
           opentMatchMember: 0,
           repeatType: 0,
           repeatDetail: '',
@@ -1042,7 +1051,11 @@ export default {
             rebuyPropType: 0,
             rebuyPropName: '',
             walletReport: 0 // 电子钱包报表上报 0:上报 1:不上报
-          }
+          },
+          gtccWhiteList: {
+            type: 0,
+            data: ''
+          },
         },
         prizeExtra: {
           awardType: 0,
@@ -1050,7 +1063,7 @@ export default {
           prizeTemplateId: 0,
           rewardType: 1,
           sceneId: 0
-        }
+        },
       },
 
       AttrNames: {
@@ -1238,7 +1251,7 @@ export default {
                 'label': '[' + objs.list[i].id + ']' + objs.list[i].name,
                 'value': objs.list[i].id,
                 'gameId': [parseInt(objs.list[i].game_id, 10)],
-                'ruleType': objs.list[i].rule_type
+                'ruleType': objs.list[i].rule_type,
               })
               const stage_detail = JSON.parse(objs.list[i].stage_detail)
               // console.log("打立初级信息 ", stage_detail)
@@ -1723,6 +1736,10 @@ export default {
             rebuyPropCost: 0,
             rebuyPropType: 0,
             rebuyPropName: ''
+          },
+          gtccWhiteList:{
+            type:0,
+            data:''
           }
         }
 
@@ -1791,6 +1808,7 @@ export default {
           this.editForm.whileList.type = whileList.type
           this.editForm.whileList.data = whileList.data
         }
+
         if (editData.repeat_type == 0) {
           this.editForm.loopDetail.onceTime = [new Date(editData.start_time * 1000), new Date(editData.end_time * 1000)]
         } else {
@@ -1810,6 +1828,11 @@ export default {
         this.editForm.signExtra = JSON.parse(editData.sign_extra)
         if (this.editForm.signExtra.reubyExtra === undefined) {
           this.rebuyConfigReset()
+        }
+        if(this.editForm.signExtra.gtccWhiteList === undefined) {
+          this.editForm.signExtra.gtccWhiteList={}
+          this.editForm.signExtra.gtccWhiteList.type = 0
+          this.editForm.signExtra.gtccWhiteList.data=''
         }
         this.editForm.prizeExtra = JSON.parse(editData.prize_extra)
         this.showCsCfgs = []
@@ -2230,9 +2253,17 @@ export default {
       if (this.editForm.whileList.type == 1) {
         // 如果开启白名单，则白名单不可为空
         if (this.editForm.whileList.data == '') {
-          this.errMsg('白名单不可为空！')
+          this.errmsg('白名单不可为空！')
           return false
         }
+      }
+      if(this.editForm.signExtra.gtccWhiteList.type === 1) {
+        if (this.editForm.signExtra.gtccWhiteList.data === '') {
+          this.errmsg('白名单不可为空')
+          return false
+        }
+      }else{
+        this.editForm.signExtra.gtccWhiteList.data = ''
       }
 
       if (this.editForm.data.repeatType == 1) {
@@ -2305,15 +2336,20 @@ export default {
 
         const endNum = this.endNumCfgs.get(this.editForm.data.csId)
         const promoteNum = this.promoteNumCfgs.get(this.editForm.data.csId)
+        const ruleExtra = this.csExtraCfgs.get(this.editForm.data.csId)
 
         if (this.editForm.data.opentMatchType == 2 && this.editForm.data.opentMatchMember < endNum) {
-          this.errmsg('开赛人数不能小于打立出局的结束规则的剩余人数')
-          return false
+          if(ruleExtra == null || ruleExtra.is_gtcc == 0) { //gtcc 赛事不做数值检查
+            this.errmsg('开赛人数不能小于打立出局的结束规则的剩余人数')
+            return false
+          }
         }
 
         if (this.editForm.data.opentMatchType == 2 && this.editForm.data.opentMatchMember < promoteNum) {
-          this.errmsg('开赛人数不能小于打立出局的晋级规则的晋级人数')
-          return false
+          if(ruleExtra == null || ruleExtra.is_gtcc == 0) { //gtcc 赛事不做数值检查
+            this.errmsg('开赛人数不能小于打立出局的晋级规则的晋级人数')
+            return false
+          }
         }
         if (this.editForm.data.opentMatchType == 1) {
           const promotion_user_num = this.reachOutNumCfgs.get(this.editForm.data.csId)
@@ -2919,6 +2955,10 @@ export default {
                   // 存储定局信息
                   this.reachOutNumCfgs.set(objs.list[i].id, stage_detail[j].system_reach_out.round_config[0].promotion_user)
                 }
+              }
+              const csExtra = JSON.parse(objs.list[i].rule_extra)
+              if (csExtra != null) {
+                this.csExtraCfgs.set(objs.list[i].id, csExtra)
               }
             }
           }
