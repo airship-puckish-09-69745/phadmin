@@ -437,7 +437,13 @@ export default {
               }
               $this.CheatCfg.FirstGiveMoreTimes = FirstGiveMoreTimes
             }
-
+            if ($this.CheatCfg.FirstGiveMoreTimes.length === 10) {
+              for (let i = 0; i < 10; i++) {
+                if ($this.CheatCfg.FirstGiveMoreTimes[i].Count === undefined){
+                  $this.CheatCfg.FirstGiveMoreTimes[i].Count = i + 1
+                }
+              }
+            }
             if ($this.CheatCfg.BigPotWin[0].BlackAdd === undefined) {
               for (let i = 0; i < $this.CheatCfg.BigPotWin.length; i++) {
                 $this.CheatCfg.BigPotWin[i].BlackAdd = 3
