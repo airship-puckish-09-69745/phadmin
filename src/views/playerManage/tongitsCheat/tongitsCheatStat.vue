@@ -2,11 +2,19 @@
   <div class="app-container">
     <el-row>
       <el-form :model="item" label-width="90px" :inline="true" size="small">
-        <el-form-item label="日期：">
+        <el-form-item label="游戏：" :required="true">
+          <el-select v-model="item.gid" placeholder="请选择">
+            <el-option label="tongits" :value="0" />
+            <el-option label="tongits pot" :value="22" />
+            <el-option label="tongits laizi" :value="28" />
+            <el-option label="tongits quick" :value="29" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="开始日期：">
           <el-date-picker
             v-model="item.start"
             value-format="timestamp"
-            type="datetime"
+            type="date"
             placeholder="选择日期"
             size="mini"
           />
@@ -15,7 +23,7 @@
           <el-date-picker
             v-model="item.end"
             value-format="timestamp"
-            type="datetime"
+            type="date"
             placeholder="选择日期"
             size="mini"
           />
@@ -129,8 +137,8 @@ export default {
       appInfo: [],
       env: 'dev',
       item: {
-        gid: 22,
-        start: $libDate.GetDayBegin(new Date().getTime()), // Date.parse(new Date(this.dDate(0, 30))),
+        gid: 0,
+        start: $libDate.GetDayBegin(new Date().getTime()-86400*7*1000), // Date.parse(new Date(this.dDate(0, 30))),
         end: $libDate.GetDayEnd(new Date().getTime()) // Date.parse(new Date()),
       },
       tableData: [],
@@ -194,7 +202,7 @@ export default {
         data: {
           Env: this.env,
           Path: '/misc/tongits/cheat/stat',
-          gid: 22,
+          gid: this.item.gid,
           from: this.item.start / 1000,
           to: this.item.end / 1000,
           page: this.currentPage,

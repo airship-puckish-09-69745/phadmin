@@ -115,7 +115,6 @@ export const  BET_SCENES_CFG_OPTIONS = [
 
 ]
 
-
 // 比赛全局ID集合
 export const MATCH_UNIQUE_ID_CFG =[
   { 'value': 0, 'label': '无' },
@@ -127,4 +126,14 @@ export const MATCH_UNIQUE_ID_CFG =[
   { 'value': 10006, 'label': 'P100' },
   { 'value': 10007, 'label': 'P300' },
   { 'value': 10008, 'label': 'GTCC 2005' },
+]
+
+//牌桌TableId
+export const MATCH_TABLE_SCENE_ID_CFG =[
+  { 'value': 0, 'label': '无' },
+  { 'value': 1, 'label': 'Table1' },
+  { 'value': 2, 'label': 'Table2' },
+  { 'value': 3, 'label': 'Table3' },
+  { 'value': 4, 'label': 'Table4' },
+  { 'value': 5, 'label': 'Table5' },
 ]
