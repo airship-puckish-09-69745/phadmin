@@ -150,6 +150,7 @@ export default {
         this.$message.warning('内容不能为空!')
         return false
       }
+      alert(this.formData.BroadcastType)
       if (!this.formData.BroadcastType) {
         this.$message.warning('类型不能为空!')
         return false
@@ -224,7 +225,7 @@ export default {
         // 渠道
         Channel: '',
         // 播报类型
-        BroadcastType: [],
+        BroadcastType: '',
         // 内容
         Content: '',
         // 标题
