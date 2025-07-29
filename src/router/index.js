@@ -1417,9 +1417,9 @@ export const asyncRoutes = [
             meta: { title: '审核环境', noCache: true },
             children: [
               {
-                path: 'arcaneegypt_slots_cfg',
+                path: 'arcaneegyptmars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/arcaneegyptmars_slots_cfg.vue'),
-                name: 'arcaneegypt_slots_cfg',
+                name: 'arcaneegyptmars_slots_cfg',
                 meta: { title: 'Arcane Egypt(审)' }
               },
               {
@@ -1475,6 +1475,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/luckywineglassmars_slots_cfg'),
                 name: 'luckywineglassmars_slots_cfg',
                 meta: { title: 'LuckyWineglass(审)' }
+              },
+              {
+                path: 'luckyspiritsmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/luckyspiritsmars_slots_cfg'),
+                name: 'luckyspiritsmars_slots_cfg',
+                meta: { title: 'LuckySpirits(审)' }
               },
               {
                 path: 'crazy777mars_slots_cfg',
@@ -3186,6 +3192,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'luckywineglassmars_slots_log',
             meta: { title: 'LuckyWineglass(审)', gid: 207 }
+          },
+          {
+            path: 'luckyspiritsmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'luckyspiritsmars_slots_log',
+            meta: { title: 'LuckySpirits(审)', gid: 211 }
           },
           {
             path: 'fortunateebisumars_slots_log',
