@@ -156,19 +156,39 @@
         </el-form-item>
         <el-form-item label="是否SNG：" :required="true">
           <el-switch
-              style="display: block"
-              v-model="editForm.data.rule_type"
-              active-color="#13ce66"
-              inactive-color="#ff4949"
-              :active-value='1'
-              :inactive-value='0'
-              active-text="是"
-              inactive-text="否">
-            </el-switch>
+            style="display: block"
+            v-model="editForm.data.rule_type"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+            :active-value='1'
+            :inactive-value='0'
+            active-text="是"
+            inactive-text="否">
+          </el-switch>
+        </el-form-item>
+        <el-form-item v-if="editForm.data.rule_type===0" label="是否GTCC：" :required="true">
+          <el-switch
+            style="display: block"
+            v-model="editForm.data.rule_extra.is_gtcc"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+            :active-value='1'
+            :inactive-value='0'
+            active-text="是"
+            inactive-text="否">
+          </el-switch>
+          <span v-show="showTip" style="color:red; margin-left:10px"></span>
+          <el-tooltip class="item" effect="light" placement="right-start">
+            <template #content>
+              <div>一个特殊的字段开关,是基于MTT SNG赛制下的一个独立字段</div>
+            </template>
+            <i class="el-icon-info" />
+          </el-tooltip>
+          <span style="color:red; margin-left:10px">[gtcc赛制字段,请慎重勾选,有疑问请联系开发 勾选会跳过比赛阶段1]</span>
         </el-form-item>
         <fieldset v-for="stageItem in editForm.data.stage_detail"  :key="stageItem.stage_index" style="margin:20px auto;max-height: max-content;min-width: inherit;">
           <legend>比赛{{ stageItem.stage_index }}阶段</legend>
-          <div v-if="stageItem.system_type == 1 && editForm.data.rule_type==0">
+          <div v-if="stageItem.system_type == 1 && (editForm.data.rule_type==0 && editForm.data.rule_extra.is_gtcc == 0)">
             <el-form-item label="赛制类型：" :required="true">
               <el-select v-model="stageItem.system_type" :disabled="true" placeholder="请选择" size="mini">
                 <el-option
@@ -195,7 +215,7 @@
           </div>
 
           <!-- 此处是专配置打立出局相关配置 -->
-          <div v-if="stageItem.system_type == 1 && editForm.data.rule_type==0">
+          <div v-if="stageItem.system_type == 1 && (editForm.data.rule_type==0 && editForm.data.rule_extra.is_gtcc == 0)">
             <!-- 底分增长配置 -->
             <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
               <legend>底分增长配置</legend>
@@ -480,7 +500,7 @@ export default {
         title: "",
         isAdd: false,
         data: {
-
+          rule_extra:{is_gtcc:0},
         }
       },
       AttrNames: {
@@ -489,6 +509,9 @@ export default {
         gid: "支持的游戏id",
         initScore: "初始积分",
         stages: "比赛阶段配置",
+        self_build:"是否是自建赛",
+        start_num:"开赛人数",
+        rule_extra:"拓展信息",
       },
       showDevTool: false
     }
@@ -627,7 +650,15 @@ export default {
 
             this.editForm.data.game_id = [gameId]
             this.tableData[i].game_id = [gameId]
-
+            //fix rule_extra
+            const ruleExtraStr = this.tableData[i].rule_extra;
+            let rule_extra
+            try {
+              rule_extra = ruleExtraStr ? JSON.parse(ruleExtraStr) : { is_gtcc:0 };
+            } catch (e) {
+              rule_extra = {is_gtcc:0 }; // 解析失败时使用默认值
+            }
+            this.editForm.data.rule_extra = rule_extra;
             break
         }
       }
@@ -646,6 +677,9 @@ export default {
           "status": 0,
           "modifier": "",
           "update_time": 0,
+          "rule_extra":{
+            "is_gtcc":0,
+          }
         }
         this.editForm.isAdd = true
         this.addStage()
@@ -656,7 +690,6 @@ export default {
           if (this.tableData[i].id == id) {
 
             //Message.info("测试111：" + JSON.stringify([this.tableData[i].game_id]))
-
             this.editForm.data = this.tableData[i]
             if(!this.editForm.data.hasOwnProperty("rule_type")){
               this.editForm.data.rule_type = 0
@@ -665,6 +698,16 @@ export default {
 
             this.editForm.data.game_id = [gameId]
             this.tableData[i].game_id = [gameId]
+
+            //fix rule_extra
+            const ruleExtraStr = this.tableData[i].rule_extra;
+            let rule_extra
+            try {
+              rule_extra = ruleExtraStr ? JSON.parse(ruleExtraStr) : { is_gtcc:0 };
+            } catch (e) {
+              rule_extra = { is_gtcc:0 }; // 解析失败时使用默认值
+            }
+            this.editForm.data.rule_extra = rule_extra;
 
             break
           }
@@ -863,12 +906,15 @@ export default {
           }
         }
       })
+      this.editForm.data.rule_extra = {
+        'is_gtcc':0,
+      }
     },
     saveStage() {
       let stageDetail = JSON.stringify(this.editForm.data.stage_detail)
       let gameId = parseInt(this.editForm.data.game_id, 10);
       let origin = this.editForm.data.game_id
-      console.log("save stageDetail==> ",stageDetail)
+     // console.log("save stageDetail==> ",stageDetail)
       // Message.info("gameId:" + gameId + " origin:" + origin)
 
       if (!this.configCheck()) {
@@ -887,6 +933,7 @@ export default {
           InitScore: this.editForm.data.init_score,
           RuleType:this.editForm.data.rule_type,
           SelfBuild:this.selfBuild,
+          RuleExtra:JSON.stringify(this.editForm.data.rule_extra),
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -1052,17 +1099,19 @@ export default {
               this.errmsg('打立出局阶段的结束人数值无效！')
               return false
             }
-            if (strikeOutStage.system_strike_out.end_rule.lave_user_number < strikeOutStage.system_strike_out.promotion_rule.user_number) {
-              this.errmsg('打立出局阶段的结束人数不能小于晋级人数！')
-              return false
+            if (this.editForm.data.rule_type == 0 && this.editForm.data.rule_extra.is_gtcc == 0){
+              if (strikeOutStage.system_strike_out.end_rule.lave_user_number < strikeOutStage.system_strike_out.promotion_rule.user_number) {
+                this.errmsg('打立出局阶段的结束人数不能小于晋级人数！')
+                return false
+              }
             }
           }
-          if (strikeOutStage.system_strike_out.end_rule.end_method == 2 || strikeOutStage.system_strike_out.end_rule.end_method == 3) {
-            if (strikeOutStage.system_strike_out.end_rule.match_minute <= 0 || strikeOutStage.system_strike_out.end_rule.match_minute > 1440) {
-              this.errmsg('打立出局阶段的结束时长值无效！')
-              return false
+            if (strikeOutStage.system_strike_out.end_rule.end_method == 2 || strikeOutStage.system_strike_out.end_rule.end_method == 3) {
+              if (strikeOutStage.system_strike_out.end_rule.match_minute <= 0 || strikeOutStage.system_strike_out.end_rule.match_minute > 1440) {
+                this.errmsg('打立出局阶段的结束时长值无效！')
+                return false
+              }
             }
-          }
           //晋级规则检查
           if (strikeOutStage.system_strike_out.promotion_rule.score_sort_type != 1) {
             this.errmsg('打立出局阶段的晋级排行规则不支持！')
@@ -1105,23 +1154,23 @@ export default {
             this.errmsg('定局积分阶段的轮次配置不能为空！')
             return false
           }
-          let lastUserNum = reachOutStage.system_reach_out.round_config[0].promotion_user
-          if (this.editForm.data.stage_detail.length > 1) {
+          let lastUserNum = 0
+          if (this.editForm.data.stage_detail.length > 1 && this.editForm.data.rule_type == 0 && this.editForm.data.rule_extra.is_gtcc == 0) {
             lastUserNum = this.editForm.data.stage_detail[0].system_strike_out.promotion_rule.user_number
+            if (lastUserNum < reachOutStage.system_reach_out.round_config[0].promotion_user){
+              this.errmsg('定局积分第1轮人数不能大于打立出局晋级人数')
+              return false
+            }
           }
+          lastUserNum = reachOutStage.system_reach_out.round_config[0].promotion_user
           for (let i=0; i<reachOutStage.system_reach_out.round_config.length; i++) {
             const round = reachOutStage.system_reach_out.round_config[i]
             if (round.play_round <= 0 || round.play_round > 1000) {
               this.errmsg('定局积分第' + round.index + '轮的局数值无效!')
               return false
             }
-            if (i < reachOutStage.system_reach_out.round_config.length - 1) {
               if (round.promotion_user > lastUserNum) {
-                if (i == 0) {
-                  this.errmsg('定局积分第' + round.index + '轮的晋级人数无效!')
-                } else {
-                  this.errmsg('定局积分第' + round.index + '轮的晋级人数不能大于前一轮的晋级人数!')
-                }
+                this.errmsg('定局积分第' + round.index + '轮的晋级人数不能大于前一轮的晋级人数!')
                 return false
               } else if (round.promotion_user % 3 != 0) {
                 this.errmsg('定局积分第' + round.index + '轮的晋级人数必须是3的倍数!')
@@ -1129,7 +1178,6 @@ export default {
               } else {
                 lastUserNum = round.promotion_user
               }
-            }
             if (reachOutStage.system_reach_out.score_method == 1 && round.score_multiple <= 0) {
               this.errmsg('定局积分第' + round.index + '轮的底分开方加倍数无效!')
               return false
@@ -1143,6 +1191,10 @@ export default {
           this.errmsg('阶段'+(i+1)+'的类型不支持！')
           return false
         }
+      }
+      //sng 不支持GTCC赛制
+      if(this.editForm.data.rule_type == 1 ||this.editForm.data.rule_extra.is_gtcc == 0){
+        this.editForm.data.rule_extra.is_gtcc = 0
       }
       return true
     }

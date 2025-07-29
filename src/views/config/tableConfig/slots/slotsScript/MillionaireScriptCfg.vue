@@ -398,7 +398,9 @@ export default {
         '192': 'bountyraid',
         '196': 'goldminer',
         '198': 'fortuneblessing',
-        '200': 'atlantistreasure'
+        '200': 'atlantistreasure',
+        '204': 'spacetreasure',
+        '208': 'candyburst'
       }
     }
   },

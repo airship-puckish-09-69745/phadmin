@@ -156,7 +156,7 @@
             <el-input v-model="editForm.itemExtra.showName" style="width: 200px;" placeholder="请填写后台名称" />
           </el-form-item>
 
-          <el-form-item v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET  && editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET" label="道具价值：" :required="true">
+          <el-form-item v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET  || editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET" label="道具价值：" :required="true">
             <el-input v-model.number="editForm.data.itemCost" style="width: 200px;" placeholder="请填写道具价值" />
           </el-form-item>
 
@@ -203,28 +203,16 @@
           <el-row>
             <el-col :span="11">
               <el-form-item   v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN" label="SlotGame:" :required="true">
-                <el-select v-model="editForm.itemExtra.gid" placeholder="请选择" size="mini">
-                  <el-option
-                    v-for="item in slotGameConfig"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                    :disabled="item.disabled"
-                  />
-                </el-select>
+                  <el-select v-model="editForm.itemExtra.gid" placeholder="请选择" size="mini" :disabled="!editForm.isAdd" @change="setSlotBetAmountStyle(editForm.itemExtra.gid)">
+                    <el-option v-for="item in SLOT_GAME_CONFIG" :key="item.value" :label="item.label" :value="item.value" :disabled="item.disabled"/>
+                  </el-select>
               </el-form-item>
             </el-col>
 
               <el-col :span="11">
                 <el-form-item   v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN" label="betAmount:" :required="true">
-                  <el-select v-model="editForm.itemExtra.betAmount" placeholder="请选择" size="mini">
-                    <el-option
-                      v-for="item in slotDefaultBetAmount"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                      :disabled="item.disabled"
-                    />
+                  <el-select v-model="editForm.itemExtra.betAmount" placeholder="请选择" size="mini" :disabled="!editForm.isAdd">
+                    <el-option v-for="item in slotDefaultBetAmount" :key="item.value" :label="item.label" :value="item.value" :disabled="item.disabled"/>
                   </el-select>
                 </el-form-item>
               </el-col>
@@ -268,6 +256,7 @@ import DateTimeShow from '@/components/DatetimeShow'
 import { $libDate, $libShow } from '@/utils/common'
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
 import {ITEM_TYPE_OPTIONS, ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS} from '@/utils/options'
+import {SLOT_GAME_CONFIG} from  '@/utils/prop'
 
 export default {
   name: 'PropsConfig',
@@ -281,6 +270,7 @@ export default {
     return {
       ITEM_TYPE_OPTIONS,
       ITEM_DAY_TYPE_OPTIONS,
+      SLOT_GAME_CONFIG,
       libShow: $libShow,
       pickerOptions: $libShow.DefaultDatePickerOptions(),
       selectTime: [$libDate.GetDayBegin(new Date().setSeconds(0)), $libDate.GetDayEnd(new Date().setSeconds(0))],
@@ -306,17 +296,8 @@ export default {
         { 'value': 4, 'label': 'C', disabled: false },
         { 'value': 5, 'label': '无品质', disabled: false }
       ],
-      slotGameConfig:[
-        { 'value': 82, 'label': '百万富翁(Millionire)', disabled: false },
-        { 'value': 160, 'label': '千兆王牌(Ultra Ace)', disabled: false },
-        { 'value': 76, 'label': '糖果1(Candy Rush)', disabled: false },
-      ],
       slotDefaultBetAmount:[
-        { 'value': 300, 'label': 'bet-0.3', disabled: false },
-        { 'value': 1000, 'label': 'bet-1', disabled: false },
-        { 'value': 2000, 'label': 'bet-2', disabled: false },
-        { 'value': 3000, 'label': 'bet-3', disabled: false },
-        { 'value': 5000, 'label': 'bet-5', disabled: false },
+       // 样式 { 'value': 300, 'label': 'bet-0.3', disabled: false },
       ],
 
       raw: {},
@@ -367,7 +348,8 @@ export default {
         createTime: '创建时间',
         id: '道具ID',
         propExtra:'拓展信息'
-      }
+      },
+      slotBetAmountCfg: new Map(), //slot 下注数值
     }
   },
   created(){
@@ -376,6 +358,7 @@ export default {
   },
   mounted(){
     this.getList()
+    this.getSlotBetAmountCfg()
   },
   methods: {
 
@@ -528,9 +511,9 @@ export default {
     getSlotFreSpinPropDescReturnGameName(itemExtra){
       var name = ''
       let extraData = JSON.parse(itemExtra)
-      for(var i = 0; i < this.slotGameConfig.length;i++){
-          if (this.slotGameConfig[i].value === extraData.gid) {
-            name = this.slotGameConfig[i].label
+      for(var i = 0; i < this.SLOT_GAME_CONFIG.length;i++){
+          if (this.SLOT_GAME_CONFIG[i].value === extraData.gid) {
+            name = this.SLOT_GAME_CONFIG[i].label
             break
           }
       }
@@ -810,6 +793,38 @@ export default {
     slotFreeSpinPropReset(){
       this.editForm.itemExtra.betAmount = 0
       this.editForm.itemExtra.gid = 0
+    },
+
+    getSlotBetAmountCfg(){
+      for (let i = 0; i < this.SLOT_GAME_CONFIG.length; i++) {
+        request({
+          url: '/customizeconfig/one',
+          method: 'get',
+          data: {
+            SubKey: this.SLOT_GAME_CONFIG[i].configKey,
+          }
+        }).then(response => {
+          if (response.RetCode === 0 && response.Data && response.Data.Data !== '')  {
+            const data = JSON.parse(response.Data.Data)
+            if (this.SLOT_GAME_CONFIG[i].value === 20){
+              this.slotBetAmountCfg.set(this.SLOT_GAME_CONFIG[i].value,data.TableMoneyList)
+
+            }else{
+              this.slotBetAmountCfg.set(this.SLOT_GAME_CONFIG[i].value,data.BetList)
+            }
+          }
+        })
+      }
+    },
+    //设置样式
+    setSlotBetAmountStyle(gameId){
+      const oneBetAmountCfg = this.slotBetAmountCfg.get(gameId)
+      // 样式 { 'value': 300, 'label': 'bet-0.3', disabled: false },
+      this.slotDefaultBetAmount = []
+      for (let i = 0; i < oneBetAmountCfg.length; i++) {
+        let amount = oneBetAmountCfg[i]/1000
+        this.slotDefaultBetAmount.push({'value': oneBetAmountCfg[i], 'label': 'bet-'+ amount.toString(), disabled: false })
+      }
     },
 
     configCheck() {

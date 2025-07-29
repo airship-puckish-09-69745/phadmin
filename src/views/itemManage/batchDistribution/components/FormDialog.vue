@@ -73,7 +73,7 @@
 </template>
 
 <script>
-import {ITEM_TYPE_OPTIONS, APPID_OPTIONS, ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS} from '@/utils/options'
+import { ITEM_TYPE_OPTIONS, APPID_OPTIONS, ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS } from '@/utils/options'
 import request from '@/utils/request'
 import { Message } from 'element-ui'
 export default {
@@ -236,6 +236,8 @@ export default {
       this.$emit('reload')
     },
     updateItemOption(filteredItems) {
+      console.log("++++++++++++++2345+++++++++++++++")
+      console.log(filteredItems)
       if (filteredItems === null) {
         return
       }
@@ -325,12 +327,12 @@ export default {
             this.total = objs.total
             this.itemList = []
             for (let i = 0; i < objs.total; i++) {
-              if (objs.list[i].status === 1 &&  (objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET ||
-                objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET)  && objs.list[i].expire_time > timestamp) {
+              if (objs.list[i].status === 1 && (objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET ||
+                objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET) && objs.list[i].expire_time > timestamp) {
                 this.itemList.push(objs.list[i])
               }
-              if (objs.list[i].status === 1 &&  (objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME ||
-                objs.list[i].item_type ===  PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR)){
+              if (objs.list[i].status === 1 && (objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME ||
+                objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR || objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN)) {
                 this.itemList.push(objs.list[i])
               }
             }

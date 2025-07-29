@@ -24,7 +24,7 @@
                     :formatter="(row) => getRobotName(row.AiLevel)"
                   />
                   <el-table-column
-                    label="闲家输时帮赢概率（%）"
+                    label="闲家包赢概率（%）"
                     width="200"
                   >
                     <template slot-scope="scope">
@@ -32,7 +32,7 @@
                     </template>
                   </el-table-column>
                   <el-table-column
-                    label="庄家输时帮赢概率（%）"
+                    label="庄家包赢概率（%）"
                     width="200"
                   >
                     <template slot-scope="scope">
@@ -40,7 +40,7 @@
                     </template>
                   </el-table-column>
                   <el-table-column
-                    label="闲家赢时帮输概率（%）"
+                    label="闲家包输概率（%）"
                     width="200"
                   >
                     <template slot-scope="scope">
@@ -48,7 +48,7 @@
                     </template>
                   </el-table-column>
                   <el-table-column
-                    label="庄家赢时帮输概率（%）"
+                    label="庄家包输概率（%）"
                     width="200"
                   >
                     <template slot-scope="scope">
@@ -122,6 +122,134 @@
             </el-col>
           </el-row>
 
+          <h3 style="text-align:center;">机器人默认昵称配置</h3>
+          <el-row>
+            <el-col :span="20" :offset="1">
+              <el-table :data="item.NickCfg" border>
+                <el-table-column label="昵称" prop="Nick" width="200">
+                  <template slot-scope="scope">
+                    <el-input v-model="scope.row.Nick" size="mini" /></template>
+                </el-table-column>
+                <el-table-column label="概率(%)" width="200">
+                  <template slot-scope="scope">
+                    <el-input v-model.number="scope.row.Probability" size="mini"  type="number"  :min="0"  :precision="0"><template
+                      slot="append"
+                    >%</template></el-input>
+                  </template>
+                </el-table-column>
+                <el-table-column label="操作" width="100">
+                  <template slot-scope="scope">
+                    <el-button type="danger" size="mini" @click="delNickCfg(scope.$index)">删除</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+              <el-button @click="addNickCfg" size="small" style="margin-top: 10px;" type="primary">添加一项</el-button>
+            </el-col>
+          </el-row>
+
+          <h3 style="text-align:center;">机器人展示资产配置</h3>
+
+          <el-row>
+            <el-col :span="20" :offset="1">
+           
+              <el-table :data="ShowMoneyCfg" border>
+                <el-table-column label="场次" prop="TableMoney" width="200" >
+                  <template slot-scope="scope">
+<!--                    <el-input v-model.number="scope.row.TableMoney/1000" size="mini" />-->
+                    <el-select v-model="scope.row.TableMoney" placeholder="请选择">
+                      <el-option
+                        v-for="itemTableMoney in AllTableMoneyList"
+                        :key="itemTableMoney"
+                        :label="itemTableMoney/1000"
+                        :value="itemTableMoney/1000"/>
+                    </el-select>
+                  </template>
+                </el-table-column>
+                <el-table-column label="最小值" width="200">
+                  <template slot-scope="scope">
+                    <el-input v-model.number="scope.row.ShowMoneyMin" size="mini"  type="number"></el-input>
+                  </template>
+                </el-table-column>
+                <el-table-column label="最大值" width="200">
+                  <template slot-scope="scope">
+                    <el-input v-model.number="scope.row.ShowMoneyMax" size="mini"  type="number" ></el-input>
+                  </template>
+                </el-table-column>
+                <el-table-column label="操作" width="100">
+                  <template slot-scope="scope">
+                    <el-button type="danger" size="mini" @click="delShowMoneyCfg(scope.$index)">删除</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+              <el-button @click="addShowMoneyCfg" size="small" style="margin-top: 10px;" type="primary">添加一项</el-button>
+            </el-col>
+          </el-row>
+
+          <h3 style="text-align:center;">机器人随机离桌</h3>
+          <el-form ref="item" :model="item" width="70%">
+          <!-- 离桌对局数配置 - 单行展示 -->
+          <el-form-item label="机器人随机离桌局数范围：" :required="true">
+            <el-row :gutter="16">
+              <el-col :span="6">
+                <template>
+                  <el-input-number
+                    v-model="item.LeaveCfg.BeginPlayCnt" 
+                    :min="1"
+                    :precision="0"
+                    placeholder="开始局数"
+                    style="width: 100%"> 
+      
+                  </el-input-number>
+                </template>
+              </el-col>
+              <el-col :span="2" class="text-center">
+                <span class="divider">至</span>
+              </el-col>
+              <el-col :span="6">
+                <template>
+                  <el-input-number 
+                    v-model="item.LeaveCfg.EndPlayCnt"
+                    :min="1"
+                    :precision="0"
+                    placeholder="结束局数"
+                    style="width: 100%">
+                  </el-input-number>
+                </template>
+              </el-col>
+            </el-row>
+          </el-form-item>
+            
+          <el-form-item label="离桌判定失败在触发判断局数范围：" :required="true">
+            <el-row :gutter="16">
+              <el-col :span="6">
+                <template>
+                  <el-input-number
+                    v-model="item.LeaveCfg.BeginLosePlayCnt" 
+                    :min="1"
+                    :precision="0"
+                    placeholder="开始局数"
+                    style="width: 100%"> 
+                  </el-input-number>
+                </template>
+              </el-col>
+              <el-col :span="2" class="text-center">
+                <span class="divider">至</span>
+              </el-col>
+              <el-col :span="6">
+                <template>
+                  <el-input-number 
+                    v-model="item.LeaveCfg.EndLosePlayCnt"
+                    :min="1"
+                    :precision="0"
+                    placeholder="结束局数"
+                    style="width: 100%">
+                  </el-input-number>
+                </template>
+              </el-col>
+            </el-row>
+          </el-form-item> 
+ 
+          </el-form>
           <el-row style="padding-top: 5px"></el-row>
              <el-row style="padding-top: 5px"></el-row>
              <el-row style="padding-top: 5px"></el-row>
@@ -513,136 +641,9 @@
             </el-row>
         </el-tab-pane>
 
-        <el-tab-pane label="机器人名字">
-          <el-row>
-            <el-col :span="20" :offset="1">
-              <h5>机器人默认昵称配置</h5>
-              <el-table :data="item.NickCfg" border>
-                <el-table-column label="昵称" prop="Nick" width="200">
-                  <template slot-scope="scope">
-                    <el-input v-model="scope.row.Nick" size="mini" /></template>
-                </el-table-column>
-                <el-table-column label="概率(%)" width="200">
-                  <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.Probability" size="mini"  type="number"  :min="0"  :precision="0"><template
-                      slot="append"
-                    >%</template></el-input>
-                  </template>
-                </el-table-column>
-                <el-table-column label="操作" width="100">
-                  <template slot-scope="scope">
-                    <el-button type="danger" size="mini" @click="delNickCfg(scope.$index)">删除</el-button>
-                  </template>
-                </el-table-column>
-              </el-table>
-              <el-button @click="addNickCfg" size="small" style="margin-top: 10px;" type="primary">添加一项</el-button>
-            </el-col>
-          </el-row>
-        </el-tab-pane>
-        <el-tab-pane label="展示资产配置">
-          <el-row>
-            <el-col :span="20" :offset="1">
-           
-              <el-table :data="ShowMoneyCfg" border>
-                <el-table-column label="场次" prop="TableMoney" width="200" >
-                  <template slot-scope="scope">
-<!--                    <el-input v-model.number="scope.row.TableMoney/1000" size="mini" />-->
-                    <el-select v-model="scope.row.TableMoney" placeholder="请选择">
-                      <el-option
-                        v-for="itemTableMoney in AllTableMoneyList"
-                        :key="itemTableMoney"
-                        :label="itemTableMoney/1000"
-                        :value="itemTableMoney/1000"/>
-                    </el-select>
-                  </template>
-                </el-table-column>
-                <el-table-column label="最小值" width="200">
-                  <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.ShowMoneyMin" size="mini"  type="number"></el-input>
-                  </template>
-                </el-table-column>
-                <el-table-column label="最大值" width="200">
-                  <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.ShowMoneyMax" size="mini"  type="number" ></el-input>
-                  </template>
-                </el-table-column>
-                <el-table-column label="操作" width="100">
-                  <template slot-scope="scope">
-                    <el-button type="danger" size="mini" @click="delShowMoneyCfg(scope.$index)">删除</el-button>
-                  </template>
-                </el-table-column>
-              </el-table>
-              <el-button @click="addShowMoneyCfg" size="small" style="margin-top: 10px;" type="primary">添加一项</el-button>
-            </el-col>
-          </el-row>
-        </el-tab-pane>
 
-        <el-tab-pane label="随机离桌配置" name="randomLeaveConfig">
-          <el-form ref="item" :model="item" width="70%">
-          <!-- 离桌对局数配置 - 单行展示 -->
-          <el-form-item label="机器人随机离桌局数范围：" :required="true">
-            <el-row :gutter="16">
-              <el-col :span="6">
-                <template>
-                  <el-input-number
-                    v-model="item.LeaveCfg.BeginPlayCnt" 
-                    :min="1"
-                    :precision="0"
-                    placeholder="开始局数"
-                    style="width: 100%"> 
-      
-                  </el-input-number>
-                </template>
-              </el-col>
-              <el-col :span="2" class="text-center">
-                <span class="divider">至</span>
-              </el-col>
-              <el-col :span="6">
-                <template>
-                  <el-input-number 
-                    v-model="item.LeaveCfg.EndPlayCnt"
-                    :min="1"
-                    :precision="0"
-                    placeholder="结束局数"
-                    style="width: 100%">
-                  </el-input-number>
-                </template>
-              </el-col>
-            </el-row>
-          </el-form-item>
-            
-          <el-form-item label="离桌判定失败在触发判断局数范围：" :required="true">
-            <el-row :gutter="16">
-              <el-col :span="6">
-                <template>
-                  <el-input-number
-                    v-model="item.LeaveCfg.BeginLosePlayCnt" 
-                    :min="1"
-                    :precision="0"
-                    placeholder="开始局数"
-                    style="width: 100%"> 
-                  </el-input-number>
-                </template>
-              </el-col>
-              <el-col :span="2" class="text-center">
-                <span class="divider">至</span>
-              </el-col>
-              <el-col :span="6">
-                <template>
-                  <el-input-number 
-                    v-model="item.LeaveCfg.EndLosePlayCnt"
-                    :min="1"
-                    :precision="0"
-                    placeholder="结束局数"
-                    style="width: 100%">
-                  </el-input-number>
-                </template>
-              </el-col>
-            </el-row>
-          </el-form-item> 
- 
-          </el-form>
-        </el-tab-pane>
+   
+
     </el-tabs>
     <div style="margin-bottom: 20px;">
       <el-button type="primary" @click="setData">保存信息</el-button>
