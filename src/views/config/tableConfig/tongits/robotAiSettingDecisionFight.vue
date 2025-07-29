@@ -22,8 +22,40 @@
              
             </el-row>
           </el-form-item>
+
         </el-form>
       </el-col>
+  
+      <el-col :span="24">
+        <h3 style="text-align:center;">上家有效牌张数分数配置</h3>
+        <div style="padding-top: 10px">
+          <el-table
+            :data="AiConfig.Decision.DecisionFight.FrontPlayerCardScore"
+            stripe
+            border
+            style="width: 100%"
+          >
+
+          <el-table-column
+              label="序号"
+               width="120"
+            >
+              <template slot-scope="scope">
+                区间{{ getFrontLabel(scope.$index) }} <!-- 从 1 开始计数 -->
+              </template>
+            </el-table-column>
+    
+          
+            <el-table-column label="分数" align="center">
+              <template slot-scope="scope">
+                <el-input-number v-model="scope.row.Score" size="mini" :min="0" :max="100"></el-input-number>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+      </el-col>
+
+
       <el-col :span="24">
         <h3 style="text-align:center;">有效牌张数区间配置</h3>
         <div style="padding-top: 10px">
@@ -161,6 +193,7 @@ export default {
       DecisionFight:
       {
         SingleCardScore: 3,
+        FrontPlayerCardScore:[{Score: 0},{Score: 1},{Score: 2},{Score: 3}],
         FightList:[
           {
             CardNumBegin: 3, // 除以10 实际是1/3
@@ -298,11 +331,11 @@ export default {
       deep: true,
       handler(newVal) {
 
-       // if (!newVal.Decision.DecisionFight) {
+        if (!newVal.Decision.DecisionFight) {
           this.editDecision = JSON.parse(JSON.stringify(this.DecisionFight)) 
           newVal.Decision.DecisionFight = this.DecisionFight 
           console.log('common DecisionFight:', this.AiConfig)       
-       // }
+        }
       }
     }
   },
@@ -319,6 +352,14 @@ export default {
     },
     getColumnLabel(start, end) {
       return `[${start},${end})`;
+    },
+    getFrontLabel(index) {
+      switch (index) {
+        case 0:return  "上家有效牌分数1-3";
+        case 1:return  "上家有效牌分数4-6"
+        case 2:return  "上家有效牌分数7-9"
+        case 3:return  "上家有效牌分数10-k"
+      }
     }
   },
  
