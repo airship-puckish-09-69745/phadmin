@@ -246,12 +246,14 @@ export default {
       }
 
       let totalWeight = 0
+      let totalReward = 0
       for (const i in this.pairs) {
         if (this.pairs[i].Reward <= 0) {
           Message.error('奖励金额必须大于0')
           return
         }
         totalWeight += this.pairs[i].Weight
+        totalReward += this.pairs[i].Reward
       }
 
       if (totalWeight === 0) {
@@ -264,6 +266,7 @@ export default {
         this.pairs.sort((a, b) => { return a.Reward - b.Reward })
         this.showData[this.editRowIndex].MinReword = this.pairs[0].Reward
         this.showData[this.editRowIndex].MaxReword = this.pairs[this.pairs.length - 1].Reward
+        this.showData[this.editRowIndex].AvgReward = (totalReward / this.pairs.length).toFixed(2)
       }
     },
     addRow() {
