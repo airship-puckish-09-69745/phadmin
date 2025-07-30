@@ -131,7 +131,7 @@ export const MATCH_UNIQUE_ID_CFG =[
 //牌桌TableId
 export const MATCH_TABLE_SCENE_ID_CFG =[
   { 'value': 0, 'label': '无' },
-  { 'value': 1, 'label': 'Table1' },
+  { 'value': 1, 'label': '付费赛桌面' },
   { 'value': 2, 'label': 'Table2' },
   { 'value': 3, 'label': 'Table3' },
   { 'value': 4, 'label': 'Table4' },

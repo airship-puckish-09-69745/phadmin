@@ -1322,6 +1322,7 @@ export default {
                     tableDataCpy[i].sort = 0
                   }
                   this.tableData.push(tableDataCpy[i])
+                  console.log("table: ",tableDataCpy[i])
                 }
               }
             }
@@ -1850,8 +1851,8 @@ export default {
           this.editForm.signExtra.gtccWhiteList.data=''
         }
         this.editForm.prizeExtra = JSON.parse(editData.prize_extra)
-        if(editData.listExtra !== undefined){
-          this.editForm.listExtra = JSON.parse(editData.listExtra)
+        if(editData.list_extra !== undefined){
+          this.editForm.listExtra = JSON.parse(editData.list_extra)
         }
         this.showCsCfgs = []
         // 循环遍历是否存在gameId
