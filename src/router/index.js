@@ -7,6 +7,7 @@ Vue.use(Router)
 import Layout from '@/layout'
 import Watermark from '@/utils/watermark'
 import { IsMars } from '@/utils/env'
+import path from "path";
 // import {IsMars} from "@/utils/env";
 /* Router Modules */
 // import componentsRouter from './modules/components'
@@ -2210,9 +2211,17 @@ export const asyncRoutes = [
           },
           {
             path: 'matchOther',
-            component: () => import('@/views/matchManage/matchOperations/matchOther.vue'),
+            component: () => import('@/views/empty'),
             name: 'matchOther',
-            meta: { title: '赛事Other配置', noCache: true }
+            meta:{title:'比赛other配置',noCache: true},
+            children: [
+              {
+                path: 'matchOther',
+                component: () => import('@/views/matchManage/matchOperations/matchOther/index.vue'),
+                name: 'matchOther',
+                meta: {title: '比赛other配置', noCache: true},
+              }
+          ]
           },
           {
             path: 'matchTcc',
