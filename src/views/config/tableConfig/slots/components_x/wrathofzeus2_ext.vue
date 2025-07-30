@@ -3,6 +3,31 @@
     <el-row :gutter="10" style="margin-top: 30px">
       <el-col :span="12" :offset="3">
         <el-form ref="frm2" :model="cfg" label-width="250px">
+          <el-form-item label="普通模式 scatter个数的权重" :rules="dataRule(true)">
+            <el-input v-model="cfg.ScatterNumWt" :required="true" placeholder="请输入内容,如0,1,2,3"> <template slot="append">如0,1,2,3 代表出现0个的权重为0 </template> </el-input>
+          </el-form-item>
+
+          <span style="color: red; font-size: 11px;">注: 位置0:无 位置1:大图标模式 位置2:大wild模式 位置3:分散wild模式 位置4:翻倍wild模式</span>
+          <el-form-item label="游戏模式的权重" :rules="dataRule(true)">
+            <el-input v-model="cfg.GameModeWt" :required="true" placeholder="请输入内容,如0,1,2,3,4"> <template slot="append">如0,1,2,3,4 代表为无模式的权重为0 </template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="大图标模式 出现大图标个数的权重" :rules="dataRule(true)">
+            <el-input v-model="cfg.GameMode1BigNumWt" :required="true" placeholder="请输入内容,如0,1,2,3"> <template slot="append">如0,1,2,3 代表出现0个大图标的权重为0 </template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="分散wild模式 分散个数的权重" :rules="dataRule(true)">
+            <el-input v-model="cfg.GameMode3WildNumWt" :required="true" placeholder="请输入内容,如0,1,2,3"> <template slot="append">如0,1,2,3 代表分散0个小wild权重为0 </template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="翻倍wild模式 分散个数的权重" :rules="dataRule(true)">
+            <el-input v-model="cfg.GameMode4WildNumWt" :required="true" placeholder="请输入内容,如0,1,2,3"> <template slot="append">如0,1,2,3 代表分散0个小wild权重为0 </template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="翻倍wild模式 wild倍数的权重" :rules="dataRule(true)">
+            <el-input v-model="cfg.GameMode4WildMulWt" :required="true" placeholder="请输入内容,如0,1,2,3"> <template slot="append">如0,1,2,3 代表小wild是0倍权重为0 </template> </el-input>
+          </el-form-item>
+
           <el-form-item label="免费模式购买倍数" prop="BuyFreeOdds" :rules="dataRule(true,{type:'n'})">
             <el-input v-model.number="cfg.BuyFreeOdds" :required="true" />
           </el-form-item>

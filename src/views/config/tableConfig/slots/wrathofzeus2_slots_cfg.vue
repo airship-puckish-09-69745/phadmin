@@ -28,6 +28,11 @@
             <publish primary-key="ID" :key-id="getFullKey('wrathofzeus2_slots_base')" :env-empty="false" compare-type="Object" />
             <slots-reels-double v-if="baseCfgBool" v-model="baseCfg" :symbol-list="ruleCfg.SymbolList" @saveData="saveBaseCfg" />
           </el-tab-pane>
+          <el-tab-pane label="大图标权重" name="row_reels_double">
+            <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布】</h3>
+            <publish primary-key="ID" :key-id="getFullKey('fortunateebisu_slots_ext')" :env-empty="false" compare-type="Object" />
+            <slots-row-reels-double v-if="extCfgBool" v-model="extCfg" :symbol-list="ruleCfg.SymbolList" @saveData="saveExtCfg" />
+          </el-tab-pane>
           <el-tab-pane label="拓展配置" name="scatter">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，发布即生效】</h3>
             <publish primary-key="ID" :key-id="getFullKey('wrathofzeus2_slots_ext')" :env-empty="false" compare-type="Object" />
@@ -60,10 +65,11 @@ import slotsReelsIcon from './components_x/aladdin_reels_icon'
 import slotsWrathofzeus2Ext from './components_x/wrathofzeus2_ext'
 import slotsReelsDouble from './components_x/reels_double'
 import slotsScript from './components_x/slots_script'
+import slotsRowReelsDouble from './components_x/row_reels_double'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: { Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotsWrathofzeus2Ext, slotsReelsDouble, slotsScript },
+  components: { Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotsWrathofzeus2Ext, slotsReelsDouble, slotsScript, slotsRowReelsDouble },
   data() {
     return {
       activeTab: 'base',
