@@ -253,7 +253,8 @@ export default {
         { 'value': 128, 'label': 'Tongits JP' },
         { 'value': 129, 'label': 'Live Color' },
         { 'value': 132, 'label': '新版扫雷' },
-        { 'value': 210, 'label': 'LuckySpirits' }
+        { 'value': 210, 'label': 'LuckySpirits' },
+        { 'value': 216, 'label': 'Phoenix' }
       ],
       userTypeConfig: [
         { 'value': -1, 'label': '全部' },
