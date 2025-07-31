@@ -36,6 +36,7 @@
           end-placeholder="结束日期"
           style="width: 360px;"
           value-format="timestamp"
+          format="yyyy-MM-dd HH:mm"
           :default-time="['00:00:00', '23:59:59']"
         />
       </el-form-item>
