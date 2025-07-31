@@ -691,8 +691,21 @@ export default {
       })
     },
     showChartDialog() {
+      this.resetChartDialog()
       this.chartDialog.visible = true
       this.initChartDialog()
+    },
+    resetChartDialog() {
+      // 重置表单数据
+      this.chartDialog.form = {
+        tableMoney: [],
+        dateRange: []
+      };
+
+      // 清空图表数据
+      this.chartData = {}
+      this.maxy = 0
+      this.ratioData = []
     },
     initChartDialog() {
       // 初始化场次选项
