@@ -796,24 +796,31 @@ export default {
     },
 
     getSlotBetAmountCfg(){
-      for (let i = 0; i < this.SLOT_GAME_CONFIG.length; i++) {
-        request({
-          url: '/customizeconfig/one',
-          method: 'get',
-          data: {
-            SubKey: this.SLOT_GAME_CONFIG[i].configKey,
-          }
-        }).then(response => {
-          if (response.RetCode === 0 && response.Data && response.Data.Data !== '')  {
-            const data = JSON.parse(response.Data.Data)
-            if (this.SLOT_GAME_CONFIG[i].value === 20){
-              this.slotBetAmountCfg.set(this.SLOT_GAME_CONFIG[i].value,data.TableMoneyList)
-
-            }else{
-              this.slotBetAmountCfg.set(this.SLOT_GAME_CONFIG[i].value,data.BetList)
-            }
-          }
-        })
+      // for (let i = 0; i < this.SLOT_GAME_CONFIG.length; i++) {
+      //   request({
+      //     url: '/customizeconfig/one',
+      //     method: 'get',
+      //     data: {
+      //       SubKey: this.SLOT_GAME_CONFIG[i].configKey,
+      //     }
+      //   }).then(response => {
+      //     if (response.RetCode === 0 && response.Data && response.Data.Data !== '')  {
+      //       const data = JSON.parse(response.Data.Data)
+      //       if (this.SLOT_GAME_CONFIG[i].value === 20){
+      //         this.slotBetAmountCfg.set(this.SLOT_GAME_CONFIG[i].value,data.TableMoneyList)
+      //
+      //       }else{
+      //         this.slotBetAmountCfg.set(this.SLOT_GAME_CONFIG[i].value,data.BetList)
+      //       }
+      //     }
+      //   })
+      // }
+      for(let i = 0;i < this.SLOT_GAME_CONFIG.length; i++){
+        if (this.SLOT_GAME_CONFIG[i].value === 20){
+          this.slotBetAmountCfg.set(this.SLOT_GAME_CONFIG[i].value,[1000,2000,3000,5000,10000])
+        }else{
+          this.slotBetAmountCfg.set(this.SLOT_GAME_CONFIG[i].value,[300,1000,2000,3000,5000])
+        }
       }
     },
     //设置样式
