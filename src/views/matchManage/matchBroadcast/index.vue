@@ -179,8 +179,8 @@ export default {
           width: 170,
           formatter: (row) => {
             const dateRange = []
-            dateRange.push(this.parseTime(row.BroadcastTimeRange[0] * 1000, '{y}/{m}/{d}'))
-            dateRange.push(this.parseTime(row.BroadcastTimeRange[1] * 1000, '{y}/{m}/{d}'))
+            dateRange.push(this.parseTime(row.BroadcastTimeRange[0] * 1000, '{y}/{m}/{d} {h}:{i}'))
+            dateRange.push(this.parseTime(row.BroadcastTimeRange[1] * 1000, '{y}/{m}/{d} {h}:{i}'))
             return dateRange.join('-')
           }
         },
