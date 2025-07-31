@@ -3148,10 +3148,6 @@
           <template slot-scope="scope">
             <span v-if="scope.row.appendsCards"><!--组合追加牌-->
               <div v-for="(item, index) in scope.row.appendsCards" :key="index" class="block">
-                <!-- 每17张卡片后插入换行（避开首行） -->
-                <template v-if="index > 0 && index % 17 === 0">
-                  <br>
-                </template>
                 <el-image style="width: 37px; height: 50px" :src="getBuracoCardUrl(item)" />
               </div>
               <span>{{ ' + ' }}</span>
