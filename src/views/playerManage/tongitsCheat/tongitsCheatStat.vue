@@ -191,10 +191,10 @@ export default {
     getInfo() {
       const $this = this
 
-      if (this.env != 'test') {
-        console.log(`env:${this.env} return`)
-        return
-      }
+      // if (this.env != 'test') {
+      //   console.log(`env:${this.env} return`)
+      //   return
+      // }
 
       request({
         url: '/dataProxy/info',
