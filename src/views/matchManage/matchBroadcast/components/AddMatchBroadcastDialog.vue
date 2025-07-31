@@ -1,13 +1,13 @@
 <template>
   <el-dialog :title="updateData && updateData.ID ? '编辑配置' : '新增配置'" :visible.sync="dialogVisible" width="540px" :close-on-click-modal="false" @close="handleClose(false)">
     <el-form :model="formData" label-width="100px">
-      <el-form-item label="标题" required>
-        <el-input v-model="formData.Title" style="width: 360px;" />
-      </el-form-item>
       <el-form-item label="类型" required>
         <el-select v-model="formData.BroadcastType" placeholder="请选择类型" style="width: 360px;" @change="handleSetTime">
           <el-option v-for="option in broadcastTypeOptions" :key="option.value" :label="option.label" :value="option.value" />
         </el-select>
+      </el-form-item>
+      <el-form-item label="标题" required>
+        <el-input v-model="formData.Title" style="width: 360px;" />
       </el-form-item>
       <el-form-item label="渠道" required>
         <el-select v-model="formData.Channel" placeholder="请选择渠道" style="width: 360px;" multiple>
