@@ -182,7 +182,7 @@ export default {
         return false
       }
       // 如果是比赛第一名类型，必须校验有效期不能有交叉
-      if (this.formData.BroadcastType === 1) {
+      if (this.formData.BroadcastType === 1 || this.formData.BroadcastType === 2) {
         const matchFirstRankCfgs = this.matchFirstRankCfgs.filter(item => item.ID !== this.formData.ID)
         const isCross = matchFirstRankCfgs.some(item => {
           let [start, end] = item.BroadcastTimeRange
