@@ -30,12 +30,13 @@
       >添加播报</el-button>
     </div>
 
-    <div style="margin-top: 12px;">
+    <div style="margin-top: 12px; min-width:600px">
       <el-table
         :data="FilterableBroadcastList"
         border
         :cell-style="libShow.DefaultTableCell"
         style="width: 100%;overflow-y: auto;"
+        height="700"
       >
         <el-table-column v-for="(item, index) in columns" :key="index" :prop="item.prop" :label="item.label" :width="item.width" :formatter="item.formatter" />
         <el-table-column
@@ -373,5 +374,23 @@ export default {
       width: 200px;
     }
   }
+}
+/* 强制保留水平滚动条位置（无滚动条时显示空白区域） */
+.el-table__body-wrapper {
+  overflow-x: scroll !important;
+  scrollbar-width: thin; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+/* Chrome/Safari 隐藏滚动条但保留功能 */
+.el-table__body-wrapper::-webkit-scrollbar {
+  height: 6px !important; /* 滚动条高度（不可为0） */
+  background: transparent !important;
+}
+
+/* 滚动条滑块（可选） */
+.el-table__body-wrapper::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
 }
 </style>
