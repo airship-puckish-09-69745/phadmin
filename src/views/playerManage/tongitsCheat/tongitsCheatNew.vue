@@ -352,6 +352,7 @@ export default {
                   for (let k = 0; k < tidRow.datas.length; k++) {
                     const cheatRow = tidRow.datas[k]
                     const playCheatLog = {
+                      Uid: cheatRow.uid,
                       EndTime: cheatRow.endTime,
                       CheatScore: cheatRow.cheatScore,
                       LogId: cheatRow.logId,
@@ -768,11 +769,15 @@ export default {
         return '----'
       }
       const strArray = []
+      const myUid = row.Uid
       for (let i = 0; i < row.OtherUid.length; i++) {
         const uid = row.OtherUid[i]
         if (row.CheatOtherUids.includes(uid)) {
           const redStr = '<span style="color: red">' + row.OtherUid[i] + '</span>'
           strArray.push(redStr)
+        } else if (uid === myUid) {
+          const blueStr = '<span style="color: blue">' + row.OtherUid[i] + '</span>'
+          strArray.push(blueStr)
         } else {
           strArray.push(row.OtherUid[i])
         }
