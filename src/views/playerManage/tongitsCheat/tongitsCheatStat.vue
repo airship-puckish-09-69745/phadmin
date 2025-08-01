@@ -60,7 +60,7 @@
           width="150"
         >
           <template slot-scope="scope">
-            <span v-html="getPercent(scope.row.login_high_score_cnt,scope.row.last.login_high_score_cnt,scope.row,true)"></span> 
+            <span v-html="getPercent(scope.row.login_high_score_cnt,scope.row.last.login_high_score_cnt,scope.row)"></span> 
           </template>
         </el-table-column>
         <el-table-column
