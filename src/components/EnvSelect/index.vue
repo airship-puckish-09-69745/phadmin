@@ -16,13 +16,19 @@ export default {
   data() {
     return {
       envOptions: [
-        { label: '测试', value: 'test' },
-        { label: '线上', value: 'pro' }
+        { label: '旧版测试', value: 'test' },
+        { label: '旧版线上', value: 'pro' },
+        { label: '新版测试-1000002', value: 'test-1000002' },
+        { label: '新版测试-1000005', value: 'test-1000005' },
+        { label: '新版线上-1000005', value: 'pro-1000005' },
       ]
     }
   },
   computed: {
     env() {
+      if (this.$store.getters.version === 'V2') {
+        return this.$store.getters.env + '-' + this.$store.getters.appId
+      }
       return this.$store.getters.env
     }
   },
@@ -36,7 +42,16 @@ export default {
       return '-'
     },
     handleSetEnv(env) {
-      this.$store.dispatch('app/setEnv', env)
+      if (env.indexOf('-') >= 0) {
+        this.$store.dispatch('app/setEnv', env.split('-')[0])
+        this.$store.dispatch('app/setAppId', env.split('-')[1])
+        this.$store.dispatch('app/setVersion', 'V2')
+      } else {
+        this.$store.dispatch('app/setEnv', env)
+        this.$store.dispatch('app/setAppId', '')
+        this.$store.dispatch('app/setVersion', 'V1')
+      }
+
       this.refreshView()
       this.$message({
         message: '切换成功，正在重新刷新页面...',

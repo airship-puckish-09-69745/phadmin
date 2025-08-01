@@ -14,6 +14,7 @@ const getters = {
   errorLogs: state => state.errorLog.logs,
   env: state => state.app.env,
   zone: state => state.app.zone,
-  appId: state => state.app.appId
+  appId: state => state.app.appId,
+  version: state => state.app.version
 }
 export default getters

@@ -1,4 +1,9 @@
 import request from '@/utils/request'
+import store from '@/store'
+
+function getVer() {
+  return store.getters.version
+}
 
 /**
  * 获取对比内容
@@ -8,8 +13,9 @@ import request from '@/utils/request'
  * @returns {*}
  */
 export function getDiff(opType, keyID, envEmpty) {
+  const ver = getVer()
   return request({
-    url: 'configfile/diff',
+    url: `configfile${ver}/diff`,
     method: 'get',
     data: {
       opType: opType,
@@ -27,8 +33,9 @@ export function getDiff(opType, keyID, envEmpty) {
  * @returns {*}
  */
 export function submitPublish(opType, keyID, summary, envEmpty, attrInfo) {
+  const ver = getVer()
   return request({
-    url: 'configfile/publish',
+    url: `configfile${ver}/publish`,
     method: 'post',
     data: {
       opType: opType,
@@ -44,8 +51,9 @@ export function submitPublish(opType, keyID, summary, envEmpty, attrInfo) {
 // 当前发布状态 getView
 // 判断权限，是否需要审核
 export function getView(keyID, envEmpty) {
+  const ver = getVer()
   return request({
-    url: 'configfile/review',
+    url: `configfile${ver}/review`,
     method: 'get',
     data: {
       keyID: keyID
@@ -56,8 +64,9 @@ export function getView(keyID, envEmpty) {
 
 // 回滚 rollback
 export function rollback(keyID, envEmpty) {
+  const ver = getVer()
   return request({
-    url: 'configfile/rollback',
+    url: `configfile${ver}/rollback`,
     method: 'post',
     data: {
       keyID: keyID

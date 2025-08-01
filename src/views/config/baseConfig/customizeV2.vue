@@ -108,8 +108,7 @@
           <el-button type="primary" size="medium" @click="save">保存配置</el-button>
         </el-col>
         <el-col v-if="edit.isEdit" :span="4">
-          <el-button v-if="env==='test'" type="primary" size="medium" @click="test">发布测试</el-button>
-          <el-button v-else type="primary" size="medium" @click="pro">发布外网</el-button>
+          <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" />
         </el-col>
       </el-row>
       <el-form ref="form" :model="edit" label-width="150px" size="small" style="padding-top: 10px">
@@ -182,6 +181,7 @@ import { Message } from 'element-ui'
 import VCA from '@vue/composition-api'
 import JsonEditorVue from 'json-editor-vue';
 import Vue from 'vue'
+import Publish from "@/components/Publish/index.vue";
 
 Vue.use(VCA)
 
@@ -194,7 +194,7 @@ function newItem() {
 }
 
 export default {
-  components: {JsonEditorVue, Compare },
+  components: {Publish, JsonEditorVue, Compare },
   data() {
     return {
       tableData: [],
@@ -234,6 +234,9 @@ export default {
       } else {
         return { type: 's', range: '1' }
       }
+    },
+    getFullKey() {
+      return 'CustomizeCfg_' + this.edit.item.RedisSubkey
     },
     // 筛选相关逻辑
     searchChange() {

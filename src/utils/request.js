@@ -29,9 +29,11 @@ service.interceptors.request.use(
       } else {
         config.data.Env = store.getters.env
       }
-      config.data.AppId = store.getters.appId
-      if (config.data.AppId === '') {
-        config.data.AppId = config.data.Env === 'pro' ? '1000005' : '1000002'
+      if (store.getters.version === 'V2') {
+        config.data.AppId = store.getters.appId
+        if (config.data.AppId === '') {
+          config.data.AppId = config.data.Env === 'pro' ? '1000005' : '1000002'
+        }
       }
       isHandle = true
     }

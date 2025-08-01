@@ -10,6 +10,7 @@ const state = {
   env: Cookies.get('env') || 'test',
   zone: Cookies.get('zone') || 'cn',
   appId: Cookies.get('appId') || '',
+  version: Cookies.get('version') || ''
 }
 
 const mutations = {
@@ -46,6 +47,10 @@ const mutations = {
     state.appId = appId
     Cookies.set('appId', appId)
   },
+  SET_VERSION: (state, version) => {
+    state.version = version
+    Cookies.set('version', version)
+  }
 }
 
 const actions = {
@@ -67,9 +72,12 @@ const actions = {
   setZone({ commit }, zone) {
     commit('SET_ZONE', zone)
   },
-  SetAppId({ commit }, appId) {
+  setAppId({ commit }, appId) {
     commit('SET_APP_ID', appId)
-  }
+  },
+  setVersion({ commit }, version) {
+    commit('SET_VERSION', version)
+  },
 }
 
 export default {
