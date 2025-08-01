@@ -147,9 +147,7 @@ export default {
         this.$message.warning('标题不能为空!')
         return false
       }
-      console.log("++++++++++++++1++++++++++++++++")
-      console.log(this.formData.Channel)
-      console.log("++++++++++++++2++++++++++++++++")
+
       if (!this.formData.Channel || this.formData.Channel.length === 0) {
         this.$message.warning('渠道不能为空!')
         return false
@@ -157,6 +155,15 @@ export default {
       if (!this.formData.Content) {
         this.$message.warning('内容不能为空!')
         return false
+      }
+
+      if (this.formData.BroadcastType === 4) {
+        let nCount = this.handleContentLength(this.formData.Content)
+        let diffCount = 150 - nCount
+        if (diffCount > 150) {
+          this.$message.warning('内容不能超过150!')
+          return false
+        }
       }
 
       if (!this.formData.BroadcastType) {
@@ -181,8 +188,9 @@ export default {
         this.$message.warning('频率不能为空，且大于0秒!')
         return false
       }
+      console.log(this.matchFirstRankCfgs)
       // 如果是比赛第一名类型，必须校验有效期不能有交叉
-      if (this.formData.BroadcastType === 1 || this.formData.BroadcastType === 2) {
+      if (this.formData.BroadcastType === 1) {
         const matchFirstRankCfgs = this.matchFirstRankCfgs.filter(item => item.ID !== this.formData.ID)
         const isCross = matchFirstRankCfgs.some(item => {
           let [start, end] = item.BroadcastTimeRange
@@ -288,6 +296,17 @@ export default {
           }
         }
       }
+    },
+    handleContentLength(str) {
+      const matches = str.match(/<[^>]+>/g);
+      if (!matches) {
+        return 0
+      }
+      let totalLength = 0;
+      matches.forEach(match => {
+        totalLength += match.length; // 减去<和>的长度
+      });
+      return totalLength;
     }
   }
 }
