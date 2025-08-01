@@ -95,6 +95,10 @@ export default {
     matchFirstRankCfgs: {
       type: Array,
       default: () => []
+    },
+    jpFirstRankCfgs: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
@@ -159,7 +163,7 @@ export default {
 
       if (this.formData.BroadcastType === 4) {
         let nCount = this.handleContentLength(this.formData.Content)
-        let diffCount = 150 - nCount
+        let diffCount = this.formData.Content.length - nCount
         if (diffCount > 150) {
           this.$message.warning('内容不能超过150!')
           return false
@@ -205,7 +209,6 @@ export default {
           return false
         }
       }
-
       return true
     },
     async handleSave() {

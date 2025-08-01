@@ -366,6 +366,7 @@ export default {
       potTableBlackTickTableMoneys: '', // pot同桌分值到了是否踢人的场次列表
       jokerTableBlackTickTableMoneys: '', // joker同桌分值到了是否踢人的场次列表
       quickTableBlackTickTableMoneys: '', // quick同桌分值到了是否踢人的场次列表
+      TableTickLeave: 0, // 组合作弊离桌人数门槛
       nearID: [
         {
           Score: 10,
@@ -425,6 +426,7 @@ export default {
             if ($this.CheatCfg.TableBlackScore === undefined) {
               $this.CheatCfg.TableBlackScore = 100
             }
+            $this.TableTickLeave = $this.CheatCfg.TableTickLeave || 0
             const potTableBlackTickTableMoneys = []
             if ($this.CheatCfg.PotTableBlackTickTableMoneys !== undefined) {
               for (let i = 0; i < $this.CheatCfg.PotTableBlackTickTableMoneys.length; i++) {
@@ -568,7 +570,7 @@ export default {
       this.CheatCfg.PotPercent = parseInt(this.CheatCfg.PotPercent)
       this.CheatCfg.MaybeReduce = parseInt(this.CheatCfg.MaybeReduce)
       this.CheatCfg.TableBlackScore = parseInt(this.CheatCfg.TableBlackScore)
-
+      this.CheatCfg.TableTickLeave = parseInt(this.TableTickLeave)
       const potItems = this.potTableBlackTickTableMoneys.split(',')
       this.CheatCfg.PotTableBlackTickTableMoneys = []
       for (const o in potItems) {
@@ -802,6 +804,9 @@ export default {
           </el-descriptions-item>
           <el-descriptions-item label="POT同一桌积分自动拉黑" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
             <el-input v-model="CheatCfg.TableBlackScore" type="number" size="medium" style="width: 120px" />
+          </el-descriptions-item>
+          <el-descriptions-item label="组合作弊离桌人数门槛" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
+            <el-input v-model="TableTickLeave" type="number" size="medium" style="width: 120px" />
           </el-descriptions-item>
           <el-descriptions-item label="POT防作弊机器⼈" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
             <el-button
