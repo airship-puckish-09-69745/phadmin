@@ -8,7 +8,8 @@ const state = {
   device: 'desktop',
   size: Cookies.get('size') || 'medium',
   env: Cookies.get('env') || 'test',
-  zone: Cookies.get('zone') || 'cn'
+  zone: Cookies.get('zone') || 'cn',
+  appId: Cookies.get('appId') || '',
 }
 
 const mutations = {
@@ -40,7 +41,11 @@ const mutations = {
   SET_ZONE: (state, env) => {
     state.zone = env
     Cookies.set('zone', env)
-  }
+  },
+  SET_APP_ID: (state, appId) => {
+    state.appId = appId
+    Cookies.set('appId', appId)
+  },
 }
 
 const actions = {
@@ -61,6 +66,9 @@ const actions = {
   },
   setZone({ commit }, zone) {
     commit('SET_ZONE', zone)
+  },
+  SetAppId({ commit }, appId) {
+    commit('SET_APP_ID', appId)
   }
 }
 

@@ -29,6 +29,10 @@ service.interceptors.request.use(
       } else {
         config.data.Env = store.getters.env
       }
+      config.data.AppId = store.getters.appId
+      if (config.data.AppId === '') {
+        config.data.AppId = config.data.Env === 'pro' ? '1000005' : '1000002'
+      }
       isHandle = true
     }
     // do something before request is sent

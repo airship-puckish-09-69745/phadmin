@@ -56,8 +56,18 @@ module.exports = {
       alias: {
         '@': resolve('src')
       }
+    },
+    module: {
+      rules: [
+        {
+          test: /\.mjs$/,
+          include: /node_modules/,
+          type: 'javascript/auto' // 告诉 Webpack 按 ES 模块处理 .mjs 文件
+        }
+      ]
     }
   },
+  transpileDependencies: ['json-editor-vue'],
   chainWebpack(config) {
     // it can improve the speed of the first screen, it is recommended to turn on preload
     // it can improve the speed of the first screen, it is recommended to turn on preload
