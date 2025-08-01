@@ -3150,7 +3150,7 @@
               <div v-for="(item, index) in scope.row.appendsCards" :key="index" class="block">
                 <el-image style="width: 37px; height: 50px" :src="getBuracoCardUrl(item)" />
               </div>
-              <span>{{ ' + ' }}</span>
+              <span v-if="scope.row.opCards.length - scope.row.appendsCards.length > 0">{{ ' + ' }}</span>
               <div v-for="(item) in scope.row.opCards" class="block">
                 <span v-if="IstBuracoAppendsCards(item, scope.row.appendsCards)">
                   <el-image style="width: 37px; height: 50px" :src="getBuracoCardUrl(item)" />
