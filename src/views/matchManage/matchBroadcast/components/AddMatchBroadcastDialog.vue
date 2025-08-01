@@ -147,15 +147,18 @@ export default {
         this.$message.warning('标题不能为空!')
         return false
       }
-      console.log("++++++++++++++1++++++++++++++++")
-      console.log(this.formData.Channel)
-      console.log("++++++++++++++2++++++++++++++++")
+
       if (!this.formData.Channel || this.formData.Channel.length === 0) {
         this.$message.warning('渠道不能为空!')
         return false
       }
       if (!this.formData.Content) {
         this.$message.warning('内容不能为空!')
+        return false
+      }
+
+      if (this.formData.Content.length > 150) {
+        this.$message.warning('内容不能超过150!')
         return false
       }
 
