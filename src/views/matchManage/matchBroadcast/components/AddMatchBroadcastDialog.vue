@@ -157,9 +157,13 @@ export default {
         return false
       }
 
-      if (this.formData.BroadcastType === 4 && this.formData.Content.length > 200) {
-        this.$message.warning('内容不能超过150!')
-        return false
+      if (this.formData.BroadcastType === 4) {
+        let nCount = this.handleContentLength(this.formData.Content)
+        let diffCount = 150 - nCount
+        if (diffCount > 150) {
+          this.$message.warning('内容不能超过150!')
+          return false
+        }
       }
 
       if (!this.formData.BroadcastType) {
@@ -292,6 +296,17 @@ export default {
           }
         }
       }
+    },
+    handleContentLength(str) {
+      const matches = str.match(/<[^>]+>/g);
+      if (!matches) {
+        return 0
+      }
+      let totalLength = 0;
+      matches.forEach(match => {
+        totalLength += match.length; // 减去<和>的长度
+      });
+      return totalLength;
     }
   }
 }
