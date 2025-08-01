@@ -59,6 +59,9 @@
           label="今日游戏高信用户"
           width="150"
         >
+          <template slot-scope="scope">
+            {{ getPercent(scope.row.login_high_score_cnt,scope.row) }}
+          </template>
         </el-table-column>
         <el-table-column
           prop="low_score_cnt"
@@ -71,6 +74,9 @@
           label="今日游戏低信用户"
           width="150"
         >
+          <template slot-scope="scope">
+            {{ getPercent(scope.row.login_low_score_cnt,scope.row) }}
+          </template>
         </el-table-column>
         <el-table-column
           prop="suspect_cnt"
@@ -82,7 +88,11 @@
           prop="login_suspect_cnt"
           label="今日游戏疑似用户"
           width="150"
-        />
+        >
+          <template slot-scope="scope">
+            {{ getPercent(scope.row.login_suspect_cnt,scope.row) }}
+          </template>
+        </el-table-column>
         <el-table-column
           prop="black_cnt"
           label="现存黑子用户"
@@ -94,6 +104,9 @@
           label="今日游戏黑子用户"
           width="150"
         >
+          <template slot-scope="scope">
+            {{ getPercent(scope.row.login_black_cnt,scope.row) }}
+          </template>
         </el-table-column>
       </el-table>
     </el-row>
@@ -187,6 +200,13 @@ export default {
     click2getInfo() {
       this.currentPage = 1
       this.getInfo()
+    },
+    getPercent(val,row) {
+      const sum = row.login_black_cnt + row.login_low_score_cnt + row.login_high_score_cnt + row.login_suspect_cnt
+      if (sum === 0) {
+        return val+'  ' + '(100%)'
+      }
+      return val + '  (' + Math.round((val/sum)*100)+'%)'
     },
     getInfo() {
       const $this = this
