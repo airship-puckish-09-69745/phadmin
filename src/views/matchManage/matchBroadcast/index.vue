@@ -270,6 +270,16 @@ export default {
         matchFirstRankCfgs = this.tableData.filter(item => item.BroadcastType === 1)
       }
       this.broadcastDialog.matchFirstRankCfgs = matchFirstRankCfgs
+      let jpFirstRankCfgs = []
+      console.log("+++++++++++++++++++1+++++++++++++++++++++++++++++++")
+      if (data) {
+        console.log("+++++++++++++++++++2+++++++++++++++++++++++++++++++")
+        jpFirstRankCfgs = this.tableData.filter(item => item.ID !== data.ID && item.BroadcastType === 2)
+      } else {
+        console.log("+++++++++++++++++++3+++++++++++++++++++++++++++++++")
+        jpFirstRankCfgs = this.tableData.filter(item => item.BroadcastType === 1)
+      }
+      this.broadcastDialog.jpFirstRankCfgs = jpFirstRankCfgs
       this.broadcastDialog.visible = true
     },
     /**
