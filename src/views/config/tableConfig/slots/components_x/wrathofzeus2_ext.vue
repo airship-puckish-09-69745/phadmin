@@ -25,7 +25,7 @@
           </el-form-item>
 
           <el-form-item label="翻倍wild模式 wild倍数的权重" :rules="dataRule(true)">
-            <el-input v-model="cfg.GameMode4WildMulWt" :required="true" placeholder="请输入内容,如0,1,2,3"> <template slot="append">如0,1,2,3 代表小wild是0倍权重为0 </template> </el-input>
+            <el-input v-model="cfg.GameMode4WildOddsWt" :required="true" placeholder="请输入内容,如0,1,2,3"> <template slot="append">如0,1,2,3 代表小wild是0倍权重为0 </template> </el-input>
           </el-form-item>
 
           <el-form-item label="免费模式购买倍数" prop="BuyFreeOdds" :rules="dataRule(true,{type:'n'})">
