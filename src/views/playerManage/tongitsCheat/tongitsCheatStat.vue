@@ -60,7 +60,7 @@
           width="150"
         >
           <template slot-scope="scope">
-            {{ getPercent(scope.row.login_high_score_cnt,scope.row) }}
+            <span v-html="getPercent(scope.row.login_high_score_cnt,scope.row.last.login_high_score_cnt,scope.row)"></span> 
           </template>
         </el-table-column>
         <el-table-column
@@ -75,7 +75,7 @@
           width="150"
         >
           <template slot-scope="scope">
-            {{ getPercent(scope.row.login_low_score_cnt,scope.row) }}
+            <span v-html="getPercent(scope.row.login_low_score_cnt,scope.row.last.login_low_score_cnt,scope.row)"></span>
           </template>
         </el-table-column>
         <el-table-column
@@ -90,7 +90,7 @@
           width="150"
         >
           <template slot-scope="scope">
-            {{ getPercent(scope.row.login_suspect_cnt,scope.row) }}
+            <span v-html="getPercent(scope.row.login_suspect_cnt,scope.row.last.login_suspect_cnt,scope.row)"></span>
           </template>
         </el-table-column>
         <el-table-column
@@ -105,7 +105,7 @@
           width="150"
         >
           <template slot-scope="scope">
-            {{ getPercent(scope.row.login_black_cnt,scope.row) }}
+            <span v-html="getPercent(scope.row.login_black_cnt,scope.row.last.login_black_cnt,scope.row)"></span>
           </template>
         </el-table-column>
       </el-table>
@@ -201,12 +201,19 @@ export default {
       this.currentPage = 1
       this.getInfo()
     },
-    getPercent(val,row) {
+    getPercent(val,last,row,revers=false) {
       const sum = row.login_black_cnt + row.login_low_score_cnt + row.login_high_score_cnt + row.login_suspect_cnt
       if (sum === 0) {
         return val+'  ' + '(100%)'
       }
-      return val + '  (' + Math.round((val/sum)*100)+'%)'
+      if (last === undefined || val === last) {
+        return `${val} (${Math.round((val/sum)*100)}%)`
+      }
+      if (val > last && !revers) {
+        return `${val} (<span style="color: red;"> ${Math.round((val/sum)*100)}%</span>)`
+      } else {
+        return `${val} (<span style="color: green;"> ${Math.round((val/sum)*100)}%</span>)`
+      }
     },
     getInfo() {
       const $this = this
@@ -232,9 +239,18 @@ export default {
         if (response.RetCode === 0) {
           const objs = response.Data || []
           $this.ret = response.Data
-          $this.tableData = objs
           this.totalCount = response.Data.length
           $this.tableData = objs
+
+          for (let i=0; i<this.totalCount; i++) {
+            if (i < this.totalCount-1) {
+              objs[i].last = objs[i+1]
+            } else {
+              objs[i].last = {}
+            }
+            // console.log(JSON.stringify(objs[i]))
+          }
+
           console.log(objs)
           if (objs.length === 0) {
             Message.success('查询结果为空')
