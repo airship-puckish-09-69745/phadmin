@@ -83,6 +83,7 @@
       :position-options="positionOptions"
       :match-unique-id-cfgs="matchUniqueIdCfgs"
       :match-first-rank-cfgs="broadcastDialog.matchFirstRankCfgs"
+      :jp-first-rank-cfgs ="broadcastDialog.jpFirstRankCfgs"
       @close="handleCloseBroadcastDialog"
       @reload="onSearch"
       @save="handleUpdateConfig"
@@ -123,7 +124,8 @@ export default {
       broadcastDialog: {
         visible: false,
         updateData: null,
-        matchFirstRankCfgs: []
+        matchFirstRankCfgs: [],
+        jpFirstRankCfgs: []
       },
       columns: [
         {
@@ -255,6 +257,7 @@ export default {
       this.broadcastDialog.visible = false
       this.broadcastDialog.updateData = null
       this.broadcastDialog.matchFirstRankCfgs = []
+      this.broadcastDialog.jpFirstRankCfgs = []
     },
     /**
      * 展示新增/编辑对话框
@@ -271,13 +274,10 @@ export default {
       }
       this.broadcastDialog.matchFirstRankCfgs = matchFirstRankCfgs
       let jpFirstRankCfgs = []
-      console.log("+++++++++++++++++++1+++++++++++++++++++++++++++++++")
       if (data) {
-        console.log("+++++++++++++++++++2+++++++++++++++++++++++++++++++")
         jpFirstRankCfgs = this.tableData.filter(item => item.ID !== data.ID && item.BroadcastType === 2)
       } else {
-        console.log("+++++++++++++++++++3+++++++++++++++++++++++++++++++")
-        jpFirstRankCfgs = this.tableData.filter(item => item.BroadcastType === 1)
+        jpFirstRankCfgs = this.tableData.filter(item => item.BroadcastType === 2)
       }
       this.broadcastDialog.jpFirstRankCfgs = jpFirstRankCfgs
       this.broadcastDialog.visible = true

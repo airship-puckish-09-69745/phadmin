@@ -192,7 +192,6 @@ export default {
         this.$message.warning('频率不能为空，且大于0秒!')
         return false
       }
-      console.log(this.matchFirstRankCfgs)
       // 如果是比赛第一名类型，必须校验有效期不能有交叉
       if (this.formData.BroadcastType === 1) {
         const matchFirstRankCfgs = this.matchFirstRankCfgs.filter(item => item.ID !== this.formData.ID)
@@ -206,6 +205,22 @@ export default {
         })
         if (isCross) {
           this.$message.warning('比赛第一名类型的有效期冲突!')
+          return false
+        }
+      }
+
+      if (this.formData.BroadcastType === 2) {
+        const jpFirstRankCfgs = this.jpFirstRankCfgs.filter(item => item.ID !== this.formData.ID)
+        const isCross = jpFirstRankCfgs.some(item => {
+          let [start, end] = item.BroadcastTimeRange
+          start *= 1000
+          end *= 1000
+          const [start2, end2] = this.formData.BroadcastTimeRange
+          //console.log(start, start2, end, end2)
+          return (start <= start2 && end >= start2) || (start <= end2 && end >= end2)
+        })
+        if (isCross) {
+          this.$message.warning('jp类型的有效期冲突!')
           return false
         }
       }
