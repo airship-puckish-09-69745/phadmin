@@ -4,7 +4,7 @@
       <el-col :span="12" :offset="3">
         <el-form ref="frm2" :model="cfg" label-width="250px">
           <el-form-item label="普通模式 scatter个数的权重" :rules="dataRule(true)">
-            <el-input v-model="cfg.ScatterNumWt" :required="true" placeholder="请输入内容,如0,1,2,3"> <template slot="append">如0,1,2,3 代表出现0个的权重为0 </template> </el-input>
+            <el-input v-model="cfg.ScatterNumWt" :required="true" placeholder="请输入内容,如0,1,2"> <template slot="append">如0,1,2 代表出现0个的权重为0 </template> </el-input>
           </el-form-item>
 
           <span style="color: red; font-size: 11px;">注: 位置0:无 位置1:大图标模式 位置2:大wild模式 位置3:分散wild模式 位置4:翻倍wild模式</span>
@@ -103,6 +103,12 @@ export default {
       return JSON.parse(JSON.stringify(this.slotsData))
     },
     submitFrm() {
+      const scatterNumWt = this.cfg.ScatterNumWt;
+      const numbers = scatterNumWt.split(',').map(num => parseInt(num.trim(), 10));
+      if (numbers.length !== 3) {
+        this.$message.error('普通模式 scatter个数的权重, 只支持0 1 2个的权重配置 3个scatter由剧本和进免费的最小倍数控制');
+        return;
+      }
       if (!ValidateVueItem(this.$refs['frm2'])) return false
       const $this = this
       this.$refs.compare.SetNewVal(this.getDiffData())
