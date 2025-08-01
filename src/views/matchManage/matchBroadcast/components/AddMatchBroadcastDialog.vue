@@ -196,7 +196,12 @@ export default {
           return (start <= start2 && end >= start2) || (start <= end2 && end >= end2)
         })
         if (isCross) {
-          this.$message.warning('比赛第一名类型的有效期冲突!')
+          if (this.formData.BroadcastType === 1) {
+            this.$message.warning('比赛第一名类型的有效期冲突!')
+          } else if (this.formData.BroadcastType === 2) {
+            this.$message.warning('JP播报类型的有效期冲突!')
+          }
+
           return false
         }
       }
