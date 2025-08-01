@@ -157,7 +157,7 @@ export default {
         return false
       }
 
-      if (this.formData.BroadcastType === 4 && this.formData.Content.length > 150) {
+      if (this.formData.BroadcastType === 4 && this.formData.Content.length > 200) {
         this.$message.warning('内容不能超过150!')
         return false
       }
