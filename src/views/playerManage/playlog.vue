@@ -3144,13 +3144,13 @@
         <el-table-column prop="actionType" label="actionType" width="100px">
           <template slot-scope="scope">{{ getBuracoActionDec(scope.row.actionType) }}</template>
         </el-table-column>
-        <el-table-column prop="opCards" label="opCards" width="750px" >
+        <el-table-column prop="opCards" label="opCards" width="680px" >
           <template slot-scope="scope">
             <span v-if="scope.row.appendsCards"><!--组合追加牌-->
               <div v-for="(item, index) in scope.row.appendsCards" :key="index" class="block">
                 <el-image style="width: 37px; height: 50px" :src="getBuracoCardUrl(item)" />
               </div>
-              <span>{{ ' + ' }}</span>
+              <span>{{' + '}}</span>
               <div v-for="(item) in scope.row.opCards" class="block">
                 <span v-if="IstBuracoAppendsCards(item, scope.row.appendsCards)">
                   <el-image style="width: 37px; height: 50px" :src="getBuracoCardUrl(item)" />
