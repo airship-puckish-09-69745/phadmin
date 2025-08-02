@@ -433,6 +433,7 @@ import {Message} from "element-ui";
 import request from "@/utils/request";
 import Compare from "@/components/Compare/index.vue";
 import store from '@/store'
+import {getCustomize, updateCustomize} from "@/api/custome_configV2";
 
 function newPrizePoolCfg() {
   return {
@@ -900,13 +901,7 @@ export default {
     },
     getData() {
       const $this = this
-      request({
-        url: '/customizeconfig/one',
-        method: 'get',
-        data: {
-          SubKey: this.subKey
-        }
-      }).then(response => {
+      getCustomize(this.subKey).then(response => {
         if (response.RetCode === 0) {
           const whitelistCfg = JSON.parse(JSON.stringify($this.item.WhitelistCfg))
           $this.form = response.Data || {}
@@ -998,11 +993,7 @@ export default {
         SiteIdList: this.item.WhitelistCfg.SiteIdList
       }
       this.form.Data = JSON.stringify(tableData)
-      request({
-        url: 'customizeconfig/update',
-        method: 'post',
-        data: this.form
-      }).then(response => {
+      updateCustomize(this.form).then(response => {
         if (response.RetCode === 0) {
           const showMsg = '保存成功'
           Message.success(showMsg)
