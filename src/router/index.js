@@ -2234,6 +2234,12 @@ export const asyncRoutes = [
             component: () => import('@/views/matchManage/matchOperations/matchGtccConfig.vue'),
             name: 'matchGtccConfig',
             meta: { title: 'GTCC配置', noCache: true }
+          },
+          {
+            path: 'matchBroadcast',
+            component: () => import('@/views/matchManage/matchOperations/matchBroadcast/index.vue'),
+            name: 'matchBroadcast',
+            meta: { title: '赛事播报', noCache: true }
           }
         ]
       },
@@ -2270,12 +2276,6 @@ export const asyncRoutes = [
 
           }
         ]
-      },
-      {
-        path: 'matchBroadcast',
-        component: () => import('@/views/matchManage/matchBroadcast/index.vue'),
-        name: 'matchBroadcast',
-        meta: { title: '赛事播报', noCache: true }
       }
     ]
   },
