@@ -84,6 +84,7 @@
       :match-unique-id-cfgs="matchUniqueIdCfgs"
       :match-first-rank-cfgs="broadcastDialog.matchFirstRankCfgs"
       :jp-first-rank-cfgs ="broadcastDialog.jpFirstRankCfgs"
+      :app-id-options="APPID_OPTIONS"
       @close="handleCloseBroadcastDialog"
       @reload="onSearch"
       @save="handleUpdateConfig"

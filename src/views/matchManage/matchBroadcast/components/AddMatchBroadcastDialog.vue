@@ -9,6 +9,11 @@
       <el-form-item label="标题" required>
         <el-input v-model="formData.Title" style="width: 360px;" />
       </el-form-item>
+      <el-form-item label="AppID" required>
+        <el-select v-model="formData.AppId" placeholder="请选择AppID" style="width: 360px;">
+          <el-option v-for="option in appIdOptions" :key="option.value" :label="option.label" :value="option.value" />
+        </el-select>
+      </el-form-item>
       <el-form-item label="渠道" required>
         <el-select v-model="formData.Channel" placeholder="请选择渠道" style="width: 360px;" multiple>
           <el-option v-for="option in channelOptions" :key="option.value" :label="option.label" :value="option.value" />
@@ -97,6 +102,10 @@ export default {
       default: () => []
     },
     jpFirstRankCfgs: {
+      type: Array,
+      default: () => []
+    },
+    appIdOptions: {
       type: Array,
       default: () => []
     }
@@ -255,7 +264,7 @@ export default {
       this.formData = {
         ID: 0,
         // 应用id
-        AppId: '',
+        AppId: 0,
         // 渠道
         Channel: '',
         // 播报类型
