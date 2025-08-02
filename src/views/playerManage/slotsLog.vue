@@ -347,7 +347,7 @@ export default {
       totalCount: 0,
       currentPage: 0,
       pageNum: 20,
-      typeNames: { 0: '主游戏', 1: 'wild', 2: 'scatter', 3: 'jackpot' },
+      typeNames: { 0: '主游戏', 1: 'wild', 2: 'scatter', 3: 'jackpot', 5: 'FreeSpin' },
       showDetail: false,
       detailContent: '',
       detailPayLine: 0
