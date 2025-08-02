@@ -416,6 +416,7 @@ export default {
         194: 'GoldTrain',
         196: 'GoldMiner',
         200: 'AtlantisTreasure',
+        220: 'GoldenDragon',
         204: 'Space Treasure',
         208: 'Candy Burst',
         210: 'Lucky Spirits',

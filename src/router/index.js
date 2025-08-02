@@ -1232,6 +1232,12 @@ export const asyncRoutes = [
                 meta: { title: 'G igaAce' }
               },
               {
+                path: 'goldendragon_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/goldendragon_slots_cfg'),
+                name: 'goldendragon_slots_cfg',
+                meta: { title: 'G oldenDragon' }
+              },
+              {
                 path: 'godoffortune_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/godoffortune_slots_cfg'),
                 name: 'godoffortune_slots_cfg',
@@ -3248,6 +3254,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'streetfightingmars_slots_log',
             meta: { title: 'StreetFighting(审)', gid: 189 }
+          },
+          {
+            path: 'goldendragonmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'goldendragonmars_slots_log',
+            meta: { title: 'GoldenDragon(审)', gid: 221 }
           },
           {
             path: 'goldtrainmars_slots_log',
