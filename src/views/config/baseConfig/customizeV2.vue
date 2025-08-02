@@ -44,6 +44,15 @@
           width="70"
         />
         <el-table-column
+          prop="AppId"
+          label="App"
+          min-width="100"
+        >
+          <template slot-scope="scope">
+            {{ getAppName(scope.row.AppId) }}
+          </template>
+        </el-table-column>
+        <el-table-column
           prop="Name"
           label="名称"
           min-width="100"
@@ -85,7 +94,7 @@
         <el-table-column
           prop="ModifyUser"
           label="最后修改人"
-          width="100"
+          width="120"
         />
       </el-table>
       <el-col :offset="16" :span="8">
@@ -107,11 +116,18 @@
         <el-col :span="4" offset="4">
           <el-button type="primary" size="medium" @click="save">保存配置</el-button>
         </el-col>
-        <el-col v-if="edit.isEdit" :span="4">
+        <el-col v-if="edit.isEdit" :span="4" offset="7">
           <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" />
         </el-col>
       </el-row>
       <el-form ref="form" :model="edit" label-width="150px" size="small" style="padding-top: 10px">
+        <el-form-item label="APP：" prop="item.AppId">
+          <el-col :span="20">
+            <el-select v-model="edit.item.AppId" placeholder="请选择" :disabled="edit.isEdit">
+              <el-option v-for="(o,idx) in appInfos" :key="idx" :label="o.Account" :value="o.ID" />
+            </el-select>
+          </el-col>
+        </el-form-item>
         <el-form-item label="内容类型：" :required="true" prop="item.Type">
           <el-radio-group v-model="edit.item.Type" :disabled="edit.isEdit" @change="typeChange">
             <el-radio :label="1">普通字符串</el-radio>
@@ -140,9 +156,9 @@
         </el-form-item>
         <el-form-item
           label="Redis子键："
-          :required="true"
+          :required="!edit.isEdit"
           prop="item.RedisSubkey"
-          :rules="dataRule(true,{type:'s',range:'2-20'})"
+          :rules="dataRule(!edit.isEdit,{type:'s',range:'2-50'})"
         >
           <el-col :span="20">
             <el-input v-if="!edit.isEdit" v-model="edit.item.RedisSubkey" />
@@ -182,6 +198,7 @@ import VCA from '@vue/composition-api'
 import JsonEditorVue from 'json-editor-vue';
 import Vue from 'vue'
 import Publish from "@/components/Publish/index.vue";
+import request from "@/utils/request";
 
 Vue.use(VCA)
 
@@ -202,6 +219,7 @@ export default {
       search: '',
       libShow: $libShow,
       env: 'test',
+      appInfos: [],
 
       edit: {
         visible: false,
@@ -219,13 +237,11 @@ export default {
     }
   },
   computed: {
-    IsNumber() {
-      return this.edit.item.Subtype === 1
-    }
   },
   created() {
     this.env = store.getters.env || this.env
     this.getList()
+    this.getAppInfos()
   },
   methods: {
     getDataRuleConfig() {
@@ -237,6 +253,10 @@ export default {
     },
     getFullKey() {
       return 'CustomizeCfg_' + this.edit.item.RedisSubkey
+    },
+    getAppName(appId) {
+      const info = this.appInfos.find(o => o.ID === appId)
+      return info ? info.Account : ''
     },
     // 筛选相关逻辑
     searchChange() {
@@ -384,7 +404,26 @@ export default {
           Message.success('发布成功！')
         }
       })
-    }
+    },
+    getAppInfos() {
+      request({
+        url: '/thirdparties/all',
+        method: 'get',
+        data: {}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          for (let i = 0; i < response.Data.length; i++) {
+            if (response.Data[i].Status !== 2) {
+              continue
+            }
+            this.appInfos.push({
+              ID: response.Data[i].ID,
+              Account: response.Data[i].ID + '-' + response.Data[i].Account
+            })
+          }
+        }
+      })
+    },
   }
 }
 </script>
