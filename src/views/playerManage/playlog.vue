@@ -177,6 +177,16 @@
         </el-table-column>
       </template>
       <el-table-column
+          prop="isfreespin"
+          label="是否使用道具下注"
+          width="100"
+      >
+        <template slot-scope="scope">
+            {{ isFreeSpin(scope.row.IsFreeSpin) }}
+        </template>
+      </el-table-column>
+
+      <el-table-column
         prop="MoneyChanged"
         label="输赢"
         width="100"
@@ -559,6 +569,7 @@
             <td>扣除奖池贡献</td>
             <td>累计奖池贡献</td>
             <td>点控命中</td>
+            <td>是否使用道具</td>
           </tr>
           <tr>
             <td>{{ sweeperPlay.JackpotContribute / 1000 }}</td>
@@ -569,6 +580,21 @@
             }}
             </td>
             <td>{{ getMicroCtrlName(sweeperPlay.microCtrl) }}</td>
+            <td>{{ sweeperPlay.propLog && sweeperPlay.propLog.propId == 0 ? '否' : '是' }}</td>
+          </tr>
+          <tr>
+            <td>道具Id</td>
+            <td>道具uuid</td>
+            <td>道具单张面值</td>
+            <td>道具使用数量</td>
+            <td>道具剩余数量</td>
+          </tr>
+          <tr>
+            <td>{{ sweeperPlay.propLog ? sweeperPlay.propLog.propId : '' }}</td>
+            <td>{{ sweeperPlay.propLog ? sweeperPlay.propLog.uuid : '' }}</td>
+            <td>{{ sweeperPlay.propLog ? sweeperPlay.propLog.itemCost/1000 : '' }}</td>
+            <td>{{ sweeperPlay.propLog ? sweeperPlay.propLog.itemCount : '' }}</td>
+            <td>{{ sweeperPlay.propLog ? sweeperPlay.propLog.itemNow : '' }}</td>
           </tr>
         </table>
       </div>
@@ -3847,6 +3873,13 @@ export default {
           return '否'
         }
       }
+    },
+    isFreeSpin(valA) {
+        if (valA === 1) {
+          return '是'
+        } else {
+          return '否'
+        }
     },
     peiValStr(randVal, winRate, peiVal) {
       if (randVal < winRate && peiVal === 1) {
