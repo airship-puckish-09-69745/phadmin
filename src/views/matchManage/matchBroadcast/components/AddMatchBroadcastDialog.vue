@@ -9,6 +9,11 @@
       <el-form-item label="标题" required>
         <el-input v-model="formData.Title" style="width: 360px;" />
       </el-form-item>
+      <el-form-item label="AppID" required>
+        <el-select v-model="formData.AppId" placeholder="请选择AppID" style="width: 360px;">
+          <el-option v-for="option in appIdOptions" :key="option.value" :label="option.label" :value="option.value" />
+        </el-select>
+      </el-form-item>
       <el-form-item label="渠道" required>
         <el-select v-model="formData.Channel" placeholder="请选择渠道" style="width: 360px;" multiple>
           <el-option v-for="option in channelOptions" :key="option.value" :label="option.label" :value="option.value" />
@@ -36,6 +41,7 @@
           end-placeholder="结束日期"
           style="width: 360px;"
           value-format="timestamp"
+          format="yyyy-MM-dd HH:mm"
           :default-time="['00:00:00', '23:59:59']"
         />
       </el-form-item>
@@ -94,6 +100,14 @@ export default {
     matchFirstRankCfgs: {
       type: Array,
       default: () => []
+    },
+    jpFirstRankCfgs: {
+      type: Array,
+      default: () => []
+    },
+    appIdOptions: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
@@ -146,9 +160,23 @@ export default {
         this.$message.warning('标题不能为空!')
         return false
       }
+
+      if (!this.formData.Channel || this.formData.Channel.length === 0) {
+        this.$message.warning('渠道不能为空!')
+        return false
+      }
       if (!this.formData.Content) {
         this.$message.warning('内容不能为空!')
         return false
+      }
+
+      if (this.formData.BroadcastType === 4) {
+        let nCount = this.handleContentLength(this.formData.Content)
+        let diffCount = this.formData.Content.length - nCount
+        if (diffCount > 150) {
+          this.$message.warning('内容不能超过150!')
+          return false
+        }
       }
 
       if (!this.formData.BroadcastType) {
@@ -190,6 +218,21 @@ export default {
         }
       }
 
+      if (this.formData.BroadcastType === 2) {
+        const jpFirstRankCfgs = this.jpFirstRankCfgs.filter(item => item.ID !== this.formData.ID)
+        const isCross = jpFirstRankCfgs.some(item => {
+          let [start, end] = item.BroadcastTimeRange
+          start *= 1000
+          end *= 1000
+          const [start2, end2] = this.formData.BroadcastTimeRange
+          //console.log(start, start2, end, end2)
+          return (start <= start2 && end >= start2) || (start <= end2 && end >= end2)
+        })
+        if (isCross) {
+          this.$message.warning('jp类型的有效期冲突!')
+          return false
+        }
+      }
       return true
     },
     async handleSave() {
@@ -221,7 +264,7 @@ export default {
       this.formData = {
         ID: 0,
         // 应用id
-        AppId: '',
+        AppId: 0,
         // 渠道
         Channel: '',
         // 播报类型
@@ -280,6 +323,17 @@ export default {
           }
         }
       }
+    },
+    handleContentLength(str) {
+      const matches = str.match(/<[^>]+>/g);
+      if (!matches) {
+        return 0
+      }
+      let totalLength = 0;
+      matches.forEach(match => {
+        totalLength += match.length; // 减去<和>的长度
+      });
+      return totalLength;
     }
   }
 }

@@ -59,6 +59,9 @@
           label="今日游戏高信用户"
           width="150"
         >
+          <template slot-scope="scope">
+            <span v-html="getPercent(scope.row.login_high_score_cnt,scope.row.last.login_high_score_cnt,scope.row)"></span> 
+          </template>
         </el-table-column>
         <el-table-column
           prop="low_score_cnt"
@@ -71,6 +74,9 @@
           label="今日游戏低信用户"
           width="150"
         >
+          <template slot-scope="scope">
+            <span v-html="getPercent(scope.row.login_low_score_cnt,scope.row.last.login_low_score_cnt,scope.row)"></span>
+          </template>
         </el-table-column>
         <el-table-column
           prop="suspect_cnt"
@@ -82,7 +88,11 @@
           prop="login_suspect_cnt"
           label="今日游戏疑似用户"
           width="150"
-        />
+        >
+          <template slot-scope="scope">
+            <span v-html="getPercent(scope.row.login_suspect_cnt,scope.row.last.login_suspect_cnt,scope.row)"></span>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="black_cnt"
           label="现存黑子用户"
@@ -94,6 +104,9 @@
           label="今日游戏黑子用户"
           width="150"
         >
+          <template slot-scope="scope">
+            <span v-html="getPercent(scope.row.login_black_cnt,scope.row.last.login_black_cnt,scope.row)"></span>
+          </template>
         </el-table-column>
       </el-table>
     </el-row>
@@ -188,13 +201,27 @@ export default {
       this.currentPage = 1
       this.getInfo()
     },
+    getPercent(val,last,row,revers=false) {
+      const sum = row.login_black_cnt + row.login_low_score_cnt + row.login_high_score_cnt + row.login_suspect_cnt
+      if (sum === 0) {
+        return val+'  ' + '(100%)'
+      }
+      if (last === undefined || val === last) {
+        return `${val} (${Math.round((val/sum)*100)}%)`
+      }
+      if (val > last && !revers) {
+        return `${val} (<span style="color: red;"> ${Math.round((val/sum)*100)}%</span>)`
+      } else {
+        return `${val} (<span style="color: green;"> ${Math.round((val/sum)*100)}%</span>)`
+      }
+    },
     getInfo() {
       const $this = this
 
-      if (this.env != 'test') {
-        console.log(`env:${this.env} return`)
-        return
-      }
+      // if (this.env != 'test') {
+      //   console.log(`env:${this.env} return`)
+      //   return
+      // }
 
       request({
         url: '/dataProxy/info',
@@ -212,9 +239,18 @@ export default {
         if (response.RetCode === 0) {
           const objs = response.Data || []
           $this.ret = response.Data
-          $this.tableData = objs
           this.totalCount = response.Data.length
           $this.tableData = objs
+
+          for (let i=0; i<this.totalCount; i++) {
+            if (i < this.totalCount-1) {
+              objs[i].last = objs[i+1]
+            } else {
+              objs[i].last = {}
+            }
+            // console.log(JSON.stringify(objs[i]))
+          }
+
           console.log(objs)
           if (objs.length === 0) {
             Message.success('查询结果为空')

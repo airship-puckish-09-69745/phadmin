@@ -352,6 +352,7 @@ export default {
                   for (let k = 0; k < tidRow.datas.length; k++) {
                     const cheatRow = tidRow.datas[k]
                     const playCheatLog = {
+                      Uid: cheatRow.uid,
                       EndTime: cheatRow.endTime,
                       CheatScore: cheatRow.cheatScore,
                       LogId: cheatRow.logId,

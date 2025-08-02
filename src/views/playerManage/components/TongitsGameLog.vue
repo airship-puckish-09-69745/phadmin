@@ -14,7 +14,7 @@
         <td v-for="one in FinishArray">
           用户：{{ one.Uid }} - {{ one.Nick }}<br>
           {{ one.isRobot?'机器人':getUserType(one.UserType) }} {{ one.RobotDefenceLevel?getRobotDefenceLevel(one.RobotDefenceLevel): getRobotLevel(one.RobotLevel) }}<br>
-<!--          {{ showCheatType(one.TrustLevel) }}-->
+          {{ showCheatType(one.TrustLevel) }}
         </td>
       </tr>
     </table>
