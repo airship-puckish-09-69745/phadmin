@@ -564,6 +564,7 @@ export default {
             }
             this.editJokerAI = this.CheatCfg.JokerAiConfigRow
             this.editQuickAI = this.CheatCfg.QuickAiConfigRow
+            this.AutoBlack = this.CheatCfg.AutoBlack || this.AutoBlack
             const maybeMin = $this.CheatCfg.MaybeMin
             $this.oldCheatMin = maybeMin
             const old = JSON.parse(response.Data.Data)
@@ -1212,7 +1213,7 @@ export default {
                 </el-table-column>
 
                 <el-table-column
-                  label="作弊分值最小值（开）"
+                  label="作弊分值最大值（开）"
                   width="120"
                 >
                   <template scope="subScope">
