@@ -2964,10 +2964,10 @@
         </el-table-column>
         <el-table-column label="team" width="100px">
           <template slot-scope="scope">
-              <div 
-                :style="{ 
-                  backgroundColor: getTrucoTeamColor(scope.row.team), 
-                  width: '50px', 
+              <div
+                :style="{
+                  backgroundColor: getTrucoTeamColor(scope.row.team),
+                  width: '50px',
                   height: '50px',
                   display: 'inline-block'
                 }"
@@ -3000,7 +3000,7 @@
             />
             <br>
             <span>{{trucoCardNumSort(scope.row.viradaCard)}}</span>
-          </template>                      
+          </template>
         </el-table-column>
 
         <el-table-column prop="roundScore" label="本轮底分" width="50px"/>
@@ -3011,10 +3011,10 @@
               <el-table-column prop="uid" label="uid" width="100"/>
               <el-table-column label="team" width="60">
                 <template slot-scope="scope">
-                  <div 
-                    :style="{ 
-                      backgroundColor: getTrucoTeamColor(scope.row.team), 
-                      width: '50px', 
+                  <div
+                    :style="{
+                      backgroundColor: getTrucoTeamColor(scope.row.team),
+                      width: '50px',
                       height: '50px',
                       display: 'inline-block'
                     }"
@@ -3039,10 +3039,10 @@
               <el-table-column prop="count" label="回合" width="50"/>
               <el-table-column label="回合结果" width="80">
                 <template slot-scope="scope">
-                  <div 
-                    :style="{ 
-                      backgroundColor: getTrucoTeamColor(scope.row.result), 
-                      width: '50px', 
+                  <div
+                    :style="{
+                      backgroundColor: getTrucoTeamColor(scope.row.result),
+                      width: '50px',
                       height: '50px',
                       display: 'inline-block'
                     }"
@@ -3060,7 +3060,7 @@
                             style="width: 37px; height: 50px"
                             :src="getCardUrl(scope.row.Card)"
                           />
-                      </template>                      
+                      </template>
                     </el-table-column>
                     <el-table-column prop="Covered" label="暗牌" width="100"/>
                   </el-table>
@@ -3069,7 +3069,7 @@
             </el-table>
           </template>
         </el-table-column>
-        
+
       </el-table>
     </el-dialog>
 
@@ -3089,10 +3089,10 @@
         </el-table-column>
         <el-table-column label="team" width="60px">
           <template slot-scope="scope">
-              <div 
-                :style="{ 
-                  backgroundColor: getBuracoTeamColor(scope.row.team), 
-                  width: '30px', 
+              <div
+                :style="{
+                  backgroundColor: getBuracoTeamColor(scope.row.team),
+                  width: '30px',
                   height: '30px',
                   display: 'inline-block'
                 }"
@@ -3109,10 +3109,10 @@
       <el-table ref="filterTable" :data="BuracoDetail.teamDetail" border>
         <el-table-column label="team" width="60">
           <template slot-scope="scope">
-            <div 
-              :style="{ 
-                backgroundColor: getBuracoTeamColor(scope.row.teamId), 
-                width: '30px', 
+            <div
+              :style="{
+                backgroundColor: getBuracoTeamColor(scope.row.teamId),
+                width: '30px',
                 height: '30px',
                 display: 'inline-block'
               }"
@@ -3154,10 +3154,10 @@
         </el-table-column>
         <el-table-column label="team" width="60">
           <template slot-scope="scope">
-            <div 
-              :style="{ 
-                backgroundColor: getBuracoTeamColor(scope.row.teamId), 
-                width: '30px', 
+            <div
+              :style="{
+                backgroundColor: getBuracoTeamColor(scope.row.teamId),
+                width: '30px',
                 height: '30px',
                 display: 'inline-block'
               }"
@@ -4346,8 +4346,8 @@ export default {
       teamGroupMap.set(2, new Map())
       for (let i = 0; i < this.BuracoDetail.actionLogs.length; i ++) {
         this.BuracoDetail.actionLogs[i].idx = i+1
-        if (this.BuracoDetail.actionLogs[i].actionType == 3 
-            || this.BuracoDetail.actionLogs[i].actionType == 6 
+        if (this.BuracoDetail.actionLogs[i].actionType == 3
+            || this.BuracoDetail.actionLogs[i].actionType == 6
             || this.BuracoDetail.actionLogs[i].actionType == 12) {
               let teamId = this.BuracoDetail.actionLogs[i].teamId
             let tg = teamGroupMap.get(teamId)
