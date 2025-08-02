@@ -20,7 +20,7 @@ export default {
         { label: '旧版线上', value: 'pro' },
         { label: '新版测试-1000002', value: 'test-1000002' },
         { label: '新版测试-1000005', value: 'test-1000005' },
-        { label: '新版线上-1000005', value: 'pro-1000005' },
+        { label: '新版线上-1000005', value: 'pro-1000005' }
       ]
     }
   },
@@ -32,7 +32,45 @@ export default {
       return this.$store.getters.env
     }
   },
+  mounted() {
+    this.getEnvOptions()
+  },
   methods: {
+    getEnvOptions() {
+      // TODO 需要改成从接口里面获取
+      switch (process.env.VUE_APP_PROJECT) {
+        case 'ph_audit':
+          this.envOptions = [
+            { label: '旧版测试', value: 'test' },
+            { label: '旧版线上', value: 'pro' },
+            { label: '新版测试-1000002', value: 'test-1000002' },
+            { label: '新版测试-1000003', value: 'test-1000003' },
+            { label: '新版线上-1000002', value: 'pro-1000002' },
+            { label: '新版线上-1000003', value: 'pro-1000003' }
+          ]
+          break
+        case 'ph':
+          this.envOptions = [
+            { label: '旧版测试', value: 'test' },
+            { label: '旧版线上', value: 'pro' },
+            { label: '新版测试-1000002', value: 'test-1000002' },
+            { label: '新版测试-1000005', value: 'test-1000005' },
+            { label: '新版线上-1000002', value: 'pro-1000002' },
+            { label: '新版线上-1000005', value: 'pro-1000005' }
+          ]
+          break
+        case 'zoo':
+          this.envOptions = [
+            { label: '旧版测试', value: 'test' },
+            { label: '旧版线上', value: 'pro' },
+            { label: '新版测试-1000002', value: 'test-1000002' },
+            { label: '新版测试-1000005', value: 'test-1000005' },
+            { label: '新版线上-1000002', value: 'pro-1000002' },
+            { label: '新版线上-1000005', value: 'pro-1000005' }
+          ]
+          break
+      }
+    },
     showEnv() {
       for (const item of this.envOptions) {
         if (item.value === this.env) {
