@@ -57,7 +57,7 @@
 
 
       <el-col :span="24">
-        <h3 style="text-align:center;">有效牌张数区间配置</h3>
+        <h3 style="text-align:center;">有效牌张分数区间</h3>
         <div style="padding-top: 10px">
           <el-table
             :data="AiConfig.Decision.DecisionFight.FightList"
@@ -123,7 +123,7 @@
                     </template>
                   </el-table-column>
                 
-                  <el-table-column label="有效牌张数" align="center">
+                  <el-table-column label="有效牌张分数区间" align="center">
                     <el-table-column prop="range1" :label="getColumnLabel(AiConfig.Decision.DecisionFight.FightList[0].CardNumBegin,AiConfig.Decision.DecisionFight.FightList[0].CardNumEnd)" width="170" align="center">
                       <template slot-scope="subScope">
                         <el-input-number v-model="subScope.row.FightRatioList[0]" size="mini" :min="0" :max="100"></el-input-number>
