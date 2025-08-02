@@ -9,6 +9,9 @@
         <el-tab-pane label="比赛列表Tag">
           <MatchTagConfig :tag-config="configData.Data.MatchTagConfig"  @update="handleUpdateTag" @delete="handleDeleteTag" @reload="getConfigData" />
         </el-tab-pane>
+        <el-tab-pane label="免费引导付费开关">
+          <WhiteListConfig :config="configData.Data.WhiteList" @update="handleUpdateConfigData" />
+        </el-tab-pane>
       </el-tabs>
     </el-row>
   </el-card>
@@ -18,9 +21,11 @@
 import Publish from '@/components/Publish/index.vue'
 import MatchTagConfig from './components/MatchTagConfig/index.vue'
 import request from '@/utils/request'
+import WhiteListConfig from "@/views/matchManage/matchOperations/matchOther/components/WhiteListConfig/index.vue";
 export default {
   name: 'MatchOther',
   components: {
+    WhiteListConfig,
     Publish,
     MatchTagConfig,
   },
@@ -31,6 +36,7 @@ export default {
       configData: {
         Data: {
           MatchTagConfig: [], //比赛页签
+          WhiteList: {} // 白名单配置
         }
       } // 存储配置数据
     }
@@ -66,6 +72,9 @@ export default {
         const Data = this.configData.Data
         if (!Data.MatchTagConfig) {
           Data.MatchTagConfig = []
+        }
+        if (!Data.WhiteList) {
+          Data.WhiteList = {}
         }
       } else {
         this.$message.error('获取配置数据失败: ' + res.RetMsg)

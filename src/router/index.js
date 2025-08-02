@@ -7,7 +7,7 @@ Vue.use(Router)
 import Layout from '@/layout'
 import Watermark from '@/utils/watermark'
 import { IsMars } from '@/utils/env'
-import path from "path";
+import path from 'path'
 // import {IsMars} from "@/utils/env";
 /* Router Modules */
 // import componentsRouter from './modules/components'
@@ -1413,7 +1413,7 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/wrathofzeus2_slots_cfg'),
                 name: 'wrathofzeus2_slots_cfg',
                 meta: { title: 'WrathOfZeus2' }
-              },
+              }
 
             ]
           },
@@ -2213,15 +2213,15 @@ export const asyncRoutes = [
             path: 'matchOther',
             component: () => import('@/views/empty'),
             name: 'matchOther',
-            meta:{title:'比赛other配置',noCache: true},
+            meta: { title: '比赛other配置', noCache: true },
             children: [
               {
                 path: 'matchOther',
                 component: () => import('@/views/matchManage/matchOperations/matchOther/index.vue'),
                 name: 'matchOther',
-                meta: {title: '比赛other配置', noCache: true},
+                meta: { title: '比赛other配置', noCache: true }
               }
-          ]
+            ]
           },
           {
             path: 'matchTcc',
@@ -2234,6 +2234,12 @@ export const asyncRoutes = [
             component: () => import('@/views/matchManage/matchOperations/matchGtccConfig.vue'),
             name: 'matchGtccConfig',
             meta: { title: 'GTCC配置', noCache: true }
+          },
+          {
+            path: 'matchBroadcast',
+            component: () => import('@/views/matchManage/matchOperations/matchBroadcast/index.vue'),
+            name: 'matchBroadcast',
+            meta: { title: '赛事播报', noCache: true }
           }
         ]
       },
@@ -2270,12 +2276,6 @@ export const asyncRoutes = [
 
           }
         ]
-      },
-      {
-        path: 'matchBroadcast',
-        component: () => import('@/views/matchManage/matchBroadcast/index.vue'),
-        name: 'matchBroadcast',
-        meta: { title: '赛事播报', noCache: true }
       }
     ]
   },
@@ -3006,7 +3006,7 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'wrathofzeus2_slots_log',
             meta: { title: 'WrathOfZeus2', gid: 218 }
-          },
+          }
         ]
       },
       {

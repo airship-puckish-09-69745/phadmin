@@ -367,6 +367,11 @@ export default {
       jokerTableBlackTickTableMoneys: '', // joker同桌分值到了是否踢人的场次列表
       quickTableBlackTickTableMoneys: '', // quick同桌分值到了是否踢人的场次列表
       TableTickLeave: 0, // 组合作弊离桌人数门槛
+      JokerDisAndGive: {
+        Count: 1,
+        MaybeAdd: 3,
+        BlackAdd: 3
+      },
       nearID: [
         {
           Score: 10,
@@ -380,7 +385,10 @@ export default {
           Score: 500,
           MaybeAdd: 3
         }
-      ]
+      ],
+      AutoBlack: [
+
+      ],
     }
   },
 
@@ -427,6 +435,7 @@ export default {
               $this.CheatCfg.TableBlackScore = 100
             }
             $this.TableTickLeave = $this.CheatCfg.TableTickLeave || 0
+            $this.JokerDisAndGive = $this.CheatCfg.JokerDisAndGive || $this.JokerDisAndGive
             const potTableBlackTickTableMoneys = []
             if ($this.CheatCfg.PotTableBlackTickTableMoneys !== undefined) {
               for (let i = 0; i < $this.CheatCfg.PotTableBlackTickTableMoneys.length; i++) {
@@ -555,6 +564,7 @@ export default {
             }
             this.editJokerAI = this.CheatCfg.JokerAiConfigRow
             this.editQuickAI = this.CheatCfg.QuickAiConfigRow
+            this.AutoBlack = this.CheatCfg.AutoBlack || this.AutoBlack
             const maybeMin = $this.CheatCfg.MaybeMin
             $this.oldCheatMin = maybeMin
             const old = JSON.parse(response.Data.Data)
@@ -623,6 +633,12 @@ export default {
         BlackAdd: parseInt(this.CheatCfg.DisAndGive.BlackAdd)
       }
       this.CheatCfg.DisAndGive = DisAndGive
+      const JokerDisAndGive = {
+        Count: parseInt(this.JokerDisAndGive.Count),
+        MaybeAdd: parseInt(this.JokerDisAndGive.MaybeAdd),
+        BlackAdd: parseInt(this.JokerDisAndGive.BlackAdd)
+      }
+      this.CheatCfg.JokerDisAndGive = JokerDisAndGive
       const SameName = {
         MaybeAdd: parseInt(this.CheatCfg.SameName.MaybeAdd),
         BlackAdd: parseInt(this.CheatCfg.SameName.BlackAdd)
@@ -690,6 +706,9 @@ export default {
       this.CheatCfg.AiConfigRow = this.editAI
       this.CheatCfg.JokerAiConfigRow = this.editJokerAI
       this.CheatCfg.QuickAiConfigRow = this.editQuickAI
+
+      // 拉黑配置
+      this.CheatCfg.AutoBlack = this.AutoBlack
       Object.assign(cpy, this.CheatCfg)
       return JSON.stringify(cpy)
     },
@@ -764,6 +783,28 @@ export default {
         }
       }).then(response => {
       })
+    },
+    addAutoBlackButton() {
+      return (
+        <div>
+          <span>操作</span>
+          <el-button type='primary' size='mini' style='padding:5px;margin-left:5px;' onClick={() => this.doAddAutoBlack()}>添加范围</el-button>
+        </div>
+      )
+    },
+    doAddAutoBlack() {
+      console.log('AutoBlack')
+      this.AutoBlack.push(
+        {
+          CheatRadio: 0,
+          CheatScoreMin: 0,
+          CheatScoreMax: 0
+        }
+      )
+    },
+    delAutoBlackRow(mine, row) {
+      console.log('mine:' + mine, row)
+      this.control.splice(mine, 1)
     }
   }
 }
@@ -977,13 +1018,24 @@ export default {
           </table>
         </div>
         <div class="table-container">
-          <h5 class="title">拆成牌喂牌</h5>
+          <h5 class="title">POT拆成牌喂牌</h5>
           <el-form v-model="CheatCfg" label-width="150px" style="margin-top: 10px">
             <el-form-item label="拆成牌喂牌">
               <el-input v-model.number="CheatCfg.DisAndGive.MaybeAdd" type="number" size="medium" style="width: 120px" />
             </el-form-item>
             <el-form-item label="和黑子额外加分">
               <el-input v-model.number="CheatCfg.DisAndGive.BlackAdd" type="number" size="medium" style="width: 120px" />
+            </el-form-item>
+          </el-form>
+        </div>
+        <div class="table-container">
+          <h5 class="title">JOKER拆成牌喂牌</h5>
+          <el-form v-model="JokerDisAndGive" label-width="150px" style="margin-top: 10px">
+            <el-form-item label="拆成牌喂牌">
+              <el-input v-model.number="JokerDisAndGive.MaybeAdd" type="number" size="medium" style="width: 120px" />
+            </el-form-item>
+            <el-form-item label="和黑子额外加分">
+              <el-input v-model.number="JokerDisAndGive.BlackAdd" type="number" size="medium" style="width: 120px" />
             </el-form-item>
           </el-form>
         </div>
@@ -1140,7 +1192,59 @@ export default {
           </table>
         </div>
       </el-tab-pane>
-      <!--      <el-tab-pane label="数据异常增加疑似度配置" />-->
+      <el-tab-pane label="自动拉黑配置">
+        <el-row style="padding-top: 5px">
+          <h3 style="text-align:center;">拉黑配置</h3>
+          <el-col :span="24">
+            <div style="padding-top: 10px">
+              <el-table
+                :data="AutoBlack"
+                stripe
+                border
+                style="width: 100%"
+              >
+                <el-table-column
+                  label="作弊分值最小值（闭）"
+                  width="120"
+                >
+                  <template scope="subScope">
+                    <el-input v-model.number="subScope.row.CheatScoreMin" />
+                  </template>
+                </el-table-column>
+
+                <el-table-column
+                  label="作弊分值最大值（开）"
+                  width="120"
+                >
+                  <template scope="subScope">
+                    <el-input v-model.number="subScope.row.CheatScoreMax" />
+                  </template>
+                </el-table-column>
+
+                <el-table-column
+                  label="异常局占比（%）"
+                  width="120"
+                >
+                  <template scope="subScope">
+                    <el-input v-model.number="subScope.row.CheatRadio" />
+                  </template>
+                </el-table-column>
+
+                <el-table-column label="操作" :render-header="(h,obj)=>addAutoBlackButton()">
+                  <template scope="subScope">
+                    <el-button
+                      size="mini"
+                      type="danger"
+                      @click="delAutoBlackRow(subScope.$index,subScope.row)"
+                    >删除</el-button>
+                  </template>
+                </el-table-column>
+
+              </el-table>
+            </div>
+          </el-col>
+        </el-row>
+      </el-tab-pane>
     </el-tabs>
     <div style="margin-bottom: 20px;">
       <el-button type="primary" @click="setData">保存信息</el-button>
