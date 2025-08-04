@@ -75,13 +75,13 @@
             </el-table-column>
     
           
-            <el-table-column label="开始张数" align="center">
+            <el-table-column label="下限" align="center">
               <template slot-scope="scope">
                 <el-input-number v-model="scope.row.CardNumBegin" size="mini" :min="0" :max="100"></el-input-number>
               </template>
             </el-table-column>
             
-            <el-table-column label="结束张数" align="center">
+            <el-table-column label="上限" align="center">
               <template slot-scope="scope">
                 <el-input-number v-model="scope.row.CardNumEnd" size="mini" :min="0" :max="100"></el-input-number>
               </template>
