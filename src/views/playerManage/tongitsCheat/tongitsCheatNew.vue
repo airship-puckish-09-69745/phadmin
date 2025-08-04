@@ -368,6 +368,9 @@ export default {
                       this.saveNicks()
                     }
                     tidCheatLog.PlayCheatLogs.push(playCheatLog)
+                    if (tidCheatLog.FirstCheatTime >= cheatRow.endTime) {
+                      tidCheatLog.FirstCheatTime = cheatRow.endTime
+                    }
                   }
                 }
 
