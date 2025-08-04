@@ -1851,10 +1851,10 @@ export default {
           this.editForm.signExtra.gtccWhiteList.data=''
         }
         this.editForm.prizeExtra = JSON.parse(editData.prize_extra)
-        this.editForm.listExtra = JSON.parse(editData.list_extra)
-        if(this.editForm.listExtra  === undefined){
-            this.editForm.listExtra.tableSceneId = 0
-        }
+        // this.editForm.listExtra = JSON.parse(editData.list_extra)
+        // if(this.editForm.listExtra  === undefined){
+        //   this.editForm.listExtra.tableSceneId = 0
+        // }  //先做代码屏蔽
         this.showCsCfgs = []
         // 循环遍历是否存在gameId
         if (this.csCfgs.length > 0) {
