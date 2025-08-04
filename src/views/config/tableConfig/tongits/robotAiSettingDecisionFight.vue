@@ -109,7 +109,7 @@
               </template>
             </el-table-column>
 
-            <el-table-column label="牌张配置" align="center" >
+            <el-table-column label="每轮Tongits减少Fight概率" align="center" >
               <template slot-scope="scope">
                 <el-table :data="scope.row.ContributeCardList" border style="width: 100%">
                   <el-table-column
