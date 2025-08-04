@@ -12,7 +12,7 @@
                   <el-input-number
                     v-model="AiConfig.Decision.DecisionFight.SingleCardScore" 
                     :min="1"
-                    :precision="0"
+                    :precision="2"
                     placeholder="分数"
                     style="width: 100%"> 
       
@@ -48,7 +48,7 @@
           
             <el-table-column label="分数" align="center">
               <template slot-scope="scope">
-                <el-input-number v-model="scope.row.Score" size="mini" :min="0" :max="100"></el-input-number>
+                <el-input-number v-model="scope.row.Score" size="mini"  :precision="2" :min="0" :max="100"></el-input-number>
               </template>
             </el-table-column>
           </el-table>
