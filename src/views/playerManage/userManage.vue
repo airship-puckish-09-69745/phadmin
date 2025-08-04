@@ -160,12 +160,20 @@
             <el-button type="success" size="mini" style="margin-left: 10px;" @click="TagCreditDetail=true">详情</el-button>
           </el-descriptions-item>
           <el-descriptions-item label="tongits信任分：" :span="1" >
-            <el-tag>{{ formatNumber(item.TrustScore) }}</el-tag>
-            <el-tag v-if="item.TrustType == 1" type="success">低危用户</el-tag>
-            <el-tag v-if="item.TrustType == 4" type="success">低信用户</el-tag>
-            <el-tag v-if="item.TrustType == 5" type="success">高信用户</el-tag>
-            <el-tag v-if="item.TrustType == 2" type="success">疑似用户</el-tag>
-            <el-tag v-if="item.TrustType == 3" type="success">黑子用户</el-tag>
+            <el-col :span="8">
+              <el-tag>{{ formatNumber(item.TrustScore) }}</el-tag>
+              <el-tag v-if="item.TrustType == 1" type="success">低危用户</el-tag>
+              <el-tag v-if="item.TrustType == 4" type="success">低信用户</el-tag>
+              <el-tag v-if="item.TrustType == 5" type="success">高信用户</el-tag>
+              <el-tag v-if="item.TrustType == 2" type="success">疑似用户</el-tag>
+              <el-tag v-if="item.TrustType == 3" type="success">黑子用户</el-tag>
+            </el-col>
+            <el-col :span="6" v-if="env==='test'">
+              <el-input v-model.number="cheatScore" size="mini" placeholder="正加负减"/>
+            </el-col>
+            <el-col :span="4" v-if="env==='test'">
+              <el-button type="primary" size="mini" @click="incCheatScore()">增加Tongits疑似分</el-button>
+            </el-col>
           </el-descriptions-item>
           <el-descriptions-item label="手动添加道具:">
             <el-col :span="2"> {{'道具类型:'}} </el-col>
@@ -477,6 +485,7 @@ export default {
         ItemExpireTime: 0,
         ItemNum: 0
       },
+      cheatScore: 0,
       total: 0,
       tableData: [], //头像框和门票物品配置表数据
       tableItemData: [],
@@ -1749,8 +1758,36 @@ export default {
           break
         }
       }
+    },
+    incCheatScore() {
+      if (this.env != 'test') {
+        return
+      }
+      if (this.cheatScore === 0) {
+        this.$message.error('请输入一个不为0的数据')
+        return 
+      }
+      const $this = this
+      request({
+        url: '/dataProxy/info',
+        method: 'post',
+        data: {
+          Env: $this.env,
+          Path: '/user/cheat/update',
+          Uid: 11251737,//$this.item.Uid,
+          Gid: 22,
+          Score: $this.cheatScore
+        }
+      }).then(response => {
+        console.log('update tag ', response)
+        if (response.RetCode === 0) {
+          $this.getInfo()
+          $this.getTags()
+        } else {
+          $this.$message.error('更新失败')
+        }
+      })
     }
-
   }
 }
 </script>
