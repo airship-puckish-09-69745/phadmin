@@ -1851,8 +1851,9 @@ export default {
           this.editForm.signExtra.gtccWhiteList.data=''
         }
         this.editForm.prizeExtra = JSON.parse(editData.prize_extra)
-        if(editData.list_extra !== undefined){
-          this.editForm.listExtra = JSON.parse(editData.list_extra)
+        this.editForm.listExtra = JSON.parse(editData.list_extra)
+        if(this.editForm.listExtra  === undefined){
+            this.editForm.listExtra.tableSceneId = 0
         }
         this.showCsCfgs = []
         // 循环遍历是否存在gameId
