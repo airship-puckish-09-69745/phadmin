@@ -113,11 +113,13 @@
     </div>
     <el-dialog :title="getEditTitle()" :visible.sync="edit.visible" :close-on-click-modal="false" :close-on-press-escape="false">
       <el-row>
-        <el-col :span="4" offset="4">
-          <el-button type="primary" size="medium" @click="save">保存配置</el-button>
-        </el-col>
-        <el-col v-if="edit.isEdit" :span="4" offset="7">
+        <el-col v-if="edit.isEdit" :span="16" offset="4">
           <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" />
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="4" offset="4" style="padding-top: 10px">
+          <el-button type="primary" size="medium" @click="save">保存配置</el-button>
         </el-col>
       </el-row>
       <el-form ref="form" :model="edit" label-width="150px" size="small" style="padding-top: 10px">
@@ -128,8 +130,8 @@
             </el-select>
           </el-col>
         </el-form-item>
-        <el-form-item label="内容类型：" :required="true" prop="item.Type">
-          <el-radio-group v-model="edit.item.Type" :disabled="edit.isEdit" @change="typeChange">
+        <el-form-item label="内容格式：" :required="true" prop="item.Type">
+          <el-radio-group v-model="edit.item.Type" @change="typeChange">
             <el-radio :label="1">普通字符串</el-radio>
             <el-radio :label="2">JSON字符串</el-radio>
           </el-radio-group>
@@ -155,7 +157,7 @@
           </el-col>
         </el-form-item>
         <el-form-item
-          label="Redis子键："
+          label="Key名："
           :required="!edit.isEdit"
           prop="item.RedisSubkey"
           :rules="dataRule(!edit.isEdit,{type:'s',range:'2-50'})"
@@ -165,7 +167,7 @@
             <span v-else>{{ edit.item.RedisSubkey }}</span>
           </el-col>
         </el-form-item>
-        <el-form-item label="配置内容：" :required="true" prop="val" :rules="dataRule(true,{type:'s',range:'1'})">
+        <el-form-item label="配置内容：" :required="true" prop="item.Data" :rules="dataRule(true,{type:'s',range:'1'})">
           <el-col :span="20">
             <el-input
               v-if="edit.item.Type === 1"
