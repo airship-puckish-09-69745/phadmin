@@ -166,7 +166,7 @@
             inactive-text="否">
           </el-switch>
         </el-form-item>
-        <el-form-item v-if="editForm.data.rule_type===0" label="是否GTCC：" :required="true">
+        <el-form-item v-if="editForm.data.rule_type===0" label="是否跳过打立阶段：" :required="true">
           <el-switch
             style="display: block"
             v-model="editForm.data.rule_extra.is_gtcc"
@@ -180,7 +180,7 @@
           <span v-show="showTip" style="color:red; margin-left:10px"></span>
           <el-tooltip class="item" effect="light" placement="right-start">
             <template #content>
-              <div>一个特殊的字段开关,是基于MTT SNG赛制下的一个独立字段</div>
+              <div>一个特殊的字段开关,是基于MTT赛制下的一个独立字段</div>
             </template>
             <i class="el-icon-info" />
           </el-tooltip>

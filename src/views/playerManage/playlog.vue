@@ -177,6 +177,16 @@
         </el-table-column>
       </template>
       <el-table-column
+          prop="isfreespin"
+          label="是否使用道具下注"
+          width="100"
+      >
+        <template slot-scope="scope">
+            {{ isFreeSpin(scope.row.IsFreeSpin) }}
+        </template>
+      </el-table-column>
+
+      <el-table-column
         prop="MoneyChanged"
         label="输赢"
         width="100"
@@ -559,6 +569,7 @@
             <td>扣除奖池贡献</td>
             <td>累计奖池贡献</td>
             <td>点控命中</td>
+            <td>是否使用道具</td>
           </tr>
           <tr>
             <td>{{ sweeperPlay.JackpotContribute / 1000 }}</td>
@@ -569,6 +580,21 @@
             }}
             </td>
             <td>{{ getMicroCtrlName(sweeperPlay.microCtrl) }}</td>
+            <td>{{ sweeperPlay.propLog && sweeperPlay.propLog.propId == 0 ? '否' : '是' }}</td>
+          </tr>
+          <tr>
+            <td>道具Id</td>
+            <td>道具uuid</td>
+            <td>道具单张面值</td>
+            <td>道具使用数量</td>
+            <td>道具剩余数量</td>
+          </tr>
+          <tr>
+            <td>{{ sweeperPlay.propLog ? sweeperPlay.propLog.propId : '' }}</td>
+            <td>{{ sweeperPlay.propLog ? sweeperPlay.propLog.uuid : '' }}</td>
+            <td>{{ sweeperPlay.propLog ? sweeperPlay.propLog.itemCost/1000 : '' }}</td>
+            <td>{{ sweeperPlay.propLog ? sweeperPlay.propLog.itemCount : '' }}</td>
+            <td>{{ sweeperPlay.propLog ? sweeperPlay.propLog.itemNow : '' }}</td>
           </tr>
         </table>
       </div>
@@ -2938,10 +2964,10 @@
         </el-table-column>
         <el-table-column label="team" width="100px">
           <template slot-scope="scope">
-              <div 
-                :style="{ 
-                  backgroundColor: getTrucoTeamColor(scope.row.team), 
-                  width: '50px', 
+              <div
+                :style="{
+                  backgroundColor: getTrucoTeamColor(scope.row.team),
+                  width: '50px',
                   height: '50px',
                   display: 'inline-block'
                 }"
@@ -2974,7 +3000,7 @@
             />
             <br>
             <span>{{trucoCardNumSort(scope.row.viradaCard)}}</span>
-          </template>                      
+          </template>
         </el-table-column>
 
         <el-table-column prop="roundScore" label="本轮底分" width="50px"/>
@@ -2985,10 +3011,10 @@
               <el-table-column prop="uid" label="uid" width="100"/>
               <el-table-column label="team" width="60">
                 <template slot-scope="scope">
-                  <div 
-                    :style="{ 
-                      backgroundColor: getTrucoTeamColor(scope.row.team), 
-                      width: '50px', 
+                  <div
+                    :style="{
+                      backgroundColor: getTrucoTeamColor(scope.row.team),
+                      width: '50px',
                       height: '50px',
                       display: 'inline-block'
                     }"
@@ -3013,10 +3039,10 @@
               <el-table-column prop="count" label="回合" width="50"/>
               <el-table-column label="回合结果" width="80">
                 <template slot-scope="scope">
-                  <div 
-                    :style="{ 
-                      backgroundColor: getTrucoTeamColor(scope.row.result), 
-                      width: '50px', 
+                  <div
+                    :style="{
+                      backgroundColor: getTrucoTeamColor(scope.row.result),
+                      width: '50px',
                       height: '50px',
                       display: 'inline-block'
                     }"
@@ -3034,7 +3060,7 @@
                             style="width: 37px; height: 50px"
                             :src="getCardUrl(scope.row.Card)"
                           />
-                      </template>                      
+                      </template>
                     </el-table-column>
                     <el-table-column prop="Covered" label="暗牌" width="100"/>
                   </el-table>
@@ -3043,7 +3069,7 @@
             </el-table>
           </template>
         </el-table-column>
-        
+
       </el-table>
     </el-dialog>
 
@@ -3063,10 +3089,10 @@
         </el-table-column>
         <el-table-column label="team" width="60px">
           <template slot-scope="scope">
-              <div 
-                :style="{ 
-                  backgroundColor: getBuracoTeamColor(scope.row.team), 
-                  width: '30px', 
+              <div
+                :style="{
+                  backgroundColor: getBuracoTeamColor(scope.row.team),
+                  width: '30px',
                   height: '30px',
                   display: 'inline-block'
                 }"
@@ -3083,10 +3109,10 @@
       <el-table ref="filterTable" :data="BuracoDetail.teamDetail" border>
         <el-table-column label="team" width="60">
           <template slot-scope="scope">
-            <div 
-              :style="{ 
-                backgroundColor: getBuracoTeamColor(scope.row.teamId), 
-                width: '30px', 
+            <div
+              :style="{
+                backgroundColor: getBuracoTeamColor(scope.row.teamId),
+                width: '30px',
                 height: '30px',
                 display: 'inline-block'
               }"
@@ -3128,10 +3154,10 @@
         </el-table-column>
         <el-table-column label="team" width="60">
           <template slot-scope="scope">
-            <div 
-              :style="{ 
-                backgroundColor: getBuracoTeamColor(scope.row.teamId), 
-                width: '30px', 
+            <div
+              :style="{
+                backgroundColor: getBuracoTeamColor(scope.row.teamId),
+                width: '30px',
                 height: '30px',
                 display: 'inline-block'
               }"
@@ -3848,6 +3874,13 @@ export default {
         }
       }
     },
+    isFreeSpin(valA) {
+        if (valA === 1) {
+          return '是'
+        } else {
+          return '否'
+        }
+    },
     peiValStr(randVal, winRate, peiVal) {
       if (randVal < winRate && peiVal === 1) {
         return '赢配牌'
@@ -4313,8 +4346,8 @@ export default {
       teamGroupMap.set(2, new Map())
       for (let i = 0; i < this.BuracoDetail.actionLogs.length; i ++) {
         this.BuracoDetail.actionLogs[i].idx = i+1
-        if (this.BuracoDetail.actionLogs[i].actionType == 3 
-            || this.BuracoDetail.actionLogs[i].actionType == 6 
+        if (this.BuracoDetail.actionLogs[i].actionType == 3
+            || this.BuracoDetail.actionLogs[i].actionType == 6
             || this.BuracoDetail.actionLogs[i].actionType == 12) {
               let teamId = this.BuracoDetail.actionLogs[i].teamId
             let tg = teamGroupMap.get(teamId)

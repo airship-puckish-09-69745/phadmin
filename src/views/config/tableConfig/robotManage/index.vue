@@ -21,12 +21,13 @@
       <br/>
     </el-row>
     <el-row >
-      <el-button   size="small" @click="searchRobot(0,2000)">小于2千></el-button>
-      <el-button   size="small" @click="searchRobot(2001,5000)">2千-5千></el-button>
-      <el-button   size="small" @click="searchRobot(5001,10000)">5千-1万></el-button>
-      <el-button   size="small" @click="searchRobot(10001,20000)">1万-2万></el-button>
-      <el-button   size="small" @click="searchRobot(20001,50000)">2万-5万></el-button>
-      <el-button   size="small" @click="searchRobot(50001,1000000)">大于5万</el-button>
+      <el-button   size="small" @click="searchRobot(0,10000000)">全部</el-button>
+      <el-button   size="small" @click="searchRobot(0,2000)">小于2千</el-button>
+      <el-button   size="small" @click="searchRobot(2001,5000)">2千-5千</el-button>
+      <el-button   size="small" @click="searchRobot(5001,10000)">5千-1万</el-button>
+      <el-button   size="small" @click="searchRobot(10001,20000)">1万-2万</el-button>
+      <el-button   size="small" @click="searchRobot(20001,50000)">2万-5万</el-button>
+      <el-button   size="small" @click="searchRobot(50001,10000000)">大于5万</el-button>
     </el-row>
     <el-row>
       <el-table
