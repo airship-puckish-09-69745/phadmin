@@ -287,7 +287,13 @@ export default {
               LastEndTime: row.lastEndTime || 0,
               CheatInfos: [],
               TidCheatLogs: [],
-              Nick: new Set()
+              Nick: new Set(),
+              TrustLevel: 0,
+              TrustScore: 0
+            }
+            if (row.trustScore !== undefined) {
+              cheatLog.TrustScore = row.trustScore
+              cheatLog.TrustLevel = row.trustLevel
             }
             // eslint-disable-next-line no-prototype-builtins
             if (row.hasOwnProperty('maxCheatScore')) {
@@ -735,6 +741,23 @@ export default {
         return '黑名单'
       }
     },
+    formatUserTrustLevel(row) {
+      const trustLevel = row.TrustLevel
+      switch (trustLevel) {
+        case 1:
+          return '低危用户'
+        case 2:
+          return '疑似用户'
+        case 3:
+          return '黑子用户'
+        case 4:
+          return '低信用户'
+        case 5:
+          return '高信用户'
+        default:
+          return '--'
+      }
+    },
     formatCheatInfo(row) {
       if (row === undefined) {
         return '--'
@@ -956,6 +979,22 @@ export default {
           <template slot-scope="scope">
             <span>{{ formatUserType(scope.row) }}</span>
           </template>
+        </el-table-column>
+        <el-table-column
+          label="信任等级"
+          width="80"
+          align="center"
+        >
+          <template slot-scope="scope">
+            <span>{{ formatUserTrustLevel(scope.row) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="TrustScore"
+          label="信任分"
+          width="80"
+          align="center"
+        >
         </el-table-column>
         <el-table-column
           prop="CheatScore"

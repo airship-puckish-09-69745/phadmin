@@ -3410,12 +3410,12 @@ export const asyncRoutes = [
             name: 'tongitsCheatLog',
             meta: { title: '作弊日志（新) ◐' }
           },
-          {
-            path: 'tongitsCheatLogDev',
-            component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatNewDev.vue'),
-            name: 'tongitsCheatLogDev',
-            meta: { title: '作弊日志（老) ◐' }
-          },
+          // {
+          //   path: 'tongitsCheatLogDev',
+          //   component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatNewDev.vue'),
+          //   name: 'tongitsCheatLogDev',
+          //   meta: { title: '作弊日志（老) ◐' }
+          // },
           {
             path: 'tongitsCheatStat',
             component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatStat.vue'),
