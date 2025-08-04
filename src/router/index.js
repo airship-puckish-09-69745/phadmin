@@ -647,6 +647,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/trustScore.vue'),
             name: 'trustScore',
             meta: { title: '信任分配置 ◐' }
+          },
+          {
+            path: 'trustScoreNew',
+            component: () => import('@/views/config/tableConfig/trustScoreNew.vue'),
+            name: 'trustScoreNew',
+            meta: { title: '信任分配置(新版) ◐' }
           }
         ]
       },

@@ -161,6 +161,7 @@
           </el-descriptions-item>
           <el-descriptions-item label="tongits信任分：" :span="1" >
             <el-tag>{{ formatNumber(item.TrustScore) }}</el-tag>
+            <el-tag v-if="item.TrustType == 1" type="success">低危用户</el-tag>
             <el-tag v-if="item.TrustType == 4" type="success">低信用户</el-tag>
             <el-tag v-if="item.TrustType == 5" type="success">高信用户</el-tag>
             <el-tag v-if="item.TrustType == 2" type="success">疑似用户</el-tag>
