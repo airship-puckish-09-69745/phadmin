@@ -8,6 +8,11 @@
     <el-col :offset="6" :span="1">
       <el-checkbox v-model="lark" @change="setLarkPage" :disabled="this.env=='pro'">lark</el-checkbox>
     </el-col>
+    <el-col :span="24">
+      <el-alert v-if="this.$store.getters.version==='V2'" type="warning" :closable="false" show-icon>
+        新版后台配置-App-{{ this.$store.getters.appId }}
+      </el-alert>
+    </el-col>
     <el-col v-if="isPublish" :span="24">
       <el-col :span="12" :offset="4">
         <el-steps v-if="!needReview" :space="200" :active="stepActive" finish-status="success">

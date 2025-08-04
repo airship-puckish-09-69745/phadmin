@@ -6,9 +6,6 @@
 
     <el-row>
       <br>
-      <el-alert v-if="this.$store.getters.version==='V2'" type="warning" :closable="false" show-icon>
-        注意：新版后台配置-App-{{ this.$store.getters.appId }}
-      </el-alert>
       <el-tabs type="border-card">
         <el-tab-pane label="活动配置">
           <el-row :gutter="5">
