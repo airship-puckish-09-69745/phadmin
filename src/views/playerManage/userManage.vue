@@ -1774,7 +1774,7 @@ export default {
         data: {
           Env: $this.env,
           Path: '/user/cheat/update',
-          Uid: 11251737,//$this.item.Uid,
+          Uid: $this.item.Uid,
           Gid: 22,
           Score: $this.cheatScore
         }
