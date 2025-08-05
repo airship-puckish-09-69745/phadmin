@@ -10,7 +10,7 @@
           <MatchTagConfig :tag-config="configData.Data.MatchTagConfig"  @update="handleUpdateTag" @delete="handleDeleteTag" @reload="getConfigData" />
         </el-tab-pane>
         <el-tab-pane label="免费引导付费开关">
-          <WhiteListConfig :config="configData.Data.WhiteList" @update="handleUpdateConfigData" />
+          <MatchFreeGuideConfig :config="configData.Data.MatchFreeGuideConfig" @update="handleUpdateConfigData" />
         </el-tab-pane>
       </el-tabs>
     </el-row>
@@ -21,11 +21,11 @@
 import Publish from '@/components/Publish/index.vue'
 import MatchTagConfig from './components/MatchTagConfig/index.vue'
 import request from '@/utils/request'
-import WhiteListConfig from "@/views/matchManage/matchOperations/matchOther/components/WhiteListConfig/index.vue";
+import MatchFreeGuideConfig from "@/views/matchManage/matchOperations/matchOther/components/WhiteListConfig/index.vue";
 export default {
   name: 'MatchOther',
   components: {
-    WhiteListConfig,
+    MatchFreeGuideConfig,
     Publish,
     MatchTagConfig,
   },
@@ -36,7 +36,7 @@ export default {
       configData: {
         Data: {
           MatchTagConfig: [], //比赛页签
-          WhiteList: {} // 白名单配置
+          MatchFreeGuideConfig: {} // 比赛免费付费引导开关
         }
       } // 存储配置数据
     }
@@ -73,8 +73,8 @@ export default {
         if (!Data.MatchTagConfig) {
           Data.MatchTagConfig = []
         }
-        if (!Data.WhiteList) {
-          Data.WhiteList = {}
+        if (!Data.MatchFreeGuideConfig) {
+          Data.MatchFreeGuideConfig = {}
         }
       } else {
         this.$message.error('获取配置数据失败: ' + res.RetMsg)
@@ -121,7 +121,6 @@ export default {
      */
     handleUpdateTag(data) {
       const MatchTagConfig = this.configData.Data.MatchTagConfig
-     // console.log("MatchTagConfig ",this.configData.Data.MatchTagConfig)
       if (data.ID) {
         const currentTag = MatchTagConfig.find(item => item.ID === data.ID)
         MatchTagConfig.splice(MatchTagConfig.indexOf(currentTag), 1, { ...currentTag, ...data })
@@ -130,7 +129,6 @@ export default {
         const newId = Date.now().toString() // 使用时间戳作为新ID
         MatchTagConfig.push({ ...data, ID: newId })
       }
-      //console.log('Updated MatchTagConfig:', MatchTagConfig)
       this.handleUpdateConfigData('MatchTagConfig', MatchTagConfig)
     },
 

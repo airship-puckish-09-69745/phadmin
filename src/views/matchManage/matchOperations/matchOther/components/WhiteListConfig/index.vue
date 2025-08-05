@@ -37,7 +37,7 @@
 import { DataRule } from '@/utils/common'
 import { APPID_OPTIONS, CHANNEL_OPTIONS } from '@/utils/options'
 export default {
-  name: 'WhiteListConfig',
+  name: 'MatchFreeGuideConfig',
   props: {
     config: {
       type: Object,
@@ -81,7 +81,7 @@ export default {
       return DataRule(required, config)
     },
     handleUpdateConfigData() {
-      this.$emit('update', 'WhiteList', this.formData)
+      this.$emit('update', 'MatchFreeGuideConfig', this.formData)
     }
   }
 }
