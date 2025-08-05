@@ -465,6 +465,7 @@ export default {
         IsSetLoginPwd: false,
         IsSetPayPwd: false,
       },
+      cheatScore: 0,
       total: 0,
       tableData: [], //头像框和门票物品配置表数据
       tableItemData: [],
@@ -1764,6 +1765,37 @@ export default {
             label: uuid, // 确保是字符串
           }))
         }
+      }
+    },
+    incTrustScore() {
+      if (this.env != 'test') {
+        return
+      }
+      if (this.cheatScore === 0) {
+        this.$message.error('请输入一个不为0的数据')
+        return
+      }
+      const $this = this
+      request({
+        url: '/dataProxy/info',
+        method: 'post',
+        data: {
+          Env: $this.env,
+          Path: '/user/cheat/update',
+          Uid: $this.item.Uid,
+          Gid: 22,
+          Score: $this.cheatScore
+        }
+      }).then(response => {
+        console.log('update tag ', response)
+        if (response.RetCode === 0) {
+          $this.getInfo()
+          $this.getTags()
+        } else {
+          $this.$message.error('更新失败')
+        }
+      })
+    }
       })
     },
   }
@@ -1773,7 +1805,6 @@ export default {
 .el-tag + .el-tag {
   margin-left: 10px;
 }
-
 .button-new-tag {
   margin-left: 10px;
   height: 32px;
@@ -1781,7 +1812,6 @@ export default {
   padding-top: 0;
   padding-bottom: 0;
 }
-
 .input-new-tag {
   width: 90px;
   margin-left: 10px;
