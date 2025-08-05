@@ -1765,7 +1765,7 @@ export default {
             label: uuid, // 确保是字符串
           }))
         }
-      }
+      })
     },
     incTrustScore() {
       if (this.env != 'test') {
@@ -1794,8 +1794,6 @@ export default {
         } else {
           $this.$message.error('更新失败')
         }
-      })
-    }
       })
     },
   }
