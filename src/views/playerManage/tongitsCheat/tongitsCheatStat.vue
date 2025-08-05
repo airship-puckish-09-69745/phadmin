@@ -60,7 +60,7 @@
           width="150"
         >
           <template slot-scope="scope">
-            <span v-html="getPercent(scope.row.login_high_score_cnt,scope.row.last.login_high_score_cnt,scope.row)"></span> 
+            <span v-html="getPercent('login_high_score_cnt',scope.row,scope.row.last)"></span> 
           </template>
         </el-table-column>
         <el-table-column
@@ -75,7 +75,7 @@
           width="150"
         >
           <template slot-scope="scope">
-            <span v-html="getPercent(scope.row.login_low_score_cnt,scope.row.last.login_low_score_cnt,scope.row)"></span>
+            <span v-html="getPercent('login_low_score_cnt',scope.row,scope.row.last)"></span>
           </template>
         </el-table-column>
         <el-table-column
@@ -90,7 +90,7 @@
           width="150"
         >
           <template slot-scope="scope">
-            <span v-html="getPercent(scope.row.login_suspect_cnt,scope.row.last.login_suspect_cnt,scope.row)"></span>
+            <span v-html="getPercent('login_suspect_cnt',scope.row,scope.row.last)"></span>
           </template>
         </el-table-column>
         <el-table-column
@@ -105,7 +105,7 @@
           width="150"
         >
           <template slot-scope="scope">
-            <span v-html="getPercent(scope.row.login_black_cnt,scope.row.last.login_black_cnt,scope.row)"></span>
+            <span v-html="getPercent('login_black_cnt',scope.row,scope.row.last)"></span>
           </template>
         </el-table-column>
       </el-table>
@@ -165,6 +165,7 @@ export default {
   created() {
     this.env = store.getters.env || this.env
     this.item.gameId = 0
+    this.getInfo()
   },
   methods: {
     // 设置默认日期
@@ -201,18 +202,27 @@ export default {
       this.currentPage = 1
       this.getInfo()
     },
-    getPercent(val,last,row,revers=false) {
-      const sum = row.login_black_cnt + row.login_low_score_cnt + row.login_high_score_cnt + row.login_suspect_cnt
-      if (sum === 0) {
-        return val+'  ' + '(100%)'
+    getSum(row) {
+      if (row === undefined) {
+        return 0
       }
-      if (last === undefined || val === last) {
-        return `${val} (${Math.round((val/sum)*100)}%)`
+      return row.login_black_cnt + row.login_low_score_cnt + row.login_high_score_cnt + row.login_suspect_cnt
+    },
+    getPercent(key,cur,last) {
+      const sum1 = this.getSum(cur)
+      const sum2 = this.getSum(last)
+      const per1 = sum1===0?0:Math.round(cur[key]*100/sum1)
+      if (last === undefined) {
+        return `${cur[key]} (${per1}%)`
       }
-      if (val > last && !revers) {
-        return `${val} (<span style="color: red;"> ${Math.round((val/sum)*100)}%</span>)`
+      const per2 = sum2===0?0:Math.round(last[key]*100/sum2)
+      if (per1 === per2) {
+        return `${cur[key]} (${per1}%)`
+      }
+      if (per1 > per2) {
+        return `${cur[key]} (<span style="color: red;"> ${per1}%</span>)`
       } else {
-        return `${val} (<span style="color: green;"> ${Math.round((val/sum)*100)}%</span>)`
+        return `${cur[key]} (<span style="color: green;"> ${per1}%</span>)`
       }
     },
     getInfo() {
@@ -245,8 +255,6 @@ export default {
           for (let i=0; i<this.totalCount; i++) {
             if (i < this.totalCount-1) {
               objs[i].last = objs[i+1]
-            } else {
-              objs[i].last = {}
             }
             // console.log(JSON.stringify(objs[i]))
           }
