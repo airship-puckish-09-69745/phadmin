@@ -3837,6 +3837,12 @@ export const asyncRoutes = [
         meta: { title: '角色管理' }
       },
       {
+        path: 'menu',
+        component: () => import('@/views/adminUser/menu'),
+        name: 'menu',
+        meta: { title: '菜单管理' }
+      },
+      {
         path: 'reviewerConfig',
         component: () => import('@/views/adminUser/reviewerConfig'),
         name: 'reviewerConfig',
