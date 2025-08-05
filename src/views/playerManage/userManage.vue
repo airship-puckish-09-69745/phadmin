@@ -172,7 +172,7 @@
               <el-input v-model.number="cheatScore" size="mini" placeholder="正加负减"/>
             </el-col>
             <el-col :span="4" v-if="env==='test'">
-              <el-button type="primary" size="mini" @click="incCheatScore()">增加Tongits疑似分</el-button>
+              <el-button type="primary" size="mini" @click="incTrustScore()">增加信任分</el-button>
             </el-col>
           </el-descriptions-item>
           <el-descriptions-item label="手动添加道具:">
@@ -1759,7 +1759,7 @@ export default {
         }
       }
     },
-    incCheatScore() {
+    incTrustScore() {
       if (this.env != 'test') {
         return
       }
