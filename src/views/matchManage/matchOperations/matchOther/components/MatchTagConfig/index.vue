@@ -81,6 +81,7 @@ export default {
         { label: 'Tag名称', prop: 'TagName',width: 130 },
         { label: '游戏名称', prop: 'GameId', width: 160 },
         { label: '展示开关', prop: 'Display', width: 160 },
+        { label: '排序', prop: 'Sort', width: 100 },
       ],
       formDialog: {
         updateData: null,
