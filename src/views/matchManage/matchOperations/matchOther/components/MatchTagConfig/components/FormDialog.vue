@@ -14,6 +14,10 @@
       <el-form-item label="Tag名称" required>
         <el-input v-model="formData.TagName"  style="width: 360px;" placeholder="请填写Tag名称"/>
       </el-form-item>
+      <el-form-item label="Tag排序" required>
+        <el-input v-model.number="formData.Sort"  style="width: 360px;" placeholder="请填写Tag排序" @input="checkTagSort()"/>
+        <span v-show="showTip" style="color:red; margin-left:10px">注意有相同的排序值</span>
+      </el-form-item>
       <el-form-item label="展示开关：" :required="true">
         <el-switch
           style="display: block"
@@ -30,7 +34,7 @@
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="handleClose(false)">取消</el-button>
-        <el-button type="primary" @click="handleSave">保存</el-button>
+        <el-button type="primary" @click="handleSave()">保存</el-button>
       </span>
     </template>
   </el-dialog>
@@ -64,11 +68,13 @@ export default {
         TagName: '',
         TagId: 0,
         Display: 1,   //展示开关 1:打开 0:关闭
-        GameId:0
+        GameId:0,
+        Sort:0,     //排序字段
       },
       tableData: [],
       MATCH_LIST_TAG_OPTIONS,
       MATCH_GAME_ID_CFG_OPTIONS,
+      showTip:false,
     }
   },
   computed: {
@@ -97,7 +103,6 @@ export default {
     tagConfig(val) {
       if(val){
         this.tableData = val
-       // console.log("tableData 接收数据 ",this.tableData)
       }else{
         this.formData = []
       }
@@ -114,6 +119,11 @@ export default {
       }
       if (this.formData.GameId <= 0) {
         this.$message.error('请选择游戏ID')
+        return false
+      }
+      console.log("111 ",this.formData)
+      if(this.formData.Sort <= 0) {
+        this.$message.error('请填写排序')
         return false
       }
       return true
@@ -134,6 +144,9 @@ export default {
       if(!this.isEdit() && !this.checkHasSameTagId()){
         return
       }
+      if(!this.checkTagSort()){
+        return
+      }
       const formData = {...this.formData}
       this.$emit('update', formData)
       this.handleClose()
@@ -145,6 +158,7 @@ export default {
         TagId: 0,
         Display: 1,
         GameId: 0,
+        Sort:0,
       }
       this.$emit('update:visible', false)
     },
@@ -154,6 +168,25 @@ export default {
     },
     isEdit(){
       return this.formData.ID !== ''
+    },
+    checkTagSort(){
+      for(let i=0;i<this.tableData.length;i++){
+        if(this.isEdit()){
+          if(this.tableData[i].GameId===this.formData.GameId && this.tableData[i].ID!== this.formData.ID && this.tableData[i].Sort===this.formData.Sort){
+            this.$message.error("已经存在相同的排序值,请重新选择")
+            this.showTip = true
+            return false
+          }
+        }else {
+          if (this.tableData[i].Sort === this.formData.Sort && this.tableData[i].GameId === this.formData.GameId) {
+            this.$message.error("已经存在相同的排序值,请重新选择")
+            this.showTip = true
+            return false
+          }
+        }
+      }
+      this.showTip = false
+      return true
     },
   }
 }
