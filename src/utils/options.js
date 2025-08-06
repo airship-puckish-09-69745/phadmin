@@ -142,10 +142,10 @@ export const MATCH_TABLE_SCENE_ID_CFG =[
 export const MATCH_LIST_TAG_OPTIONS = [
   { 'value': 0, 'label': 'All', disabled: false },
   { 'value': 1, 'label': 'Events', disabled: false },
-  { 'value': 4, 'label': 'Gtcc周赛', disabled: false },
-  { 'value': 5, 'label': 'Gtcc预选赛', disabled: false },
-  { 'value': 6, 'label': '免费赛', disabled: false },
-  { 'value': 7, 'label': '付费赛', disabled: false },
+  { 'value': 2, 'label': 'FREE', disabled: false },
+  { 'value': 3, 'label': 'Pro Arena', disabled: false },
+  { 'value': 4, 'label': 'GTCC', disabled: false },
+  { 'value': 5, 'label': 'GTCC预选赛', disabled: false },
 ]
 
 //比赛GameId选项
