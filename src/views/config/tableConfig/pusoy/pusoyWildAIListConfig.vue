@@ -624,7 +624,6 @@ export default {
         data: params
       }).then(response => {
         if (response.RetCode === 0) {
-          this.tableData = []
           // this.pagination.total = 0
           const {
             list,

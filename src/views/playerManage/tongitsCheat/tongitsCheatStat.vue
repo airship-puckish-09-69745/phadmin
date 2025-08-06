@@ -59,6 +59,9 @@
           label="今日游戏高信用户"
           width="150"
         >
+          <template slot-scope="scope">
+            <span v-html="getPercent('login_high_score_cnt',scope.row,scope.row.last)"></span> 
+          </template>
         </el-table-column>
         <el-table-column
           prop="low_score_cnt"
@@ -71,6 +74,9 @@
           label="今日游戏低信用户"
           width="150"
         >
+          <template slot-scope="scope">
+            <span v-html="getPercent('login_low_score_cnt',scope.row,scope.row.last)"></span>
+          </template>
         </el-table-column>
         <el-table-column
           prop="suspect_cnt"
@@ -82,7 +88,11 @@
           prop="login_suspect_cnt"
           label="今日游戏疑似用户"
           width="150"
-        />
+        >
+          <template slot-scope="scope">
+            <span v-html="getPercent('login_suspect_cnt',scope.row,scope.row.last)"></span>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="black_cnt"
           label="现存黑子用户"
@@ -94,6 +104,9 @@
           label="今日游戏黑子用户"
           width="150"
         >
+          <template slot-scope="scope">
+            <span v-html="getPercent('login_black_cnt',scope.row,scope.row.last)"></span>
+          </template>
         </el-table-column>
       </el-table>
     </el-row>
@@ -152,6 +165,7 @@ export default {
   created() {
     this.env = store.getters.env || this.env
     this.item.gameId = 0
+    this.getInfo()
   },
   methods: {
     // 设置默认日期
@@ -188,13 +202,36 @@ export default {
       this.currentPage = 1
       this.getInfo()
     },
+    getSum(row) {
+      if (row === undefined) {
+        return 0
+      }
+      return row.login_black_cnt + row.login_low_score_cnt + row.login_high_score_cnt + row.login_suspect_cnt
+    },
+    getPercent(key,cur,last) {
+      const sum1 = this.getSum(cur)
+      const sum2 = this.getSum(last)
+      const per1 = sum1===0?0:Math.round(cur[key]*100/sum1)
+      if (last === undefined) {
+        return `${cur[key]} (${per1}%)`
+      }
+      const per2 = sum2===0?0:Math.round(last[key]*100/sum2)
+      if (per1 === per2) {
+        return `${cur[key]} (${per1}%)`
+      }
+      if (per1 > per2) {
+        return `${cur[key]} (<span style="color: red;"> ${per1}%</span>)`
+      } else {
+        return `${cur[key]} (<span style="color: green;"> ${per1}%</span>)`
+      }
+    },
     getInfo() {
       const $this = this
 
-      if (this.env != 'test') {
-        console.log(`env:${this.env} return`)
-        return
-      }
+      // if (this.env != 'test') {
+      //   console.log(`env:${this.env} return`)
+      //   return
+      // }
 
       request({
         url: '/dataProxy/info',
@@ -212,9 +249,16 @@ export default {
         if (response.RetCode === 0) {
           const objs = response.Data || []
           $this.ret = response.Data
-          $this.tableData = objs
           this.totalCount = response.Data.length
           $this.tableData = objs
+
+          for (let i=0; i<this.totalCount; i++) {
+            if (i < this.totalCount-1) {
+              objs[i].last = objs[i+1]
+            }
+            // console.log(JSON.stringify(objs[i]))
+          }
+
           console.log(objs)
           if (objs.length === 0) {
             Message.success('查询结果为空')

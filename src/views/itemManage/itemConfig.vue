@@ -200,12 +200,25 @@
             </el-select>
           </el-form-item>
 
+          <el-form-item v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN" label="游戏类别：" :required="true">
+            <el-select  v-model="editForm.itemExtra.specialAttr" style="width: 200px;" :disabled="!editForm.isAdd" placeholder="请选择游戏类别" @change="changeCategory()">
+              <el-option
+                v-for="item in freeSpinItemAttrCfg" :key="item.value" :label="item.label" :value="item.value" :disabled="item.disabled"/>
+            </el-select>
+          </el-form-item>
+
           <el-row>
             <el-col :span="11">
-              <el-form-item   v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN" label="SlotGame:" :required="true">
-                  <el-select v-model="editForm.itemExtra.gid" placeholder="请选择" size="mini" :disabled="!editForm.isAdd" @change="setSlotBetAmountStyle(editForm.itemExtra.gid)">
+              <el-form-item   v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN && editForm.itemExtra.specialAttr === 1" label="关联游戏:" :required="true">
+                  <el-select v-model="editForm.itemExtra.gid" placeholder="请选择" size="mini" :disabled="!editForm.isAdd"  multiple  @change="setSlotBetAmountStyle(editForm.itemExtra.specialAttr)">
                     <el-option v-for="item in SLOT_GAME_CONFIG" :key="item.value" :label="item.label" :value="item.value" :disabled="item.disabled"/>
                   </el-select>
+              </el-form-item>
+
+              <el-form-item   v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN && editForm.itemExtra.specialAttr === 2" label="关联游戏:" :required="true">
+                <el-select v-model="editForm.itemExtra.gid" placeholder="请选择" size="mini" :disabled="!editForm.isAdd"  multiple  @change="setSlotBetAmountStyle(editForm.itemExtra.specialAttr)">
+                  <el-option v-for="item in BETTING_GAME_CONFIG" :key="item.value" :label="item.label" :value="item.value" :disabled="item.disabled"/>
+                </el-select>
               </el-form-item>
             </el-col>
 
@@ -228,11 +241,11 @@
             <span style="color:black; margin-left:10px">[00:00:00]</span>
           </el-form-item>
 
-          <el-form-item label="排序：" :required="true">
+          <el-form-item v-if="editForm.data.itemType !== PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN" label="排序：" :required="false">
             <el-input v-model.number="editForm.data.sort" style="width: 200px;" placeholder="请填写排序id" />
           </el-form-item>
 
-          <el-form-item label="道具ICON：" :required="true">
+          <el-form-item  label="道具ICON：" :required="false">
             <ImagePicker v-model="editForm.data.image" />
           </el-form-item>
         </fieldset>
@@ -256,7 +269,7 @@ import DateTimeShow from '@/components/DatetimeShow'
 import { $libDate, $libShow } from '@/utils/common'
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
 import {ITEM_TYPE_OPTIONS, ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS} from '@/utils/options'
-import {SLOT_GAME_CONFIG} from  '@/utils/prop'
+import {SLOT_GAME_CONFIG,BETTING_GAME_CONFIG} from  '@/utils/prop'
 
 export default {
   name: 'PropsConfig',
@@ -270,6 +283,7 @@ export default {
     return {
       ITEM_TYPE_OPTIONS,
       ITEM_DAY_TYPE_OPTIONS,
+      BETTING_GAME_CONFIG,
       SLOT_GAME_CONFIG,
       libShow: $libShow,
       pickerOptions: $libShow.DefaultDatePickerOptions(),
@@ -283,6 +297,12 @@ export default {
         { 'value': 4, 'label': 'Qualifying Round One 预选赛回合1', disabled: false },
         { 'value': 5, 'label': 'Qualifying Round Two 预选赛回合 2', disabled: false },
         { 'value': 6, 'label': 'Qualifying Round Three 预选赛回合3', disabled: false },
+        { 'value': 7, 'label': 'Qualifying Round Four 预选赛回合4', disabled: false },
+      ],
+      //free spin 道具子属性
+      freeSpinItemAttrCfg:[
+        { 'value': 1, 'label': 'Slot游戏', disabled: false },
+        { 'value': 2, 'label': '下注类游戏', disabled: false },
       ],
 
       statusCfgs: [
@@ -330,7 +350,7 @@ export default {
         itemExtra: {
           specialAttr: 0,
           showName: '',
-          gid:0,
+          gid:[],
           betAmount: 0,
         },
         itemEndDate: $libDate.GetDayBegin(new Date().setSeconds(0))
@@ -421,7 +441,9 @@ export default {
         }
         this.editForm.itemExtra = {
           specialAttr: 0,
-          showName: ''
+          showName: '',
+          gid:[],
+          betAmount: 0,
         }
         this.checkAll()
         this.editForm.itemEndDate = $libDate.GetDayBegin(new Date().setSeconds(0))
@@ -445,7 +467,7 @@ export default {
         }
 
         const time_type = JSON.parse(editData.time_type)
-        if (editData.item_extra && editData.item_extra != 'null' && editData.item_extra != 'undefined') {
+        if (editData.item_extra) {
           this.editForm.itemExtra = JSON.parse(editData.item_extra)
         }
         this.editForm.data = {
@@ -621,7 +643,6 @@ export default {
       let del = new Set()
       //新增取newVal
       if (addData) {
-        console.log("addData",addData)
         for (var i=0; i<addData.length; i++) {
           for (let ele of addData[i]) {
               add.add(ele.newVal)
@@ -629,7 +650,6 @@ export default {
         }
       }
       if (delData) {
-        console.log("delData",delData)
         for (var i=0; i<delData.length; i++) {
           for (let ele of delData[i]) {
               del.add(ele.oldVal)
@@ -792,33 +812,39 @@ export default {
 
     slotFreeSpinPropReset(){
       this.editForm.itemExtra.betAmount = 0
-      this.editForm.itemExtra.gid = 0
+      this.editForm.itemExtra.gid = []
     },
 
     getSlotBetAmountCfg(){
-      for (let i = 0; i < this.SLOT_GAME_CONFIG.length; i++) {
-        request({
-          url: '/customizeconfig/one',
-          method: 'get',
-          data: {
-            SubKey: this.SLOT_GAME_CONFIG[i].configKey,
-          }
-        }).then(response => {
-          if (response.RetCode === 0 && response.Data && response.Data.Data !== '')  {
-            const data = JSON.parse(response.Data.Data)
-            if (this.SLOT_GAME_CONFIG[i].value === 20){
-              this.slotBetAmountCfg.set(this.SLOT_GAME_CONFIG[i].value,data.TableMoneyList)
+      // for (let i = 0; i < this.SLOT_GAME_CONFIG.length; i++) {
+      //   request({
+      //     url: '/customizeconfig/one',
+      //     method: 'get',
+      //     data: {
+      //       SubKey: this.SLOT_GAME_CONFIG[i].configKey,
+      //     }
+      //   }).then(response => {
+      //     if (response.RetCode === 0 && response.Data && response.Data.Data !== '')  {
+      //       const data = JSON.parse(response.Data.Data)
+      //       if (this.SLOT_GAME_CONFIG[i].value === 20){
+      //         this.slotBetAmountCfg.set(this.SLOT_GAME_CONFIG[i].value,data.TableMoneyList)
+      //
+      //       }else{
+      //         this.slotBetAmountCfg.set(this.SLOT_GAME_CONFIG[i].value,data.BetList)
+      //       }
+      //     }
+      //   })
+      // }
 
-            }else{
-              this.slotBetAmountCfg.set(this.SLOT_GAME_CONFIG[i].value,data.BetList)
-            }
-          }
-        })
-      }
+      //根据free spin道具的子类型(1:slot类 2: 下注类)
+      this.slotBetAmountCfg.set(1,[300,1000,2000,3000,5000])
+      this.slotBetAmountCfg.set(2, [1000, 2000, 3000, 5000, 10000])
+
     },
     //设置样式
-    setSlotBetAmountStyle(gameId){
-      const oneBetAmountCfg = this.slotBetAmountCfg.get(gameId)
+    setSlotBetAmountStyle(indexId){
+      const oneBetAmountCfg = this.slotBetAmountCfg.get(indexId)
+      console.log(" oneBetAmountCfg ",indexId, oneBetAmountCfg)
       // 样式 { 'value': 300, 'label': 'bet-0.3', disabled: false },
       this.slotDefaultBetAmount = []
       for (let i = 0; i < oneBetAmountCfg.length; i++) {
@@ -826,7 +852,10 @@ export default {
         this.slotDefaultBetAmount.push({'value': oneBetAmountCfg[i], 'label': 'bet-'+ amount.toString(), disabled: false })
       }
     },
-
+    //切换类别
+    changeCategory(){
+      this.editForm.itemExtra.gid = []
+    },
     configCheck() {
       if (this.editForm.data.itemName === '') {
         this.errmsg('请填写道具名称')
@@ -837,7 +866,8 @@ export default {
         this.errmsg('请选择道具分类')
         return false
       }
-      if (this.editForm.data.itemType !== 1){
+
+      if (![PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN, PROP_TYPE_OPTIONS.PROP_TYPE_TICKET].includes(this.editForm.data.itemType)) {
         this.editForm.itemExtra.specialAttr = 0
       }
 
@@ -867,8 +897,13 @@ export default {
       }
 
       if(this.editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN){
-        if(this.editForm.itemExtra.gid === 0) {
-          this.errmsg('请选择具体SlotGame')
+        console.log("1111222 ",this.editForm.itemExtra)
+        if(this.editForm.itemExtra.specialAttr <= 0){
+          this.errmsg('请确认游戏类型')
+          return false
+        }
+        if(this.editForm.itemExtra.gid.length === 0) {
+          this.errmsg('请选择关联游戏')
           return false
         }
         if(this.editForm.itemExtra.betAmount === 0) {

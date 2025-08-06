@@ -800,7 +800,7 @@
           <el-form-item label="赛事分类：" :required="true">
             <el-select v-model="editForm.signExtra.matchEvents" placeholder="请选择" size="mini">
               <el-option
-                v-for="item in matchEvents"
+                v-for="item in MATCH_LIST_TAG_OPTIONS"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -846,7 +846,7 @@ import { log } from 'console'
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
 import { getAllCommonGameConfig, getAllMatchGuidesConfig } from '@/utils/common-game-config'
 import { IsMars } from '@/utils/env'
-import { CHANNEL_OPTIONS, APPID_OPTIONS, ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS,MATCH_TABLE_SCENE_ID_CFG } from '@/utils/options'
+import { CHANNEL_OPTIONS, APPID_OPTIONS, ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS,MATCH_TABLE_SCENE_ID_CFG,MATCH_LIST_TAG_OPTIONS } from '@/utils/options'
 
 export default {
   name: 'MatchConfig',
@@ -863,6 +863,7 @@ export default {
       APPID_OPTIONS,
       CHANNEL_OPTIONS,
       MATCH_TABLE_SCENE_ID_CFG,
+      MATCH_LIST_TAG_OPTIONS,
       form: {
         gameId: -1,
         status: -1,
@@ -934,12 +935,6 @@ export default {
           'propsIcon': '',
           'propsAttr': ''
         }
-      ],
-      matchEvents: [
-        { 'value': 0, 'label': 'All' },
-        { 'value': 1, 'label': 'Events' },
-        { 'value': 4, 'label': 'GTCC周赛' }, // notice 2,3 空着
-        { 'value': 5, 'label': 'GTCC预选赛' }
       ],
       prizeModleCfgs: [
         { 'value': 0, 'label': '固定奖励' },
@@ -1327,6 +1322,7 @@ export default {
                     tableDataCpy[i].sort = 0
                   }
                   this.tableData.push(tableDataCpy[i])
+                  console.log("table: ",tableDataCpy[i])
                 }
               }
             }
@@ -1855,9 +1851,10 @@ export default {
           this.editForm.signExtra.gtccWhiteList.data=''
         }
         this.editForm.prizeExtra = JSON.parse(editData.prize_extra)
-        if(editData.listExtra !== undefined){
-          this.editForm.listExtra = JSON.parse(editData.listExtra)
-        }
+        // this.editForm.listExtra = JSON.parse(editData.list_extra)
+        // if(this.editForm.listExtra  === undefined){
+        //   this.editForm.listExtra.tableSceneId = 0
+        // }  //先做代码屏蔽
         this.showCsCfgs = []
         // 循环遍历是否存在gameId
         if (this.csCfgs.length > 0) {

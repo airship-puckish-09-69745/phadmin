@@ -131,9 +131,26 @@ export const MATCH_UNIQUE_ID_CFG =[
 //牌桌TableId
 export const MATCH_TABLE_SCENE_ID_CFG =[
   { 'value': 0, 'label': '无' },
-  { 'value': 1, 'label': 'Table1' },
+  { 'value': 1, 'label': '付费赛桌面' },
   { 'value': 2, 'label': 'Table2' },
   { 'value': 3, 'label': 'Table3' },
   { 'value': 4, 'label': 'Table4' },
   { 'value': 5, 'label': 'Table5' },
+]
+
+//比赛页签选项
+export const MATCH_LIST_TAG_OPTIONS = [
+  { 'value': 0, 'label': 'All', disabled: false },
+  { 'value': 1, 'label': 'Events', disabled: false },
+  { 'value': 4, 'label': 'Gtcc周赛', disabled: false },
+  { 'value': 5, 'label': 'Gtcc预选赛', disabled: false },
+  { 'value': 6, 'label': '免费赛', disabled: false },
+  { 'value': 7, 'label': '付费赛', disabled: false },
+]
+
+//比赛GameId选项
+export const MATCH_GAME_ID_CFG_OPTIONS = [
+  { 'value': 2031, 'label': 'Tongits', disabled: false },
+  { 'value': 2032, 'label': 'TexasMtt', disabled: false },
+  { 'value': 2033, 'label': 'Pusoy', disabled: false },
 ]

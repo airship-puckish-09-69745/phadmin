@@ -61,6 +61,8 @@
               <el-option label="207:LuckyWineglass Mars" :value="207" />
               <el-option label="212:PirateShip" :value="212" />
               <el-option label="213:PirateShip Mars" :value="213" />
+              <el-option label="218:WrathOfZeus2" :value="218" />
+              <el-option label="219:WrathOfZeus2 Mars" :value="219" />
               <el-option label="188:StreetFighting" :value="188" />
               <el-option label="189:StreetFighting Mars" :value="189" />
               <el-option label="192:BountyRaid" :value="192" />
@@ -86,6 +88,8 @@
               <el-option label="211:LuckySpiritsMars" :value="211" />
               <el-option label="216:Phoenix" :value="216" />
               <el-option label="217:PhoenixMars" :value="217" />
+              <el-option label="220:GoldenDragon" :value="220" />
+              <el-option label="221:GoldenDragonMars" :value="221" />
             </el-select>
           </el-form-item>
 

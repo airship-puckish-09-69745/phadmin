@@ -643,7 +643,7 @@ export default {
           Env: _this.env,
           Path: '/' + this.cgiPath + '/list',
           Page: 1,
-          PageNum: 400
+          PageNum: 500
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -691,8 +691,21 @@ export default {
       })
     },
     showChartDialog() {
+      this.resetChartDialog()
       this.chartDialog.visible = true
       this.initChartDialog()
+    },
+    resetChartDialog() {
+      // 重置表单数据
+      this.chartDialog.form = {
+        tableMoney: [],
+        dateRange: []
+      };
+
+      // 清空图表数据
+      this.chartData = {}
+      this.maxy = 0
+      this.ratioData = []
     },
     initChartDialog() {
       // 初始化场次选项
@@ -742,7 +755,6 @@ export default {
         data: params
       }).then(response => {
         if (response.RetCode === 0) {
-          this.tableData = []
           // this.pagination.total = 0
           const {
             list,

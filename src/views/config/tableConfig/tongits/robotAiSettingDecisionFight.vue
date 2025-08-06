@@ -11,8 +11,7 @@
                 <template>
                   <el-input-number
                     v-model="AiConfig.Decision.DecisionFight.SingleCardScore" 
-                    :min="1"
-                    :precision="0"
+                    :min="0"
                     placeholder="分数"
                     style="width: 100%"> 
       
@@ -48,7 +47,7 @@
           
             <el-table-column label="分数" align="center">
               <template slot-scope="scope">
-                <el-input-number v-model="scope.row.Score" size="mini" :min="0" :max="100"></el-input-number>
+                <el-input-number v-model="scope.row.Score" size="mini"   :min="0" :max="100"></el-input-number>
               </template>
             </el-table-column>
           </el-table>
@@ -57,7 +56,7 @@
 
 
       <el-col :span="24">
-        <h3 style="text-align:center;">有效牌张数区间配置</h3>
+        <h3 style="text-align:center;">有效牌张分数区间</h3>
         <div style="padding-top: 10px">
           <el-table
             :data="AiConfig.Decision.DecisionFight.FightList"
@@ -76,15 +75,15 @@
             </el-table-column>
     
           
-            <el-table-column label="开始张数" align="center">
+            <el-table-column label="下限" align="center">
               <template slot-scope="scope">
-                <el-input-number v-model="scope.row.CardNumBegin" size="mini" :min="0" :max="100"></el-input-number>
+                <el-input-number v-model="scope.row.CardNumBegin" size="mini" :min="0" :max="1000"></el-input-number>
               </template>
             </el-table-column>
             
-            <el-table-column label="结束张数" align="center">
+            <el-table-column label="上限" align="center">
               <template slot-scope="scope">
-                <el-input-number v-model="scope.row.CardNumEnd" size="mini" :min="0" :max="100"></el-input-number>
+                <el-input-number v-model="scope.row.CardNumEnd" size="mini" :min="0" :max="1000"></el-input-number>
               </template>
             </el-table-column>
           </el-table>
@@ -110,7 +109,7 @@
               </template>
             </el-table-column>
 
-            <el-table-column label="牌张配置" align="center" >
+            <el-table-column label="每轮Tongits减少Fight概率" align="center" >
               <template slot-scope="scope">
                 <el-table :data="scope.row.ContributeCardList" border style="width: 100%">
                   <el-table-column
@@ -123,7 +122,7 @@
                     </template>
                   </el-table-column>
                 
-                  <el-table-column label="有效牌张数" align="center">
+                  <el-table-column label="有效牌张分数区间（概率%）" align="center">
                     <el-table-column prop="range1" :label="getColumnLabel(AiConfig.Decision.DecisionFight.FightList[0].CardNumBegin,AiConfig.Decision.DecisionFight.FightList[0].CardNumEnd)" width="170" align="center">
                       <template slot-scope="subScope">
                         <el-input-number v-model="subScope.row.FightRatioList[0]" size="mini" :min="0" :max="100"></el-input-number>

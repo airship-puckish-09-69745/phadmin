@@ -272,6 +272,86 @@
             </el-col>
           </el-row>
         </el-tab-pane>
+
+        <el-tab-pane label="机器人等级和好牌配置">
+          <el-row style="padding-top: 5px">
+            <h3 style="text-align:center;">真人好牌权重</h3>
+            <el-col :span="24">
+              <template>
+                真人好牌权重：
+                <el-input v-model.number="realPlayerGoodWeight" size="normal" />
+              </template>
+            </el-col>
+            <h3 style="text-align:center;">机器人输赢配置[)</h3>
+            <el-col :span="24">
+              <div style="padding-top: 10px">
+                <el-table
+                  :data="control"
+                  stripe
+                  border
+                  style="width: 100%"
+                >
+
+                  <el-table-column
+                    prop="ControlId"
+                    label="行号"
+                    width="70"
+                  />
+
+                  <el-table-column
+                    label="输赢最小(%)"
+                    width="120"
+                  >
+                    <template scope="subScope">
+                      <el-input v-model.number="subScope.row.PerStartPool" />
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column
+                    label="输赢最大(%)"
+                    width="120"
+                  >
+                    <template scope="subScope">
+                      <el-input v-model.number="subScope.row.PerEndPool" />
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column
+                    label="好牌权重"
+                    width="120"
+                  >
+                    <template scope="subScope">
+                      <el-input v-model.number="subScope.row.GoodWeight" />
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column label="机器人级别" width="180">
+                    <template scope="subScope">
+                      <el-select v-model="subScope.row.AiConfigLevel" placeholder="请选择">
+                        <el-option
+                          v-for="itemLvl in robotlvl"
+                          :key="itemLvl.value"
+                          :label="itemLvl.label"
+                          :value="itemLvl.value"
+                        />
+                      </el-select>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="操作" :render-header="(h,obj)=>addControlButton()">
+                    <template scope="subScope">
+                      <el-button
+                        size="mini"
+                        type="danger"
+                        @click="delControlRow(subScope.$index,subScope.row)"
+                      >删除</el-button>
+                    </template>
+                  </el-table-column>
+
+                </el-table>
+              </div>
+            </el-col>
+          </el-row>
+        </el-tab-pane>
       </el-tabs>
     </el-row>
 
@@ -434,6 +514,36 @@ export default {
         Data: {}
       },
       libShow: $libShow,
+      control: [
+
+      ],
+      realPlayerGoodWeight:0,
+      robotlvl: [
+        {
+          value: 1,
+          label: '强放机器人'
+        },
+        {
+          value: 2,
+          label: '弱放机器人'
+        },
+        {
+          value: 3,
+          label: '普通机器人'
+        },
+        {
+          value: 4,
+          label: '弱杀机器人'
+        },
+        {
+          value: 5,
+          label: '强杀机器人'
+        },
+        {
+          value: 6,
+          label: '破产保护机器人'
+        }
+      ],
       pusoyDingCardTypes: [
         {
           value: 0,
@@ -679,6 +789,31 @@ export default {
     dataRule(required, config) {
       return DataRule(required, config)
     },
+    addControlButton() {
+      return (
+        <div>
+          <span>操作</span>
+          <el-button type='primary' size='mini' style='padding:5px;margin-left:5px;' onClick={() => this.doAddControl()}>添加范围</el-button>
+        </div>
+      )
+    },
+    doAddControl() {
+      console.log('control')
+      const Id = this.control.length + 1
+      this.control.push(
+        {
+          GoodWeight: 0,
+          PerStartPool: 0,
+          PerEndPool: 0,
+          AiConfigLevel: 1,
+          ControlId: Id
+        }
+      )
+    },
+    delControlRow(mine, row) {
+      console.log('mine:' + mine, row)
+      this.control.splice(mine, 1)
+    },
     // 操作类函数
     clickData(row, column, event) {
       if (row.status === 2) {
@@ -871,6 +1006,8 @@ export default {
               one.ShowMoneyMax /= 1000
               $this.ShowMoneyCfg.push(one)
             }
+            $this.control = $this.item.Control || []
+            $this.realPlayerGoodWeight = $this.item.RealPlayerGoodWeight || 0
             // 设置修改之前数据
             $this.$refs.compare.SetOldVal(old)
             // 获取底注
@@ -891,8 +1028,10 @@ export default {
       cpy.BetCfg = []
       cpy.ProtectCfg = []
       cpy.ShowMoneyCfg = []
+      cpy.Control = this.control
       cpy.BetMoneyList = []
       cpy.BetMoneyListNew = []
+      cpy.RealPlayerGoodWeight = this.realPlayerGoodWeight
       for (const i in this.betMoneyList) {
         if (this.betMoneyList[i].IsOpen === 1) {
           cpy.BetMoneyList.push(this.betMoneyList[i].TableMoney)

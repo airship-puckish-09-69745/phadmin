@@ -7,6 +7,7 @@ Vue.use(Router)
 import Layout from '@/layout'
 import Watermark from '@/utils/watermark'
 import { IsMars } from '@/utils/env'
+import path from 'path'
 // import {IsMars} from "@/utils/env";
 /* Router Modules */
 // import componentsRouter from './modules/components'
@@ -646,6 +647,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/trustScore.vue'),
             name: 'trustScore',
             meta: { title: '信任分配置 ◐' }
+          },
+          {
+            path: 'trustScoreNew',
+            component: () => import('@/views/config/tableConfig/trustScoreNew.vue'),
+            name: 'trustScoreNew',
+            meta: { title: '信任分配置(新版) ◐' }
           }
         ]
       },
@@ -1231,6 +1238,12 @@ export const asyncRoutes = [
                 meta: { title: 'G igaAce' }
               },
               {
+                path: 'goldendragon_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/goldendragon_slots_cfg'),
+                name: 'goldendragon_slots_cfg',
+                meta: { title: 'G oldenDragon' }
+              },
+              {
                 path: 'godoffortune_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/godoffortune_slots_cfg'),
                 name: 'godoffortune_slots_cfg',
@@ -1406,6 +1419,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/wrathofzeus_slots_cfg'),
                 name: 'wrathofzeus_slots_cfg',
                 meta: { title: 'W rathOfZeus' }
+              },
+              {
+                path: 'wrathofzeus2_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/wrathofzeus2_slots_cfg'),
+                name: 'wrathofzeus2_slots_cfg',
+                meta: { title: 'WrathOfZeus2' }
               }
 
             ]
@@ -1565,6 +1584,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/wrathofzeusmars_slots_cfg'),
                 name: 'wrathofzeusmars_slots_cfg',
                 meta: { title: 'WrathOfZeus(审)' }
+              },
+              {
+                path: 'wrathofzeus2mars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/wrathofzeus2mars_slots_cfg'),
+                name: 'wrathofzeus2mars_slots_cfg',
+                meta: { title: 'WrathOfZeus2(审)' }
               },
               {
                 path: 'crazyacemars_slots_cfg',
@@ -2198,9 +2223,17 @@ export const asyncRoutes = [
           },
           {
             path: 'matchOther',
-            component: () => import('@/views/matchManage/matchOperations/matchOther.vue'),
+            component: () => import('@/views/empty'),
             name: 'matchOther',
-            meta: { title: '赛事Other配置', noCache: true }
+            meta: { title: '比赛other配置', noCache: true },
+            children: [
+              {
+                path: 'matchOther',
+                component: () => import('@/views/matchManage/matchOperations/matchOther/index.vue'),
+                name: 'matchOther',
+                meta: { title: '比赛other配置', noCache: true }
+              }
+            ]
           },
           {
             path: 'matchTcc',
@@ -2213,6 +2246,12 @@ export const asyncRoutes = [
             component: () => import('@/views/matchManage/matchOperations/matchGtccConfig.vue'),
             name: 'matchGtccConfig',
             meta: { title: 'GTCC配置', noCache: true }
+          },
+          {
+            path: 'matchBroadcast',
+            component: () => import('@/views/matchManage/matchOperations/matchBroadcast/index.vue'),
+            name: 'matchBroadcast',
+            meta: { title: '赛事播报', noCache: true }
           }
         ]
       },
@@ -2249,12 +2288,6 @@ export const asyncRoutes = [
 
           }
         ]
-      },
-      {
-        path: 'matchBroadcast',
-        component: () => import('@/views/matchManage/matchBroadcast/index.vue'),
-        name: 'matchBroadcast',
-        meta: { title: '赛事播报', noCache: true }
       }
     ]
   },
@@ -2979,8 +3012,13 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'wrathofzeus_slots_log',
             meta: { title: 'WrathOfZeus', gid: 172 }
+          },
+          {
+            path: 'wrathofzeus2_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'wrathofzeus2_slots_log',
+            meta: { title: 'WrathOfZeus2', gid: 218 }
           }
-
         ]
       },
       {
@@ -3164,6 +3202,12 @@ export const asyncRoutes = [
             meta: { title: 'WrathOfZeus(审)', gid: 173 }
           },
           {
+            path: 'wrathofzeus2mars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'wrathofzeus2mars_slots_log',
+            meta: { title: 'WrathOfZeus2(审)', gid: 219 }
+          },
+          {
             path: 'puppyhomemars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'puppyhomemars_slots_log',
@@ -3216,6 +3260,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'streetfightingmars_slots_log',
             meta: { title: 'StreetFighting(审)', gid: 189 }
+          },
+          {
+            path: 'goldendragonmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'goldendragonmars_slots_log',
+            meta: { title: 'GoldenDragon(审)', gid: 221 }
           },
           {
             path: 'goldtrainmars_slots_log',
@@ -3366,12 +3416,12 @@ export const asyncRoutes = [
             name: 'tongitsCheatLog',
             meta: { title: '作弊日志（新) ◐' }
           },
-          {
-            path: 'tongitsCheatLogDev',
-            component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatNewDev.vue'),
-            name: 'tongitsCheatLogDev',
-            meta: { title: '作弊日志（老) ◐' }
-          },
+          // {
+          //   path: 'tongitsCheatLogDev',
+          //   component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatNewDev.vue'),
+          //   name: 'tongitsCheatLogDev',
+          //   meta: { title: '作弊日志（老) ◐' }
+          // },
           {
             path: 'tongitsCheatStat',
             component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatStat.vue'),
