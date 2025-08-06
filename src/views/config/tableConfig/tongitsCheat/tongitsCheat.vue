@@ -804,7 +804,7 @@ export default {
     },
     delAutoBlackRow(mine, row) {
       console.log('mine:' + mine, row)
-      this.control.splice(mine, 1)
+      this.AutoBlack.splice(mine, 1)
     }
   }
 }

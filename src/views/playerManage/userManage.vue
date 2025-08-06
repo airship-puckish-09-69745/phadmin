@@ -194,7 +194,8 @@
             <el-col v-show="(item.ItemType === 2 ||item.ItemType === 4 || item.ItemType === 5) && !isNegativeItemNum" :span="2">
               <template>
                 <el-select v-model="item.ItemUseTime" size="mini" placeholder="请选择">
-                  <el-option v-for="option in ITEM_DAY_TYPE_OPTIONS" :key="option.value" :label="option.label" :value="option.value" :disabled="option.disabled">
+                  <el-option v-for="option in ITEM_DAY_TYPE_OPTIONS" :key="option.value"
+                             :label="option.label" :value="option.value" :disabled="option.disabled || (item.ItemType === 5 && option.value === 0)">
                   </el-option>
                 </el-select>
               </template>
