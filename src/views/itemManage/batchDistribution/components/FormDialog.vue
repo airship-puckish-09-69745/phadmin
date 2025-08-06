@@ -49,7 +49,7 @@
           数量：
           <el-input v-model.number="form.PropDetails.prop_num" type="number" placeholder="请输入道具数量" style="width: calc(100% - 80px);" />
         </div>
-        <div class="form-item-item" v-if="itemType == 2 || itemType== 4 || itemType== 5" >
+        <div class="form-item-item" v-if="itemType === 2 || itemType=== 4 || itemType=== 5" >
           过期时间：
           <el-select v-model="form.PropDetails.prop_expire_days" placeholder="请选择过期时间" style="width: calc(100% - 100px);" @focus="onItemSelectorFocus">
             <el-option
@@ -57,6 +57,7 @@
               :key="item.value"
               :label="item.label"
               :value="item.value"
+              :disabled="item.disabled || (itemType === 5 && item.value === 0)"
             />
           </el-select>
         </div>
