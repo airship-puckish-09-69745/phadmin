@@ -36,6 +36,11 @@
                     <el-date-picker v-model="item.EveryDayEndTime" type="datetime" placeholder="选择结束时间" format="HH:mm" size="mini" />
                   </el-form-item>
                 </el-col>
+                <el-col >
+                  <el-form-item label="活动展示金额：">
+                    <el-input v-model.number="item.ShowGold" style="width: 200px;" placeholder="请输入显示金额数量" />
+                  </el-form-item>
+                </el-col>
                 <el-col>
                   <el-form-item label="每日黄金红包总发放限制：" :required="true">
                     <el-input v-model="item.SingleLimitNum" style="width: 200px;" placeholder="请输入限制数量" />
@@ -619,6 +624,7 @@ export default {
         EveryDayStartTime: 0,
         EveryDayEndTime: 0,
         SockGainRatio: 10,
+        ShowGold: 0,
         RuleImgHor: [],
         RuleImgVer: [],
         RewardUseSceneId: 0,
@@ -1147,6 +1153,7 @@ export default {
             $this.item.IsWhite = old.IsWhite
             $this.item.StartTime = old.StartTime * 1000
             $this.item.EndTime = old.EndTime * 1000
+            $this.item.ShowGold = old.ShowGold
             $this.item.EveryDayStartTime = this.getStartMidnightTimestamp(old.EveryDayStartTime * 1000)
             $this.item.EveryDayEndTime = this.getEndMidnightTimestamp(old.EveryDayStartTime * 1000,old.EveryDayEndTime * 1000)
             $this.item.LimitReceiveNum1 = old.LimitReceiveNum1 / 1000
@@ -1209,6 +1216,7 @@ export default {
         EndTime: endTime,
         EveryDayStartTime: everyStartTime,
         EveryDayEndTime: everyEndTime,
+        ShowGold: this.item.ShowGold,
         SingleLimitNum: Math.ceil(this.item.SingleLimitNum * 1000),
         EveryDayLimitNum: Math.ceil(this.item.EveryDayLimitNum * 1000),
         SumLimitNum: Math.ceil(this.item.SumLimitNum * 1000),
