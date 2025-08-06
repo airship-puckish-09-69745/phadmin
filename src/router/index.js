@@ -962,7 +962,15 @@ export const asyncRoutes = [
                     component: () => import('@/views/config/tableConfig/buracoTable'),
                     name: 'buracoTable',
                     meta: { title: 'Buraco配桌 ◐' }
-                  },
+                  }
+                ]
+              },
+              {
+                path: 'BuracoOneOnOneTable',
+                component: () => import('@/views/empty'),
+                redirect: 'noRedirect',
+                meta: { title: 'BuracoOne配桌 ◐', noCache: true },
+                children: [
                   {
                     path: 'buracoOneOnOneTable',
                     component: () => import('@/views/config/tableConfig/buracoOneOnOneTable'),
