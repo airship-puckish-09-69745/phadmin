@@ -711,6 +711,8 @@ export default {
     // },
     showTrustLevel(level) {
       switch (level) {
+        case 1:
+          return '--低危用户'
         case 2:
           return '--疑似用户'
         case 3:
