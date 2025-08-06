@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-row :gutter="5" style="margin-top: 30px">
       <fieldset style="margin-top:10px">
-        <legend>身份配置</legend>
+        <legend>添加身份</legend>
         <el-form :inline="true" ref="trustTestForm" :model="trustTestForm">
           <el-form-item label="Uid">
             <el-input placeholder="请输入内容" v-model.number="trustTestForm.Uid" size="mini"></el-input>
@@ -27,15 +27,6 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="addTrustTest" size="mini">添加</el-button>
-          </el-form-item>
-          <el-form-item>
-            <el-input v-model.number="trustTestForm.CheatScore" size="mini" placeholder="正加负减"/>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" size="mini" @click="addCheatScore()">增加疑似分</el-button>
-          </el-form-item>
         </el-form>
         <el-table
           ref="filterTable"
@@ -52,6 +43,50 @@
           <el-table-column prop="identity" label="身份">
             <template slot-scope="scope">{{ getTrustIndentity(scope.row.identity) }}</template>
           </el-table-column>
+          <el-table-column label="操作">
+            <template slot-scope="scope">
+              <el-button type="primary" size="mini" @click="delTrustTest(scope.row)">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </fieldset>
+    </el-row>
+    <el-row :gutter="5" style="margin-top: 30px">
+      <fieldset style="margin-top:10px">
+        <legend>对比身份</legend>
+        <el-form :inline="true" ref="trustTestForm" :model="trustTestForm">
+          <el-form-item label="Uid">
+            <el-input placeholder="请输入内容" v-model.number="trustTestForm.Uid" size="mini"></el-input>
+          </el-form-item>
+          <el-form-item label="Gid">
+            <el-select placeholder="请输入内容" v-model.number="trustTestForm.Gid" size="mini">
+              <el-option
+                v-for="item in trustTestGame"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="疑似分加减">
+            <el-input v-model.number="trustTestForm.CheatScore" size="mini" placeholder="正加负减"/>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" size="mini" @click="addCheatScore(trustTestForm.Uid,trustTestForm.Gid,trustTestForm.CheatScore)">提交</el-button>
+          </el-form-item>
+        </el-form>
+        <el-table
+          ref="filterTable"
+          :data="trustUserData"
+          stripe
+          border
+          :row-style="{height:'10px'}"
+          style="width: 80%;"
+        >
+          <el-table-column prop="uid" label="Uid"/>
+          <el-table-column prop="gid" label="游戏">
+            <template slot-scope="scope">{{ getTrustGame(scope.row.gid) }}</template>
+          </el-table-column>
           <el-table-column prop="cheatType" label="防作弊系统身份">
             <template slot-scope="scope">{{ getCheatIndentity(scope.row.cheatType) }}</template>
           </el-table-column>
@@ -61,6 +96,11 @@
             <template slot-scope="scope">{{ getTrustIndentity(scope.row.trustType) }}</template>
           </el-table-column>
           <el-table-column prop="trustScore" label="信任分系统信任分">
+          </el-table-column>
+          <el-table-column label="操作">
+            <template slot-scope="scope">
+              <el-button type="primary" size="mini" @click="addCheatScore(scope.row.uid,scope.row.gid,0)">刷新</el-button>
+            </template>
           </el-table-column>
         </el-table>
       </fieldset>
@@ -76,11 +116,12 @@ export default {
     return {
       item: {},
       trustTestData: [],
+      trustUserData: [],
       trustTestForm: {
         Uid: 0,
         Gid: 22,
         Identity: 4,
-        CheatScore: 1,
+        CheatScore: 0,
       },
       trustTestGame: [
         {value: 22, label: 'Tongits'},
@@ -180,12 +221,31 @@ export default {
         }
       })
     },
-    addCheatScore() {
+    delTrustTest(row) {
       if (this.env != 'test') {
         return
       }
-      if (this.trustTestForm.CheatScore === 0) {
-        this.$message.error('请输入一个不为0的数据')
+      const $this = this
+      request({
+        url: '/dataProxy/info',
+        method: 'post',
+        data: {
+          Env: $this.env,
+          Uid: row.uid,
+          Gid: row.gid,
+          Identity: row.identity,
+          Path: '/tools/trust/test/del'
+        }
+      }).then(response => {
+        console.log(JSON.stringify(response))
+        if (response.RetCode === 0) {
+          $this.$message.success("删除成功")
+          $this.getTrustTest()
+        }
+      })
+    },
+    addCheatScore(uid,gid,cheatScore) {
+      if (this.env != 'test') {
         return
       }
       const $this = this
@@ -195,14 +255,27 @@ export default {
         data: {
           Env: $this.env,
           Path: '/user/cheat/score/add',
-          Uid: $this.trustTestForm.Uid,
-          Gid: $this.trustTestForm.Gid,
-          Score: $this.trustTestForm.CheatScore,
+          Uid: uid,
+          Gid: gid,
+          Score: cheatScore,
         }
       }).then(response => {
         console.log('update tag ', response)
         if (response.RetCode === 0) {
-          $this.getTrustTest()
+          let update = false
+          for (let i = 0; i < $this.trustUserData.length; i++) {
+            if ($this.trustUserData[i].uid===response.Data.uid && $this.trustUserData[i].gid===response.Data.gid) {
+              $this.trustUserData[i].cheatType = response.Data.cheatType
+              $this.trustUserData[i].cheatScore = response.Data.cheatScore
+              $this.trustUserData[i].trustType = response.Data.trustType
+              $this.trustUserData[i].trustScore = response.Data.trustScore
+              update = true
+              break
+            }
+          }
+          if (!update) {
+            $this.trustUserData.push(response.Data)
+          }
         } else {
           $this.$message.error('更新失败')
         }
