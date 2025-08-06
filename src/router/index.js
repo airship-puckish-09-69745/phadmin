@@ -960,8 +960,14 @@ export const asyncRoutes = [
                   {
                     path: 'buracoTable',
                     component: () => import('@/views/config/tableConfig/buracoTable'),
-                    name: 'buraTable',
+                    name: 'buracoTable',
                     meta: { title: 'Buraco配桌 ◐' }
+                  },
+                  {
+                    path: 'buracoOneOnOneTable',
+                    component: () => import('@/views/config/tableConfig/buracoOneOnOneTable'),
+                    name: 'buracoOneOnOneTable',
+                    meta: { title: 'BuracoOneOnOne配桌 ◐' }
                   }
                 ]
               }
@@ -2549,6 +2555,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_Buraco',
             meta: { title: 'B uraco ◐', gid: 12 }
+          },
+          {
+            path: 'playlog_BuracoOneOnOne',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_BuracoOneOnOne',
+            meta: { title: 'B uracoOneOnOne ◐', gid: 133 }
           }
         ]
       },

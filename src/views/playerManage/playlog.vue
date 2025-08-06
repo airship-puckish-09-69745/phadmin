@@ -4208,7 +4208,7 @@ export default {
             $this.showRemiGame(obj)
           } else if (gid === 11) {
             $this.showTrucoGame(obj)
-          } else if (gid === 12){
+          } else if (gid === 12 || gid === 133){
             $this.showBuracoGame(obj)
           } else {
             $this.showSmallGame(obj)
