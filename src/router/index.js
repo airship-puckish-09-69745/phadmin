@@ -3824,6 +3824,12 @@ export const asyncRoutes = [
             component: () => import('@/views/devTools/testKyc'),
             name: 'testKyc',
             meta: { title: 'KYC工具', perm: 'CFG_MANAGEMENT' }
+          },
+          {
+            path: 'testTools',
+            component: () => import('@/views/devTools/testTools'),
+            name: 'testTools',
+            meta: { title: '用户身份测试工具', perm: 'CFG_MANAGEMENT' }
           }
         ]
       },
