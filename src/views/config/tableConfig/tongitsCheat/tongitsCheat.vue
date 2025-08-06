@@ -1099,7 +1099,7 @@ export default {
           </table>
         </div>
         <div class="table-container">
-          <h5 class="title">POT累积6局后～pot被拿期间有多少⼈⾃愿离开该桌</h5>
+          <h5 class="title">作弊组合一起时POT不为0时根据离桌人数每次加分</h5>
           <table class="support-table">
             <thead>
               <tr>
