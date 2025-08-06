@@ -497,6 +497,8 @@ export default {
         return "疑似用户"
       } else if (userType === 3) {
         return "黑子用户"
+      } else if (userType === 1) {
+        return "低危用户"
       }
       return ""
     },

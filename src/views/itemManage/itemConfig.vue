@@ -467,7 +467,7 @@ export default {
         }
 
         const time_type = JSON.parse(editData.time_type)
-        if (editData.item_extra && editData.item_extra != 'null' && editData.item_extra != 'undefined') {
+        if (editData.item_extra) {
           this.editForm.itemExtra = JSON.parse(editData.item_extra)
         }
         this.editForm.data = {
