@@ -27,9 +27,7 @@
           </template>
 
             <template v-if="field.prop === 'TagName'">
-              <span v-if="scope.row.TagId">
-                {{getTagNameByTagId(scope.row.TagId)}}
-              </span>
+              {{getTagNameByTagId(scope.row.TagId)}}
             </template>
 
             <template v-if="field.prop === 'Display'">
