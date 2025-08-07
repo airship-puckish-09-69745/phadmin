@@ -2104,6 +2104,12 @@ export const asyncRoutes = [
         meta: { title: '金币流水 ◐' }
       },
       {
+        path: 'payWithdrawLog',
+        component: () => import('@/views/playerManage/payWithdrawLog'),
+        name: 'payWithdrawLog',
+        meta: { title: '支付提现流水 ◐' }
+      },
+      {
         path: 'jackpotLog',
         component: () => import('@/views/playerManage/jackpotLog'),
         name: 'ban',
