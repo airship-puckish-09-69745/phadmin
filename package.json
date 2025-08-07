@@ -31,6 +31,7 @@
     "driver.js": "0.9.5",
     "dropzone": "5.5.1",
     "echarts": "4.2.1",
+    "el-select-tree": "^2.1.1-beta.17",
     "element-ui": "^2.15.6",
     "file-saver": "^2.0.1",
     "form-data": "^4.0.0",

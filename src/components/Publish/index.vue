@@ -418,7 +418,7 @@ export default {
         })
       } else {
         let attrInfo = ''
-        if (this.opType === 4) {
+        if (this.opType === 4 && this.attrNames) {
           attrInfo = JSON.stringify(this.attrNames)
         }
         submitPublish(this.opType, this.keyId, this.getSummaryInfo(), this.envEmpty, attrInfo).then(function(response) {
