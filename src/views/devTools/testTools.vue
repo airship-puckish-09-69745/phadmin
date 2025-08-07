@@ -27,6 +27,9 @@
               </el-option>
             </el-select>
           </el-form-item>
+          <el-form-item>
+            <el-button type="primary" size="mini" @click="addTrustTest()">添加</el-button>
+          </el-form-item>
         </el-form>
         <el-table
           ref="filterTable"
