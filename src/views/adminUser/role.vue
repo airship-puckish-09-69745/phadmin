@@ -2,12 +2,7 @@
   <div id="app" class="page-container" style="padding: 10px">
     <el-row style="padding-top: 5px">
       <el-col :span="20">
-        <el-button
-          size="mini"
-          type="primary"
-          icon="el-icon-plus"
-          @click="handleCreate()"
-        >添加角色
+        <el-button size="mini" type="primary" icon="el-icon-plus" @click="handleCreate()">添加角色
         </el-button>
       </el-col>
       <el-col :span="2">
@@ -15,77 +10,35 @@
       </el-col>
     </el-row>
     <div style="padding-top: 10px">
-      <el-table
-        ref="filterTable"
-        :data="tableData"
-        stripe
-        border
-        :header-cell-style="libShow.DefaultTableHeadClass"
-        :row-style="{height:'10px'}"
-        :cell-style="libShow.DefaultTableCell"
-        style="width: 100%"
-        @sort-change="sortChange"
-      >
-        <el-table-column
-          prop="ID"
-          label="ID"
-          sortable="custom"
-          width="70"
-        />
-        <el-table-column
-          prop="Name"
-          label="角色名"
-          width="200"
-        />
-        <el-table-column
-          label="用户列表"
-          min-width="200"
-        >
+      <el-table ref="filterTable" :data="tableData" stripe border :header-cell-style="libShow.DefaultTableHeadClass"
+        :row-style="{ height: '10px' }" :cell-style="libShow.DefaultTableCell" style="width: 100%"
+        @sort-change="sortChange">
+        <el-table-column prop="ID" label="ID" sortable="custom" width="70" />
+        <el-table-column prop="Name" label="角色名" width="200" />
+        <el-table-column label="用户列表" min-width="200">
           <template slot-scope="scope">
-            {{ scope.row.UserNames?scope.row.UserNames.join("; "):'' }}
+            {{ scope.row.UserNames ? scope.row.UserNames.join("; ") : '' }}
           </template>
         </el-table-column>
-        <el-table-column
-          prop="Description"
-          label="描述"
-          width="200"
-        />
-        <el-table-column
-          label="操作"
-          column-key="op"
-          width="100"
-        >
+        <el-table-column prop="Description" label="描述" width="200" />
+        <el-table-column label="操作" column-key="op" width="100">
           <template slot-scope="scope">
-            <el-button
-              size="mini"
-              type="success"
-              @click="roleEdit(scope.row.ID)"
-            >配置权限
+            <el-button size="mini" type="success" @click="roleEdit(scope.row.ID)">配置权限
             </el-button>
           </template>
         </el-table-column>
       </el-table>
       <el-col :offset="16" :span="8">
         <div class="block">
-          <el-pagination
-            :current-page="clientDB.GetPage().GetCurrentPage()"
-            :page-sizes="[10, 20, 30, 40]"
-            :page-size="clientDB.GetPage().GetPageNum()"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="clientDB.GetPage().GetTotalCount()"
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-          />
+          <el-pagination :current-page="clientDB.GetPage().GetCurrentPage()" :page-sizes="[10, 20, 30, 40]"
+            :page-size="clientDB.GetPage().GetPageNum()" layout="total, sizes, prev, pager, next, jumper"
+            :total="clientDB.GetPage().GetTotalCount()" @size-change="handleSizeChange"
+            @current-change="handleCurrentChange" />
         </div>
       </el-col>
     </div>
-    <el-dialog
-      :title="getEditTitle()"
-      :visible.sync="edit.visible"
-      :close-on-click-modal="false"
-      :close-on-press-escape="false"
-      width="1000px"
-    >
+    <el-dialog :title="getEditTitle()" :visible.sync="edit.visible" :close-on-click-modal="false"
+      :close-on-press-escape="false" width="1000px">
       <el-tabs type="border-card">
         <el-tab-pane label="基本信息">
           <el-form ref="edit.item" label-width="150px" size="small">
@@ -103,7 +56,7 @@
         </el-tab-pane>
         <el-tab-pane label="权限配置">
           <table class="table table-border table-bordered table-bg table-striped" cellspacing="0" cellpadding="0">
-            <tr v-for="(o,idx) in edit.permissions" :key="idx">
+            <tr v-for="(o, idx) in edit.permissions" :key="idx">
               <td>
                 {{ o.Name }}
               </td>
@@ -123,13 +76,20 @@
           <el-col>
             <el-checkbox-group v-model="edit.item.AppIds">
               <table class="table  table-bg table-striped" width="100%" cellspacing="0" cellpadding="0">
-                <tr v-for="(o,idx) in appInfos" :key="idx">
+                <tr v-for="(o, idx) in appInfos" :key="idx">
                   <td>
                     <el-checkbox :label="o.ID" :key="o.ID">{{ o.ID }}-{{ o.Account }}</el-checkbox>
                   </td>
                 </tr>
               </table>
             </el-checkbox-group>
+          </el-col>
+        </el-tab-pane>
+        <el-tab-pane label="菜单配置">
+          <el-col>
+            <el-tree :data="edit.menuAll" show-checkbox node-key="id" default-expand-all
+              :default-checked-keys="edit.menuCheckedKeys" :checked-keys="edit.menuCheckedKeys" @check="handleCheckChange" :props="edit.menuProps">
+            </el-tree>
           </el-col>
         </el-tab-pane>
       </el-tabs>
@@ -144,7 +104,8 @@
   </div>
 </template>
 <style>
-.table .text-c th, .table .text-c td {
+.table .text-c th,
+.table .text-c td {
   text-align: center;
 }
 
@@ -152,15 +113,18 @@
   background-color: #f5fafe;
 }
 
-.table-bordered th, .table-bordered td {
+.table-bordered th,
+.table-bordered td {
   border: 1px solid #ddd;
 }
 
-.table-border th, .table-border td {
+.table-border th,
+.table-border td {
   border-bottom: 1px solid #ddd;
 }
 
-.table th, .table td {
+.table th,
+.table td {
   padding: 8px;
   line-height: 20px;
   word-break: break-all;
@@ -194,9 +158,14 @@ export default {
         visible: false,
         item: newItem(),
         isEdit: false,
-        permissions: []
+        permissions: [],
+        menuAll: [],
+        menuCheckedKeys: [],
+        menuProps: {
+          children: 'children',
+          label: 'title'
+        },
       },
-
       appInfos: []
     }
   },
@@ -212,6 +181,9 @@ export default {
     },
     formatTime(ts) {
       return $libDate.FormateSecondStr(ts, 2)
+    },
+    handleCheckChange(checkedNodes, { checkedKeys }) {
+      this.edit.menuCheckedKeys = checkedKeys
     },
     // 分页处理
     refreshShow() {
@@ -239,6 +211,7 @@ export default {
     roleEdit(id) {
       this.initFormData(true, id)
       this.getUserPermissions(id)
+      this.getRoleMenu(id)
       this.edit.visible = true
     },
     getList() {
@@ -289,6 +262,7 @@ export default {
       })
     },
     editSave(postData) {
+       console.log("menuCheckedKeys", this.edit.menuCheckedKeys)
       const pers = {}
       for (let i = 0; i < this.edit.permissions.length; i++) {
         const ob = this.edit.permissions[i]
@@ -299,6 +273,7 @@ export default {
         flag = ob.Delete ? (flag | 0x08) : flag
         pers[ob.Key] = flag
       }
+     
       request({
         url: '/adminuser/role/update',
         method: 'post',
@@ -307,6 +282,7 @@ export default {
           name: this.edit.item.Name,
           description: this.edit.item.Description,
           ps: JSON.stringify(pers),
+          menuIdList: JSON.stringify(this.edit.menuCheckedKeys),
           appIds: this.edit.item.AppIds ? this.edit.item.AppIds.join(',') : '',
         }
       }).then(response => {
@@ -380,7 +356,20 @@ export default {
         }
       })
     },
+    getRoleMenu(roleID) {
+      request({
+        url: '/adminuser/role/menu',
+        method: 'get',
+        data: {
+          id: roleID
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.edit.menuAll = response.Data.menuAll
+          this.edit.menuCheckedKeys = response.Data.roleMenu
+        }
+      })
+    }
   }
 }
 </script>
-

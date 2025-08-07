@@ -9,7 +9,8 @@ const state = {
   avatar: '',
   introduction: '',
   roles: [],
-  pers: null
+  pers: null,
+  menu: []
 }
 
 const mutations = {
@@ -30,6 +31,9 @@ const mutations = {
   },
   SET_PERS: (state, pers) => {
     state.pers = pers
+  },
+  SET_MENU: (state, menu) => {
+    state.menu = menu
   }
 }
 
@@ -68,13 +72,14 @@ const actions = {
           reject('Verification failed, please Login again.')
         }
 
-        const { roles, name, avatar, introduction, pers } = data
+        const { roles, name, avatar, introduction, pers, menus } = data
 
         // roles must be a non-empty array
         if (!roles || roles.length <= 0) {
           reject('getInfo: roles must be a non-null array!')
         }
 
+        commit('SET_MENU', menus)
         commit('SET_ROLES', roles)
         commit('SET_PERS', pers)
         commit('SET_NAME', name)
@@ -94,6 +99,7 @@ const actions = {
         commit('SET_TOKEN', '')
         commit('SET_ROLES', [])
         commit('SET_PERS', null)
+        commit('SET_MENU', [])
         removeToken()
         resetRouter()
 

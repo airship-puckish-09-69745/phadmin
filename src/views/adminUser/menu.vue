@@ -10,20 +10,24 @@
             </el-col>
             <el-col :span="10">
                 <el-button type="success" size="mini" style="float: right" icon="el-icon-refresh"
-                    @click="getList()">刷新</el-button>
+                    @click="getTree()">刷新</el-button>
             </el-col>
         </el-row>
         <div style="padding-top: 10px">
-            <el-table ref="filterTable" :data="tableData" stripe max-height="700" border
+            <el-table ref="filterTable" :data="tableData" stripe max-height="700" border row-key="id"
                 :header-cell-style="libShow.DefaultTableHeadClass" :row-style="{ height: '10px' }"
                 :cell-style="libShow.DefaultTableCell" style="width: 100%" @row-click="clickData"
-                @sort-change="sortChange">
-                <el-table-column prop="id" label="ID" sortable="custom" />
+                :tree-props="{ children: 'children', hasChildren: 'hasChildren' }">
+                <el-table-column prop="id" label="ID" />
                 <el-table-column prop="title" label="标题" />
                 <el-table-column prop="name" label="名称" />
                 <el-table-column prop="path" label="路径" />
-                <el-table-column prop="redirect" label="重定向" />
-                <el-table-column prop="component" label="页面" />
+                <el-table-column prop="sort" label="排序" />
+                <el-table-column prop="type" label="类型">
+                    <template slot-scope="scope">
+                        {{ scope.row.type == 1 ? '目录' : '菜单' }}
+                    </template>
+                </el-table-column>
                 <el-table-column prop="remark" label="备注" />
                 <el-table-column prop="operator" label="最后修改人" />
                 <el-table-column prop="updateTime" label="最后修改时间">
@@ -68,45 +72,44 @@
                 </el-form-item>
                 <el-form-item label="父级菜单：">
                     <el-col :span="18">
-                        <el-cascader v-model="edit.item.pid" placeholder="搜索菜单" :props="{
-                            checkStrictly: true,
-                            label: 'title',
-                            value: 'id',
-                            children: 'children',
-                            expandTrigger: 'hover',
-                        }" :options="treeData" filterable :show-all-levels="false" @change="handlePidChange">
-                            <template slot-scope="{ node, data }">
-                                <span>{{ data.title }}</span>
-                            </template>
-                        </el-cascader>
+                        <el-select-tree width="120px" placeholder="请选择内容" :data="treeData" v-model="edit.item.pid"
+                            check-strictly :props="{
+                                label: (data) => data.title,
+                                value: 'id',
+                                children: 'children',
+                            }"></el-select-tree>
                     </el-col>
                 </el-form-item>
-                <el-form-item v-if="getEditTitle() == '新增菜单'" label="类型：" :required="true">
+                <el-form-item label="类型：" :required="true">
                     <el-col :span="18">
-                        <el-select v-model="type" placeholder="请选择">
-                            <el-option label="目录" value="1"></el-option>
-                            <el-option label="菜单" value="2"></el-option>
+                        <el-select v-model="edit.item.type" placeholder="请选择">
+                            <el-option label="目录" :value=1></el-option>
+                            <el-option label="菜单" :value=2></el-option>
                         </el-select>
                     </el-col>
                 </el-form-item>
-                <el-form-item v-if="type == 2" label="页面：" :required="true">
+                <el-form-item v-if="edit.item.type == 2" label="页面：" :required="true">
                     <el-col :span="18">
                         <el-input v-model="edit.item.component" />
                     </el-col>
                 </el-form-item>
-                <el-form-item v-if="type == 1" label="重定向：" :required="true">
+                <el-form-item v-if="edit.item.type == 1" label="重定向：" :required="true">
                     <el-col :span="18">
                         <el-input v-model="edit.item.redirect" />
                     </el-col>
                 </el-form-item>
-                <el-form-item v-if="getEditTitle() == '修改菜单' && edit.item.component != ''" label="页面：">
+                <el-form-item label="图标：">
                     <el-col :span="18">
-                        <el-input v-model="edit.item.component" />
-                    </el-col>
-                </el-form-item>
-                <el-form-item v-if="getEditTitle() == '修改菜单' && edit.item.redirect != ''" label="重定向：">
-                    <el-col :span="18">
-                        <el-input v-model="edit.item.redirect" />
+                        <el-input v-model="edit.item.icon" readonly>
+                            <el-button slot="append" icon="el-icon-more" @click="edit.showIconPicker = true">
+                            </el-button>
+                        </el-input>
+                        <el-popover v-model="edit.showIconPicker" placement="bottom" width="450" trigger="manual">
+                            <div class="iconList">
+                                <i v-for="item in iconList" :key="item" :class="item" @click="setIcon(item)"
+                                    style="font-size:20px"></i>
+                            </div>
+                        </el-popover>
                     </el-col>
                 </el-form-item>
                 <el-form-item label="备注：">
@@ -134,6 +137,35 @@
 .table .text-c th,
 .table .text-c td {
     text-align: center;
+}
+
+.iconList {
+    width: 400px;
+    height: 300px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+
+    i {
+        display: inline-block;
+        width: 60px;
+        height: 45px;
+        color: #000000;
+        font-size: 20px;
+        border: 1px solid #E6E6E6;
+        border-radius: 4px;
+        cursor: pointer;
+        text-align: center;
+        line-height: 45px;
+        margin: 5px;
+
+        &:hover {
+            color: $ft;
+            border-color: $ft;
+        }
+    }
 }
 
 .table-bg thead th {
@@ -164,16 +196,20 @@
 </style>
 <script>
 import { $libDate, $libShow, ClientTableData, DataRule } from '@/utils/common'
+import ElSelectTree from 'el-select-tree'
 import store from '@/store'
 import request from '@/utils/request'
 import { Message } from 'element-ui'
+import { elementIcons } from '@/utils/icon'
 
 function newItem() {
-    return { name: '', path: '', component: '', remark: '', sort: 0, pid: 0, redirect: '', icon: '', title: '', operator: '' }
+    return { name: '', path: '', component: '', remark: '', sort: 0, pid: 0, redirect: 'noRedirect', icon: '', title: '', operator: '' }
 }
 
 export default {
-
+    components: {
+        ElSelectTree
+    },
     data() {
         return {
             tableData: [],
@@ -184,7 +220,8 @@ export default {
             edit: {
                 visible: false,
                 item: newItem(),
-                isEdit: false
+                isEdit: false,
+                showIconPicker: false,
             },
 
             type: '',
@@ -198,6 +235,8 @@ export default {
                 id: 0
             },
 
+            iconList: [],
+
             permission: {
                 visible: false,
                 userPers: [{ Name: '测试', View: true, Create: true, Update: false, Delete: true }]
@@ -206,7 +245,7 @@ export default {
     },
     created() {
         this.env = store.getters.env || this.env
-        this.getList()
+        this.iconList = elementIcons
         this.getTree()
     },
     methods: {
@@ -231,48 +270,19 @@ export default {
             return $libDate.FormateSecondStr(ts, 2)
         },
 
+        setIcon(icon) {
+            console.log(icon)
+            this.edit.item.icon = icon;
+            this.edit.showIconPicker = false;
+        },
+
         initFormData(bEdit, ID) {
             this.edit.isEdit = bEdit
             if (ID) {
-                const _data = this.clientDB.GetDataByID(ID)
+                const _data = this.clientDB.GetTreeDataById(ID)
                 if (_data) {
                     Object.assign(this.edit.item, _data)
                 }
-
-                if (_data.pid === 0) {
-                    // 如果父节点是根目录，设置为[0]
-                    this.edit.item.pid = [0];
-                } else if (_data.pid > 0) {
-                    // 如果有父节点，需要构建完整路径
-                    // 这里可能需要根据您的数据结构找到完整的父节点路径
-                    this.findParentPath(_data.pid);
-                }
-            }
-        },
-
-        // 新增方法：查找父节点路径
-        findParentPath(pid) {
-            // 递归查找父节点路径
-            const path = [];
-            const findPath = (id) => {
-                if (id === 0) {
-                    path.unshift(0); // 添加根节点
-                    return true;
-                }
-
-                const node = this.clientDB.GetDataByID(id);
-                if (node) {
-                    path.unshift(id);
-                    return findPath(node.pid);
-                }
-                return false;
-            };
-
-            if (findPath(pid)) {
-                this.edit.item.pid = path;
-            } else {
-                // 如果找不到完整路径，至少设置当前pid
-                this.edit.item.pid = [pid];
             }
         },
 
@@ -324,26 +334,17 @@ export default {
             this.edit.item = newItem()
             this.edit.visible = true
         },
-        getList() {
-            const $this = this
-            request({
-                url: '/adminuser/menu/all',
-                method: 'get',
-            }).then(response => {
-                if (response.RetCode === 0) {
-                    const menus = response.Data
-                    $this.clientDB = new ClientTableData(menus, 40, {}, 'id', -1, 'id')
-                    $this.handleCurrentChange(1)
-                }
-            })
-        },
 
         getTree() {
+            const $this = this
             request({
                 url: '/adminuser/menu/tree',
                 method: 'get',
             }).then(response => {
                 if (response.RetCode === 0) {
+                    const tree = response.Data
+                    $this.clientDB = new ClientTableData(tree.children, 40, {}, '', -1, 'id')
+                    $this.handleCurrentChange(1)
                     this.treeData = []
                     this.treeData.push(response.Data)
                 }
@@ -370,7 +371,7 @@ export default {
                     params: { id: id }
                 }).then(response => {
                     if (response.RetCode === 0) {
-                        this.getList()
+                        this.getTree()
                         Message.success('删除成功！')
                     }
                 })
@@ -388,7 +389,6 @@ export default {
                 data: postData
             }).then(response => {
                 if (response.RetCode === 0) {
-                    this.getList()
                     this.getTree()
                     Message.success('保存成功！')
                 }
@@ -401,7 +401,6 @@ export default {
                 data: postData
             }).then(response => {
                 if (response.RetCode === 0) {
-                    this.getList()
                     this.getTree()
                     Message.success('保存成功！')
                 }

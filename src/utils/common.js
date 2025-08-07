@@ -548,6 +548,24 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
     return null
   }
 
+  this.GetTreeDataById = function(ID) {
+    const stack = [...$this.TotalData];
+    
+    while (stack.length > 0) {
+        const current = stack.pop(); 
+        
+        if (current[this.IDKey] === ID) {
+            return current; 
+        }
+        
+        if (current.children && current.children.length > 0) {
+            stack.push(...[...current.children].reverse());
+        }
+    }
+    
+    return null; // 未找到
+  }
+
   this.DelData = function(id) {
     for (var i = 0; i < $this.TotalData.length; i++) {
       if ($this.TotalData[i][this.IDKey] === id) {
