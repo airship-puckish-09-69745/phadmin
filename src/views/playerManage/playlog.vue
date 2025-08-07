@@ -580,7 +580,7 @@
             }}
             </td>
             <td>{{ getMicroCtrlName(sweeperPlay.microCtrl) }}</td>
-            <td>{{ sweeperPlay.propLog && sweeperPlay.propLog.propId == 0 ? '否' : '是' }}</td>
+            <td>{{ sweeperPlay.isFreeSpin == 1 ? '是' : '否' }}</td>
           </tr>
           <tr>
             <td>道具Id</td>
