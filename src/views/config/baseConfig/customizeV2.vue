@@ -409,7 +409,7 @@ export default {
     },
     getAppInfos() {
       request({
-        url: '/thirdparties/all',
+        url: '/thirdparties/apps',
         method: 'get',
         data: {}
       }).then(response => {

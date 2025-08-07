@@ -30,9 +30,9 @@ service.interceptors.request.use(
         config.data.Env = store.getters.env
       }
       if (store.getters.version === 'V2') {
-        config.data.AppId = store.getters.appId
-        if (config.data.AppId === '') {
-          config.data.AppId = config.data.Env === 'pro' ? '1000005' : '1000002'
+        console.log('appId', config.data.AppId)
+        if (config.data.AppId === '' || config.data.AppId === undefined) {
+          config.data.AppId = store.getters.appId
         }
       }
       isHandle = true

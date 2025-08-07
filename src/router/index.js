@@ -3481,6 +3481,12 @@ export const asyncRoutes = [
         meta: { title: '审核发布', noCache: true }
       },
       {
+        path: 'reviewV2',
+        component: () => import('@/views/config/reviewV2'),
+        name: 'reviewV2',
+        meta: { title: '审核发布V2', noCache: true }
+      },
+      {
         path: 'gameAlarm',
         component: () => import('@/views/config/gameAlarmConfig.vue'),
         name: 'gameAlarm',
@@ -3847,6 +3853,12 @@ export const asyncRoutes = [
         component: () => import('@/views/adminUser/reviewerConfig'),
         name: 'reviewerConfig',
         meta: { title: '审核权限管理' }
+      },
+      {
+        path: 'reviewerConfigV2',
+        component: () => import('@/views/adminUser/reviewerConfigV2'),
+        name: 'reviewerConfigV2',
+        meta: { title: '审核权限管理V2' }
       },
       {
         path: 'systemMoneyConfig',

@@ -264,7 +264,7 @@ export default {
     },
     compareType: { // 发布内容格式，支持：Array, Object, String, CustomizeConfig
       type: String,
-      default: 'Array'
+      default: ''
     },
     envEmpty: { // 是否区分环境，true表示不区分
       type: Boolean,
@@ -685,6 +685,9 @@ export default {
       })
     },
     checkProcessing() { // 检测版本是否在处理中
+      if (this.keyId === '') {
+        return
+      }
       getView(this.keyId, this.envEmpty).then(response => {
         this.currentUser = response.Data.CurUser
         this.opType = response.Data.Step
@@ -700,8 +703,8 @@ export default {
       const $this = this
       this.init()
       getDiff(this.opType, this.keyId, this.envEmpty).then(response => {
-        if (this.diffView) {
-          this.attrNames = JSON.parse(response.Data.AttrInfo)
+        if ($this.diffView) {
+          $this.attrNames = JSON.parse(response.Data.AttrInfo)
         }
         let preVal = null
         let proVal = null
@@ -714,11 +717,14 @@ export default {
         if (!$this.compareType || $this.compareType == '') {
           if ($libType.IsArray(preVal)) {
             $this.compareType = 'Array'
+            console.log('getDiff preVal is Array')
           } else if ($libType.IsObject(preVal)) {
             $this.compareType = 'Object'
+            console.log('getDiff preVal is Object')
           }
         }
         console.log('compareType:' + $this.compareType)
+        console.log('Object.prototype.toString.call(obj):', Object.prototype.toString.call(preVal))
 
         switch ($this.compareType) {
           case 'Object':
@@ -1025,11 +1031,12 @@ export default {
           oldObject = null
           newObject = null
         }
-        console.log('here')
-        console.log(oldVal)
-        console.log(newVal)
-        console.log(newObject)
-        console.log(oldObject)
+        console.log('compare s1')
+        console.log('oldVal', oldVal)
+        console.log('newVal', newVal)
+        console.log('newObject', newObject)
+        console.log('oldObject', oldObject)
+        console.log('compare s2')
 
         let ret
         if (oldObject && newObject) {
