@@ -2107,7 +2107,7 @@ export const asyncRoutes = [
         path: 'payWithdrawLog',
         component: () => import('@/views/playerManage/payWithdrawLog'),
         name: 'payWithdrawLog',
-        meta: { title: '支付提现流水 ◐' }
+        meta: { title: '充值提现流水 ◐' }
       },
       {
         path: 'jackpotLog',
