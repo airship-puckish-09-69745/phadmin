@@ -2198,14 +2198,6 @@ export const asyncRoutes = [
 
       },
       {
-        path: 'obMatchRecordConfig',
-        component: () => import('@/views/matchManage/obMatchRecord.vue'),
-        hidden: !IsMars(),
-        name: 'obMatchRecordConfig',
-        meta: { title: '赛事记录', noCache: true, hidden: true }
-
-      },
-      {
         path: 'matchJackPot',
         component: () => import('@/views/matchManage/matchJackPot.vue'),
         name: 'matchJackPot',
@@ -2308,7 +2300,29 @@ export const asyncRoutes = [
 
           }
         ]
-      }
+      },
+      {
+        path: 'obMatchConfig',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: 'OB比赛管理', noCache: true },
+        children: [
+          {
+            path: 'modifyUserInfo',
+            component: () => import('@/views/matchManage/obMatchManage/modifyUserInfo.vue'),
+            hidden: !IsMars(),
+            name: 'modifyUserInfo',
+            meta: { title: '批量修改昵称头像', noCache: true }
+          },
+          {
+            path: 'obMatchRecordConfig',
+            component: () => import('@/views/matchManage/obMatchManage/obMatchRecord.vue'),
+            hidden: !IsMars(),
+            name: 'obMatchRecordConfig',
+            meta: { title: '赛事记录', noCache: true, hidden: true }
+          }
+        ]
+      },
     ]
   },
   {
