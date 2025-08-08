@@ -3467,6 +3467,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatStat.vue'),
             name: 'tongitsCheatStat',
             meta: { title: '用户身份统计 ◐' }
+          },
+          {
+            path: 'tongitsCheatCurve',
+            component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatCurve.vue'),
+            name: 'tongitsCheatCurve',
+            meta: { title: '疑似度分布 ◐' }
           }
         ]
       },
