@@ -177,33 +177,12 @@ export default {
       }
     }
   },
-  data() {
-    return {
-      BuildThreeNoTailRatio: 0,
-      BuildThreeNoTailMaxNum: 0,
-    }
-  },
+
   created() {
 		    this.$nextTick(() => {
 		      console.log('common plugin tongitsConfig:', this.AiConfig)
 		    })
   },
-
-  watch: {
-    AiConfig: {
-      immediate: true,
-      deep: true,
-      handler(newVal) {
-
-        if (!newVal.BuildCard.BuildThreeNoTailRatio) {
-          newVal.BuildCard.BuildThreeNoTailRatio = this.BuildThreeNoTailRatio 
-          newVal.BuildCard.BuildThreeNoTailMaxNum = this.BuildThreeNoTailMaxNum 
-         
-        }
-      }
-    }
-  },
-
   methods: {
     dataRule(required, config) {
 		      return DataRule(required, config)
