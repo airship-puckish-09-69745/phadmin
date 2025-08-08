@@ -405,14 +405,17 @@
     <el-dialog title="机器人数据图表" :visible.sync="chartDialog.visible" width="80%" @close="closeChartDialog">
       <el-form :model="chartDialog.form" label-width="100px" style="margin-bottom: 20px;">
         <el-form-item label="场次:">
-          <el-select v-model="chartDialog.form.tableMoney" placeholder="请选择场次" style="width: 100%;">
-            <el-option
+          <el-row>
+            <el-button
               v-for="item in tableMoneyOptions"
               :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
+              size="mini"
+              :type="chartDialog.form.tableMoney === item.value ? 'primary' : 'default'"
+              @click="selectTableMoney(item.value)"      style="margin-right: 10px; margin-bottom: 10px;"
+            >
+              {{ item.label }}
+            </el-button>
+          </el-row>
         </el-form-item>
         <el-form-item label="时间范围:">
           <el-date-picker
@@ -566,6 +569,10 @@ export default {
           }
         })
       })
+    },
+    selectTableMoney(tableMoney) {
+      this.chartDialog.form.tableMoney = tableMoney;
+      this.getRobotList(); // 直接触发查询
     },
     showChartDialog() {
       this.chartDialog.visible = true

@@ -2104,6 +2104,12 @@ export const asyncRoutes = [
         meta: { title: '金币流水 ◐' }
       },
       {
+        path: 'payWithdrawLog',
+        component: () => import('@/views/playerManage/payWithdrawLog'),
+        name: 'payWithdrawLog',
+        meta: { title: '充值提现流水 ◐', noCache: true, perm: 'PAY_WITHDRAW_LOG' }
+      },
+      {
         path: 'jackpotLog',
         component: () => import('@/views/playerManage/jackpotLog'),
         name: 'ban',
@@ -2189,14 +2195,6 @@ export const asyncRoutes = [
         hidden: !IsMars(),
         name: 'matchWatcherList',
         meta: { title: '主播名单', noCache: true, hidden: true }
-
-      },
-      {
-        path: 'obMatchRecordConfig',
-        component: () => import('@/views/matchManage/obMatchRecord.vue'),
-        hidden: !IsMars(),
-        name: 'obMatchRecordConfig',
-        meta: { title: '赛事记录', noCache: true, hidden: true }
 
       },
       {
@@ -2302,7 +2300,29 @@ export const asyncRoutes = [
 
           }
         ]
-      }
+      },
+      {
+        path: 'obMatchConfig',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: 'OB比赛管理', noCache: true },
+        children: [
+          {
+            path: 'modifyUserInfo',
+            component: () => import('@/views/matchManage/obMatchManage/modifyUserInfo.vue'),
+            hidden: !IsMars(),
+            name: 'modifyUserInfo',
+            meta: { title: '批量修改昵称头像', noCache: true }
+          },
+          {
+            path: 'obMatchRecordConfig',
+            component: () => import('@/views/matchManage/obMatchManage/obMatchRecord.vue'),
+            hidden: !IsMars(),
+            name: 'obMatchRecordConfig',
+            meta: { title: '赛事记录', noCache: true, hidden: true }
+          }
+        ]
+      },
     ]
   },
   {

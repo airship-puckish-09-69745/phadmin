@@ -16,12 +16,21 @@ import { $libType } from '@/utils/common'
 export default {
   name: 'UidInput',
   props: {
+    uidInput: {
+      type: Number,
+      default: 0
+    }
   },
   data() {
     return {
       Uids: [],
       myUid: '',
       Uid: 0
+    }
+  },
+  watch: {
+    uidInput: function (val) {
+      this.saveUid(val)
     }
   },
   mounted() {
