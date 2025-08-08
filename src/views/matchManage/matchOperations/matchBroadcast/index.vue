@@ -30,12 +30,13 @@
       >添加播报</el-button>
     </div>
 
-    <div style="margin-top: 12px;">
+    <div style="margin-top: 12px; min-width:600px">
       <el-table
         :data="FilterableBroadcastList"
         border
         :cell-style="libShow.DefaultTableCell"
         style="width: 100%;overflow-y: auto;"
+        height="700"
       >
         <el-table-column v-for="(item, index) in columns" :key="index" :prop="item.prop" :label="item.label" :width="item.width" :formatter="item.formatter" />
         <el-table-column
@@ -82,6 +83,8 @@
       :position-options="positionOptions"
       :match-unique-id-cfgs="matchUniqueIdCfgs"
       :match-first-rank-cfgs="broadcastDialog.matchFirstRankCfgs"
+      :jp-first-rank-cfgs ="broadcastDialog.jpFirstRankCfgs"
+      :app-id-options="APPID_OPTIONS"
       @close="handleCloseBroadcastDialog"
       @reload="onSearch"
       @save="handleUpdateConfig"
@@ -122,7 +125,8 @@ export default {
       broadcastDialog: {
         visible: false,
         updateData: null,
-        matchFirstRankCfgs: []
+        matchFirstRankCfgs: [],
+        jpFirstRankCfgs: []
       },
       columns: [
         {
@@ -179,8 +183,8 @@ export default {
           width: 170,
           formatter: (row) => {
             const dateRange = []
-            dateRange.push(this.parseTime(row.BroadcastTimeRange[0] * 1000, '{y}/{m}/{d}'))
-            dateRange.push(this.parseTime(row.BroadcastTimeRange[1] * 1000, '{y}/{m}/{d}'))
+            dateRange.push(this.parseTime(row.BroadcastTimeRange[0] * 1000, '{y}/{m}/{d} {h}:{i}'))
+            dateRange.push(this.parseTime(row.BroadcastTimeRange[1] * 1000, '{y}/{m}/{d} {h}:{i}'))
             return dateRange.join('-')
           }
         },
@@ -254,6 +258,7 @@ export default {
       this.broadcastDialog.visible = false
       this.broadcastDialog.updateData = null
       this.broadcastDialog.matchFirstRankCfgs = []
+      this.broadcastDialog.jpFirstRankCfgs = []
     },
     /**
      * 展示新增/编辑对话框
@@ -269,6 +274,13 @@ export default {
         matchFirstRankCfgs = this.tableData.filter(item => item.BroadcastType === 1)
       }
       this.broadcastDialog.matchFirstRankCfgs = matchFirstRankCfgs
+      let jpFirstRankCfgs = []
+      if (data) {
+        jpFirstRankCfgs = this.tableData.filter(item => item.ID !== data.ID && item.BroadcastType === 2)
+      } else {
+        jpFirstRankCfgs = this.tableData.filter(item => item.BroadcastType === 2)
+      }
+      this.broadcastDialog.jpFirstRankCfgs = jpFirstRankCfgs
       this.broadcastDialog.visible = true
     },
     /**
@@ -320,6 +332,7 @@ export default {
       const params = {
         ...this.configData
       }
+      params.Data.UpdateTimes = (this.configData.Data.UpdateTimes || 0) + 1
       params.Data = JSON.stringify(this.configData.Data)
       request({
         url: 'customizeconfig/update',
@@ -372,5 +385,23 @@ export default {
       width: 200px;
     }
   }
+}
+/* 强制保留水平滚动条位置（无滚动条时显示空白区域） */
+.el-table__body-wrapper {
+  overflow-x: scroll !important;
+  scrollbar-width: thin; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+/* Chrome/Safari 隐藏滚动条但保留功能 */
+.el-table__body-wrapper::-webkit-scrollbar {
+  height: 6px !important; /* 滚动条高度（不可为0） */
+  background: transparent !important;
+}
+
+/* 滚动条滑块（可选） */
+.el-table__body-wrapper::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
 }
 </style>

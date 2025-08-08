@@ -165,16 +165,42 @@ export default {
       return keys
     },
     compareArray(oldObj, newObj, prefix) {
-      const lens = oldObj.length > newObj.length ? oldObj.length : newObj.length
+      let oldLen = 0
+      let newLen = 0
+
+      try {
+        oldLen = oldObj.length
+      } catch (e) {
+        console.log('old object error', e)
+      }
+
+      try {
+        newLen = newObj.length
+      } catch (e) {
+        console.log('new object error', e)
+      }
+
+      const lens = oldLen > newLen ? oldLen : newLen
+
 
       for (let i = 0; i < lens; i++) {
         const key = i
         let oldVal, newVal
-        if (oldObj[key]) {
-          oldVal = oldObj[key]
+
+        try {
+          if (oldObj[key]) {
+            oldVal = oldObj[key]
+          }
+        } catch (e) {
+
         }
-        if (newObj[key]) {
-          newVal = newObj[key]
+
+        try {
+          if (newObj[key]) {
+            newVal = newObj[key]
+          }
+        } catch (e) {
+
         }
 
         // 如果值相等，不需要对比，直接跳过
@@ -192,11 +218,21 @@ export default {
       for (const k in keys) {
         const key = keys[k]
         let oldVal, newVal
-        if (oldObj[key] !== undefined) {
-          oldVal = oldObj[key]
+
+        try {
+          if (oldObj[key] !== undefined) {
+            oldVal = oldObj[key]
+          }
+        } catch (e) {
+          console.log('old object error', e)
         }
-        if (newObj[key] !== undefined) {
-          newVal = newObj[key]
+
+        try {
+          if (newObj[key] !== undefined) {
+            newVal = newObj[key]
+          }
+        } catch (e) {
+          console.log('new object error', e)
         }
 
         // 如果值相等，不需要对比，直接跳过
