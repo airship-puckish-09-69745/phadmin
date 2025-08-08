@@ -82,7 +82,11 @@
             <template v-if="item.WalletType==1">
               <el-button size="mini" @click="refreshWalletMoney">刷新资产</el-button>
             </template>
+            <el-button size="mini" @click="showPayWithdrawLog">充提明细</el-button>
           </el-descriptions-item>
+          <el-descriptions-item label="总充值：">{{ formatNumber(PayWithdrawSummary.PayAmount / 1000) }}</el-descriptions-item>
+          <el-descriptions-item label="总提现：">{{ formatNumber(PayWithdrawSummary.WithdrawAmount / 1000) }}</el-descriptions-item>
+          <el-descriptions-item label="首充时间："><DateTimeShow v-if="PayWithdrawSummary.FirstPayTime>0" :show-type="2" :timestamp="PayWithdrawSummary.FirstPayTime/1000" /></el-descriptions-item>
           <el-descriptions-item label="钱包类型：" :span="3">{{ item.WalletType==1?'单一钱包':'转账钱包' }}</el-descriptions-item>
           <el-descriptions-item label="平台注册时间：" :span="4"><DateTimeShow v-if="item.PlatRegisterTime>0" :show-type="2" :timestamp="item.PlatRegisterTime/1000" /></el-descriptions-item>
           <el-descriptions-item label="UID注册时间："><DateTimeShow :show-type="2" :timestamp="item.RegisterTime" /></el-descriptions-item>
@@ -401,6 +405,7 @@ import { Message } from 'element-ui'
 import { toRupee, numberFormat } from '@/utils'
 import DateTimeShow from '@/components/DatetimeShow'
 import {ITEM_TYPE_OPTIONS, ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS} from '@/utils/options'
+import payWithdrawLog from "@/views/playerManage/payWithdrawLog.vue";
 
 function NewRelationSummary() {
   return {
@@ -578,6 +583,11 @@ export default {
       ITEM_TYPE_OPTIONS,
       ITEM_DAY_TYPE_OPTIONS,
       PROP_TYPE_OPTIONS,
+      PayWithdrawSummary: {
+        PayAmount: 0,
+        WithdrawAmount: 0,
+        FirstPayTime: 0,
+      }
     }
   },
   computed: {
@@ -1432,6 +1442,7 @@ export default {
           $this.item = $this.libShowMoney.TransForShow(response.Data || $this.item)
           $this.$EventBus.$emit('uid-change', $this.item.Uid)
           $this.getCredit()
+          $this.getPayWithdrawSummary()
         }
       })
     },
@@ -1505,6 +1516,32 @@ export default {
           $this.$refs.uidInput.saveUid($this.item.Uid)
           $this.getTags()
           $this.getCredit()
+          $this.getPayWithdrawSummary()
+        }
+      })
+    },
+    getPayWithdrawSummary() {
+      if (this.item.Uid === 0) {
+        Message.error('请输入正确的Uid')
+        return
+      }
+      const $this = this
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Env: this.env,
+          Path: '/user/pay/withdraw/summary',
+          Uid: this.item.Uid
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          $this.PayWithdrawSummary.PayAmount = response.Data.PayAmount
+          $this.PayWithdrawSummary.WithdrawAmount = response.Data.WithdrawAmount
+          $this.PayWithdrawSummary.FirstPayTime = response.Data.FirstPayTime
+          console.log("PayWithdrawSummary.PayAmount:", $this.PayWithdrawSummary.PayAmount)
+          console.log("PayWithdrawSummary.WithdrawAmount:", $this.PayWithdrawSummary.WithdrawAmount)
+          console.log("PayWithdrawSummary.FirstPayTime:", $this.PayWithdrawSummary.FirstPayTime)
         }
       })
     },
@@ -1623,6 +1660,15 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           $this.item.WalletMoney = response.Data.Money
+        }
+      })
+    },
+    showPayWithdrawLog() {
+      const uid = this.item.Uid
+      this.$router.push({
+        path: '/player/payWithdrawLog',
+        query: {
+          Uid: uid
         }
       })
     },

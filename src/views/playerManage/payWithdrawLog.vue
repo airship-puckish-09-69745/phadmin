@@ -3,7 +3,7 @@
     <el-row>
       <el-form :model="form" label-width="80px" :inline="true" size="small">
         <el-form-item label="UID：" :required="true">
-          <UidInput @setUid="function (iUid) { form.Uid = iUid }" />
+          <UidInput :uidInput="form.Uid" @setUid="function (iUid) { form.Uid = iUid }" />
         </el-form-item>
         <el-form-item label="账号：">
           <el-input v-model="form.Account" placeholder="请输入账号" />
@@ -20,6 +20,20 @@
       </el-form>
 
       <el-row>
+        <el-descriptions
+          size="medium"
+          border
+          :column="10"
+          :label-style="{'text-align': 'left', 'font-weight':'bold', 'width': '150px'}"
+        >
+          <el-descriptions-item label="总充值">{{ PayWithdrawSummary.PayAmount }}</el-descriptions-item>
+          <el-descriptions-item label="总提现">{{ PayWithdrawSummary.WithdrawAmount }}</el-descriptions-item>
+          <el-descriptions-item label="首次充值时间">
+            <DateTimeShow v-if="PayWithdrawSummary.FirstPayTime>0" :show-type="2" :timestamp="PayWithdrawSummary.FirstPayTime/1000" />
+          </el-descriptions-item>
+        </el-descriptions>
+      </el-row>
+      <el-row>
         <el-tabs v-model="activeTab" type="border-card" @tab-click="handleTabClick">
           <el-tab-pane label="充值流水" name="payLog">
             <el-table
@@ -30,8 +44,22 @@
               <el-table-column prop="Account" label="账号" width="150" />
               <el-table-column prop="Site" label="站点" />
               <el-table-column prop="Money" label="充值金额" />
-              <el-table-column prop="OrderStatus" label="状态" />
-              <el-table-column prop="CreateTime" label="充值时间" />
+              <el-table-column prop="OrderStatus" label="状态">
+                <template slot-scope="scope">
+                  {{ PayStatuses[scope.row.OrderStatus+''] }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="CreateTime" label="创建时间">
+                <template slot-scope="scope">
+                  <DateTimeShow v-if="scope.row.CreateTime>0" :show-type="2" :timestamp="scope.row.CreateTime" />
+                </template>
+              </el-table-column>
+              <el-table-column prop="FinishTime" label="完成时间">
+                <template slot-scope="scope">
+                  <DateTimeShow v-if="scope.row.FinishTime>0" :show-type="2" :timestamp="scope.row.FinishTime" />
+                  <span v-else>未完成</span>
+                </template>
+              </el-table-column>
             </el-table>
             <el-row type="flex" justify="end">
               <el-col :span="12">
@@ -57,8 +85,22 @@
               <el-table-column prop="Account" label="账号" width="150" />
               <el-table-column prop="Site" label="站点" />
               <el-table-column prop="Money" label="提现金额" />
-              <el-table-column prop="Status" label="状态" />
-              <el-table-column prop="CreateTime" label="提现时间" />
+              <el-table-column prop="Status" label="状态">
+                <template slot-scope="scope">
+                  {{ WithdrawStatuses[scope.row.Status+''] }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="CreateTime" label="创建时间">
+                <template slot-scope="scope">
+                  <DateTimeShow v-if="scope.row.CreateTime>0" :show-type="2" :timestamp="scope.row.CreateTime" />
+                </template>
+              </el-table-column>
+              <el-table-column prop="FinishTime" label="完成时间">
+                <template slot-scope="scope">
+                  <DateTimeShow v-if="scope.row.FinishTime>0" :show-type="2" :timestamp="scope.row.FinishTime" />
+                  <span v-else>未完成</span>
+                </template>
+              </el-table-column>
             </el-table>
             <el-row type="flex" justify="end">
               <el-col :span="12">
@@ -86,11 +128,13 @@ import UidInput from "@/components/UidInput/index.vue";
 import { $libDate, $libShow, ClientTableData, MoneyShow } from '@/utils/common'
 import {Message} from "element-ui";
 import request from "@/utils/request";
+import DateTimeShow from "@/components/DatetimeShow/index.vue";
 
 const filterMap = {}
 
 export default {
-  components: {UidInput},
+  name: 'payWithdrawLog',
+  components: {DateTimeShow, UidInput},
   data() {
     return {
       title: '支付提现流水',
@@ -111,10 +155,60 @@ export default {
 
       payLogTableData: [],
       withdrawLogTableData: [],
+
+      PayWithdrawSummary: {
+        PayAmount: 0,
+        WithdrawAmount: 0,
+        FirstPayTime: 0,
+      },
+      PayStatuses: {
+        1: '成功'
+      },
+      // 0=挂起，1=处理中，2=批准，-1=客户取消，-2=CSO 取消，-3=拒绝
+      WithdrawStatuses: {
+        '0': '挂起',
+        '1': '处理中',
+        '2': '批准',
+        '-1': '客户取消',
+        '-2': 'CSO 取消',
+        '-3': '拒绝',
+      }
     }
   },
   created() {
 
+  },
+  watch: {
+    '$route.query.Uid': {
+      handler(newUid, oldUid) {
+        console.log('query change newUid', newUid, ' oldUid', oldUid)
+        if (newUid) {
+          this.form.Uid = parseInt(newUid)
+          this.getPayLogList()
+          this.getWithdrawLogList()
+          console.log('has new Uid:', this.form.Uid)
+        }
+      },
+      deep: true,
+    },
+    'form.Uid': {
+      handler(newUid, oldUid) {
+        if (newUid) {
+          this.getPayWithdrawSummary()
+        }
+      },
+      deep: true,
+    }
+  },
+  mounted() {
+    if (this.$route.query.Uid) {
+      this.form.Uid = parseInt(this.$route.query.Uid)
+    }
+    if (this.form.Uid > 0) {
+      this.getPayLogList()
+      this.getWithdrawLogList()
+      this.getPayWithdrawSummary()
+    }
   },
   methods: {
     // 分页处理
@@ -226,7 +320,32 @@ export default {
         }
         loading.close()
       })
-    }
+    },
+    getPayWithdrawSummary() {
+      if (this.form.Uid === 0) {
+        Message.error('请输入正确的Uid')
+        return
+      }
+      const $this = this
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Env: this.env,
+          Path: '/user/pay/withdraw/summary',
+          Uid: this.form.Uid
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          $this.PayWithdrawSummary.PayAmount = response.Data.PayAmount
+          $this.PayWithdrawSummary.WithdrawAmount = response.Data.WithdrawAmount
+          $this.PayWithdrawSummary.FirstPayTime = response.Data.FirstPayTime
+          console.log("PayWithdrawSummary.PayAmount:", $this.PayWithdrawSummary.PayAmount)
+          console.log("PayWithdrawSummary.WithdrawAmount:", $this.PayWithdrawSummary.WithdrawAmount)
+          console.log("PayWithdrawSummary.FirstPayTime:", $this.PayWithdrawSummary.FirstPayTime)
+        }
+      })
+    },
   }
 }
 </script>
