@@ -82,11 +82,11 @@
             <template v-if="item.WalletType==1">
               <el-button size="mini" @click="refreshWalletMoney">刷新资产</el-button>
             </template>
-            <el-button size="mini" @click="showPayWithdrawLog">充提明细</el-button>
+            <el-button size="mini" @click="showPayWithdrawLog" v-if="hasPayWithdrawLogPerm">充提明细</el-button>
           </el-descriptions-item>
-          <el-descriptions-item label="总充值：">{{ formatNumber(PayWithdrawSummary.PayAmount / 1000) }}</el-descriptions-item>
-          <el-descriptions-item label="总提现：">{{ formatNumber(PayWithdrawSummary.WithdrawAmount / 1000) }}</el-descriptions-item>
-          <el-descriptions-item label="首充时间："><DateTimeShow v-if="PayWithdrawSummary.FirstPayTime>0" :show-type="2" :timestamp="PayWithdrawSummary.FirstPayTime/1000" /></el-descriptions-item>
+          <el-descriptions-item label="总充值：" v-if="hasPayWithdrawLogPerm">{{ formatNumber(PayWithdrawSummary.PayAmount / 1000) }}</el-descriptions-item>
+          <el-descriptions-item label="总提现：" v-if="hasPayWithdrawLogPerm">{{ formatNumber(PayWithdrawSummary.WithdrawAmount / 1000) }}</el-descriptions-item>
+          <el-descriptions-item label="首充时间：" v-if="hasPayWithdrawLogPerm"><DateTimeShow v-if="PayWithdrawSummary.FirstPayTime>0" :show-type="2" :timestamp="PayWithdrawSummary.FirstPayTime/1000" /></el-descriptions-item>
           <el-descriptions-item label="钱包类型：" :span="3">{{ item.WalletType==1?'单一钱包':'转账钱包' }}</el-descriptions-item>
           <el-descriptions-item label="平台注册时间：" :span="4"><DateTimeShow v-if="item.PlatRegisterTime>0" :show-type="2" :timestamp="item.PlatRegisterTime/1000" /></el-descriptions-item>
           <el-descriptions-item label="UID注册时间："><DateTimeShow :show-type="2" :timestamp="item.RegisterTime" /></el-descriptions-item>
@@ -507,6 +507,7 @@ export default {
 
       hasEditPerm: false,
       hasCustomerPerm: false,
+      hasPayWithdrawLogPerm: false,
 
       UserTags: [],
       tagRecs: [],
@@ -643,6 +644,7 @@ export default {
     const pers = store.getters.pers
     this.hasEditPerm = (pers['USER_MANAGEMENT'] & 2) > 0
     this.hasCustomerPerm = (pers['CUTOMER'] & 2) > 0
+    this.hasPayWithdrawLogPerm = (pers['PAY_WITHDRAW_LOG'] & 1) > 0
     this.getAppInfo()
   },
   mounted() {

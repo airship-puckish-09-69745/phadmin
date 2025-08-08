@@ -26,16 +26,21 @@
           :column="10"
           :label-style="{'text-align': 'left', 'font-weight':'bold', 'width': '150px'}"
         >
-          <el-descriptions-item label="总充值">{{ PayWithdrawSummary.PayAmount }}</el-descriptions-item>
-          <el-descriptions-item label="总提现">{{ PayWithdrawSummary.WithdrawAmount }}</el-descriptions-item>
+          <el-descriptions-item label="累计充值金额">{{ PayWithdrawSummary.PayAmount/1000 }}</el-descriptions-item>
+          <el-descriptions-item label="累计提现金额">{{ PayWithdrawSummary.WithdrawAmount/1000 }}</el-descriptions-item>
           <el-descriptions-item label="首次充值时间">
-            <DateTimeShow v-if="PayWithdrawSummary.FirstPayTime>0" :show-type="2" :timestamp="PayWithdrawSummary.FirstPayTime/1000" />
+            <DateTimeShow v-if="PayWithdrawSummary.FirstPayTime>0" :show-type="2" :timestamp="PayWithdrawSummary.FirstPayTime" />
           </el-descriptions-item>
+          <el-descriptions-item label="今日充值金额">{{ PayWithdrawSummary.TodayPayAmount/1000 }}</el-descriptions-item>
+          <el-descriptions-item label="今日提现金额">{{ PayWithdrawSummary.TodayWithdrawAmount/1000 }}</el-descriptions-item>
         </el-descriptions>
       </el-row>
       <el-row>
         <el-tabs v-model="activeTab" type="border-card" @tab-click="handleTabClick">
           <el-tab-pane label="充值流水" name="payLog">
+            <el-row>
+              <span style="font-size: 14px">汇总充值金额：{{ PayWithdrawSummary.LogsPayAmount/1000 }}</span>
+            </el-row>
             <el-table
               :data="payLogTableData" stripe border :header-cell-style="libShow.DefaultTableHeadClass"
               :row-style="{ height: '10px' }" :cell-style="libShow.DefaultTableCell" style="padding:10px;width: 100%">
@@ -77,6 +82,9 @@
             </el-row>
           </el-tab-pane>
           <el-tab-pane label="提现流水" name="withdrawLog">
+            <el-row>
+              <span style="font-size: 14px">汇总提现金额：{{ PayWithdrawSummary.LogsWithdrawAmount/1000 }}</span>
+            </el-row>
             <el-table
               :data="withdrawLogTableData" stripe border :header-cell-style="libShow.DefaultTableHeadClass"
               :row-style="{ height: '10px' }" :cell-style="libShow.DefaultTableCell" style="padding:10px;width: 100%">
@@ -160,6 +168,10 @@ export default {
         PayAmount: 0,
         WithdrawAmount: 0,
         FirstPayTime: 0,
+        TodayPayAmount: 0,
+        TodayWithdrawAmount: 0,
+        LogsPayAmount: 0,
+        LogsWithdrawAmount: 0,
       },
       PayStatuses: {
         1: '成功'
@@ -284,7 +296,9 @@ export default {
       }).then(response => {
         const $this = this
         if (response.RetCode === 0) {
-          let objs = response.Data || []
+          $this.PayWithdrawSummary.TodayPayAmount = response.Data ? response.Data.TodayMoneySum : 0
+          $this.PayWithdrawSummary.LogsPayAmount = response.Data ? response.Data.LogsMoneySum : 0
+          let objs = response.Data.Logs ? response.Data.Logs || [] : []
           objs = $this.libMoney.TransForShow(objs)
           $this.payLogDB = new ClientTableData(objs, 10, filterMap, 'CreateTime', -1)
           $this.handleCurrentChange(1)
@@ -313,7 +327,9 @@ export default {
       }).then(response => {
         const $this = this
         if (response.RetCode === 0) {
-          let objs = response.Data || []
+          $this.PayWithdrawSummary.TodayWithdrawAmount = response.Data ? response.Data.TodayMoneySum : 0
+          $this.PayWithdrawSummary.LogsWithdrawAmount = response.Data ? response.Data.LogsMoneySum : 0
+          let objs = response.Data ? response.Data.Logs || [] : []
           objs = $this.libMoney.TransForShow(objs)
           $this.withdrawLogDB = new ClientTableData(objs, 10, filterMap, 'CreateTime', -1)
           $this.handleCurrentChange(1)
