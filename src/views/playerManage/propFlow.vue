@@ -63,7 +63,7 @@
         <el-table-column prop="propName" label="道具名称" width="180" />
         <el-table-column prop="propNum" label="数量" width="80">
           <template slot-scope="scope">
-            {{ scope.row.propNum === -1 && !scope.row.propName.includes('门票') && !scope.row.propName.includes('Ticket') && !scope.row.propName.includes('TICKET')? '永久' : scope.row.propNum }}
+            {{ scope.row.propNum === -1 && scope.row.propName.includes('头像框')? '永久' : scope.row.propNum }}
           </template>
         </el-table-column>
         <el-table-column prop="preNum" label="变化前" width="80" />
@@ -76,42 +76,15 @@
       </el-table>
     </el-row>
 
-    <!-- 添加详情弹窗 -->
     <el-dialog title="详细信息" :visible.sync="detailDialogVisible" width="600px">
-      <el-form label-position="left" inline class="demo-table-expand">
-<!--        <el-form-item label="应用">-->
-<!--          <span>{{ getAppName(currentRow.appId) }}</span>-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="站点ID">-->
-<!--          <span>{{ currentRow.siteId }}</span>-->
-<!--        </el-form-item>-->
-        <el-form-item label="道具价值">
-          <span>{{ currentRow.propCost }}</span>
-        </el-form-item>
-        <el-form-item label="变化类型">
-          <span>{{ getOptionTypeText(currentRow.channelType) }}</span>
-        </el-form-item>
-        <el-form-item label="玩法ID">
-          <span>{{ currentRow.gid }}</span>
-        </el-form-item>
-        <el-form-item label="比赛列表ID">
-          <span>{{ currentRow.ListId }}</span>
-        </el-form-item>
-        <el-form-item label="比赛名称">
-          <span>{{ currentRow.matchName }}</span>
-        </el-form-item>
-        <el-form-item label="后台操作者">
-          <span>{{ currentRow.handlers }}</span>
-        </el-form-item>
-        <el-form-item label="备注">
-          <span>{{ currentRow.remarks }}</span>
-        </el-form-item>
-      </el-form>
+      <el-table :data="detailTableData" style="width: 100%" size="small">
+        <el-table-column prop="label" label="栏位" width="120"></el-table-column>
+        <el-table-column prop="value" label="内容"></el-table-column>
+      </el-table>
       <span slot="footer" class="dialog-footer">
         <el-button @click="detailDialogVisible = false">关闭</el-button>
       </span>
     </el-dialog>
-
 
     <el-row type="flex" justify="center">
       <div class="block">
@@ -160,6 +133,7 @@ export default {
       tableData: [],
       detailDialogVisible: false, // 添加详情弹窗可见性控制
       currentRow: {}, // 添加当前行数据存储
+      detailTableData: [],
       pagination: {
         limit: 20,
         total: 0,
@@ -213,8 +187,20 @@ export default {
       }
     },
     showDetail(row) {
-      this.currentRow = row
-      this.detailDialogVisible = true
+      this.currentRow = row;
+      // 构造详情表格数据
+      this.detailTableData = [
+        // { label: '应用', value: this.getAppName(row.appId) },
+        // { label: '站点ID', value: row.siteId },
+        { label: '道具价值', value: row.propCost },
+        { label: '变化类型', value: this.getOptionTypeText(row.channelType) },
+        { label: '玩法ID', value: row.gid },
+        { label: '比赛列表ID', value: row.ListId },
+        { label: '比赛名称', value: row.matchName },
+        { label: '后台操作者', value: row.handlers },
+        { label: '备注', value: row.remarks }
+      ];
+      this.detailDialogVisible = true;
     },
     /**
      * 格式化请求参数
