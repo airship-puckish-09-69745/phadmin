@@ -256,9 +256,10 @@ import { $libDate, $libShow } from '@/utils/common'
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
 import Compare from '@/components/Compare'
 import { getAllCommonGameConfig } from '@/utils/common-game-config'
+import SiteSelect from '@/components/SiteSelect/index.vue'
 
 export default {
-  components: { Compare, Publish, DateTimeShow, ImagePicker },
+  components: { Compare, Publish, DateTimeShow, ImagePicker, SiteSelect },
   data() {
     return {
       activeTab: 'base',
@@ -329,7 +330,6 @@ export default {
         { 'value': 'BP', 'label': 'BP' },
         { 'value': 'AP', 'label': 'AP' },
         { 'value': 'GP', 'label': 'GP' },
-        { 'value': 'TP', 'label': 'TP' },
         { 'value': 'PG', 'label': 'PG' },
         { 'value': 'Dev', 'label': 'Dev' }
       ],

@@ -1,34 +1,17 @@
 <template>
   <div class="app-container">
 
-    <publish
-      primary-key="Volume"
-      :key-id="getFullKey(this.subKey)"
-      :env-empty="false"
-      compare-type="Object"
-      :attr-names="AttrNames"
-    />
+    <publish primary-key="Volume" :key-id="getFullKey(this.subKey)" :env-empty="false" compare-type="Object"
+      :attr-names="AttrNames" />
     <el-row :gutter="10" style="margin-top: 30px">
       <el-col :span="15">
         <el-form inline>
           <el-form-item label="app_id">
             <el-select v-model="appId">
-              <el-option
-                v-for="item in appInfo"
-                :key="item.key"
-                :label="item.label+'-'+item.key"
-                :value="item.key"
-              />
+              <el-option v-for="item in appInfo" :key="item.key" :label="item.label + '-' + item.key" :value="item.key" />
             </el-select>
             <el-form-item label="站点渠道">
-              <el-select v-model="channel">
-                <el-option
-                  v-for="item in channelOptions"
-                  :key="item.key"
-                  :label="item.label"
-                  :value="item.key"
-                />
-              </el-select>
+              <SiteSelect v-model="channel" />
             </el-form-item>
             <el-form-item l>
               <el-button type="primary" size="mini" @click="refresh">查询</el-button>
@@ -47,55 +30,33 @@
       </el-col>
       <el-col :span="24">
         <el-form ref="allCfg" v-model="showData" label-width="150px">
-          <el-table
-            :data="showData"
-            style="width: 95%"
-            border
-          >
+          <el-table :data="showData" style="width: 95%" border>
 
-            <el-table-column
-              prop="app_id"
-              label="app_id"
-            />
+            <el-table-column prop="app_id" label="app_id" />
 
-            <el-table-column
-              prop="game_id"
-              label="游戏"
-            >
+            <el-table-column prop="game_id" label="游戏">
               <template slot-scope="scope">
                 <span v-for="(item, index) in gameOptions" :key="index">
-                  {{ (scope.row.game_id == item.key ? item.label : "" ) }}
+                  {{ (scope.row.game_id == item.key ? item.label : "") }}
                 </span>
               </template>
             </el-table-column>
 
-            <el-table-column
-              prop="channel"
-              label="站点渠道"
-            />
+            <el-table-column prop="channel" label="站点渠道" />
 
-            <el-table-column
-              prop="is_display"
-              label="是否需要返回"
-            >
+            <el-table-column prop="is_display" label="是否需要返回">
               <template slot-scope="scope">
-                <el-switch
-                  v-model="scope.row.is_display"
-                  active-color="#13ce66"
-                  inactive-color="#ff4949"
-                  :active-value="1"
-                  :inactive-value="0"
-                  @change="editIsReturn(scope.$index,scope.row)"
-                />
+                <el-switch v-model="scope.row.is_display" active-color="#13ce66" inactive-color="#ff4949"
+                  :active-value="1" :inactive-value="0" @change="editIsReturn(scope.$index, scope.row)" />
                 <el-form-item v-model="scope.row.is_display" label-width="0" />
               </template>
             </el-table-column>
 
-<!--            <el-table-column label="操作">-->
-<!--              <template slot-scope="scope">-->
-<!--                <el-button type="success" size="mini" @click="editRow(scope.$index, scope.row)">修改</el-button>-->
-<!--              </template>-->
-<!--            </el-table-column>-->
+            <!--            <el-table-column label="操作">-->
+            <!--              <template slot-scope="scope">-->
+            <!--                <el-button type="success" size="mini" @click="editRow(scope.$index, scope.row)">修改</el-button>-->
+            <!--              </template>-->
+            <!--            </el-table-column>-->
           </el-table>
           <br>
           <br>
@@ -110,56 +71,30 @@
     <!--对比组件-->
     <compare ref="compare" />
 
-    <el-dialog
-      title="选择游戏"
-      :visible.sync="selectGameVisible"
-      width="650px"
-    >
+    <el-dialog title="选择游戏" :visible.sync="selectGameVisible" width="650px">
       <el-form label-width="150px">
         <el-form-item label="游戏">
           <el-select v-model="item.game_id" filterable placeholder="请选择" size="mini">
-            <el-option
-              v-for="item in gameOptions"
-              :key="item.key"
-              :label="item.label"
-              :value="item.key"
-            />
+            <el-option v-for="item in gameOptions" :key="item.key" :label="item.label" :value="item.key" />
           </el-select>
 
         </el-form-item>
         <el-form-item label="app_id">
           <el-select v-model="item.app_id" placeholder="请选择" size="mini">
-            <el-option
-              v-for="item in appInfo"
-              :key="item.key"
-              :label="item.label+'-'+item.key"
-              :value="item.key"
-            />
+            <el-option v-for="item in appInfo" :key="item.key" :label="item.label + '-' + item.key" :value="item.key" />
           </el-select>
         </el-form-item>
         <el-form-item label="渠道">
-          <el-select v-model="item.channel" placeholder="请选择" size="mini">
-            <el-option
-              v-for="item in channelOptions"
-              :key="item.key"
-              :label="item.label"
-              :value="item.key"
-            />
-          </el-select>
+          <SiteSelect v-model="item.channel" />
         </el-form-item>
         <el-form-item label="是否需要返回">
           <el-select v-model="item.is_display" placeholder="请选择" size="mini">
-            <el-option
-              v-for="item in isReturnOptions"
-              :key="item.key"
-              :label="item.label"
-              :value="item.key"
-            />
+            <el-option v-for="item in isReturnOptions" :key="item.key" :label="item.label" :value="item.key" />
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button v-if="showBtn==0" type="primary" @click="addGameItem">确定</el-button>
-          <el-button v-if="showBtn==1" type="primary" @click="saveEdit">确认修改</el-button>
+          <el-button v-if="showBtn == 0" type="primary" @click="addGameItem">确定</el-button>
+          <el-button v-if="showBtn == 1" type="primary" @click="saveEdit">确认修改</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -174,10 +109,11 @@ import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import MoneyInput from '@/components/MoneyInput'
 import { copyObj } from 'codemirror/src/util/misc'
+import SiteSelect from '@/components/SiteSelect'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: { Compare, Publish, MoneyInput },
+  components: { Compare, Publish, MoneyInput, SiteSelect },
   data() {
     return {
       form: {},
@@ -193,14 +129,6 @@ export default {
       channel: 'Dev',
       appId: 1000002,
 
-      channelOptions: [
-        // {key: "0", label: '请选择'},
-        { key: 'Dev', label: 'Dev' },
-        { key: 'BP', label: 'BP' },
-        { key: 'AP', label: 'AP' },
-        { key: 'GP', label: 'GP' },
-        { key: 'PG', label: 'PG' }
-      ],
       isReturnOptions: [
         { key: 0, label: '否' },
         { key: 1, label: '是' }
@@ -387,7 +315,7 @@ export default {
       // 设置修改后数据
       // this.$refs.compare.SetNewVal(this.form)
       this.$refs.compare.SetNewVal(this.postData)
-      this.$refs.compare.Compare(function(isEdit) {
+      this.$refs.compare.Compare(function (isEdit) {
         if (!isEdit) {
           Message.error('没有任何修改，不需要提交')
           return
