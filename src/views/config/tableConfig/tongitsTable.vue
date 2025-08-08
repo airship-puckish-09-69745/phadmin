@@ -415,7 +415,7 @@
 
           <el-col :span="11">
             <el-form-item
-              label="是否允许两低信用户同桌："
+              label="低信可信："
               :required="true"
               prop="item.HideCarry"
               :rules="dataRule(true,{type:'n',range:'0'})"
@@ -441,6 +441,20 @@
             >
               <el-switch
                 v-model="edit.item.IsTrustScoreEnterRoom"
+                :active-value="1"
+                :inactive-value="0"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item
+              label="低危可信："
+              :required="true"
+              prop="item.HideCarry"
+              :rules="dataRule(true,{type:'n',range:'0'})"
+            >
+              <el-switch
+                v-model="edit.item.IsLowRiskBelieve"
                 :active-value="1"
                 :inactive-value="0"
               />
@@ -647,7 +661,9 @@ function newItem() {
     AllocScheme:0,
     AutoEnterRoomCount:0,
     IsAllowTowLowTrustSit:0,
-    IsTrustScoreEnterRoom:0
+    IsTrustScoreEnterRoom:0,
+    IsLowRiskBelieve:0
+
   }
 }
 
@@ -711,7 +727,8 @@ export default {
         WaitAddRobotMaxTimes:'匹配机器人最高等待时间',
         WaitUserEnterTimes:'匹配玩家入桌等待时间',
         AutoEnterRoomCount:'自动满桌匹配人数要求',
-        IsAllowTowLowTrustSit:'是否允许两低信用户同桌',
+        IsAllowTowLowTrustSit:'低信可信',
+        IsLowRiskBelieve:'低危可信',
         IsTrustScoreEnterRoom:'是否信任分配桌',
         // 'RobotConfig.Common.RobotCarryMoneyStart': '机器人最小携带',
         // 'RobotConfig.Common.RobotCarryMoneyEnd': '机器人最大携带',
