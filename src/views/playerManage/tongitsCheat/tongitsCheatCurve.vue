@@ -63,6 +63,9 @@ export default {
     },
     // 查询在玩数据
     getInfo() {
+      if (this.env != 'test') {
+        return
+      }
       const $this = this
       const data = {
         Env: $this.env,
