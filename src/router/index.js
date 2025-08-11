@@ -1696,6 +1696,12 @@ export const asyncRoutes = [
                 meta: { title: 'GodOfFortune(审)' }
               },
               {
+                path: 'goldendragonmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/goldendragonmars_slots_cfg'),
+                name: 'ggoldendragonmars_slots_cfg',
+                meta: { title: 'GoldenDragon(审)' }
+              },
+              {
                 path: 'goldminermars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/goldminermars_slots_cfg'),
                 name: 'goldminermars_slots_cfg',
@@ -2899,6 +2905,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'goldtrain_slots_log',
             meta: { title: 'G oldTrain', gid: 194 }
+          },
+          {
+            path: 'goldendragon_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'goldendragon_slots_log',
+            meta: { title: 'G oldenDragon', gid: 220 }
           },
           {
             path: 'luckyspirits_slots_log',
