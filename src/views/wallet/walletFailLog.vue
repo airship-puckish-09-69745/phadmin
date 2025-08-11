@@ -383,6 +383,10 @@ export default {
         let sub  = JSON.parse(data.CommonFailParamsJsonString)
         console.log("json data",JSON.parse(data.CommonFailParamsJsonString));
         return sub.Amount / 1000
+      }else if (data.FailType == 16) {
+        let sub  = JSON.parse(data.CommonFailParamsJsonString)
+        console.log("json data",JSON.parse(data.CommonFailParamsJsonString));
+        return sub.PayoffAmount / 1000
       }else{
         if (data.hasOwnProperty("BetParams")) {
           return data.BetParamsFail.BetAmount / 1000
