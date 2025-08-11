@@ -930,6 +930,12 @@ export default {
         Message.warning('下限不能大于上限，请检查数值正确性！')
         return false
       }
+
+      if (this.edit.item.IsAllowTowLowTrustSit==0 && this.edit.item.IsLowRiskBelieve==1){
+        Message.warning('低信可信关闭后，低危可信不能开启')
+        return false
+      }
+
       if (this.edit.item.MinPlayMoney > this.edit.item.CarryLower) {
         Message.error('【最小玩牌金额】必须小于等于【最小携带】，请检查数值正确性！')
         return false
