@@ -3314,12 +3314,6 @@ export const asyncRoutes = [
             meta: { title: 'StreetFighting(审)', gid: 189 }
           },
           {
-            path: 'goldendragonmars_slots_log',
-            component: () => import('@/views/playerManage/slotsLog'),
-            name: 'goldendragonmars_slots_log',
-            meta: { title: 'GoldenDragon(审)', gid: 221 }
-          },
-          {
             path: 'goldtrainmars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'goldtrainmars_slots_log',
