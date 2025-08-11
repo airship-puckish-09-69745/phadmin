@@ -100,16 +100,19 @@
                 </el-form-item>
                 <el-form-item label="图标：">
                     <el-col :span="18">
-                        <el-input v-model="edit.item.icon" readonly>
-                            <el-button slot="append" icon="el-icon-more" @click="edit.showIconPicker = true">
-                            </el-button>
-                        </el-input>
-                        <el-popover v-model="edit.showIconPicker" placement="bottom" width="450" trigger="manual">
-                            <div class="iconList">
-                                <i v-for="item in iconList" :key="item" :class="item" @click="setIcon(item)"
-                                    style="font-size:20px"></i>
-                            </div>
+                        <el-popover placement="bottom-start" width="460" trigger="click"
+                            @show="$refs['iconSelect'].reset()">
+                            <IconSelect ref="iconSelect" @selected="selected" :active-icon="edit.item.icon" />
+                            <el-input slot="reference" v-model="edit.item.icon" placeholder="点击选择图标" readonly>
+                                <i v-if="edit.item.icon" slot="prefix" :class="edit.item.icon" style="width: 25px;" />
+                                <i v-else slot="prefix" class="el-icon-search el-input__icon" />
+                            </el-input>
                         </el-popover>
+                    </el-col>
+                </el-form-item>
+                <el-form-item label="路由参数(Json格式 eg:{gid: 1})：">
+                    <el-col :span="18">
+                        <el-input v-model="edit.item.metaExt" />
                     </el-col>
                 </el-form-item>
                 <el-form-item label="备注：">
@@ -138,61 +141,6 @@
 .table .text-c td {
     text-align: center;
 }
-
-.iconList {
-    width: 400px;
-    height: 300px;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-
-    i {
-        display: inline-block;
-        width: 60px;
-        height: 45px;
-        color: #000000;
-        font-size: 20px;
-        border: 1px solid #E6E6E6;
-        border-radius: 4px;
-        cursor: pointer;
-        text-align: center;
-        line-height: 45px;
-        margin: 5px;
-
-        &:hover {
-            color: $ft;
-            border-color: $ft;
-        }
-    }
-}
-
-.table-bg thead th {
-    background-color: #f5fafe;
-}
-
-.table-bordered th,
-.table-bordered td {
-    border: 1px solid #ddd;
-}
-
-.table-border th,
-.table-border td {
-    border-bottom: 1px solid #ddd;
-}
-
-.table th,
-.table td {
-    padding: 8px;
-    line-height: 20px;
-    word-break: break-all;
-    border-collapse: collapse;
-}
-
-.table th {
-    font-weight: bold;
-}
 </style>
 <script>
 import { $libDate, $libShow, ClientTableData, DataRule } from '@/utils/common'
@@ -200,15 +148,16 @@ import ElSelectTree from 'el-select-tree'
 import store from '@/store'
 import request from '@/utils/request'
 import { Message } from 'element-ui'
-import { elementIcons } from '@/utils/icon'
+import IconSelect from '@/components/IconSelect'
 
 function newItem() {
-    return { name: '', path: '', component: '', remark: '', sort: 0, pid: 0, redirect: 'noRedirect', icon: '', title: '', operator: '' }
+    return { name: '', path: '', component: '', remark: '', sort: 0, pid: 0, redirect: 'noRedirect', icon: '', title: '', operator: '', metaExt: '{}', type: 1 }
 }
 
 export default {
     components: {
-        ElSelectTree
+        ElSelectTree,
+        IconSelect,
     },
     data() {
         return {
@@ -235,8 +184,6 @@ export default {
                 id: 0
             },
 
-            iconList: [],
-
             permission: {
                 visible: false,
                 userPers: [{ Name: '测试', View: true, Create: true, Update: false, Delete: true }]
@@ -245,12 +192,22 @@ export default {
     },
     created() {
         this.env = store.getters.env || this.env
-        this.iconList = elementIcons
         this.getTree()
     },
     methods: {
         formatNumber(n) {
             return n.toLocaleString()
+        },
+        selected(name) {
+            this.edit.item.icon = name
+        },
+        jsonVerify(jsonStr) {
+            try {
+                JSON.parse(jsonStr);
+                return true;
+            } catch (e) {
+                return false;
+            }
         },
         formatTime(ts) {
             return $libDate.FormateSecondStr(ts, 2)
@@ -414,6 +371,10 @@ export default {
         },
         save() {
             if (!this.checkData()) return
+            if (!this.jsonVerify(this.edit.item.metaExt)) {
+                this.$message.error('路由参数格式错误！')
+                return
+            }
             if (this.edit.isEdit) {
                 this.editSave(this.getPostData())
             } else {

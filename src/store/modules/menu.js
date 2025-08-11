@@ -6,13 +6,23 @@ function menuTree(data, pid) {
   for (const i in data) {
     let row = {}
     if (data[i]['pid'] === pid) {
+
+      if (data[i]['metaExt']) {
+        try {
+          data[i]['metaExt'] = JSON.parse(data[i]['metaExt'])
+        } catch (e) {
+          data[i]['metaExt'] = {}
+        }
+      }
+
       row = {
         id: data[i]['id'],
         path: data[i]['path'],
         name: data[i]['name'],
         meta: {
           title: data[i]['title'],
-          icon: data[i]['icon']
+          icon: data[i]['icon'],
+          ...data[i]['metaExt']
         },
         label: data[i]['title']
       }
