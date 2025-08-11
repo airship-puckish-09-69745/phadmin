@@ -2106,8 +2106,8 @@ export const asyncRoutes = [
       {
         path: 'payWithdrawLog',
         component: () => import('@/views/playerManage/payWithdrawLog'),
-        name: 'payWithdrawLog',
-        meta: { title: '充值提现流水 ◐' }
+        name: 'PayWithdrawLog',
+        meta: { title: '充值提现流水 ◐', noCache: false, perm: 'PAY_WITHDRAW_LOG' }
       },
       {
         path: 'jackpotLog',
@@ -2901,6 +2901,12 @@ export const asyncRoutes = [
             meta: { title: 'G oldTrain', gid: 194 }
           },
           {
+            path: 'goldendragon_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'goldendragon_slots_log',
+            meta: { title: 'G oldenDragon', gid: 220 }
+          },
+          {
             path: 'luckyspirits_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'luckyspirits_slots_log',
@@ -3302,12 +3308,6 @@ export const asyncRoutes = [
             meta: { title: 'StreetFighting(审)', gid: 189 }
           },
           {
-            path: 'goldendragonmars_slots_log',
-            component: () => import('@/views/playerManage/slotsLog'),
-            name: 'goldendragonmars_slots_log',
-            meta: { title: 'GoldenDragon(审)', gid: 221 }
-          },
-          {
             path: 'goldtrainmars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'goldtrainmars_slots_log',
@@ -3467,6 +3467,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatStat.vue'),
             name: 'tongitsCheatStat',
             meta: { title: '用户身份统计 ◐' }
+          },
+          {
+            path: 'tongitsCheatCurve',
+            component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatCurve.vue'),
+            name: 'tongitsCheatCurve',
+            meta: { title: '疑似度分布 ◐' }
           }
         ]
       },

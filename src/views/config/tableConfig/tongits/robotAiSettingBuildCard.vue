@@ -111,6 +111,26 @@
         </el-form-item>
       </el-col>
     </el-row>
+    <el-row>
+      <el-col :span="11">
+        <el-form-item
+          label="构建不被贴3条概率："
+          label-width="200px"
+          :rules="dataRule(true,{type:'n',range:'0'})"
+        >
+          <el-input v-model.number="AiConfig.BuildCard.BuildThreeNoTailRatio" placeholder="单位百分比" />
+        </el-form-item>
+      </el-col>
+      <el-col :span="11">
+        <el-form-item
+          label="构建不被贴3条数量："
+          label-width="200px"
+          :rules="dataRule(true,{type:'n',range:'0'})"
+        >
+          <el-input v-model.number="AiConfig.BuildCard.BuildThreeNoTailMaxNum" placeholder="0" />
+        </el-form-item>
+      </el-col>
+    </el-row>
     <el-row v-if="GameType == 'joker'">
       <el-col :span="11">
         <el-form-item
@@ -157,6 +177,7 @@ export default {
       }
     }
   },
+
   created() {
 		    this.$nextTick(() => {
 		      console.log('common plugin tongitsConfig:', this.AiConfig)
