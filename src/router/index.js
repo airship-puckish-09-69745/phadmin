@@ -2219,7 +2219,7 @@ export const asyncRoutes = [
             path: 'matchHomePosterList',
             component: () => import('@/views/matchManage/matchOperations/homePosterList.vue'),
             name: 'matchHomePosterList',
-            meta: { title: 'home海报', noCache: true }
+            meta: { title: 'home小海报', noCache: true }
           },
           {
             path: 'matchGuideList',
