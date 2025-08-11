@@ -1696,12 +1696,6 @@ export const asyncRoutes = [
                 meta: { title: 'GodOfFortune(审)' }
               },
               {
-                path: 'goldendragonmars_slots_cfg',
-                component: () => import('@/views/config/tableConfig/slots/goldendragonmars_slots_cfg'),
-                name: 'ggoldendragonmars_slots_cfg',
-                meta: { title: 'GoldenDragon(审)' }
-              },
-              {
                 path: 'goldminermars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/goldminermars_slots_cfg'),
                 name: 'goldminermars_slots_cfg',
