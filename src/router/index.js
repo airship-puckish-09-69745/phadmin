@@ -2106,8 +2106,8 @@ export const asyncRoutes = [
       {
         path: 'payWithdrawLog',
         component: () => import('@/views/playerManage/payWithdrawLog'),
-        name: 'payWithdrawLog',
-        meta: { title: '充值提现流水 ◐' }
+        name: 'PayWithdrawLog',
+        meta: { title: '充值提现流水 ◐', noCache: false, perm: 'PAY_WITHDRAW_LOG' }
       },
       {
         path: 'jackpotLog',
@@ -2314,15 +2314,13 @@ export const asyncRoutes = [
             name: 'modifyUserInfo',
             meta: { title: '批量修改昵称头像', noCache: true }
           },
-
           {
             path: 'obMatchRecordConfig',
             component: () => import('@/views/matchManage/obMatchManage/obMatchRecord.vue'),
             hidden: !IsMars(),
             name: 'obMatchRecordConfig',
             meta: { title: '赛事记录', noCache: true, hidden: true }
-
-          },
+          }
         ]
       },
     ]
@@ -3469,6 +3467,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatStat.vue'),
             name: 'tongitsCheatStat',
             meta: { title: '用户身份统计 ◐' }
+          },
+          {
+            path: 'tongitsCheatCurve',
+            component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatCurve.vue'),
+            name: 'tongitsCheatCurve',
+            meta: { title: '疑似度分布 ◐' }
           }
         ]
       },
