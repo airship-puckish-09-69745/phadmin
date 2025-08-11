@@ -3,16 +3,23 @@
     <el-row>
       <el-form :model="form" label-width="80px" :inline="true" size="small">
         <el-form-item label="UID：" :required="true">
-          <UidInput :uidInput="form.Uid" @setUid="function (iUid) { form.Uid = iUid }" />
+          <UidInput :uid-input="form.Uid" @setUid="function (iUid) { form.Uid = iUid }" />
         </el-form-item>
         <el-form-item label="账号：">
           <el-input v-model="form.Account" placeholder="请输入账号" />
         </el-form-item>
         <el-form-item label="日期：">
           <el-date-picker
-            v-model="timeRange" :default-time="['00:00:00', '23:59:59']" type="datetimerange"
-            value-format="timestamp" :picker-options="pickerOptions" range-separator="至" start-placeholder="开始日期"
-            end-placeholder="结束日期" align="right" />
+            v-model="timeRange"
+            :default-time="['00:00:00', '23:59:59']"
+            type="datetimerange"
+            value-format="timestamp"
+            :picker-options="pickerOptions"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            align="right"
+          />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" size="mini" @click="getList">查询</el-button>
@@ -42,8 +49,14 @@
               <span style="font-size: 14px">汇总充值金额：{{ PayWithdrawSummary.LogsPayAmount/1000 }}</span>
             </el-row>
             <el-table
-              :data="payLogTableData" stripe border :header-cell-style="libShow.DefaultTableHeadClass"
-              :row-style="{ height: '10px' }" :cell-style="libShow.DefaultTableCell" style="padding:10px;width: 100%">
+              :data="payLogTableData"
+              stripe
+              border
+              :header-cell-style="libShow.DefaultTableHeadClass"
+              :row-style="{ height: '10px' }"
+              :cell-style="libShow.DefaultTableCell"
+              style="padding:10px;width: 100%"
+            >
               <el-table-column prop="OrderId" label="订单ID" width="200" />
               <el-table-column prop="Uid" label="UID" width="150" />
               <el-table-column prop="Account" label="账号" width="150" />
@@ -76,7 +89,8 @@
                     layout="total, sizes, prev, pager, next, jumper"
                     :total="payLogDB.GetPage().GetTotalCount()"
                     @size-change="handleSizeChange"
-                    @current-change="handleCurrentChange" />
+                    @current-change="handleCurrentChange"
+                  />
                 </div>
               </el-col>
             </el-row>
@@ -86,8 +100,14 @@
               <span style="font-size: 14px">汇总提现金额：{{ PayWithdrawSummary.LogsWithdrawAmount/1000 }}</span>
             </el-row>
             <el-table
-              :data="withdrawLogTableData" stripe border :header-cell-style="libShow.DefaultTableHeadClass"
-              :row-style="{ height: '10px' }" :cell-style="libShow.DefaultTableCell" style="padding:10px;width: 100%">
+              :data="withdrawLogTableData"
+              stripe
+              border
+              :header-cell-style="libShow.DefaultTableHeadClass"
+              :row-style="{ height: '10px' }"
+              :cell-style="libShow.DefaultTableCell"
+              style="padding:10px;width: 100%"
+            >
               <el-table-column prop="WithdrawId" label="订单ID" width="200" />
               <el-table-column prop="Uid" label="UID" width="150" />
               <el-table-column prop="Account" label="账号" width="150" />
@@ -120,7 +140,8 @@
                     layout="total, sizes, prev, pager, next, jumper"
                     :total="withdrawLogDB.GetPage().GetTotalCount()"
                     @size-change="handleSizeChange"
-                    @current-change="handleCurrentChange" />
+                    @current-change="handleCurrentChange"
+                  />
                 </div>
               </el-col>
             </el-row>
@@ -132,17 +153,17 @@
 </template>
 
 <script>
-import UidInput from "@/components/UidInput/index.vue";
+import UidInput from '@/components/UidInput/index.vue'
 import { $libDate, $libShow, ClientTableData, MoneyShow } from '@/utils/common'
-import {Message} from "element-ui";
-import request from "@/utils/request";
-import DateTimeShow from "@/components/DatetimeShow/index.vue";
+import { Message } from 'element-ui'
+import request from '@/utils/request'
+import DateTimeShow from '@/components/DatetimeShow/index.vue'
 
 const filterMap = {}
 
 export default {
-  name: 'payWithdrawLog',
-  components: {DateTimeShow, UidInput},
+  name: 'PayWithdrawLog',
+  components: { DateTimeShow, UidInput },
   data() {
     return {
       title: '支付提现流水',
@@ -150,7 +171,7 @@ export default {
         Uid: 0,
         Account: '',
         StartTime: 0,
-        EndTime: 0,
+        EndTime: 0
       },
       pickerOptions: $libShow.DefaultDatePickerOptions(),
       timeRange: [$libDate.GetDayBegin(new Date()), $libDate.GetDayEnd(new Date())],
@@ -171,7 +192,7 @@ export default {
         TodayPayAmount: 0,
         TodayWithdrawAmount: 0,
         LogsPayAmount: 0,
-        LogsWithdrawAmount: 0,
+        LogsWithdrawAmount: 0
       },
       PayStatuses: {
         1: '成功'
@@ -183,12 +204,9 @@ export default {
         '2': '批准',
         '-1': '客户取消',
         '-2': 'CSO 取消',
-        '-3': '拒绝',
+        '-3': '拒绝'
       }
     }
-  },
-  created() {
-
   },
   watch: {
     '$route.query.Uid': {
@@ -201,7 +219,7 @@ export default {
           console.log('has new Uid:', this.form.Uid)
         }
       },
-      deep: true,
+      deep: true
     },
     'form.Uid': {
       handler(newUid, oldUid) {
@@ -209,8 +227,11 @@ export default {
           this.getPayWithdrawSummary()
         }
       },
-      deep: true,
+      deep: true
     }
+  },
+  created() {
+
   },
   mounted() {
     if (this.$route.query.Uid) {
@@ -291,7 +312,7 @@ export default {
           Uid: this.form.Uid,
           Account: this.form.Account,
           StartTime: this.form.StartTime,
-          EndTime: this.form.EndTime,
+          EndTime: this.form.EndTime
         }
       }).then(response => {
         const $this = this
@@ -322,7 +343,7 @@ export default {
           Uid: this.form.Uid,
           Account: this.form.Account,
           StartTime: this.form.StartTime,
-          EndTime: this.form.EndTime,
+          EndTime: this.form.EndTime
         }
       }).then(response => {
         const $this = this
@@ -356,12 +377,12 @@ export default {
           $this.PayWithdrawSummary.PayAmount = response.Data.PayAmount
           $this.PayWithdrawSummary.WithdrawAmount = response.Data.WithdrawAmount
           $this.PayWithdrawSummary.FirstPayTime = response.Data.FirstPayTime
-          console.log("PayWithdrawSummary.PayAmount:", $this.PayWithdrawSummary.PayAmount)
-          console.log("PayWithdrawSummary.WithdrawAmount:", $this.PayWithdrawSummary.WithdrawAmount)
-          console.log("PayWithdrawSummary.FirstPayTime:", $this.PayWithdrawSummary.FirstPayTime)
+          console.log('PayWithdrawSummary.PayAmount:', $this.PayWithdrawSummary.PayAmount)
+          console.log('PayWithdrawSummary.WithdrawAmount:', $this.PayWithdrawSummary.WithdrawAmount)
+          console.log('PayWithdrawSummary.FirstPayTime:', $this.PayWithdrawSummary.FirstPayTime)
         }
       })
-    },
+    }
   }
 }
 </script>

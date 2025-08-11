@@ -89,7 +89,8 @@ export const PROP_SOURCE_OPTIONS = [
   { value: 11, label: '道具过期' },
   { value: 12, label: '红包活动' },
   { value: 13, label: 'rebuy' },
-  { value: 14, label: 'rebuy回退' }
+  { value: 14, label: 'rebuy回退' },
+  { value: 16, label: 'free spin' }
 ]
 
 //奖励分类
