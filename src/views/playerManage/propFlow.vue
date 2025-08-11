@@ -68,6 +68,7 @@
         </el-table-column>
         <el-table-column prop="preNum" label="变化前" width="80" />
         <el-table-column prop="afterNum" label="变化后" width="80" />
+        <el-table-column prop="recordId" label="唯一Id" width="80" />
         <el-table-column label="详情" width="80">
           <template slot-scope="scope">
             <el-button type="text" size="small" @click="showDetail(scope.row)">查看详情</el-button>
@@ -198,7 +199,8 @@ export default {
         { label: '比赛列表ID', value: row.ListId },
         { label: '比赛名称', value: row.matchName },
         { label: '后台操作者', value: row.handlers },
-        { label: '备注', value: row.remarks }
+        { label: '备注', value: row.remarks },
+        { label: '下注额度', value: row.betMoney / 1000 }
       ];
       this.detailDialogVisible = true;
     },
