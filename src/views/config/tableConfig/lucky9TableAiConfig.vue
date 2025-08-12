@@ -809,7 +809,7 @@ export default {
         },
         {
           value: 6,
-          label: 'F机器人(放破产)'
+          label: 'F机器人(防破产)'
         }
       ],
     
