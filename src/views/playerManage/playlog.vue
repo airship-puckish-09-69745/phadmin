@@ -111,7 +111,7 @@
         prop="ID"
         label="ID"
         sortable="custom"
-        width="100"
+        width="120"
       />
       <el-table-column
         prop="FinishTime"
@@ -132,7 +132,7 @@
       <el-table-column
         prop="MoneyOrigin"
         label="牌局前金额"
-        width="100"
+        width="120"
       >
         <template slot-scope="scope">
           {{ formatNumber(scope.row.MoneyOrigin / 1000) }}
@@ -179,7 +179,7 @@
       <el-table-column
           prop="showBetType"
           label="下注方式"
-          width="100"
+          width="120"
       >
         <template slot-scope="scope">
             {{ showBetType(scope.row.BetType) }}
@@ -234,7 +234,7 @@
       <el-table-column
         prop="MoneyNow"
         label="余额"
-        width="100"
+        width="120"
       >
         <template slot-scope="scope">
           {{ formatNumber(scope.row.MoneyNow) }}
