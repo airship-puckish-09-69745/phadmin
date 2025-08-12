@@ -569,7 +569,7 @@
             <td>扣除奖池贡献</td>
             <td>累计奖池贡献</td>
             <td>点控命中</td>
-            <td>是否使用道具</td>
+            <td>下注方式</td>
           </tr>
           <tr>
             <td>{{ sweeperPlay.JackpotContribute / 1000 }}</td>
@@ -580,7 +580,7 @@
             }}
             </td>
             <td>{{ getMicroCtrlName(sweeperPlay.microCtrl) }}</td>
-            <td>{{ showBetType(sweeperPlay.BetType) }}</td>
+            <td>{{ sweeperPlay.propLog ? showBetType(sweeperPlay.propLog.propAscription): '金币' }}</td>
           </tr>
           <tr>
             <td>道具Id</td>
