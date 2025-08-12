@@ -111,7 +111,7 @@
         prop="ID"
         label="ID"
         sortable="custom"
-        width="100"
+        width="120"
       />
       <el-table-column
         prop="FinishTime"
@@ -132,7 +132,7 @@
       <el-table-column
         prop="MoneyOrigin"
         label="牌局前金额"
-        width="100"
+        width="120"
       >
         <template slot-scope="scope">
           {{ formatNumber(scope.row.MoneyOrigin / 1000) }}
@@ -179,7 +179,7 @@
       <el-table-column
           prop="showBetType"
           label="下注方式"
-          width="100"
+          width="120"
       >
         <template slot-scope="scope">
             {{ showBetType(scope.row.BetType) }}
@@ -234,7 +234,7 @@
       <el-table-column
         prop="MoneyNow"
         label="余额"
-        width="100"
+        width="120"
       >
         <template slot-scope="scope">
           {{ formatNumber(scope.row.MoneyNow) }}
@@ -584,14 +584,14 @@
           </tr>
           <tr>
             <td>道具Id</td>
-            <td>道具uuid</td>
+            <td>道具recordId</td>
             <td>道具单张面值</td>
             <td>道具使用数量</td>
             <td>道具剩余数量</td>
           </tr>
           <tr>
             <td>{{ sweeperPlay.propLog ? sweeperPlay.propLog.propId : '' }}</td>
-            <td>{{ sweeperPlay.propLog ? sweeperPlay.propLog.uuid : '' }}</td>
+            <td>{{ sweeperPlay.propLog ? sweeperPlay.propLog.recordId : '' }}</td>
             <td>{{ sweeperPlay.propLog ? sweeperPlay.propLog.itemCost/1000 : '' }}</td>
             <td>{{ sweeperPlay.propLog ? sweeperPlay.propLog.itemCount : '' }}</td>
             <td>{{ sweeperPlay.propLog ? sweeperPlay.propLog.itemNow : '' }}</td>

@@ -2386,13 +2386,13 @@ export const asyncRoutes = [
 
           {
             path: 'playlog_pusoy',
-            component: () => import('@/views/playerManage/playlog'),
+            component: () => import('@/views/playerManage/pusoyPlaylog'),
             name: 'playlog_pusoy',
             meta: { title: 'Pusoy - ◐', gid: 21 }
           },
           {
             path: 'playlog_pusoyWild',
-            component: () => import('@/views/playerManage/playlog'),
+            component: () => import('@/views/playerManage/pusoyPlaylog'),
             name: 'playlog_pusoyWild',
             meta: { title: 'PusoyWild ◐', gid: 126 }
           },
