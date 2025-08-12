@@ -224,6 +224,9 @@
           width="80"
         >
           <template slot-scope="scope">
+            <span v-if="scope.row.level==6" style="color:green">
+              防破产
+            </span>
             <span v-if="scope.row.level==5" style="color:green">
               强杀
             </span>
