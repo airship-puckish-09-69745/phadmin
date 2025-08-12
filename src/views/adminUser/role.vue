@@ -166,7 +166,7 @@ export default {
           label: 'title'
         },
       },
-      appInfos: []
+      appInfos: [{ID: 0, Account: '通用APP'}]
     }
   },
   created() {
@@ -273,7 +273,7 @@ export default {
         flag = ob.Delete ? (flag | 0x08) : flag
         pers[ob.Key] = flag
       }
-     
+
       request({
         url: '/adminuser/role/update',
         method: 'post',

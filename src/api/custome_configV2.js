@@ -13,13 +13,14 @@ function getVer() {
   return store.getters.version === 'V2' ? 'V2' : ''
 }
 
-export function getCustomize(subKey) {
+export function getCustomize(subKey, appId) {
   const ver = getVer()
   return request({
     url: `/customizeconfig${ver}/one`,
     method: 'get',
     data: {
-      SubKey: subKey
+      SubKey: subKey,
+      AppId: appId
     }
   })
 }
@@ -55,13 +56,14 @@ export function publishCustomize(Env, recordID, opType) {
   })
 }
 
-export function getAllCustomizes(env) {
+export function getAllCustomizes(env, appId) {
   const ver = getVer()
   return request({
     url: `/customizeconfig${ver}/all`,
     method: 'get',
     data: {
-      Env: env
+      Env: env,
+      AppId: appId
     }
   })
 }

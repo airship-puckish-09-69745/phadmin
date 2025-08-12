@@ -1,148 +1,54 @@
 <template>
   <div id="app" class="page-container" style="padding: 10px">
     <el-row>
-      <el-col :span="2" :offset="20">
-        <el-button type="success" size="mini" icon="el-icon-refresh" @click="getList()">刷新</el-button>
-      </el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="20">
-        <el-button
-          size="mini"
-          type="primary"
-          icon="el-icon-plus"
-          @click="handleCreate()"
-        >添加配置项
-        </el-button>
-      </el-col>
-      <el-col :span="4">
-        <el-input
-          v-model="search"
-          size="mini"
-          placeholder="输入关键字搜索"
-          @input="searchChange"
-        />
-      </el-col>
-    </el-row>
-    <div style="padding-top: 10px">
-      <el-table
-        ref="filterTable"
-        :data="tableData"
-        stripe
-        border
-        :header-cell-style="libShow.DefaultTableHeadClass"
-        :row-style="{height:'10px'}"
-        :cell-style="libShow.DefaultTableCell"
-        style="width: 100%"
-        @row-click="clickData"
-        @sort-change="sortChange"
-      >
-        <el-table-column
-          prop="ID"
-          label="ID"
-          sortable="custom"
-          width="70"
-        />
-        <el-table-column
-          prop="AppId"
-          label="App"
-          min-width="100"
-        >
-          <template slot-scope="scope">
-            {{ getAppName(scope.row.AppId) }}
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="Name"
-          label="名称"
-          min-width="100"
-        />
-        <el-table-column
-          prop="RedisSubkey"
-          label="SubKey"
-          min-width="100"
-        />
-        <el-table-column
-          prop="Type"
-          label="类型"
-          width="100"
-        >
-          <template v-slot:header>
-            <el-select v-model="clientDB.FilterValueMap['Type']" size="mini" @change="handleFilter">
-              <el-option label="类型" :value="0" />
-              <el-option v-for="(o,key) in clientDB.FilterMap['Type']" :key="key" :label="o" :value="key" />
-            </el-select>
-          </template>
-          <template slot-scope="scope">
-            {{ clientDB.GetShowValue('Type', scope.row.Type) }}
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="Description"
-          label="描述"
-          min-width="200"
-        />
-        <el-table-column
-          prop="LastModify"
-          label="最近修改"
-          width="150"
-        >
-          <template slot-scope="scope">
-            {{ formatTime(scope.row.LastModify) }}
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="ModifyUser"
-          label="最后修改人"
-          width="120"
-        />
-      </el-table>
-      <el-col :offset="16" :span="8">
-        <div class="block">
-          <el-pagination
-            :current-page="clientDB.GetPage().GetCurrentPage()"
-            :page-sizes="[10, 20, 30, 40]"
-            :page-size="clientDB.GetPage().GetPageNum()"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="clientDB.GetPage().GetTotalCount()"
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-          />
-        </div>
-      </el-col>
-    </div>
-    <el-dialog :title="getEditTitle()" :visible.sync="edit.visible" :close-on-click-modal="false" :close-on-press-escape="false">
       <el-row>
-        <el-col v-if="edit.isEdit" :span="16" offset="4">
-          <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" />
+        <el-col v-if="edit.isEdit">
+          <publish primary-key="ID" :key-id="getFullKey()" :app-id="edit.item.AppId" :env-empty="false" compare-type="Object" />
         </el-col>
       </el-row>
       <el-row>
-        <el-col :span="4" offset="4" style="padding-top: 10px">
+        <el-col :span="4" :offset="10" style="padding-top: 10px">
           <el-button type="primary" size="medium" @click="save">保存配置</el-button>
         </el-col>
       </el-row>
       <el-form ref="form" :model="edit" label-width="150px" size="small" style="padding-top: 10px">
-        <el-form-item label="APP：" prop="item.AppId">
-          <el-col :span="20">
-            <el-select v-model="edit.item.AppId" placeholder="请选择" :disabled="edit.isEdit">
-              <el-option v-for="(o,idx) in appInfos" :key="idx" :label="o.Account" :value="o.ID" />
+        <el-form-item label="所属应用：" :required="true" prop="item.AppId">
+          <span>{{ edit.item.AppId > 0 ? edit.item.AppId : '通用配置' }}</span>
+        </el-form-item>
+        <el-form-item
+          label="配置Key："
+          :required="!edit.isEdit"
+          prop="item.RedisSubkey"
+          :rules="dataRule(!edit.isEdit,{type:'s',range:'2-50'})"
+        >
+          <el-col :span="4">
+            <el-select
+              v-model="edit.item.RedisSubkey"
+              filterable
+              placeholder="请选择配置项"
+              @change="onSelectConfigKeyChange"
+            >
+              <el-option label="新增配置项" value="" />
+              <el-option v-for="key in configKeys" :key="key" :label="key" :value="key" />
             </el-select>
+          </el-col>
+          <el-col :span="16">
+            <el-input v-if="!edit.isEdit" v-model="edit.item.RedisSubkey" />
           </el-col>
         </el-form-item>
         <el-form-item label="内容格式：" :required="true" prop="item.Type">
           <el-radio-group v-model="edit.item.Type" @change="typeChange">
-            <el-radio :label="1">普通字符串</el-radio>
-            <el-radio :label="2">JSON字符串</el-radio>
+            <el-radio :label="1">JSON</el-radio>
+            <el-radio :label="2">普通字符串</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="名称：" :required="true" prop="item.Name" :rules="dataRule(true,{type:'s',range:'2-20'})">
+        <el-form-item label="配置名称：" :required="true" prop="item.Name" :rules="dataRule(true,{type:'s',range:'2-20'})">
           <el-col :span="20">
             <el-input v-model="edit.item.Name" placeholder="方便管理用" />
           </el-col>
         </el-form-item>
         <el-form-item
-          label="描述："
+          label="配置描述："
           prop="item.Description"
           :required="true"
           :rules="dataRule(true,{type:'s',range:'2-300'})"
@@ -156,43 +62,36 @@
             />
           </el-col>
         </el-form-item>
-        <el-form-item
-          label="Key名："
-          :required="!edit.isEdit"
-          prop="item.RedisSubkey"
-          :rules="dataRule(!edit.isEdit,{type:'s',range:'2-50'})"
-        >
-          <el-col :span="20">
-            <el-input v-if="!edit.isEdit" v-model="edit.item.RedisSubkey" />
-            <span v-else>{{ edit.item.RedisSubkey }}</span>
-          </el-col>
-        </el-form-item>
         <el-form-item label="配置内容：" :required="true" prop="item.Data" :rules="dataRule(true,{type:'s',range:'1'})">
           <el-col :span="20">
-            <el-input
+            <json-editor-vue
               v-if="edit.item.Type === 1"
+              v-model="edit.item.Data"
+              :mode="edit.mode"
+            />
+            <el-input
+              v-if="edit.item.Type === 2"
               v-model="edit.item.Data"
               type="textarea"
               :autosize="{ minRows: 5, maxRows: 10}"
             />
-            <json-editor-vue
-                v-if="edit.item.Type === 2"
-                v-model="edit.item.Data"
-                :mode="edit.mode"
-            />
           </el-col>
         </el-form-item>
       </el-form>
-    </el-dialog>
-
+    </el-row>
     <!--对比组件-->
     <compare ref="compare" />
   </div>
 </template>
 
 <script>
-import { ClientTableData, DataRule, $libDate, $libShow } from '@/utils/common'
-import {getAllCustomizes, updateCustomize, createCustomize, publishCustomize} from '@/api/custome_configV2'
+import {DataRule, $libShow } from '@/utils/common'
+import {
+  getAllCustomizes,
+  updateCustomize,
+  createCustomize,
+  getCustomize
+} from '@/api/custome_configV2'
 import store from '@/store'
 import Compare from '@/components/Compare'
 import { Message } from 'element-ui'
@@ -205,31 +104,29 @@ import request from "@/utils/request";
 Vue.use(VCA)
 
 const filterMap = {
-  Type: { 1: '普通字符串', 2: 'JSON字符串' }
+  Type: { 1: 'JSON', 2: '普通字符串' }
 }
 
-function newItem() {
-  return { ID: 0, Type: 2, Name: '', Description: '', Data: {}, RedisSubkey: '' }
+function newItem(appId) {
+  console.log('newItem appId:', appId)
+  return { ID: 0, AppId: appId, Type: 1, Name: '', Description: '', Data: '', RedisSubkey: '' }
 }
 
 export default {
   components: {Publish, JsonEditorVue, Compare },
   data() {
     return {
-      tableData: [],
-      clientDB: new ClientTableData([], 1, filterMap),
       search: '',
       libShow: $libShow,
       env: 'test',
-      appInfos: [],
+      configKeys: [],
+      appId: 0,
+      isGeneral:  true,
 
       edit: {
-        visible: false,
-        item: newItem(),
+        item: {},
         val: '',
         vals: [],
-        keyID: 136,
-        opType: 1,
         isEdit: false,
         mode: 'text'
       },
@@ -241,9 +138,11 @@ export default {
   computed: {
   },
   created() {
+    this.isGeneral = this.$route.meta.isGeneral
+    this.appId = this.isGeneral ? 0 : store.getters.appId
     this.env = store.getters.env || this.env
     this.getList()
-    this.getAppInfos()
+    this.edit.item = newItem(this.appId)
   },
   methods: {
     getDataRuleConfig() {
@@ -256,88 +155,41 @@ export default {
     getFullKey() {
       return 'CustomizeCfg_' + this.edit.item.RedisSubkey
     },
-    getAppName(appId) {
-      const info = this.appInfos.find(o => o.ID === appId)
-      return info ? info.Account : ''
-    },
-    // 筛选相关逻辑
-    searchChange() {
-      this.clientDB.Search(this.search, ['Name', 'ID', 'RedisSubkey'])
-      this.refreshShow()
-    },
-    clearFilter() {
-      this.clientDB.ClearFilterMap()
-      this.refreshShow()
-    },
-    handleFilter() {
-      this.clientDB.FilterData()
-      this.refreshShow()
-    },
-    // 分页处理
-    refreshShow() {
-      this.tableData = this.clientDB.GetCurrentPageData()
-    },
-    handleSizeChange(val) {
-      this.clientDB.GetPage().SetPageNum(val)
-      this.refreshShow()
-    },
-    handleCurrentChange(val) {
-      this.clientDB.GetPage().SetPageNo(val)
-      this.refreshShow()
-    },
-    // 显示类处理函数
-    formatTime(ts) {
-      return $libDate.FormateSecondStr(ts, 2)
-    },
-    sortChange(ob) {
-      this.clientDB.SortByProp(ob.prop, ob.order)
-      this.refreshShow()
-    },
-    // 操作类函数
-    clickData(row, column, event) {
-      this.initFormData(true, row.ID)
-      this.edit.visible = true
-    },
-
-    handleCreate() {
-      this.edit.item = newItem()
-      this.edit.isEdit = false
-      this.edit.visible = true
-    },
     getList() {
-      getAllCustomizes(this.env).then(response => {
-        const objs = response.Data || {}
-
-        this.clientDB = new ClientTableData(objs, 10, filterMap, 'ID', -1)
-        this.handleCurrentChange(1)
+      const $this = this
+      getAllCustomizes(this.env, this.appId).then(response => {
+        const objs = response.Data || []
+        for (const i in objs) {
+          $this.configKeys.push(objs[i].RedisSubkey)
+        }
       })
     },
     //* * ********************** 修改/添加弹框相关 *****************
     getEditTitle() {
       return this.edit.isEdit ? '修改配置' : '新增配置'
     },
-    initFormData(bEdit, ID) {
-      this.edit.isEdit = bEdit
-      if (ID) {
-        const _data = this.clientDB.GetDataByID(ID)
-        if (_data) {
-          Object.assign(this.edit.item, _data)
-
-          if (this.edit.item.Data && this.edit.item.Type === 2) {
-            try {
-              this.edit.item.Data = JSON.parse(this.edit.item.Data)
-            } catch (e) {
-              console.log(this.edit.item.Data)
-              Message.warning('内容解析为JSON格式失败')
+    onSelectConfigKeyChange() {
+      if (this.edit.item.RedisSubkey === '') {
+        this.edit.item = newItem(this.appId)
+        this.edit.isEdit = false
+      } else {
+        getCustomize(this.edit.item.RedisSubkey, this.appId).then(response => {
+          if (response.RetCode === 0) {
+            Object.assign(this.edit.item, response.Data)
+            if (this.edit.item.Data && this.edit.item.Type === 1) {
+              try {
+                this.edit.item.Data = JSON.parse(this.edit.item.Data)
+              } catch (e) {
+                console.log(this.edit.item.Data)
+                Message.warning('内容解析为JSON格式失败')
+              }
             }
-          }
 
-          if (bEdit) {
-            this.edit.item.Env = this.env
+            this.edit.isEdit = true
             // 设置修改之前数据
-            this.$refs.compare.SetOldVal(_data)
+            this.$refs.compare.SetOldVal(response.Data)
           }
-        }
+        })
       }
     },
     dataRule(required, config) {
@@ -345,87 +197,53 @@ export default {
     },
     typeChange() {
       if (this.edit.item.Type === 1) {
-        this.edit.item.Data = typeof this.edit.item.Data === 'string' ? this.edit.item.Data : JSON.stringify(this.edit.item.Data)
-      } else if (this.edit.item.Type === 2) {
         this.edit.item.Data = typeof this.edit.item.Data === 'string' ? JSON.parse(this.edit.item.Data) : this.edit.item.Data
+      } else if (this.edit.item.Type === 2) {
+        this.edit.item.Data = typeof this.edit.item.Data === 'string' ? this.edit.item.Data : JSON.stringify(this.edit.item.Data)
       }
     },
-    test() {
-      this.opType = 2
-      this.publish()
-    },
-    pro() {
-      this.opType = 6
-      this.publish()
-    },
-    createSave(postData) {
-      if (this.edit.item.Type === 2) {
+    getPostData() {
+      const postData = JSON.parse(JSON.stringify(this.edit.item))
+      postData.Env = this.env
+      if (postData.Type === 1) {
         postData.Data = JSON.stringify(postData.Data)
       }
+      return postData
+    },
+    createSave(postData) {
       createCustomize(postData).then(response => {
         if (response.RetCode === 0) {
-          this.clientDB.AddData(response.Data)
-          this.refreshShow()
+          this.edit.isEdit = true
+          this.configKeys.push(postData.RedisSubkey)
           Message.success('保存成功！若要发布到redis，请点击发布。')
         }
       })
     },
     editSave(postData) {
-      if (this.edit.item.Type === 2) {
-        postData.Data = JSON.stringify(postData.Data)
-      }
       updateCustomize(postData).then(response => {
         if (response.RetCode === 0) {
-          this.clientDB.UpdateData(this.edit.item)
-          this.refreshShow()
           Message.success('保存成功！若要发布到redis，请点击发布。')
         }
       })
     },
     save() {
-      this.edit.item.Env = this.env
+      const _data = this.getPostData()
       const $this = this
       if (this.edit.isEdit) {
         // 设置修改后数据
-        this.$refs.compare.SetNewVal(this.edit.item)
+        this.$refs.compare.SetNewVal(_data)
         this.$refs.compare.Compare(function(isEdit) {
           if (!isEdit) {
             Message.error('没有任何修改，不需要提交')
             return
           } else {
-            $this.editSave($this.edit.item)
+            $this.editSave(_data)
           }
         })
       } else {
-        this.createSave(this.edit.item)
+        this.createSave(_data)
       }
-    },
-    publish() {
-      publishCustomize(this.env, this.edit.item.ID, this.opType).then(response => {
-        if (response.RetCode === 0) {
-          Message.success('发布成功！')
-        }
-      })
-    },
-    getAppInfos() {
-      request({
-        url: '/thirdparties/apps',
-        method: 'get',
-        data: {}
-      }).then(response => {
-        if (response.RetCode === 0) {
-          for (let i = 0; i < response.Data.length; i++) {
-            if (response.Data[i].Status !== 2) {
-              continue
-            }
-            this.appInfos.push({
-              ID: response.Data[i].ID,
-              Account: response.Data[i].ID + '-' + response.Data[i].Account
-            })
-          }
-        }
-      })
-    },
+    }
   }
 }
 </script>

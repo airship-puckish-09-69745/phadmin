@@ -247,8 +247,8 @@ export default {
     // 返回false，数据没有修改
     // 返回true，数据有修改
     Compare(funcSucc) {
-      // console.log('oldVal', this.oldVal)
-      // console.log('newVal', this.newVal)
+       console.log('oldVal', this.oldVal)
+       console.log('newVal', this.newVal)
       if (this.ToString(this.oldVal) === this.ToString(this.newVal)) {
         console.log('无任何差异')
         funcSucc(false)

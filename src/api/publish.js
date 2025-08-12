@@ -50,13 +50,15 @@ export function submitPublish(opType, keyID, summary, envEmpty, attrInfo) {
 
 // 当前发布状态 getView
 // 判断权限，是否需要审核
-export function getView(keyID, envEmpty) {
+export function getView(keyID, envEmpty, appId) {
   const ver = getVer()
+  console.log('getView keyID', keyID, envEmpty, appId)
   return request({
     url: `configfile${ver}/review`,
     method: 'get',
     data: {
-      keyID: keyID
+      keyID: keyID,
+      AppId: appId
     },
     envEmpty: envEmpty
   })

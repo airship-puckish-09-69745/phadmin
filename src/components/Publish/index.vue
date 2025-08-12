@@ -244,6 +244,7 @@ import { $libDate, $LibJsonDiff, $libType, ClientTableData } from '@/utils/commo
 import store from '@/store'
 import request from '@/utils/request'
 import {IsMars} from "@/utils/env";
+import {getCustomize} from "@/api/custome_configV2";
 
 const jsonDiff = require('diff')
 
@@ -261,6 +262,10 @@ export default {
     keyId: { // 配置的ID，与AdminConfig中配置ID对应
       type: String,
       default: ''
+    },
+    appId: { // 配置的AppId，与AdminConfig中配置AppId对应
+      type: Number,
+      default: store.getters.appId
     },
     compareType: { // 发布内容格式，支持：Array, Object, String, CustomizeConfig
       type: String,
@@ -376,6 +381,18 @@ export default {
     if (!IsMars()) {
       console.log("==",IsMars)
       this.getLarkPage()
+    }
+  },
+  watch: {
+    keyId: {
+      handler(newVal, oldVal) {
+        console.log('watch keyId:', newVal, oldVal, ' appId:', this.appId)
+        if (oldVal === undefined) {
+          return
+        }
+        this.checkProcessing()
+      },
+      immediate: true
     }
   },
   methods: {
@@ -498,13 +515,7 @@ export default {
       return str
     },
     getLarkPage(){
-      request({
-        url: '/customizeconfig/one',
-        method: 'get',
-        data: {
-          SubKey: 'lark_page_cfg'
-        }
-      }).then(response => {
+      getCustomize('lark_page_cfg', 0).then(response => {
         if (response.RetCode === 0) {
           console.log('cfg', response)
           this.larkConfig = response.Data || {}
@@ -582,9 +593,9 @@ export default {
       this.dialogVisible = false
     },
     dialogShow() {
-      console.log('compareType:')
-      console.log(this.compareType)
-      console.log(this.editData)
+      console.log('dialogShow compareType:', this.compareType)
+      console.log('dialogShow this.editData:', this.editData)
+      console.log('dialogShow this.ObjectData.Result:', this.ObjectData.Result)
       this.dialogVisible = true
     },
     getSummaryInfo() {
@@ -639,6 +650,7 @@ export default {
             this.opType = 6
           } else {
             this.opType = this.stepActive + 2
+            console.log('submitBtn this.opType', this.opType)
           }
         }
       }
@@ -655,6 +667,10 @@ export default {
 
       // 1.提交
       rollback(this.keyId, this.envEmpty).then(response => {
+        if (response.RetCode !== 0) {
+          this.$message.error('回滚失败：' + response.Data)
+          return
+        }
         this.$message.success('回滚成功')
         // 2.修改opType
         if (this.opType === 4 || this.opType === 5 || this.opType === 6) {
@@ -669,7 +685,7 @@ export default {
       })
     },
     getView() {
-      getView(this.keyId, this.envEmpty).then(response => {
+      getView(this.keyId, this.envEmpty, this.appId).then(response => {
         this.needReview = response.Data.NeedView
         this.isMy = response.Data.IsMy
         this.currentUser = response.Data.CurUser
@@ -688,7 +704,7 @@ export default {
       if (this.keyId === '') {
         return
       }
-      getView(this.keyId, this.envEmpty).then(response => {
+      getView(this.keyId, this.envEmpty, this.appId).then(response => {
         this.currentUser = response.Data.CurUser
         this.opType = response.Data.Step
         const stepNames = ['同步预发布', '提交审核', '审核待发布']
@@ -703,7 +719,7 @@ export default {
       const $this = this
       this.init()
       getDiff(this.opType, this.keyId, this.envEmpty).then(response => {
-        if ($this.diffView) {
+        if ($this.diffView && response.Data.AttrInfo !== '' && response.Data.AttrInfo !== 'undefined') {
           $this.attrNames = JSON.parse(response.Data.AttrInfo)
         }
         let preVal = null

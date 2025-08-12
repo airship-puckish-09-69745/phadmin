@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="page-container" style="padding: 10px">
     <el-row>
-      <publish ref="publish" :key-id="edit.item.ConfigKey" :diff-view="true" />
+      <publish ref="publish" :key-id="edit.item.ConfigKey" :app-id="edit.item.AppId" :diff-view="true" />
     </el-row>
     <el-row>
       <el-menu
@@ -57,19 +57,19 @@
         <el-table-column
           prop="CreateUserName"
           label="申请人"
-          width="100"
+          width="120"
         />
         <el-table-column
           prop="CreateTime"
           label="申请时间"
-          width="150"
+          width="160"
         >
           <template slot-scope="scope">
             {{ formatTime(scope.row.CreateTime) }}
           </template>
         </el-table-column>
         <el-table-column
-          prop="CurrentUserName"
+          prop="ReviewUserName"
           label="当前处理人"
           width="100"
         />
@@ -140,10 +140,8 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="审批流程：">
-          <el-steps :active="edit.active" finish-status="success">
-            <el-step v-for="o in edit.ops" :title="o" />
-          </el-steps>
+        <el-form-item label="可审批人：">
+          <el-tag v-for="(o, index) in edit.ops" :key="index">{{ o }}</el-tag>
         </el-form-item>
         <el-form-item label="审批详情：">
           <el-input
@@ -167,7 +165,7 @@
           </el-form-item>
 
           <el-form-item label="">
-            <el-col :offset="12" :span="12">
+            <el-col :offset="9" :span="12">
               <el-button type="success" @click="passReview(1)">通过</el-button>
               <el-button type="warning" @click="passReview(2)">拒绝</el-button>
             </el-col>
@@ -253,6 +251,7 @@ export default {
           Summary: '',
           Comment: '',
           ConfigKey: '',
+          AppId: 0,
           Status: 0,
           EnvEmpty: 0,
           CurrentUserName: ''

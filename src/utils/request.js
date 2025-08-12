@@ -30,7 +30,7 @@ service.interceptors.request.use(
         config.data.Env = store.getters.env
       }
       if (store.getters.version === 'V2') {
-        console.log('appId', config.data.AppId)
+        console.log('request appId', config.data.AppId)
         if (config.data.AppId === '' || config.data.AppId === undefined) {
           config.data.AppId = store.getters.appId
         }
