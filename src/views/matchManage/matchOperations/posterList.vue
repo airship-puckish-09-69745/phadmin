@@ -607,6 +607,8 @@ export default {
           end_time: 0,
           sort_id: 0,
           game_id: 0,
+          display_gids:[], //展示游戏
+          display_place:0, //展示位置
         }
         this.editForm.isAdd = true
         this.selectMatchName()
