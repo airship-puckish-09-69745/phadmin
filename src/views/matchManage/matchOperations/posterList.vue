@@ -321,8 +321,8 @@ export default {
           title: '',
           app_id: 1000002,
           switch: 'true',
-          displayGids:[], //展示游戏
-          displayPlace:0, //展示位置
+          display_gids:[], //展示游戏
+          display_place:0, //展示位置
         }
       },
       AttrNames: {
@@ -687,8 +687,8 @@ export default {
             'match_cfg_id': this.editForm.data.match_cfg_id,
             'start_time': bTime,
             'end_time': eTime,
-            'display_gids':this.editForm.data.displayGids,
-            'display_place':this.editForm.data.displayPlace,
+            'display_gids':this.editForm.data.display_gids,
+            'display_place':this.editForm.data.display_place,
           }
         )
       }
