@@ -2320,6 +2320,13 @@ export const asyncRoutes = [
             hidden: !IsMars(),
             name: 'obMatchRecordConfig',
             meta: { title: '赛事记录', noCache: true, hidden: true }
+          },
+          {
+            path: 'imageUpload',
+            component: () => import('@/views/matchManage/obMatchManage/imageUpload.vue'),
+            hidden: !IsMars(),
+            name: 'imageUpload',
+            meta: { title: '头像资源上传', noCache: true, hidden: true }
           }
         ]
       },
