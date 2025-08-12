@@ -155,7 +155,7 @@
           </el-form-item>
 
           <el-form-item label="展示游戏：" :required="true">
-            <el-select v-model="editForm.data.displayGids" placeholder="请选择" size="mini" multiple>
+            <el-select v-model="editForm.data.display_gids" placeholder="请选择" size="mini" multiple>
               <el-option
                 v-for="item in displayGidsCfg"
                 :key="item.value"
@@ -170,7 +170,7 @@
           </el-form-item>
 
           <el-form-item label="展示位置：" :required="true">
-            <el-select v-model="editForm.data.displayPlace" placeholder="请选择" size="mini" >
+            <el-select v-model="editForm.data.display_place" placeholder="请选择" size="mini" >
               <el-option
                 v-for="item in displayPlaceCfg"
                 :key="item.value"
