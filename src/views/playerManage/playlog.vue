@@ -177,12 +177,12 @@
         </el-table-column>
       </template>
       <el-table-column
-          prop="isfreespin"
-          label="是否使用道具下注"
+          prop="showBetType"
+          label="下注方式"
           width="100"
       >
         <template slot-scope="scope">
-            {{ isFreeSpin(scope.row.IsFreeSpin) }}
+            {{ showBetType(scope.row.BetType) }}
         </template>
       </el-table-column>
 
@@ -580,7 +580,7 @@
             }}
             </td>
             <td>{{ getMicroCtrlName(sweeperPlay.microCtrl) }}</td>
-            <td>{{ sweeperPlay.isFreeSpin == 1 ? '是' : '否' }}</td>
+            <td>{{ showBetType(sweeperPlay.BetType) }}</td>
           </tr>
           <tr>
             <td>道具Id</td>
@@ -3874,11 +3874,15 @@ export default {
         }
       }
     },
-    isFreeSpin(valA) {
-        if (valA === 1) {
-          return '是'
+    showBetType(valA) {
+        if (valA === 1 || valA === 0) {
+          return '金币'
+        } else if (valA === 2){
+          return 'FreeSpin(厅方)'
+        } else if (valA === 3){
+          return 'FreeSpin(平台)'
         } else {
-          return '否'
+          return '未知'
         }
     },
     peiValStr(randVal, winRate, peiVal) {
