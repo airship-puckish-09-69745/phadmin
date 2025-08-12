@@ -584,14 +584,14 @@
           </tr>
           <tr>
             <td>道具Id</td>
-            <td>道具uuid</td>
+            <td>道具recordId</td>
             <td>道具单张面值</td>
             <td>道具使用数量</td>
             <td>道具剩余数量</td>
           </tr>
           <tr>
             <td>{{ sweeperPlay.propLog ? sweeperPlay.propLog.propId : '' }}</td>
-            <td>{{ sweeperPlay.propLog ? sweeperPlay.propLog.uuid : '' }}</td>
+            <td>{{ sweeperPlay.propLog ? sweeperPlay.propLog.recordId : '' }}</td>
             <td>{{ sweeperPlay.propLog ? sweeperPlay.propLog.itemCost/1000 : '' }}</td>
             <td>{{ sweeperPlay.propLog ? sweeperPlay.propLog.itemCount : '' }}</td>
             <td>{{ sweeperPlay.propLog ? sweeperPlay.propLog.itemNow : '' }}</td>
