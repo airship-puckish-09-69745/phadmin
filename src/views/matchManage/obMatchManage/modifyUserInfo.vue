@@ -165,7 +165,7 @@ export default {
       return false
     },
     importSuccess(results) {
-      const cndUrl  = this.$store.getters.env === 'test' ? 'http://192.168.6.16:8092/gf/audit/' : 'https://sh-client.tiptop.bet/gf/audit/'
+      const cndUrl  = this.$store.getters.env === 'test' ? 'http://192.168.6.16:8092/audit/' : 'https://sh-client.tiptop.bet/gf/audit/'
       const keys = this.parseKeys()
       const sheetNames = results['SheetNames']
       const Sheets = results['Sheets']
