@@ -1740,6 +1740,12 @@ export const asyncRoutes = [
             meta: { title: '老虎机大奖配置' }
           },
           {
+            path: 'user_pool_cfg',
+            component: () => import('@/views/config/tableConfig/slots/userPool/UserPoolCfg.vue'),
+            name: 'user_pool_cfg',
+            meta: { title: '小奖池配置' }
+          },
+          {
             path: 'slots_act_configs_v2',
             component: () => import('@/views/config/tableConfig/slots/slotsActConfigV2'),
             name: 'slots_act_configs_v2',
@@ -2308,6 +2314,13 @@ export const asyncRoutes = [
         meta: { title: 'OB比赛管理', noCache: true },
         children: [
           {
+            path: 'obMatchRecordConfig',
+            component: () => import('@/views/matchManage/obMatchManage/obMatchRecord.vue'),
+            hidden: !IsMars(),
+            name: 'obMatchRecordConfig',
+            meta: { title: '赛事记录', noCache: true, hidden: true }
+          },
+          {
             path: 'modifyUserInfo',
             component: () => import('@/views/matchManage/obMatchManage/modifyUserInfo.vue'),
             hidden: !IsMars(),
@@ -2315,11 +2328,11 @@ export const asyncRoutes = [
             meta: { title: '批量修改昵称头像', noCache: true }
           },
           {
-            path: 'obMatchRecordConfig',
-            component: () => import('@/views/matchManage/obMatchManage/obMatchRecord.vue'),
+            path: 'imageUpload',
+            component: () => import('@/views/matchManage/obMatchManage/imageZipFileUpload.vue'),
             hidden: !IsMars(),
-            name: 'obMatchRecordConfig',
-            meta: { title: '赛事记录', noCache: true, hidden: true }
+            name: 'imageUpload',
+            meta: { title: '头像资源上传', noCache: true, hidden: true }
           }
         ]
       },

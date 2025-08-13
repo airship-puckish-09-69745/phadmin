@@ -164,7 +164,7 @@ import { DataRule } from '@/utils/common'
 
 
 export default {
-  name: 'RobotAiSettingDecision',
+  name: 'RobotAiSettingDecisionFight',
   components: { tongitsTableRange },
   model: {
 		    prop: 'AiConfig',
