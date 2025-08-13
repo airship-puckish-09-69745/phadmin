@@ -725,10 +725,18 @@ export default {
         let preVal = null
         let proVal = null
         if (response.Data.Pre) {
-          preVal = JSON.parse(response.Data.Pre)
+          try {
+            preVal = JSON.parse(response.Data.Pre)
+          } catch (e) {
+            console.log('getDiff preVal parse error:', e, ' preVal:', preVal)
+          }
         }
         if (response.Data.Publish) {
-          proVal = JSON.parse(response.Data.Publish)
+          try {
+            proVal = JSON.parse(response.Data.Publish)
+          } catch (e) {
+            console.log('getDiff proVal parse error:', e, ' proVal:', proVal)
+          }
         }
         if (!$this.compareType || $this.compareType == '') {
           if ($libType.IsArray(preVal)) {
