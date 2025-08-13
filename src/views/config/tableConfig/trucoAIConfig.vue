@@ -55,15 +55,15 @@
             <el-tab-pane label="1号位">
               <robot-ai-setting-one v-model="edit" />
             </el-tab-pane>
-            <!-- <el-tab-pane label="2号位">
-              <robot-ai-setting-challenge v-model="edit" />
+            <el-tab-pane label="2号位">
+              <robot-ai-setting-two v-model="edit" />
             </el-tab-pane>
             <el-tab-pane label="3号位">
-              <robot-ai-setting-drop v-model="edit" />
+              <robot-ai-setting-three v-model="edit" />
             </el-tab-pane>
             <el-tab-pane label="4号位">
-              <robot-ai-setting-out-card v-model="edit" />
-            </el-tab-pane> -->
+              <robot-ai-setting-four v-model="edit" />
+            </el-tab-pane>
           </el-tabs>
         </el-row>
         <el-form-item>
@@ -89,10 +89,12 @@ import Publish from '@/components/Publish'
 import MoneyInput from '@/components/MoneyInput'
 
 import robotAiSettingOne from './truco/robotAiSettingOne'
-
+import robotAiSettingTwo from './truco/robotAiSettingTwo'
+import robotAiSettingThree from './truco/robotAiSettingThree'
+import robotAiSettingFour from './truco/robotAiSettingFour'
 
 export default {
-  components: { Compare, Publish, MoneyInput,robotAiSettingOne},
+  components: { Compare, Publish, MoneyInput,robotAiSettingOne,robotAiSettingTwo,robotAiSettingThree,robotAiSettingFour},
   data() {
     return {
       subKey: 'truco_ai_config',

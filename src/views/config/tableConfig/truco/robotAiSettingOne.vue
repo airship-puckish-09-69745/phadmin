@@ -6,7 +6,7 @@
           <fieldset>
             <legend>Truco基础概率</legend>
             <el-table
-              :data="AiConfig.RoundCfg.RoundOne.Truco"
+              :data="AiConfig.OneSitCfg.RoundOne.Truco"
               border
               style="width: 100%"
             >
@@ -29,13 +29,13 @@
             
             </el-table>
    
-              <el-form ref="AiConfig.RoundCfg.RoundOne.TrucoMax" :model="AiConfig.RoundCfg.RoundOne.TrucoMax" width="70%">
+              <el-form ref="AiConfig.OneSitCfg.RoundOne.TrucoMax" :model="AiConfig.OneSitCfg.RoundOne.TrucoMax" width="70%">
                 <el-row :gutter="16">
                   <el-col :span="8">
                     <el-form-item label="我方最大的2张牌得分" :required="true">
                         <template>
                           <el-input-number
-                            v-model="AiConfig.RoundCfg.RoundOne.TrucoMax.MaxScore" 
+                            v-model="AiConfig.OneSitCfg.RoundOne.TrucoMax.MaxScore" type="number"
                             style="width: 100%"> 
                           </el-input-number>
                         </template>
@@ -46,7 +46,7 @@
                     
                         <template>
                           <el-input-number
-                            v-model="AiConfig.RoundCfg.RoundOne.TrucoMax.OtherScore" 
+                            v-model="AiConfig.OneSitCfg.RoundOne.TrucoMax.OtherScore" type="number"
                             style="width: 100%"> 
                           </el-input-number>
                         </template>
@@ -54,13 +54,13 @@
                 </el-col>
                 </el-row>
               </el-form>
-              <el-form ref="AiConfig.RoundCfg.RoundOne.TrucoMax" :model="AiConfig.RoundCfg.RoundOne.TrucoMax" width="70%">
+              <el-form ref="AiConfig.OneSitCfg.RoundOne.TrucoMax" :model="AiConfig.OneSitCfg.RoundOne.TrucoMax" width="70%">
                 <el-row :gutter="16">
                   <el-col :span="8">
                     <el-form-item label="且我方落后分" :required="true">
                         <template>
                           <el-input-number
-                            v-model="AiConfig.RoundCfg.RoundOne.TrucoMax.AfterScore" 
+                            v-model="AiConfig.OneSitCfg.RoundOne.TrucoMax.AfterScore"  type="number"
                             placeholder="且我方落后分"
                             style="width: 100%"> 
                           </el-input-number>
@@ -72,7 +72,7 @@
                     
                         <template>
                           <el-input-number
-                            v-model="AiConfig.RoundCfg.RoundOne.TrucoMax.Ratio" 
+                            v-model="AiConfig.OneSitCfg.RoundOne.TrucoMax.Ratio"  type="number"
                             placeholder="概率"
                             style="width: 100%"> 
                           </el-input-number>
@@ -87,9 +87,11 @@
 
           <fieldset>
                 <legend>Truco额外概率</legend>
+                <fieldset>
+                  <legend>比分因素</legend>
               <el-row>
                 <el-table
-              :data="AiConfig.RoundCfg.RoundOne.TrucoOther.ScoreFactors"
+              :data="AiConfig.OneSitCfg.RoundOne.TrucoOther.ScoreFactors"
               border
               style="width: 100%"
             >
@@ -112,6 +114,7 @@
             
             </el-table>
           </el-row>
+          </fieldset>
         </fieldset>
       </el-row>
      
@@ -122,7 +125,7 @@
           <fieldset>
             <legend>Truco基础概率</legend>
             <el-table
-              :data="AiConfig.RoundCfg.RoundTwo.Truco"
+              :data="AiConfig.OneSitCfg.RoundTwo.Truco"
               border
               style="width: 100%"
             >
@@ -145,13 +148,13 @@
             
             </el-table>
    
-              <el-form ref="AiConfig.RoundCfg.RoundTwo.TrucoMax" :model="AiConfig.RoundCfg.RoundTwo.TrucoMax" width="70%">
+              <el-form ref="AiConfig.OneSitCfg.RoundTwo.TrucoMax" :model="AiConfig.OneSitCfg.RoundTwo.TrucoMax" width="70%">
                 <el-row :gutter="16">
                   <el-col :span="8">
                     <el-form-item label="我方最大的2张牌得分" :required="true">
                         <template>
                           <el-input-number
-                            v-model="AiConfig.RoundCfg.RoundTwo.TrucoMax.MaxScore" 
+                            v-model="AiConfig.OneSitCfg.RoundTwo.TrucoMax.MaxScore" type="number"
                             style="width: 100%"> 
                           </el-input-number>
                         </template>
@@ -162,7 +165,7 @@
                     
                         <template>
                           <el-input-number
-                            v-model="AiConfig.RoundCfg.RoundTwo.TrucoMax.OtherScore" 
+                            v-model="AiConfig.OneSitCfg.RoundTwo.TrucoMax.OtherScore" type="number"
                             style="width: 100%"> 
                           </el-input-number>
                         </template>
@@ -170,13 +173,13 @@
                 </el-col>
                 </el-row>
               </el-form>
-              <el-form ref="AiConfig.RoundCfg.RoundTwo.TrucoMax" :model="AiConfig.RoundCfg.RoundTwo.TrucoMax" width="70%">
+              <el-form ref="AiConfig.OneSitCfg.RoundTwo.TrucoMax" :model="AiConfig.OneSitCfg.RoundTwo.TrucoMax" width="70%">
                 <el-row :gutter="16">
                   <el-col :span="8">
                     <el-form-item label="且我方落后分" :required="true">
                         <template>
                           <el-input-number
-                            v-model="AiConfig.RoundCfg.RoundTwo.TrucoMax.AfterScore" 
+                            v-model="AiConfig.OneSitCfg.RoundTwo.TrucoMax.AfterScore"  type="number"
                             placeholder="且我方落后分"
                             style="width: 100%"> 
                           </el-input-number>
@@ -188,7 +191,7 @@
                     
                         <template>
                           <el-input-number
-                            v-model="AiConfig.RoundCfg.RoundTwo.TrucoMax.Ratio" 
+                            v-model="AiConfig.OneSitCfg.RoundTwo.TrucoMax.Ratio"  type="number"
                             placeholder="概率"
                             style="width: 100%"> 
                           </el-input-number>
@@ -202,9 +205,11 @@
           </fieldset>
           <fieldset>
             <legend>Truco额外概率</legend>
+            <fieldset>
+              <legend>比分因素</legend>
               <el-row>
                 <el-table
-              :data="AiConfig.RoundCfg.RoundTwo.TrucoOther.ScoreFactors"
+              :data="AiConfig.OneSitCfg.RoundTwo.TrucoOther.ScoreFactors"
               border
               style="width: 100%"
             >
@@ -227,16 +232,17 @@
             
             </el-table>
           </el-row>
+          </fieldset>
           <fieldset>
             <legend>回合输赢因素</legend>
               <el-row>
-                <el-form ref="AiConfig.RoundCfg.RoundTwo.TrucoOther" :model="AiConfig.RoundCfg.RoundTwo.TrucoOther" width="70%">
+                <el-form ref="AiConfig.OneSitCfg.RoundTwo.TrucoOther" :model="AiConfig.OneSitCfg.RoundTwo.TrucoOther" width="70%">
                 <el-row :gutter="16">
                   <el-col :span="8">
                     <el-form-item label="第一回合输概率" :required="true">
                         <template>
                           <el-input-number
-                            v-model="AiConfig.RoundCfg.RoundTwo.TrucoOther.OneRoundLoseRatio"  type="number" 
+                            v-model="AiConfig.OneSitCfg.RoundTwo.TrucoOther.OneRoundLoseRatio"  type="number" 
                             style="width: 100%"> 
                           </el-input-number>
                         </template>
@@ -247,7 +253,7 @@
                     
                         <template>
                           <el-input-number
-                            v-model="AiConfig.RoundCfg.RoundTwo.TrucoOther.OneRoundWinRatio"  type="number" 
+                            v-model="AiConfig.OneSitCfg.RoundTwo.TrucoOther.OneRoundWinRatio"  type="number" 
                             style="width: 100%"> 
                           </el-input-number>
                         </template>
@@ -270,7 +276,7 @@
           <fieldset>
             <legend>Truco基础概率</legend>
             <el-table
-              :data="AiConfig.RoundCfg.RoundThree.Truco"
+              :data="AiConfig.OneSitCfg.RoundThree.Truco"
               border
               style="width: 100%"
             >
@@ -293,13 +299,13 @@
             
             </el-table>
    
-              <el-form ref="AiConfig.RoundCfg.RoundThree.TrucoMax" :model="AiConfig.RoundCfg.RoundThree.TrucoMax" width="70%">
+              <el-form ref="AiConfig.OneSitCfg.RoundThree.TrucoMax" :model="AiConfig.OneSitCfg.RoundThree.TrucoMax" width="70%">
                 <el-row :gutter="16">
                   <el-col :span="8">
                     <el-form-item label="我方最大的1张牌得分" :required="true">
                         <template>
                           <el-input-number
-                            v-model="AiConfig.RoundCfg.RoundThree.TrucoMax.MaxScore" 
+                            v-model="AiConfig.OneSitCfg.RoundThree.TrucoMax.MaxScore"  type="number"
                             style="width: 100%"> 
                           </el-input-number>
                         </template>
@@ -310,7 +316,7 @@
                     
                         <template>
                           <el-input-number
-                            v-model="AiConfig.RoundCfg.RoundThree.TrucoMax.OtherScore" 
+                            v-model="AiConfig.OneSitCfg.RoundThree.TrucoMax.OtherScore"  type="number"
                             style="width: 100%"> 
                           </el-input-number>
                         </template>
@@ -318,13 +324,13 @@
                 </el-col>
                 </el-row>
               </el-form>
-              <el-form ref="AiConfig.RoundCfg.RoundThree.TrucoMax" :model="AiConfig.RoundCfg.RoundThree.TrucoMax" width="70%">
+              <el-form ref="AiConfig.OneSitCfg.RoundThree.TrucoMax" :model="AiConfig.OneSitCfg.RoundThree.TrucoMax" width="70%">
                 <el-row :gutter="16">
                   <el-col :span="8">
                     <el-form-item label="且我方落后分" :required="true">
                         <template>
                           <el-input-number
-                            v-model="AiConfig.RoundCfg.RoundThree.TrucoMax.AfterScore" 
+                            v-model="AiConfig.OneSitCfg.RoundThree.TrucoMax.AfterScore"  type="number"
                             placeholder="且我方落后分"
                             style="width: 100%"> 
                           </el-input-number>
@@ -336,7 +342,7 @@
                     
                         <template>
                           <el-input-number
-                            v-model="AiConfig.RoundCfg.RoundThree.TrucoMax.Ratio" 
+                            v-model="AiConfig.OneSitCfg.RoundThree.TrucoMax.Ratio"  type="number"
                             placeholder="概率"
                             style="width: 100%"> 
                           </el-input-number>
@@ -350,9 +356,11 @@
           </fieldset>
           <fieldset>
             <legend>Truco额外概率</legend>
+            <fieldset>
+              <legend>比分因素</legend>
               <el-row>
                 <el-table
-              :data="AiConfig.RoundCfg.RoundThree.TrucoOther.ScoreFactors"
+              :data="AiConfig.OneSitCfg.RoundThree.TrucoOther.ScoreFactors"
               border
               style="width: 100%"
             >
@@ -375,6 +383,7 @@
             
             </el-table>
           </el-row>
+            </fieldset>
         </fieldset>
         
         </el-row>
@@ -411,7 +420,7 @@ export default {
   },
   data(){
     return {
-      RoundCfg:{
+      OneSitCfg:{
         RoundOne:{
           Truco:[{
             Score: 90,
@@ -530,9 +539,9 @@ export default {
       deep: true,
       handler(newVal) {
 
-        if (!newVal.RoundCfg) {
-          this.editRoundCfg = JSON.parse(JSON.stringify(this.RoundCfg)) 
-           newVal.RoundCfg= this.editRoundCfg 
+        if (!newVal.One) {
+          this.editRoundCfg = JSON.parse(JSON.stringify(this.OneSitCfg)) 
+           newVal.OneSitCfg= this.editRoundCfg 
           console.log('common truco:', this.AiConfig)       
         }
       }
