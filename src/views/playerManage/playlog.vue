@@ -569,7 +569,6 @@
             <td>扣除奖池贡献</td>
             <td>累计奖池贡献</td>
             <td>点控命中</td>
-            <td>下注方式</td>
           </tr>
           <tr>
             <td>{{ sweeperPlay.JackpotContribute / 1000 }}</td>
@@ -580,21 +579,18 @@
             }}
             </td>
             <td>{{ getMicroCtrlName(sweeperPlay.microCtrl) }}</td>
-            <td>{{ sweeperPlay.propLog ? showBetType(sweeperPlay.propLog.propAscription): '金币' }}</td>
           </tr>
           <tr>
+            <td>下注方式</td>
             <td>道具Id</td>
             <td>道具recordId</td>
             <td>道具单张面值</td>
-            <td>道具使用数量</td>
-            <td>道具剩余数量</td>
           </tr>
           <tr>
+            <td>{{ sweeperPlay.propLog ? showBetType(sweeperPlay.propLog.propAscription): '常规' }}</td>
             <td>{{ sweeperPlay.propLog ? sweeperPlay.propLog.propId : '' }}</td>
             <td>{{ sweeperPlay.propLog ? sweeperPlay.propLog.recordId : '' }}</td>
             <td>{{ sweeperPlay.propLog ? sweeperPlay.propLog.itemCost/1000 : '' }}</td>
-            <td>{{ sweeperPlay.propLog ? sweeperPlay.propLog.itemCount : '' }}</td>
-            <td>{{ sweeperPlay.propLog ? sweeperPlay.propLog.itemNow : '' }}</td>
           </tr>
         </table>
       </div>
@@ -3876,7 +3872,7 @@ export default {
     },
     showBetType(valA) {
         if (valA === 1 || valA === 0) {
-          return '金币'
+          return '常规'
         } else if (valA === 2){
           return 'FreeSpin(厅方)'
         } else if (valA === 3){
