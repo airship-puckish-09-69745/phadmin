@@ -931,17 +931,15 @@ export const asyncRoutes = [
             children: [
               {
                 path: 'trucoTable',
-                component: () => import('@/views/empty'),
-                redirect: 'noRedirect',
-                meta: { title: 'Truco配桌 ◐', noCache: true },
-                children: [
-                  {
-                    path: 'trucoTable',
-                    component: () => import('@/views/config/tableConfig/trucoTable'),
-                    name: 'trucoTable',
-                    meta: { title: 'Truco配桌 ◐' }
-                  }
-                ]
+                component: () => import('@/views/config/tableConfig/trucoTable'),
+                name: 'trucoTable',
+                meta: { title: 'Truco配桌 ◐' }
+              },
+              {
+                path: 'trucoAIConfig',
+                component: () => import('@/views/config/tableConfig/trucoAIConfig'),
+                name: 'trucoAIConfig',
+                meta: { title: 'Truco AI配置 ◐' }
               }
             ]
           },
