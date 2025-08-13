@@ -53,9 +53,9 @@
         <el-row>
           <el-tabs type="border-card">
             <el-tab-pane label="1号位">
-              <robot-ai-setting-fight v-model="edit" />
+              <robot-ai-setting-one v-model="edit" />
             </el-tab-pane>
-            <el-tab-pane label="2号位">
+            <!-- <el-tab-pane label="2号位">
               <robot-ai-setting-challenge v-model="edit" />
             </el-tab-pane>
             <el-tab-pane label="3号位">
@@ -63,7 +63,7 @@
             </el-tab-pane>
             <el-tab-pane label="4号位">
               <robot-ai-setting-out-card v-model="edit" />
-            </el-tab-pane>
+            </el-tab-pane> -->
           </el-tabs>
         </el-row>
         <el-form-item>

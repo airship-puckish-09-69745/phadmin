@@ -1,48 +1,389 @@
 <template>
   <div>
     <el-row style="padding-top: 5px">
-      <hr class="dashed-line">
+      <h3 style="text-align:center;">第一回合</h3>
+      <el-row style="padding-top: 5px">
+          <fieldset>
+            <legend>Truco基础概率</legend>
+            <el-table
+              :data="AiConfig.RoundCfg.RoundOne.Truco"
+              border
+              style="width: 100%"
+            >
+              <el-table-column
+                label="我方最大的2张牌得分"
+                width="200"
+              >
+                <template slot-scope="scope">
+                  <el-input-number v-model.number="scope.row.Score" size="mini" type="number"  :precision="0"></el-input-number>
+                </template>
+              </el-table-column>
+              <el-table-column
+                label="Truco概率(%)"
+                width="200"
+              >
+                <template slot-scope="scope">
+                  <el-input-number v-model.number="scope.row.Ratio" size="mini" type="number"  :precision="0"><template slot="append">%</template></el-input-number>
+                </template>
+              </el-table-column>
+            
+            </el-table>
+   
+              <el-form ref="AiConfig.RoundCfg.RoundOne.TrucoMax" :model="AiConfig.RoundCfg.RoundOne.TrucoMax" width="70%">
+                <el-row :gutter="16">
+                  <el-col :span="8">
+                    <el-form-item label="我方最大的2张牌得分" :required="true">
+                        <template>
+                          <el-input-number
+                            v-model="AiConfig.RoundCfg.RoundOne.TrucoMax.MaxScore" 
+                            style="width: 100%"> 
+                          </el-input-number>
+                        </template>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item label="且对方最大的2张牌得分" :required="true">
+                    
+                        <template>
+                          <el-input-number
+                            v-model="AiConfig.RoundCfg.RoundOne.TrucoMax.OtherScore" 
+                            style="width: 100%"> 
+                          </el-input-number>
+                        </template>
+                  </el-form-item>
+                </el-col>
+                </el-row>
+              </el-form>
+              <el-form ref="AiConfig.RoundCfg.RoundOne.TrucoMax" :model="AiConfig.RoundCfg.RoundOne.TrucoMax" width="70%">
+                <el-row :gutter="16">
+                  <el-col :span="8">
+                    <el-form-item label="且我方落后分" :required="true">
+                        <template>
+                          <el-input-number
+                            v-model="AiConfig.RoundCfg.RoundOne.TrucoMax.AfterScore" 
+                            placeholder="且我方落后分"
+                            style="width: 100%"> 
+                          </el-input-number>
+                        </template>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item label="Truco概率(%)" :required="true">
+                    
+                        <template>
+                          <el-input-number
+                            v-model="AiConfig.RoundCfg.RoundOne.TrucoMax.Ratio" 
+                            placeholder="概率"
+                            style="width: 100%"> 
+                          </el-input-number>
+                        </template>
+                  </el-form-item>
+                </el-col>
+                </el-row>
+              </el-form>
 
-      <el-tab-pane label="机器人等级">
-         
+            
+          </fieldset>
 
-         <el-row style="padding-top: 5px">
-             <fieldset>
-               <legend>第一回合</legend>
-               <el-table
-                 ref="Truco基础概率"  
-                 :data="item.RoundCfg.RoundOne.Truco"
-                 border
-                 style="width: 100%"
-               >
-                 <el-table-column
-                   label="我方最大的2张牌得分"
-                   width="200"
-                 >
-                   <template slot-scope="scope">
-                     <el-input-number v-model.number="scope.row.Score" size="mini" type="number"  :precision="0"></el-input-number>
-                   </template>
-                 </el-table-column>
-                 <el-table-column
-                   label="Truco概率"
-                   width="200"
-                 >
-                   <template slot-scope="scope">
-                     <el-input-number v-model.number="scope.row.Ratio" size="mini" type="number"  :precision="0"><template slot="append">%</template></el-input-number>
-                   </template>
-                 </el-table-column>
-               
-               </el-table>
-             </fieldset>
-           </el-row>
-       </el-tab-pane>
+          <fieldset>
+                <legend>Truco额外概率</legend>
+              <el-row>
+                <el-table
+              :data="AiConfig.RoundCfg.RoundOne.TrucoOther.ScoreFactors"
+              border
+              style="width: 100%"
+            >
+              <el-table-column
+                label="我方落后分数大于等于（>=）"
+                width="200"
+              >
+                <template slot-scope="scope">
+                  <el-input-number v-model.number="scope.row.Behind" size="mini" type="number"  :precision="0"></el-input-number>
+                </template>
+              </el-table-column>
+              <el-table-column
+                label="Truco 额外概率(%)"
+                width="200"
+              >
+                <template slot-scope="scope">
+                  <el-input-number v-model.number="scope.row.Ratio" size="mini" type="number"  :precision="0"><template slot="append">%</template></el-input-number>
+                </template>
+              </el-table-column>
+            
+            </el-table>
+          </el-row>
+        </fieldset>
+      </el-row>
+     
+    </el-row>
+    <el-row style="padding-top: 5px">
+      <h3 style="text-align:center;">第二回合</h3>
+      <el-row style="padding-top: 5px">
+          <fieldset>
+            <legend>Truco基础概率</legend>
+            <el-table
+              :data="AiConfig.RoundCfg.RoundTwo.Truco"
+              border
+              style="width: 100%"
+            >
+              <el-table-column
+                label="我方最大的2张牌得分"
+                width="200"
+              >
+                <template slot-scope="scope">
+                  <el-input-number v-model.number="scope.row.Score" size="mini" type="number"  :precision="0"></el-input-number>
+                </template>
+              </el-table-column>
+              <el-table-column
+                label="Truco概率(%)"
+                width="200"
+              >
+                <template slot-scope="scope">
+                  <el-input-number v-model.number="scope.row.Ratio" size="mini" type="number"  :precision="0"><template slot="append">%</template></el-input-number>
+                </template>
+              </el-table-column>
+            
+            </el-table>
+   
+              <el-form ref="AiConfig.RoundCfg.RoundTwo.TrucoMax" :model="AiConfig.RoundCfg.RoundTwo.TrucoMax" width="70%">
+                <el-row :gutter="16">
+                  <el-col :span="8">
+                    <el-form-item label="我方最大的2张牌得分" :required="true">
+                        <template>
+                          <el-input-number
+                            v-model="AiConfig.RoundCfg.RoundTwo.TrucoMax.MaxScore" 
+                            style="width: 100%"> 
+                          </el-input-number>
+                        </template>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item label="且对方最大的2张牌得分" :required="true">
+                    
+                        <template>
+                          <el-input-number
+                            v-model="AiConfig.RoundCfg.RoundTwo.TrucoMax.OtherScore" 
+                            style="width: 100%"> 
+                          </el-input-number>
+                        </template>
+                  </el-form-item>
+                </el-col>
+                </el-row>
+              </el-form>
+              <el-form ref="AiConfig.RoundCfg.RoundTwo.TrucoMax" :model="AiConfig.RoundCfg.RoundTwo.TrucoMax" width="70%">
+                <el-row :gutter="16">
+                  <el-col :span="8">
+                    <el-form-item label="且我方落后分" :required="true">
+                        <template>
+                          <el-input-number
+                            v-model="AiConfig.RoundCfg.RoundTwo.TrucoMax.AfterScore" 
+                            placeholder="且我方落后分"
+                            style="width: 100%"> 
+                          </el-input-number>
+                        </template>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item label="Truco概率(%)" :required="true">
+                    
+                        <template>
+                          <el-input-number
+                            v-model="AiConfig.RoundCfg.RoundTwo.TrucoMax.Ratio" 
+                            placeholder="概率"
+                            style="width: 100%"> 
+                          </el-input-number>
+                        </template>
+                  </el-form-item>
+                </el-col>
+                </el-row>
+              </el-form>
+       
+
+          </fieldset>
+          <fieldset>
+            <legend>Truco额外概率</legend>
+              <el-row>
+                <el-table
+              :data="AiConfig.RoundCfg.RoundTwo.TrucoOther.ScoreFactors"
+              border
+              style="width: 100%"
+            >
+              <el-table-column
+                label="我方落后分数大于等于（>=）"
+                width="200"
+              >
+                <template slot-scope="scope">
+                  <el-input-number v-model.number="scope.row.Behind" size="mini" type="number"  :precision="0"></el-input-number>
+                </template>
+              </el-table-column>
+              <el-table-column
+                label="Truco 额外概率(%)"
+                width="200"
+              >
+                <template slot-scope="scope">
+                  <el-input-number v-model.number="scope.row.Ratio" size="mini" type="number"  :precision="0"><template slot="append">%</template></el-input-number>
+                </template>
+              </el-table-column>
+            
+            </el-table>
+          </el-row>
+          <fieldset>
+            <legend>回合输赢因素</legend>
+              <el-row>
+                <el-form ref="AiConfig.RoundCfg.RoundTwo.TrucoOther" :model="AiConfig.RoundCfg.RoundTwo.TrucoOther" width="70%">
+                <el-row :gutter="16">
+                  <el-col :span="8">
+                    <el-form-item label="第一回合输概率" :required="true">
+                        <template>
+                          <el-input-number
+                            v-model="AiConfig.RoundCfg.RoundTwo.TrucoOther.OneRoundLoseRatio"  type="number" 
+                            style="width: 100%"> 
+                          </el-input-number>
+                        </template>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item label="第一回合赢概率" :required="true">
+                    
+                        <template>
+                          <el-input-number
+                            v-model="AiConfig.RoundCfg.RoundTwo.TrucoOther.OneRoundWinRatio"  type="number" 
+                            style="width: 100%"> 
+                          </el-input-number>
+                        </template>
+                  </el-form-item>
+                </el-col>
+                </el-row>
+              </el-form>
+            </el-row>
+          </fieldset>
+        </fieldset>
+        
+        </el-row>
+        <hr class="dashed-line">
+
+    </el-row>
+
+    <el-row style="padding-top: 5px">
+      <h3 style="text-align:center;">第三回合</h3>
+      <el-row style="padding-top: 5px">
+          <fieldset>
+            <legend>Truco基础概率</legend>
+            <el-table
+              :data="AiConfig.RoundCfg.RoundThree.Truco"
+              border
+              style="width: 100%"
+            >
+              <el-table-column
+                label="我方最大的1张牌得分"
+                width="200"
+              >
+                <template slot-scope="scope">
+                  <el-input-number v-model.number="scope.row.Score" size="mini" type="number"  :precision="0"></el-input-number>
+                </template>
+              </el-table-column>
+              <el-table-column
+                label="Truco概率(%)"
+                width="200"
+              >
+                <template slot-scope="scope">
+                  <el-input-number v-model.number="scope.row.Ratio" size="mini" type="number"  :precision="0"><template slot="append">%</template></el-input-number>
+                </template>
+              </el-table-column>
+            
+            </el-table>
+   
+              <el-form ref="AiConfig.RoundCfg.RoundThree.TrucoMax" :model="AiConfig.RoundCfg.RoundThree.TrucoMax" width="70%">
+                <el-row :gutter="16">
+                  <el-col :span="8">
+                    <el-form-item label="我方最大的1张牌得分" :required="true">
+                        <template>
+                          <el-input-number
+                            v-model="AiConfig.RoundCfg.RoundThree.TrucoMax.MaxScore" 
+                            style="width: 100%"> 
+                          </el-input-number>
+                        </template>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item label="且对方最大的1张牌得分" :required="true">
+                    
+                        <template>
+                          <el-input-number
+                            v-model="AiConfig.RoundCfg.RoundThree.TrucoMax.OtherScore" 
+                            style="width: 100%"> 
+                          </el-input-number>
+                        </template>
+                  </el-form-item>
+                </el-col>
+                </el-row>
+              </el-form>
+              <el-form ref="AiConfig.RoundCfg.RoundThree.TrucoMax" :model="AiConfig.RoundCfg.RoundThree.TrucoMax" width="70%">
+                <el-row :gutter="16">
+                  <el-col :span="8">
+                    <el-form-item label="且我方落后分" :required="true">
+                        <template>
+                          <el-input-number
+                            v-model="AiConfig.RoundCfg.RoundThree.TrucoMax.AfterScore" 
+                            placeholder="且我方落后分"
+                            style="width: 100%"> 
+                          </el-input-number>
+                        </template>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item label="Truco概率(%)" :required="true">
+                    
+                        <template>
+                          <el-input-number
+                            v-model="AiConfig.RoundCfg.RoundThree.TrucoMax.Ratio" 
+                            placeholder="概率"
+                            style="width: 100%"> 
+                          </el-input-number>
+                        </template>
+                  </el-form-item>
+                </el-col>
+                </el-row>
+              </el-form>
+       
+
+          </fieldset>
+          <fieldset>
+            <legend>Truco额外概率</legend>
+              <el-row>
+                <el-table
+              :data="AiConfig.RoundCfg.RoundThree.TrucoOther.ScoreFactors"
+              border
+              style="width: 100%"
+            >
+              <el-table-column
+                label="我方落后分数大于等于（>=）"
+                width="200"
+              >
+                <template slot-scope="scope">
+                  <el-input-number v-model.number="scope.row.Behind" size="mini" type="number"  :precision="0"></el-input-number>
+                </template>
+              </el-table-column>
+              <el-table-column
+                label="Truco 额外概率(%)"
+                width="200"
+              >
+                <template slot-scope="scope">
+                  <el-input-number v-model.number="scope.row.Ratio" size="mini" type="number"  :precision="0"><template slot="append">%</template></el-input-number>
+                </template>
+              </el-table-column>
+            
+            </el-table>
+          </el-row>
+        </fieldset>
+        
+        </el-row>
+        <hr class="dashed-line">
 
     </el-row>
   </div>
 </template>
 <script>
-import tongitsTableRange from '@/components/TongitsTableRange'
-import { DataRule } from '@/utils/common'
 
 function newTruco(x,y) {
   return {
@@ -55,7 +396,7 @@ function newTruco(x,y) {
 
 export default {
   name: 'RobotAiSettingOne',
-  components: { tongitsTableRange },
+  components: {  },
   model: {
 		    prop: 'AiConfig',
 		    event: 'cc'
@@ -69,8 +410,6 @@ export default {
 		    }
   },
   data(){
-   
-
     return {
       RoundCfg:{
         RoundOne:{
@@ -132,7 +471,7 @@ export default {
               Ratio: 20,
             }],
             OneRoundLoseRatio: -30,
-            OneRounWinRatio: 30
+            OneRoundWinRatio: 30
           }
         },
         RoundThree:{
