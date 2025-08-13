@@ -1740,6 +1740,12 @@ export const asyncRoutes = [
             meta: { title: '老虎机大奖配置' }
           },
           {
+            path: 'user_pool_cfg',
+            component: () => import('@/views/config/tableConfig/slots/userPool/UserPoolCfg.vue'),
+            name: 'user_pool_cfg',
+            meta: { title: '小奖池配置' }
+          },
+          {
             path: 'slots_act_configs_v2',
             component: () => import('@/views/config/tableConfig/slots/slotsActConfigV2'),
             name: 'slots_act_configs_v2',
