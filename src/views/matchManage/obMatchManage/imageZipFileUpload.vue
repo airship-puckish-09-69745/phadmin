@@ -80,7 +80,12 @@ export default {
 
     async extractZipFile() {
       if (!this.file) return;
-
+     if (this.file.size >= 1024*1024*512){
+        this.message = '文件过大,大于512M'
+        this.error = true;
+        this.isUploading = false;
+        return;
+      }
       try {
         this.isUploading = true;
         this.message = '正在解压ZIP文件...';
