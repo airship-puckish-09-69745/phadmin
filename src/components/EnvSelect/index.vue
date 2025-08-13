@@ -21,7 +21,8 @@ export default {
         { label: '新版测试-1000002', value: 'test-1000002' },
         { label: '新版测试-1000005', value: 'test-1000005' },
         { label: '新版线上-1000005', value: 'pro-1000005' }
-      ]
+      ],
+      oldEnv: ''
     }
   },
   computed: {
@@ -34,6 +35,7 @@ export default {
   },
   mounted() {
     this.getEnvOptions()
+    this.oldEnv = this.env
   },
   methods: {
     getEnvOptions() {
@@ -90,7 +92,8 @@ export default {
         this.$store.dispatch('app/setVersion', 'V1')
       }
 
-      this.refreshView()
+      const isDiffVersion = env.split('-').length !== this.oldEnv.split('-').length
+      this.refreshView(isDiffVersion)
       this.$message({
         message: '切换成功，正在重新刷新页面...',
         type: 'success'
@@ -100,11 +103,14 @@ export default {
         window.location.reload()
       }, 500)
     },
-    refreshView() {
+    refreshView(isDiffVersion) {
       // In order to make the cached page re-rendered
       this.$store.dispatch('tagsView/delAllCachedViews', this.$route)
 
-      const { fullPath } = this.$route
+      let { fullPath } = this.$route
+      if (isDiffVersion){
+        fullPath = '/'
+      }
 
       this.$nextTick(() => {
         this.$router.replace({
