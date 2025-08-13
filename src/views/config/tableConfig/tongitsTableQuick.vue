@@ -391,7 +391,7 @@
 
           <el-col :span="11">
             <el-form-item
-              label="是否允许两低信用户同桌："
+              label="低信可信："
               :required="true"
               prop="item.HideCarry"
               :rules="dataRule(true,{type:'n',range:'0'})"
