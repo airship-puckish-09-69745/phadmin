@@ -139,6 +139,14 @@ export default {
           label: '标题'
         },
         {
+          prop: 'AppId',
+          label: 'AppID',
+          width: 100,
+          formatter: (row) => {
+            return this.getAppIdTypeName(row.AppId)
+          }
+        },
+        {
           prop: 'Channel',
           label: '渠道',
           width: 160,
@@ -220,6 +228,7 @@ export default {
   },
   mounted() {
     this.onSearch()
+    APPID_OPTIONS.push({ 'value': -1, 'label': 'all' })
   },
   methods: {
     // 弹窗二次确认上架和下架操作
@@ -308,7 +317,11 @@ export default {
           this.FilterableBroadcastList = []
         } else {
           // 通过应用id进行筛选
-          this.FilterableBroadcastList = Data.BroadcastList.filter(item => item.AppId === this.searchFilter.app_id)
+          if (this.searchFilter.app_id > 0) {
+            this.FilterableBroadcastList = Data.BroadcastList.filter(item => item.AppId === this.searchFilter.app_id)
+          } else if (this.searchFilter.app_id === -1) {
+            this.FilterableBroadcastList = Data.BroadcastList
+          }
         }
         this.tableData = Data.BroadcastList
       } else {
@@ -365,6 +378,16 @@ export default {
       }).catch(() => {
         this.$message.info('已取消删除')
       })
+    },
+    getAppIdTypeName(row) {
+      let showName = ''
+      for (let i = 0; i < APPID_OPTIONS.length; i++) {
+        if (APPID_OPTIONS[i].value === row) {
+          showName = APPID_OPTIONS[i].label
+          break
+        }
+      }
+      return showName
     }
   }
 }

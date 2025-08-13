@@ -10,7 +10,7 @@
         <el-input v-model="formData.Title" style="width: 360px;" />
       </el-form-item>
       <el-form-item label="AppID" required>
-        <el-select v-model="formData.AppId" placeholder="请选择AppID" style="width: 360px;">
+        <el-select v-model="formData.AppId" placeholder="请选择AppID" :disabled="formData.ID" style="width: 360px;">
           <el-option v-for="option in appIdOptions" :key="option.value" :label="option.label" :value="option.value" />
         </el-select>
       </el-form-item>
@@ -203,32 +203,44 @@ export default {
       }
       // 如果是比赛第一名类型，必须校验有效期不能有交叉
       if (this.formData.BroadcastType === 1) {
-        const matchFirstRankCfgs = this.matchFirstRankCfgs.filter(item => item.ID !== this.formData.ID)
-        const isCross = matchFirstRankCfgs.some(item => {
-          let [start, end] = item.BroadcastTimeRange
-          start *= 1000
-          end *= 1000
-          const [start2, end2] = this.formData.BroadcastTimeRange
-          // console.log(start, start2, end, end2)
-          return (start <= start2 && end >= start2) || (start <= end2 && end >= end2)
-        })
-        if (isCross) {
+        let isUpdate = false
+        for (let i = 0; i < this.matchFirstRankCfgs.length; i++) {
+          if (this.matchFirstRankCfgs[i].ID !== this.formData.ID) {
+            if (this.matchFirstRankCfgs[i].AppId === this.formData.AppId) {
+              let [start, end] = this.matchFirstRankCfgs[i].BroadcastTimeRange
+              start *= 1000
+              end *= 1000
+              const [start2, end2] = this.formData.BroadcastTimeRange
+              if ((start <= start2 && end >= start2) || (start <= end2 && end >= end2)) {
+                isUpdate = true
+                break
+              }
+            }
+          }
+        }
+        if (isUpdate) {
           this.$message.warning('比赛第一名类型的有效期冲突!')
           return false
         }
       }
 
       if (this.formData.BroadcastType === 2) {
-        const jpFirstRankCfgs = this.jpFirstRankCfgs.filter(item => item.ID !== this.formData.ID)
-        const isCross = jpFirstRankCfgs.some(item => {
-          let [start, end] = item.BroadcastTimeRange
-          start *= 1000
-          end *= 1000
-          const [start2, end2] = this.formData.BroadcastTimeRange
-          //console.log(start, start2, end, end2)
-          return (start <= start2 && end >= start2) || (start <= end2 && end >= end2)
-        })
-        if (isCross) {
+        let isUpdate = false
+        for (let i = 0; i < this.jpFirstRankCfgs.length; i++) {
+          if (this.jpFirstRankCfgs[i].ID !== this.formData.ID) {
+            if (this.jpFirstRankCfgs[i].AppId === this.formData.AppId) {
+              let [start, end] = this.jpFirstRankCfgs[i].BroadcastTimeRange
+              start *= 1000
+              end *= 1000
+              const [start2, end2] = this.formData.BroadcastTimeRange
+              if ((start <= start2 && end >= start2) || (start <= end2 && end >= end2)) {
+                isUpdate = true
+                break
+              }
+            }
+          }
+        }
+        if (isUpdate) {
           this.$message.warning('jp类型的有效期冲突!')
           return false
         }
