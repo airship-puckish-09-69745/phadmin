@@ -2219,7 +2219,7 @@ export const asyncRoutes = [
             path: 'matchHomePosterList',
             component: () => import('@/views/matchManage/matchOperations/homePosterList.vue'),
             name: 'matchHomePosterList',
-            meta: { title: 'home海报', noCache: true }
+            meta: { title: 'home小海报', noCache: true }
           },
           {
             path: 'matchGuideList',
@@ -2320,6 +2320,13 @@ export const asyncRoutes = [
             hidden: !IsMars(),
             name: 'obMatchRecordConfig',
             meta: { title: '赛事记录', noCache: true, hidden: true }
+          },
+          {
+            path: 'imageUpload',
+            component: () => import('@/views/matchManage/obMatchManage/imageUpload.vue'),
+            hidden: !IsMars(),
+            name: 'imageUpload',
+            meta: { title: '头像资源上传', noCache: true, hidden: true }
           }
         ]
       },
@@ -2379,13 +2386,13 @@ export const asyncRoutes = [
 
           {
             path: 'playlog_pusoy',
-            component: () => import('@/views/playerManage/playlog'),
+            component: () => import('@/views/playerManage/pusoyPlaylog'),
             name: 'playlog_pusoy',
             meta: { title: 'Pusoy - ◐', gid: 21 }
           },
           {
             path: 'playlog_pusoyWild',
-            component: () => import('@/views/playerManage/playlog'),
+            component: () => import('@/views/playerManage/pusoyPlaylog'),
             name: 'playlog_pusoyWild',
             meta: { title: 'PusoyWild ◐', gid: 126 }
           },
