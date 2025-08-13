@@ -64,6 +64,9 @@
             <el-tab-pane label="4号位">
               <robot-ai-setting-four v-model="edit" />
             </el-tab-pane>
+            <el-tab-pane label="响应Truco">
+              <robot-ai-setting-truco v-model="edit" />
+            </el-tab-pane>
           </el-tabs>
         </el-row>
         <el-form-item>
@@ -92,9 +95,9 @@ import robotAiSettingOne from './truco/robotAiSettingOne'
 import robotAiSettingTwo from './truco/robotAiSettingTwo'
 import robotAiSettingThree from './truco/robotAiSettingThree'
 import robotAiSettingFour from './truco/robotAiSettingFour'
-
+import robotAiSettingTruco from './truco/robotAiSettingTruco'
 export default {
-  components: { Compare, Publish, MoneyInput,robotAiSettingOne,robotAiSettingTwo,robotAiSettingThree,robotAiSettingFour},
+  components: { Compare, Publish, MoneyInput,robotAiSettingOne,robotAiSettingTwo,robotAiSettingThree,robotAiSettingFour,robotAiSettingTruco},
   data() {
     return {
       subKey: 'truco_ai_config',

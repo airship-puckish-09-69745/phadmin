@@ -469,7 +469,7 @@ function newTruco(x,y) {
 
 
 export default {
-  name: 'RobotAiSettingThree',
+  name: 'RobotAiSettingFour',
   components: {  },
   model: {
 		    prop: 'AiConfig',
