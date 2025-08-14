@@ -81,21 +81,7 @@
                 </el-col>
                 </el-row>
               </el-form>
-              <el-row>
-                <el-form ref="AiConfig.ThreeSitCfg.RoundOne.TrucoOther" :model="AiConfig.ThreeSitCfg.RoundOne.TrucoOther" width="70%">
-                  <el-col :span="8">
-                    <el-form-item label="对手已经绝对大牌Truco概率(%)" :required="true">
-                        <template>
-                          <el-input-number
-                            v-model="AiConfig.ThreeSitCfg.RoundOne.TrucoOther.OutMaxRato"  type="number"
-                            style="width: 100%"> 
-                          </el-input-number>
-                        </template>
-                    </el-form-item>
-                </el-col>
-              
-              </el-form>
-              </el-row>
+            
             
           </fieldset>
 
@@ -127,8 +113,27 @@
               </el-table-column>
             
             </el-table>
+           
           </el-row>
                 </fieldset>
+                <fieldset>
+              <legend>对手因素</legend>
+            <el-row>
+                <el-form ref="AiConfig.ThreeSitCfg.RoundOne.TrucoOther" :model="AiConfig.ThreeSitCfg.RoundOne.TrucoOther" width="70%">
+                  <el-col :span="8">
+                    <el-form-item label="对手已经绝对大牌Truco概率(%)" :required="true">
+                        <template>
+                          <el-input-number
+                            v-model="AiConfig.ThreeSitCfg.RoundOne.TrucoOther.OutMaxRato"  type="number"
+                            style="width: 100%"> 
+                          </el-input-number>
+                        </template>
+                    </el-form-item>
+                </el-col>
+              
+              </el-form>
+              </el-row>
+            </fieldset>
         </fieldset>
 
         <fieldset>
@@ -303,7 +308,7 @@
                 <el-form ref="AiConfig.ThreeSitCfg.RoundTwo.TrucoOther" :model="AiConfig.ThreeSitCfg.RoundTwo.TrucoOther" width="70%">
                 <el-row :gutter="16">
                   <el-col :span="8">
-                    <el-form-item label="对手已出绝对大牌且第一回合赢Truco概率" :required="true">
+                    <el-form-item label="对手已出绝对大牌且第一回合我方赢Truco概率" :required="true">
                         <template>
                           <el-input-number
                             v-model="AiConfig.ThreeSitCfg.RoundTwo.TrucoOther.OneWinAndOutMaxRatio"  type="number" 

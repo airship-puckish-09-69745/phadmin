@@ -67,6 +67,12 @@
             <el-tab-pane label="响应Truco">
               <robot-ai-setting-truco v-model="edit" />
             </el-tab-pane>
+            <el-tab-pane label="11分决策">
+              <robot-ai-setting-eleven v-model="edit" />
+            </el-tab-pane> 
+            <el-tab-pane label="作弊控制">
+              <robot-ai-setting-cheat v-model="edit" />
+            </el-tab-pane>
           </el-tabs>
         </el-row>
         <el-form-item>
@@ -96,8 +102,12 @@ import robotAiSettingTwo from './truco/robotAiSettingTwo'
 import robotAiSettingThree from './truco/robotAiSettingThree'
 import robotAiSettingFour from './truco/robotAiSettingFour'
 import robotAiSettingTruco from './truco/robotAiSettingTruco'
+import robotAiSettingEleven from './truco/robotAiSettingEleven'
+import robotAiSettingCheat from './truco/robotAiSettingCheat'
+
+
 export default {
-  components: { Compare, Publish, MoneyInput,robotAiSettingOne,robotAiSettingTwo,robotAiSettingThree,robotAiSettingFour,robotAiSettingTruco},
+  components: { Compare, Publish, MoneyInput,robotAiSettingOne,robotAiSettingTwo,robotAiSettingThree,robotAiSettingFour,robotAiSettingTruco,robotAiSettingEleven,robotAiSettingCheat},
   data() {
     return {
       subKey: 'truco_ai_config',
