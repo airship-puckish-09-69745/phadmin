@@ -34,7 +34,7 @@ export function getDiff(opType, keyID, envEmpty, appId) {
  * @param summary 修改的配置，类型为对象型
  * @returns {*}
  */
-export function submitPublish(opType, keyID, summary, envEmpty, attrInfo) {
+export function submitPublish(opType, keyID, summary, envEmpty, attrInfo, appId) {
   const ver = getVer()
   return request({
     url: `configfile${ver}/publish`,
@@ -44,7 +44,8 @@ export function submitPublish(opType, keyID, summary, envEmpty, attrInfo) {
       keyID: keyID,
       summary: summary,
       AttrInfo: attrInfo,
-      EnvEmpty: envEmpty ? 1 : 0
+      EnvEmpty: envEmpty ? 1 : 0,
+      AppId: appId
     },
     envEmpty: envEmpty
   })
@@ -67,13 +68,14 @@ export function getView(keyID, envEmpty, appId) {
 }
 
 // 回滚 rollback
-export function rollback(keyID, envEmpty) {
+export function rollback(keyID, envEmpty, appId) {
   const ver = getVer()
   return request({
     url: `configfile${ver}/rollback`,
     method: 'post',
     data: {
-      keyID: keyID
+      keyID: keyID,
+      AppId: appId
     },
     envEmpty: envEmpty
   })

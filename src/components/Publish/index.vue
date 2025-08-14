@@ -424,7 +424,7 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          submitPublish(this.opType, this.keyId, this.getSummaryInfo(), this.envEmpty).then(function(response) {
+          submitPublish(this.opType, this.keyId, this.getSummaryInfo(), this.envEmpty, '', this.appId).then(function(response) {
             if (response.RetCode === 0) {
               $this.stepActive++
               $this.$message.success('发布成功')
@@ -438,7 +438,7 @@ export default {
         if (this.opType === 4 && this.attrNames) {
           attrInfo = JSON.stringify(this.attrNames)
         }
-        submitPublish(this.opType, this.keyId, this.getSummaryInfo(), this.envEmpty, attrInfo).then(function(response) {
+        submitPublish(this.opType, this.keyId, this.getSummaryInfo(), this.envEmpty, attrInfo, this.appId).then(function(response) {
           if (response.RetCode === 0) {
             $this.stepActive++
             $this.$message.success('发布成功')

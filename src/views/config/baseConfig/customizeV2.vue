@@ -21,18 +21,19 @@
           prop="item.RedisSubkey"
           :rules="dataRule(!edit.isEdit,{type:'s',range:'2-50'})"
         >
-          <el-col :span="4">
+          <el-col :span="5">
             <el-select
               v-model="edit.item.RedisSubkey"
               filterable
               placeholder="请选择配置项"
               @change="onSelectConfigKeyChange"
+              style="width: 300px"
             >
               <el-option label="新增配置项" value="" />
               <el-option v-for="key in configKeys" :key="key" :label="key" :value="key" />
             </el-select>
           </el-col>
-          <el-col :span="16">
+          <el-col :span="15">
             <el-input v-if="!edit.isEdit" v-model="edit.item.RedisSubkey" />
           </el-col>
         </el-form-item>
