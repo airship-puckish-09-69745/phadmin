@@ -1,20 +1,28 @@
 <template>
   <div>
     <el-row style="padding-top: 5px">
-      <h3 style="text-align:center;">第一回合</h3>
       <el-row style="padding-top: 5px">
         
         <el-table
-              :data="AiConfig.ResponseTruco.RoundOne"
+              :data="AiConfig.ResponseTruco"
               border
               style="width: 100%"
             >
+            <el-table-column
+              label="回合数"
+              width="200"
+            >
+              <template slot-scope="scope">
+                <!-- 使用 $index + 1 显示回合数（从1开始） -->
+                第{{ scope.$index + 1 }}回合
+              </template>
+            </el-table-column>
               <el-table-column
-                label="我方最大的2张牌得分(>=)"
+                label="我方最大的2张牌得分(>=)(对后2项生效)"
                 width="200"
               >
                 <template slot-scope="scope">
-                  <el-input-number v-model.number="scope.row.Score" size="mini" type="number"  :precision="0"></el-input-number>
+                  <el-input-number v-model.number="scope.row.FirstScore" size="mini" type="number"  :precision="0"></el-input-number>
                 </template>
               </el-table-column>
               <el-table-column
@@ -22,7 +30,7 @@
                 width="200"
               >
                 <template slot-scope="scope">
-                  <el-input-number v-model.number="scope.row.AddRatio" size="mini" type="number"  :precision="0"><template slot="append">%</template></el-input-number>
+                  <el-input-number v-model.number="scope.row.FirstAddRatio" size="mini" type="number"  :precision="0"><template slot="append">%</template></el-input-number>
                 </template>
               </el-table-column>
 
@@ -31,116 +39,62 @@
                 width="200"
               >
                 <template slot-scope="scope">
-                  <el-input-number v-model.number="scope.row.AcceptRatio" size="mini" type="number"  :precision="0"><template slot="append">%</template></el-input-number>
+                  <el-input-number v-model.number="scope.row.FirstAcceptRatio" size="mini" type="number"  :precision="0"><template slot="append">%</template></el-input-number>
                 </template>
               </el-table-column>
 
               <el-table-column
-                label="比对手牌小接受Truco概率(%)"
+                label="当我方最大的2张牌得分(>=)(对后3项生效)"
                 width="200"
               >
                 <template slot-scope="scope">
-                  <el-input-number v-model.number="scope.row.LessAcceptRatio" size="mini" type="number"  :precision="0"><template slot="append">%</template></el-input-number>
+                  <el-input-number v-model.number="scope.row.SecondScore" size="mini" type="number"  :precision="0"></el-input-number>
                 </template>
               </el-table-column>
-            
+             
+              <el-table-column
+                label="对手已出最大牌接受Truco概率(%)"
+                width="200"
+              >
+                <template slot-scope="scope">
+                  <el-input-number v-model.number="scope.row.SecondAcceptRatio" size="mini" type="number"  :precision="0"><template slot="append">%</template></el-input-number>
+                </template>
+              </el-table-column>
+
+              <el-table-column
+                label="对手没有出最大牌反加注概率(%)"
+                width="200"
+              >
+                <template slot-scope="scope">
+                  <el-input-number v-model.number="scope.row.SecondAddRatio" size="mini" type="number"  :precision="0"><template slot="append">%</template></el-input-number>
+                </template>
+              </el-table-column>
+
+             
+
+              <el-table-column
+                label="对手没有出最大牌没有命中反加注Truco概率(%)"
+                width="200"
+              >
+                <template slot-scope="scope">
+                  <el-input-number v-model.number="scope.row.SecondNoAddcceptRatio" size="mini" type="number"  :precision="0"><template slot="append">%</template></el-input-number>
+                </template>
+              </el-table-column>
+
+              <el-table-column
+                label="当我方最大的2张牌得分小于前两项时,对手没有出最大牌，接受Truco概率"
+                width="200"
+              >
+                <template slot-scope="scope">
+                  <el-input-number v-model.number="scope.row.LastAcceptRatio" size="mini" type="number"  :precision="0"><template slot="append">%</template></el-input-number>
+                </template>
+              </el-table-column>
             </el-table>
-   
-
-
       </el-row>
      
     </el-row>
-    <el-row style="padding-top: 5px">
-      <h3 style="text-align:center;">第二回合</h3>
-      <el-table
-              :data="AiConfig.ResponseTruco.RoundTwo"
-              border
-              style="width: 100%"
-            >
-              <el-table-column
-                label="我方最大的2张牌得分(>=)"
-                width="200"
-              >
-                <template slot-scope="scope">
-                  <el-input-number v-model.number="scope.row.Score" size="mini" type="number"  :precision="0"></el-input-number>
-                </template>
-              </el-table-column>
-              <el-table-column
-                label="反加注概率(%)"
-                width="200"
-              >
-                <template slot-scope="scope">
-                  <el-input-number v-model.number="scope.row.AddRatio" size="mini" type="number"  :precision="0"><template slot="append">%</template></el-input-number>
-                </template>
-              </el-table-column>
 
-              <el-table-column
-                label="接受Truco概率(%)"
-                width="200"
-              >
-                <template slot-scope="scope">
-                  <el-input-number v-model.number="scope.row.AcceptRatio" size="mini" type="number"  :precision="0"><template slot="append">%</template></el-input-number>
-                </template>
-              </el-table-column>
-
-              <el-table-column
-                label="比对手牌小接受Truco概率(%)"
-                width="200"
-              >
-                <template slot-scope="scope">
-                  <el-input-number v-model.number="scope.row.LessAcceptRatio" size="mini" type="number"  :precision="0"><template slot="append">%</template></el-input-number>
-                </template>
-              </el-table-column>
-            
-            </el-table>
-
-    </el-row>
-
-    <el-row style="padding-top: 5px">
-      <h3 style="text-align:center;">第三回合</h3>
-      <el-table
-              :data="AiConfig.ResponseTruco.RoundThree"
-              border
-              style="width: 100%"
-            >
-              <el-table-column
-                label="我方最大的1张牌得分(>=)"
-                width="200"
-              >
-                <template slot-scope="scope">
-                  <el-input-number v-model.number="scope.row.Score" size="mini" type="number"  :precision="0"></el-input-number>
-                </template>
-              </el-table-column>
-              <el-table-column
-                label="反加注概率(%)"
-                width="200"
-              >
-                <template slot-scope="scope">
-                  <el-input-number v-model.number="scope.row.AddRatio" size="mini" type="number"  :precision="0"><template slot="append">%</template></el-input-number>
-                </template>
-              </el-table-column>
-
-              <el-table-column
-                label="接受Truco概率(%)"
-                width="200"
-              >
-                <template slot-scope="scope">
-                  <el-input-number v-model.number="scope.row.AcceptRatio" size="mini" type="number"  :precision="0"><template slot="append">%</template></el-input-number>
-                </template>
-              </el-table-column>
-
-              <el-table-column
-                label="比对手牌小接受Truco概率(%)"
-                width="200"
-              >
-                <template slot-scope="scope">
-                  <el-input-number v-model.number="scope.row.LessAcceptRatio" size="mini" type="number"  :precision="0"><template slot="append">%</template></el-input-number>
-                </template>
-              </el-table-column>
-            
-            </el-table>
-    </el-row>
+   
   </div>
 </template>
 <script>
@@ -171,66 +125,37 @@ export default {
   },
   data(){
     return {
-      ResponseTruco:{
-        RoundOne:[{
-          Score: 90,
-          AddRatio: 90,
-          AcceptRatio: 80,
-          NoRatio: 0,
-          LessAcceptRatio: 0,
+      ResponseTruco:[
+        {
+          FirstScore: 90,
+          FirstAddRatio: 90,
+          FirstAcceptRatio: 80,
+          SecondScore: 70,
+          SecondAcceptRatio: 30,
+          SecondAddRatio: 30,
+          SecondNoAddcceptRatio: 50,
+          LastAcceptRatio: 20,
+        },
+        {
+          FirstScore: 90,
+          FirstAddRatio: 90,
+          FirstAcceptRatio: 80,
+          SecondScore: 70,
+          SecondAcceptRatio: 30,
+          SecondAddRatio: 30,
+          SecondNoAddcceptRatio: 50,
+          LastAcceptRatio: 20,
         },{
-          Score: 70,
-          AcceptRatio: 30,
-          AddRatio: 20,
-          NoRatio: 50,
-          LessAcceptRatio: 50,
-        },{
-          Score: 0,
-          AddRatio: 0,
-          AcceptRatio: 20,
-          LessAcceptRatio:0,
-          NoRatio: 0,
-        }
+          FirstScore: 90,
+          FirstAddRatio: 90,
+          FirstAcceptRatio: 80,
+          SecondScore: 70,
+          SecondAcceptRatio: 30,
+          SecondAddRatio: 30,
+          SecondNoAddcceptRatio: 50,
+          LastAcceptRatio: 20,
+        },
       ],
-      RoundTwo:[{
-        Score: 90,
-          AddRatio: 90,
-          AcceptRatio: 0,
-          LessAcceptRatio:50,
-          NoRatio: 0,
-          LessAcceptRatio: 0,
-        },{
-          Score: 70,
-          AddRatio: 90,
-          AcceptRatio: 20,
-          LessAcceptRatio:50,
-        },{
-          Score: 0,
-          AddRatio: 0,
-          AcceptRatio: 20,
-          LessAcceptRatio:50,
-        }
-      ],
-      RoundThree:[{
-        Score: 90,
-          AddRatio: 90,
-          AcceptRatio: 0,
-          LessAcceptRatio:50,
-        },{
-          Score: 70,
-          AddRatio: 90,
-          AcceptRatio: 20,
-          LessAcceptRatio:50,
-        },{
-          Score: 0,
-          AddRatio: 0,
-          AcceptRatio: 20,
-          LessAcceptRatio:50,
-        }
-      ],
-
-
-      },
  
       editResponseTruco:{}
       
