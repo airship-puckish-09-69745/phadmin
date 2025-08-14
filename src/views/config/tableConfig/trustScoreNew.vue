@@ -126,10 +126,10 @@ export default {
     setData() {
       if (!ValidateVueItem(this.$refs['item'])) return false
       console.log(this.env)
-      if (this.env === 'pro') {
-        Message.error('请使用旧版')
-        return
-      }
+      // if (this.env === 'pro') {
+      //   Message.error('请使用旧版')
+      //   return
+      // }
       this.form.Data = JSON.stringify(this.item)
       const $this = this
       // 设置修改后数据
