@@ -215,6 +215,10 @@ export default {
                 isUpdate = true
                 break
               }
+              if (start <= start2 && end2 <= end) {
+                isUpdate = true
+                break
+              }
             }
           }
         }
@@ -234,6 +238,10 @@ export default {
               end *= 1000
               const [start2, end2] = this.formData.BroadcastTimeRange
               if ((start <= start2 && end >= start2) || (start <= end2 && end >= end2)) {
+                isUpdate = true
+                break
+              }
+              if (start <= start2 && end2 <= end) {
                 isUpdate = true
                 break
               }

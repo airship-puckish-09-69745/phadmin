@@ -8,7 +8,7 @@
       <div class="search-filter-item">
         appid: <el-select v-model="searchFilter.app_id" placeholder="请选择应用id" size="mini" @change="onSearch">
           <el-option
-            v-for="item in APPID_OPTIONS"
+            v-for="item in app_options_list"
             :key="item.value"
             :label="item.label"
             :value="item.value"
@@ -97,7 +97,7 @@ import Publish from '@/components/Publish/index.vue'
 import request from '@/utils/request'
 import { parseTime } from '@/utils'
 import { APPID_OPTIONS, CHANNEL_OPTIONS } from '@/utils/options'
-import { broadcastTypeOptions, positionOptions, getBroadcastTypeName } from './options'
+import {broadcastTypeOptions, positionOptions, getBroadcastTypeName, app_options_list} from './options'
 import AddMatchBroadcastDialog from './components/AddMatchBroadcastDialog.vue'
 import { $libShow } from '@/utils/common'
 
@@ -115,6 +115,7 @@ export default {
       configData: {},
       FilterableBroadcastList: [], // 通过appId过滤之后展示到列表
       broadcastTypeOptions,
+      app_options_list,
       APPID_OPTIONS,
       CHANNEL_OPTIONS,
       searchFilter: {
@@ -228,7 +229,6 @@ export default {
   },
   mounted() {
     this.onSearch()
-    APPID_OPTIONS.push({ 'value': -1, 'label': 'all' })
   },
   methods: {
     // 弹窗二次确认上架和下架操作
