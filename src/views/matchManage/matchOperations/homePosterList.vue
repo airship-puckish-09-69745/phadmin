@@ -321,7 +321,7 @@ export default {
       jumpCfgs: [
         { 'value': 1, 'label': 'Events' },
         { 'value': 2, 'label': 'Free' },
-        { 'value': 3, 'label': 'Master' },
+        { 'value': 3, 'label': 'PRO ARENA' },
         { 'value': 4, 'label': 'GTCC' },
       ],
       statusCfgs: [
