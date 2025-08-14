@@ -978,7 +978,29 @@ export const asyncRoutes = [
                 ]
               }
             ]
-          }
+          },
+          {
+            path: 'PusoyJPCfg',
+            component: () => import('@/views/empty'),
+            redirect: 'noRedirect',
+            meta: { title: 'PusoyJP', noCache: true },
+            children: [
+              {
+                path: 'PusoyJPCfg',
+                component: () => import('@/views/empty'),
+                redirect: 'noRedirect',
+                meta: { title: 'Normal', noCache: true },
+                children: [
+                  {
+                    path: 'pusoyJPTable',
+                    component: () => import('@/views/config/tableConfig/pusoyJPTable'),
+                    name: 'pusoyJPTable',
+                    meta: { title: '场次 ◐' }
+                  },
+                ]
+              }
+            ]
+          },
         ]
       },
       {
