@@ -14,7 +14,7 @@
         <td v-for="one in FinishArray">
           用户：{{ one.Uid }} - {{ one.Nick }}<br>
           {{ one.isRobot?'机器人':getUserType(one.UserType) }} {{ one.RobotDefenceLevel?getRobotDefenceLevel(one.RobotDefenceLevel): getRobotLevel(one.RobotLevel) }}<br>
-          {{ showCheatType(one.TrustLevel) }}
+          {{ showCheatType(one.isRobot,one.TrustLevel) }}
         </td>
       </tr>
     </table>
@@ -488,7 +488,10 @@ export default {
         return '真人--黑'
       }
     },
-    showCheatType(userType) {
+    showCheatType(isRobot,userType) {
+      if (isRobot) {
+        return ''
+      }
       if (userType === 4) {
         return '低信用户'
       } else if (userType === 5) {

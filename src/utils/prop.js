@@ -12,5 +12,5 @@ export const SLOT_GAME_CONFIG =[
 //下注类游戏
 export const BETTING_GAME_CONFIG =[
   {'value': 20, 'label': '扫雷(sweeper)', 'configKey':'gameSweeper', disabled: false },
-  {'value': 107, 'label': 'Mines Magic', 'configKey':'gameSweeper', disabled: false },
+  {'value': 132, 'label': 'Mines Magic', 'configKey':'gameSweeper', disabled: false },
   ]

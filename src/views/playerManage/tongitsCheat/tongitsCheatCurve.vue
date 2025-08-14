@@ -44,7 +44,7 @@ export default {
   data() {
     return {
       item: {
-        date: new Date().getTime()
+        date: new Date().getTime()-86400*1000
       },
       libShow: $libShow,
       chartData: NewPlaying(),
@@ -81,7 +81,7 @@ export default {
       }).then(response => {
         const chartData = NewPlaying()
         if (response.RetCode === 0) {
-          chartData['yData'][0]['Name'] = new Date($this.item.date).toJSON()
+          chartData['yData'][0]['Name'] = new Date($this.item.date).toJSON().split('T')[0]
           chartData['yData'][0]['Data'] = response.Data
           for (const i in response.Data) {
             chartData['xData'].push((5*i).toString())

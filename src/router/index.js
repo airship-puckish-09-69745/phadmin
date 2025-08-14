@@ -931,17 +931,15 @@ export const asyncRoutes = [
             children: [
               {
                 path: 'trucoTable',
-                component: () => import('@/views/empty'),
-                redirect: 'noRedirect',
-                meta: { title: 'Truco配桌 ◐', noCache: true },
-                children: [
-                  {
-                    path: 'trucoTable',
-                    component: () => import('@/views/config/tableConfig/trucoTable'),
-                    name: 'trucoTable',
-                    meta: { title: 'Truco配桌 ◐' }
-                  }
-                ]
+                component: () => import('@/views/config/tableConfig/trucoTable'),
+                name: 'trucoTable',
+                meta: { title: 'Truco配桌 ◐' }
+              },
+              {
+                path: 'trucoAIConfig',
+                component: () => import('@/views/config/tableConfig/trucoAIConfig'),
+                name: 'trucoAIConfig',
+                meta: { title: 'Truco AI配置 ◐' }
               }
             ]
           },
@@ -980,7 +978,29 @@ export const asyncRoutes = [
                 ]
               }
             ]
-          }
+          },
+          {
+            path: 'PusoyJPCfg',
+            component: () => import('@/views/empty'),
+            redirect: 'noRedirect',
+            meta: { title: 'PusoyJP', noCache: true },
+            children: [
+              {
+                path: 'PusoyJPCfg',
+                component: () => import('@/views/empty'),
+                redirect: 'noRedirect',
+                meta: { title: 'Normal', noCache: true },
+                children: [
+                  {
+                    path: 'pusoyJPTable',
+                    component: () => import('@/views/config/tableConfig/pusoyJPTable'),
+                    name: 'pusoyJPTable',
+                    meta: { title: '场次 ◐' }
+                  },
+                ]
+              }
+            ]
+          },
         ]
       },
       {
@@ -1738,6 +1758,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/slots/slotsScript/MillionaireScriptCfg'),
             name: 'millionaire_script_cfg',
             meta: { title: '老虎机大奖配置' }
+          },
+          {
+            path: 'user_pool_cfg',
+            component: () => import('@/views/config/tableConfig/slots/userPool/UserPoolCfg.vue'),
+            name: 'user_pool_cfg',
+            meta: { title: '小奖池配置' }
           },
           {
             path: 'slots_act_configs_v2',

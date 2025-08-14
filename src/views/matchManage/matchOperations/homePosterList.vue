@@ -268,9 +268,10 @@ import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
 import Compare from '@/components/Compare'
 import { getAllCommonGameConfig } from '@/utils/common-game-config'
 import {APPID_OPTIONS, MATCH_UNIQUE_ID_CFG,CHANNEL_OPTIONS} from "@/utils/options";
+import SiteSelect from '@/components/SiteSelect/index.vue'
 
 export default {
-  components: { Compare, Publish, DateTimeShow, ImagePicker },
+  components: { Compare, Publish, DateTimeShow, ImagePicker, SiteSelect },
   data() {
     return {
       activeTab: 'base',
@@ -321,7 +322,7 @@ export default {
       jumpCfgs: [
         { 'value': 1, 'label': 'Events' },
         { 'value': 2, 'label': 'Free' },
-        { 'value': 3, 'label': 'Master' },
+        { 'value': 3, 'label': 'PRO ARENA' },
         { 'value': 4, 'label': 'GTCC' },
       ],
       statusCfgs: [
