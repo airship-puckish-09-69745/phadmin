@@ -43,15 +43,15 @@ router.beforeEach(async(to, from, next) => {
           // generate accessible routes map based on roles
           // 获取cookie中的版本
           const version = Cookies.get('version')
-          console.log('version', version)
-          
-          if (version == "V1") {
+          console.log('permission version', version)
+
+          if (version === "V1" || version === undefined) {
             const accessRoutes = await store.dispatch('permission/generateRoutes', pers)
             router.addRoutes(accessRoutes)
-          } else if (version == "V2") {
-            console.log('menus', menus)
+          } else if (version === "V2") {
+            console.log('permission menus', menus)
             const accessRoutes = await store.dispatch('menu/generateRoutes', menus)
-            console.log('accessRoutes', accessRoutes)
+            console.log('permission accessRoutes', accessRoutes)
             router.addRoutes(accessRoutes)
           }
           // hack method to ensure that addRoutes is complete

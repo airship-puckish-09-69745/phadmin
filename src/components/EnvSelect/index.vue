@@ -92,6 +92,8 @@ export default {
         this.$store.dispatch('app/setVersion', 'V1')
       }
 
+      console.log('handleSetEnv env', env)
+
       const isDiffVersion = env.split('-').length !== this.oldEnv.split('-').length
       this.refreshView(isDiffVersion)
       this.$message({
