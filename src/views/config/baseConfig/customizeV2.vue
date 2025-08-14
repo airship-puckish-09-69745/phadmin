@@ -3,7 +3,7 @@
     <el-row>
       <el-row>
         <el-col v-if="edit.isEdit">
-          <publish primary-key="ID" :key-id="getFullKey()" :app-id="edit.item.AppId" :env-empty="false" compare-type="Object" />
+          <publish primary-key="ID" :key-id="getFullKey()" :app-id="appId" :env-empty="false" compare-type="Object" />
         </el-col>
       </el-row>
       <el-row>
@@ -13,7 +13,7 @@
       </el-row>
       <el-form ref="form" :model="edit" label-width="150px" size="small" style="padding-top: 10px">
         <el-form-item label="所属应用：" :required="true" prop="item.AppId">
-          <span>{{ edit.item.AppId > 0 ? edit.item.AppId : '通用配置' }}</span>
+          <span>{{ appId > 0 ? appId : '通用配置' }}</span>
         </el-form-item>
         <el-form-item
           label="配置Key："
@@ -205,7 +205,7 @@ export default {
     getPostData() {
       const postData = JSON.parse(JSON.stringify(this.edit.item))
       postData.Env = this.env
-      if (postData.Type === 1) {
+      if (postData.Type === 1 && typeof this.edit.item.Data === 'object') {
         postData.Data = JSON.stringify(postData.Data)
       }
       return postData

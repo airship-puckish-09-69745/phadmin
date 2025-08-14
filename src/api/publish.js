@@ -10,16 +10,18 @@ function getVer() {
  * @param opType 2发布到测试 3测试到预发布 6预发布到线上
  * @param keyID
  * @param envEmpty true环境变量为空
+ * @param appId
  * @returns {*}
  */
-export function getDiff(opType, keyID, envEmpty) {
+export function getDiff(opType, keyID, envEmpty, appId) {
   const ver = getVer()
   return request({
     url: `configfile${ver}/diff`,
     method: 'get',
     data: {
       opType: opType,
-      keyID: keyID
+      keyID: keyID,
+      AppId: appId
     },
     envEmpty: envEmpty
   })

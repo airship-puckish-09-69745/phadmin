@@ -718,7 +718,7 @@ export default {
     getDiff() {
       const $this = this
       this.init()
-      getDiff(this.opType, this.keyId, this.envEmpty).then(response => {
+      getDiff(this.opType, this.keyId, this.envEmpty, this.appId).then(response => {
         if ($this.diffView && response.Data.AttrInfo !== '' && response.Data.AttrInfo !== 'undefined') {
           $this.attrNames = JSON.parse(response.Data.AttrInfo)
         }
@@ -747,6 +747,8 @@ export default {
             console.log('getDiff preVal is Object')
           }
         }
+        console.log('preVal:', preVal)
+        console.log('proVal:', proVal)
         console.log('compareType:' + $this.compareType)
         console.log('Object.prototype.toString.call(obj):', Object.prototype.toString.call(preVal))
 
@@ -760,7 +762,11 @@ export default {
             $this.dialogShow()
             break
           case 'CustomizeConfig':
-            preVal = JSON.parse(preVal.Data)
+            if (preVal && preVal.Data) {
+              preVal = JSON.parse(preVal.Data)
+            } else {
+              preVal = {}
+            }
             if (proVal && proVal.Data) {
               proVal = JSON.parse(proVal.Data)
             } else {
@@ -926,11 +932,15 @@ export default {
         keys.push(k)
       }
 
+      console.log('1.getKeys', keys)
+
       for (const k in v2) {
         if (keys.indexOf(k) === -1) {
           keys.push(k)
         }
       }
+
+      console.log('2.getKeys', keys)
 
       return keys
     },
