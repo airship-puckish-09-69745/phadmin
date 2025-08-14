@@ -105,7 +105,7 @@
               style="width: 100%"
             >
               <el-table-column
-                label="我方最大的2张牌得分(>=)"
+                label="我方最大的1张牌得分(>=)"
                 width="200"
               >
                 <template slot-scope="scope">
@@ -175,18 +175,21 @@ export default {
         RoundOne:[{
           Score: 90,
           AddRatio: 90,
-          AcceptRatio: 0,
-          LessAcceptRatio:50,
+          AcceptRatio: 80,
+          NoRatio: 0,
+          LessAcceptRatio: 0,
         },{
           Score: 70,
-          AddRatio: 90,
-          AcceptRatio: 20,
-          LessAcceptRatio:50,
+          AcceptRatio: 30,
+          AddRatio: 20,
+          NoRatio: 50,
+          LessAcceptRatio: 50,
         },{
           Score: 0,
           AddRatio: 0,
           AcceptRatio: 20,
-          LessAcceptRatio:50,
+          LessAcceptRatio:0,
+          NoRatio: 0,
         }
       ],
       RoundTwo:[{
@@ -194,6 +197,8 @@ export default {
           AddRatio: 90,
           AcceptRatio: 0,
           LessAcceptRatio:50,
+          NoRatio: 0,
+          LessAcceptRatio: 0,
         },{
           Score: 70,
           AddRatio: 90,
