@@ -3445,12 +3445,6 @@ export const asyncRoutes = [
         meta: { title: '自定义配置 ◐', noCache: true }
       },
       {
-        path: 'customizeV2',
-        component: () => import('@/views/config/baseConfig/customizeV2'),
-        name: 'customizeV2',
-        meta: { title: '自定义配置V2 ◐', noCache: true }
-      },
-      {
         path: 'creditScore',
         component: () => import('@/views/config/baseConfig/creditScore'),
         name: 'creditScore',
