@@ -476,15 +476,8 @@
             </el-row>
             <el-row>
               <el-col :span="11">
-                <el-form-item label="SiteId白名单：" prop="item.WhitelistCfg.AppIdList">
-                  <el-select v-model="edit.item.WhitelistCfg.SiteIdList" multiple placeholder="请选择" style="width: 400px" @change="onSiteIdOptionsChange">
-                    <el-option
-                      v-for="item in siteIdOptions"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
+                <el-form-item label="SiteId白名单：" prop="item.WhitelistCfg.SiteIdList">
+                  <SiteSelect v-model="edit.item.WhitelistCfg.SiteIdList" multiple placeholder="请选择" style="width: 400px" @change="onSiteIdOptionsChange" />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -513,6 +506,7 @@ import store from "@/store"
 import request from "@/utils/request"
 import {Message} from "element-ui"
 import ImagePicker from "@/components/ImagePicker/ImagePicker.vue"
+import SiteSelect from "@/components/SiteSelect/index.vue"
 
 const filterMap = {}
 
@@ -623,7 +617,7 @@ function newEggWeightCfg(conditionType, eggs) {
 }
 
 export default {
-  components: {ImagePicker, Compare, Publish, GameLevel, MoneyInput },
+  components: {ImagePicker, Compare, Publish, GameLevel, MoneyInput, SiteSelect },
   data() {
     return {
       tableData: [],
@@ -712,16 +706,6 @@ export default {
           label: 'BingoPlus测试1000006'
         },
       ],
-
-      siteIdOptions: [
-        { value: 'BP', label: 'BP' },
-        { value: 'AP', label: 'AP' },
-        { value: 'GP', label: 'GP' },
-        { value: 'TP', label: 'TP' },
-        { value: 'PG', label: 'PG' },
-        { value: 'Dev', label: 'Dev' }
-      ],
-
       // 奖励类型
       rewardTypes: [
         { 'value': 1, 'label': '金币' },

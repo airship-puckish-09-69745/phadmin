@@ -319,15 +319,8 @@
                 </el-form-item>
               </el-col>
               <el-col>
-                <el-form-item label="SiteId白名单：" prop="item.WhitelistCfg.AppIdList">
-                  <el-select v-model="item.WhitelistCfg.SiteIdList" multiple placeholder="请选择" style="width: 400px" @change="onSiteIdOptionsChange">
-                    <el-option
-                      v-for="item in siteIdOptions"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
+                <el-form-item label="SiteId白名单：" prop="item.WhitelistCfg.SiteIdList">
+                  <SiteSelect v-model="item.WhitelistCfg.SiteIdList" multiple placeholder="请选择" style="width: 400px" />
                 </el-form-item>
               </el-col>
               <el-col :span="10">
@@ -433,6 +426,7 @@ import {Message} from "element-ui";
 import request from "@/utils/request";
 import Compare from "@/components/Compare/index.vue";
 import store from '@/store'
+import SiteSelect from '@/components/SiteSelect/index.vue'
 
 function newPrizePoolCfg() {
   return {
@@ -446,7 +440,7 @@ function newPrizePoolCfg() {
 }
 
 export default {
-  components: {Compare, ImagePicker, Publish},
+  components: {Compare, ImagePicker, Publish, SiteSelect},
   watch: {
     filterText(val) {
       this.$refs.tree.filter(val);
@@ -564,15 +558,6 @@ export default {
           value: 1000005,
           label: '正式1000005'
         },
-      ],
-
-      siteIdOptions: [
-        { value: 'BP', label: 'BP' },
-        { value: 'AP', label: 'AP' },
-        { value: 'GP', label: 'GP' },
-        { value: 'TP', label: 'TP' },
-        { value: 'PG', label: 'PG' },
-        { value: 'Dev', label: 'Dev' }
       ],
 
       // 奖励类型

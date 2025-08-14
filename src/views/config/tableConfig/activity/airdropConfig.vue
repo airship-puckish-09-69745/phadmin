@@ -462,15 +462,11 @@
             </el-row>
             <el-row>
               <el-col :span="11">
-                <el-form-item label="SiteId白名单：" prop="item.whitelistCfg.appIdList">
-                  <el-select v-model="edit.item.whitelistCfg.siteIdList" multiple placeholder="请选择" style="width: 400px" @change="onSiteIdOptionsChange">
-                    <el-option
-                      v-for="item in siteIdOptions"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
+                <el-form-item label="SiteId白名单：" prop="item.whitelistCfg.siteIdList">
+                  <SiteSelect
+                    v-model="edit.item.whitelistCfg.siteIdList"
+                    multiple
+                  />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -538,6 +534,7 @@ import store from "@/store";
 import request from "@/utils/request";
 import {Message} from "element-ui";
 import {id} from "html-webpack-plugin/lib/chunksorter";
+import SiteSelect from "@/components/SiteSelect/index.vue"
 
 const filterMap = {}
 
@@ -593,7 +590,7 @@ function newItem() {
 }
 
 export default {
-  components: { ImagePicker, Compare, Publish, GameLevel, MoneyInput },
+  components: { ImagePicker, Compare, Publish, GameLevel, MoneyInput, SiteSelect },
   data() {
     return {
       AttrNames: {
@@ -681,16 +678,6 @@ export default {
           label: 'BingoPlus测试1000006'
         },
       ],
-
-      siteIdOptions: [
-        { value: 'BP', label: 'BP' },
-        { value: 'AP', label: 'AP' },
-        { value: 'GP', label: 'GP' },
-        { value: 'TP', label: 'TP' },
-        { value: 'PG', label: 'PG' },
-        { value: 'Dev', label: 'Dev' }
-      ],
-
       // 奖励类型
       rewardTypes: [
         // { 'value': 1, 'label': '金币' },
