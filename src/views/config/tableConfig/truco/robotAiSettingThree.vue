@@ -144,7 +144,7 @@
                     <el-form-item label="队友已出牌得分(>=)" :required="true">
                         <template>
                           <el-input-number
-                            v-model="AiConfig.ThreeSitCfg.RoundOne.OutCard.TeamOuCardScore"  type="number"
+                            v-model="AiConfig.ThreeSitCfg.RoundOne.OutCard.TeamOuCardRatio"  type="number"
                             style="width: 100%"> 
                           </el-input-number>
                         </template>
@@ -329,7 +329,7 @@
                     <el-form-item label="队友已出牌得分(>=)" :required="true">
                         <template>
                           <el-input-number
-                            v-model="AiConfig.ThreeSitCfg.RoundTwo.OutCard.TeamOuCardScore"  type="number"
+                            v-model="AiConfig.ThreeSitCfg.RoundTwo.OutCard.TeamOuCardRatio"  type="number"
                             style="width: 100%"> 
                           </el-input-number>
                         </template>
@@ -529,7 +529,7 @@ export default {
             OutMaxRato: 20,
           },
           OutCard:{
-            TeamOuCardScore:20,
+            TeamOuCardRatio:20,
           }
         },
         RoundTwo:{
@@ -565,7 +565,7 @@ export default {
             OneWinAndOutMaxRatio: 20,
           },
           OutCard:{
-            TeamOuCardScore:20,
+            TeamOuCardRatio:20,
           }
         },
         RoundThree:{
