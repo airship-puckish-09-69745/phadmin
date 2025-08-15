@@ -2192,10 +2192,24 @@ export const asyncRoutes = [
     meta: { title: '比赛管理', icon: 'example', perm: 'CFG_MANAGEMENT_GTCC' },
     children: [
       {
-        path: 'matchConfig',
-        component: () => import('@/views/matchManage/matchConfig'),
-        name: 'matchConfig',
-        meta: { title: '赛事管理', noCache: true }
+        path: 'matchType',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: '赛事管理', noCache: true },
+        children: [
+          {
+            path: 'matchConfig',
+            component: () => import('@/views/matchManage/matchConfigs/matchConfig'),
+            name: 'matchConfig',
+            meta: { title: 'Tongits赛制管理', noCache: true }
+          },
+          {
+            path: 'matchConfigCopy',
+            component: () => import('@/views/matchManage/matchConfigs/matchConfigCopy'),
+            name: 'matchConfig1',
+            meta: { title: 'Pusoy赛制管理', noCache: true }
+          }
+        ]
       },
       {
         path: 'matchRule',
