@@ -119,7 +119,7 @@ export default {
       APPID_OPTIONS,
       CHANNEL_OPTIONS,
       searchFilter: {
-        app_id: 1000002
+        app_id: -1
       },
       tableData: [],
       positionOptions,
