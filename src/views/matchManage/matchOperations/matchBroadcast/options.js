@@ -23,6 +23,7 @@ export const broadcastTypeOptions = [
   }
 ]
 export const app_options_list = [
+  { 'value': -1, 'label': 'all' },
   { 'value': 1000002, 'label': 'dayusenlin' },
   { 'value': 1000003, 'label': 'testaccount' },
   { 'value': 1000004, 'label': 'testkey' },
@@ -30,8 +31,7 @@ export const app_options_list = [
   { 'value': 1000006, 'label': 'BingoPlusTest' },
   { 'value': 1000007, 'label': 'br' },
   { 'value': 1000008, 'label': 'gli' },
-  { 'value': 1100000, 'label': 'xworld' },
-  { 'value': -1, 'label': 'all' }
+  { 'value': 1100000, 'label': 'xworld' }
 ]
 
 // 獲取播报类型名称
