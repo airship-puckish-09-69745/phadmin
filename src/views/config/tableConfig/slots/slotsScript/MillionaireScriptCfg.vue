@@ -399,6 +399,7 @@ export default {
         '196': 'goldminer',
         '198': 'fortuneblessing',
         '200': 'atlantistreasure',
+        '202': 'fortunateebisu',
         '204': 'spacetreasure',
         '208': 'candyburst'
       }
