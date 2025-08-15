@@ -2935,6 +2935,10 @@ export default {
           if (objs.total > 0) {
             let total = 0
             for (var i = 0; i < objs.list.length; i++) {
+              let gameId = parseInt(objs.list[i].game_id, 10)
+              if (gameId !== 2033) {
+                continue
+              }
               if (!await this.checkRuleIdIsPublish(objs.list[i].id)) {
                 continue
               }
