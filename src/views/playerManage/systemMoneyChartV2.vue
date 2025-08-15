@@ -421,7 +421,7 @@ export default {
         210: 'Lucky Spirits',
         214: 'PumpkinCash',
         216: 'Phoenix',
-        220: 'GoldenDragon',
+        220: 'Golden Dragon',
         9: 'Teen Patti',
         126: 'Pusoy Wild',
         2031: 'TongitsMtt',
