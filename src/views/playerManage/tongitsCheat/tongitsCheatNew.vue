@@ -45,7 +45,8 @@ export default {
         { label: '全部', value: -1 },
         { label: '普通', value: 0 },
         { label: '疑似', value: 1 },
-        { label: '黑子', value: 2 }
+        { label: '黑子', value: 2 },
+        { label: '认证高信', value: 3 }
       ],
       CheatType: 0,
       CheatTypeOption: [
