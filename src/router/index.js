@@ -2198,15 +2198,15 @@ export const asyncRoutes = [
         meta: { title: '赛事管理', noCache: true },
         children: [
           {
-            path: 'matchConfig',
-            component: () => import('@/views/matchManage/matchConfigs/matchConfig'),
-            name: 'matchConfig',
+            path: 'matchTongitsConfig',
+            component: () => import('@/views/matchManage/matchConfigs/matchTongitsConfig'),
+            name: 'matchTongitsConfig',
             meta: { title: 'Tongits赛事', noCache: true }
           },
           {
-            path: 'matchConfigCopy',
-            component: () => import('@/views/matchManage/matchConfigs/matchConfigCopy'),
-            name: 'matchConfig1',
+            path: 'matchPusoyConfig',
+            component: () => import('@/views/matchManage/matchConfigs/matchPusoyConfig'),
+            name: 'matchPusoyConfig',
             meta: { title: 'Pusoy赛事', noCache: true }
           }
         ]

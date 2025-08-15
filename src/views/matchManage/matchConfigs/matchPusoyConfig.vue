@@ -1246,10 +1246,14 @@ export default {
           const objs = response.Data || []
           if (objs.total > 0) {
             for (var i = 0; i < objs.list.length; i++) {
+              let gameId = parseInt(objs.list[i].game_id, 10)
+              if (gameId !== 2033) {
+                continue
+              }
               this.csCfgs.push({
                 'label': '[' + objs.list[i].id + ']' + objs.list[i].name,
                 'value': objs.list[i].id,
-                'gameId': [parseInt(objs.list[i].game_id, 10)],
+                'gameId': [gameId],
                 'ruleType': objs.list[i].rule_type,
               })
               const stage_detail = JSON.parse(objs.list[i].stage_detail)
@@ -1292,13 +1296,15 @@ export default {
         if (response.RetCode === 0) {
           const objs = response.Data || []
           if (objs.total > 0) {
-            console.log("+++++++++++++++++++++++++++++++++")
-            console.log(objs.list)
             this.total = objs.total
             this.tableData = []
             const tableDataCpy = objs.list
             if (tableDataCpy.length > 0) {
               for (let i = 0; i < tableDataCpy.length; i++) {
+                let gameId = parseInt(tableDataCpy[i].game_id, 10)
+                if (gameId !== 2033) {
+                  continue
+                }
                 let show_appinfo = ''
                 show_appinfo = this.filterMatchListByAppId(tableDataCpy[i].app_info_cfg)
                 if (show_appinfo !== '') {

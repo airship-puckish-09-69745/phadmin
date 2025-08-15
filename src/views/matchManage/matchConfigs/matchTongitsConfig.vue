@@ -1308,8 +1308,6 @@ export default {
         if (response.RetCode === 0) {
           const objs = response.Data || []
           if (objs.total > 0) {
-            console.log("+++++++++++++++++++++++++++++++++")
-            console.log(objs.list)
             this.total = objs.total
             this.tableData = []
             const tableDataCpy = objs.list
