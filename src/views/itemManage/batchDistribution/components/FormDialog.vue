@@ -42,6 +42,7 @@
               :key="item.value"
               :label="item.label"
               :value="item.value"
+              :disabled="disableByPropId(item.value)"
             />
           </el-select>
         </div>
@@ -237,8 +238,6 @@ export default {
       this.$emit('reload')
     },
     updateItemOption(filteredItems) {
-      console.log("++++++++++++++2345+++++++++++++++")
-      console.log(filteredItems)
       if (filteredItems === null) {
         return
       }
@@ -387,6 +386,18 @@ export default {
         params.ID = this.updateForm.id
       }
       return params
+    },
+
+    disableByPropId(propId){
+      for(let i=0; i < this.itemList.length;i++){
+        if(this.itemList[i].id === propId && this.itemList[i].item_type ===  PROP_TYPE_OPTIONS.PROP_TYPE_TICKET){
+          if(this.itemList[i].item_extra !== null && JSON.parse(this.itemList[i].item_extra).specialAttr=== 1 ){ //如果是邀请函
+            return true
+          }
+        }
+      }
+      return false
+
     },
     /**
      * 切换id类型时，清空应用id

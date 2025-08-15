@@ -544,15 +544,24 @@ export default {
           if (objs.total > 0) {
             this.tableData = []
             this.total = 0
-            for(let i=0;i<objs.list.length;i++) {
-              if (objs.list[i].self_build ==  0) {
+            for (let i = 0; i < objs.list.length; i++) {
+              let gameId = parseInt(objs.list[i].game_id, 10)
+              if (gameId !== 2031) {
+                continue
+              }
+              if (this.form.gameId > 0) {
+                if (this.form.gameId > 0 && this.form.gameId !== gameId) {
+                  continue
+                }
+              }
+              if (objs.list[i].self_build === 0) {
                 this.total = this.total + 1
                 this.tableData.push(objs.list[i])
               }
             }
             if (this.tableData.length > 0) {
-              for (let i=0;i<this.tableData.length;i++) {
-                if (this.tableData[i].status == 0) {
+              for (let i = 0; i < this.tableData.length; i++) {
+                if (this.tableData[i].status === 0) {
                   this.tableData[i].openShow = true
                 } else {
                   this.tableData[i].openShow = false

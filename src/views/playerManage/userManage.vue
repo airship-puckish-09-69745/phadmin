@@ -176,7 +176,7 @@
             <el-col :span="3">
               <template>
                 <el-select v-model.number="item.ItemCfgId" size="mini" placeholder="请选择" @change="handleItemChange(item.ItemCfgId)">
-                  <el-option v-for="option in tableItemData" :key="option.value" :label="option.label" :value="option.value" :disabled="option.disabled"
+                  <el-option v-for="option in tableItemData" :key="option.value" :label="option.label" :value="option.value" :disabled="disableByPropId(option.value)"
                   ></el-option>
                 </el-select>
               </template>
@@ -1794,6 +1794,17 @@ export default {
 
         }
       }
+    },
+
+    disableByPropId(propId){
+      for(let i=0; i < this.tableData.length;i++){
+        if(this.tableData[i].id === propId && this.tableData[i].item_type ===  PROP_TYPE_OPTIONS.PROP_TYPE_TICKET){
+          if(this.tableData[i].item_extra !== null && JSON.parse(this.tableData[i].item_extra).specialAttr=== 1 ){ //如果是邀请函
+            return true
+          }
+        }
+      }
+      return false
     },
 
     handleItemChange() {
