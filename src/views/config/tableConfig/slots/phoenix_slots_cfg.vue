@@ -58,11 +58,10 @@ import slotsVup from './components_x/slots_vup'
 import slotsReelsDouble from './components_x/reels_double'
 import slotsRowReelsDouble from './components_x/row_reels_double'
 import slotsScript from './components_x/slots_script'
-import slotsPharaohExt from "@/views/config/tableConfig/slots/components_x/pharaohtreasure_ext.vue";
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: {slotsPharaohExt, Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotsPhoenixExt, slotsRowReelsDouble, slotsBigWinnerCfg, slotsVup, slotsReelsDouble, slotsScript },
+  components: { Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotsPhoenixExt, slotsRowReelsDouble, slotsBigWinnerCfg, slotsVup, slotsReelsDouble, slotsScript },
   data() {
     return {
       activeTab: 'base',

@@ -65,6 +65,13 @@
                     {{scope.row.Total - scope.row.Free }}
                 </template>
             </el-table-column>
+            <el-table-column
+            label="机器人桌子数量"
+            width="180">
+                <template slot-scope="scope">
+                    {{scope.row.RobotTableNum}}
+                </template>
+            </el-table-column>
         </el-table>
       </el-row>
 
@@ -127,6 +134,13 @@
                                 {{scope.row.Total - scope.row.Free }}
                             </template>
                         </el-table-column>
+                        <el-table-column
+                        label="机器人桌子数量"
+                        width="180">
+                            <template slot-scope="scope">
+                                {{scope.row.RobotTableNum}}
+                            </template>
+                        </el-table-column>  
                     </el-table>
                 </template>
             </el-table-column>
@@ -163,6 +177,11 @@
                         <el-table-column
                             prop="score"
                             label="积分"
+                        >
+                        </el-table-column>
+                        <el-table-column
+                            prop="robotNum"
+                            label="机器人数量"
                         >
                         </el-table-column>
                     </el-table>

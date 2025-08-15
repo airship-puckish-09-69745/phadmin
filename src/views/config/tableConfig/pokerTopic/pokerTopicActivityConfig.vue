@@ -346,14 +346,7 @@
             <el-row>
               <el-col :span="11">
                 <el-form-item label="SiteId白名单：" prop="item.SiteWhitelist">
-                  <el-select v-model="edit.item.SiteWhitelist" multiple placeholder="请选择" style="width: 400px">
-                    <el-option
-                      v-for="item in siteIdOptions"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
+                  <SiteSelect v-model="edit.item.SiteWhitelist" multiple placeholder="请选择" style="width: 400px" />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -420,6 +413,7 @@ import { Message } from 'element-ui'
 import Publish from '@/components/Publish'
 import GameLevel from '@/components/GameLevel'
 import MoneyInput from '@/components/MoneyInput'
+import SiteSelect from '@/components/SiteSelect/index.vue'
 
 const filterMap = {}
 
@@ -455,7 +449,7 @@ function newCycle(activity, actCycle, number, startTime) {
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: { Compare, Publish, GameLevel, MoneyInput },
+  components: { Compare, Publish, GameLevel, MoneyInput, SiteSelect },
   data() {
     return {
       tableData: [],
@@ -555,16 +549,6 @@ export default {
           label: '正式1000005'
         }
       ],
-
-      siteIdOptions: [
-        { value: 'BP', label: 'BP' },
-        { value: 'AP', label: 'AP' },
-        { value: 'GP', label: 'GP' },
-        { value: 'TP', label: 'TP' },
-        { value: 'PG', label: 'PG' },
-        { value: 'Dev', label: 'Dev' }
-      ],
-
       filterText: '',
 
       defaultProps: {

@@ -240,11 +240,33 @@ export default {
       this.editRowIndex = idx
     },
     saveRow() {
+      if (this.pairs.length === 0) {
+        Message.error('请至少添加一个奖励-权重配置')
+        return
+      }
+
+      let totalWeight = 0
+      let totalReward = 0
+      for (const i in this.pairs) {
+        if (this.pairs[i].Reward <= 0) {
+          Message.error('奖励金额必须大于0')
+          return
+        }
+        totalWeight += this.pairs[i].Weight
+        totalReward += this.pairs[i].Reward
+      }
+
+      if (totalWeight === 0) {
+        Message.error('权重之和必须大于0')
+        return
+      }
+
       this.visible = false
       if (this.pairs) {
         this.pairs.sort((a, b) => { return a.Reward - b.Reward })
         this.showData[this.editRowIndex].MinReword = this.pairs[0].Reward
         this.showData[this.editRowIndex].MaxReword = this.pairs[this.pairs.length - 1].Reward
+        this.showData[this.editRowIndex].AvgReward = (totalReward / this.pairs.length).toFixed(2)
       }
     },
     addRow() {
@@ -408,6 +430,16 @@ export default {
       return JSON.parse(JSON.stringify(cfg))
     },
     checkData(cfg) {
+      for (const i in cfg) {
+        if (cfg[i].ScoreRequired <= 0) {
+          Message.error('需求积分必须大于0')
+          return false
+        }
+        if (cfg[i].Pairs.length === 0) {
+          Message.error('请至少添加一个奖励配置项')
+          return false
+        }
+      }
       return true
     },
     getGameList() {

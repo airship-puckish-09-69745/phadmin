@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-row>
+    <el-row :gutter="20">
       <div class="serach-filter">
         <div class="serach-filter-item">
           机器人资产范围：<el-input v-model="searchFilter.moneyLowerLimit" placeholder="资产下限" size="small" type="number" min="0" />
@@ -10,17 +10,34 @@
           <el-button type="primary" icon="el-icon-search" size="small" @click="onSearch">搜索</el-button>
         </div>
         <div class="serach-filter-item float-right">
-          <el-button type="warning" size="small" :disabled="selectedRobots.length === 0" @click="handleLaunchRobot">投放选中的机器人</el-button>
+          <el-button type="success" size="small" :disabled="selectedRobots.length === 0" @click="handleLaunchRobot">投放选中的机器人</el-button>
         </div>
         <div class="serach-filter-item float-right">
-          <el-button type="success" icon="el-icon-plus" size="small" @click="handleShowImportRobotDialog">添加机器人</el-button>
+          <el-button  icon="el-icon-plus" size="small" @click="handleShowImportRobotDialog">添加机器人</el-button>
         </div>
       </div>
     </el-row>
     <el-row>
+      <br/>
+    </el-row>
+    <el-row >
+      <el-button   size="small" @click="searchRobot(0,10000000)">全部</el-button>
+      <el-button   size="small" @click="searchRobot(0,2000)">小于2千</el-button>
+      <el-button   size="small" @click="searchRobot(2001,5000)">2千-5千</el-button>
+      <el-button   size="small" @click="searchRobot(5001,10000)">5千-1万</el-button>
+      <el-button   size="small" @click="searchRobot(10001,20000)">1万-2万</el-button>
+      <el-button   size="small" @click="searchRobot(20001,50000)">2万-5万</el-button>
+      <el-button   size="small" @click="searchRobot(50001,10000000)">大于5万</el-button>
+    </el-row>
+    <el-row>
       <el-table
         :data="robotList"
-        style="width: 100%"
+        stripe
+        border
+        style="width: 70%"
+        :header-cell-style="libShow.DefaultTableHeadClass"
+        :row-style="{height:'10px'}"
+        :cell-style="libShow.DefaultTableCell"
         @selection-change="handleSelectionChange"
       >
         <el-table-column v-for="(item, index) in columns" :key="index" :prop="item.prop" :label="item.label" :formatter="item.formatter" />
@@ -53,6 +70,7 @@
 import AddRobotDialog from './components/AddRobotDialog.vue'
 import request from '@/utils/request'
 import LaunchRobotsDialog from './components/LaunchRobotsDialog.vue'
+import { $libShow } from '@/utils/common'
 
 export default {
   components: {
@@ -61,6 +79,7 @@ export default {
   },
   data() {
     return {
+      libShow: $libShow,
       searchFilter: {
         moneyLowerLimit: '',
         moneyUpperLimit: ''
@@ -80,7 +99,7 @@ export default {
           label: '当前资产',
           prop: 'money',
           formatter: (row, column, cellValue) => {
-            return this.transformMoney(cellValue)
+            return this.transformMoney(cellValue).toLocaleString()
           }
         }
       ],
@@ -106,7 +125,12 @@ export default {
   },
   methods: {
     transformMoney(money) {
-      return parseFloat(money / 1000)
+      return parseInt(money / 1000)
+    },
+    searchRobot(a,b){
+      this.searchFilter.moneyLowerLimit = a
+      this.searchFilter.moneyUpperLimit = b
+      this.onSearch()
     },
     onSearch() {
       this.pagination.currentPage = 1

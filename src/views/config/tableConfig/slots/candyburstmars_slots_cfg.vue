@@ -28,11 +28,6 @@
             <publish primary-key="ID" :key-id="getFullKey('candyburstmars_slots_ext')" :env-empty="false" compare-type="Object" />
             <slots-candyburstmars-ext v-if="extCfgBool" v-model="extCfg" @saveData="saveExtCfg" />
           </el-tab-pane>
-          <el-tab-pane label="剧本" name="script">
-            <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，发布即生效】</h3>
-            <publish primary-key="ID" :key-id="getFullKey('candyburstmars_slots_rule')" :env-empty="false" compare-type="Object" />
-            <slots-script v-if="ruleCfgBool" v-model="ruleCfg" :bets="baseCfg.BetListAct" @saveData="saveRuleCfg" />
-          </el-tab-pane>
         </el-tabs>
       </el-col>
     </el-row>

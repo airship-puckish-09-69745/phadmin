@@ -424,14 +424,17 @@
     <el-dialog title="机器人数据图表" :visible.sync="chartDialog.visible" width="80%" @close="closeChartDialog">
       <el-form :model="chartDialog.form" label-width="100px" style="margin-bottom: 20px;">
         <el-form-item label="场次:">
-          <el-select v-model="chartDialog.form.tableMoney" placeholder="请选择场次" style="width: 100%;">
-            <el-option
+          <el-row>
+            <el-button
               v-for="item in tableMoneyOptions"
               :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
+              size="mini"
+              :type="chartDialog.form.tableMoney === item.value ? 'primary' : 'default'"
+              @click="selectTableMoney(item.value)"      style="margin-right: 10px; margin-bottom: 10px;"
+            >
+              {{ item.label }}
+            </el-button>
+          </el-row>
         </el-form-item>
         <el-form-item label="时间范围:">
           <el-date-picker
@@ -538,6 +541,10 @@ export default {
       this.getData()
       this.getList()
     },
+    selectTableMoney(tableMoney) {
+      this.chartDialog.form.tableMoney = tableMoney;
+      this.getRobotList(); // 直接触发查询
+    },
     getData() {
       const $this = this
       request({
@@ -643,7 +650,7 @@ export default {
           Env: _this.env,
           Path: '/' + this.cgiPath + '/list',
           Page: 1,
-          PageNum: 400
+          PageNum: 500
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -691,8 +698,21 @@ export default {
       })
     },
     showChartDialog() {
+      this.resetChartDialog()
       this.chartDialog.visible = true
       this.initChartDialog()
+    },
+    resetChartDialog() {
+      // 重置表单数据
+      this.chartDialog.form = {
+        tableMoney: [],
+        dateRange: []
+      };
+
+      // 清空图表数据
+      this.chartData = {}
+      this.maxy = 0
+      this.ratioData = []
     },
     initChartDialog() {
       // 初始化场次选项
@@ -742,7 +762,6 @@ export default {
         data: params
       }).then(response => {
         if (response.RetCode === 0) {
-          this.tableData = []
           // this.pagination.total = 0
           const {
             list,

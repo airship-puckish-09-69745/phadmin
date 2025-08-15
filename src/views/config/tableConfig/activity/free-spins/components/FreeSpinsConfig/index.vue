@@ -13,14 +13,7 @@
       <el-switch v-model="formData.OtherGameStatus" :active-value="true" :inactive-value="false" />
     </el-form-item>
     <el-form-item label="支持的SiteId：">
-      <el-select
-        v-model="formData.Sites"
-        placeholder="请选择"
-        style="width: 400px"
-        multiple
-      >
-        <el-option v-for="item in siteIdOptions" :key="item.value" :label="item.label" :value="item.value" />
-      </el-select>
+      <SiteSelect v-model="formData.Sites" multiple placeholder="请选择" style="width: 400px" />
     </el-form-item>
     <el-form-item label="Other game支持的游戏id">
       <GameTreeSelector :selected-games-id="formData.OtherGames" @change="handleGamesChange" />
@@ -34,10 +27,13 @@
 
 <script>
 import GameTreeSelector from '@/views/config/tableConfig/activity/activityMap/components/DetailsConfig/components/GamesTreeSelector.vue'
+import SiteSelect from '@/components/SiteSelect/index.vue'
+
 export default {
   name: 'FreeSpinsConfig',
   components: {
-    GameTreeSelector
+    GameTreeSelector,
+    SiteSelect
   },
   props: {
     config: {
@@ -62,14 +58,6 @@ export default {
         Sites: [],
         OtherGames: []
       },
-      siteIdOptions: [
-        { value: 'BP', label: 'BP' },
-        { value: 'AP', label: 'AP' },
-        { value: 'GP', label: 'GP' },
-        { value: 'TP', label: 'TP' },
-        { value: 'PG', label: 'PG' },
-        { value: 'Dev', label: 'Dev' }
-      ]
     }
   },
   watch: {

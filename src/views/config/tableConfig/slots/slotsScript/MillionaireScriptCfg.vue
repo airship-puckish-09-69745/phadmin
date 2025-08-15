@@ -401,7 +401,9 @@ export default {
         '200': 'atlantistreasure',
         '202': 'fortunateebisu',
         '204': 'spacetreasure',
-        '208': 'candyburst'
+        '208': 'candyburst',
+        '220': 'goldendragon',
+        '221': 'goldendragonmars'
       }
     }
   },

@@ -98,6 +98,7 @@ export function LibShow() {
     202: 'FortunateEbisu',//独占一行
     206: 'LuckyWineglass',//独占一行
     212: 'PirateShip',//独占一行
+    218: 'WrathOfZeus2',//独占一行
     188: 'StreetFighting',//独占一行
     192: 'BountyRaid',//独占一行
     180: 'FishingMaster',//独占一行
@@ -110,7 +111,7 @@ export function LibShow() {
     112: 'Wingo Lottery', 115: 'MultiPlayer NiuNiu', 118: 'Car Racing', 124: 'Jackpot Wheel', 125: 'Free Spin', 127: 'SaBong', 128: 'Tongits JP', 129: 'Live Color', 132: '新版扫雷',
     150: 'SuperGemsIII', 152: 'Aladdin\'s Lamp', 154: 'GrandAce', 156: 'CrazyAce', 172: 'WrathOfZeus', 158: 'SharkKingdom', 160: 'GigaAce', 162: 'MajorAce', 164: 'MahjongFortune', 166: 'FireLink',
     170: 'EpicAce', 176: 'PuppyHome', 182: 'GodOfFortune', 186: 'MahjongJackpot', 174: 'TreasureBowl', 178: 'MayanTotem', 194: 'GoldTrain', 168: 'Pharaoh\'sTreasure', 196: 'GoldMiner', 184: 'Dance of the Lion',
-    190: 'ArcaneEgypt', 198: 'FortuneBlessing', 200: 'AtlantisTreasure', 204: 'SpaceTreasure', 208: 'CandyBurst', 210: 'LuckySpirits', 216: 'Phoenix' // slots
+    190: 'ArcaneEgypt', 198: 'FortuneBlessing', 200: 'AtlantisTreasure', 204: 'SpaceTreasure', 208: 'CandyBurst', 210: 'LuckySpirits', 216: 'Phoenix', 220: 'GoldenDragon'// slots
   }
 
   this.NumMap = {

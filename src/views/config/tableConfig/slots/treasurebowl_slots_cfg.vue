@@ -63,11 +63,10 @@ import slotsReelsDouble from './components_x/reels_double'
 import slotsScript from './components_x/slots_script'
 import SlotsTreasurebowlExt from '@/views/config/tableConfig/slots/components_x/treasurebowl_ext.vue'
 import SlotsFreeTriggerPlans from '@/views/config/tableConfig/slots/components_x/slotsFreeTriggerPlans.vue'
-import slotsPhoenixExt from "@/views/config/tableConfig/slots/components_x/phoenix_ext.vue";
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: {slotsPhoenixExt, SlotsFreeTriggerPlans, SlotsTreasurebowlExt, Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotsBigWinnerCfg, slotsVup, slotsReelsDouble, slotsScript },
+  components: {SlotsFreeTriggerPlans, SlotsTreasurebowlExt, Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotsBigWinnerCfg, slotsVup, slotsReelsDouble, slotsScript },
   data() {
     return {
       activeTab: 'base',

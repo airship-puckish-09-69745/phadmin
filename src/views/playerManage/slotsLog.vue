@@ -347,7 +347,7 @@ export default {
       totalCount: 0,
       currentPage: 0,
       pageNum: 20,
-      typeNames: { 0: '主游戏', 1: 'wild', 2: 'scatter', 3: 'jackpot' },
+      typeNames: { 0: '主游戏', 1: 'wild', 2: 'scatter', 3: 'jackpot', 5: 'FreeSpin' },
       showDetail: false,
       detailContent: '',
       detailPayLine: 0
@@ -367,7 +367,7 @@ export default {
     isActV2(gid) {
       return [78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 154, 156, 158, 160, 162, 164, 166, 170,
         172, 188, 198, 192, 180, 176, 182, 174, 178, 168, 196, 184, 202, 190, 200, 204, 206, 208, 210,
-        212, 216].indexOf(gid) >= 0
+        212, 216, 218, 220].indexOf(gid) >= 0
     },
     // 收集剧本
     isActCollect(gid) {

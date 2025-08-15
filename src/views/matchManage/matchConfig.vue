@@ -330,6 +330,17 @@
             </el-select>
           </el-form-item>
 
+          <el-form-item label="比赛牌桌ID：" :required="true">
+            <el-select v-model="editForm.listExtra.tableSceneId" placeholder="请选择" size="mini">
+              <el-option
+                v-for="item in MATCH_TABLE_SCENE_ID_CFG"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+
           <el-form-item label="GTCC线上决赛补位白名单:" :required="true">
             <el-radio v-for="item in whileListCfgs" :key="item.value" v-model="editForm.signExtra.gtccWhiteList.type" :label="item.value">{{ item.label }}</el-radio>
           </el-form-item>
@@ -789,7 +800,7 @@
           <el-form-item label="赛事分类：" :required="true">
             <el-select v-model="editForm.signExtra.matchEvents" placeholder="请选择" size="mini">
               <el-option
-                v-for="item in matchEvents"
+                v-for="item in MATCH_LIST_TAG_OPTIONS"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -835,7 +846,7 @@ import { log } from 'console'
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
 import { getAllCommonGameConfig, getAllMatchGuidesConfig } from '@/utils/common-game-config'
 import { IsMars } from '@/utils/env'
-import { CHANNEL_OPTIONS, APPID_OPTIONS, ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS } from '@/utils/options'
+import { CHANNEL_OPTIONS, APPID_OPTIONS, ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS,MATCH_TABLE_SCENE_ID_CFG,MATCH_LIST_TAG_OPTIONS } from '@/utils/options'
 
 export default {
   name: 'MatchConfig',
@@ -851,6 +862,8 @@ export default {
       ITEM_DAY_TYPE_OPTIONS,
       APPID_OPTIONS,
       CHANNEL_OPTIONS,
+      MATCH_TABLE_SCENE_ID_CFG,
+      MATCH_LIST_TAG_OPTIONS,
       form: {
         gameId: -1,
         status: -1,
@@ -922,12 +935,6 @@ export default {
           'propsIcon': '',
           'propsAttr': ''
         }
-      ],
-      matchEvents: [
-        { 'value': 0, 'label': 'All' },
-        { 'value': 1, 'label': 'Events' },
-        { 'value': 4, 'label': 'GTCC周赛' }, // notice 2,3 空着
-        { 'value': 5, 'label': 'GTCC预选赛' }
       ],
       prizeModleCfgs: [
         { 'value': 0, 'label': '固定奖励' },
@@ -1056,6 +1063,7 @@ export default {
             type: 0,
             data: ''
           },
+
         },
         prizeExtra: {
           awardType: 0,
@@ -1063,6 +1071,9 @@ export default {
           prizeTemplateId: 0,
           rewardType: 1,
           sceneId: 0
+        },
+        listExtra:{
+          tableSceneId: 0,  //牌桌场景ID
         },
       },
 
@@ -1096,7 +1107,8 @@ export default {
         signExtra: '报名额外信息',
         associateKey: '推荐方案',
         dcReport: '是否上报数据中心',
-        propsId: '道具ID'
+        propsId: '道具ID',
+        listExtra: '列表拓展信息',
       },
       singleCopy: {
         id: 0,
@@ -1310,6 +1322,7 @@ export default {
                     tableDataCpy[i].sort = 0
                   }
                   this.tableData.push(tableDataCpy[i])
+                  console.log("table: ",tableDataCpy[i])
                 }
               }
             }
@@ -1750,6 +1763,9 @@ export default {
           rewardType: 1,
           sceneId: 0
         }
+        this.editForm.listExtra ={
+          tableSceneId:0,
+        }
         this.editForm.isAdd = true
         this.showCsCfgs = this.csCfgs
         this.guideShowCfgs = this.guideCfgs
@@ -1835,6 +1851,10 @@ export default {
           this.editForm.signExtra.gtccWhiteList.data=''
         }
         this.editForm.prizeExtra = JSON.parse(editData.prize_extra)
+        // this.editForm.listExtra = JSON.parse(editData.list_extra)
+        // if(this.editForm.listExtra  === undefined){
+        //   this.editForm.listExtra.tableSceneId = 0
+        // }  //先做代码屏蔽
         this.showCsCfgs = []
         // 循环遍历是否存在gameId
         if (this.csCfgs.length > 0) {
@@ -1980,7 +2000,8 @@ export default {
           AssociateKey: this.editForm.data.associateKey,
           DcReport: this.editForm.data.dcReport,
           SignExtra: JSON.stringify(this.editForm.signExtra),
-          PrizeExtra: JSON.stringify(this.editForm.prizeExtra)
+          PrizeExtra: JSON.stringify(this.editForm.prizeExtra),
+          ListExtra: JSON.stringify(this.editForm.listExtra),
 
         }
       }).then(response => {

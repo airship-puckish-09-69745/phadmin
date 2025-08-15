@@ -47,24 +47,24 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item v-model="item.path" label="进厅 path：" label-width="110px">
-          <el-select v-model="item.path" placeholder="请选择" size="mini">
-            <el-option label="常规" value="1" />
-            <el-option label="Banner（返回gamefun.ph）" value="2" />
-          </el-select>
-        </el-form-item>
+<!--        <el-form-item v-model="item.path" label="进厅 path：" label-width="110px">-->
+<!--          <el-select v-model="item.path" placeholder="请选择" size="mini">-->
+<!--            <el-option label="常规" value="1" />-->
+<!--            <el-option label="Banner（返回gamefun.ph）" value="2" />-->
+<!--          </el-select>-->
+<!--        </el-form-item>-->
         <el-form-item v-model="item.need_test_uri" label="指定链接类型：" :required="true" label-width="140px">
           <el-select v-model="item.need_test_uri" placeholder="请选择" size="mini">
             <el-option label="平台配置链接" value="0" />
             <el-option label="预发布" value="1" />
           </el-select>
         </el-form-item>
-        <el-form-item v-model="item.debug" label="调试模式：" :required="true" label-width="140px">
-          <el-select v-model="item.debug" placeholder="请选择" size="mini">
-            <el-option label="否" value="0" />
-            <el-option label="是" value="1" />
-          </el-select>
-        </el-form-item>
+<!--        <el-form-item v-model="item.debug" label="调试模式：" :required="true" label-width="140px">-->
+<!--          <el-select v-model="item.debug" placeholder="请选择" size="mini">-->
+<!--            <el-option label="否" value="0" />-->
+<!--            <el-option label="是" value="1" />-->
+<!--          </el-select>-->
+<!--        </el-form-item>-->
         <el-form-item v-model="item.cashier" label="充值链接：" label-width="140px">
           <el-input v-model="item.cashier" />
         </el-form-item>

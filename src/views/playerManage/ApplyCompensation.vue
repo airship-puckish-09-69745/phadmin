@@ -121,7 +121,7 @@
               <el-button type="text" :disabled="getDisable(scope.row,[3])" v-if="showBtn(scope.row,[3])" size="mini"
                          @click="editData(scope.row)">编辑
               </el-button>
-              <el-button type="text" :disabled="getDisable(scope.row,[3])" v-if="showBtn(scope.row,[3])" size="mini"
+              <el-button type="text" :disabled="getDisable(scope.row,[3,7])" v-if="showBtn(scope.row,[3,7])" size="mini"
                          @click="initiateApplication(scope.row,0)">发起申请
               </el-button>
               <el-button type="text" :disabled="getDisable(scope.row,[6,2,8])" v-if="showBtn(scope.row,[6,2,8])"
@@ -132,7 +132,7 @@
                          size="mini"
                          @click="initiateApplication(scope.row,10)">取消补偿
               </el-button>
-              <el-button type="text" :disabled="getDisable(scope.row,[3])" v-if="showBtn(scope.row,[3])" size="mini"
+              <el-button type="text" :disabled="getDisable(scope.row,[3,7])" v-if="showBtn(scope.row,[3,7])" size="mini"
                          @click="deleteForm(scope.row)">删除
               </el-button>
             </template>

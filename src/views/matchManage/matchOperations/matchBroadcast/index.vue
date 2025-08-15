@@ -8,7 +8,7 @@
       <div class="search-filter-item">
         appid: <el-select v-model="searchFilter.app_id" placeholder="请选择应用id" size="mini" @change="onSearch">
           <el-option
-            v-for="item in APPID_OPTIONS"
+            v-for="item in app_options_list"
             :key="item.value"
             :label="item.label"
             :value="item.value"
@@ -30,12 +30,13 @@
       >添加播报</el-button>
     </div>
 
-    <div style="margin-top: 12px;">
+    <div style="margin-top: 12px; min-width:600px">
       <el-table
         :data="FilterableBroadcastList"
         border
         :cell-style="libShow.DefaultTableCell"
         style="width: 100%;overflow-y: auto;"
+        height="700"
       >
         <el-table-column v-for="(item, index) in columns" :key="index" :prop="item.prop" :label="item.label" :width="item.width" :formatter="item.formatter" />
         <el-table-column
@@ -82,6 +83,8 @@
       :position-options="positionOptions"
       :match-unique-id-cfgs="matchUniqueIdCfgs"
       :match-first-rank-cfgs="broadcastDialog.matchFirstRankCfgs"
+      :jp-first-rank-cfgs ="broadcastDialog.jpFirstRankCfgs"
+      :app-id-options="APPID_OPTIONS"
       @close="handleCloseBroadcastDialog"
       @reload="onSearch"
       @save="handleUpdateConfig"
@@ -94,7 +97,7 @@ import Publish from '@/components/Publish/index.vue'
 import request from '@/utils/request'
 import { parseTime } from '@/utils'
 import { APPID_OPTIONS, CHANNEL_OPTIONS } from '@/utils/options'
-import { broadcastTypeOptions, positionOptions, getBroadcastTypeName } from './options'
+import {broadcastTypeOptions, positionOptions, getBroadcastTypeName, app_options_list} from './options'
 import AddMatchBroadcastDialog from './components/AddMatchBroadcastDialog.vue'
 import { $libShow } from '@/utils/common'
 
@@ -112,6 +115,7 @@ export default {
       configData: {},
       FilterableBroadcastList: [], // 通过appId过滤之后展示到列表
       broadcastTypeOptions,
+      app_options_list,
       APPID_OPTIONS,
       CHANNEL_OPTIONS,
       searchFilter: {
@@ -122,7 +126,8 @@ export default {
       broadcastDialog: {
         visible: false,
         updateData: null,
-        matchFirstRankCfgs: []
+        matchFirstRankCfgs: [],
+        jpFirstRankCfgs: []
       },
       columns: [
         {
@@ -133,6 +138,14 @@ export default {
         {
           prop: 'Title',
           label: '标题'
+        },
+        {
+          prop: 'AppId',
+          label: 'AppID',
+          width: 100,
+          formatter: (row) => {
+            return this.getAppIdTypeName(row.AppId)
+          }
         },
         {
           prop: 'Channel',
@@ -179,8 +192,8 @@ export default {
           width: 170,
           formatter: (row) => {
             const dateRange = []
-            dateRange.push(this.parseTime(row.BroadcastTimeRange[0] * 1000, '{y}/{m}/{d}'))
-            dateRange.push(this.parseTime(row.BroadcastTimeRange[1] * 1000, '{y}/{m}/{d}'))
+            dateRange.push(this.parseTime(row.BroadcastTimeRange[0] * 1000, '{y}/{m}/{d} {h}:{i}'))
+            dateRange.push(this.parseTime(row.BroadcastTimeRange[1] * 1000, '{y}/{m}/{d} {h}:{i}'))
             return dateRange.join('-')
           }
         },
@@ -254,6 +267,7 @@ export default {
       this.broadcastDialog.visible = false
       this.broadcastDialog.updateData = null
       this.broadcastDialog.matchFirstRankCfgs = []
+      this.broadcastDialog.jpFirstRankCfgs = []
     },
     /**
      * 展示新增/编辑对话框
@@ -269,6 +283,13 @@ export default {
         matchFirstRankCfgs = this.tableData.filter(item => item.BroadcastType === 1)
       }
       this.broadcastDialog.matchFirstRankCfgs = matchFirstRankCfgs
+      let jpFirstRankCfgs = []
+      if (data) {
+        jpFirstRankCfgs = this.tableData.filter(item => item.ID !== data.ID && item.BroadcastType === 2)
+      } else {
+        jpFirstRankCfgs = this.tableData.filter(item => item.BroadcastType === 2)
+      }
+      this.broadcastDialog.jpFirstRankCfgs = jpFirstRankCfgs
       this.broadcastDialog.visible = true
     },
     /**
@@ -296,7 +317,11 @@ export default {
           this.FilterableBroadcastList = []
         } else {
           // 通过应用id进行筛选
-          this.FilterableBroadcastList = Data.BroadcastList.filter(item => item.AppId === this.searchFilter.app_id)
+          if (this.searchFilter.app_id > 0) {
+            this.FilterableBroadcastList = Data.BroadcastList.filter(item => item.AppId === this.searchFilter.app_id)
+          } else if (this.searchFilter.app_id === -1) {
+            this.FilterableBroadcastList = Data.BroadcastList
+          }
         }
         this.tableData = Data.BroadcastList
       } else {
@@ -353,6 +378,16 @@ export default {
       }).catch(() => {
         this.$message.info('已取消删除')
       })
+    },
+    getAppIdTypeName(row) {
+      let showName = ''
+      for (let i = 0; i < APPID_OPTIONS.length; i++) {
+        if (APPID_OPTIONS[i].value === row) {
+          showName = APPID_OPTIONS[i].label
+          break
+        }
+      }
+      return showName
     }
   }
 }
@@ -373,5 +408,23 @@ export default {
       width: 200px;
     }
   }
+}
+/* 强制保留水平滚动条位置（无滚动条时显示空白区域） */
+.el-table__body-wrapper {
+  overflow-x: scroll !important;
+  scrollbar-width: thin; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+/* Chrome/Safari 隐藏滚动条但保留功能 */
+.el-table__body-wrapper::-webkit-scrollbar {
+  height: 6px !important; /* 滚动条高度（不可为0） */
+  background: transparent !important;
+}
+
+/* 滚动条滑块（可选） */
+.el-table__body-wrapper::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
 }
 </style>

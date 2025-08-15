@@ -2,11 +2,19 @@
   <div class="app-container">
     <el-row>
       <el-form :model="item" label-width="90px" :inline="true" size="small">
-        <el-form-item label="日期：">
+        <el-form-item label="游戏：" :required="true">
+          <el-select v-model="item.gid" placeholder="请选择">
+            <el-option label="tongits" :value="0" />
+            <el-option label="tongits pot" :value="22" />
+            <el-option label="tongits laizi" :value="28" />
+            <el-option label="tongits quick" :value="29" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="开始日期：">
           <el-date-picker
             v-model="item.start"
             value-format="timestamp"
-            type="datetime"
+            type="date"
             placeholder="选择日期"
             size="mini"
           />
@@ -15,7 +23,7 @@
           <el-date-picker
             v-model="item.end"
             value-format="timestamp"
-            type="datetime"
+            type="date"
             placeholder="选择日期"
             size="mini"
           />
@@ -48,9 +56,12 @@
         />
         <el-table-column
           prop="login_high_score_cnt"
-          label="今日登录高信用户"
+          label="今日游戏高信用户"
           width="150"
         >
+          <template slot-scope="scope">
+            <span v-html="getPercent('login_high_score_cnt',scope.row,scope.row.last)"></span> 
+          </template>
         </el-table-column>
         <el-table-column
           prop="low_score_cnt"
@@ -60,9 +71,12 @@
         </el-table-column>
         <el-table-column
           prop="login_low_score_cnt"
-          label="今日登录低信用户"
+          label="今日游戏低信用户"
           width="150"
         >
+          <template slot-scope="scope">
+            <span v-html="getPercent('login_low_score_cnt',scope.row,scope.row.last)"></span>
+          </template>
         </el-table-column>
         <el-table-column
           prop="suspect_cnt"
@@ -72,9 +86,13 @@
         </el-table-column>
         <el-table-column
           prop="login_suspect_cnt"
-          label="今日登录疑似用户"
+          label="今日游戏疑似用户"
           width="150"
-        />
+        >
+          <template slot-scope="scope">
+            <span v-html="getPercent('login_suspect_cnt',scope.row,scope.row.last)"></span>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="black_cnt"
           label="现存黑子用户"
@@ -83,9 +101,27 @@
         </el-table-column>
         <el-table-column
           prop="login_black_cnt"
-          label="今日登录黑子用户"
+          label="今日游戏黑子用户"
           width="150"
         >
+          <template slot-scope="scope">
+            <span v-html="getPercent('login_black_cnt',scope.row,scope.row.last)"></span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="low_risk_cnt"
+          label="现存低危用户"
+          width="120"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="login_low_risk_cnt"
+          label="今日游戏低危用户"
+          width="150"
+        >
+          <template slot-scope="scope">
+            <span v-html="getPercent('login_low_risk_cnt',scope.row,scope.row.last)"></span>
+          </template>
         </el-table-column>
       </el-table>
     </el-row>
@@ -129,8 +165,8 @@ export default {
       appInfo: [],
       env: 'dev',
       item: {
-        gid: 22,
-        start: $libDate.GetDayBegin(new Date().getTime()), // Date.parse(new Date(this.dDate(0, 30))),
+        gid: 0,
+        start: $libDate.GetDayBegin(new Date().getTime()-86400*7*1000), // Date.parse(new Date(this.dDate(0, 30))),
         end: $libDate.GetDayEnd(new Date().getTime()) // Date.parse(new Date()),
       },
       tableData: [],
@@ -144,6 +180,7 @@ export default {
   created() {
     this.env = store.getters.env || this.env
     this.item.gameId = 0
+    this.getInfo()
   },
   methods: {
     // 设置默认日期
@@ -180,13 +217,36 @@ export default {
       this.currentPage = 1
       this.getInfo()
     },
+    getSum(row) {
+      if (row === undefined) {
+        return 0
+      }
+      return row.login_black_cnt + row.login_low_score_cnt + row.login_high_score_cnt + row.login_suspect_cnt
+    },
+    getPercent(key,cur,last) {
+      const sum1 = this.getSum(cur)
+      const sum2 = this.getSum(last)
+      const per1 = sum1===0?0:Math.round(cur[key]*100/sum1)
+      if (last === undefined) {
+        return `${cur[key]} (${per1}%)`
+      }
+      const per2 = sum2===0?0:Math.round(last[key]*100/sum2)
+      if (per1 === per2) {
+        return `${cur[key]} (${per1}%)`
+      }
+      if (per1 > per2) {
+        return `${cur[key]} (<span style="color: red;"> ${per1}%</span>)`
+      } else {
+        return `${cur[key]} (<span style="color: green;"> ${per1}%</span>)`
+      }
+    },
     getInfo() {
       const $this = this
 
-      if (this.env != 'test') {
-        console.log(`env:${this.env} return`)
-        return
-      }
+      // if (this.env != 'test') {
+      //   console.log(`env:${this.env} return`)
+      //   return
+      // }
 
       request({
         url: '/dataProxy/info',
@@ -194,7 +254,7 @@ export default {
         data: {
           Env: this.env,
           Path: '/misc/tongits/cheat/stat',
-          gid: 22,
+          gid: this.item.gid,
           from: this.item.start / 1000,
           to: this.item.end / 1000,
           page: this.currentPage,
@@ -204,9 +264,16 @@ export default {
         if (response.RetCode === 0) {
           const objs = response.Data || []
           $this.ret = response.Data
-          $this.tableData = objs
           this.totalCount = response.Data.length
           $this.tableData = objs
+
+          for (let i=0; i<this.totalCount; i++) {
+            if (i < this.totalCount-1) {
+              objs[i].last = objs[i+1]
+            }
+            // console.log(JSON.stringify(objs[i]))
+          }
+
           console.log(objs)
           if (objs.length === 0) {
             Message.success('查询结果为空')

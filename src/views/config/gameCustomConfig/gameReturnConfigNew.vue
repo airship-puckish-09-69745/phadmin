@@ -20,14 +20,7 @@
               />
             </el-select>
             <el-form-item label="站点渠道">
-              <el-select v-model="channel" @change="refreshEnabled">
-                <el-option
-                  v-for="item in channelOptions"
-                  :key="item.key"
-                  :label="item.label"
-                  :value="item.key"
-                />
-              </el-select>
+              <SiteSelect v-model="channel" :showCP="true" />
             </el-form-item>
             <el-form-item l>
               <el-button type="primary" size="mini" @click="refresh">查询</el-button>
@@ -148,14 +141,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="渠道">
-          <el-select v-model="item.channel" placeholder="请选择" size="mini">
-            <el-option
-              v-for="item in channelOptions"
-              :key="item.key"
-              :label="item.label"
-              :value="item.key"
-            />
-          </el-select>
+          <SiteSelect v-model="item.channel" :showCP="true" />
         </el-form-item>
         <el-form-item label="是否需要返回">
           <el-select v-model="item.is_return" placeholder="请选择" size="mini">
@@ -184,10 +170,11 @@ import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import MoneyInput from '@/components/MoneyInput'
 import { copyObj } from 'codemirror/src/util/misc'
+import SiteSelect from '@/components/SiteSelect'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: { Compare, Publish, MoneyInput },
+  components: { Compare, Publish, MoneyInput, SiteSelect },
   data() {
     return {
       form: {},
@@ -204,17 +191,6 @@ export default {
       channel: 'Dev',
       appId: 1000002,
       isDisabled: false,
-
-      channelOptions: [
-        // {key: "0", label: '请选择'},
-        { key: 'Dev', label: 'Dev' },
-        { key: 'BP', label: 'BP' },
-        { key: 'AP', label: 'AP' },
-        { key: 'GP', label: 'GP' },
-        { key: 'PG', label: 'PG' },
-        { key: 'TP', label: 'TP' },
-        { key: 'CP', label: 'CP' }
-      ],
       isReturnOptions: [
         { key: 0, label: '否' },
         { key: 1, label: '是' }

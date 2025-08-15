@@ -806,6 +806,10 @@ export default {
         {
           value: 5,
           label: 'E机器人(强杀)'
+        },
+        {
+          value: 6,
+          label: 'F机器人(防破产)'
         }
       ],
     

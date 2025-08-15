@@ -1,8 +1,18 @@
 <template>
   <el-dialog :title="updateData && updateData.ID ? '编辑配置' : '新增配置'" :visible.sync="dialogVisible" width="540px" :close-on-click-modal="false" @close="handleClose(false)">
     <el-form :model="formData" label-width="100px">
+      <el-form-item label="类型" required>
+        <el-select v-model="formData.BroadcastType" placeholder="请选择类型" style="width: 360px;" @change="handleSetTime">
+          <el-option v-for="option in broadcastTypeOptions" :key="option.value" :label="option.label" :value="option.value" />
+        </el-select>
+      </el-form-item>
       <el-form-item label="标题" required>
         <el-input v-model="formData.Title" style="width: 360px;" />
+      </el-form-item>
+      <el-form-item label="AppID" required>
+        <el-select v-model="formData.AppId" placeholder="请选择AppID" :disabled="formData.ID" style="width: 360px;">
+          <el-option v-for="option in appIdOptions" :key="option.value" :label="option.label" :value="option.value" />
+        </el-select>
       </el-form-item>
       <el-form-item label="渠道" required>
         <el-select v-model="formData.Channel" placeholder="请选择渠道" style="width: 360px;" multiple>
@@ -11,11 +21,6 @@
       </el-form-item>
       <el-form-item label="内容" required>
         <el-input v-model="formData.Content" type="textarea" style="width: 360px;" />
-      </el-form-item>
-      <el-form-item label="类型" required>
-        <el-select v-model="formData.BroadcastType" placeholder="请选择类型" style="width: 360px;">
-          <el-option v-for="option in broadcastTypeOptions" :key="option.value" :label="option.label" :value="option.value" />
-        </el-select>
       </el-form-item>
       <el-form-item v-if="formData.BroadcastType === 1" label="播报来源" required>
         <el-select v-model="formData.Origin" placeholder="请选择播报来源" style="width: 360px;" multiple>
@@ -36,6 +41,7 @@
           end-placeholder="结束日期"
           style="width: 360px;"
           value-format="timestamp"
+          format="yyyy-MM-dd HH:mm"
           :default-time="['00:00:00', '23:59:59']"
         />
       </el-form-item>
@@ -94,6 +100,14 @@ export default {
     matchFirstRankCfgs: {
       type: Array,
       default: () => []
+    },
+    jpFirstRankCfgs: {
+      type: Array,
+      default: () => []
+    },
+    appIdOptions: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
@@ -146,16 +160,31 @@ export default {
         this.$message.warning('标题不能为空!')
         return false
       }
+
+      if (!this.formData.Channel || this.formData.Channel.length === 0) {
+        this.$message.warning('渠道不能为空!')
+        return false
+      }
       if (!this.formData.Content) {
         this.$message.warning('内容不能为空!')
         return false
       }
+
+      if (this.formData.BroadcastType === 4) {
+        let nCount = this.handleContentLength(this.formData.Content)
+        let diffCount = this.formData.Content.length - nCount
+        if (diffCount > 150) {
+          this.$message.warning('内容不能超过150!')
+          return false
+        }
+      }
+
       if (!this.formData.BroadcastType) {
         this.$message.warning('类型不能为空!')
         return false
       }
       // 播报来源只在类型为比赛第一名时才需要
-      if (this.formData.BroadcastType === 1 && !this.formData.Origin) {
+      if (this.formData.BroadcastType === 1 && this.formData.Origin.length === 0) {
         this.$message.warning('播报来源不能为空!')
         return false
       }
@@ -174,21 +203,56 @@ export default {
       }
       // 如果是比赛第一名类型，必须校验有效期不能有交叉
       if (this.formData.BroadcastType === 1) {
-        const matchFirstRankCfgs = this.matchFirstRankCfgs.filter(item => item.ID !== this.formData.ID)
-        const isCross = matchFirstRankCfgs.some(item => {
-          let [start, end] = item.BroadcastTimeRange
-          start *= 1000
-          end *= 1000
-          const [start2, end2] = this.formData.BroadcastTimeRange
-          // console.log(start, start2, end, end2)
-          return (start <= start2 && end >= start2) || (start <= end2 && end >= end2)
-        })
-        if (isCross) {
+        let isUpdate = false
+        for (let i = 0; i < this.matchFirstRankCfgs.length; i++) {
+          if (this.matchFirstRankCfgs[i].ID !== this.formData.ID) {
+            if (this.matchFirstRankCfgs[i].AppId === this.formData.AppId) {
+              let [start, end] = this.matchFirstRankCfgs[i].BroadcastTimeRange
+              start *= 1000
+              end *= 1000
+              const [start2, end2] = this.formData.BroadcastTimeRange
+              if ((start <= start2 && end >= start2) || (start <= end2 && end >= end2)) {
+                isUpdate = true
+                break
+              }
+              if (start <= start2 && end2 <= end) {
+                isUpdate = true
+                break
+              }
+            }
+          }
+        }
+        if (isUpdate) {
           this.$message.warning('比赛第一名类型的有效期冲突!')
           return false
         }
       }
 
+      if (this.formData.BroadcastType === 2) {
+        let isUpdate = false
+        for (let i = 0; i < this.jpFirstRankCfgs.length; i++) {
+          if (this.jpFirstRankCfgs[i].ID !== this.formData.ID) {
+            if (this.jpFirstRankCfgs[i].AppId === this.formData.AppId) {
+              let [start, end] = this.jpFirstRankCfgs[i].BroadcastTimeRange
+              start *= 1000
+              end *= 1000
+              const [start2, end2] = this.formData.BroadcastTimeRange
+              if ((start <= start2 && end >= start2) || (start <= end2 && end >= end2)) {
+                isUpdate = true
+                break
+              }
+              if (start <= start2 && end2 <= end) {
+                isUpdate = true
+                break
+              }
+            }
+          }
+        }
+        if (isUpdate) {
+          this.$message.warning('jp类型的有效期冲突!')
+          return false
+        }
+      }
       return true
     },
     async handleSave() {
@@ -220,11 +284,11 @@ export default {
       this.formData = {
         ID: 0,
         // 应用id
-        AppId: '',
+        AppId: 0,
         // 渠道
         Channel: '',
         // 播报类型
-        BroadcastType: [],
+        BroadcastType: '',
         // 内容
         Content: '',
         // 标题
@@ -253,6 +317,43 @@ export default {
       if (reload) {
         this.$emit('reload')
       }
+    },
+    handleSetTime() {
+      if (this.formData.BroadcastType === 4) {
+        if (this.formData.BroadcastTimeRange.length === 0) {
+          this.formData.Content = ''
+          const currTime = new Date()
+          currTime.setHours(0, 0, 0, 0)
+          let startTime = currTime.getTime()
+          let endTime = startTime + 24 * 60 * 60 * 1000 * 7 - 1000
+          this.formData.BroadcastTimeRange = [startTime, endTime]
+        }
+      } else {
+        if (this.formData.ID === 0) {
+          this.formData.BroadcastTimeRange = []
+        }
+        this.formData.Content = ''
+        if (this.formData.Content.length === 0) {
+          if (this.formData.BroadcastType === 1) {
+            const textString = `<size=36><b><outline color=#2553B3 width=3>Congratulations the <color=#FFFC00>__name__</color> to get the <color=#00FFD2>__rank__</color> in <color=#FFFC00>__title__</color> with <color=#FFFC00>__rewards__</color>!</outline></b></size>`;
+            this.formData.Content = textString
+          } else if (this.formData.BroadcastType === 2) {
+            const textString = `<size=36><b><outline color=#2553B3 width=3>Congratulations to <color=#FFFC00>__name__</color> on winning the jackpot <color=#00FFD2>__extraJackpotType__</color> of <color=#FFFC00>__rewards__</color>!</outline></b></size>`;
+            this.formData.Content = textString
+          }
+        }
+      }
+    },
+    handleContentLength(str) {
+      const matches = str.match(/<[^>]+>/g);
+      if (!matches) {
+        return 0
+      }
+      let totalLength = 0;
+      matches.forEach(match => {
+        totalLength += match.length; // 减去<和>的长度
+      });
+      return totalLength;
     }
   }
 }

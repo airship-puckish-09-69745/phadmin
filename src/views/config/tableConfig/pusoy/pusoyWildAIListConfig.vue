@@ -221,13 +221,8 @@
           label="等级"
           width="80"
         >
-          <template slot-scope="scope">
-            <span v-if="scope.row.level==5" style="color:green">
-              需要赢
-            </span>
-            <span v-else style="color:red">
-              陪玩
-            </span>
+          <template slot-scope="scopeInfo">
+            <p v-html="getLevelName(scopeInfo.row.level)" />
           </template>
         </el-table-column>
 
@@ -410,14 +405,17 @@
     <el-dialog title="机器人数据图表" :visible.sync="chartDialog.visible" width="80%" @close="closeChartDialog">
       <el-form :model="chartDialog.form" label-width="100px" style="margin-bottom: 20px;">
         <el-form-item label="场次:">
-          <el-select v-model="chartDialog.form.tableMoney" placeholder="请选择场次" style="width: 100%;">
-            <el-option
+          <el-row>
+            <el-button
               v-for="item in tableMoneyOptions"
               :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
+              size="mini"
+              :type="chartDialog.form.tableMoney === item.value ? 'primary' : 'default'"
+              @click="selectTableMoney(item.value)"      style="margin-right: 10px; margin-bottom: 10px;"
+            >
+              {{ item.label }}
+            </el-button>
+          </el-row>
         </el-form-item>
         <el-form-item label="时间范围:">
           <el-date-picker
@@ -572,6 +570,10 @@ export default {
         })
       })
     },
+    selectTableMoney(tableMoney) {
+      this.chartDialog.form.tableMoney = tableMoney;
+      this.getRobotList(); // 直接触发查询
+    },
     showChartDialog() {
       this.chartDialog.visible = true
       this.initChartDialog()
@@ -624,7 +626,6 @@ export default {
         data: params
       }).then(response => {
         if (response.RetCode === 0) {
-          this.tableData = []
           // this.pagination.total = 0
           const {
             list,
@@ -906,12 +907,22 @@ export default {
         }
       })
     },
-    getLevelName(money ,initMoney) {
-      let per = money *100/initMoney
-      if (per >= 90) {
-        return '陪玩'
-      } else {
-        return '需要赢'
+    getLevelName(level) {
+      switch (level) {
+        case 1:
+          return '<span style="color: green">强放</span>'
+        case 2:
+          return '<span style="color: green">弱放</span>'
+        case 3:
+          return '<span>陪玩</span>'
+        case 4:
+          return '<span style="color: red">弱杀</span>'
+        case 5:
+          return '<span style="color: red">强杀</span>'
+        case 6:
+          return '<span style="color: red">破产保护</span>'
+        default:
+          return '<span>未知</span>'
       }
     },
     createSave(postData) {

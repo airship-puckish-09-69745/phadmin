@@ -54,14 +54,7 @@
 
                 <el-col :span="11">
                   <el-form-item label="支持的SiteId：" :required="true">
-                    <el-select v-model="item.SiteIdList" multiple placeholder="请选择" style="width: 400px">
-                      <el-option
-                        v-for="item in channelIdCfgs"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                      />
-                    </el-select>
+                    <SiteSelect v-model="item.SiteIdList" multiple placeholder="请选择" style="width: 400px" />
                   </el-form-item>
                 </el-col>
 
@@ -329,14 +322,7 @@
                 </el-col>
                 <el-col :span="11">
                   <el-form-item label="支持的SiteId：" :required="true">
-                    <el-select v-model="item.GameEvent.SiteIdList" multiple placeholder="请选择" style="width: 400px">
-                      <el-option
-                        v-for="item in channelIdCfgs"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                      />
-                    </el-select>
+                    <SiteSelect v-model="item.GameEvent.SiteIdList" multiple placeholder="请选择" style="width: 400px" />
                   </el-form-item>
                 </el-col>
               </el-form>
@@ -822,6 +808,7 @@ import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
 import { Message } from 'element-ui'
 import request from '@/utils/request'
 import Compare from '@/components/Compare/index.vue'
+import SiteSelect from '@/components/SiteSelect/index.vue'
 
 function newItem() {
   return { Gid: 1, GameIconLink: '', GameSort: 1, IsOpen: true }
@@ -836,7 +823,7 @@ function newItemZoneGame() {
   return { Desc: '', Index: -1, Gids: [], IsOpen: false, Games: [{ Gid: 1, IconLink: '', GameSort: 1, IsOpen: true }], AppId: 1000002, ChannelId: [] }
 }
 export default {
-  components: { Compare, ImagePicker, Publish },
+  components: { Compare, ImagePicker, Publish, SiteSelect },
   data() {
     return {
       subKey: 'gameZone_cfg',
@@ -862,7 +849,6 @@ export default {
         { 'value': 'BP', 'label': 'BP' },
         { 'value': 'AP', 'label': 'AP' },
         { 'value': 'GP', 'label': 'GP' },
-        { 'value': 'TP', 'label': 'TP' },
         { 'value': 'PG', 'label': 'PG' },
         { 'value': 'Dev', 'label': 'Dev' }
       ],
@@ -1745,7 +1731,7 @@ export default {
         if (data.Index === id) {
           if (data.AppId == null) {
             data.AppId = 1000002
-            data.ChannelId = ['BP', 'AP', 'GP', 'TP', 'PG', 'Dev']
+            data.ChannelId = ['BP', 'AP', 'GP', 'PG', 'Dev']
           }
           if (Array.isArray(data.AppId)) {
             data.AppId = 1000002

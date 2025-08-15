@@ -28,6 +28,11 @@
             <publish primary-key="ID" :key-id="getFullKey('fortunateebisu_slots_base')" :env-empty="false" compare-type="Object" />
             <slots-reels-double v-if="baseCfgBool" v-model="baseCfg" :symbol-list="ruleCfg.SymbolList" @saveData="saveBaseCfg" />
           </el-tab-pane>
+          <el-tab-pane label="数量图标" name="symbolcount_reels">
+            <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布】</h3>
+            <publish primary-key="ID" :key-id="getFullKey('fortunateebisu_slots_base')" :env-empty="false" compare-type="Object" />
+            <slots-symbolcount-reels v-if="baseCfgBool" v-model="baseCfg" :symbol-list="ruleCfg.SymbolList" @saveData="saveBaseCfg" />
+          </el-tab-pane>
           <el-tab-pane label="2套轴首行横图标" name="row_reels_double">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布】</h3>
             <publish primary-key="ID" :key-id="getFullKey('fortunateebisu_slots_ext')" :env-empty="false" compare-type="Object" />
@@ -78,10 +83,13 @@ import slotsRowReelsDouble from './components_x/row_reels_double'
 import slotsRowSymbolsSame from './components_x/row_symbols_same'
 import slotsScript from './components_x/slots_script'
 import SlotsFreeTriggerPlans from "@/views/config/tableConfig/slots/components_x/slotsFreeTriggerPlans.vue";
+import slotsSymbolcountReels from "@/views/config/tableConfig/slots/components_x/symbolcount_reels.vue";
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: {SlotsFreeTriggerPlans, Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotsFortunateebisuExt, slotsRowReelsDouble,slotsRowSymbolsSame, slotsReelsDouble, slotsScript },
+  components: {
+    slotsSymbolcountReels,
+    SlotsFreeTriggerPlans, Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotsFortunateebisuExt, slotsRowReelsDouble,slotsRowSymbolsSame, slotsReelsDouble, slotsScript },
   data() {
     return {
       activeTab: 'base',

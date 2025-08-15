@@ -111,7 +111,7 @@
         prop="ID"
         label="ID"
         sortable="custom"
-        width="100"
+        width="120"
       />
       <el-table-column
         prop="FinishTime"
@@ -132,7 +132,7 @@
       <el-table-column
         prop="MoneyOrigin"
         label="牌局前金额"
-        width="100"
+        width="120"
       >
         <template slot-scope="scope">
           {{ formatNumber(scope.row.MoneyOrigin / 1000) }}
@@ -176,6 +176,16 @@
           </template>
         </el-table-column>
       </template>
+      <el-table-column
+          prop="showBetType"
+          label="下注方式"
+          width="120"
+      >
+        <template slot-scope="scope">
+            {{ showBetType(scope.row.BetType) }}
+        </template>
+      </el-table-column>
+
       <el-table-column
         prop="MoneyChanged"
         label="输赢"
@@ -224,7 +234,7 @@
       <el-table-column
         prop="MoneyNow"
         label="余额"
-        width="100"
+        width="120"
       >
         <template slot-scope="scope">
           {{ formatNumber(scope.row.MoneyNow) }}
@@ -569,6 +579,18 @@
             }}
             </td>
             <td>{{ getMicroCtrlName(sweeperPlay.microCtrl) }}</td>
+          </tr>
+          <tr>
+            <td>下注方式</td>
+            <td>道具Id</td>
+            <td>道具recordId</td>
+            <td>道具单张面值</td>
+          </tr>
+          <tr>
+            <td>{{ sweeperPlay.propLog ? showBetType(sweeperPlay.propLog.propAscription): '常规' }}</td>
+            <td>{{ sweeperPlay.propLog ? sweeperPlay.propLog.propId : '' }}</td>
+            <td>{{ sweeperPlay.propLog ? sweeperPlay.propLog.recordId : '' }}</td>
+            <td>{{ sweeperPlay.propLog ? sweeperPlay.propLog.itemCost/1000 : '' }}</td>
           </tr>
         </table>
       </div>
@@ -2938,10 +2960,10 @@
         </el-table-column>
         <el-table-column label="team" width="100px">
           <template slot-scope="scope">
-              <div 
-                :style="{ 
-                  backgroundColor: getTrucoTeamColor(scope.row.team), 
-                  width: '50px', 
+              <div
+                :style="{
+                  backgroundColor: getTrucoTeamColor(scope.row.team),
+                  width: '50px',
                   height: '50px',
                   display: 'inline-block'
                 }"
@@ -2974,7 +2996,7 @@
             />
             <br>
             <span>{{trucoCardNumSort(scope.row.viradaCard)}}</span>
-          </template>                      
+          </template>
         </el-table-column>
 
         <el-table-column prop="roundScore" label="本轮底分" width="50px"/>
@@ -2985,10 +3007,10 @@
               <el-table-column prop="uid" label="uid" width="100"/>
               <el-table-column label="team" width="60">
                 <template slot-scope="scope">
-                  <div 
-                    :style="{ 
-                      backgroundColor: getTrucoTeamColor(scope.row.team), 
-                      width: '50px', 
+                  <div
+                    :style="{
+                      backgroundColor: getTrucoTeamColor(scope.row.team),
+                      width: '50px',
                       height: '50px',
                       display: 'inline-block'
                     }"
@@ -3013,10 +3035,10 @@
               <el-table-column prop="count" label="回合" width="50"/>
               <el-table-column label="回合结果" width="80">
                 <template slot-scope="scope">
-                  <div 
-                    :style="{ 
-                      backgroundColor: getTrucoTeamColor(scope.row.result), 
-                      width: '50px', 
+                  <div
+                    :style="{
+                      backgroundColor: getTrucoTeamColor(scope.row.result),
+                      width: '50px',
                       height: '50px',
                       display: 'inline-block'
                     }"
@@ -3034,7 +3056,7 @@
                             style="width: 37px; height: 50px"
                             :src="getCardUrl(scope.row.Card)"
                           />
-                      </template>                      
+                      </template>
                     </el-table-column>
                     <el-table-column prop="Covered" label="暗牌" width="100"/>
                   </el-table>
@@ -3043,7 +3065,7 @@
             </el-table>
           </template>
         </el-table-column>
-        
+
       </el-table>
     </el-dialog>
 
@@ -3063,10 +3085,10 @@
         </el-table-column>
         <el-table-column label="team" width="60px">
           <template slot-scope="scope">
-              <div 
-                :style="{ 
-                  backgroundColor: getBuracoTeamColor(scope.row.team), 
-                  width: '30px', 
+              <div
+                :style="{
+                  backgroundColor: getBuracoTeamColor(scope.row.team),
+                  width: '30px',
                   height: '30px',
                   display: 'inline-block'
                 }"
@@ -3083,10 +3105,10 @@
       <el-table ref="filterTable" :data="BuracoDetail.teamDetail" border>
         <el-table-column label="team" width="60">
           <template slot-scope="scope">
-            <div 
-              :style="{ 
-                backgroundColor: getBuracoTeamColor(scope.row.teamId), 
-                width: '30px', 
+            <div
+              :style="{
+                backgroundColor: getBuracoTeamColor(scope.row.teamId),
+                width: '30px',
                 height: '30px',
                 display: 'inline-block'
               }"
@@ -3128,10 +3150,10 @@
         </el-table-column>
         <el-table-column label="team" width="60">
           <template slot-scope="scope">
-            <div 
-              :style="{ 
-                backgroundColor: getBuracoTeamColor(scope.row.teamId), 
-                width: '30px', 
+            <div
+              :style="{
+                backgroundColor: getBuracoTeamColor(scope.row.teamId),
+                width: '30px',
                 height: '30px',
                 display: 'inline-block'
               }"
@@ -3144,13 +3166,13 @@
         <el-table-column prop="actionType" label="actionType" width="100px">
           <template slot-scope="scope">{{ getBuracoActionDec(scope.row.actionType) }}</template>
         </el-table-column>
-        <el-table-column prop="opCards" label="opCards" width="750px" >
+        <el-table-column prop="opCards" label="opCards" width="680px" >
           <template slot-scope="scope">
             <span v-if="scope.row.appendsCards"><!--组合追加牌-->
-              <div v-for="(item) in scope.row.appendsCards" class="block">
+              <div v-for="(item, index) in scope.row.appendsCards" :key="index" class="block">
                 <el-image style="width: 37px; height: 50px" :src="getBuracoCardUrl(item)" />
               </div>
-              <span>{{ ' + ' }}</span>
+              <span>{{' + '}}</span>
               <div v-for="(item) in scope.row.opCards" class="block">
                 <span v-if="IstBuracoAppendsCards(item, scope.row.appendsCards)">
                   <el-image style="width: 37px; height: 50px" :src="getBuracoCardUrl(item)" />
@@ -3848,6 +3870,17 @@ export default {
         }
       }
     },
+    showBetType(valA) {
+        if (valA === 1 || valA === 0) {
+          return '常规'
+        } else if (valA === 2){
+          return 'FreeSpin(厅方)'
+        } else if (valA === 3){
+          return 'FreeSpin(平台)'
+        } else {
+          return '未知'
+        }
+    },
     peiValStr(randVal, winRate, peiVal) {
       if (randVal < winRate && peiVal === 1) {
         return '赢配牌'
@@ -4175,7 +4208,7 @@ export default {
             $this.showRemiGame(obj)
           } else if (gid === 11) {
             $this.showTrucoGame(obj)
-          } else if (gid === 12){
+          } else if (gid === 12 || gid === 133){
             $this.showBuracoGame(obj)
           } else {
             $this.showSmallGame(obj)
@@ -4313,8 +4346,8 @@ export default {
       teamGroupMap.set(2, new Map())
       for (let i = 0; i < this.BuracoDetail.actionLogs.length; i ++) {
         this.BuracoDetail.actionLogs[i].idx = i+1
-        if (this.BuracoDetail.actionLogs[i].actionType == 3 
-            || this.BuracoDetail.actionLogs[i].actionType == 6 
+        if (this.BuracoDetail.actionLogs[i].actionType == 3
+            || this.BuracoDetail.actionLogs[i].actionType == 6
             || this.BuracoDetail.actionLogs[i].actionType == 12) {
               let teamId = this.BuracoDetail.actionLogs[i].teamId
             let tg = teamGroupMap.get(teamId)
