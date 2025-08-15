@@ -2233,9 +2233,23 @@ export const asyncRoutes = [
       },
       {
         path: 'matchMonitor',
-        component: () => import('@/views/matchManage/matchMonitor'),
+        component: () => import('@/views/empty'),
         name: 'matchMonitor',
-        meta: { title: '赛事监控', noCache: true }
+        meta: { title: '赛事监控', noCache: true },
+        children: [
+          {
+            path: 'matchRuleTongits',
+            component: () => import('@/views/matchManage/matchMonitor/matchTongitsMonitor'),
+            name: 'matchRuleTongits',
+            meta: { title: 'Tongits赛事监控', noCache: true }
+          },
+          {
+            path: 'matchPusoyMonitor',
+            component: () => import('@/views/matchManage/matchMonitor/matchPusoyMonitor'),
+            name: 'matchPusoyMonitor',
+            meta: { title: 'Pusoy赛事监控', noCache: true }
+          }
+        ]
       },
       {
         path: 'matchLimitWhite',
