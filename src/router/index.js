@@ -978,7 +978,29 @@ export const asyncRoutes = [
                 ]
               }
             ]
-          }
+          },
+          {
+            path: 'PusoyJPCfg',
+            component: () => import('@/views/empty'),
+            redirect: 'noRedirect',
+            meta: { title: 'PusoyJP', noCache: true },
+            children: [
+              {
+                path: 'PusoyJPCfg',
+                component: () => import('@/views/empty'),
+                redirect: 'noRedirect',
+                meta: { title: 'Normal', noCache: true },
+                children: [
+                  {
+                    path: 'pusoyJPTable',
+                    component: () => import('@/views/config/tableConfig/pusoyJPTable'),
+                    name: 'pusoyJPTable',
+                    meta: { title: '场次 ◐' }
+                  },
+                ]
+              }
+            ]
+          },
         ]
       },
       {
@@ -2170,22 +2192,64 @@ export const asyncRoutes = [
     meta: { title: '比赛管理', icon: 'example', perm: 'CFG_MANAGEMENT_GTCC' },
     children: [
       {
-        path: 'matchConfig',
-        component: () => import('@/views/matchManage/matchConfig'),
-        name: 'matchConfig',
-        meta: { title: '赛事管理', noCache: true }
+        path: 'matchType',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: '赛事管理', noCache: true },
+        children: [
+          {
+            path: 'matchTongitsConfig',
+            component: () => import('@/views/matchManage/matchConfigs/matchTongitsConfig'),
+            name: 'matchTongitsConfig',
+            meta: { title: 'Tongits赛事', noCache: true }
+          },
+          {
+            path: 'matchPusoyConfig',
+            component: () => import('@/views/matchManage/matchConfigs/matchPusoyConfig'),
+            name: 'matchPusoyConfig',
+            meta: { title: 'Pusoy赛事', noCache: true }
+          }
+        ]
       },
       {
         path: 'matchRule',
-        component: () => import('@/views/matchManage/matchRule'),
+        component: () => import('@/views/empty'),
         name: 'matchRule',
-        meta: { title: '赛制管理', noCache: true }
+        meta: { title: '赛制管理', noCache: true },
+        children: [
+          {
+            path: 'matchRuleTongits',
+            component: () => import('@/views/matchManage/matchRule/matchRuleTongits'),
+            name: 'matchRuleTongits',
+            meta: { title: 'Tongits赛制管理', noCache: true }
+          },
+          {
+            path: 'matchRulePusoy',
+            component: () => import('@/views/matchManage/matchRule/matchRulePusoy'),
+            name: 'matchRulePusoy',
+            meta: { title: 'Pusoy赛制管理', noCache: true }
+          }
+        ]
       },
       {
         path: 'matchMonitor',
-        component: () => import('@/views/matchManage/matchMonitor'),
+        component: () => import('@/views/empty'),
         name: 'matchMonitor',
-        meta: { title: '赛事监控', noCache: true }
+        meta: { title: '赛事监控', noCache: true },
+        children: [
+          {
+            path: 'matchRuleTongits',
+            component: () => import('@/views/matchManage/matchMonitor/matchTongitsMonitor'),
+            name: 'matchRuleTongits',
+            meta: { title: 'Tongits赛事监控', noCache: true }
+          },
+          {
+            path: 'matchPusoyMonitor',
+            component: () => import('@/views/matchManage/matchMonitor/matchPusoyMonitor'),
+            name: 'matchPusoyMonitor',
+            meta: { title: 'Pusoy赛事监控', noCache: true }
+          }
+        ]
       },
       {
         path: 'matchLimitWhite',

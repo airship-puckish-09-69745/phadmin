@@ -221,7 +221,7 @@ export default {
       if (row === undefined) {
         return 0
       }
-      return row.login_black_cnt + row.login_low_score_cnt + row.login_high_score_cnt + row.login_suspect_cnt
+      return row.login_black_cnt + row.login_low_score_cnt + row.login_high_score_cnt + row.login_suspect_cnt + row.login_low_risk_cnt
     },
     getPercent(key,cur,last) {
       const sum1 = this.getSum(cur)
