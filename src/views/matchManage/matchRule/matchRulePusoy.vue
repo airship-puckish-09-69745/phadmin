@@ -679,7 +679,7 @@ export default {
         this.editForm.data = {
           "id": 0,
           "name": "mtt赛制配置",
-          "game_id": [2031],
+          "game_id": [2033],
           "init_score": 1000,
           "rule_type":0,
           "stage_detail": [],
@@ -857,7 +857,7 @@ export default {
               }
           },
           "wait_queue":{ //班车配置
-            "player_num":3, //发车人数
+            "player_num":4, //发车人数
             "wait_time":9, //等待时间
           },
         }
@@ -1036,26 +1036,29 @@ export default {
         this.errmsg('比赛只允许有两个阶段！')
         return false
       }
-      if (this.editForm.data.stage_detail.length == 2 && this.editForm.data.stage_detail[0].system_type != 1) {
+      if (this.editForm.data.stage_detail.length === 2 && this.editForm.data.stage_detail[0].system_type !== 1) {
         this.errmsg('阶段1的类型只能是【打立出局】！')
         return false
       }
-      for (let i=0; i<this.editForm.data.stage_detail.length; i++) {
+      for (let i = 0; i < this.editForm.data.stage_detail.length; i++) {
         //打立出局阶段配置检查
-        if (this.editForm.data.stage_detail[i].system_type == 1) {
+        if (this.editForm.data.stage_detail[i].system_type === 1) {
           const strikeOutStage = this.editForm.data.stage_detail[i]
-          if (strikeOutStage.alloc_type != 1) {
+          if (strikeOutStage.alloc_type !== 1) {
             this.errmsg('打立出局阶段的配桌方式暂不支持，请选择【随机配桌】！')
             return false
           }
-          if(strikeOutStage.system_strike_out.wait_queue.wait_time <=0 || strikeOutStage.system_strike_out.wait_queue.player_num<=0){
+          if (strikeOutStage.system_strike_out.wait_queue.wait_time <= 0 || strikeOutStage.system_strike_out.wait_queue.player_num <= 0) {
+            this.errmsg('班车配置错误')
+            return false
+          }
+          if (strikeOutStage.system_strike_out.wait_queue.player_num % 4 !== 0) {
             this.errmsg('班车配置错误')
             return false
           }
           //底分检查
           if (strikeOutStage.system_strike_out.bottom_score_growth.type > 1) {
             this.editForm.data.stage_detail[i].system_strike_out.bottom_score_growth.open = 1
-
             if (strikeOutStage.system_strike_out.bottom_score_growth.init_score_grow_detail.length > 0) {
               if (strikeOutStage.system_strike_out.bottom_score_growth.init_score_grow_detail[0].init_score >= this.editForm.data.init_score) {
                 this.errmsg('打立出局阶段的底分初始值必须小于用户初始积分！')
@@ -1063,14 +1066,14 @@ export default {
               }
             }
 
-            for (let j=0; j < strikeOutStage.system_strike_out.bottom_score_growth.init_score_grow_detail.length; j++) {
+            for (let j = 0; j < strikeOutStage.system_strike_out.bottom_score_growth.init_score_grow_detail.length; j++) {
               /*
               if (strikeOutStage.system_strike_out.bottom_score_growth.init_score_grow_detail[j].init_score >= this.editForm.data.init_score) {
                 this.errmsg('打立出局阶段的底分初始值必须小于用户初始积分！')
                 return false
               }
               */
-              if (strikeOutStage.system_strike_out.bottom_score_growth.type == 3) {
+              if (strikeOutStage.system_strike_out.bottom_score_growth.type === 3) {
                 if (strikeOutStage.system_strike_out.bottom_score_growth.init_score_grow_detail[j].duration <= 0) {
                   this.errmsg('打立出局阶段的底分时长无效！')
                   return false
@@ -1089,8 +1092,8 @@ export default {
               }
             }
 
-            for (let j=0; j < strikeOutStage.system_strike_out.disuse_score_growth.disuse_score_grow_detail.length; j++) {
-              if (strikeOutStage.system_strike_out.disuse_score_growth.disuse_score_grow_detail[j].disuse_score == 0) {
+            for (let j = 0; j < strikeOutStage.system_strike_out.disuse_score_growth.disuse_score_grow_detail.length; j++) {
+              if (strikeOutStage.system_strike_out.disuse_score_growth.disuse_score_grow_detail[j].disuse_score === 0) {
                 this.errmsg('打立出局阶段的淘汰分不能为0！')
                 return false
               }
@@ -1103,26 +1106,26 @@ export default {
             }
           }
           //结束规则检查
-          if (strikeOutStage.system_strike_out.end_rule.end_method == 1 || strikeOutStage.system_strike_out.end_rule.end_method == 3) {
+          if (strikeOutStage.system_strike_out.end_rule.end_method === 1 || strikeOutStage.system_strike_out.end_rule.end_method === 3) {
             if (strikeOutStage.system_strike_out.end_rule.lave_user_number <= 0) {
               this.errmsg('打立出局阶段的结束人数值无效！')
               return false
             }
-            if (this.editForm.data.rule_type == 0 && this.editForm.data.rule_extra.is_gtcc == 0){
+            if (this.editForm.data.rule_type === 0 && this.editForm.data.rule_extra.is_gtcc === 0) {
               if (strikeOutStage.system_strike_out.end_rule.lave_user_number < strikeOutStage.system_strike_out.promotion_rule.user_number) {
                 this.errmsg('打立出局阶段的结束人数不能小于晋级人数！')
                 return false
               }
             }
           }
-            if (strikeOutStage.system_strike_out.end_rule.end_method == 2 || strikeOutStage.system_strike_out.end_rule.end_method == 3) {
-              if (strikeOutStage.system_strike_out.end_rule.match_minute <= 0 || strikeOutStage.system_strike_out.end_rule.match_minute > 1440) {
-                this.errmsg('打立出局阶段的结束时长值无效！')
-                return false
-              }
+          if (strikeOutStage.system_strike_out.end_rule.end_method === 2 || strikeOutStage.system_strike_out.end_rule.end_method === 3) {
+            if (strikeOutStage.system_strike_out.end_rule.match_minute <= 0 || strikeOutStage.system_strike_out.end_rule.match_minute > 1440) {
+              this.errmsg('打立出局阶段的结束时长值无效！')
+              return false
             }
+          }
           //晋级规则检查
-          if (strikeOutStage.system_strike_out.promotion_rule.score_sort_type != 1) {
+          if (strikeOutStage.system_strike_out.promotion_rule.score_sort_type !== 1) {
             this.errmsg('打立出局阶段的晋级排行规则不支持！')
             return false
           }
@@ -1130,68 +1133,68 @@ export default {
             this.errmsg('打立出局阶段的晋级人数值无效！')
             return false
           }
-          if (strikeOutStage.system_strike_out.promotion_rule.user_number % 3 != 0) {
-            this.errmsg('打立出局阶段的晋级人数值必须是3的倍数！')
+          if (strikeOutStage.system_strike_out.promotion_rule.user_number % 4 !== 0) {
+            this.errmsg('打立出局阶段的晋级人数值必须是4的倍数！')
             return false
           }
-          if (strikeOutStage.system_strike_out.promotion_rule.score_brought_in.score_method == 1 && strikeOutStage.system_strike_out.promotion_rule.score_brought_in.score_multiple <= 0) {
+          if (strikeOutStage.system_strike_out.promotion_rule.score_brought_in.score_method === 1 && strikeOutStage.system_strike_out.promotion_rule.score_brought_in.score_multiple <= 0) {
             this.errmsg('打立出局阶段的带分开方加倍数无效！')
             return false
           }
-          if (strikeOutStage.system_strike_out.promotion_rule.score_brought_in.score_method == 2 && (strikeOutStage.system_strike_out.promotion_rule.score_brought_in.score_rate <= 0 || strikeOutStage.system_strike_out.promotion_rule.score_brought_in.score_rate > 100)) {
+          if (strikeOutStage.system_strike_out.promotion_rule.score_brought_in.score_method === 2 && (strikeOutStage.system_strike_out.promotion_rule.score_brought_in.score_rate <= 0 || strikeOutStage.system_strike_out.promotion_rule.score_brought_in.score_rate > 100)) {
             this.errmsg('打立出局阶段的带分比例值无效！')
             return false
           }
           let bi = strikeOutStage.system_strike_out.promotion_rule.score_brought_in;
-          if (bi.min_score != 0 ) {
-            if(bi.min_score > bi.max_score){
+          if (bi.min_score !== 0) {
+            if (bi.min_score > bi.max_score) {
               this.errmsg('打立出局晋级的带分 下限大于上限值')
               return false
             }
-            if(bi.min_score < -10000 || bi.min_score > 10000) {
+            if (bi.min_score < -10000 || bi.min_score > 10000) {
               this.errmsg('打立出局晋级的带分 下限取值范围[-10000,10000]')
               return false
             }
           }
-        } else if (this.editForm.data.stage_detail[i].system_type == 2) { //定局积分阶段配置检查
+        } else if (this.editForm.data.stage_detail[i].system_type === 2) { //定局积分阶段配置检查
           const reachOutStage = this.editForm.data.stage_detail[i]
-          if (reachOutStage.system_reach_out.score_sort_type != 1) {
+          if (reachOutStage.system_reach_out.score_sort_type !== 1) {
             this.errmsg('定局积分阶段的晋级排名规则不支持，请选择【按总排名】！')
             return false
           }
-          if (reachOutStage.system_reach_out.round_config.length == 0) {
+          if (reachOutStage.system_reach_out.round_config.length === 0) {
             this.errmsg('定局积分阶段的轮次配置不能为空！')
             return false
           }
           let lastUserNum = 0
-          if (this.editForm.data.stage_detail.length > 1 && this.editForm.data.rule_type == 0 && this.editForm.data.rule_extra.is_gtcc == 0) {
+          if (this.editForm.data.stage_detail.length > 1 && this.editForm.data.rule_type === 0 && this.editForm.data.rule_extra.is_gtcc === 0) {
             lastUserNum = this.editForm.data.stage_detail[0].system_strike_out.promotion_rule.user_number
-            if (lastUserNum < reachOutStage.system_reach_out.round_config[0].promotion_user){
+            if (lastUserNum < reachOutStage.system_reach_out.round_config[0].promotion_user) {
               this.errmsg('定局积分第1轮人数不能大于打立出局晋级人数')
               return false
             }
           }
           lastUserNum = reachOutStage.system_reach_out.round_config[0].promotion_user
-          for (let i=0; i<reachOutStage.system_reach_out.round_config.length; i++) {
+          for (let i = 0; i < reachOutStage.system_reach_out.round_config.length; i++) {
             const round = reachOutStage.system_reach_out.round_config[i]
             if (round.play_round <= 0 || round.play_round > 1000) {
               this.errmsg('定局积分第' + round.index + '轮的局数值无效!')
               return false
             }
-              if (round.promotion_user > lastUserNum) {
-                this.errmsg('定局积分第' + round.index + '轮的晋级人数不能大于前一轮的晋级人数!')
-                return false
-              } else if (round.promotion_user % 3 != 0) {
-                this.errmsg('定局积分第' + round.index + '轮的晋级人数必须是3的倍数!')
-                return false
-              } else {
-                lastUserNum = round.promotion_user
-              }
-            if (reachOutStage.system_reach_out.score_method == 1 && round.score_multiple <= 0) {
+            if (round.promotion_user > lastUserNum) {
+              this.errmsg('定局积分第' + round.index + '轮的晋级人数不能大于前一轮的晋级人数!')
+              return false
+            } else if (round.promotion_user % 4 !== 0) {
+              this.errmsg('定局积分第' + round.index + '轮的晋级人数必须是4的倍数!')
+              return false
+            } else {
+              lastUserNum = round.promotion_user
+            }
+            if (reachOutStage.system_reach_out.score_method === 1 && round.score_multiple <= 0) {
               this.errmsg('定局积分第' + round.index + '轮的底分开方加倍数无效!')
               return false
             }
-            if (reachOutStage.system_reach_out.score_method == 2 && round.score_rate <= 0) {
+            if (reachOutStage.system_reach_out.score_method === 2 && round.score_rate <= 0) {
               this.errmsg('定局积分第' + round.index + '轮的底分比例值无效!')
               return false
             }
@@ -1202,7 +1205,7 @@ export default {
         }
       }
       //sng 不支持GTCC赛制
-      if(this.editForm.data.rule_type == 1 ||this.editForm.data.rule_extra.is_gtcc == 0){
+      if (this.editForm.data.rule_type === 1 || this.editForm.data.rule_extra.is_gtcc === 0) {
         this.editForm.data.rule_extra.is_gtcc = 0
       }
       return true
