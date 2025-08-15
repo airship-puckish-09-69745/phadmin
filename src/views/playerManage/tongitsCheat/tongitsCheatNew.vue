@@ -248,6 +248,9 @@ export default {
       const $this = this
       $this.cheatLogs = []
       $this.clientDB = new ClientTableData([], 1, {})
+      if (this.Uid ==='' || this.Uid === undefined) {
+        this.Uid = 0
+      }
       request({
         url: '/dataProxy/info',
         method: 'get',
