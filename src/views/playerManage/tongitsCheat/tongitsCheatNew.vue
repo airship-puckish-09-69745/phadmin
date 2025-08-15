@@ -37,7 +37,8 @@ export default {
         { label: '按时间', value: 0 },
         { label: '按疑似度', value: 1 },
         { label: '按异常局占比', value: 2 },
-        { label: '按拉黑时间', value: 3 }
+        { label: '按拉黑时间', value: 3 },
+        { label: '按历史信任分', value: 4 }
       ],
       cheatType: -1,
       cheatTypeOption: [
@@ -289,11 +290,13 @@ export default {
               TidCheatLogs: [],
               Nick: new Set(),
               TrustLevel: 0,
-              TrustScore: 0
+              TrustScore: 0,
+              TrustMaxScore: 0
             }
             if (row.trustScore !== undefined) {
               cheatLog.TrustScore = row.trustScore
               cheatLog.TrustLevel = row.trustLevel
+              cheatLog.TrustMaxScore = row.trustMaxScore
             }
             // eslint-disable-next-line no-prototype-builtins
             if (row.hasOwnProperty('maxCheatScore')) {
@@ -308,8 +311,10 @@ export default {
             sortName = 'CheatScore'
           } else if (this.sortType === 2) {
             sortName = 'CheatRadio'
-          }else if (this.sortType === 3) {
+          } else if (this.sortType === 3) {
             sortName = 'BlackTime'
+          } else if (this.sortType === 4) {
+            sortName = 'TrustMaxScore'
           }
           $this.clientDB = new ClientTableData(cheatLogs, $this.pageNum, {}, sortName, -1, 'Uid')
           $this.handleCurrentChange(1)
@@ -661,10 +666,13 @@ export default {
       return $libDate.FormateSecondStr(ts, 2)
     },
     changeWhite(row, userType) {
-      const tips = '是否确认将玩家ID为' + row.Uid + '的玩家洗白?'
+      let tips = '是否确认将玩家ID为' + row.Uid + '的玩家洗白?'
+      if (userType === 3) {
+        tips = '是否确认将玩家ID为' + row.Uid + '的玩家设置为认证高信?'
+      }
       this.$confirm(tips, '提示', { type: 'warning' }).then(() => {
         const ob = this.clientDB.GetDataByID(row.Uid)
-        ob.UserType = 0
+        ob.UserType = userType
         ob.CheatScore = 0
         this.clientDB.UpdateData2('Uid', ob)
         request({
@@ -720,12 +728,11 @@ export default {
     formatUserNick(row) {
       if (row.Nick.size === 0) {
         const _nick = this.getNick(row.Uid)
-        if (_nick){
+        if (_nick) {
           return _nick
-        }else {
+        } else {
           return '--'
         }
-
       } else {
         const array = Array.from(row.Nick)
         return (array[0] === '' ? '--' : array[0])
@@ -734,11 +741,13 @@ export default {
     formatUserType(row) {
       const userType = row.UserType
       if (userType === 0) {
-        return '信誉'
+        return '普通'
       } else if (userType === 1) {
         return '疑似'
       } else if (userType === 2) {
         return '黑名单'
+      } else if (userType === 3) {
+        return '认证高信'
       }
     },
     formatUserTrustLevel(row) {
@@ -861,9 +870,13 @@ export default {
       this.CheatLogVisible = true
       this.CheatLogs = row.CheatInfos
     },
-    showButton(row) {
-      return row.userType === 2
+    showButton(row, userType) {
+      if (userType === 2) {
+        return row.UserType === userType
+      }
+      return true
     },
+
     getValueColor(value) {
       if (value >= this.maybeMin) return '#ff0000'
       return '#000000'
@@ -994,8 +1007,13 @@ export default {
           label="信任分"
           width="80"
           align="center"
-        >
-        </el-table-column>
+        />
+        <el-table-column
+          prop="TrustMaxScore"
+          label="历史最高信任分"
+          width="80"
+          align="center"
+        />
         <el-table-column
           prop="CheatScore"
           label="疑似度"
@@ -1030,7 +1048,7 @@ export default {
         <el-table-column
           prop="BlackTime"
           label="拉⿊时间"
-          width="160"
+          width="100"
           align="center"
         >
           <template slot-scope="scope">
@@ -1039,7 +1057,7 @@ export default {
         </el-table-column>
         <el-table-column
           label="拉⿊信息"
-          width="300"
+          width="200"
           align="center"
         >
           <template slot-scope="scope">
@@ -1049,7 +1067,7 @@ export default {
         <el-table-column
           prop="LastEndTime"
           label="最近牌局时间"
-          width="160"
+          width="100"
           align="center"
         >
           <template slot-scope="scope">
@@ -1059,7 +1077,7 @@ export default {
         <el-table-column
           prop="UpdateTime"
           label="最近作弊时间"
-          width="160"
+          width="100"
           align="center"
         >
           <template slot-scope="scope">
@@ -1164,15 +1182,18 @@ export default {
         </el-table-column>
         <el-table-column
           label="操作"
-          width="200"
+          width="300"
           align="center"
         >
           <template slot-scope="scope">
-            <el-button type="primary" size="small" :disabled="showButton(scope.row)" @click="changeWhite(scope.row,0)">
+            <el-button type="primary" size="small" @click="changeWhite(scope.row,0)">
               洗白
             </el-button>
-            <el-button type="primary" size="small" :disabled="showButton(scope.row)" @click="changeBlack(scope.row,2)">
+            <el-button type="primary" size="small" :disabled="showButton(scope.row,2)" @click="changeBlack(scope.row,2)">
               拉黑
+            </el-button>
+            <el-button type="primary" size="small" @click="changeWhite(scope.row,3)">
+              认证高信
             </el-button>
           </template>
         </el-table-column>

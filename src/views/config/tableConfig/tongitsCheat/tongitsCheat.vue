@@ -397,6 +397,21 @@ export default {
       AutoBlack: [
 
       ],
+      RepairRadio:70,
+      PotTrustRepairType:[],
+      PotTrustRepairTypeOption:[
+        { label: '全部', value: 0 },
+        { label: '拆牌喂牌', value: 1 },
+        { label: '单局多次喂牌', value: 2 },
+        { label: '近5局首出喂牌局数>=3', value: 3 },
+        { label: '皇冠FIGHT', value: 4 },
+        { label: '皇冠FOLD', value: 5 },
+        { label: '打一局不拿pot就离开', value: 6 },
+        { label: '大POT高胜率', value: 7 },
+        { label: '大POT多人离开', value: 8 },
+        { label: '玩超多局数且盈利', value: 9 },
+        { label: '名字相似度过高', value: 10 }
+      ]
     }
   },
 
@@ -651,6 +666,7 @@ export default {
             this.editJokerAI = this.CheatCfg.JokerAiConfigRow
             this.editQuickAI = this.CheatCfg.QuickAiConfigRow
             this.AutoBlack = this.CheatCfg.AutoBlack || this.AutoBlack
+            this.RepairRadio = $this.CheatCfg.RepairRadio || 70
             const maybeMin = $this.CheatCfg.MaybeMin
             $this.oldCheatMin = maybeMin
             const old = JSON.parse(response.Data.Data)
@@ -667,6 +683,7 @@ export default {
       this.CheatCfg.MaybeReduce = parseInt(this.CheatCfg.MaybeReduce)
       this.CheatCfg.TableBlackScore = parseInt(this.CheatCfg.TableBlackScore)
       this.CheatCfg.TableTickLeave = parseInt(this.TableTickLeave)
+      this.CheatCfg.RepairRadio = parseInt(this.RepairRadio)
       const potItems = this.potTableBlackTickTableMoneys.split(',')
       this.CheatCfg.PotTableBlackTickTableMoneys = []
       for (const o in potItems) {
@@ -995,6 +1012,7 @@ export default {
             </el-button>
           </el-descriptions-item>
         </el-descriptions>
+        <h3 class="title">拉黑场次相关</h3>
         <el-descriptions :column="1" :colon="false" border>
           <el-descriptions-item label="POT开通同一桌积分拉黑场次" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
             <el-input v-model="potTableBlackTickTableMoneys" size="medium" style="width: 1000px" />
@@ -1024,6 +1042,12 @@ export default {
           </el-descriptions-item>
           <el-descriptions-item label="QUICK开通按照异常局拉黑场次" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
             <el-input v-model="quickTableBlackRadioTableMoneys" size="medium" style="width: 1000px" />
+          </el-descriptions-item>
+        </el-descriptions>
+        <h3 class="title">信任分修正相关</h3>
+        <el-descriptions :column="2" :colon="false" border>
+          <el-descriptions-item label="Pot修正系数(百分比)" :content-style="{'text-align': 'center','width': '250px'}" :label-style="{'text-align': 'center'}">
+            <el-input v-model.number="RepairRadio" type="number" size="medium" style="width: 120px" />
           </el-descriptions-item>
         </el-descriptions>
       </el-tab-pane>
