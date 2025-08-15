@@ -2213,9 +2213,23 @@ export const asyncRoutes = [
       },
       {
         path: 'matchRule',
-        component: () => import('@/views/matchManage/matchRule'),
+        component: () => import('@/views/empty'),
         name: 'matchRule',
-        meta: { title: '赛制管理', noCache: true }
+        meta: { title: '赛制管理', noCache: true },
+        children: [
+          {
+            path: 'matchRuleTongits',
+            component: () => import('@/views/matchManage/matchRule/matchRuleTongits'),
+            name: 'matchRuleTongits',
+            meta: { title: 'Tongits赛制管理', noCache: true }
+          },
+          {
+            path: 'matchRulePusoy',
+            component: () => import('@/views/matchManage/matchRule/matchRulePusoy'),
+            name: 'matchRulePusoy',
+            meta: { title: 'Pusoy赛制管理', noCache: true }
+          }
+        ]
       },
       {
         path: 'matchMonitor',
