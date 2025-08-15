@@ -2201,13 +2201,13 @@ export const asyncRoutes = [
             path: 'matchConfig',
             component: () => import('@/views/matchManage/matchConfigs/matchConfig'),
             name: 'matchConfig',
-            meta: { title: 'Tongits赛制管理', noCache: true }
+            meta: { title: 'Tongits赛事', noCache: true }
           },
           {
             path: 'matchConfigCopy',
             component: () => import('@/views/matchManage/matchConfigs/matchConfigCopy'),
             name: 'matchConfig1',
-            meta: { title: 'Pusoy赛制管理', noCache: true }
+            meta: { title: 'Pusoy赛事', noCache: true }
           }
         ]
       },
