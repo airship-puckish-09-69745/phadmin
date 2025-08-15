@@ -330,17 +330,6 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item label="比赛牌桌ID：" :required="true">
-            <el-select v-model="editForm.listExtra.tableSceneId" placeholder="请选择" size="mini">
-              <el-option
-                v-for="item in MATCH_TABLE_SCENE_ID_CFG"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              />
-            </el-select>
-          </el-form-item>
-
           <el-form-item label="GTCC线上决赛补位白名单:" :required="true">
             <el-radio v-for="item in whileListCfgs" :key="item.value" v-model="editForm.signExtra.gtccWhiteList.type" :label="item.value">{{ item.label }}</el-radio>
           </el-form-item>
@@ -800,7 +789,7 @@
           <el-form-item label="赛事分类：" :required="true">
             <el-select v-model="editForm.signExtra.matchEvents" placeholder="请选择" size="mini">
               <el-option
-                v-for="item in MATCH_LIST_TAG_OPTIONS"
+                v-for="item in matchEvents"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -846,7 +835,7 @@ import { log } from 'console'
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
 import { getAllCommonGameConfig, getAllMatchGuidesConfig } from '@/utils/common-game-config'
 import { IsMars } from '@/utils/env'
-import { CHANNEL_OPTIONS, APPID_OPTIONS, ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS,MATCH_TABLE_SCENE_ID_CFG,MATCH_LIST_TAG_OPTIONS } from '@/utils/options'
+import { CHANNEL_OPTIONS, APPID_OPTIONS, ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS } from '@/utils/options'
 
 export default {
   name: 'MatchConfig',
@@ -862,8 +851,6 @@ export default {
       ITEM_DAY_TYPE_OPTIONS,
       APPID_OPTIONS,
       CHANNEL_OPTIONS,
-      MATCH_TABLE_SCENE_ID_CFG,
-      MATCH_LIST_TAG_OPTIONS,
       form: {
         gameId: -1,
         status: -1,
@@ -872,8 +859,7 @@ export default {
         appId: -1
       },
       gameCfgs: [
-        { 'value': 2031, 'label': 'tongits' }
-        // {"value": 15, "label":"德州"}
+        { 'value': 2033, 'label': 'pusoy' }
       ],
       statusCfgs: [
         { 'value': 0, 'label': '启用' },
@@ -935,6 +921,12 @@ export default {
           'propsIcon': '',
           'propsAttr': ''
         }
+      ],
+      matchEvents: [
+        { 'value': 0, 'label': 'All' },
+        { 'value': 1, 'label': 'Events' },
+        { 'value': 4, 'label': 'GTCC周赛' }, // notice 2,3 空着
+        { 'value': 5, 'label': 'GTCC预选赛' }
       ],
       prizeModleCfgs: [
         { 'value': 0, 'label': '固定奖励' },
@@ -1063,7 +1055,6 @@ export default {
             type: 0,
             data: ''
           },
-
         },
         prizeExtra: {
           awardType: 0,
@@ -1071,9 +1062,6 @@ export default {
           prizeTemplateId: 0,
           rewardType: 1,
           sceneId: 0
-        },
-        listExtra:{
-          tableSceneId: 0,  //牌桌场景ID
         },
       },
 
@@ -1107,8 +1095,7 @@ export default {
         signExtra: '报名额外信息',
         associateKey: '推荐方案',
         dcReport: '是否上报数据中心',
-        propsId: '道具ID',
-        listExtra: '列表拓展信息',
+        propsId: '道具ID'
       },
       singleCopy: {
         id: 0,
@@ -1260,29 +1247,30 @@ export default {
           if (objs.total > 0) {
             for (var i = 0; i < objs.list.length; i++) {
               let gameId = parseInt(objs.list[i].game_id, 10)
-              if (gameId === 2031) {
-                this.csCfgs.push({
-                  'label': '[' + objs.list[i].id + ']' + objs.list[i].name,
-                  'value': objs.list[i].id,
-                  'gameId': [parseInt(objs.list[i].game_id, 10)],
-                  'ruleType': objs.list[i].rule_type
-                })
-                const stage_detail = JSON.parse(objs.list[i].stage_detail)
-                // console.log("打立初级信息 ", stage_detail)
-                for (var j = 0; j < stage_detail.length; j++) {
-                  if (stage_detail[j].system_type === 1) { // 打立出局
-                    // console.log("id:" + objs.list[i].id + " min:" + stage_detail[j].system_strike_out.end_rule.match_minute)
-                    // 存储打立出局的最大时长配置 用于配置检查
-                    this.endMinuteCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.end_rule.match_minute)
-                    this.endNumCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.end_rule.lave_user_number)
-                    this.promoteNumCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.promotion_rule.user_number)
-                    this.growTotalNumCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.disuse_score_growth.grow_total)
-                    this.disuseScoreGrowDetail.set(objs.list[i].id, stage_detail[j].system_strike_out.disuse_score_growth.disuse_score_grow_detail)
-                    // console.log("disuseScoreGrowDetail",this.disuseScoreGrowDetail)
-                  } else if (stage_detail[j].system_type === 2) {
-                    // 存储定局信息
-                    this.reachOutNumCfgs.set(objs.list[i].id, stage_detail[j].system_reach_out.round_config[0].promotion_user)
-                  }
+              if (gameId !== 2033) {
+                continue
+              }
+              this.csCfgs.push({
+                'label': '[' + objs.list[i].id + ']' + objs.list[i].name,
+                'value': objs.list[i].id,
+                'gameId': [gameId],
+                'ruleType': objs.list[i].rule_type,
+              })
+              const stage_detail = JSON.parse(objs.list[i].stage_detail)
+              // console.log("打立初级信息 ", stage_detail)
+              for (var j = 0; j < stage_detail.length; j++) {
+                if (stage_detail[j].system_type === 1) { // 打立出局
+                  // console.log("id:" + objs.list[i].id + " min:" + stage_detail[j].system_strike_out.end_rule.match_minute)
+                  // 存储打立出局的最大时长配置 用于配置检查
+                  this.endMinuteCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.end_rule.match_minute)
+                  this.endNumCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.end_rule.lave_user_number)
+                  this.promoteNumCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.promotion_rule.user_number)
+                  this.growTotalNumCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.disuse_score_growth.grow_total)
+                  this.disuseScoreGrowDetail.set(objs.list[i].id, stage_detail[j].system_strike_out.disuse_score_growth.disuse_score_grow_detail)
+                  // console.log("disuseScoreGrowDetail",this.disuseScoreGrowDetail)
+                } else if (stage_detail[j].system_type == 2) {
+                  // 存储定局信息
+                  this.reachOutNumCfgs.set(objs.list[i].id, stage_detail[j].system_reach_out.round_config[0].promotion_user)
                 }
               }
             }
@@ -1308,28 +1296,27 @@ export default {
         if (response.RetCode === 0) {
           const objs = response.Data || []
           if (objs.total > 0) {
-            console.log("+++++++++++++++++++++++++++++++++")
-            console.log(objs.list)
             this.total = objs.total
             this.tableData = []
             const tableDataCpy = objs.list
             if (tableDataCpy.length > 0) {
               for (let i = 0; i < tableDataCpy.length; i++) {
-                if (tableDataCpy[i].game_id === 2031) {
-                  let show_appinfo = ''
-                  show_appinfo = this.filterMatchListByAppId(tableDataCpy[i].app_info_cfg)
-                  if (show_appinfo !== '') {
-                    tableDataCpy[i].show_appinfo = show_appinfo
-                    tableDataCpy[i].openShow = tableDataCpy[i].status === 0
-                    if (!tableDataCpy[i].hasOwnProperty('open_days_limit')) {
-                      tableDataCpy[i].open_days_limit = 0
-                    }
-                    if (!tableDataCpy[i].hasOwnProperty('sort')) {
-                      tableDataCpy[i].sort = 0
-                    }
-                    this.tableData.push(tableDataCpy[i])
+                let gameId = parseInt(tableDataCpy[i].game_id, 10)
+                if (gameId !== 2033) {
+                  continue
+                }
+                let show_appinfo = ''
+                show_appinfo = this.filterMatchListByAppId(tableDataCpy[i].app_info_cfg)
+                if (show_appinfo !== '') {
+                  tableDataCpy[i].show_appinfo = show_appinfo
+                  tableDataCpy[i].openShow = tableDataCpy[i].status === 0
+                  if (!tableDataCpy[i].hasOwnProperty('open_days_limit')) {
+                    tableDataCpy[i].open_days_limit = 0
                   }
-                  console.log("table: ",tableDataCpy[i])
+                  if (!tableDataCpy[i].hasOwnProperty('sort')) {
+                    tableDataCpy[i].sort = 0
+                  }
+                  this.tableData.push(tableDataCpy[i])
                 }
               }
             }
@@ -1770,9 +1757,6 @@ export default {
           rewardType: 1,
           sceneId: 0
         }
-        this.editForm.listExtra ={
-          tableSceneId:0,
-        }
         this.editForm.isAdd = true
         this.showCsCfgs = this.csCfgs
         this.guideShowCfgs = this.guideCfgs
@@ -1858,10 +1842,6 @@ export default {
           this.editForm.signExtra.gtccWhiteList.data=''
         }
         this.editForm.prizeExtra = JSON.parse(editData.prize_extra)
-        // this.editForm.listExtra = JSON.parse(editData.list_extra)
-        // if(this.editForm.listExtra  === undefined){
-        //   this.editForm.listExtra.tableSceneId = 0
-        // }  //先做代码屏蔽
         this.showCsCfgs = []
         // 循环遍历是否存在gameId
         if (this.csCfgs.length > 0) {
@@ -2007,8 +1987,7 @@ export default {
           AssociateKey: this.editForm.data.associateKey,
           DcReport: this.editForm.data.dcReport,
           SignExtra: JSON.stringify(this.editForm.signExtra),
-          PrizeExtra: JSON.stringify(this.editForm.prizeExtra),
-          ListExtra: JSON.stringify(this.editForm.listExtra),
+          PrizeExtra: JSON.stringify(this.editForm.prizeExtra)
 
         }
       }).then(response => {
@@ -2956,6 +2935,10 @@ export default {
           if (objs.total > 0) {
             let total = 0
             for (var i = 0; i < objs.list.length; i++) {
+              let gameId = parseInt(objs.list[i].game_id, 10)
+              if (gameId !== 2033) {
+                continue
+              }
               if (!await this.checkRuleIdIsPublish(objs.list[i].id)) {
                 continue
               }

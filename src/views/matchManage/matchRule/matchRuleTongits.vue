@@ -456,7 +456,6 @@ export default {
       },
       gameCfgs: [
         {"value": 2031, "label":"tongits"},
-        {"value": 2033, "label":"pusoy"},
         // {"value": 15, "label":"德州"}
       ],
       statusCfgs: [
@@ -546,8 +545,11 @@ export default {
             this.tableData = []
             this.total = 0
             for (let i = 0; i < objs.list.length; i++) {
+              let gameId = parseInt(objs.list[i].game_id, 10)
+              if (gameId !== 2031) {
+                continue
+              }
               if (this.form.gameId > 0) {
-                let gameId = parseInt(objs.list[i].game_id, 10)
                 if (this.form.gameId > 0 && this.form.gameId !== gameId) {
                   continue
                 }
