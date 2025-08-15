@@ -841,7 +841,7 @@ import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import DateTimeShow from '@/components/DatetimeShow'
 import { $libDate, $libShow } from '@/utils/common'
-import AppInfo from '../devTools/appInfo.vue'
+import AppInfo from '../../devTools/appInfo.vue'
 import { log } from 'console'
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
 import { getAllCommonGameConfig, getAllMatchGuidesConfig } from '@/utils/common-game-config'
@@ -1259,27 +1259,30 @@ export default {
           const objs = response.Data || []
           if (objs.total > 0) {
             for (var i = 0; i < objs.list.length; i++) {
-              this.csCfgs.push({
-                'label': '[' + objs.list[i].id + ']' + objs.list[i].name,
-                'value': objs.list[i].id,
-                'gameId': [parseInt(objs.list[i].game_id, 10)],
-                'ruleType': objs.list[i].rule_type,
-              })
-              const stage_detail = JSON.parse(objs.list[i].stage_detail)
-              // console.log("打立初级信息 ", stage_detail)
-              for (var j = 0; j < stage_detail.length; j++) {
-                if (stage_detail[j].system_type === 1) { // 打立出局
-                  // console.log("id:" + objs.list[i].id + " min:" + stage_detail[j].system_strike_out.end_rule.match_minute)
-                  // 存储打立出局的最大时长配置 用于配置检查
-                  this.endMinuteCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.end_rule.match_minute)
-                  this.endNumCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.end_rule.lave_user_number)
-                  this.promoteNumCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.promotion_rule.user_number)
-                  this.growTotalNumCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.disuse_score_growth.grow_total)
-                  this.disuseScoreGrowDetail.set(objs.list[i].id, stage_detail[j].system_strike_out.disuse_score_growth.disuse_score_grow_detail)
-                  // console.log("disuseScoreGrowDetail",this.disuseScoreGrowDetail)
-                } else if (stage_detail[j].system_type == 2) {
-                  // 存储定局信息
-                  this.reachOutNumCfgs.set(objs.list[i].id, stage_detail[j].system_reach_out.round_config[0].promotion_user)
+              let gameId = parseInt(objs.list[i].game_id, 10)
+              if (gameId === 2031) {
+                this.csCfgs.push({
+                  'label': '[' + objs.list[i].id + ']' + objs.list[i].name,
+                  'value': objs.list[i].id,
+                  'gameId': [parseInt(objs.list[i].game_id, 10)],
+                  'ruleType': objs.list[i].rule_type
+                })
+                const stage_detail = JSON.parse(objs.list[i].stage_detail)
+                // console.log("打立初级信息 ", stage_detail)
+                for (var j = 0; j < stage_detail.length; j++) {
+                  if (stage_detail[j].system_type === 1) { // 打立出局
+                    // console.log("id:" + objs.list[i].id + " min:" + stage_detail[j].system_strike_out.end_rule.match_minute)
+                    // 存储打立出局的最大时长配置 用于配置检查
+                    this.endMinuteCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.end_rule.match_minute)
+                    this.endNumCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.end_rule.lave_user_number)
+                    this.promoteNumCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.promotion_rule.user_number)
+                    this.growTotalNumCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.disuse_score_growth.grow_total)
+                    this.disuseScoreGrowDetail.set(objs.list[i].id, stage_detail[j].system_strike_out.disuse_score_growth.disuse_score_grow_detail)
+                    // console.log("disuseScoreGrowDetail",this.disuseScoreGrowDetail)
+                  } else if (stage_detail[j].system_type === 2) {
+                    // 存储定局信息
+                    this.reachOutNumCfgs.set(objs.list[i].id, stage_detail[j].system_reach_out.round_config[0].promotion_user)
+                  }
                 }
               }
             }
@@ -1310,18 +1313,20 @@ export default {
             const tableDataCpy = objs.list
             if (tableDataCpy.length > 0) {
               for (let i = 0; i < tableDataCpy.length; i++) {
-                let show_appinfo = ''
-                show_appinfo = this.filterMatchListByAppId(tableDataCpy[i].app_info_cfg)
-                if (show_appinfo !== '') {
-                  tableDataCpy[i].show_appinfo = show_appinfo
-                  tableDataCpy[i].openShow = tableDataCpy[i].status === 0
-                  if (!tableDataCpy[i].hasOwnProperty('open_days_limit')) {
-                    tableDataCpy[i].open_days_limit = 0
+                if (tableDataCpy[i].game_id === 2031) {
+                  let show_appinfo = ''
+                  show_appinfo = this.filterMatchListByAppId(tableDataCpy[i].app_info_cfg)
+                  if (show_appinfo !== '') {
+                    tableDataCpy[i].show_appinfo = show_appinfo
+                    tableDataCpy[i].openShow = tableDataCpy[i].status === 0
+                    if (!tableDataCpy[i].hasOwnProperty('open_days_limit')) {
+                      tableDataCpy[i].open_days_limit = 0
+                    }
+                    if (!tableDataCpy[i].hasOwnProperty('sort')) {
+                      tableDataCpy[i].sort = 0
+                    }
+                    this.tableData.push(tableDataCpy[i])
                   }
-                  if (!tableDataCpy[i].hasOwnProperty('sort')) {
-                    tableDataCpy[i].sort = 0
-                  }
-                  this.tableData.push(tableDataCpy[i])
                   console.log("table: ",tableDataCpy[i])
                 }
               }
@@ -2949,6 +2954,10 @@ export default {
           if (objs.total > 0) {
             let total = 0
             for (var i = 0; i < objs.list.length; i++) {
+              let gameId = parseInt(objs.list[i].game_id, 10)
+              if (gameId !== 2031) {
+                continue
+              }
               if (!await this.checkRuleIdIsPublish(objs.list[i].id)) {
                 continue
               }
