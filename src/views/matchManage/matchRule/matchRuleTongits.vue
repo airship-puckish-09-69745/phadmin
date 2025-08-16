@@ -442,6 +442,7 @@ import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import { $libDate, $libShow} from '@/utils/common'
+import {MATCH_IUPSTREAM_TYPE_OPTIONS} from "@/utils/options";
 
 export default {
   name: 'MatchRule',
@@ -451,11 +452,11 @@ export default {
       envProjectName: process.env.VUE_APP_PROJECT,
       libShow: $libShow,
       form: {
-        gameId: -1,
+        gameId: MATCH_IUPSTREAM_TYPE_OPTIONS.MATCH_UPSTREAM_TYPE_TONGITS,
         status: -1,
       },
       gameCfgs: [
-        {"value": 2031, "label":"tongits"},
+        {"value": MATCH_IUPSTREAM_TYPE_OPTIONS.MATCH_UPSTREAM_TYPE_TONGITS, "label":"tongits"},
         // {"value": 15, "label":"德州"}
       ],
       statusCfgs: [
@@ -513,7 +514,8 @@ export default {
         start_num:"开赛人数",
         rule_extra:"拓展信息",
       },
-      showDevTool: false
+      showDevTool: false,
+      MATCH_IUPSTREAM_TYPE_OPTIONS,
     }
   },
   computed: {
@@ -537,6 +539,7 @@ export default {
           Status: this.form.status,
           PageNum: this.page,
           PageSize: this.limit,
+          GameId:this.form.gameId,
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -546,7 +549,7 @@ export default {
             this.total = 0
             for (let i = 0; i < objs.list.length; i++) {
               let gameId = parseInt(objs.list[i].game_id, 10)
-              if (gameId !== 2031) {
+              if (gameId !== MATCH_IUPSTREAM_TYPE_OPTIONS.MATCH_UPSTREAM_TYPE_TONGITS) {
                 continue
               }
               if (this.form.gameId > 0) {
@@ -679,7 +682,7 @@ export default {
         this.editForm.data = {
           "id": 0,
           "name": "mtt赛制配置",
-          "game_id": [2031],
+          "game_id": [MATCH_IUPSTREAM_TYPE_OPTIONS.MATCH_UPSTREAM_TYPE_TONGITS],
           "init_score": 1000,
           "rule_type":0,
           "stage_detail": [],

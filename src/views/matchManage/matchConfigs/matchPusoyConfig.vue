@@ -851,7 +851,7 @@ import {
   APPID_OPTIONS,
   ITEM_DAY_TYPE_OPTIONS,
   PROP_TYPE_OPTIONS,
-  MATCH_TABLE_SCENE_ID_CFG, MATCH_LIST_TAG_OPTIONS
+  MATCH_TABLE_SCENE_ID_CFG, MATCH_LIST_TAG_OPTIONS,MATCH_IUPSTREAM_TYPE_OPTIONS
 } from '@/utils/options'
 
 export default {
@@ -871,7 +871,7 @@ export default {
       MATCH_TABLE_SCENE_ID_CFG,
       MATCH_LIST_TAG_OPTIONS,
       form: {
-        gameId: 2033,
+        gameId: MATCH_IUPSTREAM_TYPE_OPTIONS.MATCH_UPSTREAM_TYPE_PUSOY,
         status: -1,
         csId: -1,
         repeatType: -1,
@@ -1248,7 +1248,7 @@ export default {
       }
     },
     resetSearch() {
-      this.form.gameId = -1
+      this.form.gameId -1
       this.form.status = -1
       this.form.csId = -1
       this.form.repeatType = -1
@@ -1262,7 +1262,8 @@ export default {
           Env: this.env,
           Status: 0,
           PageNum: 1,
-          PageSize: 200
+          PageSize: 200,
+          GameId:MATCH_IUPSTREAM_TYPE_OPTIONS.MATCH_UPSTREAM_TYPE_PUSOY,
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -1270,7 +1271,7 @@ export default {
           if (objs.total > 0) {
             for (var i = 0; i < objs.list.length; i++) {
               let gameId = parseInt(objs.list[i].game_id, 10)
-              if (gameId !== 2033) {
+              if (gameId !== MATCH_IUPSTREAM_TYPE_OPTIONS.MATCH_UPSTREAM_TYPE_PUSOY) {
                 continue
               }
               this.csCfgs.push({
@@ -2954,7 +2955,8 @@ export default {
             Env: this.env,
             Status: 0,
             PageNum: 1,
-            PageSize: 200
+            PageSize: 200,
+            GameId:MATCH_IUPSTREAM_TYPE_OPTIONS.MATCH_UPSTREAM_TYPE_PUSOY,
           }
         })
         if (response.RetCode === 0) {
@@ -2963,7 +2965,7 @@ export default {
             let total = 0
             for (var i = 0; i < objs.list.length; i++) {
               let gameId = parseInt(objs.list[i].game_id, 10)
-              if (gameId !== 2033) {
+              if (gameId !== MATCH_IUPSTREAM_TYPE_OPTIONS.MATCH_UPSTREAM_TYPE_PUSOY) {
                 continue
               }
               if (!await this.checkRuleIdIsPublish(objs.list[i].id)) {

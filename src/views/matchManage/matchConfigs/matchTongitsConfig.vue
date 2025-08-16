@@ -846,7 +846,15 @@ import { log } from 'console'
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
 import { getAllCommonGameConfig, getAllMatchGuidesConfig } from '@/utils/common-game-config'
 import { IsMars } from '@/utils/env'
-import { CHANNEL_OPTIONS, APPID_OPTIONS, ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS,MATCH_TABLE_SCENE_ID_CFG,MATCH_LIST_TAG_OPTIONS } from '@/utils/options'
+import {
+  CHANNEL_OPTIONS,
+  APPID_OPTIONS,
+  ITEM_DAY_TYPE_OPTIONS,
+  PROP_TYPE_OPTIONS,
+  MATCH_TABLE_SCENE_ID_CFG,
+  MATCH_LIST_TAG_OPTIONS,
+  MATCH_IUPSTREAM_TYPE_OPTIONS
+} from '@/utils/options'
 
 export default {
   name: 'MatchConfig',
@@ -864,15 +872,16 @@ export default {
       CHANNEL_OPTIONS,
       MATCH_TABLE_SCENE_ID_CFG,
       MATCH_LIST_TAG_OPTIONS,
+      MATCH_IUPSTREAM_TYPE_OPTIONS,
       form: {
-        gameId: 2031,
+        gameId: MATCH_IUPSTREAM_TYPE_OPTIONS.MATCH_UPSTREAM_TYPE_TONGITS,
         status: -1,
         csId: -1,
         repeatType: -1,
         appId: -1
       },
       gameCfgs: [
-        { 'value': 2031, 'label': 'tongits' }
+        { 'value': MATCH_IUPSTREAM_TYPE_OPTIONS.MATCH_UPSTREAM_TYPE_TONGITS, 'label': 'tongits' }
         // {"value": 15, "label":"德州"}
       ],
       statusCfgs: [
@@ -1260,7 +1269,7 @@ export default {
           if (objs.total > 0) {
             for (var i = 0; i < objs.list.length; i++) {
               let gameId = parseInt(objs.list[i].game_id, 10)
-              if (gameId === 2031) {
+              if (gameId === MATCH_IUPSTREAM_TYPE_OPTIONS.MATCH_UPSTREAM_TYPE_TONGITS) {
                 this.csCfgs.push({
                   'label': '[' + objs.list[i].id + ']' + objs.list[i].name,
                   'value': objs.list[i].id,
@@ -1313,7 +1322,7 @@ export default {
             const tableDataCpy = objs.list
             if (tableDataCpy.length > 0) {
               for (let i = 0; i < tableDataCpy.length; i++) {
-                if (tableDataCpy[i].game_id === 2031) {
+                if (tableDataCpy[i].game_id === MATCH_IUPSTREAM_TYPE_OPTIONS.MATCH_UPSTREAM_TYPE_TONGITS) {
                   let show_appinfo = ''
                   show_appinfo = this.filterMatchListByAppId(tableDataCpy[i].app_info_cfg)
                   if (show_appinfo !== '') {
@@ -2945,7 +2954,8 @@ export default {
             Env: this.env,
             Status: 0,
             PageNum: 1,
-            PageSize: 200
+            PageSize: 200,
+            GameId:MATCH_IUPSTREAM_TYPE_OPTIONS.MATCH_UPSTREAM_TYPE_TONGITS,
           }
         })
         if (response.RetCode === 0) {
@@ -2954,7 +2964,7 @@ export default {
             let total = 0
             for (var i = 0; i < objs.list.length; i++) {
               let gameId = parseInt(objs.list[i].game_id, 10)
-              if (gameId !== 2031) {
+              if (gameId !== MATCH_IUPSTREAM_TYPE_OPTIONS.MATCH_UPSTREAM_TYPE_TONGITS) {
                 continue
               }
               if (!await this.checkRuleIdIsPublish(objs.list[i].id)) {
