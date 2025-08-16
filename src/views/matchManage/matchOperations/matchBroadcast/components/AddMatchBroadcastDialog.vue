@@ -261,7 +261,7 @@ export default {
       }
 
       const data = { ...this.formData }
-      data.AppId = this.appId
+      data.AppId = this.formData.AppId
       data.Operator = store.getters.name
       data.BroadcastTimeRange = data.BroadcastTimeRange.map(item => parseInt(item / 1000))
       if (!data.ID) {
