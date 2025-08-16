@@ -141,6 +141,7 @@ export default {
         {value: 0, label: '普通用户'},
         {value: 1, label: '疑似用户'},
         {value: 2, label: '黑子用户'},
+        {value: 3, label: '认证用户'},
       ]
     }
   },
