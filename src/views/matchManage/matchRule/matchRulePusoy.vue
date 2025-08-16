@@ -875,7 +875,7 @@ export default {
                 {
                     "index": 1,                 //第几轮
                     "play_round": 4,            //玩牌局数
-                    "promotion_user": 3,        //晋级人数
+                    "promotion_user": 4,        //晋级人数
                     "init_score_growth":0,     //本轮初始积分增量
                     "score_multiple": 1,   //开方加倍数，带分方式为1有值
                     "score_rate": 100,   //固定比列(%)，带分方式为2有值
@@ -1097,7 +1097,7 @@ export default {
                 this.errmsg('打立出局阶段的淘汰分不能为0！')
                 return false
               }
-              if (strikeOutStage.system_strike_out.disuse_score_growth.type == 3) {
+              if (strikeOutStage.system_strike_out.disuse_score_growth.type === 3) {
                 if (strikeOutStage.system_strike_out.disuse_score_growth.disuse_score_grow_detail[j].duration <= 0) {
                   this.errmsg('打立出局阶段的淘汰分增长间隔无效！')
                   return false
