@@ -21,6 +21,9 @@
       </el-form-item>
       <el-form-item label="内容" required>
         <el-input v-model="formData.Content" type="textarea" style="width: 360px;" />
+        <template>
+          <button @click="goToExternalSite">预览</button>
+        </template>
       </el-form-item>
       <el-form-item v-if="formData.BroadcastType === 1" label="播报来源" required>
         <el-select v-model="formData.Origin" placeholder="请选择播报来源" style="width: 360px;" multiple>
@@ -354,6 +357,9 @@ export default {
         totalLength += match.length; // 减去<和>的长度
       });
       return totalLength;
+    },
+    goToExternalSite() {
+      window.open('http://192.168.8.2:4000/', '_blank');
     }
   }
 }
