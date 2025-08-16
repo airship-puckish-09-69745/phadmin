@@ -147,6 +147,7 @@ export const MATCH_LIST_TAG_OPTIONS = [
   { 'value': 3, 'label': 'Pro Arena', disabled: false },
   { 'value': 4, 'label': 'GTCC', disabled: false },
   { 'value': 5, 'label': 'GTCC预选赛', disabled: false },
+  { 'value': 6, 'label': 'GTCC特别赛', disabled: false },
 ]
 
 //比赛GameId选项
