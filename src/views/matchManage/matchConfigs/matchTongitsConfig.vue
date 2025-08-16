@@ -865,7 +865,7 @@ export default {
       MATCH_TABLE_SCENE_ID_CFG,
       MATCH_LIST_TAG_OPTIONS,
       form: {
-        gameId: -1,
+        gameId: 2031,
         status: -1,
         csId: -1,
         repeatType: -1,
@@ -1856,10 +1856,9 @@ export default {
           this.editForm.signExtra.gtccWhiteList.data=''
         }
         this.editForm.prizeExtra = JSON.parse(editData.prize_extra)
-        // this.editForm.listExtra = JSON.parse(editData.list_extra)
-        // if(this.editForm.listExtra  === undefined){
-        //   this.editForm.listExtra.tableSceneId = 0
-        // }  //先做代码屏蔽
+        if(editData.list_extra  !== undefined){
+          this.editForm.listExtra = JSON.parse(editData.list_extra)
+        }
         this.showCsCfgs = []
         // 循环遍历是否存在gameId
         if (this.csCfgs.length > 0) {

@@ -512,7 +512,7 @@
           </el-form>
         </el-tab-pane>
 
-        <el-tab-pane label="导入的用户">
+        <el-tab-pane v-if="showImportElement" label="导入的用户">
           <el-row :gutter="5">
             <el-col>
               <el-button type="primary" @click="getImportedUidList()" size="mini">查询</el-button>
@@ -1150,6 +1150,7 @@ export default {
       }
     },
     createData(data) {
+      data['env'] = this.env
       request({
         url: '/airdropconfig/create',
         method: 'post',
