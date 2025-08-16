@@ -261,7 +261,7 @@ export default {
       }
 
       const data = { ...this.formData }
-      data.AppId = this.appId
+      data.AppId = this.formData.AppId
       data.Operator = store.getters.name
       data.BroadcastTimeRange = data.BroadcastTimeRange.map(item => parseInt(item / 1000))
       if (!data.ID) {
@@ -269,8 +269,8 @@ export default {
         data.CreateTime = parseInt(Date.now() / 1000)
       } else {
         data.CreateTime = parseInt(data.CreateTime / 1000)
-        data.UpdateTime = parseInt(Date.now() / 1000)
       }
+      data.UpdateTime = parseInt(Date.now() / 1000)
       // 如果不是比赛第一名类型，清空播报来源
       if (data.BroadcastType !== 1) {
         data.Origin = []

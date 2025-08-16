@@ -330,6 +330,17 @@
             </el-select>
           </el-form-item>
 
+          <el-form-item label="比赛牌桌ID：" :required="true">
+            <el-select v-model="editForm.listExtra.tableSceneId" placeholder="请选择" size="mini">
+              <el-option
+                v-for="item in MATCH_TABLE_SCENE_ID_CFG"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+
           <el-form-item label="GTCC线上决赛补位白名单:" :required="true">
             <el-radio v-for="item in whileListCfgs" :key="item.value" v-model="editForm.signExtra.gtccWhiteList.type" :label="item.value">{{ item.label }}</el-radio>
           </el-form-item>
@@ -835,7 +846,13 @@ import { log } from 'console'
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
 import { getAllCommonGameConfig, getAllMatchGuidesConfig } from '@/utils/common-game-config'
 import { IsMars } from '@/utils/env'
-import { CHANNEL_OPTIONS, APPID_OPTIONS, ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS } from '@/utils/options'
+import {
+  CHANNEL_OPTIONS,
+  APPID_OPTIONS,
+  ITEM_DAY_TYPE_OPTIONS,
+  PROP_TYPE_OPTIONS,
+  MATCH_TABLE_SCENE_ID_CFG, MATCH_LIST_TAG_OPTIONS,MATCH_IUPSTREAM_TYPE_OPTIONS
+} from '@/utils/options'
 
 export default {
   name: 'MatchConfig',
@@ -851,8 +868,10 @@ export default {
       ITEM_DAY_TYPE_OPTIONS,
       APPID_OPTIONS,
       CHANNEL_OPTIONS,
+      MATCH_TABLE_SCENE_ID_CFG,
+      MATCH_LIST_TAG_OPTIONS,
       form: {
-        gameId: -1,
+        gameId: MATCH_IUPSTREAM_TYPE_OPTIONS.MATCH_UPSTREAM_TYPE_PUSOY,
         status: -1,
         csId: -1,
         repeatType: -1,
@@ -1063,6 +1082,9 @@ export default {
           rewardType: 1,
           sceneId: 0
         },
+        listExtra:{
+          tableSceneId: 0,  //牌桌场景ID
+        }
       },
 
       AttrNames: {
@@ -1095,7 +1117,8 @@ export default {
         signExtra: '报名额外信息',
         associateKey: '推荐方案',
         dcReport: '是否上报数据中心',
-        propsId: '道具ID'
+        propsId: '道具ID',
+        listExtra: '列表拓展信息',
       },
       singleCopy: {
         id: 0,
@@ -1225,7 +1248,7 @@ export default {
       }
     },
     resetSearch() {
-      this.form.gameId = -1
+      this.form.gameId -1
       this.form.status = -1
       this.form.csId = -1
       this.form.repeatType = -1
@@ -1239,7 +1262,8 @@ export default {
           Env: this.env,
           Status: 0,
           PageNum: 1,
-          PageSize: 200
+          PageSize: 200,
+          GameId:MATCH_IUPSTREAM_TYPE_OPTIONS.MATCH_UPSTREAM_TYPE_PUSOY,
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -1247,7 +1271,7 @@ export default {
           if (objs.total > 0) {
             for (var i = 0; i < objs.list.length; i++) {
               let gameId = parseInt(objs.list[i].game_id, 10)
-              if (gameId !== 2033) {
+              if (gameId !== MATCH_IUPSTREAM_TYPE_OPTIONS.MATCH_UPSTREAM_TYPE_PUSOY) {
                 continue
               }
               this.csCfgs.push({
@@ -1302,9 +1326,6 @@ export default {
             if (tableDataCpy.length > 0) {
               for (let i = 0; i < tableDataCpy.length; i++) {
                 let gameId = parseInt(tableDataCpy[i].game_id, 10)
-                if (gameId !== 2033) {
-                  continue
-                }
                 let show_appinfo = ''
                 show_appinfo = this.filterMatchListByAppId(tableDataCpy[i].app_info_cfg)
                 if (show_appinfo !== '') {
@@ -1757,6 +1778,9 @@ export default {
           rewardType: 1,
           sceneId: 0
         }
+        this.editForm.listExtra ={
+          tableSceneId:0,
+        }
         this.editForm.isAdd = true
         this.showCsCfgs = this.csCfgs
         this.guideShowCfgs = this.guideCfgs
@@ -1842,6 +1866,9 @@ export default {
           this.editForm.signExtra.gtccWhiteList.data=''
         }
         this.editForm.prizeExtra = JSON.parse(editData.prize_extra)
+        if(editData.list_extra  !== undefined){
+          this.editForm.listExtra = JSON.parse(editData.list_extra)
+        }
         this.showCsCfgs = []
         // 循环遍历是否存在gameId
         if (this.csCfgs.length > 0) {
@@ -1987,7 +2014,8 @@ export default {
           AssociateKey: this.editForm.data.associateKey,
           DcReport: this.editForm.data.dcReport,
           SignExtra: JSON.stringify(this.editForm.signExtra),
-          PrizeExtra: JSON.stringify(this.editForm.prizeExtra)
+          PrizeExtra: JSON.stringify(this.editForm.prizeExtra),
+          ListExtra: JSON.stringify(this.editForm.listExtra),
 
         }
       }).then(response => {
@@ -2927,7 +2955,8 @@ export default {
             Env: this.env,
             Status: 0,
             PageNum: 1,
-            PageSize: 200
+            PageSize: 200,
+            GameId:MATCH_IUPSTREAM_TYPE_OPTIONS.MATCH_UPSTREAM_TYPE_PUSOY,
           }
         })
         if (response.RetCode === 0) {
@@ -2936,7 +2965,7 @@ export default {
             let total = 0
             for (var i = 0; i < objs.list.length; i++) {
               let gameId = parseInt(objs.list[i].game_id, 10)
-              if (gameId !== 2033) {
+              if (gameId !== MATCH_IUPSTREAM_TYPE_OPTIONS.MATCH_UPSTREAM_TYPE_PUSOY) {
                 continue
               }
               if (!await this.checkRuleIdIsPublish(objs.list[i].id)) {

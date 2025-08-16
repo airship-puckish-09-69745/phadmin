@@ -1761,7 +1761,7 @@ export const asyncRoutes = [
           },
           {
             path: 'user_pool_cfg',
-            component: () => import('@/views/config/tableConfig/slots/userPool/UserPoolCfg.vue'),
+            component: () => import('@/views/config/tableConfig/slots/userPool/UserPoolPage.vue'),
             name: 'user_pool_cfg',
             meta: { title: '小奖池配置' }
           },

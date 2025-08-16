@@ -442,6 +442,7 @@ import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import { $libDate, $libShow} from '@/utils/common'
+import {MATCH_IUPSTREAM_TYPE_OPTIONS} from "@/utils/options";
 
 export default {
   name: 'MatchRule',
@@ -451,11 +452,11 @@ export default {
       envProjectName: process.env.VUE_APP_PROJECT,
       libShow: $libShow,
       form: {
-        gameId: -1,
+        gameId: MATCH_IUPSTREAM_TYPE_OPTIONS.MATCH_UPSTREAM_TYPE_PUSOY,
         status: -1,
       },
       gameCfgs: [
-        {"value": 2033, "label":"pusoy"},
+        {"value": MATCH_IUPSTREAM_TYPE_OPTIONS.MATCH_UPSTREAM_TYPE_PUSOY, "label":"pusoy"},
         // {"value": 15, "label":"德州"}
       ],
       statusCfgs: [
@@ -513,7 +514,8 @@ export default {
         start_num:"开赛人数",
         rule_extra:"拓展信息",
       },
-      showDevTool: false
+      showDevTool: false,
+      MATCH_IUPSTREAM_TYPE_OPTIONS,
     }
   },
   computed: {
@@ -537,6 +539,7 @@ export default {
           Status: this.form.status,
           PageNum: this.page,
           PageSize: this.limit,
+          GameId: this.form.gameId,
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -546,7 +549,7 @@ export default {
             this.total = 0
             for (let i = 0; i < objs.list.length; i++) {
               let gameId = parseInt(objs.list[i].game_id, 10)
-              if (gameId !== 2033) {
+              if (gameId !== MATCH_IUPSTREAM_TYPE_OPTIONS.MATCH_UPSTREAM_TYPE_PUSOY) {
                 continue
               }
               if (this.form.gameId > 0) {
@@ -679,7 +682,7 @@ export default {
         this.editForm.data = {
           "id": 0,
           "name": "mtt赛制配置",
-          "game_id": [2033],
+          "game_id": [MATCH_IUPSTREAM_TYPE_OPTIONS.MATCH_UPSTREAM_TYPE_PUSOY],
           "init_score": 1000,
           "rule_type":0,
           "stage_detail": [],
@@ -875,7 +878,7 @@ export default {
                 {
                     "index": 1,                 //第几轮
                     "play_round": 4,            //玩牌局数
-                    "promotion_user": 3,        //晋级人数
+                    "promotion_user": 4,        //晋级人数
                     "init_score_growth":0,     //本轮初始积分增量
                     "score_multiple": 1,   //开方加倍数，带分方式为1有值
                     "score_rate": 100,   //固定比列(%)，带分方式为2有值
@@ -1097,7 +1100,7 @@ export default {
                 this.errmsg('打立出局阶段的淘汰分不能为0！')
                 return false
               }
-              if (strikeOutStage.system_strike_out.disuse_score_growth.type == 3) {
+              if (strikeOutStage.system_strike_out.disuse_score_growth.type === 3) {
                 if (strikeOutStage.system_strike_out.disuse_score_growth.disuse_score_grow_detail[j].duration <= 0) {
                   this.errmsg('打立出局阶段的淘汰分增长间隔无效！')
                   return false
