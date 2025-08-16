@@ -707,7 +707,7 @@ export default {
       getView(this.keyId, this.envEmpty, this.appId).then(response => {
         this.currentUser = response.Data.CurUser
         this.opType = response.Data.Step
-        const stepNames = ['同步预发布', '提交审核', '审核待发布']
+        const stepNames = ['同步预发布', '已提交审核', '已审核待发布']
         if (this.opType > 2 && this.opType < 6) {
           this.processInfo = '(' + stepNames[this.opType - 3] + ',当前处理人：' + this.currentUser + ')'
         } else {
