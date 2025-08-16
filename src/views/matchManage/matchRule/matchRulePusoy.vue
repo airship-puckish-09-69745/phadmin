@@ -875,7 +875,7 @@ export default {
                 {
                     "index": 1,                 //第几轮
                     "play_round": 4,            //玩牌局数
-                    "promotion_user": 3,        //晋级人数
+                    "promotion_user": 4,        //晋级人数
                     "init_score_growth":0,     //本轮初始积分增量
                     "score_multiple": 1,   //开方加倍数，带分方式为1有值
                     "score_rate": 100,   //固定比列(%)，带分方式为2有值
