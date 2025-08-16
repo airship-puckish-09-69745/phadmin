@@ -1150,6 +1150,7 @@ export default {
       }
     },
     createData(data) {
+      data['env'] = this.env
       request({
         url: '/airdropconfig/create',
         method: 'post',
