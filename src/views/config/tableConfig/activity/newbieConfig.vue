@@ -281,7 +281,7 @@
               </el-checkbox-group>
             </el-form-item>
             <el-form-item v-if="edit.cfgType == 2" label="比赛：">
-              <el-select   v-model="edit.item.GameType" :disabled="edit.item.TaskType === 2" multiple placeholder="请选择" style="width: 250px" @change="onAppIdOptionsChange">
+              <el-select   v-model="edit.item.GameType" :disabled="edit.item.TaskType === 2" multiple placeholder="请选择" style="width: 250px">
                 <el-option
                   v-for="item in matchUniqueIdCfgs"
                   :key="item.value"
@@ -304,18 +304,6 @@
               <el-col>
                 <el-form-item label="白名单开关：" :rules="dataRule(true,{type:'n',range:'0'})">
                   <el-switch v-model="item.IsWhite" :active-value="true" :inactive-value="false" />
-                </el-form-item>
-              </el-col>
-              <el-col :span="11">
-                <el-form-item label="AppId白名单：" prop="item.WhitelistCfg.AppIdList">
-                  <el-select v-model="item.WhitelistCfg.AppIdList" multiple placeholder="请选择" style="width: 400px" @change="onAppIdOptionsChange">
-                    <el-option
-                      v-for="item in appIdOptions"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
                 </el-form-item>
               </el-col>
               <el-col>
@@ -551,21 +539,6 @@ export default {
           }]
         }]
       }],
-
-      appIdOptions: [
-        {
-          value: 1000002,
-          label: '内部1000002'
-        },
-        {
-          value: 1000003,
-          label: '提审1000003'
-        },
-        {
-          value: 1000005,
-          label: '正式1000005'
-        },
-      ],
 
       siteIdOptions: [
         { value: 'BP', label: 'BP' },
@@ -1064,9 +1037,6 @@ export default {
       } else {
         this.item.RuleImgVer.splice(index, 1)
       }
-    },
-    onAppIdOptionsChange() {
-      console.log('onAppIdOptionsChange', this.item.WhitelistCfg.AppIdList)
     },
     onSiteIdOptionsChange() {
       console.log('onSiteIdOptionsChange', this.item.WhitelistCfg.SiteIdList)
