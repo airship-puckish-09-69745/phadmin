@@ -643,16 +643,10 @@ export const asyncRoutes = [
             meta: { title: '排队入桌配置 ◐' }
           },
           {
-            path: 'trustScore',
-            component: () => import('@/views/config/tableConfig/trustScore.vue'),
-            name: 'trustScore',
-            meta: { title: '信任分配置 ◐' }
-          },
-          {
             path: 'trustScoreNew',
             component: () => import('@/views/config/tableConfig/trustScoreNew.vue'),
             name: 'trustScoreNew',
-            meta: { title: '信任分配置(新版) ◐' }
+            meta: { title: '信任分配置 ◐' }
           }
         ]
       },
