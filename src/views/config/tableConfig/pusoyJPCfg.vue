@@ -674,15 +674,15 @@ export default {
       ret.GrandTableMoney *= 1000
 
       for (const k in ret.GrandCfg){
-        ret.GrandCfg[k].MultiMin /= 100
-        ret.GrandCfg[k].MultiMax /= 100
+        ret.GrandCfg[k].MultiMin *= 100
+        ret.GrandCfg[k].MultiMax *= 100
       }
       for (const k in ret.MajorCfg){
-        ret.MajorCfg[k].MultiMin /= 100
-        ret.MajorCfg[k].MultiMax /= 100
+        ret.MajorCfg[k].MultiMin *= 100
+        ret.MajorCfg[k].MultiMax *= 100
       }
       for (const k in ret.MinorCfg){
-        ret.MinorCfg[k].RewardMul /= 100
+          ret.MinorCfg[k].RewardMul *= 100
       }
 
       for (const k in ret.ShowPool.GrandRewardCfg){
