@@ -130,7 +130,7 @@
                 
                 <el-table-column prop="RewardCfg" label="中奖条件：当前奖金池/(底注*n倍)" >
                   <template slot-scope="scope">
-                    <el-input v-model="scope.row.RewardCfg" size="mini" />
+                    <el-input v-model="scope.row.RewardMul" size="mini" />
                   </template>
                 </el-table-column>
 
@@ -169,13 +169,13 @@
                 
                 <el-table-column prop="minRate" label="【major奖金池/major最大奖金】下限倍数" >
                   <template slot-scope="scope">
-                    <el-input v-model="scope.row.MinorMin" size="mini" />
+                    <el-input v-model="scope.row.MultiMin" size="mini" />
                   </template>
                 </el-table-column>
 
                 <el-table-column prop="maxRate" label="【major奖金池/major最大奖金】上限倍数" >
                   <template slot-scope="scope">
-                    <el-input v-model="scope.row.MinorMax" size="mini" />
+                    <el-input v-model="scope.row.MultiMax" size="mini" />
                   </template>
                 </el-table-column>
                 
@@ -214,15 +214,14 @@
                 
                 <el-table-column prop="minRate" label="【Grand奖金池/Grand最大奖】下限倍数" >
                   <template slot-scope="scope">
-                    <el-input v-model="scope.row.MinorMin" size="mini" />
+                    <el-input v-model="scope.row.MultiMin" size="mini" />
                   </template>
                 </el-table-column>
-
                 
                 
                 <el-table-column prop="maxRate" label="【Grand奖金池/Grand最大奖】上限倍数" >
                   <template slot-scope="scope">
-                    <el-input v-model="scope.row.MinorMax" size="mini" />
+                    <el-input v-model="scope.row.MultiMax" size="mini" />
                   </template>
                 </el-table-column>
                 
@@ -626,13 +625,7 @@ export default {
           if (response.Data && response.Data.Data !== '') {
             const item = JSON.parse(response.Data.Data)
             Object.assign(this.item, item)
-            //this.transMoneyForShow()
-            this.item.MajorShowBase /= 1000
-            this.item.GrandShowBase /= 1000      
-            this.item.MinorTableMoney /= 1000
-            this.item.MajorTableMoney /= 1000
-            this.item.GrandTableMoney /= 1000
-
+            this.transMoneyForShow()
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data)
             console.log(item)
@@ -640,33 +633,36 @@ export default {
         }
       })
     },
-    /*
+    
     transMoneyForShow() {
-      this.item.MajorShowBase /= 1000
-      this.item.GrandShowBase /= 1000
-      for (const k in this.item.Jackpot.RandAwards) {
-        this.item.Jackpot.RandAwards[k].PoolVal /= 1000
-      }
-      for (const k in this.item.GrandCfg){
-        this.item.GrandCfg[k].MinorMin /= 100
-        this.item.GrandCfg[k].MinorMax /= 100
-      }
-      for (const k in this.item.MajorCfg){
-        this.item.MajorCfg[k].MinorMin /= 100
-        this.item.MajorCfg[k].MinorMax /= 100
-      }
-      for (const k in this.item.MinorCfg){
-        this.item.MinorCfg[k].RewardCfg /= 100
-      }
-      for (const k in this.item.ShowPool.GrandRewardCfg){
-        this.item.ShowPool.GrandRewardCfg[k].PoolAreaMin /= 1
-        this.item.ShowPool.GrandRewardCfg[k].PoolAreaMax /= 1
-      }
-      for (const k in this.item.ShowPool.MajorRewardCfg){
-        this.item.ShowPool.MajorRewardCfg[k].PoolAreaMin /= 1
-        this.item.ShowPool.MajorRewardCfg[k].PoolAreaMax /= 1
-      }
-    },*/
+            this.item.MajorShowBase /= 1000
+            this.item.GrandShowBase /= 1000      
+            this.item.MinorTableMoney /= 1000
+            this.item.MajorTableMoney /= 1000
+            this.item.GrandTableMoney /= 1000
+
+            for (const k in this.item.GrandCfg){
+              this.item.GrandCfg[k].MultiMin /= 100
+              this.item.GrandCfg[k].MultiMax /= 100
+            }
+            for (const k in this.item.MajorCfg){
+              this.item.MajorCfg[k].MultiMin /= 100
+              this.item.MajorCfg[k].MultiMax /= 100
+            }
+            for (const k in this.item.MinorCfg){
+              this.item.MinorCfg[k].RewardMul /= 100
+            }
+
+            for (const k in this.item.ShowPool.GrandRewardCfg){
+              this.item.ShowPool.GrandRewardCfg[k].PoolAreaMin /= 100
+              this.item.ShowPool.GrandRewardCfg[k].PoolAreaMax /= 100
+            }
+            for (const k in this.item.ShowPool.MajorRewardCfg){
+              this.item.ShowPool.MajorRewardCfg[k].PoolAreaMin /= 100
+              this.item.ShowPool.MajorRewardCfg[k].PoolAreaMax /= 100
+            }
+    },
+    
     getPostData() {
       const ret = {}
       Object.assign(ret, this.item)
@@ -676,6 +672,27 @@ export default {
       ret.MinorTableMoney *= 1000
       ret.MajorTableMoney *= 1000
       ret.GrandTableMoney *= 1000
+
+      for (const k in ret.GrandCfg){
+        ret.GrandCfg[k].MultiMin /= 100
+        ret.GrandCfg[k].MultiMax /= 100
+      }
+      for (const k in ret.MajorCfg){
+        ret.MajorCfg[k].MultiMin /= 100
+        ret.MajorCfg[k].MultiMax /= 100
+      }
+      for (const k in ret.MinorCfg){
+        ret.MinorCfg[k].RewardMul /= 100
+      }
+
+      for (const k in ret.ShowPool.GrandRewardCfg){
+        ret.ShowPool.GrandRewardCfg[k].PoolAreaMin *= 100
+        ret.ShowPool.GrandRewardCfg[k].PoolAreaMax *= 100
+      }
+      for (const k in this.ret.MajorRewardCfg){
+        ret.ShowPool.MajorRewardCfg[k].PoolAreaMin *= 100
+        ret.ShowPool.MajorRewardCfg[k].PoolAreaMax *= 100
+      }
 
       return ret
     },
@@ -727,17 +744,17 @@ export default {
         if (!this.item.GrandCfg) {
           this.item['GrandCfg'] = []
         }
-        this.item.GrandCfg.push({ tableMoney:5, rewardRateMin:18, rewardRateMax:20, MinorMin: 1, MinorMax:1.5, WinRate: 50})
+        this.item.GrandCfg.push({ MultiMin: 1, MultiMax:1.5, WinRate: 50})
       } else if (level === 2) {//major
         if (!this.item.MajorCfg) {
           this.item['MajorCfg'] = []
         }
-        this.item.MajorCfg.push({ tableMoney:5, rewardRateMin:18, rewardRateMax:20, MinorMin: 1, MinorMax:1.5, WinRate: 50})
+        this.item.MajorCfg.push({ MultiMin: 1, MultiMax:1.5, WinRate: 50})
       } else if (level === 4) {//minor（这里其实是mini奖励）
         if (!this.item.MinorCfg) {
           this.item['MinorCfg'] = []
         }
-        this.item.MinorCfg.push({ tableMoney:0, rewardRateMul:5, RewardCfg: 1, WinRate: 50})
+        this.item.MinorCfg.push({ RewardMul: 1, WinRate: 50})
       }
 
       if (level === 11) {//grand
