@@ -74,10 +74,10 @@
           />
         </el-form-item>
         <el-form-item label="生效ID">
-          <el-input v-model="edit.item.uid" style="width: 600px"/>
+          <el-input v-model.number="edit.item.uid" style="width: 600px"/>
         </el-form-item>
         <el-form-item label="可发放金额">
-          <el-input-number v-model="edit.item.amount" :min="0" style="width: 600px"/>
+          <el-input-number v-model.number="edit.item.amount" :min="0" style="width: 600px"/>
         </el-form-item>
         <el-form-item label="生效游戏">
           <!--          <el-input v-model="editForm.games" style="width: 350px"></el-input>-->
@@ -375,7 +375,7 @@ export default {
     saveEdit() {
       if (!this.checkData()) return
       if (this.edit.editingIndex !== null) {
-        this.userPoolItem.uid = this.edit.item.uid
+        this.userPoolItem.uid = Number(this.edit.item.uid)
         this.userPoolItem.games = this.splitGames(this.edit.item.games)
         this.userPoolItem.amount = this.edit.item.amount
         this.userPoolItem.updateAt = this.Unix(this.edit.item.updateAt)
@@ -461,7 +461,7 @@ export default {
       if (
         this.edit.item.uid === '' ||
         this.edit.item.games.length === 0 ||
-        this.edit.item.amount === '' ||
+        this.edit.item.amount === undefined ||
         this.edit.item.updateAt === '' ||
         this.edit.item.effectiveRange === null) {
         this.$message.error('请填写完整')
