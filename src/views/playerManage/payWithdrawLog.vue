@@ -301,6 +301,7 @@ export default {
         background: 'rgba(0, 0, 0, 0.7)'
       })
 
+      const $this = this
       console.log('uid', isNaN(this.form.Uid))
 
       request({
@@ -315,7 +316,6 @@ export default {
           EndTime: this.form.EndTime
         }
       }).then(response => {
-        const $this = this
         if (response.RetCode === 0) {
           $this.PayWithdrawSummary.TodayPayAmount = response.Data ? response.Data.TodayMoneySum : 0
           $this.PayWithdrawSummary.LogsPayAmount = response.Data ? response.Data.LogsMoneySum : 0

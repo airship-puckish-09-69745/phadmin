@@ -1,8 +1,9 @@
 <template>
   <el-select v-model="selectedValue" v-bind="$attrs" @change="handleChange" >
-    <el-option 
-      v-for="option in displayOptions" 
-      :key="option.value" 
+    <el-option v-if="showAll" value="" label="全部"></el-option>
+    <el-option
+      v-for="option in displayOptions"
+      :key="option.value"
       :value="option.value"
       :label="option.label"
     >
@@ -24,6 +25,10 @@ export default {
       default: false
     },
     showCP: {
+      type: Boolean,
+      default: false
+    },
+    showAll: {
       type: Boolean,
       default: false
     }
