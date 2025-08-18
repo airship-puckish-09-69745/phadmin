@@ -32,12 +32,12 @@
 
     <!-- 表格 -->
     <el-table :data="tableData" border style="width: 100%; margin-top: 20px;">
-      <el-table-column prop="updateAt" label="导入日期" align="center">
+      <el-table-column prop="updateAt" label="导入日期" align="center" width="100">
         <template slot-scope="scope">
           {{ formatDate(scope.row.updateAt) }}
         </template>
       </el-table-column>
-      <el-table-column prop="effectiveRange" label="生效日期" align="center">
+      <el-table-column prop="effectiveRange" label="生效日期" align="center" width="230">
         <template slot-scope="scope">
           {{ formatDate(scope.row.validStartAt) }} 至 {{ formatDate(scope.row.validEndAt) }}
         </template>
@@ -47,8 +47,8 @@
         <!--          {{ getGameLabels(scope.row.games) }}-->
         <!--        </template>-->
       </el-table-column>
-      <el-table-column prop="uid" label="生效ID" align="center"/>
-      <el-table-column prop="amount" label="可发放金额" align="center"/>
+      <el-table-column prop="uid" label="生效ID" align="center" width="150"/>
+      <el-table-column prop="amount" label="可发放金额" align="center" width="150"/>
       <el-table-column label="操作" align="center" width="150">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="openEdit(scope.row)">编辑</el-button>
