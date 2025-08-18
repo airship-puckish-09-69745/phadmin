@@ -42,7 +42,6 @@
             <el-form-item
               label="启用的老虎机列表"
               :rules="[{ required: true, message: '启用的老虎机列表不能为空'}]">
-              <!--              <el-input v-model="cfg.taxedSlots" placeholder="请输入内容" class="elInput"/>-->
               <el-checkbox v-model="checkAll" :indeterminate="isIndeterminate" @change="handleCheckAllChange">
                 全选
               </el-checkbox>
@@ -70,7 +69,6 @@ import request from '@/utils/request';
 import {Message} from "element-ui";
 import {number} from "echarts/lib/export";
 
-// const cityOptions = ['上海', '北京', '广州', '深圳'];
 export default {
   name: 'UserPoolCfg',
   components: {Publish},
@@ -88,10 +86,8 @@ export default {
       reqData: {},
       // 复选框相关
       checkAll: false,
-      // cities: cityOptions,
       //
       allGames: [],
-      // pickGames: [],
       isIndeterminate: true,
     }
   },
@@ -127,19 +123,12 @@ export default {
         if (response.RetCode === 0) {
           if (response.Data && response.Data.Data !== '') {
             const jsonData = JSON.parse(response.Data.Data)
-            // this.tableData = jsonData.items
-            // console.log('this.tableData:============>', this.tableData)
-            // this.tableDataBak = jsonData.items
-            console.log('response ========>:', response)
-            console.log('jsonData ========>:', jsonData)
             this.cfg.betOddsMax = jsonData.betOddsMax
             this.cfg.betOddsMin = jsonData.betOddsMin
             this.cfg.playTimesMin = jsonData.playTimesMin
             this.cfg.playTimesMax = jsonData.playTimesMax
             this.cfg.taxed = jsonData.taxed
-            // this.cfg.taxedSlots = jsonData.taxedSlots.join(',')
             this.cfg.taxedSlots = this.formatTaxedSlots(jsonData.taxedSlots)
-            // console.log('this.cfg.taxedSlots:', this.cfg.taxedSlots);
             this.reqData = response.Data
           }
         }
@@ -147,14 +136,10 @@ export default {
     },
     formatTaxedSlots(gameIds) {
       const formatNames = []
-      console.log('formatTaxedSlots(gameIds)中this.gameIdMap:', this.gameIdMap)
-      console.log('formatTaxedSlots(gameIds)中gameIds:', gameIds)
-      console.log('formatTaxedSlots(gameIds)中this.gameIdMap[158]:', this.gameIdMap[158])
       for (const gameId of gameIds) {
         const str = gameId + '|' + this.gameIdMap[Number(gameId)]
         formatNames.push(str)
       }
-      console.log('formatTaxedSlots(gameIds)formatNames:', formatNames)
       return formatNames
     },
     getGameList() {

@@ -43,9 +43,6 @@
         </template>
       </el-table-column>
       <el-table-column prop="gamesLabel" label="生效游戏" align="center">
-        <!--        <template slot-scope="scope">-->
-        <!--          {{ getGameLabels(scope.row.games) }}-->
-        <!--        </template>-->
       </el-table-column>
       <el-table-column prop="uid" label="生效ID" align="center" width="150"/>
       <el-table-column prop="amount" label="可发放金额" align="center" width="150"/>
@@ -80,10 +77,6 @@
           <el-input-number v-model.number="edit.item.amount" :min="0" style="width: 600px"/>
         </el-form-item>
         <el-form-item label="生效游戏">
-          <!--          <el-input v-model="editForm.games" style="width: 350px"></el-input>-->
-          <!--          <el-select v-model="edit.item.games" multiple style="width: 600px">-->
-          <!--            <el-option v-for="(o) in gameOptions" :key="o.key" :label="o.label" :value="parseInt(o.key)"/>-->
-          <!--          </el-select>-->
           <el-tooltip
             class="item"
             effect="dark"
@@ -156,7 +149,6 @@ export default {
       editDialogVisible: false,
       editForm: {updateAt: '', effectiveRange: [], games: '', uid: '', amount: 0},
       // editingIndex: null,
-      formData: {},
       userPoolCfg: {
         items: []
       },
@@ -176,10 +168,8 @@ export default {
       },
       // 复选框相关
       checkAll: false,
-      // cities: cityOptions,
       //
       allGames: [],
-      // pickGames: [],
       isIndeterminate: true,
     }
   },
@@ -201,14 +191,11 @@ export default {
     handleCheckAllChange(val) {
       this.edit.item.games = val ? this.allGames : []
       this.isIndeterminate = false
-      console.log('>>>>>>done handleCheckAllChange<<<<<<')
     },
     handleCheckedGamesChange(value) {
       const checkedCount = value.length
       this.checkAll = checkedCount === this.allGames.length
       this.isIndeterminate = checkedCount > 0 && checkedCount < this.allGames.length
-      // console.log('checkedCount:', checkedCount);
-      // console.log('>>>>>>done handleCheckedCitiesChange<<<<<<')
     },
     async fetchData() {
       await this.getGameList()
@@ -226,17 +213,12 @@ export default {
             if (response.Data[i].Gid < 50 || response.Data[i].Gid > 100 && response.Data[i].Gid < 150 || response.Data[i].Gid > 499) {
               continue
             }
-            // this.gameOptions.push({
-            //   key: response.Data[i].Gid,
-            //   label: response.Data[i].Name
-            // })
             this.allGames.push(response.Data[i].Gid + '|' + response.Data[i].Name)
             this.gameNameMap[response.Data[i].Name] = response.Data[i].Gid
             this.gameIdMap[response.Data[i].Gid] = response.Data[i].Name
           }
         }
       })
-      // console.log('finish getGameList,this.gameOptions:', this.gameOptions)
     },
     formatDate(Unix) {
       // row.updateAt 是秒级时间戳，需要乘 1000 转成毫秒
@@ -266,16 +248,8 @@ export default {
             this.tableData.forEach(item => {
               item.gamesLabel = item.games.map(id => this.gameIdMap[id] || id).join(', ')
             })
-            // console.log('this.tableData:============>', this.tableData)
             this.tableDataBak = jsonData.items
-            // console.log('response ========>:', response)
             this.reqData = response.Data
-            // console.log('getData this.reqData====>:', this.reqData)
-            // this.tableData=items
-
-            // console.log('ext-data:', this.extCfg)
-            // 设置修改之前数据
-            // this.$refs.compare.SetOldVal(response.Data.Data)
           }
         }
       })
@@ -291,10 +265,6 @@ export default {
     handleSearch() {
       const hasDate = this.dateRange?.length === 2
       const hasUserId = this.searchUserId?.trim() !== ''
-      // console.log('hasDate:', hasDate)
-      // console.log('hasUserId:', hasUserId)
-      // console.log('this.dateRange:', this.dateRange)
-      // console.log('this.searchUserId:', this.searchUserId)
       if (!hasDate && !hasUserId) {
         this.$message.warning('请输入查询条件')
         return
@@ -310,31 +280,17 @@ export default {
           endDate.setHours(23, 59, 59, 999) // 设置到当天的最后一毫秒
           const end = Math.floor(endDate.getTime() / 1000) // 转为秒级时间戳
           const time = new Date(item.updateAt).getTime()
-          console.log('start:', start)
-          console.log('this.dateRange[0]:', this.dateRange[0])
-          console.log('end  :', end)
-          console.log('time :', time)
-          // console.log('item.updateAt:', item.updateAt)
-          // console.log('时间戳转化后this.formatDate(time):', this.formatDate(time))
           matchDate = time >= start && time <= end
         }
         if (hasUserId) {
           matchId = item.uid + '' === (this.searchUserId.trim())
         }
-        // console.log('matchDate:', matchDate)
-        // console.log('matchId:', matchId)
         return matchDate && matchId
       })
-      // console.log('finish this.tableData:', this.tableData)
-      // todo
     },
-    // handleImport() {
-    //   console.log('导入')
-    // },
     openEdit(row) {
       this.dialogTitle = '编辑配置'
       this.edit.editingIndex = this.tableData.indexOf(row)
-      // this.editForm = {...row, effectiveRange: [...row.effectiveRange]}
       this.edit.item.amount = row.amount
       this.edit.item.games = this.formatTaxedSlots(row.games)
       this.edit.item.uid = row.uid
@@ -350,20 +306,15 @@ export default {
     },
     formatTaxedSlots(gameIds) {
       const formatNames = []
-      console.log('formatTaxedSlots(gameIds)中this.gameIdMap:', this.gameIdMap)
-      console.log('formatTaxedSlots(gameIds)中gameIds:', gameIds)
-      console.log('formatTaxedSlots(gameIds)中this.gameIdMap[158]:', this.gameIdMap[158])
       for (const gameId of gameIds) {
         const str = gameId + '|' + this.gameIdMap[Number(gameId)]
         formatNames.push(str)
       }
-      console.log('formatTaxedSlots(gameIds)formatNames:', formatNames)
       return formatNames
     },
     handleCreate() {
       this.dialogTitle = '添加配置'
       this.edit.item = newItem()
-      // this.edit.isEdit = false
       this.editDialogVisible = true
       this.isIndeterminate = false
       this.checkAll = false
@@ -385,7 +336,6 @@ export default {
         this.userPoolItem.updateBy = this.name
         this.userPoolItem.validStartAt = this.Unix(this.edit.item.effectiveRange[0])
         this.userPoolItem.validEndAt = this.Unix(this.edit.item.effectiveRange[1])
-        // this.tableData[this.edit.editingIndex] = this.edit.item
         this.$set(this.tableData, this.edit.editingIndex, this.userPoolItem)
         this.tableData.forEach(game => { // gamesLabel不用保存
           delete game.gamesLabel
@@ -395,15 +345,6 @@ export default {
         this.userPoolCfg.items = newTableData
         this.reqData.Data = JSON.stringify(this.userPoolCfg)
         this.updateRequest(this.reqData)
-        //
-        // this.$refs.compare.Compare(function (isEdit) {
-        //   if (!isEdit) {
-        //     Message.error('没有任何修改，不需要提交')
-        //     return
-        //   }
-        //   $this.editSave(newTableData)
-        // })
-        //
       } else {
         this.createSave(this.edit.item)
       }
@@ -439,7 +380,6 @@ export default {
       })
     },
     createSave(postData) {
-      console.log('postData==========>:', postData)
       this.userPoolItem.uid = postData.uid
       this.userPoolItem.games = this.splitGames(postData.games)
       this.userPoolItem.amount = postData.amount
@@ -460,7 +400,6 @@ export default {
         this.$message.error('可发放金额不能为负数')
         return false
       }
-      console.log(' this.edit.item:', this.edit.item)
       if (
         this.edit.item.uid === '' ||
         this.edit.item.games.length === 0 ||
@@ -516,16 +455,9 @@ export default {
             this.resetEditForm()
             json.forEach((row, index) => {
               if (index > 0 && row.length === 5) {
-                console.log('row=========>:', row)
-                // this.ScatterTriggerPlans.PlayTimesMin = json[1][0]
-                // this.ScatterTriggerPlans.PlayTimesMax = json[1][1]
-                // this.ScatterTriggerPlans.FreeTimesCompareOperator = json[1][2]
-                // this.ScatterTriggerPlans.FreeTimesCompareValue = json[1][3]
-                // this.ScatterTriggerPlans.currentConf.push({OddsMin: row[4], OddsMax: row[5], Rates: row[6]})
                 const userPoolItem = {}
                 userPoolItem.updateAt = today// 当日凌晨0点的时间
                 const validRange = this.splitTimeRange(row[1])
-                console.log('row[1]:', row[1])
                 userPoolItem.validStartAt = this.Unix(validRange[0])
                 userPoolItem.validEndAt = this.Unix(validRange[1])
                 userPoolItem.games = this.splitGamesName(row[2])
@@ -539,14 +471,12 @@ export default {
                   userPoolItem.games.length === 0 ||
                   userPoolItem.uid === 0 ||
                   userPoolItem.amount === 0) {
-                  console.log('this.userPoolItem:', userPoolItem)
                   Message.error('导入失败,请检查数据')
                   return
                 }
                 this.tableData.push(userPoolItem)
               }
             })
-            // this.ScatterTriggerPlans.editIndex = undefined//
             this.userPoolCfg.items = this.tableData
             this.tableData.forEach(game => { // gamesLabel不用保存
               delete game.gamesLabel
