@@ -378,13 +378,13 @@ export default {
         this.userPoolItem.uid = Number(this.edit.item.uid)
         this.userPoolItem.games = this.splitGames(this.edit.item.games)
         this.userPoolItem.amount = this.edit.item.amount
-        this.userPoolItem.updateAt = this.Unix(this.edit.item.updateAt)
+        this.userPoolItem.updateAt = new Date(this.edit.item.updateAt).getTime()
         this.userPoolItem.updateBy = this.name
         this.userPoolItem.validStartAt = this.Unix(this.edit.item.effectiveRange[0])
         this.userPoolItem.validEndAt = this.Unix(this.edit.item.effectiveRange[1])
         // this.tableData[this.edit.editingIndex] = this.edit.item
         this.$set(this.tableData, this.edit.editingIndex, this.userPoolItem)
-        this.tableData.forEach(game => { //gamesLabel不用保存
+        this.tableData.forEach(game => { // gamesLabel不用保存
           delete game.gamesLabel
         })
         const newTableData = this.tableData
@@ -440,7 +440,7 @@ export default {
       this.userPoolItem.uid = postData.uid
       this.userPoolItem.games = this.splitGames(postData.games)
       this.userPoolItem.amount = postData.amount
-      this.userPoolItem.updateAt = this.Unix(postData.updateAt)
+      this.userPoolItem.updateAt = new Date(postData.updateAt).getTime()
       this.userPoolItem.updateBy = this.name
       this.userPoolItem.validStartAt = this.Unix(postData.effectiveRange[0])
       this.userPoolItem.validEndAt = this.Unix(postData.effectiveRange[1])
