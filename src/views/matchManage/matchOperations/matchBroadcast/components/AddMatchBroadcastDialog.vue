@@ -176,8 +176,8 @@ export default {
       if (this.formData.BroadcastType === 4) {
         let nCount = this.handleContentLength(this.formData.Content)
         let diffCount = this.formData.Content.length - nCount
-        if (diffCount > 150) {
-          this.$message.warning('内容不能超过150!')
+        if (diffCount > 200) {
+          this.$message.warning('内容不能超过200!')
           return false
         }
       }
