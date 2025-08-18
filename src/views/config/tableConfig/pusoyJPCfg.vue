@@ -629,6 +629,9 @@ export default {
             //this.transMoneyForShow()
             this.item.MajorShowBase *= 1000
             this.item.GrandShowBase *= 1000      
+            this.item.MinorTableMoney *= 1000
+            this.item.MajorTableMoney *= 1000
+            this.item.GrandTableMoney *= 1000
 
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data)
@@ -666,15 +669,13 @@ export default {
     getPostData() {
       const ret = {}
       Object.assign(ret, this.item)
-
-      const jackpotInfo = {}
-      Object.assign(jackpotInfo, this.item.Jackpot)
       
-      jackpotInfo.MajorShowBase /= 1000
-      jackpotInfo.GrandShowBase /= 1000
+      this.item.MajorShowBase /= 1000
+      this.item.GrandShowBase /= 1000   
+      this.item.MinorTableMoney /= 1000
+      this.item.MajorTableMoney /= 1000
+      this.item.GrandTableMoney /= 1000
 
-      ret.Jackpot = jackpotInfo
-      
       console.log("上传====>",ret)
 
       return ret
