@@ -70,15 +70,20 @@
             range-separator="至"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            value-format="yyyy-MM-dd"
             style="width: 600px"
           />
         </el-form-item>
+        <el-form-item label="生效ID">
+          <el-input v-model="edit.item.uid" style="width: 600px"/>
+        </el-form-item>
+        <el-form-item label="可发放金额">
+          <el-input-number v-model="edit.item.amount" :min="0" style="width: 600px"/>
+        </el-form-item>
         <el-form-item label="生效游戏">
           <!--          <el-input v-model="editForm.games" style="width: 350px"></el-input>-->
-          <el-select v-model="edit.item.games" multiple style="width: 600px">
-            <el-option v-for="(o) in gameOptions" :key="o.key" :label="o.label" :value="parseInt(o.key)"/>
-          </el-select>
+          <!--          <el-select v-model="edit.item.games" multiple style="width: 600px">-->
+          <!--            <el-option v-for="(o) in gameOptions" :key="o.key" :label="o.label" :value="parseInt(o.key)"/>-->
+          <!--          </el-select>-->
           <el-tooltip
             class="item"
             effect="dark"
@@ -87,13 +92,14 @@
           >
             <i class="el-icon-info"/>
           </el-tooltip>
+          <el-checkbox v-model="checkAll" :indeterminate="isIndeterminate" @change="handleCheckAllChange">
+            全选
+          </el-checkbox>
+          <div style="margin: 15px 0;"/>
+          <el-checkbox-group v-model="edit.item.games" @change="handleCheckedGamesChange">
+            <el-checkbox v-for="game in allGames" :key="game" :label="game">{{ game }}</el-checkbox>
+          </el-checkbox-group>
           <!--          -->
-        </el-form-item>
-        <el-form-item label="生效ID">
-          <el-input v-model="edit.item.uid" style="width: 600px"/>
-        </el-form-item>
-        <el-form-item label="可发放金额">
-          <el-input-number v-model="edit.item.amount" :min="0" style="width: 600px"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -102,7 +108,7 @@
       </div>
     </el-dialog>
     <!--对比组件-->
-    <compare ref="compare" />
+    <compare ref="compare"/>
 
   </div>
 </template>
@@ -114,6 +120,7 @@ import Compare from '@/components/Compare/index.vue'
 import {$libShow, ClientTableData, ValidateVueItem} from '@/utils/common'
 import {Message} from 'element-ui'
 import XLSX from 'xlsx'
+import {mapGetters} from "vuex";
 
 const filterMap = {}
 
@@ -136,7 +143,7 @@ export default {
     return {
       // todo
       queryGid: 82,
-      gameOptions: [],
+      // gameOptions: [],
       dialogTitle: '编辑配置',
       // todo
       dateRange: [],
@@ -145,7 +152,7 @@ export default {
       tableData: [],
       tableDataBak: [], // 用于筛选
       gameNameMap: {}, // {gameName:gameId}
-      // gameIdMap: {}, // {gameId:gameName}
+      gameIdMap: {}, // {gameId:gameName}
       editDialogVisible: false,
       editForm: {updateAt: '', effectiveRange: [], games: '', uid: '', amount: 0},
       // editingIndex: null,
@@ -163,23 +170,23 @@ export default {
         validStartAt: 0,
         validEndAt: 0
       },
-      edit:
-        {
-          editingIndex: null,
-          item: newItem()
-        }
+      edit: {
+        editingIndex: null,
+        item: newItem()
+      },
+      // 复选框相关
+      checkAll: false,
+      // cities: cityOptions,
+      //
+      allGames: [],
+      // pickGames: [],
+      isIndeterminate: true,
     }
   },
   computed: {
-    gameIdMap() {
-      const map = {}
-      if (Array.isArray(this.gameOptions)) {
-        this.gameOptions.forEach(opt => {
-          map[Number(opt.key)] = opt.label // 强制转 number
-        })
-      }
-      return map
-    }
+    ...mapGetters([
+      'name',
+    ])
   },
   mounted() {
     this.setDefaultDateRange()
@@ -191,6 +198,18 @@ export default {
   },
   // todo
   methods: {
+    handleCheckAllChange(val) {
+      this.edit.item.games = val ? this.allGames : []
+      this.isIndeterminate = false
+      console.log('>>>>>>done handleCheckAllChange<<<<<<')
+    },
+    handleCheckedGamesChange(value) {
+      const checkedCount = value.length
+      this.checkAll = checkedCount === this.allGames.length
+      this.isIndeterminate = checkedCount > 0 && checkedCount < this.allGames.length
+      // console.log('checkedCount:', checkedCount);
+      // console.log('>>>>>>done handleCheckedCitiesChange<<<<<<')
+    },
     // todo
     getGameLabels(gameIds) {
       if (!Array.isArray(gameIds)) return ''
@@ -199,8 +218,8 @@ export default {
       return gameIds.map(id => this.gameIdMap[id] || id).join(', ')
     },
     async fetchData() {
-      await this.getData()
       await this.getGameList()
+      await this.getData()
     },
     getGameList() {
       request({
@@ -213,16 +232,17 @@ export default {
             if (response.Data[i].Gid < 50 || response.Data[i].Gid > 100 && response.Data[i].Gid < 150 || response.Data[i].Gid > 499) {
               continue
             }
-            this.gameOptions.push({
-              key: response.Data[i].Gid,
-              label: response.Data[i].Name
-            })
+            // this.gameOptions.push({
+            //   key: response.Data[i].Gid,
+            //   label: response.Data[i].Name
+            // })
+            this.allGames.push(response.Data[i].Gid + '|' + response.Data[i].Name)
             this.gameNameMap[response.Data[i].Name] = response.Data[i].Gid
             this.gameIdMap[response.Data[i].Gid] = response.Data[i].Name
           }
         }
       })
-      console.log('finish getGameList,this.gameOptions:', this.gameOptions)
+      // console.log('finish getGameList,this.gameOptions:', this.gameOptions)
     },
     formatDate(Unix) {
       // row.updateAt 是秒级时间戳，需要乘 1000 转成毫秒
@@ -315,33 +335,55 @@ export default {
     //   console.log('导入')
     // },
     openEdit(row) {
+      this.dialogTitle = '编辑配置'
       this.edit.editingIndex = this.tableData.indexOf(row)
       // this.editForm = {...row, effectiveRange: [...row.effectiveRange]}
       this.edit.item.amount = row.amount
-      this.edit.item.games = row.games
+      this.edit.item.games = this.formatTaxedSlots(row.games)
       this.edit.item.uid = row.uid
       this.edit.item.updateAt = this.formatDate(row.updateAt)
       this.edit.item.updateBy = row.updateBy // todo need??
-      this.edit.item.effectiveRange[0] = this.formatDate(row.validStartAt)
-      this.edit.item.effectiveRange[1] = this.formatDate(row.validEndAt)
+      const start = new Date(row.validStartAt * 1000)
+      const end = new Date(row.validEndAt * 1000)
+      this.edit.item.effectiveRange = [start, end]
       //
       this.editDialogVisible = true
+      this.isIndeterminate = true
+    },
+    formatTaxedSlots(gameIds) {
+      const formatNames = []
+      console.log('formatTaxedSlots(gameIds)中this.gameIdMap:', this.gameIdMap)
+      console.log('formatTaxedSlots(gameIds)中gameIds:', gameIds)
+      console.log('formatTaxedSlots(gameIds)中this.gameIdMap[158]:', this.gameIdMap[158])
+      for (const gameId of gameIds) {
+        const str = gameId + '|' + this.gameIdMap[Number(gameId)]
+        formatNames.push(str)
+      }
+      console.log('formatTaxedSlots(gameIds)formatNames:', formatNames)
+      return formatNames
     },
     handleCreate() {
       this.dialogTitle = '添加配置'
       this.edit.item = newItem()
       // this.edit.isEdit = false
       this.editDialogVisible = true
+      this.isIndeterminate = false
+    },
+    splitGames(pickGames) {
+      const games = []
+      for (const game of pickGames) {
+        games.push(Number(game.split('|')[0]))
+      }
+      return games
     },
     saveEdit() {
       if (!this.checkData()) return
       if (this.edit.editingIndex !== null) {
-        // this.$refs.compare.SetOldVal(this.tableData)
         this.userPoolItem.uid = this.edit.item.uid
-        this.userPoolItem.games = this.edit.item.games
+        this.userPoolItem.games = this.splitGames(this.edit.item.games)
         this.userPoolItem.amount = this.edit.item.amount
         this.userPoolItem.updateAt = this.Unix(this.edit.item.updateAt)
-        this.userPoolItem.updateBy = this.edit.item.updateBy
+        this.userPoolItem.updateBy = this.name
         this.userPoolItem.validStartAt = this.Unix(this.edit.item.effectiveRange[0])
         this.userPoolItem.validEndAt = this.Unix(this.edit.item.effectiveRange[1])
         // this.tableData[this.edit.editingIndex] = this.edit.item
@@ -397,10 +439,10 @@ export default {
     createSave(postData) {
       console.log('postData==========>:', postData)
       this.userPoolItem.uid = postData.uid
-      this.userPoolItem.games = postData.games
+      this.userPoolItem.games = this.splitGames(postData.games)
       this.userPoolItem.amount = postData.amount
       this.userPoolItem.updateAt = this.Unix(postData.updateAt)
-      this.userPoolItem.updateBy = postData.updateBy
+      this.userPoolItem.updateBy = this.name
       this.userPoolItem.validStartAt = this.Unix(postData.effectiveRange[0])
       this.userPoolItem.validEndAt = this.Unix(postData.effectiveRange[1])
       this.tableData.push(this.userPoolItem)// todo 中间还使用tableData？？？
@@ -409,8 +451,18 @@ export default {
       this.updateRequest(this.reqData)
     },
     checkData() {
-      if (this.editForm.amount < 0) {
+      if (this.edit.amount < 0) {
         this.$message.error('可发放金额不能为负数')
+        return false
+      }
+      console.log(' this.edit.item:', this.edit.item)
+      if (
+        this.edit.item.uid === '' ||
+        this.edit.item.games.length === 0 ||
+        this.edit.item.amount === '' ||
+        this.edit.item.updateAt === '' ||
+        this.edit.item.effectiveRange === []) {
+        this.$message.error('请填写完整')
         return false
       }
       return true
@@ -521,5 +573,6 @@ export default {
   margin-top: 30px;
   margin-left: 10px;
   margin-right: 10px;
+  margin-bottom:100px;
 }
 </style>
