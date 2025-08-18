@@ -627,11 +627,11 @@ export default {
             const item = JSON.parse(response.Data.Data)
             Object.assign(this.item, item)
             //this.transMoneyForShow()
-            this.item.MajorShowBase *= 1000
-            this.item.GrandShowBase *= 1000      
-            this.item.MinorTableMoney *= 1000
-            this.item.MajorTableMoney *= 1000
-            this.item.GrandTableMoney *= 1000
+            this.item.MajorShowBase /= 1000
+            this.item.GrandShowBase /= 1000      
+            this.item.MinorTableMoney /= 1000
+            this.item.MajorTableMoney /= 1000
+            this.item.GrandTableMoney /= 1000
 
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data)
@@ -640,6 +640,7 @@ export default {
         }
       })
     },
+    /*
     transMoneyForShow() {
       this.item.MajorShowBase /= 1000
       this.item.GrandShowBase /= 1000
@@ -665,18 +666,16 @@ export default {
         this.item.ShowPool.MajorRewardCfg[k].PoolAreaMin /= 1
         this.item.ShowPool.MajorRewardCfg[k].PoolAreaMax /= 1
       }
-    },
+    },*/
     getPostData() {
       const ret = {}
       Object.assign(ret, this.item)
       
-      this.item.MajorShowBase /= 1000
-      this.item.GrandShowBase /= 1000   
-      this.item.MinorTableMoney /= 1000
-      this.item.MajorTableMoney /= 1000
-      this.item.GrandTableMoney /= 1000
-
-      console.log("上传====>",ret)
+      ret.MajorShowBase *= 1000
+      ret.GrandShowBase *= 1000   
+      ret.MinorTableMoney *= 1000
+      ret.MajorTableMoney *= 1000
+      ret.GrandTableMoney *= 1000
 
       return ret
     },
