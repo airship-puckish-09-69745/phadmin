@@ -445,6 +445,9 @@ export default {
       this.userPoolItem.validStartAt = this.Unix(postData.effectiveRange[0])
       this.userPoolItem.validEndAt = this.Unix(postData.effectiveRange[1])
       this.tableData.push(this.userPoolItem)// todo 中间还使用tableData？？？
+      this.tableData.forEach(game => { // gamesLabel不用保存
+        delete game.gamesLabel
+      })
       this.userPoolCfg.items = this.tableData
       this.reqData.Data = JSON.stringify(this.userPoolCfg)
       this.updateRequest(this.reqData)
@@ -460,7 +463,7 @@ export default {
         this.edit.item.games.length === 0 ||
         this.edit.item.amount === '' ||
         this.edit.item.updateAt === '' ||
-        this.edit.item.effectiveRange === []) {
+        this.edit.item.effectiveRange === null) {
         this.$message.error('请填写完整')
         return false
       }
@@ -468,6 +471,9 @@ export default {
     },
     removeRow(index) {
       this.tableData.splice(index, 1)
+      this.tableData.forEach(game => { // gamesLabel不用保存
+        delete game.gamesLabel
+      })
       this.userPoolCfg.items = this.tableData
       this.reqData.Data = JSON.stringify(this.userPoolCfg)
       this.updateRequest(this.reqData)
@@ -539,6 +545,9 @@ export default {
             })
             // this.ScatterTriggerPlans.editIndex = undefined//
             this.userPoolCfg.items = this.tableData
+            this.tableData.forEach(game => { // gamesLabel不用保存
+              delete game.gamesLabel
+            })
             this.reqData.Data = JSON.stringify(this.userPoolCfg)
             this.updateRequest(this.reqData)
           })
