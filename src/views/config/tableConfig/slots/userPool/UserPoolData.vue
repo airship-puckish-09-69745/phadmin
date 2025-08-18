@@ -221,6 +221,7 @@ export default {
         data: {}
       }).then(response => {
         if (response.RetCode === 0) {
+          this.allGames = []
           for (let i = 0; i < response.Data.length; i++) {
             if (response.Data[i].Gid < 50 || response.Data[i].Gid > 100 && response.Data[i].Gid < 150 || response.Data[i].Gid > 499) {
               continue
@@ -378,7 +379,7 @@ export default {
         this.userPoolItem.uid = Number(this.edit.item.uid)
         this.userPoolItem.games = this.splitGames(this.edit.item.games)
         this.userPoolItem.amount = this.edit.item.amount
-        this.userPoolItem.updateAt = new Date(this.edit.item.updateAt).getTime()
+        this.userPoolItem.updateAt = Math.floor(Date.now() / 1000)
         this.userPoolItem.updateBy = this.name
         this.userPoolItem.validStartAt = this.Unix(this.edit.item.effectiveRange[0])
         this.userPoolItem.validEndAt = this.Unix(this.edit.item.effectiveRange[1])
@@ -440,7 +441,7 @@ export default {
       this.userPoolItem.uid = postData.uid
       this.userPoolItem.games = this.splitGames(postData.games)
       this.userPoolItem.amount = postData.amount
-      this.userPoolItem.updateAt = new Date(postData.updateAt).getTime()
+      this.userPoolItem.updateAt = Math.floor(Date.now() / 1000)
       this.userPoolItem.updateBy = this.name
       this.userPoolItem.validStartAt = this.Unix(postData.effectiveRange[0])
       this.userPoolItem.validEndAt = this.Unix(postData.effectiveRange[1])
