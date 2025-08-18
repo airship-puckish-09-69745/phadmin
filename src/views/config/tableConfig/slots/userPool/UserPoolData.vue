@@ -42,10 +42,10 @@
           {{ formatDate(scope.row.validStartAt) }} 至 {{ formatDate(scope.row.validEndAt) }}
         </template>
       </el-table-column>
-      <el-table-column prop="games" label="生效游戏" align="center">
-        <template slot-scope="scope">
-          {{ getGameLabels(scope.row.games) }}
-        </template>
+      <el-table-column prop="gamesLabel" label="生效游戏" align="center">
+        <!--        <template slot-scope="scope">-->
+        <!--          {{ getGameLabels(scope.row.games) }}-->
+        <!--        </template>-->
       </el-table-column>
       <el-table-column prop="uid" label="生效ID" align="center"/>
       <el-table-column prop="amount" label="可发放金额" align="center"/>
@@ -74,10 +74,10 @@
           />
         </el-form-item>
         <el-form-item label="生效ID">
-          <el-input v-model="edit.item.uid" style="width: 600px"/>
+          <el-input v-model.number="edit.item.uid" style="width: 600px"/>
         </el-form-item>
         <el-form-item label="可发放金额">
-          <el-input-number v-model="edit.item.amount" :min="0" style="width: 600px"/>
+          <el-input-number v-model.number="edit.item.amount" :min="0" style="width: 600px"/>
         </el-form-item>
         <el-form-item label="生效游戏">
           <!--          <el-input v-model="editForm.games" style="width: 350px"></el-input>-->
@@ -210,19 +210,12 @@ export default {
       // console.log('checkedCount:', checkedCount);
       // console.log('>>>>>>done handleCheckedCitiesChange<<<<<<')
     },
-    // todo
-    getGameLabels(gameIds) {
-      if (!Array.isArray(gameIds)) return ''
-      // console.log('this.gameIdMap:========>', this.gameIdMap)
-      // console.log('gameIds:========>', gameIds)
-      return gameIds.map(id => this.gameIdMap[id] || id).join(', ')
-    },
     async fetchData() {
       await this.getGameList()
       await this.getData()
     },
     getGameList() {
-      request({
+      return request({
         url: '/thirdpartygames/all',
         method: 'get',
         data: {}
@@ -269,6 +262,9 @@ export default {
           if (response.Data && response.Data.Data !== '') {
             const jsonData = JSON.parse(response.Data.Data)
             this.tableData = jsonData.items
+            this.tableData.forEach(item => {
+              item.gamesLabel = item.games.map(id => this.gameIdMap[id] || id).join(', ')
+            })
             // console.log('this.tableData:============>', this.tableData)
             this.tableDataBak = jsonData.items
             // console.log('response ========>:', response)
@@ -379,7 +375,7 @@ export default {
     saveEdit() {
       if (!this.checkData()) return
       if (this.edit.editingIndex !== null) {
-        this.userPoolItem.uid = this.edit.item.uid
+        this.userPoolItem.uid = Number(this.edit.item.uid)
         this.userPoolItem.games = this.splitGames(this.edit.item.games)
         this.userPoolItem.amount = this.edit.item.amount
         this.userPoolItem.updateAt = this.Unix(this.edit.item.updateAt)
@@ -388,6 +384,9 @@ export default {
         this.userPoolItem.validEndAt = this.Unix(this.edit.item.effectiveRange[1])
         // this.tableData[this.edit.editingIndex] = this.edit.item
         this.$set(this.tableData, this.edit.editingIndex, this.userPoolItem)
+        this.tableData.forEach(game => { //gamesLabel不用保存
+          delete game.gamesLabel
+        })
         const newTableData = this.tableData
         // this.$refs.compare.SetNewVal(this.tableData)
         this.userPoolCfg.items = newTableData
@@ -446,6 +445,9 @@ export default {
       this.userPoolItem.validStartAt = this.Unix(postData.effectiveRange[0])
       this.userPoolItem.validEndAt = this.Unix(postData.effectiveRange[1])
       this.tableData.push(this.userPoolItem)// todo 中间还使用tableData？？？
+      this.tableData.forEach(game => { // gamesLabel不用保存
+        delete game.gamesLabel
+      })
       this.userPoolCfg.items = this.tableData
       this.reqData.Data = JSON.stringify(this.userPoolCfg)
       this.updateRequest(this.reqData)
@@ -459,9 +461,9 @@ export default {
       if (
         this.edit.item.uid === '' ||
         this.edit.item.games.length === 0 ||
-        this.edit.item.amount === '' ||
+        this.edit.item.amount === undefined ||
         this.edit.item.updateAt === '' ||
-        this.edit.item.effectiveRange === []) {
+        this.edit.item.effectiveRange === null) {
         this.$message.error('请填写完整')
         return false
       }
@@ -469,6 +471,9 @@ export default {
     },
     removeRow(index) {
       this.tableData.splice(index, 1)
+      this.tableData.forEach(game => { // gamesLabel不用保存
+        delete game.gamesLabel
+      })
       this.userPoolCfg.items = this.tableData
       this.reqData.Data = JSON.stringify(this.userPoolCfg)
       this.updateRequest(this.reqData)
@@ -540,6 +545,9 @@ export default {
             })
             // this.ScatterTriggerPlans.editIndex = undefined//
             this.userPoolCfg.items = this.tableData
+            this.tableData.forEach(game => { // gamesLabel不用保存
+              delete game.gamesLabel
+            })
             this.reqData.Data = JSON.stringify(this.userPoolCfg)
             this.updateRequest(this.reqData)
           })
@@ -573,6 +581,6 @@ export default {
   margin-top: 30px;
   margin-left: 10px;
   margin-right: 10px;
-  margin-bottom:100px;
+  margin-bottom: 100px;
 }
 </style>
