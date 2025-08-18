@@ -34,7 +34,7 @@
                 placeholder="请输入内容"
                 class="elInput"/>
             </el-form-item>
-            <el-form-item label="抽水比例1(万分之一)" :rules="[{ required: true, message: '抽水比例不能为空'}]">
+            <el-form-item label="抽水比例(万分之一)" :rules="[{ required: true, message: '抽水比例不能为空'}]">
               <el-input v-model.number="cfg.taxed" placeholder="请输入内容" class="elInput"/>
             </el-form-item>
           </el-col>
