@@ -5,7 +5,7 @@
       <el-form ref="frm2" :model="cfg" label-width="230px">
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="玩牌局数最小值"  :rules="[{ required: true, message: '玩牌局数最小值不能为空'}]">
+            <el-form-item label="玩牌局数最小值" :rules="[{ required: true, message: '玩牌局数最小值不能为空'}]">
               <el-input
                 v-model.number="cfg.playTimesMin"
                 placeholder="请输入内容"
@@ -58,6 +58,7 @@
 
 import Publish from '@/components/Publish/index.vue';
 import request from '@/utils/request';
+import {Message} from "element-ui";
 
 export default {
   name: 'UserPoolCfg',
@@ -114,6 +115,16 @@ export default {
       })
     },
     saveEdit() {
+      if (
+        this.cfg.taxed === '' ||
+        this.cfg.taxedSlots === '' ||
+        this.cfg.betOddsMin === '' ||
+        this.cfg.betOddsMax === '' ||
+        this.cfg.playTimesMin === '' ||
+        this.cfg.playTimesMax === '') {
+        Message.error('请填写完整')
+        return
+      }
       const newCfg = {
         taxed: this.cfg.taxed,
         taxedSlots: this.cfg.taxedSlots.split(',').map(Number),
