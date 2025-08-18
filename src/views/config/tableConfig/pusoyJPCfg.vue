@@ -627,7 +627,9 @@ export default {
             const item = JSON.parse(response.Data.Data)
             Object.assign(this.item, item)
             //this.transMoneyForShow()
-            
+            this.item.MajorShowBase *= 1000
+            this.item.GrandShowBase *= 1000      
+
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data)
             console.log(item)
@@ -662,15 +664,14 @@ export default {
       }
     },
     getPostData() {
-      //const ret = JSON.parse(JSON.stringify(this.item))
       const ret = {}
       Object.assign(ret, this.item)
 
       const jackpotInfo = {}
       Object.assign(jackpotInfo, this.item.Jackpot)
       
-      //jackpotInfo.MajorShowBase *= 1000
-      //jackpotInfo.GrandShowBase *= 1000
+      jackpotInfo.MajorShowBase /= 1000
+      jackpotInfo.GrandShowBase /= 1000
 
       ret.Jackpot = jackpotInfo
       
