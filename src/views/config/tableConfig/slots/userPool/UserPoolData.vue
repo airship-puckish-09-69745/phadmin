@@ -569,6 +569,9 @@ export default {
         if (nameStr === 'Phoenix') {
           Message.warning('Phoenix存在非唯一gid')
         }
+        if (!this.gameNameMap[nameStr]) {
+          this.$message.warning('存在无效游戏名,请检查')
+        }
         gid.push(this.gameNameMap[nameStr])
       }
       return gid
