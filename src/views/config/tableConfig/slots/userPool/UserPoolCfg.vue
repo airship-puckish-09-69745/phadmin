@@ -102,14 +102,11 @@ export default {
     handleCheckAllChange(val) {
       this.cfg.taxedSlots = val ? this.allGames : []
       this.isIndeterminate = false
-      console.log('>>>>>>done handleCheckAllChange<<<<<<')
     },
     handleCheckedGamesChange(value) {
       const checkedCount = value.length
       this.checkAll = checkedCount === this.allGames.length
       this.isIndeterminate = checkedCount > 0 && checkedCount < this.allGames.length
-      // console.log('checkedCount:', checkedCount);
-      // console.log('>>>>>>done handleCheckedCitiesChange<<<<<<')
     },
     getFullKey() {
       return 'CustomizeCfg_slots_user_pool_cfg'
@@ -187,7 +184,7 @@ export default {
     saveEdit() {
       if (
         this.cfg.taxed === '' ||
-        this.cfg.taxedSlots === '' ||
+        this.cfg.taxedSlots.length === 0 ||
         this.cfg.betOddsMin === '' ||
         this.cfg.betOddsMax === '' ||
         this.cfg.playTimesMin === '' ||
