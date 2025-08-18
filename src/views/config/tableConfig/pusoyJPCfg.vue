@@ -591,7 +591,7 @@ export default {
           type: 3,
       },
       form: {},
-      subKey: 'pusoyjackpot_cfg',
+      subKey: 'pusoy_jackpot_cfg',
       libShow: $libShow,
       showSetResultPage: false,
       env:process.env.VUE_APP_PROJECT,
