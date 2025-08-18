@@ -339,11 +339,6 @@ export default {
         // this.$refs.compare.SetOldVal(this.tableData)
         this.userPoolItem.uid = this.edit.item.uid
         this.userPoolItem.games = this.edit.item.games
-        for (let i = 0; i < this.edit.item.games.length; i++) {
-          if (this.edit.item.games[i] === 51 || this.edit.item.games[i] === 216) {
-            Message.warning('选中的Phoenix的Gid是:' + this.edit.item.games[i])
-          }
-        }
         this.userPoolItem.amount = this.edit.item.amount
         this.userPoolItem.updateAt = this.Unix(this.edit.item.updateAt)
         this.userPoolItem.updateBy = this.edit.item.updateBy
@@ -403,12 +398,6 @@ export default {
       console.log('postData==========>:', postData)
       this.userPoolItem.uid = postData.uid
       this.userPoolItem.games = postData.games
-      // eslint-disable-next-line no-empty
-      for (let i = 0; i < postData.games.length; i++) {
-        if (postData.games[i] === 51 || postData.games[i] === 216) {
-          Message.warning('选中的Phoenix的Gid是:' + postData.games[i])
-        }
-      }
       this.userPoolItem.amount = postData.amount
       this.userPoolItem.updateAt = this.Unix(postData.updateAt)
       this.userPoolItem.updateBy = postData.updateBy
