@@ -24,15 +24,15 @@
               <el-input
                 v-model.number="cfg.playTimesMax"
                 placeholder="请输入内容"
-                class="elInput"
-                :rules="[{ required: true, message: '玩牌局数最大值不能为空'}]"/>
+                class="elInput"/>
             </el-form-item>
-            <el-form-item label="发放金额与下注金额的最大倍数">
+            <el-form-item
+              label="发放金额与下注金额的最大倍数"
+             :rules="[{ required: true, message: '发放金额与下注金额的最大倍数不能为空'}]">
               <el-input
                 v-model.number="cfg.betOddsMax"
                 placeholder="请输入内容"
-                class="elInput"
-                :rules="[{ required: true, message: '发放金额与下注金额的最大倍数不能为空'}]"/>
+                class="elInput"/>
             </el-form-item>
             <el-form-item label="抽水比例1(万分之一)" :rules="[{ required: true, message: '抽水比例不能为空'}]">
               <el-input v-model.number="cfg.taxed" placeholder="请输入内容" class="elInput"/>
