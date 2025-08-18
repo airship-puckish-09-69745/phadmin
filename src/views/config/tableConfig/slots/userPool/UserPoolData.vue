@@ -345,7 +345,8 @@ export default {
       this.edit.item.effectiveRange = [start, end]
       //
       this.editDialogVisible = true
-      this.isIndeterminate = true
+      this.checkAll = this.edit.item.games.length === this.allGames.length
+      this.isIndeterminate = !this.checkAll
     },
     formatTaxedSlots(gameIds) {
       const formatNames = []
@@ -365,6 +366,7 @@ export default {
       // this.edit.isEdit = false
       this.editDialogVisible = true
       this.isIndeterminate = false
+      this.checkAll = false
     },
     splitGames(pickGames) {
       const games = []
