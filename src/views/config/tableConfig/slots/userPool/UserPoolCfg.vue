@@ -5,9 +5,9 @@
       <el-form ref="frm2" :model="cfg" label-width="230px">
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="玩牌局数最小值">
+            <el-form-item label="玩牌局数最小值"  :rules="[{ required: true, message: '玩牌局数最小值不能为空'}]">
               <el-input
-                v-model="cfg.playTimesMin"
+                v-model.number="cfg.playTimesMin"
                 placeholder="请输入内容"
                 class="elInput"
                 :rules="[{ required: true, message: '玩牌局数最小值不能为空'}]"/>
@@ -15,24 +15,24 @@
             <el-form-item
               label="发放金额与下注金额的最小倍数"
               :rules="[{ required: true, message: '发放金额与下注金额的最小倍数不能为空'}]">
-              <el-input v-model="cfg.betOddsMin" placeholder="请输入内容" class="elInput"/>
+              <el-input v-model.number="cfg.betOddsMin" placeholder="请输入内容" class="elInput"/>
             </el-form-item>
             <el-form-item label="抽水比例1(万分之一)" :rules="[{ required: true, message: '抽水比例不能为空'}]">
-              <el-input v-model="cfg.taxed" placeholder="请输入内容" class="elInput"/>
+              <el-input v-model.number="cfg.taxed" placeholder="请输入内容" class="elInput"/>
             </el-form-item>
           </el-col>
 
           <el-col :span="12">
-            <el-form-item label="玩牌局数最大值">
+            <el-form-item label="玩牌局数最大值" :rules="[{ required: true, message: '玩牌局数最大值不能为空'}]">
               <el-input
-                v-model="cfg.playTimesMax"
+                v-model.number="cfg.playTimesMax"
                 placeholder="请输入内容"
                 class="elInput"
                 :rules="[{ required: true, message: '玩牌局数最大值不能为空'}]"/>
             </el-form-item>
             <el-form-item label="发放金额与下注金额的最大倍数">
               <el-input
-                v-model="cfg.betOddsMax"
+                v-model.number="cfg.betOddsMax"
                 placeholder="请输入内容"
                 class="elInput"
                 :rules="[{ required: true, message: '发放金额与下注金额的最大倍数不能为空'}]"/>
