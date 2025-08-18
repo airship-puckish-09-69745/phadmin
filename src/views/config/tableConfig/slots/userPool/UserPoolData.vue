@@ -42,10 +42,10 @@
           {{ formatDate(scope.row.validStartAt) }} 至 {{ formatDate(scope.row.validEndAt) }}
         </template>
       </el-table-column>
-      <el-table-column prop="games" label="生效游戏" align="center">
-        <template slot-scope="scope">
-          {{ getGameLabels(scope.row.games) }}
-        </template>
+      <el-table-column prop="gamesLabel" label="生效游戏" align="center">
+        <!--        <template slot-scope="scope">-->
+        <!--          {{ getGameLabels(scope.row.games) }}-->
+        <!--        </template>-->
       </el-table-column>
       <el-table-column prop="uid" label="生效ID" align="center"/>
       <el-table-column prop="amount" label="可发放金额" align="center"/>
@@ -210,19 +210,12 @@ export default {
       // console.log('checkedCount:', checkedCount);
       // console.log('>>>>>>done handleCheckedCitiesChange<<<<<<')
     },
-    // todo
-    getGameLabels(gameIds) {
-      if (!Array.isArray(gameIds)) return ''
-      // console.log('this.gameIdMap:========>', this.gameIdMap)
-      // console.log('gameIds:========>', gameIds)
-      return gameIds.map(id => this.gameIdMap[id] || id).join(', ')
-    },
     async fetchData() {
       await this.getGameList()
       await this.getData()
     },
     getGameList() {
-      request({
+      return request({
         url: '/thirdpartygames/all',
         method: 'get',
         data: {}
@@ -269,6 +262,9 @@ export default {
           if (response.Data && response.Data.Data !== '') {
             const jsonData = JSON.parse(response.Data.Data)
             this.tableData = jsonData.items
+            this.tableData.forEach(item => {
+              item.gamesLabel = item.games.map(id => this.gameIdMap[id] || id).join(', ')
+            })
             // console.log('this.tableData:============>', this.tableData)
             this.tableDataBak = jsonData.items
             // console.log('response ========>:', response)
@@ -388,6 +384,9 @@ export default {
         this.userPoolItem.validEndAt = this.Unix(this.edit.item.effectiveRange[1])
         // this.tableData[this.edit.editingIndex] = this.edit.item
         this.$set(this.tableData, this.edit.editingIndex, this.userPoolItem)
+        this.tableData.forEach(game => { //gamesLabel不用保存
+          delete game.gamesLabel
+        })
         const newTableData = this.tableData
         // this.$refs.compare.SetNewVal(this.tableData)
         this.userPoolCfg.items = newTableData
@@ -573,6 +572,6 @@ export default {
   margin-top: 30px;
   margin-left: 10px;
   margin-right: 10px;
-  margin-bottom:100px;
+  margin-bottom: 100px;
 }
 </style>
