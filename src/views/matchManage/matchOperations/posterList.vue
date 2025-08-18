@@ -266,6 +266,12 @@
             <el-switch v-model="editForm.data.first_jump" :active-value="true" :inactive-value="false" />
           </el-form-item>
 
+          <el-form-item label="站点选择：">
+            <el-checkbox-group v-model="editForm.data.channelId" style="width: 700px">
+              <el-checkbox v-for="item in CHANNEL_OPTIONS" :key="item.value" :label="item.value">{{ item.label }}</el-checkbox>
+            </el-checkbox-group>
+          </el-form-item>
+
         </fieldset>
         <el-form-item>
           <el-button size="medium" type="primary" icon="el-icon-s-order" @click="savePosetCfg()">保存海报配置</el-button>
@@ -286,7 +292,7 @@ import { $libDate, $libShow } from '@/utils/common'
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
 import Compare from '@/components/Compare'
 import { getAllCommonGameConfig } from '@/utils/common-game-config'
-import {APPID_OPTIONS,MATCH_UNIQUE_ID_CFG} from "@/utils/options";
+import {APPID_OPTIONS, CHANNEL_OPTIONS, MATCH_UNIQUE_ID_CFG} from "@/utils/options";
 
 export default {
   components: { Compare, Publish, DateTimeShow, ImagePicker },
@@ -323,6 +329,7 @@ export default {
           switch: 'true',
           display_gids:[], //展示游戏
           display_place:0, //展示位置
+          channelId: []  //站点
         }
       },
       AttrNames: {
@@ -357,7 +364,8 @@ export default {
 
       subKey: 'match_poster_list',
       APPID_OPTIONS,
-      MATCH_UNIQUE_ID_CFG
+      MATCH_UNIQUE_ID_CFG,
+      CHANNEL_OPTIONS
     }
   },
   computed: {
@@ -609,6 +617,7 @@ export default {
           game_id: 0,
           display_gids:[], //展示游戏
           display_place:0, //展示位置
+          channelId:[],
         }
         this.editForm.isAdd = true
         this.selectMatchName()
@@ -623,6 +632,9 @@ export default {
           }
         }
         this.editForm.onceTime = [new Date(editData.start_time * 1000), new Date(editData.end_time * 1000)]
+        if (editData.channelId === undefined){
+          editData.channelId = []
+        }
         this.editForm.data = editData
         this.selectMatchName()
         let find = false
@@ -670,7 +682,7 @@ export default {
             if(this.editForm.data.display_place !== undefined){
               this.posterList.tableData[i].display_place = this.editForm.data.display_place
             }
-
+            this.posterList.tableData[i].channelId = this.editForm.data.channelId
           }
         }
       } else {
@@ -691,6 +703,7 @@ export default {
             'end_time': eTime,
             'display_gids':this.editForm.data.display_gids,
             'display_place':this.editForm.data.display_place,
+            'channelId': this.editForm.data.channelId,
           }
         )
       }

@@ -643,16 +643,10 @@ export const asyncRoutes = [
             meta: { title: '排队入桌配置 ◐' }
           },
           {
-            path: 'trustScore',
-            component: () => import('@/views/config/tableConfig/trustScore.vue'),
-            name: 'trustScore',
-            meta: { title: '信任分配置 ◐' }
-          },
-          {
             path: 'trustScoreNew',
             component: () => import('@/views/config/tableConfig/trustScoreNew.vue'),
             name: 'trustScoreNew',
-            meta: { title: '信任分配置(新版) ◐' }
+            meta: { title: '信任分配置 ◐' }
           }
         ]
       },
@@ -986,18 +980,16 @@ export const asyncRoutes = [
             meta: { title: 'PusoyJP', noCache: true },
             children: [
               {
-                path: 'PusoyJPCfg',
-                component: () => import('@/views/empty'),
-                redirect: 'noRedirect',
-                meta: { title: 'Normal', noCache: true },
-                children: [
-                  {
-                    path: 'pusoyJPTable',
-                    component: () => import('@/views/config/tableConfig/pusoyJPTable'),
-                    name: 'pusoyJPTable',
-                    meta: { title: '场次 ◐' }
-                  },
-                ]
+                path: 'pusoyJPTable',
+                component: () => import('@/views/config/tableConfig/pusoyJPTable'),
+                name: 'pusoyJPTable',
+                meta: { title: '场次 ◐' }
+              },
+              {
+                path: 'pusoyJackpotCfg',
+                component: () => import('@/views/config/tableConfig/pusoyJPCfg'),
+                name: 'pusoyJackpotCfg',
+                meta: { title: 'Jackpot配置' }
               }
             ]
           },
@@ -1761,9 +1753,9 @@ export const asyncRoutes = [
           },
           {
             path: 'user_pool_cfg',
-            component: () => import('@/views/config/tableConfig/slots/userPool/UserPoolCfg.vue'),
+            component: () => import('@/views/config/tableConfig/slots/userPool/UserPoolPage.vue'),
             name: 'user_pool_cfg',
-            meta: { title: '小奖池配置' }
+            meta: { title: '个人奖池配置' }
           },
           {
             path: 'slots_act_configs_v2',

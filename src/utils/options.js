@@ -156,3 +156,10 @@ export const MATCH_GAME_ID_CFG_OPTIONS = [
   { 'value': 2032, 'label': 'TexasMtt', disabled: false },
   { 'value': 2033, 'label': 'Pusoy', disabled: false },
 ]
+
+//比赛GameID 宏定义
+export const MATCH_IUPSTREAM_TYPE_OPTIONS = {
+  MATCH_UPSTREAM_TYPE_TONGITS: 2031,        //tongits
+  UPSTREAM_TYPE_TEXAS_MTT:2032,             //德州MTT
+  MATCH_UPSTREAM_TYPE_PUSOY: 2033,          //pusoy
+}

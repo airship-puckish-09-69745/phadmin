@@ -21,6 +21,9 @@
       </el-form-item>
       <el-form-item label="内容" required>
         <el-input v-model="formData.Content" type="textarea" style="width: 360px;" />
+        <template>
+          <button @click="goToExternalSite">预览</button>
+        </template>
       </el-form-item>
       <el-form-item v-if="formData.BroadcastType === 1" label="播报来源" required>
         <el-select v-model="formData.Origin" placeholder="请选择播报来源" style="width: 360px;" multiple>
@@ -173,8 +176,8 @@ export default {
       if (this.formData.BroadcastType === 4) {
         let nCount = this.handleContentLength(this.formData.Content)
         let diffCount = this.formData.Content.length - nCount
-        if (diffCount > 150) {
-          this.$message.warning('内容不能超过150!')
+        if (diffCount > 200) {
+          this.$message.warning('内容不能超过200!')
           return false
         }
       }
@@ -261,7 +264,7 @@ export default {
       }
 
       const data = { ...this.formData }
-      data.AppId = this.appId
+      data.AppId = this.formData.AppId
       data.Operator = store.getters.name
       data.BroadcastTimeRange = data.BroadcastTimeRange.map(item => parseInt(item / 1000))
       if (!data.ID) {
@@ -269,8 +272,8 @@ export default {
         data.CreateTime = parseInt(Date.now() / 1000)
       } else {
         data.CreateTime = parseInt(data.CreateTime / 1000)
-        data.UpdateTime = parseInt(Date.now() / 1000)
       }
+      data.UpdateTime = parseInt(Date.now() / 1000)
       // 如果不是比赛第一名类型，清空播报来源
       if (data.BroadcastType !== 1) {
         data.Origin = []
@@ -354,6 +357,9 @@ export default {
         totalLength += match.length; // 减去<和>的长度
       });
       return totalLength;
+    },
+    goToExternalSite() {
+      window.open('http://192.168.8.2:4000/', '_blank');
     }
   }
 }
