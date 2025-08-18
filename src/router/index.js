@@ -980,18 +980,16 @@ export const asyncRoutes = [
             meta: { title: 'PusoyJP', noCache: true },
             children: [
               {
-                path: 'PusoyJPCfg',
-                component: () => import('@/views/empty'),
-                redirect: 'noRedirect',
-                meta: { title: 'Normal', noCache: true },
-                children: [
-                  {
-                    path: 'pusoyJPTable',
-                    component: () => import('@/views/config/tableConfig/pusoyJPTable'),
-                    name: 'pusoyJPTable',
-                    meta: { title: '场次 ◐' }
-                  },
-                ]
+                path: 'pusoyJPTable',
+                component: () => import('@/views/config/tableConfig/pusoyJPTable'),
+                name: 'pusoyJPTable',
+                meta: { title: '场次 ◐' }
+              },
+              {
+                path: 'pusoyJackpotCfg',
+                component: () => import('@/views/config/tableConfig/pusoyJPCfg'),
+                name: 'pusoyJackpotCfg',
+                meta: { title: 'Jackpot配置' }
               }
             ]
           },
