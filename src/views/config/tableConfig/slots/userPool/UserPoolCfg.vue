@@ -170,7 +170,7 @@ export default {
       }
       return games
     },
-    saveEdit() {
+    checkInput() {
       if (
         this.cfg.taxed === '' ||
         this.cfg.taxedSlots.length === 0 ||
@@ -179,6 +179,28 @@ export default {
         this.cfg.playTimesMin === '' ||
         this.cfg.playTimesMax === '') {
         Message.error('请填写完整')
+        return false
+      }
+      if (this.cfg.playTimesMin < 0) {
+        Message.error('玩牌局数最小值不能小于0')
+        return false
+      }
+      if (this.cfg.playTimesMax < 0) {
+        Message.error('玩牌局数最大值不能小于0')
+        return false
+      }
+      if (this.cfg.taxed < 0) {
+        Message.error('抽水比例不能小于0')
+        return false
+      }
+      if (this.cfg.taxed > 10000) {
+        Message.error('抽水比例不能大于10000')
+        return false
+      }
+      return true
+    },
+    saveEdit() {
+      if (!this.checkInput()) {
         return
       }
       const newCfg = {
