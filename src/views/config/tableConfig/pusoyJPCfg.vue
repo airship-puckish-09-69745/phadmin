@@ -703,7 +703,8 @@ export default {
               this.item.MajorCfg[k].MultiMin /= 100
               this.item.MajorCfg[k].MultiMax /= 100
             }
-            for (const k in this.item.MiniCfg){
+            for (const k in this.item.ShowPool.MiniCfg){
+              this.item.MiniCfg[k].TableMoney /= 1000
               this.item.MiniCfg[k].RewardMul /= 100
             }
 
@@ -730,13 +731,16 @@ export default {
       for (const k in ret.GrandCfg){
         ret.GrandCfg[k].MultiMin *= 100
         ret.GrandCfg[k].MultiMax *= 100
+        ret.GrandCfg[k].RewardMul *= 100
+        ret.GrandCfg[k].ShowRobotRewardRate *= 100
       }
       for (const k in ret.MajorCfg){
         ret.MajorCfg[k].MultiMin *= 100
         ret.MajorCfg[k].MultiMax *= 100
       }
       for (const k in ret.MiniCfg){
-          ret.MiniCfg[k].RewardMul *= 100
+        ret.MiniCfg[k].TableMoney *= 1000
+        ret.MiniCfg[k].RewardMul *= 100
       }
 
       //Object.assign(ret.ShowPool, this.item.ShowPool)
@@ -744,10 +748,19 @@ export default {
       for (const k in ret.ShowPool.GrandRewardCfg){
         ret.ShowPool.GrandRewardCfg[k].PoolAreaMin *= 100
         ret.ShowPool.GrandRewardCfg[k].PoolAreaMax *= 100
+        ret.ShowPool.GrandRewardCfg[k].RewardMul *= 100
+        ret.ShowPool.GrandRewardCfg[k].ShowRobotRewardRate *= 100
       }
       for (const k in ret.ShowPool.MajorRewardCfg){
         ret.ShowPool.MajorRewardCfg[k].PoolAreaMin *= 100
         ret.ShowPool.MajorRewardCfg[k].PoolAreaMax *= 100
+        ret.ShowPool.MajorRewardCfg[k].RewardMul *= 100
+        ret.ShowPool.MajorRewardCfg[k].ShowRobotRewardRate *= 100
+      }
+      for (const k in ret.ShowPool.MiniRewardCfg){
+        ret.ShowPool.MiniRewardCfg[k].TableMoney *= 1000
+        ret.ShowPool.MiniRewardCfg[k].RewardMul *= 100
+        ret.ShowPool.MiniRewardCfg[k].ShowRobotRewardRate *= 100
       }
 
       return ret
@@ -810,7 +823,7 @@ export default {
         if (!this.item.MiniCfg) {
           this.item['MiniCfg'] = []
         }
-        this.item.MiniCfg.push({ RewardMul: 1, WinRate: 50})
+        this.item.MiniCfg.push({ TableMoney: 5, RewardMul: 1, WinRate: 50})
       }
 
       if (level === 11) {//grand
