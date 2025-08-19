@@ -664,8 +664,8 @@ export default {
     },
     
     getPostData() {
-      const ret = {}
-      Object.assign(ret, this.item)
+      const ret = JSON.parse(JSON.stringify(this.item))
+      //Object.assign(ret, this.item)
       
       ret.MajorShowBase *= 1000
       ret.GrandShowBase *= 1000   
@@ -685,7 +685,7 @@ export default {
           ret.MinorCfg[k].RewardMul *= 100
       }
 
-      Object.assign(ret.ShowPool, this.item.ShowPool)
+      //Object.assign(ret.ShowPool, this.item.ShowPool)
 
       for (const k in ret.ShowPool.GrandRewardCfg){
         ret.ShowPool.GrandRewardCfg[k].PoolAreaMin *= 100
