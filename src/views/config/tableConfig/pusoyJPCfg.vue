@@ -685,6 +685,8 @@ export default {
           ret.MinorCfg[k].RewardMul *= 100
       }
 
+      Object.assign(ret.ShowPool, this.item.ShowPool)
+
       for (const k in ret.ShowPool.GrandRewardCfg){
         ret.ShowPool.GrandRewardCfg[k].PoolAreaMin *= 100
         ret.ShowPool.GrandRewardCfg[k].PoolAreaMax *= 100
