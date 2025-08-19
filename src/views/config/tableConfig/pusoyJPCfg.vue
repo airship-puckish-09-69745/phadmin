@@ -49,7 +49,7 @@
 
                   <el-col :span="8">
                     <el-form-item label="场次底注最小需求>=:">
-                      <el-input v-model.number="item.MinorTableMoney" size="mini" />
+                      <el-input v-model.number="item.MiniTableMoney" size="mini" />
                     </el-form-item>
                   </el-col>
                   
@@ -529,7 +529,7 @@ export default {
         UserPoolRate: 5, //公共奖池  桌费*
         MajorWinRate: 30, //Major中奖池  公共奖池*
         GrandWinRate: 70, //Grand中奖池  公共奖池*
-        MinorTableMoney: 0,//场次底注最小需求>=:
+        MiniTableMoney: 0,//场次底注最小需求>=:
         MinorWinMin: 5,  //Minor中奖=底注*N倍
         MajorTableMoney: 5, //"场次底注最小需求>=:
         MajorWinMin: 18, //Major中奖池最小
@@ -637,7 +637,7 @@ export default {
     transMoneyForShow() {
             this.item.MajorShowBase /= 1000
             this.item.GrandShowBase /= 1000      
-            this.item.MinorTableMoney /= 1000
+            this.item.MiniTableMoney /= 1000
             this.item.MajorTableMoney /= 1000
             this.item.GrandTableMoney /= 1000
 
@@ -669,7 +669,7 @@ export default {
       
       ret.MajorShowBase *= 1000
       ret.GrandShowBase *= 1000   
-      ret.MinorTableMoney *= 1000
+      ret.MiniTableMoney *= 1000
       ret.MajorTableMoney *= 1000
       ret.GrandTableMoney *= 1000
 
