@@ -925,7 +925,7 @@ export default {
         { 'value': 6, 'label': '有限制倍数的返水金（10倍）' },
         { 'value': 16, 'label': '没有任何限制的返水金【Tongits免费赛】' }
       ],
-      // 投注金
+      //投注金
       betScenesCfgs: [
         { 'value': 1, 'label': '任意游戏投注' },
         { 'value': 2, 'label': '仅限Poker类游戏投注' },
