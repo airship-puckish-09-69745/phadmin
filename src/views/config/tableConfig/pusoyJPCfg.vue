@@ -387,13 +387,13 @@
                   </template>
                 </el-table-column>
 
-                <el-table-column prop="rewardRate" label="普通类型机器人中奖概率(在桌)" ><!--在桌机器人中奖概率-->
+                <el-table-column prop="rewardRate" label="普通类型机器人中奖概率%(在桌)" ><!--在桌机器人中奖概率-->
                   <template slot-scope="scope">
                     <el-input v-model="scope.row.RewardRate" size="mini" />
                   </template>
                 </el-table-column>
 
-                <el-table-column prop="showRobotRewardRate" label="展示类型机器人中奖概率(定时)" ><!--5分钟定时机器人中奖概率-->
+                <el-table-column prop="showRobotRewardRate" label="展示类型机器人中奖概率%(定时)" ><!--5分钟定时机器人中奖概率-->
                   <template slot-scope="scope">
                     <el-input v-model="scope.row.ShowRobotRewardRate" size="mini" />
                   </template>
@@ -436,13 +436,13 @@
                   </template>
                 </el-table-column>
 
-                <el-table-column prop="rewardRate" label="普通类型机器人中奖概率(在桌)" ><!--在桌机器人中奖概率-->
+                <el-table-column prop="rewardRate" label="普通类型机器人中奖概率%(在桌)" ><!--在桌机器人中奖概率-->
                   <template slot-scope="scope">
                     <el-input v-model="scope.row.RewardRate" size="mini" />
                   </template>
                 </el-table-column>
 
-                <el-table-column prop="showRobotRewardRate" label="展示类型机器人中奖概率(定时)" ><!--5分钟定时机器人中奖概率-->
+                <el-table-column prop="showRobotRewardRate" label="展示类型机器人中奖概率%(定时)" ><!--5分钟定时机器人中奖概率-->
                   <template slot-scope="scope">
                     <el-input v-model="scope.row.ShowRobotRewardRate" size="mini" />
                   </template>
@@ -485,13 +485,13 @@
                   </template>
                 </el-table-column>
 
-                <el-table-column prop="rewardRate" label="普通类型机器人中奖概率(在桌)" ><!--在桌机器人中奖概率-->
+                <el-table-column prop="rewardRate" label="普通类型机器人中奖概率%(在桌)" ><!--在桌机器人中奖概率-->
                   <template slot-scope="scope">
                     <el-input v-model="scope.row.RewardRate" size="mini" />
                   </template>
                 </el-table-column>
 
-                <el-table-column prop="showRobotRewardRate" label="展示类型机器人中奖概率(定时)" ><!--5分钟定时机器人中奖概率-->
+                <el-table-column prop="showRobotRewardRate" label="展示类型机器人中奖概率%(定时)" ><!--5分钟定时机器人中奖概率-->
                   <template slot-scope="scope">
                     <el-input v-model="scope.row.ShowRobotRewardRate" size="mini" />
                   </template>
@@ -714,26 +714,25 @@ export default {
             for (const k in this.item.ShowPool.GrandRewardCfg){
               this.item.ShowPool.GrandRewardCfg[k].PoolAreaMin /= 100
               this.item.ShowPool.GrandRewardCfg[k].PoolAreaMax /= 100
-              this.item.ShowPool.GrandRewardCfg[k].RewardRate /= 100
-              this.item.ShowPool.GrandRewardCfg[k].ShowRobotRewardRate /= 100
+              //this.item.ShowPool.GrandRewardCfg[k].RewardRate /= 100
+              //this.item.ShowPool.GrandRewardCfg[k].ShowRobotRewardRate /= 100
             }
             for (const k in this.item.ShowPool.MajorRewardCfg){
               this.item.ShowPool.MajorRewardCfg[k].PoolAreaMin /= 100
               this.item.ShowPool.MajorRewardCfg[k].PoolAreaMax /= 100
-              this.item.ShowPool.MajorRewardCfg[k].RewardRate /= 100
-              this.item.ShowPool.MajorRewardCfg[k].ShowRobotRewardRate /= 100
+              //this.item.ShowPool.MajorRewardCfg[k].RewardRate /= 100
+              //this.item.ShowPool.MajorRewardCfg[k].ShowRobotRewardRate /= 100
             }
             for (const k in this.item.ShowPool.MiniRewardCfg){
               this.item.ShowPool.MiniRewardCfg[k].TableMoney /= 1000
-              this.item.ShowPool.MiniRewardCfg[k].RewardRate /= 100
-              this.item.ShowPool.MiniRewardCfg[k].ShowRobotRewardRate /= 100
+              //this.item.ShowPool.MiniRewardCfg[k].RewardRate /= 100
+              //this.item.ShowPool.MiniRewardCfg[k].ShowRobotRewardRate /= 100
             }
     },
     
     getPostData() {
       const ret = JSON.parse(JSON.stringify(this.item))
-      //Object.assign(ret, this.item)
-      
+
       ret.MajorShowBase *= 1000
       ret.GrandShowBase *= 1000   
       ret.MiniTableMoney *= 1000
@@ -755,24 +754,22 @@ export default {
         //ret.MiniCfg[k].RewardMul *= 100
       }
 
-      //Object.assign(ret.ShowPool, this.item.ShowPool)
-
       for (const k in ret.ShowPool.GrandRewardCfg){
         ret.ShowPool.GrandRewardCfg[k].PoolAreaMin *= 100
         ret.ShowPool.GrandRewardCfg[k].PoolAreaMax *= 100
-        ret.ShowPool.GrandRewardCfg[k].RewardRate *= 100
-        ret.ShowPool.GrandRewardCfg[k].ShowRobotRewardRate *= 100
+        //ret.ShowPool.GrandRewardCfg[k].RewardRate *= 100
+        //ret.ShowPool.GrandRewardCfg[k].ShowRobotRewardRate *= 100
       }
       for (const k in ret.ShowPool.MajorRewardCfg){
         ret.ShowPool.MajorRewardCfg[k].PoolAreaMin *= 100
         ret.ShowPool.MajorRewardCfg[k].PoolAreaMax *= 100
-        ret.ShowPool.MajorRewardCfg[k].RewardRate *= 100
-        ret.ShowPool.MajorRewardCfg[k].ShowRobotRewardRate *= 100
+        //ret.ShowPool.MajorRewardCfg[k].RewardRate *= 100
+        //ret.ShowPool.MajorRewardCfg[k].ShowRobotRewardRate *= 100
       }
       for (const k in ret.ShowPool.MiniRewardCfg){
         ret.ShowPool.MiniRewardCfg[k].TableMoney *= 1000
-        ret.ShowPool.MiniRewardCfg[k].RewardRate *= 100
-        ret.ShowPool.MiniRewardCfg[k].ShowRobotRewardRate *= 100
+        //ret.ShowPool.MiniRewardCfg[k].RewardRate *= 100
+        //ret.ShowPool.MiniRewardCfg[k].ShowRobotRewardRate *= 100
       }
 
       return ret
