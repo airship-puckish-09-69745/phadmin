@@ -21,7 +21,7 @@
           <el-tab-pane label="赔付线配置" name="pay_table">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，重启生效】</h3>
             <publish primary-key="ID" :key-id="getFullKey('wrathofzeus2mars_slots_base')" :env-empty="false" compare-type="Object" />
-            <slots-pay-table v-if="baseCfgBool" v-model="baseCfg" :symbol-list="ruleCfg.SymbolList" :start-col="3" @saveData="saveBaseCfg" />
+            <slots-pay-table v-if="baseCfgBool" v-model="baseCfg" :symbol-list="ruleCfg.SymbolList" :label-map="labelMap" :start-col="4" @saveData="saveBaseCfg" />
           </el-tab-pane>
           <el-tab-pane label="2套轴图标" name="reels_double">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布】</h3>
@@ -73,7 +73,14 @@ export default {
       extForm: {},
       txt: '',
       subKey: 'wrathofzeus2mars_slots_base',
-      inc: 0
+      inc: 0,
+      labelMap: {
+        4: '5-6个',
+        5: '7-9个',
+        6: '10-14个',
+        7: '15-19个',
+        8: '20+个',
+      }
     }
   },
   created() {
