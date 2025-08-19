@@ -689,7 +689,7 @@ export default {
         ret.ShowPool.GrandRewardCfg[k].PoolAreaMin *= 100
         ret.ShowPool.GrandRewardCfg[k].PoolAreaMax *= 100
       }
-      for (const k in this.ret.MajorRewardCfg){
+      for (const k in ret.ShowPool.MajorRewardCfg){
         ret.ShowPool.MajorRewardCfg[k].PoolAreaMin *= 100
         ret.ShowPool.MajorRewardCfg[k].PoolAreaMax *= 100
       }
