@@ -28,7 +28,7 @@
             </el-form-item>
             <el-form-item
               label="发放金额与下注金额的最大倍数"
-             :rules="[{ required: true, message: '发放金额与下注金额的最大倍数不能为空'}]">
+              :rules="[{ required: true, message: '发放金额与下注金额的最大倍数不能为空'}]">
               <el-input
                 v-model.number="cfg.betOddsMax"
                 placeholder="请输入内容"
@@ -130,6 +130,10 @@ export default {
             this.cfg.taxed = jsonData.taxed
             this.cfg.taxedSlots = this.formatTaxedSlots(jsonData.taxedSlots)
             this.reqData = response.Data
+            if (this.cfg.taxedSlots.length === this.allGames.length) {
+              this.isIndeterminate = false
+              this.checkAll = true
+            }
           }
         }
       })
