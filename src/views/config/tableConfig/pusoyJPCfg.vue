@@ -364,8 +364,51 @@
               </el-table-column>
             </el-table>
 
-            <fieldset style="margin-top:10px">
+            <fieldset style="margin-top:10px">                
+              <el-col :span="20">
+                <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="doAddCfg(14)">添加</el-button>
+              </el-col>
+              
+              <legend>Mini中奖配置</legend>
+              <el-table
+                ref="filterTable"
+                :data="item.ShowPool.MiniRewardCfg"
+                border
+                :header-cell-style="libShow.DefaultTableHeadClass"
+                :row-style="{height:'10px'}"
+                :cell-style="libShow.DefaultTableCell"
+                style="width: 100%"
+              >
+                <el-table-column type="index" />
+
+                <el-table-column prop="tableMoney" label="底分" >
+                  <template slot-scope="scope">
+                    <el-input v-model="scope.row.TableMoney" size="mini" />
+                  </template>
+                </el-table-column>
+
+                <el-table-column prop="rewardRate" label="普通类型机器人中奖概率" ><!--在桌机器人中奖概率-->
+                  <template slot-scope="scope">
+                    <el-input v-model="scope.row.RewardRate" size="mini" />
+                  </template>
+                </el-table-column>
+
+                <el-table-column prop="showRobotRewardRate" label="展示类型机器人中奖概率" ><!--5分钟定时机器人中奖概率-->
+                  <template slot-scope="scope">
+                    <el-input v-model="scope.row.ShowRobotRewardRate" size="mini" />
+                  </template>
+                </el-table-column>
+
+                <el-table-column label="操作">
+                  <template slot-scope="scope">
+                    <el-button type="danger" size="mini" @click="delRowBetMoneyLevel(14, scope.$index)">删除</el-button>
+                  </template>
+                </el-table-column>
                 
+              </el-table>
+            </fieldset>
+
+            <fieldset style="margin-top:10px">
               <el-col :span="20">
                 <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="doAddCfg(12)">添加</el-button>
               </el-col>
@@ -393,9 +436,15 @@
                   </template>
                 </el-table-column>
 
-                <el-table-column prop="rewardRate" label="概率" >
+                <el-table-column prop="rewardRate" label="普通类型机器人中奖概率" ><!--在桌机器人中奖概率-->
                   <template slot-scope="scope">
                     <el-input v-model="scope.row.RewardRate" size="mini" />
+                  </template>
+                </el-table-column>
+
+                <el-table-column prop="showRobotRewardRate" label="展示类型机器人中奖概率" ><!--5分钟定时机器人中奖概率-->
+                  <template slot-scope="scope">
+                    <el-input v-model="scope.row.ShowRobotRewardRate" size="mini" />
                   </template>
                 </el-table-column>
 
@@ -408,8 +457,7 @@
               </el-table>
             </fieldset>
 
-            <fieldset style="margin-top:10px">
-                
+            <fieldset style="margin-top:10px">                
               <el-col :span="20">
                 <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="doAddCfg(11)">添加</el-button>
               </el-col>
@@ -437,9 +485,15 @@
                   </template>
                 </el-table-column>
 
-                <el-table-column prop="rewardRate" label="概率" >
+                <el-table-column prop="rewardRate" label="普通类型机器人中奖概率" ><!--在桌机器人中奖概率-->
                   <template slot-scope="scope">
                     <el-input v-model="scope.row.RewardRate" size="mini" />
+                  </template>
+                </el-table-column>
+
+                <el-table-column prop="showRobotRewardRate" label="展示类型机器人中奖概率" ><!--5分钟定时机器人中奖概率-->
+                  <template slot-scope="scope">
+                    <el-input v-model="scope.row.ShowRobotRewardRate" size="mini" />
                   </template>
                 </el-table-column>
 
@@ -763,14 +817,18 @@ export default {
         if (!this.item.ShowPool.GrandRewardCfg) {
           this.item.ShowPool['GrandRewardCfg'] = []
         }
-        this.item.ShowPool.GrandRewardCfg.push({ PoolAreaMin: 1, PoolAreaMax: 1.5, RewardRate:10})
+        this.item.ShowPool.GrandRewardCfg.push({ PoolAreaMin: 1, PoolAreaMax: 1.5, RewardRate:10, ShowRobotRewardRate:10})  //RewardRate在玩机器人中奖概率，ShowRobotRewardRate5分钟定时机器人中奖概率
       } else if (level === 12) {//major
         if (!this.item.ShowPool.MajorRewardCfg) {
           this.item.ShowPool['MajorRewardCfg'] = []
         }
-        this.item.ShowPool.MajorRewardCfg.push({ PoolAreaMin: 1, PoolAreaMax: 1.5, RewardRate:10})
+        this.item.ShowPool.MajorRewardCfg.push({ PoolAreaMin: 1, PoolAreaMax: 1.5, RewardRate:10, ShowRobotRewardRate:10})
+      } else if (level === 14) {//minor
+        if (!this.item.ShowPool.MiniRewardCfg) {
+          this.item.ShowPool['MiniRewardCfg'] = []
+        }
+        this.item.ShowPool.MiniRewardCfg.push({ tableMoney: 1, RewardRate:10, ShowRobotRewardRate:10})
       }
-
     },
     delRowBetMoneyLevel(level, index) {
       console.log(index)
@@ -786,6 +844,8 @@ export default {
         this.item.ShowPool.GrandRewardCfg.splice(index, 1)
       } else if (level === 12) {//major
         this.item.ShowPool.MajorRewardCfg.splice(index, 1)
+      } else if (level === 14) {//mini
+        this.item.ShowPool.MiniRewardCfg.splice(index, 1)
       }
     },
     
