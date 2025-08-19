@@ -16,7 +16,7 @@ export const CHANNEL_OPTIONS = [
   { 'value': 'BP', 'label': 'BP' },
   { 'value': 'AP', 'label': 'AP' },
   { 'value': 'GP', 'label': 'GP' },
-  { 'value': 'TP', 'label': 'TP' },
+  //{ 'value': 'TP', 'label': 'TP' },
   { 'value': 'PG', 'label': 'PG' },
   { 'value': 'Dev', 'label': 'Dev' }
 ]
@@ -89,7 +89,8 @@ export const PROP_SOURCE_OPTIONS = [
   { value: 11, label: '道具过期' },
   { value: 12, label: '红包活动' },
   { value: 13, label: 'rebuy' },
-  { value: 14, label: 'rebuy回退' }
+  { value: 14, label: 'rebuy回退' },
+  { value: 16, label: 'free spin' }
 ]
 
 //奖励分类
@@ -142,10 +143,11 @@ export const MATCH_TABLE_SCENE_ID_CFG =[
 export const MATCH_LIST_TAG_OPTIONS = [
   { 'value': 0, 'label': 'All', disabled: false },
   { 'value': 1, 'label': 'Events', disabled: false },
-  { 'value': 4, 'label': 'Gtcc周赛', disabled: false },
-  { 'value': 5, 'label': 'Gtcc预选赛', disabled: false },
-  { 'value': 6, 'label': '免费赛', disabled: false },
-  { 'value': 7, 'label': '付费赛', disabled: false },
+  { 'value': 2, 'label': 'FREE', disabled: false },
+  { 'value': 3, 'label': 'Pro Arena', disabled: false },
+  { 'value': 4, 'label': 'GTCC', disabled: false },
+  { 'value': 5, 'label': 'GTCC预选赛', disabled: false },
+  { 'value': 6, 'label': 'GTCC特别赛', disabled: false },
 ]
 
 //比赛GameId选项
@@ -154,3 +156,10 @@ export const MATCH_GAME_ID_CFG_OPTIONS = [
   { 'value': 2032, 'label': 'TexasMtt', disabled: false },
   { 'value': 2033, 'label': 'Pusoy', disabled: false },
 ]
+
+//比赛GameID 宏定义
+export const MATCH_IUPSTREAM_TYPE_OPTIONS = {
+  MATCH_UPSTREAM_TYPE_TONGITS: 2031,        //tongits
+  UPSTREAM_TYPE_TEXAS_MTT:2032,             //德州MTT
+  MATCH_UPSTREAM_TYPE_PUSOY: 2033,          //pusoy
+}

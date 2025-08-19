@@ -111,7 +111,7 @@
         prop="ID"
         label="ID"
         sortable="custom"
-        width="100"
+        width="120"
       />
       <el-table-column
         prop="FinishTime"
@@ -132,7 +132,7 @@
       <el-table-column
         prop="MoneyOrigin"
         label="牌局前金额"
-        width="100"
+        width="120"
       >
         <template slot-scope="scope">
           {{ formatNumber(scope.row.MoneyOrigin / 1000) }}
@@ -177,12 +177,12 @@
         </el-table-column>
       </template>
       <el-table-column
-          prop="isfreespin"
-          label="是否使用道具下注"
-          width="100"
+          prop="showBetType"
+          label="下注方式"
+          width="120"
       >
         <template slot-scope="scope">
-            {{ isFreeSpin(scope.row.IsFreeSpin) }}
+            {{ showBetType(scope.row.BetType) }}
         </template>
       </el-table-column>
 
@@ -234,7 +234,7 @@
       <el-table-column
         prop="MoneyNow"
         label="余额"
-        width="100"
+        width="120"
       >
         <template slot-scope="scope">
           {{ formatNumber(scope.row.MoneyNow) }}
@@ -569,7 +569,6 @@
             <td>扣除奖池贡献</td>
             <td>累计奖池贡献</td>
             <td>点控命中</td>
-            <td>是否使用道具</td>
           </tr>
           <tr>
             <td>{{ sweeperPlay.JackpotContribute / 1000 }}</td>
@@ -580,21 +579,18 @@
             }}
             </td>
             <td>{{ getMicroCtrlName(sweeperPlay.microCtrl) }}</td>
-            <td>{{ sweeperPlay.propLog && sweeperPlay.propLog.propId == 0 ? '否' : '是' }}</td>
           </tr>
           <tr>
+            <td>下注方式</td>
             <td>道具Id</td>
-            <td>道具uuid</td>
+            <td>道具recordId</td>
             <td>道具单张面值</td>
-            <td>道具使用数量</td>
-            <td>道具剩余数量</td>
           </tr>
           <tr>
+            <td>{{ sweeperPlay.propLog ? showBetType(sweeperPlay.propLog.propAscription): '常规' }}</td>
             <td>{{ sweeperPlay.propLog ? sweeperPlay.propLog.propId : '' }}</td>
-            <td>{{ sweeperPlay.propLog ? sweeperPlay.propLog.uuid : '' }}</td>
+            <td>{{ sweeperPlay.propLog ? sweeperPlay.propLog.recordId : '' }}</td>
             <td>{{ sweeperPlay.propLog ? sweeperPlay.propLog.itemCost/1000 : '' }}</td>
-            <td>{{ sweeperPlay.propLog ? sweeperPlay.propLog.itemCount : '' }}</td>
-            <td>{{ sweeperPlay.propLog ? sweeperPlay.propLog.itemNow : '' }}</td>
           </tr>
         </table>
       </div>
@@ -3874,11 +3870,15 @@ export default {
         }
       }
     },
-    isFreeSpin(valA) {
-        if (valA === 1) {
-          return '是'
+    showBetType(valA) {
+        if (valA === 1 || valA === 0) {
+          return '常规'
+        } else if (valA === 2){
+          return 'FreeSpin(厅方)'
+        } else if (valA === 3){
+          return 'FreeSpin(平台)'
         } else {
-          return '否'
+          return '未知'
         }
     },
     peiValStr(randVal, winRate, peiVal) {
@@ -4208,7 +4208,7 @@ export default {
             $this.showRemiGame(obj)
           } else if (gid === 11) {
             $this.showTrucoGame(obj)
-          } else if (gid === 12){
+          } else if (gid === 12 || gid === 133){
             $this.showBuracoGame(obj)
           } else {
             $this.showSmallGame(obj)

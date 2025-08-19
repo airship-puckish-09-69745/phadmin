@@ -286,13 +286,13 @@
               <el-input v-model.number="edit.item.ExtendsAddSeconds" placeholder="操作时长" />
             </el-form-item>
           </el-col>
-<!--
+
           <el-col :span="11">
             <el-form-item label="摸弃牌堆增加时间(秒)：" :required="true" prop="item.DrawAndDropAddSeconds">
               <el-input v-model.number="edit.item.DrawAndDropAddSeconds" placeholder="操作时长" />
             </el-form-item>
           </el-col>
--->
+
         </el-row>
 <!--
         <el-row>

@@ -77,12 +77,12 @@
             width="150"
           >
             <template slot-scope="scope">
-               <span v-if="scope.row.money > scope.row.initMoney" style="color:red">
-              {{ formatNumber(scope.row.money - scope.row.initMoney) }}
-            </span>
+              <span v-if="scope.row.money > scope.row.initMoney" style="color:red">
+                {{ formatNumber(scope.row.money - scope.row.initMoney) }}
+              </span>
               <span v-else style="color:green">
-              {{ formatNumber(scope.row.money - scope.row.initMoney) }}
-            </span>
+                {{ formatNumber(scope.row.money - scope.row.initMoney) }}
+              </span>
             </template>
           </el-table-column>
           <el-table-column
@@ -91,11 +91,11 @@
           >
             <template slot-scope="scope">
               <span v-if="scope.row.money > scope.row.initMoney" style="color:red">
-              {{ ((scope.row.money - scope.row.initMoney)*100/scope.row.initMoney).toFixed(2) }}%
-            </span>
+                {{ ((scope.row.money - scope.row.initMoney)*100/scope.row.initMoney).toFixed(2) }}%
+              </span>
               <span v-else style="color:green">
-              {{ ((scope.row.money - scope.row.initMoney)*100/scope.row.initMoney).toFixed(2) }}%
-            </span>
+                {{ ((scope.row.money - scope.row.initMoney)*100/scope.row.initMoney).toFixed(2) }}%
+              </span>
             </template>
           </el-table-column>
           <el-table-column
@@ -103,7 +103,7 @@
             width="100"
           >
             <template slot-scope="scope">
-              {{ scope.row.gameCount }}/ {{ scope.row.gameCount + scope.row.workCount}}
+              {{ scope.row.gameCount }}/ {{ scope.row.gameCount + scope.row.workCount }}
             </template>
           </el-table-column>
           <el-table-column
@@ -112,7 +112,7 @@
           >
             <template slot-scope="scope">
               <span v-if="scope.row.loserCount > 0" style="color:red">
-                {{ scope.row.loserCount}}
+                {{ scope.row.loserCount }}
               </span>
             </template>
           </el-table-column>
@@ -121,9 +121,9 @@
             width="100"
           >
             <template slot-scope="scope">
-               <span v-if="scope.row.coldCount > 0">
-              {{ scope.row.coldCount }}
-               </span>
+              <span v-if="scope.row.coldCount > 0">
+                {{ scope.row.coldCount }}
+              </span>
             </template>
           </el-table-column>
         </el-table>
@@ -147,11 +147,11 @@
           sortable="custom"
           width="90"
         />
-<!--        <el-table-column-->
-<!--          prop="nick"-->
-<!--          label="昵称"-->
-<!--          width="120"-->
-<!--        />-->
+        <!--        <el-table-column-->
+        <!--          prop="nick"-->
+        <!--          label="昵称"-->
+        <!--          width="120"-->
+        <!--        />-->
         <el-table-column
           prop="account"
           label="账号标识"
@@ -221,13 +221,8 @@
           label="等级"
           width="80"
         >
-          <template slot-scope="scope">
-            <span v-if="scope.row.level==5" style="color:green">
-              需要赢
-            </span>
-            <span v-else style="color:red">
-              陪玩
-            </span>
+          <template slot-scope="scopeInfo">
+            <p v-html="getLevelName(scopeInfo.row.level)" />
           </template>
         </el-table-column>
 
@@ -267,7 +262,8 @@
           prop="lastLogin"
           label="更新时间"
           sortable="custom"
-          width="150">
+          width="150"
+        >
           <template slot-scope="scope">
             <span v-if="(scope.row.status===2 || scope.row.currentTid ===0) && scope.row.lastLogin * 1000 < timeYesterday" style="color:red">
               {{ formatTime(scope.row.lastLogin) }}
@@ -409,14 +405,17 @@
     <el-dialog title="机器人数据图表" :visible.sync="chartDialog.visible" width="80%" @close="closeChartDialog">
       <el-form :model="chartDialog.form" label-width="100px" style="margin-bottom: 20px;">
         <el-form-item label="场次:">
-          <el-select v-model="chartDialog.form.tableMoney" placeholder="请选择场次" style="width: 100%;">
-            <el-option
+          <el-row>
+            <el-button
               v-for="item in tableMoneyOptions"
               :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
+              size="mini"
+              :type="chartDialog.form.tableMoney === item.value ? 'primary' : 'default'"
+              @click="selectTableMoney(item.value)"      style="margin-right: 10px; margin-bottom: 10px;"
+            >
+              {{ item.label }}
+            </el-button>
+          </el-row>
         </el-form-item>
         <el-form-item label="时间范围:">
           <el-date-picker
@@ -425,15 +424,16 @@
             range-separator="至"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            value-format="timestamp"            style="width: 100%;">
-          </el-date-picker>
+            value-format="timestamp"
+            style="width: 100%;"
+          />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="getRobotList">查询</el-button>
         </el-form-item>
       </el-form>
       <el-row>
-        <line-chart :chart-data="chartData" :max="maxy"  height="600px" />
+        <line-chart :chart-data="chartData" :max="maxy" height="600px" />
       </el-row>
     </el-dialog>
 
@@ -617,6 +617,10 @@ export default {
       }
       return params
     },
+    selectTableMoney(tableMoney) {
+      this.chartDialog.form.tableMoney = tableMoney;
+      this.getRobotList(); // 直接触发查询
+    },
     getRobotList() {
       const params = this.getRequestParams()
       request({
@@ -628,7 +632,7 @@ export default {
           // this.pagination.total = 0
           const {
             list,
-            max,
+            max
           } = response.Data
           // console.log('表格数据', list)
           // console.log('折线图数据', max)
@@ -738,7 +742,7 @@ export default {
           for (let i = 0; i < objs.length; i++) {
             const item = objs[i]
             if (statMap[item.allowTableMoney] == null) {
-              statMap[item.allowTableMoney] = { tableMoney: item.allowTableMoney, initMoney: 0, money: 0, gameCount: 0, workCount: 0, coldCount: 0, loserCount:0 }
+              statMap[item.allowTableMoney] = { tableMoney: item.allowTableMoney, initMoney: 0, money: 0, gameCount: 0, workCount: 0, coldCount: 0, loserCount: 0 }
             }
             if (item.status == 0) {
               statMap[item.allowTableMoney].coldCount++
@@ -756,7 +760,7 @@ export default {
               statMap[item.allowTableMoney].loserCount++
             }
           }
-          this.statItems=[]
+          this.statItems = []
           for (const o in statMap) {
             this.statItems.push(statMap[o])
           }
@@ -905,12 +909,22 @@ export default {
         }
       })
     },
-    getLevelName(money ,initMoney) {
-      let per = money *100/initMoney
-      if (per >= 90) {
-        return '陪玩'
-      } else {
-        return '需要赢'
+    getLevelName(level) {
+      switch (level) {
+        case 1:
+          return '<span style="color: green">强放</span>'
+        case 2:
+          return '<span style="color: green">弱放</span>'
+        case 3:
+          return '<span>陪玩</span>'
+        case 4:
+          return '<span style="color: red">弱杀</span>'
+        case 5:
+          return '<span style="color: red">强杀</span>'
+        case 6:
+          return '<span style="color: red">破产保护</span>'
+        default:
+          return '<span>未知</span>'
       }
     },
     createSave(postData) {

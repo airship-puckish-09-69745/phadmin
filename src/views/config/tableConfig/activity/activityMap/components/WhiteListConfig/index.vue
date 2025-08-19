@@ -20,15 +20,7 @@
       </el-col>
       <el-col>
         <el-form-item label="SiteId白名单：">
-          <el-select
-            v-model="formData.SiteIdList"
-            placeholder="请选择"
-            style="width: 400px"
-            multiple
-            @change="onSiteIdOptionsChange"
-          >
-            <el-option v-for="item in siteIdOptions" :key="item.value" :label="item.label" :value="item.value" />
-          </el-select>
+          <SiteSelect v-model="formData.SiteIdList" multiple placeholder="请选择" style="width: 400px" />
         </el-form-item>
       </el-col>
       <el-col>
@@ -40,8 +32,13 @@
 
 <script>
 import { DataRule } from '@/utils/common'
+import SiteSelect from '@/components/SiteSelect/index.vue'
+
 export default {
   name: 'WhiteListConfig',
+  components: {
+    SiteSelect
+  },
   props: {
     config: {
       type: Object,
@@ -76,14 +73,6 @@ export default {
           label: '正式1000005'
         }
       ],
-      siteIdOptions: [
-        { value: 'BP', label: 'BP' },
-        { value: 'AP', label: 'AP' },
-        { value: 'GP', label: 'GP' },
-        { value: 'TP', label: 'TP' },
-        { value: 'PG', label: 'PG' },
-        { value: 'Dev', label: 'Dev' }
-      ]
     }
   },
   watch: {

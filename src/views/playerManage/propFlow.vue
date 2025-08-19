@@ -47,47 +47,45 @@
     <!-- 数据表格 -->
     <el-row>
       <el-table :data="tableData" border stripe style="width: 100%">
-        <el-table-column prop="uid" label="UID" width="100" />
-        <el-table-column prop="appId" label="应用" width="100">
+        <!-- 移除原来的 expand 列 -->
+
+        <el-table-column prop="upTime" label="更新时间" width="160">
           <template slot-scope="scope">
-            {{ getAppName(scope.row.appId) }}
+            {{ formatTime(scope.row.upTime) }}
           </template>
         </el-table-column>
-        <el-table-column prop="siteId" label="站点ID" width="80" />
         <el-table-column prop="propId" label="道具ID" width="80" />
-        <!-- 道具类型转换成对应文字 -->
         <el-table-column prop="propType" label="道具类型" width="160">
           <template slot-scope="scope">
             {{ getItemTypeText(scope.row.propType) }}
           </template>
         </el-table-column>
         <el-table-column prop="propName" label="道具名称" width="180" />
-        <!-- 道具数量如果是-1就是无限 -->
-        <el-table-column prop="propNum" label="道具数量" width="80">
+        <el-table-column prop="propNum" label="数量" width="80">
           <template slot-scope="scope">
-            {{ scope.row.propNum === -1 && !scope.row.propName.includes('门票') && !scope.row.propName.includes('Ticket') && !scope.row.propName.includes('TICKET')? '永久' : scope.row.propNum }}
+            {{ scope.row.propNum === -1 && scope.row.propName.includes('头像框')? '永久' : scope.row.propNum }}
           </template>
         </el-table-column>
-        <el-table-column prop="propCost" label="道具价值" width="80" />
-        <el-table-column prop="channelType" label="变化类型" width="160">
-          <template slot-scope="scope">
-            {{ getOptionTypeText(scope.row.channelType) }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="gid" label="玩法ID" width="80" />
-        <el-table-column prop="upTime" label="更新时间" width="160">
-          <template slot-scope="scope">
-            {{ formatTime(scope.row.upTime) }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="ListId" label="比赛列表ID" width="120" />
         <el-table-column prop="preNum" label="变化前" width="80" />
         <el-table-column prop="afterNum" label="变化后" width="80" />
-        <el-table-column prop="matchName" label="比赛名称" width="80" />
-        <el-table-column prop="handlers" label="后台操作者" width="160" />
-        <el-table-column prop="remarks" label="备注" width="180" />
+        <el-table-column prop="recordId" label="唯一Id" width="80" />
+        <el-table-column label="详情" width="80">
+          <template slot-scope="scope">
+            <el-button type="text" size="small" @click="showDetail(scope.row)">查看详情</el-button>
+          </template>
+        </el-table-column>
       </el-table>
     </el-row>
+
+    <el-dialog title="详细信息" :visible.sync="detailDialogVisible" width="600px">
+      <el-table :data="detailTableData" style="width: 100%" size="small">
+        <el-table-column prop="label" label="栏位" width="120"></el-table-column>
+        <el-table-column prop="value" label="内容"></el-table-column>
+      </el-table>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="detailDialogVisible = false">关闭</el-button>
+      </span>
+    </el-dialog>
 
     <el-row type="flex" justify="center">
       <div class="block">
@@ -134,6 +132,9 @@ export default {
       itemTypeOptions: ITEM_TYPE_OPTIONS,
       propOptions: [], // 道具下拉框选项
       tableData: [],
+      detailDialogVisible: false, // 添加详情弹窗可见性控制
+      currentRow: {}, // 添加当前行数据存储
+      detailTableData: [],
       pagination: {
         limit: 20,
         total: 0,
@@ -185,6 +186,23 @@ export default {
         this.$message.warning('请先选择道具类型')
         this.searchForm.propName = ''
       }
+    },
+    showDetail(row) {
+      this.currentRow = row;
+      // 构造详情表格数据
+      this.detailTableData = [
+        // { label: '应用', value: this.getAppName(row.appId) },
+        // { label: '站点ID', value: row.siteId },
+        { label: '道具价值', value: row.propCost },
+        { label: '变化类型', value: this.getOptionTypeText(row.channelType) },
+        { label: '玩法ID', value: row.gid },
+        { label: '比赛列表ID', value: row.ListId },
+        { label: '比赛名称', value: row.matchName },
+        { label: '后台操作者', value: row.handlers },
+        { label: '备注', value: row.remarks },
+        { label: '下注额度', value: row.betMoney / 1000 }
+      ];
+      this.detailDialogVisible = true;
     },
     /**
      * 格式化请求参数

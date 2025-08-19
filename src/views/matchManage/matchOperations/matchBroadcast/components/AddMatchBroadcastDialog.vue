@@ -10,7 +10,7 @@
         <el-input v-model="formData.Title" style="width: 360px;" />
       </el-form-item>
       <el-form-item label="AppID" required>
-        <el-select v-model="formData.AppId" placeholder="请选择AppID" style="width: 360px;">
+        <el-select v-model="formData.AppId" placeholder="请选择AppID" :disabled="formData.ID" style="width: 360px;">
           <el-option v-for="option in appIdOptions" :key="option.value" :label="option.label" :value="option.value" />
         </el-select>
       </el-form-item>
@@ -21,6 +21,9 @@
       </el-form-item>
       <el-form-item label="内容" required>
         <el-input v-model="formData.Content" type="textarea" style="width: 360px;" />
+        <template>
+          <button @click="goToExternalSite">预览</button>
+        </template>
       </el-form-item>
       <el-form-item v-if="formData.BroadcastType === 1" label="播报来源" required>
         <el-select v-model="formData.Origin" placeholder="请选择播报来源" style="width: 360px;" multiple>
@@ -169,12 +172,16 @@ export default {
         this.$message.warning('内容不能为空!')
         return false
       }
+      if (this.formData.AppId <= 0) {
+        this.$message.warning('AppId选择错误!')
+        return false
+      }
 
       if (this.formData.BroadcastType === 4) {
         let nCount = this.handleContentLength(this.formData.Content)
         let diffCount = this.formData.Content.length - nCount
-        if (diffCount > 150) {
-          this.$message.warning('内容不能超过150!')
+        if (diffCount > 200) {
+          this.$message.warning('内容不能超过200!')
           return false
         }
       }
@@ -203,32 +210,52 @@ export default {
       }
       // 如果是比赛第一名类型，必须校验有效期不能有交叉
       if (this.formData.BroadcastType === 1) {
-        const matchFirstRankCfgs = this.matchFirstRankCfgs.filter(item => item.ID !== this.formData.ID)
-        const isCross = matchFirstRankCfgs.some(item => {
-          let [start, end] = item.BroadcastTimeRange
-          start *= 1000
-          end *= 1000
-          const [start2, end2] = this.formData.BroadcastTimeRange
-          // console.log(start, start2, end, end2)
-          return (start <= start2 && end >= start2) || (start <= end2 && end >= end2)
-        })
-        if (isCross) {
+        let isUpdate = false
+        for (let i = 0; i < this.matchFirstRankCfgs.length; i++) {
+          if (this.matchFirstRankCfgs[i].ID !== this.formData.ID) {
+            if (this.matchFirstRankCfgs[i].AppId === this.formData.AppId) {
+              let [start, end] = this.matchFirstRankCfgs[i].BroadcastTimeRange
+              start *= 1000
+              end *= 1000
+              const [start2, end2] = this.formData.BroadcastTimeRange
+              if ((start <= start2 && end >= start2) || (start <= end2 && end >= end2)) {
+                isUpdate = true
+                break
+              }
+              if (start <= start2 && end2 <= end) {
+                isUpdate = true
+                break
+              }
+            }
+          }
+        }
+        if (isUpdate) {
           this.$message.warning('比赛第一名类型的有效期冲突!')
           return false
         }
       }
 
       if (this.formData.BroadcastType === 2) {
-        const jpFirstRankCfgs = this.jpFirstRankCfgs.filter(item => item.ID !== this.formData.ID)
-        const isCross = jpFirstRankCfgs.some(item => {
-          let [start, end] = item.BroadcastTimeRange
-          start *= 1000
-          end *= 1000
-          const [start2, end2] = this.formData.BroadcastTimeRange
-          //console.log(start, start2, end, end2)
-          return (start <= start2 && end >= start2) || (start <= end2 && end >= end2)
-        })
-        if (isCross) {
+        let isUpdate = false
+        for (let i = 0; i < this.jpFirstRankCfgs.length; i++) {
+          if (this.jpFirstRankCfgs[i].ID !== this.formData.ID) {
+            if (this.jpFirstRankCfgs[i].AppId === this.formData.AppId) {
+              let [start, end] = this.jpFirstRankCfgs[i].BroadcastTimeRange
+              start *= 1000
+              end *= 1000
+              const [start2, end2] = this.formData.BroadcastTimeRange
+              if ((start <= start2 && end >= start2) || (start <= end2 && end >= end2)) {
+                isUpdate = true
+                break
+              }
+              if (start <= start2 && end2 <= end) {
+                isUpdate = true
+                break
+              }
+            }
+          }
+        }
+        if (isUpdate) {
           this.$message.warning('jp类型的有效期冲突!')
           return false
         }
@@ -241,7 +268,7 @@ export default {
       }
 
       const data = { ...this.formData }
-      data.AppId = this.appId
+      data.AppId = this.formData.AppId
       data.Operator = store.getters.name
       data.BroadcastTimeRange = data.BroadcastTimeRange.map(item => parseInt(item / 1000))
       if (!data.ID) {
@@ -249,8 +276,8 @@ export default {
         data.CreateTime = parseInt(Date.now() / 1000)
       } else {
         data.CreateTime = parseInt(data.CreateTime / 1000)
-        data.UpdateTime = parseInt(Date.now() / 1000)
       }
+      data.UpdateTime = parseInt(Date.now() / 1000)
       // 如果不是比赛第一名类型，清空播报来源
       if (data.BroadcastType !== 1) {
         data.Origin = []
@@ -334,6 +361,9 @@ export default {
         totalLength += match.length; // 减去<和>的长度
       });
       return totalLength;
+    },
+    goToExternalSite() {
+      window.open('http://192.168.8.2:4000/', '_blank');
     }
   }
 }

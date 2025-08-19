@@ -306,12 +306,24 @@ export default {
         }else if (userType == 2) {
           return '真人-黑子'
         }
-      } else if (robotLevel == 4) {
-        return '机器人--陪玩'
-      } else if (robotLevel == 5) {
-        return '机器人--要赢'
+      } else {
+        switch (robotLevel) {
+          case 1:
+            return '机器人-强放'
+          case 2:
+            return '机器人-弱放'
+          case 3:
+            return '机器人-陪玩'
+          case 4:
+            return '机器人-弱杀'
+          case 5:
+            return '机器人-强杀'
+          case 6:
+            return '机器人-破产保护'
+          default:
+            return '机器人-未知'
+        }
       }
-      return '机器人'
     }
 
   }

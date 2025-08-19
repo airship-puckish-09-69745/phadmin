@@ -22,6 +22,17 @@ export const broadcastTypeOptions = [
     condition: '自定义循环展示频率'
   }
 ]
+export const app_options_list = [
+  { 'value': -1, 'label': 'all' },
+  { 'value': 1000002, 'label': 'dayusenlin' },
+  { 'value': 1000003, 'label': 'testaccount' },
+  { 'value': 1000004, 'label': 'testkey' },
+  { 'value': 1000005, 'label': 'BingoPlusTongits' },
+  { 'value': 1000006, 'label': 'BingoPlusTest' },
+  { 'value': 1000007, 'label': 'br' },
+  { 'value': 1000008, 'label': 'gli' },
+  { 'value': 1100000, 'label': 'xworld' }
+]
 
 // 獲取播报类型名称
 export function getBroadcastTypeName(value) {

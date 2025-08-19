@@ -366,6 +366,14 @@ export default {
       potTableBlackTickTableMoneys: '', // pot同桌分值到了是否踢人的场次列表
       jokerTableBlackTickTableMoneys: '', // joker同桌分值到了是否踢人的场次列表
       quickTableBlackTickTableMoneys: '', // quick同桌分值到了是否踢人的场次列表
+
+      potTableBlackRadioTableMoneys: '', // 异常局拉黑的场次列表
+      jokerTableBlackRadioTableMoneys: '', // joker异常局拉黑的场次列表
+      quickTableBlackRadioTableMoneys: '', // quick异常局拉黑的场次列表
+
+      potTableAutoBlackTableMoneys: '', // pot自动拉黑的场次列表
+      jokerTableAutoBlackTableMoneys: '', // joker自动拉黑的场次列表
+      quickTableAutoBlackTableMoneys: '', // quick自动拉黑的场次列表
       TableTickLeave: 0, // 组合作弊离桌人数门槛
       JokerDisAndGive: {
         Count: 1,
@@ -389,6 +397,21 @@ export default {
       AutoBlack: [
 
       ],
+      RepairRadio:70,
+      PotTrustRepairType:[],
+      PotTrustRepairTypeOption:[
+        { label: '全部', value: 0 },
+        { label: '拆牌喂牌', value: 1 },
+        { label: '单局多次喂牌', value: 2 },
+        { label: '近5局首出喂牌局数>=3', value: 3 },
+        { label: '皇冠FIGHT', value: 4 },
+        { label: '皇冠FOLD', value: 5 },
+        { label: '打一局不拿pot就离开', value: 6 },
+        { label: '大POT高胜率', value: 7 },
+        { label: '大POT多人离开', value: 8 },
+        { label: '玩超多局数且盈利', value: 9 },
+        { label: '名字相似度过高', value: 10 }
+      ]
     }
   },
 
@@ -464,6 +487,84 @@ export default {
               }
             }
             $this.quickTableBlackTickTableMoneys = quickTableBlackTickTableMoneys.join(',')
+
+            ////////////////////////////
+            const potTableAutoBlackTableMoneys = []
+            if ($this.CheatCfg.potTableAutoBlackTableMoneys !== undefined) {
+              for (let i = 0; i < $this.CheatCfg.potTableAutoBlackTableMoneys.length; i++) {
+                const result = $this.CheatCfg.potTableAutoBlackTableMoneys[i] / 1000
+                const tableMoney = result % 1 === 0 ? result : parseFloat(result.toFixed(1))
+                if (tableMoney <= 0) {
+                  continue
+                }
+                potTableAutoBlackTableMoneys.push(tableMoney)
+              }
+            }
+            $this.potTableAutoBlackTableMoneys = potTableAutoBlackTableMoneys.join(',')
+
+            const jokerTableAutoBlackTableMoneys = []
+            if ($this.CheatCfg.jokerTableAutoBlackTableMoneys !== undefined) {
+              for (let i = 0; i < $this.CheatCfg.jokerTableAutoBlackTableMoneys.length; i++) {
+                const result = $this.CheatCfg.jokerTableAutoBlackTableMoneys[i] / 1000
+                const tableMoney = result % 1 === 0 ? result : parseFloat(result.toFixed(1))
+                if (tableMoney <= 0) {
+                  continue
+                }
+                jokerTableAutoBlackTableMoneys.push(tableMoney)
+              }
+            }
+            $this.jokerTableAutoBlackTableMoneys = jokerTableAutoBlackTableMoneys.join(',')
+            const quickTableAutoBlackTableMoneys = []
+            if ($this.CheatCfg.quickTableAutoBlackTableMoneys !== undefined) {
+              for (let i = 0; i < $this.CheatCfg.quickTableAutoBlackTableMoneys.length; i++) {
+                const result = $this.CheatCfg.quickTableAutoBlackTableMoneys[i] / 1000
+                const tableMoney = result % 1 === 0 ? result : parseFloat(result.toFixed(1))
+                if (tableMoney <= 0) {
+                  continue
+                }
+                quickTableAutoBlackTableMoneys.push(tableMoney)
+              }
+            }
+            $this.quickTableAutoBlackTableMoneys = quickTableAutoBlackTableMoneys.join(',')
+
+            const potTableBlackRadioTableMoneys = []
+            if ($this.CheatCfg.potTableBlackRadioTableMoneys !== undefined) {
+              for (let i = 0; i < $this.CheatCfg.potTableBlackRadioTableMoneys.length; i++) {
+                const result = $this.CheatCfg.potTableBlackRadioTableMoneys[i] / 1000
+                const tableMoney = result % 1 === 0 ? result : parseFloat(result.toFixed(1))
+                if (tableMoney <= 0) {
+                  continue
+                }
+                potTableBlackRadioTableMoneys.push(tableMoney)
+              }
+            }
+            $this.potTableBlackRadioTableMoneys = potTableBlackRadioTableMoneys.join(',')
+
+            const jokerTableBlackRadioTableMoneys = []
+            if ($this.CheatCfg.jokerTableBlackRadioTableMoneys !== undefined) {
+              for (let i = 0; i < $this.CheatCfg.jokerTableBlackRadioTableMoneys.length; i++) {
+                const result = $this.CheatCfg.jokerTableBlackRadioTableMoneys[i] / 1000
+                const tableMoney = result % 1 === 0 ? result : parseFloat(result.toFixed(1))
+                if (tableMoney <= 0) {
+                  continue
+                }
+                jokerTableBlackRadioTableMoneys.push(tableMoney)
+              }
+            }
+            $this.jokerTableBlackRadioTableMoneys = jokerTableBlackRadioTableMoneys.join(',')
+            const quickTableBlackRadioTableMoneys = []
+            if ($this.CheatCfg.quickTableBlackRadioTableMoneys !== undefined) {
+              for (let i = 0; i < $this.CheatCfg.quickTableBlackRadioTableMoneys.length; i++) {
+                const result = $this.CheatCfg.quickTableBlackRadioTableMoneys[i] / 1000
+                const tableMoney = result % 1 === 0 ? result : parseFloat(result.toFixed(1))
+                if (tableMoney <= 0) {
+                  continue
+                }
+                quickTableBlackRadioTableMoneys.push(tableMoney)
+              }
+            }
+            $this.quickTableBlackRadioTableMoneys = quickTableBlackRadioTableMoneys.join(',')
+            ////////////////////////////
 
             $this.nearID = $this.CheatCfg.NearID || $this.nearID
 
@@ -565,6 +666,7 @@ export default {
             this.editJokerAI = this.CheatCfg.JokerAiConfigRow
             this.editQuickAI = this.CheatCfg.QuickAiConfigRow
             this.AutoBlack = this.CheatCfg.AutoBlack || this.AutoBlack
+            this.RepairRadio = $this.CheatCfg.RepairRadio || 70
             const maybeMin = $this.CheatCfg.MaybeMin
             $this.oldCheatMin = maybeMin
             const old = JSON.parse(response.Data.Data)
@@ -581,6 +683,7 @@ export default {
       this.CheatCfg.MaybeReduce = parseInt(this.CheatCfg.MaybeReduce)
       this.CheatCfg.TableBlackScore = parseInt(this.CheatCfg.TableBlackScore)
       this.CheatCfg.TableTickLeave = parseInt(this.TableTickLeave)
+      this.CheatCfg.RepairRadio = parseInt(this.RepairRadio)
       const potItems = this.potTableBlackTickTableMoneys.split(',')
       this.CheatCfg.PotTableBlackTickTableMoneys = []
       for (const o in potItems) {
@@ -596,6 +699,38 @@ export default {
       for (const o in quickItems) {
         this.CheatCfg.QuickTableBlackTickTableMoneys.push(quickItems[o] * 1000)
       }
+      ///////////////////////////
+      const potAutoItems = this.potTableAutoBlackTableMoneys.split(',')
+      this.CheatCfg.potTableAutoBlackTableMoneys = []
+      for (const o in potAutoItems) {
+        this.CheatCfg.potTableAutoBlackTableMoneys.push(potAutoItems[o] * 1000)
+      }
+      const jokerAutoItems = this.jokerTableAutoBlackTableMoneys.split(',')
+      this.CheatCfg.jokerTableAutoBlackTableMoneys = []
+      for (const o in jokerAutoItems) {
+        this.CheatCfg.jokerTableAutoBlackTableMoneys.push(jokerAutoItems[o] * 1000)
+      }
+      const quickAutoItems = this.quickTableAutoBlackTableMoneys.split(',')
+      this.CheatCfg.quickTableAutoBlackTableMoneys = []
+      for (const o in quickAutoItems) {
+        this.CheatCfg.quickTableAutoBlackTableMoneys.push(quickAutoItems[o] * 1000)
+      }
+      const potRadioItems = this.potTableBlackRadioTableMoneys.split(',')
+      this.CheatCfg.potTableBlackRadioTableMoneys = []
+      for (const o in potRadioItems) {
+        this.CheatCfg.potTableBlackRadioTableMoneys.push(potRadioItems[o] * 1000)
+      }
+      const jokerRadioItems = this.jokerTableBlackRadioTableMoneys.split(',')
+      this.CheatCfg.jokerTableBlackRadioTableMoneys = []
+      for (const o in jokerRadioItems) {
+        this.CheatCfg.jokerTableBlackRadioTableMoneys.push(jokerRadioItems[o] * 1000)
+      }
+      const quickRadioItems = this.quickTableBlackRadioTableMoneys.split(',')
+      this.CheatCfg.quickTableBlackRadioTableMoneys = []
+      for (const o in quickRadioItems) {
+        this.CheatCfg.quickTableBlackRadioTableMoneys.push(quickRadioItems[o] * 1000)
+      }
+      //////////////////////////////
       const NearID = []
       for (let i = 0; i < this.nearID.length; i++) {
         const item = this.nearID[i]
@@ -877,6 +1012,7 @@ export default {
             </el-button>
           </el-descriptions-item>
         </el-descriptions>
+        <h3 class="title">拉黑场次相关</h3>
         <el-descriptions :column="1" :colon="false" border>
           <el-descriptions-item label="POT开通同一桌积分拉黑场次" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
             <el-input v-model="potTableBlackTickTableMoneys" size="medium" style="width: 1000px" />
@@ -888,6 +1024,31 @@ export default {
             <el-input v-model="quickTableBlackTickTableMoneys" size="medium" style="width: 1000px" />
           </el-descriptions-item>
 
+          <el-descriptions-item label="POT开通保底自动拉黑场次" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
+            <el-input v-model="potTableAutoBlackTableMoneys" size="medium" style="width: 1000px" />
+          </el-descriptions-item>
+          <el-descriptions-item label="JOKER开通保底自动拉黑场次" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
+            <el-input v-model="jokerTableAutoBlackTableMoneys" size="medium" style="width: 1000px" />
+          </el-descriptions-item>
+          <el-descriptions-item label="QUICK开通保底自动拉黑场次" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
+            <el-input v-model="quickTableAutoBlackTableMoneys" size="medium" style="width: 1000px" />
+          </el-descriptions-item>
+
+          <el-descriptions-item label="POT开通按照异常局拉黑场次" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
+            <el-input v-model="potTableBlackRadioTableMoneys" size="medium" style="width: 1000px" />
+          </el-descriptions-item>
+          <el-descriptions-item label="JOKER开通按照异常局拉黑场次" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
+            <el-input v-model="jokerTableBlackRadioTableMoneys" size="medium" style="width: 1000px" />
+          </el-descriptions-item>
+          <el-descriptions-item label="QUICK开通按照异常局拉黑场次" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
+            <el-input v-model="quickTableBlackRadioTableMoneys" size="medium" style="width: 1000px" />
+          </el-descriptions-item>
+        </el-descriptions>
+        <h3 class="title">信任分修正相关</h3>
+        <el-descriptions :column="2" :colon="false" border>
+          <el-descriptions-item label="Pot修正系数(百分比)" :content-style="{'text-align': 'center','width': '250px'}" :label-style="{'text-align': 'center'}">
+            <el-input v-model.number="RepairRadio" type="number" size="medium" style="width: 120px" />
+          </el-descriptions-item>
         </el-descriptions>
       </el-tab-pane>
       <el-tab-pane label="疑似度配置">

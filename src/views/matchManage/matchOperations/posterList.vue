@@ -11,7 +11,7 @@
             <el-select v-model="form.app_id" placeholder="请选择" size="mini">
               <el-option label="全部" :value="-1" />
               <el-option
-                v-for="item in appidInfoCfgs"
+                v-for="item in APPID_OPTIONS"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -43,7 +43,7 @@
             <el-row>
               <el-form-item label="应用开关：">
                   <el-checkbox-group v-model="posterList.switchData" style="width: 700px">
-                    <el-checkbox v-for="item in appidInfoCfgs" :key="item.value" :label="item.value">{{ item.label }}</el-checkbox>
+                    <el-checkbox v-for="item in APPID_OPTIONS" :key="item.value" :label="item.value">{{ item.label }}</el-checkbox>
                   </el-checkbox-group>
               </el-form-item>
             </el-row>
@@ -146,7 +146,18 @@
           <el-form-item label="AppId：" :required="true">
             <el-select v-model="editForm.data.app_id" placeholder="请选择" size="mini" :disabled="!editForm.isAdd" @change="selectMatchName()">
               <el-option
-                v-for="item in appidInfoCfgs"
+                v-for="item in APPID_OPTIONS"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+
+          <el-form-item label="展示游戏：" :required="true">
+            <el-select v-model="editForm.data.display_gids" placeholder="请选择" size="mini" multiple>
+              <el-option
+                v-for="item in displayGidsCfg"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -156,6 +167,17 @@
 
           <el-form-item label="配置开关：" :required="true" prop="switch">
             <el-switch v-model="editForm.data.switch" :active-value="true" :inactive-value="false" />
+          </el-form-item>
+
+          <el-form-item label="展示位置：" :required="true">
+            <el-select v-model="editForm.data.display_place" placeholder="请选择" size="mini" >
+              <el-option
+                v-for="item in displayPlaceCfg"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
           </el-form-item>
 
           <el-form-item label="排序" :required="true" >
@@ -244,6 +266,12 @@
             <el-switch v-model="editForm.data.first_jump" :active-value="true" :inactive-value="false" />
           </el-form-item>
 
+          <el-form-item label="站点选择：">
+            <el-checkbox-group v-model="editForm.data.channelId" style="width: 700px">
+              <el-checkbox v-for="item in CHANNEL_OPTIONS" :key="item.value" :label="item.value">{{ item.label }}</el-checkbox>
+            </el-checkbox-group>
+          </el-form-item>
+
         </fieldset>
         <el-form-item>
           <el-button size="medium" type="primary" icon="el-icon-s-order" @click="savePosetCfg()">保存海报配置</el-button>
@@ -264,6 +292,7 @@ import { $libDate, $libShow } from '@/utils/common'
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
 import Compare from '@/components/Compare'
 import { getAllCommonGameConfig } from '@/utils/common-game-config'
+import {APPID_OPTIONS, CHANNEL_OPTIONS, MATCH_UNIQUE_ID_CFG} from "@/utils/options";
 
 export default {
   components: { Compare, Publish, DateTimeShow, ImagePicker },
@@ -297,7 +326,10 @@ export default {
           id: 0,
           title: '',
           app_id: 1000002,
-          switch: 'true'
+          switch: 'true',
+          display_gids:[], //展示游戏
+          display_place:0, //展示位置
+          channelId: []  //站点
         }
       },
       AttrNames: {
@@ -305,14 +337,13 @@ export default {
       gameCfgs: [
         { 'value': 2031, 'label': 'tongits' }
       ],
-      appidInfoCfgs: [
-        { 'value': 1000002, 'label': 'dayusenlin' },
-        { 'value': 1000003, 'label': 'testaccount' },
-        { 'value': 1000004, 'label': 'testkey' },
-        { 'value': 1000005, 'label': 'BingoPlusTongits' },
-        { 'value': 1000006, 'label': 'BingoPlusTest' },
-        { 'value': 1000007, 'label': 'br' },
-        { 'value': 1100000, 'label': 'xworld' }
+      displayGidsCfg:[
+        { 'value': 2031, 'label': 'tongits' },
+        { 'value': 2033, 'label': 'pusoy' },
+      ],
+      displayPlaceCfg:[
+        {'value':0,'label':'home页面'},
+        {'value':1,'label':'免费赛页面'},
       ],
       postJumpCfgs: [
         { 'value': 1, 'label': '打开海报详情' },
@@ -323,7 +354,7 @@ export default {
       jumpTypeCfgs: [
         { 'value': 1, 'label': 'Events' },
         { 'value': 2, 'label': 'Free' },
-        { 'value': 3, 'label': 'Master' },
+        { 'value': 3, 'label': 'PRO ARENA ' },
         { 'value': 4, 'label': 'GTCC' },
       ],
       statusCfgs: [
@@ -331,27 +362,10 @@ export default {
         { "value": 1, "label": "开启" },
       ],
 
-      channelIdCfgs: [
-        { 'value': 'BP', 'label': 'BP' },
-        { 'value': 'AP', 'label': 'AP' },
-        { 'value': 'GP', 'label': 'GP' },
-        { 'value': 'TP', 'label': 'TP' },
-        { 'value': 'PG', 'label': 'PG' },
-        { 'value': 'Dev', 'label': 'Dev' }
-      ],
-      //比赛全局ID集合
-      matchUniqueIdCfgs: [
-        { 'value': 10001, 'label': '188Free' },
-        { 'value': 10002, 'label': '12888Free' },
-        { 'value': 10003, 'label': 'P10' },
-        { 'value': 10004, 'label': 'P20' },
-        { 'value': 10005, 'label': 'P40' },
-        { 'value': 10006, 'label': 'P100' },
-        { 'value': 10007, 'label': 'P300' },
-        { 'value': 10008, 'label': 'GTCC 2005' }
-      ],
-
-      subKey: 'match_poster_list'
+      subKey: 'match_poster_list',
+      APPID_OPTIONS,
+      MATCH_UNIQUE_ID_CFG,
+      CHANNEL_OPTIONS
     }
   },
   computed: {
@@ -564,9 +578,9 @@ export default {
 
     getAppName(id) {
       var appName = ""
-      for (var i = 0; i < this.appidInfoCfgs.length; i++) {
-        if (this.appidInfoCfgs[i].value == id) {
-          appName = this.appidInfoCfgs[i].label
+      for (var i = 0; i < this.APPID_OPTIONS.length; i++) {
+        if (this.APPID_OPTIONS[i].value == id) {
+          appName = this.APPID_OPTIONS[i].label
           break
         }
       }
@@ -601,6 +615,9 @@ export default {
           end_time: 0,
           sort_id: 0,
           game_id: 0,
+          display_gids:[], //展示游戏
+          display_place:0, //展示位置
+          channelId:[],
         }
         this.editForm.isAdd = true
         this.selectMatchName()
@@ -615,6 +632,9 @@ export default {
           }
         }
         this.editForm.onceTime = [new Date(editData.start_time * 1000), new Date(editData.end_time * 1000)]
+        if (editData.channelId === undefined){
+          editData.channelId = []
+        }
         this.editForm.data = editData
         this.selectMatchName()
         let find = false
@@ -656,7 +676,13 @@ export default {
             this.posterList.tableData[i].match_cfg_id = this.editForm.data.match_cfg_id
             this.posterList.tableData[i].start_time = bTime
             this.posterList.tableData[i].end_time = eTime
-
+            if (this.editForm.data.display_gids !== undefined){
+              this.posterList.tableData[i].display_gids = this.editForm.data.display_gids
+            }
+            if(this.editForm.data.display_place !== undefined){
+              this.posterList.tableData[i].display_place = this.editForm.data.display_place
+            }
+            this.posterList.tableData[i].channelId = this.editForm.data.channelId
           }
         }
       } else {
@@ -674,7 +700,10 @@ export default {
             'first_jump': this.editForm.data.first_jump,
             'match_cfg_id': this.editForm.data.match_cfg_id,
             'start_time': bTime,
-            'end_time': eTime
+            'end_time': eTime,
+            'display_gids':this.editForm.data.display_gids,
+            'display_place':this.editForm.data.display_place,
+            'channelId': this.editForm.data.channelId,
           }
         )
       }
@@ -765,9 +794,9 @@ export default {
     },
     getMatchName(id) {
       var jumpName = ''
-      for (var i = 0; i < this.matchUniqueIdCfgs.length; i++) {
-        if (this.matchUniqueIdCfgs[i].value == id) {
-          jumpName = this.matchUniqueIdCfgs[i].label
+      for (var i = 0; i < this.MATCH_UNIQUE_ID_CFG.length; i++) {
+        if(this.MATCH_UNIQUE_ID_CFG[i].value === id) {
+          jumpName = this.MATCH_UNIQUE_ID_CFG[i].label
         }
       }
       return jumpName

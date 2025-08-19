@@ -643,16 +643,10 @@ export const asyncRoutes = [
             meta: { title: '排队入桌配置 ◐' }
           },
           {
-            path: 'trustScore',
-            component: () => import('@/views/config/tableConfig/trustScore.vue'),
-            name: 'trustScore',
-            meta: { title: '信任分配置 ◐' }
-          },
-          {
             path: 'trustScoreNew',
             component: () => import('@/views/config/tableConfig/trustScoreNew.vue'),
             name: 'trustScoreNew',
-            meta: { title: '信任分配置(新版) ◐' }
+            meta: { title: '信任分配置 ◐' }
           }
         ]
       },
@@ -931,17 +925,15 @@ export const asyncRoutes = [
             children: [
               {
                 path: 'trucoTable',
-                component: () => import('@/views/empty'),
-                redirect: 'noRedirect',
-                meta: { title: 'Truco配桌 ◐', noCache: true },
-                children: [
-                  {
-                    path: 'trucoTable',
-                    component: () => import('@/views/config/tableConfig/trucoTable'),
-                    name: 'trucoTable',
-                    meta: { title: 'Truco配桌 ◐' }
-                  }
-                ]
+                component: () => import('@/views/config/tableConfig/trucoTable'),
+                name: 'trucoTable',
+                meta: { title: 'Truco配桌 ◐' }
+              },
+              {
+                path: 'trucoAIConfig',
+                component: () => import('@/views/config/tableConfig/trucoAIConfig'),
+                name: 'trucoAIConfig',
+                meta: { title: 'Truco AI配置 ◐' }
               }
             ]
           },
@@ -960,13 +952,47 @@ export const asyncRoutes = [
                   {
                     path: 'buracoTable',
                     component: () => import('@/views/config/tableConfig/buracoTable'),
-                    name: 'buraTable',
+                    name: 'buracoTable',
                     meta: { title: 'Buraco配桌 ◐' }
+                  }
+                ]
+              },
+              {
+                path: 'BuracoOneOnOneTable',
+                component: () => import('@/views/empty'),
+                redirect: 'noRedirect',
+                meta: { title: 'BuracoOne配桌 ◐', noCache: true },
+                children: [
+                  {
+                    path: 'buracoOneOnOneTable',
+                    component: () => import('@/views/config/tableConfig/buracoOneOnOneTable'),
+                    name: 'buracoOneOnOneTable',
+                    meta: { title: 'BuracoOneOnOne配桌 ◐' }
                   }
                 ]
               }
             ]
-          }
+          },
+          {
+            path: 'PusoyJPCfg',
+            component: () => import('@/views/empty'),
+            redirect: 'noRedirect',
+            meta: { title: 'PusoyJP', noCache: true },
+            children: [
+              {
+                path: 'pusoyJPTable',
+                component: () => import('@/views/config/tableConfig/pusoyJPTable'),
+                name: 'pusoyJPTable',
+                meta: { title: '场次 ◐' }
+              },
+              {
+                path: 'pusoyJackpotCfg',
+                component: () => import('@/views/config/tableConfig/pusoyJPCfg'),
+                name: 'pusoyJackpotCfg',
+                meta: { title: 'Jackpot配置' }
+              }
+            ]
+          },
         ]
       },
       {
@@ -1726,6 +1752,12 @@ export const asyncRoutes = [
             meta: { title: '老虎机大奖配置' }
           },
           {
+            path: 'user_pool_cfg',
+            component: () => import('@/views/config/tableConfig/slots/userPool/UserPoolPage.vue'),
+            name: 'user_pool_cfg',
+            meta: { title: '个人奖池配置' }
+          },
+          {
             path: 'slots_act_configs_v2',
             component: () => import('@/views/config/tableConfig/slots/slotsActConfigV2'),
             name: 'slots_act_configs_v2',
@@ -2090,6 +2122,18 @@ export const asyncRoutes = [
         meta: { title: '金币流水 ◐' }
       },
       {
+        path: 'payWithdrawLog',
+        component: () => import('@/views/playerManage/payWithdrawLog'),
+        name: 'PayWithdrawLog',
+        meta: { title: '充提流水 ◐', noCache: false, perm: 'PAY_WITHDRAW_LOG' }
+      },
+      {
+        path: 'payWithdrawTop',
+        component: () => import('@/views/playerManage/payWithdrawTop'),
+        name: 'PayWithdrawTop',
+        meta: { title: '充提榜单 ◐', noCache: false, perm: 'PAY_WITHDRAW_LOG' }
+      },
+      {
         path: 'jackpotLog',
         component: () => import('@/views/playerManage/jackpotLog'),
         name: 'ban',
@@ -2146,22 +2190,64 @@ export const asyncRoutes = [
     meta: { title: '比赛管理', icon: 'example', perm: 'CFG_MANAGEMENT_GTCC' },
     children: [
       {
-        path: 'matchConfig',
-        component: () => import('@/views/matchManage/matchConfig'),
-        name: 'matchConfig',
-        meta: { title: '赛事管理', noCache: true }
+        path: 'matchType',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: '赛事管理', noCache: true },
+        children: [
+          {
+            path: 'matchTongitsConfig',
+            component: () => import('@/views/matchManage/matchConfigs/matchTongitsConfig'),
+            name: 'matchTongitsConfig',
+            meta: { title: 'Tongits赛事', noCache: true }
+          },
+          {
+            path: 'matchPusoyConfig',
+            component: () => import('@/views/matchManage/matchConfigs/matchPusoyConfig'),
+            name: 'matchPusoyConfig',
+            meta: { title: 'Pusoy赛事', noCache: true }
+          }
+        ]
       },
       {
         path: 'matchRule',
-        component: () => import('@/views/matchManage/matchRule'),
+        component: () => import('@/views/empty'),
         name: 'matchRule',
-        meta: { title: '赛制管理', noCache: true }
+        meta: { title: '赛制管理', noCache: true },
+        children: [
+          {
+            path: 'matchRuleTongits',
+            component: () => import('@/views/matchManage/matchRule/matchRuleTongits'),
+            name: 'matchRuleTongits',
+            meta: { title: 'Tongits赛制管理', noCache: true }
+          },
+          {
+            path: 'matchRulePusoy',
+            component: () => import('@/views/matchManage/matchRule/matchRulePusoy'),
+            name: 'matchRulePusoy',
+            meta: { title: 'Pusoy赛制管理', noCache: true }
+          }
+        ]
       },
       {
         path: 'matchMonitor',
-        component: () => import('@/views/matchManage/matchMonitor'),
+        component: () => import('@/views/empty'),
         name: 'matchMonitor',
-        meta: { title: '赛事监控', noCache: true }
+        meta: { title: '赛事监控', noCache: true },
+        children: [
+          {
+            path: 'matchRuleTongits',
+            component: () => import('@/views/matchManage/matchMonitor/matchTongitsMonitor'),
+            name: 'matchRuleTongits',
+            meta: { title: 'Tongits赛事监控', noCache: true }
+          },
+          {
+            path: 'matchPusoyMonitor',
+            component: () => import('@/views/matchManage/matchMonitor/matchPusoyMonitor'),
+            name: 'matchPusoyMonitor',
+            meta: { title: 'Pusoy赛事监控', noCache: true }
+          }
+        ]
       },
       {
         path: 'matchLimitWhite',
@@ -2175,14 +2261,6 @@ export const asyncRoutes = [
         hidden: !IsMars(),
         name: 'matchWatcherList',
         meta: { title: '主播名单', noCache: true, hidden: true }
-
-      },
-      {
-        path: 'obMatchRecordConfig',
-        component: () => import('@/views/matchManage/obMatchRecord.vue'),
-        hidden: !IsMars(),
-        name: 'obMatchRecordConfig',
-        meta: { title: '赛事记录', noCache: true, hidden: true }
 
       },
       {
@@ -2207,7 +2285,7 @@ export const asyncRoutes = [
             path: 'matchHomePosterList',
             component: () => import('@/views/matchManage/matchOperations/homePosterList.vue'),
             name: 'matchHomePosterList',
-            meta: { title: 'home海报', noCache: true }
+            meta: { title: 'home小海报', noCache: true }
           },
           {
             path: 'matchGuideList',
@@ -2288,7 +2366,36 @@ export const asyncRoutes = [
 
           }
         ]
-      }
+      },
+      {
+        path: 'obMatchConfig',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: 'OB比赛管理', noCache: true },
+        children: [
+          {
+            path: 'obMatchRecordConfig',
+            component: () => import('@/views/matchManage/obMatchManage/obMatchRecord.vue'),
+            hidden: !IsMars(),
+            name: 'obMatchRecordConfig',
+            meta: { title: '赛事记录', noCache: true, hidden: true }
+          },
+          {
+            path: 'modifyUserInfo',
+            component: () => import('@/views/matchManage/obMatchManage/modifyUserInfo.vue'),
+            hidden: !IsMars(),
+            name: 'modifyUserInfo',
+            meta: { title: '批量修改昵称头像', noCache: true }
+          },
+          {
+            path: 'imageUpload',
+            component: () => import('@/views/matchManage/obMatchManage/imageZipFileUpload.vue'),
+            hidden: !IsMars(),
+            name: 'imageUpload',
+            meta: { title: '头像资源上传', noCache: true, hidden: true }
+          }
+        ]
+      },
     ]
   },
   {
@@ -2345,13 +2452,13 @@ export const asyncRoutes = [
 
           {
             path: 'playlog_pusoy',
-            component: () => import('@/views/playerManage/playlog'),
+            component: () => import('@/views/playerManage/pusoyPlaylog'),
             name: 'playlog_pusoy',
             meta: { title: 'Pusoy - ◐', gid: 21 }
           },
           {
             path: 'playlog_pusoyWild',
-            component: () => import('@/views/playerManage/playlog'),
+            component: () => import('@/views/playerManage/pusoyPlaylog'),
             name: 'playlog_pusoyWild',
             meta: { title: 'PusoyWild ◐', gid: 126 }
           },
@@ -2549,6 +2656,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_Buraco',
             meta: { title: 'B uraco ◐', gid: 12 }
+          },
+          {
+            path: 'playlog_BuracoOneOnOne',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_BuracoOneOnOne',
+            meta: { title: 'B uracoOneOnOne ◐', gid: 133 }
           }
         ]
       },
@@ -2859,6 +2972,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'goldtrain_slots_log',
             meta: { title: 'G oldTrain', gid: 194 }
+          },
+          {
+            path: 'goldendragon_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'goldendragon_slots_log',
+            meta: { title: 'G oldenDragon', gid: 220 }
           },
           {
             path: 'luckyspirits_slots_log',
@@ -3262,12 +3381,6 @@ export const asyncRoutes = [
             meta: { title: 'StreetFighting(审)', gid: 189 }
           },
           {
-            path: 'goldendragonmars_slots_log',
-            component: () => import('@/views/playerManage/slotsLog'),
-            name: 'goldendragonmars_slots_log',
-            meta: { title: 'GoldenDragon(审)', gid: 221 }
-          },
-          {
             path: 'goldtrainmars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'goldtrainmars_slots_log',
@@ -3427,6 +3540,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatStat.vue'),
             name: 'tongitsCheatStat',
             meta: { title: '用户身份统计 ◐' }
+          },
+          {
+            path: 'tongitsCheatCurve',
+            component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatCurve.vue'),
+            name: 'tongitsCheatCurve',
+            meta: { title: '疑似度分布 ◐' }
           }
         ]
       },
@@ -3824,6 +3943,12 @@ export const asyncRoutes = [
             component: () => import('@/views/devTools/testKyc'),
             name: 'testKyc',
             meta: { title: 'KYC工具', perm: 'CFG_MANAGEMENT' }
+          },
+          {
+            path: 'testTools',
+            component: () => import('@/views/devTools/testTools'),
+            name: 'testTools',
+            meta: { title: '用户身份测试工具', perm: 'CFG_MANAGEMENT' }
           }
         ]
       },

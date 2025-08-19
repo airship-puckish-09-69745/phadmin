@@ -79,6 +79,21 @@
           </template>
         </el-table-column>
         <el-table-column
+          prop="low_risk_cnt"
+          label="现存低危用户"
+          width="120"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="login_low_risk_cnt"
+          label="今日游戏低危用户"
+          width="150"
+        >
+          <template slot-scope="scope">
+            <span v-html="getPercent('login_low_risk_cnt',scope.row,scope.row.last)"></span>
+          </template>
+        </el-table-column>
+        <el-table-column
           prop="suspect_cnt"
           label="现存疑似用户"
           width="120"
@@ -206,7 +221,7 @@ export default {
       if (row === undefined) {
         return 0
       }
-      return row.login_black_cnt + row.login_low_score_cnt + row.login_high_score_cnt + row.login_suspect_cnt
+      return row.login_black_cnt + row.login_low_score_cnt + row.login_high_score_cnt + row.login_suspect_cnt + row.login_low_risk_cnt
     },
     getPercent(key,cur,last) {
       const sum1 = this.getSum(cur)

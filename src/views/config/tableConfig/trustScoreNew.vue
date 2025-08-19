@@ -16,6 +16,11 @@
               <template slot="prepend">低信线配置</template>
             </el-input>
             </el-col>
+            <el-col :span="8">
+              <el-input placeholder="请输入内容" v-model.number="item.game_cfg[22].clear" style="margin-top:10px">
+                <template slot="prepend">清空信任分线配置</template>
+              </el-input>
+            </el-col>
           </fieldset>
           <fieldset style="margin-top:10px">
             <legend>Pusoy类授信线配置</legend>
@@ -77,7 +82,7 @@ export default {
         22: 0,
         game_cfg: {
           21: {high:0, low:0},
-          22: {high:0, low:0},
+          22: {high:0, low:0, clear:0},
           126: {high:0, low:0}
         }
       },
@@ -126,10 +131,10 @@ export default {
     setData() {
       if (!ValidateVueItem(this.$refs['item'])) return false
       console.log(this.env)
-      if (this.env === 'pro') {
-        Message.error('请使用旧版')
-        return
-      }
+      // if (this.env === 'pro') {
+      //   Message.error('请使用旧版')
+      //   return
+      // }
       this.form.Data = JSON.stringify(this.item)
       const $this = this
       // 设置修改后数据

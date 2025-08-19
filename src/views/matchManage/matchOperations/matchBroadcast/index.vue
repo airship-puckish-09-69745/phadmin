@@ -8,7 +8,7 @@
       <div class="search-filter-item">
         appid: <el-select v-model="searchFilter.app_id" placeholder="请选择应用id" size="mini" @change="onSearch">
           <el-option
-            v-for="item in APPID_OPTIONS"
+            v-for="item in app_options_list"
             :key="item.value"
             :label="item.label"
             :value="item.value"
@@ -97,7 +97,7 @@ import Publish from '@/components/Publish/index.vue'
 import request from '@/utils/request'
 import { parseTime } from '@/utils'
 import { APPID_OPTIONS, CHANNEL_OPTIONS } from '@/utils/options'
-import { broadcastTypeOptions, positionOptions, getBroadcastTypeName } from './options'
+import {broadcastTypeOptions, positionOptions, getBroadcastTypeName, app_options_list} from './options'
 import AddMatchBroadcastDialog from './components/AddMatchBroadcastDialog.vue'
 import { $libShow } from '@/utils/common'
 
@@ -115,10 +115,11 @@ export default {
       configData: {},
       FilterableBroadcastList: [], // 通过appId过滤之后展示到列表
       broadcastTypeOptions,
+      app_options_list,
       APPID_OPTIONS,
       CHANNEL_OPTIONS,
       searchFilter: {
-        app_id: 1000002
+        app_id: -1
       },
       tableData: [],
       positionOptions,
@@ -137,6 +138,14 @@ export default {
         {
           prop: 'Title',
           label: '标题'
+        },
+        {
+          prop: 'AppId',
+          label: 'AppID',
+          width: 100,
+          formatter: (row) => {
+            return this.getAppIdTypeName(row.AppId)
+          }
         },
         {
           prop: 'Channel',
@@ -308,7 +317,11 @@ export default {
           this.FilterableBroadcastList = []
         } else {
           // 通过应用id进行筛选
-          this.FilterableBroadcastList = Data.BroadcastList.filter(item => item.AppId === this.searchFilter.app_id)
+          if (this.searchFilter.app_id > 0) {
+            this.FilterableBroadcastList = Data.BroadcastList.filter(item => item.AppId === this.searchFilter.app_id)
+          } else if (this.searchFilter.app_id === -1) {
+            this.FilterableBroadcastList = Data.BroadcastList
+          }
         }
         this.tableData = Data.BroadcastList
       } else {
@@ -365,6 +378,16 @@ export default {
       }).catch(() => {
         this.$message.info('已取消删除')
       })
+    },
+    getAppIdTypeName(row) {
+      let showName = ''
+      for (let i = 0; i < APPID_OPTIONS.length; i++) {
+        if (APPID_OPTIONS[i].value === row) {
+          showName = APPID_OPTIONS[i].label
+          break
+        }
+      }
+      return showName
     }
   }
 }

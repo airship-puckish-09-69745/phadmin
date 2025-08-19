@@ -151,18 +151,25 @@ export default {
                 data: {
                     Env: this.env,
                     Path:'/match/list',
-                    GameId: this.form.gameId,
+                    GameId: this.form.gameId
                 }
             }).then(response => {
                 if (response.RetCode === 0) {
                     let objs = response.Data || []
                     if (objs.total > 0) {
-                        this.total = objs.total;
-                        this.tableData = objs.list;
-                        console.log(this.tableData)
+                      this.total = objs.total
+                      console.log(objs.list)
+                      for (let i = 0; i < objs.list.length; i++) {
+                        let gameId = parseInt(objs.list[i].gid, 10)
+                        if (gameId !== 2031) {
+                          continue
+                        }
+                        this.tableData.push(objs.list[i])
+                      }
+                      console.log(this.tableData)
                     } else {
-                        this.total = 0;
-                        this.tableData = [];
+                        this.total = 0
+                        this.tableData = []
                     }
                 } else {
                     console.log("获取列表 失败")
