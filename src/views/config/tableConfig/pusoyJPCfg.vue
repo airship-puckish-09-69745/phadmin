@@ -116,10 +116,10 @@
                 <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="doAddCfg(4)">添加</el-button>
               </el-col>
               
-              <legend>Minor小奖池发放</legend>
+              <legend>Mini小奖池发放</legend>
               <el-table
                 ref="filterTable"
-                :data="item.MinorCfg"
+                :data="item.MiniCfg"
                 border
                 :header-cell-style="libShow.DefaultTableHeadClass"
                 :row-style="{height:'10px'}"
@@ -542,7 +542,7 @@ export default {
         GrandShowBase: 10000,
         GrandCfg:[],
         MajorCfg:[],
-        MinorCfg:[],
+        MiniCfg:[],
         ShowPool:{
           MajorPoolIncrArr:[
             {Id:1,MinPool:0,MaxPool:200000000,TimeArr:[{EndHour:1,Index:1,StartHour:0,PerHourIncr:19800000},
@@ -649,8 +649,8 @@ export default {
               this.item.MajorCfg[k].MultiMin /= 100
               this.item.MajorCfg[k].MultiMax /= 100
             }
-            for (const k in this.item.MinorCfg){
-              this.item.MinorCfg[k].RewardMul /= 100
+            for (const k in this.item.MiniCfg){
+              this.item.MiniCfg[k].RewardMul /= 100
             }
 
             for (const k in this.item.ShowPool.GrandRewardCfg){
@@ -681,8 +681,8 @@ export default {
         ret.MajorCfg[k].MultiMin *= 100
         ret.MajorCfg[k].MultiMax *= 100
       }
-      for (const k in ret.MinorCfg){
-          ret.MinorCfg[k].RewardMul *= 100
+      for (const k in ret.MiniCfg){
+          ret.MiniCfg[k].RewardMul *= 100
       }
 
       //Object.assign(ret.ShowPool, this.item.ShowPool)
@@ -753,10 +753,10 @@ export default {
         }
         this.item.MajorCfg.push({ MultiMin: 1, MultiMax:1.5, WinRate: 50})
       } else if (level === 4) {//minor（这里其实是mini奖励）
-        if (!this.item.MinorCfg) {
-          this.item['MinorCfg'] = []
+        if (!this.item.MiniCfg) {
+          this.item['MiniCfg'] = []
         }
-        this.item.MinorCfg.push({ RewardMul: 1, WinRate: 50})
+        this.item.MiniCfg.push({ RewardMul: 1, WinRate: 50})
       }
 
       if (level === 11) {//grand
@@ -779,7 +779,7 @@ export default {
       } else if (level === 2) {//major
         this.item.MajorCfg.splice(index, 1)
       } else if (level === 4) {//minor（这里其实是mini奖励）
-        this.item.MinorCfg.splice(index, 1)
+        this.item.MiniCfg.splice(index, 1)
       }
 
       if (level === 11) {//grand
