@@ -634,6 +634,7 @@ export default {
           ],
           MajorRewardCfg:[],
           GrandRewardCfg:[],
+          MiniRewardCfg:[],
         },
       },
       incrJackpotForm: {
@@ -840,7 +841,7 @@ export default {
         if (!this.item.ShowPool.MiniRewardCfg) {
           this.item.ShowPool['MiniRewardCfg'] = []
         }
-        this.item.ShowPool.MiniRewardCfg.push({ tableMoney: 1, RewardRate:10, ShowRobotRewardRate:10})
+        this.item.ShowPool.MiniRewardCfg.push({ TableMoney: 1, RewardRate:10, ShowRobotRewardRate:10})
       }
     },
     delRowBetMoneyLevel(level, index) {
