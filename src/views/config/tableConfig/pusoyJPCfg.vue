@@ -48,14 +48,14 @@
                 <el-form :inline="true">
 
                   <el-col :span="8">
-                    <el-form-item label="场次底注最小需求>=:">
+                    <el-form-item label="中mini奖池场次底注最小需求>=:">
                       <el-input v-model.number="item.MiniTableMoney" size="mini" />
                     </el-form-item>
                   </el-col>
                   
                   <el-col :span="8">
-                    <el-form-item label="Minor中奖=底注*N倍">
-                      <el-input v-model.number="item.MinorWinMin" size="mini" />
+                    <el-form-item label="Mini中奖=底注*N倍">
+                      <el-input v-model.number="item.MiniWinMin" size="mini" />
                     </el-form-item>
                   </el-col>
 
@@ -66,7 +66,7 @@
                 <el-form :inline="true">
 
                   <el-col :span="8">
-                    <el-form-item label="场次底注最小需求>=:">
+                    <el-form-item label="中major奖池场次底注最小需求>=:">
                       <el-input v-model.number="item.MajorTableMoney" size="mini" />
                     </el-form-item>
                   </el-col>
@@ -89,7 +89,7 @@
                 <el-form :inline="true">
 
                   <el-col :span="8">
-                    <el-form-item label="场次底注最小需求>=:">
+                    <el-form-item label="中grand奖池场次底注最小需求>=:">
                       <el-input v-model.number="item.GrandTableMoney" size="mini" />
                     </el-form-item>
                   </el-col>
@@ -530,7 +530,7 @@ export default {
         MajorWinRate: 30, //Major中奖池  公共奖池*
         GrandWinRate: 70, //Grand中奖池  公共奖池*
         MiniTableMoney: 0,//场次底注最小需求>=:
-        MinorWinMin: 5,  //Minor中奖=底注*N倍
+        MiniWinMin: 5,  //Mini中奖=底注*N倍
         MajorTableMoney: 5, //"场次底注最小需求>=:
         MajorWinMin: 18, //Major中奖池最小
         MajorWinMax: 20, //Major中奖池最大
