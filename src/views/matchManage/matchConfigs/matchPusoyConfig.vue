@@ -800,7 +800,7 @@
           <el-form-item label="赛事分类：" :required="true">
             <el-select v-model="editForm.signExtra.matchEvents" placeholder="请选择" size="mini">
               <el-option
-                v-for="item in matchEvents"
+                v-for="item in MATCH_LIST_TAG_OPTIONS"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -870,6 +870,7 @@ export default {
       CHANNEL_OPTIONS,
       MATCH_TABLE_SCENE_ID_CFG,
       MATCH_LIST_TAG_OPTIONS,
+      MATCH_IUPSTREAM_TYPE_OPTIONS,
       form: {
         gameId: MATCH_IUPSTREAM_TYPE_OPTIONS.MATCH_UPSTREAM_TYPE_PUSOY,
         status: -1,
