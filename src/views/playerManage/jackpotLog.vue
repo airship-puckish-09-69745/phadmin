@@ -832,7 +832,7 @@ export default {
         }
       })
     },
-    changePusoyJPPrizePool(isRobot, jpType) {
+    changePusoyJPPrizePool(isRobot, jpType) { //pusoy 更新指定奖池
       const _this = this
       let changeNum = _this.prizeForm.ChangeNum
       if (jpType == 1){
@@ -877,20 +877,46 @@ export default {
     },
     changePusoyTotalPrizePool(isRobot, jpType) { //pusoyJP 更新总奖池
       const _this = this
+      let changeNum = _this.prizeForm.ChangeNum
+      let robotFlag = 0
       if (isRobot) {
+        robotFlag = 1
         if (jpType == 1){
-          this.prizeForm.ChangeNum = _this.prizeForm.GrandChangeRobotNum
+          changeNum = _this.prizeForm.GrandChangeRobotNum
         } else if (jpType == 2) {
-          this.prizeForm.ChangeNum = _this.prizeForm.MajorChangeRobotNum
+          changeNum = _this.prizeForm.MajorChangeRobotNum
         }
       }else{
         if (jpType == 1){
-          this.prizeForm.ChangeNum = _this.prizeForm.GrandChangeNum
+          changeNum = _this.prizeForm.GrandChangeNum
         } else if (jpType == 2) {
-          this.prizeForm.ChangeNum = _this.prizeForm.MajorChangeNum
+          changeNum = _this.prizeForm.MajorChangeNum
         }
       }
-      this.changePrizePool(isRobot)
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Env: _this.env,
+          Path: '/jackpot/operate',
+          GameId: _this.searchForm.gameId,
+          ChangeNum: changeNum * 1000,
+          App: _this.searchForm.app,
+          Level: _this.searchForm.level,
+          IsRobot: robotFlag,
+          JackpotType: 0 //pusoyJP 总奖池
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          _this.showInfo()
+          this.$message({
+            message: '操作成功！',
+            type: 'success'
+          })
+        } else {
+          this.$message.error('操作失败')            
+        }
+      })
     },
     changePrizePool(isRobot) {
       const _this = this
