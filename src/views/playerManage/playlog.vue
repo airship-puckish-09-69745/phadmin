@@ -586,8 +586,8 @@
             <td>道具Id</td>
             <td>道具recordId</td>
             <td>道具单张面值</td>
-            <td>使用数量</td>
-            <td>剩余数量</td>
+            <td>道具使用数量</td>
+            <td>道具剩余数量</td>
           </tr>
           <tr>
             <td>{{ sweeperPlay.propLog ? sweeperPlay.propLog.propId : '' }}</td>
