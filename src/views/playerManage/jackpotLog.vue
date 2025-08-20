@@ -316,7 +316,7 @@
             <el-input v-model="prizeForm.GrandChangeNum" size="mini" />
           </el-col>
           <el-col :span="8">
-            <el-button style="margin-left: 10px;" type="primary" size="mini" @click="changePusoyJPPrizePool(false, 1);changePusoyTotalPrizePool(false, 1)">保存</el-button>
+            <el-button style="margin-left: 10px;" type="primary" size="mini" @click="changePusoyTotalPrizePool(false, 1)">保存</el-button>
           </el-col>
         </el-form-item>
         <el-form-item label="手动修改玩家Major奖池数量：">
@@ -913,6 +913,10 @@ export default {
             message: '操作成功！',
             type: 'success'
           })
+          this.prizeForm.GrandChangeNum = 0
+          this.prizeForm.MajorChangeNum = 0
+          this.prizeForm.GrandChangeRobotNum = 0
+          this.prizeForm.MajorChangeRobotNum = 0
         } else {
           this.$message.error('操作失败')            
         }
