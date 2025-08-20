@@ -313,7 +313,7 @@
       <el-form :model="prizeForm">
         <el-form-item label="手动修改玩家Grand奖池数量：">
           <el-col :span="8">
-            <el-input v-model="prizeForm.ChangeNum" size="mini" />
+            <el-input v-model="prizeForm.GrandChangeNum" size="mini" />
           </el-col>
           <el-col :span="8">
             <el-button style="margin-left: 10px;" type="primary" size="mini" @click="changePusoyJPPrizePool(false, 1)">保存</el-button>
@@ -321,7 +321,7 @@
         </el-form-item>
         <el-form-item label="手动修改玩家Major奖池数量：">
           <el-col :span="8">
-            <el-input v-model="prizeForm.ChangeNum" size="mini" />
+            <el-input v-model="prizeForm.MajorChangeNum" size="mini" />
           </el-col>
           <el-col :span="8">
             <el-button style="margin-left: 10px;" type="primary" size="mini" @click="changePusoyJPPrizePool(false, 2)">保存</el-button>
@@ -330,7 +330,7 @@
 
         <el-form-item label="手动修改展示Grand奖池数量：">
           <el-col :span="8">
-            <el-input v-model="prizeForm.ChangeRobotNum" size="mini" />
+            <el-input v-model="prizeForm.GrandChangeRobotNum" size="mini" />
           </el-col>
           <el-col :span="8">
             <el-button style="margin-left: 10px;" type="primary" size="mini" @click="changePusoyJPPrizePool(true, 1)">保存</el-button>
@@ -338,7 +338,7 @@
         </el-form-item>
         <el-form-item label="手动修改展示Major奖池数量：">
           <el-col :span="8">
-            <el-input v-model="prizeForm.ChangeRobotNum" size="mini" />
+            <el-input v-model="prizeForm.MajorChangeRobotNum" size="mini" />
           </el-col>
           <el-col :span="8">
             <el-button style="margin-left: 10px;" type="primary" size="mini" @click="changePusoyJPPrizePool(true, 2)">保存</el-button>
@@ -519,7 +519,12 @@ export default {
       envProjectName: process.env.VUE_APP_PROJECT,
       prizeForm: {
         ChangeNum: 0,
-        ChangeRobotNum: 0
+        ChangeRobotNum: 0,
+        
+        GrandChangeNum: 0,
+        MajorChangeNum: 0,
+        GrandChangeRobotNum: 0,
+        MajorChangeRobotNum: 0,
       },
       itemForm: {
         progressChange: 0,
@@ -830,10 +835,20 @@ export default {
     changePusoyJPPrizePool(isRobot, jpType) {
       const _this = this
       let changeNum = _this.prizeForm.ChangeNum
+      if (jpType == 1){
+        changeNum = _this.prizeForm.GrandChangeNum
+      } else if (jpType == 2) {
+        changeNum = _this.prizeForm.MajorChangeNum
+      }
       let robotFlag = 0
       if (isRobot) {
         robotFlag = 1
         changeNum = _this.prizeForm.ChangeRobotNum
+        if (jpType == 1){
+          changeNum = _this.prizeForm.GrandChangeRobotNum
+        } else if (jpType == 2) {
+          changeNum = _this.prizeForm.MajorChangeRobotNum
+        }
       }
       request({
         url: '/dataProxy/info',
