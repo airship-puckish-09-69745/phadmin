@@ -169,7 +169,7 @@
         <el-form-item v-if="editForm.data.rule_type===0" label="是否GTCC：" :required="true">
           <el-switch
             style="display: block"
-            v-model="editForm.data.rule_extra.is_gtcc"
+            v-model="editForm.data.rule_extra.skip_strikeout"
             active-color="#13ce66"
             inactive-color="#ff4949"
             :active-value='1'
@@ -503,7 +503,7 @@ export default {
         title: "",
         isAdd: false,
         data: {
-          rule_extra:{'is_gtcc':0},
+          rule_extra:{'skip_strikeout':0},
         }
       },
       AttrNames: {
@@ -657,9 +657,9 @@ export default {
             const ruleExtraStr = this.tableData[i].rule_extra;
             let rule_extra
             try {
-              rule_extra = ruleExtraStr ? JSON.parse(ruleExtraStr) : { is_gtcc:0 };
+              rule_extra = ruleExtraStr ? JSON.parse(ruleExtraStr) : { skip_strikeout:0 };
             } catch (e) {
-              rule_extra = { is_gtcc: 0 }; // 解析失败时使用默认值
+              rule_extra = { skip_strikeout: 0 }; // 解析失败时使用默认值
             }
             this.editForm.data.rule_extra = rule_extra;
 
@@ -683,7 +683,7 @@ export default {
           "update_time": 0,
           "start_num":0, //开赛人数
           "rule_extra":{
-            "is_gtcc":0,
+            "skip_strikeout":0,
           }
 
         }
@@ -710,9 +710,9 @@ export default {
             const ruleExtraStr = this.tableData[i].rule_extra;
             let rule_extra
             try {
-              rule_extra = ruleExtraStr ? JSON.parse(ruleExtraStr) : { is_gtcc:0 };
+              rule_extra = ruleExtraStr ? JSON.parse(ruleExtraStr) : { skip_strikeout:0 };
             } catch (e) {
-              rule_extra = { is_gtcc:0 }; // 解析失败时使用默认值
+              rule_extra = { skip_strikeout:0 }; // 解析失败时使用默认值
             }
             this.editForm.data.rule_extra = rule_extra;
 
@@ -914,7 +914,7 @@ export default {
         }
       })
       this.editForm.data.rule_extra = {
-        'is_gtcc':0,
+        'skip_strikeout':0,
       }
     },
     saveStage() {
