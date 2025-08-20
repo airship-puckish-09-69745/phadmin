@@ -32,19 +32,20 @@
 
     <!-- 表格 -->
     <el-table :data="tableData" border style="width: 100%; margin-top: 20px;">
-      <el-table-column prop="updateAt" label="导入日期" align="center" width="100">
+      <el-table-column prop="updateAt" label="导入日期" align="center" width="320">
         <template slot-scope="scope">
           {{ formatDate(scope.row.updateAt) }}
         </template>
       </el-table-column>
-      <el-table-column prop="effectiveRange" label="生效日期" align="center" width="230">
+      <el-table-column prop="effectiveRange" label="生效日期" align="center" width="320">
         <template slot-scope="scope">
           {{ formatDate(scope.row.validStartAt) }} 至 {{ formatDate(scope.row.validEndAt) }}
         </template>
       </el-table-column>
-      <el-table-column prop="uid" label="生效ID" align="center" width="150"/>
-      <el-table-column prop="amount" label="可发放金额" align="center" width="150"/>
-      <el-table-column label="操作" align="center" width="150">
+      <el-table-column prop="uid" label="生效ID" align="center" width="320"/>
+      <el-table-column prop="amount" label="可发放金额" align="center" width="320"/>
+      <el-table-column prop="updateBy" label="修改人" align="center" width="320"/>
+      <el-table-column label="操作" align="center" width="197">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="openEdit(scope.row)">编辑</el-button>
           <el-button type="danger" size="mini" @click="removeRow(scope.$index)">删除</el-button>
@@ -98,7 +99,7 @@ import {mapGetters} from "vuex";
 const filterMap = {}
 
 function newItem() {
-  return {updateAt: getCurrentDate(), effectiveRange: [], updateBy: '',uid: '', amount: 0}
+  return {updateAt: getCurrentDate(), effectiveRange: [], updateBy: '', uid: '', amount: 0}
 }
 
 function getCurrentDate() {
@@ -351,7 +352,7 @@ export default {
       this.updateRequest(this.reqData)
     },
     resetEditForm() {
-      this.editForm = {updateAt: '', effectiveRange: [],uid: '', amount: 0}
+      this.editForm = {updateAt: '', effectiveRange: [], uid: '', amount: 0}
       this.edit.editingIndex = null
     },
     removeAllConfig() {
