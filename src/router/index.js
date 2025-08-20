@@ -3489,54 +3489,54 @@ export const asyncRoutes = [
         redirect: 'noRedirect',
         meta: { title: 'Tongits-作弊识别 ◐' },
         children: [
-          {
-            path: 'tongits_cheat_group',
-            component: () => import('@/views/playerManage/tongitsCheatGroup'),
-            name: 'tongits_cheat_group',
-            meta: { title: 'tongits作弊组合 ◐' }
-          },
-          {
-            path: 'tongits_cheatlog',
-            component: () => import('@/views/playerManage/tongitsCheatlog'),
-            name: 'tongits_cheatlog',
-            meta: { title: 'tongits作弊识别日志 ◐' }
-          },
+          // {
+          //   path: 'tongits_cheat_group',
+          //   component: () => import('@/views/playerManage/tongitsCheatGroup'),
+          //   name: 'tongits_cheat_group',
+          //   meta: { title: 'tongits作弊组合 ◐' }
+          // },
+          // {
+          //   path: 'tongits_cheatlog',
+          //   component: () => import('@/views/playerManage/tongitsCheatlog'),
+          //   name: 'tongits_cheatlog',
+          //   meta: { title: 'tongits作弊识别日志 ◐' }
+          // },
           {
             path: 'game_kick_user_log',
             component: () => import('@/views/playerManage/gameKickUserlog'),
             name: 'game_kick_user_log',
             meta: { title: '游戏作弊踢出用户日志 ◐' }
           },
-          {
-            path: 'tongits_blackuserlog',
-            component: () => import('@/views/playerManage/tongitsBlackUserlog'),
-            name: 'tongits_blackuserlog',
-            meta: { title: '黑名单配桌日志 ◐' }
-          },
-          {
-            path: 'tongits_cheat_related_scorelog',
-            component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatRelatedScorelog'),
-            name: 'tongits_cheat_related_scorelog',
-            meta: { title: '关联计分日志 ◐' }
-          },
-          {
-            path: 'tongits_cheat_related_blacklog',
-            component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatRelatedBlacklog'),
-            name: 'tongits_cheat_related_blacklog',
-            meta: { title: '关联拉黑日志 ◐' }
-          },
-          {
-            path: 'tongits_black_users',
-            component: () => import('@/views/playerManage/tongitsCheat/tongitsBlackUsers'),
-            name: 'tongits_black_users',
-            meta: { title: 'Tongits黑名单 ◐' }
-          },
-          {
-            path: 'tongits_updatemoneylog',
-            component: () => import('@/views/playerManage/tongitsUpdateMoneylog'),
-            name: 'tongits_blackuserlog',
-            meta: { title: '机器人资产变更日志 ◐' }
-          },
+          // {
+          //   path: 'tongits_blackuserlog',
+          //   component: () => import('@/views/playerManage/tongitsBlackUserlog'),
+          //   name: 'tongits_blackuserlog',
+          //   meta: { title: '黑名单配桌日志 ◐' }
+          // },
+          // {
+          //   path: 'tongits_cheat_related_scorelog',
+          //   component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatRelatedScorelog'),
+          //   name: 'tongits_cheat_related_scorelog',
+          //   meta: { title: '关联计分日志 ◐' }
+          // },
+          // {
+          //   path: 'tongits_cheat_related_blacklog',
+          //   component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatRelatedBlacklog'),
+          //   name: 'tongits_cheat_related_blacklog',
+          //   meta: { title: '关联拉黑日志 ◐' }
+          // },
+          // {
+          //   path: 'tongits_black_users',
+          //   component: () => import('@/views/playerManage/tongitsCheat/tongitsBlackUsers'),
+          //   name: 'tongits_black_users',
+          //   meta: { title: 'Tongits黑名单 ◐' }
+          // },
+          // {
+          //   path: 'tongits_updatemoneylog',
+          //   component: () => import('@/views/playerManage/tongitsUpdateMoneylog'),
+          //   name: 'tongits_blackuserlog',
+          //   meta: { title: '机器人资产变更日志 ◐' }
+          // },
           {
             path: 'tongitsCheatLog',
             component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatNew.vue'),
