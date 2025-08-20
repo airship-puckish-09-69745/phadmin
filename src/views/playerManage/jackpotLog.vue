@@ -850,7 +850,6 @@ export default {
           changeNum = _this.prizeForm.MajorChangeRobotNum
         }
       }
-      for (const i = 0; i < 2; i ++) { //第一次更新具体奖池，第二次更新总奖池
         request({
           url: '/dataProxy/info',
           method: 'get',
@@ -866,17 +865,45 @@ export default {
           }
         }).then(response => {
           if (response.RetCode === 0) {
+            /*
             _this.showInfo()
             this.$message({
               message: '操作成功！',
               type: 'success'
             })
+            */
+            this.changePusoyJPUserPool(isRobot, changeNum) //更新总奖池
           } else {
             this.$message.error('操作失败')            
           }
         })
-        jpType = 0  //更新总奖池
-      }
+    },
+    changePusoyJPUserPool(isRobot, changeNum) {
+      const _this = this
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Env: _this.env,
+          Path: '/jackpot/operate',
+          GameId: _this.searchForm.gameId,
+          ChangeNum: changeNum * 1000,
+          App: _this.searchForm.app,
+          Level: _this.searchForm.level,
+          IsRobot: robotFlag,
+          JackpotType: 0
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          _this.showInfo()
+          this.$message({
+            message: '操作成功！',
+            type: 'success'
+          })
+        } else {
+          this.$message.error('操作失败')            
+        }
+      })
     },
     changePrizePool(isRobot) {
       const _this = this
