@@ -406,7 +406,7 @@ export default {
                 this.tableData.push(userPoolItem)
               }
             })
-            this.userPoolCfg.items = this.tableData
+            this.userPoolCfg.items.push(...this.tableData)
             this.reqData.Data = JSON.stringify(this.userPoolCfg)
             this.updateRequest(this.reqData)
           })
