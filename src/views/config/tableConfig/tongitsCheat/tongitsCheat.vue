@@ -419,7 +419,7 @@ export default {
       ],
       autoWhite: {
         IsOpen: false,
-        AutoWhiteCheatScore: 0,
+        CheatScore: 0,
         AutoWhiteCheatRadio: 0
       }
     }
@@ -781,6 +781,22 @@ export default {
       for (const o in quickRadioItems) {
         this.CheatCfg.quickTableBlackRadioTableMoneys.push(quickRadioItems[o] * 1000)
       }
+
+      const potLeaveItems = this.potLeaveFreTableMoneys.split(',')
+      this.CheatCfg.potLeaveFreTableMoneys = []
+      for (const o in potLeaveItems) {
+        this.CheatCfg.potLeaveFreTableMoneys.push(potLeaveItems[o] * 1000)
+      }
+      const jokerLeaveItems = this.jokerLeaveFreTableMoneys.split(',')
+      this.CheatCfg.jokerLeaveFreTableMoneys = []
+      for (const o in jokerLeaveItems) {
+        this.CheatCfg.jokerLeaveFreTableMoneys.push(jokerLeaveItems[o] * 1000)
+      }
+      const quickLeaveItems = this.quickLeaveFreTableMoneys.split(',')
+      this.CheatCfg.quickLeaveFreTableMoneys = []
+      for (const o in quickLeaveItems) {
+        this.CheatCfg.quickLeaveFreTableMoneys.push(quickLeaveItems[o] * 1000)
+      }
       // ////////////////////////////
       const NearID = []
       for (let i = 0; i < this.nearID.length; i++) {
@@ -893,9 +909,12 @@ export default {
       this.CheatCfg.JokerAiConfigRow = this.editJokerAI
       this.CheatCfg.QuickAiConfigRow = this.editQuickAI
 
+      if (this.autoWhite.CheatScore === undefined){
+        this.autoWhite.CheatScore = 0
+      }
       const autoWhite = {
         IsOpen: this.autoWhite.IsOpen,
-        CheatScore: parseInt(this.autoWhite.AutoWhiteCheatScore)
+        CheatScore: parseInt(this.autoWhite.CheatScore)
       }
       this.CheatCfg.AutoWhite = autoWhite
       // 拉黑配置
@@ -1135,7 +1154,7 @@ export default {
             :content-style="{'text-align': 'center','width': '250px'}"
             :label-style="{'text-align': 'center'}"
           >
-            <el-input v-model.number="autoWhite.AutoWhiteCheatScore" type="number" size="medium" style="width: 120px" />
+            <el-input v-model.number="autoWhite.CheatScore" type="number" size="medium" style="width: 120px" />
           </el-descriptions-item>
           <el-descriptions-item label="自动洗白开关" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
             <el-switch
