@@ -115,11 +115,7 @@ export default {
   components: {Compare, Publish},
   data() {
     return {
-      // todo
-      queryGid: 82,
-      // gameOptions: [],
       dialogTitle: '编辑配置',
-      // todo
       dateRange: [],
       clientDB: new ClientTableData([], 1, filterMap),
       searchUserId: '',
@@ -160,11 +156,9 @@ export default {
     this.setDefaultDateRange()
     this.handleSearch()
   },
-  // todo
   created() {
     this.fetchData()
   },
-  // todo
   methods: {
     async fetchData() {
       await this.getGameList()
@@ -220,7 +214,6 @@ export default {
         }
       })
     },
-    //  todo
     setDefaultDateRange() {
       const now = new Date()
       const start = new Date(now.getFullYear(), now.getMonth(), 1)
@@ -235,7 +228,6 @@ export default {
         this.$message.warning('请输入查询条件')
         return
       }
-      // todo
       this.tableData = this.tableDataBak.filter(item => {
         let matchDate = true
         let matchId = true
@@ -260,7 +252,7 @@ export default {
       this.edit.item.amount = row.amount
       this.edit.item.uid = row.uid
       this.edit.item.updateAt = this.formatDate(row.updateAt)
-      this.edit.item.updateBy = row.updateBy // todo need??
+      this.edit.item.updateBy = row.updateBy
       const start = new Date(row.validStartAt * 1000)
       const end = new Date(row.validEndAt * 1000)
       this.edit.item.effectiveRange = [start, end]
@@ -325,7 +317,7 @@ export default {
       this.userPoolItem.updateBy = this.name
       this.userPoolItem.validStartAt = this.Unix(postData.effectiveRange[0])
       this.userPoolItem.validEndAt = this.Unix(postData.effectiveRange[1])
-      this.tableData.push(this.userPoolItem)// todo 中间还使用tableData？？？
+      this.tableData.push(this.userPoolItem)
       this.userPoolCfg.items = this.tableData
       this.reqData.Data = JSON.stringify(this.userPoolCfg)
       this.updateRequest(this.reqData)
@@ -380,19 +372,27 @@ export default {
           const data = new Uint8Array(e.target.result)
           const workbook = XLSX.read(data, {type: 'array'})
           const sheetNames = workbook.SheetNames
+          const uidSet = new Set() // 用来存放已存在的 uid
           sheetNames.forEach((sheetName) => {
             const worksheet = workbook.Sheets[sheetName]
             const json = XLSX.utils.sheet_to_json(worksheet, {header: 1})
             this.resetEditForm()
             json.forEach((row, index) => {
-              if (index > 0 && row.length === 5) {
+              if (index > 0 && row.length > 0) {
+                const uid = row[2]
+
+                // 1. 检查 uid 是否重复
+                if (uidSet.has(uid)) {
+                  Message.error(`导入失败: UID ${uid} 在表格中存在重复`)
+                  return
+                }
+                uidSet.add(uid)
                 const userPoolItem = {}
                 userPoolItem.updateAt = today// 当日凌晨0点的时间
-                const validRange = this.splitTimeRange(row[1])
-                userPoolItem.validStartAt = this.Unix(validRange[0])
-                userPoolItem.validEndAt = this.Unix(validRange[1])
-                userPoolItem.uid = row[3]
-                userPoolItem.amount = row[4]
+                userPoolItem.validStartAt = this.excelSerialToUnix(row[0])
+                userPoolItem.validEndAt = this.excelSerialToUnix(row[1])
+                userPoolItem.uid = row[2]
+                userPoolItem.amount = row[3]
                 userPoolItem.updateBy = this.reqData.ModifyUser
                 if (
                   userPoolItem.updateAt === 0 ||
@@ -400,7 +400,7 @@ export default {
                   userPoolItem.validEndAt === 0 ||
                   userPoolItem.uid === 0 ||
                   userPoolItem.amount === 0) {
-                  Message.error('导入失败,请检查数据')
+                  Message.error('导入失败,数据不能为空')
                   return
                 }
                 this.tableData.push(userPoolItem)
@@ -414,6 +414,11 @@ export default {
         reader.readAsArrayBuffer(file)
         this.$forceUpdate()
       }
+    },
+    excelSerialToUnix(serial) {
+      const date = XLSX.SSF.parse_date_code(serial)
+      if (!date) return 0
+      return Math.floor(new Date(date.y, date.m - 1, date.d).getTime() / 1000)
     },
     splitTimeRange(dateStr) {
       return dateStr.replace(/\s+/g, '').split('至')
