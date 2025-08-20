@@ -893,7 +893,7 @@ export default {
           changeNum = _this.prizeForm.MajorChangeNum
         }
       }
-      changeNum -= -339500 //test
+      changeNum += 100 //test
       request({
         url: '/dataProxy/info',
         method: 'get',
