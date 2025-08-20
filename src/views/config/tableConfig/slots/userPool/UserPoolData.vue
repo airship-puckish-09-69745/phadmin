@@ -42,8 +42,6 @@
           {{ formatDate(scope.row.validStartAt) }} 至 {{ formatDate(scope.row.validEndAt) }}
         </template>
       </el-table-column>
-      <el-table-column prop="gamesLabel" label="生效游戏" align="center">
-      </el-table-column>
       <el-table-column prop="uid" label="生效ID" align="center" width="150"/>
       <el-table-column prop="amount" label="可发放金额" align="center" width="150"/>
       <el-table-column label="操作" align="center" width="150">
@@ -76,24 +74,6 @@
         <el-form-item label="可发放金额">
           <el-input-number v-model.number="edit.item.amount" :min="0" style="width: 600px"/>
         </el-form-item>
-        <el-form-item label="生效游戏">
-          <el-tooltip
-            class="item"
-            effect="dark"
-            content="导入时,请严格按下拉框中游戏名称进行导入"
-            placement="right-start"
-          >
-            <i class="el-icon-info"/>
-          </el-tooltip>
-          <el-checkbox v-model="checkAll" :indeterminate="isIndeterminate" @change="handleCheckAllChange">
-            全选
-          </el-checkbox>
-          <div style="margin: 15px 0;"/>
-          <el-checkbox-group v-model="edit.item.games" @change="handleCheckedGamesChange">
-            <el-checkbox v-for="game in allGames" :key="game" :label="game">{{ game }}</el-checkbox>
-          </el-checkbox-group>
-          <!--          -->
-        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false">取 消</el-button>
@@ -118,7 +98,7 @@ import {mapGetters} from "vuex";
 const filterMap = {}
 
 function newItem() {
-  return {updateAt: getCurrentDate(), effectiveRange: [], updateBy: '', games: [], uid: '', amount: 0}
+  return {updateAt: getCurrentDate(), effectiveRange: [], updateBy: '',uid: '', amount: 0}
 }
 
 function getCurrentDate() {
@@ -147,7 +127,7 @@ export default {
       gameNameMap: {}, // {gameName:gameId}
       gameIdMap: {}, // {gameId:gameName}
       editDialogVisible: false,
-      editForm: {updateAt: '', effectiveRange: [], games: '', uid: '', amount: 0},
+      editForm: {updateAt: '', effectiveRange: [], uid: '', amount: 0},
       // editingIndex: null,
       userPoolCfg: {
         items: []
@@ -155,7 +135,6 @@ export default {
       reqData: {},
       userPoolItem: {
         uid: 0,
-        games: [],
         amount: 0,
         updateAt: 0,
         updateBy: '',
@@ -167,10 +146,8 @@ export default {
         item: newItem()
       },
       // 复选框相关
-      checkAll: false,
       //
       allGames: [],
-      isIndeterminate: true,
     }
   },
   computed: {
@@ -188,15 +165,6 @@ export default {
   },
   // todo
   methods: {
-    handleCheckAllChange(val) {
-      this.edit.item.games = val ? this.allGames : []
-      this.isIndeterminate = false
-    },
-    handleCheckedGamesChange(value) {
-      const checkedCount = value.length
-      this.checkAll = checkedCount === this.allGames.length
-      this.isIndeterminate = checkedCount > 0 && checkedCount < this.allGames.length
-    },
     async fetchData() {
       await this.getGameList()
       await this.getData()
@@ -245,9 +213,6 @@ export default {
           if (response.Data && response.Data.Data !== '') {
             const jsonData = JSON.parse(response.Data.Data)
             this.tableData = jsonData.items
-            this.tableData.forEach(item => {
-              item.gamesLabel = item.games.map(id => this.gameIdMap[id] || id).join(', ')
-            })
             this.tableDataBak = jsonData.items
             this.reqData = response.Data
           }
@@ -292,7 +257,6 @@ export default {
       this.dialogTitle = '编辑配置'
       this.edit.editingIndex = this.tableData.indexOf(row)
       this.edit.item.amount = row.amount
-      this.edit.item.games = this.formatTaxedSlots(row.games)
       this.edit.item.uid = row.uid
       this.edit.item.updateAt = this.formatDate(row.updateAt)
       this.edit.item.updateBy = row.updateBy // todo need??
@@ -301,47 +265,23 @@ export default {
       this.edit.item.effectiveRange = [start, end]
       //
       this.editDialogVisible = true
-      this.checkAll = this.edit.item.games.length === this.allGames.length
-      this.isIndeterminate = !this.checkAll
-    },
-    formatTaxedSlots(gameIds) {
-      const formatNames = []
-      for (const gameId of gameIds) {
-        const str = gameId + '|' + this.gameIdMap[Number(gameId)]
-        formatNames.push(str)
-      }
-      return formatNames
     },
     handleCreate() {
       this.dialogTitle = '添加配置'
       this.edit.item = newItem()
       this.editDialogVisible = true
-      this.isIndeterminate = false
-      this.checkAll = false
-    },
-    splitGames(pickGames) {
-      const games = []
-      for (const game of pickGames) {
-        games.push(Number(game.split('|')[0]))
-      }
-      return games
     },
     saveEdit() {
       if (!this.checkData()) return
       if (this.edit.editingIndex !== null) {
         this.userPoolItem.uid = Number(this.edit.item.uid)
-        this.userPoolItem.games = this.splitGames(this.edit.item.games)
         this.userPoolItem.amount = this.edit.item.amount
         this.userPoolItem.updateAt = Math.floor(Date.now() / 1000)
         this.userPoolItem.updateBy = this.name
         this.userPoolItem.validStartAt = this.Unix(this.edit.item.effectiveRange[0])
         this.userPoolItem.validEndAt = this.Unix(this.edit.item.effectiveRange[1])
         this.$set(this.tableData, this.edit.editingIndex, this.userPoolItem)
-        this.tableData.forEach(game => { // gamesLabel不用保存
-          delete game.gamesLabel
-        })
         const newTableData = this.tableData
-        // this.$refs.compare.SetNewVal(this.tableData)
         this.userPoolCfg.items = newTableData
         this.reqData.Data = JSON.stringify(this.userPoolCfg)
         this.updateRequest(this.reqData)
@@ -372,8 +312,6 @@ export default {
         if (response.RetCode === 0) {
           this.edit.item.ID = response.Data.ID
           this.clientDB.AddData(this.edit.item)
-          // this.refreshShow()
-          //
           this.getData()
           Message.success('操作成功！')
         }
@@ -381,16 +319,12 @@ export default {
     },
     createSave(postData) {
       this.userPoolItem.uid = postData.uid
-      this.userPoolItem.games = this.splitGames(postData.games)
       this.userPoolItem.amount = postData.amount
       this.userPoolItem.updateAt = Math.floor(Date.now() / 1000)
       this.userPoolItem.updateBy = this.name
       this.userPoolItem.validStartAt = this.Unix(postData.effectiveRange[0])
       this.userPoolItem.validEndAt = this.Unix(postData.effectiveRange[1])
       this.tableData.push(this.userPoolItem)// todo 中间还使用tableData？？？
-      this.tableData.forEach(game => { // gamesLabel不用保存
-        delete game.gamesLabel
-      })
       this.userPoolCfg.items = this.tableData
       this.reqData.Data = JSON.stringify(this.userPoolCfg)
       this.updateRequest(this.reqData)
@@ -402,7 +336,6 @@ export default {
       }
       if (
         this.edit.item.uid === '' ||
-        this.edit.item.games.length === 0 ||
         this.edit.item.amount === undefined ||
         this.edit.item.updateAt === '' ||
         this.edit.item.effectiveRange === null) {
@@ -413,15 +346,12 @@ export default {
     },
     removeRow(index) {
       this.tableData.splice(index, 1)
-      this.tableData.forEach(game => { // gamesLabel不用保存
-        delete game.gamesLabel
-      })
       this.userPoolCfg.items = this.tableData
       this.reqData.Data = JSON.stringify(this.userPoolCfg)
       this.updateRequest(this.reqData)
     },
     resetEditForm() {
-      this.editForm = {updateAt: '', effectiveRange: [], games: [], uid: '', amount: 0}
+      this.editForm = {updateAt: '', effectiveRange: [],uid: '', amount: 0}
       this.edit.editingIndex = null
     },
     removeAllConfig() {
@@ -460,7 +390,6 @@ export default {
                 const validRange = this.splitTimeRange(row[1])
                 userPoolItem.validStartAt = this.Unix(validRange[0])
                 userPoolItem.validEndAt = this.Unix(validRange[1])
-                userPoolItem.games = this.splitGamesName(row[2])
                 userPoolItem.uid = row[3]
                 userPoolItem.amount = row[4]
                 userPoolItem.updateBy = this.reqData.ModifyUser
@@ -468,7 +397,6 @@ export default {
                   userPoolItem.updateAt === 0 ||
                   userPoolItem.validStartAt === 0 ||
                   userPoolItem.validEndAt === 0 ||
-                  userPoolItem.games.length === 0 ||
                   userPoolItem.uid === 0 ||
                   userPoolItem.amount === 0) {
                   Message.error('导入失败,请检查数据')
@@ -478,9 +406,6 @@ export default {
               }
             })
             this.userPoolCfg.items = this.tableData
-            this.tableData.forEach(game => { // gamesLabel不用保存
-              delete game.gamesLabel
-            })
             this.reqData.Data = JSON.stringify(this.userPoolCfg)
             this.updateRequest(this.reqData)
           })
@@ -491,22 +416,6 @@ export default {
     },
     splitTimeRange(dateStr) {
       return dateStr.replace(/\s+/g, '').split('至')
-    },
-    splitGamesName(gamesName) {
-      const gid = []
-      const GName = gamesName.split(',')
-      for (let i = 0; i < GName.length; i++) {
-        const nameStr = GName[i]
-        // eslint-disable-next-line no-empty
-        if (nameStr === 'Phoenix') {
-          Message.warning('Phoenix存在非唯一gid')
-        }
-        if (!this.gameNameMap[nameStr]) {
-          this.$message.warning('存在无效游戏名,请检查')
-        }
-        gid.push(this.gameNameMap[nameStr])
-      }
-      return gid
     }
   }
 }
