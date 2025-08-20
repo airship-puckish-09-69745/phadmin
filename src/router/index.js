@@ -2180,7 +2180,21 @@ export const asyncRoutes = [
         component: () => import('@/views/playerManage/kycInfo.vue'),
         name: 'kycInfo',
         meta: { title: 'KYC信息 ◐' }
-      }
+      },
+      {
+        path: 'tagManager',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: '玩家标签管理', noCache: true },
+        children: [
+          {
+            path: 'tagConfig',
+            component: () => import('@/views/tagManager/tagConfig.vue'),
+            name: 'matchTongitsConfig',
+            meta: { title: '标签配置', noCache: true }
+          }
+        ]
+      },
     ]
   },
   {
