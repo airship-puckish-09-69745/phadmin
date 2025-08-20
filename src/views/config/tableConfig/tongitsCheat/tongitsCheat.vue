@@ -578,9 +578,9 @@ export default {
 
             // /////////////////////////
             const potLeaveFreTableMoneys = []
-            if ($this.CheatCfg.PotLeaveFreTableMoneys !== undefined) {
-              for (let i = 0; i < $this.CheatCfg.PotLeaveFreTableMoneys.length; i++) {
-                const result = $this.CheatCfg.PotLeaveFreTableMoneys[i] / 1000
+            if ($this.CheatCfg.potLeaveFreTableMoneys !== undefined) {
+              for (let i = 0; i < $this.CheatCfg.potLeaveFreTableMoneys.length; i++) {
+                const result = $this.CheatCfg.potLeaveFreTableMoneys[i] / 1000
                 const tableMoney = result % 1 === 0 ? result : parseFloat(result.toFixed(1))
                 if (tableMoney <= 0) {
                   continue
@@ -591,9 +591,9 @@ export default {
             $this.potLeaveFreTableMoneys = potLeaveFreTableMoneys.join(',')
 
             const jokerLeaveFreTableMoneys = []
-            if ($this.CheatCfg.JokerLeaveFreTableMoneys !== undefined) {
-              for (let i = 0; i < $this.CheatCfg.JokerLeaveFreTableMoneys.length; i++) {
-                const result = $this.CheatCfg.JokerLeaveFreTableMoneys[i] / 1000
+            if ($this.CheatCfg.jokerLeaveFreTableMoneys !== undefined) {
+              for (let i = 0; i < $this.CheatCfg.jokerLeaveFreTableMoneys.length; i++) {
+                const result = $this.CheatCfg.jokerLeaveFreTableMoneys[i] / 1000
                 const tableMoney = result % 1 === 0 ? result : parseFloat(result.toFixed(1))
                 if (tableMoney <= 0) {
                   continue
@@ -603,9 +603,9 @@ export default {
             }
             $this.jokerLeaveFreTableMoneys = jokerLeaveFreTableMoneys.join(',')
             const quickLeaveFreTableMoneys = []
-            if ($this.CheatCfg.QuickLeaveFreTableMoneys !== undefined) {
-              for (let i = 0; i < $this.CheatCfg.QuickLeaveFreTableMoneys.length; i++) {
-                const result = $this.CheatCfg.QuickLeaveFreTableMoneys[i] / 1000
+            if ($this.CheatCfg.quickLeaveFreTableMoneys !== undefined) {
+              for (let i = 0; i < $this.CheatCfg.quickLeaveFreTableMoneys.length; i++) {
+                const result = $this.CheatCfg.quickLeaveFreTableMoneys[i] / 1000
                 const tableMoney = result % 1 === 0 ? result : parseFloat(result.toFixed(1))
                 if (tableMoney <= 0) {
                   continue
