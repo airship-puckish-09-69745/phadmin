@@ -316,7 +316,7 @@
             <el-input v-model="prizeForm.GrandChangeNum" size="mini" />
           </el-col>
           <el-col :span="8">
-            <el-button style="margin-left: 10px;" type="primary" size="mini" @click="changePusoyJPPrizePool(false, 1);changePrizePool(false)">保存</el-button>
+            <el-button style="margin-left: 10px;" type="primary" size="mini" @click="changePusoyJPPrizePool(false, 1);changePusoyTotalPrizePool(false, 1)">保存</el-button>
           </el-col>
         </el-form-item>
         <el-form-item label="手动修改玩家Major奖池数量：">
@@ -324,7 +324,7 @@
             <el-input v-model="prizeForm.MajorChangeNum" size="mini" />
           </el-col>
           <el-col :span="8">
-            <el-button style="margin-left: 10px;" type="primary" size="mini" @click="changePusoyJPPrizePool(false, 2);changePrizePool(false)">保存</el-button>
+            <el-button style="margin-left: 10px;" type="primary" size="mini" @click="changePusoyJPPrizePool(false, 2);changePusoyTotalPrizePool(false, 1)">保存</el-button>
           </el-col>
         </el-form-item>
 
@@ -333,7 +333,7 @@
             <el-input v-model="prizeForm.GrandChangeRobotNum" size="mini" />
           </el-col>
           <el-col :span="8">
-            <el-button style="margin-left: 10px;" type="primary" size="mini" @click="changePusoyJPPrizePool(true, 1);changePrizePool(true)">保存</el-button>
+            <el-button style="margin-left: 10px;" type="primary" size="mini" @click="changePusoyJPPrizePool(true, 1);changePusoyTotalPrizePool(true, 1)">保存</el-button>
           </el-col>
         </el-form-item>
         <el-form-item label="手动修改展示Major奖池数量：">
@@ -341,7 +341,7 @@
             <el-input v-model="prizeForm.MajorChangeRobotNum" size="mini" />
           </el-col>
           <el-col :span="8">
-            <el-button style="margin-left: 10px;" type="primary" size="mini" @click="changePusoyJPPrizePool(true, 2);changePrizePool(true)">保存</el-button>
+            <el-button style="margin-left: 10px;" type="primary" size="mini" @click="changePusoyJPPrizePool(true, 2);changePusoyTotalPrizePool(true, 1)">保存</el-button>
           </el-col>
         </el-form-item>
 
@@ -861,7 +861,7 @@ export default {
           App: _this.searchForm.app,
           Level: _this.searchForm.level,
           IsRobot: robotFlag,
-          JackpotType: jpType
+          JackpotType: jpType //pusoyJP 更新指定奖池
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -874,6 +874,23 @@ export default {
           this.$message.error('操作失败')            
         }
       })
+    },
+    changePusoyTotalPrizePool(isRobot, jpType) { //pusoyJP 更新总奖池
+      const _this = this
+      if (isRobot) {
+        if (jpType == 1){
+          this.prizeForm.ChangeNum = _this.prizeForm.GrandChangeRobotNum
+        } else if (jpType == 2) {
+          this.prizeForm.ChangeNum = _this.prizeForm.MajorChangeRobotNum
+        }
+      }else{
+        if (jpType == 1){
+          this.prizeForm.ChangeNum = _this.prizeForm.GrandChangeNum
+        } else if (jpType == 2) {
+          this.prizeForm.ChangeNum = _this.prizeForm.MajorChangeNum
+        }
+      }
+      this.changePrizePool(isRobot)
     },
     changePrizePool(isRobot) {
       const _this = this
