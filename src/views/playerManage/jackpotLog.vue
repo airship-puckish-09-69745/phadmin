@@ -865,14 +865,12 @@ export default {
           }
         }).then(response => {
           if (response.RetCode === 0) {
-            /*
             _this.showInfo()
             this.$message({
               message: '操作成功！',
               type: 'success'
             })
-            */
-            this.changePusoyJPUserPool(isRobot, changeNum) //更新总奖池
+            _this.changePusoyJPUserPool(isRobot, changeNum) //更新总奖池
           } else {
             this.$message.error('操作失败')            
           }
