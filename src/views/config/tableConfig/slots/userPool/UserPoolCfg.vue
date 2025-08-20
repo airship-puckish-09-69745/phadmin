@@ -44,17 +44,28 @@
             </el-form-item>
           </el-col>
           <el-col>
-            <el-form-item
-              label="启用的老虎机列表"
-              :rules="[{ required: true, message: '启用的老虎机列表不能为空'}]">
+            <el-form-item label="启用的老虎机列表" :rules="[{ required: true, message: '启用的老虎机列表不能为空'}]">
               <el-checkbox v-model="checkAll" :indeterminate="isIndeterminate" @change="handleCheckAllChange">
                 全选
               </el-checkbox>
-              <div style="margin: 15px 0;"/>
+              <div style="margin: 15px 0;" />
+
               <el-checkbox-group v-model="cfg.taxedSlots" @change="handleCheckedGamesChange">
-                <el-checkbox v-for="game in allGames" :key="game" :label="game">{{ game }}</el-checkbox>
+                <table class="checkbox-table">
+                  <tbody>
+                    <tr v-for="(row, ri) in chunkedLabels" :key="ri">
+                      <td v-for="(label, ci) in row" :key="`${ri}-${ci}`" class="checkbox-cell">
+                        <template v-if="label">
+                          <el-checkbox :label="label">{{ label }}</el-checkbox>
+                        </template>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </el-checkbox-group>
+
             </el-form-item>
+
           </el-col>
 
         </el-row>
@@ -72,7 +83,6 @@
 import Publish from '@/components/Publish/index.vue';
 import request from '@/utils/request';
 import {Message} from "element-ui";
-import {number} from "echarts/lib/export";
 
 export default {
   name: 'UserPoolCfg',
@@ -97,12 +107,37 @@ export default {
       isIndeterminate: true,
     }
   },
+  computed: {
+    // 仍然按 gid 数字升序
+    sortedAllGames() {
+      return (this.allGames || []).slice().sort((a, b) => {
+        const ga = Number(String(a).split('|')[0]);
+        const gb = Number(String(b).split('|')[0]);
+        return ga - gb;
+      });
+    },
+    // 列优先分布：先填满第1列(从上到下)，再第2列...
+    chunkedLabels() {
+      const cols = 3; // 列数
+      const list = this.sortedAllGames;
+      const rows = Math.ceil(list.length / cols); // 每列的行数
+      const grid = Array.from({ length: rows }, () => Array(cols).fill(null));
+
+      for (let c = 0; c < cols; c++) {
+        for (let r = 0; r < rows; r++) {
+          const i = r + c * rows; // 列优先索引
+          if (i < list.length) grid[r][c] = list[i];
+        }
+      }
+      return grid; // => [[row0col0,row0col1,row0col2], [row1col0,...], ...]
+    }
+  },
   created() {
     this.fetchData()
   },
   methods: {
     handleCheckAllChange(val) {
-      this.cfg.taxedSlots = val ? this.allGames : []
+      this.cfg.taxedSlots = val ? this.sortedAllGames.slice() : []
       this.isIndeterminate = false
     },
     handleCheckedGamesChange(value) {
@@ -251,4 +286,16 @@ export default {
 .dialog-footer {
   margin-left: 90%;
 }
+.checkbox-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.checkbox-cell {
+  width: 33.33%;            /* 三列 */
+  border: 1px solid #dcdfe6;
+  padding: 8px 12px;
+  text-align: left;
+  vertical-align: middle;
+}
+
 </style>
