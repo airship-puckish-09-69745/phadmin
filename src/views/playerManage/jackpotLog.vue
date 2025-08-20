@@ -872,7 +872,7 @@ export default {
           })
           //更新总奖池start
           _this.prizeForm.ChangeNum = changeNum / 1000
-           this.changePrizePool(isRobot)
+           this.changePusoyJPPrizePool(isRobot, 0)
           //更新总奖池end
         } else {
           this.$message.error('操作失败')
