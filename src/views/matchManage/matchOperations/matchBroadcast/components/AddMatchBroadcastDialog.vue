@@ -172,6 +172,10 @@ export default {
         this.$message.warning('内容不能为空!')
         return false
       }
+      if (this.formData.AppId <= 0) {
+        this.$message.warning('AppId选择错误!')
+        return false
+      }
 
       if (this.formData.BroadcastType === 4) {
         let nCount = this.handleContentLength(this.formData.Content)

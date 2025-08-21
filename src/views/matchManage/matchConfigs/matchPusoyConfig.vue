@@ -800,7 +800,7 @@
           <el-form-item label="赛事分类：" :required="true">
             <el-select v-model="editForm.signExtra.matchEvents" placeholder="请选择" size="mini">
               <el-option
-                v-for="item in matchEvents"
+                v-for="item in MATCH_LIST_TAG_OPTIONS"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -870,6 +870,7 @@ export default {
       CHANNEL_OPTIONS,
       MATCH_TABLE_SCENE_ID_CFG,
       MATCH_LIST_TAG_OPTIONS,
+      MATCH_IUPSTREAM_TYPE_OPTIONS,
       form: {
         gameId: MATCH_IUPSTREAM_TYPE_OPTIONS.MATCH_UPSTREAM_TYPE_PUSOY,
         status: -1,
@@ -924,7 +925,7 @@ export default {
         { 'value': 6, 'label': '有限制倍数的返水金（10倍）' },
         { 'value': 16, 'label': '没有任何限制的返水金【Tongits免费赛】' }
       ],
-      // 投注金
+      //投注金
       betScenesCfgs: [
         { 'value': 1, 'label': '任意游戏投注' },
         { 'value': 2, 'label': '仅限Poker类游戏投注' },
@@ -2374,14 +2375,14 @@ export default {
         const ruleExtra = this.csExtraCfgs.get(this.editForm.data.csId)
 
         if (this.editForm.data.opentMatchType == 2 && this.editForm.data.opentMatchMember < endNum) {
-          if(ruleExtra == null || ruleExtra.is_gtcc == 0) { //gtcc 赛事不做数值检查
+          if(ruleExtra == null || ruleExtra.skip_strikeout == 0) { //跳过打立赛事不做数值检查
             this.errmsg('开赛人数不能小于打立出局的结束规则的剩余人数')
             return false
           }
         }
 
         if (this.editForm.data.opentMatchType == 2 && this.editForm.data.opentMatchMember < promoteNum) {
-          if(ruleExtra == null || ruleExtra.is_gtcc == 0) { //gtcc 赛事不做数值检查
+          if(ruleExtra == null || ruleExtra.skip_strikeout == 0) { //跳过打立赛事不做数值检查
             this.errmsg('开赛人数不能小于打立出局的晋级规则的晋级人数')
             return false
           }
