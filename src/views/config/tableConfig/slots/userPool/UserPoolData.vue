@@ -17,7 +17,7 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="handleSearch">查询</el-button>
-        <el-button type="success" @click="fetchData">刷新</el-button>
+<!--        <el-button type="success" @click="fetchData">刷新</el-button>-->
         <el-button type="success" @click="handleCreate">添加配置</el-button>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <el-tooltip content="1.需要首行标题" effect="dark" placement="top">
@@ -370,7 +370,7 @@ export default {
         const reader = new FileReader()
         reader.onload = (e) => {
           const data = new Uint8Array(e.target.result)
-          const workbook = XLSX.read(data, {type: 'array'})
+          const workbook = XLSX.read(data, {type: 'array' })
           const sheetNames = workbook.SheetNames
           const uidSet = new Set() // 用来存放已存在的 uid
           sheetNames.forEach((sheetName) => {
@@ -408,12 +408,28 @@ export default {
             })
             this.userPoolCfg.items.push(...this.tableData)
             this.reqData.Data = JSON.stringify(this.userPoolCfg)
-            this.updateRequest(this.reqData)
+            // this.updateRequest(this.reqData)
+            // 后端处理UpdateBy
+            this.excelImportData(JSON.stringify(this.userPoolCfg))
           })
         }
         reader.readAsArrayBuffer(file)
         this.$forceUpdate()
       }
+    },
+    excelImportData(jsonData) {
+      request({
+        url: 'userpoolconfig/import/excel',
+        method: 'post',
+        data: {ExcelJsonData: jsonData}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.edit.item.ID = response.Data.ID
+          this.clientDB.AddData(this.edit.item)
+          this.getData()
+          Message.success('操作成功！')
+        }
+      })
     },
     excelSerialToUnix(serial) {
       const date = XLSX.SSF.parse_date_code(serial)
