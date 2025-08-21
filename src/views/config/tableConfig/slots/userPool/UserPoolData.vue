@@ -16,8 +16,7 @@
         <el-input v-model="searchUserId" clearable placeholder="请输入生效ID"/>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="handleSearch">查询</el-button>
-<!--        <el-button type="success" @click="fetchData">刷新</el-button>-->
+        <el-button type="primary" @click="getData">查询</el-button>
         <el-button type="success" @click="handleCreate">添加配置</el-button>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <el-tooltip content="1.需要首行标题" effect="dark" placement="top">
@@ -83,6 +82,18 @@
     </el-dialog>
     <!--对比组件-->
     <compare ref="compare"/>
+    <!--    分页-->
+    <div class="block">
+      <el-pagination
+        :current-page="clientDB.GetPage().GetCurrentPage()"
+        :page-sizes="[100, 200, 300, 400]"
+        :page-size="clientDB.GetPage().GetPageNum()"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="tableData.length"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
+    </div>
 
   </div>
 </template>
@@ -120,7 +131,6 @@ export default {
       clientDB: new ClientTableData([], 1, filterMap),
       searchUserId: '',
       tableData: [],
-      tableDataBak: [], // 用于筛选
       gameNameMap: {}, // {gameName:gameId}
       gameIdMap: {}, // {gameId:gameName}
       editDialogVisible: false,
@@ -129,6 +139,8 @@ export default {
       userPoolCfg: {
         items: []
       },
+      pageSize: 100,
+      page: 1,
       reqData: {},
       userPoolItem: {
         uid: 0,
@@ -154,12 +166,20 @@ export default {
   },
   mounted() {
     this.setDefaultDateRange()
-    this.handleSearch()
   },
   created() {
     this.fetchData()
   },
   methods: {
+    // 分页处理
+    handleSizeChange(val) {
+      this.pageSize = val
+      this.getData()
+    },
+    handleCurrentChange(val) {
+      this.page = val
+      this.getData()
+    },
     async fetchData() {
       await this.getGameList()
       await this.getData()
@@ -197,20 +217,19 @@ export default {
     getData() {
       // 加载基础数值配置
       request({
-        url: '/customizeconfig/one',
+        url: '/userpoolconfig/all',
         method: 'get',
         data: {
-          SubKey: 'slots_user_pool_data'
+          Page: this.page,
+          PageSize: this.pageSize,
+          UID: this.searchUserId,
+          UpdateStartAt: this.Unix(this.dateRange[0]),
+          UpdateEndAt: this.Unix(this.dateRange[1])
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          this.extForm = response.Data || {}
-          if (response.Data && response.Data.Data !== '') {
-            const jsonData = JSON.parse(response.Data.Data)
-            this.tableData = jsonData.items
-            this.tableDataBak = jsonData.items
-            this.reqData = response.Data
-          }
+          this.tableData = response.Data ? response.Data : []
+          this.reqData = response.Data// todo delete
         }
       })
     },
@@ -220,31 +239,6 @@ export default {
       const end = new Date(now.getFullYear(), now.getMonth() + 1, 0)
       const fmt = d => d.toISOString().slice(0, 10)
       this.dateRange = [fmt(start), fmt(end)]
-    },
-    handleSearch() {
-      const hasDate = this.dateRange?.length === 2
-      const hasUserId = this.searchUserId?.trim() !== ''
-      if (!hasDate && !hasUserId) {
-        this.$message.warning('请输入查询条件')
-        return
-      }
-      this.tableData = this.tableDataBak.filter(item => {
-        let matchDate = true
-        let matchId = true
-
-        if (hasDate) {
-          const start = this.Unix(this.dateRange[0])
-          const endDate = new Date(this.dateRange[1])
-          endDate.setHours(23, 59, 59, 999) // 设置到当天的最后一毫秒
-          const end = Math.floor(endDate.getTime() / 1000) // 转为秒级时间戳
-          const time = new Date(item.updateAt).getTime()
-          matchDate = time >= start && time <= end
-        }
-        if (hasUserId) {
-          matchId = item.uid + '' === (this.searchUserId.trim())
-        }
-        return matchDate && matchId
-      })
     },
     openEdit(row) {
       this.dialogTitle = '编辑配置'
@@ -370,7 +364,7 @@ export default {
         const reader = new FileReader()
         reader.onload = (e) => {
           const data = new Uint8Array(e.target.result)
-          const workbook = XLSX.read(data, {type: 'array' })
+          const workbook = XLSX.read(data, { type: 'array' })
           const sheetNames = workbook.SheetNames
           const uidSet = new Set() // 用来存放已存在的 uid
           sheetNames.forEach((sheetName) => {
@@ -408,7 +402,6 @@ export default {
             })
             this.userPoolCfg.items.push(...this.tableData)
             this.reqData.Data = JSON.stringify(this.userPoolCfg)
-            // this.updateRequest(this.reqData)
             // 后端处理UpdateBy
             this.excelImportData(JSON.stringify(this.userPoolCfg))
           })
