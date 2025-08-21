@@ -324,7 +324,7 @@
             <el-input v-model="prizeForm.MajorChangeNum" size="mini" />
           </el-col>
           <el-col :span="8">
-            <el-button style="margin-left: 10px;" type="primary" size="mini" @click="changePusoyJPPrizePool(false, 2);changePusoyTotalPrizePool(false, 1)">保存</el-button>
+            <el-button style="margin-left: 10px;" type="primary" size="mini" @click="changePusoyJPPrizePool(false, 2);changePusoyTotalPrizePool(false, 2)">保存</el-button>
           </el-col>
         </el-form-item>
 
@@ -341,7 +341,7 @@
             <el-input v-model="prizeForm.MajorChangeRobotNum" size="mini" />
           </el-col>
           <el-col :span="8">
-            <el-button style="margin-left: 10px;" type="primary" size="mini" @click="changePusoyJPPrizePool(true, 2);changePusoyTotalPrizePool(true, 1)">保存</el-button>
+            <el-button style="margin-left: 10px;" type="primary" size="mini" @click="changePusoyJPPrizePool(true, 2);changePusoyTotalPrizePool(true, 2)">保存</el-button>
           </el-col>
         </el-form-item>
 
@@ -835,19 +835,20 @@ export default {
     changePusoyJPPrizePool(isRobot, jpType) { //pusoy 更新指定奖池
       const _this = this
       let changeNum = _this.prizeForm.ChangeNum
-      if (jpType == 1){
-        changeNum = _this.prizeForm.GrandChangeNum
-      } else if (jpType == 2) {
-        changeNum = _this.prizeForm.MajorChangeNum
-      }
       let robotFlag = 0
       if (isRobot) {
         robotFlag = 1
         changeNum = _this.prizeForm.ChangeRobotNum
-        if (jpType == 1){
+        if (jpType === 1){
           changeNum = _this.prizeForm.GrandChangeRobotNum
-        } else if (jpType == 2) {
+        } else if (jpType === 2) {
           changeNum = _this.prizeForm.MajorChangeRobotNum
+        }
+      }else{
+        if (jpType === 1){
+          changeNum = _this.prizeForm.GrandChangeNum
+        } else if (jpType === 2) {
+          changeNum = _this.prizeForm.MajorChangeNum
         }
       }
       request({
