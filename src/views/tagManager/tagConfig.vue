@@ -141,7 +141,15 @@
                 </el-select>
             </el-form-item>
             <el-form-item v-if="gameIntensity()" label="登录天数：">
-              <el-select v-model="form.loginDay" placeholder="placeholder">
+              <el-select v-model="form.loginDay[0]" placeholder="placeholder">
+                <el-option
+                    v-for="opt in dayOptions"
+                    :key="opt.value"
+                    :label="opt.label"
+                    :value="opt.value"
+                />
+              </el-select>
+              <el-select v-model="form.loginDay[1]" placeholder="placeholder">
                 <el-option
                     v-for="opt in dayOptions"
                     :key="opt.value"
@@ -200,7 +208,7 @@
         name: 'tagConfig',
         libShow: $libShow,
         dayOptions: [
-          {value: 0, label: '无限制'},
+          {value: 0, label: '0天'},
           {value: 1, label: '1天'},
           {value: 2, label: '2天'},
           {value: 3, label: '3天'},
@@ -260,7 +268,7 @@
             tag_type: 40000,
             tag_name: 40001,
             tag_gid: 0,
-            loginDay: 0,
+            loginDay: [0,0],
             roundAvg: 1,
             validBet: 1000,
         },
@@ -338,7 +346,7 @@
         console.log(JSON.stringify(row))
         if (row.tag_type === 40000) {
           const attr = JSON.parse(row.tag_attr)
-          return `一周内在${this.gameName(row.tag_gid)}登录天数>=${attr.loginDay};日均玩牌局数>=${attr.roundAvg},有效下注>=${attr.validBet}`
+          return `一周内在${this.gameName(row.tag_gid)}登录天数在区间[${attr.loginDay[0]}-${attr.loginDay[1]}],日均玩牌局数>=${attr.roundAvg},有效下注>=${attr.validBet}`
         }
         return row.tag_attr
       },
