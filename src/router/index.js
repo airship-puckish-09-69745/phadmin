@@ -2188,9 +2188,15 @@ export const asyncRoutes = [
         meta: { title: '玩家标签管理', noCache: true },
         children: [
           {
+            path: 'tagUser',
+            component: () => import('@/views/tagManager/tagUser.vue'),
+            name: 'tagUser',
+            meta: { title: '查询用户标签', noCache: true }
+          },
+          {
             path: 'tagConfig',
             component: () => import('@/views/tagManager/tagConfig.vue'),
-            name: 'matchTongitsConfig',
+            name: 'tagConfig',
             meta: { title: '标签配置', noCache: true }
           }
         ]

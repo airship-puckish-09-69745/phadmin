@@ -151,7 +151,7 @@
               </el-select>
             </el-form-item>
             <el-form-item v-if="gameIntensity()" label="日均玩牌数：">
-              <el-input v-model.number="form.playRound" placeholder="大于等于"></el-input>
+              <el-input v-model.number="form.roundAvg" placeholder="大于等于"></el-input>
             </el-form-item>
             <el-form-item v-if="gameIntensity()" label="有效下注：">
               <el-input v-model.number="form.validBet" placeholder="大于等于"></el-input>
@@ -227,9 +227,7 @@
                     {value: 'core', label: '核心'},
                     {value: 'often', label: '常玩'},
                     {value: 'try', label: '尝试'},
-                    {value: 'ever', label: '无感'},
-                    {value: 'avg_round', label: '玩牌局数'},
-                    {value: 'login_day', label: '登录天数'},
+                    {value: 'unfeeling', label: '无感'},
                 ]},
             {value: 50000, label: '常玩底注'},
             {value: 60000, label: '最高场次'},
@@ -263,7 +261,7 @@
             tag_name: 40001,
             tag_gid: 0,
             loginDay: 0,
-            playRound: 1,
+            roundAvg: 1,
             validBet: 1000,
         },
         syncInfo: false,
@@ -317,7 +315,7 @@
         return ''
       },
       fieldName(tag_name) {
-        console.log(tag_name, this.fieldOptions)
+        // console.log(tag_name, this.fieldOptions)
         for (const v of this.fieldOptions) {
           if (v.value == tag_name) {
             return v.label
@@ -340,7 +338,7 @@
         console.log(JSON.stringify(row))
         if (row.tag_type === 40000) {
           const attr = JSON.parse(row.tag_attr)
-          return `一周内在${this.gameName(row.tag_gid)}登录天数>=${attr.loginDay};日均玩牌局数>=${attr.playRound},有效下注>=${attr.validBet}`
+          return `一周内在${this.gameName(row.tag_gid)}登录天数>=${attr.loginDay};日均玩牌局数>=${attr.roundAvg},有效下注>=${attr.validBet}`
         }
         return row.tag_attr
       },
@@ -394,7 +392,7 @@
         this.form.tag_gid = row.tag_gid
         this.form.status = row.status
         this.form.loginDay = attr.loginDay
-        this.form.playRound = attr.playRound
+        this.form.roundAvg = attr.roundAvg
         this.form.validBet = attr.validBet
         this.selectChange(this.form.tag_type)
       },
@@ -407,7 +405,7 @@
         this.form.tag_gid = row.tag_gid
         this.form.status = row.status
         this.form.loginDay = attr.loginDay
-        this.form.playRound = attr.playRound
+        this.form.roundAvg = attr.roundAvg
         this.form.validBet = attr.validBet
         this.selectChange(this.form.tag_type)
       },
@@ -418,7 +416,7 @@
       sure() {
         this.form.tag_attr = JSON.stringify({
           loginDay: this.form.loginDay,
-          playRound: this.form.playRound,
+          roundAvg: this.form.roundAvg,
           validBet: this.form.validBet
         })
         this.syncInfo = false
