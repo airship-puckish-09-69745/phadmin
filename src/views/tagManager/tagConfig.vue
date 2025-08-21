@@ -141,22 +141,32 @@
                 </el-select>
             </el-form-item>
             <el-form-item v-if="gameIntensity()" label="登录天数：">
-              <el-select v-model="form.loginDay[0]" placeholder="placeholder">
-                <el-option
-                    v-for="opt in dayOptions"
-                    :key="opt.value"
-                    :label="opt.label"
-                    :value="opt.value"
-                />
-              </el-select>
-              <el-select v-model="form.loginDay[1]" placeholder="placeholder">
-                <el-option
-                    v-for="opt in dayOptions"
-                    :key="opt.value"
-                    :label="opt.label"
-                    :value="opt.value"
-                />
-              </el-select>
+              <el-row>
+                <el-col :span="3">最小值</el-col>
+                <el-col :span="8">
+                  <el-select v-model="form.loginDay[0]" placeholder="最小值">
+                    <el-option
+                        v-for="opt in dayOptions"
+                        :key="opt.value"
+                        :label="opt.label"
+                        :value="opt.value"
+                    />
+                  </el-select>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="3">最大值</el-col>
+                <el-col :span="8">
+                  <el-select v-model="form.loginDay[1]" placeholder="最大值">
+                    <el-option
+                        v-for="opt in dayOptions"
+                        :key="opt.value"
+                        :label="opt.label"
+                        :value="opt.value"
+                    />
+                  </el-select>
+                </el-col>
+              </el-row>
             </el-form-item>
             <el-form-item v-if="gameIntensity()" label="日均玩牌数：">
               <el-input v-model.number="form.roundAvg" placeholder="大于等于"></el-input>
@@ -343,7 +353,7 @@
         return gid
       },
       attrName(row) {
-        console.log(JSON.stringify(row))
+        // console.log(JSON.stringify(row))
         if (row.tag_type === 40000) {
           const attr = JSON.parse(row.tag_attr)
           return `一周内在${this.gameName(row.tag_gid)}登录天数在区间[${attr.loginDay[0]}-${attr.loginDay[1]}],日均玩牌局数>=${attr.roundAvg},有效下注>=${attr.validBet}`
@@ -422,6 +432,30 @@
         this.form.id = 0
       },
       sure() {
+        if (!this.isEdit) {
+          const form = this.form
+          if (this.form.loginDay[0] > this.form.loginDay[1]) {
+            Message.error("登录天数最小值不能大于最大值")
+            return
+          }
+          for (const v of this.tableData) {
+            const attr = JSON.parse(v.tag_attr)
+            if (v.tag_type === this.form.tag_type && v.tag_gid === this.form.tag_gid && v.tag_name === this.form.tag_name) {
+              Message.error("重复标签")
+              return
+            }
+            if (v.tag_type === this.form.tag_type && v.tag_gid === this.form.tag_gid && this.gameIntensity()) {
+              if (form.loginDay[0] < attr.loginDay[0] && form.loginDay[1] >= attr.loginDay[0]) {
+                Message.error(`标签区间[${form.loginDay[0]},${form.loginDay[1]}]与标签《${this.fieldName(v.tag_name)}》的区间[${attr.loginDay[0]},${attr.loginDay[1]}]有重叠`)
+                return
+              }
+              if (form.loginDay[1] > attr.loginDay[1] && form.loginDay[0] <= attr.loginDay[1]) {
+                Message.error(`标签区间[${form.loginDay[0]},${form.loginDay[1]}]与标签《${this.fieldName(v.tag_name)}》的区间[${attr.loginDay[0]},${attr.loginDay[1]}]有重叠`)
+                return
+              }
+            }
+          }
+        }
         this.form.tag_attr = JSON.stringify({
           loginDay: this.form.loginDay,
           roundAvg: this.form.roundAvg,
