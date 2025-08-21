@@ -311,6 +311,38 @@
         <el-descriptions-item label="最后更新时间">{{ formatTime(prizeInfo.UpdateTime) }}</el-descriptions-item>
       </el-descriptions>
       <el-form :model="prizeForm">
+        <el-form-item >
+          <template #label>
+            <span style="color: #ff0000">手动修改玩家奖池数量(慎用)：</span>
+          </template>
+          <el-col :span="2">
+            <el-tooltip class="item" effect="dark" content="如Grand+Major不等于当前奖池数量时" placement="left-start">
+              <i class="el-icon-info" />
+            </el-tooltip>
+          </el-col>
+          <el-col :span="8">
+            <el-input v-model="prizeForm.ChangeNum" size="mini" />
+          </el-col>
+          <el-col :span="8">
+            <el-button style="margin-left: 10px;" type="primary" size="mini" @click="changePusoyTotalPrizePool(false, 0)">保存</el-button>
+          </el-col>
+        </el-form-item>
+        <el-form-item>
+          <template #label>
+            <span style="color: #ff0000">手动修改展示奖池数量(慎用)：</span>
+          </template>
+          <el-col :span="2">
+            <el-tooltip class="item" effect="dark" content="如Grand+Major不等于当前奖池数量时" placement="left-start">
+              <i class="el-icon-info" />
+            </el-tooltip>
+          </el-col>
+          <el-col :span="8">
+            <el-input v-model="prizeForm.ChangeRobotNum" size="mini" />
+          </el-col>
+          <el-col :span="8">
+            <el-button style="margin-left: 10px;" type="primary" size="mini" @click="changePusoyTotalPrizePool(true, 0)">保存</el-button>
+          </el-col>
+        </el-form-item>
         <el-form-item label="手动修改玩家Grand奖池数量：">
           <el-col :span="8">
             <el-input v-model="prizeForm.GrandChangeNum" size="mini" />
@@ -882,6 +914,7 @@ export default {
       let robotFlag = 0
       if (isRobot) {
         robotFlag = 1
+        changeNum = _this.prizeForm.ChangeRobotNum
         if (jpType == 1){
           changeNum = _this.prizeForm.GrandChangeRobotNum
         } else if (jpType == 2) {
