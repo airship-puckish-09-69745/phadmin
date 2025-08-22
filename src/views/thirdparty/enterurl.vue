@@ -86,6 +86,15 @@
             />
           </el-select>
         </el-form-item>
+        <el-form-item v-if="item.activity === 'tournament'" v-model="item.match_gid" label="比赛游戏：" label-width="100px">
+          <el-select v-model="item.match_gid" filterable allow-create default-first-option placeholder="请选择" size="mini">
+            <el-option
+              v-for="row in matchGames"
+              :label="row.name"
+              :value="row.val"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item v-if="item.activity === 'tournament' || item.activity === 'matchjoin'" v-model="item.activity_val" label="活动附加值：" label-width="100px">
           <el-input v-model="item.activity_val" />
         </el-form-item>
@@ -348,6 +357,20 @@ export default {
           val: 'tournament_-4'
         }
       ],
+      matchGames: [
+        {
+          name: '无',
+          val: ''
+        },
+        {
+          name: 'Tongits',
+          val: '2031'
+        },
+        {
+          name: 'Pusoy',
+          val: '2033'
+        }
+      ],
       appInfo: [],
       tableData: [],
       env: 'dev',
@@ -366,6 +389,7 @@ export default {
         path: '1',
         source: 'glife.bingoplus.com',
         activity: '',
+        match_gid: '',
         live_id: '',
         gp_ext: '{"vip":1}',
         kyc: '0',
