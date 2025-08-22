@@ -43,10 +43,10 @@
       </el-table-column>
       <el-table-column prop="uid" label="生效ID" align="center" width="320"/>
       <el-table-column prop="amount" label="可发放金额" align="center" width="320"/>
-<!--      <el-table-column prop="updateBy" label="修改人" align="center" width="320"/>-->
+      <el-table-column prop="updateBy" label="修改人" align="center" width="320"/>
       <el-table-column label="操作" align="center" width="197">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="openEdit(scope.row)">编辑</el-button>
+<!--          <el-button type="primary" size="mini" @click="openEdit(scope.row)">编辑</el-button>-->
           <el-button type="danger" size="mini" @click="removeRow(scope.row)">删除</el-button>
         </template>
       </el-table-column>
@@ -394,7 +394,7 @@ export default {
                 userPoolItem.validEndAt = this.excelSerialToUnix(row[1])
                 userPoolItem.uid = row[2]
                 userPoolItem.amount = row[3]
-                userPoolItem.updateBy = this.reqData.ModifyUser
+                // userPoolItem.updateBy = this.reqData.ModifyUser
                 if (
                   userPoolItem.updateAt === 0 ||
                   userPoolItem.validStartAt === 0 ||
@@ -408,7 +408,7 @@ export default {
               }
             })
             this.userPoolCfg.items.push(...this.tableData)
-            this.reqData.Data = JSON.stringify(this.userPoolCfg)
+            // this.reqData.Data = JSON.stringify(this.userPoolCfg)
             // 后端处理UpdateBy
             this.excelImportData(JSON.stringify(this.userPoolCfg))
           })
