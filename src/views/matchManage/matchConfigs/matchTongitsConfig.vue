@@ -1867,6 +1867,10 @@ export default {
         this.editForm.prizeExtra = JSON.parse(editData.prize_extra)
         if(editData.list_extra  !== undefined){
           this.editForm.listExtra = JSON.parse(editData.list_extra)
+        }else{
+          this.editForm.listExtra ={
+            tableSceneId :0,
+          }
         }
         this.showCsCfgs = []
         // 循环遍历是否存在gameId
