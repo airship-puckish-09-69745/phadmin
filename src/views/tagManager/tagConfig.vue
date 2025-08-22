@@ -17,7 +17,7 @@
         >
           <el-table-column
             prop="id"
-            label="标签id"
+            label="ID"
             width="120"
           />
           <el-table-column
@@ -34,9 +34,6 @@
             label="标签名称"
             width="120"
           >
-            <template slot-scope="scope">
-              {{ fieldName(scope.row.tag_name) }}
-            </template>
           </el-table-column>
           <el-table-column
             prop="tag_gid"
@@ -120,7 +117,7 @@
               </el-select>
             </el-form-item>
             <el-form-item v-if="haveChildren()" label="字段：">
-              <el-select v-model="form.tag_name" placeholder="placeholder">
+              <el-select v-model="form.tag_val" placeholder="placeholder" @change="tagValChange">
                 <el-option
                     v-for="opt in fieldOptions"
                     :key="opt.value"
@@ -129,9 +126,9 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item v-if="gameIntensity()" label="选择游戏：">
+            <el-form-item v-if="showGameOptions()" label="选择游戏：">
                 <el-select v-model="form.tag_gid" filterable placeholder="placeholder">
-                    <el-option :value="0" label="任意游戏"></el-option>
+                    <el-option v-if="gameIntensity()" :value="0" label="任意游戏"></el-option>
                     <el-option
                         v-for="opt in gameOptions"
                         :key="opt.value"
@@ -169,10 +166,24 @@
               </el-row>
             </el-form-item>
             <el-form-item v-if="gameIntensity()" label="日均玩牌数：">
-              <el-input v-model.number="form.roundAvg" placeholder="大于等于"></el-input>
+              <el-row>
+                <el-col :span="4">
+                  <el-checkbox v-model="form.roundAvg.use">启用</el-checkbox>
+                </el-col>
+                <el-col :span="8">
+                  <el-input v-if="form.roundAvg.use" v-model.number="form.roundAvg.val" placeholder="大于等于"></el-input>
+                </el-col>
+              </el-row>
             </el-form-item>
             <el-form-item v-if="gameIntensity()" label="有效下注：">
-              <el-input v-model.number="form.validBet" placeholder="大于等于"></el-input>
+              <el-row>
+                <el-col :span="4">
+                  <el-checkbox v-model="form.validBet.use">启用</el-checkbox>
+                </el-col>
+                <el-col :span="8">
+                  <el-input v-if="form.validBet.use" v-model.number="form.validBet.val" placeholder="大于等于"></el-input>
+                </el-col>
+              </el-row>
             </el-form-item>
           </el-form>
         </span>
@@ -208,6 +219,7 @@
       return {
         AttrNames: {
           tag_type: '标签类型',
+          tag_val: '标签值',
           tag_name: '标签名称',
           tag_gid: '关联游戏',
           tag_attr: '标签属性',
@@ -229,58 +241,81 @@
         ],
         gameOptions: [],
         tagOptions: [
-            {value: 10000, label: '用户类型', children: [
-                    {value: 'new', label: '新增用户'},
-                    {value: 'newplayer', label: '新进用户'},
-                    {value: 'user', label: '老用户'},
-                    {value: 'lose', label: '流失用户'},
-                    {value: 'prelose', label: '预流失用户'},
-                ]},
-            {value: 20000, label: '时间', children: [
-                    {value: 20001, label: '注册时间'},
-                    {value: 20002, label: '最后登录时间'},
-                ]},
-            {value: 30000, label: 'KYC'},
-            {value: 40000, label: '游戏强度', children: [
-                    {value: 'core', label: '核心'},
-                    {value: 'often', label: '常玩'},
-                    {value: 'try', label: '尝试'},
-                    {value: 'unfeeling', label: '无感'},
-                ]},
-            {value: 50000, label: '常玩底注'},
-            {value: 60000, label: '最高场次'},
-            {value: 70000, label: '信誉身份', children: [
-                    {value: 70001, label: '认证用户'},
-                    {value: 70002, label: '高信用户'},
-                    {value: 70003, label: '低信用户'},
-                    {value: 70004, label: '低危用户'},
-                    {value: 70005, label: '疑似用户'},
-                    {value: 70006, label: '黑子用户'},
-                ]},
-            {value: 80000, label: '赛事类型', children: [
-                    {value: 80001, label: '免费'},
-                    {value: 80002, label: '付费'},
-                ]},
-            {value: 90000, label: '平台VIP等级'},
-            {value: 100000, label: '资产相关', children: [
-                    {value: 100001, label: '用户单笔充值最高'},
-                    {value: 100002, label: '用户累计充值额度'},
-                    {value: 100003, label: '用户累计充值次数'},
-                    {value: 100004, label: '是否全平台无牌局记录充值'},
-                    {value: 100005, label: '用户登录资产'},
-                    {value: 100006, label: '用户提现次数'},
-                    {value: 100007, label: '用户累计提现额'},
-                    {value: 100008, label: '用户最高提现额'}
-                ]},
+          {value: 10000, label: '用户类型', children: [
+            {value: 1, label: '新增用户'},
+            {value: 2, label: '新进用户'},
+            {value: 3, label: '流失用户'},
+            {value: 4, label: '预流失用户'},
+          ]},
+          {value: 40000, label: '游戏强度', children: [
+            {value: 1, label: '无感'},
+            {value: 2, label: '尝试'},
+            {value: 3, label: '常玩'},
+            {value: 4, label: '核心'},
+          ]},
+          {value: 50000, label: '常玩底注', children: [
+            {value: 100, label: '底注0.1'},
+            {value: 200, label: '底注0.2'},
+            {value: 500, label: '底注0.5'},
+            {value: 1000, label: '底注1'},
+            {value: 2000, label: '底注2'},
+            {value: 5000, label: '底注5'},
+            {value: 10000, label: '底注10'},
+            {value: 20000, label: '底注20'},
+            {value: 50000, label: '底注50'},
+            {value: 100000, label: '底注100'},
+            {value: 200000, label: '底注200'},
+            {value: 500000, label: '底注500'},
+            {value: 1000000, label: '底注1K'},
+            {value: 2000000, label: '底注2K'},
+            {value: 5000000, label: '底注5K'},
+            {value: 10000000, label: '底注10K'},
+            {value: 20000000, label: '底注20K'},
+            {value: 50000000, label: '底注50K'},
+            {value: 100000000, label: '底注100K'},
+            {value: 200000000, label: '底注200K'},
+            {value: 500000000, label: '底注500K'},
+            {value: 1000000000, label: '底注1M'},
+            {value: 2000000000, label: '底注2M'},
+            {value: 5000000000, label: '底注5M'},
+            {value: 10000000000, label: '底注10M'},
+            {value: 20000000000, label: '底注20M'},
+            {value: 50000000000, label: '底注50M'},
+            {value: 100000000000, label: '底注100M'},
+            {value: 200000000000, label: '底注200M'},
+            {value: 500000000000, label: '底注500M'},
+          ]},
+          {value: 60000, label: '最高场次', children: [
+            {value: 100, label: '0.1场次'},
+            {value: 200, label: '0.2场次'},
+            {value: 500, label: '0.5场次'},
+            {value: 1000, label: '1场次'},
+            {value: 2000, label: '2场次'},
+            {value: 5000, label: '5场次'},
+            {value: 10000, label: '10场次'},
+            {value: 20000, label: '20场次'},
+            {value: 50000, label: '50场次'},
+            {value: 100000, label: '100场次'},
+            {value: 200000, label: '200场次'},
+            {value: 500000, label: '500场次'},
+            {value: 1000000, label: '1000场次'},
+            {value: 2000000, label: '2000场次'},
+            {value: 5000000, label: '5000场次'},
+          ]},
+          {value: 80000, label: '赛事类型', children: [
+            {value: 1, label: '免费'},
+            {value: 2, label: '付费'},
+          ]}
         ],
         fieldOptions: [],
         form: {
-            tag_type: 40000,
-            tag_name: 40001,
-            tag_gid: 0,
-            loginDay: [0,0],
-            roundAvg: 1,
-            validBet: 1000,
+          tag_type: 40000,
+          tag_val: 0,
+          tag_name: '',
+          tag_gid: 22,
+          loginDay: [0,0],
+          roundAvg: {use:false, min: 0},
+          validBet: {use:false, min: 0},
         },
         syncInfo: false,
         appInfo: [],
@@ -307,13 +342,24 @@
       this.selectChange(this.form.tag_type)
     },
     methods: {
+      tagValChange(value) {
+        for (const v of this.fieldOptions) {
+          if (v.value == value) {
+            this.form.tag_name = v.label
+          }
+        }
+      },
       selectChange(value) {
-        console.log(value)
+        // console.log(value)
         for (const v of this.tagOptions) {
           if (v.value === value) {
               this.fieldOptions = v.children
               break
           }
+        }
+        if (this.fieldOptions && this.fieldOptions.length>0) {
+          this.form.tag_val = this.fieldOptions[0].value
+          this.form.tag_name = this.fieldOptions[0].label
         }
       },
       haveChildren(){
@@ -332,10 +378,10 @@
         }
         return ''
       },
-      fieldName(tag_name) {
-        // console.log(tag_name, this.fieldOptions)
+      fieldName(tag_val) {
+        // console.log(tag_val, this.fieldOptions)
         for (const v of this.fieldOptions) {
-          if (v.value == tag_name) {
+          if (v.value == tag_val) {
             return v.label
           }
         }
@@ -353,10 +399,20 @@
         return gid
       },
       attrName(row) {
+        if (row.tag_attr === '{}') {
+          return ""
+        }
         // console.log(JSON.stringify(row))
         if (row.tag_type === 40000) {
           const attr = JSON.parse(row.tag_attr)
-          return `一周内在${this.gameName(row.tag_gid)}登录天数在区间[${attr.loginDay[0]}-${attr.loginDay[1]}],日均玩牌局数>=${attr.roundAvg},有效下注>=${attr.validBet}`
+          let str = `一周内在${this.gameName(row.tag_gid)}登录天数在区间[${attr.loginDay[0]}-${attr.loginDay[1]}]`
+          if (attr.roundAvg.use) {
+            str += `,日均玩牌局数>=${attr.roundAvg.val}`
+          }
+          if (attr.validBet.use) {
+            str += `,有效下注>=${attr.validBet.val}`
+          }
+          return str
         }
         return row.tag_attr
       },
@@ -379,6 +435,9 @@
             }
           }
         })
+      },
+      showGameOptions() {
+        return (this.form.tag_type === 40000 || this.form.tag_type === 50000 || this.form.tag_type === 60000)
       },
       gameIntensity() {
         return (this.form.tag_type === 40000)
@@ -406,6 +465,7 @@
         const attr = JSON.parse(row.tag_attr)
         this.form.id = row.id
         this.form.tag_type = row.tag_type
+        this.form.tag_val = row.tag_val
         this.form.tag_name = row.tag_name
         this.form.tag_gid = row.tag_gid
         this.form.status = row.status
@@ -419,6 +479,7 @@
         const attr = JSON.parse(row.tag_attr)
         // this.form.id = row.id
         this.form.tag_type = row.tag_type
+        this.form.tag_val = row.tag_val
         this.form.tag_name = row.tag_name
         this.form.tag_gid = row.tag_gid
         this.form.status = row.status
@@ -432,35 +493,38 @@
         this.form.id = 0
       },
       sure() {
-        if (!this.isEdit) {
-          const form = this.form
-          if (this.form.loginDay[0] > this.form.loginDay[1]) {
-            Message.error("登录天数最小值不能大于最大值")
-            return
-          }
-          for (const v of this.tableData) {
-            const attr = JSON.parse(v.tag_attr)
-            if (v.tag_type === this.form.tag_type && v.tag_gid === this.form.tag_gid && v.tag_name === this.form.tag_name) {
-              Message.error("重复标签")
+        this.form.tag_attr = '{}'
+        if (this.gameIntensity()){
+          if (!this.isEdit) {
+            const form = this.form
+            if (this.form.loginDay[0] > this.form.loginDay[1]) {
+              Message.error("登录天数最小值不能大于最大值")
               return
             }
-            if (v.tag_type === this.form.tag_type && v.tag_gid === this.form.tag_gid && this.gameIntensity()) {
-              if (form.loginDay[0] < attr.loginDay[0] && form.loginDay[1] >= attr.loginDay[0]) {
-                Message.error(`标签区间[${form.loginDay[0]},${form.loginDay[1]}]与标签《${this.fieldName(v.tag_name)}》的区间[${attr.loginDay[0]},${attr.loginDay[1]}]有重叠`)
+            for (const v of this.tableData) {
+              const attr = JSON.parse(v.tag_attr)
+              if (v.tag_type === this.form.tag_type && v.tag_gid === this.form.tag_gid && v.tag_val === this.form.tag_val) {
+                Message.error("重复标签")
                 return
               }
-              if (form.loginDay[1] > attr.loginDay[1] && form.loginDay[0] <= attr.loginDay[1]) {
-                Message.error(`标签区间[${form.loginDay[0]},${form.loginDay[1]}]与标签《${this.fieldName(v.tag_name)}》的区间[${attr.loginDay[0]},${attr.loginDay[1]}]有重叠`)
-                return
+              if (v.tag_type === this.form.tag_type && v.tag_gid === this.form.tag_gid && this.gameIntensity()) {
+                if (form.loginDay[0] < attr.loginDay[0] && form.loginDay[1] >= attr.loginDay[0]) {
+                  Message.error(`标签区间[${form.loginDay[0]},${form.loginDay[1]}]与标签《${this.fieldName(v.tag_val)}》的区间[${attr.loginDay[0]},${attr.loginDay[1]}]有重叠`)
+                  return
+                }
+                if (form.loginDay[1] > attr.loginDay[1] && form.loginDay[0] <= attr.loginDay[1]) {
+                  Message.error(`标签区间[${form.loginDay[0]},${form.loginDay[1]}]与标签《${this.fieldName(v.tag_val)}》的区间[${attr.loginDay[0]},${attr.loginDay[1]}]有重叠`)
+                  return
+                }
               }
             }
           }
+          this.form.tag_attr = JSON.stringify({
+            loginDay: this.form.loginDay,
+            roundAvg: this.form.roundAvg,
+            validBet: this.form.validBet
+          })
         }
-        this.form.tag_attr = JSON.stringify({
-          loginDay: this.form.loginDay,
-          roundAvg: this.form.roundAvg,
-          validBet: this.form.validBet
-        })
         this.syncInfo = false
         this.isEdit?this.tagUpdate():this.tagCreate()
         this.isEdit = false
@@ -503,6 +567,7 @@
             Env: this.env,
             ID: editData.id,
             TagType: editData.tag_type,
+            TagVal: editData.tag_val,
             TagName: editData.tag_name,
             TagGid: editData.tag_gid,
             TagAttr: editData.tag_attr,
@@ -552,6 +617,7 @@
             Env: this.env,
             ID: editData.id,
             TagType: editData.tag_type,
+            TagVal: editData.tag_val,
             TagName: editData.tag_name,
             TagGid: editData.tag_gid,
             TagAttr: editData.tag_attr,
