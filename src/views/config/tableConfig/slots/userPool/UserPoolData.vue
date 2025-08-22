@@ -43,11 +43,11 @@
       </el-table-column>
       <el-table-column prop="uid" label="生效ID" align="center" width="320"/>
       <el-table-column prop="amount" label="可发放金额" align="center" width="320"/>
-      <el-table-column prop="updateBy" label="修改人" align="center" width="320"/>
+<!--      <el-table-column prop="updateBy" label="修改人" align="center" width="320"/>-->
       <el-table-column label="操作" align="center" width="197">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="openEdit(scope.row)">编辑</el-button>
-          <el-button type="danger" size="mini" @click="removeRow(scope.$index)">删除</el-button>
+          <el-button type="danger" size="mini" @click="removeRow(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -110,7 +110,7 @@ import {mapGetters} from "vuex";
 const filterMap = {}
 
 function newItem() {
-  return {updateAt: getCurrentDate(), effectiveRange: [], updateBy: '', uid: '', amount: 0}
+  return {updateAt: getCurrentDate(), effectiveRange: [], updateBy: '', uid: '', amount: 0, id: 0}
 }
 
 function getCurrentDate() {
@@ -143,12 +143,13 @@ export default {
       page: 1,
       reqData: {},
       userPoolItem: {
-        uid: 0,
-        amount: 0,
-        updateAt: 0,
-        updateBy: '',
-        validStartAt: 0,
-        validEndAt: 0
+        ID: 0,
+        UID: 0,
+        Amount: 0,
+        UpdateAt: 0,
+        UpdateBy: '',
+        ValidStartAt: 0,
+        ValidEndAt: 0
       },
       edit: {
         editingIndex: null,
@@ -243,6 +244,7 @@ export default {
     openEdit(row) {
       this.dialogTitle = '编辑配置'
       this.edit.editingIndex = this.tableData.indexOf(row)
+      this.edit.item.id = row.id
       this.edit.item.amount = row.amount
       this.edit.item.uid = row.uid
       this.edit.item.updateAt = this.formatDate(row.updateAt)
@@ -261,22 +263,19 @@ export default {
     saveEdit() {
       if (!this.checkData()) return
       if (this.edit.editingIndex !== null) {
-        this.userPoolItem.uid = Number(this.edit.item.uid)
-        this.userPoolItem.amount = this.edit.item.amount
-        this.userPoolItem.updateAt = Math.floor(Date.now() / 1000)
-        this.userPoolItem.updateBy = this.name
-        this.userPoolItem.validStartAt = this.Unix(this.edit.item.effectiveRange[0])
-        this.userPoolItem.validEndAt = this.Unix(this.edit.item.effectiveRange[1])
-        this.$set(this.tableData, this.edit.editingIndex, this.userPoolItem)
-        const newTableData = this.tableData
-        this.userPoolCfg.items = newTableData
-        this.reqData.Data = JSON.stringify(this.userPoolCfg)
-        this.updateRequest(this.reqData)
+        this.userPoolItem.ID = this.edit.item.id
+        this.userPoolItem.UID = Number(this.edit.item.uid)
+        this.userPoolItem.Amount = this.edit.item.amount
+        this.userPoolItem.UpdateAt = Math.floor(Date.now() / 1000)
+        this.userPoolItem.UpdateBy = this.name
+        this.userPoolItem.ValidStartAt = this.Unix(this.edit.item.effectiveRange[0])
+        this.userPoolItem.ValidEndAt = this.Unix(this.edit.item.effectiveRange[1])
+        this.updateRequest(this.userPoolItem)
       } else {
         this.createSave(this.edit.item)
       }
       //
-      this.getData()
+      // this.getData()
       this.editDialogVisible = false
     },
     getPostData() {
@@ -292,7 +291,7 @@ export default {
     },
     updateRequest(updateData) {
       request({
-        url: 'customizeconfig/update',
+        url: '/userpoolconfig/update',
         method: 'post',
         data: updateData
       }).then(response => {
@@ -331,11 +330,19 @@ export default {
       }
       return true
     },
-    removeRow(index) {
-      this.tableData.splice(index, 1)
-      this.userPoolCfg.items = this.tableData
-      this.reqData.Data = JSON.stringify(this.userPoolCfg)
-      this.updateRequest(this.reqData)
+    removeRow(row) {
+      request({
+        url: 'userpoolconfig/delete',
+        method: 'post',
+        data: {ID: row.id}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          // this.edit.item.ID = response.Data.ID
+          // this.clientDB.AddData(this.edit.item)
+          this.getData()
+          Message.success('操作成功！')
+        }
+      })
     },
     resetEditForm() {
       this.editForm = {updateAt: '', effectiveRange: [], uid: '', amount: 0}
