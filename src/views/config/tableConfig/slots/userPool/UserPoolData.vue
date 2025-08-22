@@ -427,6 +427,7 @@ export default {
         this.removeAllConfig()
         this.resetEditForm()
       }
+      const excelData = []
       const today = this.getMidnightTimestamp()// 当日凌晨0点的时间
       if (file) {
         const reader = new FileReader()
@@ -464,26 +465,36 @@ export default {
                   Message.error('导入失败,数据不能为空')
                   return
                 }
-                this.tableData.push(userPoolItem)
+                excelData.push(userPoolItem)
               }
             })
-            this.userPoolCfg.items.push(...this.tableData)// 只追加excel中的
+            this.userPoolCfg.items.push(...excelData)// 只追加excel中的
             if (this.reqData == null) {
               this.reqData = {}
             }
-            this.reqData.Data = JSON.stringify(this.userPoolCfg)
-            // 后端处理UpdateBy(this.tableData会再次刷新)
+            this.reqData.Data = JSON.stringify(excelData)
+            // 后端处理UpdateBy(excelData会再次刷新)
             this.excelImportData(JSON.stringify(this.userPoolCfg))
             // 筛出过期配置，保存到配置表
             // eslint-disable-next-line no-unused-vars
-            let allConfigData = []
-            this.getAllData() // 数据库的数据
-            allConfigData.push(...this.tableData)
-            allConfigData = this.filterExpiredData(allConfigData)
-            this.userPoolCfg.items = allConfigData
-            this.reqData.Data = JSON.stringify(this.userPoolCfg)
-            // console.log('handlerImport this.reqData:=====>', this.reqData);
-            this.saveConfigTable(this.reqData)
+            request({
+              url: '/userpoolconfig/all',
+              method: 'get',
+              data: {
+                page: 0,
+                pageSize: 0
+              }
+            }).then(response => {
+              if (response.RetCode === 0) {
+                let allConfigData = []
+                allConfigData = response.Data ? response.Data : []
+                allConfigData = this.filterExpiredData(allConfigData)
+                this.userPoolCfg.items = allConfigData
+                this.reqData.Data = JSON.stringify(this.userPoolCfg)
+                // console.log('handlerImport this.reqData:=====>', this.reqData);
+                this.saveConfigTable(this.reqData)
+              }
+            })
           })
         }
         reader.readAsArrayBuffer(file)
