@@ -16,7 +16,7 @@
         <el-input v-model="searchUserId" clearable placeholder="请输入生效ID"/>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="getData">查询</el-button>
+        <el-button type="primary" @click="getData(page,pageSize)">查询</el-button>
         <el-button type="success" @click="handleCreate">添加配置</el-button>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <el-tooltip content="1.需要首行标题" effect="dark" placement="top">
@@ -46,7 +46,7 @@
       <el-table-column prop="updateBy" label="修改人" align="center" width="320"/>
       <el-table-column label="操作" align="center" width="197">
         <template slot-scope="scope">
-<!--          <el-button type="primary" size="mini" @click="openEdit(scope.row)">编辑</el-button>-->
+          <!--          <el-button type="primary" size="mini" @click="openEdit(scope.row)">编辑</el-button>-->
           <el-button type="danger" size="mini" @click="removeRow(scope.row)">删除</el-button>
         </template>
       </el-table-column>
@@ -106,6 +106,7 @@ import {$libShow, ClientTableData, ValidateVueItem} from '@/utils/common'
 import {Message} from 'element-ui'
 import XLSX from 'xlsx'
 import {mapGetters} from "vuex";
+import {now} from "mockjs/src/mock/random/date";
 
 const filterMap = {}
 
@@ -141,7 +142,9 @@ export default {
       },
       pageSize: 100,
       page: 1,
-      reqData: {},
+      reqData: {
+        Data: ''
+      },
       userPoolItem: {
         ID: 0,
         UID: 0,
@@ -175,15 +178,16 @@ export default {
     // 分页处理
     handleSizeChange(val) {
       this.pageSize = val
-      this.getData()
+      this.getData(this.page, this.pageSize)
     },
     handleCurrentChange(val) {
       this.page = val
-      this.getData()
+      this.getData(this.page, this.pageSize)
     },
     async fetchData() {
       await this.getGameList()
-      await this.getData()
+      await this.getData(this.page, this.pageSize)
+      await this.getConfigTable()
     },
     getGameList() {
       return request({
@@ -215,14 +219,17 @@ export default {
     getFullKey() {
       return 'CustomizeCfg_slots_user_pool_data'
     },
-    getData() {
+    getAllData() {
+      this.getData(0, 0)
+    },
+    getData(pageIndex, pageSize) {
       // 加载基础数值配置
-      request({
+      return request({
         url: '/userpoolconfig/all',
         method: 'get',
         data: {
-          Page: this.page,
-          PageSize: this.pageSize,
+          Page: pageIndex,
+          PageSize: pageSize,
           UID: this.searchUserId,
           UpdateStartAt: this.Unix(this.dateRange[0]),
           UpdateEndAt: this.Unix(this.dateRange[1])
@@ -270,12 +277,20 @@ export default {
         this.userPoolItem.UpdateBy = this.name
         this.userPoolItem.ValidStartAt = this.Unix(this.edit.item.effectiveRange[0])
         this.userPoolItem.ValidEndAt = this.Unix(this.edit.item.effectiveRange[1])
+        //
+        let allConfigData = []
+        this.getAllData() // 数据库的数据
+        allConfigData.push(...this.tableData)
+        allConfigData.push(this.userPoolItem)
+        allConfigData = this.filterExpiredData(allConfigData)
+        this.userPoolCfg.items = allConfigData
+        this.reqData.Data = JSON.stringify(this.userPoolCfg)
+        this.saveConfigTable(this.reqData)
+        //
         this.updateRequest(this.userPoolItem)
       } else {
         this.createSave(this.edit.item)
       }
-      //
-      // this.getData()
       this.editDialogVisible = false
     },
     getPostData() {
@@ -298,22 +313,45 @@ export default {
         if (response.RetCode === 0) {
           this.edit.item.ID = response.Data.ID
           this.clientDB.AddData(this.edit.item)
-          this.getData()
+          this.getData(this.page, this.pageSize)
           Message.success('操作成功！')
         }
       })
     },
-    createSave(postData) {
-      this.userPoolItem.uid = postData.uid
-      this.userPoolItem.amount = postData.amount
-      this.userPoolItem.updateAt = Math.floor(Date.now() / 1000)
-      this.userPoolItem.updateBy = this.name
-      this.userPoolItem.validStartAt = this.Unix(postData.effectiveRange[0])
-      this.userPoolItem.validEndAt = this.Unix(postData.effectiveRange[1])
+    createRequest(updateData) {
+      request({
+        url: '/userpoolconfig/create',
+        method: 'post',
+        data: updateData
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.edit.item.ID = response.Data.ID
+          this.clientDB.AddData(this.edit.item)
+          this.getData(this.page, this.pageSize)
+          Message.success('操作成功！')
+        }
+      })
+    },
+    createSave() {
+      this.userPoolItem.UID = this.edit.item.uid
+      this.userPoolItem.Amount = this.edit.item.amount
+      this.userPoolItem.UpdateAt = Math.floor(Date.now() / 1000)
+      this.userPoolItem.UpdateBy = this.edit.item.name
+      this.userPoolItem.ValidStartAt = this.Unix(this.edit.item.effectiveRange[0])
+      this.userPoolItem.ValidEndAt = this.Unix(this.edit.item.effectiveRange[1])
       this.tableData.push(this.userPoolItem)
       this.userPoolCfg.items = this.tableData
+      // this.reqData.Data = JSON.stringify(this.userPoolCfg)
+      this.createRequest(this.userPoolItem)
+      // 加到配置表中
+      let allConfigData = []
+      this.getAllData() // 数据库的数据
+      allConfigData.push(...this.tableData)
+      allConfigData.push(this.userPoolItem)
+      allConfigData = this.filterExpiredData(allConfigData)
+      this.userPoolCfg.items = allConfigData
       this.reqData.Data = JSON.stringify(this.userPoolCfg)
-      this.updateRequest(this.reqData)
+      this.saveConfigTable(this.reqData)
     },
     checkData() {
       if (this.edit.amount < 0) {
@@ -339,10 +377,24 @@ export default {
         if (response.RetCode === 0) {
           // this.edit.item.ID = response.Data.ID
           // this.clientDB.AddData(this.edit.item)
-          this.getData()
+          this.getData(this.page, this.pageSize)
           Message.success('操作成功！')
         }
       })
+      // 加到配置表中
+      let allConfigData = []
+      this.getAllData() // 数据库的数据
+      allConfigData.push(...this.tableData)
+      allConfigData.push(this.userPoolItem)
+      allConfigData = this.filterExpiredData(allConfigData)
+      for (const index of allConfigData) { // 删除这个
+        if (allConfigData[index].ID === row.id) {
+          allConfigData.splice(index, 1)
+        }
+      }
+      this.userPoolCfg.items = allConfigData
+      this.reqData.Data = JSON.stringify(this.userPoolCfg)
+      this.saveConfigTable(this.reqData)
     },
     resetEditForm() {
       this.editForm = {updateAt: '', effectiveRange: [], uid: '', amount: 0}
@@ -371,7 +423,7 @@ export default {
         const reader = new FileReader()
         reader.onload = (e) => {
           const data = new Uint8Array(e.target.result)
-          const workbook = XLSX.read(data, { type: 'array' })
+          const workbook = XLSX.read(data, {type: 'array'})
           const sheetNames = workbook.SheetNames
           const uidSet = new Set() // 用来存放已存在的 uid
           sheetNames.forEach((sheetName) => {
@@ -381,7 +433,6 @@ export default {
             json.forEach((row, index) => {
               if (index > 0 && row.length > 0) {
                 const uid = row[2]
-
                 // 1. 检查 uid 是否重复
                 if (uidSet.has(uid)) {
                   Message.error(`导入失败: UID ${uid} 在表格中存在重复`)
@@ -407,15 +458,41 @@ export default {
                 this.tableData.push(userPoolItem)
               }
             })
-            this.userPoolCfg.items.push(...this.tableData)
-            // this.reqData.Data = JSON.stringify(this.userPoolCfg)
-            // 后端处理UpdateBy
+            this.userPoolCfg.items.push(...this.tableData)// 只追加excel中的
+            if (this.reqData == null) {
+              this.reqData = {}
+            }
+            this.reqData.Data = JSON.stringify(this.userPoolCfg)
+            // 后端处理UpdateBy(this.tableData会再次刷新)
             this.excelImportData(JSON.stringify(this.userPoolCfg))
+            // 筛出过期配置，保存到配置表
+            // eslint-disable-next-line no-unused-vars
+            let allConfigData = []
+            allConfigData = this.tableData // 此时是excel中的数据
+            this.getAllData() // 数据库的数据
+            allConfigData.push(...this.tableData)
+            allConfigData = this.filterExpiredData(allConfigData)
+            this.userPoolCfg.items = allConfigData
+            this.reqData.Data = JSON.stringify(this.userPoolCfg)
+            // console.log('handlerImport this.reqData:=====>', this.reqData);
+            this.saveConfigTable(this.reqData)
           })
         }
         reader.readAsArrayBuffer(file)
         this.$forceUpdate()
       }
+    },
+    filterExpiredData(needFilterData) {
+      const res = []
+      for (const data of needFilterData) {
+        if (data.validEndAt >= this.getCurrentUnix() && data.validStartAt <= this.getCurrentUnix()) {
+          res.push(data)
+        }
+      }
+      return res
+    },
+    getCurrentUnix() {
+      return Math.floor(Date.now() / 1000)
     },
     excelImportData(jsonData) {
       request({
@@ -426,8 +503,39 @@ export default {
         if (response.RetCode === 0) {
           this.edit.item.ID = response.Data.ID
           this.clientDB.AddData(this.edit.item)
-          this.getData()
           Message.success('操作成功！')
+        }
+      })
+    },
+    saveConfigTable(updateData) {
+      request({
+        url: 'customizeconfig/update',
+        method: 'post',
+        data: updateData
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.edit.item.ID = response.Data.ID
+          this.clientDB.AddData(this.edit.item)
+          this.getData(this.page, this.pageSize)
+          Message.success('操作成功！')
+        }
+      })
+    },
+    getConfigTable() {
+      // 加载基础数值配置
+      return request({
+        url: '/customizeconfig/one',
+        method: 'get',
+        data: {
+          SubKey: 'slots_user_pool_data'
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.extForm = response.Data || {}
+          if (response.Data && response.Data.Data !== '') {
+            this.reqData = response.Data
+            console.log('getConfigTable this.reqData:=====>', this.reqData);
+          }
         }
       })
     },
