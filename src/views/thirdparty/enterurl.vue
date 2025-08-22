@@ -532,7 +532,8 @@ export default {
           source: this.item.source,
           activity: activityVal,
           live_id: this.item.live_id,
-          gp_ext: this.item.gp_ext
+          gp_ext: this.item.gp_ext,
+          match_gid: this.item.match_gid
           // kyc: this.item.kyc,
           // r_time: this.item.r_time/1000
         }
