@@ -714,25 +714,25 @@ export default {
             }
             for (const k in this.item.MiniCfg){
               this.item.MiniCfg[k].TableMoney /= 1000
-              //this.item.MiniCfg[k].RewardMul /= 100
+              this.item.MiniCfg[k].RewardMul /= 1
             }
 
             for (const k in this.item.ShowPool.GrandRewardCfg){
               this.item.ShowPool.GrandRewardCfg[k].PoolAreaMin /= 1000
               this.item.ShowPool.GrandRewardCfg[k].PoolAreaMax /= 1000
-              //this.item.ShowPool.GrandRewardCfg[k].RewardRate /= 100
-              //this.item.ShowPool.GrandRewardCfg[k].ShowRobotRewardRate /= 100
+              this.item.ShowPool.GrandRewardCfg[k].RewardRate /= 1
+              this.item.ShowPool.GrandRewardCfg[k].ShowRobotRewardRate /= 1
             }
             for (const k in this.item.ShowPool.MajorRewardCfg){
               this.item.ShowPool.MajorRewardCfg[k].PoolAreaMin /= 1000
               this.item.ShowPool.MajorRewardCfg[k].PoolAreaMax /= 1000
-              //this.item.ShowPool.MajorRewardCfg[k].RewardRate /= 100
-              //this.item.ShowPool.MajorRewardCfg[k].ShowRobotRewardRate /= 100
+              this.item.ShowPool.MajorRewardCfg[k].RewardRate /= 1
+              this.item.ShowPool.MajorRewardCfg[k].ShowRobotRewardRate /= 1
             }
             for (const k in this.item.ShowPool.MiniRewardCfg){
               this.item.ShowPool.MiniRewardCfg[k].TableMoney /= 1000
-              //this.item.ShowPool.MiniRewardCfg[k].RewardRate /= 100
-              //this.item.ShowPool.MiniRewardCfg[k].ShowRobotRewardRate /= 100
+              this.item.ShowPool.MiniRewardCfg[k].RewardRate /= 1
+              this.item.ShowPool.MiniRewardCfg[k].ShowRobotRewardRate /= 1
             }
     },
     
@@ -757,25 +757,25 @@ export default {
       }
       for (const k in ret.MiniCfg){
         ret.MiniCfg[k].TableMoney *= 1000
-        //ret.MiniCfg[k].RewardMul *= 100
+        ret.MiniCfg[k].RewardMul *= 1
       }
 
       for (const k in ret.ShowPool.GrandRewardCfg){
         ret.ShowPool.GrandRewardCfg[k].PoolAreaMin *= 1000
         ret.ShowPool.GrandRewardCfg[k].PoolAreaMax *= 1000
-        //ret.ShowPool.GrandRewardCfg[k].RewardRate *= 100
-        //ret.ShowPool.GrandRewardCfg[k].ShowRobotRewardRate *= 100
+        ret.ShowPool.GrandRewardCfg[k].RewardRate *= 1
+        ret.ShowPool.GrandRewardCfg[k].ShowRobotRewardRate *= 1
       }
       for (const k in ret.ShowPool.MajorRewardCfg){
         ret.ShowPool.MajorRewardCfg[k].PoolAreaMin *= 1000
         ret.ShowPool.MajorRewardCfg[k].PoolAreaMax *= 1000
-        //ret.ShowPool.MajorRewardCfg[k].RewardRate *= 100
-        //ret.ShowPool.MajorRewardCfg[k].ShowRobotRewardRate *= 100
+        ret.ShowPool.MajorRewardCfg[k].RewardRate *= 1
+        ret.ShowPool.MajorRewardCfg[k].ShowRobotRewardRate *= 1
       }
       for (const k in ret.ShowPool.MiniRewardCfg){
         ret.ShowPool.MiniRewardCfg[k].TableMoney *= 1000
-        //ret.ShowPool.MiniRewardCfg[k].RewardRate *= 100
-        //ret.ShowPool.MiniRewardCfg[k].ShowRobotRewardRate *= 100
+        ret.ShowPool.MiniRewardCfg[k].RewardRate *= 1
+        ret.ShowPool.MiniRewardCfg[k].ShowRobotRewardRate *= 1
       }
 
       return ret

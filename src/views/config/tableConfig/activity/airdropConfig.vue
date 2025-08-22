@@ -1105,8 +1105,11 @@ export default {
         }
       }
 
+      // 确保注册的结束时间是日期的最后一秒
+      const registerEndTime = new Date(this.edit.registerDateRange[1]).setHours(23, 59, 59, 0)
+
       copyItem.userFilterCondition.registerTimeRange.min = this.edit.registerDateRange[0] / 1000
-      copyItem.userFilterCondition.registerTimeRange.max = this.edit.registerDateRange[1] / 1000
+      copyItem.userFilterCondition.registerTimeRange.max = registerEndTime / 1000
 
       const data = {}
       data.id = copyItem.id
