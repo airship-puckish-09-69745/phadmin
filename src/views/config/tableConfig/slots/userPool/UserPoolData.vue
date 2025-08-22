@@ -16,8 +16,7 @@
         <el-input v-model="searchUserId" clearable placeholder="请输入生效ID"/>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="handleSearch">查询</el-button>
-        <el-button type="success" @click="fetchData">刷新</el-button>
+        <el-button type="primary" @click="getData">查询</el-button>
         <el-button type="success" @click="handleCreate">添加配置</el-button>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <el-tooltip content="1.需要首行标题" effect="dark" placement="top">
@@ -47,8 +46,8 @@
       <el-table-column prop="updateBy" label="修改人" align="center" width="320"/>
       <el-table-column label="操作" align="center" width="197">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="openEdit(scope.row)">编辑</el-button>
-          <el-button type="danger" size="mini" @click="removeRow(scope.$index)">删除</el-button>
+<!--          <el-button type="primary" size="mini" @click="openEdit(scope.row)">编辑</el-button>-->
+          <el-button type="danger" size="mini" @click="removeRow(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -83,6 +82,18 @@
     </el-dialog>
     <!--对比组件-->
     <compare ref="compare"/>
+    <!--    分页-->
+    <div class="block">
+      <el-pagination
+        :current-page="clientDB.GetPage().GetCurrentPage()"
+        :page-sizes="[100, 200, 300, 400]"
+        :page-size="clientDB.GetPage().GetPageNum()"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="tableData.length"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
+    </div>
 
   </div>
 </template>
@@ -99,7 +110,7 @@ import {mapGetters} from "vuex";
 const filterMap = {}
 
 function newItem() {
-  return {updateAt: getCurrentDate(), effectiveRange: [], updateBy: '', uid: '', amount: 0}
+  return {updateAt: getCurrentDate(), effectiveRange: [], updateBy: '', uid: '', amount: 0, id: 0}
 }
 
 function getCurrentDate() {
@@ -120,7 +131,6 @@ export default {
       clientDB: new ClientTableData([], 1, filterMap),
       searchUserId: '',
       tableData: [],
-      tableDataBak: [], // 用于筛选
       gameNameMap: {}, // {gameName:gameId}
       gameIdMap: {}, // {gameId:gameName}
       editDialogVisible: false,
@@ -129,14 +139,17 @@ export default {
       userPoolCfg: {
         items: []
       },
+      pageSize: 100,
+      page: 1,
       reqData: {},
       userPoolItem: {
-        uid: 0,
-        amount: 0,
-        updateAt: 0,
-        updateBy: '',
-        validStartAt: 0,
-        validEndAt: 0
+        ID: 0,
+        UID: 0,
+        Amount: 0,
+        UpdateAt: 0,
+        UpdateBy: '',
+        ValidStartAt: 0,
+        ValidEndAt: 0
       },
       edit: {
         editingIndex: null,
@@ -154,12 +167,20 @@ export default {
   },
   mounted() {
     this.setDefaultDateRange()
-    this.handleSearch()
   },
   created() {
     this.fetchData()
   },
   methods: {
+    // 分页处理
+    handleSizeChange(val) {
+      this.pageSize = val
+      this.getData()
+    },
+    handleCurrentChange(val) {
+      this.page = val
+      this.getData()
+    },
     async fetchData() {
       await this.getGameList()
       await this.getData()
@@ -197,20 +218,19 @@ export default {
     getData() {
       // 加载基础数值配置
       request({
-        url: '/customizeconfig/one',
+        url: '/userpoolconfig/all',
         method: 'get',
         data: {
-          SubKey: 'slots_user_pool_data'
+          Page: this.page,
+          PageSize: this.pageSize,
+          UID: this.searchUserId,
+          UpdateStartAt: this.Unix(this.dateRange[0]),
+          UpdateEndAt: this.Unix(this.dateRange[1])
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          this.extForm = response.Data || {}
-          if (response.Data && response.Data.Data !== '') {
-            const jsonData = JSON.parse(response.Data.Data)
-            this.tableData = jsonData.items
-            this.tableDataBak = jsonData.items
-            this.reqData = response.Data
-          }
+          this.tableData = response.Data ? response.Data : []
+          this.reqData = response.Data// todo delete
         }
       })
     },
@@ -221,34 +241,10 @@ export default {
       const fmt = d => d.toISOString().slice(0, 10)
       this.dateRange = [fmt(start), fmt(end)]
     },
-    handleSearch() {
-      const hasDate = this.dateRange?.length === 2
-      const hasUserId = this.searchUserId?.trim() !== ''
-      if (!hasDate && !hasUserId) {
-        this.$message.warning('请输入查询条件')
-        return
-      }
-      this.tableData = this.tableDataBak.filter(item => {
-        let matchDate = true
-        let matchId = true
-
-        if (hasDate) {
-          const start = this.Unix(this.dateRange[0])
-          const endDate = new Date(this.dateRange[1])
-          endDate.setHours(23, 59, 59, 999) // 设置到当天的最后一毫秒
-          const end = Math.floor(endDate.getTime() / 1000) // 转为秒级时间戳
-          const time = new Date(item.updateAt).getTime()
-          matchDate = time >= start && time <= end
-        }
-        if (hasUserId) {
-          matchId = item.uid + '' === (this.searchUserId.trim())
-        }
-        return matchDate && matchId
-      })
-    },
     openEdit(row) {
       this.dialogTitle = '编辑配置'
       this.edit.editingIndex = this.tableData.indexOf(row)
+      this.edit.item.id = row.id
       this.edit.item.amount = row.amount
       this.edit.item.uid = row.uid
       this.edit.item.updateAt = this.formatDate(row.updateAt)
@@ -267,22 +263,19 @@ export default {
     saveEdit() {
       if (!this.checkData()) return
       if (this.edit.editingIndex !== null) {
-        this.userPoolItem.uid = Number(this.edit.item.uid)
-        this.userPoolItem.amount = this.edit.item.amount
-        this.userPoolItem.updateAt = Math.floor(Date.now() / 1000)
-        this.userPoolItem.updateBy = this.name
-        this.userPoolItem.validStartAt = this.Unix(this.edit.item.effectiveRange[0])
-        this.userPoolItem.validEndAt = this.Unix(this.edit.item.effectiveRange[1])
-        this.$set(this.tableData, this.edit.editingIndex, this.userPoolItem)
-        const newTableData = this.tableData
-        this.userPoolCfg.items = newTableData
-        this.reqData.Data = JSON.stringify(this.userPoolCfg)
-        this.updateRequest(this.reqData)
+        this.userPoolItem.ID = this.edit.item.id
+        this.userPoolItem.UID = Number(this.edit.item.uid)
+        this.userPoolItem.Amount = this.edit.item.amount
+        this.userPoolItem.UpdateAt = Math.floor(Date.now() / 1000)
+        this.userPoolItem.UpdateBy = this.name
+        this.userPoolItem.ValidStartAt = this.Unix(this.edit.item.effectiveRange[0])
+        this.userPoolItem.ValidEndAt = this.Unix(this.edit.item.effectiveRange[1])
+        this.updateRequest(this.userPoolItem)
       } else {
         this.createSave(this.edit.item)
       }
       //
-      this.getData()
+      // this.getData()
       this.editDialogVisible = false
     },
     getPostData() {
@@ -298,7 +291,7 @@ export default {
     },
     updateRequest(updateData) {
       request({
-        url: 'customizeconfig/update',
+        url: '/userpoolconfig/update',
         method: 'post',
         data: updateData
       }).then(response => {
@@ -337,11 +330,19 @@ export default {
       }
       return true
     },
-    removeRow(index) {
-      this.tableData.splice(index, 1)
-      this.userPoolCfg.items = this.tableData
-      this.reqData.Data = JSON.stringify(this.userPoolCfg)
-      this.updateRequest(this.reqData)
+    removeRow(row) {
+      request({
+        url: 'userpoolconfig/delete',
+        method: 'post',
+        data: {ID: row.id}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          // this.edit.item.ID = response.Data.ID
+          // this.clientDB.AddData(this.edit.item)
+          this.getData()
+          Message.success('操作成功！')
+        }
+      })
     },
     resetEditForm() {
       this.editForm = {updateAt: '', effectiveRange: [], uid: '', amount: 0}
@@ -370,7 +371,7 @@ export default {
         const reader = new FileReader()
         reader.onload = (e) => {
           const data = new Uint8Array(e.target.result)
-          const workbook = XLSX.read(data, {type: 'array'})
+          const workbook = XLSX.read(data, { type: 'array' })
           const sheetNames = workbook.SheetNames
           const uidSet = new Set() // 用来存放已存在的 uid
           sheetNames.forEach((sheetName) => {
@@ -393,7 +394,7 @@ export default {
                 userPoolItem.validEndAt = this.excelSerialToUnix(row[1])
                 userPoolItem.uid = row[2]
                 userPoolItem.amount = row[3]
-                userPoolItem.updateBy = this.reqData.ModifyUser
+                // userPoolItem.updateBy = this.reqData.ModifyUser
                 if (
                   userPoolItem.updateAt === 0 ||
                   userPoolItem.validStartAt === 0 ||
@@ -407,13 +408,28 @@ export default {
               }
             })
             this.userPoolCfg.items.push(...this.tableData)
-            this.reqData.Data = JSON.stringify(this.userPoolCfg)
-            this.updateRequest(this.reqData)
+            // this.reqData.Data = JSON.stringify(this.userPoolCfg)
+            // 后端处理UpdateBy
+            this.excelImportData(JSON.stringify(this.userPoolCfg))
           })
         }
         reader.readAsArrayBuffer(file)
         this.$forceUpdate()
       }
+    },
+    excelImportData(jsonData) {
+      request({
+        url: 'userpoolconfig/import/excel',
+        method: 'post',
+        data: {ExcelJsonData: jsonData}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.edit.item.ID = response.Data.ID
+          this.clientDB.AddData(this.edit.item)
+          this.getData()
+          Message.success('操作成功！')
+        }
+      })
     },
     excelSerialToUnix(serial) {
       const date = XLSX.SSF.parse_date_code(serial)

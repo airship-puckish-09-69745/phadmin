@@ -1336,7 +1336,7 @@ export default {
                     }
                     this.tableData.push(tableDataCpy[i])
                   }
-                  console.log("table: ",tableDataCpy[i])
+
                 }
               }
             }
@@ -1865,7 +1865,7 @@ export default {
           this.editForm.signExtra.gtccWhiteList.data=''
         }
         this.editForm.prizeExtra = JSON.parse(editData.prize_extra)
-        if(editData.list_extra  !== undefined){
+        if(editData.list_extra  !== null &&  editData.list_extra !=="null"){
           this.editForm.listExtra = JSON.parse(editData.list_extra)
         }
         this.showCsCfgs = []
