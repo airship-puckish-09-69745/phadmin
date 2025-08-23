@@ -240,7 +240,7 @@ export default {
         data: {
           page: pageIndex,
           pageSize: pageSize,
-          UID: this.searchUserId,
+          uid: this.searchUserId,
           updateStartAt: this.Unix(this.dateRange[0]),
           updateEndAt: this.Unix(this.dateRange[1])
         }
