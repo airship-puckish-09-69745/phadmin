@@ -146,6 +146,7 @@ export default {
       reqData: {
         Data: ''
       },
+      currRowUpdateAt: 0,
       userPoolItem: {
         id: 0,
         uid: 0,
@@ -265,6 +266,7 @@ export default {
       this.edit.item.amount = row.amount
       this.edit.item.uid = row.uid
       this.edit.item.updateAt = this.formatDate(row.updateAt)
+      this.currRowUpdateAt = row.updateAt
       this.edit.item.updateBy = row.updateBy
       const start = new Date(row.validStartAt * 1000)
       const end = new Date(row.validEndAt * 1000)
@@ -284,7 +286,7 @@ export default {
         this.userPoolItem.uid = Number(this.edit.item.uid)
         this.userPoolItem.amount = this.edit.item.amount
         // this.userPoolItem.UpdateAt = Math.floor(Date.now() / 1000)// todo
-        this.userPoolItem.updateAt = this.Unix(this.edit.item.updateAt)
+        this.userPoolItem.updateAt = this.currRowUpdateAt
         this.userPoolItem.updateBy = this.name
         this.userPoolItem.validStartAt = this.Unix(this.edit.item.effectiveRange[0])
         this.userPoolItem.validEndAt = this.Unix(this.edit.item.effectiveRange[1])
@@ -315,9 +317,6 @@ export default {
           this.saveConfigTable(this.reqData)
         }
       })
-    },
-    getPostData() {
-      return this.edit.item
     },
     Unix(dateStr) {
       // 直接生成 Date 对象
