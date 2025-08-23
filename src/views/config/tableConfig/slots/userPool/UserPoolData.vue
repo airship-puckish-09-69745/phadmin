@@ -277,7 +277,7 @@ export default {
       this.edit.item = newItem()
       this.editDialogVisible = true
     },
-    saveEdit() {
+    async saveEdit() {
       if (!this.checkData()) return
       if (this.edit.editingIndex !== null) {
         this.userPoolItem.id = this.edit.item.id
@@ -289,29 +289,32 @@ export default {
         this.userPoolItem.validStartAt = this.Unix(this.edit.item.effectiveRange[0])
         this.userPoolItem.validEndAt = this.Unix(this.edit.item.effectiveRange[1])
         //
-        this.updateRequest(this.userPoolItem)
+        await this.updateRequest(this.userPoolItem)
         //
-        request({
-          url: '/userpoolconfig/all',
-          method: 'get',
-          data: {
-            page: 0,
-            pageSize: 0
-          }
-        }).then(response => {
-          if (response.RetCode === 0) {
-            console.log('已经完成列表获取');
-            let allConfigData = response.Data.rows ? response.Data.rows : []
-            allConfigData = this.filterExpiredData(allConfigData)
-            this.userPoolCfg.items = allConfigData
-            this.reqData.Data = JSON.stringify(this.userPoolCfg)
-            this.saveConfigTable(this.reqData)
-          }
-        })
+        await this.filterData2ConfigTable()
       } else {
-        this.createSave(this.edit.item)
+        await this.createSave(this.edit.item)
       }
       this.editDialogVisible = false
+    },
+    filterData2ConfigTable() {
+      return request({
+        url: '/userpoolconfig/all',
+        method: 'get',
+        data: {
+          page: 0,
+          pageSize: 0
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          console.log('后完成列表获取');
+          let allConfigData = response.Data.rows ? response.Data.rows : []
+          allConfigData = this.filterExpiredData(allConfigData)
+          this.userPoolCfg.items = allConfigData
+          this.reqData.Data = JSON.stringify(this.userPoolCfg)
+          this.saveConfigTable(this.reqData)
+        }
+      })
     },
     getPostData() {
       return this.edit.item
@@ -325,11 +328,12 @@ export default {
       return Math.floor(timestampMs / 1000)
     },
     updateRequest(updateData) {
-      request({
+      return request({
         url: '/userpoolconfig/update',
         method: 'post',
         data: updateData
       }).then(response => {
+        console.log('先更新userpoolconfig完成');
         if (response.RetCode === 0) {
           this.edit.item.ID = response.Data.ID
           this.clientDB.AddData(this.edit.item)
@@ -339,7 +343,7 @@ export default {
       })
     },
     createRequest(updateData) {
-      request({
+      return request({
         url: '/userpoolconfig/create',
         method: 'post',
         data: updateData
@@ -368,23 +372,7 @@ export default {
       // this.reqData.Data = JSON.stringify(this.userPoolCfg)
       await this.createRequest(this.userPoolItem)
       // 加到配置表中
-      await request({
-        url: '/userpoolconfig/all',
-        method: 'get',
-        data: {
-          page: 0,
-          pageSize: 0
-        }
-      }).then(response => {
-        if (response.RetCode === 0) {
-          console.log('已经完成列表获取');
-          let allConfigData = response.Data.rows ? response.Data.rows : []
-          allConfigData = this.filterExpiredData(allConfigData)
-          this.userPoolCfg.items = allConfigData
-          this.reqData.Data = JSON.stringify(this.userPoolCfg)
-          this.saveConfigTable(this.reqData)
-        }
-      })
+      await this.filterData2ConfigTable()
     },
     checkData() {
       if (this.edit.amount < 0) {
@@ -401,11 +389,11 @@ export default {
       }
       return true
     },
-    async removeRow(row) {
-      await request({
+    deleteById(Id) {
+      return request({
         url: 'userpoolconfig/delete',
         method: 'post',
-        data: {id: row.id}
+        data: {id: Id}
       }).then(response => {
         if (response.RetCode === 0) {
           // this.edit.item.ID = response.Data.ID
@@ -415,19 +403,11 @@ export default {
           Message.success('操作成功！')
         }
       })
+    },
+    async removeRow(row) {
+      await this.deleteById(row.id)
       // 加到配置表中
-      let allConfigData = []
-      await this.getAllData() // 数据库的数据
-      allConfigData.push(...this.tableData)
-      allConfigData = this.filterExpiredData(allConfigData)
-      for (const index in allConfigData) { // 删除这个
-        if (allConfigData[index].id === row.id) {
-          allConfigData.splice(index, 1)
-        }
-      }
-      this.userPoolCfg.items = allConfigData
-      this.reqData.Data = JSON.stringify(this.userPoolCfg)
-      this.saveConfigTable(this.reqData)
+      await this.filterData2ConfigTable()
     },
     resetEditForm() {
       this.editForm = {updateAt: '', effectiveRange: [], uid: '', amount: 0}
@@ -444,7 +424,7 @@ export default {
       // 返回当天凌晨0点的时间戳
       return now.getTime() / 1000
     },
-    handleImport(event) {
+    async handleImport(event) {
       const file = event.target.files[0]
       // eslint-disable-next-line no-empty
       if (file !== undefined) {
@@ -498,33 +478,19 @@ export default {
               this.reqData = {}
             }
             this.reqData.Data = JSON.stringify(excelData)
-            // 后端处理UpdateBy(excelData会再次刷新)
-            this.excelImportData(JSON.stringify(this.userPoolCfg))
-            // 筛出过期配置，保存到配置表
-            // eslint-disable-next-line no-unused-vars
-            request({
-              url: '/userpoolconfig/all',
-              method: 'get',
-              data: {
-                page: 0,
-                pageSize: 0
-              }
-            }).then(response => {
-              if (response.RetCode === 0) {
-                let allConfigData = []
-                allConfigData = response.Data.rows ? response.Data.rows : []
-                allConfigData = this.filterExpiredData(allConfigData)
-                this.userPoolCfg.items = allConfigData
-                this.reqData.Data = JSON.stringify(this.userPoolCfg)
-                // console.log('handlerImport this.reqData:=====>', this.reqData);
-                this.saveConfigTable(this.reqData)
-              }
-            })
+            this.excel2ConfigTable()
           })
         }
         reader.readAsArrayBuffer(file)
         this.$forceUpdate()
       }
+    },
+    async excel2ConfigTable() {
+      // 后端处理UpdateBy(excelData会再次刷新)
+      await this.excelImportData(JSON.stringify(this.userPoolCfg))
+      // 筛出过期配置，保存到配置表
+      // eslint-disable-next-line no-unused-vars
+      await this.filterData2ConfigTable()
     },
     filterExpiredData(needFilterData) {
       const res = []
@@ -540,7 +506,7 @@ export default {
       return Math.floor(Date.now() / 1000)
     },
     excelImportData(jsonData) {
-      request({
+      return request({
         url: 'userpoolconfig/import/excel',
         method: 'post',
         data: {ExcelJsonData: jsonData}
