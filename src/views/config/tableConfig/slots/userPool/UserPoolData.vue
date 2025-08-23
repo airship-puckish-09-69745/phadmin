@@ -16,7 +16,7 @@
         <el-input v-model="searchUserId" clearable placeholder="请输入生效ID"/>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="getData(page,pageSize)">查询</el-button>
+        <el-button type="primary" @click="searchData()">查询</el-button>
         <el-button type="success" @click="handleCreate">添加配置</el-button>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <el-tooltip content="1.需要首行标题" effect="dark" placement="top">
@@ -85,11 +85,11 @@
     <!--    分页-->
     <div class="block">
       <el-pagination
-        :current-page="clientDB.GetPage().GetCurrentPage()"
+        :current-page="pageInfo.GetCurrentPage()"
         :page-sizes="[100, 200, 300, 400]"
-        :page-size="clientDB.GetPage().GetPageNum()"
+        :page-size="pageInfo.GetPageNum()"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="tableData.length"
+        :total="pageInfo.GetTotalCount()"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
       />
@@ -102,7 +102,7 @@
 import request from '@/utils/request'
 import Publish from '@/components/Publish/index.vue'
 import Compare from '@/components/Compare/index.vue'
-import {$libShow, ClientTableData, ValidateVueItem} from '@/utils/common'
+import {$libShow, ClientTableData, Pagination, ValidateVueItem} from '@/utils/common'
 import {Message} from 'element-ui'
 import XLSX from 'xlsx'
 import {mapGetters} from "vuex";
@@ -140,6 +140,7 @@ export default {
       userPoolCfg: {
         items: []
       },
+      pageInfo: new Pagination(0, 100),
       pageSize: 100,
       page: 1,
       reqData: {
@@ -177,16 +178,16 @@ export default {
   methods: {
     // 分页处理
     handleSizeChange(val) {
-      this.pageSize = val
-      this.getData(this.page, this.pageSize)
+      this.pageInfo.SetPageNum(val)
+      this.getData(this.pageInfo.GetCurrentPage(), this.pageInfo.GetPageNum())
     },
     handleCurrentChange(val) {
-      this.page = val
-      this.getData(this.page, this.pageSize)
+      this.pageInfo.SetPageNo(val)
+      this.getData(this.pageInfo.GetCurrentPage(), this.pageInfo.GetPageNum())
     },
     async fetchData() {
       await this.getGameList()
-      await this.getData(this.page, this.pageSize)
+      await this.getData(this.pageInfo.GetCurrentPage(), this.pageInfo.GetPageNum())
       await this.getConfigTable()
     },
     getGameList() {
@@ -222,6 +223,14 @@ export default {
     async getAllData() {
       await this.getData(0, 0)
     },
+    searchData() {
+      console.log('this.dateRange:', this.dateRange)
+      if (this.dateRange === null) {
+        Message.error('请输入日期')
+        return
+      }
+      this.getData(this.pageInfo.GetCurrentPage(), this.pageInfo.GetPageNum())
+    },
     getData(pageIndex, pageSize) {
       // 加载基础数值配置
       return request({
@@ -236,8 +245,9 @@ export default {
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          this.tableData = response.Data ? response.Data : []
+          this.tableData = response.Data ? response.Data.rows : []
           // this.reqData = response.Data// todo delete
+          this.pageInfo.SetTotalCount(response.Data.total)
         }
       })
     },
@@ -313,7 +323,7 @@ export default {
         if (response.RetCode === 0) {
           this.edit.item.ID = response.Data.ID
           this.clientDB.AddData(this.edit.item)
-          this.getData(this.page, this.pageSize)
+          this.getData(this.pageInfo.GetCurrentPage(), this.pageInfo.GetPageNum())
           Message.success('操作成功！')
         }
       })
@@ -328,7 +338,7 @@ export default {
           console.log('已经完成创建');
           this.edit.item.ID = response.Data.ID
           this.clientDB.AddData(this.edit.item)
-          this.getData(this.page, this.pageSize)
+          this.getData(this.pageInfo.GetCurrentPage(), this.pageInfo.GetPageNum())
           Message.success('操作成功！')
         }
       })
@@ -387,7 +397,7 @@ export default {
         if (response.RetCode === 0) {
           // this.edit.item.ID = response.Data.ID
           // this.clientDB.AddData(this.edit.item)
-          this.getData(this.page, this.pageSize)
+          this.getData(this.pageInfo.GetCurrentPage(), this.pageInfo.GetPageNum())
           Message.success('操作成功！')
         }
       })
@@ -537,7 +547,7 @@ export default {
         if (response.RetCode === 0) {
           this.edit.item.ID = response.Data.ID
           this.clientDB.AddData(this.edit.item)
-          this.getData(this.page, this.pageSize)
+          this.getData(this.pageInfo.GetCurrentPage(), this.pageInfo.GetPageNum())
           Message.success('操作成功！')
         }
       })
