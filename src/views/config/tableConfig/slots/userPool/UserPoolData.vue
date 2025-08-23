@@ -468,6 +468,7 @@ export default {
                 excelData.push(userPoolItem)
               }
             })
+            this.userPoolCfg.items = []
             this.userPoolCfg.items.push(...excelData)// 只追加excel中的
             if (this.reqData == null) {
               this.reqData = {}
@@ -505,6 +506,7 @@ export default {
       const res = []
       for (const data of needFilterData) {
         if (data.validEndAt >= this.getCurrentUnix()) {
+          delete data.id
           res.push(data)
         }
       }
