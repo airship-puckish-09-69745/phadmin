@@ -350,6 +350,9 @@ export default {
       this.userPoolItem.updateBy = this.name
       this.userPoolItem.validStartAt = this.Unix(this.edit.item.effectiveRange[0])
       this.userPoolItem.validEndAt = this.Unix(this.edit.item.effectiveRange[1])
+      if (this.tableData === null) {
+        this.tableData = []
+      }
       this.tableData.push(this.userPoolItem)
       this.userPoolCfg.items = this.tableData
       // this.reqData.Data = JSON.stringify(this.userPoolCfg)
@@ -365,7 +368,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           console.log('已经完成列表获取');
-          let allConfigData = response.Data ? response.Data : []
+          let allConfigData = response.Data ? response.Data.rows : []
           allConfigData = this.filterExpiredData(allConfigData)
           this.userPoolCfg.items = allConfigData
           this.reqData.Data = JSON.stringify(this.userPoolCfg)
@@ -498,7 +501,7 @@ export default {
             }).then(response => {
               if (response.RetCode === 0) {
                 let allConfigData = []
-                allConfigData = response.Data ? response.Data : []
+                allConfigData = response.Data ? response.Data.rows : []
                 allConfigData = this.filterExpiredData(allConfigData)
                 this.userPoolCfg.items = allConfigData
                 this.reqData.Data = JSON.stringify(this.userPoolCfg)
