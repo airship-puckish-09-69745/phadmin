@@ -382,7 +382,7 @@ export default {
         this.edit.item.uid === '' ||
         this.edit.item.amount === undefined ||
         this.edit.item.updateAt === '' ||
-        this.edit.item.effectiveRange === null) {
+        this.edit.item.effectiveRange.length === 0) {
         this.$message.error('请填写完整')
         return false
       }
