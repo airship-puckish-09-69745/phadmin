@@ -136,15 +136,18 @@ export default {
         let successCount = 0;
         let warningCount = 0;
         let failedCount = 0
-
+        console.log('准备上传的文件:', this.extractedFiles);
         // 逐个上传文件
         for (const file of this.extractedFiles) {
           try {
+            console.log('正在上传文件:', file.name);
             const formData = new FormData();
             formData.append('Env', this.$store.getters.env);
             formData.append('category', 'audit/');
             formData.append('file', file.blob, file.name);
             formData.append('ife', 1); // 是否覆盖原文件
+
+            console.log('正在上传文件111:', file.name);
 
             const url = process.env.VUE_APP_BASE_API + '/file/upload';
             const response = await axios.post(url, formData, {
@@ -169,6 +172,7 @@ export default {
               });
               successCount++
             } else {
+              console.log('上传警告:', 1111);
               this.uploadStatus.push({
                 filename: file.name,
                 status: 'fail',
@@ -180,7 +184,7 @@ export default {
           } catch (err) {
             const errorMessage = err.response?.data?.message ||
               (err.response?.data?.error || err.message);
-
+            console.error('上传错误:', err, '文件:', file.name);
             this.uploadStatus.push({
               filename: file.name,
               status: 'error',
