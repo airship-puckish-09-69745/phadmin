@@ -481,7 +481,7 @@ export default {
     async excel2ConfigTable() {
       // 后端处理UpdateBy(excelData会再次刷新)
       await this.excelImportData(JSON.stringify(this.userPoolCfg))
-      this.getData(this.pageInfo.GetCurrentPage(), this.pageInfo.GetPageNum())
+      await this.getData(this.pageInfo.GetCurrentPage(), this.pageInfo.GetPageNum())
       // 筛出过期配置，保存到配置表
       // eslint-disable-next-line no-unused-vars
       // await this.filterData2ConfigTable()
