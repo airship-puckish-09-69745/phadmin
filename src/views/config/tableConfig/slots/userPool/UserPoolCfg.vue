@@ -221,7 +221,8 @@ export default {
         this.cfg.betOddsMax === '' ||
         this.cfg.playTimesMin === '' ||
         this.cfg.playTimesMax === '' ||
-        this.cfg.hitRates === undefined) {
+        this.cfg.hitRates === undefined ||
+        this.cfg.hitRates === '') {
         Message.error('请填写完整')
         return false
       }
@@ -287,10 +288,12 @@ export default {
 .dialog-footer {
   margin-left: 90%;
 }
+
 .checkbox-table {
   width: 100%;
   border-collapse: collapse;
 }
+
 .checkbox-cell {
   width: 33.33%; /* 三列 */
   border: 1px solid #dcdfe6;
