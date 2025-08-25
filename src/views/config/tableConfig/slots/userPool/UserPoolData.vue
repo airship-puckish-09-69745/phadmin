@@ -225,7 +225,6 @@ export default {
       await this.getData(0, 0)
     },
     searchData() {
-      console.log('this.dateRange:', this.dateRange)
       if (this.dateRange === null) {
         Message.error('请输入日期')
         return
@@ -247,7 +246,6 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           this.tableData = response.Data.rows ? response.Data.rows : []
-          // this.reqData = response.Data// todo delete
           this.pageInfo.SetTotalCount(response.Data.total)
         }
       })
@@ -309,7 +307,6 @@ export default {
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          console.log('后完成列表获取');
           let allConfigData = response.Data.rows ? response.Data.rows : []
           allConfigData = this.filterExpiredData(allConfigData)
           this.userPoolCfg.items = allConfigData
@@ -332,7 +329,6 @@ export default {
         method: 'post',
         data: updateData
       }).then(response => {
-        console.log('先更新userpoolconfig完成');
         if (response.RetCode === 0) {
           this.edit.item.ID = response.Data.ID
           this.clientDB.AddData(this.edit.item)
@@ -348,7 +344,6 @@ export default {
         data: updateData
       }).then(response => {
         if (response.RetCode === 0) {
-          console.log('已经完成创建');
           this.edit.item.ID = response.Data.ID
           this.clientDB.AddData(this.edit.item)
           this.getData(this.pageInfo.GetCurrentPage(), this.pageInfo.GetPageNum())
@@ -397,7 +392,6 @@ export default {
         if (response.RetCode === 0) {
           // this.edit.item.ID = response.Data.ID
           // this.clientDB.AddData(this.edit.item)
-          console.log('this.pageInfo:', this.pageInfo);
           this.getData(this.pageInfo.GetCurrentPage(), this.pageInfo.GetPageNum())
           Message.success('操作成功！')
         }
@@ -544,7 +538,6 @@ export default {
           this.extForm = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
             this.reqData = response.Data
-            console.log('getConfigTable this.reqData:=====>', this.reqData);
           }
         }
       })
