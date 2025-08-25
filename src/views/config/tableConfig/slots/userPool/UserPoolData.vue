@@ -16,7 +16,7 @@
         <el-input v-model="searchUserId" clearable placeholder="请输入生效ID"/>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="getData">查询</el-button>
+        <el-button type="primary" @click="searchData()">查询</el-button>
         <el-button type="success" @click="handleCreate">添加配置</el-button>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <el-tooltip content="1.需要首行标题" effect="dark" placement="top">
@@ -24,29 +24,29 @@
         </el-tooltip>
       </el-form-item>
       <br>
-      <el-form-item>
-        <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object"/>
-      </el-form-item>
+      <!--      <el-form-item>-->
+      <!--        <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object"/>-->
+      <!--      </el-form-item>-->
     </el-form>
 
     <!-- 表格 -->
     <el-table :data="tableData" border style="width: 100%; margin-top: 20px;">
-      <el-table-column prop="updateAt" label="导入日期" align="center" width="320">
+      <el-table-column prop="updateAt" label="导入日期" align="center" min-width="320">
         <template slot-scope="scope">
           {{ formatDate(scope.row.updateAt) }}
         </template>
       </el-table-column>
-      <el-table-column prop="effectiveRange" label="生效日期" align="center" width="320">
+      <el-table-column prop="effectiveRange" label="生效日期" align="center" min-width="320">
         <template slot-scope="scope">
           {{ formatDate(scope.row.validStartAt) }} 至 {{ formatDate(scope.row.validEndAt) }}
         </template>
       </el-table-column>
-      <el-table-column prop="uid" label="生效ID" align="center" width="320"/>
-      <el-table-column prop="amount" label="可发放金额" align="center" width="320"/>
-      <el-table-column prop="updateBy" label="修改人" align="center" width="320"/>
-      <el-table-column label="操作" align="center" width="197">
+      <el-table-column prop="uid" label="生效ID" align="center" min-width="320"/>
+      <el-table-column prop="amount" label="可发放金额" align="center" min-width="320"/>
+      <el-table-column prop="updateBy" label="修改人" align="center" min-width="320"/>
+      <el-table-column label="操作" align="center" min-width="197">
         <template slot-scope="scope">
-<!--          <el-button type="primary" size="mini" @click="openEdit(scope.row)">编辑</el-button>-->
+          <el-button type="primary" size="mini" @click="openEdit(scope.row)">编辑</el-button>
           <el-button type="danger" size="mini" @click="removeRow(scope.row)">删除</el-button>
         </template>
       </el-table-column>
@@ -85,11 +85,11 @@
     <!--    分页-->
     <div class="block">
       <el-pagination
-        :current-page="clientDB.GetPage().GetCurrentPage()"
+        :current-page="pageInfo.GetCurrentPage()"
         :page-sizes="[100, 200, 300, 400]"
-        :page-size="clientDB.GetPage().GetPageNum()"
+        :page-size="pageInfo.GetPageNum()"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="tableData.length"
+        :total="pageInfo.GetTotalCount()"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
       />
@@ -102,10 +102,11 @@
 import request from '@/utils/request'
 import Publish from '@/components/Publish/index.vue'
 import Compare from '@/components/Compare/index.vue'
-import {$libShow, ClientTableData, ValidateVueItem} from '@/utils/common'
+import {$libShow, ClientTableData, Pagination, ValidateVueItem} from '@/utils/common'
 import {Message} from 'element-ui'
 import XLSX from 'xlsx'
 import {mapGetters} from "vuex";
+import {now} from "mockjs/src/mock/random/date";
 
 const filterMap = {}
 
@@ -139,17 +140,21 @@ export default {
       userPoolCfg: {
         items: []
       },
+      pageInfo: new Pagination(0, 100),
       pageSize: 100,
       page: 1,
-      reqData: {},
+      reqData: {
+        Data: ''
+      },
+      currRowUpdateAt: 0,
       userPoolItem: {
-        ID: 0,
-        UID: 0,
-        Amount: 0,
-        UpdateAt: 0,
-        UpdateBy: '',
-        ValidStartAt: 0,
-        ValidEndAt: 0
+        id: 0,
+        uid: 0,
+        amount: 0,
+        updateAt: 0,
+        updateBy: '',
+        validStartAt: 0,
+        validEndAt: 0
       },
       edit: {
         editingIndex: null,
@@ -174,16 +179,17 @@ export default {
   methods: {
     // 分页处理
     handleSizeChange(val) {
-      this.pageSize = val
-      this.getData()
+      this.pageInfo.SetPageNum(val)
+      this.getData(this.pageInfo.GetCurrentPage(), this.pageInfo.GetPageNum())
     },
     handleCurrentChange(val) {
-      this.page = val
-      this.getData()
+      this.pageInfo.SetPageNo(val)
+      this.getData(this.pageInfo.GetCurrentPage(), this.pageInfo.GetPageNum())
     },
     async fetchData() {
       await this.getGameList()
-      await this.getData()
+      await this.getData(this.pageInfo.GetCurrentPage(), this.pageInfo.GetPageNum())
+      await this.getConfigTable()
     },
     getGameList() {
       return request({
@@ -215,22 +221,32 @@ export default {
     getFullKey() {
       return 'CustomizeCfg_slots_user_pool_data'
     },
-    getData() {
+    async getAllData() {
+      await this.getData(0, 0)
+    },
+    searchData() {
+      if (this.dateRange === null) {
+        Message.error('请输入日期')
+        return
+      }
+      this.getData(this.pageInfo.GetCurrentPage(), this.pageInfo.GetPageNum())
+    },
+    getData(pageIndex, pageSize) {
       // 加载基础数值配置
-      request({
+      return request({
         url: '/userpoolconfig/all',
         method: 'get',
         data: {
-          Page: this.page,
-          PageSize: this.pageSize,
-          UID: this.searchUserId,
-          UpdateStartAt: this.Unix(this.dateRange[0]),
-          UpdateEndAt: this.Unix(this.dateRange[1])
+          page: pageIndex,
+          pageSize: pageSize,
+          uid: this.searchUserId,
+          updateStartAt: this.Unix(this.dateRange[0]),
+          updateEndAt: this.Unix(this.dateRange[1])
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          this.tableData = response.Data ? response.Data : []
-          this.reqData = response.Data// todo delete
+          this.tableData = response.Data.rows ? response.Data.rows : []
+          this.pageInfo.SetTotalCount(response.Data.total)
         }
       })
     },
@@ -248,6 +264,7 @@ export default {
       this.edit.item.amount = row.amount
       this.edit.item.uid = row.uid
       this.edit.item.updateAt = this.formatDate(row.updateAt)
+      this.currRowUpdateAt = row.updateAt
       this.edit.item.updateBy = row.updateBy
       const start = new Date(row.validStartAt * 1000)
       const end = new Date(row.validEndAt * 1000)
@@ -260,26 +277,43 @@ export default {
       this.edit.item = newItem()
       this.editDialogVisible = true
     },
-    saveEdit() {
+    async saveEdit() {
       if (!this.checkData()) return
       if (this.edit.editingIndex !== null) {
-        this.userPoolItem.ID = this.edit.item.id
-        this.userPoolItem.UID = Number(this.edit.item.uid)
-        this.userPoolItem.Amount = this.edit.item.amount
-        this.userPoolItem.UpdateAt = Math.floor(Date.now() / 1000)
-        this.userPoolItem.UpdateBy = this.name
-        this.userPoolItem.ValidStartAt = this.Unix(this.edit.item.effectiveRange[0])
-        this.userPoolItem.ValidEndAt = this.Unix(this.edit.item.effectiveRange[1])
-        this.updateRequest(this.userPoolItem)
+        this.userPoolItem.id = this.edit.item.id
+        this.userPoolItem.uid = Number(this.edit.item.uid)
+        this.userPoolItem.amount = this.edit.item.amount
+        // this.userPoolItem.UpdateAt = Math.floor(Date.now() / 1000)// todo
+        this.userPoolItem.updateAt = this.currRowUpdateAt
+        this.userPoolItem.updateBy = this.name
+        this.userPoolItem.validStartAt = this.Unix(this.edit.item.effectiveRange[0])
+        this.userPoolItem.validEndAt = this.Unix(this.edit.item.effectiveRange[1])
+        //
+        await this.updateRequest(this.userPoolItem)
+        //
+        // await this.filterData2ConfigTable()
       } else {
-        this.createSave(this.edit.item)
+        await this.createSave(this.edit.item)
       }
-      //
-      // this.getData()
       this.editDialogVisible = false
     },
-    getPostData() {
-      return this.edit.item
+    filterData2ConfigTable() {
+      return request({
+        url: '/userpoolconfig/all',
+        method: 'get',
+        data: {
+          page: 0,
+          pageSize: 0
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          let allConfigData = response.Data.rows ? response.Data.rows : []
+          allConfigData = this.filterExpiredData(allConfigData)
+          this.userPoolCfg.items = allConfigData
+          this.reqData.Data = JSON.stringify(this.userPoolCfg)
+          this.saveConfigTable(this.reqData)
+        }
+      })
     },
     Unix(dateStr) {
       // 直接生成 Date 对象
@@ -290,7 +324,7 @@ export default {
       return Math.floor(timestampMs / 1000)
     },
     updateRequest(updateData) {
-      request({
+      return request({
         url: '/userpoolconfig/update',
         method: 'post',
         data: updateData
@@ -298,22 +332,41 @@ export default {
         if (response.RetCode === 0) {
           this.edit.item.ID = response.Data.ID
           this.clientDB.AddData(this.edit.item)
-          this.getData()
+          this.getData(this.pageInfo.GetCurrentPage(), this.pageInfo.GetPageNum())
           Message.success('操作成功！')
         }
       })
     },
-    createSave(postData) {
-      this.userPoolItem.uid = postData.uid
-      this.userPoolItem.amount = postData.amount
+    createRequest(updateData) {
+      return request({
+        url: '/userpoolconfig/create',
+        method: 'post',
+        data: updateData
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.edit.item.ID = response.Data.ID
+          this.clientDB.AddData(this.edit.item)
+          this.getData(this.pageInfo.GetCurrentPage(), this.pageInfo.GetPageNum())
+          Message.success('操作成功！')
+        }
+      })
+    },
+    async createSave() {
+      this.userPoolItem.uid = this.edit.item.uid
+      this.userPoolItem.amount = this.edit.item.amount
       this.userPoolItem.updateAt = Math.floor(Date.now() / 1000)
       this.userPoolItem.updateBy = this.name
-      this.userPoolItem.validStartAt = this.Unix(postData.effectiveRange[0])
-      this.userPoolItem.validEndAt = this.Unix(postData.effectiveRange[1])
+      this.userPoolItem.validStartAt = this.Unix(this.edit.item.effectiveRange[0])
+      this.userPoolItem.validEndAt = this.Unix(this.edit.item.effectiveRange[1])
+      if (this.tableData === null) {
+        this.tableData = []
+      }
       this.tableData.push(this.userPoolItem)
       this.userPoolCfg.items = this.tableData
-      this.reqData.Data = JSON.stringify(this.userPoolCfg)
-      this.updateRequest(this.reqData)
+      // this.reqData.Data = JSON.stringify(this.userPoolCfg)
+      await this.createRequest(this.userPoolItem)
+      // 加到配置表中
+      // await this.filterData2ConfigTable()
     },
     checkData() {
       if (this.edit.amount < 0) {
@@ -324,25 +377,31 @@ export default {
         this.edit.item.uid === '' ||
         this.edit.item.amount === undefined ||
         this.edit.item.updateAt === '' ||
-        this.edit.item.effectiveRange === null) {
+        this.edit.item.effectiveRange === null ||
+        this.edit.item.effectiveRange.length === 0) {
         this.$message.error('请填写完整')
         return false
       }
       return true
     },
-    removeRow(row) {
-      request({
+    deleteById(Id) {
+      return request({
         url: 'userpoolconfig/delete',
         method: 'post',
-        data: {ID: row.id}
+        data: {id: Id}
       }).then(response => {
         if (response.RetCode === 0) {
           // this.edit.item.ID = response.Data.ID
           // this.clientDB.AddData(this.edit.item)
-          this.getData()
+          this.getData(this.pageInfo.GetCurrentPage(), this.pageInfo.GetPageNum())
           Message.success('操作成功！')
         }
       })
+    },
+    async removeRow(row) {
+      await this.deleteById(row.id)
+      // 加到配置表中
+      // await this.filterData2ConfigTable()
     },
     resetEditForm() {
       this.editForm = {updateAt: '', effectiveRange: [], uid: '', amount: 0}
@@ -359,19 +418,21 @@ export default {
       // 返回当天凌晨0点的时间戳
       return now.getTime() / 1000
     },
-    handleImport(event) {
+    async handleImport(event) {
+      let hadSameUid = false
       const file = event.target.files[0]
       // eslint-disable-next-line no-empty
       if (file !== undefined) {
         this.removeAllConfig()
         this.resetEditForm()
       }
+      const excelData = []
       const today = this.getMidnightTimestamp()// 当日凌晨0点的时间
       if (file) {
         const reader = new FileReader()
         reader.onload = (e) => {
           const data = new Uint8Array(e.target.result)
-          const workbook = XLSX.read(data, { type: 'array' })
+          const workbook = XLSX.read(data, {type: 'array'})
           const sheetNames = workbook.SheetNames
           const uidSet = new Set() // 用来存放已存在的 uid
           sheetNames.forEach((sheetName) => {
@@ -381,9 +442,9 @@ export default {
             json.forEach((row, index) => {
               if (index > 0 && row.length > 0) {
                 const uid = row[2]
-
                 // 1. 检查 uid 是否重复
                 if (uidSet.has(uid)) {
+                  hadSameUid = true
                   Message.error(`导入失败: UID ${uid} 在表格中存在重复`)
                   return
                 }
@@ -404,21 +465,47 @@ export default {
                   Message.error('导入失败,数据不能为空')
                   return
                 }
-                this.tableData.push(userPoolItem)
+                excelData.push(userPoolItem)
               }
             })
-            this.userPoolCfg.items.push(...this.tableData)
-            // this.reqData.Data = JSON.stringify(this.userPoolCfg)
-            // 后端处理UpdateBy
-            this.excelImportData(JSON.stringify(this.userPoolCfg))
+            this.userPoolCfg.items = []
+            this.userPoolCfg.items.push(...excelData)// 只追加excel中的
+            if (this.reqData == null) {
+              this.reqData = {}
+            }
+            this.reqData.Data = JSON.stringify(excelData)
+            if (!hadSameUid) {
+              this.excel2ConfigTable()
+            }
           })
         }
         reader.readAsArrayBuffer(file)
         this.$forceUpdate()
       }
     },
+    async excel2ConfigTable() {
+      // 后端处理UpdateBy(excelData会再次刷新)
+      await this.excelImportData(JSON.stringify(this.userPoolCfg))
+      await this.getData(this.pageInfo.GetCurrentPage(), this.pageInfo.GetPageNum())
+      // 筛出过期配置，保存到配置表
+      // eslint-disable-next-line no-unused-vars
+      // await this.filterData2ConfigTable()
+    },
+    filterExpiredData(needFilterData) {
+      const res = []
+      for (const data of needFilterData) {
+        if (data.validEndAt >= this.getCurrentUnix()) {
+          delete data.id
+          res.push(data)
+        }
+      }
+      return res
+    },
+    getCurrentUnix() {
+      return Math.floor(Date.now() / 1000)
+    },
     excelImportData(jsonData) {
-      request({
+      return request({
         url: 'userpoolconfig/import/excel',
         method: 'post',
         data: {ExcelJsonData: jsonData}
@@ -426,8 +513,38 @@ export default {
         if (response.RetCode === 0) {
           this.edit.item.ID = response.Data.ID
           this.clientDB.AddData(this.edit.item)
-          this.getData()
           Message.success('操作成功！')
+        }
+      })
+    },
+    saveConfigTable(updateData) {
+      request({
+        url: 'customizeconfig/update',
+        method: 'post',
+        data: updateData
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.edit.item.ID = response.Data.ID
+          this.clientDB.AddData(this.edit.item)
+          this.getData(this.pageInfo.GetCurrentPage(), this.pageInfo.GetPageNum())
+          Message.success('操作成功！')
+        }
+      })
+    },
+    getConfigTable() {
+      // 加载基础数值配置
+      return request({
+        url: '/customizeconfig/one',
+        method: 'get',
+        data: {
+          SubKey: 'slots_user_pool_data'
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.extForm = response.Data || {}
+          if (response.Data && response.Data.Data !== '') {
+            this.reqData = response.Data
+          }
         }
       })
     },

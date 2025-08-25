@@ -1294,6 +1294,12 @@ export const asyncRoutes = [
                 meta: { title: 'G randAce' }
               },
               {
+                path: 'lionfortune_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/lionfortune_slots_cfg'),
+                name: 'lionfortune_slots_cfg',
+                meta: { title: 'L ionFortune' }
+              },
+              {
                 path: 'luckyspirits_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/luckyspirits_slots_cfg'),
                 name: 'luckyspirits_slots_cfg',
@@ -2920,7 +2926,6 @@ export const asyncRoutes = [
             name: 'dancelion_slots_log',
             meta: { title: 'D ance of the Lion', gid: 184 }
           },
-
           {
             path: 'epicace_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
@@ -2998,6 +3003,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'goldendragon_slots_log',
             meta: { title: 'G oldenDragon', gid: 220 }
+          },
+          {
+            path: 'lionfortune_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'lionfortune_slots_log',
+            meta: { title: 'L ionFortune', gid: 222 }
           },
           {
             path: 'luckyspirits_slots_log',

@@ -111,9 +111,9 @@ export default {
     // 仍然按 gid 数字升序
     sortedAllGames() {
       return (this.allGames || []).slice().sort((a, b) => {
-        const ga = Number(String(a).split('|')[0]);
-        const gb = Number(String(b).split('|')[0]);
-        return ga - gb;
+        const nameA = a.split('(')[0].trim().toLowerCase() // 游戏名部分
+        const nameB = b.split('(')[0].trim().toLowerCase()
+        return nameA.localeCompare(nameB) // 按字母顺序排序
       });
     },
     // 列优先分布：先填满第1列(从上到下)，再第2列...
@@ -183,7 +183,8 @@ export default {
     formatTaxedSlots(gameIds) {
       const formatNames = []
       for (const gameId of gameIds) {
-        const str = gameId + '|' + this.gameIdMap[Number(gameId)]
+        // const str = gameId + '|' + this.gameIdMap[Number(gameId)]
+        const str = this.gameIdMap[Number(gameId)] + '(' + gameId + ')'
         formatNames.push(str)
       }
       return formatNames
@@ -199,7 +200,7 @@ export default {
             if (response.Data[i].Gid < 50 || response.Data[i].Gid > 100 && response.Data[i].Gid < 150 || response.Data[i].Gid > 499) {
               continue
             }
-            this.allGames.push(response.Data[i].Gid + '|' + response.Data[i].Name)
+            this.allGames.push(response.Data[i].Name + '(' + response.Data[i].Gid + ')')
             this.gameIdMap[Number(response.Data[i].Gid)] = response.Data[i].Name
           }
         }
@@ -207,8 +208,8 @@ export default {
     },
     splitGames(pickGames) {
       const games = []
-      for (const game of pickGames) {
-        games.push(Number(game.split('|')[0]))
+      for (const gameStr of pickGames) {
+        games.push(Number(gameStr.split('(')[1].replace(')', '')))
       }
       return games
     },
@@ -220,7 +221,8 @@ export default {
         this.cfg.betOddsMax === '' ||
         this.cfg.playTimesMin === '' ||
         this.cfg.playTimesMax === '' ||
-        this.cfg.hitRates === undefined) {
+        this.cfg.hitRates === undefined ||
+        this.cfg.hitRates === '') {
         Message.error('请填写完整')
         return false
       }
@@ -286,12 +288,14 @@ export default {
 .dialog-footer {
   margin-left: 90%;
 }
+
 .checkbox-table {
   width: 100%;
   border-collapse: collapse;
 }
+
 .checkbox-cell {
-  width: 33.33%;            /* 三列 */
+  width: 33.33%; /* 三列 */
   border: 1px solid #dcdfe6;
   padding: 8px 12px;
   text-align: left;
