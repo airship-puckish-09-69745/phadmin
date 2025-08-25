@@ -26,7 +26,16 @@
             width="100"
           >
             <template slot-scope="scope">
-              {{ tagName(scope.row.tag_type) }}
+              {{ tagTypeName(scope.row.tag_type) }}
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="tag_id"
+            label="标签"
+            width="100"
+          >
+            <template slot-scope="scope">
+              {{ tagIdName(scope.row.tag_id) }}
             </template>
           </el-table-column>
           <el-table-column
@@ -106,7 +115,7 @@
         >
         <span>
           <el-form ref="form" :model="form" label-width="150px">
-            <el-form-item label="标签：">
+            <el-form-item label="标签类型：">
               <el-select v-model="form.tag_type" placeholder="placeholder"  @change="selectChange">
                 <el-option
                     v-for="opt in tagOptions"
@@ -116,10 +125,20 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item v-if="haveChildren()" label="字段：">
-              <el-select v-model="form.tag_val" placeholder="placeholder" @change="tagValChange">
+            <el-form-item label="标签：">
+              <el-select v-model="form.tag_id" placeholder="placeholder" >
                 <el-option
                     v-for="opt in fieldOptions"
+                    :key="opt.value"
+                    :label="opt.label"
+                    :value="opt.value"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item v-if="gameIntensity()" label="字段：">
+              <el-select v-model="form.tag_val" placeholder="placeholder" @change="tagValChange">
+                <el-option
+                    v-for="opt in intensityOptions"
                     :key="opt.value"
                     :label="opt.label"
                     :value="opt.value"
@@ -219,6 +238,7 @@
       return {
         AttrNames: {
           tag_type: '标签类型',
+          tag_id: '标签ID',
           tag_val: '标签值',
           tag_name: '标签名称',
           tag_gid: '关联游戏',
@@ -241,32 +261,36 @@
         ],
         gameOptions: [],
         tagOptions: [
-          {value: 10000, label: '用户类型', children: [
-            {value: 1, label: '新增用户'},
-            {value: 2, label: '新进用户'},
-            {value: 3, label: '流失用户'},
-            {value: 4, label: '预流失用户'},
+          {value: 1, label: '用户类型', children: [
+            {value: 10000, label: '新增用户'},
+            {value: 20000, label: '新进用户'},
+            {value: 30000, label: '流失用户'},
+            {value: 40000, label: '预流失用户'},
           ]},
-          {value: 40000, label: '游戏强度', children: [
-            {value: 1, label: '无感'},
-            {value: 2, label: '尝试'},
-            {value: 3, label: '常玩'},
-            {value: 4, label: '核心'},
+          {value: 2, label: '游戏强度', children: [
+            {value: 50000, label: '登录天数'},
+            {value: 60000, label: '日平局局数'},
+            {value: 70000, label: '游戏强度'},
           ]},
-          {value: 50000, label: '常玩底注', children: [
-            {value: 0, label: '常玩底注'},
+          {value: 3, label: '游戏场次', children: [
+            {value: 80000, label: '常玩底注'},
+            {value: 90000, label: '最高场次'},
           ]},
-          {value: 60000, label: '最高场次', children: [
-            {value: 0, label: '最高场次'},
-          ]},
-          {value: 80000, label: '赛事类型', children: [
-            {value: 1, label: '免费'},
-            {value: 2, label: '付费'},
+          {value: 4, label: '赛事类型', children: [
+            {value: 100000, label: '免费'},
+            {value: 110000, label: '付费'},
           ]}
+        ],
+        intensityOptions: [
+          {value: 1, label: '无感'},
+          {value: 2, label: '尝试'},
+          {value: 3, label: '常玩'},
+          {value: 4, label: '核心'},
         ],
         fieldOptions: [],
         form: {
-          tag_type: 40000,
+          tag_type: 2,
+          tag_id: 0,
           tag_val: 0,
           tag_name: '',
           tag_gid: 22,
@@ -300,6 +324,14 @@
     },
     methods: {
       tagValChange(value) {
+        if (this.form.tag_id === 70000) {
+          for (const v of this.intensityOptions) {
+            if (v.value === value) {
+              this.form.tag_name = v.label
+              return
+            }
+          }
+        }
         for (const v of this.fieldOptions) {
           if (v.value == value) {
             this.form.tag_name = v.label
@@ -314,23 +346,30 @@
               break
           }
         }
+        if (this.form.tag_id > 0) {
+          return
+        } 
         if (this.fieldOptions && this.fieldOptions.length>0) {
-          this.form.tag_val = this.fieldOptions[0].value
-          this.form.tag_name = this.fieldOptions[0].label
+          this.form.tag_id = this.fieldOptions[0].value
+        }
+        if (this.gameIntensity()) {
+          this.form.tag_val = this.intensityOptions[0].value
         }
       },
-      haveChildren(){
-        for (const v of this.tagOptions) {
-          if (v.value === this.form.tag_type) {
-              return v.children && v.children.length>0
-          }
-        }
-        return false
-      },
-      tagName(tag_type) {
+      tagTypeName(tag_type) {
         for (const v of this.tagOptions) {
           if (v.value === tag_type) {
             return v.label
+          }
+        }
+        return ''
+      },
+      tagIdName(tag_id) {
+        for (const v of this.tagOptions) {
+          for (const v2 of v.children) {
+            if (v2.value === tag_id) {
+              return v2.label
+            }
           }
         }
         return ''
@@ -360,7 +399,7 @@
           return ""
         }
         // console.log(JSON.stringify(row))
-        if (row.tag_type === 40000) {
+        if (row.tag_type === 2) {
           const attr = JSON.parse(row.tag_attr)
           let str = `一周内在${this.gameName(row.tag_gid)}登录天数在区间[${attr.loginDay[0]}-${attr.loginDay[1]}]`
           if (attr.roundAvg.use) {
@@ -394,10 +433,10 @@
         })
       },
       showGameOptions() {
-        return (this.form.tag_type === 40000 || this.form.tag_type === 50000 || this.form.tag_type === 60000)
+        return (this.form.tag_type === 2 || this.form.tag_type === 3)
       },
       gameIntensity() {
-        return (this.form.tag_type === 40000)
+        return (this.form.tag_type === 2 && this.form.tag_id === 70000)
       },
       handleSizeChange(val) {
         this.page = 1
@@ -418,10 +457,11 @@
       edit(row) {
         this.syncInfo = true
         this.isEdit = true
-        console.log(JSON.stringify(row))
+        // console.log(JSON.stringify(row))
         const attr = JSON.parse(row.tag_attr)
         this.form.id = row.id
         this.form.tag_type = row.tag_type
+        this.form.tag_id = row.tag_id
         this.form.tag_val = row.tag_val
         this.form.tag_name = row.tag_name
         this.form.tag_gid = row.tag_gid
@@ -435,6 +475,7 @@
         this.syncInfo = true
         const attr = JSON.parse(row.tag_attr)
         // this.form.id = row.id
+        this.form.tag_id = row.tag_id
         this.form.tag_type = row.tag_type
         this.form.tag_val = row.tag_val
         this.form.tag_name = row.tag_name
@@ -460,11 +501,11 @@
             }
             for (const v of this.tableData) {
               const attr = JSON.parse(v.tag_attr)
-              if (v.tag_type === this.form.tag_type && v.tag_gid === this.form.tag_gid && v.tag_val === this.form.tag_val) {
+              if (v.tag_id === this.form.tag_id && v.tag_gid === this.form.tag_gid && v.tag_val === this.form.tag_val) {
                 Message.error("重复标签")
                 return
               }
-              if (v.tag_type === this.form.tag_type && v.tag_gid === this.form.tag_gid && this.gameIntensity()) {
+              if (v.tag_id === this.form.tag_id && v.tag_gid === this.form.tag_gid && this.gameIntensity()) {
                 if (form.loginDay[0] < attr.loginDay[0] && form.loginDay[1] >= attr.loginDay[0]) {
                   Message.error(`标签区间[${form.loginDay[0]},${form.loginDay[1]}]与标签《${this.fieldName(v.tag_val)}》的区间[${attr.loginDay[0]},${attr.loginDay[1]}]有重叠`)
                   return
@@ -497,7 +538,7 @@
             Env: this.env,
             PageNum: this.page,
             PageSize: this.limit,
-            TagType:this.form.TagType,
+            TagId:this.form.tagId,
           }
         }).then(response => {
           if (response.RetCode === 0) {
@@ -517,6 +558,7 @@
       tagCreate() {
         this.form.status = 0
         const editData = this.form
+        console.log("editData", editData)
         request({
           url: '/tagconfig/tag/create',
           method: 'POST',
@@ -524,6 +566,7 @@
             Env: this.env,
             ID: editData.id,
             TagType: editData.tag_type,
+            TagId: editData.tag_id,
             TagVal: editData.tag_val,
             TagName: editData.tag_name,
             TagGid: editData.tag_gid,
@@ -574,6 +617,7 @@
             Env: this.env,
             ID: editData.id,
             TagType: editData.tag_type,
+            TagId: editData.tag_id,
             TagVal: editData.tag_val,
             TagName: editData.tag_name,
             TagGid: editData.tag_gid,
