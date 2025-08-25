@@ -68,7 +68,7 @@
           <el-tab-pane label="钱币倍数" name="script1">
             <el-button type="primary" @click="addCoinOddsRow">添加配置</el-button>
             <el-table :data="coinOdds">
-              <el-table-column prop="Symbol" label="钱币" width="120">
+              <el-table-column prop="Symbol" label="钱币" width="80">
                 <template slot-scope="scope">
                   <el-input v-model.number="scope.row.Symbol" :required="true" placeholder="请输入内容"></el-input>
                 </template>
@@ -78,17 +78,17 @@
                   <el-input v-model="scope.row.Odds" :required="true" placeholder="请输入内容,如10,100"></el-input>
                 </template>
               </el-table-column>
-              <el-table-column prop="Weight" label="普通模式权重" width="240">
+              <el-table-column prop="Weight" label="普通模式权重" width="180">
                 <template slot-scope="scope">
                   <el-input v-model="scope.row.Weight" :required="true" placeholder="请输入内容,如10,100"></el-input>
                 </template>
               </el-table-column>
-              <el-table-column prop="FreeWeight" label="免费模式权重" width="240">
+              <el-table-column prop="FreeWeight" label="免费模式权重" width="180">
                 <template slot-scope="scope">
                   <el-input v-model="scope.row.FreeWeight" :required="true" placeholder="请输入内容,如10,100"></el-input>
                 </template>
               </el-table-column>
-              <el-table-column label="操作" width="180" header-align="center">
+              <el-table-column label="操作" width="120" header-align="center">
                 <template slot-scope="scope">
                   <el-button type="danger" @click="removeCoinOddsRow(scope.$index)">删除</el-button>
                 </template>
@@ -113,7 +113,7 @@
                   <el-input v-model.number="scope.row.InWeight" :required="true"></el-input>
                 </template>
               </el-table-column>
-              <el-table-column label="操作" width="180" header-align="center">
+              <el-table-column label="操作" width="120" header-align="center">
                 <template slot-scope="scope">
                   <el-button type="danger" @click="removeBonusOddsRow(scope.$index)">删除</el-button>
                 </template>
@@ -381,9 +381,9 @@ export default {
       for (const item of this.coinOdds) {
         this.cfg.CoinOdds.push({
           Symbol: item.Symbol,
-          Odds: item.Odds.split(','),
-          Weight: item.Weight.split(','),
-          FreeWeight: item.FreeWeight.split(',')
+          Odds: item.Odds.split(',').map(Number),
+          Weight: item.Weight.split(',').map(Number),
+          FreeWeight: item.FreeWeight.split(',').map(Number)
         })
       }
     },
@@ -391,9 +391,6 @@ export default {
       if (this.cfg.BonusOdds === null) {
         this.cfg.BonusOdds = []
       }
-      // if (typeof this.cfg.BonusOdds === 'undefined') {
-      //   this.cfg.BonusOdds = []
-      // }
       this.cfg.BonusOdds.push({
         MinOdds: 0,
         MaxOdds: 0,
