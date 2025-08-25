@@ -24,9 +24,9 @@
         </el-tooltip>
       </el-form-item>
       <br>
-      <el-form-item>
-        <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object"/>
-      </el-form-item>
+      <!--      <el-form-item>-->
+      <!--        <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object"/>-->
+      <!--      </el-form-item>-->
     </el-form>
 
     <!-- 表格 -->
@@ -293,7 +293,7 @@ export default {
         //
         await this.updateRequest(this.userPoolItem)
         //
-        await this.filterData2ConfigTable()
+        // await this.filterData2ConfigTable()
       } else {
         await this.createSave(this.edit.item)
       }
@@ -371,7 +371,7 @@ export default {
       // this.reqData.Data = JSON.stringify(this.userPoolCfg)
       await this.createRequest(this.userPoolItem)
       // 加到配置表中
-      await this.filterData2ConfigTable()
+      // await this.filterData2ConfigTable()
     },
     checkData() {
       if (this.edit.amount < 0) {
@@ -406,7 +406,7 @@ export default {
     async removeRow(row) {
       await this.deleteById(row.id)
       // 加到配置表中
-      await this.filterData2ConfigTable()
+      // await this.filterData2ConfigTable()
     },
     resetEditForm() {
       this.editForm = {updateAt: '', effectiveRange: [], uid: '', amount: 0}
@@ -489,7 +489,7 @@ export default {
       await this.excelImportData(JSON.stringify(this.userPoolCfg))
       // 筛出过期配置，保存到配置表
       // eslint-disable-next-line no-unused-vars
-      await this.filterData2ConfigTable()
+      // await this.filterData2ConfigTable()
     },
     filterExpiredData(needFilterData) {
       const res = []
