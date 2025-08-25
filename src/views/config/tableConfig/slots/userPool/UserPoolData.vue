@@ -418,6 +418,7 @@ export default {
       return now.getTime() / 1000
     },
     async handleImport(event) {
+      let hadSameUid = false
       const file = event.target.files[0]
       // eslint-disable-next-line no-empty
       if (file !== undefined) {
@@ -442,6 +443,7 @@ export default {
                 const uid = row[2]
                 // 1. 检查 uid 是否重复
                 if (uidSet.has(uid)) {
+                  hadSameUid = true
                   Message.error(`导入失败: UID ${uid} 在表格中存在重复`)
                   return
                 }
@@ -471,7 +473,9 @@ export default {
               this.reqData = {}
             }
             this.reqData.Data = JSON.stringify(excelData)
-            this.excel2ConfigTable()
+            if (!hadSameUid) {
+              this.excel2ConfigTable()
+            }
           })
         }
         reader.readAsArrayBuffer(file)
