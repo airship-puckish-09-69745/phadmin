@@ -108,7 +108,7 @@
         name: 'tagConfig',
         libShow: $libShow,
         dayOptions: [
-          {value: 0, label: '无限制'},
+          {value: 0, label: '0天'},
           {value: 1, label: '1天'},
           {value: 2, label: '2天'},
           {value: 3, label: '3天'},
@@ -119,52 +119,28 @@
         ],
         gameOptions: [],
         tagOptions: [
-            {value: 10000, label: '用户类型', children: [
-                    {value: 'new', label: '新增用户'},
-                    {value: 'newplayer', label: '新进用户'},
-                    {value: 'user', label: '老用户'},
-                    {value: 'lose', label: '流失用户'},
-                    {value: 'prelose', label: '预流失用户'},
-                ]},
-            {value: 20000, label: '时间', children: [
-                    {value: 20001, label: '注册时间'},
-                    {value: 20002, label: '最后登录时间'},
-                ]},
-            {value: 30000, label: 'KYC'},
-            {value: 40000, label: '游戏强度', children: [
-                    {value: 'core', label: '核心'},
-                    {value: 'often', label: '常玩'},
-                    {value: 'try', label: '尝试'},
-                    {value: 'unfeeling', label: '无感'},
-                    {value: 'roundAvg', label: '玩牌局数'},
-                    {value: 'loginDay', label: '登录天数'},
-                    {value: 'validBet', label: '有效下注'},
-                ]},
-            {value: 50000, label: '常玩底注'},
-            {value: 60000, label: '最高场次'},
-            {value: 70000, label: '信誉身份', children: [
-                    {value: 70001, label: '认证用户'},
-                    {value: 70002, label: '高信用户'},
-                    {value: 70003, label: '低信用户'},
-                    {value: 70004, label: '低危用户'},
-                    {value: 70005, label: '疑似用户'},
-                    {value: 70006, label: '黑子用户'},
-                ]},
-            {value: 80000, label: '赛事类型', children: [
-                    {value: 80001, label: '免费'},
-                    {value: 80002, label: '付费'},
-                ]},
-            {value: 90000, label: '平台VIP等级'},
-            {value: 100000, label: '资产相关', children: [
-                    {value: 100001, label: '用户单笔充值最高'},
-                    {value: 100002, label: '用户累计充值额度'},
-                    {value: 100003, label: '用户累计充值次数'},
-                    {value: 100004, label: '是否全平台无牌局记录充值'},
-                    {value: 100005, label: '用户登录资产'},
-                    {value: 100006, label: '用户提现次数'},
-                    {value: 100007, label: '用户累计提现额'},
-                    {value: 100008, label: '用户最高提现额'}
-                ]},
+          {value: 10000, label: '用户类型', children: [
+            {value: 1, label: '新增用户'},
+            {value: 2, label: '新进用户'},
+            {value: 3, label: '流失用户'},
+            {value: 4, label: '预流失用户'},
+          ]},
+          {value: 40000, label: '游戏强度', children: [
+            {value: 1, label: '无感'},
+            {value: 2, label: '尝试'},
+            {value: 3, label: '常玩'},
+            {value: 4, label: '核心'},
+          ]},
+          {value: 50000, label: '常玩底注', children: [
+            {value: 0, label: '常玩底注'},
+          ]},
+          {value: 60000, label: '最高场次', children: [
+            {value: 0, label: '最高场次'},
+          ]},
+          {value: 80000, label: '赛事类型', children: [
+            {value: 1, label: '免费'},
+            {value: 2, label: '付费'},
+          ]}
         ],
         fieldOptions: [],
         form: {
