@@ -235,6 +235,7 @@ export default {
     //     });
     //   }
     // },
+
     async uploadExtractedFiles() {
       if (this.extractedFiles.length === 0) return;
 
@@ -248,11 +249,10 @@ export default {
         const totalFiles = this.extractedFiles.length;
         let uploadedCount = 0;
         let successCount = 0;
-        let warningCount = 0;
         let failedCount = 0;
 
-        // 创建所有上传任务的Promise数组
-        const uploadPromises = this.extractedFiles.map(async (file, index) => {
+        // 顺序上传文件（避免并行请求可能的问题）
+        for (const file of this.extractedFiles) {
           try {
             const formData = new FormData();
             formData.append('Env', this.$store.getters.env);
@@ -262,23 +262,15 @@ export default {
 
             const url = process.env.VUE_APP_BASE_API + '/file/upload';
 
-            const config = {
+            // 简化版本：移除进度事件处理
+            const response = await axios.post(url, formData, {
               headers: {
                 'Content-Type': 'multipart/form-data'
-              },
-              onUploadProgress: (progressEvent) => {
-                if (progressEvent.total > 0) {
-                  const fileProgress = progressEvent.loaded / progressEvent.total;
-                  this.progress = Math.round(
-                    ((uploadedCount + fileProgress) / totalFiles) * 100
-                  );
-                }
               }
-            };
+            });
 
-            const response = await axios.post(url, formData, config);
             const { status, data } = response || {};
-            const { RetCode, Data } = data || {};
+            const { RetCode } = data || {};
 
             if (status === 200 && RetCode === 0) {
               this.uploadStatus.push({
@@ -292,15 +284,14 @@ export default {
               this.uploadStatus.push({
                 filename: file.name,
                 status: 'fail',
-                message: Data || '上传失败',
-                data: data.data
+                message: data?.Data || '上传失败',
+                data: data?.data
               });
               failedCount++;
             }
           } catch (err) {
             const errorMessage = err.response?.data?.message ||
               (err.response?.data?.error || err.message);
-            console.error('上传错误:', err, '文件:', file.name);
             this.uploadStatus.push({
               filename: file.name,
               status: 'error',
@@ -312,10 +303,7 @@ export default {
             uploadedCount++;
             this.progress = Math.round((uploadedCount / totalFiles) * 100);
           }
-        });
-
-        // 等待所有文件上传完成
-        await Promise.all(uploadPromises);
+        }
 
         // 最终状态汇总
         if (failedCount === 0) {
@@ -339,9 +327,8 @@ export default {
 
         this.$emit('upload-complete', {
           total: this.extractedFiles.length,
-          success: this.uploadStatus.filter(f => f.status === 'success').length,
-          warning: this.uploadStatus.filter(f => f.status === 'warning').length,
-          failed: this.uploadStatus.filter(f => f.status === 'error' || f.status === 'fail').length,
+          success: successCount,
+          failed: failedCount,
           details: this.uploadStatus
         });
       }

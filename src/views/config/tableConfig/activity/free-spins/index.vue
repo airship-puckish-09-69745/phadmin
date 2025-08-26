@@ -13,9 +13,6 @@
         <el-tab-pane label="Free Spins发放配置">
           <FreeSpinsConfig :config="configData.Data.FreeSpinsConfig" @update="handleUpdateConfigData" />
         </el-tab-pane>
-        <el-tab-pane label="白名单配置">
-          <WhiteListConfig :config="configData.Data.WhiteListConfig" @update="handleUpdateConfigData" />
-        </el-tab-pane>
       </el-tabs>
     </el-row>
   </el-card>
@@ -24,13 +21,11 @@
 <script>
 import Publish from '@/components/Publish/index.vue'
 import request from '@/utils/request'
-import WhiteListConfig from './components/WhiteListConfig/index.vue'
 import FreeSpinsConfig from './components/FreeSpinsConfig/index.vue'
 export default {
   name: 'FreeSpins',
   components: {
     Publish,
-    WhiteListConfig,
     FreeSpinsConfig
   },
   data() {
@@ -48,11 +43,6 @@ export default {
             // "Sites": ["Dev"],
             // "OtherGames": [1]
           },
-          WhiteListConfig: {
-            // "Status": true,
-            // "Appid": 1000002,
-            // "SiteId": ''
-          }
         }
       }
     }
@@ -93,9 +83,6 @@ export default {
         // }
         if (!Data.FreeSpinsConfig) {
           Data.FreeSpinsConfig = {}
-        }
-        if (!Data.WhiteListConfig) {
-          Data.WhiteListConfig = {}
         }
       } else {
         this.$message.error('获取配置数据失败: ' + res.RetMsg)
