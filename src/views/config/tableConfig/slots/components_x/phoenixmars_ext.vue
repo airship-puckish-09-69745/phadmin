@@ -8,6 +8,17 @@
             <el-input v-model.number="cfg.BuyFreeOdds" placeholder="请输入内容" />
           </el-form-item>
 
+          <el-form-item label="Bonus倍数">
+            <el-input v-model="cfg.BonusOdds" placeholder="请输入内容,保持与Bonus倍数权重对应"> <template slot="append">放大100倍</template> </el-input>
+          </el-form-item>
+          <el-form-item label="Bonus倍数权重">
+            <el-input v-model="cfg.BonusOddsWeight" placeholder="请输入内容,保持与Bonus倍数对应"> <template slot="append">各倍数权重</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="Bonus羽毛个数权重">
+            <el-input v-model.number="cfg.BonusFeatherWeight" placeholder="请输入内容" ><template slot="append">分别对应1,2,3只羽毛</template> </el-input>
+          </el-form-item>
+
         </el-form>
       </el-col>
     </el-row>
@@ -29,7 +40,7 @@ import Compare from '@/components/Compare'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  name: 'SlotsSpacetreasuremarsExt',
+  name: 'SlotsPhoenixmarsExt',
   components: { RatioInput, Compare },
   model: {
     prop: 'slotsData',

@@ -1678,6 +1678,12 @@ export const asyncRoutes = [
                 meta: { title: 'PumpkinCash(审)' }
               },
               {
+                path: 'phoenixmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/phoenixmars_slots_cfg'),
+                name: 'phoenixmars_slots_cfg',
+                meta: { title: 'Phoenix(审)' }
+              },
+              {
                 path: 'dancelionmars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/dancelionmars_slots_cfg'),
                 name: 'dancelionmars_slots_cfg',
@@ -3421,6 +3427,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'pumpkincashmars_slots_log',
             meta: { title: 'PumpkinCash(审)', gid: 215 }
+          },
+          {
+            path: 'Phoenixmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'Phoenixmars_slots_log',
+            meta: { title: 'Phoenix(审)', gid: 217 }
           }
         ]
       },
