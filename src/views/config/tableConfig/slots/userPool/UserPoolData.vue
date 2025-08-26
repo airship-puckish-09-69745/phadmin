@@ -427,7 +427,7 @@ export default {
       return now.getTime() / 1000
     },
     async handleImport(event) {
-      let hadSameUid = false
+      let isPassCheck = true
       const file = event.target.files[0]
       // eslint-disable-next-line no-empty
       if (file !== undefined) {
@@ -452,7 +452,7 @@ export default {
                 const uid = row[2]
                 // 1. 检查 uid 是否重复
                 if (uidSet.has(uid)) {
-                  hadSameUid = true
+                  isPassCheck = false
                   Message.error(`导入失败: UID ${uid} 在表格中存在重复`)
                   return
                 }
@@ -467,9 +467,13 @@ export default {
                 if (
                   userPoolItem.updateAt === 0 ||
                   userPoolItem.validStartAt === 0 ||
+                  userPoolItem.validStartAt < 0 ||
                   userPoolItem.validEndAt === 0 ||
+                  userPoolItem.validEndAt < 0 ||
                   userPoolItem.uid === 0 ||
-                  userPoolItem.amount === 0) {
+                  userPoolItem.amount === 0 ||
+                  userPoolItem.amount === undefined) {
+                  isPassCheck = false
                   Message.error('导入失败,数据不能为空')
                   return
                 }
@@ -482,8 +486,10 @@ export default {
               this.reqData = {}
             }
             this.reqData.Data = JSON.stringify(excelData)
-            if (!hadSameUid) {
+            if (isPassCheck) {
               this.excel2ConfigTable()
+            } else {
+              this.getData(this.pageInfo.GetCurrentPage(), this.pageInfo.GetPageNum())
             }
           })
         }
