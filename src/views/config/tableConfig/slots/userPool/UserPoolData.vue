@@ -369,8 +369,12 @@ export default {
       // await this.filterData2ConfigTable()
     },
     checkData() {
-      if (this.edit.amount < 0) {
-        this.$message.error('可发放金额不能为负数')
+      if (this.edit.item.amount <= 0) {
+        this.$message.error('可发放金额填写错误')
+        return false
+      }
+      if (this.edit.item.uid <= 0) {
+        this.$message.error('uid填写错误')
         return false
       }
       if (
@@ -380,6 +384,10 @@ export default {
         this.edit.item.effectiveRange === null ||
         this.edit.item.effectiveRange.length === 0) {
         this.$message.error('请填写完整')
+        return false
+      }
+      if (this.Unix(this.edit.item.effectiveRange[1]) < this.getCurrentUnix()) {
+        this.$message.error('生效日期已经过期')
         return false
       }
       return true
