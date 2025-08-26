@@ -17,7 +17,7 @@
           :header-cell-style="libShow.DefaultTableHeadClass"
           :row-style="{height:'10px'}"
           :cell-style="libShow.DefaultTableCell"
-          style="width: 100%;margin-top:10px;"
+          style="width: 40%;margin-top:10px;"
         >
           <el-table-column
             prop="uid"
@@ -25,12 +25,11 @@
             width="150"
           />
           <el-table-column
-            prop="tagType"
-            label="标签类型"
-            width="150"
+            prop="tagVal"
+            label="标签名称"
           >
-            <template slot-scope="scope">
-              {{ tagName(scope.row.tagType) }}
+          <template slot-scope="scope">
+              {{ tagIdName(scope.row.tagId) + "  [" +  tagFieldName(scope.row.tagVal) + ']'}}
             </template>
           </el-table-column>
           <el-table-column
@@ -40,26 +39,6 @@
           >
             <template slot-scope="scope">
               {{ gameName(scope.row.tagGid) }}
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="tagName"
-            label="标签名称"
-          >
-            <template slot-scope="scope">
-              <el-tag v-for="(tag, index) in fieldName(scope.row)">
-                {{ tag }}
-              </el-tag>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="tagData"
-            label="标签数据"
-          >
-            <template slot-scope="scope">
-              <el-tag v-for="(data, index) in tagData(scope.row)">
-                {{ data }}
-              </el-tag>
             </template>
           </el-table-column>
           <el-table-column
@@ -169,49 +148,23 @@
       this.getInfo()
     },
     methods: {
-      selectChange(value) {
-        console.log(value)
+      tagIdName(tag_id,tag_val) {
         for (const v of this.tagOptions) {
-          if (v.value === value) {
-              this.fieldOptions = v.children
-              break
-          }
-        }
-      },
-      haveChildren(){
-        for (const v of this.tagOptions) {
-          if (v.value === this.form.tag_type) {
-              return v.children && v.children.length>0
-          }
-        }
-        return false
-      },
-      tagName(tag_type) {
-        for (const v of this.tagOptions) {
-          if (v.value === tag_type) {
-            return v.label
+          for (const v2 of v.children) {
+            if (v2.value === tag_id) {
+              return v2.label
+            }
           }
         }
         return ''
       },
-      fieldName(row) {
-        let tag = []
-        for (const v of this.tagOptions) {
-          if (v.value == row.tagType) {
-            for (const vv of v.children) {
-              if (row[vv.value] === 1) {
-                tag.push(vv.label)
-              }
-            }
+      tagFieldName(value) {
+        for (const v of this.intensityOptions) {
+          if (v.value === value) {
+            return v.label
           }
         }
-        return tag
-      },
-      tagData(row) {
-        if (row.tagType === 40000) {
-          return [`登录天数${row.loginDay|0}天`, `日均玩牌局数${row.roundAvg|0}局`, `有效下注${(row.validBet|0)/1000}`]
-        }
-        return []
+        return ""
       },
       gameName(gid) {
         if (gid === 0) {
@@ -225,6 +178,9 @@
         return gid
       },
       formatTime(ts) {
+        if (ts === undefined) {
+          $libDate.FormateSecondStr(new Date().getTime(), 2)
+        }
         return $libDate.FormateSecondStr(ts, 2)
       },
       getGameList() {
