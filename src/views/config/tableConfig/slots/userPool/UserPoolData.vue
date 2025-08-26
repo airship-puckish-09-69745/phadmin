@@ -369,8 +369,12 @@ export default {
       // await this.filterData2ConfigTable()
     },
     checkData() {
-      if (this.edit.amount < 0) {
-        this.$message.error('可发放金额不能为负数')
+      if (this.edit.item.amount <= 0) {
+        this.$message.error('可发放金额填写错误')
+        return false
+      }
+      if (this.edit.item.uid <= 0) {
+        this.$message.error('uid填写错误')
         return false
       }
       if (
@@ -380,6 +384,10 @@ export default {
         this.edit.item.effectiveRange === null ||
         this.edit.item.effectiveRange.length === 0) {
         this.$message.error('请填写完整')
+        return false
+      }
+      if (this.Unix(this.edit.item.effectiveRange[1]) < this.getCurrentUnix()) {
+        this.$message.error('生效日期已经过期')
         return false
       }
       return true
@@ -419,7 +427,7 @@ export default {
       return now.getTime() / 1000
     },
     async handleImport(event) {
-      let hadSameUid = false
+      let isPassCheck = true
       const file = event.target.files[0]
       // eslint-disable-next-line no-empty
       if (file !== undefined) {
@@ -444,7 +452,7 @@ export default {
                 const uid = row[2]
                 // 1. 检查 uid 是否重复
                 if (uidSet.has(uid)) {
-                  hadSameUid = true
+                  isPassCheck = false
                   Message.error(`导入失败: UID ${uid} 在表格中存在重复`)
                   return
                 }
@@ -459,10 +467,14 @@ export default {
                 if (
                   userPoolItem.updateAt === 0 ||
                   userPoolItem.validStartAt === 0 ||
+                  userPoolItem.validStartAt < 0 ||
                   userPoolItem.validEndAt === 0 ||
-                  userPoolItem.uid === 0 ||
-                  userPoolItem.amount === 0) {
-                  Message.error('导入失败,数据不能为空')
+                  userPoolItem.validEndAt < 0 ||
+                  userPoolItem.uid <= 0 ||
+                  userPoolItem.amount === 0 ||
+                  userPoolItem.amount === undefined) {
+                  isPassCheck = false
+                  Message.error('导入失败,数据存在错误')
                   return
                 }
                 excelData.push(userPoolItem)
@@ -474,8 +486,10 @@ export default {
               this.reqData = {}
             }
             this.reqData.Data = JSON.stringify(excelData)
-            if (!hadSameUid) {
+            if (isPassCheck) {
               this.excel2ConfigTable()
+            } else {
+              this.getData(this.pageInfo.GetCurrentPage(), this.pageInfo.GetPageNum())
             }
           })
         }
