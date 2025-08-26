@@ -23,6 +23,11 @@
             <publish primary-key="ID" :key-id="getFullKey('goldtrain_slots_base')" :env-empty="false" compare-type="Object" />
             <slots-reels-double v-if="baseCfgBool" v-model="baseCfg" :symbol-list="ruleCfg.SymbolList" @saveData="saveBaseCfg" />
           </el-tab-pane>
+          <el-tab-pane label="2套轴图标" name="reels_double">
+            <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布】</h3>
+            <publish primary-key="ID" :key-id="getFullKey('goldtrain_slots_base')" :env-empty="false" compare-type="Object" />
+            <slots-reels-double v-if="baseCfgBool" v-model="baseCfg" :symbol-list="ruleCfg.SymbolList" @saveData="saveBaseCfg" />
+          </el-tab-pane>
           <el-tab-pane label="拓展配置" name="scatter">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，发布即生效】</h3>
             <publish primary-key="ID" :key-id="getFullKey('goldtrain_slots_ext')" :env-empty="false" compare-type="Object" />
