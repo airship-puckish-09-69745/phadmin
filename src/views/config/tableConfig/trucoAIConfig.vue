@@ -179,7 +179,6 @@ export default {
             this.tableData = this.item.Config
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data.Data)
-            this.moneyProc(false)
             this.load = true
           }
         }
@@ -188,10 +187,8 @@ export default {
 
 
     setData() {
-      this.moneyProc(true)
       this.form.Data = JSON.stringify(this.item)
       console.log('this.form.Data:', this.form.Data)
-      this.moneyProc(false)
       const $this = this
       // 设置修改后数据
       this.$refs.compare.SetNewVal(this.form.Data)
