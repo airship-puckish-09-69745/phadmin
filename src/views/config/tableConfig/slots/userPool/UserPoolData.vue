@@ -470,11 +470,11 @@ export default {
                   userPoolItem.validStartAt < 0 ||
                   userPoolItem.validEndAt === 0 ||
                   userPoolItem.validEndAt < 0 ||
-                  userPoolItem.uid === 0 ||
+                  userPoolItem.uid <= 0 ||
                   userPoolItem.amount === 0 ||
                   userPoolItem.amount === undefined) {
                   isPassCheck = false
-                  Message.error('导入失败,数据不能为空')
+                  Message.error('导入失败,数据存在错误')
                   return
                 }
                 excelData.push(userPoolItem)
