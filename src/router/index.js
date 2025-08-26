@@ -1294,6 +1294,12 @@ export const asyncRoutes = [
                 meta: { title: 'G randAce' }
               },
               {
+                path: 'lionfortune_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/lionfortune_slots_cfg'),
+                name: 'lionfortune_slots_cfg',
+                meta: { title: 'L ionFortune' }
+              },
+              {
                 path: 'luckyspirits_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/luckyspirits_slots_cfg'),
                 name: 'luckyspirits_slots_cfg',
@@ -2186,7 +2192,27 @@ export const asyncRoutes = [
         component: () => import('@/views/playerManage/kycInfo.vue'),
         name: 'kycInfo',
         meta: { title: 'KYC信息 ◐' }
-      }
+      },
+      {
+        path: 'tagManager',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: '玩家标签管理', noCache: true },
+        children: [
+          {
+            path: 'tagUser',
+            component: () => import('@/views/tagManager/tagUser.vue'),
+            name: 'tagUser',
+            meta: { title: '查询用户标签', noCache: true }
+          },
+          {
+            path: 'tagConfig',
+            component: () => import('@/views/tagManager/tagConfig.vue'),
+            name: 'tagConfig',
+            meta: { title: '标签配置', noCache: true }
+          }
+        ]
+      },
     ]
   },
   {
@@ -2906,7 +2932,6 @@ export const asyncRoutes = [
             name: 'dancelion_slots_log',
             meta: { title: 'D ance of the Lion', gid: 184 }
           },
-
           {
             path: 'epicace_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
@@ -2984,6 +3009,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'goldendragon_slots_log',
             meta: { title: 'G oldenDragon', gid: 220 }
+          },
+          {
+            path: 'lionfortune_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'lionfortune_slots_log',
+            meta: { title: 'L ionFortune', gid: 222 }
           },
           {
             path: 'luckyspirits_slots_log',
@@ -3487,54 +3518,54 @@ export const asyncRoutes = [
         redirect: 'noRedirect',
         meta: { title: 'Tongits-作弊识别 ◐' },
         children: [
-          {
-            path: 'tongits_cheat_group',
-            component: () => import('@/views/playerManage/tongitsCheatGroup'),
-            name: 'tongits_cheat_group',
-            meta: { title: 'tongits作弊组合 ◐' }
-          },
-          {
-            path: 'tongits_cheatlog',
-            component: () => import('@/views/playerManage/tongitsCheatlog'),
-            name: 'tongits_cheatlog',
-            meta: { title: 'tongits作弊识别日志 ◐' }
-          },
+          // {
+          //   path: 'tongits_cheat_group',
+          //   component: () => import('@/views/playerManage/tongitsCheatGroup'),
+          //   name: 'tongits_cheat_group',
+          //   meta: { title: 'tongits作弊组合 ◐' }
+          // },
+          // {
+          //   path: 'tongits_cheatlog',
+          //   component: () => import('@/views/playerManage/tongitsCheatlog'),
+          //   name: 'tongits_cheatlog',
+          //   meta: { title: 'tongits作弊识别日志 ◐' }
+          // },
           {
             path: 'game_kick_user_log',
             component: () => import('@/views/playerManage/gameKickUserlog'),
             name: 'game_kick_user_log',
             meta: { title: '游戏作弊踢出用户日志 ◐' }
           },
-          {
-            path: 'tongits_blackuserlog',
-            component: () => import('@/views/playerManage/tongitsBlackUserlog'),
-            name: 'tongits_blackuserlog',
-            meta: { title: '黑名单配桌日志 ◐' }
-          },
-          {
-            path: 'tongits_cheat_related_scorelog',
-            component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatRelatedScorelog'),
-            name: 'tongits_cheat_related_scorelog',
-            meta: { title: '关联计分日志 ◐' }
-          },
-          {
-            path: 'tongits_cheat_related_blacklog',
-            component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatRelatedBlacklog'),
-            name: 'tongits_cheat_related_blacklog',
-            meta: { title: '关联拉黑日志 ◐' }
-          },
-          {
-            path: 'tongits_black_users',
-            component: () => import('@/views/playerManage/tongitsCheat/tongitsBlackUsers'),
-            name: 'tongits_black_users',
-            meta: { title: 'Tongits黑名单 ◐' }
-          },
-          {
-            path: 'tongits_updatemoneylog',
-            component: () => import('@/views/playerManage/tongitsUpdateMoneylog'),
-            name: 'tongits_blackuserlog',
-            meta: { title: '机器人资产变更日志 ◐' }
-          },
+          // {
+          //   path: 'tongits_blackuserlog',
+          //   component: () => import('@/views/playerManage/tongitsBlackUserlog'),
+          //   name: 'tongits_blackuserlog',
+          //   meta: { title: '黑名单配桌日志 ◐' }
+          // },
+          // {
+          //   path: 'tongits_cheat_related_scorelog',
+          //   component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatRelatedScorelog'),
+          //   name: 'tongits_cheat_related_scorelog',
+          //   meta: { title: '关联计分日志 ◐' }
+          // },
+          // {
+          //   path: 'tongits_cheat_related_blacklog',
+          //   component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatRelatedBlacklog'),
+          //   name: 'tongits_cheat_related_blacklog',
+          //   meta: { title: '关联拉黑日志 ◐' }
+          // },
+          // {
+          //   path: 'tongits_black_users',
+          //   component: () => import('@/views/playerManage/tongitsCheat/tongitsBlackUsers'),
+          //   name: 'tongits_black_users',
+          //   meta: { title: 'Tongits黑名单 ◐' }
+          // },
+          // {
+          //   path: 'tongits_updatemoneylog',
+          //   component: () => import('@/views/playerManage/tongitsUpdateMoneylog'),
+          //   name: 'tongits_blackuserlog',
+          //   meta: { title: '机器人资产变更日志 ◐' }
+          // },
           {
             path: 'tongitsCheatLog',
             component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatNew.vue'),

@@ -131,11 +131,11 @@ export const MATCH_UNIQUE_ID_CFG =[
 
 //牌桌TableId
 export const MATCH_TABLE_SCENE_ID_CFG =[
-  { 'value': 0, 'label': '无' },
+  { 'value': 0, 'label': '免费赛桌面' },
   { 'value': 1, 'label': '付费赛桌面' },
-  { 'value': 2, 'label': 'Table2' },
-  { 'value': 3, 'label': 'Table3' },
-  { 'value': 4, 'label': 'Table4' },
+  { 'value': 2, 'label': 'GTCC预选赛1' },
+  { 'value': 3, 'label': 'GTCC预选赛2' },
+  { 'value': 4, 'label': 'GTCC预选赛3' },
   { 'value': 5, 'label': 'Table5' },
 ]
 

@@ -44,17 +44,28 @@
             </el-form-item>
           </el-col>
           <el-col>
-            <el-form-item
-              label="启用的老虎机列表"
-              :rules="[{ required: true, message: '启用的老虎机列表不能为空'}]">
+            <el-form-item label="启用的老虎机列表" :rules="[{ required: true, message: '启用的老虎机列表不能为空'}]">
               <el-checkbox v-model="checkAll" :indeterminate="isIndeterminate" @change="handleCheckAllChange">
                 全选
               </el-checkbox>
-              <div style="margin: 15px 0;"/>
+              <div style="margin: 15px 0;" />
+
               <el-checkbox-group v-model="cfg.taxedSlots" @change="handleCheckedGamesChange">
-                <el-checkbox v-for="game in allGames" :key="game" :label="game">{{ game }}</el-checkbox>
+                <table class="checkbox-table">
+                  <tbody>
+                    <tr v-for="(row, ri) in chunkedLabels" :key="ri">
+                      <td v-for="(label, ci) in row" :key="`${ri}-${ci}`" class="checkbox-cell">
+                        <template v-if="label">
+                          <el-checkbox :label="label">{{ label }}</el-checkbox>
+                        </template>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </el-checkbox-group>
+
             </el-form-item>
+
           </el-col>
 
         </el-row>
@@ -72,7 +83,6 @@
 import Publish from '@/components/Publish/index.vue';
 import request from '@/utils/request';
 import {Message} from "element-ui";
-import {number} from "echarts/lib/export";
 
 export default {
   name: 'UserPoolCfg',
@@ -97,12 +107,37 @@ export default {
       isIndeterminate: true,
     }
   },
+  computed: {
+    // 仍然按 gid 数字升序
+    sortedAllGames() {
+      return (this.allGames || []).slice().sort((a, b) => {
+        const nameA = a.split('(')[0].trim().toLowerCase() // 游戏名部分
+        const nameB = b.split('(')[0].trim().toLowerCase()
+        return nameA.localeCompare(nameB) // 按字母顺序排序
+      });
+    },
+    // 列优先分布：先填满第1列(从上到下)，再第2列...
+    chunkedLabels() {
+      const cols = 3; // 列数
+      const list = this.sortedAllGames;
+      const rows = Math.ceil(list.length / cols); // 每列的行数
+      const grid = Array.from({ length: rows }, () => Array(cols).fill(null));
+
+      for (let c = 0; c < cols; c++) {
+        for (let r = 0; r < rows; r++) {
+          const i = r + c * rows; // 列优先索引
+          if (i < list.length) grid[r][c] = list[i];
+        }
+      }
+      return grid; // => [[row0col0,row0col1,row0col2], [row1col0,...], ...]
+    }
+  },
   created() {
     this.fetchData()
   },
   methods: {
     handleCheckAllChange(val) {
-      this.cfg.taxedSlots = val ? this.allGames : []
+      this.cfg.taxedSlots = val ? this.sortedAllGames.slice() : []
       this.isIndeterminate = false
     },
     handleCheckedGamesChange(value) {
@@ -148,7 +183,8 @@ export default {
     formatTaxedSlots(gameIds) {
       const formatNames = []
       for (const gameId of gameIds) {
-        const str = gameId + '|' + this.gameIdMap[Number(gameId)]
+        // const str = gameId + '|' + this.gameIdMap[Number(gameId)]
+        const str = this.gameIdMap[Number(gameId)] + '(' + gameId + ')'
         formatNames.push(str)
       }
       return formatNames
@@ -164,7 +200,7 @@ export default {
             if (response.Data[i].Gid < 50 || response.Data[i].Gid > 100 && response.Data[i].Gid < 150 || response.Data[i].Gid > 499) {
               continue
             }
-            this.allGames.push(response.Data[i].Gid + '|' + response.Data[i].Name)
+            this.allGames.push(response.Data[i].Name + '(' + response.Data[i].Gid + ')')
             this.gameIdMap[Number(response.Data[i].Gid)] = response.Data[i].Name
           }
         }
@@ -172,8 +208,8 @@ export default {
     },
     splitGames(pickGames) {
       const games = []
-      for (const game of pickGames) {
-        games.push(Number(game.split('|')[0]))
+      for (const gameStr of pickGames) {
+        games.push(Number(gameStr.split('(')[1].replace(')', '')))
       }
       return games
     },
@@ -185,7 +221,8 @@ export default {
         this.cfg.betOddsMax === '' ||
         this.cfg.playTimesMin === '' ||
         this.cfg.playTimesMax === '' ||
-        this.cfg.hitRates === undefined) {
+        this.cfg.hitRates === undefined ||
+        this.cfg.hitRates === '') {
         Message.error('请填写完整')
         return false
       }
@@ -251,4 +288,18 @@ export default {
 .dialog-footer {
   margin-left: 90%;
 }
+
+.checkbox-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.checkbox-cell {
+  width: 33.33%; /* 三列 */
+  border: 1px solid #dcdfe6;
+  padding: 8px 12px;
+  text-align: left;
+  vertical-align: middle;
+}
+
 </style>

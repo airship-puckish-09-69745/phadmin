@@ -344,6 +344,7 @@ export default {
       formData.append('Env', this.$store.getters.env)
       formData.append('category', this.formData.category)
       formData.append('file', this.formData.file)
+      console.log("formData", this.$store.getters.env)
 
       const url = process.env.VUE_APP_BASE_API + '/file/upload'
       const config = {

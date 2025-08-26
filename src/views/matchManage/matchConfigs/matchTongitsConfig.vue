@@ -1336,7 +1336,7 @@ export default {
                     }
                     this.tableData.push(tableDataCpy[i])
                   }
-                  console.log("table: ",tableDataCpy[i])
+
                 }
               }
             }
@@ -1865,7 +1865,7 @@ export default {
           this.editForm.signExtra.gtccWhiteList.data=''
         }
         this.editForm.prizeExtra = JSON.parse(editData.prize_extra)
-        if(editData.list_extra  !== undefined){
+        if(editData.list_extra  !== null &&  editData.list_extra !=="null"){
           this.editForm.listExtra = JSON.parse(editData.list_extra)
         }
         this.showCsCfgs = []
@@ -2373,14 +2373,14 @@ export default {
         const ruleExtra = this.csExtraCfgs.get(this.editForm.data.csId)
 
         if (this.editForm.data.opentMatchType == 2 && this.editForm.data.opentMatchMember < endNum) {
-          if(ruleExtra == null || ruleExtra.is_gtcc == 0) { //gtcc 赛事不做数值检查
+          if(ruleExtra == null || ruleExtra.skip_strikeout == 0) { //跳过打立阶段赛事不做数值检查
             this.errmsg('开赛人数不能小于打立出局的结束规则的剩余人数')
             return false
           }
         }
 
         if (this.editForm.data.opentMatchType == 2 && this.editForm.data.opentMatchMember < promoteNum) {
-          if(ruleExtra == null || ruleExtra.is_gtcc == 0) { //gtcc 赛事不做数值检查
+          if(ruleExtra == null || ruleExtra.skip_strikeout == 0) { //跳过打立阶段赛事不做数值检查
             this.errmsg('开赛人数不能小于打立出局的晋级规则的晋级人数')
             return false
           }
