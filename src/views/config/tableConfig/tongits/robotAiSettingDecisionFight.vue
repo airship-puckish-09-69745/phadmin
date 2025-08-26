@@ -328,7 +328,6 @@ export default {
   watch: {
     AiConfig: {
       immediate: true,
-      deep: true,
       handler(newVal) {
 
         if (!newVal.Decision.DecisionFight) {
