@@ -251,74 +251,59 @@ export default {
         let successCount = 0;
         let failedCount = 0;
 
-        // 创建所有上传任务的Promise数组
-        const uploadPromises = this.extractedFiles.map((file, index) => {
-          return new Promise(async (resolve) => {
-            try {
-              const formData = new FormData();
-              formData.append('Env', this.$store.getters.env);
-              formData.append('category', 'audit/');
-              formData.append('file', file.blob, file.name);
-              formData.append('ife', 1);
+        // 顺序上传文件（避免并行请求可能的问题）
+        for (const file of this.extractedFiles) {
+          try {
+            const formData = new FormData();
+            formData.append('Env', this.$store.getters.env);
+            formData.append('category', 'audit/');
+            formData.append('file', file.blob, file.name);
+            formData.append('ife', 1);
 
-              const url = process.env.VUE_APP_BASE_API + '/file/upload';
+            const url = process.env.VUE_APP_BASE_API + '/file/upload';
 
-              // 修复：使用正确的axios配置格式
-              const response = await axios.post(url, formData, {
-                headers: {
-                  'Content-Type': 'multipart/form-data'
-                },
-                onUploadProgress: (progressEvent) => {
-                  if (progressEvent.total > 0) {
-                    const fileProgress = progressEvent.loaded / progressEvent.total;
-                    // 计算总体进度
-                    const overallProgress = ((uploadedCount + fileProgress) / totalFiles) * 100;
-                    this.progress = Math.round(overallProgress);
-                  }
-                }
-              });
-
-              const { status, data } = response || {};
-              const { RetCode } = data || {};
-
-              if (status === 200 && RetCode === 0) {
-                this.uploadStatus.push({
-                  filename: file.name,
-                  status: 'success',
-                  message: data.message || '上传成功',
-                  data: data.data
-                });
-                successCount++;
-              } else {
-                this.uploadStatus.push({
-                  filename: file.name,
-                  status: 'fail',
-                  message: data?.Data || '上传失败',
-                  data: data?.data
-                });
-                failedCount++;
+            // 简化版本：移除进度事件处理
+            const response = await axios.post(url, formData, {
+              headers: {
+                'Content-Type': 'multipart/form-data'
               }
-            } catch (err) {
-              const errorMessage = err.response?.data?.message ||
-                (err.response?.data?.error || err.message);
+            });
+
+            const { status, data } = response || {};
+            const { RetCode } = data || {};
+
+            if (status === 200 && RetCode === 0) {
               this.uploadStatus.push({
                 filename: file.name,
-                status: 'error',
-                message: errorMessage,
-                data: err.response?.data || null
+                status: 'success',
+                message: data.message || '上传成功',
+                data: data.data
+              });
+              successCount++;
+            } else {
+              this.uploadStatus.push({
+                filename: file.name,
+                status: 'fail',
+                message: data?.Data || '上传失败',
+                data: data?.data
               });
               failedCount++;
-            } finally {
-              uploadedCount++;
-              // 更新最终进度
-              this.progress = Math.round((uploadedCount / totalFiles) * 100);
-              resolve();
             }
-          });
-        });
-
-        // 等待所有文件上传完成
-        await Promise.all(uploadPromises);
+          } catch (err) {
+            const errorMessage = err.response?.data?.message ||
+              (err.response?.data?.error || err.message);
+            this.uploadStatus.push({
+              filename: file.name,
+              status: 'error',
+              message: errorMessage,
+              data: err.response?.data || null
+            });
+            failedCount++;
+          } finally {
+            uploadedCount++;
+            this.progress = Math.round((uploadedCount / totalFiles) * 100);
+          }
+        }
 
         // 最终状态汇总
         if (failedCount === 0) {
@@ -342,9 +327,8 @@ export default {
 
         this.$emit('upload-complete', {
           total: this.extractedFiles.length,
-          success: this.uploadStatus.filter(f => f.status === 'success').length,
-          warning: this.uploadStatus.filter(f => f.status === 'warning').length,
-          failed: this.uploadStatus.filter(f => f.status === 'error' || f.status === 'fail').length,
+          success: successCount,
+          failed: failedCount,
           details: this.uploadStatus
         });
       }
