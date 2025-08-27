@@ -199,7 +199,7 @@
               <template>
                 <el-select v-model="item.ItemUseTime" size="mini" placeholder="请选择">
                   <el-option v-for="option in ITEM_DAY_TYPE_OPTIONS" :key="option.value"
-                             :label="option.label" :value="option.value" :disabled="option.disabled || (item.ItemType === 5 && option.value === 0)">
+                             :label="option.label" :value="option.value" :disabled="option.disabled || (item.ItemType === 5 && (option.value === 0 || option.value === 365))">
                   </el-option>
                 </el-select>
               </template>
