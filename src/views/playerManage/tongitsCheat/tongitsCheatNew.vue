@@ -203,12 +203,15 @@ export default {
           fieldsCount.push(0)
         }
       }
-      for (let i = 1; i < fileds.length; i++) {
+      for (let i = 0; i < fileds.length; i++) {
         if (fileds[i] === 0) {
           continue
         }
         let info = ''
         switch (i) {
+          case 0:
+            info = '返还前伙伴分值' + fieldsScore[i]
+            break
           case 1:
             info = '拆牌喂牌:' + '  次数=' + fieldsCount[i] + '  加分=' + fieldsScore[i]
             break
@@ -252,7 +255,7 @@ export default {
       const $this = this
       $this.cheatLogs = []
       $this.clientDB = new ClientTableData([], 1, {})
-      if (this.Uid ==='' || this.Uid === undefined) {
+      if (this.Uid === '' || this.Uid === undefined) {
         this.Uid = 0
       }
       request({
@@ -379,7 +382,7 @@ export default {
                       Gid: cheatRow.gid,
                       TableMoney: cheatRow.tableMoney,
                       CheatInfos: this.getCheatInfo(cheatRow.cheatFields, cheatRow.cheatFieldsCount, cheatRow.cheatScores),
-                      TableCheatScore: cheatRow.tableCheatScore ? cheatRow.tableCheatScore : 0,
+                      TableCheatScore: cheatRow.tableCheatScore ? cheatRow.tableCheatScore : 0
                     }
                     if (cheatRow.hasOwnProperty('nick')) {
                       nick.add(cheatRow.nick)
@@ -996,15 +999,15 @@ export default {
             <span>{{ formatUserNick(scope.row) }}</span>
           </template>
         </el-table-column>
-<!--        <el-table-column-->
-<!--          label="身份"-->
-<!--          width="80"-->
-<!--          align="center"-->
-<!--        >-->
-<!--          <template slot-scope="scope">-->
-<!--            <span>{{ formatUserType(scope.row) }}</span>-->
-<!--          </template>-->
-<!--        </el-table-column>-->
+        <!--        <el-table-column-->
+        <!--          label="身份"-->
+        <!--          width="80"-->
+        <!--          align="center"-->
+        <!--        >-->
+        <!--          <template slot-scope="scope">-->
+        <!--            <span>{{ formatUserType(scope.row) }}</span>-->
+        <!--          </template>-->
+        <!--        </el-table-column>-->
         <el-table-column
           label="信任等级"
           width="80"
