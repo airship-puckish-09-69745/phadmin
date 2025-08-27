@@ -214,6 +214,15 @@
           </template>
         </el-table-column>
         <el-table-column
+          prop="jackpot_total_amount"
+          label="Jackpot Total Amount"
+          width="120"
+        >
+          <template slot-scope="scope">
+            {{ scope.row.jackpot_total_amount ? formatNumber(scope.row.jackpot_total_amount / 1000) : 0 }}
+          </template>
+        </el-table-column>
+        <el-table-column
           prop="money_now"
           label="结算后余额"
           width="100"
