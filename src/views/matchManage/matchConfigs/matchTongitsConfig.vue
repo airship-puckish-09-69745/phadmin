@@ -2479,7 +2479,7 @@ export default {
           this.errmsg('前三名必须配,且请以1-1,2-2,3-3的格式配')
           return false
         }
-        if (element.startRank >= 4 &&  element.startRank < rewards[index-1].endRank) {
+        if (element.startRank >= 4 &&  element.startRank <= rewards[index-1].endRank) {
           this.errmsg('名次配置必须连续')
           return false
         }
@@ -2563,7 +2563,7 @@ export default {
           this.errmsg('前三名必须配,且请以1-1,2-2,3-3的格式配')
           return false
         }
-        if (element.startRank >= 4 &&  element.startRank < rewards[index-1].endRank) {
+        if (element.startRank >= 4 &&  element.startRank <= rewards[index-1].endRank) {
           this.errmsg('名次配置必须连续')
           return false
         }
