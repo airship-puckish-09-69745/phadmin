@@ -484,17 +484,20 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
     }
   }
   // 传入排序字段及排序方向
-  this.SortByProp = function(prop, order) {
+  this.SortByProp = function(prop, order, compareMethod) {
     $this.SortName = prop
     if (prop != null) {
       $this.SortOrder = order === 'ascending' ? 1 : -1
     }
-    this._sortByProp()
+    this._sortByProp(compareMethod)
   }
-  this._sortByProp = function() {
+  this._sortByProp = function(compareMethod) {
     if ($this.SortName == null) {
       $this.ShowData = $this.ShowData.slice(0)
     } else {
+      if (compareMethod != null) {
+        $this.ShowData = $this.ShowData.sort(compareMethod)
+      }
       $this.ShowData = $this.ShowData.sort(this.compare)
     }
   }

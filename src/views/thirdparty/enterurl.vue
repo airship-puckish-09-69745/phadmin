@@ -480,7 +480,7 @@ export default {
           id: 1000041,
           agentId: 'IndiaH5GameDev',
           desc: 'IndiaH5Game[1000041]【印度H5】'
-``        },
+        },
         {
           id: 1000049,
           agentId: 'zoogameDev',
