@@ -25,11 +25,19 @@
             width="150"
           />
           <el-table-column
-            prop="tagVal"
-            label="标签名称"
+            prop="tagId"
+            label="标签"
           >
           <template slot-scope="scope">
-              {{ tagIdName(scope.row.tagId) + "  [" +  tagFieldName(scope.row.tagVal) + ']'}}
+              {{ tagIdName(scope.row.tagId)}}
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="tagVal"
+            label="数据"
+          >
+          <template slot-scope="scope">
+              {{ tagFieldName(scope.row)}}
             </template>
           </el-table-column>
           <el-table-column
@@ -141,14 +149,33 @@
       }
     },
     computed: {},
+    mounted() {
+      this.env = store.getters.env || this.env
+      if (this.$route.query && this.$route.query.uid > 0) {
+        this.form.Uid = parseInt(this.$route.query.uid)
+        this.$refs.uidInput.saveUid(this.form.Uid)
+        console.log('set mounted', this.form.Uid)
+      }
+    },
+    activated() {
+      if (this.$route.query && this.$route.query.uid > 0) {
+        this.form.Uid = parseInt(this.$route.query.uid)
+        this.$refs.uidInput.saveUid(this.form.Uid)
+        console.log('set activated', this.form.Uid)
+      }
+    },
     created() {
       this.env = store.getters.env || this.env
-      this.item.gameId = 0
       this.getGameList()
+      if (this.$route.query && this.$route.query.uid > 0) {
+        this.form.Uid = parseInt(this.$route.query.uid)
+        this.$refs.uidInput.saveUid(this.form.Uid)
+        console.log('set mounted', this.form.Uid)
+      }
       this.getInfo()
     },
     methods: {
-      tagIdName(tag_id,tag_val) {
+      tagIdName(tag_id) {
         for (const v of this.tagOptions) {
           for (const v2 of v.children) {
             if (v2.value === tag_id) {
@@ -158,13 +185,32 @@
         }
         return ''
       },
-      tagFieldName(value) {
-        for (const v of this.intensityOptions) {
-          if (v.value === value) {
-            return v.label
+      getTagType(tag_id) {
+        for (const v of this.tagOptions) {
+          for (const v2 of v.children) {
+            if (v2.value === tag_id) {
+              return v.value
+            }
           }
         }
-        return ""
+        return 0
+      },
+      tagFieldName(row) {
+        const tagType = this.getTagType(row.tagId)
+        console.log("tagType", tagType)
+        if (tagType === 0) {
+          return ""
+        }
+        if (tagType === 2) {
+          for (const v of this.intensityOptions) {
+            if (v.value === row.tagVal) {
+              return v.label
+            }
+          }
+        } else if (tagType === 3) {
+          return row.tagVal/1000
+        }
+        return row.tagVal
       },
       gameName(gid) {
         if (gid === 0) {
@@ -207,6 +253,10 @@
         return n.toLocaleString()
       },
       getInfo() {
+        if (this.form.Uid === 0) {
+          Message.error("请输入Uid")
+          return 
+        }
         request({
           url: '/dataProxy/info',
           method: 'get',
@@ -218,7 +268,10 @@
         }).then(response => {
           if (response.RetCode === 0) {
             this.tableData = response.Data || []
-            console.log(JSON.stringify(response.Data))
+            if (this.tableData === "") {
+
+            }
+            console.log(JSON.stringify(response.Data),typeof this.tableData)
           }
         })
       }

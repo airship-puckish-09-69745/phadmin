@@ -2112,6 +2112,12 @@ export const asyncRoutes = [
             meta: { title: 'Free Spins配置', noCache: true }
           }
         ]
+      },
+      {
+        path: 'tongitsHunter',
+        component: () => import('@/views/config/tableConfig/activity/tongitsHunter/index.vue'),
+        name: 'tongitsHunter',
+        meta: { title: 'TongitsHunter配置', noCache: true }
       }
     ]
   },
