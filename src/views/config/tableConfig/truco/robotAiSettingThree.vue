@@ -144,7 +144,7 @@
                     <el-form-item label="队友已出牌得分(>=)" :required="true">
                         <template>
                           <el-input-number
-                            v-model="AiConfig.ThreeSitCfg.RoundOne.OutCard.TeamOuCardRatio"  type="number"
+                            v-model="AiConfig.ThreeSitCfg.RoundOne.OutCard.TeamOuCardScore"  type="number"
                             style="width: 100%"> 
                           </el-input-number>
                         </template>
@@ -307,7 +307,7 @@
               <el-row>
                 <el-form ref="AiConfig.ThreeSitCfg.RoundTwo.TrucoOther" :model="AiConfig.ThreeSitCfg.RoundTwo.TrucoOther" width="70%">
                 <el-row :gutter="16">
-                  <el-col :span="8">
+                  <el-col :span="12">
                     <el-form-item label="对手已出绝对大牌且第一回合我方赢Truco概率" :required="true">
                         <template>
                           <el-input-number
@@ -329,7 +329,7 @@
                     <el-form-item label="队友已出牌得分(>=)" :required="true">
                         <template>
                           <el-input-number
-                            v-model="AiConfig.ThreeSitCfg.RoundTwo.OutCard.TeamOuCardRatio"  type="number"
+                            v-model="AiConfig.ThreeSitCfg.RoundTwo.OutCard.TeamOuCardScore"  type="number"
                             style="width: 100%"> 
                           </el-input-number>
                         </template>
@@ -529,7 +529,7 @@ export default {
             OutMaxRato: 20,
           },
           OutCard:{
-            TeamOuCardRatio:20,
+            TeamOuCardScore:20,
           }
         },
         RoundTwo:{
@@ -565,7 +565,7 @@ export default {
             OneWinAndOutMaxRatio: 20,
           },
           OutCard:{
-            TeamOuCardRatio:20,
+            TeamOuCardScore:20,
           }
         },
         RoundThree:{

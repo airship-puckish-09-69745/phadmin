@@ -17,7 +17,7 @@
         >
           <el-table-column
             prop="id"
-            label="标签id"
+            label="ID"
             width="120"
           />
           <el-table-column
@@ -26,7 +26,16 @@
             width="100"
           >
             <template slot-scope="scope">
-              {{ tagName(scope.row.tag_type) }}
+              {{ tagTypeName(scope.row.tag_type) }}
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="tag_id"
+            label="标签"
+            width="100"
+          >
+            <template slot-scope="scope">
+              {{ tagIdName(scope.row.tag_id) }}
             </template>
           </el-table-column>
           <el-table-column
@@ -34,9 +43,6 @@
             label="标签名称"
             width="120"
           >
-            <template slot-scope="scope">
-              {{ fieldName(scope.row.tag_name) }}
-            </template>
           </el-table-column>
           <el-table-column
             prop="tag_gid"
@@ -109,7 +115,7 @@
         >
         <span>
           <el-form ref="form" :model="form" label-width="150px">
-            <el-form-item label="标签：">
+            <el-form-item label="标签类型：">
               <el-select v-model="form.tag_type" placeholder="placeholder"  @change="selectChange">
                 <el-option
                     v-for="opt in tagOptions"
@@ -119,8 +125,8 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item v-if="haveChildren()" label="字段：">
-              <el-select v-model="form.tag_name" placeholder="placeholder">
+            <el-form-item label="标签：">
+              <el-select v-model="form.tag_id" placeholder="placeholder" >
                 <el-option
                     v-for="opt in fieldOptions"
                     :key="opt.value"
@@ -129,9 +135,19 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item v-if="gameIntensity()" label="选择游戏：">
+            <el-form-item v-if="gameIntensity()" label="字段：">
+              <el-select v-model="form.tag_val" placeholder="placeholder" @change="tagValChange">
+                <el-option
+                    v-for="opt in intensityOptions"
+                    :key="opt.value"
+                    :label="opt.label"
+                    :value="opt.value"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item v-if="showGameOptions()" label="选择游戏：">
                 <el-select v-model="form.tag_gid" filterable placeholder="placeholder">
-                    <el-option :value="0" label="任意游戏"></el-option>
+                    <el-option v-if="gameIntensity()" :value="0" label="任意游戏"></el-option>
                     <el-option
                         v-for="opt in gameOptions"
                         :key="opt.value"
@@ -141,20 +157,52 @@
                 </el-select>
             </el-form-item>
             <el-form-item v-if="gameIntensity()" label="登录天数：">
-              <el-select v-model="form.loginDay" placeholder="placeholder">
-                <el-option
-                    v-for="opt in dayOptions"
-                    :key="opt.value"
-                    :label="opt.label"
-                    :value="opt.value"
-                />
-              </el-select>
+              <el-row>
+                <el-col :span="3">最小值</el-col>
+                <el-col :span="8">
+                  <el-select v-model="form.loginDay[0]" placeholder="最小值">
+                    <el-option
+                        v-for="opt in dayOptions"
+                        :key="opt.value"
+                        :label="opt.label"
+                        :value="opt.value"
+                    />
+                  </el-select>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="3">最大值</el-col>
+                <el-col :span="8">
+                  <el-select v-model="form.loginDay[1]" placeholder="最大值">
+                    <el-option
+                        v-for="opt in dayOptions"
+                        :key="opt.value"
+                        :label="opt.label"
+                        :value="opt.value"
+                    />
+                  </el-select>
+                </el-col>
+              </el-row>
             </el-form-item>
             <el-form-item v-if="gameIntensity()" label="日均玩牌数：">
-              <el-input v-model.number="form.playRound" placeholder="大于等于"></el-input>
+              <el-row>
+                <el-col :span="4">
+                  <el-checkbox v-model="form.roundAvg.use">启用</el-checkbox>
+                </el-col>
+                <el-col :span="8">
+                  <el-input v-if="form.roundAvg.use" v-model.number="form.roundAvg.val" placeholder="大于等于"></el-input>
+                </el-col>
+              </el-row>
             </el-form-item>
             <el-form-item v-if="gameIntensity()" label="有效下注：">
-              <el-input v-model.number="form.validBet" placeholder="大于等于"></el-input>
+              <el-row>
+                <el-col :span="4">
+                  <el-checkbox v-model="form.validBet.use">启用</el-checkbox>
+                </el-col>
+                <el-col :span="8">
+                  <el-input v-if="form.validBet.use" v-model.number="form.validBet.val" placeholder="大于等于"></el-input>
+                </el-col>
+              </el-row>
             </el-form-item>
           </el-form>
         </span>
@@ -190,6 +238,8 @@
       return {
         AttrNames: {
           tag_type: '标签类型',
+          tag_id: '标签ID',
+          tag_val: '标签值',
           tag_name: '标签名称',
           tag_gid: '关联游戏',
           tag_attr: '标签属性',
@@ -200,7 +250,7 @@
         name: 'tagConfig',
         libShow: $libShow,
         dayOptions: [
-          {value: 0, label: '无限制'},
+          {value: 0, label: '0天'},
           {value: 1, label: '1天'},
           {value: 2, label: '2天'},
           {value: 3, label: '3天'},
@@ -211,60 +261,42 @@
         ],
         gameOptions: [],
         tagOptions: [
-            {value: 10000, label: '用户类型', children: [
-                    {value: 'new', label: '新增用户'},
-                    {value: 'newplayer', label: '新进用户'},
-                    {value: 'user', label: '老用户'},
-                    {value: 'lose', label: '流失用户'},
-                    {value: 'prelose', label: '预流失用户'},
-                ]},
-            {value: 20000, label: '时间', children: [
-                    {value: 20001, label: '注册时间'},
-                    {value: 20002, label: '最后登录时间'},
-                ]},
-            {value: 30000, label: 'KYC'},
-            {value: 40000, label: '游戏强度', children: [
-                    {value: 'core', label: '核心'},
-                    {value: 'often', label: '常玩'},
-                    {value: 'try', label: '尝试'},
-                    {value: 'ever', label: '无感'},
-                    {value: 'avg_round', label: '玩牌局数'},
-                    {value: 'login_day', label: '登录天数'},
-                ]},
-            {value: 50000, label: '常玩底注'},
-            {value: 60000, label: '最高场次'},
-            {value: 70000, label: '信誉身份', children: [
-                    {value: 70001, label: '认证用户'},
-                    {value: 70002, label: '高信用户'},
-                    {value: 70003, label: '低信用户'},
-                    {value: 70004, label: '低危用户'},
-                    {value: 70005, label: '疑似用户'},
-                    {value: 70006, label: '黑子用户'},
-                ]},
-            {value: 80000, label: '赛事类型', children: [
-                    {value: 80001, label: '免费'},
-                    {value: 80002, label: '付费'},
-                ]},
-            {value: 90000, label: '平台VIP等级'},
-            {value: 100000, label: '资产相关', children: [
-                    {value: 100001, label: '用户单笔充值最高'},
-                    {value: 100002, label: '用户累计充值额度'},
-                    {value: 100003, label: '用户累计充值次数'},
-                    {value: 100004, label: '是否全平台无牌局记录充值'},
-                    {value: 100005, label: '用户登录资产'},
-                    {value: 100006, label: '用户提现次数'},
-                    {value: 100007, label: '用户累计提现额'},
-                    {value: 100008, label: '用户最高提现额'}
-                ]},
+          {value: 1, label: '用户类型', children: [
+            {value: 10000, label: '新增用户'},
+            {value: 20000, label: '新进用户'},
+            {value: 30000, label: '流失用户'},
+            {value: 40000, label: '预流失用户'},
+          ]},
+          {value: 2, label: '游戏强度', children: [
+            {value: 50000, label: '登录天数'},
+            {value: 60000, label: '日平局局数'},
+            {value: 70000, label: '游戏强度'},
+          ]},
+          {value: 3, label: '游戏场次', children: [
+            {value: 80000, label: '常玩底注'},
+            {value: 90000, label: '最高场次'},
+          ]},
+          {value: 4, label: '赛事类型', children: [
+            {value: 100000, label: '免费'},
+            {value: 110000, label: '付费'},
+          ]}
+        ],
+        intensityOptions: [
+          {value: 1, label: '无感'},
+          {value: 2, label: '尝试'},
+          {value: 3, label: '常玩'},
+          {value: 4, label: '核心'},
         ],
         fieldOptions: [],
         form: {
-            tag_type: 40000,
-            tag_name: 40001,
-            tag_gid: 0,
-            loginDay: 0,
-            playRound: 1,
-            validBet: 1000,
+          tag_type: 2,
+          tag_id: 0,
+          tag_val: 0,
+          tag_name: '',
+          tag_gid: 22,
+          loginDay: [0,0],
+          roundAvg: {use:false, min: 0},
+          validBet: {use:false, min: 0},
         },
         syncInfo: false,
         appInfo: [],
@@ -291,24 +323,43 @@
       this.selectChange(this.form.tag_type)
     },
     methods: {
+      tagValChange(value) {
+        if (this.form.tag_id === 70000) {
+          for (const v of this.intensityOptions) {
+            if (v.value === value) {
+              this.form.tag_name = v.label
+              return
+            }
+          }
+        }
+        for (const v of this.fieldOptions) {
+          if (v.value == value) {
+            this.form.tag_name = v.label
+          }
+        }
+      },
       selectChange(value) {
-        console.log(value)
+        // console.log(value)
         for (const v of this.tagOptions) {
           if (v.value === value) {
               this.fieldOptions = v.children
               break
           }
         }
-      },
-      haveChildren(){
-        for (const v of this.tagOptions) {
-          if (v.value === this.form.tag_type) {
-              return v.children && v.children.length>0
-          }
+        if (this.form.tag_id > 0) {
+          return
+        } 
+        if (this.fieldOptions && this.fieldOptions.length>0) {
+          this.form.tag_val = 0
+          this.form.tag_id = this.fieldOptions[0].value
+          this.form.tag_name = this.fieldOptions[0].label
         }
-        return false
+        if (this.gameIntensity()) {
+          this.form.tag_val = this.intensityOptions[0].value
+          this.form.tag_name = this.intensityOptions[0].label
+        }
       },
-      tagName(tag_type) {
+      tagTypeName(tag_type) {
         for (const v of this.tagOptions) {
           if (v.value === tag_type) {
             return v.label
@@ -316,10 +367,20 @@
         }
         return ''
       },
-      fieldName(tag_name) {
-        console.log(tag_name, this.fieldOptions)
+      tagIdName(tag_id) {
+        for (const v of this.tagOptions) {
+          for (const v2 of v.children) {
+            if (v2.value === tag_id) {
+              return v2.label
+            }
+          }
+        }
+        return ''
+      },
+      fieldName(tag_val) {
+        // console.log(tag_val, this.fieldOptions)
         for (const v of this.fieldOptions) {
-          if (v.value == tag_name) {
+          if (v.value == tag_val) {
             return v.label
           }
         }
@@ -337,10 +398,20 @@
         return gid
       },
       attrName(row) {
-        console.log(JSON.stringify(row))
-        if (row.tag_type === 40000) {
+        if (row.tag_attr === '{}') {
+          return ""
+        }
+        // console.log(JSON.stringify(row))
+        if (row.tag_type === 2) {
           const attr = JSON.parse(row.tag_attr)
-          return `一周内在${this.gameName(row.tag_gid)}登录天数>=${attr.loginDay};日均玩牌局数>=${attr.playRound},有效下注>=${attr.validBet}`
+          let str = `一周内在${this.gameName(row.tag_gid)}登录天数在区间[${attr.loginDay[0]}-${attr.loginDay[1]}]`
+          if (attr.roundAvg.use) {
+            str += `,日均玩牌局数>=${attr.roundAvg.val}`
+          }
+          if (attr.validBet.use) {
+            str += `,有效下注>=${attr.validBet.val}`
+          }
+          return str
         }
         return row.tag_attr
       },
@@ -364,8 +435,11 @@
           }
         })
       },
+      showGameOptions() {
+        return (this.form.tag_type === 2 || this.form.tag_type === 3)
+      },
       gameIntensity() {
-        return (this.form.tag_type === 40000)
+        return (this.form.tag_type === 2 && this.form.tag_id === 70000)
       },
       handleSizeChange(val) {
         this.page = 1
@@ -386,15 +460,17 @@
       edit(row) {
         this.syncInfo = true
         this.isEdit = true
-        console.log(JSON.stringify(row))
+        // console.log(JSON.stringify(row))
         const attr = JSON.parse(row.tag_attr)
         this.form.id = row.id
         this.form.tag_type = row.tag_type
+        this.form.tag_id = row.tag_id
+        this.form.tag_val = row.tag_val
         this.form.tag_name = row.tag_name
         this.form.tag_gid = row.tag_gid
         this.form.status = row.status
         this.form.loginDay = attr.loginDay
-        this.form.playRound = attr.playRound
+        this.form.roundAvg = attr.roundAvg
         this.form.validBet = attr.validBet
         this.selectChange(this.form.tag_type)
       },
@@ -402,25 +478,56 @@
         this.syncInfo = true
         const attr = JSON.parse(row.tag_attr)
         // this.form.id = row.id
+        this.form.tag_id = row.tag_id
         this.form.tag_type = row.tag_type
+        this.form.tag_val = row.tag_val
         this.form.tag_name = row.tag_name
         this.form.tag_gid = row.tag_gid
         this.form.status = row.status
         this.form.loginDay = attr.loginDay
-        this.form.playRound = attr.playRound
+        this.form.roundAvg = attr.roundAvg
         this.form.validBet = attr.validBet
         this.selectChange(this.form.tag_type)
       },
       add() {
         this.syncInfo = true
         this.form.id = 0
+        this.form.tag_id = 0
+        this.selectChange(this.tagOptions[0].value)
       },
       sure() {
-        this.form.tag_attr = JSON.stringify({
-          loginDay: this.form.loginDay,
-          playRound: this.form.playRound,
-          validBet: this.form.validBet
-        })
+        this.form.tag_attr = '{}'
+        if (this.gameIntensity()){
+          if (!this.isEdit) {
+            const form = this.form
+            if (this.form.loginDay[0] > this.form.loginDay[1]) {
+              Message.error("登录天数最小值不能大于最大值")
+              return
+            }
+            for (const v of this.tableData) {
+              const attr = JSON.parse(v.tag_attr)
+              if (v.tag_id === this.form.tag_id && v.tag_gid === this.form.tag_gid && v.tag_val === this.form.tag_val) {
+                Message.error("重复标签")
+                return
+              }
+              if (v.tag_id === this.form.tag_id && v.tag_gid === this.form.tag_gid && this.gameIntensity()) {
+                if (form.loginDay[0] < attr.loginDay[0] && form.loginDay[1] >= attr.loginDay[0]) {
+                  Message.error(`标签区间[${form.loginDay[0]},${form.loginDay[1]}]与标签《${this.fieldName(v.tag_val)}》的区间[${attr.loginDay[0]},${attr.loginDay[1]}]有重叠`)
+                  return
+                }
+                if (form.loginDay[1] > attr.loginDay[1] && form.loginDay[0] <= attr.loginDay[1]) {
+                  Message.error(`标签区间[${form.loginDay[0]},${form.loginDay[1]}]与标签《${this.fieldName(v.tag_val)}》的区间[${attr.loginDay[0]},${attr.loginDay[1]}]有重叠`)
+                  return
+                }
+              }
+            }
+          }
+          this.form.tag_attr = JSON.stringify({
+            loginDay: this.form.loginDay,
+            roundAvg: this.form.roundAvg,
+            validBet: this.form.validBet
+          })
+        }
         this.syncInfo = false
         this.isEdit?this.tagUpdate():this.tagCreate()
         this.isEdit = false
@@ -436,7 +543,7 @@
             Env: this.env,
             PageNum: this.page,
             PageSize: this.limit,
-            TagType:this.form.TagType,
+            TagId:this.form.tagId,
           }
         }).then(response => {
           if (response.RetCode === 0) {
@@ -456,6 +563,7 @@
       tagCreate() {
         this.form.status = 0
         const editData = this.form
+        console.log("editData", editData)
         request({
           url: '/tagconfig/tag/create',
           method: 'POST',
@@ -463,6 +571,8 @@
             Env: this.env,
             ID: editData.id,
             TagType: editData.tag_type,
+            TagId: editData.tag_id,
+            TagVal: editData.tag_val,
             TagName: editData.tag_name,
             TagGid: editData.tag_gid,
             TagAttr: editData.tag_attr,
@@ -512,6 +622,8 @@
             Env: this.env,
             ID: editData.id,
             TagType: editData.tag_type,
+            TagId: editData.tag_id,
+            TagVal: editData.tag_val,
             TagName: editData.tag_name,
             TagGid: editData.tag_gid,
             TagAttr: editData.tag_attr,

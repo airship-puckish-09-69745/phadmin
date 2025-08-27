@@ -2,6 +2,9 @@
   <el-form ref="item" label-width="300px">
     <el-form-item label="活动开关：">
       <el-switch v-model="formData.Status" :active-value="true" :inactive-value="false" />
+      <el-tooltip  class="item" effect="dark" content="仅前端用" placement="right-start">
+        <i class="el-icon-info" />
+      </el-tooltip>
     </el-form-item>
     <el-form-item label="每日单人道具总额度发放限制：">
       <el-input v-model="formData.PersonQuotaLimit" type="number" placeholder="请输入" style="width: 300px" />

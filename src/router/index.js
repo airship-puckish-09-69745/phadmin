@@ -1294,6 +1294,12 @@ export const asyncRoutes = [
                 meta: { title: 'G randAce' }
               },
               {
+                path: 'lionfortune_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/lionfortune_slots_cfg'),
+                name: 'lionfortune_slots_cfg',
+                meta: { title: 'L ionFortune' }
+              },
+              {
                 path: 'luckyspirits_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/luckyspirits_slots_cfg'),
                 name: 'luckyspirits_slots_cfg',
@@ -1676,6 +1682,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/pumpkincashmars_slots_cfg'),
                 name: 'pumpkincashmars_slots_cfg',
                 meta: { title: 'PumpkinCash(审)' }
+              },
+              {
+                path: 'phoenixmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/phoenixmars_slots_cfg'),
+                name: 'phoenixmars_slots_cfg',
+                meta: { title: 'Phoenix(审)' }
               },
               {
                 path: 'dancelionmars_slots_cfg',
@@ -2194,9 +2206,15 @@ export const asyncRoutes = [
         meta: { title: '玩家标签管理', noCache: true },
         children: [
           {
+            path: 'tagUser',
+            component: () => import('@/views/tagManager/tagUser.vue'),
+            name: 'tagUser',
+            meta: { title: '查询用户标签', noCache: true }
+          },
+          {
             path: 'tagConfig',
             component: () => import('@/views/tagManager/tagConfig.vue'),
-            name: 'matchTongitsConfig',
+            name: 'tagConfig',
             meta: { title: '标签配置', noCache: true }
           }
         ]
@@ -2920,7 +2938,6 @@ export const asyncRoutes = [
             name: 'dancelion_slots_log',
             meta: { title: 'D ance of the Lion', gid: 184 }
           },
-
           {
             path: 'epicace_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
@@ -2998,6 +3015,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'goldendragon_slots_log',
             meta: { title: 'G oldenDragon', gid: 220 }
+          },
+          {
+            path: 'lionfortune_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'lionfortune_slots_log',
+            meta: { title: 'L ionFortune', gid: 222 }
           },
           {
             path: 'luckyspirits_slots_log',
@@ -3441,6 +3464,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'pumpkincashmars_slots_log',
             meta: { title: 'PumpkinCash(审)', gid: 215 }
+          },
+          {
+            path: 'Phoenixmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'Phoenixmars_slots_log',
+            meta: { title: 'Phoenix(审)', gid: 217 }
           }
         ]
       },

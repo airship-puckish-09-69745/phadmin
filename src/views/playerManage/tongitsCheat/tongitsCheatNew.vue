@@ -48,20 +48,20 @@ export default {
         { label: '黑子', value: 2 },
         { label: '认证高信', value: 3 }
       ],
-      CheatType: 0,
-      CheatTypeOption: [
-        { label: '全部', value: 0 },
-        { label: '拆牌喂牌', value: 1 },
-        { label: '单局多次喂牌', value: 2 },
-        { label: '近5局首出喂牌局数>=3', value: 3 },
-        { label: '皇冠FIGHT', value: 4 },
-        { label: '皇冠FOLD', value: 5 },
-        { label: '打一局不拿pot就离开', value: 6 },
-        { label: '大POT高胜率', value: 7 },
-        { label: '大POT多人离开', value: 8 },
-        { label: '玩超多局数且盈利', value: 9 },
-        { label: '名字相似度过高', value: 10 }
-      ],
+      // CheatType: 0,
+      // CheatTypeOption: [
+      //   { label: '全部', value: 0 },
+      //   { label: '拆牌喂牌', value: 1 },
+      //   { label: '单局多次喂牌', value: 2 },
+      //   { label: '近5局首出喂牌局数>=3', value: 3 },
+      //   { label: '皇冠FIGHT', value: 4 },
+      //   { label: '皇冠FOLD', value: 5 },
+      //   { label: '打一局不拿pot就离开', value: 6 },
+      //   { label: '大POT高胜率', value: 7 },
+      //   { label: '大POT多人离开', value: 8 },
+      //   { label: '玩超多局数且盈利', value: 9 },
+      //   { label: '名字相似度过高', value: 10 }
+      // ],
       maybeMin: 100,
 
       BlackVisible: false,
@@ -151,6 +151,9 @@ export default {
         }
         let info = ''
         switch (i) {
+          case 0:
+            info = '前伙伴返还分:' + '  加分=' + fieldsScore[i]
+            break
           case 1:
             info = '拆牌喂牌:' + '  加分=' + fieldsScore[i]
             break
@@ -807,12 +810,16 @@ export default {
       if (!row.OtherUid || !row.CheatOtherUids) {
         return '----'
       }
+      let tableCheatScore = 0
+      if (row.TableCheatScore !== undefined) {
+        tableCheatScore = row.TableCheatScore
+      }
       const strArray = []
       const myUid = row.Uid
       for (let i = 0; i < row.OtherUid.length; i++) {
         const uid = row.OtherUid[i]
         if (row.CheatOtherUids.includes(uid)) {
-          const redStr = '<span style="color: red">' + row.OtherUid[i] + '</span>'
+          const redStr = '<span style="color: red">' + row.OtherUid[i] + '（与该玩家累计作弊分' + tableCheatScore + '）' + '</span>'
           strArray.push(redStr)
         } else if (uid === myUid) {
           const blueStr = '<span style="color: blue">' + row.OtherUid[i] + '</span>'
@@ -988,15 +995,15 @@ export default {
             <span>{{ formatUserNick(scope.row) }}</span>
           </template>
         </el-table-column>
-        <el-table-column
-          label="身份"
-          width="80"
-          align="center"
-        >
-          <template slot-scope="scope">
-            <span>{{ formatUserType(scope.row) }}</span>
-          </template>
-        </el-table-column>
+<!--        <el-table-column-->
+<!--          label="身份"-->
+<!--          width="80"-->
+<!--          align="center"-->
+<!--        >-->
+<!--          <template slot-scope="scope">-->
+<!--            <span>{{ formatUserType(scope.row) }}</span>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
         <el-table-column
           label="信任等级"
           width="80"

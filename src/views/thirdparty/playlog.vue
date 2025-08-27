@@ -170,6 +170,15 @@
         </el-table-column>
         <el-table-column
           prop="service_fee"
+          label="下注类型"
+          width="80"
+        >
+          <template slot-scope="scope">
+            {{ showBetType(scope.row.bet_type || 0) }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="service_fee"
           label="服务费"
           width="80"
         >
@@ -202,6 +211,15 @@
         >
           <template slot-scope="scope">
             {{ formatNumber(scope.row.ggr / 1000) }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="jackpot_total_amount"
+          label="Jackpot Total Amount"
+          width="120"
+        >
+          <template slot-scope="scope">
+            {{ formatNumber(scope.row.jackpot_total_amount / 1000) }}
           </template>
         </el-table-column>
         <el-table-column
@@ -450,6 +468,18 @@ export default {
     },
     formatNumber(n) {
       return n.toLocaleString()
+    },
+    showBetType(n) {
+      switch (n) {
+        case 0:
+        case 1:
+          return '常规'
+        case 2:
+        case 3:
+          return 'FreeSpin'
+        default:
+          return 'Unknown'
+      }
     },
     jackportShow(n) {
       if (n >= 0) {
