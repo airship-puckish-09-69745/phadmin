@@ -378,7 +378,8 @@ export default {
                       CheatOtherUids: cheatRow.cheatOtherUids,
                       Gid: cheatRow.gid,
                       TableMoney: cheatRow.tableMoney,
-                      CheatInfos: this.getCheatInfo(cheatRow.cheatFields, cheatRow.cheatFieldsCount, cheatRow.cheatScores)
+                      CheatInfos: this.getCheatInfo(cheatRow.cheatFields, cheatRow.cheatFieldsCount, cheatRow.cheatScores),
+                      TableCheatScore: cheatRow.tableCheatScore ? cheatRow.tableCheatScore : 0,
                     }
                     if (cheatRow.hasOwnProperty('nick')) {
                       nick.add(cheatRow.nick)
@@ -819,7 +820,7 @@ export default {
       for (let i = 0; i < row.OtherUid.length; i++) {
         const uid = row.OtherUid[i]
         if (row.CheatOtherUids.includes(uid)) {
-          const redStr = '<span style="color: red">' + row.OtherUid[i] + '（与该玩家累计作弊分' + tableCheatScore + '）' + '</span>'
+          const redStr = '<span style="color: red">' + row.OtherUid[i] + '（ + tableCheatScore + '）' + '</span>'
           strArray.push(redStr)
         } else if (uid === myUid) {
           const blueStr = '<span style="color: blue">' + row.OtherUid[i] + '</span>'
