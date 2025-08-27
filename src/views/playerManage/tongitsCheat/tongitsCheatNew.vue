@@ -820,7 +820,7 @@ export default {
       for (let i = 0; i < row.OtherUid.length; i++) {
         const uid = row.OtherUid[i]
         if (row.CheatOtherUids.includes(uid)) {
-          const redStr = '<span style="color: red">' + row.OtherUid[i] + '（ + tableCheatScore + '）' + '</span>'
+          const redStr = '<span style="color: red">' + row.OtherUid[i] + '（ ' + tableCheatScore + '）' + '</span>'
           strArray.push(redStr)
         } else if (uid === myUid) {
           const blueStr = '<span style="color: blue">' + row.OtherUid[i] + '</span>'
