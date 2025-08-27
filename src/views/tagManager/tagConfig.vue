@@ -350,10 +350,13 @@
           return
         } 
         if (this.fieldOptions && this.fieldOptions.length>0) {
+          this.form.tag_val = 0
           this.form.tag_id = this.fieldOptions[0].value
+          this.form.tag_name = this.fieldOptions[0].label
         }
         if (this.gameIntensity()) {
           this.form.tag_val = this.intensityOptions[0].value
+          this.form.tag_name = this.intensityOptions[0].label
         }
       },
       tagTypeName(tag_type) {
@@ -489,6 +492,8 @@
       add() {
         this.syncInfo = true
         this.form.id = 0
+        this.form.tag_id = 0
+        this.selectChange(this.tagOptions[0].value)
       },
       sure() {
         this.form.tag_attr = '{}'

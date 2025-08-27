@@ -24,9 +24,9 @@
         </el-tooltip>
       </el-form-item>
       <br>
-      <!--      <el-form-item>-->
-      <!--        <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object"/>-->
-      <!--      </el-form-item>-->
+      <el-form-item>
+        <publish primary-key="ID" key-id="SlotsUserPoolData" :env-empty="false"/>
+      </el-form-item>
     </el-form>
 
     <!-- 表格 -->
@@ -139,6 +139,14 @@ export default {
       // editingIndex: null,
       userPoolCfg: {
         items: []
+      },
+      AttrNames: {
+        uid: '生效id',
+        amount: '可发放金额',
+        updateAt: '更新时间',
+        updateBy: '修改人',
+        validStartAt: '生效开始时间',
+        validEndAt: '生效结束时间'
       },
       pageInfo: new Pagination(0, 100),
       pageSize: 100,

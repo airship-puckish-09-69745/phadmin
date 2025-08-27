@@ -219,7 +219,7 @@
           width="120"
         >
           <template slot-scope="scope">
-            {{ formatNumber(scope.row.jackpot_total_amount / 1000) }}
+            {{ scope.row.jackpot_total_amount ? formatNumber(scope.row.jackpot_total_amount / 1000) : 0 }}
           </template>
         </el-table-column>
         <el-table-column
