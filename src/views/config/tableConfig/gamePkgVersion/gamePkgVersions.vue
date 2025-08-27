@@ -507,7 +507,7 @@
         <el-table-column
           prop="GamePkgVersion"
           label="版本号"
-          sortable="custom"
+          sortable="true"
           width="120"
         />
         <el-table-column
