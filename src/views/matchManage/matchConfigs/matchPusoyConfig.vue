@@ -333,7 +333,7 @@
           <el-form-item label="比赛牌桌ID：" :required="true">
             <el-select v-model="editForm.listExtra.tableSceneId" placeholder="请选择" size="mini">
               <el-option
-                v-for="item in MATCH_TABLE_SCENE_ID_CFG"
+                v-for="item in MATCH_PUSOY_TABLE_SCENE_ID_CFG"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -851,7 +851,7 @@ import {
   APPID_OPTIONS,
   ITEM_DAY_TYPE_OPTIONS,
   PROP_TYPE_OPTIONS,
-  MATCH_TABLE_SCENE_ID_CFG, MATCH_LIST_TAG_OPTIONS,MATCH_IUPSTREAM_TYPE_OPTIONS
+  MATCH_TABLE_SCENE_ID_CFG, MATCH_LIST_TAG_OPTIONS, MATCH_IUPSTREAM_TYPE_OPTIONS, MATCH_PUSOY_TABLE_SCENE_ID_CFG
 } from '@/utils/options'
 
 export default {
@@ -868,7 +868,7 @@ export default {
       ITEM_DAY_TYPE_OPTIONS,
       APPID_OPTIONS,
       CHANNEL_OPTIONS,
-      MATCH_TABLE_SCENE_ID_CFG,
+      MATCH_PUSOY_TABLE_SCENE_ID_CFG,
       MATCH_LIST_TAG_OPTIONS,
       MATCH_IUPSTREAM_TYPE_OPTIONS,
       form: {
@@ -1084,7 +1084,7 @@ export default {
           sceneId: 0
         },
         listExtra:{
-          tableSceneId: 0,  //牌桌场景ID
+          tableSceneId: 100,  //牌桌场景ID
         }
       },
 
@@ -1780,7 +1780,7 @@ export default {
           sceneId: 0
         }
         this.editForm.listExtra ={
-          tableSceneId:0,
+          tableSceneId:100,
         }
         this.editForm.isAdd = true
         this.showCsCfgs = this.csCfgs

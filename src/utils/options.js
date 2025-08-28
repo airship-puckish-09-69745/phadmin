@@ -138,6 +138,11 @@ export const MATCH_TABLE_SCENE_ID_CFG =[
   { 'value': 4, 'label': 'GTCC预选赛3' },
   { 'value': 5, 'label': 'Table5' },
 ]
+  //Pusoy 牌桌TableId
+export const MATCH_PUSOY_TABLE_SCENE_ID_CFG =[
+  { 'value': 100, 'label': '免费赛桌面' },
+  { 'value': 101, 'label': '付费赛桌面' },
+]
 
 //比赛页签选项
 export const MATCH_LIST_TAG_OPTIONS = [
