@@ -76,7 +76,7 @@
           <el-input v-model.number="edit.item.uid" style="width: 600px"/>
         </el-form-item>
         <el-form-item label="可发放金额">
-          <el-input-number v-model.number="edit.item.amount" :min="0" style="width: 600px" :step="0.1" :precision="2"/>
+          <el-input-number v-model.number="edit.item.amount" :min="0" style="width: 600px" :step="0.1" :precision="3"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
