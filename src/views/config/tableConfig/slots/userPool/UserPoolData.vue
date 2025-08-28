@@ -101,7 +101,7 @@
       <br />
       <el-table :data="userPoolCache" border style="width: 100%; margin-top: 20px;">
         <el-table-column prop="uid" label="UID" align="center" min-width="320" />
-        <el-table-column prop="amount" label="剩余金额" align="center" min-width="320" />
+        <el-table-column prop="pool" label="剩余金额" align="center" min-width="320" />
         <el-table-column prop="expireAt" label="过期时间" align="center" min-width="320">
           <template slot-scope="scope"> {{ formatDate(scope.row.expireAt) }} </template>
         </el-table-column>
