@@ -685,6 +685,10 @@ export default {
         const ob = this.clientDB.GetDataByID(row.Uid)
         ob.UserType = userType
         ob.CheatScore = 0
+        if (userType===3){
+          ob.BlackOperator = this.BlackOperator
+          ob.BlackTime = Math.floor(Date.now() / 1000)
+        }
         this.clientDB.UpdateData2('Uid', ob)
         request({
           url: '/dataProxy/info',
@@ -696,7 +700,7 @@ export default {
             Uid: row.Uid,
             Gid: row.Gid,
             Reason: '',
-            Operator: ''
+            Operator: this.BlackOperator
           }
         }).then(response => {
         })
@@ -795,6 +799,8 @@ export default {
       const userType = row.UserType
       if (userType === 2) {
         return this.formatTimeDate(row.BlackTime)
+      } else if (userType === 3) {
+        return this.formatTimeDate(row.BlackTime)
       } else {
         return '--'
       }
@@ -803,6 +809,8 @@ export default {
       const userType = row.UserType
       if (userType === 2) {
         return '拉黑原因：' + row.BlackReason + '，拉黑人：' + row.BlackOperator
+      } else if (userType === 3) {
+        return '认证高信，操作人：' + row.BlackOperator
       } else {
         return '--'
       }
@@ -814,22 +822,34 @@ export default {
       if (!row.OtherUid || !row.CheatOtherUids) {
         return '----'
       }
-      let tableCheatScore = 0
-      if (row.TableCheatScore !== undefined) {
-        tableCheatScore = row.TableCheatScore
-      }
-      const strArray = []
+
       const myUid = row.Uid
+      let partnerTableCheatScore = ''
+      let noPartnerTableCheatScore = ''
+      if (row.TableCheatScore !== undefined && Array.isArray(row.TableCheatScore)) {
+        for (let i = 0; i < row.TableCheatScore.length; i++) {
+          const tableScoreObj = row.TableCheatScore[i]
+          if (row.CheatOtherUids.includes(tableScoreObj.uid)) {
+            partnerTableCheatScore = '(' + tableScoreObj.oldCheatScore + ',' + tableScoreObj.newCheatScore + ')'
+          } else if (tableScoreObj.uid !== myUid) {
+            noPartnerTableCheatScore = '(' + tableScoreObj.oldCheatScore + ',' + tableScoreObj.newCheatScore + ')'
+          }
+        }
+      } else if (row.TableCheatScore !== undefined && typeof row.TableCheatScore === 'number') {
+        partnerTableCheatScore = '(' + row.TableCheatScore + ')'
+      }
+
+      const strArray = []
       for (let i = 0; i < row.OtherUid.length; i++) {
         const uid = row.OtherUid[i]
         if (row.CheatOtherUids.includes(uid)) {
-          const redStr = '<span style="color: red">' + row.OtherUid[i] + '（ ' + tableCheatScore + '）' + '</span>'
+          const redStr = '<span style="color: red">' + row.OtherUid[i] + partnerTableCheatScore + '</span>'
           strArray.push(redStr)
         } else if (uid === myUid) {
           const blueStr = '<span style="color: blue">' + row.OtherUid[i] + '</span>'
           strArray.push(blueStr)
         } else {
-          strArray.push(row.OtherUid[i])
+          strArray.push(row.OtherUid[i] + noPartnerTableCheatScore)
         }
       }
       // if (this.GameLogUidsMap.has(row.logId)) {
@@ -1062,7 +1082,7 @@ export default {
         </el-table-column>
         <el-table-column
           prop="BlackTime"
-          label="拉⿊时间"
+          label="操作时间"
           width="100"
           align="center"
         >
@@ -1071,7 +1091,7 @@ export default {
           </template>
         </el-table-column>
         <el-table-column
-          label="拉⿊信息"
+          label="操作信息"
           width="200"
           align="center"
         >
@@ -1160,7 +1180,7 @@ export default {
                       </template>
                     </el-table-column>
 
-                    <el-table-column width="200" label="在该桌其他真⼈玩家id">
+                    <el-table-column width="500" label="在该桌其他真⼈玩家id">
                       <template slot-scope="scopeInfo">
                         <p v-html="formatOtherUids(scopeInfo.row)" />
                       </template>
