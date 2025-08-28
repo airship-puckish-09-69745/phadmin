@@ -1018,7 +1018,8 @@ export default {
         { label: '新手任务活动-[11]', value: 11 },
         { label: '空投活动-[12]', value: 12 },
         { label: '红包雨活动-[13]', value: 13 },
-        { label: 'free spins-[14]', value: 14 }
+        { label: 'free spins-[14]', value: 14 },
+        { label: 'TongitsHunter-[15]', value: 15 }
       ],
       gameSelect: [],
       activitySelect: [
@@ -1030,7 +1031,8 @@ export default {
         { name: '复活节活动-[10]', id: 10 },
         { name: '新手任务活动-[11]', id: 11 },
         { name: '红包雨活动-[13]', id: 13 },
-        { name: 'free spins-[14]', id: 14 }
+        { name: 'free spins-[14]', id: 14 },
+        { name: 'TongitsHunter-[15]', id: 15 }
       ],
       blockGames: [36, 38, 39, 43, 44],
       hallGame: [],
