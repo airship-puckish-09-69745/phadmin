@@ -447,7 +447,7 @@
           tagType: 0,
           tagId: 0,
           tagVal: 0,
-          dateRange: [$libDate.GetDayBegin(new Date().getTime()-86400*7*1000),$libDate.GetDayEnd(new Date().getTime())]
+          dateRange: [new Date(new Date().getTime()-86400*7*1000),new Date()]
         },
         isEdit: false,
         tableData: [],
@@ -717,15 +717,14 @@
         this.showStat()
       },
       showStat() {
-        console.log(this.item.dateRange,this.item.values)
         request({
           url: '/dataProxy/info',
           method: 'get',
           data: {
             Env: this.env,
             Path: '/misc/tag/stat',
-            queryBegin: this.item.dateRange[0]/1000,
-            queryEnd: this.item.dateRange[1]/1000,
+            queryBegin: Math.floor(this.item.dateRange[0].getTime()/1000),
+            queryEnd: Math.floor(this.item.dateRange[1].getTime()/1000),
             gid: this.item.gid,
             tagId: this.item.tagId,
             tagVal: this.item.tagVal,
