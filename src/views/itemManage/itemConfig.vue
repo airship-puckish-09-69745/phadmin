@@ -66,7 +66,11 @@
               lazy></el-image>
           </template>
         </el-table-column>
-        <el-table-column prop="item_cost" label="道具价值"/>
+        <el-table-column prop="item_cost" label="道具价值">
+          <template slot-scope="scope">
+            {{ getItemCost(scope.row.id) }}
+          </template>
+        </el-table-column>
 
         <el-table-column
           prop="show_text"
@@ -496,6 +500,24 @@ export default {
         }
       }
       return itemTypeName
+    },
+
+    getItemCost(item_id){
+      var ret = 0
+      for(var i = 0; i < this.tableData.length; i++) {
+        const item_type = this.tableData[i].item_type
+        if ((item_type ===PROP_TYPE_OPTIONS.PROP_TYPE_TICKET || item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET) && this.tableData[i].id === item_id ) {
+          ret  = this.tableData[i].item_cost
+          break
+        }
+        if (item_type ===PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN && this.tableData[i].id === item_id ) {
+          if(this.tableData[i].item_extra.trim().length > 0) {
+            ret = JSON.parse(this.tableData[i].item_extra).betAmount / 1000
+            break
+          }
+        }
+      }
+      return ret
     },
 
     getItemShowName(item_type) {
