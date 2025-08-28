@@ -2242,22 +2242,19 @@ export default {
       return s
     },
     async configCheck() {
-      if (this.editForm.data.gameId == 0) {
+      if (this.editForm.data.gameId === 0) {
         this.errmsg('请选择游戏')
         return false
       }
 
-      if (this.editForm.appInfo[0].channelId.length == 0) {
+      if (this.editForm.appInfo[0].channelId.length === 0) {
         this.errmsg('请先选择渠道ID')
         return false
       }
       if (this.editForm.data.signUpType === 1) {
         // 如果是免费报名，重置报名费数量为0
         this.editForm.data.signUpNum = 0
-      }
-
-      // 付费赛的是,每日限制不开启
-      if (this.editForm.data.signUpType === 0) {
+      }else{
         this.editForm.data.openDaysLimit = 0
         this.editForm.signExtra.betCnt = 0
       }
@@ -2455,11 +2452,18 @@ export default {
         if (element.startRank === element.endRank && element.startRank <= 3) {
           topThree.push(element.startRank)
         }
-        if (element.startRank >= 4 && topThree.length < 3) {
-          this.errmsg('前三名必须配,且请以1-1,2-2,3-3的格式配')
+      }
+      if(topThree.length ===0){
+        this.errmsg('至少需要配一名奖励,且请以1-1,2-2,3-3的格式配')
+        return false
+      }
+      for(let i=0;i<topThree.length-1;i++){
+        if(topThree[i]+1 !== topThree[i+1]){
+          this.errmsg('奖励名次必须是从第一名开始连续配置,且请以1-1,2-2,3-3的格式配')
           return false
         }
       }
+
       // 遍历配置项
       for (let index = 0; index < rewards.length; index++) {
         const element = rewards[index]
@@ -2467,10 +2471,19 @@ export default {
           this.errmsg('请填写正确的排名')
           return false
         }
-        if (element.startRank <= 3 && element.startRank != element.endRank) {
+        if (element.startRank <= 3 && element.startRank !== element.endRank) {
           this.errmsg('奖励前三名需要单独配，名次区间请配置成：1-1  2-2 3-3')
           return false
         }
+        if (element.startRank >= 4 && topThree.length < 3) {
+          this.errmsg('前三名必须配,且请以1-1,2-2,3-3的格式配')
+          return false
+        }
+        if (element.startRank >= 4 &&  element.startRank <= rewards[index-1].endRank) {
+          this.errmsg('名次配置必须连续')
+          return false
+        }
+
         if (element.hasOwnProperty('propsReward') && element.hasOwnProperty('rewardItems') && element.propsReward.propsId <= 0 && element.rewardItems[0].getNum <= 0) {
           this.errmsg('当前名次没有配任何奖励,请检查')
           return false
@@ -2524,25 +2537,34 @@ export default {
         if (element.startRank === element.endRank && element.startRank <= 3) {
           topThree.push(element.startRank)
         }
+      }
+      if(topThree.length ===0){
+        this.errmsg('至少需要配一名奖励,且请以1-1,2-2,3-3的格式配')
+        return false
+      }
+      for(let i=0;i<topThree.length-1;i++){
+        if(topThree[i]+1 !== topThree[i+1]){
+          this.errmsg('奖励名次必须是从第一名开始连续配置,且请以1-1,2-2,3-3的格式配')
+          return false
+        }
+      }
+
+      for (let index = 0; index < rewards.length; index++) {
+        const element = rewards[index]
+        if (element.startRank <= 0 || element.endRank < element.startRank) {
+          this.errmsg('请填写正确的排名')
+          return false
+        }
+        if (element.startRank <= 3 && element.startRank !== element.endRank) {
+          this.errmsg('奖励前三名需要单独配，名次区间请配置成：1-1  2-2 3-3')
+          return false
+        }
         if (element.startRank >= 4 && topThree.length < 3) {
           this.errmsg('前三名必须配,且请以1-1,2-2,3-3的格式配')
           return false
         }
-      }
-      for (let index = 0; index < rewards.length; index++) {
-        const element = rewards[index]
-        if (element.hasOwnProperty('propsReward') && element.propsReward.propsId <= 0) {
-          this.errmsg('当前名次没有配道具奖励')
-          return false
-        }
-        if (element.propsReward.propsId) {
-          if (element.startRank <= 0 || element.endRank < element.startRank) {
-            this.errmsg('请填写正确的排名')
-            return false
-          }
-        }
-        if (element.startRank <= 3 && element.startRank != element.endRank) {
-          this.errmsg('奖励前三名需要单独配，名次区间请配置成：1-1  2-2   3-3')
+        if (element.startRank >= 4 &&  element.startRank <= rewards[index-1].endRank) {
+          this.errmsg('名次配置必须连续')
           return false
         }
         if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0 && (element.propsReward.propsNum === 0 || element.propsReward.propsNum === undefined)) {

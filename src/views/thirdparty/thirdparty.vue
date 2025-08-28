@@ -201,8 +201,8 @@
         <div class="block">
           <el-pagination
             :current-page="clientDB.GetPage().GetCurrentPage()"
-            :page-sizes="[20, 30, 40, 50]"
-            :page-size="clientDB.GetPage().GetPageNum()"
+            :page-sizes="[40, 80, 120, 160]"
+            :page-size="pageNum"
             layout="total, sizes, prev, pager, next, jumper"
             :total="clientDB.GetPage().GetTotalCount()"
             @size-change="handleSizeChange"
@@ -322,6 +322,7 @@ export default {
   components: { Compare, Publish },
   data() {
     return {
+      pageNum: 40,
       tableData: [],
       statNames: { 0: '正常', 2: '上架', 6: '下架', 1: '关闭', 7: '预上架', 8: '预下架' },
       screenNames: { 'horizontal': '横屏', 'vertical': '竖屏' },
@@ -371,6 +372,7 @@ export default {
     this.isDisabled = false
     this.getRemark()
     this.getList()
+    this.clientDB.GetPage().SetPageNum(this.pageNum)
   },
   methods: {
     formatNumber(n) {
@@ -397,6 +399,7 @@ export default {
       this.tableData = this.clientDB.GetCurrentPageData()
     },
     handleSizeChange(val) {
+      this.pageNum = val
       this.clientDB.GetPage().SetPageNum(val)
       this.refreshShow()
     },
@@ -600,8 +603,8 @@ export default {
           }
         }
       }
-      if (str === "") {
-        str = "没有修改!"
+      if (str === '') {
+        str = '没有修改!'
       }
       return str
     },

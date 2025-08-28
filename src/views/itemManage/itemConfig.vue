@@ -115,146 +115,147 @@
             <el-button v-if="scope.row.status===2" size="mini" type="success" @click="handleUpdate(scope.row.id)">上架</el-button>
             <el-button v-if="scope.row.status===1" size="mini" type="danger" @click="handleUpdate(scope.row.id)">下架</el-button>
             <el-button v-if="itemEnv==='development' &&  scope.row.status===2" size="mini" type="danger" @click="handleDelete(scope.row.id, false)">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-    </el-row>
-    <el-row type="flex" justify="center">
-      <div class="block">
-        <el-pagination
-          :current-page="page"
-          :page-sizes="[10, 20, 30, 40]"
-          :page-size="limit"
-          layout="slot, total, sizes, prev, next"
-          prev-text="上一页"
-          next-text="下一页"
-          :total="total"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-        >
-          <span class="pageSizeInput" style="padding-right: 10px">
-            当前页：{{ page }}/{{ Math.ceil(total/limit) }}
-          </span>
-        </el-pagination>
-      </div>
-    </el-row>
-    <el-dialog
-      :title="editForm.title"
-      :visible.sync="editForm.visable"
-      :close-on-click-modal="false"
-      :close-on-press-escape="false"
-      width="900px"
-    >
-      <el-form :model="editForm.data" label-width="200px" size="mini">
-        <fieldset>
-          <legend>道具信息</legend>
-          <el-form-item label="道具名称：" :required="true">
-            <el-input v-model="editForm.data.itemName" style="width: 200px;" placeholder="请填写道具名称" />
-          </el-form-item>
+            <!-- <el-button  scope.row.status===2" size="mini" type="danger" @click="handleDelete(scope.row.id, false)">删除</el-button>  -->
+           </template>
+         </el-table-column>
+       </el-table>
+     </el-row>
+     <el-row type="flex" justify="center">
+       <div class="block">
+         <el-pagination
+           :current-page="page"
+           :page-sizes="[10, 20, 30, 40]"
+           :page-size="limit"
+           layout="slot, total, sizes, prev, next"
+           prev-text="上一页"
+           next-text="下一页"
+           :total="total"
+           @size-change="handleSizeChange"
+           @current-change="handleCurrentChange"
+         >
+           <span class="pageSizeInput" style="padding-right: 10px">
+             当前页：{{ page }}/{{ Math.ceil(total/limit) }}
+           </span>
+         </el-pagination>
+       </div>
+     </el-row>
+     <el-dialog
+       :title="editForm.title"
+       :visible.sync="editForm.visable"
+       :close-on-click-modal="false"
+       :close-on-press-escape="false"
+       width="900px"
+     >
+       <el-form :model="editForm.data" label-width="200px" size="mini">
+         <fieldset>
+           <legend>道具信息</legend>
+           <el-form-item label="道具名称：" :required="true">
+             <el-input v-model="editForm.data.itemName" style="width: 200px;" placeholder="请填写道具名称" />
+           </el-form-item>
 
-          <el-form-item label="后台名称：" :required="true">
-            <el-input v-model="editForm.itemExtra.showName" style="width: 200px;" placeholder="请填写后台名称" />
-          </el-form-item>
+           <el-form-item label="后台名称：" :required="true">
+             <el-input v-model="editForm.itemExtra.showName" style="width: 200px;" placeholder="请填写后台名称" />
+           </el-form-item>
 
-          <el-form-item v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET  || editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET" label="道具价值：" :required="true">
-            <el-input v-model.number="editForm.data.itemCost" style="width: 200px;" placeholder="请填写道具价值" />
-          </el-form-item>
+           <el-form-item v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET  || editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET" label="道具价值：" :required="true">
+             <el-input v-model.number="editForm.data.itemCost" style="width: 200px;" placeholder="请填写道具价值" />
+           </el-form-item>
 
-          <el-form-item v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME || editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR" label="品质：" :required="true">
-            <el-select v-model="editForm.data.quality" style="width: 200px;" :disabled="!editForm.isAdd" placeholder="请选择道具品质分类">
-              <el-option
-                v-for="item in qualityTypeCfgs"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-                :disabled="item.disabled"
-              />
-            </el-select>
-          </el-form-item>
+           <el-form-item v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME || editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR" label="品质：" :required="true">
+             <el-select v-model="editForm.data.quality" style="width: 200px;" :disabled="!editForm.isAdd" placeholder="请选择道具品质分类">
+               <el-option
+                 v-for="item in qualityTypeCfgs"
+                 :key="item.value"
+                 :label="item.label"
+                 :value="item.value"
+                 :disabled="item.disabled"
+               />
+             </el-select>
+           </el-form-item>
 
-          <el-form-item label="道具描述：" :required="true">
-            <el-input v-model="editForm.data.describe" style="width: 400px;" placeholder="请填写道具描述" />
-          </el-form-item>
+           <el-form-item label="道具描述：" :required="true">
+             <el-input v-model="editForm.data.describe" style="width: 400px;" placeholder="请填写道具描述" />
+           </el-form-item>
 
-          <el-form-item label="道具类别：" :required="true">
-            <el-select v-model="editForm.data.itemType" style="width: 200px;" :disabled="!editForm.isAdd" placeholder="请选择道具分类">
-              <el-option
-                v-for="item in ITEM_TYPE_OPTIONS"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-                :disabled="item.disabled"
-              />
-            </el-select>
-          </el-form-item>
+           <el-form-item label="道具类别：" :required="true">
+             <el-select v-model="editForm.data.itemType" style="width: 200px;" :disabled="!editForm.isAdd" placeholder="请选择道具分类">
+               <el-option
+                 v-for="item in ITEM_TYPE_OPTIONS"
+                 :key="item.value"
+                 :label="item.label"
+                 :value="item.value"
+                 :disabled="item.disabled"
+               />
+             </el-select>
+           </el-form-item>
 
-          <el-form-item v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET" label="道具特殊属性：" :required="true">
-            <el-select  v-model="editForm.itemExtra.specialAttr" style="width: 200px;" :disabled="!editForm.isAdd" placeholder="请选择道具特殊属性">
-              <el-option
-                v-for="item in itemSpecialAttrCfgs"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-                :disabled="item.disabled"
-              />
-            </el-select>
-          </el-form-item>
+           <el-form-item v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET" label="道具特殊属性：" :required="true">
+             <el-select  v-model="editForm.itemExtra.specialAttr" style="width: 200px;" :disabled="!editForm.isAdd" placeholder="请选择道具特殊属性">
+               <el-option
+                 v-for="item in itemSpecialAttrCfgs"
+                 :key="item.value"
+                 :label="item.label"
+                 :value="item.value"
+                 :disabled="item.disabled"
+               />
+             </el-select>
+           </el-form-item>
 
-          <el-form-item v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN" label="游戏类别：" :required="true">
-            <el-select  v-model="editForm.itemExtra.specialAttr" style="width: 200px;" :disabled="!editForm.isAdd" placeholder="请选择游戏类别" @change="changeCategory()">
-              <el-option
-                v-for="item in freeSpinItemAttrCfg" :key="item.value" :label="item.label" :value="item.value" :disabled="item.disabled"/>
-            </el-select>
-          </el-form-item>
+           <el-form-item v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN" label="游戏类别：" :required="true">
+             <el-select  v-model="editForm.itemExtra.specialAttr" style="width: 200px;" :disabled="!editForm.isAdd" placeholder="请选择游戏类别" @change="changeCategory()">
+               <el-option
+                 v-for="item in freeSpinItemAttrCfg" :key="item.value" :label="item.label" :value="item.value" :disabled="item.disabled"/>
+             </el-select>
+           </el-form-item>
 
-          <el-row>
-            <el-col :span="11">
-              <el-form-item   v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN && editForm.itemExtra.specialAttr === 1" label="关联游戏:" :required="true">
-                  <el-select v-model="editForm.itemExtra.gid" placeholder="请选择" size="mini" :disabled="!editForm.isAdd"  multiple  @change="setSlotBetAmountStyle(editForm.itemExtra.specialAttr)">
-                    <el-option v-for="item in SLOT_GAME_CONFIG" :key="item.value" :label="item.label" :value="item.value" :disabled="item.disabled"/>
-                  </el-select>
-              </el-form-item>
+           <el-row>
+             <el-col :span="11">
+               <el-form-item   v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN && editForm.itemExtra.specialAttr === 1" label="关联游戏:" :required="true">
+                   <el-select v-model="editForm.itemExtra.gid" placeholder="请选择" size="mini" :disabled="!editForm.isAdd"  multiple  @change="setSlotBetAmountStyle(editForm.itemExtra.specialAttr)">
+                     <el-option v-for="item in SLOT_GAME_CONFIG" :key="item.value" :label="item.label" :value="item.value" :disabled="item.disabled"/>
+                   </el-select>
+               </el-form-item>
 
-              <el-form-item   v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN && editForm.itemExtra.specialAttr === 2" label="关联游戏:" :required="true">
-                <el-select v-model="editForm.itemExtra.gid" placeholder="请选择" size="mini" :disabled="!editForm.isAdd"  multiple  @change="setSlotBetAmountStyle(editForm.itemExtra.specialAttr)">
-                  <el-option v-for="item in BETTING_GAME_CONFIG" :key="item.value" :label="item.label" :value="item.value" :disabled="item.disabled"/>
-                </el-select>
-              </el-form-item>
-            </el-col>
+               <el-form-item   v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN && editForm.itemExtra.specialAttr === 2" label="关联游戏:" :required="true">
+                 <el-select v-model="editForm.itemExtra.gid" placeholder="请选择" size="mini" :disabled="!editForm.isAdd"  multiple  @change="setSlotBetAmountStyle(editForm.itemExtra.specialAttr)">
+                   <el-option v-for="item in BETTING_GAME_CONFIG" :key="item.value" :label="item.label" :value="item.value" :disabled="item.disabled"/>
+                 </el-select>
+               </el-form-item>
+             </el-col>
 
-              <el-col :span="11">
-                <el-form-item   v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN" label="betAmount:" :required="true">
-                  <el-select v-model="editForm.itemExtra.betAmount" placeholder="请选择" size="mini" :disabled="!editForm.isAdd">
-                    <el-option v-for="item in slotDefaultBetAmount" :key="item.value" :label="item.label" :value="item.value" :disabled="item.disabled"/>
-                  </el-select>
-                </el-form-item>
-              </el-col>
-          </el-row>
-          <el-form-item v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET || editForm.data.itemType ===PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET"  label="道具过期时间：" :required="true">
-            <el-date-picker
-              v-model="editForm.itemEndDate"
-              style="width: 200px;"
-              type="date"
-              :disabled="!editForm.isAdd"
-              placeholder="选择过期日期"
-            />
-            <span style="color:black; margin-left:10px">[00:00:00]</span>
-          </el-form-item>
+               <el-col :span="11">
+                 <el-form-item   v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN" label="betAmount:" :required="true">
+                   <el-select v-model="editForm.itemExtra.betAmount" placeholder="请选择" size="mini" :disabled="!editForm.isAdd">
+                     <el-option v-for="item in slotDefaultBetAmount" :key="item.value" :label="item.label" :value="item.value" :disabled="item.disabled"/>
+                   </el-select>
+                 </el-form-item>
+               </el-col>
+           </el-row>
+           <el-form-item v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET || editForm.data.itemType ===PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET"  label="道具过期时间：" :required="true">
+             <el-date-picker
+               v-model="editForm.itemEndDate"
+               style="width: 200px;"
+               type="date"
+               :disabled="!editForm.isAdd"
+               placeholder="选择过期日期"
+             />
+             <span style="color:black; margin-left:10px">[00:00:00]</span>
+           </el-form-item>
 
-          <el-form-item v-if="editForm.data.itemType !== PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN" label="排序：" :required="false">
-            <el-input v-model.number="editForm.data.sort" style="width: 200px;" placeholder="请填写排序id" />
-          </el-form-item>
+           <el-form-item v-if="editForm.data.itemType !== PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN" label="排序：" :required="false">
+             <el-input v-model.number="editForm.data.sort" style="width: 200px;" placeholder="请填写排序id" />
+           </el-form-item>
 
-          <el-form-item  label="道具ICON：" :required="false">
-            <ImagePicker v-model="editForm.data.image" />
-          </el-form-item>
-        </fieldset>
-        <el-form-item>
-          <el-button size="medium" type="primary" icon="el-icon-s-order" @click="saveItemConfig()">保存道具配置</el-button>
-        </el-form-item>
-      </el-form>
-    </el-dialog>
-    <!--对比组件-->
+           <el-form-item  label="道具ICON：" :required="false">
+             <ImagePicker v-model="editForm.data.image" />
+           </el-form-item>
+         </fieldset>
+         <el-form-item>
+           <el-button size="medium" type="primary" icon="el-icon-s-order" @click="saveItemConfig()">保存道具配置</el-button>
+         </el-form-item>
+       </el-form>
+     </el-dialog>
+     <!--对比组件-->
     <compare ref="compare" />
   </div>
 
