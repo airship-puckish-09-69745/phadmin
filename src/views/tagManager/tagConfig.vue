@@ -58,7 +58,7 @@
             width="120"
           >
             <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="setItem(scope.row)">数据</el-button>
+            <el-button type="primary" size="mini" @click="setItem(scope.row)">查看数据</el-button>
             </template>
           </el-table-column>
           <el-table-column
