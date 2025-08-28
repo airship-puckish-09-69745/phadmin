@@ -42,7 +42,11 @@
         </template>
       </el-table-column>
       <el-table-column prop="uid" label="生效ID" align="center" min-width="320"/>
-      <el-table-column prop="amount" label="可发放金额" align="center" min-width="320"/>
+      <el-table-column prop="amount" label="可发放金额" align="center" min-width="320">
+        <template slot-scope="scope">
+          {{ scope.row.amount / 1000 }}
+        </template>
+      </el-table-column>
       <el-table-column prop="updateBy" label="修改人" align="center" min-width="320"/>
       <el-table-column label="操作" align="center" min-width="197">
         <template slot-scope="scope">
@@ -72,7 +76,7 @@
           <el-input v-model.number="edit.item.uid" style="width: 600px"/>
         </el-form-item>
         <el-form-item label="可发放金额">
-          <el-input-number v-model.number="edit.item.amount" :min="0" style="width: 600px"/>
+          <el-input-number v-model.number="edit.item.amount" :min="0" style="width: 600px" :step="0.1" :precision="2"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -100,8 +104,10 @@
       <el-button type="success" @click="queryUserPoolCache">查询用户实时小奖池余额列表</el-button>
       <br />
       <el-table :data="userPoolCache" border style="width: 100%; margin-top: 20px;">
-        <el-table-column prop="uid" label="UID" align="center" min-width="320" />
-        <el-table-column prop="pool" label="剩余金额" align="center" min-width="320" />
+        <el-table-column prop="uid" label="UID" align="center" min-width="320"/>
+        <el-table-column prop="pool" label="剩余金额" align="center" min-width="320">
+          <template slot-scope="scope"> {{ scope.row.pool / 1000 }}</template>
+        </el-table-column>
         <el-table-column prop="expireAt" label="过期时间" align="center" min-width="320">
           <template slot-scope="scope"> {{ formatDate(scope.row.expireAt) }} </template>
         </el-table-column>
@@ -288,7 +294,7 @@ export default {
       this.dialogTitle = '编辑配置'
       this.edit.editingIndex = this.tableData.indexOf(row)
       this.edit.item.id = row.id
-      this.edit.item.amount = row.amount
+      this.edit.item.amount = row.amount / 1000
       this.edit.item.uid = row.uid
       this.edit.item.updateAt = this.formatDate(row.updateAt)
       this.currRowUpdateAt = row.updateAt
@@ -309,7 +315,7 @@ export default {
       if (this.edit.editingIndex !== null) {
         this.userPoolItem.id = this.edit.item.id
         this.userPoolItem.uid = Number(this.edit.item.uid)
-        this.userPoolItem.amount = this.edit.item.amount
+        this.userPoolItem.amount = this.edit.item.amount * 1000
         // this.userPoolItem.UpdateAt = Math.floor(Date.now() / 1000)// todo
         this.userPoolItem.updateAt = this.currRowUpdateAt
         this.userPoolItem.updateBy = this.name
@@ -380,7 +386,7 @@ export default {
     },
     async createSave() {
       this.userPoolItem.uid = this.edit.item.uid
-      this.userPoolItem.amount = this.edit.item.amount
+      this.userPoolItem.amount = this.edit.item.amount * 1000
       this.userPoolItem.updateAt = Math.floor(Date.now() / 1000)
       this.userPoolItem.updateBy = this.name
       this.userPoolItem.validStartAt = this.Unix(this.edit.item.effectiveRange[0])
@@ -489,7 +495,7 @@ export default {
                 userPoolItem.validStartAt = this.excelSerialToUnix(row[0])
                 userPoolItem.validEndAt = this.excelSerialToUnix(row[1])
                 userPoolItem.uid = row[2]
-                userPoolItem.amount = row[3]
+                userPoolItem.amount = row[3] * 1000
                 // userPoolItem.updateBy = this.reqData.ModifyUser
                 if (
                   userPoolItem.updateAt === 0 ||
