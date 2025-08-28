@@ -508,6 +508,7 @@
           prop="GamePkgVersion"
           label="版本号"
           sortable="custom"
+          :sort-method="versionSort"
           width="120"
         />
         <el-table-column
@@ -591,6 +592,7 @@ export default {
       LobbyVersion: '',
       LobbyVersionStatus: 0,
       LobbyVersionTag: 0,
+      versionSortOrder: 1,
       statNames: { 0: '正常', 2: '上架', 6: '下架', 1: '关闭', 7: '预上架', 8: '预下架' },
       tagOptions: [
         { value: 0, label: '预发布' },
@@ -649,6 +651,24 @@ export default {
     this.getMessgeStatus()
   },
   methods: {
+    versionSort(a, b) {
+      const v1Arr = a.GamePkgVersion.split('.')
+      const v2Arr = b.GamePkgVersion.split('.')
+      const len = Math.max(v1Arr.length, v2Arr.length)
+      for (let i = 0; i < len; i++) {
+        const num1 = parseInt(v1Arr[i] || 0)
+        const num2 = parseInt(v2Arr[i] || 0)
+
+        if (this.versionSortOrder === 1) {
+          if (num1 > num2) return 1
+          if (num1 < num2) return -1
+        } else {
+          if (num1 > num2) return -1
+          if (num1 < num2) return 1
+        }
+      }
+      return 0
+    },
     newItem() {
       return { LobbyVersionID: this.LobbyVersionID, LobbyVersion: this.LobbyVersion, GamePkgVersion: '', BundleKey: '', PkgName: '', WhiteVersion: '', Status: 7 }
     },
@@ -684,10 +704,28 @@ export default {
       this.clientDB.GetPage().SetPageNo(val)
       this.refreshShow()
     },
-
     sortChange(ob) {
-      this.clientDB.SortByProp(ob.prop, ob.order)
-      this.refreshShow()
+      if (!ob || !ob.prop) {
+        return
+      }
+      try {
+        if (ob.prop === 'GamePkgVersion' && ob.order) {
+          // 版本号列的自定义排序
+          this.versionSortOrder = ob.order === 'ascending' ? 1 : -1
+
+          this.clientDB.SortByProp(ob.prop, ob.order, this.versionSort)
+          this.refreshShow()
+        } else {
+          // 其他列使用原有排序逻辑
+          this.clientDB.SortByProp(ob.prop, ob.order)
+          this.refreshShow()
+        }
+      } catch (error) {
+        console.error('排序出错:', error)
+        // 出错时使用默认排序
+        this.clientDB.SortByProp(ob.prop, ob.order)
+        this.refreshShow()
+      }
     },
     // 操作类函数
     clickData(row, column, event) {

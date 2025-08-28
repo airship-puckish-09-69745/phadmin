@@ -244,15 +244,8 @@ export default {
       this.itemOptions = []
       for (let i = 0; i < filteredItems.length; i++) {
         let str = filteredItems[i].item_name
-        if (filteredItems[i].item_extra.length > 0) {
-          let exitData = JSON.parse(filteredItems[i].item_extra)
-          if (exitData != null) {
-            if (exitData.showName != null) {
-              if (exitData.showName.length > 0) {
-                str = str + '(' + exitData.showName + ')'
-              }
-            }
-          }
+        if (filteredItems[i].show_name) {
+          str += `(${filteredItems[i].show_name})`
         }
         this.itemOptions.push({
           value: filteredItems[i].id,
@@ -311,14 +304,14 @@ export default {
      * 由于没有提供道具下拉框接口，这里使用列表的接口，size为100
      */
     getItemList() {
-      request({
-        url: '/propsconfig/props/config/list',
-        method: 'get',
-        data: {
-          Env: this.env,
-          PageNum: 1,
-          PageSize: 100
-        }
+        request({
+          url: '/dataProxy/info',
+          method: 'get',
+          data: {
+            Env: this.env,
+            Path: '/match/props/config/list',
+            PropType: 0
+          }
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || {}
@@ -354,6 +347,7 @@ export default {
       this.form.PropDetails.prop_num = 1
       this.form.PropDetails.prop_expire_days = 1
       const filteredItems = this.itemList.filter(item => item.item_type === value)
+      console.log("筛选后的道具列表", filteredItems)
       this.updateItemOption(filteredItems)
       console.log('道具下拉框选项', this.itemOptions)
     },
@@ -387,15 +381,15 @@ export default {
       }
       return params
     },
-
+    // 根据道具id禁用某些道具选项
     disableByPropId(propId){
-      for(let i=0; i < this.itemList.length;i++){
-        if(this.itemList[i].id === propId && this.itemList[i].item_type ===  PROP_TYPE_OPTIONS.PROP_TYPE_TICKET){
-          if(this.itemList[i].item_extra !== null && JSON.parse(this.itemList[i].item_extra).specialAttr=== 1 ){ //如果是邀请函
-            return true
-          }
-        }
-      }
+      // for(let i=0; i < this.itemList.length;i++){
+      //   if(this.itemList[i].id === propId && this.itemList[i].item_type ===  PROP_TYPE_OPTIONS.PROP_TYPE_TICKET){
+      //     if(this.itemList[i].item_extra !== null && JSON.parse(this.itemList[i].item_extra).specialAttr=== 1 ){ //如果是邀请函
+      //       return true
+      //     }
+      //   }
+      // }
       return false
 
     },

@@ -25,7 +25,7 @@
       </el-form-item>
       <br>
       <el-form-item>
-        <publish primary-key="ID" key-id="SlotsUserPoolData" :env-empty="true"/>
+        <publish primary-key="ID" key-id="SlotsUserPoolData" :env-empty="false"/>
       </el-form-item>
     </el-form>
 
@@ -95,6 +95,23 @@
       />
     </div>
 
+    <hr />
+    <div class="block">
+      <el-button type="success" @click="queryUserPoolCache">查询用户实时小奖池余额列表</el-button>
+      <br />
+      <el-table :data="userPoolCache" border style="width: 100%; margin-top: 20px;">
+        <el-table-column prop="uid" label="UID" align="center" min-width="320" />
+        <el-table-column prop="pool" label="剩余金额" align="center" min-width="320" />
+        <el-table-column prop="expireAt" label="过期时间" align="center" min-width="320">
+          <template slot-scope="scope"> {{ formatDate(scope.row.expireAt) }} </template>
+        </el-table-column>
+        <el-table-column prop="createAt" label="导入日期" align="center" min-width="320">
+          <template slot-scope="scope"> {{ formatDate(scope.row.createAt) }} </template>
+        </el-table-column>
+        <el-table-column prop="createBy" label="修改人" align="center" min-width="320" />
+      </el-table>
+    </div>
+
   </div>
 </template>
 
@@ -107,6 +124,7 @@ import {Message} from 'element-ui'
 import XLSX from 'xlsx'
 import {mapGetters} from "vuex";
 import {now} from "mockjs/src/mock/random/date";
+import store from "@/store";
 
 const filterMap = {}
 
@@ -171,6 +189,7 @@ export default {
       // 复选框相关
       //
       allGames: [],
+      userPoolCache: []
     }
   },
   computed: {
@@ -577,6 +596,22 @@ export default {
     },
     splitTimeRange(dateStr) {
       return dateStr.replace(/\s+/g, '').split('至')
+    },
+    queryUserPoolCache() {
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Path: '/slotsStat/user/pool/cache',
+          Env: store.getters.env
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.userPoolCache = response.Data
+        }
+      }).catch(e => {
+        console.log(e)
+      })
     }
   }
 }

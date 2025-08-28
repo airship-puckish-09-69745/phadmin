@@ -57,7 +57,9 @@
             label="数据"
             width="120"
           >
-            <el-button type="primary" size="mini" @click="showStat">数据</el-button>
+            <template slot-scope="scope">
+            <el-button type="primary" size="mini" @click="setItem(scope.row)">查看数据</el-button>
+            </template>
           </el-table-column>
           <el-table-column
             prop="tag_attr"
@@ -211,6 +213,116 @@
             <el-button type="primary" @click="sure">确 定</el-button>
         </span>
       </el-dialog>
+      <el-dialog
+        title="标签数据"
+        :visible.sync="syncStat"
+        width="70%"
+        >
+        <span>
+          <el-form :inline="true" :model="item">
+            <el-form-item label="标签：">
+              <el-cascader v-model="item.values" :options="tagOptions" :show-all-levels="false" style="width: 120px;" size="mini"></el-cascader>
+            </el-form-item>
+            <el-form-item v-if="item.values[1]==70000" label="字段：">
+              <el-select v-model="item.tagVal" placeholder="placeholder" @change="tagValChange" style="width: 100px;" size="mini">
+                <el-option
+                    v-for="opt in intensityOptions"
+                    :key="opt.value"
+                    :label="opt.label"
+                    :value="opt.value"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item v-if="showGameOptions()" label="选择游戏：">
+                <el-select v-model="item.gid" filterable placeholder="placeholder" style="width: 180px;" size="mini">
+                    <el-option v-if="gameIntensity()" :value="0" label="任意游戏"></el-option>
+                    <el-option
+                        v-for="opt in gameOptions"
+                        :key="opt.value"
+                        :label="opt.label"
+                        :value="opt.value"
+                    />
+                </el-select>
+            </el-form-item>
+            <el-form-item label="选择日期：">
+              <el-date-picker
+                v-model="item.dateRange"
+                type="daterange"
+                align="right"
+                unlink-panels
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                size="mini"
+                :picker-options="pickerOptions">
+              </el-date-picker>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="showStat" size="mini">查询</el-button>
+            </el-form-item>
+          </el-form>
+        </span>
+        <span>
+          <el-table
+            ref="filterTable"
+            :data="statData"
+            stripe
+            border
+            :header-cell-style="libShow.DefaultTableHeadClass"
+            :row-style="{height:'10px'}"
+            :cell-style="libShow.DefaultTableCell"
+            style="width: 100%;margin-top:10px;"
+          >
+            <el-table-column
+              prop="date"
+              label="日期"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="gid"
+              label="游戏"
+            >
+              <template slot-scope="scope">
+                {{ gameName(scope.row.gid) }}
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="tagId"
+              label="标签"
+            >
+              <template slot-scope="scope">
+                {{ tagIdName(scope.row.tagId) }}
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="tagVal"
+              label="标签名"
+            >
+              <template slot-scope="scope">
+                {{ tagFieldName(scope.row) }}
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="cnt"
+              label="人数"
+              width="150"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="incCnt"
+              label="新增人数"
+              width="150"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="decCnt"
+              label="去除人数"
+              width="150"
+            >
+            </el-table-column>
+          </el-table>
+        </span>
+      </el-dialog>
       <!--对比组件-->
       <compare ref="compare" />
     </div>
@@ -287,6 +399,33 @@
           {value: 3, label: '常玩'},
           {value: 4, label: '核心'},
         ],
+        pickerOptions: {
+          shortcuts: [{
+            text: '最近一周',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近一个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近三个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+              picker.$emit('pick', [start, end]);
+            }
+          }]
+        },
         fieldOptions: [],
         form: {
           tag_type: 2,
@@ -299,15 +438,20 @@
           validBet: {use:false, min: 0},
         },
         syncInfo: false,
+        syncStat: false,
         appInfo: [],
         env: 'test',
         item: {
-          tag_gid: 0,
-          start: $libDate.GetDayBegin(new Date().getTime()-86400*7*1000),
-          end: $libDate.GetDayEnd(new Date().getTime())
+          values: [0,0],
+          gid: 0,
+          tagType: 0,
+          tagId: 0,
+          tagVal: 0,
+          dateRange: [$libDate.GetDayBegin(new Date().getTime()-86400*7*1000),$libDate.GetDayEnd(new Date().getTime())]
         },
         isEdit: false,
         tableData: [],
+        statData: [],
         libShow: $libShow,
         totalCount: 0,
         page: 1,
@@ -377,7 +521,7 @@
         }
         return ''
       },
-      fieldName(tag_val) {
+      tagValName(tag_val) {
         // console.log(tag_val, this.fieldOptions)
         for (const v of this.fieldOptions) {
           if (v.value == tag_val) {
@@ -385,6 +529,33 @@
           }
         }
         return ''
+      },
+      getTagType(tag_id) {
+        for (const v of this.tagOptions) {
+          for (const v2 of v.children) {
+            if (v2.value === tag_id) {
+              return v.value
+            }
+          }
+        }
+        return 0
+      },
+      tagFieldName(row) {
+        const tagType = this.getTagType(row.tagId)
+        console.log("tagType", tagType)
+        if (tagType === 0) {
+          return ""
+        }
+        if (tagType === 2) {
+          for (const v of this.intensityOptions) {
+            if (v.value === row.tagVal) {
+              return v.label
+            }
+          }
+        } else if (tagType === 3) {
+          return row.tagVal/1000
+        }
+        return row.tagVal
       },
       gameName(gid) {
         if (gid === 0) {
@@ -438,7 +609,10 @@
       showGameOptions() {
         return (this.form.tag_type === 2 || this.form.tag_type === 3)
       },
-      gameIntensity() {
+      gameIntensity(tagId) {
+        if (tagId) {
+          return (tagId === 70000)
+        }
         return (this.form.tag_type === 2 && this.form.tag_id === 70000)
       },
       handleSizeChange(val) {
@@ -512,11 +686,11 @@
               }
               if (v.tag_id === this.form.tag_id && v.tag_gid === this.form.tag_gid && this.gameIntensity()) {
                 if (form.loginDay[0] < attr.loginDay[0] && form.loginDay[1] >= attr.loginDay[0]) {
-                  Message.error(`标签区间[${form.loginDay[0]},${form.loginDay[1]}]与标签《${this.fieldName(v.tag_val)}》的区间[${attr.loginDay[0]},${attr.loginDay[1]}]有重叠`)
+                  Message.error(`标签区间[${form.loginDay[0]},${form.loginDay[1]}]与标签《${this.tagValName(v.tag_val)}》的区间[${attr.loginDay[0]},${attr.loginDay[1]}]有重叠`)
                   return
                 }
                 if (form.loginDay[1] > attr.loginDay[1] && form.loginDay[0] <= attr.loginDay[1]) {
-                  Message.error(`标签区间[${form.loginDay[0]},${form.loginDay[1]}]与标签《${this.fieldName(v.tag_val)}》的区间[${attr.loginDay[0]},${attr.loginDay[1]}]有重叠`)
+                  Message.error(`标签区间[${form.loginDay[0]},${form.loginDay[1]}]与标签《${this.tagValName(v.tag_val)}》的区间[${attr.loginDay[0]},${attr.loginDay[1]}]有重叠`)
                   return
                 }
               }
@@ -532,8 +706,37 @@
         this.isEdit?this.tagUpdate():this.tagCreate()
         this.isEdit = false
       },
+      setItem(row) {
+        console.log(JSON.stringify(row))
+        this.item.tagType = this.getTagType(row.tag_id)
+        this.item.gid = row.tag_gid
+        this.item.tagId = row.tag_id
+        this.item.tagVal = row.tag_val
+        this.item.values = [this.item.tagType,this.item.tagId]
+        console.log("setItem", this.item.values)
+        this.showStat()
+      },
       showStat() {
-        console.log("show Stat")
+        console.log(this.item.dateRange,this.item.values)
+        request({
+          url: '/dataProxy/info',
+          method: 'get',
+          data: {
+            Env: this.env,
+            Path: '/misc/tag/stat',
+            queryBegin: this.item.dateRange[0]/1000,
+            queryEnd: this.item.dateRange[1]/1000,
+            gid: this.item.gid,
+            tagId: this.item.tagId,
+            tagVal: this.item.tagVal,
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            this.statData = response.Data || []
+            this.syncStat = true
+            console.log(JSON.stringify(response.Data))
+          }
+        })
       },
       tagList() {
         request({
