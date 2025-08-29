@@ -464,6 +464,7 @@
       this.item.gameId = 0
       this.getGameList()
       this.tagList()
+
       this.selectChange(this.form.tag_type)
     },
     methods: {
@@ -482,7 +483,7 @@
           }
         }
       },
-      selectChange(value) {
+      selectChange(value,skip) {
         // console.log(value)
         for (const v of this.tagOptions) {
           if (v.value === value) {
@@ -490,7 +491,7 @@
               break
           }
         }
-        if (this.form.tag_id > 0) {
+        if (skip) {
           return
         } 
         if (this.fieldOptions && this.fieldOptions.length>0) {
@@ -646,7 +647,7 @@
         this.form.loginDay = attr.loginDay
         this.form.roundAvg = attr.roundAvg
         this.form.validBet = attr.validBet
-        this.selectChange(this.form.tag_type)
+        this.selectChange(this.form.tag_type,true)
       },
       copy(row) {
         this.syncInfo = true
@@ -661,12 +662,13 @@
         this.form.loginDay = attr.loginDay
         this.form.roundAvg = attr.roundAvg
         this.form.validBet = attr.validBet
-        this.selectChange(this.form.tag_type)
+        this.selectChange(this.form.tag_type,true)
       },
       add() {
         this.syncInfo = true
         this.form.id = 0
         this.form.tag_id = 0
+        this.form.tag_type = this.tagOptions[0].value
         this.selectChange(this.tagOptions[0].value)
       },
       sure() {
