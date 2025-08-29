@@ -249,7 +249,10 @@ export default {
       const y = date.getFullYear()
       const m = String(date.getMonth() + 1).padStart(2, '0')
       const d = String(date.getDate()).padStart(2, '0')
-      return `${y}-${m}-${d}`
+      const h = date.getHours()
+      const M = date.getMinutes()
+      const S = date.getSeconds()
+      return `${y}-${m}-${d} ` + (h > 9 ? h : '0'+h) + ':' + (M > 9 ? M : '0'+M) + ':' + (S > 9 ? S : '0'+S)
     },
     getFullKey() {
       return 'CustomizeCfg_slots_user_pool_data'
