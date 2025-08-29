@@ -510,6 +510,11 @@ export default {
                   Message.error('导入失败,数据存在错误')
                   return
                 }
+                if (userPoolItem.validEndAt < this.getCurrentUnix()) {
+                  isPassCheck = false
+                  Message.error('存在过期数据不能导入')
+                  return
+                }
                 excelData.push(userPoolItem)
               }
             })
