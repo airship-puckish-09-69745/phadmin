@@ -671,6 +671,7 @@ export default {
               rule_extra = {skip_strikeout:0 }; // 解析失败时使用默认值
             }
             this.editForm.data.rule_extra = rule_extra;
+            console.log("show rule_extra:", this.editForm.data.rule_extra)
             break
         }
       }
