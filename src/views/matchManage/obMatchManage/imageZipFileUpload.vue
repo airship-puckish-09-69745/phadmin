@@ -268,6 +268,7 @@ export default {
               headers: {
                 'Content-Type': 'multipart/form-data'
               },
+              withCredentials: true,
             }
             if (store.getters.token) {
               config.headers['X-Token'] = getToken()
