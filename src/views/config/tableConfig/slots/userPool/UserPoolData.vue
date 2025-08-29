@@ -19,7 +19,7 @@
         <el-button type="primary" @click="searchData()">查询</el-button>
         <el-button type="success" @click="handleCreate">添加配置</el-button>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <el-tooltip content="1.需要首行标题" effect="dark" placement="top">
+        <el-tooltip content="1.需要首行标题2.导入追加" effect="dark" placement="top">
           <input type="file" accept=".xlsx, .xls" size="small" @change="handleImport">
         </el-tooltip>
       </el-form-item>
@@ -73,7 +73,7 @@
           />
         </el-form-item>
         <el-form-item label="生效ID">
-          <el-input v-model.number="edit.item.uid" style="width: 600px"/>
+          <el-input v-model.number="edit.item.uid" style="width: 600px" :disabled="edit.editingIndex !== null"/>
         </el-form-item>
         <el-form-item label="可发放金额">
           <el-input-number v-model.number="edit.item.amount" :min="0" style="width: 600px" :step="0.1" :precision="3"/>
@@ -99,22 +99,22 @@
       />
     </div>
 
-    <hr />
+    <hr/>
     <div class="block">
       <el-button type="success" @click="queryUserPoolCache">查询用户实时小奖池余额列表</el-button>
-      <br />
+      <br/>
       <el-table :data="userPoolCache" border style="width: 100%; margin-top: 20px;">
         <el-table-column prop="uid" label="UID" align="center" min-width="320"/>
         <el-table-column prop="pool" label="剩余金额" align="center" min-width="320">
           <template slot-scope="scope"> {{ scope.row.pool / 1000 }}</template>
         </el-table-column>
         <el-table-column prop="expireAt" label="过期时间" align="center" min-width="320">
-          <template slot-scope="scope"> {{ formatDate(scope.row.expireAt) }} </template>
+          <template slot-scope="scope"> {{ formatDate(scope.row.expireAt) }}</template>
         </el-table-column>
         <el-table-column prop="createAt" label="导入日期" align="center" min-width="320">
-          <template slot-scope="scope"> {{ formatDate(scope.row.createAt) }} </template>
+          <template slot-scope="scope"> {{ formatDate(scope.row.createAt) }}</template>
         </el-table-column>
-        <el-table-column prop="createBy" label="修改人" align="center" min-width="320" />
+        <el-table-column prop="createBy" label="修改人" align="center" min-width="320"/>
       </el-table>
     </div>
 
@@ -379,9 +379,9 @@ export default {
         if (response.RetCode === 0) {
           this.edit.item.ID = response.Data.ID
           this.clientDB.AddData(this.edit.item)
-          this.getData(this.pageInfo.GetCurrentPage(), this.pageInfo.GetPageNum())
           Message.success('操作成功！')
         }
+        this.getData(this.pageInfo.GetCurrentPage(), this.pageInfo.GetPageNum())
       })
     },
     async createSave() {
@@ -394,7 +394,7 @@ export default {
       if (this.tableData === null) {
         this.tableData = []
       }
-      this.tableData.push(this.userPoolItem)
+      // this.tableData.push(this.userPoolItem) todo
       this.userPoolCfg.items = this.tableData
       // this.reqData.Data = JSON.stringify(this.userPoolCfg)
       await this.createRequest(this.userPoolItem)
