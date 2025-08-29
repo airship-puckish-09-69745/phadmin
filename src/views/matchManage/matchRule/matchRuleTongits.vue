@@ -667,8 +667,8 @@ export default {
             console.log("show rule_extra: ruleExtraStr ", ruleExtraStr)
             let rule_extra
             try {
-              //rule_extra = ruleExtraStr !==null ? JSON.parse(ruleExtraStr) : { skip_strikeout:0 };
-              rule_extra = ruleExtraStr ? JSON.parse(ruleExtraStr) : { skip_strikeout:0 };
+              rule_extra = ruleExtraStr !==null ? JSON.parse(ruleExtraStr) : { skip_strikeout:0 };
+             // rule_extra = ruleExtraStr ? JSON.parse(ruleExtraStr) : { skip_strikeout:0 };
               console.log("show rule_extra: 22  rule_extra", rule_extra)
             } catch (e) {
               rule_extra = {skip_strikeout:0 }; // 解析失败时使用默认值
