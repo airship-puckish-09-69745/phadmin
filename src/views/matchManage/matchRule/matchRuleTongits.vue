@@ -932,6 +932,7 @@ export default {
       if (!this.configCheck()) {
         return
       }
+      console.log("this.editForm.data ",this.editForm.data)
       request({
         url: '/matchconfig/match/rule',
         method: 'post',
