@@ -663,10 +663,11 @@ export default {
             this.editForm.data.game_id = [gameId]
             this.tableData[i].game_id = [gameId]
             //fix rule_extra
-            const ruleExtraStr = this.tableData[i].rule_extra;
+            let ruleExtraStr = this.tableData[i].rule_extra;
             console.log("show rule_extra: ruleExtraStr ", ruleExtraStr)
             let rule_extra
             try {
+              //rule_extra = ruleExtraStr !==null ? JSON.parse(ruleExtraStr) : { skip_strikeout:0 };
               rule_extra = ruleExtraStr ? JSON.parse(ruleExtraStr) : { skip_strikeout:0 };
               console.log("show rule_extra: 22  rule_extra", rule_extra)
             } catch (e) {
