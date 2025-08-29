@@ -442,8 +442,21 @@ export default {
         }
       })
     },
-    async removeRow(row) {
-      await this.deleteById(row.id)
+    removeRow(row) {
+      const mess = '确定删除这条记录?' + '{uid:' + row.uid + ',金额:' + row.amount / 1000 + ',导入日期:' + this.formatDate(row.updateAt) + ',修改人:' + row.updateBy + ',生效开始日期:' +
+        this.formatDate(row.validStartAt) + ',生效结束日期:' + this.formatDate(row.validEndAt) + '}'
+      this.$confirm(mess, '删除确认', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.deleteById(row.id)
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
       // 加到配置表中
       // await this.filterData2ConfigTable()
     },
