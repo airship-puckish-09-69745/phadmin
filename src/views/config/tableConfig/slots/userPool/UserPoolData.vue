@@ -2,13 +2,13 @@
   <div class="user-pool-container">
     <!-- 筛选区 -->
     <el-form inline>
-      <el-form-item label="导入日期">
+      <el-form-item label="导入时间">
         <el-date-picker
           v-model="dateRange"
           type="daterange"
           range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
+          start-placeholder="开始时间"
+          end-placeholder="结束时间"
           value-format="yyyy-MM-dd"
         />
       </el-form-item>
@@ -31,12 +31,12 @@
 
     <!-- 表格 -->
     <el-table :data="tableData" border style="width: 100%; margin-top: 20px;">
-      <el-table-column prop="updateAt" label="导入日期" align="center" min-width="320">
+      <el-table-column prop="updateAt" label="导入时间" align="center" min-width="320">
         <template slot-scope="scope">
           {{ formatDate(scope.row.updateAt) }}
         </template>
       </el-table-column>
-      <el-table-column prop="effectiveRange" label="生效日期" align="center" min-width="320">
+      <el-table-column prop="effectiveRange" label="生效时间" align="center" min-width="320">
         <template slot-scope="scope">
           {{ formatDate(scope.row.validStartAt) }} 至 {{ formatDate(scope.row.validEndAt) }}
         </template>
@@ -59,16 +59,16 @@
     <!-- 编辑弹窗 -->
     <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="900px" @close="resetEditForm">
       <el-form :model="edit.item" label-width="100px">
-        <el-form-item label="导入日期">
+        <el-form-item label="导入时间">
           <el-input v-model="edit.item.updateAt" :disabled="true" style="width: 600px"/>
         </el-form-item>
-        <el-form-item label="生效日期">
+        <el-form-item label="生效时间">
           <el-date-picker
             v-model="edit.item.effectiveRange"
             type="daterange"
             range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
+            start-placeholder="开始时间"
+            end-placeholder="结束时间"
             style="width: 600px"
           />
         </el-form-item>
@@ -111,7 +111,7 @@
         <el-table-column prop="expireAt" label="过期时间" align="center" min-width="320">
           <template slot-scope="scope"> {{ formatDate(scope.row.expireAt) }}</template>
         </el-table-column>
-        <el-table-column prop="createAt" label="导入日期" align="center" min-width="320">
+        <el-table-column prop="createAt" label="导入时间" align="center" min-width="320">
           <template slot-scope="scope"> {{ formatDate(scope.row.createAt) }}</template>
         </el-table-column>
         <el-table-column prop="createBy" label="修改人" align="center" min-width="320"/>
@@ -431,7 +431,7 @@ export default {
         return false
       }
       if (this.UnixEnd(this.edit.item.effectiveRange[1]) < this.getCurrentUnix()) {
-        this.$message.error('生效日期已经过期')
+        this.$message.error('生效时间已经过期')
         return false
       }
       return true
@@ -451,8 +451,8 @@ export default {
       })
     },
     removeRow(row) {
-      const mess = '确定删除这条记录?' + '{uid:' + row.uid + ',金额:' + row.amount / 1000 + ',导入日期:' + this.formatDate(row.updateAt) + ',修改人:' + row.updateBy + ',生效开始日期:' +
-        this.formatDate(row.validStartAt) + ',生效结束日期:' + this.formatDate(row.validEndAt) + '}'
+      const mess = '确定删除这条记录?' + '{uid:' + row.uid + ',金额:' + row.amount / 1000 + ',导入时间:' + this.formatDate(row.updateAt) + ',修改人:' + row.updateBy + ',生效开始时间:' +
+        this.formatDate(row.validStartAt) + ',生效结束时间:' + this.formatDate(row.validEndAt) + '}'
       this.$confirm(mess, '删除确认', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
