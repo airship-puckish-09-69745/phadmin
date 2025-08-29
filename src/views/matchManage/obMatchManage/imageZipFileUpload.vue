@@ -325,6 +325,8 @@ export default {
         this.isUploading = false;
         this.progress = 0;
 
+        let successCount = successCount;
+        let failedCount = failedCount;
         this.$emit('upload-complete', {
           total: this.extractedFiles.length,
           success: successCount,
