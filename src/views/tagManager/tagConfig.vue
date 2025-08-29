@@ -189,7 +189,7 @@
             <el-form-item v-if="gameIntensity()" label="日均玩牌数：">
               <el-row>
                 <el-col :span="4">
-                  <el-checkbox v-model="form.roundAvg.use" @change="form.validBet.use=!form.roundAvg.use">启用</el-checkbox>
+                  <el-checkbox v-model="form.roundAvg.use" @change="form.validBet.use=form.roundAvg.use?!form.roundAvg.use:form.validBet.use">启用</el-checkbox>
                 </el-col>
                 <el-col :span="8">
                   <el-input v-if="form.roundAvg.use" v-model.number="form.roundAvg.val" placeholder="大于等于"></el-input>
@@ -199,7 +199,7 @@
             <el-form-item v-if="gameIntensity()" label="有效下注：">
               <el-row>
                 <el-col :span="4">
-                  <el-checkbox v-model="form.validBet.use" @change="form.roundAvg.use=!form.validBet.use">启用</el-checkbox>
+                  <el-checkbox v-model="form.validBet.use" @change="form.roundAvg.use=form.validBet.use?!form.validBet.use:form.roundAvg.use">启用</el-checkbox>
                 </el-col>
                 <el-col :span="8">
                   <el-input v-if="form.validBet.use" v-model.number="form.validBet.val" placeholder="大于等于"></el-input>
