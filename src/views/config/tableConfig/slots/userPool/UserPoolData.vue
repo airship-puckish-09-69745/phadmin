@@ -276,8 +276,8 @@ export default {
           page: pageIndex,
           pageSize: pageSize,
           uid: this.searchUserId,
-          updateStartAt: this.Unix(this.dateRange[0]),
-          updateEndAt: this.Unix(this.dateRange[1])
+          updateStartAt: this.UnixStart(this.dateRange[0]),
+          updateEndAt: this.UnixEnd(this.dateRange[1])
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -322,8 +322,8 @@ export default {
         // this.userPoolItem.UpdateAt = Math.floor(Date.now() / 1000)// todo
         this.userPoolItem.updateAt = this.currRowUpdateAt
         this.userPoolItem.updateBy = this.name
-        this.userPoolItem.validStartAt = this.Unix(this.edit.item.effectiveRange[0])
-        this.userPoolItem.validEndAt = this.Unix(this.edit.item.effectiveRange[1])
+        this.userPoolItem.validStartAt = this.UnixStart(this.edit.item.effectiveRange[0])
+        this.userPoolItem.validEndAt = this.UnixEnd(this.edit.item.effectiveRange[1])
         //
         await this.updateRequest(this.userPoolItem)
         //
@@ -351,10 +351,18 @@ export default {
         }
       })
     },
-    Unix(dateStr) {
+    UnixStart(dateStr) {
       // 直接生成 Date 对象
       const date = new Date(dateStr)
       date.setHours(0, 0, 0, 0) // 设置到当天的第一秒
+      // 毫秒时间戳
+      const timestampMs = date.getTime()
+      return Math.floor(timestampMs / 1000)
+    },
+    UnixEnd(dateStr) {
+      // 直接生成 Date 对象
+      const date = new Date(dateStr)
+      date.setHours(23, 59, 59, 59) // 设置到当天的第最后一秒
       // 毫秒时间戳
       const timestampMs = date.getTime()
       return Math.floor(timestampMs / 1000)
@@ -392,8 +400,8 @@ export default {
       this.userPoolItem.amount = this.edit.item.amount * 1000
       this.userPoolItem.updateAt = Math.floor(Date.now() / 1000)
       this.userPoolItem.updateBy = this.name
-      this.userPoolItem.validStartAt = this.Unix(this.edit.item.effectiveRange[0])
-      this.userPoolItem.validEndAt = this.Unix(this.edit.item.effectiveRange[1])
+      this.userPoolItem.validStartAt = this.UnixStart(this.edit.item.effectiveRange[0])
+      this.userPoolItem.validEndAt = this.UnixEnd(this.edit.item.effectiveRange[1])
       if (this.tableData === null) {
         this.tableData = []
       }
@@ -422,7 +430,7 @@ export default {
         this.$message.error('请填写完整')
         return false
       }
-      if (this.Unix(this.edit.item.effectiveRange[1]) < this.getCurrentUnix()) {
+      if (this.UnixEnd(this.edit.item.effectiveRange[1]) < this.getCurrentUnix()) {
         this.$message.error('生效日期已经过期')
         return false
       }
