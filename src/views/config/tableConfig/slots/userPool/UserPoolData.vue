@@ -2,13 +2,13 @@
   <div class="user-pool-container">
     <!-- 筛选区 -->
     <el-form inline>
-      <el-form-item label="导入日期">
+      <el-form-item label="导入时间">
         <el-date-picker
           v-model="dateRange"
           type="daterange"
           range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
+          start-placeholder="开始时间"
+          end-placeholder="结束时间"
           value-format="yyyy-MM-dd"
         />
       </el-form-item>
@@ -19,7 +19,7 @@
         <el-button type="primary" @click="searchData()">查询</el-button>
         <el-button type="success" @click="handleCreate">添加配置</el-button>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <el-tooltip content="1.需要首行标题" effect="dark" placement="top">
+        <el-tooltip content="1.需要首行标题2.导入追加" effect="dark" placement="top">
           <input type="file" accept=".xlsx, .xls" size="small" @change="handleImport">
         </el-tooltip>
       </el-form-item>
@@ -31,12 +31,12 @@
 
     <!-- 表格 -->
     <el-table :data="tableData" border style="width: 100%; margin-top: 20px;">
-      <el-table-column prop="updateAt" label="导入日期" align="center" min-width="320">
+      <el-table-column prop="updateAt" label="导入时间" align="center" min-width="320">
         <template slot-scope="scope">
           {{ formatDate(scope.row.updateAt) }}
         </template>
       </el-table-column>
-      <el-table-column prop="effectiveRange" label="生效日期" align="center" min-width="320">
+      <el-table-column prop="effectiveRange" label="生效时间" align="center" min-width="320">
         <template slot-scope="scope">
           {{ formatDate(scope.row.validStartAt) }} 至 {{ formatDate(scope.row.validEndAt) }}
         </template>
@@ -59,21 +59,21 @@
     <!-- 编辑弹窗 -->
     <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="900px" @close="resetEditForm">
       <el-form :model="edit.item" label-width="100px">
-        <el-form-item label="导入日期">
+        <el-form-item label="导入时间">
           <el-input v-model="edit.item.updateAt" :disabled="true" style="width: 600px"/>
         </el-form-item>
-        <el-form-item label="生效日期">
+        <el-form-item label="生效时间">
           <el-date-picker
             v-model="edit.item.effectiveRange"
             type="daterange"
             range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
+            start-placeholder="开始时间"
+            end-placeholder="结束时间"
             style="width: 600px"
           />
         </el-form-item>
         <el-form-item label="生效ID">
-          <el-input v-model.number="edit.item.uid" style="width: 600px"/>
+          <el-input v-model.number="edit.item.uid" style="width: 600px" :disabled="edit.editingIndex !== null"/>
         </el-form-item>
         <el-form-item label="可发放金额">
           <el-input-number v-model.number="edit.item.amount" :min="0" style="width: 600px" :step="0.1" :precision="3"/>
@@ -99,22 +99,22 @@
       />
     </div>
 
-    <hr />
+    <hr/>
     <div class="block">
       <el-button type="success" @click="queryUserPoolCache">查询用户实时小奖池余额列表</el-button>
-      <br />
+      <br/>
       <el-table :data="userPoolCache" border style="width: 100%; margin-top: 20px;">
         <el-table-column prop="uid" label="UID" align="center" min-width="320"/>
         <el-table-column prop="pool" label="剩余金额" align="center" min-width="320">
           <template slot-scope="scope"> {{ scope.row.pool / 1000 }}</template>
         </el-table-column>
         <el-table-column prop="expireAt" label="过期时间" align="center" min-width="320">
-          <template slot-scope="scope"> {{ formatDate(scope.row.expireAt) }} </template>
+          <template slot-scope="scope"> {{ formatDate(scope.row.expireAt) }}</template>
         </el-table-column>
-        <el-table-column prop="createAt" label="导入日期" align="center" min-width="320">
-          <template slot-scope="scope"> {{ formatDate(scope.row.createAt) }} </template>
+        <el-table-column prop="createAt" label="导入时间" align="center" min-width="320">
+          <template slot-scope="scope"> {{ formatDate(scope.row.createAt) }}</template>
         </el-table-column>
-        <el-table-column prop="createBy" label="修改人" align="center" min-width="320" />
+        <el-table-column prop="createBy" label="修改人" align="center" min-width="320"/>
       </el-table>
     </div>
 
@@ -249,7 +249,10 @@ export default {
       const y = date.getFullYear()
       const m = String(date.getMonth() + 1).padStart(2, '0')
       const d = String(date.getDate()).padStart(2, '0')
-      return `${y}-${m}-${d}`
+      const h = date.getHours()
+      const M = date.getMinutes()
+      const S = date.getSeconds()
+      return `${y}-${m}-${d} ` + (h > 9 ? h : '0'+h) + ':' + (M > 9 ? M : '0'+M) + ':' + (S > 9 ? S : '0'+S)
     },
     getFullKey() {
       return 'CustomizeCfg_slots_user_pool_data'
@@ -273,8 +276,8 @@ export default {
           page: pageIndex,
           pageSize: pageSize,
           uid: this.searchUserId,
-          updateStartAt: this.Unix(this.dateRange[0]),
-          updateEndAt: this.Unix(this.dateRange[1])
+          updateStartAt: this.UnixStart(this.dateRange[0]),
+          updateEndAt: this.UnixEnd(this.dateRange[1])
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -319,8 +322,8 @@ export default {
         // this.userPoolItem.UpdateAt = Math.floor(Date.now() / 1000)// todo
         this.userPoolItem.updateAt = this.currRowUpdateAt
         this.userPoolItem.updateBy = this.name
-        this.userPoolItem.validStartAt = this.Unix(this.edit.item.effectiveRange[0])
-        this.userPoolItem.validEndAt = this.Unix(this.edit.item.effectiveRange[1])
+        this.userPoolItem.validStartAt = this.UnixStart(this.edit.item.effectiveRange[0])
+        this.userPoolItem.validEndAt = this.UnixEnd(this.edit.item.effectiveRange[1])
         //
         await this.updateRequest(this.userPoolItem)
         //
@@ -348,10 +351,18 @@ export default {
         }
       })
     },
-    Unix(dateStr) {
+    UnixStart(dateStr) {
       // 直接生成 Date 对象
       const date = new Date(dateStr)
       date.setHours(0, 0, 0, 0) // 设置到当天的第一秒
+      // 毫秒时间戳
+      const timestampMs = date.getTime()
+      return Math.floor(timestampMs / 1000)
+    },
+    UnixEnd(dateStr) {
+      // 直接生成 Date 对象
+      const date = new Date(dateStr)
+      date.setHours(23, 59, 59, 59) // 设置到当天的第最后一秒
       // 毫秒时间戳
       const timestampMs = date.getTime()
       return Math.floor(timestampMs / 1000)
@@ -379,9 +390,9 @@ export default {
         if (response.RetCode === 0) {
           this.edit.item.ID = response.Data.ID
           this.clientDB.AddData(this.edit.item)
-          this.getData(this.pageInfo.GetCurrentPage(), this.pageInfo.GetPageNum())
           Message.success('操作成功！')
         }
+        this.getData(this.pageInfo.GetCurrentPage(), this.pageInfo.GetPageNum())
       })
     },
     async createSave() {
@@ -389,12 +400,12 @@ export default {
       this.userPoolItem.amount = this.edit.item.amount * 1000
       this.userPoolItem.updateAt = Math.floor(Date.now() / 1000)
       this.userPoolItem.updateBy = this.name
-      this.userPoolItem.validStartAt = this.Unix(this.edit.item.effectiveRange[0])
-      this.userPoolItem.validEndAt = this.Unix(this.edit.item.effectiveRange[1])
+      this.userPoolItem.validStartAt = this.UnixStart(this.edit.item.effectiveRange[0])
+      this.userPoolItem.validEndAt = this.UnixEnd(this.edit.item.effectiveRange[1])
       if (this.tableData === null) {
         this.tableData = []
       }
-      this.tableData.push(this.userPoolItem)
+      // this.tableData.push(this.userPoolItem) todo
       this.userPoolCfg.items = this.tableData
       // this.reqData.Data = JSON.stringify(this.userPoolCfg)
       await this.createRequest(this.userPoolItem)
@@ -419,8 +430,8 @@ export default {
         this.$message.error('请填写完整')
         return false
       }
-      if (this.Unix(this.edit.item.effectiveRange[1]) < this.getCurrentUnix()) {
-        this.$message.error('生效日期已经过期')
+      if (this.UnixEnd(this.edit.item.effectiveRange[1]) < this.getCurrentUnix()) {
+        this.$message.error('生效时间已经过期')
         return false
       }
       return true
@@ -439,8 +450,21 @@ export default {
         }
       })
     },
-    async removeRow(row) {
-      await this.deleteById(row.id)
+    removeRow(row) {
+      const mess = '确定删除这条记录?' + '{uid:' + row.uid + ',金额:' + row.amount / 1000 + ',导入时间:' + this.formatDate(row.updateAt) + ',修改人:' + row.updateBy + ',生效开始时间:' +
+        this.formatDate(row.validStartAt) + ',生效结束时间:' + this.formatDate(row.validEndAt) + '}'
+      this.$confirm(mess, '删除确认', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.deleteById(row.id)
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
       // 加到配置表中
       // await this.filterData2ConfigTable()
     },
@@ -508,6 +532,16 @@ export default {
                   userPoolItem.amount === undefined) {
                   isPassCheck = false
                   Message.error('导入失败,数据存在错误')
+                  return
+                }
+                if (userPoolItem.validEndAt < this.getCurrentUnix()) {
+                  isPassCheck = false
+                  Message.error('存在过期数据不能导入')
+                  return
+                }
+                if (userPoolItem.validEndAt < userPoolItem.validStartAt) {
+                  isPassCheck = false
+                  Message.error('生效结束时间早于生效开始时间')
                   return
                 }
                 excelData.push(userPoolItem)

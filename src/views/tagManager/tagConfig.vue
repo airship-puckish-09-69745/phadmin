@@ -189,7 +189,7 @@
             <el-form-item v-if="gameIntensity()" label="日均玩牌数：">
               <el-row>
                 <el-col :span="4">
-                  <el-checkbox v-model="form.roundAvg.use">启用</el-checkbox>
+                  <el-checkbox v-model="form.roundAvg.use" @change="form.validBet.use=form.roundAvg.use?!form.roundAvg.use:form.validBet.use">启用</el-checkbox>
                 </el-col>
                 <el-col :span="8">
                   <el-input v-if="form.roundAvg.use" v-model.number="form.roundAvg.val" placeholder="大于等于"></el-input>
@@ -199,7 +199,7 @@
             <el-form-item v-if="gameIntensity()" label="有效下注：">
               <el-row>
                 <el-col :span="4">
-                  <el-checkbox v-model="form.validBet.use">启用</el-checkbox>
+                  <el-checkbox v-model="form.validBet.use" @change="form.roundAvg.use=form.validBet.use?!form.validBet.use:form.roundAvg.use">启用</el-checkbox>
                 </el-col>
                 <el-col :span="8">
                   <el-input v-if="form.validBet.use" v-model.number="form.validBet.val" placeholder="大于等于"></el-input>
@@ -434,8 +434,8 @@
           tag_name: '',
           tag_gid: 22,
           loginDay: [0,0],
-          roundAvg: {use:false, min: 0},
-          validBet: {use:false, min: 0},
+          roundAvg: {use:false, val: 0},
+          validBet: {use:false, val: 0},
         },
         syncInfo: false,
         syncStat: false,
@@ -464,6 +464,7 @@
       this.item.gameId = 0
       this.getGameList()
       this.tagList()
+
       this.selectChange(this.form.tag_type)
     },
     methods: {
@@ -482,7 +483,7 @@
           }
         }
       },
-      selectChange(value) {
+      selectChange(value,skip) {
         // console.log(value)
         for (const v of this.tagOptions) {
           if (v.value === value) {
@@ -490,7 +491,7 @@
               break
           }
         }
-        if (this.form.tag_id > 0) {
+        if (skip) {
           return
         } 
         if (this.fieldOptions && this.fieldOptions.length>0) {
@@ -646,7 +647,7 @@
         this.form.loginDay = attr.loginDay
         this.form.roundAvg = attr.roundAvg
         this.form.validBet = attr.validBet
-        this.selectChange(this.form.tag_type)
+        this.selectChange(this.form.tag_type,true)
       },
       copy(row) {
         this.syncInfo = true
@@ -661,12 +662,13 @@
         this.form.loginDay = attr.loginDay
         this.form.roundAvg = attr.roundAvg
         this.form.validBet = attr.validBet
-        this.selectChange(this.form.tag_type)
+        this.selectChange(this.form.tag_type,true)
       },
       add() {
         this.syncInfo = true
         this.form.id = 0
         this.form.tag_id = 0
+        this.form.tag_type = this.tagOptions[0].value
         this.selectChange(this.tagOptions[0].value)
       },
       sure() {
