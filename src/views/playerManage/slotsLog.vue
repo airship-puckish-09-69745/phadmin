@@ -261,6 +261,8 @@
             <el-table-column  prop="ActLogObj.HitBigPrize" label="命中大奖"><template slot-scope="scope"><span v-if="scope.row.ActLogObj.HitBigPrize" style="color:red">是</span><span v-else>-</span></template></el-table-column>
             <el-table-column  prop="ActLogObj.BigPrizeHitReason" label="大奖原因"><template slot-scope="scope">{{ showBigPrizeReason(scope.row.ActLogObj.BigPrizeHitReason) }}</template></el-table-column>
             <el-table-column  prop="ActLogObj.BigPrizeCfgId" label="大奖用户群ID" />
+            <el-table-column  prop="ActLogObj.UserPoolOdds" label="小奖池加赠倍数" />
+            <el-table-column  prop="ActLogObj.UserPoolAmount" label="小奖池剩余余额" :formatter="toRupee" />
 
           </el-table-column>
         </template>
@@ -734,6 +736,8 @@ export default {
                 tmp.push(actLogObj.IsLotteryLimit ? '是' : '否')
                 tmp.push(actLogObj.ScriptV3PlanId)
                 tmp.push(actLogObj.ScriptV3PlanVer)
+                tmp.push(actLogObj.UserPoolOdds)
+                tmp.push(actLogObj.UserPoolAmount)
               }
             }
             this.exportData.push(tmp)
