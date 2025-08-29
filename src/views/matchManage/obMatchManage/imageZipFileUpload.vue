@@ -51,6 +51,8 @@
 <script>
 import JSZip from 'jszip';
 import axios from 'axios';
+import store from "@/store";
+import {getToken} from "@/utils/auth";
 
 export default {
   data() {
@@ -262,12 +264,17 @@ export default {
 
             const url = process.env.VUE_APP_BASE_API + '/file/upload';
 
-            // 简化版本：移除进度事件处理
-            const response = await axios.post(url, formData, {
+            const config = {
               headers: {
                 'Content-Type': 'multipart/form-data'
-              }
-            });
+              },
+            }
+            if (store.getters.token) {
+              config.headers['X-Token'] = getToken()
+            }
+
+            // 简化版本：移除进度事件处理
+            const response = await axios.post(url, formData,config);
 
             const { status, data } = response || {};
             const { RetCode } = data || {};
