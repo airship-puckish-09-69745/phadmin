@@ -278,7 +278,7 @@ export default {
       },
       edit: {
         cfgId: 0,
-        antesMinMap: {},
+        antesMinMap: [],
         isEdit: false,
         visible: false,
         item: newItem(),
@@ -362,7 +362,7 @@ export default {
           item.whitelistCfg = JSON.parse(item.whitelistCfg)
           item.gameTasks = JSON.parse(item.gameTasks)
 
-          this.edit.antesMinMap = {}
+          this.edit.antesMinMap = []
           for (let i = 0; i < item.gameTasks.length; i++) {
             const gameTask = item.gameTasks[i]
             this.edit.antesMinMap[gameTask.gameId] = gameTask.winTasks[0].antesMin / 1000
