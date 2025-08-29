@@ -515,6 +515,11 @@ export default {
                   Message.error('存在过期数据不能导入')
                   return
                 }
+                if (userPoolItem.validEndAt < userPoolItem.validStartAt) {
+                  isPassCheck = false
+                  Message.error('生效结束时间早于生效开始时间')
+                  return
+                }
                 excelData.push(userPoolItem)
               }
             })
