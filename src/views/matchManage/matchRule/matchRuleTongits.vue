@@ -664,11 +664,14 @@ export default {
             this.tableData[i].game_id = [gameId]
             //fix rule_extra
             const ruleExtraStr = this.tableData[i].rule_extra;
+            console.log("show rule_extra: ruleExtraStr ", ruleExtraStr)
             let rule_extra
             try {
               rule_extra = ruleExtraStr ? JSON.parse(ruleExtraStr) : { skip_strikeout:0 };
+              console.log("show rule_extra: 22  rule_extra", rule_extra)
             } catch (e) {
               rule_extra = {skip_strikeout:0 }; // 解析失败时使用默认值
+              console.log("show rule_extra: 3333  rule_extra", rule_extra)
             }
             this.editForm.data.rule_extra = rule_extra;
             console.log("show rule_extra:", this.editForm.data.rule_extra)
