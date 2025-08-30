@@ -5602,6 +5602,7 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
     getBuracoCardUrl(card) {
       let c = (card & 0x0ff)
       let color = (c >> 4) & 0xf
+      color = (color - 1)%5 + 1  //兼容0x111 和 0x61定义
       if (color == 5) {//王
         c = 2
       }
