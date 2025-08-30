@@ -663,10 +663,10 @@ export default {
             this.editForm.data.game_id = [gameId]
             this.tableData[i].game_id = [gameId]
             //fix rule_extra
-            const ruleExtraStr = this.tableData[i].rule_extra;
+            let ruleExtraStr = this.tableData[i].rule_extra;
             let rule_extra
             try {
-              rule_extra = ruleExtraStr ? JSON.parse(ruleExtraStr) : { skip_strikeout:0 };
+              rule_extra = ruleExtraStr !=="null" ? JSON.parse(ruleExtraStr) : { skip_strikeout:0 };
             } catch (e) {
               rule_extra = {skip_strikeout:0 }; // 解析失败时使用默认值
             }
@@ -932,6 +932,7 @@ export default {
       if (!this.configCheck()) {
         return
       }
+      console.log("this.editForm.data ",this.editForm.data)
       request({
         url: '/matchconfig/match/rule',
         method: 'post',
