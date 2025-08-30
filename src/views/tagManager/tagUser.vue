@@ -118,7 +118,7 @@
             {value: 20002, label: '日平局局数'},
             {value: 20003, label: '有效下注'},
           ]},
-          {value: 3, label: '常玩底注', children: [
+          {value: 3, label: '游戏场次', children: [
             {value: 30000, label: '常玩底注'},
             {value: 30001, label: '最高场次'},
           ]},
@@ -196,19 +196,22 @@
         }
         return 0
       },
+      isBet(tagType,tagId) {
+        return (tagType === 3) || (tagId === 20003)
+      },
       tagFieldName(row) {
         const tagType = this.getTagType(row.tagId)
         console.log("tagType", tagType)
         if (tagType === 0) {
           return ""
         }
-        if (tagType === 2 && row.tagId === 70000) {
+        if (tagType === 2 && row.tagId === 20000) {
           for (const v of this.intensityOptions) {
             if (v.value === row.tagVal) {
               return v.label
             }
           }
-        } else if (tagType === 3) {
+        } else if (this.isBet(tagType,row.tagId)) {
           return row.tagVal/1000
         }
         return row.tagVal

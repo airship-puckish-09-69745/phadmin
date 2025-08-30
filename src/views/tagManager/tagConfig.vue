@@ -43,6 +43,9 @@
             label="标签名称"
             width="120"
           >
+            <template slot-scope="scope">
+              {{ tagValName(scope.row) }}
+            </template>
           </el-table-column>
           <el-table-column
             prop="tag_gid"
@@ -138,7 +141,7 @@
               </el-select>
             </el-form-item>
             <el-form-item v-if="gameIntensity()" label="字段：">
-              <el-select v-model="form.tag_val" placeholder="placeholder" @change="tagValChange">
+              <el-select v-model="form.tag_val" placeholder="placeholder">
                 <el-option
                     v-for="opt in intensityOptions"
                     :key="opt.value"
@@ -224,7 +227,7 @@
               <el-cascader v-model="item.values" :options="tagOptions" :show-all-levels="false" style="width: 120px;" size="mini"></el-cascader>
             </el-form-item>
             <el-form-item v-if="item.values[1]==70000" label="字段：">
-              <el-select v-model="item.tagVal" placeholder="placeholder" @change="tagValChange" style="width: 100px;" size="mini">
+              <el-select v-model="item.tagVal" placeholder="placeholder" style="width: 100px;" size="mini">
                 <el-option
                     v-for="opt in intensityOptions"
                     :key="opt.value"
@@ -385,7 +388,7 @@
             {value: 20002, label: '日平局局数'},
             {value: 20003, label: '有效下注'},
           ]},
-          {value: 3, label: '常玩底注', children: [
+          {value: 3, label: '游戏场次', children: [
             {value: 30000, label: '常玩底注'},
             {value: 30001, label: '最高场次'},
           ]},
@@ -469,21 +472,6 @@
       this.selectChange(this.form.tag_type)
     },
     methods: {
-      tagValChange(value) {
-        if (this.form.tag_id === 70000) {
-          for (const v of this.intensityOptions) {
-            if (v.value === value) {
-              this.form.tag_name = v.label
-              return
-            }
-          }
-        }
-        for (const v of this.fieldOptions) {
-          if (v.value == value) {
-            this.form.tag_name = v.label
-          }
-        }
-      },
       selectChange(value,skip) {
         // console.log(value)
         for (const v of this.tagOptions) {
@@ -498,11 +486,9 @@
         if (this.fieldOptions && this.fieldOptions.length>0) {
           this.form.tag_val = 0
           this.form.tag_id = this.fieldOptions[0].value
-          this.form.tag_name = this.fieldOptions[0].label
         }
         if (this.gameIntensity()) {
           this.form.tag_val = this.intensityOptions[0].value
-          this.form.tag_name = this.intensityOptions[0].label
         }
       },
       tagTypeName(tag_type) {
@@ -523,11 +509,12 @@
         }
         return ''
       },
-      tagValName(tag_val) {
-        // console.log(tag_val, this.fieldOptions)
-        for (const v of this.fieldOptions) {
-          if (v.value == tag_val) {
-            return v.label
+      tagValName(row) {
+        if (row.tag_id === 20000) {
+          for (const v of this.intensityOptions) {
+            if (v.value === row.tag_val) {
+              return v.label
+            }
           }
         }
         return ''
@@ -613,9 +600,9 @@
       },
       gameIntensity(tagId) {
         if (tagId) {
-          return (tagId === 70000)
+          return (tagId === 20000)
         }
-        return (this.form.tag_type === 2 && this.form.tag_id === 70000)
+        return (this.form.tag_type === 2 && this.form.tag_id === 20000)
       },
       handleSizeChange(val) {
         this.page = 1
