@@ -6,12 +6,6 @@
         <i class="el-icon-info" />
       </el-tooltip>
     </el-form-item>
-    <el-form-item label="每日单人道具总额度发放限制：">
-      <el-input v-model="formData.PersonQuotaLimit" type="number" placeholder="请输入" style="width: 300px" />
-    </el-form-item>
-    <el-form-item label="每日单人道具总数量发放限制：">
-      <el-input v-model="formData.PersonNumberLimit" type="number" placeholder="请输入" style="width: 300px" />
-    </el-form-item>
     <el-form-item label="Other game开关：">
       <el-switch v-model="formData.OtherGameStatus" :active-value="true" :inactive-value="false" />
     </el-form-item>

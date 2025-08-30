@@ -706,15 +706,18 @@ export default {
               this.item.GrandCfg[k].MultiMin /= 100
               this.item.GrandCfg[k].MultiMax /= 100
               //this.item.GrandCfg[k].RewardMul /= 100
+              this.item.MiniCfg[k].WinRate /= 1
             }
             for (const k in this.item.MajorCfg){
               this.item.MajorCfg[k].MultiMin /= 100
               this.item.MajorCfg[k].MultiMax /= 100
               //this.item.MajorCfg[k].RewardMul /= 100
+              this.item.MiniCfg[k].WinRate /= 1
             }
             for (const k in this.item.MiniCfg){
               this.item.MiniCfg[k].TableMoney /= 1000
               this.item.MiniCfg[k].RewardMul /= 1
+              this.item.MiniCfg[k].WinRate /= 1
             }
 
             for (const k in this.item.ShowPool.GrandRewardCfg){
@@ -749,15 +752,18 @@ export default {
         ret.GrandCfg[k].MultiMin *= 100
         ret.GrandCfg[k].MultiMax *= 100
         //ret.GrandCfg[k].RewardMul *= 100
+        ret.GrandCfg[k].WinRate *= 1
       }
       for (const k in ret.MajorCfg){
         ret.MajorCfg[k].MultiMin *= 100
         ret.MajorCfg[k].MultiMax *= 100
         //ret.MajorCfg[k].RewardMul *= 100
+        ret.MajorCfg[k].WinRate *= 1
       }
       for (const k in ret.MiniCfg){
         ret.MiniCfg[k].TableMoney *= 1000
         ret.MiniCfg[k].RewardMul *= 1
+        ret.MiniCfg[k].WinRate *= 1
       }
 
       for (const k in ret.ShowPool.GrandRewardCfg){
