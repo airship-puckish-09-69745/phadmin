@@ -516,8 +516,8 @@ export default {
                 uidSet.add(uid)
                 const userPoolItem = {}
                 userPoolItem.updateAt = today// 当日凌晨0点的时间
-                userPoolItem.validStartAt = this.excelSerialToUnix(row[0])
-                userPoolItem.validEndAt = this.excelSerialToUnix(row[1])
+                userPoolItem.validStartAt = this.excelSerialToUnix(row[0], 'start')
+                userPoolItem.validEndAt = this.excelSerialToUnix(row[1], 'end')
                 userPoolItem.uid = row[2]
                 userPoolItem.amount = row[3] * 1000
                 // userPoolItem.updateBy = this.reqData.ModifyUser
@@ -629,9 +629,15 @@ export default {
         }
       })
     },
-    excelSerialToUnix(serial) {
+    excelSerialToUnix(serial, unixMode) {
       const date = XLSX.SSF.parse_date_code(serial)
       if (!date) return 0
+
+      if (unixMode === 'end') {
+        // 返回当天的最后一秒 (23:59:59)
+        return Math.floor(new Date(date.y, date.m - 1, date.d, 23, 59, 59).getTime() / 1000)
+      }
+      // 默认返回当天的开始 (00:00:00)
       return Math.floor(new Date(date.y, date.m - 1, date.d).getTime() / 1000)
     },
     splitTimeRange(dateStr) {
