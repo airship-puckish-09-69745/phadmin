@@ -374,23 +374,24 @@
         gameOptions: [],
         tagOptions: [
           {value: 1, label: '用户类型', children: [
-            {value: 10000, label: '新增用户'},
-            {value: 20000, label: '新进用户'},
-            {value: 30000, label: '流失用户'},
-            {value: 40000, label: '预流失用户'},
+            {value: 10001, label: '新增用户'},
+            {value: 10002, label: '新进用户'},
+            {value: 10003, label: '流失用户'},
+            {value: 10004, label: '预流失用户'},
           ]},
           {value: 2, label: '游戏强度', children: [
-            {value: 50000, label: '登录天数'},
-            {value: 60000, label: '日平局局数'},
-            {value: 70000, label: '游戏强度'},
+            {value: 20000, label: '游戏强度'},
+            {value: 20001, label: '登录天数'},
+            {value: 20002, label: '日平局局数'},
+            {value: 20003, label: '有效下注'},
           ]},
-          {value: 3, label: '游戏场次', children: [
-            {value: 80000, label: '常玩底注'},
-            {value: 90000, label: '最高场次'},
+          {value: 3, label: '常玩底注', children: [
+            {value: 30000, label: '常玩底注'},
+            {value: 30001, label: '最高场次'},
           ]},
           {value: 4, label: '赛事类型', children: [
-            {value: 100000, label: '免费'},
-            {value: 110000, label: '付费'},
+            {value: 40001, label: '免费'},
+            {value: 40002, label: '付费'},
           ]}
         ],
         intensityOptions: [
