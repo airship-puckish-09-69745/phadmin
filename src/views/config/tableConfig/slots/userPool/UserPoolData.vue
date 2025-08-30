@@ -475,14 +475,6 @@ export default {
     removeAllConfig() {
       this.tableData = []
     },
-    getMidnightTimestamp() {
-      // 创建一个新的Date对象，表示当前时间
-      const now = new Date()
-      // 设置时间为当天凌晨0点
-      now.setHours(0, 0, 0, 0)
-      // 返回当天凌晨0点的时间戳
-      return now.getTime() / 1000
-    },
     async handleImport(event) {
       let isPassCheck = true
       const file = event.target.files[0]
@@ -492,7 +484,7 @@ export default {
         this.resetEditForm()
       }
       const excelData = []
-      const today = this.getMidnightTimestamp()// 当日凌晨0点的时间
+      const today = this.getCurrentUnix()// 当日凌晨0点的时间
       if (file) {
         const reader = new FileReader()
         reader.onload = (e) => {
