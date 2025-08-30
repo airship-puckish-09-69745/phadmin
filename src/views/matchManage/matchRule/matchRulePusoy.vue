@@ -1188,8 +1188,8 @@ export default {
               this.errmsg('定局积分第' + round.index + '轮的晋级人数不能大于前一轮的晋级人数!')
               return false
             } else if (round.promotion_user % 4 !== 0) {
-              this.errmsg('定局积分第' + round.index + '轮的晋级人数必须是4的倍数!')
-              return false
+              //this.errmsg('定局积分第' + round.index + '轮的晋级人数必须是4的倍数!')
+              //return false
             } else {
               lastUserNum = round.promotion_user
             }
