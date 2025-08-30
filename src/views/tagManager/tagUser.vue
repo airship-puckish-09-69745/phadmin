@@ -119,8 +119,8 @@
             {value: 20003, label: '有效下注'},
           ]},
           {value: 3, label: '游戏场次', children: [
-            {value: 30000, label: '常玩底注'},
-            {value: 30001, label: '最高场次'},
+            {value: 30001, label: '常玩底注'},
+            {value: 30002, label: '最高场次'},
           ]},
           {value: 4, label: '赛事类型', children: [
             {value: 40001, label: '免费'},
