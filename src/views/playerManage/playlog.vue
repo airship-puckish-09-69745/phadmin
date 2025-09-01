@@ -3197,11 +3197,17 @@
                 <el-image style="width: 37px; height: 50px" :src="getBuracoCardUrl(item)" />
               </div>
             </el-card>
-            <div v-for="c in scope.row.handcards" class="block"><!--手牌-->
+          </template>
+        </el-table-column>
+        <!--
+        <el-table-column prop="handcards" label="handcards" width="650px" >
+          <template slot-scope="scope">
+            <div v-for="c in scope.row.handcards" class="block">
               <el-image style="width: 37px; height: 50px" :src="getBuracoCardUrl(c)" />
             </div>
           </template>
         </el-table-column>
+      -->
       </el-table>
     </el-dialog>
 
@@ -4366,6 +4372,7 @@ export default {
               this.BuracoDetail.actionLogs[i].groups.push(val)
             }
         }
+        /*
         //玩家手牌
         let uId = this.BuracoDetail.actionLogs[i].uid
         if (this.BuracoDetail.actionLogs[i].actionType == 0) {  //发牌
@@ -4375,9 +4382,15 @@ export default {
           || this.BuracoDetail.actionLogs[i].actionType == 4){   //弃牌堆给玩家
             //添加牌
           let handCards = userHandCards.get(uId)
-          handCards = handCards.concat(this.BuracoDetail.actionLogs[i].opCards)
-          userHandCards.set(uId,handCards)
-          this.BuracoDetail.actionLogs[i].handcards = handCards
+          //handCards = handCards.concat(this.BuracoDetail.actionLogs[i].opCards)
+          //userHandCards.set(uId,handCards)
+          for (let c of this.BuracoDetail.actionLogs[i].opCards){
+            handCards.push(c)
+          }
+          this.BuracoDetail.actionLogs[i].handcards = new Array()
+          for (let c of handCards){
+            this.BuracoDetail.actionLogs[i].handcards.push(c)
+          }
         } else if (this.BuracoDetail.actionLogs[i].actionType == 3 //摸组弃牌
           || this.BuracoDetail.actionLogs[i].actionType == 5  //弃牌
           || this.BuracoDetail.actionLogs[i].actionType == 6 //扩组牌
@@ -4394,8 +4407,12 @@ export default {
             }
           }
           userHandCards.set(uId, handCards)
-          this.BuracoDetail.actionLogs[i].handcards = handCards
+          for (let c of handCards){
+            this.BuracoDetail.actionLogs[i].handcards.push(c)
+          }
+          console.log(this.BuracoDetail.actionLogs[i].idx, "=====>", this.BuracoDetail.actionLogs[i].handcards)
         }
+      */
       }
       console.log('this.BuracoData => ', this.BuracoDetail)
       this.BuracoDetailVisible = true
