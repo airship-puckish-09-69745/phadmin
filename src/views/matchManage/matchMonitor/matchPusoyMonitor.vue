@@ -158,6 +158,7 @@ export default {
                     let objs = response.Data || []
                     if (objs.total > 0) {
                         this.total = objs.total;
+                        this.tableData=[]
                         for (let i = 0; i < objs.list.length; i++) {
                           let gameId = parseInt(objs.list[i].gid, 10)
                           if (gameId !== 2033) {
@@ -165,7 +166,6 @@ export default {
                           }
                           this.tableData.push(objs.list[i])
                         }
-                        console.log(this.tableData)
                     } else {
                         this.total = 0;
                         this.tableData = [];
