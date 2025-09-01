@@ -3197,7 +3197,7 @@
                 <el-image style="width: 37px; height: 50px" :src="getBuracoCardUrl(item)" />
               </div>
             </el-card>
-            <el-card v-for="c in scope.row.handcards" class="box-card"><!--手牌-->
+            <el-card v-for="c in scope.row.handcards" class="block"><!--手牌-->
                 <el-image style="width: 37px; height: 50px" :src="getBuracoCardUrl(c)" />
             </el-card>
           </template>
