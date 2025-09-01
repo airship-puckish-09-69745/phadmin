@@ -124,7 +124,9 @@
                 <el-descriptions title="胜场任务配置" direction="vertical" :column="1" border style="padding-top: 30px">
                   <el-descriptions-item label="最低场次底注">
                     <el-col :span="12">
-                      <el-input v-model="edit.antesMinMap[gameTask.gameId]" type="number" @change="handleAntesMinChange(gameTask)" />
+                      <el-select v-model="edit.antesMinMap[gameTask.gameId]" placeholder="请选择" @change="handleAntesMinChange(gameTask)">
+                        <el-option v-for="ante in edit.gameAntesMap[gameTask.gameId]" :label="ante" :value="ante" />
+                      </el-select>
                     </el-col>
                   </el-descriptions-item>
                   <el-descriptions-item label="胜场任务列表">
@@ -279,6 +281,7 @@ export default {
       edit: {
         cfgId: 0,
         antesMinMap: [],
+        gameAntesMap: {},
         isEdit: false,
         visible: false,
         item: newItem(),
@@ -323,6 +326,7 @@ export default {
   },
   mounted() {
     this.getList()
+    this.getGameAnteTables()
   },
   methods: {
     formatTime(ts) {
@@ -381,6 +385,49 @@ export default {
       }
     },
     //************************ 修改/添加弹框相关 ************************
+    //************************ 游戏场次底注列表相关 ************************
+    async getGameAnteTables() {
+      const gameIds = this.edit.item.gameIds
+      for (const gameId of gameIds) {
+        let list = []
+        switch (gameId) {
+          case 22:
+            list =  await this.getTongitsAnteList(1)
+            break
+          case 28:
+            list =  await this.getTongitsAnteList(2)
+            break
+          case 29:
+            list =  await this.getTongitsAnteList(3)
+            break
+          default:
+            console.log('getGameAnteTables gameId: ', gameId, ' not supported',)
+        }
+        this.edit.gameAntesMap[gameId] = list
+      }
+    },
+    async getTongitsAnteList(playMode) {
+      const response = await request({
+        url: '/tongitstable/all',
+        method: 'get',
+        data: {
+          PlayMode: playMode
+        }
+      })
+
+      let anteTables = []
+      if (response.RetCode === 0) {
+        const objs = response.Data || []
+        for (const i in objs) {
+          anteTables.push(objs[i].TableMoney / 1000)
+        }
+        anteTables = Array.from(new Set(anteTables)) // 去重
+        anteTables.sort((x, y) => x - y)
+      }
+
+      console.log('getTongitsAnteList anteTables: ', anteTables)
+      return anteTables
+    },
     //************************ 表格数据相关 ************************
     // 配置列表
     getList() {
