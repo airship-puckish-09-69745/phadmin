@@ -320,12 +320,10 @@ export default {
             this.total = objs.total
             this.itemList = []
             for (let i = 0; i < objs.total; i++) {
-              if (objs.list[i].status === 1 && (objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET ||
-                objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET) && objs.list[i].expire_time > timestamp) {
+              if (objs.list[i].status === 1 && this.isTicketProp(objs.list[i].item_type) && objs.list[i].expire_time > timestamp) {
                 this.itemList.push(objs.list[i])
               }
-              if (objs.list[i].status === 1 && (objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME ||
-                objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR || objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN)) {
+              if (objs.list[i].status === 1 && (this.isAvatarFrameProp(objs.list[i].item_type) || objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN)) {
                 this.itemList.push(objs.list[i])
               }
             }
@@ -401,6 +399,16 @@ export default {
         this.form.SendDetails.app_id = ''
       }
     },
+
+    //是否是门票类型道具
+    isTicketProp(itemType) {
+      return itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET || itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET || itemType === PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET
+    },
+    //是否是头像框道具
+    isAvatarFrameProp(itemType) {
+      return itemType === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME || itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR
+    },
+
     hasDuplicates(arr) {
     const map = new Map()
     let emptyArr = []
