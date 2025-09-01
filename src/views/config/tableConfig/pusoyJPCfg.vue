@@ -127,7 +127,7 @@
                 style="width: 100%"
               >
                 <el-table-column type="index" />
-
+                <!--
                 <el-table-column prop="tableMoney" label="底注" >
                   <template slot-scope="scope">
                     <el-input v-model="scope.row.TableMoney" size="mini" />
@@ -145,13 +145,31 @@
                     <el-input v-model="scope.row.WinRate" size="mini" />
                   </template>
                 </el-table-column>
+              -->
+                <el-table-column prop="minRate" label="【mini奖金池/mini最大奖金】下限倍数" >
+                  <template slot-scope="scope">
+                    <el-input v-model="scope.row.MultiMin" size="mini" />
+                  </template>
+                </el-table-column>
+
+                <el-table-column prop="maxRate" label="【mini奖金池/mini最大奖金】上限倍数" >
+                  <template slot-scope="scope">
+                    <el-input v-model="scope.row.MultiMax" size="mini" />
+                  </template>
+                </el-table-column>
+                
+                <el-table-column prop="winRate" label="中奖概率%" >
+                  <template slot-scope="scope">
+                    <el-input v-model="scope.row.WinRate" size="mini" />
+                  </template>
+                </el-table-column>
 
                 <el-table-column label="操作">
                   <template slot-scope="scope">
                     <el-button type="danger" size="mini" @click="delRowBetMoneyLevel(4, scope.$index)">删除</el-button>
                   </template>
                 </el-table-column>
-                
+            -
               </el-table>
             </fieldset>
 
@@ -706,17 +724,19 @@ export default {
               this.item.GrandCfg[k].MultiMin /= 100
               this.item.GrandCfg[k].MultiMax /= 100
               //this.item.GrandCfg[k].RewardMul /= 100
-              this.item.MiniCfg[k].WinRate /= 1
+              this.item.GrandCfg[k].WinRate /= 1
             }
             for (const k in this.item.MajorCfg){
               this.item.MajorCfg[k].MultiMin /= 100
               this.item.MajorCfg[k].MultiMax /= 100
               //this.item.MajorCfg[k].RewardMul /= 100
-              this.item.MiniCfg[k].WinRate /= 1
+              this.item.MajorCfg[k].WinRate /= 1
             }
             for (const k in this.item.MiniCfg){
               this.item.MiniCfg[k].TableMoney /= 1000
               this.item.MiniCfg[k].RewardMul /= 1
+              this.item.MiniCfg[k].MultiMin /= 100
+              this.item.MiniCfg[k].MultiMax /= 100
               this.item.MiniCfg[k].WinRate /= 1
             }
 
@@ -763,6 +783,8 @@ export default {
       for (const k in ret.MiniCfg){
         ret.MiniCfg[k].TableMoney *= 1000
         ret.MiniCfg[k].RewardMul *= 1
+        ret.MiniCfg[k].MultiMin *= 100
+        ret.MiniCfg[k].MultiMax *= 100
         ret.MiniCfg[k].WinRate *= 1
       }
 
