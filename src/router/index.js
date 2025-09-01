@@ -3589,6 +3589,12 @@ export const asyncRoutes = [
             name: 'tongitsCheatLog',
             meta: { title: '作弊日志（新) ◐' }
           },
+          {
+            path: 'tongitsWhiteUsers',
+            component: () => import('@/views/playerManage/tongitsCheat/tongitsWhiteUsers.vue'),
+            name: 'tongitsWhiteUsers',
+            meta: { title: '高信列表 ◐' }
+          },
           // {
           //   path: 'tongitsCheatLogDev',
           //   component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatNewDev.vue'),
