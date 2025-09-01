@@ -152,6 +152,7 @@ export default {
               CheatScore: items[i].cheatScore,
               MaxCheatScore: items[i].maxCheatScore,
               CheatOperator: items[i].cheatOperator,
+              CheatOperTime: items[i].cheatOperTime,
               TrustType: items[i].trustType,
               TrustScore: items[i].trustScore,
               MaxTrustScore: items[i].maxTrustScore
@@ -201,6 +202,7 @@ export default {
         if (response.RetCode === 0) {
           row.CheatType = 3
           row.CheatOperator = this.BlackOperator
+          row.CheatOperTime = Date.now() / 1000
           this.clientDB.UpdateData2('Uid', row)
         }
       })
@@ -320,6 +322,13 @@ export default {
     },
     showMaxCheatScore(row) {
       return '<span style="color: darkred">' + row.MaxTrustScore + '</span>'
+    },
+    showOperInfo(row) {
+      if (row.CheatOperator !== undefined && row.CheatOperator !== '' && row.CheatType === 3) {
+        return $libDate.FormateSecondStr(row.CheatOperTime, 2) + ' 由 ' + row.CheatOperator + ' 认证'
+      } else {
+        return ''
+      }
     }
   }
 }
@@ -455,11 +464,14 @@ export default {
           align="center"
         />
         <el-table-column
-          prop="CheatOperator"
           label="操作历史"
           width="200"
           align="center"
-        />
+        >
+          <template slot-scope="scope">
+            <span>{{ showOperInfo(scope.row) }}</span>
+          </template>
+        </el-table-column>
         <el-table-column
           label="操作"
           width="300"
