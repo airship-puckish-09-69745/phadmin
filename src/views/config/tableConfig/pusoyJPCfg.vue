@@ -733,8 +733,8 @@ export default {
               this.item.MajorCfg[k].WinRate /= 1
             }
             for (const k in this.item.MiniCfg){
-              this.item.MiniCfg[k].TableMoney /= 1000
-              this.item.MiniCfg[k].RewardMul /= 1
+              //this.item.MiniCfg[k].TableMoney /= 1000
+              //this.item.MiniCfg[k].RewardMul /= 1
               this.item.MiniCfg[k].MultiMin /= 100
               this.item.MiniCfg[k].MultiMax /= 100
               this.item.MiniCfg[k].WinRate /= 1
@@ -781,8 +781,8 @@ export default {
         ret.MajorCfg[k].WinRate *= 1
       }
       for (const k in ret.MiniCfg){
-        ret.MiniCfg[k].TableMoney *= 1000
-        ret.MiniCfg[k].RewardMul *= 1
+        //ret.MiniCfg[k].TableMoney *= 1000
+        //ret.MiniCfg[k].RewardMul *= 1
         ret.MiniCfg[k].MultiMin *= 100
         ret.MiniCfg[k].MultiMax *= 100
         ret.MiniCfg[k].WinRate *= 1
