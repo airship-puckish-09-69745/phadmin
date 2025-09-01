@@ -567,7 +567,7 @@ export default {
   data() {
     return {
       APPID_OPTIONS,
-      gameId: 128,
+      gameId: 134,
       playMode: 4, // 经典玩法
 
       edit: {},
@@ -1146,11 +1146,9 @@ export default {
     },
     getGameConfig() {
       request({
-        url: '/tongitsjackpottable/all',
+        url: '/pusoyjptable/all',
         method: 'get',
-        data: {
-          PlayMode: this.playMode
-        }
+        data: {}
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []

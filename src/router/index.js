@@ -997,9 +997,9 @@ export const asyncRoutes = [
                 name: 'pusoyJackpotCfg',
                 meta: { title: 'Jackpot配置' }
               },    {
-                path: 'pusoyjackPotEGameControl',
-                component: () => import('@/views/config/tableConfig/pusoyjackPotEGameControl'),
-                name: 'pusoyjackPotEGameControl',
+                path: 'pusoyJPEGameControl',
+                component: () => import('@/views/config/tableConfig/pusoyJPEGameControl'),
+                name: 'pusoyJPEGameControl',
                 meta: { title: 'EGame控制配置 ◐' }
               }
             ]
