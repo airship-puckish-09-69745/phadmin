@@ -3192,13 +3192,22 @@
         </el-table-column>
         <el-table-column prop="groups" label="groups" width="650px" >
           <template slot-scope="scope">
-            <el-card v-for="g in scope.row.groups" class="box-card">
+            <el-card v-for="g in scope.row.groups" class="box-card"><!--组合牌-->
               <div v-for="(item) in g" class="block">
                 <el-image style="width: 37px; height: 50px" :src="getBuracoCardUrl(item)" />
               </div>
             </el-card>
           </template>
         </el-table-column>
+        <!--
+        <el-table-column prop="handcards" label="handcards" width="650px" >
+          <template slot-scope="scope">
+            <div v-for="c in scope.row.handcards" class="block">
+              <el-image style="width: 37px; height: 50px" :src="getBuracoCardUrl(c)" />
+            </div>
+          </template>
+        </el-table-column>
+      -->
       </el-table>
     </el-dialog>
 
@@ -4345,22 +4354,65 @@ export default {
     },
     showBuracoGame(obj){
       this.BuracoDetail = obj
+      let userHandCards = new Map()
       let teamGroupMap = new Map()
       teamGroupMap.set(1, new Map())
       teamGroupMap.set(2, new Map())
       for (let i = 0; i < this.BuracoDetail.actionLogs.length; i ++) {
-        this.BuracoDetail.actionLogs[i].idx = i+1
+        this.BuracoDetail.actionLogs[i].idx = i+1 //步骤序号
+        //扩组牌
         if (this.BuracoDetail.actionLogs[i].actionType == 3
             || this.BuracoDetail.actionLogs[i].actionType == 6
             || this.BuracoDetail.actionLogs[i].actionType == 12) {
               let teamId = this.BuracoDetail.actionLogs[i].teamId
             let tg = teamGroupMap.get(teamId)
-            tg.set(this.BuracoDetail.actionLogs[i].groupIndex, this.BuracoDetail.actionLogs[i].opCards)
-            this.BuracoDetail.actionLogs[i].groups = new Array()
+            tg.set(this.BuracoDetail.actionLogs[i].groupIndex, this.BuracoDetail.actionLogs[i].opCards) //增加扩、组牌的牌
+            this.BuracoDetail.actionLogs[i].groups = new Array() //队伍的扩组牌情况
             for (let [key, val] of tg){
               this.BuracoDetail.actionLogs[i].groups.push(val)
             }
         }
+        /*
+        //玩家手牌
+        let uId = this.BuracoDetail.actionLogs[i].uid
+        if (this.BuracoDetail.actionLogs[i].actionType == 0) {  //发牌
+          userHandCards.set(uId, this.BuracoDetail.actionLogs[i].opCards)
+          this.BuracoDetail.actionLogs[i].handcards = this.BuracoDetail.actionLogs[i].opCards
+        } else if (this.BuracoDetail.actionLogs[i].actionType == 2    //摸牌堆
+          || this.BuracoDetail.actionLogs[i].actionType == 4){   //弃牌堆给玩家
+            //添加牌
+          let handCards = userHandCards.get(uId)
+          //handCards = handCards.concat(this.BuracoDetail.actionLogs[i].opCards)
+          //userHandCards.set(uId,handCards)
+          for (let c of this.BuracoDetail.actionLogs[i].opCards){
+            handCards.push(c)
+          }
+          this.BuracoDetail.actionLogs[i].handcards = new Array()
+          for (let c of handCards){
+            this.BuracoDetail.actionLogs[i].handcards.push(c)
+          }
+        } else if (this.BuracoDetail.actionLogs[i].actionType == 3 //摸组弃牌
+          || this.BuracoDetail.actionLogs[i].actionType == 5  //弃牌
+          || this.BuracoDetail.actionLogs[i].actionType == 6 //扩组牌
+          || this.BuracoDetail.actionLogs[i].actionType == 12 //新组合
+        ){
+          //删除牌
+          let handCards = userHandCards.get(uId)
+          for (let opcard of this.BuracoDetail.actionLogs[i].opCards) {
+            for (let n = 0; n < handCards.length; n ++){
+              if (opcard == handCards[n]) {
+                handCards = handCards.splice(n, 1)
+                break
+              }
+            }
+          }
+          userHandCards.set(uId, handCards)
+          for (let c of handCards){
+            this.BuracoDetail.actionLogs[i].handcards.push(c)
+          }
+          console.log(this.BuracoDetail.actionLogs[i].idx, "=====>", this.BuracoDetail.actionLogs[i].handcards)
+        }
+      */
       }
       console.log('this.BuracoData => ', this.BuracoDetail)
       this.BuracoDetailVisible = true
@@ -5602,6 +5654,7 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
     getBuracoCardUrl(card) {
       let c = (card & 0x0ff)
       let color = (c >> 4) & 0xf
+      color = (color - 1)%5 + 1  //兼容0x111 和 0x61定义
       if (color == 5) {//王
         c = 2
       }

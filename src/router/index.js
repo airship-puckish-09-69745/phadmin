@@ -208,6 +208,12 @@ export const asyncRoutes = [
         meta: { title: 'slots - 大奖实时统计 ◐' }
       },
       {
+        path: 'slotsSmallPrize',
+        component: () => import('@/views/online/slotsSmallPrize'),
+        name: '小奖返奖监控',
+        meta: { title: 'slots - 小奖返奖监控 ◐' }
+      },
+      {
         path: 'egame-control',
         component: () => import('@/views/online/egameControl/index.vue'),
         name: 'EGame控制监控',
@@ -990,6 +996,11 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/pusoyJPCfg'),
                 name: 'pusoyJackpotCfg',
                 meta: { title: 'Jackpot配置' }
+              },    {
+                path: 'pusoyJPEGameControl',
+                component: () => import('@/views/config/tableConfig/pusoyJPEGameControl'),
+                name: 'pusoyJPEGameControl',
+                meta: { title: 'EGame控制配置 ◐' }
               }
             ]
           },
@@ -2274,7 +2285,7 @@ export const asyncRoutes = [
         meta: { title: '赛事监控', noCache: true },
         children: [
           {
-            path: 'matchRuleTongits',
+            path: 'matchTongitsMonitor',
             component: () => import('@/views/matchManage/matchMonitor/matchTongitsMonitor'),
             name: 'matchRuleTongits',
             meta: { title: 'Tongits赛事监控', noCache: true }

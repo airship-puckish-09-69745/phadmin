@@ -6,7 +6,7 @@
           <el-tab-pane label="进入免费方案配置" name="script">
             <el-button type="primary" @click="showDialog">今日已玩牌局数配置</el-button>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <el-tooltip content="1.需要首行标题;2.再次导入请保存后刷新" effect="dark" placement="top">
+            <el-tooltip content="1.需要首行标题;2.导入覆盖" effect="dark" placement="top">
               <input type="file" accept=".xlsx, .xls" size="small" @change="handleFileUpload">
             </el-tooltip>
             <span style="margin-left:10px;color:#909399"></span>
