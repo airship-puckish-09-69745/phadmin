@@ -1127,7 +1127,7 @@ export default {
       },
       showDevTool: false,
       showTip: false,
-      propsTypeList: [1, 2] // 门票 头像框
+      propsTypeList: [PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET,PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME] // 门票 头像框
     }
   },
   computed: {
@@ -2190,7 +2190,7 @@ export default {
             var timestamp = Date.parse(new Date()) / 1000
             for (let i = 0; i < objs.list.length; i++) {
               if (this.propsTypeList.includes(objs.list[i].item_type)) {
-                if (objs.list[i].status === 1 && ((objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET && objs.list[i].expire_time > timestamp) ||
+                if (objs.list[i].status === 1 && ((objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET && objs.list[i].expire_time > timestamp) ||
                   objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME)) {
                   let str = objs.list[i].item_name
                   if (objs.list[i].show_name.length > 0) {
@@ -2205,7 +2205,7 @@ export default {
                     'propsCost': objs.list[i].item_cost,
                     'propsShowName': str
                   })
-                  if (objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET) { // Tongits 门票
+                  if (objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET) { //Pusoy门票
                     this.matchTicketsCfgs.push({
                       'label': str,
                       'value': objs.list[i].id

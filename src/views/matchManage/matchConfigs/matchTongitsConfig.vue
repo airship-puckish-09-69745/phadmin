@@ -1125,7 +1125,7 @@ export default {
       },
       showDevTool: false,
       showTip: false,
-      propsTypeList: [1, 2] // 门票 头像框
+      propsTypeList: [PROP_TYPE_OPTIONS.PROP_TYPE_TICKET, PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME] // 门票 头像框
     }
   },
   computed: {

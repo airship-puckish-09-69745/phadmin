@@ -77,10 +77,10 @@
           label="扩展信息"
         >
           <template slot-scope="scope">
-            <span v-if="scope.row.item_type ===PROP_TYPE_OPTIONS.PROP_TYPE_TICKET || scope.row.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET">
+            <span v-if="isTicketProp(scope.row.item_type)">
               创建时间:{{ formatTime(scope.row.create_time)}} / 结束时间:{{ formatTime(scope.row.expire_time)}}
             </span>
-            <span v-if="scope.row.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME ||scope.row.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR">
+            <span v-if="isAvatarFrameProp( scope.row.item_type)">
               品质:{{getQualityName(scope.row.quality)}} 可用时间:{{getShowText(scope.row.id)}} 描述:这是一个头像框
             </span>
             <span v-if="scope.row.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN">
@@ -161,11 +161,11 @@
              <el-input v-model="editForm.itemExtra.showName" style="width: 200px;" placeholder="请填写后台名称" />
            </el-form-item>
 
-           <el-form-item v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET  || editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET" label="道具价值：" :required="true">
+           <el-form-item v-if="isTicketProp(editForm.data.itemType)" label="道具价值：" :required="true">
              <el-input v-model.number="editForm.data.itemCost" style="width: 200px;" placeholder="请填写道具价值" />
            </el-form-item>
 
-           <el-form-item v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME || editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR" label="品质：" :required="true">
+           <el-form-item v-if="isAvatarFrameProp(editForm.data.itemType)" label="品质：" :required="true">
              <el-select v-model="editForm.data.quality" style="width: 200px;" :disabled="!editForm.isAdd" placeholder="请选择道具品质分类">
                <el-option
                  v-for="item in qualityTypeCfgs"
@@ -235,7 +235,7 @@
                  </el-form-item>
                </el-col>
            </el-row>
-           <el-form-item v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET || editForm.data.itemType ===PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET"  label="道具过期时间：" :required="true">
+           <el-form-item v-if="isTicketProp(editForm.data.itemType)"  label="道具过期时间：" :required="true">
              <el-date-picker
                v-model="editForm.itemEndDate"
                style="width: 200px;"
@@ -506,7 +506,7 @@ export default {
       var ret = 0
       for(var i = 0; i < this.tableData.length; i++) {
         const item_type = this.tableData[i].item_type
-        if ((item_type ===PROP_TYPE_OPTIONS.PROP_TYPE_TICKET || item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET) && this.tableData[i].id === item_id ) {
+        if (this.isTicketProp(item_type) && this.tableData[i].id === item_id ) {
           ret  = this.tableData[i].item_cost
           break
         }
@@ -803,7 +803,7 @@ export default {
       const timeList = JSON.stringify(this.editForm.data.timeType)
       if (this.editForm.data.ID === 0) {
         this.editForm.data.status = 1
-        if(this.editForm.data.itemType === 1 && this.editForm.itemExtra.specialAttr ===0){
+        if(this.editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET && this.editForm.itemExtra.specialAttr ===0){
           this.$confirm('当前配置的是Tongits门票,没有配道具子属性,确定是否需要配道具子属性', '提醒')
             .then(()=>{
               this.dataUpdateRequest(true,expireTime, timeList)
@@ -894,10 +894,10 @@ export default {
         this.editForm.itemExtra.specialAttr = 0
       }
 
-      if (this.editForm.data.itemType === 2 || this.editForm.data.itemType === 4) {
+      if (this.isAvatarFrameProp(this.editForm.data.itemType)) {
         this.editForm.data.itemCost = 0
         this.slotFreeSpinPropReset()
-      } else if  (this.editForm.data.itemType === 1 || this.editForm.data.itemType === 3){
+      } else if  (this.isTicketProp(this.editForm.data.itemType)) {
         this.slotFreeSpinPropReset()
         if (typeof this.editForm.data.itemCost === 'undefined' || this.editForm.data.itemCost === null || this.editForm.data.itemCost === '') {
           this.errmsg('请填写道具价值')
@@ -920,7 +920,6 @@ export default {
       }
 
       if(this.editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN){
-        console.log("1111222 ",this.editForm.itemExtra)
         if(this.editForm.itemExtra.specialAttr <= 0){
           this.errmsg('请确认游戏类型')
           return false
@@ -934,12 +933,12 @@ export default {
           return false
         }
       }
-      if (this.editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR || this.editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME) {
+      if (this.isAvatarFrameProp(this.editForm.data.itemType)) {
         if (this.editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME  && this.editForm.data.quality === 0) {
           this.errmsg('请选择品质')
           return false
         }
-      } else if (this.editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET || this.editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET) {
+      } else if (this.isTicketProp(this.editForm.data.itemType)) {
         if (this.editForm.data.ID === 0) {
           let expireTime = 0
           expireTime = (Math.floor(this.editForm.itemEndDate / 1000))
@@ -952,7 +951,15 @@ export default {
         }
       }
       return true
-    }
+    },
+    //是否是门票类型道具
+    isTicketProp(itemType) {
+      return itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET || itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET || itemType === PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET
+    },
+    //是否是头像框道具
+    isAvatarFrameProp(itemType) {
+      return itemType === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME || itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR
+    },
   }
 }
 </script>
