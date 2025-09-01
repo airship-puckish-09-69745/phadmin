@@ -314,6 +314,12 @@ export default {
         trustType = 1
       }
       this.trustType = trustType
+    },
+    showMaxTrustScore(row) {
+      return '<span style="color: darkgreen">' + row.MaxTrustScore + '</span>'
+    },
+    showMaxCheatScore(row) {
+      return '<span style="color: darkred">' + row.MaxTrustScore + '</span>'
     }
   }
 }
@@ -425,17 +431,23 @@ export default {
           align="center"
         />
         <el-table-column
-          prop="MaxTrustScore"
           label="历史最高信誉分"
           width="200"
           align="center"
-        />
+        >
+          <template slot-scope="scopeInfo">
+            <p v-html="showMaxTrustScore(scopeInfo.row)" />
+          </template>
+        </el-table-column>
         <el-table-column
-          prop="MaxCheatScore"
           label="历史最高疑似度"
           width="200"
           align="center"
-        />
+        >
+          <template slot-scope="scopeInfo">
+            <p v-html="showMaxCheatScore(scopeInfo.row)" />
+          </template>
+        </el-table-column>
         <el-table-column
           prop="GGR"
           label="近7日GGR"
