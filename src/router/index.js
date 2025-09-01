@@ -2280,7 +2280,7 @@ export const asyncRoutes = [
         meta: { title: '赛事监控', noCache: true },
         children: [
           {
-            path: 'matchRuleTongits',
+            path: 'matchTongitsMonitor',
             component: () => import('@/views/matchManage/matchMonitor/matchTongitsMonitor'),
             name: 'matchRuleTongits',
             meta: { title: 'Tongits赛事监控', noCache: true }
