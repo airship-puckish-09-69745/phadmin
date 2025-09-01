@@ -866,7 +866,7 @@ export default {
         if (!this.item.MiniCfg) {
           this.item['MiniCfg'] = []
         }
-        this.item.MiniCfg.push({ TableMoney: 5, RewardMul: 5, WinRate: 50})
+        this.item.MiniCfg.push({ MultiMin: 1, MultiMax:1.5, WinRate: 50})//.push({ TableMoney: 5, RewardMul: 5, WinRate: 50})
       }
 
       if (level === 11) {//grand
