@@ -3192,10 +3192,13 @@
         </el-table-column>
         <el-table-column prop="groups" label="groups" width="650px" >
           <template slot-scope="scope">
-            <el-card v-for="g in scope.row.groups" class="box-card">
+            <el-card v-for="g in scope.row.groups" class="box-card"><!--组合牌-->
               <div v-for="(item) in g" class="block">
                 <el-image style="width: 37px; height: 50px" :src="getBuracoCardUrl(item)" />
               </div>
+            </el-card>
+            <el-card v-for="c in scope.row.handcards" class="box-card"><!--手牌-->
+                <el-image style="width: 37px; height: 50px" :src="getBuracoCardUrl(c)" />
             </el-card>
           </template>
         </el-table-column>
@@ -4345,21 +4348,53 @@ export default {
     },
     showBuracoGame(obj){
       this.BuracoDetail = obj
+      let userHandCards = new Map()
       let teamGroupMap = new Map()
       teamGroupMap.set(1, new Map())
       teamGroupMap.set(2, new Map())
       for (let i = 0; i < this.BuracoDetail.actionLogs.length; i ++) {
-        this.BuracoDetail.actionLogs[i].idx = i+1
+        this.BuracoDetail.actionLogs[i].idx = i+1 //步骤序号
+        //扩组牌
         if (this.BuracoDetail.actionLogs[i].actionType == 3
             || this.BuracoDetail.actionLogs[i].actionType == 6
             || this.BuracoDetail.actionLogs[i].actionType == 12) {
               let teamId = this.BuracoDetail.actionLogs[i].teamId
             let tg = teamGroupMap.get(teamId)
-            tg.set(this.BuracoDetail.actionLogs[i].groupIndex, this.BuracoDetail.actionLogs[i].opCards)
-            this.BuracoDetail.actionLogs[i].groups = new Array()
+            tg.set(this.BuracoDetail.actionLogs[i].groupIndex, this.BuracoDetail.actionLogs[i].opCards) //增加扩、组牌的牌
+            this.BuracoDetail.actionLogs[i].groups = new Array() //队伍的扩组牌情况
             for (let [key, val] of tg){
               this.BuracoDetail.actionLogs[i].groups.push(val)
             }
+        }
+        //玩家手牌
+        let uId = this.BuracoDetail.actionLogs[i].uid
+        if (this.BuracoDetail.actionLogs[i].actionType == 0) {  //发牌
+          userHandCards.set(uId, this.BuracoDetail.actionLogs[i].opCards)
+          this.BuracoDetail.actionLogs[i].handcards = this.BuracoDetail.actionLogs[i].opCards
+        } else if (this.BuracoDetail.actionLogs[i].actionType == 2    //摸牌堆
+          || this.BuracoDetail.actionLogs[i].actionType == 4){   //弃牌堆给玩家
+            //添加牌
+          let handCards = userHandCards.get(uId)
+          handCards = handCards.concat(this.BuracoDetail.actionLogs[i].opCards)
+          userHandCards.set(uId,handCards)
+          this.BuracoDetail.actionLogs[i].handcards = handCards
+        } else if (this.BuracoDetail.actionLogs[i].actionType == 3 //摸组弃牌
+          || this.BuracoDetail.actionLogs[i].actionType == 5  //弃牌
+          || this.BuracoDetail.actionLogs[i].actionType == 6 //扩组牌
+          || this.BuracoDetail.actionLogs[i].actionType == 12 //新组合
+        ){
+          //删除牌
+          let handCards = userHandCards.get(uId)
+          for (let opcard of this.BuracoDetail.actionLogs[i].opCards) {
+            for (let n = 0; n < handCards.length; n ++){
+              if (opcard == handCards[n]) {
+                handCards = handCards.splice(n, 1)
+                break
+              }
+            }
+          }
+          userHandCards.set(uId, handCards)
+          this.BuracoDetail.actionLogs[i].handcards = handCards
         }
       }
       console.log('this.BuracoData => ', this.BuracoDetail)
