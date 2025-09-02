@@ -12,7 +12,7 @@ export default {
       currentPage: 1,
       pageNum: 20,
       clientDB: new ClientTableData([], 1, {}),
-      Uid : 0,
+      Uid: 0,
       Gid: 22,
       gidOption: [
         { label: 'TONGITS POT', value: 22 },
@@ -334,6 +334,9 @@ export default {
       } else {
         return ''
       }
+    },
+    showGgr(row) {
+      return (row.GGR / 1000).toFixed(2)
     }
   }
 }
@@ -466,11 +469,14 @@ export default {
           </template>
         </el-table-column>
         <el-table-column
-          prop="GGR"
           label="近7日GGR"
           width="200"
           align="center"
-        />
+        >
+          <template slot-scope="scope">
+            <span>{{ showGgr(scope.row) }}</span>
+          </template>
+        </el-table-column>
         <el-table-column
           label="操作历史"
           width="200"
