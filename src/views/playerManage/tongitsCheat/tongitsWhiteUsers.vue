@@ -321,7 +321,7 @@ export default {
       return '<span style="color: darkgreen">' + row.MaxTrustScore + '</span>'
     },
     showMaxCheatScore(row) {
-      return '<span style="color: darkred">' + row.MaxTrustScore + '</span>'
+      return '<span style="color: darkred">' + row.MaxCheatScore + '</span>'
     },
     showOperInfo(row) {
       if (row.CheatOperator !== undefined && row.CheatOperator !== '' && row.CheatType === 3) {
