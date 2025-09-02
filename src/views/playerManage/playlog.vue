@@ -4372,45 +4372,37 @@ export default {
               this.BuracoDetail.actionLogs[i].groups.push(val)
             }
         }
+
         /*
         //玩家手牌
         let uId = this.BuracoDetail.actionLogs[i].uid
-        if (this.BuracoDetail.actionLogs[i].actionType == 0) {  //发牌
+        if (this.BuracoDetail.actionLogs[i].actionType == 0 || this.BuracoDetail.actionLogs[i].actionType == 4) {  //发牌/弃牌堆给玩家
           userHandCards.set(uId, this.BuracoDetail.actionLogs[i].opCards)
-          this.BuracoDetail.actionLogs[i].handcards = this.BuracoDetail.actionLogs[i].opCards
-        } else if (this.BuracoDetail.actionLogs[i].actionType == 2    //摸牌堆
-          || this.BuracoDetail.actionLogs[i].actionType == 4){   //弃牌堆给玩家
-            //添加牌
+        } else if (this.BuracoDetail.actionLogs[i].actionType == 2){    //摸牌堆
           let handCards = userHandCards.get(uId)
-          //handCards = handCards.concat(this.BuracoDetail.actionLogs[i].opCards)
-          //userHandCards.set(uId,handCards)
           for (let c of this.BuracoDetail.actionLogs[i].opCards){
             handCards.push(c)
-          }
-          this.BuracoDetail.actionLogs[i].handcards = new Array()
-          for (let c of handCards){
-            this.BuracoDetail.actionLogs[i].handcards.push(c)
           }
         } else if (this.BuracoDetail.actionLogs[i].actionType == 3 //摸组弃牌
           || this.BuracoDetail.actionLogs[i].actionType == 5  //弃牌
           || this.BuracoDetail.actionLogs[i].actionType == 6 //扩组牌
           || this.BuracoDetail.actionLogs[i].actionType == 12 //新组合
         ){
-          //删除牌
           let handCards = userHandCards.get(uId)
           for (let opcard of this.BuracoDetail.actionLogs[i].opCards) {
             for (let n = 0; n < handCards.length; n ++){
               if (opcard == handCards[n]) {
-                handCards = handCards.splice(n, 1)
+                handCards.splice(n, 1)
                 break
               }
             }
           }
-          userHandCards.set(uId, handCards)
-          for (let c of handCards){
-            this.BuracoDetail.actionLogs[i].handcards.push(c)
+          if (this.BuracoDetail.actionLogs[i].actionType == 5) {//弃牌后刷新显示
+            this.BuracoDetail.actionLogs[i].handcards = new Array()
+            for (let c of handCards){
+              this.BuracoDetail.actionLogs[i].handcards.push(c)
+            }
           }
-          console.log(this.BuracoDetail.actionLogs[i].idx, "=====>", this.BuracoDetail.actionLogs[i].handcards)
         }
       */
       }
