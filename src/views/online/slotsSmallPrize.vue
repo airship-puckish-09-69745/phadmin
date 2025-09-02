@@ -59,8 +59,11 @@
           {{ scope.row.TotalBet / 1000 }}
         </template>
       </el-table-column>
-      <!--     todo 要请求另一个接口-->
-      <!--      <el-table-column prop="uid" label="奖池总金额" align="center" min-width="100"/>-->
+      <el-table-column prop="PoolOrigin" label="奖池总金额" align="center" min-width="100">
+        <template slot-scope="scope">
+          {{ scope.row.PoolOrigin / 1000 }}
+        </template>
+      </el-table-column>
       <el-table-column prop="PoolChange" label="返奖金额" align="center" min-width="100">
         <template slot-scope="scope">
           {{ scope.row.PoolChange / 1000 }}
@@ -207,8 +210,8 @@ export default {
       this.reqDataInfo.uid = this.searchViewInfo.searchUserId
       this.reqDataInfo.gid = this.gameNameMap[this.searchViewInfo.games]
       this.reqDataInfo.site = this.searchViewInfo.site === '全部' ? 'all' : this.searchViewInfo.site
-      this.reqDataInfo.limit = 20 // todo需要后面修改
-      this.reqDataInfo.orderDesc = false // todo需要后面修改
+      // this.reqDataInfo.limit = 20 // todo需要后面修改
+      // this.reqDataInfo.orderDesc = false // todo需要后面修改
     },
     UnixStart(dateStr) {
       // 直接生成 Date 对象
