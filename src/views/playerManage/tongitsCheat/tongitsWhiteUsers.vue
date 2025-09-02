@@ -12,8 +12,10 @@ export default {
       currentPage: 1,
       pageNum: 20,
       clientDB: new ClientTableData([], 1, {}),
-      Gid: 22,
+      Uid : 0,
+      Gid: 0,
       gidOption: [
+        { label: '全部', value: 0 },
         { label: 'TONGITS POT', value: 22 },
         { label: 'TONGITS JOKER', value: 28 },
         { label: 'TONGITS QUICK', value: 29 }
@@ -34,9 +36,8 @@ export default {
         { label: '非认证高信', value: 1 },
         { label: '认证高信', value: 2 }
       ],
-      tableMoneyType: 0,
+      tableMoneyType: [10000, 20000, 50000, 100000, 200000, 500000, 1000000],
       tableMoneyOption: [
-        { label: '全部>=10P场次', value: 0 },
         { label: '10P场次', value: 10000 },
         { label: '20P场次', value: 20000 },
         { label: '50P场次', value: 50000 },
@@ -81,8 +82,12 @@ export default {
     },
     getNewData() {
       const $this = this
+      if ($this.Uid === undefined || $this.Uid === null || $this.Uid === '') {
+        $this.Uid = 0
+      }
       $this.page++
       $this.logs = this.clientDB.TotalData
+      this.blindList = JSON.stringify(this.tableMoneyType)
       request({
         url: '/dataProxy/info',
         method: 'get',
@@ -94,6 +99,7 @@ export default {
           gid: this.Gid,
           page: this.page,
           limit: 100,
+          uid: this.Uid,
           blindList: this.blindList,
           trustType: this.trustType
         }
@@ -124,6 +130,10 @@ export default {
       const $this = this
       $this.page = 1
       $this.logs = []
+      if ($this.Uid === undefined || $this.Uid === null || $this.Uid === '') {
+        $this.Uid = 0
+      }
+      this.blindList = JSON.stringify(this.tableMoneyType)
       $this.clientDB = new ClientTableData([], 1, {})
       request({
         url: '/dataProxy/info',
@@ -136,6 +146,7 @@ export default {
           gid: this.Gid,
           page: this.page,
           limit: 100,
+          uid: this.Uid,
           blindList: this.blindList,
           trustType: this.trustType
         }
@@ -302,13 +313,8 @@ export default {
       }
     },
     changeTableMoneyType() {
-      let blindList = []
-      if (this.tableMoneyType === 0) {
-        blindList = [10000, 20000, 50000, 100000, 200000, 500000, 1000000]
-      } else {
-        blindList.push(this.tableMoneyType)
-      }
-      this.blindList = JSON.stringify(blindList)
+      // this.tableMoneyType
+      // this.blindList = JSON.stringify(blindList)
     },
     changeUserType() {
       let trustType = 0
@@ -346,6 +352,9 @@ export default {
             placeholder="选择日期"
             size="mini"
           />
+        </el-form-item>
+        <el-form-item label="UID：">
+          <el-input v-model.number="Uid" />
         </el-form-item>
         <el-form-item label="排序方式：">
           <el-select v-model.number="sortType" placeholder="请选择" @change="changeSortType">
@@ -388,7 +397,7 @@ export default {
           </el-select>
         </el-form-item>
         <el-form-item label="场次：">
-          <el-select v-model.number="tableMoneyType" placeholder="请选择" @change="changeTableMoneyType">
+          <el-select v-model="tableMoneyType" multiple placeholder="请选择">
             <el-option
               v-for="itemTableMoney in tableMoneyOption"
               :key="itemTableMoney.value"
