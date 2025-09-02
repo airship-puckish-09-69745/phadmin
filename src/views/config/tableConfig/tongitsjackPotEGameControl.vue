@@ -397,7 +397,7 @@
             </el-row>
             <el-row>
               <el-descriptions :column="3" :colon="false">
-                <el-descriptions-item label="前7天平均有效下注:">
+                <el-descriptions-item label="前7天有效下注:">
                   {{ sevenDayMoneyBet }}
                 </el-descriptions-item>
               </el-descriptions>
@@ -418,7 +418,7 @@
 
               </el-descriptions>
               <el-alert
-              title="⚠️ 系统游戏库存= （前7日每日平均有效下注*2.5%+最新累积待调整金额）/（前7日每日平局有效下注+今日有效下注）"
+              title="⚠️ 系统游戏库存= （前7日有效下注*2.5%+最新累积待调整金额）/（前7日有效下注+今日有效下注）"
               type="error"
               :closable="false"
               style="margin-bottom: 16px;"

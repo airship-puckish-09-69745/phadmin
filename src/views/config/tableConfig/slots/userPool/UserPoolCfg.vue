@@ -4,6 +4,7 @@
     <el-row :gutter="20" style="margin-top: 30px;margin-left: 30px">
       <el-form ref="frm2" :model="cfg" label-width="230px">
         <el-row :gutter="20">
+
           <el-col :span="12">
             <el-form-item label="玩牌局数最小值" :rules="[{ required: true, message: '玩牌局数最小值不能为空'}]">
               <el-input
@@ -13,9 +14,14 @@
                 :rules="[{ required: true, message: '玩牌局数最小值不能为空'}]"/>
             </el-form-item>
             <el-form-item
-              label="发放金额与下注金额的最小倍数"
-              :rules="[{ required: true, message: '发放金额与下注金额的最小倍数不能为空'}]">
+              label="发放金额是总下注的最小倍数"
+              :rules="[{ required: true, message: '“发放金额是总下注的最小倍数”不能为空'}]">
               <el-input v-model.number="cfg.betOddsMin" placeholder="请输入内容" class="elInput"/>
+            </el-form-item>
+            <el-form-item
+              label="最小发放(总下注)倍数"
+              :rules="[{ required: true, message: '最小发放倍数不能小于0'}]">
+              <el-input v-model.number="cfg.addOddsMin" placeholder="请输入内容" class="elInput"/>
             </el-form-item>
             <el-form-item
               label="命中概率(百分比)"
@@ -32,17 +38,23 @@
                 class="elInput"/>
             </el-form-item>
             <el-form-item
-              label="发放金额与下注金额的最大倍数"
-              :rules="[{ required: true, message: '发放金额与下注金额的最大倍数不能为空'}]">
+              label="发放金额是总下注的最大倍数"
+              :rules="[{ required: true, message: '“发放金额是总下注的最大倍数”不能为空'}]">
               <el-input
                 v-model.number="cfg.betOddsMax"
                 placeholder="请输入内容"
                 class="elInput"/>
             </el-form-item>
+            <el-form-item
+              label="最大发放(总下注)倍数"
+              :rules="[{ required: true, message: '最大发放倍数不能小于最小发放倍数'}]">
+              <el-input v-model.number="cfg.addOddsMax" placeholder="请输入内容" class="elInput"/>
+            </el-form-item>
             <el-form-item label="抽水比例(万分之一)" :rules="[{ required: true, message: '抽水比例不能为空'}]">
               <el-input v-model.number="cfg.taxed" placeholder="请输入内容" class="elInput"/>
             </el-form-item>
           </el-col>
+
           <el-col>
             <el-form-item label="启用的老虎机列表" :rules="[{ required: true, message: '启用的老虎机列表不能为空'}]">
               <el-checkbox v-model="checkAll" :indeterminate="isIndeterminate" @change="handleCheckAllChange">
@@ -96,7 +108,9 @@ export default {
         betOddsMax: 0,
         playTimesMin: 0,
         playTimesMax: 0,
-        hitRates: 0
+        hitRates: 0,
+        addOddsMin: 0,
+        addOddsMax: 0
       },
       gameIdMap: {},
       reqData: {},
@@ -170,6 +184,8 @@ export default {
             this.cfg.playTimesMax = jsonData.playTimesMax
             this.cfg.taxed = jsonData.taxed
             this.cfg.hitRates = jsonData.hitRates
+            this.cfg.addOddsMin = jsonData.addOddsMin
+            this.cfg.addOddsMax = jsonData.addOddsMax
             this.cfg.taxedSlots = this.formatTaxedSlots(jsonData.taxedSlots)
             this.reqData = response.Data
             if (this.cfg.taxedSlots.length === this.allGames.length) {
@@ -221,6 +237,8 @@ export default {
         this.cfg.betOddsMax === '' ||
         this.cfg.playTimesMin === '' ||
         this.cfg.playTimesMax === '' ||
+        this.cfg.addOddsMin === '' ||
+        this.cfg.addOddsMax === '' ||
         this.cfg.hitRates === undefined ||
         this.cfg.hitRates === '') {
         Message.error('请填写完整')
@@ -250,6 +268,22 @@ export default {
         Message.error('命中概率不能小于0')
         return false
       }
+      if (this.cfg.addOddsMin < 0) {
+        Message.error('最小发放倍数不能小于0')
+        return false
+      }
+      if (this.cfg.addOddsMin > this.cfg.betOddsMax) {
+        Message.error('最小发放倍数无效，不能大于 ' + this.cfg.betOddsMax)
+        return false
+      }
+      if (this.cfg.addOddsMax < this.cfg.addOddsMin) {
+        Message.error('最大发放倍数不能小于最小发放倍数')
+        return false
+      }
+      if (this.cfg.addOddsMax > this.cfg.betOddsMax) {
+        Message.error('最大发放倍数无效，不能大于 ' + this.cfg.betOddsMax)
+        return false
+      }
       return true
     },
     saveEdit() {
@@ -263,7 +297,9 @@ export default {
         betOddsMax: this.cfg.betOddsMax,
         hitRates: this.cfg.hitRates,
         playTimesMin: this.cfg.playTimesMin,
-        playTimesMax: this.cfg.playTimesMax
+        playTimesMax: this.cfg.playTimesMax,
+        addOddsMin: this.cfg.addOddsMin,
+        addOddsMax: this.cfg.addOddsMax
       }
       this.reqData.Data = JSON.stringify(newCfg)
       request({
