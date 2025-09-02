@@ -120,16 +120,17 @@ export default {
         dateRange: [],
         searchUserId: 0,
         games: '所有',
-        site: '全部',
+        site: '全部'
       },
       pageInfo: new Pagination(0, 100),
       reqDataInfo: { // 界面搜索栏的相关数据转化后形成的后端数据
         startTime: 0,
         endTime: 0,
         uid: 0,
-        gids: -1,
+        gid: -1,
         site: '',
-        limit: 0,
+        limit: 100,
+        offset: 0,
         orderDesc: 0,
         Path: '/slotsStat/user/pool/log',
         Env: store.getters.env
@@ -137,10 +138,8 @@ export default {
     }
   },
   created() {
-    this.fetchData()
-  },
-  mounted() {
     this.setDefaultDateRange()
+    this.fetchData()
   },
   methods: {
     setDefaultDateRange() {
@@ -189,8 +188,6 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           this.tableData = response.Data.data ? response.Data.data : []
-          console.log(' response.Data.data======>', response.Data.data)
-          console.log(' this.tableData ======>', this.tableData)
           this.pageInfo.SetTotalCount(response.Data.total)
         }
       })
@@ -208,9 +205,8 @@ export default {
       this.reqDataInfo.startTime = this.UnixStart(this.searchViewInfo.dateRange[0])
       this.reqDataInfo.endTime = this.UnixEnd(this.searchViewInfo.dateRange[1])
       this.reqDataInfo.uid = this.searchViewInfo.searchUserId
-      this.reqDataInfo.gids = this.gameNameMap[this.searchViewInfo.games]
-      // this.reqDataInfo.site = this.searchViewInfo.site === '全部' ? '' : this.searchViewInfo.site // todo this.searchViewInfo.site 为'全部'的时候,是空???
-      this.reqDataInfo.site = 'Dev'
+      this.reqDataInfo.gid = this.gameNameMap[this.searchViewInfo.games]
+      this.reqDataInfo.site = this.searchViewInfo.site === '全部' ? 'all' : this.searchViewInfo.site
       this.reqDataInfo.limit = 20 // todo需要后面修改
       this.reqDataInfo.orderDesc = false // todo需要后面修改
     },
@@ -240,7 +236,7 @@ export default {
       const M = date.getMinutes()
       const S = date.getSeconds()
       return `${y}-${m}-${d} ` + (h > 9 ? h : '0' + h) + ':' + (M > 9 ? M : '0' + M) + ':' + (S > 9 ? S : '0' + S)
-    },
+    }
   }
 }
 </script>
