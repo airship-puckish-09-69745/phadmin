@@ -14,12 +14,12 @@
                 :rules="[{ required: true, message: '玩牌局数最小值不能为空'}]"/>
             </el-form-item>
             <el-form-item
-              label="发放金额与下注金额的最小倍数"
-              :rules="[{ required: true, message: '发放金额与下注金额的最小倍数不能为空'}]">
+              label="发放金额是总下注的最小倍数"
+              :rules="[{ required: true, message: '“发放金额是总下注的最小倍数”不能为空'}]">
               <el-input v-model.number="cfg.betOddsMin" placeholder="请输入内容" class="elInput"/>
             </el-form-item>
             <el-form-item
-              label="最小发放倍数"
+              label="最小发放(总下注)倍数"
               :rules="[{ required: true, message: '最小发放倍数不能小于0'}]">
               <el-input v-model.number="cfg.addOddsMin" placeholder="请输入内容" class="elInput"/>
             </el-form-item>
@@ -38,15 +38,15 @@
                 class="elInput"/>
             </el-form-item>
             <el-form-item
-              label="发放金额与下注金额的最大倍数"
-              :rules="[{ required: true, message: '发放金额与下注金额的最大倍数不能为空'}]">
+              label="发放金额是总下注的最大倍数"
+              :rules="[{ required: true, message: '“发放金额是总下注的最大倍数”不能为空'}]">
               <el-input
                 v-model.number="cfg.betOddsMax"
                 placeholder="请输入内容"
                 class="elInput"/>
             </el-form-item>
             <el-form-item
-              label="最大发放倍数"
+              label="最大发放(总下注)倍数"
               :rules="[{ required: true, message: '最大发放倍数不能小于最小发放倍数'}]">
               <el-input v-model.number="cfg.addOddsMax" placeholder="请输入内容" class="elInput"/>
             </el-form-item>
@@ -272,8 +272,16 @@ export default {
         Message.error('最小发放倍数不能小于0')
         return false
       }
+      if (this.cfg.addOddsMin > this.cfg.betOddsMax) {
+        Message.error('最小发放倍数无效，不能大于 ' + this.cfg.betOddsMax)
+        return false
+      }
       if (this.cfg.addOddsMax < this.cfg.addOddsMin) {
         Message.error('最大发放倍数不能小于最小发放倍数')
+        return false
+      }
+      if (this.cfg.addOddsMax > this.cfg.betOddsMax) {
+        Message.error('最大发放倍数无效，不能大于 ' + this.cfg.betOddsMax)
         return false
       }
       return true
