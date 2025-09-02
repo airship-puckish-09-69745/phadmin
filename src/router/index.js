@@ -1467,7 +1467,7 @@ export const asyncRoutes = [
                 path: 'wrathofzeus2_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/wrathofzeus2_slots_cfg'),
                 name: 'wrathofzeus2_slots_cfg',
-                meta: { title: 'WrathOfZeus2' }
+                meta: { title: 'W rathOfZeus2' }
               }
 
             ]
@@ -3184,13 +3184,13 @@ export const asyncRoutes = [
             path: 'wrathofzeus_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'wrathofzeus_slots_log',
-            meta: { title: 'WrathOfZeus', gid: 172 }
+            meta: { title: 'W rathOfZeus', gid: 172 }
           },
           {
             path: 'wrathofzeus2_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'wrathofzeus2_slots_log',
-            meta: { title: 'WrathOfZeus2', gid: 218 }
+            meta: { title: 'W rathOfZeus2', gid: 218 }
           }
         ]
       },
