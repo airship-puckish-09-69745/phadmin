@@ -13,9 +13,8 @@ export default {
       pageNum: 20,
       clientDB: new ClientTableData([], 1, {}),
       Uid : 0,
-      Gid: 0,
+      Gid: 22,
       gidOption: [
-        { label: '全部', value: 0 },
         { label: 'TONGITS POT', value: 22 },
         { label: 'TONGITS JOKER', value: 28 },
         { label: 'TONGITS QUICK', value: 29 }
