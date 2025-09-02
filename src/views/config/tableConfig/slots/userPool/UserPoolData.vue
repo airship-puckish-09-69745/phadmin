@@ -222,7 +222,7 @@ export default {
     async fetchData() {
       await this.getGameList()
       await this.getData(this.pageInfo.GetCurrentPage(), this.pageInfo.GetPageNum())
-      await this.getConfigTable()
+      // await this.getConfigTable()
     },
     getGameList() {
       return request({
@@ -604,23 +604,24 @@ export default {
         }
       })
     },
-    getConfigTable() {
-      // 加载基础数值配置
-      return request({
-        url: '/customizeconfig/one',
-        method: 'get',
-        data: {
-          SubKey: 'slots_user_pool_data'
-        }
-      }).then(response => {
-        if (response.RetCode === 0) {
-          this.extForm = response.Data || {}
-          if (response.Data && response.Data.Data !== '') {
-            this.reqData = response.Data
-          }
-        }
-      })
-    },
+    // getConfigTable() {
+    //   // 加载基础数值配置
+    //   return request({
+    //     url: '/customizeconfig/one',
+    //     method: 'get',
+    //     data: {
+    //       SubKey: 'slots_user_pool_data'
+    //     }
+    //   }).then(response => {
+    //     if (response.RetCode === 0) {
+    //       this.extForm = response.Data || {}
+    //       if (response.Data && response.Data.Data !== '') {
+    //         this.reqData = response.Data
+    //         console.log('this.reqData====>', this.reqData)
+    //       }
+    //     }
+    //   })
+    // },
     excelSerialToUnix(serial, unixMode) {
       const date = XLSX.SSF.parse_date_code(serial)
       if (!date) return 0
