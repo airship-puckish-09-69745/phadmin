@@ -497,8 +497,9 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
     } else {
       if (compareMethod != null) {
         $this.ShowData = $this.ShowData.sort(compareMethod)
+      } else {
+        $this.ShowData = $this.ShowData.sort(this.compare)
       }
-      $this.ShowData = $this.ShowData.sort(this.compare)
     }
   }
   // 返回当前页的内容
