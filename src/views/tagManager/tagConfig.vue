@@ -150,6 +150,16 @@
                 />
               </el-select>
             </el-form-item>
+            <el-form-item v-if="form.tag_id===10003" label="连续天数：">
+              <el-col :span="8">
+                <el-input v-model.number="form.days" placeholder="placeholder"></el-input>
+              </el-col>
+            </el-form-item>
+            <el-form-item v-if="form.tag_id===10004" label="降低系数：">
+              <el-col :span="8">
+                <el-input v-model.number="form.reduce" placeholder="placeholder"></el-input>
+              </el-col>
+            </el-form-item>
             <el-form-item v-if="showGameOptions()" label="选择游戏：">
                 <el-select v-model="form.tag_gid" filterable placeholder="placeholder">
                     <el-option v-if="gameIntensity()" :value="0" label="任意游戏"></el-option>
@@ -440,6 +450,8 @@
           loginDay: [0,0],
           roundAvg: {use:false, val: 0},
           validBet: {use:false, val: 0},
+          days: 7,
+          reduce: 50
         },
         syncInfo: false,
         syncStat: false,
@@ -572,6 +584,12 @@
             str += `,有效下注>=${attr.validBet.val}`
           }
           return str
+        } else if (row.tag_id === 10003) {
+          const attr = JSON.parse(row.tag_attr)
+          return `连续${attr.days}天未进入厅方的游戏用户`
+        } else if (row.tag_id === 10004) {
+          const attr = JSON.parse(row.tag_attr)
+          return `最近一自然周的总有效下注对比前一自然周降低>=${attr.reduce}%`
         }
         return row.tag_attr
       },
@@ -691,6 +709,14 @@
             roundAvg: this.form.roundAvg,
             validBet: this.form.validBet
           })
+        } else if (this.form.tag_id === 10003) {
+          this.form.tag_attr = JSON.stringify({
+            days: this.form.days,
+          })
+        } else if (this.form.tag_id === 10004) {
+          this.form.tag_attr = JSON.stringify({
+            reduce: this.form.reduce
+          })
         }
         this.syncInfo = false
         this.isEdit?this.tagUpdate():this.tagCreate()
@@ -716,7 +742,7 @@
             queryBegin: Math.floor(this.item.dateRange[0].getTime()/1000),
             queryEnd: Math.floor(this.item.dateRange[1].getTime()/1000),
             gid: this.item.gid,
-            tagId: this.item.tagId,
+            tagId: this.item.values[1],
             tagVal: this.item.tagVal,
           }
         }).then(response => {
