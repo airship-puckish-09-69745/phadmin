@@ -656,6 +656,8 @@ export default {
           this.edit.item.gameTasks.push(newGameTask(gameId))
         }
       } else {
+        this.edit.dailyBonus = 0
+        this.edit.totalBonus = 0
         this.getTaskBonusStat()
       }
       this.edit.activeTag = this.gameNames[this.edit.item.gameIds[0]]
