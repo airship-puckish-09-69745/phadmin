@@ -134,7 +134,7 @@ export default {
         site: '',
         limit: 100,
         offset: 0,
-        orderDesc: 0,
+        orderDesc: true,
         Path: '/slotsStat/user/pool/log',
         Env: store.getters.env
       }
