@@ -145,7 +145,7 @@ export default {
         111: 'Domino QiuQiu',
         120: 'Tongits-Swap',
         126: 'Pusoy-Wild',
-        128: 'Tongits-Jackpot'
+        128: 'Tongits-Jackpot',
         134: 'Pusoy-JP'
       },
 
