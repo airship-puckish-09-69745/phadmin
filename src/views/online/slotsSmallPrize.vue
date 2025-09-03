@@ -189,7 +189,7 @@ export default {
       })
     },
     searchLogData() {
-      this.convertView2RequestData()// 转成可请求的数据
+      this.convertViewData2RequestData()// 转成可请求的数据
       this.getUserPoolLog()
     },
     getUserPoolLog() {
@@ -218,7 +218,7 @@ export default {
       this.reqDataInfo.offset = (this.pageInfo.GetCurrentPage() - 1) * this.pageInfo.GetPageNum()
       this.getUserPoolLog()
     },
-    convertView2RequestData() {
+    convertViewData2RequestData() {
       this.reqDataInfo.startTime = this.UnixStart(this.searchViewInfo.dateRange[0])
       this.reqDataInfo.endTime = this.UnixEnd(this.searchViewInfo.dateRange[1])
       this.reqDataInfo.uid = this.searchViewInfo.searchUserId
