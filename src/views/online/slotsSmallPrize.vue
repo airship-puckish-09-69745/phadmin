@@ -109,7 +109,7 @@
 <script setup>
 
 import request from '@/utils/request'
-import { Pagination } from '@/utils/common'
+import {Pagination} from '@/utils/common'
 import store from '@/store'
 
 export default {
@@ -145,7 +145,7 @@ export default {
       }
     }
   },
-  created() {
+  mounted() {
     this.setDefaultDateRange()
     this.fetchData()
   },
@@ -154,7 +154,12 @@ export default {
       const now = new Date()
       const start = new Date(now.getFullYear(), now.getMonth(), now.getDate())
       const end = new Date(now.getFullYear(), now.getMonth(), now.getDate())
-      const fmt = d => d.toISOString().slice(0, 10)
+      const fmt = d => {
+        const y = d.getFullYear()
+        const m = String(d.getMonth() + 1).padStart(2, '0')
+        const day = String(d.getDate()).padStart(2, '0')
+        return `${y}-${m}-${day}`
+      }
       this.searchViewInfo.dateRange = [fmt(start), fmt(end)]
     },
     async fetchData() {
