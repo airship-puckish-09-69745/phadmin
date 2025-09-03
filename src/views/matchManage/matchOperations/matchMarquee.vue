@@ -153,7 +153,7 @@
                 :label="item.label"
                 :value="item.value" />
             </el-select>
-          </el-form-item>>
+          </el-form-item>
 
           <el-form-item label="预览地址">
             <button @click="goToExternalSite">预览</button>
