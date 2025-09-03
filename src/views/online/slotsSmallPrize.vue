@@ -16,7 +16,7 @@
         <el-input v-model="searchViewInfo.searchUserId" clearable placeholder="请输入UID"/>
       </el-form-item>
       <el-form-item label="游戏">
-        <el-select v-model="searchViewInfo.games" placeholder="请选择">
+        <el-select v-model="searchViewInfo.games" filterable placeholder="请选择">
           <el-option
             v-for="(item,index) in allGames"
             :key="index"
@@ -31,7 +31,7 @@
             v-for="(item,index) in allSite"
             :key="index"
             :label="item"
-            :value="index">
+            :value="item">
           </el-option>
         </el-select>
       </el-form-item>
@@ -41,8 +41,13 @@
     </el-form>
 
     <!--    表格-->
-    <el-table :data="tableData" border style="width: 100%; margin-top: 20px;">
-      <el-table-column prop="updateAt" label="日期时间" align="center" min-width="200">
+    <el-table
+      :data="tableData"
+      border
+      style="width: 100%; margin-top: 20px;"
+      :default-sort="{prop: 'updateAt', order: 'ascending'}"
+    >
+      <el-table-column prop="updateAt" label="日期时间" align="center" min-width="200" sortable>
         <template slot-scope="scope">
           {{ formatTime(scope.row.TS) }}
         </template>
@@ -104,8 +109,8 @@
 <script setup>
 
 import request from '@/utils/request'
-import {Pagination} from '@/utils/common';
-import store from "@/store";
+import {Pagination} from '@/utils/common'
+import store from '@/store'
 
 export default {
   name: 'SlotsSmallPrize',
@@ -134,13 +139,13 @@ export default {
         site: '',
         limit: 100,
         offset: 0,
-        orderDesc: 0,
+        orderDesc: true,
         Path: '/slotsStat/user/pool/log',
         Env: store.getters.env
       }
     }
   },
-  created() {
+  mounted() {
     this.setDefaultDateRange()
     this.fetchData()
   },
@@ -149,7 +154,12 @@ export default {
       const now = new Date()
       const start = new Date(now.getFullYear(), now.getMonth(), now.getDate())
       const end = new Date(now.getFullYear(), now.getMonth(), now.getDate())
-      const fmt = d => d.toISOString().slice(0, 10)
+      const fmt = d => {
+        const y = d.getFullYear()
+        const m = String(d.getMonth() + 1).padStart(2, '0')
+        const day = String(d.getDate()).padStart(2, '0')
+        return `${y}-${m}-${day}`
+      }
       this.searchViewInfo.dateRange = [fmt(start), fmt(end)]
     },
     async fetchData() {
@@ -179,7 +189,7 @@ export default {
       })
     },
     searchLogData() {
-      this.convertView2RequestData()// 转成可请求的数据
+      this.convertViewData2RequestData()// 转成可请求的数据
       this.getUserPoolLog()
     },
     getUserPoolLog() {
@@ -198,20 +208,22 @@ export default {
     // 分页处理
     handleSizeChange(val) {
       this.pageInfo.SetPageNum(val)
-      this.getData(this.pageInfo.GetCurrentPage(), this.pageInfo.GetPageNum())
+      this.reqDataInfo.limit = this.pageInfo.GetPageNum()
+      this.reqDataInfo.offset = (this.pageInfo.GetCurrentPage() - 1) * this.pageInfo.GetPageNum()
+      this.getUserPoolLog()
     },
     handleCurrentChange(val) {
       this.pageInfo.SetPageNo(val)
-      this.getData(this.pageInfo.GetCurrentPage(), this.pageInfo.GetPageNum())
+      this.reqDataInfo.limit = this.pageInfo.GetPageNum()
+      this.reqDataInfo.offset = (this.pageInfo.GetCurrentPage() - 1) * this.pageInfo.GetPageNum()
+      this.getUserPoolLog()
     },
-    convertView2RequestData() {
+    convertViewData2RequestData() {
       this.reqDataInfo.startTime = this.UnixStart(this.searchViewInfo.dateRange[0])
       this.reqDataInfo.endTime = this.UnixEnd(this.searchViewInfo.dateRange[1])
       this.reqDataInfo.uid = this.searchViewInfo.searchUserId
       this.reqDataInfo.gid = this.gameNameMap[this.searchViewInfo.games]
       this.reqDataInfo.site = this.searchViewInfo.site === '全部' ? 'all' : this.searchViewInfo.site
-      // this.reqDataInfo.limit = 20 // todo需要后面修改
-      // this.reqDataInfo.orderDesc = false // todo需要后面修改
     },
     UnixStart(dateStr) {
       // 直接生成 Date 对象

@@ -268,8 +268,8 @@ export default {
         Message.error('命中概率不能小于0')
         return false
       }
-      if (this.cfg.addOddsMin < 0) {
-        Message.error('最小发放倍数不能小于0')
+      if (this.cfg.addOddsMin < 10) {
+        Message.error('最小发放倍数不能小于10')
         return false
       }
       if (this.cfg.addOddsMin > this.cfg.betOddsMax) {
