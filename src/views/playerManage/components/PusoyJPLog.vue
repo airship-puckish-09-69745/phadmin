@@ -63,7 +63,10 @@
         <template slot-scope="scope">{{ scope.row.moneyTotal / 1000 }}</template>
       </el-table-column>
       <el-table-column prop="moneyTotal" label="用户类型" width="120">
+        <!--
         <template slot-scope="scope">{{ (scope.row.character > 0 && scope.row.RobotId == 0) ? '机器人' : getRobotType(scope.row.RobotId,scope.row.RobotLevel,scope.row.userType) }}</template>
+        -->
+        <template slot-scope="scope">{{ getRobotType(scope.row.character, scope.row.character, 0) }}</template>
       </el-table-column>
 
       <el-table-column prop="jackpotNum" label="jp奖池" width="120">
