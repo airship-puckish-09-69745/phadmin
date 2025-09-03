@@ -146,6 +146,7 @@ export default {
         120: 'Tongits-Swap',
         126: 'Pusoy-Wild',
         128: 'Tongits-Jackpot'
+        134: 'Pusoy-JP'
       },
 
       selectedGid: -1,
