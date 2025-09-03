@@ -188,7 +188,7 @@
               </template>
             </el-table-column>
 
-          </el-table>>
+          </el-table>
         </fieldset>
 
         <el-form-item>
