@@ -75,9 +75,9 @@
       <el-tabs type="border-card">
         <el-tab-pane label="活动配置">
           <el-row>
-            <el-form label-width="220px">
+            <el-form :model="edit.item" label-width="220px">
               <el-col :span="24">
-                <el-form-item label="活动名称：" prop="item.name">
+                <el-form-item label="活动名称：" prop="name">
                   <el-input v-model="edit.item.name" placeholder="请输入活动名称" />
                 </el-form-item>
               </el-col>
@@ -102,7 +102,17 @@
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="参与活动的游戏" prop="item.gameIds">
+                <el-form-item label="今日已发奖励：">
+                  <el-input v-model.number="edit.dailyBonus" type="number" disabled />
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="总的已发奖励：">
+                  <el-input v-model.number="edit.totalBonus" type="number" disabled />
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="参与活动的游戏" prop="gameIds">
                   <GameTreeSelector :selected-games-id="edit.item.gameIds" :sub-games-id="edit.subGamesId" :expand-all="true" @change="handleGamesChange" />
                 </el-form-item>
               </el-col>
@@ -289,6 +299,8 @@ export default {
         loading: false,
         subGamesId: [22, 28],
         activeTag: '',
+        dailyBonus: 0,
+        totalBonus: 0,
         clientDB: new ClientTableData([], 10, filterMap),
       },
       env: 'test',
@@ -588,6 +600,21 @@ export default {
         winTask.antesMin = antesMin
       })
     },
+    getTaskBonusStat() {
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          ActCfgId: this.edit.item.id,
+          Path: '/activity/tongits/hunter/task/bonus/stat'
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.edit.dailyBonus = response.Data.dailyBonus / 1000
+          this.edit.totalBonus = response.Data.totalBonus / 1000
+        }
+      })
+    },
     clearFilter() {
       this.clientDB.ClearFilterMap()
       this.refreshShow()
@@ -622,12 +649,17 @@ export default {
       this.changeStatus(ob.id, 3, '您确定要将记录状态修改为废弃吗？')
     },
     handleEditDialogOpened() {
+      this.edit.dailyBonus = 0
+      this.edit.totalBonus = 0
+
       if (!this.edit.isEdit) {
         console.log('handleEditDialogOpened', this.edit.item.gameIds)
         for (let i = 0; i < this.edit.item.gameIds.length; i++) {
           const gameId = this.edit.item.gameIds[i]
           this.edit.item.gameTasks.push(newGameTask(gameId))
         }
+      } else {
+        this.getTaskBonusStat()
       }
       this.edit.activeTag = this.gameNames[this.edit.item.gameIds[0]]
       console.log('handleEditDialogOpened', this.edit.item.gameTasks)
