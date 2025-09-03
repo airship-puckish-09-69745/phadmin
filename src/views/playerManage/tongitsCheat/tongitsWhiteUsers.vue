@@ -23,7 +23,8 @@ export default {
       sortTypeOption: [
         { label: '信誉分', value: 1 },
         { label: '历史最高信誉分', value: 2 },
-        { label: '历史最高疑似度', value: 3 }
+        { label: '历史最高疑似度', value: 3 },
+        { label: '7日GGR', value: 4 }
       ],
       regiestType: 1,
       regiestTypeOption: [
@@ -76,6 +77,8 @@ export default {
         sortType = 'MaxTrustScore'
       } else if (this.sortType === 3) {
         sortType = 'MaxCheatScore'
+      }else if (this.sortType === 4) {
+        sortType = 'GGR'
       }
       return sortType
     },
