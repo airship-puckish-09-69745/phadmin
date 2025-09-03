@@ -649,6 +649,9 @@ export default {
       this.changeStatus(ob.id, 3, '您确定要将记录状态修改为废弃吗？')
     },
     handleEditDialogOpened() {
+      this.edit.dailyBonus = 0
+      this.edit.totalBonus = 0
+
       if (!this.edit.isEdit) {
         console.log('handleEditDialogOpened', this.edit.item.gameIds)
         for (let i = 0; i < this.edit.item.gameIds.length; i++) {
@@ -656,8 +659,6 @@ export default {
           this.edit.item.gameTasks.push(newGameTask(gameId))
         }
       } else {
-        this.edit.dailyBonus = 0
-        this.edit.totalBonus = 0
         this.getTaskBonusStat()
       }
       this.edit.activeTag = this.gameNames[this.edit.item.gameIds[0]]
