@@ -84,11 +84,11 @@
           {{ scope.row.PoolAfter / 1000 }}
         </template>
       </el-table-column>
-      <el-table-column prop="StreamAfter" label="小奖池剩余金额" align="center" min-width="100">
-        <template slot-scope="scope">
-          {{ scope.row.StreamAfter / 1000 }}
-        </template>
-      </el-table-column>
+<!--      <el-table-column prop="StreamAfter" label="小奖池剩余金额" align="center" min-width="100">-->
+<!--        <template slot-scope="scope">-->
+<!--          {{ scope.row.StreamAfter / 1000 }}-->
+<!--        </template>-->
+<!--      </el-table-column>-->
     </el-table>
 
     <!--    分页-->
