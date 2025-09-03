@@ -824,6 +824,13 @@
             />
           </el-form-item>
         </fieldset>
+
+        <fieldset>
+          <legend>OB线下赛入座</legend>
+          <el-form-item label="比赛玩家id列表：" :required="true">
+            <el-input v-model="editForm.signExtra.obMatchList" style="width: 400px;" placeholder="多个uid用,分开" />
+          </el-form-item>
+        </fieldset>
         <el-divider />
         <el-form-item>
           <el-button size="medium" type="primary" icon="el-icon-s-order" @click="saveMatch()">保存比赛配置</el-button>
@@ -1072,7 +1079,7 @@ export default {
             type: 0,
             data: ''
           },
-
+          obMatchList: ''
         },
         prizeExtra: {
           awardType: 0,
@@ -1859,13 +1866,17 @@ export default {
         if (this.editForm.signExtra.reubyExtra === undefined) {
           this.rebuyConfigReset()
         }
-        if(this.editForm.signExtra.gtccWhiteList === undefined) {
-          this.editForm.signExtra.gtccWhiteList={}
+        if (this.editForm.signExtra.gtccWhiteList === undefined) {
+          this.editForm.signExtra.gtccWhiteList = {}
           this.editForm.signExtra.gtccWhiteList.type = 0
-          this.editForm.signExtra.gtccWhiteList.data=''
+          this.editForm.signExtra.gtccWhiteList.data = ''
+        }
+        // ob线下赛录入的名单
+        if (this.editForm.signExtra.obMatchList === undefined) {
+          this.editForm.signExtra.obMatchList = ''
         }
         this.editForm.prizeExtra = JSON.parse(editData.prize_extra)
-        if(editData.list_extra  !== null &&  editData.list_extra !=="null"){
+        if (editData.list_extra !== null && editData.list_extra !== "null") {
           this.editForm.listExtra = JSON.parse(editData.list_extra)
         }
         this.showCsCfgs = []
