@@ -58,7 +58,7 @@
               :key="item.value"
               :label="item.label"
               :value="item.value"
-              :disabled="item.disabled || (itemType === 5 && item.value === 0)"
+              :disabled="item.disabled || (itemType === 5 && (item.value === 0 || item.value ===365))"
             />
           </el-select>
         </div>
