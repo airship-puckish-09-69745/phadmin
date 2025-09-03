@@ -180,6 +180,7 @@ export default {
               BlackTime: row.blackTime,
               UpdateTime: row.updateTime,
               LastEndTime: row.lastEndTime || 0,
+              CheatRadio: row.cheatRadio || 0,
               CheatInfos: [],
               TidCheatLogs: []
             }
@@ -584,6 +585,12 @@ export default {
             <div>{{ formatUserBlackTime(scope.row) }}</div>
           </template>
         </el-table-column>
+        <el-table-column
+          prop="CheatRadio"
+          label="异常局占比"
+          width="80"
+          align="center"
+        />
         <el-table-column
           label="拉⿊信息"
           width="300"

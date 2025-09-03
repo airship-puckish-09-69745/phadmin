@@ -12,6 +12,7 @@ export default {
       currentPage: 1,
       pageNum: 20,
       clientDB: new ClientTableData([], 1, {}),
+      Uid: 0,
       Gid: 22,
       gidOption: [
         { label: 'TONGITS POT', value: 22 },
@@ -22,7 +23,8 @@ export default {
       sortTypeOption: [
         { label: '信誉分', value: 1 },
         { label: '历史最高信誉分', value: 2 },
-        { label: '历史最高疑似度', value: 3 }
+        { label: '历史最高疑似度', value: 3 },
+        { label: '7日GGR', value: 4 }
       ],
       regiestType: 1,
       regiestTypeOption: [
@@ -34,9 +36,8 @@ export default {
         { label: '非认证高信', value: 1 },
         { label: '认证高信', value: 2 }
       ],
-      tableMoneyType: 0,
+      tableMoneyType: [10000, 20000, 50000, 100000, 200000, 500000, 1000000],
       tableMoneyOption: [
-        { label: '全部>=10P场次', value: 0 },
         { label: '10P场次', value: 10000 },
         { label: '20P场次', value: 20000 },
         { label: '50P场次', value: 50000 },
@@ -76,13 +77,19 @@ export default {
         sortType = 'MaxTrustScore'
       } else if (this.sortType === 3) {
         sortType = 'MaxCheatScore'
+      }else if (this.sortType === 4) {
+        sortType = 'GGR'
       }
       return sortType
     },
     getNewData() {
       const $this = this
+      if ($this.Uid === undefined || $this.Uid === null || $this.Uid === '') {
+        $this.Uid = 0
+      }
       $this.page++
       $this.logs = this.clientDB.TotalData
+      this.blindList = JSON.stringify(this.tableMoneyType)
       request({
         url: '/dataProxy/info',
         method: 'get',
@@ -94,6 +101,7 @@ export default {
           gid: this.Gid,
           page: this.page,
           limit: 100,
+          uid: this.Uid,
           blindList: this.blindList,
           trustType: this.trustType
         }
@@ -124,6 +132,10 @@ export default {
       const $this = this
       $this.page = 1
       $this.logs = []
+      if ($this.Uid === undefined || $this.Uid === null || $this.Uid === '') {
+        $this.Uid = 0
+      }
+      this.blindList = JSON.stringify(this.tableMoneyType)
       $this.clientDB = new ClientTableData([], 1, {})
       request({
         url: '/dataProxy/info',
@@ -136,6 +148,7 @@ export default {
           gid: this.Gid,
           page: this.page,
           limit: 100,
+          uid: this.Uid,
           blindList: this.blindList,
           trustType: this.trustType
         }
@@ -302,13 +315,8 @@ export default {
       }
     },
     changeTableMoneyType() {
-      let blindList = []
-      if (this.tableMoneyType === 0) {
-        blindList = [10000, 20000, 50000, 100000, 200000, 500000, 1000000]
-      } else {
-        blindList.push(this.tableMoneyType)
-      }
-      this.blindList = JSON.stringify(blindList)
+      // this.tableMoneyType
+      // this.blindList = JSON.stringify(blindList)
     },
     changeUserType() {
       let trustType = 0
@@ -321,7 +329,7 @@ export default {
       return '<span style="color: darkgreen">' + row.MaxTrustScore + '</span>'
     },
     showMaxCheatScore(row) {
-      return '<span style="color: darkred">' + row.MaxTrustScore + '</span>'
+      return '<span style="color: darkred">' + row.MaxCheatScore + '</span>'
     },
     showOperInfo(row) {
       if (row.CheatOperator !== undefined && row.CheatOperator !== '' && row.CheatType === 3) {
@@ -329,6 +337,9 @@ export default {
       } else {
         return ''
       }
+    },
+    showGgr(row) {
+      return (row.GGR / 1000).toFixed(2)
     }
   }
 }
@@ -346,6 +357,9 @@ export default {
             placeholder="选择日期"
             size="mini"
           />
+        </el-form-item>
+        <el-form-item label="UID：">
+          <el-input v-model.number="Uid" />
         </el-form-item>
         <el-form-item label="排序方式：">
           <el-select v-model.number="sortType" placeholder="请选择" @change="changeSortType">
@@ -388,7 +402,7 @@ export default {
           </el-select>
         </el-form-item>
         <el-form-item label="场次：">
-          <el-select v-model.number="tableMoneyType" placeholder="请选择" @change="changeTableMoneyType">
+          <el-select v-model="tableMoneyType" multiple placeholder="请选择">
             <el-option
               v-for="itemTableMoney in tableMoneyOption"
               :key="itemTableMoney.value"
@@ -458,11 +472,14 @@ export default {
           </template>
         </el-table-column>
         <el-table-column
-          prop="GGR"
           label="近7日GGR"
           width="200"
           align="center"
-        />
+        >
+          <template slot-scope="scope">
+            <span>{{ showGgr(scope.row) }}</span>
+          </template>
+        </el-table-column>
         <el-table-column
           label="操作历史"
           width="200"

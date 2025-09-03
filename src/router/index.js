@@ -1467,7 +1467,7 @@ export const asyncRoutes = [
                 path: 'wrathofzeus2_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/wrathofzeus2_slots_cfg'),
                 name: 'wrathofzeus2_slots_cfg',
-                meta: { title: 'WrathOfZeus2' }
+                meta: { title: 'W rathOfZeus2' }
               }
 
             ]
@@ -2379,7 +2379,13 @@ export const asyncRoutes = [
             component: () => import('@/views/matchManage/matchOperations/matchBroadcast/index.vue'),
             name: 'matchBroadcast',
             meta: { title: '赛事播报', noCache: true }
-          }
+          },
+          {
+            path: 'matchMarquee',
+            component: () => import('@/views/matchManage/matchOperations/matchMarquee.vue'),
+            name: 'matchMarquee',
+            meta: { title: '赛事跑马灯', noCache: true }
+          },
         ]
       },
       {
@@ -2711,6 +2717,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_BuracoOneOnOne',
             meta: { title: 'B uracoOneOnOne ◐', gid: 133 }
+          },
+          {
+            path: 'playlog_JP',
+            component: () => import('@/views/playerManage/pusoyPlaylog'),
+            name: 'playlog_JP',
+            meta: { title: 'PusoyJP ◐', gid: 134 }
           }
         ]
       },
@@ -3184,13 +3196,13 @@ export const asyncRoutes = [
             path: 'wrathofzeus_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'wrathofzeus_slots_log',
-            meta: { title: 'WrathOfZeus', gid: 172 }
+            meta: { title: 'W rathOfZeus', gid: 172 }
           },
           {
             path: 'wrathofzeus2_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'wrathofzeus2_slots_log',
-            meta: { title: 'WrathOfZeus2', gid: 218 }
+            meta: { title: 'W rathOfZeus2', gid: 218 }
           }
         ]
       },

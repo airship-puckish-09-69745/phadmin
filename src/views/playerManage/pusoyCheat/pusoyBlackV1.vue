@@ -180,6 +180,7 @@ export default {
               BlackTime: row.blackTime,
               UpdateTime: row.updateTime,
               LastEndTime: row.lastEndTime || 0,
+              CheatRadio: row.cheatRadio || 0,
               CheatInfos: [],
               TidCheatLogs: []
             }
@@ -574,6 +575,12 @@ export default {
             <span :style="{color: getValueColor(scope.row.MaxCheatScore)}">{{ scope.row.MaxCheatScore }}</span>
           </template>
         </el-table-column>
+        <el-table-column
+          prop="CheatRadio"
+          label="异常局占比"
+          width="80"
+          align="center"
+        />
         <el-table-column
           prop="BlackTime"
           label="拉⿊时间"
