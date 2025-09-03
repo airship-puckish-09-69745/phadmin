@@ -2379,7 +2379,13 @@ export const asyncRoutes = [
             component: () => import('@/views/matchManage/matchOperations/matchBroadcast/index.vue'),
             name: 'matchBroadcast',
             meta: { title: '赛事播报', noCache: true }
-          }
+          },
+          {
+            path: 'matchMarquee',
+            component: () => import('@/views/matchManage/matchOperations/matchMarquee.vue'),
+            name: 'matchMarquee',
+            meta: { title: '赛事跑马灯', noCache: true }
+          },
         ]
       },
       {
