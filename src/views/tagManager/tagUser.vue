@@ -218,7 +218,7 @@
       },
       gameName(gid) {
         if (gid === 0) {
-          return '任意游戏'
+          return ''
         }
         for (const v of this.gameOptions) {
           if (v.value === gid) {

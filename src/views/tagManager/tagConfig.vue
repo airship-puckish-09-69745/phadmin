@@ -560,7 +560,7 @@
       },
       gameName(gid) {
         if (gid === 0) {
-          return '任意游戏'
+          return ''
         }
         for (const v of this.gameOptions) {
           if (v.value === gid) {
@@ -674,6 +674,11 @@
         this.syncInfo = true
         this.form.id = 0
         this.form.tag_id = 0
+        if ([10001,10003,10004,40001,40002].includes(this.form.tag_id)) {
+          this.form.tag_gid = 0
+        } else {
+          this.form.tag_gid = 22
+        }
         this.form.tag_type = this.tagOptions[0].value
         this.selectChange(this.tagOptions[0].value)
       },
@@ -781,6 +786,9 @@
       tagCreate() {
         this.form.status = 0
         const editData = this.form
+        if ([10001,10003,10004,40001,40002].includes(editData.tag_id)) {
+          editData.tag_gid = 0
+        }
         console.log("editData", editData)
         request({
           url: '/tagconfig/tag/create',
@@ -833,6 +841,9 @@
       },
       tagUpdate() {
         const editData = this.form
+        if ([10001,10003,10004,40001,40002].includes(editData.tag_id)) {
+          editData.tag_gid = 0
+        }
         request({
           url: '/tagconfig/tag/update',
           method: 'POST',
