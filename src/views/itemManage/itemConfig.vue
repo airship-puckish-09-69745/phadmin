@@ -686,7 +686,7 @@ export default {
           console.log(edit.Head.id)
         }
       }
-      if (change.size + del.size + add.size == 0) {
+      if (change.size + del.size + add.size === 0) {
         console.log('no change return')
         return "没有修改!"
       }

@@ -241,17 +241,23 @@ export default {
       if (filteredItems === null) {
         return
       }
+
+      // 先按 item_name 排序
+      const sortedItems = [...filteredItems].sort((a, b) => {
+        return a.item_name.localeCompare(b.item_name)
+      })
       this.itemOptions = []
-      for (let i = 0; i < filteredItems.length; i++) {
-        let str = filteredItems[i].item_name
-        if (filteredItems[i].show_name) {
-          str += `(${filteredItems[i].show_name})`
+      for (let i = 0; i < sortedItems.length; i++) {
+        let str = sortedItems[i].item_name
+        if (sortedItems[i].show_name) {
+          str += `(${sortedItems[i].show_name})`
         }
         this.itemOptions.push({
-          value: filteredItems[i].id,
+          value: sortedItems[i].id,
           label: str
         })
       }
+
     },
     /**
      * 校验表单各项输入
