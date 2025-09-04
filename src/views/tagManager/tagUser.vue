@@ -199,6 +199,9 @@
       isBet(tagType,tagId) {
         return (tagType === 3) || (tagId === 20003)
       },
+      isVal(tagId) {
+        return [20001,20002].includes(tagId)
+      },
       tagFieldName(row) {
         const tagType = this.getTagType(row.tagId)
         console.log("tagType", tagType)
@@ -211,10 +214,13 @@
               return v.label
             }
           }
+          return 0
         } else if (this.isBet(tagType,row.tagId)) {
           return row.tagVal/1000
+        } else if (this.isVal(row.tagId)) {
+          return row.val
         }
-        return row.tagVal
+        return row.val
       },
       gameName(gid) {
         if (gid === 0) {
@@ -272,10 +278,15 @@
         }).then(response => {
           if (response.RetCode === 0) {
             this.tableData = response.Data || []
-            if (this.tableData === "") {
-
+            if (this.tableData.length > 0) {
+              for (let i=0; i < this.tableData.length; i++) {
+                if (this.tableData[i].tagVal === 0) {
+                  this.tableData.splice(i,1)
+                  i--
+                }
+              }
             }
-            console.log(JSON.stringify(response.Data),typeof this.tableData)
+            console.log(JSON.stringify(this.tableData))
           }
         })
       }

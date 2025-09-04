@@ -451,7 +451,8 @@
           roundAvg: {use:false, val: 0},
           validBet: {use:false, val: 0},
           days: 7,
-          reduce: 50
+          reduce: 50,
+          totalBet: 0,
         },
         syncInfo: false,
         syncStat: false,
@@ -589,7 +590,7 @@
           return `连续${attr.days}天未进入厅方的游戏用户`
         } else if (row.tag_id === 10004) {
           const attr = JSON.parse(row.tag_attr)
-          return `最近一自然周的总有效下注对比前一自然周降低>=${attr.reduce}%`
+          return `最近一自然周的总有效下注对比前一自然周降低>=${attr.reduce}%且历史有效下注>=${attr.totalBet}`
         }
         return row.tag_attr
       },
@@ -720,7 +721,8 @@
           })
         } else if (this.form.tag_id === 10004) {
           this.form.tag_attr = JSON.stringify({
-            reduce: this.form.reduce
+            reduce: this.form.reduce,
+            totalBet: this.form.totalBet
           })
         }
         this.syncInfo = false

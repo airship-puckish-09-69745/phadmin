@@ -383,7 +383,7 @@ export default {
       eTime = Math.floor(this.editForm.onceTime[1] / 1000)
       var saveTime = new Date().getTime()
       if (this.editForm.isAdd === false) {
-        for (var i = 0; i < this.posterList.tableData.length; i++) {
+        for (var i = 0; i < this.tableData.length; i++) {
           if (this.tableData[i].id === this.editForm.data.id) {
             this.tableData[i].title = this.editForm.data.title
             this.tableData[i].app_id = this.editForm.data.app_id
@@ -495,6 +495,18 @@ export default {
     goToExternalSite() {
       window.open('http://192.168.8.2:4000/', '_blank');
     },
+    handleContentLength(str) {
+      const matches = str.match(/<[^>]+>/g);
+      if (!matches) {
+        return 0
+      }
+      let totalLength = 0;
+      matches.forEach(match => {
+        totalLength += match.length; // 减去<和>的长度
+      });
+      return totalLength;
+    },
+
    configCheck() {
      if (this.editForm.onceTime === '') {
        this.errmsg("请选择过期时间")
@@ -518,8 +530,10 @@ export default {
           this.errmsg("请填写跑马灯内容")
           return false
         }
-        if(this.editForm.data.contentItem[i].content.length > 100){
-          this.errmsg("跑马灯内容不能超过100字")
+
+        let nCount = this.editForm.data.contentItem[i].content.length-this.handleContentLength(this.editForm.data.contentItem[i].content)
+        if (nCount > 200) {
+          this.errmsg("跑马灯内容不能超200字")
           return false
         }
       }
