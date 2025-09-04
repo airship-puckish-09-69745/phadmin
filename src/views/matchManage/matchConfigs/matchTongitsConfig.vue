@@ -825,11 +825,11 @@
           </el-form-item>
         </fieldset>
 
-        <fieldset>
+        <fieldset v-if="envProjectName == 'ph_audit'">
           <legend>OB线下赛入座 </legend>
           <el-form-item label="比赛玩家id列表：" :required="true">
             <div>
-              <el-input v-model="editForm.signExtra.obMatchList" style="width: 400px;" placeholder="多个uid用,分开" />
+              <el-input v-model="editForm.uidObList" style="width: 400px;" placeholder="多个uid用,分开" />
             </div>
           </el-form-item>
         </fieldset>
@@ -995,6 +995,7 @@ export default {
         visable: false,
         title: '',
         isAdd: false,
+        uidObList: '',
         data: {
           id: 0,
           name: '',
@@ -1876,8 +1877,11 @@ export default {
         }
         // ob线下赛录入的名单
         if (this.editForm.signExtra.obMatchList === undefined) {
+          console.log("1111111111111111111111111111")
           this.editForm.signExtra.obMatchList = ''
+          console.log("11111111111112222111111111111111")
         }
+        this.editForm.uidObList = this.editForm.signExtra.obMatchList
 
         this.editForm.prizeExtra = JSON.parse(editData.prize_extra)
         if (editData.list_extra !== null && editData.list_extra !== "null") {
@@ -1963,7 +1967,7 @@ export default {
           break
         }
       }
-
+      this.editForm.signExtra.obMatchList = this.editForm.uidObList
       const rankReward = JSON.stringify(this.editForm.rankRewards)
       const whileDetail = JSON.stringify(this.editForm.whileList)
       let repeatDetail = ''
@@ -2042,6 +2046,7 @@ export default {
           this.editForm.visable = false
           this.singleCopy.isCopy = false
           this.singleCopy.id = 0
+          this.editForm.uidObList = ''
           return
         } else {
           let errMsg = '新增比赛配置失败！'
