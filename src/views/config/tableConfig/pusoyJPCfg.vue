@@ -70,7 +70,7 @@
                       <el-input v-model.number="item.MajorTableMoney" size="mini" />
                     </el-form-item>
                   </el-col>
-                  
+                  <!--
                   <el-col :span="8">
                     <el-form-item label="Major中奖池最小">
                       <el-input v-model.number="item.MajorWinMin" size="mini" ><template slot="append">%</template></el-input>
@@ -79,6 +79,12 @@
                   
                   <el-col :span="8">
                     <el-form-item label="Major中奖池最大">
+                      <el-input v-model.number="item.MajorWinMax" size="mini" ><template slot="append">%</template></el-input>
+                    </el-form-item>
+                  </el-col>
+                  -->
+                  <el-col :span="8">
+                    <el-form-item label="Major中奖发放比例">
                       <el-input v-model.number="item.MajorWinMax" size="mini" ><template slot="append">%</template></el-input>
                     </el-form-item>
                   </el-col>
@@ -94,6 +100,7 @@
                     </el-form-item>
                   </el-col>
 
+                  <!--
                   <el-col :span="8">
                     <el-form-item label="Grand中奖池最小">
                       <el-input v-model.number="item.GrandWinMin" size="mini" ><template slot="append">%</template></el-input>
@@ -102,6 +109,12 @@
                   
                   <el-col :span="8">
                     <el-form-item label="Grand中奖池最大">
+                      <el-input v-model.number="item.GrandWinMax" size="mini" ><template slot="append">%</template></el-input>
+                    </el-form-item>
+                  </el-col>
+                  -->
+                  <el-col :span="8">
+                    <el-form-item label="Grand中奖发放比例">
                       <el-input v-model.number="item.GrandWinMax" size="mini" ><template slot="append">%</template></el-input>
                     </el-form-item>
                   </el-col>

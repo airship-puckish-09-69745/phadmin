@@ -825,8 +825,8 @@
           </el-form-item>
         </fieldset>
 
-        <fieldset>
-          <legend>OB线下赛入座</legend>
+        <fieldset v-if="envProjectName == 'ph_audit'">
+          <legend>OB线下赛入座 </legend>
           <el-form-item label="比赛玩家id列表：" :required="true">
             <el-input v-model="editForm.signExtra.obMatchList" style="width: 400px;" placeholder="多个uid用,分开" />
           </el-form-item>
