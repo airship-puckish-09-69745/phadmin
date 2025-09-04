@@ -220,7 +220,7 @@
         } else if (this.isVal(row.tagId)) {
           return row.val
         }
-        return row.yes
+        return row.val
       },
       gameName(gid) {
         if (gid === 0) {
@@ -278,10 +278,15 @@
         }).then(response => {
           if (response.RetCode === 0) {
             this.tableData = response.Data || []
-            if (this.tableData === "") {
-
+            if (this.tableData.length > 0) {
+              for (let i=0; i < this.tableData.length; i++) {
+                if (this.tableData[i].tagVal === 0) {
+                  this.tableData.splice(i,1)
+                  i--
+                }
+              }
             }
-            console.log(JSON.stringify(response.Data),typeof this.tableData)
+            console.log(JSON.stringify(this.tableData))
           }
         })
       }
