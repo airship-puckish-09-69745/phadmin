@@ -199,6 +199,9 @@
       isBet(tagType,tagId) {
         return (tagType === 3) || (tagId === 20003)
       },
+      isVal(tagId) {
+        return [20001,20002].includes(tagId)
+      },
       tagFieldName(row) {
         const tagType = this.getTagType(row.tagId)
         console.log("tagType", tagType)
@@ -211,10 +214,13 @@
               return v.label
             }
           }
+          return 0
         } else if (this.isBet(tagType,row.tagId)) {
           return row.tagVal/1000
+        } else if (this.isVal(row.tagId)) {
+          return row.val
         }
-        return row.tagVal
+        return row.yes
       },
       gameName(gid) {
         if (gid === 0) {
