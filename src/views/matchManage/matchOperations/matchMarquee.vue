@@ -383,7 +383,7 @@ export default {
       eTime = Math.floor(this.editForm.onceTime[1] / 1000)
       var saveTime = new Date().getTime()
       if (this.editForm.isAdd === false) {
-        for (var i = 0; i < this.posterList.tableData.length; i++) {
+        for (var i = 0; i < this.tableData.length; i++) {
           if (this.tableData[i].id === this.editForm.data.id) {
             this.tableData[i].title = this.editForm.data.title
             this.tableData[i].app_id = this.editForm.data.app_id
