@@ -651,9 +651,12 @@
         this.form.tag_name = row.tag_name
         this.form.tag_gid = row.tag_gid
         this.form.status = row.status
-        this.form.loginDay = attr.loginDay
-        this.form.roundAvg = attr.roundAvg
-        this.form.validBet = attr.validBet
+        attr.loginDay && (this.form.loginDay = attr.loginDay)
+        attr.roundAvg && (this.form.roundAvg = attr.roundAvg)
+        attr.validBet && (this.form.validBet = attr.validBet)
+        attr.days && (this.form.days = attr.days)
+        attr.reduce && (this.form.reduce = attr.reduce)
+        attr.totalBet && (this.form.totalBet = attr.totalBet)
         this.selectChange(this.form.tag_type,true)
       },
       copy(row) {
@@ -666,9 +669,12 @@
         this.form.tag_name = row.tag_name
         this.form.tag_gid = row.tag_gid
         this.form.status = row.status
-        this.form.loginDay = attr.loginDay
-        this.form.roundAvg = attr.roundAvg
-        this.form.validBet = attr.validBet
+        attr.loginDay && (this.form.loginDay = attr.loginDay)
+        attr.roundAvg && (this.form.roundAvg = attr.roundAvg)
+        attr.roundAvg && (this.form.validBet = attr.validBet)
+        attr.days && (this.form.days = attr.days)
+        attr.reduce && (this.form.reduce = attr.reduce)
+        attr.totalBet && (this.form.totalBet = attr.totalBet)
         this.selectChange(this.form.tag_type,true)
       },
       add() {
