@@ -828,7 +828,9 @@
         <fieldset v-if="envProjectName == 'ph_audit'">
           <legend>OB线下赛入座 </legend>
           <el-form-item label="比赛玩家id列表：" :required="true">
-            <el-input v-model="editForm.signExtra.obMatchList" style="width: 400px;" placeholder="多个uid用,分开" />
+            <div>
+              <el-input v-model="editForm.signExtra.obMatchList" style="width: 400px;" placeholder="多个uid用,分开" />
+            </div>
           </el-form-item>
         </fieldset>
         <el-divider />
@@ -1774,7 +1776,8 @@ export default {
           gtccWhiteList:{
             type:0,
             data:''
-          }
+          },
+          obMatchList: ''
         }
 
         this.editForm.prizeExtra = {
@@ -1875,6 +1878,7 @@ export default {
         if (this.editForm.signExtra.obMatchList === undefined) {
           this.editForm.signExtra.obMatchList = ''
         }
+
         this.editForm.prizeExtra = JSON.parse(editData.prize_extra)
         if (editData.list_extra !== null && editData.list_extra !== "null") {
           this.editForm.listExtra = JSON.parse(editData.list_extra)
@@ -2025,8 +2029,7 @@ export default {
           DcReport: this.editForm.data.dcReport,
           SignExtra: JSON.stringify(this.editForm.signExtra),
           PrizeExtra: JSON.stringify(this.editForm.prizeExtra),
-          ListExtra: JSON.stringify(this.editForm.listExtra),
-
+          ListExtra: JSON.stringify(this.editForm.listExtra)
         }
       }).then(response => {
         if (response.RetCode === 0) {
