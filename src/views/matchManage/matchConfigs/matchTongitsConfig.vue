@@ -825,7 +825,7 @@
           </el-form-item>
         </fieldset>
 
-        <fieldset v-if="envProjectName == 'ph_audit'">
+        <fieldset>
           <legend>OB线下赛入座 </legend>
           <el-form-item label="比赛玩家id列表：" :required="true">
             <div>
