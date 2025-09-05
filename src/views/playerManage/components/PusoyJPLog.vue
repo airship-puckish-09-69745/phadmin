@@ -86,6 +86,13 @@
         <template slot-scope="scope">{{ scope.row.eGameInfo.RobotWeight }}</template>
       </el-table-column>
 
+      <el-table-column prop="jackpotContribute" label="本局贡献度" width="120">
+        <template slot-scope="scope">{{ scope.row.JackpotContribute }}</template>
+      </el-table-column>
+      <el-table-column prop="JackpotTotalContribute" label="总贡献度" width="120">
+        <template slot-scope="scope">{{ scope.row.JackpotTotalContribute }}</template>
+      </el-table-column>
+
     </el-table>
     <br>
     <el-table
