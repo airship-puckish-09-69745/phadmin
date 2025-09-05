@@ -1001,6 +1001,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/pusoyJPEGameControl'),
                 name: 'pusoyJPEGameControl',
                 meta: { title: 'EGame控制配置 ◐' }
+              },
+              {
+                path: 'PusoyJPRobotSetting',
+                component: () => import('@/views/config/tableConfig/pusoy/pusoyJPRobotSetting'),
+                name: 'PusoyJPRobotSetting',
+                meta: { title: 'AI配置 ◐' }
               }
             ]
           }

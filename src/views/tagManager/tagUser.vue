@@ -42,7 +42,7 @@
           </el-table-column>
           <el-table-column
             prop="tagGid"
-            label="游戏名称"
+            label="关联游戏"
             width="180"
           >
             <template slot-scope="scope">
@@ -51,7 +51,7 @@
           </el-table-column>
           <el-table-column
             prop="upTime"
-            label="操作时间"
+            label="更新时间"
             width="200"
           > 
             <template slot-scope="scope">
@@ -173,7 +173,6 @@
         this.$refs.uidInput.saveUid(this.form.Uid)
         console.log('set mounted', this.form.Uid)
       }
-      this.getInfo()
     },
     methods: {
       tagIdName(tag_id) {
@@ -205,8 +204,8 @@
       tagFieldName(row) {
         const tagType = this.getTagType(row.tagId)
         console.log("tagType", tagType)
-        if (tagType === 0) {
-          return ""
+        if (tagType === 0 || row.val === 0) {
+          return "-"
         }
         if (tagType === 2 && row.tagId === 20000) {
           for (const v of this.intensityOptions) {
@@ -234,8 +233,8 @@
         return gid
       },
       formatTime(ts) {
-        if (ts === undefined) {
-          $libDate.FormateSecondStr(new Date().getTime(), 2)
+        if (ts === undefined || ts === 0) {
+          return ""
         }
         return $libDate.FormateSecondStr(ts, 2)
       },
@@ -280,7 +279,7 @@
             this.tableData = response.Data || []
             if (this.tableData.length > 0) {
               for (let i=0; i < this.tableData.length; i++) {
-                if (this.tableData[i].tagVal === 0) {
+                if (this.tableData[i].tagVal === 0 && !this.tableData[i].yes) {
                   this.tableData.splice(i,1)
                   i--
                 }

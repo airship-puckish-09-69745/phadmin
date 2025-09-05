@@ -61,7 +61,7 @@
             width="120"
           >
             <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="setItem(scope.row)">查看数据</el-button>
+              <el-button type="primary" size="mini" @click="setItem(scope.row)" :disabled="![10003,10004,20000].includes(scope.row.tag_id)">查看数据</el-button>
             </template>
           </el-table-column>
           <el-table-column
@@ -158,6 +158,11 @@
             <el-form-item v-if="form.tag_id===10004" label="降低系数：">
               <el-col :span="8">
                 <el-input v-model.number="form.reduce" placeholder="placeholder"></el-input>
+              </el-col>
+            </el-form-item>
+            <el-form-item v-if="form.tag_id===10004" label="历史有效下注：">
+              <el-col :span="8">
+                <el-input v-model.number="form.totalBet" placeholder="placeholder"></el-input>
               </el-col>
             </el-form-item>
             <el-form-item v-if="showGameOptions()" label="选择游戏：">
@@ -651,9 +656,12 @@
         this.form.tag_name = row.tag_name
         this.form.tag_gid = row.tag_gid
         this.form.status = row.status
-        this.form.loginDay = attr.loginDay
-        this.form.roundAvg = attr.roundAvg
-        this.form.validBet = attr.validBet
+        attr.loginDay && (this.form.loginDay = attr.loginDay)
+        attr.roundAvg && (this.form.roundAvg = attr.roundAvg)
+        attr.validBet && (this.form.validBet = attr.validBet)
+        attr.days && (this.form.days = attr.days)
+        attr.reduce && (this.form.reduce = attr.reduce)
+        attr.totalBet && (this.form.totalBet = attr.totalBet)
         this.selectChange(this.form.tag_type,true)
       },
       copy(row) {
@@ -666,9 +674,12 @@
         this.form.tag_name = row.tag_name
         this.form.tag_gid = row.tag_gid
         this.form.status = row.status
-        this.form.loginDay = attr.loginDay
-        this.form.roundAvg = attr.roundAvg
-        this.form.validBet = attr.validBet
+        attr.loginDay && (this.form.loginDay = attr.loginDay)
+        attr.roundAvg && (this.form.roundAvg = attr.roundAvg)
+        attr.roundAvg && (this.form.validBet = attr.validBet)
+        attr.days && (this.form.days = attr.days)
+        attr.reduce && (this.form.reduce = attr.reduce)
+        attr.totalBet && (this.form.totalBet = attr.totalBet)
         this.selectChange(this.form.tag_type,true)
       },
       add() {
