@@ -2129,6 +2129,12 @@ export const asyncRoutes = [
         component: () => import('@/views/config/tableConfig/activity/tongitsHunter/index.vue'),
         name: 'tongitsHunter',
         meta: { title: 'TongitsHunter配置', noCache: true }
+      },
+      {
+        path: 'kingOfPot',
+        component: () => import('@/views/config/tableConfig/activity/kingOfPot/index.vue'),
+        name: 'kingOfPot',
+        meta: { title: 'KingOfPot配置', noCache: true }
       }
     ]
   },
