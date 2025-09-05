@@ -61,7 +61,7 @@
             width="120"
           >
             <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="setItem(scope.row)">查看数据</el-button>
+              <el-button type="primary" size="mini" @click="setItem(scope.row)" :disabled="![10003,10004,20000].includes(scope.row.tag_id)">查看数据</el-button>
             </template>
           </el-table-column>
           <el-table-column
