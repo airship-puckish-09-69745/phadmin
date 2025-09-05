@@ -1131,8 +1131,8 @@ export default {
             this.errmsg('打立出局阶段的晋级人数值无效！')
             return false
           }
-          if (strikeOutStage.system_strike_out.promotion_rule.user_number < 4) {
-            this.errmsg('打立出局阶段的晋级人数值必须大于4！')
+          if (strikeOutStage.system_strike_out.promotion_rule.user_number % 4 !== 0) {
+            this.errmsg('打立出局阶段的晋级人数值必须4倍数！')
             return false
           }
           if (strikeOutStage.system_strike_out.promotion_rule.score_brought_in.score_method === 1 && strikeOutStage.system_strike_out.promotion_rule.score_brought_in.score_multiple <= 0) {
