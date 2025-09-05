@@ -160,6 +160,11 @@
                 <el-input v-model.number="form.reduce" placeholder="placeholder"></el-input>
               </el-col>
             </el-form-item>
+            <el-form-item v-if="form.tag_id===10004" label="历史有效下注：">
+              <el-col :span="8">
+                <el-input v-model.number="form.totalBet" placeholder="placeholder"></el-input>
+              </el-col>
+            </el-form-item>
             <el-form-item v-if="showGameOptions()" label="选择游戏：">
                 <el-select v-model="form.tag_gid" filterable placeholder="placeholder">
                     <el-option v-if="gameIntensity()" :value="0" label="任意游戏"></el-option>

@@ -42,7 +42,7 @@
           </el-table-column>
           <el-table-column
             prop="tagGid"
-            label="游戏名称"
+            label="关联游戏"
             width="180"
           >
             <template slot-scope="scope">
