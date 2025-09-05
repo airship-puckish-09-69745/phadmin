@@ -243,7 +243,7 @@ export default {
   components: { Compare, Publish },
   data() {
     return {
-      subKey: 'pusoyJPRobotNewSetting',
+      subKey: 'pusoyJPRobotSetting',
       form: {
         Data: {}
       },
