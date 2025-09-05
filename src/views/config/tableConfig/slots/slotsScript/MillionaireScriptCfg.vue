@@ -403,7 +403,8 @@ export default {
         '204': 'spacetreasure',
         '208': 'candyburst',
         '220': 'goldendragon',
-        '221': 'goldendragonmars'
+        '221': 'goldendragonmars',
+        '224': 'supermahjong'
       }
     }
   },
