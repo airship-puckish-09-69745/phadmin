@@ -2348,7 +2348,7 @@ export default {
         this.errmsg('开赛人数值无效！')
         return false
       } else if (this.editForm.data.opentMatchMember >= 4) {
-        this.errmsg('开赛人数值大于4！')
+        this.errmsg('最低开赛人数值大于4！')
         return false
       } else if (this.editForm.signExtra.matchMaxLimit > 0 && this.editForm.signExtra.matchMaxLimit < this.editForm.data.opentMatchMember) {
         this.errmsg('报名最大限制必须大于最低开赛人数')
