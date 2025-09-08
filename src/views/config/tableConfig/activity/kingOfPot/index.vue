@@ -276,6 +276,8 @@ export default {
     return {
       AttrNames: {
         activityId: '活动ID',
+        appId: 'AppId',
+        site: '站点',
         name: '活动名称',
         actName: '活动名称',
         cfgId: '活动配置ID',
