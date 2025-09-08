@@ -77,7 +77,7 @@
       <!--  todo PoolOdds/基础投注   -->
       <el-table-column prop="PoolOdds" label="返奖倍数" align="center" min-width="100">
         <template slot-scope="scope">
-          {{ scope.row.PoolOdds/(this.baseBetMap[Number(scope.row.Gid)]===0? 100:this.baseBetMap[Number(scope.row.Gid)]) }}
+          {{ scope.row.PoolOdds/(baseBetMap[Number(scope.row.Gid)]===0? 100:baseBetMap[Number(scope.row.Gid)]) }}
         </template>
       </el-table-column>
       <el-table-column prop="PoolAfter" label="返奖后奖池剩余金额" align="center" min-width="100">
