@@ -1001,6 +1001,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/pusoyJPEGameControl'),
                 name: 'pusoyJPEGameControl',
                 meta: { title: 'EGame控制配置 ◐' }
+              },
+              {
+                path: 'PusoyJPRobotSetting',
+                component: () => import('@/views/config/tableConfig/pusoy/pusoyJPRobotSetting'),
+                name: 'PusoyJPRobotSetting',
+                meta: { title: 'AI配置 ◐' }
               }
             ]
           }
@@ -2129,6 +2135,12 @@ export const asyncRoutes = [
         component: () => import('@/views/config/tableConfig/activity/tongitsHunter/index.vue'),
         name: 'tongitsHunter',
         meta: { title: 'TongitsHunter配置', noCache: true }
+      },
+      {
+        path: 'kingOfPot',
+        component: () => import('@/views/config/tableConfig/activity/kingOfPot/index.vue'),
+        name: 'kingOfPot',
+        meta: { title: 'KingOfPot配置', noCache: true }
       }
     ]
   },

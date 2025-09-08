@@ -173,7 +173,6 @@
         this.$refs.uidInput.saveUid(this.form.Uid)
         console.log('set mounted', this.form.Uid)
       }
-      this.getInfo()
     },
     methods: {
       tagIdName(tag_id) {
