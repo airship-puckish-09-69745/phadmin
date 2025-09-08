@@ -825,7 +825,7 @@
           </el-form-item>
         </fieldset>
 
-        <fieldset v-if="envProjectName == 'ph_audit'">
+        <fieldset v-if="envProjectName === 'ph_audit'">
           <legend>OB线下赛入座 </legend>
           <el-form-item label="比赛玩家id列表：" :required="true">
             <div>
@@ -1877,9 +1877,7 @@ export default {
         }
         // ob线下赛录入的名单
         if (this.editForm.signExtra.obMatchList === undefined) {
-          console.log("1111111111111111111111111111")
           this.editForm.signExtra.obMatchList = ''
-          console.log("11111111111112222111111111111111")
         }
         this.editForm.uidObList = this.editForm.signExtra.obMatchList
 
@@ -2456,6 +2454,16 @@ export default {
       if (!this.reubyConfigCheck()) {
         return false
       }
+      if (this.envProjectName === 'ph_audit') {
+        if (this.editForm.uidObList.length > 0) {
+          const arrStr = this.editForm.uidObList.split(',')
+          if (arrStr.length !== this.editForm.data.opentMatchMember) {
+            this.errmsg('开赛人数不等与配置表数量')
+            return false
+          }
+        }
+      }
+
       return true
     },
 
