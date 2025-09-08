@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="page-container" style="padding: 10px">
     <el-row>
-      <publish primary-key="cfgId" key-id="TongitsHunterConfig" :env-empty="false" compare-type="Array" :attr-names="AttrNames" :head-attrs="['cfgId', 'name']" />
+      <publish primary-key="cfgId" key-id="KingOfPotConfig" :env-empty="false" compare-type="Array" :attr-names="AttrNames" :head-attrs="['cfgId', 'name']" />
     </el-row>
     <el-row style="padding-top: 5px">
       <el-col :span="20">
@@ -276,6 +276,8 @@ export default {
     return {
       AttrNames: {
         activityId: '活动ID',
+        appId: 'AppId',
+        site: '站点',
         name: '活动名称',
         actName: '活动名称',
         cfgId: '活动配置ID',
