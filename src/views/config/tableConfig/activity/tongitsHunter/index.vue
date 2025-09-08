@@ -93,22 +93,30 @@
               </el-col>
               <el-col :span="12">
                 <el-form-item label="每日发奖上限：" prop="dailyBonusLimit" :required="true">
-                  <el-input v-model.number="edit.item.dailyBonusLimit" type="number" />
+                  <el-input v-model.number="edit.item.dailyBonusLimit" type="number" >
+                    <template slot="append">₱</template>
+                  </el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="总的发奖上限：" prop="totalBonusLimit" :required="true">
-                  <el-input v-model.number="edit.item.totalBonusLimit" type="number" />
+                  <el-input v-model.number="edit.item.totalBonusLimit" type="number" >
+                    <template slot="append">₱</template>
+                  </el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="今日已发奖励：">
-                  <el-input v-model.number="edit.dailyBonus" type="number" disabled />
+                  <el-input v-model.number="edit.dailyBonus" type="number" disabled>
+                    <template slot="append">₱</template>
+                  </el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="总的已发奖励：">
-                  <el-input v-model.number="edit.totalBonus" type="number" disabled />
+                  <el-input v-model.number="edit.totalBonus" type="number" disabled>
+                    <template slot="append">₱</template>
+                  </el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
@@ -277,6 +285,7 @@ export default {
       AttrNames: {
         activityId: '活动ID',
         name: '活动名称',
+        actName: '活动名称',
         cfgId: '活动配置ID',
         startTime: '开始时间',
         endTime: '结束时间',
@@ -301,7 +310,6 @@ export default {
         activeTag: '',
         dailyBonus: 0,
         totalBonus: 0,
-        clientDB: new ClientTableData([], 10, filterMap),
       },
       env: 'test',
       libDate: $libDate,
@@ -450,7 +458,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
-          this.clientDB = new ClientTableData(objs, 10, filterMap, 'EndTime', -1, "id")
+          this.clientDB = new ClientTableData(objs, 10, filterMap, 'endTime', -1, "id")
           this.handleCurrentChange(1)
         }
       }).catch(err => {
