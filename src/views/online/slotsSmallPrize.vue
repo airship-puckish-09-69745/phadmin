@@ -77,7 +77,7 @@
       <!--  todo PoolOdds/基础投注   -->
       <el-table-column prop="PoolOdds" label="返奖倍数" align="center" min-width="100">
         <template slot-scope="scope">
-          {{ scope.row.PoolOdds}}
+          {{ scope.row.PoolOdds/(this.baseBetMap[Number(scope.row.Gid)]===0? 100:this.baseBetMap[Number(scope.row.Gid)]) }}
         </template>
       </el-table-column>
       <el-table-column prop="PoolAfter" label="返奖后奖池剩余金额" align="center" min-width="100">
@@ -153,9 +153,6 @@ export default {
     this.fetchData()
   },
   methods: {
-    getBaseBet(gid) {
-      return this.baseBetMap[gid] === 0 ? 100 : this.baseBetMap[gid]
-    },
     setDefaultDateRange() {
       const now = new Date()
       const start = new Date(now.getFullYear(), now.getMonth(), now.getDate())
