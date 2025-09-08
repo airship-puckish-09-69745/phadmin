@@ -186,7 +186,8 @@ export default {
         updateAt: 0,
         updateBy: '',
         validStartAt: 0,
-        validEndAt: 0
+        validEndAt: 0,
+        Env: store.getters.env
       },
       edit: {
         editingIndex: null,
@@ -252,7 +253,7 @@ export default {
       const h = date.getHours()
       const M = date.getMinutes()
       const S = date.getSeconds()
-      return `${y}-${m}-${d} ` + (h > 9 ? h : '0'+h) + ':' + (M > 9 ? M : '0'+M) + ':' + (S > 9 ? S : '0'+S)
+      return `${y}-${m}-${d} ` + (h > 9 ? h : '0' + h) + ':' + (M > 9 ? M : '0' + M) + ':' + (S > 9 ? S : '0' + S)
     },
     getFullKey() {
       return 'CustomizeCfg_slots_user_pool_data'
@@ -277,7 +278,8 @@ export default {
           pageSize: pageSize,
           uid: this.searchUserId,
           updateStartAt: this.UnixStart(this.dateRange[0]),
-          updateEndAt: this.UnixEnd(this.dateRange[1])
+          updateEndAt: this.UnixEnd(this.dateRange[1]),
+          Env: store.getters.env
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -324,6 +326,7 @@ export default {
         this.userPoolItem.updateBy = this.name
         this.userPoolItem.validStartAt = this.UnixStart(this.edit.item.effectiveRange[0])
         this.userPoolItem.validEndAt = this.UnixEnd(this.edit.item.effectiveRange[1])
+        this.userPoolItem.Env = store.getters.env
         //
         await this.updateRequest(this.userPoolItem)
         //
@@ -332,24 +335,6 @@ export default {
         await this.createSave(this.edit.item)
       }
       this.editDialogVisible = false
-    },
-    filterData2ConfigTable() {
-      return request({
-        url: '/userpoolconfig/all',
-        method: 'get',
-        data: {
-          page: 0,
-          pageSize: 0
-        }
-      }).then(response => {
-        if (response.RetCode === 0) {
-          let allConfigData = response.Data.rows ? response.Data.rows : []
-          allConfigData = this.filterExpiredData(allConfigData)
-          this.userPoolCfg.items = allConfigData
-          this.reqData.Data = JSON.stringify(this.userPoolCfg)
-          this.saveConfigTable(this.reqData)
-        }
-      })
     },
     UnixStart(dateStr) {
       // 直接生成 Date 对象
@@ -402,6 +387,7 @@ export default {
       this.userPoolItem.updateBy = this.name
       this.userPoolItem.validStartAt = this.UnixStart(this.edit.item.effectiveRange[0])
       this.userPoolItem.validEndAt = this.UnixEnd(this.edit.item.effectiveRange[1])
+      this.userPoolItem.Env = store.getters.env
       if (this.tableData === null) {
         this.tableData = []
       }
@@ -440,7 +426,7 @@ export default {
       return request({
         url: 'userpoolconfig/delete',
         method: 'post',
-        data: {id: Id}
+        data: {id: Id, Env: store.getters.env}
       }).then(response => {
         if (response.RetCode === 0) {
           // this.edit.item.ID = response.Data.ID
@@ -581,7 +567,7 @@ export default {
       return request({
         url: 'userpoolconfig/import/excel',
         method: 'post',
-        data: {ExcelJsonData: jsonData}
+        data: { ExcelJsonData: jsonData, Env: store.getters.env }
       }).then(response => {
         if (response.RetCode === 0) {
           this.edit.item.ID = response.Data.ID
@@ -590,38 +576,6 @@ export default {
         }
       })
     },
-    saveConfigTable(updateData) {
-      request({
-        url: 'customizeconfig/update',
-        method: 'post',
-        data: updateData
-      }).then(response => {
-        if (response.RetCode === 0) {
-          this.edit.item.ID = response.Data.ID
-          this.clientDB.AddData(this.edit.item)
-          this.getData(this.pageInfo.GetCurrentPage(), this.pageInfo.GetPageNum())
-          Message.success('操作成功！')
-        }
-      })
-    },
-    // getConfigTable() {
-    //   // 加载基础数值配置
-    //   return request({
-    //     url: '/customizeconfig/one',
-    //     method: 'get',
-    //     data: {
-    //       SubKey: 'slots_user_pool_data'
-    //     }
-    //   }).then(response => {
-    //     if (response.RetCode === 0) {
-    //       this.extForm = response.Data || {}
-    //       if (response.Data && response.Data.Data !== '') {
-    //         this.reqData = response.Data
-    //         console.log('this.reqData====>', this.reqData)
-    //       }
-    //     }
-    //   })
-    // },
     excelSerialToUnix(serial, unixMode) {
       const date = XLSX.SSF.parse_date_code(serial)
       if (!date) return 0
@@ -632,9 +586,6 @@ export default {
       }
       // 默认返回当天的开始 (00:00:00)
       return Math.floor(new Date(date.y, date.m - 1, date.d).getTime() / 1000)
-    },
-    splitTimeRange(dateStr) {
-      return dateStr.replace(/\s+/g, '').split('至')
     },
     queryUserPoolCache() {
       request({
