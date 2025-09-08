@@ -2470,11 +2470,10 @@ export default {
 
       }
       if (this.editForm.uidObList.length > 0) {
-        const arrStr = this.editForm.uidObList.split(',')
-        console.log("+++++++++++++++arrStr+++++++++++++++:%d", arrStr.length)
+        const uidObList = this.editForm.uidObList.split(',')
+        console.log("+++++++++++++++arrStr+++++++++++++++:%d", uidObList.length)
         console.log("+++++++++++++++opentMatchMember+++++++++++++++:%d", this.editForm.data.opentMatchMember)
-        let strlen = arrStr.length
-        if (strlen !== this.editForm.data.opentMatchMember) {
+        if (uidObList.length !== this.editForm.data.opentMatchMember) {
           this.errmsg('开赛人数不等与配置表数量')
           return false
         }
