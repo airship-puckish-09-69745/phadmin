@@ -1679,6 +1679,7 @@ export default {
       if (id === 0) {
         this.disableOpenType(false, 0)
         this.editForm.title = '新增比赛配置'
+        this.editForm.uidObList = ''
         this.editForm.data = {
           id: 0,
           name: '',
