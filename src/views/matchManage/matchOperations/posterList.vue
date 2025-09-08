@@ -873,7 +873,7 @@ export default {
          this.errmsg("请选择子游戏")
         return false
       }
-      if (this.editForm.data.jump_id == 3 &&  this.editForm.data.match_cfg_id <= 0) {
+      if (this.editForm.data.jump_id == 3 &&  this.editForm.data.game_id <= 0) {
         this.errmsg("请选择比赛赛事")
         return false
       }
