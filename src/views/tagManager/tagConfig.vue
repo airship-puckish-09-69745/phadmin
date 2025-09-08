@@ -251,7 +251,7 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item v-if="showGameOptions()" label="选择游戏：">
+            <el-form-item v-if="item.values[0]===2||item.values[0]===3" label="选择游戏：">
                 <el-select v-model="item.gid" filterable placeholder="placeholder" style="width: 180px;" size="mini">
                     <el-option v-if="gameIntensity()" :value="0" label="任意游戏"></el-option>
                     <el-option
@@ -821,9 +821,6 @@
           if (response.RetCode === 0) {
             Message.success("添加成功")
             this.tagList()
-          } else {
-            let errMsg ='添加失败！'
-            Message.error(errMsg + response.Data)
           }
         })
       },
