@@ -2473,7 +2473,9 @@ export default {
         const uidObList = this.editForm.uidObList.split(',')
         console.log("+++++++++++++++arrStr+++++++++++++++:%d", uidObList.length)
         console.log("+++++++++++++++opentMatchMember+++++++++++++++:%d", this.editForm.data.opentMatchMember)
-        if (uidObList.length !== this.editForm.data.opentMatchMember) {
+        let minNum = Math.round(uidObList.length - this.editForm.data.opentMatchMember)
+        console.log("+++++++++++++++minNum+++++++++++++++:%d", minNum)
+        if (minNum !== 0) {
           this.errmsg('开赛人数不等与配置表数量')
           return false
         }
