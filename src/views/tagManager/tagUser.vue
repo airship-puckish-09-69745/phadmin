@@ -279,7 +279,8 @@
             this.tableData = response.Data || []
             if (this.tableData.length > 0) {
               for (let i=0; i < this.tableData.length; i++) {
-                if (this.tableData[i].tagVal === 0 && !this.tableData[i].yes) {
+                if (this.tableData[i].val === 0 && !this.tableData[i].yes) {
+                  console.log("pass",JSON.stringify(this.tableData[i]))
                   this.tableData.splice(i,1)
                   i--
                 }
