@@ -2398,6 +2398,12 @@ export const asyncRoutes = [
             name: 'matchMarquee',
             meta: { title: '赛事跑马灯', noCache: true }
           },
+          {
+            path: 'texasTongis',
+            component: () => import('@/views/matchManage/matchOperations/texasTongis/index.vue'),
+            name: 'texasTongis',
+            meta: { title: 'TexasTongis配置', noCache: true }
+          }
         ]
       },
       {
