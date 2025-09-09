@@ -215,7 +215,7 @@
           </el-form-item>
 
           <el-form-item v-if="editForm.data.jump_id==3" label="比赛跳转" :required="true">
-            <el-select v-model="editForm.data.game_id" placeholder="请选择" size="mini">
+            <el-select v-model="editForm.data.match_cfg_id" placeholder="请选择" size="mini">
               <el-option
                 v-for="item in showCsCfgs"
                 :key="item.value"
