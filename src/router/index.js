@@ -1257,6 +1257,12 @@ export const asyncRoutes = [
                 meta: { title: 'F ortuneComing' }
               },
               {
+                path: 'fortunewheel_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/fortunewheel_slots_cfg'),
+                name: 'fortunewheel_slots_cfg',
+                meta: { title: 'F ortuneWheel' }
+              },
+              {
                 path: 'fortunateebisu_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/fortunateebisu_slots_cfg'),
                 name: 'fortunateebisu_slots_cfg',
@@ -2987,6 +2993,12 @@ export const asyncRoutes = [
             meta: { title: 'F ortunateEbisu', gid: 202 }
           },
           {
+            path: 'fortunewheel_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'wrathofzeus2_slots_log',
+            meta: { title: 'F ortuneWheel', gid: 226 }
+          },
+          {
             path: 'grandace_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'grandace_slots_log',
@@ -3162,7 +3174,6 @@ export const asyncRoutes = [
             name: 'treasurebowl_slots_log',
             meta: { title: 'T reasureBowl', gid: 174 }
           },
-
           {
             path: 'fortuneacego_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
