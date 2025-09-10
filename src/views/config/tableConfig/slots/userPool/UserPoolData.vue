@@ -40,7 +40,7 @@
         </template>
       </el-table-column>
       <el-table-column prop="uid" label="生效ID" align="center" min-width="320"/>
-      <el-table-column prop="amount" label="可发放金额" align="center" min-width="320">
+      <el-table-column prop="amount" label="发放金额" align="center" min-width="320">
         <template slot-scope="scope">
           {{ scope.row.amount / 1000 }}
         </template>

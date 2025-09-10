@@ -69,8 +69,8 @@
                            size="mini" >复制版本</el-button>
                 <el-button @click="querySlotBase(scope.row.PlanId)" type="primary"
                            size="mini">查询</el-button>
-                <el-button @click="showTips(2,scope.$index, versionScope.$index)" type="danger"
-                           size="mini">删除版本</el-button>
+                <!-- <el-button @click="showTips(2,scope.$index, versionScope.$index)" type="danger"
+                           size="mini">删除版本</el-button> -->
                 <el-button @click="delScripts(scope.row.PlanId, versionScope.row.Version)" type="danger"
                            size="mini">清理剧本</el-button>
               </template>
