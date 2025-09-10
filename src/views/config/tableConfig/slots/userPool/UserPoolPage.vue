@@ -6,7 +6,7 @@
           <el-tab-pane label="个人奖池配置" name="userPoolConfig">
             <user-pool-cfg/>
           </el-tab-pane>
-          <el-tab-pane label="个人奖池数据" name="userPoolData">
+          <el-tab-pane label="发放金额" name="userPoolData">
             <user-pool-data/>
           </el-tab-pane>
         </el-tabs>
