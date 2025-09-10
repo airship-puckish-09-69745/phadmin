@@ -586,6 +586,7 @@ import Publish from '@/components/Publish'
 import GameLevel from '@/components/GameLevel'
 import MoneyInput from '@/components/MoneyInput'
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
+import { IsMars } from '@/utils/env'
 
 const filterMap = {}
 
@@ -789,7 +790,9 @@ export default {
   created() {
     this.env = store.getters.env || this.env
     this.getList()
-    this.getMatchProps()
+    if (!IsMars()) {
+      this.getMatchProps()
+    } 
     /*this.getMatchPropsV1()*/
   },
   methods: {
@@ -1284,6 +1287,7 @@ export default {
       return gameName
     },
     getMatchProps() {
+      console.log("==>getMatchProps<==")
       const _this = this
       request({
         url: '/dataProxy/info',

@@ -37,6 +37,17 @@
                   </el-form-item>
                 </el-col>
                 <el-col >
+                  <el-form-item label="单日弹窗次数：">
+                    <el-input v-model.number="item.ShowTimes" style="width: 200px;" placeholder="请输入限制数量"/>
+                    <el-tooltip class="item" effect="light" placement="right-start">
+                      <template #content>
+                        <div>配置1则所有用户单日只弹出1次该弹窗，配置0则该弹窗不主动弹出，配置-1则该弹窗次数为无限</div>
+                      </template>
+                      <i class="el-icon-info" />
+                    </el-tooltip>
+                  </el-form-item>
+                </el-col>
+                <el-col >
                   <el-form-item label="活动展示金额：">
                     <el-input v-model.number="item.ShowGold" style="width: 200px;" placeholder="请输入显示金额数量" />
                   </el-form-item>
@@ -617,6 +628,7 @@ export default {
         EndTime: 0,
         EveryDayStartTime: 0,
         EveryDayEndTime: 0,
+        ShowTimes: 0,
         SockGainRatio: 10,
         ShowGold: 0,
         RuleImgHor: [],
@@ -1138,6 +1150,7 @@ export default {
             $this.item.StartTime = old.StartTime * 1000
             $this.item.EndTime = old.EndTime * 1000
             $this.item.ShowGold = old.ShowGold
+            $this.item.ShowTimes = old.ShowTimes
             $this.item.EveryDayStartTime = this.getStartMidnightTimestamp(old.EveryDayStartTime * 1000)
             $this.item.EveryDayEndTime = this.getEndMidnightTimestamp(old.EveryDayStartTime * 1000,old.EveryDayEndTime * 1000)
             $this.item.LimitReceiveNum1 = old.LimitReceiveNum1 / 1000
@@ -1201,6 +1214,7 @@ export default {
         EveryDayStartTime: everyStartTime,
         EveryDayEndTime: everyEndTime,
         ShowGold: this.item.ShowGold,
+        ShowTimes: this.item.ShowTimes,
         SingleLimitNum: Math.ceil(this.item.SingleLimitNum * 1000),
         EveryDayLimitNum: Math.ceil(this.item.EveryDayLimitNum * 1000),
         SumLimitNum: Math.ceil(this.item.SumLimitNum * 1000),
