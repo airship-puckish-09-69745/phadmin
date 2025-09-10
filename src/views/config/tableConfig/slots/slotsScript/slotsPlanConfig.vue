@@ -54,7 +54,7 @@
                 <span v-else  style="color: red">{{'未就绪'}}</span>
               </template>
             </el-table-column>
-            <el-table-column label="操作" width="420px">
+            <el-table-column label="操作" width="500px">
               <template slot-scope="versionScope">
 
 <!--                <el-button @click="openCreateVersionScriptsDialog(scope.$index, versionScope.$index)" type="success"-->
