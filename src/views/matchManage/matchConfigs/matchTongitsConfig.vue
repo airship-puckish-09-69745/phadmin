@@ -833,7 +833,7 @@
           </el-form-item>
         </fieldset>
 
-        <fieldset v-if="envProjectName === 'ph_audit'">
+        <fieldset v-if="this.envProjectName === 'ph_audit'">
           <legend>OB线下赛入座 </legend>
           <el-form-item label="比赛玩家id列表：" :required="true">
             <div>
@@ -1679,6 +1679,7 @@ export default {
       if (id === 0) {
         this.disableOpenType(false, 0)
         this.editForm.title = '新增比赛配置'
+        this.editForm.uidObList = ''
         this.editForm.data = {
           id: 0,
           name: '',
@@ -2467,10 +2468,9 @@ export default {
       }
       if (this.envProjectName === 'ph_audit') {
         if (this.editForm.uidObList.length > 0) {
-          const arrStr = this.editForm.uidObList.split(',')
-          console.log("+++++++++++++++arrStr+++++++++++++++:%d", arrStr.length)
-          console.log("+++++++++++++++opentMatchMember+++++++++++++++:%d", this.editForm.data.opentMatchMember)
-          if (arrStr.length !== this.editForm.data.opentMatchMember) {
+          const uidObList = this.editForm.uidObList.split(',')
+          let minNum = Math.round(uidObList.length - this.editForm.data.opentMatchMember)
+          if (minNum !== 0) {
             this.errmsg('开赛人数不等与配置表数量')
             return false
           }

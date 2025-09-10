@@ -86,7 +86,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item v-if="item.activity === 'tournament'" v-model="item.match_gid" label="比赛游戏：" label-width="100px">
+        <el-form-item v-if="isShowMatchGameOption(item.activity)" v-model="item.match_gid" label="比赛游戏：" label-width="100px">
           <el-select v-model="item.match_gid" filterable allow-create default-first-option placeholder="请选择" size="mini">
             <el-option
               v-for="row in matchGames"
@@ -493,6 +493,9 @@ export default {
   methods: {
     formatNumber(n) {
       return n.toLocaleString()
+    },
+    isShowMatchGameOption(activityVal) {
+      return activityVal === 'tournament' || activityVal === 'tournament_-1' || activityVal === 'tournament_-2'
     },
     enterurl(local) {
       this.item.nick = ''

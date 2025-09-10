@@ -67,7 +67,6 @@
           <el-table-column
             prop="tag_attr"
             label="标签定义"
-            width="600"
           >
             <template slot-scope="scope">
               {{ attrName(scope.row) }}
@@ -75,6 +74,7 @@
           </el-table-column>
           <el-table-column
             label="操作"
+            width="250"
           >
             <template slot-scope="scope">
               <el-button type="primary" size="mini" @click="edit(scope.row)">编辑</el-button>
@@ -85,12 +85,13 @@
           <el-table-column
             prop="modifier"
             label="最后操作人"
-            width="150"
+            width="120"
           >
           </el-table-column>
           <el-table-column
             prop="modify_time"
             label="操作时间"
+            width="150"
           > 
             <template slot-scope="scope">
               {{ formatTime(scope.row.modify_time) }}
@@ -620,7 +621,7 @@
         })
       },
       showGameOptions() {
-        return (this.form.tag_type === 2 || this.form.tag_type === 3)
+        return (this.form.tag_type === 2 || this.form.tag_type === 3 || this.form.tag_id === 10002)
       },
       gameIntensity(tagId) {
         if (tagId) {
@@ -787,11 +788,11 @@
             if (objs.total > 0) {
               this.tableData = []
               this.tableData = objs.list
-              this.total = objs.total
+              this.totalCount = objs.total
               this.$refs.compare.SetOldVal(response.Data)
             }
           } else {
-            this.total = 0
+            this.totalCount = 0
             this.tableData = []
           }
         })
