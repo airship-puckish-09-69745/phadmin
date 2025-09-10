@@ -24,14 +24,12 @@
         </el-tooltip>
       </el-form-item>
       <br>
-      <el-form-item>
-        <publish primary-key="ID" key-id="SlotsUserPoolData" :env-empty="false"/>
-      </el-form-item>
+      <publish primary-key="ID" key-id="SlotsUserPoolData" :env-empty="false" />
     </el-form>
 
     <!-- 表格 -->
     <el-table :data="tableData" border style="width: 100%; margin-top: 20px;" :default-sort = "{prop: 'updateAt', order: 'descending'}">
-      <el-table-column prop="updateAt" label="导入时间" align="center" min-width="320">
+      <el-table-column prop="updateAt" label="导入时间" align="center" min-width="320" sortable>
         <template slot-scope="scope">
           {{ formatDate(scope.row.updateAt) }}
         </template>
