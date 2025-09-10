@@ -24,9 +24,7 @@
         </el-tooltip>
       </el-form-item>
       <br>
-      <el-form-item>
-        <publish primary-key="ID" key-id="SlotsUserPoolData" :env-empty="false"/>
-      </el-form-item>
+      <publish primary-key="ID" key-id="SlotsUserPoolData" :env-empty="false" />
     </el-form>
 
     <!-- 表格 -->
