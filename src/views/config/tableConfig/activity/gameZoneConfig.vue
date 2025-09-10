@@ -1020,7 +1020,7 @@ export default {
         { label: '红包雨活动-[13]', value: 13 },
         { label: 'free spins-[14]', value: 14 },
         { label: 'TongitsHunter-[15]', value: 15 },
-        { lable: 'KingOfPot-[16]', value: 16 }
+        { label: 'KingOfPot-[16]', value: 16 }
       ],
       gameSelect: [],
       activitySelect: [
