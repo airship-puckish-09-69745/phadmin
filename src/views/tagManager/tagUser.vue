@@ -204,9 +204,6 @@
       tagFieldName(row) {
         const tagType = this.getTagType(row.tagId)
         console.log("tagType", tagType)
-        if (tagType === 0 || row.val === 0) {
-          return "-"
-        }
         if (tagType === 2 && row.tagId === 20000) {
           for (const v of this.intensityOptions) {
             if (v.value === row.tagVal) {
@@ -217,9 +214,9 @@
         } else if (this.isBet(tagType,row.tagId)) {
           return row.tagVal/1000
         } else if (this.isVal(row.tagId)) {
-          return row.val
+          return row.tagVal
         }
-        return row.val
+        return row.tagVal == 1?'-':row.tagVal
       },
       gameName(gid) {
         if (gid === 0) {
@@ -279,7 +276,8 @@
             this.tableData = response.Data || []
             if (this.tableData.length > 0) {
               for (let i=0; i < this.tableData.length; i++) {
-                if (this.tableData[i].tagVal === 0 && !this.tableData[i].yes) {
+                if (this.tableData[i].tagVal === 0) {
+                  console.log("pass",JSON.stringify(this.tableData[i]))
                   this.tableData.splice(i,1)
                   i--
                 }

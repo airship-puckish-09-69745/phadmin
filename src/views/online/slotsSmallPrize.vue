@@ -74,9 +74,10 @@
           {{ scope.row.PoolChange / 1000 }}
         </template>
       </el-table-column>
+      <!--  todo PoolOdds/基础投注   -->
       <el-table-column prop="PoolOdds" label="返奖倍数" align="center" min-width="100">
         <template slot-scope="scope">
-          {{ scope.row.PoolChange / scope.row.TotalBet }}
+          {{ scope.row.PoolOdds/(baseBetMap[Number(scope.row.Gid)]===undefined? 100:baseBetMap[Number(scope.row.Gid)]) }}
         </template>
       </el-table-column>
       <el-table-column prop="PoolAfter" label="返奖后奖池剩余金额" align="center" min-width="100">
@@ -84,11 +85,11 @@
           {{ scope.row.PoolAfter / 1000 }}
         </template>
       </el-table-column>
-<!--      <el-table-column prop="StreamAfter" label="小奖池剩余金额" align="center" min-width="100">-->
-<!--        <template slot-scope="scope">-->
-<!--          {{ scope.row.StreamAfter / 1000 }}-->
-<!--        </template>-->
-<!--      </el-table-column>-->
+      <!--      <el-table-column prop="StreamAfter" label="小奖池剩余金额" align="center" min-width="100">-->
+      <!--        <template slot-scope="scope">-->
+      <!--          {{ scope.row.StreamAfter / 1000 }}-->
+      <!--        </template>-->
+      <!--      </el-table-column>-->
     </el-table>
 
     <!--    分页-->
@@ -124,6 +125,8 @@ export default {
       allSite: ['全部', 'BP', 'AP', 'GP', 'PG', 'Dev'],
       // 表格数据
       tableData: [],
+      // Slots基础投注Map(不填默认100)gid:baseBet
+      baseBetMap: {76: 10, 82: 10, 176: 10},
       searchViewInfo: { // 界面搜索栏的相关数据
         dateRange: [],
         searchUserId: 0,

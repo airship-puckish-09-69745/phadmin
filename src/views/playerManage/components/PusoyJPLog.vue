@@ -80,7 +80,7 @@
         <template slot-scope="scope">{{ scope.row.eGameInfo.GameRatio }}</template>
       </el-table-column>
       <el-table-column prop="ctrlAreaId" label="区间" width="120">
-        <template slot-scope="scope">{{ scope.row.eGameInfo.CtrlAreaId }}</template>
+        <template slot-scope="scope">{{ getControlLevel(scope.row.eGameInfo.CtrlAreaId) }}</template>
       </el-table-column>
       <el-table-column prop="RobotWeight" label="机器人权重" width="120">
         <template slot-scope="scope">{{ scope.row.eGameInfo.RobotWeight }}</template>
@@ -354,6 +354,19 @@ export default {
       }
       return '-'
     },
+    getControlLevel(lv) {
+      if (lv == 1) {
+        return '强放'
+      } else if (lv == 2) {
+        return '弱放'
+      } else if (lv == 3) {
+        return '正常'
+      } else if (lv == 4) {
+        return '弱杀'
+      } else if (lv == 5) {
+        return '强杀'
+      }
+    }
 
   }
 }
