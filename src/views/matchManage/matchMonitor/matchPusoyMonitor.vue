@@ -98,6 +98,7 @@ import { Message } from 'element-ui'
 import DateTimeShow from '@/components/DatetimeShow'
 import { $libShow } from '@/utils/common'
 import {IsMars} from "@/utils/env";
+import {MATCH_IUPSTREAM_TYPE_OPTIONS} from "@/utils/options";
 export default {
     name: 'MatchMonitor',
     components: { DateTimeShow },
@@ -158,6 +159,7 @@ export default {
                     let objs = response.Data || []
                     if (objs.total > 0) {
                         this.total = objs.total;
+                        this.tableData=[]
                         for (let i = 0; i < objs.list.length; i++) {
                           let gameId = parseInt(objs.list[i].gid, 10)
                           if (gameId !== 2033) {
@@ -165,7 +167,6 @@ export default {
                           }
                           this.tableData.push(objs.list[i])
                         }
-                        console.log(this.tableData)
                     } else {
                         this.total = 0;
                         this.tableData = [];
@@ -225,6 +226,7 @@ export default {
                         Env: this.env,
                         Path: '/match/off',
                         ListId: listId,
+                        Gid: MATCH_IUPSTREAM_TYPE_OPTIONS.MATCH_UPSTREAM_TYPE_PUSOY,
                     }
                 }).then(response => {
                     if (response.RetCode === 0) {
@@ -251,6 +253,7 @@ export default {
                         Env: this.env,
                         Path: '/match/hide',
                         ListId: listId,
+                        Gid: MATCH_IUPSTREAM_TYPE_OPTIONS.MATCH_UPSTREAM_TYPE_PUSOY,
                     }
                 }).then(response => {
                     if (response.RetCode === 0) {
@@ -278,6 +281,7 @@ export default {
                         Env: this.env,
                         Path: '/match/delete',
                         ListId: listId,
+                        Gid: MATCH_IUPSTREAM_TYPE_OPTIONS.MATCH_UPSTREAM_TYPE_PUSOY,
                     }
                 }).then(response => {
                     if (response.RetCode === 0) {

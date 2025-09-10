@@ -98,6 +98,7 @@ import { Message } from 'element-ui'
 import DateTimeShow from '@/components/DatetimeShow'
 import { $libShow } from '@/utils/common'
 import {IsMars} from "@/utils/env";
+import {MATCH_IUPSTREAM_TYPE_OPTIONS} from "@/utils/options";
 export default {
     name: 'MatchMonitor',
     components: { DateTimeShow },
@@ -225,6 +226,7 @@ export default {
                         Env: this.env,
                         Path: '/match/off',
                         ListId: listId,
+                        Gid:MATCH_IUPSTREAM_TYPE_OPTIONS.MATCH_UPSTREAM_TYPE_TONGITS,
                     }
                 }).then(response => {
                     if (response.RetCode === 0) {
@@ -251,6 +253,7 @@ export default {
                         Env: this.env,
                         Path: '/match/hide',
                         ListId: listId,
+                      Gid:MATCH_IUPSTREAM_TYPE_OPTIONS.MATCH_UPSTREAM_TYPE_TONGITS,
                     }
                 }).then(response => {
                     if (response.RetCode === 0) {
@@ -278,6 +281,7 @@ export default {
                         Env: this.env,
                         Path: '/match/delete',
                         ListId: listId,
+                         Gid:MATCH_IUPSTREAM_TYPE_OPTIONS.MATCH_UPSTREAM_TYPE_TONGITS,
                     }
                 }).then(response => {
                     if (response.RetCode === 0) {

@@ -61,13 +61,12 @@
             width="120"
           >
             <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="setItem(scope.row)">查看数据</el-button>
+              <el-button type="primary" size="mini" @click="setItem(scope.row)" :disabled="![10003,10004,20000].includes(scope.row.tag_id)">查看数据</el-button>
             </template>
           </el-table-column>
           <el-table-column
             prop="tag_attr"
             label="标签定义"
-            width="600"
           >
             <template slot-scope="scope">
               {{ attrName(scope.row) }}
@@ -75,6 +74,7 @@
           </el-table-column>
           <el-table-column
             label="操作"
+            width="250"
           >
             <template slot-scope="scope">
               <el-button type="primary" size="mini" @click="edit(scope.row)">编辑</el-button>
@@ -85,12 +85,13 @@
           <el-table-column
             prop="modifier"
             label="最后操作人"
-            width="150"
+            width="120"
           >
           </el-table-column>
           <el-table-column
             prop="modify_time"
             label="操作时间"
+            width="150"
           > 
             <template slot-scope="scope">
               {{ formatTime(scope.row.modify_time) }}
@@ -149,6 +150,21 @@
                     :value="opt.value"
                 />
               </el-select>
+            </el-form-item>
+            <el-form-item v-if="form.tag_id===10003" label="连续天数：">
+              <el-col :span="8">
+                <el-input v-model.number="form.days" placeholder="placeholder"></el-input>
+              </el-col>
+            </el-form-item>
+            <el-form-item v-if="form.tag_id===10004" label="降低系数：">
+              <el-col :span="8">
+                <el-input v-model.number="form.reduce" placeholder="placeholder"></el-input>
+              </el-col>
+            </el-form-item>
+            <el-form-item v-if="form.tag_id===10004" label="历史有效下注：">
+              <el-col :span="8">
+                <el-input v-model.number="form.totalBet" placeholder="placeholder"></el-input>
+              </el-col>
             </el-form-item>
             <el-form-item v-if="showGameOptions()" label="选择游戏：">
                 <el-select v-model="form.tag_gid" filterable placeholder="placeholder">
@@ -236,7 +252,7 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item v-if="showGameOptions()" label="选择游戏：">
+            <el-form-item v-if="item.values[0]===2||item.values[0]===3" label="选择游戏：">
                 <el-select v-model="item.gid" filterable placeholder="placeholder" style="width: 180px;" size="mini">
                     <el-option v-if="gameIntensity()" :value="0" label="任意游戏"></el-option>
                     <el-option
@@ -440,6 +456,9 @@
           loginDay: [0,0],
           roundAvg: {use:false, val: 0},
           validBet: {use:false, val: 0},
+          days: 7,
+          reduce: 50,
+          totalBet: 0,
         },
         syncInfo: false,
         syncStat: false,
@@ -548,7 +567,7 @@
       },
       gameName(gid) {
         if (gid === 0) {
-          return '任意游戏'
+          return ''
         }
         for (const v of this.gameOptions) {
           if (v.value === gid) {
@@ -572,6 +591,12 @@
             str += `,有效下注>=${attr.validBet.val}`
           }
           return str
+        } else if (row.tag_id === 10003) {
+          const attr = JSON.parse(row.tag_attr)
+          return `连续${attr.days}天未进入厅方的游戏用户`
+        } else if (row.tag_id === 10004) {
+          const attr = JSON.parse(row.tag_attr)
+          return `最近一自然周的总有效下注对比前一自然周降低>=${attr.reduce}%且历史有效下注>=${attr.totalBet}`
         }
         return row.tag_attr
       },
@@ -596,7 +621,7 @@
         })
       },
       showGameOptions() {
-        return (this.form.tag_type === 2 || this.form.tag_type === 3)
+        return (this.form.tag_type === 2 || this.form.tag_type === 3 || this.form.tag_id === 10002)
       },
       gameIntensity(tagId) {
         if (tagId) {
@@ -632,9 +657,12 @@
         this.form.tag_name = row.tag_name
         this.form.tag_gid = row.tag_gid
         this.form.status = row.status
-        this.form.loginDay = attr.loginDay
-        this.form.roundAvg = attr.roundAvg
-        this.form.validBet = attr.validBet
+        attr.loginDay && (this.form.loginDay = attr.loginDay)
+        attr.roundAvg && (this.form.roundAvg = attr.roundAvg)
+        attr.validBet && (this.form.validBet = attr.validBet)
+        attr.days && (this.form.days = attr.days)
+        attr.reduce && (this.form.reduce = attr.reduce)
+        attr.totalBet && (this.form.totalBet = attr.totalBet)
         this.selectChange(this.form.tag_type,true)
       },
       copy(row) {
@@ -647,15 +675,23 @@
         this.form.tag_name = row.tag_name
         this.form.tag_gid = row.tag_gid
         this.form.status = row.status
-        this.form.loginDay = attr.loginDay
-        this.form.roundAvg = attr.roundAvg
-        this.form.validBet = attr.validBet
+        attr.loginDay && (this.form.loginDay = attr.loginDay)
+        attr.roundAvg && (this.form.roundAvg = attr.roundAvg)
+        attr.roundAvg && (this.form.validBet = attr.validBet)
+        attr.days && (this.form.days = attr.days)
+        attr.reduce && (this.form.reduce = attr.reduce)
+        attr.totalBet && (this.form.totalBet = attr.totalBet)
         this.selectChange(this.form.tag_type,true)
       },
       add() {
         this.syncInfo = true
         this.form.id = 0
         this.form.tag_id = 0
+        if ([10001,10003,10004,40001,40002].includes(this.form.tag_id)) {
+          this.form.tag_gid = 0
+        } else {
+          this.form.tag_gid = 22
+        }
         this.form.tag_type = this.tagOptions[0].value
         this.selectChange(this.tagOptions[0].value)
       },
@@ -691,6 +727,15 @@
             roundAvg: this.form.roundAvg,
             validBet: this.form.validBet
           })
+        } else if (this.form.tag_id === 10003) {
+          this.form.tag_attr = JSON.stringify({
+            days: this.form.days,
+          })
+        } else if (this.form.tag_id === 10004) {
+          this.form.tag_attr = JSON.stringify({
+            reduce: this.form.reduce,
+            totalBet: this.form.totalBet
+          })
         }
         this.syncInfo = false
         this.isEdit?this.tagUpdate():this.tagCreate()
@@ -716,7 +761,7 @@
             queryBegin: Math.floor(this.item.dateRange[0].getTime()/1000),
             queryEnd: Math.floor(this.item.dateRange[1].getTime()/1000),
             gid: this.item.gid,
-            tagId: this.item.tagId,
+            tagId: this.item.values[1],
             tagVal: this.item.tagVal,
           }
         }).then(response => {
@@ -743,11 +788,11 @@
             if (objs.total > 0) {
               this.tableData = []
               this.tableData = objs.list
-              this.total = objs.total
+              this.totalCount = objs.total
               this.$refs.compare.SetOldVal(response.Data)
             }
           } else {
-            this.total = 0
+            this.totalCount = 0
             this.tableData = []
           }
         })
@@ -755,6 +800,9 @@
       tagCreate() {
         this.form.status = 0
         const editData = this.form
+        if ([10001,10003,10004,40001,40002].includes(editData.tag_id)) {
+          editData.tag_gid = 0
+        }
         console.log("editData", editData)
         request({
           url: '/tagconfig/tag/create',
@@ -774,9 +822,6 @@
           if (response.RetCode === 0) {
             Message.success("添加成功")
             this.tagList()
-          } else {
-            let errMsg ='添加失败！'
-            Message.error(errMsg + response.Data)
           }
         })
       },
@@ -807,6 +852,9 @@
       },
       tagUpdate() {
         const editData = this.form
+        if ([10001,10003,10004,40001,40002].includes(editData.tag_id)) {
+          editData.tag_gid = 0
+        }
         request({
           url: '/tagconfig/tag/update',
           method: 'POST',

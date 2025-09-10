@@ -42,7 +42,7 @@
           </el-table-column>
           <el-table-column
             prop="tagGid"
-            label="游戏名称"
+            label="关联游戏"
             width="180"
           >
             <template slot-scope="scope">
@@ -51,7 +51,7 @@
           </el-table-column>
           <el-table-column
             prop="upTime"
-            label="操作时间"
+            label="更新时间"
             width="200"
           > 
             <template slot-scope="scope">
@@ -173,7 +173,6 @@
         this.$refs.uidInput.saveUid(this.form.Uid)
         console.log('set mounted', this.form.Uid)
       }
-      this.getInfo()
     },
     methods: {
       tagIdName(tag_id) {
@@ -199,26 +198,29 @@
       isBet(tagType,tagId) {
         return (tagType === 3) || (tagId === 20003)
       },
+      isVal(tagId) {
+        return [20001,20002].includes(tagId)
+      },
       tagFieldName(row) {
         const tagType = this.getTagType(row.tagId)
         console.log("tagType", tagType)
-        if (tagType === 0) {
-          return ""
-        }
         if (tagType === 2 && row.tagId === 20000) {
           for (const v of this.intensityOptions) {
             if (v.value === row.tagVal) {
               return v.label
             }
           }
+          return 0
         } else if (this.isBet(tagType,row.tagId)) {
           return row.tagVal/1000
+        } else if (this.isVal(row.tagId)) {
+          return row.tagVal
         }
-        return row.tagVal
+        return row.tagVal == 1?'-':row.tagVal
       },
       gameName(gid) {
         if (gid === 0) {
-          return '任意游戏'
+          return ''
         }
         for (const v of this.gameOptions) {
           if (v.value === gid) {
@@ -228,8 +230,8 @@
         return gid
       },
       formatTime(ts) {
-        if (ts === undefined) {
-          $libDate.FormateSecondStr(new Date().getTime(), 2)
+        if (ts === undefined || ts === 0) {
+          return ""
         }
         return $libDate.FormateSecondStr(ts, 2)
       },
@@ -272,10 +274,16 @@
         }).then(response => {
           if (response.RetCode === 0) {
             this.tableData = response.Data || []
-            if (this.tableData === "") {
-
+            if (this.tableData.length > 0) {
+              for (let i=0; i < this.tableData.length; i++) {
+                if (this.tableData[i].tagVal === 0) {
+                  console.log("pass",JSON.stringify(this.tableData[i]))
+                  this.tableData.splice(i,1)
+                  i--
+                }
+              }
             }
-            console.log(JSON.stringify(response.Data),typeof this.tableData)
+            console.log(JSON.stringify(this.tableData))
           }
         })
       }

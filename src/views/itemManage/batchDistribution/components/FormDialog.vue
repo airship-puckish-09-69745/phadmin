@@ -58,7 +58,7 @@
               :key="item.value"
               :label="item.label"
               :value="item.value"
-              :disabled="item.disabled || (itemType === 5 && item.value === 0)"
+              :disabled="item.disabled || (itemType === 5 && (item.value === 0 || item.value ===365))"
             />
           </el-select>
         </div>
@@ -241,17 +241,23 @@ export default {
       if (filteredItems === null) {
         return
       }
+
+      // 先按 item_name 排序
+      const sortedItems = [...filteredItems].sort((a, b) => {
+        return a.item_name.localeCompare(b.item_name)
+      })
       this.itemOptions = []
-      for (let i = 0; i < filteredItems.length; i++) {
-        let str = filteredItems[i].item_name
-        if (filteredItems[i].show_name) {
-          str += `(${filteredItems[i].show_name})`
+      for (let i = 0; i < sortedItems.length; i++) {
+        let str = sortedItems[i].item_name
+        if (sortedItems[i].show_name) {
+          str += `(${sortedItems[i].show_name})`
         }
         this.itemOptions.push({
-          value: filteredItems[i].id,
+          value: sortedItems[i].id,
           label: str
         })
       }
+
     },
     /**
      * 校验表单各项输入
@@ -320,12 +326,10 @@ export default {
             this.total = objs.total
             this.itemList = []
             for (let i = 0; i < objs.total; i++) {
-              if (objs.list[i].status === 1 && (objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET ||
-                objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET) && objs.list[i].expire_time > timestamp) {
+              if (objs.list[i].status === 1 && this.isTicketProp(objs.list[i].item_type) && objs.list[i].expire_time > timestamp) {
                 this.itemList.push(objs.list[i])
               }
-              if (objs.list[i].status === 1 && (objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME ||
-                objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR || objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN)) {
+              if (objs.list[i].status === 1 && (this.isAvatarFrameProp(objs.list[i].item_type) || objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN)) {
                 this.itemList.push(objs.list[i])
               }
             }
@@ -401,6 +405,16 @@ export default {
         this.form.SendDetails.app_id = ''
       }
     },
+
+    //是否是门票类型道具
+    isTicketProp(itemType) {
+      return itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET || itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET || itemType === PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET
+    },
+    //是否是头像框道具
+    isAvatarFrameProp(itemType) {
+      return itemType === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME || itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR
+    },
+
     hasDuplicates(arr) {
     const map = new Map()
     let emptyArr = []

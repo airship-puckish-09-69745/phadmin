@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="page-container" style="padding: 10px">
     <el-row>
-      <publish primary-key="cfgId" key-id="TongitsHunterConfig" :env-empty="true" compare-type="Array" :attr-names="AttrNames" :head-attrs="['cfgId', 'name']" />
+      <publish primary-key="cfgId" key-id="TongitsHunterConfig" :env-empty="false" compare-type="Array" :attr-names="AttrNames" :head-attrs="['cfgId', 'name']" />
     </el-row>
     <el-row style="padding-top: 5px">
       <el-col :span="20">
@@ -75,9 +75,9 @@
       <el-tabs type="border-card">
         <el-tab-pane label="活动配置">
           <el-row>
-            <el-form label-width="220px">
+            <el-form :model="edit.item" label-width="220px">
               <el-col :span="24">
-                <el-form-item label="活动名称：" prop="item.name">
+                <el-form-item label="活动名称：" prop="name">
                   <el-input v-model="edit.item.name" placeholder="请输入活动名称" />
                 </el-form-item>
               </el-col>
@@ -93,16 +93,34 @@
               </el-col>
               <el-col :span="12">
                 <el-form-item label="每日发奖上限：" prop="dailyBonusLimit" :required="true">
-                  <el-input v-model.number="edit.item.dailyBonusLimit" type="number" />
+                  <el-input v-model.number="edit.item.dailyBonusLimit" type="number" >
+                    <template slot="append">₱</template>
+                  </el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="总的发奖上限：" prop="totalBonusLimit" :required="true">
-                  <el-input v-model.number="edit.item.totalBonusLimit" type="number" />
+                  <el-input v-model.number="edit.item.totalBonusLimit" type="number" >
+                    <template slot="append">₱</template>
+                  </el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="参与活动的游戏" prop="item.gameIds">
+                <el-form-item label="今日已发奖励：">
+                  <el-input v-model.number="edit.dailyBonus" type="number" disabled>
+                    <template slot="append">₱</template>
+                  </el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="总的已发奖励：">
+                  <el-input v-model.number="edit.totalBonus" type="number" disabled>
+                    <template slot="append">₱</template>
+                  </el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="参与活动的游戏" prop="gameIds">
                   <GameTreeSelector :selected-games-id="edit.item.gameIds" :sub-games-id="edit.subGamesId" :expand-all="true" @change="handleGamesChange" />
                 </el-form-item>
               </el-col>
@@ -124,7 +142,9 @@
                 <el-descriptions title="胜场任务配置" direction="vertical" :column="1" border style="padding-top: 30px">
                   <el-descriptions-item label="最低场次底注">
                     <el-col :span="12">
-                      <el-input v-model="edit.antesMinMap[gameTask.gameId]" type="number" @change="handleAntesMinChange(gameTask)" />
+                      <el-select v-model="edit.antesMinMap[gameTask.gameId]" placeholder="请选择" @change="handleAntesMinChange(gameTask)">
+                        <el-option v-for="ante in edit.gameAntesMap[gameTask.gameId]" :label="ante" :value="ante" />
+                      </el-select>
                     </el-col>
                   </el-descriptions-item>
                   <el-descriptions-item label="胜场任务列表">
@@ -265,6 +285,7 @@ export default {
       AttrNames: {
         activityId: '活动ID',
         name: '活动名称',
+        actName: '活动名称',
         cfgId: '活动配置ID',
         startTime: '开始时间',
         endTime: '结束时间',
@@ -279,6 +300,7 @@ export default {
       edit: {
         cfgId: 0,
         antesMinMap: [],
+        gameAntesMap: {},
         isEdit: false,
         visible: false,
         item: newItem(),
@@ -286,7 +308,8 @@ export default {
         loading: false,
         subGamesId: [22, 28],
         activeTag: '',
-        clientDB: new ClientTableData([], 10, filterMap),
+        dailyBonus: 0,
+        totalBonus: 0,
       },
       env: 'test',
       libDate: $libDate,
@@ -323,6 +346,7 @@ export default {
   },
   mounted() {
     this.getList()
+    this.getGameAnteTables()
   },
   methods: {
     formatTime(ts) {
@@ -381,6 +405,49 @@ export default {
       }
     },
     //************************ 修改/添加弹框相关 ************************
+    //************************ 游戏场次底注列表相关 ************************
+    async getGameAnteTables() {
+      const gameIds = this.edit.item.gameIds
+      for (const gameId of gameIds) {
+        let list = []
+        switch (gameId) {
+          case 22:
+            list =  await this.getTongitsAnteList(1)
+            break
+          case 28:
+            list =  await this.getTongitsAnteList(2)
+            break
+          case 29:
+            list =  await this.getTongitsAnteList(3)
+            break
+          default:
+            console.log('getGameAnteTables gameId: ', gameId, ' not supported',)
+        }
+        this.edit.gameAntesMap[gameId] = list
+      }
+    },
+    async getTongitsAnteList(playMode) {
+      const response = await request({
+        url: '/tongitstable/all',
+        method: 'get',
+        data: {
+          PlayMode: playMode
+        }
+      })
+
+      let anteTables = []
+      if (response.RetCode === 0) {
+        const objs = response.Data || []
+        for (const i in objs) {
+          anteTables.push(objs[i].TableMoney / 1000)
+        }
+        anteTables = Array.from(new Set(anteTables)) // 去重
+        anteTables.sort((x, y) => x - y)
+      }
+
+      console.log('getTongitsAnteList anteTables: ', anteTables)
+      return anteTables
+    },
     //************************ 表格数据相关 ************************
     // 配置列表
     getList() {
@@ -391,7 +458,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
-          this.clientDB = new ClientTableData(objs, 10, filterMap, 'EndTime', -1, "id")
+          this.clientDB = new ClientTableData(objs, 10, filterMap, 'endTime', -1, "id")
           this.handleCurrentChange(1)
         }
       }).catch(err => {
@@ -541,6 +608,21 @@ export default {
         winTask.antesMin = antesMin
       })
     },
+    getTaskBonusStat() {
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          ActCfgId: this.edit.item.id,
+          Path: '/activity/tongits/hunter/task/bonus/stat'
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.edit.dailyBonus = response.Data.dailyBonus / 1000
+          this.edit.totalBonus = response.Data.totalBonus / 1000
+        }
+      })
+    },
     clearFilter() {
       this.clientDB.ClearFilterMap()
       this.refreshShow()
@@ -575,12 +657,17 @@ export default {
       this.changeStatus(ob.id, 3, '您确定要将记录状态修改为废弃吗？')
     },
     handleEditDialogOpened() {
+      this.edit.dailyBonus = 0
+      this.edit.totalBonus = 0
+
       if (!this.edit.isEdit) {
         console.log('handleEditDialogOpened', this.edit.item.gameIds)
         for (let i = 0; i < this.edit.item.gameIds.length; i++) {
           const gameId = this.edit.item.gameIds[i]
           this.edit.item.gameTasks.push(newGameTask(gameId))
         }
+      } else {
+        this.getTaskBonusStat()
       }
       this.edit.activeTag = this.gameNames[this.edit.item.gameIds[0]]
       console.log('handleEditDialogOpened', this.edit.item.gameTasks)

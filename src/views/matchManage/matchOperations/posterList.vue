@@ -199,11 +199,11 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item v-if="editForm.data.jump_id==1" label="海报详情图" :required="true">
+          <el-form-item v-if="editForm.data.jump_id===1" label="海报详情图" :required="true">
             <ImagePicker v-model="editForm.data.details_image_path" />
           </el-form-item>
 
-          <el-form-item v-if="editForm.data.jump_id==2" label="游戏跳转" :required="true">
+          <el-form-item v-if="editForm.data.jump_id===2" label="游戏跳转" :required="true">
             <el-select v-model="editForm.data.game_id" placeholder="请选择" size="mini">
               <el-option
                 v-for="item in gameCfgs"
@@ -214,8 +214,8 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item v-if="editForm.data.jump_id==3" label="比赛跳转" :required="true">
-            <el-select v-model="editForm.data.game_id" placeholder="请选择" size="mini">
+          <el-form-item v-if="editForm.data.jump_id===3" label="比赛跳转" :required="true">
+            <el-select v-model="editForm.data.match_cfg_id" placeholder="请选择" size="mini">
               <el-option
                 v-for="item in showCsCfgs"
                 :key="item.value"
@@ -226,7 +226,7 @@
           </el-form-item>
 
 
-          <el-form-item v-if="editForm.data.jump_id==4" label="分类跳转" :required="true">
+          <el-form-item v-if="editForm.data.jump_id===4" label="分类跳转" :required="true">
             <el-select v-model="editForm.data.game_id" placeholder="请选择" size="mini">
               <el-option
                 v-for="item in jumpTypeCfgs"
@@ -262,7 +262,7 @@
             />
           </el-form-item>
 
-          <el-form-item v-if="editForm.data.jump_id==1" label="是否首弹:" :required="true" prop="first_jump" >
+          <el-form-item v-if="editForm.data.jump_id===1" label="是否首弹:" :required="true" prop="first_jump" >
             <el-switch v-model="editForm.data.first_jump" :active-value="true" :inactive-value="false" />
           </el-form-item>
 
@@ -568,7 +568,7 @@ export default {
     getStatusName(status) {
       var statusName = ""
       for (var i = 0; i < this.statusCfgs.length; i++) {
-        if (this.statusCfgs[i].value == status) {
+        if (this.statusCfgs[i].value === status) {
           statusName = this.statusCfgs[i].label
           break
         }
@@ -579,7 +579,7 @@ export default {
     getAppName(id) {
       var appName = ""
       for (var i = 0; i < this.APPID_OPTIONS.length; i++) {
-        if (this.APPID_OPTIONS[i].value == id) {
+        if (this.APPID_OPTIONS[i].value === id) {
           appName = this.APPID_OPTIONS[i].label
           break
         }
@@ -591,7 +591,7 @@ export default {
     getJumpName(jump_id) {
       var jumpName = ""
       for (var i = 0; i < this.postJumpCfgs.length; i++) {
-        if (this.postJumpCfgs[i].value == jump_id) {
+        if (this.postJumpCfgs[i].value === jump_id) {
           jumpName = this.postJumpCfgs[i].label
           break
         }
@@ -639,7 +639,7 @@ export default {
         this.selectMatchName()
         let find = false
         for (var i = 0; i < this.showCsCfgs.length; i++) {
-          if (this.showCsCfgs[i].value == this.editForm.data.match_cfg_id) {
+          if (this.showCsCfgs[i].value === this.editForm.data.match_cfg_id) {
             find = true
             break
           }
@@ -664,7 +664,7 @@ export default {
 
       if (this.editForm.isAdd === false) {
         for (var i = 0; i < this.posterList.tableData.length; i++) {
-          if (this.posterList.tableData[i].id == this.editForm.data.id) {
+          if (this.posterList.tableData[i].id === this.editForm.data.id) {
             this.posterList.tableData[i].title = this.editForm.data.title
             this.posterList.tableData[i].switch = this.editForm.data.switch
             this.posterList.tableData[i].sort_id = parseInt(this.editForm.data.sort_id)
@@ -851,7 +851,7 @@ export default {
       return str
     },
     configCheck() {
-      if (this.editForm.data.title == '') {
+      if (this.editForm.data.title === '') {
         this.errmsg("请填写标题")
         return false
       }
@@ -859,21 +859,21 @@ export default {
         this.errmsg("请海报排序")
         return false
       }
-      if (this.editForm.data.image_path == '') {
+      if (this.editForm.data.image_path === '') {
         this.errmsg("请填写海报入口图")
         return false
       }
 
-      if (this.editForm.data.jump_id == 1 && this.editForm.data.details_image_path == '') {
+      if (this.editForm.data.jump_id === 1 && this.editForm.data.details_image_path=== '') {
         this.errmsg("请上传海报详情图")
         return false
       }
 
-      if (this.editForm.data.jump_id == 2 &&  this.editForm.data.game_id <= 0) {
+      if (this.editForm.data.jump_id === 2 &&  this.editForm.data.game_id <= 0) {
          this.errmsg("请选择子游戏")
         return false
       }
-      if (this.editForm.data.jump_id == 3 &&  this.editForm.data.match_cfg_id <= 0) {
+      if (this.editForm.data.jump_id === 3 &&  this.editForm.data.game_id <= 0) {
         this.errmsg("请选择比赛赛事")
         return false
       }

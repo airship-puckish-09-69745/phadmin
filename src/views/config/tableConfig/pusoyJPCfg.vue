@@ -70,7 +70,7 @@
                       <el-input v-model.number="item.MajorTableMoney" size="mini" />
                     </el-form-item>
                   </el-col>
-                  
+                  <!--
                   <el-col :span="8">
                     <el-form-item label="Major中奖池最小">
                       <el-input v-model.number="item.MajorWinMin" size="mini" ><template slot="append">%</template></el-input>
@@ -79,6 +79,12 @@
                   
                   <el-col :span="8">
                     <el-form-item label="Major中奖池最大">
+                      <el-input v-model.number="item.MajorWinMax" size="mini" ><template slot="append">%</template></el-input>
+                    </el-form-item>
+                  </el-col>
+                  -->
+                  <el-col :span="8">
+                    <el-form-item label="Major中奖发放比例">
                       <el-input v-model.number="item.MajorWinMax" size="mini" ><template slot="append">%</template></el-input>
                     </el-form-item>
                   </el-col>
@@ -94,6 +100,7 @@
                     </el-form-item>
                   </el-col>
 
+                  <!--
                   <el-col :span="8">
                     <el-form-item label="Grand中奖池最小">
                       <el-input v-model.number="item.GrandWinMin" size="mini" ><template slot="append">%</template></el-input>
@@ -102,6 +109,12 @@
                   
                   <el-col :span="8">
                     <el-form-item label="Grand中奖池最大">
+                      <el-input v-model.number="item.GrandWinMax" size="mini" ><template slot="append">%</template></el-input>
+                    </el-form-item>
+                  </el-col>
+                  -->
+                  <el-col :span="8">
+                    <el-form-item label="Grand中奖发放比例">
                       <el-input v-model.number="item.GrandWinMax" size="mini" ><template slot="append">%</template></el-input>
                     </el-form-item>
                   </el-col>
@@ -944,15 +957,13 @@ export default {
       }
       this.incrJackpotForm.type = type
       this.incrJackpotForm.visible = true
-    }
-  },
-
-  saveIncrJackpotDialog() {
+    },
+    saveIncrJackpotDialog() {
       if (this.incrJackpotForm.type === 2) {
         for (var i = 0; i < this.item.ShowPool.MajorPoolIncrArr.length; i++) {
           if (this.item.ShowPool.MajorPoolIncrArr[i].Id == this.incrJackpotForm.id) {
             this.item.ShowPool.MajorPoolIncrArr[i].TimeArr = this.incrJackpotForm.data
-            for (var j = 0; j < this.item.Jackpot.MajorPoolIncrArr[i].TimeArr.length; j++) {
+            for (var j = 0; j < this.item.ShowPool.MajorPoolIncrArr[i].TimeArr.length; j++) {
               this.item.ShowPool.MajorPoolIncrArr[i].TimeArr[j].PerHourIncr *= 1000
             }
             break
@@ -962,7 +973,7 @@ export default {
         for (var i = 0; i < this.item.ShowPool.GrandPoolIncrArr.length; i++) {
           if (this.item.ShowPool.GrandPoolIncrArr[i].Id == this.incrJackpotForm.id) {
             this.item.ShowPool.GrandPoolIncrArr[i].TimeArr = this.incrJackpotForm.data
-            for (var j = 0; j < this.item.Jackpot.GrandPoolIncrArr[i].TimeArr.length; j++) {
+            for (var j = 0; j < this.item.ShowPool.GrandPoolIncrArr[i].TimeArr.length; j++) {
               this.item.ShowPool.GrandPoolIncrArr[i].TimeArr[j].PerHourIncr *= 1000
             }
             break
@@ -971,6 +982,7 @@ export default {
       }
       this.incrJackpotForm.visible = false
     },
-
+  },
+  
 }
 </script>
