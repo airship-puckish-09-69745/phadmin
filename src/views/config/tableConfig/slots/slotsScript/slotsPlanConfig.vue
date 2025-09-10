@@ -38,7 +38,7 @@
           {{ scope.row.IsDisabled === 1 ? '禁用' : '未禁用' }}
         </template>
       </el-table-column>
-      <el-table-column prop="Versions" label="配置版本列表" width="900px">
+      <el-table-column prop="Versions" label="配置版本列表" width="1000px">
         <template slot-scope="scope" >
           <el-table :data="scope.row.Versions" stripe style="font-size: 10px">
             <el-table-column prop="Version" label="版本号" width="80px">
@@ -54,7 +54,7 @@
                 <span v-else  style="color: red">{{'未就绪'}}</span>
               </template>
             </el-table-column>
-            <el-table-column label="操作" width="500px">
+            <el-table-column label="操作" width="600px">
               <template slot-scope="versionScope">
 
 <!--                <el-button @click="openCreateVersionScriptsDialog(scope.$index, versionScope.$index)" type="success"-->
