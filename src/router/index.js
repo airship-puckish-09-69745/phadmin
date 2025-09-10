@@ -2402,7 +2402,7 @@ export const asyncRoutes = [
             path: 'texasTongis',
             component: () => import('@/views/matchManage/matchOperations/texasTongis/index.vue'),
             name: 'texasTongis',
-            meta: { title: 'TexasTongis配置', noCache: true }
+            meta: { title: 'kyc配置', noCache: true }
           }
         ]
       },
