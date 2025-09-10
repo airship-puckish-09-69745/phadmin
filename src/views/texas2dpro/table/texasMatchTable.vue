@@ -1088,7 +1088,7 @@ export default {
       postData.RaceBeginDate = this.timeToTimestamp(postData.RaceBeginDate)
       postData.RaceEndDate = this.timeToTimestamp(postData.RaceEndDate)
       postData.RaceBeginTime = this.timeToTimestamp(postData.RaceBeginTime) % (24 * 3600) + 8 * 3600
-      if (postData.RaceBeginTime > 86400) {
+      if (postData.RaceBeginTime >= 86400) {
         postData.RaceBeginTime = postData.RaceBeginTime - 86400
       }
       postData.RaceEndTime = this.timeToTimestamp(postData.RaceEndTime) % (24 * 3600) + 8 * 3600
