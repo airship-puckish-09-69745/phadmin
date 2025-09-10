@@ -88,6 +88,12 @@
           </template>
         </el-table-column>
 
+        <el-table-column prop="own_gid" label="游戏类型" >
+          <template slot-scope="scope">
+            {{ getMatchName(scope.row.own_gid) }}
+          </template>
+        </el-table-column>
+
         <el-table-column prop="start_time" label="开始时间">
           <template slot-scope="{row}">
             <DateTimeShow :show-type="2" :timestamp="row.start_time" />
@@ -144,7 +150,7 @@
           </el-form-item>
 
           <el-form-item label="AppId：" :required="true">
-            <el-select v-model="editForm.data.app_id" placeholder="请选择" size="mini" :disabled="!editForm.isAdd" @change="selectMatchName()">
+            <el-select v-model="editForm.data.app_id" placeholder="请选择" size="mini" :disabled="!editForm.isAdd" >
               <el-option
                 v-for="item in APPID_OPTIONS"
                 :key="item.value"
@@ -155,7 +161,7 @@
           </el-form-item>
 
           <el-form-item label="展示游戏：" :required="true">
-            <el-select v-model="editForm.data.display_gids" placeholder="请选择" size="mini" multiple>
+            <el-select v-model="editForm.data.own_gid" placeholder="请选择" size="mini" :disabled="!editForm.isAdd" >
               <el-option
                 v-for="item in displayGidsCfg"
                 :key="item.value"
@@ -214,20 +220,8 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item v-if="editForm.data.jump_id===3" label="比赛跳转" :required="true">
-            <el-select v-model="editForm.data.match_cfg_id" placeholder="请选择" size="mini">
-              <el-option
-                v-for="item in showCsCfgs"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              />
-            </el-select>
-          </el-form-item>
-
-
           <el-form-item v-if="editForm.data.jump_id===4" label="分类跳转" :required="true">
-            <el-select v-model="editForm.data.game_id" placeholder="请选择" size="mini">
+            <el-select v-model="editForm.data.game_id" placeholder="请选择" size="mini" @change="selectMatchConfig()">
               <el-option
                 v-for="item in jumpTypeCfgs"
                 :key="item.value"
@@ -292,7 +286,7 @@ import { $libDate, $libShow } from '@/utils/common'
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
 import Compare from '@/components/Compare'
 import { getAllCommonGameConfig } from '@/utils/common-game-config'
-import {APPID_OPTIONS, CHANNEL_OPTIONS, MATCH_UNIQUE_ID_CFG} from "@/utils/options";
+import {APPID_OPTIONS, CHANNEL_OPTIONS, MATCH_IUPSTREAM_TYPE_OPTIONS, MATCH_UNIQUE_ID_CFG,MATCH_PUSOY_UNIQUE_ID_CFG} from "@/utils/options";
 
 export default {
   components: { Compare, Publish, DateTimeShow, ImagePicker },
@@ -327,9 +321,10 @@ export default {
           title: '',
           app_id: 1000002,
           switch: 'true',
-          display_gids:[], //展示游戏
+          display_gids:[], //展示游戏 //当前字段弃用
           display_place:0, //展示位置
-          channelId: []  //站点
+          channelId: [] , //站点
+          own_gid: 0,  //所属哪个游戏
         }
       },
       AttrNames: {
@@ -348,7 +343,7 @@ export default {
       postJumpCfgs: [
         { 'value': 1, 'label': '打开海报详情' },
         { 'value': 2, 'label': '跳转到子游戏' },
-        { 'value': 3, 'label': '跳转比赛详情' },
+       // { 'value': 3, 'label': '跳转比赛详情' },
         { 'value': 4, 'label': '跳转分类' },
       ],
       jumpTypeCfgs: [
@@ -358,14 +353,15 @@ export default {
         { 'value': 4, 'label': 'GTCC' },
       ],
       statusCfgs: [
-        { "value": 0, "label": "关闭" },
-        { "value": 1, "label": "开启" },
+        { "value": false, "label": "关闭" },
+        { "value": true, "label": "开启" },
       ],
 
       subKey: 'match_poster_list',
       APPID_OPTIONS,
       MATCH_UNIQUE_ID_CFG,
-      CHANNEL_OPTIONS
+      CHANNEL_OPTIONS,
+      MATCH_PUSOY_UNIQUE_ID_CFG,
     }
   },
   computed: {
@@ -377,7 +373,6 @@ export default {
   },
   mounted() {
     this.getList()
-    this.getBeginMatchCfgs()
   },
   methods: {
     getFullKey() {
@@ -388,43 +383,36 @@ export default {
       this.form.app_id = -1
       this.form.status = -1
     },
-    getBeginMatchCfgs() {
-      request({
+    async getBeginMatchCfgs(gid) {
+      await request({
         url: '/matchconfig/match/config/list',
         method: 'get',
         data: {
           Env: this.env,
-          GameId: -1,
+          GameId: gid,
           Status: this.form.status,
           CsId: -1,
           RepeatType: -1,
           PageNum: 1,
-          PageSize: 200
+          PageSize: 200,
         }
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
           if (objs.total > 0) {
-            //step one 先将比赛全局唯一ID存储起来
-            var tmpArray = []
-            for (var i = 0; i < objs.list.length; i++) {
-              var signExtra = JSON.parse(objs.list[i].sign_extra)
-              if (signExtra.matchUniqueId != null || signExtra.matchUniqueId > 0) {
-                tmpArray.push(signExtra.matchUniqueId)
-              }
-            }
-            //step 数组中的数据去重,并根据ID转换为label标签名字
-            if (tmpArray.length > 0) {
-              const newArr = this.removeDuplicate(tmpArray)
-              for(var i = 0; i < newArr.length; i++) {
-                var name = this.getMatchName(newArr[i])
-                if (name != null && name !== '') {
-                  this.matchCfg.push({
-                    'label': name,
-                    'value': newArr[i],
-                    'app_info': JSON.parse(objs.list[i].app_info_cfg)
-                  })
-                }
+            this.matchCfg = []
+            for (let i = 0; i < objs.list.length; i++) {
+              let signExtra = JSON.parse(objs.list[i].sign_extra)
+              if (signExtra.matchEvents > 0  &&  signExtra.matchUniqueId > 0) {
+                  let labelName = this.getMatchUniqueLabel(gid,signExtra.matchUniqueId)
+                  if (labelName !== '' ){
+                    this.matchCfg.push({
+                      'label': labelName,
+                      'value': signExtra.matchUniqueId,
+                      'app_info': JSON.parse(objs.list[i].app_info_cfg),
+                      'match_event':signExtra.matchEvents
+                    })
+                  }
               }
             }
           }
@@ -483,28 +471,27 @@ export default {
             if (cfg.tableData.length > 0) {
               this.posterList.tableData = []
               if (this.form.app_id < 0 && this.form.status >= 0) {
-                for (var i = 0; i < cfg.tableData.length; i++) {
-                  if (this.form.status == 1 && cfg.tableData[i].switch == true) {
+                for (let i = 0; i < cfg.tableData.length; i++) {
+                  if (this.form.status === 1 && cfg.tableData[i].switch === true) {
                     this.posterList.tableData.push(cfg.tableData[i])
                   }
-                  if (this.form.status == 0 && cfg.tableData[i].switch == false) {
+                  if (this.form.status === 0 && cfg.tableData[i].switch === false) {
                     this.posterList.tableData.push(cfg.tableData[i])
                   }
                 }
 
               } else if (this.form.app_id > 0 && this.form.status < 0) {
-                for (var i = 0; i < cfg.tableData.length; i++) {
-                  if (cfg.tableData[i].app_id == this.form.app_id) {
+                for (let i = 0; i < cfg.tableData.length; i++) {
+                  if (cfg.tableData[i].app_id === this.form.app_id) {
                     this.posterList.tableData.push(cfg.tableData[i])
                   }
                 }
               } else if (this.form.app_id > 0 && this.form.status >= 0) {
-                for (var i = 0; i < cfg.tableData.length; i++) {
-                  if (cfg.tableData[i].app_id == this.form.app_id && (this.form.status == 1 && cfg.tableData[i].switch == true)) {
+                for (let i = 0; i < cfg.tableData.length; i++) {
+                  if (cfg.tableData[i].app_id === this.form.app_id && (this.form.status === 1 && cfg.tableData[i].switch === true)) {
                     this.posterList.tableData.push(cfg.tableData[i])
                   }
-
-                  if (cfg.tableData[i].app_id == this.form.app_id && (this.form.status == 0 && cfg.tableData[i].switch == false)) {
+                  if (cfg.tableData[i].app_id === this.form.app_id && (this.form.status === 0 && cfg.tableData[i].switch === false)) {
                     this.posterList.tableData.push(cfg.tableData[i])
                   }
                 }
@@ -521,25 +508,34 @@ export default {
         }
       })
     },
-    selectMatchName() {
-      this.showCsCfgs = []
-      if (this.matchCfg.length > 0) {
-        var fit = false
-        for (var i = 0; i < this.matchCfg.length; i++) {
-          for (var j = 0; j < this.matchCfg[i].app_info.length; j++) {
-            if (this.matchCfg[i].app_info[j].appId === this.editForm.data.app_id) {
-              this.showCsCfgs.push(this.matchCfg[i])
-              fit = true
-            }
+    async  selectMatchConfig() {
+      this.editForm.data.match_cfg_id = 0
+      //页签分类跳转的时候 拉取赛事列表的数据，按比赛全局ID 页签ID  应用ID 做数据过滤
+        await this.getBeginMatchCfgs(this.editForm.data.own_gid);
+
+        // 使用filter和some进行条件筛选
+        const matchedCfgs = this.matchCfg.filter(cfg =>
+          cfg.app_info?.some(app => app.appId === this.editForm.data.app_id)
+        );
+        //console.log("过滤one matchedCfgs ",matchedCfgs)
+        //做数据过滤 并且对matchEvent去重
+        const seenEvents = new Set();
+        const matchEventsCfgs = matchedCfgs.filter(cfg => {
+          const isMatch = cfg.match_event === this.editForm.data.game_id;
+          const isUnique = !seenEvents.has(cfg.match_event);
+          if (isMatch && isUnique) {
+            seenEvents.add(cfg.match_event);
+            return true;
           }
-        }
-        if (fit === true) {
-          this.showCsCfgs.push({
-            'label': '无',
-            'value': 0
-          })
-        }
-      }
+          return false;
+        });
+
+        this.showCsCfgs = []
+        this.showCsCfgs = matchEventsCfgs
+        this.showCsCfgs.push({
+          label: '无', value: 0
+        })
+     // console.log("过滤二  this.showCsCfgs  ",this.showCsCfgs)
     },
 
     saveSwitch() {
@@ -554,11 +550,9 @@ export default {
           Message.success(showMsg)
           this.getList()
           this.editForm.visable = false
-          return
         } else {
           const errMsg = '保存成功失败！'
           Message.error(errMsg + response.Data)
-          return
         }
       })
     },
@@ -566,37 +560,39 @@ export default {
       return $libDate.FormateSecondStr(ts, 2)
     },
     getStatusName(status) {
-      var statusName = ""
-      for (var i = 0; i < this.statusCfgs.length; i++) {
-        if (this.statusCfgs[i].value === status) {
-          statusName = this.statusCfgs[i].label
-          break
-        }
+      let statusName = ""
+      const foundItem = this.statusCfgs.find(item => item.value === status);
+      if (foundItem) {
+        statusName = foundItem.label;
       }
       return statusName
     },
 
     getAppName(id) {
-      var appName = ""
-      for (var i = 0; i < this.APPID_OPTIONS.length; i++) {
-        if (this.APPID_OPTIONS[i].value === id) {
-          appName = this.APPID_OPTIONS[i].label
-          break
-        }
+      let appName = ""
+      const foundItem = this.APPID_OPTIONS.find(item => item.value === id);
+      if (foundItem) {
+        appName = foundItem.label;
       }
       appName = appName + '[' + id + ']'
       return appName
     },
 
     getJumpName(jump_id) {
-      var jumpName = ""
-      for (var i = 0; i < this.postJumpCfgs.length; i++) {
-        if (this.postJumpCfgs[i].value === jump_id) {
-          jumpName = this.postJumpCfgs[i].label
-          break
-        }
+      let jumpName = "";
+      const foundItem = this.postJumpCfgs.find(item => item.value === jump_id);
+      if (foundItem) {
+        jumpName = foundItem.label;
       }
       return jumpName
+    },
+    getMatchName(gid){
+      let matchName = ""
+      const foundItem = this.displayGidsCfg.find(item => item.value === gid);
+      if (foundItem) {
+        matchName = foundItem.label;
+      }
+      return matchName
     },
     showForm(id) {
       if (id === 0) {
@@ -618,9 +614,9 @@ export default {
           display_gids:[], //展示游戏
           display_place:0, //展示位置
           channelId:[],
+          own_gid:0,
         }
         this.editForm.isAdd = true
-        this.selectMatchName()
       } else {
         let editData = {}
         this.editForm.title = '编辑海报配置'
@@ -636,15 +632,14 @@ export default {
           editData.channelId = []
         }
         this.editForm.data = editData
-        this.selectMatchName()
         let find = false
-        for (var i = 0; i < this.showCsCfgs.length; i++) {
+        for (let i = 0; i < this.showCsCfgs.length; i++) {
           if (this.showCsCfgs[i].value === this.editForm.data.match_cfg_id) {
             find = true
             break
           }
         }
-        if (find == false) {
+        if (find === false) {
           this.editForm.data.match_cfg_id = 0
         }
       }
@@ -663,7 +658,7 @@ export default {
       eTime = Math.floor(this.editForm.onceTime[1] / 1000)
 
       if (this.editForm.isAdd === false) {
-        for (var i = 0; i < this.posterList.tableData.length; i++) {
+        for (let i = 0; i < this.posterList.tableData.length; i++) {
           if (this.posterList.tableData[i].id === this.editForm.data.id) {
             this.posterList.tableData[i].title = this.editForm.data.title
             this.posterList.tableData[i].switch = this.editForm.data.switch
@@ -681,6 +676,9 @@ export default {
             }
             if(this.editForm.data.display_place !== undefined){
               this.posterList.tableData[i].display_place = this.editForm.data.display_place
+            }
+            if(this.editForm.data.own_gid !== undefined){
+              this.posterList.tableData[i].own_gid = this.editForm.data.own_gid
             }
             this.posterList.tableData[i].channelId = this.editForm.data.channelId
           }
@@ -704,6 +702,7 @@ export default {
             'display_gids':this.editForm.data.display_gids,
             'display_place':this.editForm.data.display_place,
             'channelId': this.editForm.data.channelId,
+            'own_gid':this.editForm.data.own_gid,
           }
         )
       }
@@ -718,11 +717,9 @@ export default {
           Message.success(showMsg)
           this.getList()
           this.editForm.visable = false
-          return
         } else {
           const errMsg = '保存成功失败！'
           Message.error(errMsg + response.Data)
-          return
         }
       })
     },
@@ -773,6 +770,7 @@ export default {
         this.editForm.data.match_cfg_id = 0
         this.editForm.data.first_jump = false
         this.editForm.data.details_image_path = ''
+        this.editForm.data.game_id = 0
       } else if (this.editForm.data.jump_id === 3) {
         this.editForm.data.game_id = 0
         this.editForm.data.first_jump = false
@@ -781,23 +779,21 @@ export default {
       else if (this.editForm.data.jump_id === 4) {
         this.editForm.data.first_jump = false
         this.editForm.data.details_image_path = ''
+        this.editForm.data.game_id = 0
       }
     },
-    removeDuplicate(arr) {
-      const newArr = []
-      arr.forEach(item => {
-        if (newArr.indexOf(item) === -1) {
-          newArr.push(item)
-        }
-      })
-      return newArr // 返回一个新数组
-    },
-    getMatchName(id) {
-      var jumpName = ''
-      for (var i = 0; i < this.MATCH_UNIQUE_ID_CFG.length; i++) {
-        if(this.MATCH_UNIQUE_ID_CFG[i].value === id) {
-          jumpName = this.MATCH_UNIQUE_ID_CFG[i].label
-        }
+    getMatchUniqueLabel(gid,matchUniqueId) {
+      let jumpName = ''
+      let foundItem
+      switch (gid){
+        case MATCH_IUPSTREAM_TYPE_OPTIONS.MATCH_UPSTREAM_TYPE_TONGITS:
+          foundItem = this.MATCH_UNIQUE_ID_CFG.find(item => item.value === matchUniqueId);
+          jumpName = foundItem ? foundItem.label : jumpName; // 保持jumpName原有的值（如果未找到）
+          break
+        case MATCH_IUPSTREAM_TYPE_OPTIONS.MATCH_UPSTREAM_TYPE_PUSOY:
+          foundItem = this.MATCH_PUSOY_UNIQUE_ID_CFG.find(item => item.value === matchUniqueId);
+          jumpName = foundItem ? foundItem.label : jumpName; // 保持jumpName原有的值（如果未找到）
+          break
       }
       return jumpName
     },
@@ -873,10 +869,11 @@ export default {
          this.errmsg("请选择子游戏")
         return false
       }
-      if (this.editForm.data.jump_id === 3 &&  this.editForm.data.game_id <= 0) {
-        this.errmsg("请选择比赛赛事")
+      if (this.editForm.data.jump_id === 4 &&  this.editForm.data.game_id <= 0) {
+        this.errmsg("请选择分类跳转类型")
         return false
       }
+
       return true
     }
   }

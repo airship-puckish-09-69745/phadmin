@@ -118,7 +118,7 @@ export const  BET_SCENES_CFG_OPTIONS = [
 
 ]
 
-// 比赛全局ID集合
+// 比赛Tongits全局ID集合
 export const MATCH_UNIQUE_ID_CFG =[
   { 'value': 0, 'label': '无' },
   { 'value': 10001, 'label': '188Free' },
@@ -129,6 +129,19 @@ export const MATCH_UNIQUE_ID_CFG =[
   { 'value': 10006, 'label': 'P100' },
   { 'value': 10007, 'label': 'P300' },
   { 'value': 10008, 'label': 'GTCC 2005' },
+]
+
+// 比赛Pusoy全局ID集合
+export const MATCH_PUSOY_UNIQUE_ID_CFG =[
+  { 'value': 0, 'label': '无' },
+  { 'value': 20001, 'label': '188Free' },
+  { 'value': 20002, 'label': '12888Free' },
+  { 'value': 20003, 'label': 'P10' },
+  { 'value': 20004, 'label': 'P20' },
+  { 'value': 20005, 'label': 'P40' },
+  { 'value': 20006, 'label': 'P100' },
+  { 'value': 20007, 'label': 'P300' },
+  { 'value': 20008, 'label': 'GTCC 2005' },
 ]
 
 //牌桌TableId

@@ -40,12 +40,12 @@
         </template>
       </el-table-column>
       <el-table-column prop="uid" label="生效ID" align="center" min-width="320"/>
-      <el-table-column prop="amount" label="可发放金额" align="center" min-width="320">
+      <el-table-column prop="amount" label="发放金额" align="center" min-width="239">
         <template slot-scope="scope">
           {{ scope.row.amount / 1000 }}
         </template>
       </el-table-column>
-      <el-table-column prop="updateBy" label="修改人" align="center" min-width="320"/>
+      <el-table-column prop="updateBy" label="修改人" align="center" min-width="239"/>
       <el-table-column label="操作" align="center" min-width="197">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="openEdit(scope.row)">编辑</el-button>
