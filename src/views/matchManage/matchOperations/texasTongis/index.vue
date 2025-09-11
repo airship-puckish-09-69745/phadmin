@@ -10,7 +10,7 @@
       </div> -->
       <br>
       <el-tabs v-if="configData.Data" type="border-card">
-        <el-tab-pane label="Texas Tongits配置">
+        <el-tab-pane label="kyc开关配置">
           <TexasTongisConfig :config="configData.Data.TexasTongisConfig" @update="handleUpdateConfigData" />
         </el-tab-pane>
       </el-tabs>

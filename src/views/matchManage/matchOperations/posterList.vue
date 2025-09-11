@@ -88,9 +88,9 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="display_gids" label="游戏类型" >
+        <el-table-column prop="own_gid" label="游戏类型" >
           <template slot-scope="scope">
-            {{ getMatchName(scope.row.display_gids) }}
+            {{ getMatchName(scope.row.own_gid) }}
           </template>
         </el-table-column>
 
@@ -161,7 +161,7 @@
           </el-form-item>
 
           <el-form-item label="展示游戏：" :required="true">
-            <el-select v-model="editForm.data.display_gids" placeholder="请选择" size="mini" :disabled="!editForm.isAdd" >
+            <el-select v-model="editForm.data.own_gid" placeholder="请选择" size="mini" :disabled="!editForm.isAdd" >
               <el-option
                 v-for="item in displayGidsCfg"
                 :key="item.value"
@@ -221,7 +221,7 @@
           </el-form-item>
 
           <el-form-item v-if="editForm.data.jump_id===4" label="分类跳转" :required="true">
-            <el-select v-model="editForm.data.game_id" placeholder="请选择" size="mini" @change="selectMatchConfig()">
+            <el-select v-model="editForm.data.game_id" placeholder="请选择" size="mini" @change="selectMatchConfig(true)">
               <el-option
                 v-for="item in jumpTypeCfgs"
                 :key="item.value"
@@ -321,9 +321,10 @@ export default {
           title: '',
           app_id: 1000002,
           switch: 'true',
-          display_gids:[], //展示游戏
+          display_gids:[], //展示游戏 //当前字段弃用
           display_place:0, //展示位置
-          channelId: []  //站点
+          channelId: [] , //站点
+          own_gid: 0,  //所属哪个游戏
         }
       },
       AttrNames: {
@@ -507,16 +508,20 @@ export default {
         }
       })
     },
-    async  selectMatchConfig() {
-      this.editForm.data.match_cfg_id = 0
+    async  selectMatchConfig(change) {
+
+      //console.log("过滤one matchedCfgs jump_id ",this.editForm.data.jump_id)
+      if(this.editForm.data.jump_id === 4 && change === true){
+        this.editForm.data.match_cfg_id = 0
+      }
       //页签分类跳转的时候 拉取赛事列表的数据，按比赛全局ID 页签ID  应用ID 做数据过滤
-        await this.getBeginMatchCfgs(this.editForm.data.display_gids);
+        await this.getBeginMatchCfgs(this.editForm.data.own_gid);
 
         // 使用filter和some进行条件筛选
         const matchedCfgs = this.matchCfg.filter(cfg =>
           cfg.app_info?.some(app => app.appId === this.editForm.data.app_id)
         );
-        //console.log("过滤one matchedCfgs ",matchedCfgs)
+       // console.log("过滤one matchedCfgs ",matchedCfgs)
         //做数据过滤 并且对matchEvent去重
         const seenEvents = new Set();
         const matchEventsCfgs = matchedCfgs.filter(cfg => {
@@ -534,7 +539,7 @@ export default {
         this.showCsCfgs.push({
           label: '无', value: 0
         })
-     // console.log("过滤二  this.showCsCfgs  ",this.showCsCfgs)
+      //console.log("过滤二  this.showCsCfgs  ",this.showCsCfgs)
     },
 
     saveSwitch() {
@@ -613,6 +618,7 @@ export default {
           display_gids:[], //展示游戏
           display_place:0, //展示位置
           channelId:[],
+          own_gid:0,
         }
         this.editForm.isAdd = true
       } else {
@@ -630,17 +636,8 @@ export default {
           editData.channelId = []
         }
         this.editForm.data = editData
-        let find = false
-        for (let i = 0; i < this.showCsCfgs.length; i++) {
-          if (this.showCsCfgs[i].value === this.editForm.data.match_cfg_id) {
-            find = true
-            break
-          }
-        }
-        if (find === false) {
-          this.editForm.data.match_cfg_id = 0
-        }
       }
+      this.selectMatchConfig(false)
       this.editForm.visable = true
     },
     savePosetCfg() {
@@ -675,6 +672,9 @@ export default {
             if(this.editForm.data.display_place !== undefined){
               this.posterList.tableData[i].display_place = this.editForm.data.display_place
             }
+            if(this.editForm.data.own_gid !== undefined){
+              this.posterList.tableData[i].own_gid = this.editForm.data.own_gid
+            }
             this.posterList.tableData[i].channelId = this.editForm.data.channelId
           }
         }
@@ -697,6 +697,7 @@ export default {
             'display_gids':this.editForm.data.display_gids,
             'display_place':this.editForm.data.display_place,
             'channelId': this.editForm.data.channelId,
+            'own_gid':this.editForm.data.own_gid,
           }
         )
       }

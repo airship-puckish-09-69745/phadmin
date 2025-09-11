@@ -2147,7 +2147,19 @@ export const asyncRoutes = [
         component: () => import('@/views/config/tableConfig/activity/kingOfPot/index.vue'),
         name: 'kingOfPot',
         meta: { title: 'KingOfPot配置', noCache: true }
-      }
+      },
+      {
+        path: 'sevenDayTreasureVault',
+        component: () => import('@/views/config/tableConfig/activity/sevenDayTreasureVaultConfig.vue'),
+        name: 'sevenDayTreasureVault',
+        meta: { title: '7日留存活动配置', noCache: true }
+      },
+      {
+        path: 'slotsRankConfig',
+        component: () => import('@/views/config/tableConfig/activity/slotsRankCfg.vue'),
+        name: 'slotsRankConfig',
+        meta: { title: '老虎机排行榜', noCache: true }
+      },
     ]
   },
   {
