@@ -479,7 +479,7 @@
               </el-table-column>
             </el-table>
           </el-form-item>
-          <el-form-item v-if="editForm.data.opentMatchType===2" label="提前显示时间(秒)：" :required="true">
+          <el-form-item  label="提前显示时间(秒)：" :required="true">
             <el-input v-model.number="editForm.data.preShowSeconds" style="width: 200px;" placeholder="请填写提前显示时间" />
           </el-form-item>
           <el-form-item v-if="envProjectName === 'ph_audit' && editForm.data.opentMatchType===1" label="创建时间(秒)" :required="true">
@@ -1947,9 +1947,10 @@ export default {
       return flag
     },
     async saveMatch() {
-      if (this.editForm.data.opentMatchType == 1) {
-        this.editForm.data.preEnterSeconds = this.editForm.data.preShowSeconds
-      }
+      //SNG 不考虑提前进入时间
+      // if(this.editForm.data.opentMatchType == 1) {
+      //   this.editForm.data.preEnterSeconds = this.editForm.data.preShowSeconds
+      // }
       if (!await this.configCheck()) {
         return
       }
@@ -2668,7 +2669,7 @@ export default {
       return false
     },
     getMatchStartTimeLabel() {
-      if (this.editForm.data.opentMatchType == 2) {
+      if(this.editForm.data.opentMatchType === 2){
         return '开赛时间'
       } else {
         return '最后开赛时间'
