@@ -221,7 +221,7 @@
           </el-form-item>
 
           <el-form-item v-if="editForm.data.jump_id===4" label="分类跳转" :required="true">
-            <el-select v-model="editForm.data.game_id" placeholder="请选择" size="mini" @change="selectMatchConfig()">
+            <el-select v-model="editForm.data.game_id" placeholder="请选择" size="mini" @change="selectMatchConfig(true)">
               <el-option
                 v-for="item in jumpTypeCfgs"
                 :key="item.value"
@@ -508,8 +508,12 @@ export default {
         }
       })
     },
-    async  selectMatchConfig() {
-      this.editForm.data.match_cfg_id = 0
+    async  selectMatchConfig(change) {
+
+      //console.log("过滤one matchedCfgs jump_id ",this.editForm.data.jump_id)
+      if(this.editForm.data.jump_id === 4 && change === true){
+        this.editForm.data.match_cfg_id = 0
+      }
       //页签分类跳转的时候 拉取赛事列表的数据，按比赛全局ID 页签ID  应用ID 做数据过滤
         await this.getBeginMatchCfgs(this.editForm.data.own_gid);
 
@@ -517,7 +521,7 @@ export default {
         const matchedCfgs = this.matchCfg.filter(cfg =>
           cfg.app_info?.some(app => app.appId === this.editForm.data.app_id)
         );
-        //console.log("过滤one matchedCfgs ",matchedCfgs)
+       // console.log("过滤one matchedCfgs ",matchedCfgs)
         //做数据过滤 并且对matchEvent去重
         const seenEvents = new Set();
         const matchEventsCfgs = matchedCfgs.filter(cfg => {
@@ -535,7 +539,7 @@ export default {
         this.showCsCfgs.push({
           label: '无', value: 0
         })
-     // console.log("过滤二  this.showCsCfgs  ",this.showCsCfgs)
+      //console.log("过滤二  this.showCsCfgs  ",this.showCsCfgs)
     },
 
     saveSwitch() {
@@ -632,17 +636,8 @@ export default {
           editData.channelId = []
         }
         this.editForm.data = editData
-        let find = false
-        for (let i = 0; i < this.showCsCfgs.length; i++) {
-          if (this.showCsCfgs[i].value === this.editForm.data.match_cfg_id) {
-            find = true
-            break
-          }
-        }
-        if (find === false) {
-          this.editForm.data.match_cfg_id = 0
-        }
       }
+      this.selectMatchConfig(false)
       this.editForm.visable = true
     },
     savePosetCfg() {

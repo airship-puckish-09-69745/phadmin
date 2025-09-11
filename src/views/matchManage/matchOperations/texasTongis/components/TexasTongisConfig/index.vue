@@ -1,8 +1,5 @@
 <template>
   <el-form ref="item" label-width="300px">
-    <el-form-item label="kyc开关：">
-      <el-switch v-model="formData.OtherGameStatus" :active-value="true" :inactive-value="false" />
-    </el-form-item>
     <el-form-item label="支持的SiteId：">
       <SiteSelect v-model="formData.Sites" multiple placeholder="请选择" style="width: 400px" />
     </el-form-item>
