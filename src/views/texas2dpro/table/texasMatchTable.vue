@@ -926,7 +926,7 @@ export default {
               objs[o].RaceEndDate = new Date(objs[o].RaceEndDate * 1000)
             }
 
-            if (objs[o].RaceBeginTime === 0) {
+            if (objs[o].RaceBeginTime < 0) {
               objs[o].RaceBeginTime = new Date()
             } else {
               objs[o].RaceBeginTime = new Date(objs[o].RaceBeginTime * 1000 - 8 * 3600 * 1000)
@@ -937,7 +937,7 @@ export default {
               objs[o].BgImage = ''
             }
 
-            if (objs[o].RaceEndTime === 0) {
+            if (objs[o].RaceEndTime < 0) {
               objs[o].RaceEndTime = new Date()
             } else {
               objs[o].RaceEndTime = new Date(objs[o].RaceEndTime * 1000 - 8 * 3600 * 1000)
