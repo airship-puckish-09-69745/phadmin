@@ -672,7 +672,10 @@ export default {
         { key: '[1]快速盲注配置', value: 1 },
         { key: '[2]小赛2m升盲', value: 2 },
         { key: '[3]Daily Free', value: 3 },
-        { key: '[4]新2m升盲', value: 4 }
+        { key: '[4]新2m升盲', value: 4 },
+        { key: '[5]Turbo盲注', value: 5 },
+        { key: '[6]3M标准', value: 6 },
+        { key: '[7]深筹大赛200P+', value: 7 }
       ],
       TemplateTypeConfig: [
         { key: '固定奖励', value: 0 },
@@ -1085,7 +1088,7 @@ export default {
       postData.RaceBeginDate = this.timeToTimestamp(postData.RaceBeginDate)
       postData.RaceEndDate = this.timeToTimestamp(postData.RaceEndDate)
       postData.RaceBeginTime = this.timeToTimestamp(postData.RaceBeginTime) % (24 * 3600) + 8 * 3600
-      if (postData.RaceBeginTime > 86400) {
+      if (postData.RaceBeginTime >= 86400) {
         postData.RaceBeginTime = postData.RaceBeginTime - 86400
       }
       postData.RaceEndTime = this.timeToTimestamp(postData.RaceEndTime) % (24 * 3600) + 8 * 3600
