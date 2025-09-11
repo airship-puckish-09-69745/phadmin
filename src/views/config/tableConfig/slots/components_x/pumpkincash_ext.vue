@@ -155,7 +155,8 @@ export default {
       default: function() {
         return {}
       }
-    }
+    },
+    baseBet: Number
   },
   data() {
     return {
