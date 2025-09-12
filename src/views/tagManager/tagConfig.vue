@@ -577,6 +577,9 @@
         return gid
       },
       attrName(row) {
+        if (row.tag_id === 10002) {
+          return `未在${this.gameName(row.tag_gid)}投注过的用户`
+        }
         if (row.tag_attr === '{}') {
           return ""
         }
