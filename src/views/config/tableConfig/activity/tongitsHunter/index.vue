@@ -323,7 +323,7 @@ export default {
       },
       gameNames: {
         22: 'TongitsPot',
-        28: 'TongitsJoke',
+        28: 'TongitsJoker',
       },
       appIdOptions: [
         {
