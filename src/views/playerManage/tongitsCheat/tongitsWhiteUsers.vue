@@ -53,7 +53,8 @@ export default {
       regTime: $libDate.GetDayBegin(new Date().getTime()) / 1000 - 24 * 60 * 60 * 7,
       trustType: 0,
       maxCount: 0,
-      page: 1
+      page: 1,
+      trustScore:0,
     }
   },
   created() {
@@ -77,7 +78,7 @@ export default {
         sortType = 'MaxTrustScore'
       } else if (this.sortType === 3) {
         sortType = 'MaxCheatScore'
-      }else if (this.sortType === 4) {
+      } else if (this.sortType === 4) {
         sortType = 'GGR'
       }
       return sortType
@@ -137,6 +138,9 @@ export default {
       }
       this.blindList = JSON.stringify(this.tableMoneyType)
       $this.clientDB = new ClientTableData([], 1, {})
+      if (this.trustScore === undefined || this.trustScore <= 0){
+        this.trustScore = 0
+      }
       request({
         url: '/dataProxy/info',
         method: 'get',
@@ -157,6 +161,12 @@ export default {
           this.maxCount = response.Data.MaxCount
           const items = response.Data.Items || []
           for (let i = 0; i < items.length; i++) {
+            if (this.userType === 1 && items[i].cheatType === 3) {
+              continue
+            }
+            if (this.trustScore !== 0 && items[i].trustScore < this.trustScore) {
+              continue
+            }
             this.logs.push({
               Uid: items[i].uid,
               RegTime: items[i].regTime,
@@ -198,8 +208,8 @@ export default {
     formatTimeDate(ts) {
       return $libDate.FormateSecondStr(ts, 2)
     },
-    changeWhite(row) {
-      request({
+    async changeWhite(row) {
+      await request({
         url: '/dataProxy/info',
         method: 'post',
         data: {
@@ -217,22 +227,36 @@ export default {
           row.CheatOperator = this.BlackOperator
           row.CheatOperTime = Date.now() / 1000
           this.clientDB.UpdateData2('Uid', row)
+        } else {
+          this.$message.error(row.Uid + '认证失败')
         }
       })
       this.refreshShow()
     },
     changeSomeWhite() {
-      const logs = this.clientDB.GetCurrentPageData()
-      for (let i = 0; i < logs.length; i++) {
-        const log = logs[i]
-        if (log.UserType === 3) {
-          continue
+      const loading = this.$loading({
+        lock: true,
+        text: 'Loading',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      })
+      try {
+        const logs = this.clientDB.GetCurrentPageData()
+        for (let i = 0; i < logs.length; i++) {
+          const log = logs[i]
+          if (log.UserType === 3) {
+            continue
+          }
+          this.changeWhite(log)
         }
-        this.changeWhite(log)
+      } catch (e) {
+        console.log(e)
+      } finally {
+        loading.close()
       }
     },
-    channelWhite(row) {
-      request({
+    async channelWhite(row) {
+      await request({
         url: '/dataProxy/info',
         method: 'post',
         data: {
@@ -252,7 +276,7 @@ export default {
             this.clientDB.UpdateData2('Uid', row)
           }
         } else {
-          console.log(response.Data)
+          this.$message.error(row.Uid + '取消认证失败')
         }
       })
       this.refreshShow()
@@ -410,6 +434,9 @@ export default {
               :value="itemTableMoney.value"
             />
           </el-select>
+        </el-form-item>
+        <el-form-item label="最低信任分：">
+          <el-input v-model.number="trustScore" />
         </el-form-item>
         <el-form-item>
           <el-button size="mini" type="primary" icon="el-icon-plus" @click="getData">查询</el-button>

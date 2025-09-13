@@ -521,14 +521,14 @@ export default {
         const matchedCfgs = this.matchCfg.filter(cfg =>
           cfg.app_info?.some(app => app.appId === this.editForm.data.app_id)
         );
-       // console.log("过滤one matchedCfgs ",matchedCfgs)
-        //做数据过滤 并且对matchEvent去重
+       //console.log("过滤one matchedCfgs ",matchedCfgs)
+        //做数据过滤 并且对全局ID去重
         const seenEvents = new Set();
         const matchEventsCfgs = matchedCfgs.filter(cfg => {
           const isMatch = cfg.match_event === this.editForm.data.game_id;
-          const isUnique = !seenEvents.has(cfg.match_event);
+          const isUnique = !seenEvents.has(cfg.value);
           if (isMatch && isUnique) {
-            seenEvents.add(cfg.match_event);
+            seenEvents.add(cfg.value);
             return true;
           }
           return false;

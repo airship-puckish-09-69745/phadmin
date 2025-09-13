@@ -47,6 +47,20 @@
                     {{ showGameName(scope.row.Gid) }}
                   </template>
                 </el-table-column>
+
+                <el-table-column label="免费模式" width="200">
+                  <template #default="{ row }">
+                    <el-select v-model="row.FreeTyp" placeholder="请选择" style="width: 120px">
+                      <el-option
+                          v-for="item in freeTypes"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value"
+                      />
+                    </el-select>
+                  </template>
+                </el-table-column>
+
                 <el-table-column prop="Open" label="排行榜开关" width="200">
                   <template slot-scope="scope">
                     <el-switch
@@ -98,7 +112,7 @@ export default {
       slotsRankCfg: { //排行榜游戏配置
         Open: 1,
         AppsCanSkip: [],
-        GameCfg: [{Gid:1, Icon:"", Open:0}],
+        GameCfg: [{Gid:1, Icon:"", Open:0, FreeTyp: 0}],
       },
       gameNameMap: {},
       gameDataMap: {},
@@ -110,6 +124,10 @@ export default {
         { 'value': 1000006, 'label': 'BingoPlusTest' },
         { 'value': 1000007, 'label': 'br' },
         { 'value': 1100000, 'label': 'xworld' }
+      ],
+      freeTypes: [
+        { 'value': 0, 'label': 'scatter' },
+        { 'value': 1, 'label': 'bouns' },
       ],
     }
   },
@@ -137,7 +155,7 @@ export default {
           const cfgGameCfg = cfg.GameCfg || []
           for (let i = 0; i < cfgGameCfg.length; i++) {
             const obj = cfg.GameCfg[i]
-            gameDataMap[obj.Gid] = {Open: obj.Open, Icon: obj.Icon}
+            gameDataMap[obj.Gid] = {Open: obj.Open, Icon: obj.Icon, FreeTyp: obj.FreeTyp}
           }
           this.gameDataMap = gameDataMap
 
@@ -163,7 +181,8 @@ export default {
             const gameData = this.gameDataMap[obj.Gid] || {}
             const icon = gameData.Icon || ""
             const open = gameData.Open !== undefined ? gameData.Open : 0
-            const game = {Gid: obj.Gid, Name: obj.Name, Icon: icon, Open: open}
+            const freeTyp = gameData.FreeTyp !== undefined ? gameData.FreeTyp : 0
+            const game = {Gid:obj.Gid, Name:obj.Name, Icon:icon, Open:open, FreeTyp:freeTyp}
             games.push(game)
 
             gameNameMap[obj.Gid] = obj.Name
