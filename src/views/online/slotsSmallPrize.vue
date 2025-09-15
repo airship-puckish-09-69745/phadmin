@@ -64,7 +64,7 @@
           {{ scope.row.TotalBet / 1000 }}
         </template>
       </el-table-column>
-      <el-table-column prop="PoolOrigin" label="奖池总金额" align="center" min-width="100">
+      <el-table-column prop="PoolOrigin" label="返奖前奖池剩余金额" align="center" min-width="100">
         <template slot-scope="scope">
           {{ scope.row.PoolOrigin / 1000 }}
         </template>
