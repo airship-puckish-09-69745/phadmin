@@ -725,16 +725,21 @@
               }
             }
           }
+          this.form.roundAvg.val = Number(this.form.roundAvg.val)
+          this.form.validBet.val = Number(this.form.validBet.val)
           this.form.tag_attr = JSON.stringify({
             loginDay: this.form.loginDay,
             roundAvg: this.form.roundAvg,
             validBet: this.form.validBet
           })
         } else if (this.form.tag_id === 10003) {
+          this.form.days = Number(this.form.days)
           this.form.tag_attr = JSON.stringify({
             days: this.form.days,
           })
         } else if (this.form.tag_id === 10004) {
+          this.form.reduce = Number(this.form.reduce)
+          this.form.totalBet = Number(this.form.totalBet)
           this.form.tag_attr = JSON.stringify({
             reduce: this.form.reduce,
             totalBet: this.form.totalBet
