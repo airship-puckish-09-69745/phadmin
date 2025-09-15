@@ -315,7 +315,7 @@
             <span v-show="showTip" style="color:red; margin-left:10px">注意有相同的排序值</span>
             <el-tooltip class="item" effect="light" placement="right-start">
               <template #content>
-                <div>排序相同，全局id相同,时间相同则会同时展示。排序相同时间不同则大于30分钟的会展示</div>
+                <div>排序相同，赛制id相同,时间相同则会同时展示。排序相同和赛制ID相同,时间不同则大于30分钟的会展示</div>
                 <div>否则会在当前之后按顺序展示</div>
               </template>
               <i class="el-icon-info" />
