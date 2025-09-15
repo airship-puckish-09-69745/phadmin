@@ -403,7 +403,7 @@ export default {
         180: 'FishingMaster',
         172: 'WrathOfZeus',
         122: 'Filipino Mahjong',
-        123: 'Mines Battle',
+        123: 'MINES SHOWDOWN',
         124: 'Jackpot Wheel',
         125: 'Free Spin',
         170: 'Epic Ace',
@@ -431,7 +431,7 @@ export default {
         129: 'Live Color',
         130: 'Remi',
         131: 'Remi Pro',
-        132: 'MinesMagic',
+        132: 'Mines Magic',
         134: 'Pusoy JP',
         1: 'Rummy',
         10000: '汇总'
