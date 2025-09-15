@@ -259,10 +259,6 @@
         return n.toLocaleString()
       },
       getInfo() {
-        if (this.env != 'test') {
-          Message.error("正式环境请联系cyf")
-          return
-        }
         if (this.form.Uid === 0) {
           Message.error("请输入Uid")
           return 
