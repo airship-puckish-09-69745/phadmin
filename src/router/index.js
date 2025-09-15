@@ -2282,7 +2282,7 @@ export const asyncRoutes = [
           },
           {
             path: 'matchPusoyConfig',
-            component: () => import('@/views/matchManage/matchConfigs/matchPusoyConfig'),
+            component: () => import('@/views/matchManage/matchConfigs/pusoy/matchPusoyConfigOptimized.vue'),
             name: 'matchPusoyConfig',
             meta: { title: 'Pusoy赛事', noCache: true }
           }

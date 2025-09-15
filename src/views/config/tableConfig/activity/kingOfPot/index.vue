@@ -312,7 +312,7 @@ export default {
       statusNames: { 2: '上架', 6: '下架', 7: '预上架', 8: '预下架' },
       gameNames: {
         22: 'TongitsPot',
-        28: 'TongitsJoke',
+        28: 'TongitsJoker',
       },
       appIdOptions: [
         {
