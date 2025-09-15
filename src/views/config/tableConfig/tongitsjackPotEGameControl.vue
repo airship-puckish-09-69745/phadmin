@@ -70,23 +70,25 @@
                 />
               </el-descriptions-item>
             </el-descriptions>
-            <h4 style="text-align:left;">个⼈控制周期局数</h4>
-            <el-descriptions :column="1" :colon="false" direction="vertical" border>
-              <el-descriptions-item label="个⼈控制周期局数" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-                <el-input
-                v-model.number="editGameControl.PlayerControl.PlayerControlRound"
-                type="number"
-                placeholder="请输入整数"
-                />
-              </el-descriptions-item>
-            </el-descriptions>
             <el-divider />
             <h2 style="text-align:center;">个⼈控制区间配置</h2>
             <el-row>
               <el-form :label-position="labelPosition" label-width="100px">
-                <el-form-item label="同周期机器⼈类型是否与⾸局⼀致" required>
+                <el-form-item label="同周期个人控制区间类型是否与⾸局⼀致" required>
                   <el-col :span="2">
                     <el-switch v-model.number="editGameControl.PlayerControl.IsSameFirst" :active-value="true" :inactive-value="false" />
+                  </el-col>
+                </el-form-item>
+
+                <el-form-item label="同周期个⼈区间控制周期局数" required>
+                  <el-col :span="2">
+                     <el-input-number
+                    v-model.number="editGameControl.PlayerControl.PlayerControlRound"
+                    type="number"
+                    placeholder="请输入整数"
+                    :precision="0"
+                    min="0"
+                    />
                   </el-col>
                 </el-form-item>
                 <el-form-item label="区间匹配机器⼈权重" required>
