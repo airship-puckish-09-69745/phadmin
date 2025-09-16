@@ -170,6 +170,7 @@ import RatioInput from '@/components/RatioInput'
 import Compare from '@/components/Compare'
 import {DataRule} from '@/utils/common'
 import {Message} from "element-ui";
+import {IsProd} from "@/utils/env";
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
@@ -266,7 +267,7 @@ export default {
         .map(b => parseFloat(b.trim()) * 1000)
         .filter(b => !isNaN(b))
 
-      if (this.checkBuyFreeOdds(currentBets) === false) {
+      if (this.checkBuyFreeOdds(currentBets) === false && IsProd()) {
         return
       }
       if (this.buyFreeOddsConf.editIndex >= 0) {
