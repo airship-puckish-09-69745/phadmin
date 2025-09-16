@@ -47,24 +47,24 @@
             />
           </el-select>
         </el-form-item>
-<!--        <el-form-item v-model="item.path" label="进厅 path：" label-width="110px">-->
-<!--          <el-select v-model="item.path" placeholder="请选择" size="mini">-->
-<!--            <el-option label="常规" value="1" />-->
-<!--            <el-option label="Banner（返回gamefun.ph）" value="2" />-->
-<!--          </el-select>-->
-<!--        </el-form-item>-->
+        <!--        <el-form-item v-model="item.path" label="进厅 path：" label-width="110px">-->
+        <!--          <el-select v-model="item.path" placeholder="请选择" size="mini">-->
+        <!--            <el-option label="常规" value="1" />-->
+        <!--            <el-option label="Banner（返回gamefun.ph）" value="2" />-->
+        <!--          </el-select>-->
+        <!--        </el-form-item>-->
         <el-form-item v-model="item.need_test_uri" label="指定链接类型：" :required="true" label-width="140px">
           <el-select v-model="item.need_test_uri" placeholder="请选择" size="mini">
             <el-option label="平台配置链接" value="0" />
             <el-option label="预发布" value="1" />
           </el-select>
         </el-form-item>
-<!--        <el-form-item v-model="item.debug" label="调试模式：" :required="true" label-width="140px">-->
-<!--          <el-select v-model="item.debug" placeholder="请选择" size="mini">-->
-<!--            <el-option label="否" value="0" />-->
-<!--            <el-option label="是" value="1" />-->
-<!--          </el-select>-->
-<!--        </el-form-item>-->
+        <!--        <el-form-item v-model="item.debug" label="调试模式：" :required="true" label-width="140px">-->
+        <!--          <el-select v-model="item.debug" placeholder="请选择" size="mini">-->
+        <!--            <el-option label="否" value="0" />-->
+        <!--            <el-option label="是" value="1" />-->
+        <!--          </el-select>-->
+        <!--        </el-form-item>-->
         <el-form-item v-model="item.cashier" label="充值链接：" label-width="140px">
           <el-input v-model="item.cashier" />
         </el-form-item>
@@ -86,10 +86,13 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item v-if="isShowMatchGameOption(item.activity)" v-model="item.match_gid" label="比赛游戏：" label-width="100px">
-          <el-select v-model="item.match_gid" filterable allow-create default-first-option placeholder="请选择" size="mini">
+        <el-form-item v-model="item.gid" label="游戏：" label-width="100px">
+          <el-tooltip class="item" effect="dark" content="此处有值时，优先取此处关连的场景。比如：游戏选了【pusoy比赛】,进入场景选了【color】，此时进入【pusoy比赛】。" placement="right-start">
+            <i class="el-icon-info" />
+          </el-tooltip>
+          <el-select v-model="item.gid" filterable allow-create default-first-option placeholder="请选择" size="mini">
             <el-option
-              v-for="row in matchGames"
+              v-for="row in gameOptions"
               :label="row.name"
               :value="row.val"
             />
@@ -357,17 +360,17 @@ export default {
           val: 'tournament_-4'
         }
       ],
-      matchGames: [
+      gameOptions: [
         {
           name: '无',
           val: ''
         },
         {
-          name: 'Tongits',
+          name: 'Tongits比赛',
           val: '2031'
         },
         {
-          name: 'Pusoy',
+          name: 'Pusoy比赛',
           val: '2033'
         }
       ],
@@ -389,7 +392,7 @@ export default {
         path: '1',
         source: 'glife.bingoplus.com',
         activity: '',
-        match_gid: '',
+        gid: '',
         live_id: '',
         gp_ext: '{"vip":1}',
         kyc: '0',
@@ -541,7 +544,7 @@ export default {
           activity: activityVal,
           live_id: this.item.live_id,
           gp_ext: this.item.gp_ext,
-          match_gid: this.item.match_gid
+          gid: this.item.gid
           // kyc: this.item.kyc,
           // r_time: this.item.r_time/1000
         }
