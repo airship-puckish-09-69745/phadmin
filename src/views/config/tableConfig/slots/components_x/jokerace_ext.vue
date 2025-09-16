@@ -1,8 +1,8 @@
 <template>
   <div class="app-container">
-    <el-row :gutter="10" style="margin-top: 30px">
+    <el-row :gutter="10" style="margin-top: 25px">
       <el-col :span="12" :offset="3">
-        <el-form ref="frm2" :model="cfg" label-width="250px">
+        <el-form ref="frm2" :model="cfg" label-width="200px">
 
           <el-form-item label="普通模式 scatter个数的权重" :rules="dataRule(true)">
             <el-input v-model="cfg.ScatterNumWt" :required="true" placeholder="请输入内容,如0,1,2"> <template slot="append">如0,1,2 代表出现0个的权重为0 </template> </el-input>
@@ -24,6 +24,70 @@
             <el-input v-model="cfg.BuyFreeDistributeV2" placeholder="请输入内容,如250,500,70,501,940,50"> <template slot="append">三个值一组用 , 连接。</template> </el-input>
           </el-form-item>
 
+          <el-form-item label="Joker的倍数权重">
+            <div>
+              <el-button
+                  size="mini"
+                  type="primary"
+                  @click="doAdd"
+                  v-if="cfg.JokerOddsCfg && cfg.JokerOddsCfg.length<=0"
+              >添加</el-button>
+
+              <el-table
+                  v-if="cfg.JokerOddsCfg"
+                  :data="cfg.JokerOddsCfg"
+                  border
+                  :header-cell-style="libShow.DefaultTableHeadClass"
+                  :row-style="{ height: '10px' }"
+                  :cell-style="libShow.DefaultTableCell"
+                  style="width: 100%"
+              >
+                <!-- 值 -->
+                <el-table-column prop="Val" label="最小倍数">
+                  <template slot-scope="scope">
+                    <el-input
+                        v-model.number="scope.row.OddsMin"
+                        type="number"
+                        size="mini"
+                        oninput="if(value < 0 || value=='' || value==null || value=='NAN'){value=0;}"
+                    />
+                  </template>
+                </el-table-column>
+
+                <!-- 值 -->
+                <el-table-column prop="Val" label="最大倍数">
+                  <template slot-scope="scope">
+                    <el-input
+                        v-model.number="scope.row.OddsMax"
+                        type="number"
+                        size="mini"
+                        oninput="if(value < 0 || value=='' || value==null || value=='NAN'){value=0;}"
+                    />
+                  </template>
+                </el-table-column>
+
+                <!-- 权重 -->
+                <el-table-column prop="Weight" label="权重">
+                  <template slot-scope="scope">
+                    <el-input
+                        v-model.number="scope.row.Weight"
+                        size="mini"
+                        type="number"
+                        oninput="if(value < 0 || value=='' || value==null || value=='NAN'){value=0;}"
+                    />
+                  </template>
+                </el-table-column>
+
+                <!-- 操作 -->
+                <el-table-column label="操作">
+                  <template slot-scope="scope">
+                    <el-button size="mini" type="primary" @click="doAdd">添加</el-button>
+                    <el-button size="mini" type="danger" @click="delRow(scope.$index)">删除</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+          </el-form-item>
         </el-form>
       </el-col>
     </el-row>
@@ -36,7 +100,7 @@
             <span style="margin-left:10px;color:#909399">(Bet为单线下注大小，Bet=0为默认配置，配置的倍数不能出现0倍的情况)</span>
 
             <el-table :data="cfg.BuyFreeOddsConf">
-              <el-table-column prop="bet" label="Bet值" width="120">
+              <el-table-column prop="bet" label="Bet值" width="600">
                 <template slot-scope="scope">
                   <el-button type="text" @click="editConfig(scope.row)">{{ scope.row.Bet.map(b => b/1000).join(', ') }}</el-button>
                 </template>
@@ -113,7 +177,7 @@
 <script>
 import RatioInput from '@/components/RatioInput'
 import Compare from '@/components/Compare'
-import { DataRule, ValidateVueItem } from '@/utils/common'
+import { DataRule, ValidateVueItem, $libShow  } from '@/utils/common'
 import {Message} from "element-ui";
 
 export default {
@@ -135,15 +199,15 @@ export default {
   },
   data() {
     return {
-      cfg: {
-      },
+      cfg: { JokerOddsCfg: [] }, //对应ext
       activeTab: 'script',
       buyFreeOddsConf: {
         dialogVisible: false,
         currentBet: '0',
         dialogTitle: '添加配置',
         currentConf: []
-      }
+      },
+      libShow: $libShow
     }
   },
   created() {
@@ -185,6 +249,7 @@ export default {
       // this.initSymbolMap()
       if (this.slotsData) {
         this.cfg = this.slotsData
+        if (!this.cfg.JokerOddsCfg) this.cfg.JokerOddsCfg = []
         this.$refs.compare.SetOldVal(this.getDiffData())
         this.lock = true
       }
@@ -211,6 +276,16 @@ export default {
     },
     removeConfig(index) {
       this.cfg.BuyFreeOddsConf.splice(index, 1)
+    },
+    doAdd() {
+      this.cfg.JokerOddsCfg.push({ OddsMin: 0, OddsMax: 0, Weight:0})
+    },
+    delRow(index) {
+      if (this.cfg.JokerOddsCfg.length <= 1) {
+        Message.error('再删就没了')
+        return
+      }
+      this.cfg.JokerOddsCfg.splice(index, 1)
     },
     saveConfig() {
       const currentBets = this.buyFreeOddsConf.currentBet
