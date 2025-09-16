@@ -3,12 +3,13 @@
     <el-row :gutter="10" style="margin-top: 30px">
       <el-col :span="12" :offset="3">
         <el-form ref="frm2" :model="cfg" label-width="250px">
-          <el-form-item label="银框出现概率">
-            <el-input v-model.number="cfg.SlvRate" ><template slot="append">‰</template></el-input>
+
+          <el-form-item label="普通模式 scatter个数的权重" :rules="dataRule(true)">
+            <el-input v-model="cfg.ScatterNumWt" :required="true" placeholder="请输入内容,如0,1,2"> <template slot="append">如0,1,2 代表出现0个的权重为0 </template> </el-input>
           </el-form-item>
 
-          <el-form-item label="免费模式再中scatter概率">
-            <el-input v-model.number="cfg.ReHitScatterRate" ><template slot="append">‰</template></el-input>
+          <el-form-item label="Joker带出wild个数权重" :rules="dataRule(true)">
+            <el-input v-model="cfg.WildJokerSetNum" :required="true" placeholder="请输入内容,如0,1,2"> <template slot="append">如0,1,2 代表出现0个的权重为0 </template> </el-input>
           </el-form-item>
 
           <el-form-item label="免费模式购买倍数" prop="BuyFreeOdds" :rules="dataRule(true,{type:'n'})">
@@ -18,14 +19,6 @@
           <el-form-item label="进入免费模式的最小赔率" prop="ScatterOdds" :rules="dataRule(true,{type:'n'})">
             <el-input v-model.number="cfg.ScatterOdds" :required="true" />
           </el-form-item>
-
-<!--          <el-form-item label="购买免费模式中奖倍数范围V2">-->
-<!--            <el-input v-model="cfg.BuyFreeOddsRangeV2" placeholder="请输入内容,如0,150,151,940"> <template slot="append">四个值用 , 连接。如0,150,151,940表示0,150和151,940</template> </el-input>-->
-<!--          </el-form-item>-->
-
-<!--          <el-form-item label="购买免费模式中奖左范围概率V2">-->
-<!--            <el-input v-model.number="cfg.BuyFreeRateV2" placeholder="请输入内容,如800"> <template slot="append">‰</template> </el-input>-->
-<!--          </el-form-item>-->
 
           <el-form-item label="购买免费模式中奖倍数分布V2">
             <el-input v-model="cfg.BuyFreeDistributeV2" placeholder="请输入内容,如250,500,70,501,940,50"> <template slot="append">三个值一组用 , 连接。</template> </el-input>
@@ -166,6 +159,12 @@ export default {
       return JSON.parse(JSON.stringify(this.slotsData))
     },
     submitFrm() {
+      const scatterNumWt = this.cfg.ScatterNumWt;
+      const numbers = scatterNumWt.split(',').map(num => parseInt(num.trim(), 10));
+      if (numbers.length !== 3) {
+        this.$message.error('普通模式 scatter个数的权重, 只支持0 1 2个的权重配置 3个scatter由剧本和进免费的最小倍数控制');
+        return;
+      }
       if (!ValidateVueItem(this.$refs['frm2'])) return false
       const $this = this
       this.$refs.compare.SetNewVal(this.getDiffData())

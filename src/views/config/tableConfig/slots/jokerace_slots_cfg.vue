@@ -33,16 +33,6 @@
             <publish primary-key="ID" :key-id="getFullKey('jokerace_slots_base')" :env-empty="false" compare-type="Object" />
             <slots-symbolcount-reels v-if="baseCfgBool" v-model="baseCfg" :symbol-list="ruleCfg.SymbolList" @saveData="saveBaseCfg" />
           </el-tab-pane>
-          <el-tab-pane label="2套轴首行横图标" name="row_reels_double">
-            <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布】</h3>
-            <publish primary-key="ID" :key-id="getFullKey('jokerace_slots_ext')" :env-empty="false" compare-type="Object" />
-            <slots-row-reels-double v-if="extCfgBool" v-model="extCfg" :symbol-list="ruleCfg.SymbolList" @saveData="saveExtCfg" />
-          </el-tab-pane>
-          <el-tab-pane label="行符号相同" name="row_symbols_same">
-            <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布】</h3>
-            <publish primary-key="ID" :key-id="getFullKey('jokerace_slots_ext')" :env-empty="false" compare-type="Object" />
-            <slots-row-symbols-same v-if="extCfgBool" v-model="extCfg" :symbol-list="ruleCfg.SymbolList" @saveData="saveExtCfg" />
-          </el-tab-pane>
           <el-tab-pane label="进入免费方案配置" name="scatter_trigger_plans">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布】</h3>
             <publish primary-key="ID" :key-id="getFullKey('jokerace_slots_ext')" :env-empty="false" compare-type="Object" />
