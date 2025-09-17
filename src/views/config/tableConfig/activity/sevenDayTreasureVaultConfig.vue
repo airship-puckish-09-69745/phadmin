@@ -607,7 +607,9 @@ export default {
     },
     handleEdit(ob) {
       this.edit.isEdit = true
+      console.log('ab', ob)
       this.edit.item = JSON.parse(JSON.stringify(ob))
+      console.log('item', this.edit.item)
       for (let i = 0; i < this.edit.item.TaskItem.length; i++) {
         if (this.edit.item.TaskItem[i].ConditionType === 2) {
           this.edit.item.TaskItem[i].ConditionTarget /= 1000
@@ -867,13 +869,8 @@ export default {
     saveTask() {
       let index = 0
       if (this.edit.isEdit) {
-        for (let i = 0; i < this.item.TaskConfig.length; i++) {
-          if (this.item.TaskConfig[i].TaskID === this.edit.item.TaskID) {
-            this.item.TaskConfig[i] = JSON.parse(JSON.stringify(this.edit.item))
-            index = i
-            break
-          }
-        }
+        index = this.item.TaskConfig.findIndex(item => item.TaskID === this.edit.item.TaskID)
+        this.$set(this.item.TaskConfig, index, JSON.parse(JSON.stringify(this.edit.item)))
       } else {
         const foundItem = this.item.TaskConfig.find(item => item.TaskID === this.edit.item.TaskID)
         if (foundItem) {
