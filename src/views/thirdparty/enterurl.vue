@@ -394,7 +394,7 @@ export default {
         activity: '',
         gid: '',
         live_id: '',
-        gp_ext: '{"vip":1}',
+        gp_ext: '{"vip":1,"ekycPassed":1}',
         kyc: '0',
         activity_val: '',
         r_time: Date.parse(new Date())
