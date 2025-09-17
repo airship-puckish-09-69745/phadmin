@@ -602,6 +602,7 @@ export default {
       })
     },
     handleEdit(ob) {
+      this.edit.isEdit = true
       this.edit.item = JSON.parse(JSON.stringify(ob))
       for (let i = 0; i < this.edit.item.TaskItem.length; i++) {
         if (this.edit.item.TaskItem[i].ConditionType === 2) {
