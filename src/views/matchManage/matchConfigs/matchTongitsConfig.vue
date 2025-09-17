@@ -1947,10 +1947,10 @@ export default {
       return flag
     },
     async saveMatch() {
-      //SNG 不考虑提前进入时间
-      // if(this.editForm.data.opentMatchType == 1) {
-      //   this.editForm.data.preEnterSeconds = this.editForm.data.preShowSeconds
-      // }
+      //非ob SNG 不考虑提前进入时间
+      if(IsMars() && this. this.editForm.data.opentMatchType === 1) {
+        this.editForm.data.preEnterSeconds = this.editForm.data.preShowSeconds
+      }
       if (!await this.configCheck()) {
         return
       }
