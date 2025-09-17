@@ -1,6 +1,10 @@
 <template>
   <el-col class="app-container">
     <el-row>
+      <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" />
+    </el-row>
+
+    <el-row>
       <br>
       <el-tabs type="border-card">
         <el-tab-pane label="7日留存活动配置">
