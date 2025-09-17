@@ -1949,11 +1949,15 @@ export default {
     async saveMatch() {
       //非ob SNG 不考虑提前进入时间
       if(IsMars() && this. this.editForm.data.opentMatchType === 1) {
+        console.log("1111111")
         this.editForm.data.preEnterSeconds = this.editForm.data.preShowSeconds
+        console.log("222222")
       }
+      console.log("33333")
       if (!await this.configCheck()) {
         return
       }
+      console.log("44444")
       // 修复道具
       for (let i = 0; i < this.editForm.rankRewards.length; i++) {
         const element = this.editForm.rankRewards[i]
