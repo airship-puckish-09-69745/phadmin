@@ -99,6 +99,7 @@ export function LibShow() {
     206: 'LuckyWineglass',//独占一行
     212: 'PirateShip',//独占一行
     218: 'WrathOfZeus2',//独占一行
+    228: 'JokerAce',//独占一行
     188: 'StreetFighting',//独占一行
     192: 'BountyRaid',//独占一行
     180: 'FishingMaster',//独占一行
