@@ -456,7 +456,7 @@ export const matchFormMixin = {
             return false
           }
         }
-        
+
         if (this.editForm.data.opentMatchType == 1) {
           const promotion_user_num = this.configs.reachOutNumCfgs.get(this.editForm.data.csId)
           if (this.editForm.data.opentMatchMember < promotion_user_num) {
@@ -464,7 +464,7 @@ export const matchFormMixin = {
             return false
           }
         }
-        
+
         if (this.editForm.data.opentMatchType == 1 && this.editForm.data.disappearType != 1) {
           Message.error('sng比赛必须开赛后消失')
           return false
@@ -479,11 +479,11 @@ export const matchFormMixin = {
       if (!this.reubyConfigCheck()) {
         return false
       }
-      
+
       return true
     },
 
-    
+
     /**
      * 修复道具信息
      */
@@ -501,7 +501,8 @@ export const matchFormMixin = {
       }
 
       // 修复报名和重买道具信息
-      const propsInfo = this.configs.propsInfo || this.configs.matchPropsCfgs || []
+      const propsInfo =  this.configs.matchPropsCfgs || []
+      console.log("propsInfo ,",this.configs.matchPropsCfgs)
       for (let i = 0; i < propsInfo.length; i++) {
         const prop = propsInfo[i]
 
