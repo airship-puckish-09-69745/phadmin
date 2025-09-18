@@ -49,6 +49,7 @@
       <!-- 编辑对话框 -->
       <EditDialog
         :edit-form="editForm"
+        :show-tip="showTip"
         :configs="configs"
         :attr-names="attrNames"
         :game-cfgs="configs.gameCfgs"
@@ -220,7 +221,8 @@ export default {
         repeatType: -1,
         appId: -1
       },
-
+      // 排序重复提示
+      showTip: false,
       // 编辑表单
       editForm: {
         visable: false,

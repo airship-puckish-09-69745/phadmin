@@ -1,11 +1,11 @@
 <template>
   <fieldset>
     <legend>報名條件</legend>
-    <el-form-item label="報名條件：" :required="true">
-      <el-select 
-        v-model="editForm.data.signUpType" 
-        placeholder="請選擇" 
-        size="mini" 
+    <el-form-item label="报名条件：" :required="true">
+      <el-select
+        v-model="editForm.data.signUpType"
+        placeholder="请选择"
+        size="mini"
         @change="handleSignUpTypeChange"
       >
         <el-option
@@ -16,28 +16,28 @@
         />
       </el-select>
     </el-form-item>
-    
-    <el-form-item 
-      v-if="editForm.data.signUpType == 0 || editForm.data.signUpType == 3" 
-      label="報名費：" 
+
+    <el-form-item
+      v-if="editForm.data.signUpType == 0 || editForm.data.signUpType == 3"
+      label="报名费："
       :required="true"
     >
-      <el-input 
-        v-model.number="editForm.data.signUpNum" 
-        style="width: 200px;" 
-        size="mini" 
-        placeholder="請填寫金幣數量" 
+      <el-input
+        v-model.number="editForm.data.signUpNum"
+        style="width: 200px;"
+        size="mini"
+        placeholder="请填写金额"
       />
     </el-form-item>
 
-    <el-form-item 
-      v-if="editForm.data.signUpType == 2 || editForm.data.signUpType == 3" 
-      label="門票：" 
+    <el-form-item
+      v-if="editForm.data.signUpType == 2 || editForm.data.signUpType == 3"
+      label="门票："
       :required="true"
     >
-      <el-select 
-        v-model="editForm.signExtra.propId" 
-        placeholder="請選擇" 
+      <el-select
+        v-model="editForm.signExtra.propId"
+        placeholder="请选择"
         size="mini"
         @change="handlePropChange"
       >
@@ -50,35 +50,35 @@
       </el-select>
     </el-form-item>
 
-    <el-form-item 
-      v-if="editForm.data.signUpType == 2 || editForm.data.signUpType == 3" 
-      label="門票數量：" 
+    <el-form-item
+      v-if="editForm.data.signUpType == 2 || editForm.data.signUpType == 3"
+      label="门票数量："
       :required="true"
     >
-      <el-input 
-        v-model.number="editForm.signExtra.propNum" 
-        style="width: 180px;" 
-        size="mini" 
-        placeholder="請填寫門票數量" 
+      <el-input
+        v-model.number="editForm.signExtra.propNum"
+        style="width: 180px;"
+        size="mini"
+        placeholder="请填写门票数量"
       />
     </el-form-item>
 
-    <el-form-item 
-      v-if="editForm.data.signUpType == 1" 
-      label="今日投注下限(0不限制)：" 
+    <el-form-item
+      v-if="editForm.data.signUpType == 1"
+      label="今日投注下限(0不限制)："
       :required="true"
     >
-      <el-input 
-        v-model.number="editForm.signExtra.betCnt" 
-        style="width: 200px;" 
-        size="mini" 
-        placeholder="請填寫限制數值" 
+      <el-input
+        v-model.number="editForm.signExtra.betCnt"
+        style="width: 200px;"
+        size="mini"
+        placeholder="请填写限制数值"
       />
     </el-form-item>
 
-    <el-form-item 
-      v-if="editForm.data.signUpType == 1" 
-      label="是否启用每日限制：" 
+    <el-form-item
+      v-if="editForm.data.signUpType == 1"
+      label="是否启用每日限制："
       :required="true"
     >
       <el-switch
@@ -91,19 +91,19 @@
         inactive-text="否"
       />
     </el-form-item>
-    
-    <el-form-item label="比賽最大人數：" :required="true">
-      <el-input 
-        v-model.number="editForm.signExtra.matchMaxLimit" 
-        style="width: 180px;" 
-        size="mini" 
-        placeholder="請填寫最大數量" 
+
+    <el-form-item label="比赛最大人數：" :required="true">
+      <el-input
+        v-model.number="editForm.signExtra.matchMaxLimit"
+        style="width: 180px;"
+        size="mini"
+        placeholder="请填写最大数量"
       />
     </el-form-item>
 
-    <el-form-item 
-      v-if="editForm.data.signUpType === 3" 
-      label="電子錢包報表是否上報:" 
+    <el-form-item
+      v-if="editForm.data.signUpType === 3"
+      label="电子钱包报表是否上报:"
       :required="true"
     >
       <el-radio-group v-model.number="editForm.signExtra.walletReport">
