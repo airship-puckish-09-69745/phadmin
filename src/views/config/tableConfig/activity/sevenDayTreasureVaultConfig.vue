@@ -37,9 +37,9 @@
                   </el-form-item>
                 </el-col>
                 <el-col>
-                  <el-form-item label="抽水比例：" :required="true">
+                  <el-form-item label="抽水比例(‰)：" :required="true">
                     <el-input
-                      v-model="item.ActivityExtend.FreeRate"
+                      v-model.number="item.ActivityExtend.FreeRate"
                       style="width: 200px;"
                       placeholder="请输入参数"
                       suffix-icon="‰"
@@ -47,9 +47,9 @@
                   </el-form-item>
                 </el-col>
                 <el-col>
-                  <el-form-item label="玩家占奖池最大比例：" :required="true">
+                  <el-form-item label="玩家占奖池最大比例(‰)：" :required="true">
                     <el-input
-                      v-model="item.ActivityExtend.UserMaxRate"
+                      v-model.number="item.ActivityExtend.UserMaxRate"
                       style="width: 200px;"
                       placeholder="请输入参数"
                       suffix-icon="‰"
@@ -58,12 +58,12 @@
                 </el-col>
                 <el-col>
                   <el-form-item label="星星解锁数量：" :required="true">
-                    <el-input v-model="item.ActivityExtend.StarUnlockCount" style="width: 200px;" placeholder="请输入参数" />
+                    <el-input v-model.number="item.ActivityExtend.StarUnlockCount" style="width: 200px;" placeholder="请输入参数" />
                   </el-form-item>
                 </el-col>
                 <el-col>
                   <el-form-item label="发奖持续天数：" :required="true">
-                    <el-input v-model="item.ActivityExtend.GrantKeepDay" style="width: 200px;" placeholder="请输入参数" />
+                    <el-input v-model.number="item.ActivityExtend.GrantKeepDay" style="width: 200px;" placeholder="请输入参数" />
                   </el-form-item>
                 </el-col>
               </el-form>
@@ -137,6 +137,46 @@
                     size="mini"
                     type="warning"
                     @click="handleDelete(scope.row)"
+                  >删除
+                  </el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-form>
+        </el-tab-pane>
+
+        <el-tab-pane label="宝箱配置">
+          <el-button size="mini" type="primary" icon="el-icon-plus" @click="handleCreateBonusIcon()">
+            添加配置
+          </el-button>
+
+          <el-form ref="BonusIcon" v-model="item.BonusIcon" label-width="150px" style="margin-top: 10px">
+            <el-table
+              :data="item.BonusIcon"
+              border
+              style="width: 100%"
+              :cell-style="libShow.DefaultTableCell"
+            >
+              <el-table-column prop="Img" label="宝箱图片" width="200">
+                <template slot-scope="scope">
+                  <ImagePicker v-model="scope.row.Img" />
+                </template>
+              </el-table-column>
+              <el-table-column prop="StarCount" label="星星数量" width="200">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.StarCount" size="mini" />
+                </template>
+              </el-table-column>
+              <el-table-column
+                label="操作"
+                column-key="op"
+                width="250"
+              >
+                <template slot-scope="scope">
+                  <el-button
+                    size="mini"
+                    type="warning"
+                    @click="handleDeleteBonusIcon(scope.$index)"
                   >删除
                   </el-button>
                 </template>
@@ -310,14 +350,14 @@
                   <!-- 数量输入 -->
                   <el-table-column prop="Num" label="数量">
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.Num" size="mini" />
+                      <el-input v-model="scope.row.Num" size="mini" />
                     </template>
                   </el-table-column>
 
                   <!-- 图片输入 -->
-                  <el-table-column prop="Img" label="图片">
+                  <el-table-column prop="Img" label="图片" width="120">
                     <template slot-scope="scope">
-                      <el-input v-model="scope.row.Img" size="mini" />
+                      <ImagePicker v-model="scope.row.Img" />
                     </template>
                   </el-table-column>
 
@@ -459,7 +499,8 @@ export default {
           }
         },
         ActivityExtend: {},
-        TaskConfig: []
+        TaskConfig: [],
+        BonusIcon: []
       },
       GamesSorted: [
         {
@@ -607,9 +648,7 @@ export default {
     },
     handleEdit(ob) {
       this.edit.isEdit = true
-      console.log('ab', ob)
       this.edit.item = JSON.parse(JSON.stringify(ob))
-      console.log('item', this.edit.item)
       for (let i = 0; i < this.edit.item.TaskItem.length; i++) {
         if (this.edit.item.TaskItem[i].ConditionType === 2) {
           this.edit.item.TaskItem[i].ConditionTarget /= 1000
@@ -624,51 +663,12 @@ export default {
     },
     handleDelete(ob) {
       const $this = this
-      this.$confirm('是否确认删除此奖池配置?', '提示', { type: 'warning' }).then(() => {
+      this.$confirm('是否确认删除此配置?', '提示', { type: 'warning' }).then(() => {
         const delIndex = $this.item.TaskConfig.findIndex(item => item.TaskID === ob.TaskID)
         this.item.TaskConfig.splice(delIndex, 1)
       }).catch(() => {
         console.log('取消')
       })
-    },
-    addWhite() {
-      if (this.item.CurId === '' || this.item.CurId === null) {
-        return
-      }
-      const numbers = this.item.CurId.split(',').filter(num => !isNaN(num))
-      const insertList = []
-      for (let i = 0; i < numbers.length; i++) {
-        if (isNaN(numbers[i])) {
-          continue
-        }
-        const num = parseInt(numbers[i], 10)
-        if (isNaN(num)) {
-          continue
-        }
-        var bExit = false
-        for (let j = 0; j < this.item.WhitelistCfg.UidList.length; j++) {
-          if (this.item.WhitelistCfg.UidList[j].uid === num) {
-            bExit = true
-            break
-          }
-        }
-
-        if (!bExit) {
-          insertList.push(num)
-        }
-      }
-      let isShow = false
-      for (let i = 0; i < insertList.length; i++) {
-        this.item.WhitelistCfg.UidList.push({
-          'uid': insertList[i]
-        })
-        isShow = true
-      }
-      if (isShow) {
-        const showMsg = '白名单添加成功'
-        Message.success(showMsg)
-      }
-      console.log(this.item.WhitelistCfg.UidList)
     },
     delRow(row) {
       const newList = []
@@ -679,13 +679,6 @@ export default {
         newList.push(this.item.WhitelistCfg.UidList[key])
       }
       this.item.WhitelistCfg.UidList = newList
-    },
-    getWhiteList() {
-      const whiteList = []
-      for (const key in this.item.WhitelistCfg.UidList) {
-        whiteList.push(this.item.WhitelistCfg.UidList[key].uid)
-      }
-      return whiteList
     },
     getData() {
       const $this = this
@@ -714,8 +707,8 @@ export default {
     saveData() {
       // 设置修改后数据
       var tableData = JSON.parse(JSON.stringify(this.item))
-      tableData.StartTime /= 1000
-      tableData.EndTime /= 1000
+      tableData.Activity.StartTime /= 1000
+      tableData.Activity.EndTime /= 1000
       tableData.ActivityExtend.InitBonusPool *= 1000
       tableData.ActivityExtend.BonusPoolMax *= 1000
       this.$refs.compare.SetNewVal(tableData)
@@ -887,6 +880,8 @@ export default {
         for (let j = 0; j < this.item.TaskConfig[index].TaskItem[i].Reward.length; j++) {
           if (this.item.TaskConfig[index].TaskItem[i].Reward[j].RewardType === 1) {
             this.item.TaskConfig[index].TaskItem[i].Reward[j].Num *= 1000
+          } else {
+            this.item.TaskConfig[index].TaskItem[i].Reward[j].Num = parseInt(this.item.TaskConfig[index].TaskItem[i].Reward[j].Num, 10)
           }
         }
       }
@@ -994,6 +989,19 @@ export default {
         }
         return ''
       }
+    },
+    handleCreateBonusIcon() {
+      this.item.BonusIcon.push({
+        Img: '',
+        StarCount: 0
+      })
+    },
+    handleDeleteBonusIcon(index) {
+      this.$confirm('是否确认删除此配置?', '提示', { type: 'warning' }).then(() => {
+        this.item.BonusIcon.splice(index, 1)
+      }).catch(() => {
+        console.log('取消')
+      })
     }
   }
 }
