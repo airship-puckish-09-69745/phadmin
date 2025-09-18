@@ -4,12 +4,12 @@
       <el-col :span="12" :offset="3">
         <el-form ref="frm2" :model="cfg" label-width="210px">
 
-          <el-form-item label="符号在1-5轴变成Joker的概率" :rules="dataRule(true)">
-            <el-input v-model="cfg.JokerColRate" :required="true" placeholder="请输入内容，如 0,11,12,13,14"> <template slot="append">如0,11,12,13,14 代表1轴0‱ .. 5轴14‱</template> </el-input>
-          </el-form-item>
-
           <el-form-item label="普通模式 scatter个数的权重" :rules="dataRule(true)">
             <el-input v-model="cfg.ScatterNumWt" :required="true" placeholder="请输入内容,如 0,1,2"> <template slot="append">如0,1,2 代表出现0个的权重为0 </template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="符号在1-5轴变成Joker的概率" :rules="dataRule(true)">
+            <el-input v-model="cfg.JokerColRate" :required="true" placeholder="请输入内容，如 0,11,12,13,14"> <template slot="append">如0,11,12,13,14 代表1轴0‱ .. 5轴14‱</template> </el-input>
           </el-form-item>
 
           <el-form-item label="Joker带出wild个数权重" :rules="dataRule(true)">
