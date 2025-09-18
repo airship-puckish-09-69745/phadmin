@@ -436,18 +436,6 @@ export default {
     },
     handleEndRankChange(rankIndex, value) {
       this.$emit('end-rank-change', rankIndex, value)
-    },
-    handleAwardTypeChange(awardType) {
-      this.$emit('award-type-change', awardType)
-    },
-    handlePrizeTemplateChange(value) {
-      this.$emit('prize-template-change', value)
-    },
-    handlePrizeRateChange(value) {
-      this.$emit('prize-rate-change', value)
-    },
-    handleRewardTypeRadioChange(value) {
-      this.$emit('reward-type-radio-change', value)
     }
   }
 }

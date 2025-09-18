@@ -353,7 +353,8 @@ export const matchUtilsMixin = {
      */
     handlePrizeRateChange(value) {
       // 处理奖品比例变化的逻辑
-      this.editForm.prizeExtra.prizeRate = value
+      const num = Number(value)
+      this.editForm.prizeExtra.prizeRate = isNaN(num) ? 0 : num
     },
 
     /**
