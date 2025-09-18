@@ -70,10 +70,10 @@
       </el-table-column>
 
       <el-table-column prop="jackpotNum" label="jp奖池" width="120">
-        <template slot-scope="scope">{{ scope.row.jackpotNum }}</template>
+        <template slot-scope="scope">{{ scope.row.JackpotNum }}</template>
       </el-table-column>
       <el-table-column prop="jackpotType" label="jp类型" width="120">
-        <template slot-scope="scope">{{ getJackpotLevel(scope.row.ackpotType) }}</template>
+        <template slot-scope="scope">{{ getJackpotLevel(scope.row.JackpotType) }}</template>
       </el-table-column>
       
       <el-table-column prop="gameRatio" label="库存" width="120">

@@ -1,7 +1,14 @@
 <template>
   <el-form ref="item" label-width="300px">
-    <el-form-item label="kyc开关：">
-      <el-switch v-model="formData.OtherGameStatus" :active-value="true" :inactive-value="false" />
+    <el-form-item label="支持的AppId：">
+      <el-select v-model="formData.AppIdList" multiple placeholder="请选择" style="width: 400px">
+        <el-option
+          v-for="item in APPID_OPTIONS"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        />
+      </el-select>
     </el-form-item>
     <el-form-item label="支持的SiteId：">
       <SiteSelect v-model="formData.Sites" multiple placeholder="请选择" style="width: 400px" />
@@ -15,6 +22,7 @@
 <script>
 import GameTreeSelector from '@/views/config/tableConfig/activity/activityMap/components/DetailsConfig/components/GamesTreeSelector.vue'
 import SiteSelect from '@/components/SiteSelect/index.vue'
+import {APPID_OPTIONS} from "@/utils/options";
 
 export default {
   name: 'TexasTongisConfig',
@@ -27,15 +35,18 @@ export default {
       type: Object,
       default: () => ({
         OtherGameStatus: false,
-        Sites: []
+        Sites: [],
+        AppIdList: []
       })
     }
   },
   data() {
     return {
+      APPID_OPTIONS,
       formData: {
         OtherGameStatus: false,
-        Sites: []
+        Sites: [],
+        AppIdList: []
       },
     }
   },

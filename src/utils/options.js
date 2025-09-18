@@ -75,6 +75,8 @@ export const PROP_TYPE_OPTIONS = {
   PROP_TYPE_TEXAS_AVATAR: 4,    //德州头像框
   PROP_TYPE_SLOT_FREE_SPIN: 5,  //slot freespin
   PROP_TYPE_PUSOY_TICKET: 6,    //Pusoy参赛券
+  PROP_TYPE_TICKET_NEW:7,      //新版Tongits门票 带交易ID
+  PROP_TYPE_TEXAS_TICKET_NEW:8, //新版德州参赛券 带交易ID
 }
 // 操作类型
 export const PROP_SOURCE_OPTIONS = [

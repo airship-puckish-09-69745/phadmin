@@ -315,7 +315,7 @@
             <span v-show="showTip" style="color:red; margin-left:10px">注意有相同的排序值</span>
             <el-tooltip class="item" effect="light" placement="right-start">
               <template #content>
-                <div>排序相同，时间相同则会同时展示。排序相同时间不同则大于30分钟的会展示</div>
+                <div>排序相同，赛制id相同,时间相同则会同时展示。排序相同和赛制ID相同,时间不同则大于30分钟的会展示</div>
                 <div>否则会在当前之后按顺序展示</div>
               </template>
               <i class="el-icon-info" />
@@ -479,7 +479,7 @@
               </el-table-column>
             </el-table>
           </el-form-item>
-          <el-form-item v-if="editForm.data.opentMatchType===2" label="提前显示时间(秒)：" :required="true">
+          <el-form-item  label="提前显示时间(秒)：" :required="true">
             <el-input v-model.number="editForm.data.preShowSeconds" style="width: 200px;" placeholder="请填写提前显示时间" />
           </el-form-item>
           <el-form-item v-if="envProjectName === 'ph_audit' && editForm.data.opentMatchType===1" label="创建时间(秒)" :required="true">
@@ -1947,7 +1947,8 @@ export default {
       return flag
     },
     async saveMatch() {
-      if (this.editForm.data.opentMatchType == 1) {
+      //非ob SNG 不考虑提前进入时间
+      if(IsMars() && this.editForm.data.opentMatchType === 1) {
         this.editForm.data.preEnterSeconds = this.editForm.data.preShowSeconds
       }
       if (!await this.configCheck()) {
@@ -2668,7 +2669,7 @@ export default {
       return false
     },
     getMatchStartTimeLabel() {
-      if (this.editForm.data.opentMatchType == 2) {
+      if(this.editForm.data.opentMatchType === 2){
         return '开赛时间'
       } else {
         return '最后开赛时间'

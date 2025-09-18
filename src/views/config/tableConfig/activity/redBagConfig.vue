@@ -87,6 +87,17 @@
                     <el-input v-model="item.LimitMaxNum" style="width: 200px;" placeholder="请输入限制数量" />
                   </el-form-item>
                 </el-col>
+                <el-col :span="12">
+                  <el-form-item label="消息推送开关：" :rules="dataRule(true,{type:'n',range:'0'})">
+                    <el-switch v-model="item.IsSend" :active-value="true" :inactive-value="false" />
+                    <el-tooltip class="item" effect="light" placement="right-start">
+                      <template #content>
+                        <div>控制推送红包任务进度</div>
+                      </template>
+                      <i class="el-icon-info" />
+                    </el-tooltip>
+                  </el-form-item>
+                </el-col>
               </el-form>
             </el-col>
           </el-row>
@@ -624,6 +635,7 @@ export default {
       IsUpdate: false,
       item: {
         IsOpen: true,
+        IsSend: true,
         StartTime: 0,
         EndTime: 0,
         EveryDayStartTime: 0,
@@ -1151,6 +1163,9 @@ export default {
             $this.item.EndTime = old.EndTime * 1000
             $this.item.ShowGold = old.ShowGold
             $this.item.ShowTimes = old.ShowTimes
+            if (old.IsSend !== null) {
+              $this.item.IsSend = old.IsSend
+            }
             $this.item.EveryDayStartTime = this.getStartMidnightTimestamp(old.EveryDayStartTime * 1000)
             $this.item.EveryDayEndTime = this.getEndMidnightTimestamp(old.EveryDayStartTime * 1000,old.EveryDayEndTime * 1000)
             $this.item.LimitReceiveNum1 = old.LimitReceiveNum1 / 1000
@@ -1209,6 +1224,7 @@ export default {
       var whiteList = this.getWhiteList()
       var tableData = {
         IsOpen: this.item.IsOpen,
+        IsSend: this.item.IsSend,
         StartTime: startTime,
         EndTime: endTime,
         EveryDayStartTime: everyStartTime,

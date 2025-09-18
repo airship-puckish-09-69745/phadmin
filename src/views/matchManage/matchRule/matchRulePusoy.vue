@@ -492,7 +492,7 @@ export default {
         {"value":2,"label":"固定比列(%)"},
       ],
       tableData: [],
-      limit: 10,
+      limit: 100,
       total: 0,
       page: 1,
       selfBuild:0, //普通比赛的赛制

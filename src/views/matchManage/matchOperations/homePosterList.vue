@@ -194,7 +194,7 @@
           </el-form-item>
 
           <el-form-item v-if="editForm.data.jump_id===1" label="分类跳转" :required="true">
-            <el-select v-model="editForm.data.game_id" placeholder="请选择" size="mini" @change="selectMatchConfig()">
+            <el-select v-model="editForm.data.game_id" placeholder="请选择" size="mini" @change="selectMatchConfig(true)">
               <el-option
                 v-for="item in jumpCfgs"
                 :key="item.value"
@@ -496,8 +496,11 @@ export default {
         }
       })
     },
-    async  selectMatchConfig() {
-      this.editForm.data.match_cfg_id = 0
+    async  selectMatchConfig(change) {
+      if(change===true && this.editForm.data.jump_id === 1){
+        this.editForm.data.match_cfg_id = 0
+      }
+
       //页签分类跳转的时候 拉取赛事列表的数据，按比赛全局ID 页签ID  应用ID 做数据过滤
       await this.getBeginMatchCfgs(this.editForm.data.own_gid);
 
@@ -510,9 +513,9 @@ export default {
       const seenEvents = new Set();
       const matchEventsCfgs = matchedCfgs.filter(cfg => {
         const isMatch = cfg.match_event === this.editForm.data.game_id;
-        const isUnique = !seenEvents.has(cfg.match_event);
+        const isUnique = !seenEvents.has(cfg.value);
         if (isMatch && isUnique) {
-          seenEvents.add(cfg.match_event);
+          seenEvents.add(cfg.value);
           return true;
         }
         return false;
@@ -619,16 +622,7 @@ export default {
         }
         this.editForm.onceTime = [new Date(editData.start_time * 1000), new Date(editData.end_time * 1000)]
         this.editForm.data = editData
-        let find = false
-        for (let i = 0; i < this.showCsCfgs.length; i++) {
-          if (this.showCsCfgs[i].value === this.editForm.data.match_cfg_id) {
-            find = true
-            break
-          }
-        }
-        if (find === false) {
-          this.editForm.data.match_cfg_id = 0
-        }
+        this.selectMatchConfig(false)
       }
       this.editForm.visable = true
     },
