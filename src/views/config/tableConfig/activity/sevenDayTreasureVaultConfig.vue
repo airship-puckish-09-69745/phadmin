@@ -145,6 +145,46 @@
           </el-form>
         </el-tab-pane>
 
+        <el-tab-pane label="宝箱配置">
+          <el-button size="mini" type="primary" icon="el-icon-plus" @click="handleCreateBonusIcon()">
+            添加配置
+          </el-button>
+
+          <el-form ref="BonusIcon" v-model="item.BonusIcon" label-width="150px" style="margin-top: 10px">
+            <el-table
+              :data="item.BonusIcon"
+              border
+              style="width: 100%"
+              :cell-style="libShow.DefaultTableCell"
+            >
+              <el-table-column prop="Img" label="宝箱图片" width="200">
+                <template slot-scope="scope">
+                  <ImagePicker v-model="scope.row.Img" />
+                </template>
+              </el-table-column>
+              <el-table-column prop="StarCount" label="星星数量" width="200">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.StarCount" size="mini" />
+                </template>
+              </el-table-column>
+              <el-table-column
+                label="操作"
+                column-key="op"
+                width="250"
+              >
+                <template slot-scope="scope">
+                  <el-button
+                    size="mini"
+                    type="warning"
+                    @click="handleDeleteBonusIcon(scope.$index)"
+                  >删除
+                  </el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-form>
+        </el-tab-pane>
+
         <el-tab-pane label="白名单配置">
           <el-form ref="item" label-width="220px">
             <el-row>
@@ -315,9 +355,9 @@
                   </el-table-column>
 
                   <!-- 图片输入 -->
-                  <el-table-column prop="Img" label="图片">
+                  <el-table-column prop="Img" label="图片" width="120">
                     <template slot-scope="scope">
-                      <el-input v-model="scope.row.Img" size="mini" />
+                      <ImagePicker v-model="scope.row.Img" />
                     </template>
                   </el-table-column>
 
@@ -459,7 +499,8 @@ export default {
           }
         },
         ActivityExtend: {},
-        TaskConfig: []
+        TaskConfig: [],
+        BonusIcon: []
       },
       GamesSorted: [
         {
@@ -624,7 +665,7 @@ export default {
     },
     handleDelete(ob) {
       const $this = this
-      this.$confirm('是否确认删除此奖池配置?', '提示', { type: 'warning' }).then(() => {
+      this.$confirm('是否确认删除此配置?', '提示', { type: 'warning' }).then(() => {
         const delIndex = $this.item.TaskConfig.findIndex(item => item.TaskID === ob.TaskID)
         this.item.TaskConfig.splice(delIndex, 1)
       }).catch(() => {
@@ -994,6 +1035,19 @@ export default {
         }
         return ''
       }
+    },
+    handleCreateBonusIcon() {
+      this.item.BonusIcon.push({
+        Img: '',
+        StarCount: 0
+      })
+    },
+    handleDeleteBonusIcon(index) {
+      this.$confirm('是否确认删除此配置?', '提示', { type: 'warning' }).then(() => {
+        this.item.BonusIcon.splice(index, 1)
+      }).catch(() => {
+        console.log('取消')
+      })
     }
   }
 }
