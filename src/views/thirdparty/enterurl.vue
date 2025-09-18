@@ -104,8 +104,26 @@
         <el-form-item v-model="item.live_id" label="直播ID：" label-width="100px">
           <el-input v-model="item.live_id" />
         </el-form-item>
-        <el-form-item v-model="item.gp_ext" label="GP扩展字段：" label-width="100px">
-          <el-input v-model="item.gp_ext" />
+        <el-form-item v-model="gpVip" label="GP VIP 等级：" label-width="100px">
+          <el-tooltip class="item" effect="dark" content="站点为 GP 时才生效。" placement="right-start">
+            <i class="el-icon-info" />
+          </el-tooltip>
+          <el-select v-model="gpVip" filterable allow-create default-first-option placeholder="请选择" size="mini">
+            <el-option
+              v-for="row in gpVipOptions"
+              :label="row.name"
+              :value="row.val"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item v-model="ekycPassed" label="ekyc 是否认证：" label-width="100px">
+          <el-select v-model="ekycPassed" filterable allow-create default-first-option placeholder="请选择" size="mini">
+            <el-option
+              v-for="row in ekycOptions"
+              :label="row.name"
+              :value="row.val"
+            />
+          </el-select>
         </el-form-item>
         <!-- <el-form-item label="KYC状态" label-width="100px">
           <el-select v-model="item.kyc" placeholder="请选择" size="mini">
@@ -374,6 +392,50 @@ export default {
           val: '2033'
         }
       ],
+      gpVipOptions: [
+        {
+          name: '无',
+          val: 0
+        },
+        {
+          name: '1',
+          val: 1
+        },
+        {
+          name: '2',
+          val: 2
+        },
+        {
+          name: '3',
+          val: 3
+        },
+        {
+          name: '4',
+          val: 4
+        },
+        {
+          name: '5',
+          val: 5
+        },
+        {
+          name: '6',
+          val: 6
+        },
+        {
+          name: '7',
+          val: 7
+        }
+      ],
+      ekycOptions: [
+        {
+          name: '未认证',
+          val: 0
+        },
+        {
+          name: '已认证',
+          val: 1
+        }
+      ],
       appInfo: [],
       tableData: [],
       env: 'dev',
@@ -399,6 +461,8 @@ export default {
         activity_val: '',
         r_time: Date.parse(new Date())
       },
+      gpVip: 1,
+      ekycPassed: 1,
       libShow: $libShow,
       expiredTime: 0,
       enterUrl: ''
@@ -522,6 +586,7 @@ export default {
       if (activityVal === 'tournament' || activityVal === 'matchjoin' && this.item.activity_val !== '') {
         activityVal += '_' + this.item.activity_val
       }
+      const gpExt = '{"vip":' + this.gpVip + ',"ekycPassed":' + this.ekycPassed + '}'
       request({
         url: '/dataProxy/info',
         method: 'post',
@@ -543,7 +608,7 @@ export default {
           source: this.item.source,
           activity: activityVal,
           live_id: this.item.live_id,
-          gp_ext: this.item.gp_ext,
+          gp_ext: gpExt,
           gid: this.item.gid
           // kyc: this.item.kyc,
           // r_time: this.item.r_time/1000
