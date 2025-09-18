@@ -496,7 +496,8 @@ export default {
           Whitelist: {
             AppIdList: [],
             SiteIdList: []
-          }
+          },
+          GameIdList: []
         },
         ActivityExtend: {},
         TaskConfig: [],
@@ -768,6 +769,9 @@ export default {
         return
       }
 
+      if (!this.item.Activity.GameIdList) {
+        this.item.Activity.GameIdList = []
+      }
       const index = this.item.Activity.GameIdList.indexOf(data.id)
       if (checked) {
         if (index < 0) {
@@ -828,7 +832,7 @@ export default {
 
           // 更新选中游戏的排序
           this.updateGamesSorted()
-          this.$refs.tree.setCheckedKeys(this.item.GameIdCfg)
+          this.$refs.tree.setCheckedKeys(this.item.Activity.GameIdList)
         }
       })
     },
