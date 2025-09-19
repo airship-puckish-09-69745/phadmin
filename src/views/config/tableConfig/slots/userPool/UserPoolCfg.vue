@@ -119,7 +119,7 @@ export default {
     },
     getData() {
       // 加载基础数值配置
-      request({
+      return request({
         url: '/customizeconfig/one',
         method: 'get',
         data: {
@@ -154,7 +154,7 @@ export default {
       return formatNames
     },
     getGameList() {
-      request({
+      return request({
         url: '/thirdpartygames/all',
         method: 'get',
         data: {}
