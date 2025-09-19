@@ -1050,13 +1050,6 @@ export const asyncRoutes = [
             meta: { title: 'C olor game ◐' }
           },
           {
-            path: 'super_color_game',
-            component: () => import('@/views/config/tableConfig/minigames/superColorGame.vue'),
-            // component: () => import('@/views/config/tableConfig/colorGameMars'),
-            name: 'gameSuperColorCfg',
-            meta: { title: 'S uperColor game ◐' }
-          },
-          {
             path: 'gameCrash',
             component: () => import('@/views/config/tableConfig/gameCrash'),
             name: 'gameCrash',
@@ -1121,6 +1114,13 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/sicboGame'),
             name: 'sicbo_cfg',
             meta: { title: 'S icbo ◐' }
+          },
+          {
+            path: 'super_color_game',
+            component: () => import('@/views/config/tableConfig/minigames/superColorGame.vue'),
+            // component: () => import('@/views/config/tableConfig/colorGameMars'),
+            name: 'gameSuperColorCfg',
+            meta: { title: 'S uperColor game ◐' }
           },
           {
             path: 'tower_cfg',
