@@ -74,7 +74,7 @@ export function handleUidInputChange(input) {
 
 
   //如果验证通过，格式化输入（移除多余空白，统一逗号间距）
-  const formattedInput = validation.uids ? validation.uids.join(', ') : input
+  const formattedInput = validation.uids ? validation.uids.join(',') : input
 
   return { success: true, message: '', formattedInput: formattedInput }
 }
