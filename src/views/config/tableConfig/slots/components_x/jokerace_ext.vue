@@ -244,6 +244,12 @@ export default {
         this.$message.error(`符号在1-5轴变成Joker的概率 err:第一轴只能概率为0 当前值:${this.cfg.JokerColRate}`);
         return;
       }
+      const big = 2000
+      const invalidNumbers = jokerNumbers.filter(num => isNaN(num) || num > big);
+      if (invalidNumbers.length > 0) {
+        this.$message.error(`符号在1-5轴变成Joker的概率 err:每个数字必须小于等于${big}‱`);
+        return;
+      }
       if (!ValidateVueItem(this.$refs['frm2'])) return false
       const $this = this
       this.$refs.compare.SetNewVal(this.getDiffData())
