@@ -1053,8 +1053,8 @@ export const asyncRoutes = [
             path: 'super_color_game',
             component: () => import('@/views/config/tableConfig/minigames/superColorGame.vue'),
             // component: () => import('@/views/config/tableConfig/colorGameMars'),
-            name: 'gameColorCfg',
-            meta: { title: 'C olor super game ◐' }
+            name: 'gameSuperColorCfg',
+            meta: { title: 'S uperColor game ◐' }
           },
           {
             path: 'gameCrash',
