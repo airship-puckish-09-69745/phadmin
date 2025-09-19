@@ -17,6 +17,11 @@
               :rules="[{ required: true, message: '发放金额与下注金额的最小倍数不能为空'}]">
               <el-input v-model.number="cfg.betOddsMin" placeholder="请输入内容" class="elInput"/>
             </el-form-item>
+            <el-form-item
+              label="命中概率(百分比)"
+              :rules="[{ required: true, message: '命中概率不能为空'}]">
+              <el-input v-model.number="cfg.hitRates" placeholder="请输入内容" class="elInput"/>
+            </el-form-item>
           </el-col>
 
           <el-col :span="12">
@@ -80,7 +85,8 @@ export default {
         betOddsMin: 0,
         betOddsMax: 0,
         playTimesMin: 0,
-        playTimesMax: 0
+        playTimesMax: 0,
+        hitRates: 0
       },
       gameIdMap: {},
       reqData: {},
@@ -128,6 +134,7 @@ export default {
             this.cfg.playTimesMin = jsonData.playTimesMin
             this.cfg.playTimesMax = jsonData.playTimesMax
             this.cfg.taxed = jsonData.taxed
+            this.cfg.hitRates = jsonData.hitRates
             this.cfg.taxedSlots = this.formatTaxedSlots(jsonData.taxedSlots)
             this.reqData = response.Data
             if (this.cfg.taxedSlots.length === this.allGames.length) {
@@ -177,7 +184,8 @@ export default {
         this.cfg.betOddsMin === '' ||
         this.cfg.betOddsMax === '' ||
         this.cfg.playTimesMin === '' ||
-        this.cfg.playTimesMax === '') {
+        this.cfg.playTimesMax === '' ||
+        this.cfg.hitRates === undefined) {
         Message.error('请填写完整')
         return false
       }
@@ -197,6 +205,14 @@ export default {
         Message.error('抽水比例不能大于10000')
         return false
       }
+      if (this.cfg.hitRates > 100) {
+        Message.error('命中概率不能大于100')
+        return false
+      }
+      if (this.cfg.hitRates < 0) {
+        Message.error('命中概率不能小于0')
+        return false
+      }
       return true
     },
     saveEdit() {
@@ -208,6 +224,7 @@ export default {
         taxedSlots: this.splitGames(this.cfg.taxedSlots),
         betOddsMin: this.cfg.betOddsMin,
         betOddsMax: this.cfg.betOddsMax,
+        hitRates: this.cfg.hitRates,
         playTimesMin: this.cfg.playTimesMin,
         playTimesMax: this.cfg.playTimesMax
       }
