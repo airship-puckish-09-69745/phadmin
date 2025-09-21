@@ -256,6 +256,7 @@ export default {
         { 'value': 210, 'label': 'LuckySpirits' },
         { 'value': 216, 'label': 'Phoenix' },
         { 'value': 134, 'label': 'Pusoy JP' },
+        { 'value': 135, 'label': 'SUPER COLOR' },
       ],
       userTypeConfig: [
         { 'value': -1, 'label': '全部' },

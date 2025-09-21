@@ -126,8 +126,8 @@ export default {
         { 'value': 1100000, 'label': 'xworld' }
       ],
       freeTypes: [
-        { 'value': 0, 'label': 'scatter' },
-        { 'value': 1, 'label': 'bouns' },
+        { 'value': 0, 'label': 'free game' },
+        { 'value': 1, 'label': 'bonus' },
       ],
     }
   },
