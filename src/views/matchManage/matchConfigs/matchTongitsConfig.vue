@@ -3009,7 +3009,8 @@ export default {
           method: 'get',
           data: {
             Env: this.env,
-            Path: '/match/rule/list'
+            Path: '/match/rule/list',
+            Gid:2031,
           }
         })
         if (response.RetCode === 0) {

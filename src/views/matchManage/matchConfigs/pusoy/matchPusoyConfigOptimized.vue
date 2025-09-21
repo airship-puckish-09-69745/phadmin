@@ -3,7 +3,7 @@
     <el-row>
       <publish
         primary-key="matchCfgId"
-        key-id="MatchConfig"
+        key-id="MatchConfigPusoy"
         :env-empty="true"
         :attr-names="AttrNames"
         :make-content="makeContent"
