@@ -2,14 +2,18 @@
   <div class="app-container">
     <el-row :gutter="10" style="margin-top: 25px">
       <el-col :span="12" :offset="3">
-        <el-form ref="frm2" :model="cfg" label-width="210px">
+        <el-form ref="frm2" :model="cfg" label-width="250px">
 
           <el-form-item label="普通模式 scatter个数的权重" :rules="dataRule(true)">
             <el-input v-model="cfg.ScatterNumWt" :required="true" placeholder="请输入内容,如 0,1,2"> <template slot="append">如0,1,2 代表出现0个的权重为0 </template> </el-input>
           </el-form-item>
 
-          <el-form-item label="符号在1-5轴变成Joker的概率" :rules="dataRule(true)">
+          <el-form-item label="符号在1-5轴变成Joker的概率(普通)" :rules="dataRule(true)">
             <el-input v-model="cfg.JokerColRate" :required="true" placeholder="请输入内容，如 0,11,12,13,14"> <template slot="append">如0,11,12,13,14 代表1轴0‱ .. 5轴14‱</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="符号在1-5轴变成Joker的概率(免费)" :rules="dataRule(true)">
+            <el-input v-model="cfg.JokerColRateFree" :required="true" placeholder="请输入内容，如 0,11,12,13,14"> <template slot="append">如0,11,12,13,14 代表1轴0‱ .. 5轴14‱</template> </el-input>
           </el-form-item>
 
           <el-form-item label="Joker带出wild个数权重" :rules="dataRule(true)">
@@ -71,7 +75,7 @@
                 </el-table-column>
 
                 <!-- 操作 -->
-                <el-table-column label="操作">
+                <el-table-column label="操作" width="160">
                   <template slot-scope="scope">
                     <el-button size="mini" type="primary" @click="doAdd">添加</el-button>
                     <el-button size="mini" type="danger" @click="delRow(scope.$index)">删除</el-button>
@@ -237,19 +241,37 @@ export default {
       const jokerColRate = this.cfg.JokerColRate;
       const jokerNumbers = jokerColRate.split(',').map(num => parseInt(num.trim(), 10));
       if (jokerNumbers.length !== 5) {
-        this.$message.error(`符号在1-5轴变成Joker的概率 err:长度!=5 当前值:, ${this.cfg.JokerColRate}`);
+        this.$message.error(`符号在1-5轴变成Joker的概率(普通) err:长度!=5 当前值:, ${this.cfg.JokerColRate}`);
         return;
       }
       if (jokerNumbers[0] !== 0) {
-        this.$message.error(`符号在1-5轴变成Joker的概率 err:第一轴只能概率为0 当前值:${this.cfg.JokerColRate}`);
+        this.$message.error(`符号在1-5轴变成Joker的概率(普通) err:第一轴只能概率为0 当前值:${this.cfg.JokerColRate}`);
         return;
       }
       const big = 2000
       const invalidNumbers = jokerNumbers.filter(num => isNaN(num) || num > big);
       if (invalidNumbers.length > 0) {
-        this.$message.error(`符号在1-5轴变成Joker的概率 err:每个数字必须小于等于${big}‱`);
+        this.$message.error(`符号在1-5轴变成Joker的概率(普通) err:每个数字必须小于等于${big}‱`);
         return;
       }
+
+      const jokerColRateFree = this.cfg.JokerColRateFree;
+      const jokerNumbersFree = jokerColRateFree.split(',').map(num => parseInt(num.trim(), 10));
+      if (jokerNumbersFree.length !== 5) {
+        this.$message.error(`符号在1-5轴变成Joker的概率(免费) err:长度!=5 当前值:, ${this.cfg.JokerColRateFree}`);
+        return;
+      }
+      if (jokerNumbersFree[0] !== 0) {
+        this.$message.error(`符号在1-5轴变成Joker的概率(免费) err:第一轴只能概率为0 当前值:${this.cfg.JokerColRateFree}`);
+        return;
+      }
+      const bigFree = 1000
+      const invalidNumbersFree = jokerNumbersFree.filter(num => isNaN(num) || num > bigFree);
+      if (invalidNumbersFree.length > 0) {
+        this.$message.error(`符号在1-5轴变成Joker的概率(免费) err:每个数字必须小于等于${bigFree}‱`);
+        return;
+      }
+
       if (!ValidateVueItem(this.$refs['frm2'])) return false
       const $this = this
       this.$refs.compare.SetNewVal(this.getDiffData())
