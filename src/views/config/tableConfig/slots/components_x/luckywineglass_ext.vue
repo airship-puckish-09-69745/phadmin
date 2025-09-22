@@ -2,12 +2,16 @@
   <div class="app-container">
     <el-row :gutter="10" style="margin-top: 30px">
       <el-col :span="12" :offset="3">
-        <el-form ref="frm2" :model="cfg" label-width="250px">
+        <el-form ref="frm2" :model="cfg" label-width="300px">
           <el-form-item label="酒杯倍数">
             <el-input v-model="cfg.WineglassMultiStr" placeholder="请输入内容,如2,3,5,6,8"></el-input>
           </el-form-item>
 
-          <el-form-item label="金框出现概率">
+          <el-form-item label="第一个矩阵出现金框个数权重 从0开始" :rules="dataRule(true)">
+            <el-input v-model="cfg.GoldMt0NumWt" :required="true" placeholder="请输入内容,如0,1,2"> <template slot="append">如0,1,2 代表出现0个的权重为0 </template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="消除后格数能出现金框时金框出现的概率">
             <el-input v-model.number="cfg.GoldRate" ><template slot="append">‰</template></el-input>
           </el-form-item>
 
@@ -171,6 +175,12 @@ export default {
       return JSON.parse(JSON.stringify(this.slotsData))
     },
     submitFrm() {
+      const goldMt0NumWt = this.cfg.GoldMt0NumWt;
+      const numbers = goldMt0NumWt.split(',').map(num => parseInt(num.trim(), 10));
+      if (numbers.length > 5) {
+        this.$message.error('第一个矩阵出现金框个数权重, 最多支持4个金框配置');
+        return;
+      }
       if (!ValidateVueItem(this.$refs['frm2'])) return false
       const $this = this
       this.$refs.compare.SetNewVal(this.getDiffData())
