@@ -141,7 +141,7 @@
                     </legend>
                     <el-col :span="3">
                       <el-button size="mini" type="primary" icon="el-icon-plus" @click="addTask(anteTask)">添加任务</el-button>
-                      <el-button size="mini" type="primary" icon="el-icon-plus" @click="removeAnteTask(anteTaskIndex, anteTask)">删除场次配置</el-button>
+                      <el-button size="mini" type="primary" icon="el-icon-plus" @click="removeAnteTask(anteTaskIndex, gameTask.anteTasks)">删除场次配置</el-button>
                     </el-col>
                     <el-table :data="anteTask.tasks">
                       <el-table-column prop="id" label="任务ID">
