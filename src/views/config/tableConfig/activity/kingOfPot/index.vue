@@ -128,8 +128,8 @@
           </el-row>
           <el-row>
             <el-tabs type="border-card" v-model="edit.activeTag">
-              <el-tab-pane v-for="(gameTask, index) in edit.item.gameTasks" :label="gameNames[gameTask.gameId]" :name="gameNames[gameTask.gameId]">
-                <el-button size="mini" type="primary" icon="el-icon-plus" @click="addAnteTask(gameTask)">添加场次配置</el-button>
+              <el-tab-pane v-for="(gameTask, anteTaskIndex) in edit.item.gameTasks" :label="gameNames[gameTask.gameId]" :name="gameNames[gameTask.gameId]">
+                <el-button size="mini" type="primary" icon="el-icon-plus" @click="addAnteTask(gameTask.anteTasks)">添加场次配置</el-button>
                 <el-row v-for="(anteTask, index) in gameTask.anteTasks" :key="index">
                   <fieldset style="margin-top: 10px">
                     <legend>
@@ -141,6 +141,7 @@
                     </legend>
                     <el-col :span="3">
                       <el-button size="mini" type="primary" icon="el-icon-plus" @click="addTask(anteTask)">添加任务</el-button>
+                      <el-button size="mini" type="primary" icon="el-icon-plus" @click="removeAnteTask(anteTaskIndex, anteTask)">删除场次配置</el-button>
                     </el-col>
                     <el-table :data="anteTask.tasks">
                       <el-table-column prop="id" label="任务ID">
@@ -589,11 +590,11 @@ export default {
         this.createData(data)
       }
     },
-    addAnteTask(gameTask) {
-      gameTask.anteTasks.push(newAnteTask(0))
+    addAnteTask(anteTasks) {
+      anteTasks.push(newAnteTask(0))
     },
-    removeAnteTask(index, gameTask) {
-      gameTask.anteTasks.splice(index, 1)
+    removeAnteTask(index, anteTasks) {
+      anteTasks.splice(index, 1)
     },
     addTask(anteTask) {
       anteTask.tasks.push(newTask())
