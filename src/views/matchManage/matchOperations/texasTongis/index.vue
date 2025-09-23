@@ -31,7 +31,7 @@ export default {
   data() {
     return {
       // 主键
-      subKey: 'texas_tongis_cfg',
+      subKey: 'match_kyc_cfg',
       configData: {
         Data: {
           // Status: false,

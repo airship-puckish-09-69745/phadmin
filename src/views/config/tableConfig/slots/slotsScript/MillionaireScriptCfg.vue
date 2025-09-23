@@ -404,6 +404,7 @@ export default {
         '208': 'candyburst',
         '220': 'goldendragon',
         '221': 'goldendragonmars',
+        '214': 'pumpkincash',
         '224': 'supermahjong'
       }
     }
