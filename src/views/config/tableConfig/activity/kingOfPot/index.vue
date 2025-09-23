@@ -139,7 +139,7 @@
                       </el-select>
                       <span>（₱）</span>
                     </legend>
-                    <el-col :span="3">
+                    <el-col :span="6">
                       <el-button size="mini" type="primary" icon="el-icon-plus" @click="addTask(anteTask)">添加任务</el-button>
                       <el-button size="mini" type="primary" icon="el-icon-plus" @click="removeAnteTask(anteTaskIndex, gameTask.anteTasks)">删除场次配置</el-button>
                     </el-col>
