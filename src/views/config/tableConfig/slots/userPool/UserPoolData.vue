@@ -46,7 +46,7 @@
       <el-table-column prop="updateBy" label="修改人" align="center" width="320"/>
       <el-table-column label="操作" align="center" width="197">
         <template slot-scope="scope">
-          <!--          <el-button type="primary" size="mini" @click="openEdit(scope.row)">编辑</el-button>-->
+          <el-button type="primary" size="mini" @click="openEdit(scope.row)">编辑</el-button>
           <el-button type="danger" size="mini" @click="removeRow(scope.row)">删除</el-button>
         </template>
       </el-table-column>
@@ -245,7 +245,7 @@ export default {
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          this.tableData = response.Data ? response.Data.rows : []
+          this.tableData = response.Data.rows ? response.Data.rows : []
           // this.reqData = response.Data// todo delete
           this.pageInfo.SetTotalCount(response.Data.total)
         }
@@ -280,24 +280,34 @@ export default {
     saveEdit() {
       if (!this.checkData()) return
       if (this.edit.editingIndex !== null) {
-        // this.userPoolItem.ID = this.edit.item.id
-        // this.userPoolItem.UID = Number(this.edit.item.uid)
-        // this.userPoolItem.Amount = this.edit.item.amount
-        // this.userPoolItem.UpdateAt = Math.floor(Date.now() / 1000)
-        // this.userPoolItem.UpdateBy = this.name
-        // this.userPoolItem.ValidStartAt = this.Unix(this.edit.item.effectiveRange[0])
-        // this.userPoolItem.ValidEndAt = this.Unix(this.edit.item.effectiveRange[1])
-        // //
-        // let allConfigData = []
-        // this.getAllData() // 数据库的数据
-        // allConfigData.push(...this.tableData)
-        // allConfigData.push(this.userPoolItem)
-        // allConfigData = this.filterExpiredData(allConfigData)
-        // this.userPoolCfg.items = allConfigData
-        // this.reqData.Data = JSON.stringify(this.userPoolCfg)
-        // this.saveConfigTable(this.reqData)
-        // //
-        // this.updateRequest(this.userPoolItem)
+        this.userPoolItem.id = this.edit.item.id
+        this.userPoolItem.uid = Number(this.edit.item.uid)
+        this.userPoolItem.amount = this.edit.item.amount
+        // this.userPoolItem.UpdateAt = Math.floor(Date.now() / 1000)// todo
+        this.userPoolItem.updateAt = this.Unix(this.edit.item.updateAt)
+        this.userPoolItem.updateBy = this.name
+        this.userPoolItem.validStartAt = this.Unix(this.edit.item.effectiveRange[0])
+        this.userPoolItem.validEndAt = this.Unix(this.edit.item.effectiveRange[1])
+        //
+        this.updateRequest(this.userPoolItem)
+        //
+        request({
+          url: '/userpoolconfig/all',
+          method: 'get',
+          data: {
+            page: 0,
+            pageSize: 0
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            console.log('已经完成列表获取');
+            let allConfigData = response.Data.rows ? response.Data.rows : []
+            allConfigData = this.filterExpiredData(allConfigData)
+            this.userPoolCfg.items = allConfigData
+            this.reqData.Data = JSON.stringify(this.userPoolCfg)
+            this.saveConfigTable(this.reqData)
+          }
+        })
       } else {
         this.createSave(this.edit.item)
       }
@@ -368,7 +378,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           console.log('已经完成列表获取');
-          let allConfigData = response.Data ? response.Data.rows : []
+          let allConfigData = response.Data.rows ? response.Data.rows : []
           allConfigData = this.filterExpiredData(allConfigData)
           this.userPoolCfg.items = allConfigData
           this.reqData.Data = JSON.stringify(this.userPoolCfg)
@@ -395,11 +405,12 @@ export default {
       await request({
         url: 'userpoolconfig/delete',
         method: 'post',
-        data: {ID: row.id}
+        data: {id: row.id}
       }).then(response => {
         if (response.RetCode === 0) {
           // this.edit.item.ID = response.Data.ID
           // this.clientDB.AddData(this.edit.item)
+          console.log('this.pageInfo:', this.pageInfo);
           this.getData(this.pageInfo.GetCurrentPage(), this.pageInfo.GetPageNum())
           Message.success('操作成功！')
         }
@@ -501,7 +512,7 @@ export default {
             }).then(response => {
               if (response.RetCode === 0) {
                 let allConfigData = []
-                allConfigData = response.Data ? response.Data.rows : []
+                allConfigData = response.Data.rows ? response.Data.rows : []
                 allConfigData = this.filterExpiredData(allConfigData)
                 this.userPoolCfg.items = allConfigData
                 this.reqData.Data = JSON.stringify(this.userPoolCfg)
