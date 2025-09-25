@@ -88,7 +88,7 @@
         <el-tab-pane label="菜单配置">
           <el-col>
             <el-tree :data="edit.menuAll" show-checkbox node-key="id" default-expand-all
-              :default-checked-keys="edit.menuCheckedKeys" :checked-keys="edit.menuCheckedKeys" @check="handleCheckChange" :props="edit.menuProps">
+              :default-checked-keys="edit.menuCheckedKeys" @check="handleCheckChange" :props="edit.menuProps">
             </el-tree>
           </el-col>
         </el-tab-pane>
@@ -166,7 +166,7 @@ export default {
           label: 'title'
         },
       },
-      appInfos: [{ID: 0, Account: '通用APP'}]
+      appInfos: [{ ID: 0, Account: '通用APP' }]
     }
   },
   created() {
@@ -261,8 +261,32 @@ export default {
         }
       })
     },
+    collectAncestors(tree, id, map = new Map()) {
+      function buildMap(list, parentId) {
+        list.forEach(item => {
+          if (parentId !== undefined) map.set(item.id, parentId)
+          if (item.children?.length) buildMap(item.children, item.id)
+        })
+      }
+      buildMap(tree)
+      const ids = new Set()
+      let cur = map.get(id)
+      while (cur !== undefined) {
+        ids.add(cur)
+        cur = map.get(cur)
+      }
+      return [...ids]
+    },
     editSave(postData) {
-       console.log("menuCheckedKeys", this.edit.menuCheckedKeys)
+      console.log("menuCheckedKeys", this.edit.menuCheckedKeys)
+      const allIds = new Set(this.edit.menuCheckedKeys)
+
+      this.edit.menuCheckedKeys.forEach(id => {
+        this.collectAncestors(this.edit.menuAll, id)
+          .forEach(pid => allIds.add(pid))
+      })
+
+      const submitIds = [...allIds]
       const pers = {}
       for (let i = 0; i < this.edit.permissions.length; i++) {
         const ob = this.edit.permissions[i]
@@ -282,7 +306,7 @@ export default {
           name: this.edit.item.Name,
           description: this.edit.item.Description,
           ps: JSON.stringify(pers),
-          menuIdList: JSON.stringify(this.edit.menuCheckedKeys),
+          menuIdList: JSON.stringify(submitIds),
           appIds: this.edit.item.AppIds ? this.edit.item.AppIds.join(',') : '',
         }
       }).then(response => {
@@ -365,8 +389,25 @@ export default {
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          this.edit.menuAll = response.Data.menuAll
-          this.edit.menuCheckedKeys = response.Data.roleMenu
+          const leafIds = []
+          const Data = response.Data
+          function collectLeaf(list) {
+            list.forEach(item => {
+              if (!item.children || item.children.length === 0) {
+                leafIds.push(item.id)
+              } else {
+                collectLeaf(item.children)
+              }
+            })
+          }
+          collectLeaf(Data.menuAll || [])
+
+          // 真正属于该角色的菜单 = 后端返回的 id 与 叶子节点 的交集
+          const owned = Data.roleMenu || []
+          this.edit.menuCheckedKeys = owned.filter(id => leafIds.includes(id))
+
+          // 整棵树仍用来展示
+          this.edit.menuAll = Data.menuAll || []
         }
       })
     }
