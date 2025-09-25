@@ -6,6 +6,7 @@ import request from '@/utils/request'
 import store from '@/store'
 import Compare from '@/components/Compare/index.vue'
 import Publish from '@/components/Publish/index.vue'
+import {getCustomize, updateCustomize} from "@/api/custome_configV2";
 
 export default {
   components: { Compare, Publish },
@@ -236,13 +237,7 @@ export default {
     },
     getData() {
       const $this = this
-      request({
-        url: '/customizeconfig/one',
-        method: 'get',
-        data: {
-          SubKey: this.subKey
-        }
-      }).then(response => {
+      getCustomize(this.subKey).then(response => {
         if (response.RetCode === 0) {
           $this.form = response.Data || {}
           if (response.Data && response.Data.Data !== '' && response.Data.Data !== '{}') {
@@ -280,11 +275,7 @@ export default {
           Message.error('没有任何修改，不需要提交')
           return
         }
-        request({
-          url: 'customizeconfig/update',
-          method: 'post',
-          data: $this.form
-        }).then(response => {
+        updateCustomize($this.form).then(response => {
           if (response.RetCode === 0) {
             console.log('save', response)
             Message.success('保存成功')
