@@ -71,6 +71,36 @@
           </el-row>
           <el-row :gutter="5">
             <el-form label-width="220px">
+              <el-col :span="24">
+                <el-form-item label="规则图片横板：" :required="true">
+                  <el-col v-for="(v,k) in item.Activity.RuleImgHor" :span="2">
+                    <span style="display: inline-block; position: relative;">
+                      <span style="position: absolute; top: -20px; right: 1px; cursor: pointer; z-index: 99" @click="removeRuleImage(k, 'Hor')">移除</span>
+                      <ImagePicker v-model="item.Activity.RuleImgHor[k]" />
+                    </span>
+                  </el-col>
+                  <span style="position: relative;">
+                    <el-button @click="addRuleImage('Hor')">添加</el-button>
+                  </span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="24">
+                <el-form-item label="规则图片竖版：" :required="true">
+                  <el-col v-for="(v,k) in item.Activity.RuleImgVer" :span="2">
+                    <span style="display: inline-block; position: relative;">
+                      <span style="position: absolute; top: -20px; right: 1px; cursor: pointer; z-index: 99" @click="removeRuleImage(k, 'Vor')">移除</span>
+                      <ImagePicker v-model="item.Activity.RuleImgVer[k]" />
+                    </span>
+                  </el-col>
+                  <span style="position: relative;">
+                    <el-button @click="addRuleImage('Vor')">添加</el-button>
+                  </span>
+                </el-form-item>
+              </el-col>
+            </el-form>
+          </el-row>
+          <el-row :gutter="5">
+            <el-form label-width="220px">
               <el-col :span="12">
                 <el-form-item label="勾选支持的游戏：" :required="true">
                   <el-input
@@ -497,7 +527,9 @@ export default {
             AppIdList: [],
             SiteIdList: []
           },
-          GameIdList: []
+          GameIdList: [],
+          RuleImgHor: [],
+          RuleImgVer: []
         },
         ActivityExtend: {},
         TaskConfig: [],
@@ -1006,6 +1038,28 @@ export default {
       }).catch(() => {
         console.log('取消')
       })
+    },
+    addRuleImage(type) {
+      if (type === 'Hor') {
+        if (this.item.Activity.RuleImgHor) {
+          this.item.Activity.RuleImgHor.push('')
+        } else {
+          this.$set(this.item.Activity, 'RuleImgHor', [''])
+        }
+      } else {
+        if (this.item.Activity.RuleImgVer) {
+          this.item.Activity.RuleImgVer.push('')
+        } else {
+          this.$set(this.item.Activity, 'RuleImgVer', [''])
+        }
+      }
+    },
+    removeRuleImage(index, type) {
+      if (type === 'Hor') {
+        this.item.Activity.RuleImgHor.splice(index, 1)
+      } else {
+        this.item.Activity.RuleImgVer.splice(index, 1)
+      }
     }
   }
 }
