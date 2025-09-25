@@ -233,6 +233,7 @@ export default {
       this.getSuperColorBetOption(superColorGameLog.areas, this.Player.betAreas)
     },
     getSuperColorBetOption(betAreaCfg,betArea){
+      this.SuperColorBetArea = []
       for (const betAreaCfgKey in betAreaCfg) {
         const tmp = {
           id: betAreaCfg[betAreaCfgKey].id,
