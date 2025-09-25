@@ -542,11 +542,11 @@ export default {
               return
             }
             if (task.type === 0 || task.timesRequired === 0 || task.bonus === 0) {
-              Message.error('任务配置中的数值不能为0')
+              Message.error(`场次底注${anteTask.antes}对应的任务次数不能为0`)
               return
             }
             if (k > 0 && task.timesRequired <= anteTask.tasks[k - 1].timesRequired) {
-              Message.error('场次底注对应的任务配置中，次数要求必须大于前一个任务的次数要求')
+              Message.error(`场次底注${anteTask.antes}对应的次数要求必须大于前一个任务的次数要求`)
               return
             }
             taskIds.push(task.id)
