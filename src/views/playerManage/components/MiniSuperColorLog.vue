@@ -23,7 +23,7 @@
       </el-descriptions-item>
     </el-descriptions>
 
-    <el-descriptions class="margin-top" title="" :column="3" border>
+    <el-descriptions class="margin-top" title="" :column="2" border>
       <el-descriptions-item>
         <template slot="label">
           骰子结果：
@@ -48,8 +48,8 @@
       ref="filterTable"
       :data="SuperColorBetArea"
       border
-      :header-cell-style="libShow.DefaultTableHeadClass"
-      :cell-style="libShow.DefaultTableCell"
+      :header-cell-style="{'text-align':'center'}"
+      :cell-style="getHitStyle"
       style="width: 100%"
     >
       <el-table-column
@@ -72,7 +72,7 @@
       <el-table-column
         prop="Result"
         label="下注"
-        width="800"
+        width="200"
       >
         <template slot-scope="scope">
           {{ showMoney(scope.row.moneyBet) }}
@@ -81,7 +81,7 @@
       <el-table-column
         prop="Result"
         label="输赢"
-        width="800"
+        width="200"
       >
         <template slot-scope="scope">
           {{ showMoney(scope.row.moneyWon) }}
@@ -90,7 +90,7 @@
       <el-table-column
         prop="Result"
         label="赔率"
-        width="800"
+        width="200"
       >
         <template slot-scope="scope">
           {{ showBetOdd(scope.row.odd) }}
@@ -101,10 +101,11 @@
 </template>
 
 <script>
-
+import { $libShow } from '@/utils/common'
 export default {
   name: 'MiniSuperColorDetailLog',
   components: {},
+  libShow: $libShow,
   props: {
     GameLog: {
       type: Object,
@@ -187,11 +188,19 @@ export default {
     this.initData(this.GameLog)
   },
   methods: {
+    getHitStyle({ row }) {
+      if (row.isHit && row.moneyBet > 0) {
+        return { color: 'red' }
+      } else if (row.moneyBet > 0){
+        return { color: 'blue' }
+      }
+      return {}
+    },
     showMoney(money) {
       return (money/1000).toFixed(3)
     },
     showBetOdd(odd) {
-      return (odd/1000).toFixed(2)
+      return (odd/1000).toFixed(0)
     },
     showBetAreaName(id) {
       return this.ColorOption[id].Name
@@ -218,9 +227,34 @@ export default {
       this.SuperIndex = superColorGameLog.superDiceIndex
       this.SuperOdd = superColorGameLog.superOdd
       this.JackpotDices = superColorGameLog.jackpotDices
-      this.Player = superColorGameLog.Players[0]
+      this.Player = superColorGameLog.players[0]
       this.Money = this.Player.moneyEnd
-      this.SuperColorBetArea = this.Player.betAreas
+      // this.SuperColorBetArea = this.Player.betAreas
+      this.getSuperColorBetOption(superColorGameLog.areas, this.Player.betAreas)
+    },
+    getSuperColorBetOption(betAreaCfg,betArea){
+      this.SuperColorBetArea = []
+      for (const betAreaCfgKey in betAreaCfg) {
+        const tmp = {
+          id: betAreaCfg[betAreaCfgKey].id,
+          isHit: betAreaCfg[betAreaCfgKey].isHit,
+          moneyBet: 0,
+          moneyWon: 0,
+          odd: betAreaCfg[betAreaCfgKey].odd,
+          superOdd :betAreaCfg[betAreaCfgKey].superOdd || 0,
+          totalOdd :0,
+        }
+        if (betAreaCfg[betAreaCfgKey].superOdd > 0){
+          tmp.totalOdd = (tmp.odd-1000) * tmp.superOdd + 1000
+        }
+        for (const betAreaKey in betArea) {
+          if (betArea[betAreaKey].id === betAreaCfg[betAreaCfgKey].id){
+            tmp.moneyBet = betArea[betAreaKey].moneyBet
+            tmp.moneyWon = betArea[betAreaKey].moneyWon
+          }
+        }
+        this.SuperColorBetArea.push(tmp)
+      }
     },
     closeView(done) {
       this.$emit('closeDialog')
