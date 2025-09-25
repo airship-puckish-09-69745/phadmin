@@ -976,7 +976,7 @@ export default {
           Two: this.resultForm.two,
           Three: this.resultForm.three,
           Index: this.resultForm.superDiceIndex,
-          Odd: this.resultForm.superDiceOdd*1000
+          Odd: this.resultForm.superDiceOdd
         }
       }).then(response => {
         if (response.RetCode === 0) {
