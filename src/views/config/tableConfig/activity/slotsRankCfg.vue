@@ -18,17 +18,17 @@
         <el-tab-pane label="排行榜游戏设置">
           <el-row :gutter="5">
             <el-col :span="16">
-              <el-form ref="item" label-width="150px">
+              <el-form ref="item" label-width="120px">
                 <el-col :span="24">
-                  <el-form-item label="------排行榜总开关">
+                  <el-form-item label="----排行榜总开关">
                     <el-switch v-model="slotsRankCfg.Open" :active-value="1" :inactive-value="0" />
                   </el-form-item>
                 </el-col>
 
                 <el-col :span="300">
-                  <el-form-item label="支持跳转的App：">
-                    <el-select v-model="slotsRankCfg.AppsCanSkip" multiple placeholder="请选择" style="width: 300px">
-                      <el-option v-for="item in appidInfoCfgs" :key="item.value" :label="item.label" :value="item.value" />
+                  <el-form-item label="支持跳转的站点:">
+                    <el-select v-model="slotsRankCfg.ChannelsCanSkip" multiple placeholder="请选择" style="width: 300px">
+                      <el-option v-for="item in Channels" :key="item.value" :label="item.label" :value="item.value" />
                     </el-select>
                   </el-form-item>
                 </el-col>
@@ -111,19 +111,17 @@ export default {
       form: {},
       slotsRankCfg: { //排行榜游戏配置
         Open: 1,
-        AppsCanSkip: [],
+        ChannelsCanSkip: [],
         GameCfg: [{Gid:1, Icon:"", Open:0, FreeTyp: 0}],
       },
       gameNameMap: {},
       gameDataMap: {},
-      appidInfoCfgs: [
-        { 'value': 1000002, 'label': 'dayusenlin' },
-        { 'value': 1000003, 'label': 'testaccount' },
-        { 'value': 1000004, 'label': 'testkey' },
-        { 'value': 1000005, 'label': 'BingoPlusTongits' },
-        { 'value': 1000006, 'label': 'BingoPlusTest' },
-        { 'value': 1000007, 'label': 'br' },
-        { 'value': 1100000, 'label': 'xworld' }
+      Channels: [
+        { 'value': "BP", 'label': 'BP' },
+        { 'value': "AP", 'label': 'AP' },
+        { 'value': "GP", 'label': 'GP' },
+        { 'value': "PG", 'label': 'PG' },
+        { 'value': "DEV", 'label': 'DEV' },
       ],
       freeTypes: [
         { 'value': 0, 'label': 'free game' },
