@@ -200,7 +200,7 @@ export default {
           }
           this.gameDataMap = gameDataMap
 
-          this.$refs.compare.SetOldVal(cfg)
+          this.$refs.compare.SetOldVal(JSON.stringify(cfg))
         }
       })
     },
