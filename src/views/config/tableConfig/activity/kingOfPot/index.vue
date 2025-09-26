@@ -128,9 +128,9 @@
           </el-row>
           <el-row>
             <el-tabs type="border-card" v-model="edit.activeTag">
-              <el-tab-pane v-for="(gameTask, anteTaskIndex) in edit.item.gameTasks" :label="gameNames[gameTask.gameId]" :name="gameNames[gameTask.gameId]">
+              <el-tab-pane v-for="(gameTask, gameTaskIndex) in edit.item.gameTasks" :label="gameNames[gameTask.gameId]" :name="gameNames[gameTask.gameId]" :key="gameNames[gameTask.gameId]">
                 <el-button size="mini" type="primary" icon="el-icon-plus" @click="addAnteTask(gameTask.anteTasks)">添加场次配置</el-button>
-                <el-row v-for="(anteTask, index) in gameTask.anteTasks" :key="index">
+                <el-row v-for="(anteTask, anteTaskIndex) in gameTask.anteTasks" :key="anteTaskIndex">
                   <fieldset style="margin-top: 10px">
                     <legend>
                       <span>场次底注：</span>
@@ -598,6 +598,7 @@ export default {
       anteTasks.push(newAnteTask(0))
     },
     removeAnteTask(index, anteTasks) {
+      console.log('removeAnteTask index:', index, ' anteTasks:', anteTasks)
       anteTasks.splice(index, 1)
     },
     addTask(anteTask) {
