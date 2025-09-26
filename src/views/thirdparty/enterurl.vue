@@ -20,10 +20,10 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item v-model="item.directScene" label="进入场景：" :required="true" label-width="100px">
-          <el-select v-model="item.directScene" filterable placeholder="请选择" size="mini">
+        <el-form-item v-model="item.gid" label="进入场景：" :required="true" label-width="100px">
+          <el-select v-model="item.gid" filterable placeholder="请选择" size="mini">
             <el-option
-              v-for="row in directScenes"
+              v-for="row in gameOptions"
               :label="row.name"
               :value="row.val"
             />
@@ -86,18 +86,18 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item v-model="item.gid" label="游戏：" label-width="100px">
-          <el-tooltip class="item" effect="dark" content="此处有值时，优先取此处关连的场景。比如：游戏选了【pusoy比赛】,进入场景选了【color】，此时进入【pusoy比赛】。" placement="right-start">
-            <i class="el-icon-info" />
-          </el-tooltip>
-          <el-select v-model="item.gid" filterable allow-create default-first-option placeholder="请选择" size="mini">
-            <el-option
-              v-for="row in gameOptions"
-              :label="row.name"
-              :value="row.val"
-            />
-          </el-select>
-        </el-form-item>
+<!--        <el-form-item v-model="item.gid" label="游戏：" label-width="100px">-->
+<!--          <el-tooltip class="item" effect="dark" content="此处有值时，优先取此处关连的场景。比如：游戏选了【pusoy比赛】,进入场景选了【color】，此时进入【pusoy比赛】。" placement="right-start">-->
+<!--            <i class="el-icon-info" />-->
+<!--          </el-tooltip>-->
+<!--          <el-select v-model="item.gid" filterable allow-create default-first-option placeholder="请选择" size="mini">-->
+<!--            <el-option-->
+<!--              v-for="row in gameOptions"-->
+<!--              :label="row.name"-->
+<!--              :value="row.val"-->
+<!--            />-->
+<!--          </el-select>-->
+<!--        </el-form-item>-->
         <el-form-item v-if="item.activity === 'tournament' || item.activity === 'matchjoin'" v-model="item.activity_val" label="活动附加值：" label-width="100px">
           <el-input v-model="item.activity_val" />
         </el-form-item>
@@ -382,14 +382,6 @@ export default {
         {
           name: '无',
           val: ''
-        },
-        {
-          name: 'Tongits比赛',
-          val: '2031'
-        },
-        {
-          name: 'Pusoy比赛',
-          val: '2033'
         }
       ],
       gpVipOptions: [
@@ -669,6 +661,7 @@ export default {
             item.name = objs[i].Name
             item.val = objs[i].Scene
             $this.directScenes.push(item)
+            $this.gameOptions.push({ val: objs[i].GameID, name: objs[i].Name })
           }
         }
       })
