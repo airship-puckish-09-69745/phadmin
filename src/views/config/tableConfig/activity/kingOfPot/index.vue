@@ -128,9 +128,9 @@
           </el-row>
           <el-row>
             <el-tabs type="border-card" v-model="edit.activeTag">
-              <el-tab-pane v-for="(gameTask, index) in edit.item.gameTasks" :label="gameNames[gameTask.gameId]" :name="gameNames[gameTask.gameId]">
-                <el-button size="mini" type="primary" icon="el-icon-plus" @click="addAnteTask(gameTask)">添加场次配置</el-button>
-                <el-row v-for="(anteTask, index) in gameTask.anteTasks" :key="index">
+              <el-tab-pane v-for="(gameTask, gameTaskIndex) in edit.item.gameTasks" :label="gameNames[gameTask.gameId]" :name="gameNames[gameTask.gameId]" :key="gameNames[gameTask.gameId]">
+                <el-button size="mini" type="primary" icon="el-icon-plus" @click="addAnteTask(gameTask.anteTasks)">添加场次配置</el-button>
+                <el-row v-for="(anteTask, anteTaskIndex) in gameTask.anteTasks" :key="anteTaskIndex">
                   <fieldset style="margin-top: 10px">
                     <legend>
                       <span>场次底注：</span>
@@ -139,8 +139,9 @@
                       </el-select>
                       <span>（₱）</span>
                     </legend>
-                    <el-col :span="3">
+                    <el-col :span="6">
                       <el-button size="mini" type="primary" icon="el-icon-plus" @click="addTask(anteTask)">添加任务</el-button>
+                      <el-button size="mini" type="danger" icon="el-icon-remove" @click="removeAnteTask(anteTaskIndex, gameTask.anteTasks)">删除场次配置</el-button>
                     </el-col>
                     <el-table :data="anteTask.tasks">
                       <el-table-column prop="id" label="任务ID">
@@ -540,11 +541,15 @@ export default {
               Message.error(`场次底注${anteTask.antes}对应的任务ID不能重复`)
               return
             }
-            taskIds.push(task.id)
             if (task.type === 0 || task.timesRequired === 0 || task.bonus === 0) {
-              Message.error('任务配置中的数值不能为0')
+              Message.error(`场次底注${anteTask.antes}对应的任务次数不能为0`)
               return
             }
+            if (k > 0 && task.timesRequired <= anteTask.tasks[k - 1].timesRequired) {
+              Message.error(`场次底注${anteTask.antes}对应的次数要求必须大于前一个任务的次数要求`)
+              return
+            }
+            taskIds.push(task.id)
           }
         }
       }
@@ -589,11 +594,12 @@ export default {
         this.createData(data)
       }
     },
-    addAnteTask(gameTask) {
-      gameTask.anteTasks.push(newAnteTask(0))
+    addAnteTask(anteTasks) {
+      anteTasks.push(newAnteTask(0))
     },
-    removeAnteTask(index, gameTask) {
-      gameTask.anteTasks.splice(index, 1)
+    removeAnteTask(index, anteTasks) {
+      console.log('removeAnteTask index:', index, ' anteTasks:', anteTasks)
+      anteTasks.splice(index, 1)
     },
     addTask(anteTask) {
       anteTask.tasks.push(newTask())

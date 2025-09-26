@@ -18,18 +18,16 @@
         <el-tab-pane label="排行榜游戏设置">
           <el-row :gutter="5">
             <el-col :span="16">
-              <el-form ref="item" label-width="150px">
+              <el-form ref="item" label-width="120px">
                 <el-col :span="24">
-                  <el-form-item label="------排行榜总开关">
+                  <el-form-item label="----排行榜总开关">
                     <el-switch v-model="slotsRankCfg.Open" :active-value="1" :inactive-value="0" />
                   </el-form-item>
                 </el-col>
 
                 <el-col :span="300">
-                  <el-form-item label="支持跳转的App：">
-                    <el-select v-model="slotsRankCfg.AppsCanSkip" multiple placeholder="请选择" style="width: 300px">
-                      <el-option v-for="item in appidInfoCfgs" :key="item.value" :label="item.label" :value="item.value" />
-                    </el-select>
+                  <el-form-item label="支持跳转的站点:">
+                    <SiteSelect v-model="slotsRankCfg.ChannelsCanSkip" multiple placeholder="请选择" style="width: 400px" />
                   </el-form-item>
                 </el-col>
               </el-form>
@@ -79,6 +77,38 @@
             </el-form>
           </el-row>
         </el-tab-pane>
+
+        <el-tab-pane label="入口白名单配置">
+          <el-form ref="whiteForm" :model="slotsRankCfg" label-width="220px">
+            <el-row>
+              <el-col :span="24">
+                <el-form-item label="白名单开关：" prop="White.Open">
+                  <el-switch v-model="slotsRankCfg.White.Open" :active-value="1" :inactive-value="0" />
+                </el-form-item>
+              </el-col>
+
+              <el-col :span="24">
+                <el-form-item label="AppId白名单：" prop="White.AppIdList">
+                  <el-select v-model="slotsRankCfg.White.AppIdList" multiple placeholder="请选择" style="width: 400px">
+                    <el-option
+                        v-for="item in appIdOptions"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+
+              <el-col :span="24">
+                <el-form-item label="站点白名单：" prop="White.ChannelList">
+                  <SiteSelect v-model="slotsRankCfg.White.ChannelList" multiple placeholder="请选择" style="width: 400px" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-form>
+        </el-tab-pane>
+
       </el-tabs>
 
       <el-row>
@@ -100,9 +130,10 @@ import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
 import {Message} from 'element-ui'
 import request from '@/utils/request'
 import Compare from '@/components/Compare/index.vue'
+import SiteSelect from "@/components/SiteSelect/index.vue";
 
 export default {
-  components: { Compare, ImagePicker, Publish },
+  components: {SiteSelect, Compare, ImagePicker, Publish },
   data() {
     return {
       libShow: $libShow,
@@ -111,23 +142,33 @@ export default {
       form: {},
       slotsRankCfg: { //排行榜游戏配置
         Open: 1,
-        AppsCanSkip: [],
+        ChannelsCanSkip: [],
         GameCfg: [{Gid:1, Icon:"", Open:0, FreeTyp: 0}],
+        White:{
+          Open: 0,
+          AppIdList: [],
+          ChannelList: [],
+        },
       },
       gameNameMap: {},
       gameDataMap: {},
-      appidInfoCfgs: [
-        { 'value': 1000002, 'label': 'dayusenlin' },
-        { 'value': 1000003, 'label': 'testaccount' },
-        { 'value': 1000004, 'label': 'testkey' },
-        { 'value': 1000005, 'label': 'BingoPlusTongits' },
-        { 'value': 1000006, 'label': 'BingoPlusTest' },
-        { 'value': 1000007, 'label': 'br' },
-        { 'value': 1100000, 'label': 'xworld' }
-      ],
       freeTypes: [
         { 'value': 0, 'label': 'free game' },
         { 'value': 1, 'label': 'bonus' },
+      ],
+      appIdOptions: [
+        {
+          value: 1000002,
+          label: '内部1000002'
+        },
+        {
+          value: 1000003,
+          label: '提审1000003'
+        },
+        {
+          value: 1000005,
+          label: '正式1000005'
+        }
       ],
     }
   },
@@ -159,7 +200,7 @@ export default {
           }
           this.gameDataMap = gameDataMap
 
-          this.$refs.compare.SetOldVal(cfg)
+          this.$refs.compare.SetOldVal(JSON.stringify(cfg))
         }
       })
     },

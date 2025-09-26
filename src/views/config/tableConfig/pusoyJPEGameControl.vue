@@ -1013,7 +1013,7 @@ export default {
           console.log("objs", objs)
           this.handleRefreshPlayerLevels()
           if (objs.isFind === 0) {
-            Message.warning('该用户在Tongits JP数据为空')
+            Message.warning('该用户在数据为空')
             this.VisibleUid = false
             return
           }

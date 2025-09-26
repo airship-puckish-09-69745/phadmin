@@ -665,6 +665,7 @@ export default {
     },
     getView() {
       getView(this.keyId, this.envEmpty).then(response => {
+        console.log('getView: ', this.keyId, this.envEmpty, response)
         this.needReview = response.Data.NeedView
         this.isMy = response.Data.IsMy
         this.currentUser = response.Data.CurUser
@@ -681,6 +682,7 @@ export default {
     },
     checkProcessing() { // 检测版本是否在处理中
       getView(this.keyId, this.envEmpty).then(response => {
+        console.log('checkProcessing: ', this.keyId, this.envEmpty, response)
         this.currentUser = response.Data.CurUser
         this.opType = response.Data.Step
         const stepNames = ['同步预发布', '提交审核', '审核待发布']

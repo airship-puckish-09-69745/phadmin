@@ -113,7 +113,7 @@
                         label="1颗"
                       >
                         <template slot-scope="scope">
-                          <el-input v-model="scope.row.Odds[0].Odd" style="width:120px;" size="mini">
+                          <el-input v-model.number="scope.row.Odds[0].Odd" style="width:120px;" size="mini">
                             <template slot="append">X</template>
                           </el-input>
                         </template>
@@ -122,7 +122,7 @@
                         label="2颗"
                       >
                         <template slot-scope="scope">
-                          <el-input v-if="scope.row.Odds[1]!==undefined" v-model="scope.row.Odds[1].Odd" style="width:120px;" size="mini">
+                          <el-input v-if="scope.row.Odds[1]!==undefined" v-model.number="scope.row.Odds[1].Odd" style="width:120px;" size="mini">
                             <template slot="append">X</template>
                           </el-input>
                         </template>
@@ -131,7 +131,7 @@
                         label="3颗"
                       >
                         <template slot-scope="scope">
-                          <el-input v-if="scope.row.Odds[2]!==undefined" v-model="scope.row.Odds[2].Odd" style="width:120px;" size="mini">
+                          <el-input v-if="scope.row.Odds[2]!==undefined" v-model.number="scope.row.Odds[2].Odd" style="width:120px;" size="mini">
                             <template slot="append">X</template>
                           </el-input>
                         </template>
@@ -547,19 +547,19 @@ export default {
         NoticeTime: 300,
         MinMoneyCarry: 10000,
         BetAreas: [
-          { Id: 0, Name: 'Yellow', Odds: [{ Number: 1, Odd: 2000 }, { Number: 2, Odd: 3000 }, { Number: 3, Odd: 4000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
-          { Id: 1, Name: 'White', Odds: [{ Number: 1, Odd: 2000 }, { Number: 2, Odd: 3000 }, { Number: 3, Odd: 4000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
-          { Id: 2, Name: 'Purple', Odds: [{ Number: 1, Odd: 2000 }, { Number: 2, Odd: 3000 }, { Number: 3, Odd: 4000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
-          { Id: 3, Name: 'Blue', Odds: [{ Number: 1, Odd: 2000 }, { Number: 2, Odd: 3000 }, { Number: 3, Odd: 4000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
-          { Id: 4, Name: 'Green', Odds: [{ Number: 1, Odd: 2000 }, { Number: 2, Odd: 3000 }, { Number: 3, Odd: 4000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
-          { Id: 5, Name: 'Red', Odds: [{ Number: 1, Odd: 2000 }, { Number: 2, Odd: 3000 }, { Number: 3, Odd: 4000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
-          { Id: 6, Name: 'YellowWhite', Odds: [{ Number: 1, Odd: 2000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
-          { Id: 7, Name: 'WhitePurple', Odds: [{ Number: 1, Odd: 2000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
-          { Id: 8, Name: 'PurpleGreen', Odds: [{ Number: 1, Odd: 2000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
-          { Id: 9, Name: 'GreenRed', Odds: [{ Number: 1, Odd: 2000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
-          { Id: 10, Name: 'RedBlue', Odds: [{ Number: 1, Odd: 2000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
-          { Id: 11, Name: 'BlueYellow', Odds: [{ Number: 1, Odd: 2000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
-          { Id: 12, Name: 'RedWhite', Odds: [{ Number: 1, Odd: 2000 }], MaxMoneyBet: 2000, RobotBetRate: 10 }
+          { Id: 0, Name: 'Yellow', Odds: [{ Number: 2, Odd: 2000 }, { Number: 2, Odd: 3000 }, { Number: 3, Odd: 4000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
+          { Id: 1, Name: 'White', Odds: [{ Number: 2, Odd: 2000 }, { Number: 2, Odd: 3000 }, { Number: 3, Odd: 4000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
+          { Id: 2, Name: 'Purple', Odds: [{ Number: 2, Odd: 2000 }, { Number: 2, Odd: 3000 }, { Number: 3, Odd: 4000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
+          { Id: 3, Name: 'Blue', Odds: [{ Number: 2, Odd: 2000 }, { Number: 2, Odd: 3000 }, { Number: 3, Odd: 4000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
+          { Id: 4, Name: 'Green', Odds: [{ Number: 2, Odd: 2000 }, { Number: 2, Odd: 3000 }, { Number: 3, Odd: 4000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
+          { Id: 5, Name: 'Red', Odds: [{ Number: 2, Odd: 2000 }, { Number: 2, Odd: 3000 }, { Number: 3, Odd: 4000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
+          { Id: 6, Name: 'YellowWhite', Odds: [{ Number: 2, Odd: 2000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
+          { Id: 7, Name: 'WhitePurple', Odds: [{ Number: 2, Odd: 2000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
+          { Id: 8, Name: 'PurpleGreen', Odds: [{ Number: 2, Odd: 2000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
+          { Id: 9, Name: 'GreenRed', Odds: [{ Number: 2, Odd: 2000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
+          { Id: 10, Name: 'RedBlue', Odds: [{ Number: 2, Odd: 2000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
+          { Id: 11, Name: 'BlueYellow', Odds: [{ Number: 2, Odd: 2000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
+          { Id: 12, Name: 'RedWhite', Odds: [{ Number: 2, Odd: 2000 }], MaxMoneyBet: 2000, RobotBetRate: 10 }
         ],
         SuperDice: {
           Probability: 50,
@@ -921,6 +921,16 @@ export default {
               return
             }
           }
+          for (const i in this.item.BetAreas) {
+            const odds = this.item.BetAreas[i].Odds
+            for (const oddsKey in odds) {
+              if (odds[oddsKey].Odd <= 1) {
+                Message.error('请输入正确的下注区域赔率,赔率不能小于1,颜色是' + this.item.BetAreas[i].Name)
+                return
+              }
+            }
+
+          }
         }
       }
 
@@ -966,7 +976,7 @@ export default {
           Two: this.resultForm.two,
           Three: this.resultForm.three,
           Index: this.resultForm.superDiceIndex,
-          Odd: this.resultForm.superDiceOdd*1000
+          Odd: this.resultForm.superDiceOdd
         }
       }).then(response => {
         if (response.RetCode === 0) {
