@@ -27,9 +27,7 @@
 
                 <el-col :span="300">
                   <el-form-item label="支持跳转的站点:">
-                    <el-select v-model="slotsRankCfg.ChannelsCanSkip" multiple placeholder="请选择" style="width: 300px">
-                      <el-option v-for="item in Channels" :key="item.value" :label="item.label" :value="item.value" />
-                    </el-select>
+                    <SiteSelect v-model="slotsRankCfg.ChannelsCanSkip" multiple placeholder="请选择" style="width: 400px" />
                   </el-form-item>
                 </el-col>
               </el-form>
@@ -79,6 +77,38 @@
             </el-form>
           </el-row>
         </el-tab-pane>
+
+        <el-tab-pane label="入口白名单配置">
+          <el-form ref="whiteForm" :model="slotsRankCfg" label-width="220px">
+            <el-row>
+              <el-col :span="24">
+                <el-form-item label="白名单开关：" prop="White.Open">
+                  <el-switch v-model="slotsRankCfg.White.Open" :active-value="1" :inactive-value="0" />
+                </el-form-item>
+              </el-col>
+
+              <el-col :span="24">
+                <el-form-item label="AppId白名单：" prop="White.AppIdList">
+                  <el-select v-model="slotsRankCfg.White.AppIdList" multiple placeholder="请选择" style="width: 400px">
+                    <el-option
+                        v-for="item in appIdOptions"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+
+              <el-col :span="24">
+                <el-form-item label="站点白名单：" prop="White.ChannelList">
+                  <SiteSelect v-model="slotsRankCfg.White.ChannelList" multiple placeholder="请选择" style="width: 400px" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-form>
+        </el-tab-pane>
+
       </el-tabs>
 
       <el-row>
@@ -100,9 +130,10 @@ import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
 import {Message} from 'element-ui'
 import request from '@/utils/request'
 import Compare from '@/components/Compare/index.vue'
+import SiteSelect from "@/components/SiteSelect/index.vue";
 
 export default {
-  components: { Compare, ImagePicker, Publish },
+  components: {SiteSelect, Compare, ImagePicker, Publish },
   data() {
     return {
       libShow: $libShow,
@@ -113,19 +144,31 @@ export default {
         Open: 1,
         ChannelsCanSkip: [],
         GameCfg: [{Gid:1, Icon:"", Open:0, FreeTyp: 0}],
+        White:{
+          Open: 0,
+          AppIdList: [],
+          ChannelList: [],
+        },
       },
       gameNameMap: {},
       gameDataMap: {},
-      Channels: [
-        { 'value': "BP", 'label': 'BP' },
-        { 'value': "AP", 'label': 'AP' },
-        { 'value': "GP", 'label': 'GP' },
-        { 'value': "PG", 'label': 'PG' },
-        { 'value': "DEV", 'label': 'DEV' },
-      ],
       freeTypes: [
         { 'value': 0, 'label': 'free game' },
         { 'value': 1, 'label': 'bonus' },
+      ],
+      appIdOptions: [
+        {
+          value: 1000002,
+          label: '内部1000002'
+        },
+        {
+          value: 1000003,
+          label: '提审1000003'
+        },
+        {
+          value: 1000005,
+          label: '正式1000005'
+        }
       ],
     }
   },
