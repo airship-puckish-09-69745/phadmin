@@ -551,7 +551,9 @@ export default {
         this.$message.error('检测不通过')
         return
       }
+      console.log('publishBtn')
       this.selfGetView()
+      console.log('this.selfGetView()')
       this.isPublish = true
       this.isTestBtn = false
       this.isToTest = false
@@ -664,6 +666,7 @@ export default {
       })
     },
     selfGetView() {
+      console.log('selfGetView')
       getView(this.keyId, this.envEmpty).then(response => {
         console.log('getView: ', this.keyId, this.envEmpty, response)
         this.needReview = response.Data.NeedView
