@@ -180,7 +180,6 @@
                     <el-button type="danger" size="mini" @click="delRowBetMoneyLevel(4, scope.$index)">删除</el-button>
                   </template>
                 </el-table-column>
-                -
               </el-table>
             </fieldset>
 

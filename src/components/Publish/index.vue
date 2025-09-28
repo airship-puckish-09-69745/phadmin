@@ -202,7 +202,7 @@
               <el-table-column
                 width="70"
               >
-                -->
+                --》
               </el-table-column>
               <el-table-column
                 prop="NewValue"
@@ -1057,10 +1057,9 @@ export default {
   font-size: 14px;
   font-weight: 600;
 
-span {
-  margin-left: 5px;
-}
-
+  span {
+    margin-left: 5px;
+  }
 }
 
 .publish-name {
