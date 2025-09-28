@@ -553,7 +553,24 @@ export default {
       }
       console.log('publishBtn')
       getView(this.keyId, this.envEmpty).then(response => {
-        console.log('getView: ', this.keyId, this.envEmpty, response)
+        try {
+          console.log('getView: ', this.keyId, this.envEmpty)
+          console.log('response1：', response)
+        } catch (e) {
+          console.log('getView error:', e)
+          console.log('response2：', response)
+          response = {
+            "RetCode": 0,
+            "Data": {
+              "NeedView": true,
+              "Step": 0,
+              "IsMy": true,
+              "CanSubmit": true,
+              "CurUser": "",
+              "PreTime": 0
+            }
+          }
+        }
         this.needReview = response.Data.NeedView
         this.isMy = response.Data.IsMy
         this.currentUser = response.Data.CurUser
