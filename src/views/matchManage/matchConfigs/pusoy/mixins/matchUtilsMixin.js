@@ -44,12 +44,18 @@ export const matchUtilsMixin = {
       }
     },
 
-    /**
-     * 改变奖励配置
-     */
-    changeRewardCfg() {
-      // 这里可以添加奖励配置变化的处理逻辑
-    },
+    // /**
+    //  * 改变奖励配置
+    //  */
+    // changeRewardCfg() {
+    //   // 判断是否是编辑
+    //   this.getAfterTypeCfgOptions()
+    //   this.getAfterUpdatedSceneSelection()
+    //   if (this.editForm.data.id === 0) {
+    //     // 新增的配置，把奖励信息重置
+    //     this.editForm.rankRewards = this.initRankRewards()
+    //   }
+    // },
 
     /**
      * 生成内容描述
@@ -264,6 +270,7 @@ export const matchUtilsMixin = {
 
       // 根据报名类型更新奖励类型配置
       this.getAfterTypeCfgOptions()
+      this.getAfterUpdatedSceneSelection()
     },
 
     /**
@@ -382,33 +389,6 @@ export const matchUtilsMixin = {
       return date
     },
 
-    /**
-     * 检查场景是否在投注金场景配置中
-     * @param {number} scene - 场景ID
-     * @returns {boolean} 是否在配置中
-     */
-    isInBetScenes(scene) {
-      for (let index = 0; index < this.configs.betScenesCfgs.length; index++) {
-        if (this.configs.betScenesCfgs[index].value == scene) {
-          return true
-        }
-      }
-      return false
-    },
-
-    /**
-     * 检查场景是否在返水金场景配置中
-     * @param {number} scene - 场景ID
-     * @returns {boolean} 是否在配置中
-     */
-    isInRebateScenes(scene) {
-      for (let index = 0; index < this.configs.rebateScenesCfgs.length; index++) {
-        if (this.configs.rebateScenesCfgs[index].value == scene) {
-          return true
-        }
-      }
-      return false
-    },
 
     /**
      * 选择显示的引导推荐配置
@@ -465,16 +445,6 @@ export const matchUtilsMixin = {
       }
     },
 
-    /**
-     * 设置已存在的类型配置选项（兼容旧版本）
-     */
-    getExistedTypeCfgOptions() {
-      this.configs.getTypeCfgs = [
-        { value: 1, label: '金币' },
-        { value: 2, label: '投注金' },
-        { value: 3, label: '返水金' }
-      ]
-    },
 
     /**
      * 设置更新后的类型配置选项（根据报名类型动态设置）
@@ -490,6 +460,26 @@ export const matchUtilsMixin = {
           { value: 1, label: '金币' },
           { value: 2, label: '投注金' },
           { value: 3, label: '返水金' }
+        ]
+      }
+    },
+
+    getAfterUpdatedSceneSelection() {
+      if (this.editForm.data.signUpType === 1) { // 免费报名
+        // 投注金
+        this.configs.betScenesCfgs = [
+          { 'value': 23, 'label': '仅限GZ任意游戏投注金【pusoy免费赛】' }
+        ]
+        // 返水金（免费报名时没有返水金选项）
+        this.configs.rebateScenesCfgs = []
+      } else { // 付费报名
+        // 投注金
+        this.configs.betScenesCfgs = [
+          { 'value': 1, 'label': '任意游戏投注' }
+        ]
+        // 返水金
+        this.configs.rebateScenesCfgs = [
+          { 'value': 5, 'label': '没有任何限制的返水金' }
         ]
       }
     },
@@ -580,48 +570,6 @@ export const matchUtilsMixin = {
     parseSignExtraData(signExtraString) {
       const signExtra = this.parseJsonData(signExtraString, () => ({}), '{}')
       return signExtra
-    },
-
-    /**
-     * 获取报名方式显示名称
-     * @param {number} signUpType - 报名类型
-     * @param {number} signUpNum - 报名数量
-     * @param {string} signExtra - 报名额外信息
-     * @returns {string} 报名方式名称
-     */
-    getSignUpName(signUpType, signUpNum, signExtra) {
-      let signUpName = ''
-      for (var i = 0; i < this.configs.signUpTypeCfgs.length; i++) {
-        if (this.configs.signUpTypeCfgs[i].value === signUpType) {
-          signUpName = this.configs.signUpTypeCfgs[i].label
-          break
-        }
-      }
-
-      if (signUpType === 0) {
-        // 付费报名
-        try {
-          const signExtraData = JSON.parse(signExtra || '{}')
-          if (signExtraData.propId > 0) {
-            signUpName += `(道具ID:${signExtraData.propId})`
-          } else {
-            signUpName += `(数量:${signUpNum})`
-          }
-        } catch (e) {
-          signUpName += `(数量:${signUpNum})`
-        }
-      } else if (signUpType === 1) {
-        // 免费报名
-        signUpName += '(免费)'
-      } else if (signUpType === 2) {
-        // 纯门票
-        signUpName += `(门票:${signUpNum})`
-      } else if (signUpType === 3) {
-        // 金币or门票
-        signUpName += `(金币或门票:${signUpNum})`
-      }
-
-      return signUpName
     },
 
     /**
