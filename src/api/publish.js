@@ -52,7 +52,7 @@ export function getView(keyID, envEmpty) {
     },
     envEmpty: envEmpty
   }).cache(error => {
-    console.error('getView request failed:', error)
+    console.log('getView request failed:', error)
     throw error
   })
 }
