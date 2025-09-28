@@ -555,49 +555,34 @@ export default {
       getView(this.keyId, this.envEmpty).then(response => {
         try {
           console.log('getView: ', this.keyId, this.envEmpty)
-          console.log('response1：', JSON.stringify(response, null, 2).substring(0, 1000))
+          console.log('response1：', response)
         } catch (e) {
           console.log('getView error:', e)
           console.log('response2：', response)
-          return Promise.reject(e) // 添加错误传递
         }
-        console.log('process start 1')
         this.needReview = response.Data.NeedView
-        console.log('process start 2')
         this.isMy = response.Data.IsMy
-        console.log('process start 3')
         this.currentUser = response.Data.CurUser
-        console.log('process start 4')
         if (response.Data.PreTime > 0) {
           this.preTime = $libDate.FormateSecondStr(response.Data.PreTime, 2)
         } else {
           this.preTime = '-'
         }
-        console.log('process start 5')
 
         this.opType = response.Data.Step
-        console.log('process start 6')
         const validType = [2, 3, 4, 5, 6]
         if (validType.indexOf(this.opType) === -1) {
           this.opType = 2
         }
-        console.log('process start 7')
 
         this.stepActive = this.opType - 1
 
-        console.log('process start 8')
+        this.isPublish = true
+        this.isTestBtn = false
+        this.isToTest = false
+        this.isProBtn = false
 
-        try {
-          this.isPublish = true
-          this.isTestBtn = false
-          this.isToTest = false
-          this.isProBtn = false
-          console.log('process start 9')
-        } catch (e) {
-          console.log('publishBtn error:', e)
-          console.log('process start 10')
-        }
-        console.log('process start 11')
+        console.log('publishBtn end')
       }).catch(error => {
         console.log('getView error:', error)
       })
