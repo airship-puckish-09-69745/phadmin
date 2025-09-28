@@ -97,6 +97,19 @@
                   </span>
                 </el-form-item>
               </el-col>
+              <el-col :span="24">
+                <el-form-item label="游戏入口：" :required="true">
+                  <el-col v-for="(v,k) in item.GameImg" :span="2">
+                    <span style="display: inline-block; position: relative;">
+                      <span style="position: absolute; top: -20px; right: 1px; cursor: pointer; z-index: 99" @click="removeRuleImage(k, 'Game')">移除</span>
+                      <ImagePicker v-model="item.GameImg[k]" />
+                    </span>
+                  </el-col>
+                  <span style="position: relative;">
+                    <el-button @click="addRuleImage('Game')">添加</el-button>
+                  </span>
+                </el-form-item>
+              </el-col>
             </el-form>
           </el-row>
           <el-row :gutter="5">
@@ -533,7 +546,8 @@ export default {
         },
         ActivityExtend: {},
         TaskConfig: [],
-        BonusIcon: []
+        BonusIcon: [],
+        GameImg: []
       },
       GamesSorted: [
         {
@@ -1046,19 +1060,27 @@ export default {
         } else {
           this.$set(this.item.Activity, 'RuleImgHor', [''])
         }
-      } else {
+      } else if (type === 'Vor') {
         if (this.item.Activity.RuleImgVer) {
           this.item.Activity.RuleImgVer.push('')
         } else {
           this.$set(this.item.Activity, 'RuleImgVer', [''])
+        }
+      } else {
+        if (this.item.GameImg) {
+          this.item.GameImg.push('')
+        } else {
+          this.$set(this.item, 'GameImg', [''])
         }
       }
     },
     removeRuleImage(index, type) {
       if (type === 'Hor') {
         this.item.Activity.RuleImgHor.splice(index, 1)
-      } else {
+      } else if (type === 'Vor') {
         this.item.Activity.RuleImgVer.splice(index, 1)
+      } else {
+        this.item.GameImg.splice(index, 1)
       }
     }
   }
