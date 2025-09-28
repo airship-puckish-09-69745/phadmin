@@ -520,19 +520,19 @@ export default {
         4: '阳光普照奖'
       },
       resultForm: {
-        one: 0,
-        two: 0,
-        three: 0,
+        one: 1,
+        two: 2,
+        three: 3,
         superDiceIndex: 0,
         superDiceOdd: 0
       },
       ColorOption: [
-        { 'Id': 0, 'Name': '黄', 'Key': 'yellow' },
-        { 'Id': 1, 'Name': '白', 'Key': 'white' },
-        { 'Id': 2, 'Name': '紫', 'Key': 'purple' },
-        { 'Id': 3, 'Name': '蓝', 'Key': 'blue' },
-        { 'Id': 4, 'Name': '绿', 'Key': 'green' },
-        { 'Id': 5, 'Name': '红', 'Key': 'red' }
+        { 'Id': 1, 'Name': '黄', 'Key': 'yellow' },
+        { 'Id': 2, 'Name': '白', 'Key': 'white' },
+        { 'Id': 3, 'Name': '紫', 'Key': 'purple' },
+        { 'Id': 4, 'Name': '蓝', 'Key': 'blue' },
+        { 'Id': 5, 'Name': '绿', 'Key': 'green' },
+        { 'Id': 6, 'Name': '红', 'Key': 'red' }
       ],
       DiceIndexOption: [
         { 'Id': 0, 'Name': '第一个骰子' },
@@ -547,19 +547,19 @@ export default {
         NoticeTime: 300,
         MinMoneyCarry: 10000,
         BetAreas: [
-          { Id: 0, Name: 'Yellow', Odds: [{ Number: 2, Odd: 2000 }, { Number: 2, Odd: 3000 }, { Number: 3, Odd: 4000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
-          { Id: 1, Name: 'White', Odds: [{ Number: 2, Odd: 2000 }, { Number: 2, Odd: 3000 }, { Number: 3, Odd: 4000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
-          { Id: 2, Name: 'Purple', Odds: [{ Number: 2, Odd: 2000 }, { Number: 2, Odd: 3000 }, { Number: 3, Odd: 4000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
-          { Id: 3, Name: 'Blue', Odds: [{ Number: 2, Odd: 2000 }, { Number: 2, Odd: 3000 }, { Number: 3, Odd: 4000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
-          { Id: 4, Name: 'Green', Odds: [{ Number: 2, Odd: 2000 }, { Number: 2, Odd: 3000 }, { Number: 3, Odd: 4000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
-          { Id: 5, Name: 'Red', Odds: [{ Number: 2, Odd: 2000 }, { Number: 2, Odd: 3000 }, { Number: 3, Odd: 4000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
-          { Id: 6, Name: 'YellowWhite', Odds: [{ Number: 2, Odd: 2000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
-          { Id: 7, Name: 'WhitePurple', Odds: [{ Number: 2, Odd: 2000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
-          { Id: 8, Name: 'PurpleGreen', Odds: [{ Number: 2, Odd: 2000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
-          { Id: 9, Name: 'GreenRed', Odds: [{ Number: 2, Odd: 2000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
-          { Id: 10, Name: 'RedBlue', Odds: [{ Number: 2, Odd: 2000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
-          { Id: 11, Name: 'BlueYellow', Odds: [{ Number: 2, Odd: 2000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
-          { Id: 12, Name: 'RedWhite', Odds: [{ Number: 2, Odd: 2000 }], MaxMoneyBet: 2000, RobotBetRate: 10 }
+          { Id: 1, Name: 'Yellow', Odds: [{ Number: 2, Odd: 2000 }, { Number: 2, Odd: 3000 }, { Number: 3, Odd: 4000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
+          { Id: 2, Name: 'White', Odds: [{ Number: 2, Odd: 2000 }, { Number: 2, Odd: 3000 }, { Number: 3, Odd: 4000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
+          { Id: 3, Name: 'Purple', Odds: [{ Number: 2, Odd: 2000 }, { Number: 2, Odd: 3000 }, { Number: 3, Odd: 4000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
+          { Id: 4, Name: 'Blue', Odds: [{ Number: 2, Odd: 2000 }, { Number: 2, Odd: 3000 }, { Number: 3, Odd: 4000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
+          { Id: 5, Name: 'Green', Odds: [{ Number: 2, Odd: 2000 }, { Number: 2, Odd: 3000 }, { Number: 3, Odd: 4000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
+          { Id: 6, Name: 'Red', Odds: [{ Number: 2, Odd: 2000 }, { Number: 2, Odd: 3000 }, { Number: 3, Odd: 4000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
+          { Id: 7, Name: 'YellowWhite', Odds: [{ Number: 2, Odd: 2000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
+          { Id: 8, Name: 'WhitePurple', Odds: [{ Number: 2, Odd: 2000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
+          { Id: 9, Name: 'PurpleGreen', Odds: [{ Number: 2, Odd: 2000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
+          { Id: 10, Name: 'GreenRed', Odds: [{ Number: 2, Odd: 2000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
+          { Id: 11, Name: 'RedBlue', Odds: [{ Number: 2, Odd: 2000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
+          { Id: 12, Name: 'BlueYellow', Odds: [{ Number: 2, Odd: 2000 }], MaxMoneyBet: 2000, RobotBetRate: 10 },
+          { Id: 13, Name: 'RedWhite', Odds: [{ Number: 2, Odd: 2000 }], MaxMoneyBet: 2000, RobotBetRate: 10 }
         ],
         SuperDice: {
           Probability: 50,
@@ -853,6 +853,7 @@ export default {
       return ret
     },
     getData() {
+      // console.log(ttt)
       request({
         url: '/customizeconfig/one',
         method: 'get',
