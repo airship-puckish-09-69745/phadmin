@@ -6,7 +6,7 @@
       <span v-if="showProBtn">{{ processInfo }}</span>
     </el-col>
     <el-col :offset="6" :span="1">
-      <el-checkbox v-model="lark" @change="setLarkPage" :disabled="this.env=='pro'">lark</el-checkbox>
+      <el-checkbox v-model="lark" :disabled="this.env=='pro'" @change="setLarkPage">lark</el-checkbox>
     </el-col>
     <el-col v-if="isPublish" :span="24">
       <el-col :span="12" :offset="4">
@@ -238,7 +238,7 @@ import Diff from '@/utils/diff'
 import { $libDate, $LibJsonDiff, $libType, ClientTableData } from '@/utils/common'
 import store from '@/store'
 import request from '@/utils/request'
-import {IsMars} from "@/utils/env";
+import { IsMars } from '@/utils/env'
 
 const jsonDiff = require('diff')
 
@@ -289,13 +289,13 @@ export default {
     makeContent: {
       type: Function,
       default: function() {
-        return ""
+        return ''
       }
     },
     onCompare: {
       type: Function,
       default: function() {
-        return ""
+        return ''
       }
     }
   },
@@ -369,7 +369,7 @@ export default {
     this.resetData()
     this.checkProcessing()
     if (!IsMars()) {
-      console.log("==",IsMars)
+      console.log('==', IsMars)
       this.getLarkPage()
     }
   },
@@ -436,53 +436,53 @@ export default {
       let warn = ''
       // 同步到测试
       if (this.env === 'test') {
-        warn = "WarningJustForTest"
-        console.log("开发阶段只通知开发服")
+        warn = 'WarningJustForTest'
+        console.log('开发阶段只通知开发服')
         return
       }
       // 同步到正式
       if (this.env === 'pro' && this.opType != 4 && this.opType != 6) {
-        console.log("生产环境只在审核和同步正式发送通知")
+        console.log('生产环境只在审核和同步正式发送通知')
         return
       }
       const $this = this
       getInfo(this.$store.getters.token).then(function(response) {
         if (response.RetCode === 0) {
-          let step = ""
+          let step = ''
           if ($this.env === 'pro') {
-            if ($this.opType === 4) {step = "【待审核】"}
-            if ($this.opType === 6) {step = "【已发布】"}
+            if ($this.opType === 4) { step = '【待审核】' }
+            if ($this.opType === 6) { step = '【已发布】' }
           }
           const nick = response.Data.nick
           const routes = $this.getRoutesName()
-          const content = $this.larkContent.length>0?$this.larkContent:$this.makeContent($this.keyId, $this.addData, $this.delData, $this.editData)
+          const content = $this.larkContent.length > 0 ? $this.larkContent : $this.makeContent($this.keyId, $this.addData, $this.delData, $this.editData)
           let at = ''
           if ($this.env === 'pro') {
             // at += '<at user_id="ou_dacc382512738a049ab4f32d6db9f82e">xiong</at>'
             at = '<at user_id="ou_2b283f529fc901b97b443b946f692efd">SamYe</at>\r\n'
             // at += '<at user_id="ou_932b1ed1e7064b512199b77ce83236c1">高勋</at>'
           }
-          const text = `${step}【${nick}】发布配置：${routes} 🚩\r\n${at}`+content
-          sendLark(text,warn,$this.env).then(response => {
+          const text = `${step}【${nick}】发布配置：${routes} 🚩\r\n${at}` + content
+          sendLark(text, warn, $this.env).then(response => {
             if (response.RetCode === 0) {
               console.log('wanring success')
             }
           })
         }
-      }).catch((e)=>{
-        console.log('sendLark failed',e)
+      }).catch((e) => {
+        console.log('sendLark failed', e)
       })
     },
     getRoutesName() {
       let str = ''
       let slots = false
-      for (let i=0; i<this.$route.matched.length; i++) {
+      for (let i = 0; i < this.$route.matched.length; i++) {
         if (i > 0) {
           str += '->'
         }
         str += this.$route.matched[i].meta.title
         console.log(this.$route.matched[i])
-        if (this.$route.matched[i].path === "/tableConfig/slotsCfg/slotsProCfg"){
+        if (this.$route.matched[i].path === '/tableConfig/slotsCfg/slotsProCfg') {
           slots = true
         }
       }
@@ -492,7 +492,7 @@ export default {
       }
       return str
     },
-    getLarkPage(){
+    getLarkPage() {
       request({
         url: '/customizeconfig/one',
         method: 'get',
@@ -508,8 +508,8 @@ export default {
             this.lark = this.larkPages.indexOf(this.$route.name) > -1
           }
         }
-      }).catch((e)=>{
-        console.log("getLarkPage err",e)
+      }).catch((e) => {
+        console.log('getLarkPage err', e)
       })
     },
     setLarkPage(add) {
@@ -525,9 +525,9 @@ export default {
       if (add) {
         this.larkPages.push(this.$route.name)
       } else {
-        for (let i=0; i<this.larkPages.length; i++) {
+        for (let i = 0; i < this.larkPages.length; i++) {
           if (this.larkPages[i] === this.$route.name) {
-            this.larkPages.splice(i,1)
+            this.larkPages.splice(i, 1)
           }
         }
       }
@@ -535,10 +535,10 @@ export default {
       request({
         url: '/customizeconfig/update',
         method: 'post',
-        data: this.larkConfig,
+        data: this.larkConfig
       }).then(response => {
         if (response.RetCode === 0) {
-          add?this.$message.success(`添加通知成功!`):this.$message.success(`取消通知成功!`)
+          add ? this.$message.success(`添加通知成功!`) : this.$message.success(`取消通知成功!`)
         } else {
           this.$message.error('lark设置失败')
         }
@@ -551,11 +551,11 @@ export default {
         this.$message.error('检测不通过')
         return
       }
+      this.selfGetView()
       this.isPublish = true
       this.isTestBtn = false
       this.isToTest = false
       this.isProBtn = false
-      this.getView()
     },
     reviewDiffShow() {
       this.envEmpty = false
@@ -663,7 +663,7 @@ export default {
         this.stepActive--
       })
     },
-    getView() {
+    selfGetView() {
       getView(this.keyId, this.envEmpty).then(response => {
         console.log('getView: ', this.keyId, this.envEmpty, response)
         this.needReview = response.Data.NeedView
@@ -744,7 +744,7 @@ export default {
             $this.compare(preVal, proVal)
         }
         try {
-          $this.larkContent=$this.onCompare(preVal,proVal)
+          $this.larkContent = $this.onCompare(preVal, proVal)
         } catch (e) {
           console.log('onCompare err:', e)
         }
