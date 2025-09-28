@@ -129,7 +129,7 @@
 
               <legend>Mini小奖池发放</legend>
               <el-table
-                ref="filterTable"
+                ref="filterMiniPrizePoolTable"
                 :data="item.MiniCfg"
                 border
                 :header-cell-style="libShow.DefaultTableHeadClass"
@@ -191,7 +191,7 @@
 
               <legend>Major中奖池发放</legend>
               <el-table
-                ref="filterTable"
+                ref="filterMajorPrizePoolTable"
                 :data="item.MajorCfg"
                 border
                 :header-cell-style="libShow.DefaultTableHeadClass"
@@ -236,7 +236,7 @@
 
               <legend>Grand大奖池发放</legend>
               <el-table
-                ref="filterTable"
+                ref="filterGrandPrizePoolTable"
                 :data="item.GrandCfg"
                 border
                 :header-cell-style="libShow.DefaultTableHeadClass"
@@ -299,7 +299,7 @@
               </el-descriptions-item>
             </el-descriptions>
             <el-table
-              ref="filterTable"
+              ref="filterShowPrizePoolTable"
               :data="item.ShowPool.MajorPoolIncrArr"
               border
               :header-cell-style="libShow.DefaultTableHeadClass"
@@ -351,7 +351,7 @@
               </el-descriptions-item>
             </el-descriptions>
             <el-table
-              ref="filterTable"
+              ref="filterShowGrandPrizePoolTable"
               :data="item.ShowPool.GrandPoolIncrArr"
               border
               :header-cell-style="libShow.DefaultTableHeadClass"
@@ -404,7 +404,7 @@
 
               <legend>Mini中奖配置</legend>
               <el-table
-                ref="filterTable"
+                ref="filterShowMiniPrizePoolTable"
                 :data="item.ShowPool.MiniRewardCfg"
                 border
                 :header-cell-style="libShow.DefaultTableHeadClass"
@@ -448,7 +448,7 @@
 
               <legend>Major中奖配置</legend>
               <el-table
-                ref="filterTable"
+                ref="filterMajorTable"
                 :data="item.ShowPool.MajorRewardCfg"
                 border
                 :header-cell-style="libShow.DefaultTableHeadClass"
@@ -497,7 +497,7 @@
 
               <legend>Grand中奖配置</legend>
               <el-table
-                ref="filterTable"
+                ref="filterGrandTable"
                 :data="item.ShowPool.GrandRewardCfg"
                 border
                 :header-cell-style="libShow.DefaultTableHeadClass"
@@ -562,7 +562,7 @@
       <el-form ref="robotForm" :model="incrJackpotForm.data">
         <el-form-item>
           <el-table
-            ref="filterTable"
+            ref="filterRobotTable"
             :data="incrJackpotForm.data"
             border
             :header-cell-style="libShow.DefaultTableHeadClass"
