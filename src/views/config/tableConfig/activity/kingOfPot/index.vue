@@ -517,6 +517,15 @@ export default {
         Message.error('请添加活动任务')
         return
       }
+      if (this.edit.item.dailyBonusLimit === 0 || this.edit.item.dailyBonusLimit === undefined) {
+        Message.error('每日奖励上限不能为0')
+        return
+      }
+      if (this.edit.item.totalBonusLimit === 0 || this.edit.item.totalBonusLimit === undefined) {
+        Message.error('总奖励上限不能为0')
+        return
+      }
+
       for (let i = 0; i < this.edit.item.gameTasks.length; i++) {
         const gameTask = this.edit.item.gameTasks[i]
         if (gameTask.anteTasks.length === 0) {
