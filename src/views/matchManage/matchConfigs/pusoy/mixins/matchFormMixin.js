@@ -119,6 +119,8 @@ export const matchFormMixin = {
         } else if (this.editForm.data.gameId) {
           this.filterCsCfgsByGameId(this.editForm.data.gameId)
         }
+
+        
       } else {
         this.editForm.title = '添加比赛'
         this.editForm.isAdd = true
@@ -127,6 +129,9 @@ export const matchFormMixin = {
         // 获取当前赛制成长信息
         this.getCurrCsGrowInfo()
       }
+      // 调用动态配置方法，根据报名类型设置配置选项
+      this.getAfterTypeCfgOptions()
+      this.getAfterUpdatedSceneSelection()
       this.editForm.visable = true
     },
 
@@ -842,7 +847,7 @@ export const matchFormMixin = {
      */
     isInBetScenes(scene) {
       for (let index = 0; index < this.configs.betScenesCfgs.length; index++) {
-        if (this.configs.betScenesCfgs[index].value == scene) {
+        if (this.configs.betScenesCfgs[index].value === scene) {
           return true
         }
       }
@@ -854,7 +859,7 @@ export const matchFormMixin = {
      */
     isInRebateScenes(scene) {
       for (let index = 0; index < this.configs.rebateScenesCfgs.length; index++) {
-        if (this.configs.rebateScenesCfgs[index].value == scene) {
+        if (this.configs.rebateScenesCfgs[index].value === scene) {
           return true
         }
       }
