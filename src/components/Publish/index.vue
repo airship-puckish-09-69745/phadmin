@@ -552,12 +552,29 @@ export default {
         return
       }
       console.log('publishBtn')
-      this.selfGetView()
+      getView(this.keyId, this.envEmpty).then(response => {
+        console.log('getView: ', this.keyId, this.envEmpty, response)
+        this.needReview = response.Data.NeedView
+        this.isMy = response.Data.IsMy
+        this.currentUser = response.Data.CurUser
+        this.preTime = $libDate.FormateSecondStr(response.Data.PreTime, 2)
+
+        this.opType = response.Data.Step
+        const validType = [2, 3, 4, 5, 6]
+        if (validType.indexOf(this.opType) === -1) {
+          this.opType = 2
+        }
+
+        this.stepActive = this.opType - 1
+
+        this.isPublish = true
+        this.isTestBtn = false
+        this.isToTest = false
+        this.isProBtn = false
+      }).catch(error => {
+        console.log('getView error:', error)
+      })
       console.log('this.selfGetView()')
-      this.isPublish = true
-      this.isTestBtn = false
-      this.isToTest = false
-      this.isProBtn = false
     },
     reviewDiffShow() {
       this.envEmpty = false
@@ -663,26 +680,6 @@ export default {
         }
         // 3.修改step
         this.stepActive--
-      })
-    },
-    selfGetView() {
-      console.log('selfGetView')
-      getView(this.keyId, this.envEmpty).then(response => {
-        console.log('getView: ', this.keyId, this.envEmpty, response)
-        this.needReview = response.Data.NeedView
-        this.isMy = response.Data.IsMy
-        this.currentUser = response.Data.CurUser
-        this.preTime = $libDate.FormateSecondStr(response.Data.PreTime, 2)
-
-        this.opType = response.Data.Step
-        const validType = [2, 3, 4, 5, 6]
-        if (validType.indexOf(this.opType) === -1) {
-          this.opType = 2
-        }
-
-        this.stepActive = this.opType - 1
-      }).catch(error => {
-        console.error('getView error:', error)
       })
     },
     checkProcessing() { // 检测版本是否在处理中
