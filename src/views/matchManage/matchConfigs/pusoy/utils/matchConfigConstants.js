@@ -61,21 +61,9 @@ export const WHITE_LIST_CONFIGS = [
   { value: 1, label: '有白名单', code: 'enabled' }
 ]
 
-// 返水金場景配置
-export const REBATE_SCENES_CONFIGS = [
-  { value: 5, label: '沒有任何限制的返水金', code: 'unlimited' },
-  { value: 6, label: '有限制倍數的返水金（10倍）', code: 'limited_10x' },
-  { value: 16, label: '沒有任何限制的返水金【Tongits免費賽】', code: 'tongits_unlimited' }
-]
-
-// 投注金場景配置
-export const BET_SCENES_CONFIGS = [
-  { value: 1, label: '任意游戏投注', code: 'any_game' },
-  { value: 2, label: '僅限Poker類遊戲投注', code: 'poker_only' },
-  { value: 3, label: '仅限Slots类游戏投注', code: 'slots_only' },
-  { value: 4, label: '仅限Tongits游戏投注', code: 'tongits_only' },
-  { value: 15, label: '仅限GZ任意游戏投注金【Tongits免费赛】', code: 'gz_tongits' }
-]
+// 注意：返水金場景配置和投注金場景配置已移除
+// 這些配置現在通過 getAfterUpdatedSceneSelection() 方法動態生成
+// 根據報名類型（免費/付費）和遊戲類型動態設置不同的場景選項
 
 
 // 獎品模式配置
