@@ -555,38 +555,37 @@ export default {
       getView(this.keyId, this.envEmpty).then(response => {
         try {
           console.log('getView: ', this.keyId, this.envEmpty)
-          console.log('response1：', response)
+          console.log('response1：', JSON.stringify(response, null, 2).substring(0, 1000))
         } catch (e) {
           console.log('getView error:', e)
           console.log('response2：', response)
-          response = {
-            "RetCode": 0,
-            "Data": {
-              "NeedView": true,
-              "Step": 0,
-              "IsMy": true,
-              "CanSubmit": true,
-              "CurUser": "",
-              "PreTime": 0
-            }
-          }
+          return Promise.reject(e) // 添加错误传递
         }
+        console.log('process start 1')
         this.needReview = response.Data.NeedView
+        console.log('process start 2')
         this.isMy = response.Data.IsMy
+        console.log('process start 3')
         this.currentUser = response.Data.CurUser
+        console.log('process start 4')
         if (response.Data.PreTime > 0) {
           this.preTime = $libDate.FormateSecondStr(response.Data.PreTime, 2)
         } else {
           this.preTime = '-'
         }
+        console.log('process start 5')
 
         this.opType = response.Data.Step
+        console.log('process start 6')
         const validType = [2, 3, 4, 5, 6]
         if (validType.indexOf(this.opType) === -1) {
           this.opType = 2
         }
+        console.log('process start 7')
 
         this.stepActive = this.opType - 1
+
+        console.log('process start 8')
 
         this.isPublish = true
         this.isTestBtn = false
