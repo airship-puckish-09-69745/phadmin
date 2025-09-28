@@ -55,6 +55,8 @@ export default {
       maxCount: 0,
       page: 1,
       trustScore:0,
+      minGGR:0,
+      minGGRTrust:0
     }
   },
   created() {
@@ -91,55 +93,14 @@ export default {
       $this.page++
       $this.logs = this.clientDB.TotalData
       this.blindList = JSON.stringify(this.tableMoneyType)
-      request({
-        url: '/dataProxy/info',
-        method: 'get',
-        data: {
-          Env: this.env,
-          Path: '/misc/tongits/cheat//white/list',
-          regTime: this.regTime,
-          queryTime: this.checkTime.start / 1000,
-          gid: this.Gid,
-          page: this.page,
-          limit: 100,
-          uid: this.Uid,
-          blindList: this.blindList,
-          trustType: this.trustType
-        }
-      }).then(response => {
-        if (response.RetCode === 0) {
-          this.maxCount = response.Data.MaxCount
-          const items = response.Data.Items || []
-          for (let i = 0; i < items.length; i++) {
-            this.logs.push({
-              Uid: items[i].uid,
-              RegTime: items[i].regTime,
-              GGR: items[i].ggr,
-              CheatType: items[i].cheatType,
-              CheatScore: items[i].cheatScore,
-              MaxCheatScore: items[i].maxCheatScore,
-              CheatOperator: items[i].cheatOperator,
-              TrustType: items[i].trustType,
-              TrustScore: items[i].trustScore,
-              MaxTrustScore: items[i].maxTrustScore
-            })
-          }
-          const sortType = this.getSortType()
-          this.clientDB = new ClientTableData(this.logs, this.pageNum, {}, sortType, -1, 'Uid')
-        }
-      })
-    },
-    getData() {
-      const $this = this
-      $this.page = 1
-      $this.logs = []
-      if ($this.Uid === undefined || $this.Uid === null || $this.Uid === '') {
-        $this.Uid = 0
-      }
-      this.blindList = JSON.stringify(this.tableMoneyType)
-      $this.clientDB = new ClientTableData([], 1, {})
       if (this.trustScore === undefined || this.trustScore <= 0){
         this.trustScore = 0
+      }
+      if (this.minGGR === undefined || this.minGGR <= 0){
+        this.minGGR = 0
+      }
+      if (this.minGGRTrust === undefined || this.minGGRTrust <= 0){
+        this.minGGRTrust = 0
       }
       request({
         url: '/dataProxy/info',
@@ -167,6 +128,91 @@ export default {
             if (this.trustScore !== 0 && items[i].trustScore < this.trustScore) {
               continue
             }
+            if (this.minGGR !== 0 && (items[i].ggr/1000) < this.minGGR) {
+              continue
+            }
+            const trustScore = items[i].trustScore
+            const ggrTrust = 0
+            if (trustScore !== 0) {
+              ggrTrust = items[i].ggr /1000 / trustScore
+            }
+            if (this.minGGRTrust !== 0 && ggrTrust < this.minGGRTrust) {
+              continue
+            }
+            this.logs.push({
+              Uid: items[i].uid,
+              RegTime: items[i].regTime,
+              GGR: items[i].ggr,
+              CheatType: items[i].cheatType,
+              CheatScore: items[i].cheatScore,
+              MaxCheatScore: items[i].maxCheatScore,
+              CheatOperator: items[i].cheatOperator,
+              TrustType: items[i].trustType,
+              TrustScore: items[i].trustScore,
+              MaxTrustScore: items[i].maxTrustScore,
+              GGRTrust: ggrTrust.toFixed(2)
+            })
+          }
+          const sortType = this.getSortType()
+          this.clientDB = new ClientTableData(this.logs, this.pageNum, {}, sortType, -1, 'Uid')
+        }
+      })
+    },
+    getData() {
+      const $this = this
+      $this.page = 1
+      $this.logs = []
+      if ($this.Uid === undefined || $this.Uid === null || $this.Uid === '') {
+        $this.Uid = 0
+      }
+      this.blindList = JSON.stringify(this.tableMoneyType)
+      $this.clientDB = new ClientTableData([], 1, {})
+      if (this.trustScore === undefined || this.trustScore <= 0){
+        this.trustScore = 0
+      }
+      if (this.minGGR === undefined || this.minGGR <= 0){
+        this.minGGR = 0
+      }
+      if (this.minGGRTrust === undefined || this.minGGRTrust <= 0){
+        this.minGGRTrust = 0
+      }
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Env: this.env,
+          Path: '/misc/tongits/cheat//white/list',
+          regTime: this.regTime,
+          queryTime: this.checkTime.start / 1000,
+          gid: this.Gid,
+          page: this.page,
+          limit: 100,
+          uid: this.Uid,
+          blindList: this.blindList,
+          trustType: this.trustType
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.maxCount = response.Data.MaxCount
+          const items = response.Data.Items || []
+          for (let i = 0; i < items.length; i++) {
+            if (this.userType === 1 && items[i].cheatType === 3) {
+              continue
+            }
+            if (this.trustScore !== 0 && items[i].trustScore < this.trustScore) {
+              continue
+            }
+            if (this.minGGR !== 0 && (items[i].ggr/1000) < this.minGGR) {
+              continue
+            }
+            const trustScore = items[i].trustScore
+            let ggrTrust = 0
+            if (trustScore !== 0) {
+              ggrTrust = items[i].ggr /1000 / trustScore
+            }
+            if (this.minGGRTrust !== 0 && ggrTrust < this.minGGRTrust) {
+              continue
+            }
             this.logs.push({
               Uid: items[i].uid,
               RegTime: items[i].regTime,
@@ -178,7 +224,8 @@ export default {
               CheatOperTime: items[i].cheatOperTime,
               TrustType: items[i].trustType,
               TrustScore: items[i].trustScore,
-              MaxTrustScore: items[i].maxTrustScore
+              MaxTrustScore: items[i].maxTrustScore,
+              GGRTrust: ggrTrust.toFixed(2)
             })
           }
           const sortType = this.getSortType()
@@ -438,6 +485,12 @@ export default {
         <el-form-item label="最低信任分：">
           <el-input v-model.number="trustScore" />
         </el-form-item>
+        <el-form-item label="最低近7日GGR：">
+          <el-input v-model.number="minGGR" />
+        </el-form-item>
+        <el-form-item label="最低GGR分数比：">
+          <el-input v-model.number="minGGRTrust" />
+        </el-form-item>
         <el-form-item>
           <el-button size="mini" type="primary" icon="el-icon-plus" @click="getData">查询</el-button>
         </el-form-item>
@@ -507,6 +560,12 @@ export default {
             <span>{{ showGgr(scope.row) }}</span>
           </template>
         </el-table-column>
+        <el-table-column
+          prop="GGRTrust"
+          label="GGR分数比"
+          width="200"
+          align="center"
+        />
         <el-table-column
           label="操作历史"
           width="200"

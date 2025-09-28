@@ -6,129 +6,127 @@
         <el-tabs type="border-card">
 
           <el-tab-pane label="用户奖池配置">
-            
-              <el-col :span="24" :offset="5">
-                <el-form :inline="true">
-                  <el-col :span="8">
-                    <el-form-item label="个人奖池  桌费*">
-                      <el-input v-model.number="item.ContributeRate" size="mini" ><template slot="append">%</template></el-input>
-                    </el-form-item>
-                  </el-col>
-                </el-form>
-              </el-col>
 
-              <el-col :span="24" :offset="5">
-                  <el-form :inline="true">
-                    <el-col :span="8">
-                      <el-form-item label="公共奖池  桌费*">
-                        <el-input v-model.number="item.UserPoolRate" size="mini" ><template slot="append">%</template></el-input>
-                      </el-form-item>
-                    </el-col>
-                  </el-form>
-              </el-col>
-            
-              <el-col :span="24" :offset="5">
-                <el-form :inline="true">
-                  
-                  <el-col :span="8">
-                    <el-form-item label="Major中奖池  公共奖池*">
-                      <el-input v-model.number="item.MajorWinRate" size="mini" ><template slot="append">%</template></el-input>
-                    </el-form-item>
-                  </el-col>
-                  
-                  <el-col :span="8">
-                    <el-form-item label="Grand中奖池  公共奖池*">
-                      <el-input v-model.number="item.GrandWinRate" size="mini" ><template slot="append">%</template></el-input>
-                    </el-form-item>
-                  </el-col>
-                </el-form>
-              </el-col>
-            
-              <el-col :span="20" :offset="5">
-                <el-form :inline="true">
+            <el-col :span="24" :offset="5">
+              <el-form :inline="true">
+                <el-col :span="8">
+                  <el-form-item label="个人奖池  桌费*">
+                    <el-input v-model.number="item.ContributeRate" size="mini"><template slot="append">%</template></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-form>
+            </el-col>
 
-                  <el-col :span="8">
-                    <el-form-item label="中mini奖池场次底注最小需求>=:">
-                      <el-input v-model.number="item.MiniTableMoney" size="mini" />
-                    </el-form-item>
-                  </el-col>
-                  
-                  <el-col :span="8">
-                    <el-form-item label="Mini中奖=底注*N倍">
-                      <el-input v-model.number="item.MiniWinMin" size="mini" />
-                    </el-form-item>
-                  </el-col>
+            <el-col :span="24" :offset="5">
+              <el-form :inline="true">
+                <el-col :span="8">
+                  <el-form-item label="公共奖池  桌费*">
+                    <el-input v-model.number="item.UserPoolRate" size="mini"><template slot="append">%</template></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-form>
+            </el-col>
 
-                </el-form>
-              </el-col>
-              
-              <el-col :span="20" :offset="5">
-                <el-form :inline="true">
+            <el-col :span="24" :offset="5">
+              <el-form :inline="true">
 
-                  <el-col :span="8">
-                    <el-form-item label="中major奖池场次底注最小需求>=:">
-                      <el-input v-model.number="item.MajorTableMoney" size="mini" />
-                    </el-form-item>
-                  </el-col>
-                  <!--
+                <el-col :span="8">
+                  <el-form-item label="Major中奖池  公共奖池*">
+                    <el-input v-model.number="item.MajorWinRate" size="mini"><template slot="append">%</template></el-input>
+                  </el-form-item>
+                </el-col>
+
+                <el-col :span="8">
+                  <el-form-item label="Grand中奖池  公共奖池*">
+                    <el-input v-model.number="item.GrandWinRate" size="mini"><template slot="append">%</template></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-form>
+            </el-col>
+
+            <el-col :span="20" :offset="5">
+              <el-form :inline="true">
+
+                <el-col :span="8">
+                  <el-form-item label="中mini奖池场次底注最小需求>=:">
+                    <el-input v-model.number="item.MiniTableMoney" size="mini" />
+                  </el-form-item>
+                </el-col>
+
+                <el-col :span="8">
+                  <el-form-item label="Mini中奖=底注*N倍">
+                    <el-input v-model.number="item.MiniWinMin" size="mini" />
+                  </el-form-item>
+                </el-col>
+
+              </el-form>
+            </el-col>
+
+            <el-col :span="20" :offset="5">
+              <el-form :inline="true">
+
+                <el-col :span="8">
+                  <el-form-item label="中major奖池场次底注最小需求>=:">
+                    <el-input v-model.number="item.MajorTableMoney" size="mini" />
+                  </el-form-item>
+                </el-col>
+                <!--
                   <el-col :span="8">
                     <el-form-item label="Major中奖池最小">
                       <el-input v-model.number="item.MajorWinMin" size="mini" ><template slot="append">%</template></el-input>
                     </el-form-item>
                   </el-col>
-                  
+
                   <el-col :span="8">
                     <el-form-item label="Major中奖池最大">
                       <el-input v-model.number="item.MajorWinMax" size="mini" ><template slot="append">%</template></el-input>
                     </el-form-item>
                   </el-col>
                   -->
-                  <el-col :span="8">
-                    <el-form-item label="Major中奖发放比例">
-                      <el-input v-model.number="item.MajorWinMax" size="mini" ><template slot="append">%</template></el-input>
-                    </el-form-item>
-                  </el-col>
-                </el-form>
-              </el-col>
+                <el-col :span="8">
+                  <el-form-item label="Major中奖发放比例">
+                    <el-input v-model.number="item.MajorWinMax" size="mini"><template slot="append">%</template></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-form>
+            </el-col>
 
-              <el-col :span="20" :offset="5">
-                <el-form :inline="true">
+            <el-col :span="20" :offset="5">
+              <el-form :inline="true">
 
-                  <el-col :span="8">
-                    <el-form-item label="中grand奖池场次底注最小需求>=:">
-                      <el-input v-model.number="item.GrandTableMoney" size="mini" />
-                    </el-form-item>
-                  </el-col>
+                <el-col :span="8">
+                  <el-form-item label="中grand奖池场次底注最小需求>=:">
+                    <el-input v-model.number="item.GrandTableMoney" size="mini" />
+                  </el-form-item>
+                </el-col>
 
-                  <!--
+                <!--
                   <el-col :span="8">
                     <el-form-item label="Grand中奖池最小">
                       <el-input v-model.number="item.GrandWinMin" size="mini" ><template slot="append">%</template></el-input>
                     </el-form-item>
                   </el-col>
-                  
+
                   <el-col :span="8">
                     <el-form-item label="Grand中奖池最大">
                       <el-input v-model.number="item.GrandWinMax" size="mini" ><template slot="append">%</template></el-input>
                     </el-form-item>
                   </el-col>
                   -->
-                  <el-col :span="8">
-                    <el-form-item label="Grand中奖发放比例">
-                      <el-input v-model.number="item.GrandWinMax" size="mini" ><template slot="append">%</template></el-input>
-                    </el-form-item>
-                  </el-col>
-                </el-form>
-              </el-col>
-            
+                <el-col :span="8">
+                  <el-form-item label="Grand中奖发放比例">
+                    <el-input v-model.number="item.GrandWinMax" size="mini"><template slot="append">%</template></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-form>
             </el-col>
 
             <fieldset style="margin-top:10px">
-                
+
               <el-col :span="20">
                 <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="doAddCfg(4)">添加</el-button>
               </el-col>
-              
+
               <legend>Mini小奖池发放</legend>
               <el-table
                 ref="filterTable"
@@ -146,7 +144,7 @@
                     <el-input v-model="scope.row.TableMoney" size="mini" />
                   </template>
                 </el-table-column>
-                
+
                 <el-table-column prop="RewardCfg" label="中奖条件：当前奖金池/(底注*n倍)" >
                   <template slot-scope="scope">
                     <el-input v-model="scope.row.RewardMul" size="mini" />
@@ -159,19 +157,19 @@
                   </template>
                 </el-table-column>
               -->
-                <el-table-column prop="minRate" label="【mini奖金池/mini最大奖金】下限倍数" >
+                <el-table-column prop="minRate" label="【mini奖金池/mini最大奖金】下限倍数">
                   <template slot-scope="scope">
                     <el-input v-model="scope.row.MultiMin" size="mini" />
                   </template>
                 </el-table-column>
 
-                <el-table-column prop="maxRate" label="【mini奖金池/mini最大奖金】上限倍数" >
+                <el-table-column prop="maxRate" label="【mini奖金池/mini最大奖金】上限倍数">
                   <template slot-scope="scope">
                     <el-input v-model="scope.row.MultiMax" size="mini" />
                   </template>
                 </el-table-column>
-                
-                <el-table-column prop="winRate" label="中奖概率%" >
+
+                <el-table-column prop="winRate" label="中奖概率%">
                   <template slot-scope="scope">
                     <el-input v-model="scope.row.WinRate" size="mini" />
                   </template>
@@ -182,16 +180,16 @@
                     <el-button type="danger" size="mini" @click="delRowBetMoneyLevel(4, scope.$index)">删除</el-button>
                   </template>
                 </el-table-column>
-            -
+                -
               </el-table>
             </fieldset>
 
             <fieldset style="margin-top:10px">
-                
+
               <el-col :span="20">
                 <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="doAddCfg(2)">添加</el-button>
               </el-col>
-              
+
               <legend>Major中奖池发放</legend>
               <el-table
                 ref="filterTable"
@@ -203,20 +201,20 @@
                 style="width: 100%"
               >
                 <el-table-column type="index" />
-                
-                <el-table-column prop="minRate" label="【major奖金池/major最大奖金】下限倍数" >
+
+                <el-table-column prop="minRate" label="【major奖金池/major最大奖金】下限倍数">
                   <template slot-scope="scope">
                     <el-input v-model="scope.row.MultiMin" size="mini" />
                   </template>
                 </el-table-column>
 
-                <el-table-column prop="maxRate" label="【major奖金池/major最大奖金】上限倍数" >
+                <el-table-column prop="maxRate" label="【major奖金池/major最大奖金】上限倍数">
                   <template slot-scope="scope">
                     <el-input v-model="scope.row.MultiMax" size="mini" />
                   </template>
                 </el-table-column>
-                
-                <el-table-column prop="winRate" label="中奖概率%" >
+
+                <el-table-column prop="winRate" label="中奖概率%">
                   <template slot-scope="scope">
                     <el-input v-model="scope.row.WinRate" size="mini" />
                   </template>
@@ -227,16 +225,16 @@
                     <el-button type="danger" size="mini" @click="delRowBetMoneyLevel(2, scope.$index)">删除</el-button>
                   </template>
                 </el-table-column>
-                
+
               </el-table>
             </fieldset>
 
             <fieldset style="margin-top:10px">
-                
+
               <el-col :span="20">
                 <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="doAddCfg(1)">添加</el-button>
               </el-col>
-              
+
               <legend>Grand大奖池发放</legend>
               <el-table
                 ref="filterTable"
@@ -248,21 +246,20 @@
                 style="width: 100%"
               >
                 <el-table-column type="index" />
-                
-                <el-table-column prop="minRate" label="【Grand奖金池/Grand最大奖】下限倍数" >
+
+                <el-table-column prop="minRate" label="【Grand奖金池/Grand最大奖】下限倍数">
                   <template slot-scope="scope">
                     <el-input v-model="scope.row.MultiMin" size="mini" />
                   </template>
                 </el-table-column>
-                
-                
-                <el-table-column prop="maxRate" label="【Grand奖金池/Grand最大奖】上限倍数" >
+
+                <el-table-column prop="maxRate" label="【Grand奖金池/Grand最大奖】上限倍数">
                   <template slot-scope="scope">
                     <el-input v-model="scope.row.MultiMax" size="mini" />
                   </template>
                 </el-table-column>
-                
-                <el-table-column prop="winRate" label="中奖概率%" >
+
+                <el-table-column prop="winRate" label="中奖概率%">
                   <template slot-scope="scope">
                     <el-input v-model="scope.row.WinRate" size="mini" />
                   </template>
@@ -273,7 +270,7 @@
                     <el-button type="danger" size="mini" @click="delRowBetMoneyLevel(1, scope.$index)">删除</el-button>
                   </template>
                 </el-table-column>
-                
+
               </el-table>
             </fieldset>
 
@@ -401,11 +398,11 @@
               </el-table-column>
             </el-table>
 
-            <fieldset style="margin-top:10px">                
+            <fieldset style="margin-top:10px">
               <el-col :span="20">
                 <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="doAddCfg(14)">添加</el-button>
               </el-col>
-              
+
               <legend>Mini中奖配置</legend>
               <el-table
                 ref="filterTable"
@@ -418,19 +415,19 @@
               >
                 <el-table-column type="index" />
 
-                <el-table-column prop="tableMoney" label="底分" >
+                <el-table-column prop="tableMoney" label="底分">
                   <template slot-scope="scope">
                     <el-input v-model="scope.row.TableMoney" size="mini" />
                   </template>
                 </el-table-column>
 
-                <el-table-column prop="rewardRate" label="普通类型机器人中奖概率%(在桌)" ><!--在桌机器人中奖概率-->
+                <el-table-column prop="rewardRate" label="普通类型机器人中奖概率%(在桌)"><!--在桌机器人中奖概率-->
                   <template slot-scope="scope">
                     <el-input v-model="scope.row.RewardRate" size="mini" />
                   </template>
                 </el-table-column>
 
-                <el-table-column prop="showRobotRewardRate" label="展示类型机器人中奖概率%(定时)" ><!--5分钟定时机器人中奖概率-->
+                <el-table-column prop="showRobotRewardRate" label="展示类型机器人中奖概率%(定时)"><!--5分钟定时机器人中奖概率-->
                   <template slot-scope="scope">
                     <el-input v-model="scope.row.ShowRobotRewardRate" size="mini" />
                   </template>
@@ -441,7 +438,7 @@
                     <el-button type="danger" size="mini" @click="delRowBetMoneyLevel(14, scope.$index)">删除</el-button>
                   </template>
                 </el-table-column>
-                
+
               </el-table>
             </fieldset>
 
@@ -449,7 +446,7 @@
               <el-col :span="20">
                 <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="doAddCfg(12)">添加</el-button>
               </el-col>
-              
+
               <legend>Major中奖配置</legend>
               <el-table
                 ref="filterTable"
@@ -462,24 +459,24 @@
               >
                 <el-table-column type="index" />
 
-                <el-table-column prop="poolAreaMin" label="展示奖池金额下限【" >
+                <el-table-column prop="poolAreaMin" label="展示奖池金额下限【">
                   <template slot-scope="scope">
                     <el-input v-model="scope.row.PoolAreaMin" size="mini" />
                   </template>
                 </el-table-column>
-                <el-table-column prop="poolAreaMax" label="】展示奖池金额上限" >
+                <el-table-column prop="poolAreaMax" label="】展示奖池金额上限">
                   <template slot-scope="scope">
                     <el-input v-model="scope.row.PoolAreaMax" size="mini" />
                   </template>
                 </el-table-column>
 
-                <el-table-column prop="rewardRate" label="普通类型机器人中奖概率%(在桌)" ><!--在桌机器人中奖概率-->
+                <el-table-column prop="rewardRate" label="普通类型机器人中奖概率%(在桌)"><!--在桌机器人中奖概率-->
                   <template slot-scope="scope">
                     <el-input v-model="scope.row.RewardRate" size="mini" />
                   </template>
                 </el-table-column>
 
-                <el-table-column prop="showRobotRewardRate" label="展示类型机器人中奖概率%(定时)" ><!--5分钟定时机器人中奖概率-->
+                <el-table-column prop="showRobotRewardRate" label="展示类型机器人中奖概率%(定时)"><!--5分钟定时机器人中奖概率-->
                   <template slot-scope="scope">
                     <el-input v-model="scope.row.ShowRobotRewardRate" size="mini" />
                   </template>
@@ -490,15 +487,15 @@
                     <el-button type="danger" size="mini" @click="delRowBetMoneyLevel(12, scope.$index)">删除</el-button>
                   </template>
                 </el-table-column>
-                
+
               </el-table>
             </fieldset>
 
-            <fieldset style="margin-top:10px">                
+            <fieldset style="margin-top:10px">
               <el-col :span="20">
                 <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="doAddCfg(11)">添加</el-button>
               </el-col>
-              
+
               <legend>Grand中奖配置</legend>
               <el-table
                 ref="filterTable"
@@ -511,24 +508,24 @@
               >
                 <el-table-column type="index" />
 
-                <el-table-column prop="poolAreaMin" label="展示奖池金额下限【" >
+                <el-table-column prop="poolAreaMin" label="展示奖池金额下限【">
                   <template slot-scope="scope">
                     <el-input v-model="scope.row.PoolAreaMin" size="mini" />
                   </template>
                 </el-table-column>
-                <el-table-column prop="poolAreaMax" label="】展示奖池金额上限" >
+                <el-table-column prop="poolAreaMax" label="】展示奖池金额上限">
                   <template slot-scope="scope">
                     <el-input v-model="scope.row.PoolAreaMax" size="mini" />
                   </template>
                 </el-table-column>
 
-                <el-table-column prop="rewardRate" label="普通类型机器人中奖概率%(在桌)" ><!--在桌机器人中奖概率-->
+                <el-table-column prop="rewardRate" label="普通类型机器人中奖概率%(在桌)"><!--在桌机器人中奖概率-->
                   <template slot-scope="scope">
                     <el-input v-model="scope.row.RewardRate" size="mini" />
                   </template>
                 </el-table-column>
 
-                <el-table-column prop="showRobotRewardRate" label="展示类型机器人中奖概率%(定时)" ><!--5分钟定时机器人中奖概率-->
+                <el-table-column prop="showRobotRewardRate" label="展示类型机器人中奖概率%(定时)"><!--5分钟定时机器人中奖概率-->
                   <template slot-scope="scope">
                     <el-input v-model="scope.row.ShowRobotRewardRate" size="mini" />
                   </template>
@@ -539,10 +536,10 @@
                     <el-button type="danger" size="mini" @click="delRowBetMoneyLevel(11, scope.$index)">删除</el-button>
                   </template>
                 </el-table-column>
-                
+
               </el-table>
             </fieldset>
-            
+
           </el-tab-pane>
 
         </el-tabs>
@@ -555,7 +552,7 @@
     </el-row>
 
     <!-- 【dialog】Jackpot奖池增长 -->
-    
+
     <el-dialog
       :title="incrJackpotForm.title"
       :modal="false"
@@ -592,7 +589,7 @@
         </el-form-item>
       </el-form>
     </el-dialog>
-  
+
     <!--对比组件-->
     <compare ref="compare" />
   </div>
@@ -604,7 +601,7 @@ import { Message } from 'element-ui'
 import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import request from '@/utils/request'
-import {$libShow, DataRule} from '@/utils/common'
+import { $libShow, DataRule } from '@/utils/common'
 import BetAmount from '@/components/BetAmount'
 import RobotOnlineItems from '@/views/config/components/robotOnlineItems.vue'
 import JackpotDayLimit from '@/views/config/components/jackpotDayLimit.vue'
@@ -616,77 +613,77 @@ export default {
   data() {
     return {
       item: {
-        ContributeRate: 15,  //个人奖池  桌费*
-        UserPoolRate: 5, //公共奖池  桌费*
-        MajorWinRate: 30, //Major中奖池  公共奖池*
-        GrandWinRate: 70, //Grand中奖池  公共奖池*
-        MiniTableMoney: 0,//场次底注最小需求>=:
-        MiniWinMin: 5,  //Mini中奖=底注*N倍
-        MajorTableMoney: 5, //"场次底注最小需求>=:
-        MajorWinMin: 18, //Major中奖池最小
-        MajorWinMax: 20, //Major中奖池最大
-        GrandTableMoney: 5, //场次底注最小需求>=:
-        GrandWinMin: 18, //Grand中奖池最小
-        GrandWinMax: 20, //Grand中奖池最大
-            
+        ContributeRate: 15, // 个人奖池  桌费*
+        UserPoolRate: 5, // 公共奖池  桌费*
+        MajorWinRate: 30, // Major中奖池  公共奖池*
+        GrandWinRate: 70, // Grand中奖池  公共奖池*
+        MiniTableMoney: 0, // 场次底注最小需求>=:
+        MiniWinMin: 5, // Mini中奖=底注*N倍
+        MajorTableMoney: 5, // "场次底注最小需求>=:
+        MajorWinMin: 18, // Major中奖池最小
+        MajorWinMax: 20, // Major中奖池最大
+        GrandTableMoney: 5, // 场次底注最小需求>=:
+        GrandWinMin: 18, // Grand中奖池最小
+        GrandWinMax: 20, // Grand中奖池最大
+
         MajorShowBase: 5000,
         GrandShowBase: 10000,
-        GrandCfg:[],
-        MajorCfg:[],
-        MiniCfg:[],
-        ShowPool:{
-          MajorPoolIncrArr:[
-            {Id:1,MinPool:0,MaxPool:200000000,TimeArr:[{EndHour:1,Index:1,StartHour:0,PerHourIncr:19800000},
-            {EndHour:6,Index:2,StartHour:2,PerHourIncr:13200000},{EndHour:8,Index:3,StartHour:7,PerHourIncr:19800000},
-            {EndHour:17,Index:4,StartHour:9,PerHourIncr:39600000},{EndHour:23,Index:5,StartHour:18,PerHourIncr:39600000}]},
+        GrandCfg: [],
+        MajorCfg: [],
+        MiniCfg: [],
+        ShowPool: {
+          MajorPoolIncrArr: [
+            { Id: 1, MinPool: 0, MaxPool: 200000000, TimeArr: [{ EndHour: 1, Index: 1, StartHour: 0, PerHourIncr: 19800000 },
+              { EndHour: 6, Index: 2, StartHour: 2, PerHourIncr: 13200000 }, { EndHour: 8, Index: 3, StartHour: 7, PerHourIncr: 19800000 },
+              { EndHour: 17, Index: 4, StartHour: 9, PerHourIncr: 39600000 }, { EndHour: 23, Index: 5, StartHour: 18, PerHourIncr: 39600000 }] },
 
-            {Id:2,MinPool:200000000,MaxPool:250000000,TimeArr:[{EndHour:1,Index:1,StartHour:0,PerHourIncr:9900000},
-            {EndHour:6,Index:2,StartHour:2,PerHourIncr:6600000},{EndHour:8,Index:3,StartHour:7,PerHourIncr:9900000},
-            {EndHour:17,Index:4,StartHour:9,PerHourIncr:19800000},{EndHour:23,Index:5,StartHour:18,PerHourIncr:19800000}]},
+            { Id: 2, MinPool: 200000000, MaxPool: 250000000, TimeArr: [{ EndHour: 1, Index: 1, StartHour: 0, PerHourIncr: 9900000 },
+              { EndHour: 6, Index: 2, StartHour: 2, PerHourIncr: 6600000 }, { EndHour: 8, Index: 3, StartHour: 7, PerHourIncr: 9900000 },
+              { EndHour: 17, Index: 4, StartHour: 9, PerHourIncr: 19800000 }, { EndHour: 23, Index: 5, StartHour: 18, PerHourIncr: 19800000 }] },
 
-            {Id:3,MinPool:250000000,MaxPool:300000000,TimeArr:[{EndHour:1,Index:1,StartHour:0,PerHourIncr:4950000},
-            {EndHour:6,Index:2,StartHour:2,PerHourIncr:3300000},{EndHour:8,Index:3,StartHour:7,PerHourIncr:4950000},
-            {EndHour:17,Index:4,StartHour:9,PerHourIncr:9900000},{EndHour:23,Index:5,StartHour:18,PerHourIncr:9900000}]},
+            { Id: 3, MinPool: 250000000, MaxPool: 300000000, TimeArr: [{ EndHour: 1, Index: 1, StartHour: 0, PerHourIncr: 4950000 },
+              { EndHour: 6, Index: 2, StartHour: 2, PerHourIncr: 3300000 }, { EndHour: 8, Index: 3, StartHour: 7, PerHourIncr: 4950000 },
+              { EndHour: 17, Index: 4, StartHour: 9, PerHourIncr: 9900000 }, { EndHour: 23, Index: 5, StartHour: 18, PerHourIncr: 9900000 }] },
 
-            {Id:4,MinPool:300000000,MaxPool:-1,TimeArr:[{EndHour:1,Index:1,StartHour:0,PerHourIncr:1980000},
-            {EndHour:6,Index:2,StartHour:2,PerHourIncr:1320000},{EndHour:8,Index:3,StartHour:7,PerHourIncr:1980000},
-            {EndHour:17,Index:4,StartHour:9,PerHourIncr:3960000},{EndHour:23,Index:5,StartHour:18,PerHourIncr:3960000}]}
+            { Id: 4, MinPool: 300000000, MaxPool: -1, TimeArr: [{ EndHour: 1, Index: 1, StartHour: 0, PerHourIncr: 1980000 },
+              { EndHour: 6, Index: 2, StartHour: 2, PerHourIncr: 1320000 }, { EndHour: 8, Index: 3, StartHour: 7, PerHourIncr: 1980000 },
+              { EndHour: 17, Index: 4, StartHour: 9, PerHourIncr: 3960000 }, { EndHour: 23, Index: 5, StartHour: 18, PerHourIncr: 3960000 }] }
           ],
-          GrandPoolIncrArr:[
-            {Id:1,MinPool:0,MaxPool:200000000,TimeArr:[{EndHour:1,Index:1,StartHour:0,PerHourIncr:19800000},
-            {EndHour:6,Index:2,StartHour:2,PerHourIncr:13200000},{EndHour:8,Index:3,StartHour:7,PerHourIncr:19800000},
-            {EndHour:17,Index:4,StartHour:9,PerHourIncr:39600000},{EndHour:23,Index:5,StartHour:18,PerHourIncr:39600000}]},
+          GrandPoolIncrArr: [
+            { Id: 1, MinPool: 0, MaxPool: 200000000, TimeArr: [{ EndHour: 1, Index: 1, StartHour: 0, PerHourIncr: 19800000 },
+              { EndHour: 6, Index: 2, StartHour: 2, PerHourIncr: 13200000 }, { EndHour: 8, Index: 3, StartHour: 7, PerHourIncr: 19800000 },
+              { EndHour: 17, Index: 4, StartHour: 9, PerHourIncr: 39600000 }, { EndHour: 23, Index: 5, StartHour: 18, PerHourIncr: 39600000 }] },
 
-            {Id:2,MinPool:200000000,MaxPool:250000000,TimeArr:[{EndHour:1,Index:1,StartHour:0,PerHourIncr:9900000},
-            {EndHour:6,Index:2,StartHour:2,PerHourIncr:6600000},{EndHour:8,Index:3,StartHour:7,PerHourIncr:9900000},
-            {EndHour:17,Index:4,StartHour:9,PerHourIncr:19800000},{EndHour:23,Index:5,StartHour:18,PerHourIncr:19800000}]},
+            { Id: 2, MinPool: 200000000, MaxPool: 250000000, TimeArr: [{ EndHour: 1, Index: 1, StartHour: 0, PerHourIncr: 9900000 },
+              { EndHour: 6, Index: 2, StartHour: 2, PerHourIncr: 6600000 }, { EndHour: 8, Index: 3, StartHour: 7, PerHourIncr: 9900000 },
+              { EndHour: 17, Index: 4, StartHour: 9, PerHourIncr: 19800000 }, { EndHour: 23, Index: 5, StartHour: 18, PerHourIncr: 19800000 }] },
 
-            {Id:3,MinPool:250000000,MaxPool:300000000,TimeArr:[{EndHour:1,Index:1,StartHour:0,PerHourIncr:4950000},
-            {EndHour:6,Index:2,StartHour:2,PerHourIncr:3300000},{EndHour:8,Index:3,StartHour:7,PerHourIncr:4950000},
-            {EndHour:17,Index:4,StartHour:9,PerHourIncr:9900000},{EndHour:23,Index:5,StartHour:18,PerHourIncr:9900000}]},
+            { Id: 3, MinPool: 250000000, MaxPool: 300000000, TimeArr: [{ EndHour: 1, Index: 1, StartHour: 0, PerHourIncr: 4950000 },
+              { EndHour: 6, Index: 2, StartHour: 2, PerHourIncr: 3300000 }, { EndHour: 8, Index: 3, StartHour: 7, PerHourIncr: 4950000 },
+              { EndHour: 17, Index: 4, StartHour: 9, PerHourIncr: 9900000 }, { EndHour: 23, Index: 5, StartHour: 18, PerHourIncr: 9900000 }] },
 
-            {Id:4,MinPool:300000000,MaxPool:-1,TimeArr:[{EndHour:1,Index:1,StartHour:0,PerHourIncr:1980000},
-            {EndHour:6,Index:2,StartHour:2,PerHourIncr:1320000},{EndHour:8,Index:3,StartHour:7,PerHourIncr:1980000},
-            {EndHour:17,Index:4,StartHour:9,PerHourIncr:3960000},{EndHour:23,Index:5,StartHour:18,PerHourIncr:3960000}]}
+            { Id: 4, MinPool: 300000000, MaxPool: -1, TimeArr: [{ EndHour: 1, Index: 1, StartHour: 0, PerHourIncr: 1980000 },
+              { EndHour: 6, Index: 2, StartHour: 2, PerHourIncr: 1320000 }, { EndHour: 8, Index: 3, StartHour: 7, PerHourIncr: 1980000 },
+              { EndHour: 17, Index: 4, StartHour: 9, PerHourIncr: 3960000 }, { EndHour: 23, Index: 5, StartHour: 18, PerHourIncr: 3960000 }] }
           ],
-          MajorRewardCfg:[],
-          GrandRewardCfg:[],
-          MiniRewardCfg:[],
-        },
+          MajorRewardCfg: [],
+          GrandRewardCfg: [],
+          MiniRewardCfg: []
+        }
       },
       incrJackpotForm: {
-          id: 0,
-          title: '',
-          visible: false,
-          data: [],
-          type: 3,
+        id: 0,
+        title: '',
+        visible: false,
+        data: [],
+        type: 3
       },
       form: {},
       subKey: 'pusoy_jackpot_cfg',
       libShow: $libShow,
       showSetResultPage: false,
-      env:process.env.VUE_APP_PROJECT,
-      dialogFormVisible: false,
+      env: process.env.VUE_APP_PROJECT,
+      dialogFormVisible: false
     }
   },
   created() {
@@ -725,95 +722,95 @@ export default {
         }
       })
     },
-    
+
     transMoneyForShow() {
-            this.item.MajorShowBase /= 1000
-            this.item.GrandShowBase /= 1000      
-            this.item.MiniTableMoney /= 1000
-            this.item.MajorTableMoney /= 1000
-            this.item.GrandTableMoney /= 1000
+      this.item.MajorShowBase /= 1000
+      this.item.GrandShowBase /= 1000
+      this.item.MiniTableMoney /= 1000
+      this.item.MajorTableMoney /= 1000
+      this.item.GrandTableMoney /= 1000
 
-            for (const k in this.item.GrandCfg){
-              this.item.GrandCfg[k].MultiMin /= 100
-              this.item.GrandCfg[k].MultiMax /= 100
-              //this.item.GrandCfg[k].RewardMul /= 100
-              this.item.GrandCfg[k].WinRate /= 1
-            }
-            for (const k in this.item.MajorCfg){
-              this.item.MajorCfg[k].MultiMin /= 100
-              this.item.MajorCfg[k].MultiMax /= 100
-              //this.item.MajorCfg[k].RewardMul /= 100
-              this.item.MajorCfg[k].WinRate /= 1
-            }
-            for (const k in this.item.MiniCfg){
-              //this.item.MiniCfg[k].TableMoney /= 1000
-              //this.item.MiniCfg[k].RewardMul /= 1
-              this.item.MiniCfg[k].MultiMin /= 100
-              this.item.MiniCfg[k].MultiMax /= 100
-              this.item.MiniCfg[k].WinRate /= 1
-            }
+      for (const k in this.item.GrandCfg) {
+        this.item.GrandCfg[k].MultiMin /= 100
+        this.item.GrandCfg[k].MultiMax /= 100
+        // this.item.GrandCfg[k].RewardMul /= 100
+        this.item.GrandCfg[k].WinRate /= 1
+      }
+      for (const k in this.item.MajorCfg) {
+        this.item.MajorCfg[k].MultiMin /= 100
+        this.item.MajorCfg[k].MultiMax /= 100
+        // this.item.MajorCfg[k].RewardMul /= 100
+        this.item.MajorCfg[k].WinRate /= 1
+      }
+      for (const k in this.item.MiniCfg) {
+        // this.item.MiniCfg[k].TableMoney /= 1000
+        // this.item.MiniCfg[k].RewardMul /= 1
+        this.item.MiniCfg[k].MultiMin /= 100
+        this.item.MiniCfg[k].MultiMax /= 100
+        this.item.MiniCfg[k].WinRate /= 1
+      }
 
-            for (const k in this.item.ShowPool.GrandRewardCfg){
-              this.item.ShowPool.GrandRewardCfg[k].PoolAreaMin /= 1000
-              this.item.ShowPool.GrandRewardCfg[k].PoolAreaMax /= 1000
-              this.item.ShowPool.GrandRewardCfg[k].RewardRate /= 1
-              this.item.ShowPool.GrandRewardCfg[k].ShowRobotRewardRate /= 1
-            }
-            for (const k in this.item.ShowPool.MajorRewardCfg){
-              this.item.ShowPool.MajorRewardCfg[k].PoolAreaMin /= 1000
-              this.item.ShowPool.MajorRewardCfg[k].PoolAreaMax /= 1000
-              this.item.ShowPool.MajorRewardCfg[k].RewardRate /= 1
-              this.item.ShowPool.MajorRewardCfg[k].ShowRobotRewardRate /= 1
-            }
-            for (const k in this.item.ShowPool.MiniRewardCfg){
-              this.item.ShowPool.MiniRewardCfg[k].TableMoney /= 1000
-              this.item.ShowPool.MiniRewardCfg[k].RewardRate /= 1
-              this.item.ShowPool.MiniRewardCfg[k].ShowRobotRewardRate /= 1
-            }
+      for (const k in this.item.ShowPool.GrandRewardCfg) {
+        this.item.ShowPool.GrandRewardCfg[k].PoolAreaMin /= 1000
+        this.item.ShowPool.GrandRewardCfg[k].PoolAreaMax /= 1000
+        this.item.ShowPool.GrandRewardCfg[k].RewardRate /= 1
+        this.item.ShowPool.GrandRewardCfg[k].ShowRobotRewardRate /= 1
+      }
+      for (const k in this.item.ShowPool.MajorRewardCfg) {
+        this.item.ShowPool.MajorRewardCfg[k].PoolAreaMin /= 1000
+        this.item.ShowPool.MajorRewardCfg[k].PoolAreaMax /= 1000
+        this.item.ShowPool.MajorRewardCfg[k].RewardRate /= 1
+        this.item.ShowPool.MajorRewardCfg[k].ShowRobotRewardRate /= 1
+      }
+      for (const k in this.item.ShowPool.MiniRewardCfg) {
+        this.item.ShowPool.MiniRewardCfg[k].TableMoney /= 1000
+        this.item.ShowPool.MiniRewardCfg[k].RewardRate /= 1
+        this.item.ShowPool.MiniRewardCfg[k].ShowRobotRewardRate /= 1
+      }
     },
-    
+
     getPostData() {
       const ret = JSON.parse(JSON.stringify(this.item))
 
       ret.MajorShowBase *= 1000
-      ret.GrandShowBase *= 1000   
+      ret.GrandShowBase *= 1000
       ret.MiniTableMoney *= 1000
       ret.MajorTableMoney *= 1000
       ret.GrandTableMoney *= 1000
 
-      for (const k in ret.GrandCfg){
+      for (const k in ret.GrandCfg) {
         ret.GrandCfg[k].MultiMin *= 100
         ret.GrandCfg[k].MultiMax *= 100
-        //ret.GrandCfg[k].RewardMul *= 100
+        // ret.GrandCfg[k].RewardMul *= 100
         ret.GrandCfg[k].WinRate *= 1
       }
-      for (const k in ret.MajorCfg){
+      for (const k in ret.MajorCfg) {
         ret.MajorCfg[k].MultiMin *= 100
         ret.MajorCfg[k].MultiMax *= 100
-        //ret.MajorCfg[k].RewardMul *= 100
+        // ret.MajorCfg[k].RewardMul *= 100
         ret.MajorCfg[k].WinRate *= 1
       }
-      for (const k in ret.MiniCfg){
-        //ret.MiniCfg[k].TableMoney *= 1000
-        //ret.MiniCfg[k].RewardMul *= 1
+      for (const k in ret.MiniCfg) {
+        // ret.MiniCfg[k].TableMoney *= 1000
+        // ret.MiniCfg[k].RewardMul *= 1
         ret.MiniCfg[k].MultiMin *= 100
         ret.MiniCfg[k].MultiMax *= 100
         ret.MiniCfg[k].WinRate *= 1
       }
 
-      for (const k in ret.ShowPool.GrandRewardCfg){
+      for (const k in ret.ShowPool.GrandRewardCfg) {
         ret.ShowPool.GrandRewardCfg[k].PoolAreaMin *= 1000
         ret.ShowPool.GrandRewardCfg[k].PoolAreaMax *= 1000
         ret.ShowPool.GrandRewardCfg[k].RewardRate *= 1
         ret.ShowPool.GrandRewardCfg[k].ShowRobotRewardRate *= 1
       }
-      for (const k in ret.ShowPool.MajorRewardCfg){
+      for (const k in ret.ShowPool.MajorRewardCfg) {
         ret.ShowPool.MajorRewardCfg[k].PoolAreaMin *= 1000
         ret.ShowPool.MajorRewardCfg[k].PoolAreaMax *= 1000
         ret.ShowPool.MajorRewardCfg[k].RewardRate *= 1
         ret.ShowPool.MajorRewardCfg[k].ShowRobotRewardRate *= 1
       }
-      for (const k in ret.ShowPool.MiniRewardCfg){
+      for (const k in ret.ShowPool.MiniRewardCfg) {
         ret.ShowPool.MiniRewardCfg[k].TableMoney *= 1000
         ret.ShowPool.MiniRewardCfg[k].RewardRate *= 1
         ret.ShowPool.MiniRewardCfg[k].ShowRobotRewardRate *= 1
@@ -823,9 +820,9 @@ export default {
     },
 
     setData() {
-      var postData = this.getPostData();
+      var postData = this.getPostData()
       this.form.Data = JSON.stringify(postData)
-      console.log("==> ", this.form.Data)
+      console.log('==> ', this.form.Data)
       console.log(this.form)
       const $this = this
       // 设置修改后数据
@@ -835,16 +832,16 @@ export default {
           Message.error('没有任何修改，不需要提交')
           return
         }
-        if (postData.openTest=="2") {
+        if (postData.openTest == '2') {
           this.$alert('测试模式已开启，请测试后关闭', '提示', {
             confirmButtonText: '确定',
             callback: action => {
               this.$message({
                 type: 'info',
                 message: ``
-              });
+              })
             }
-          });
+          })
         }
         request({
           url: 'customizeconfig/update',
@@ -858,66 +855,66 @@ export default {
         })
       })
     },
-    
-    IsPHAuditEnv(){
+
+    IsPHAuditEnv() {
       return this.env == 'ph_audit'
     },
-    
+
     doAddCfg(level) {
-      console.log("level:", level)
-      if (level === 1) {//grand
+      console.log('level:', level)
+      if (level === 1) { // grand
         if (!this.item.GrandCfg) {
           this.item['GrandCfg'] = []
         }
-        this.item.GrandCfg.push({ MultiMin: 1, MultiMax:1.5, WinRate: 50})
-      } else if (level === 2) {//major
+        this.item.GrandCfg.push({ MultiMin: 1, MultiMax: 1.5, WinRate: 50 })
+      } else if (level === 2) { // major
         if (!this.item.MajorCfg) {
           this.item['MajorCfg'] = []
         }
-        this.item.MajorCfg.push({ MultiMin: 1, MultiMax:1.5, WinRate: 50})
-      } else if (level === 4) {//minor（这里其实是mini奖励）
+        this.item.MajorCfg.push({ MultiMin: 1, MultiMax: 1.5, WinRate: 50 })
+      } else if (level === 4) { // minor（这里其实是mini奖励）
         if (!this.item.MiniCfg) {
           this.item['MiniCfg'] = []
         }
-        this.item.MiniCfg.push({ MultiMin: 1, MultiMax:1.5, WinRate: 50})//.push({ TableMoney: 5, RewardMul: 5, WinRate: 50})
+        this.item.MiniCfg.push({ MultiMin: 1, MultiMax: 1.5, WinRate: 50 })// .push({ TableMoney: 5, RewardMul: 5, WinRate: 50})
       }
 
-      if (level === 11) {//grand
+      if (level === 11) { // grand
         if (!this.item.ShowPool.GrandRewardCfg) {
           this.item.ShowPool['GrandRewardCfg'] = []
         }
-        this.item.ShowPool.GrandRewardCfg.push({ PoolAreaMin: 10000, PoolAreaMax: 20000, RewardRate:10, ShowRobotRewardRate:10})  //RewardRate在玩机器人中奖概率，ShowRobotRewardRate5分钟定时机器人中奖概率
-      } else if (level === 12) {//major
+        this.item.ShowPool.GrandRewardCfg.push({ PoolAreaMin: 10000, PoolAreaMax: 20000, RewardRate: 10, ShowRobotRewardRate: 10 }) // RewardRate在玩机器人中奖概率，ShowRobotRewardRate5分钟定时机器人中奖概率
+      } else if (level === 12) { // major
         if (!this.item.ShowPool.MajorRewardCfg) {
           this.item.ShowPool['MajorRewardCfg'] = []
         }
-        this.item.ShowPool.MajorRewardCfg.push({ PoolAreaMin: 10000, PoolAreaMax: 25000, RewardRate:10, ShowRobotRewardRate:10})
-      } else if (level === 14) {//minor
+        this.item.ShowPool.MajorRewardCfg.push({ PoolAreaMin: 10000, PoolAreaMax: 25000, RewardRate: 10, ShowRobotRewardRate: 10 })
+      } else if (level === 14) { // minor
         if (!this.item.ShowPool.MiniRewardCfg) {
           this.item.ShowPool['MiniRewardCfg'] = []
         }
-        this.item.ShowPool.MiniRewardCfg.push({ TableMoney: 1, RewardRate:10, ShowRobotRewardRate:10})
+        this.item.ShowPool.MiniRewardCfg.push({ TableMoney: 1, RewardRate: 10, ShowRobotRewardRate: 10 })
       }
     },
     delRowBetMoneyLevel(level, index) {
       console.log(index)
-      if (level === 1) {//grand
+      if (level === 1) { // grand
         this.item.GrandCfg.splice(index, 1)
-      } else if (level === 2) {//major
+      } else if (level === 2) { // major
         this.item.MajorCfg.splice(index, 1)
-      } else if (level === 4) {//minor（这里其实是mini奖励）
+      } else if (level === 4) { // minor（这里其实是mini奖励）
         this.item.MiniCfg.splice(index, 1)
       }
 
-      if (level === 11) {//grand
+      if (level === 11) { // grand
         this.item.ShowPool.GrandRewardCfg.splice(index, 1)
-      } else if (level === 12) {//major
+      } else if (level === 12) { // major
         this.item.ShowPool.MajorRewardCfg.splice(index, 1)
-      } else if (level === 14) {//mini
+      } else if (level === 14) { // mini
         this.item.ShowPool.MiniRewardCfg.splice(index, 1)
       }
     },
-    
+
     // 展示jackpot奖池增长标题
     getJackpotPoolTitle(row) {
       if (row.MaxPool == -1) {
@@ -937,7 +934,7 @@ export default {
       }
       return showNum.toLocaleString()
     },
-    
+
     showIncrJackpotForm(data, type) {
       this.incrJackpotForm.id = data.Id
       this.incrJackpotForm.data = []
@@ -981,8 +978,8 @@ export default {
         }
       }
       this.incrJackpotForm.visible = false
-    },
-  },
-  
+    }
+  }
+
 }
 </script>

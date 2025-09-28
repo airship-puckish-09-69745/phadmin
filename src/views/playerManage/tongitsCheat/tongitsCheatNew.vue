@@ -302,7 +302,8 @@ export default {
               Nick: new Set(),
               TrustLevel: 0,
               TrustScore: 0,
-              TrustMaxScore: 0
+              TrustMaxScore: 0,
+              RealBlackTime: row.userType === 2 ? row.blackTime : 0  // 真实拉黑时间
             }
             if (row.trustScore !== undefined) {
               cheatLog.TrustScore = row.trustScore
@@ -323,7 +324,7 @@ export default {
           } else if (this.sortType === 2) {
             sortName = 'CheatRadio'
           } else if (this.sortType === 3) {
-            sortName = 'BlackTime'
+            sortName = 'RealBlackTime'
           } else if (this.sortType === 4) {
             sortName = 'TrustMaxScore'
           } else if (this.sortType === 5) {
@@ -945,7 +946,7 @@ export default {
       } else if (this.sortType === 2) {
         sortName = 'CheatRadio'
       } else if (this.sortType === 3) {
-        sortName = 'BlackTime'
+        sortName = 'RealBlackTime'
       } else if (this.sortType === 4) {
         sortName = 'TrustMaxScore'
       } else if (this.sortType === 5) {
