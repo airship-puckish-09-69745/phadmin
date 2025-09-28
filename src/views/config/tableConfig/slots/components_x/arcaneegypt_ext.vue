@@ -48,7 +48,7 @@
 
           <el-form-item label="SuperWild中单个wild的倍率">
             <el-input v-model="cfg.WildSingleOdds" placeholder="请输入内容,如100,100,100,100">
-              <template slot="append">与"SuperWild中单个wild的倍率权重"配置要对应</template>
+              <template slot="append">与"SuperWild中单个wild的倍率权重"配置要对应,且倍率不能超过10倍</template>
             </el-input>
           </el-form-item>
 
