@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-row :gutter="10" style="margin-top: 30px">
       <el-col :span="12" :offset="3">
-        <el-form ref="frm2" :model="cfg" label-width="200px">
+        <el-form ref="frm2" :model="cfg" label-width="260px">
 
           <el-form-item label="免费模式购买倍数" prop="BuyFreeOdds" :rules="dataRule(true,{type:'n'})">
             <el-input v-model.number="cfg.BuyFreeOdds" :required="true"/>
