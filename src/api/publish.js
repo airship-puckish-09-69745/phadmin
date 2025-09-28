@@ -44,13 +44,11 @@ export function submitPublish(opType, keyID, summary, envEmpty, attrInfo) {
 // 当前发布状态 getView
 // 判断权限，是否需要审核
 export function getView(keyID, envEmpty) {
-  const timestamp = new Date().getTime()
   return request({
     url: 'configfile/review',
     method: 'get',
     data: {
-      keyID: keyID,
-      _: timestamp // 添加时间戳参数避免缓存
+      keyID: keyID
     },
     envEmpty: envEmpty
   }).catch(error => {
