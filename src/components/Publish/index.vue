@@ -587,10 +587,17 @@ export default {
 
         console.log('process start 8')
 
-        this.isPublish = true
-        this.isTestBtn = false
-        this.isToTest = false
-        this.isProBtn = false
+        try {
+          this.isPublish = true
+          this.isTestBtn = false
+          this.isToTest = false
+          this.isProBtn = false
+          console.log('process start 9')
+        } catch (e) {
+          console.log('publishBtn error:', e)
+          console.log('process start 10')
+        }
+        console.log('process start 11')
       }).catch(error => {
         console.log('getView error:', error)
       })

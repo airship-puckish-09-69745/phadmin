@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" />
+    <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="CustomizeConfig" />
     <el-row :gutter="5" style="margin-top: 30px">
       <el-form ref="item" :model="item" label-width="200px">
         <el-tabs type="border-card">
