@@ -574,7 +574,11 @@ export default {
         this.needReview = response.Data.NeedView
         this.isMy = response.Data.IsMy
         this.currentUser = response.Data.CurUser
-        this.preTime = $libDate.FormateSecondStr(response.Data.PreTime, 2)
+        if (response.Data.PreTime > 0) {
+          this.preTime = $libDate.FormateSecondStr(response.Data.PreTime, 2)
+        } else {
+          this.preTime = '-'
+        }
 
         this.opType = response.Data.Step
         const validType = [2, 3, 4, 5, 6]
