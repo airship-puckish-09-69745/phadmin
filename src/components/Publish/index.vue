@@ -678,8 +678,6 @@ export default {
         }
 
         this.stepActive = this.opType - 1
-      }).cache(error => {
-        console.log('getView err:', error)
       })
     },
     checkProcessing() { // 检测版本是否在处理中
