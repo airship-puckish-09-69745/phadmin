@@ -606,8 +606,6 @@ export default {
 
       this.edit.gamesIconSortDialogVisible = true
     },
-
-    // 查找游戏名
     findGameNameById(id) {
       let name = ''
       function dfs(list) {
@@ -625,14 +623,10 @@ export default {
       dfs(this.treeData)
       return name || `ID: ${id}`
     },
-
-    // 用户修改排序编号
     onOrderNoChange() {
       // 重新根据 OrderNo 排序
       this.GamesSorted.sort((a, b) => a.OrderNo - b.OrderNo)
     },
-
-    // 点击保存排序
     saveGamesSort() {
       // 根据排序后的 GamesSorted 重新排列 GameIcon
       const sortedIds = this.GamesSorted.map(g => g.GameId)
@@ -642,7 +636,7 @@ export default {
 
       this.$message.success('排序已保存')
       this.edit.gamesIconSortDialogVisible = false
-    },
+    }
   }
 }
 </script>
