@@ -92,6 +92,8 @@
               <el-option label="221:GoldenDragonMars" :value="221" />
               <el-option label="222:LionFortune" :value="222" />
               <el-option label="223:LionFortuneMars" :value="223" />
+              <el-option label="226:FortuneWheel" :value="226" />
+              <el-option label="227:FortuneWheel Mars" :value="227" />
             </el-select>
           </el-form-item>
 
