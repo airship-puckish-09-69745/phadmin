@@ -128,9 +128,9 @@
           </el-row>
           <el-row>
             <el-tabs type="border-card" v-model="edit.activeTag">
-              <el-tab-pane v-for="(gameTask, index) in edit.item.gameTasks" :label="gameNames[gameTask.gameId]" :name="gameNames[gameTask.gameId]">
-                <el-button size="mini" type="primary" icon="el-icon-plus" @click="addAnteTask(gameTask)">添加场次配置</el-button>
-                <el-row v-for="(anteTask, index) in gameTask.anteTasks" :key="index">
+              <el-tab-pane v-for="(gameTask, gameTaskIndex) in edit.item.gameTasks" :label="gameNames[gameTask.gameId]" :name="gameNames[gameTask.gameId]" :key="gameNames[gameTask.gameId]">
+                <el-button size="mini" type="primary" icon="el-icon-plus" @click="addAnteTask(gameTask.anteTasks)">添加场次配置</el-button>
+                <el-row v-for="(anteTask, anteTaskIndex) in gameTask.anteTasks" :key="anteTaskIndex">
                   <fieldset style="margin-top: 10px">
                     <legend>
                       <span>场次底注：</span>
@@ -139,8 +139,9 @@
                       </el-select>
                       <span>（₱）</span>
                     </legend>
-                    <el-col :span="3">
+                    <el-col :span="6">
                       <el-button size="mini" type="primary" icon="el-icon-plus" @click="addTask(anteTask)">添加任务</el-button>
+                      <el-button size="mini" type="danger" icon="el-icon-remove" @click="removeAnteTask(anteTaskIndex, gameTask.anteTasks)">删除场次配置</el-button>
                     </el-col>
                     <el-table :data="anteTask.tasks">
                       <el-table-column prop="id" label="任务ID">
@@ -312,7 +313,7 @@ export default {
       statusNames: { 2: '上架', 6: '下架', 7: '预上架', 8: '预下架' },
       gameNames: {
         22: 'TongitsPot',
-        28: 'TongitsJoke',
+        28: 'TongitsJoker',
       },
       appIdOptions: [
         {
@@ -426,6 +427,9 @@ export default {
       if (response.RetCode === 0) {
         const objs = response.Data || []
         for (const i in objs) {
+          if (objs[i].TableMoney === 0 || objs[i].Status !== 2) {
+            continue
+          }
           anteTables.push(objs[i].TableMoney / 1000)
         }
         anteTables = Array.from(new Set(anteTables)) // 去重
@@ -516,6 +520,15 @@ export default {
         Message.error('请添加活动任务')
         return
       }
+      if (this.edit.item.dailyBonusLimit === 0 || this.edit.item.dailyBonusLimit === undefined) {
+        Message.error('每日奖励上限不能为0')
+        return
+      }
+      if (this.edit.item.totalBonusLimit === 0 || this.edit.item.totalBonusLimit === undefined) {
+        Message.error('总奖励上限不能为0')
+        return
+      }
+
       for (let i = 0; i < this.edit.item.gameTasks.length; i++) {
         const gameTask = this.edit.item.gameTasks[i]
         if (gameTask.anteTasks.length === 0) {
@@ -540,11 +553,15 @@ export default {
               Message.error(`场次底注${anteTask.antes}对应的任务ID不能重复`)
               return
             }
-            taskIds.push(task.id)
             if (task.type === 0 || task.timesRequired === 0 || task.bonus === 0) {
-              Message.error('任务配置中的数值不能为0')
+              Message.error(`场次底注${anteTask.antes}对应的任务次数不能为0`)
               return
             }
+            if (k > 0 && task.timesRequired <= anteTask.tasks[k - 1].timesRequired) {
+              Message.error(`场次底注${anteTask.antes}对应的次数要求必须大于前一个任务的次数要求`)
+              return
+            }
+            taskIds.push(task.id)
           }
         }
       }
@@ -559,8 +576,8 @@ export default {
           })
         })
       }
-      copyItem.startTime /= 1000
-      copyItem.endTime /= 1000
+      copyItem.startTime = parseInt(copyItem.startTime / 1000)
+      copyItem.endTime = parseInt(copyItem.endTime / 1000)
       copyItem.dailyBonusLimit *= 1000
       copyItem.totalBonusLimit *= 1000
       copyItem.gameIds = JSON.stringify(copyItem.gameIds)
@@ -589,11 +606,12 @@ export default {
         this.createData(data)
       }
     },
-    addAnteTask(gameTask) {
-      gameTask.anteTasks.push(newAnteTask(0))
+    addAnteTask(anteTasks) {
+      anteTasks.push(newAnteTask(0))
     },
-    removeAnteTask(index, gameTask) {
-      gameTask.anteTasks.splice(index, 1)
+    removeAnteTask(index, anteTasks) {
+      console.log('removeAnteTask index:', index, ' anteTasks:', anteTasks)
+      anteTasks.splice(index, 1)
     },
     addTask(anteTask) {
       anteTask.tasks.push(newTask())

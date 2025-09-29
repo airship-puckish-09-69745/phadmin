@@ -1116,6 +1116,13 @@ export const asyncRoutes = [
             meta: { title: 'S icbo ◐' }
           },
           {
+            path: 'super_color_game',
+            component: () => import('@/views/config/tableConfig/minigames/superColorGame.vue'),
+            // component: () => import('@/views/config/tableConfig/colorGameMars'),
+            name: 'gameSuperColorCfg',
+            meta: { title: 'S uperColor game ◐' }
+          },
+          {
             path: 'tower_cfg',
             component: () => import('@/views/config/tableConfig/minigames/tower'),
             name: 'tower_cfg',
@@ -1315,6 +1322,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/grandace_slots_cfg'),
                 name: 'grandace_slots_cfg',
                 meta: { title: 'G randAce' }
+              },
+              {
+                  path: 'jokerace_slots_cfg',
+                  component: () => import('@/views/config/tableConfig/slots/jokerace_slots_cfg'),
+                  name: 'jokerace_slots_cfg',
+                  meta: { title: 'J okerAce' }
               },
               {
                 path: 'lionfortune_slots_cfg',
@@ -1621,6 +1634,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/fortunateebisumars_slots_cfg'),
                 name: 'fortunateebisumars_slots_cfg',
                 meta: { title: 'FortunateEbisu(审)' }
+              },
+              {
+                path: 'jokeracemars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/jokeracemars_slots_cfg'),
+                name: 'jokeracemars_slots_cfg',
+                meta: { title: 'JokerAce(审)' }
               },
               {
                 path: 'streetfightingmars_slots_cfg',
@@ -2153,7 +2172,19 @@ export const asyncRoutes = [
         component: () => import('@/views/config/tableConfig/activity/sevenDayTreasureVaultConfig.vue'),
         name: 'sevenDayTreasureVault',
         meta: { title: '7日留存活动配置', noCache: true }
-      }
+      },
+      {
+        path: 'slotsRankConfig',
+        component: () => import('@/views/config/tableConfig/activity/slotsRankCfg.vue'),
+        name: 'slotsRankConfig',
+        meta: { title: '老虎机排行榜', noCache: true }
+      },
+      // {
+      //   path: 'posterConfig',
+      //   component: () => import('@/views/config/tableConfig/activity/posterConfig.vue'),
+      //   name: 'posterConfig',
+      //   meta: { title: '引流海报', noCache: true }
+      // }
     ]
   },
   {
@@ -2276,7 +2307,7 @@ export const asyncRoutes = [
           },
           {
             path: 'matchPusoyConfig',
-            component: () => import('@/views/matchManage/matchConfigs/matchPusoyConfig'),
+            component: () => import('@/views/matchManage/matchConfigs/pusoy/matchPusoyConfigOptimized.vue'),
             name: 'matchPusoyConfig',
             meta: { title: 'Pusoy赛事', noCache: true }
           }
@@ -2794,7 +2825,12 @@ export const asyncRoutes = [
             name: 'playlog_colorgame',
             meta: { title: 'C olorGame - ◐', gid: 25 }
           },
-
+          {
+            path: 'playlog_supercolorgame',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_supercolorgame',
+            meta: { title: 'S uperColorGame - ◐', gid: 135 }
+          },
           {
             path: 'playlog_crash',
             component: () => import('@/views/playerManage/playlog'),
@@ -3074,6 +3110,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'goldendragon_slots_log',
             meta: { title: 'G oldenDragon', gid: 220 }
+          },
+          {
+              path: 'jokerace_slots_log',
+              component: () => import('@/views/playerManage/slotsLog'),
+              name: 'jokerace_slots_log',
+              meta: { title: 'J okerAce', gid: 228 }
           },
           {
             path: 'lionfortune_slots_log',
@@ -3474,6 +3516,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'pirateshipmars_slots_log',
             meta: { title: 'PirateShip(审)', gid: 213 }
+          },
+          {
+            path: 'jokeracemars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'jokeracemars_slots_log',
+            meta: { title: 'JokerAce(审)', gid: 229 }
           },
           {
             path: 'streetfightingmars_slots_log',

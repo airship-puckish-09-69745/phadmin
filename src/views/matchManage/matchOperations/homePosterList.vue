@@ -513,9 +513,9 @@ export default {
       const seenEvents = new Set();
       const matchEventsCfgs = matchedCfgs.filter(cfg => {
         const isMatch = cfg.match_event === this.editForm.data.game_id;
-        const isUnique = !seenEvents.has(cfg.match_event);
+        const isUnique = !seenEvents.has(cfg.value);
         if (isMatch && isUnique) {
-          seenEvents.add(cfg.match_event);
+          seenEvents.add(cfg.value);
           return true;
         }
         return false;

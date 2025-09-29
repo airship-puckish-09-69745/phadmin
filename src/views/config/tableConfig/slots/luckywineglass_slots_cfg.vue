@@ -28,6 +28,11 @@
             <publish primary-key="ID" :key-id="getFullKey('luckywineglass_slots_base')" :env-empty="false" compare-type="Object" />
             <slots-reels-double v-if="baseCfgBool" v-model="baseCfg" :symbol-list="ruleCfg.SymbolList" @saveData="saveBaseCfg" />
           </el-tab-pane>
+          <el-tab-pane label="数量图标" name="symbolcount_reels">
+            <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布】</h3>
+            <publish primary-key="ID" :key-id="getFullKey('luckywineglass_slots_base')" :env-empty="false" compare-type="Object" />
+            <slots-symbolcount-reels v-if="baseCfgBool" v-model="baseCfg" :symbol-list="ruleCfg.SymbolList" @saveData="saveBaseCfg" />
+          </el-tab-pane>
           <el-tab-pane label="拓展配置" name="scatter">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，发布即生效】</h3>
             <publish primary-key="ID" :key-id="getFullKey('luckywineglass_slots_ext')" :env-empty="false" compare-type="Object" />
@@ -60,10 +65,11 @@ import slotsReelsIcon from './components_x/aladdin_reels_icon'
 import slotsLuckywineglassExt from './components_x/luckywineglass_ext'
 import slotsReelsDouble from './components_x/reels_double'
 import slotsScript from './components_x/slots_script'
+import slotsSymbolcountReels from "@/views/config/tableConfig/slots/components_x/symbolcount_reels.vue";
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: { Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotsLuckywineglassExt, slotsReelsDouble, slotsScript },
+  components: {slotsSymbolcountReels, Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotsLuckywineglassExt, slotsReelsDouble, slotsScript },
   data() {
     return {
       activeTab: 'base',

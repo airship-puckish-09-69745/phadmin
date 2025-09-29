@@ -64,7 +64,7 @@
           {{ scope.row.TotalBet / 1000 }}
         </template>
       </el-table-column>
-      <el-table-column prop="PoolOrigin" label="奖池总金额" align="center" min-width="100">
+      <el-table-column prop="PoolOrigin" label="返奖前奖池剩余金额" align="center" min-width="100">
         <template slot-scope="scope">
           {{ scope.row.PoolOrigin / 1000 }}
         </template>
@@ -175,20 +175,26 @@ export default {
         method: 'get',
         data: {}
       }).then(response => {
+        let gameOptionsArr = []
         if (response.RetCode === 0) {
           this.allGames.push('所有')
           this.gameIdMap[-1] = '所有'
           this.gameNameMap['所有'] = -1
           for (let i = 0; i < response.Data.length; i++) {
-            if (response.Data[i].Gid < 50 || response.Data[i].Gid > 100 && response.Data[i].Gid < 150 || response.Data[i].Gid > 499) {
+            if (response.Data[i].CategoryID != 1) {
               continue
             }
             // const gameInfo = { Name: response.Data[i].Name, Gid: response.Data[i].Gid}
-            this.allGames.push(response.Data[i].Name + '(' + response.Data[i].Gid + ')')
+            gameOptionsArr.push(response.Data[i].Name + '(' + response.Data[i].Gid + ')')
             this.gameIdMap[Number(response.Data[i].Gid)] = response.Data[i].Name
             this.gameNameMap[response.Data[i].Name + '(' + response.Data[i].Gid + ')'] = response.Data[i].Gid
           }
         }
+        // 排序
+        gameOptionsArr.sort((a, b) => {
+          return a.localeCompare(b)
+        })
+        this.allGames.push(...gameOptionsArr)
       })
     },
     searchLogData() {

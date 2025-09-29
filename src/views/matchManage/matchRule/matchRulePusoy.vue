@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-row>
-      <publish primary-key="ruleId" key-id="MatchRule" :env-empty="true" :attr-names="AttrNames" />
+      <publish primary-key="ruleId" key-id="MatchRulePusoy" :env-empty="true" :attr-names="AttrNames" />
     </el-row>
     <el-row>
       <el-form :model="form" label-width="100px" :inline="true" size="mini">
@@ -492,7 +492,7 @@ export default {
         {"value":2,"label":"固定比列(%)"},
       ],
       tableData: [],
-      limit: 10,
+      limit: 100,
       total: 0,
       page: 1,
       selfBuild:0, //普通比赛的赛制

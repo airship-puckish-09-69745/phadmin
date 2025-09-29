@@ -323,7 +323,7 @@ export default {
       },
       gameNames: {
         22: 'TongitsPot',
-        28: 'TongitsJoke',
+        28: 'TongitsJoker',
       },
       appIdOptions: [
         {
@@ -439,6 +439,9 @@ export default {
       if (response.RetCode === 0) {
         const objs = response.Data || []
         for (const i in objs) {
+          if (objs[i].TableMoney === 0 || objs[i].Status !== 2) {
+            continue
+          }
           anteTables.push(objs[i].TableMoney / 1000)
         }
         anteTables = Array.from(new Set(anteTables)) // 去重
@@ -529,6 +532,15 @@ export default {
         Message.error('请添加活动任务')
         return
       }
+      if (this.edit.item.dailyBonusLimit === 0 || this.edit.item.dailyBonusLimit === undefined) {
+        Message.error('每日奖励上限不能为0')
+        return
+      }
+      if (this.edit.item.totalBonusLimit === 0 || this.edit.item.totalBonusLimit === undefined) {
+        Message.error('总奖励上限不能为0')
+        return
+      }
+
       for (let i = 0; i < this.edit.item.gameTasks.length; i++) {
         const gameTask = this.edit.item.gameTasks[i]
         if (gameTask.winTasks.length === 0) {
@@ -558,8 +570,8 @@ export default {
           winTask.antesMin = parseInt(parseFloat(winTask.antesMin) * 1000)
         })
       }
-      copyItem.startTime /= 1000
-      copyItem.endTime /= 1000
+      copyItem.startTime = parseInt(copyItem.startTime / 1000)
+      copyItem.endTime = parseInt(copyItem.endTime / 1000)
       copyItem.dailyBonusLimit *= 1000
       copyItem.totalBonusLimit *= 1000
       copyItem.gameIds = JSON.stringify(copyItem.gameIds)

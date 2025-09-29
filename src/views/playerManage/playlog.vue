@@ -3324,6 +3324,14 @@
       :uid="clickRowUid"
       @closeDialog="closeDialog"
     />
+    <mini-super-color-detail-log
+      v-if="gameLogComponent.gid === 135"
+      :game-log="gameLogComponent.detail"
+      :game-log-visible="gameLogComponent.visible"
+      :gid="135"
+      :uid="clickRowUid"
+      @closeDialog="closeDialog"
+    />
 
     <el-dialog
       v-if="gameLogComponent.gid === 47||gameLogComponent.gid === 48"
@@ -3464,6 +3472,7 @@ import GinRummy from '@/views/playerManage/components/GinRummy.vue'
 import UnoLog from '@/views/playerManage/components/UnoLog.vue'
 import PusoyWildLog from '@/views/playerManage/components/PusoyWildLog.vue'
 import PusoyGameLog from '@/views/playerManage/components/PusoyGameLog.vue'
+import MiniSuperColorDetailLog from '@/views/playerManage/components/MiniSuperColorLog.vue';
 
 const filterMap = {
   IsPractice: {
@@ -3491,6 +3500,7 @@ function newChartData() {
 export default {
   // eslint-disable-next-line vue/no-unused-components
   components: {
+    MiniSuperColorDetailLog,
     UnoLog,
     GinRummy,
     MultiPlayerNiuNiuDetailLog,
@@ -3793,7 +3803,7 @@ export default {
         4: 'MINI'
       },
       libMoney: new MoneyShow(['MoneyChanged', 'PayoffAmount', 'MoneyNow', 'ServiceFee', 'TableMoney', 'TotalValidBet', 'PotChange']),
-      LogComponentGameIds: [107, 108, 32, 111, 110, 49, 47, 48, 112, 115, 116, 117, 126,21],
+      LogComponentGameIds: [107, 108, 32, 111, 110, 49, 47, 48, 112, 115, 116, 117, 126,21,135],
       uidMap: {},
       isRobotMap: {}
     }
