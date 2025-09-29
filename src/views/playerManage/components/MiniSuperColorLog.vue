@@ -136,19 +136,19 @@ export default {
     return {
       ComponentsGameLogVisible: false,
       ColorOption: [
-        { Id: 0, Name: 'Yellow' },
-        { Id: 1, Name: 'White' },
-        { Id: 2, Name: 'Purple' },
-        { Id: 3, Name: 'Blue' },
-        { Id: 4, Name: 'Green' },
-        { Id: 5, Name: 'Red' },
-        { Id: 6, Name: 'YellowWhite' },
-        { Id: 7, Name: 'WhitePurple' },
-        { Id: 8, Name: 'PurpleGreen' },
-        { Id: 9, Name: 'GreenRed' },
-        { Id: 10, Name: 'RedBlue' },
-        { Id: 11, Name: 'BlueYellow' },
-        { Id: 12, Name: 'RedWhite' }
+        { Id: 1, Name: 'Yellow' },
+        { Id: 2, Name: 'White' },
+        { Id: 3, Name: 'Purple' },
+        { Id: 4, Name: 'Blue' },
+        { Id: 5, Name: 'Green' },
+        { Id: 6, Name: 'Red' },
+        { Id: 7, Name: 'YellowWhite' },
+        { Id: 8, Name: 'WhitePurple' },
+        { Id: 9, Name: 'PurpleGreen' },
+        { Id: 10, Name: 'GreenRed' },
+        { Id: 11, Name: 'RedBlue' },
+        { Id: 12, Name: 'BlueYellow' },
+        { Id: 13, Name: 'RedWhite' }
       ],
       JackpotTypeCfg: {
         1: '一等奖',

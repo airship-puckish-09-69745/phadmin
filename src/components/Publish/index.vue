@@ -553,11 +553,21 @@ export default {
       }
       console.log('publishBtn')
       getView(this.keyId, this.envEmpty).then(response => {
-        console.log('getView: ', this.keyId, this.envEmpty, response)
+        try {
+          console.log('getView: ', this.keyId, this.envEmpty)
+          console.log('response1：', response)
+        } catch (e) {
+          console.log('getView error:', e)
+          console.log('response2：', response)
+        }
         this.needReview = response.Data.NeedView
         this.isMy = response.Data.IsMy
         this.currentUser = response.Data.CurUser
-        this.preTime = $libDate.FormateSecondStr(response.Data.PreTime, 2)
+        if (response.Data.PreTime > 0) {
+          this.preTime = $libDate.FormateSecondStr(response.Data.PreTime, 2)
+        } else {
+          this.preTime = '-'
+        }
 
         this.opType = response.Data.Step
         const validType = [2, 3, 4, 5, 6]
@@ -571,6 +581,8 @@ export default {
         this.isTestBtn = false
         this.isToTest = false
         this.isProBtn = false
+
+        console.log('publishBtn end')
       }).catch(error => {
         console.log('getView error:', error)
       })
