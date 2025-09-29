@@ -2179,12 +2179,12 @@ export const asyncRoutes = [
         name: 'slotsRankConfig',
         meta: { title: '老虎机排行榜', noCache: true }
       },
-      // {
-      //   path: 'posterConfig',
-      //   component: () => import('@/views/config/tableConfig/activity/posterConfig.vue'),
-      //   name: 'posterConfig',
-      //   meta: { title: '引流海报', noCache: true }
-      // }
+      {
+        path: 'posterConfig',
+        component: () => import('@/views/config/tableConfig/activity/posterConfig.vue'),
+        name: 'posterConfig',
+        meta: { title: '引流海报', noCache: true }
+      }
     ]
   },
   {

@@ -810,7 +810,6 @@ export default {
       }
     },
     handleCheckChange(data, checked, indeterminate) {
-      console.log('handleCheckChange', data, checked, indeterminate)
       if (data.label === 'Slot' || data.label === 'Poker' || data.label === 'Casino') {
         return
       }
