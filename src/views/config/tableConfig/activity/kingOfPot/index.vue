@@ -427,6 +427,9 @@ export default {
       if (response.RetCode === 0) {
         const objs = response.Data || []
         for (const i in objs) {
+          if (objs[i].TableMoney === 0 || objs[i].Status !== 2) {
+            continue
+          }
           anteTables.push(objs[i].TableMoney / 1000)
         }
         anteTables = Array.from(new Set(anteTables)) // 去重
