@@ -570,8 +570,8 @@ export default {
           winTask.antesMin = parseInt(parseFloat(winTask.antesMin) * 1000)
         })
       }
-      copyItem.startTime /= 1000
-      copyItem.endTime /= 1000
+      copyItem.startTime = parseInt(copyItem.startTime / 1000)
+      copyItem.endTime = parseInt(copyItem.endTime / 1000)
       copyItem.dailyBonusLimit *= 1000
       copyItem.totalBonusLimit *= 1000
       copyItem.gameIds = JSON.stringify(copyItem.gameIds)
