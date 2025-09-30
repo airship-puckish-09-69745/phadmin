@@ -712,7 +712,7 @@ export default {
           this.edit.item.TaskItem[i].ConditionTarget /= 1000
         }
         for (let j = 0; j < this.edit.item.TaskItem[i].Reward.length; j++) {
-          if (this.edit.item.TaskItem[i].Reward[j].RewardType === 1) {
+          if (this.edit.item.TaskItem[i].Reward[j].RewardType === 1 || this.edit.item.TaskItem[i].Reward[j].RewardType === 4) {
             this.edit.item.TaskItem[i].Reward[j].Num /= 1000
           }
         }
@@ -896,7 +896,7 @@ export default {
           this.item.TaskConfig[index].TaskItem[i].ConditionTarget *= 1000
         }
         for (let j = 0; j < this.item.TaskConfig[index].TaskItem[i].Reward.length; j++) {
-          if (this.item.TaskConfig[index].TaskItem[i].Reward[j].RewardType === 1) {
+          if (this.item.TaskConfig[index].TaskItem[i].Reward[j].RewardType === 1 || this.item.TaskConfig[index].TaskItem[i].Reward[j].RewardType === 4) {
             this.item.TaskConfig[index].TaskItem[i].Reward[j].Num *= 1000
           } else {
             this.item.TaskConfig[index].TaskItem[i].Reward[j].Num = parseInt(this.item.TaskConfig[index].TaskItem[i].Reward[j].Num, 10)
