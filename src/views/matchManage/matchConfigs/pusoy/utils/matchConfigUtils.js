@@ -77,7 +77,7 @@ export function initLoopDetail() {
   const now = new Date()
   return {
     onceTime: [
-      $libDate.GetDayBegin(now.setSeconds(0)), 
+      $libDate.GetDayBegin(now.setSeconds(0)),
       $libDate.GetDayEnd(now.setSeconds(0))
     ],
     loopStartDate: $libDate.GetDayBegin(now.setSeconds(0)),
@@ -154,7 +154,7 @@ export function initSignExtra() {
  */
 export function initListExtra() {
   return {
-    tableSceneId: 0
+    tableSceneId: 100
   }
 }
 
@@ -167,7 +167,7 @@ export function formatTime(timestamp) {
   if (!timestamp || typeof timestamp !== 'number') {
     return ''
   }
-  
+
   try {
     const date = new Date(timestamp * 1000)
     return date.toLocaleString('zh-TW', {
@@ -193,7 +193,7 @@ export function getGameName(gameId, gameConfigs = []) {
   if (!gameId || !Array.isArray(gameConfigs)) {
     return '未知'
   }
-  
+
   const game = gameConfigs.find(item => item.value === gameId)
   return game ? game.label : '未知'
 }
@@ -208,7 +208,7 @@ export function getRepeatTypeShow(repeatType, repeatConfigs = []) {
   if (typeof repeatType !== 'number' || !Array.isArray(repeatConfigs)) {
     return '未知'
   }
-  
+
   const repeat = repeatConfigs.find(item => item.value === repeatType)
   return repeat ? repeat.label : '未知'
 }
@@ -248,15 +248,15 @@ export function deepClone(obj) {
   if (obj === null || typeof obj !== 'object') {
     return obj
   }
-  
+
   if (obj instanceof Date) {
     return new Date(obj.getTime())
   }
-  
+
   if (obj instanceof Array) {
     return obj.map(item => deepClone(item))
   }
-  
+
   if (typeof obj === 'object') {
     const clonedObj = {}
     for (const key in obj) {
@@ -266,7 +266,7 @@ export function deepClone(obj) {
     }
     return clonedObj
   }
-  
+
   return obj
 }
 

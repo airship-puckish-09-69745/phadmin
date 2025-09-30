@@ -1,15 +1,15 @@
 <template>
   <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
     <legend>奖励信息</legend>
-    
+
     <!-- 奖励模型选择 -->
     <el-form-item label="奖励模型：" :required="true">
       <el-radio v-for="item in prizeModleCfgs" :key="item.value" v-model="prizeExtra.awardType" :label="item.value" @change="handleAwardTypeChange">{{ item.label }}</el-radio>
     </el-form-item>
-    
+
     <!-- 添加名次奖励按钮 - 固定奖励和动态奖励模式都显示 -->
     <el-button style="margin-bottom: 10px;" type="normal" size="mini" @click="addRankReward">添加</el-button>
-    
+
     <!-- 奖励表格 - 固定奖励和动态奖励模式都显示 -->
     <el-table
       :data="rankRewards"
@@ -58,7 +58,7 @@
               </el-select>
               <el-input v-model.number="gItem.getNum" style="width: 80px;" size="mini" placeholder="请填写获得数量" @input="handleRewardNumChange(scope.$index, itemIndex, $event)" />
             </li>
-            
+
             <!-- 固定奖励模式 - 道具奖励 -->
             <li v-if="prizeExtra.awardType === 0 && scope.row.propsReward != null" style="list-style: none;">
               <span>道具奖励：</span>
@@ -75,13 +75,13 @@
               </el-select>
               <el-input v-model.number="scope.row.propsReward.propsNum" style="width: 100px;" size="mini" placeholder="填数量" @input="handlePropsNumChange(scope.$index, $event)" />
             </li>
-            
+
             <!-- 道具过期天数 - 固定奖励模式 -->
             <li v-if="prizeExtra.awardType === 0 && scope.row.propsReward != null && getPropsRewardItem(scope.row.propsReward.propsId, scope.row.propsReward.propsNum, scope.row.propsReward.propExpireDays).propsType === 2" style="list-style: none;">
               <span>过期天数：</span>
               <el-input v-model.number="scope.row.propsReward.propExpireDays" style="width: 100px;" size="mini" placeholder="填天数" @input="handlePropsExpireChange(scope.$index, $event)" />
             </li>
-            
+
             <!-- 动态奖励模式 - 道具奖励 -->
             <li v-if="prizeExtra.awardType === 1 && scope.row.propsReward != null" style="list-style: none;">
               <span>道具奖励：</span>
@@ -98,7 +98,7 @@
               </el-select>
               <el-input v-model.number="scope.row.propsReward.propsNum" style="width: 100px;" size="mini" placeholder="填数量" @input="handlePropsNumChange(scope.$index, $event)" />
             </li>
-            
+
             <!-- 道具过期天数 -->
             <li v-if="prizeExtra.awardType === 1 && scope.row.propsReward != null && getPropsRewardItem(scope.row.propsReward.propsId, scope.row.propsReward.propsNum, scope.row.propsReward.propExpireDays).propsType === 2" style="list-style: none;">
               <span>过期天数：</span>
@@ -125,7 +125,7 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <!-- 动态奖励配置 -->
     <el-form-item v-if="prizeExtra.awardType === 1" label="选择模板：" :required="true">
       <el-select v-model="prizeExtra.prizeTemplateId" placeholder="请选择" size="mini" @change="handlePrizeTemplateChange">
@@ -139,7 +139,7 @@
     </el-form-item>
 
     <el-form-item v-if="prizeExtra.awardType === 1" label="手续费率[百分比]：" :required="true">
-      <el-input v-model.number="prizeExtra.prizeRate" style="width: 200px;" size="mini" placeholder="请填写手续费率数值" @input="handlePrizeRateChange" />
+      <el-input v-model.number="prizeExtra.prizeRate" style="width: 200px;" size="mini" placeholder="请填写手续费率数值" @input="handlePrizeRateChange($event)" />
     </el-form-item>
 
     <el-form-item v-if="prizeExtra.awardType === 1" label="奖励类型" :required="true">
@@ -236,7 +236,7 @@ export default {
     handleEndRankChange(rankIndex, value) {
       this.$emit('end-rank-change', rankIndex, value)
     },
-    
+
     // 奖励模型相关事件处理
     handleAwardTypeChange(value) {
       // 先更新本地的 prizeExtra
@@ -244,19 +244,20 @@ export default {
       // 然后通知父组件进行数据重置
       this.$emit('award-type-change', value)
     },
-    
+
     handlePrizeTemplateChange(value) {
       this.$emit('prize-template-change', value)
     },
-    
+
     handlePrizeRateChange(value) {
-      this.$emit('prize-rate-change', value)
+      const num = Number(value)
+      this.$emit('prize-rate-change', isNaN(num) ? 0 : num)
     },
-    
+
     handleRewardTypeRadioChange(value) {
       this.$emit('reward-type-radio-change', value)
     },
-    
+
     // 获取道具奖励项信息
     getPropsRewardItem(propsId, propsNum, propExpireDays) {
       for (let i = 0; i < this.matchPropsCfgs.length; i++) {

@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-row :gutter="10" style="margin-top: 30px">
       <el-col :span="12" :offset="3">
-        <el-form ref="frm2" :model="cfg" label-width="200px">
+        <el-form ref="frm2" :model="cfg" label-width="260px">
 
           <el-form-item label="免费模式购买倍数" prop="BuyFreeOdds" :rules="dataRule(true,{type:'n'})">
             <el-input v-model.number="cfg.BuyFreeOdds" :required="true"/>
@@ -48,7 +48,7 @@
 
           <el-form-item label="SuperWild中单个wild的倍率">
             <el-input v-model="cfg.WildSingleOdds" placeholder="请输入内容,如100,100,100,100">
-              <template slot="append">与"SuperWild中单个wild的倍率权重"配置要对应</template>
+              <template slot="append">与"SuperWild中单个wild的倍率权重"配置要对应,且每个倍率不能超过10倍</template>
             </el-input>
           </el-form-item>
 

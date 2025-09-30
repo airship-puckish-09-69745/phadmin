@@ -3,7 +3,7 @@
     <el-row>
       <publish
         primary-key="matchCfgId"
-        key-id="MatchConfig"
+        key-id="MatchConfigPusoy"
         :env-empty="true"
         :attr-names="AttrNames"
         :make-content="makeContent"
@@ -49,6 +49,7 @@
       <!-- 编辑对话框 -->
       <EditDialog
         :edit-form="editForm"
+        :show-tip="showTip"
         :configs="configs"
         :attr-names="attrNames"
         :game-cfgs="configs.gameCfgs"
@@ -70,8 +71,6 @@
         :prize-modle-cfgs="configs.prizeModleCfgs"
         :prize-template-cfg="configs.prizeTemplateCfg"
         :item-day-type-options="configs.itemDayTypeOptions"
-        :match-pusoy-unique-id-cfg="configs.MATCH_PUSOY_UNIQUE_ID_CFG"
-        :match-pusoy-table-scene-id-cfg="configs.MATCH_PUSOY_TABLE_SCENE_ID_CFG"
         @save="handleSave"
         @close="handleCloseEdit"
         @app-id-change="handleAppIdChange"
@@ -135,8 +134,6 @@ import {
   REBUY_SIGN_UP_TYPE_CONFIGS,
   GET_TYPE_CONFIGS,
   WHITE_LIST_CONFIGS,
-  REBATE_SCENES_CONFIGS,
-  BET_SCENES_CONFIGS,
   PRIZE_MODEL_CONFIGS,
   PROPS_INFO_CONFIGS
 } from './utils/matchConfigConstants'
@@ -220,7 +217,8 @@ export default {
         repeatType: -1,
         appId: -1
       },
-
+      // 排序重复提示
+      showTip: false,
       // 编辑表单
       editForm: {
         visable: false,
@@ -248,8 +246,6 @@ export default {
         rebuySignUpTypeCfgs: REBUY_SIGN_UP_TYPE_CONFIGS,
         getTypeCfgs: GET_TYPE_CONFIGS,
         whileListCfgs: WHITE_LIST_CONFIGS,
-        rebateScenesCfgs: REBATE_SCENES_CONFIGS,
-        betScenesCfgs: BET_SCENES_CONFIGS,
         prizeModleCfgs: PRIZE_MODEL_CONFIGS,
         propsInfo: PROPS_INFO_CONFIGS,
 
@@ -263,20 +259,11 @@ export default {
         guideShowCfgs: [],
         matchListTagOptions: MATCH_LIST_TAG_OPTIONS,
         itemDayTypeOptions: [],
+        
 
-        // 比赛全局ID配置
-        MATCH_PUSOY_UNIQUE_ID_CFG: [
-          { value: 1, label: 'Pusoy 1' },
-          { value: 2, label: 'Pusoy 2' },
-          { value: 3, label: 'Pusoy 3' }
-        ],
-
-        // 比赛牌桌ID配置
-        MATCH_PUSOY_TABLE_SCENE_ID_CFG: [
-          { value: 1, label: '牌桌场景 1' },
-          { value: 2, label: '牌桌场景 2' },
-          { value: 3, label: '牌桌场景 3' }
-        ],
+        // 動態場景配置（通過 getAfterUpdatedSceneSelection 方法生成）
+        betScenesCfgs: [],
+        rebateScenesCfgs: [],
 
         // Map 配置
         endMinuteCfgs: new Map(),

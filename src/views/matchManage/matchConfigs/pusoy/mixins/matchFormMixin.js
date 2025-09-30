@@ -119,6 +119,8 @@ export const matchFormMixin = {
         } else if (this.editForm.data.gameId) {
           this.filterCsCfgsByGameId(this.editForm.data.gameId)
         }
+
+        
       } else {
         this.editForm.title = '添加比赛'
         this.editForm.isAdd = true
@@ -127,6 +129,9 @@ export const matchFormMixin = {
         // 获取当前赛制成长信息
         this.getCurrCsGrowInfo()
       }
+      // 调用动态配置方法，根据报名类型设置配置选项
+      this.getAfterTypeCfgOptions()
+      this.getAfterUpdatedSceneSelection()
       this.editForm.visable = true
     },
 
@@ -456,7 +461,7 @@ export const matchFormMixin = {
             return false
           }
         }
-        
+
         if (this.editForm.data.opentMatchType == 1) {
           const promotion_user_num = this.configs.reachOutNumCfgs.get(this.editForm.data.csId)
           if (this.editForm.data.opentMatchMember < promotion_user_num) {
@@ -464,7 +469,7 @@ export const matchFormMixin = {
             return false
           }
         }
-        
+
         if (this.editForm.data.opentMatchType == 1 && this.editForm.data.disappearType != 1) {
           Message.error('sng比赛必须开赛后消失')
           return false
@@ -479,11 +484,11 @@ export const matchFormMixin = {
       if (!this.reubyConfigCheck()) {
         return false
       }
-      
+
       return true
     },
 
-    
+
     /**
      * 修复道具信息
      */
@@ -501,7 +506,8 @@ export const matchFormMixin = {
       }
 
       // 修复报名和重买道具信息
-      const propsInfo = this.configs.propsInfo || this.configs.matchPropsCfgs || []
+      const propsInfo =  this.configs.matchPropsCfgs || []
+      console.log("propsInfo ,",this.configs.matchPropsCfgs)
       for (let i = 0; i < propsInfo.length; i++) {
         const prop = propsInfo[i]
 
@@ -841,7 +847,7 @@ export const matchFormMixin = {
      */
     isInBetScenes(scene) {
       for (let index = 0; index < this.configs.betScenesCfgs.length; index++) {
-        if (this.configs.betScenesCfgs[index].value == scene) {
+        if (this.configs.betScenesCfgs[index].value === scene) {
           return true
         }
       }
@@ -853,7 +859,7 @@ export const matchFormMixin = {
      */
     isInRebateScenes(scene) {
       for (let index = 0; index < this.configs.rebateScenesCfgs.length; index++) {
-        if (this.configs.rebateScenesCfgs[index].value == scene) {
+        if (this.configs.rebateScenesCfgs[index].value === scene) {
           return true
         }
       }

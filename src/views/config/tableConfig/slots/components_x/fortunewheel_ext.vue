@@ -30,9 +30,9 @@
             <el-input v-model="cfg.FreeOuterWheelFreeGameWeight" placeholder="请输入内容,如2,1"> <template slot="append">用 , 连接</template> </el-input>
           </el-form-item>
 
-          <el-form-item label="转盘外圈布局">
+<!--           <el-form-item label="转盘外圈布局">
             <el-input v-model="cfg.OuterWheelFreeGameLayout" placeholder="请输入内容,如2,1"> <template slot="append">用 , 连接 (支持百位数区分类型)</template> </el-input>
-          </el-form-item>
+          </el-form-item> -->
 
 
           <el-divider > 外层转盘配置(不含Free Game) </el-divider>
@@ -49,9 +49,9 @@
             <el-input v-model="cfg.FreeOuterWheelWeight" placeholder="请输入内容,如2,1"> <template slot="append">用 , 连接</template> </el-input>
           </el-form-item>
 
-          <el-form-item label="转盘外圈布局">
+<!--           <el-form-item label="转盘外圈布局">
             <el-input v-model="cfg.OuterWheelLayout" placeholder="请输入内容,如2,1"> <template slot="append">用 , 连接 (支持百位数区分类型)</template> </el-input>
-          </el-form-item>
+          </el-form-item> -->
 
           <el-divider > 内层转盘配置 </el-divider>
 
@@ -67,9 +67,9 @@
             <el-input v-model="cfg.FreeInnerWheelWeight" placeholder="请输入内容,如2,1"> <template slot="append">用 , 连接</template> </el-input>
           </el-form-item>
 
-          <el-form-item label="转盘内圈布局">
+<!--           <el-form-item label="转盘内圈布局">
             <el-input v-model.number="cfg.InnerWheelLayout"><template slot="append">用 , 连接</template></el-input>
-          </el-form-item>
+          </el-form-item> -->
 
         </el-form>
       </el-col>

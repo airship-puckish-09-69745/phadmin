@@ -20,7 +20,7 @@ export const matchDataMixin = {
         if (this.loading) {
           return
         }
-        
+
         this.loading = true
         const response = await request({
           url: 'matchconfig/match/config/list',
@@ -36,7 +36,7 @@ export const matchDataMixin = {
             PageSize: this.limit
           }
         })
-        
+
         if (response.RetCode === 0) {
           const objs = response.Data || []
           if (objs.total > 0) {
@@ -44,7 +44,7 @@ export const matchDataMixin = {
             this.tableData = []
             const tableDataCpy = objs.list
             if (tableDataCpy.length > 0) {
-              for (let i = 0; i < tableDataCpy.length; i++) {  
+              for (let i = 0; i < tableDataCpy.length; i++) {
                 // 处理APP信息显示
                 let show_appinfo = this.filterMatchListByAppId(tableDataCpy[i].app_info_cfg)
                 if (show_appinfo !== '') {
@@ -101,10 +101,11 @@ export const matchDataMixin = {
           method: 'get',
           data: {
             Env: env,
-            Path: '/match/rule/list'
+            Path: '/match/rule/list',
+            Gid:2033,
           }
         })
-        
+
         if (response.RetCode === 0) {
           const data = response.Data || {}
           this.configs.csIdCfg = data.list || []
@@ -130,7 +131,7 @@ export const matchDataMixin = {
             GameId: MATCH_IUPSTREAM_TYPE_OPTIONS.MATCH_UPSTREAM_TYPE_PUSOY,
           }
         })
-        
+
         if (response.RetCode === 0) {
           const data = response.Data || {}
           if (data.total > 0) {
@@ -146,18 +147,18 @@ export const matchDataMixin = {
               if (item.self_build > 0) {
                 continue
               }
-              
+
               this.configs.csCfgs.push({
                 label: `[${item.id}]${item.name}`,
                 value: item.id,
                 gameId: [gameId],
                 ruleType: item.rule_type
               })
-              
+
               // 处理阶段详情
               const stageDetail = JSON.parse(item.stage_detail || '[]')
               this.processStageDetail(item.id, stageDetail)
-              
+
               // 处理规则额外信息
               const csExtra = JSON.parse(item.rule_extra || '{}')
               if (csExtra) {
@@ -177,12 +178,12 @@ export const matchDataMixin = {
     async getPrizeTemplateCfg(env) {
       try {
         const url = IsMars() ? '/matchprizeconfig/match/prize/list' : '/dataProxy/info'
-        const data = IsMars() 
+        const data = IsMars()
           ? { Env: env }
           : { Env: env, Path: '/match/prize/template' }
-        
+
         const response = await request({ url, method: 'get', data })
-        
+
         if (response.RetCode === 0) {
           const result = response.Data || {}
           if (result.total > 0) {
@@ -211,7 +212,7 @@ export const matchDataMixin = {
             PropType: 0
           }
         })
-        
+
         if (response.RetCode === 0) {
           const data = response.Data || {}
           if (data.total > 0) {
@@ -224,19 +225,19 @@ export const matchDataMixin = {
               propsCost: '',
               propsShowName: ''
             }]
-            
+
             this.configs.matchTicketsCfgs = []
             const timestamp = Date.now() / 1000
             const propsTypeList = [PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET, PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME]
-            
+
             for (const item of data.list) {
               if (propsTypeList.includes(item.item_type)) {
-                if (item.status === 1 && 
+                if (item.status === 1 &&
                     ((item.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET && item.expire_time > timestamp) ||
                      item.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME)) {
-                  
+
                   const showName = item.show_name ? `${item.item_name}(${item.show_name})` : item.item_name
-                  
+
                   this.configs.matchPropsCfgs.push({
                     propsType: item.item_type,
                     propsId: item.id,
@@ -246,7 +247,7 @@ export const matchDataMixin = {
                     propsCost: item.item_cost,
                     propsShowName: showName
                   })
-                  
+
                   if (item.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET) {
                     this.configs.matchTicketsCfgs.push({
                       label: showName,
@@ -272,7 +273,7 @@ export const matchDataMixin = {
         this.configs.guideCfgs = [
           { label: '无', value: 0, appId: 0 }
         ]
-        
+
         for (const item of data) {
           this.configs.guideCfgs.push({
             label: item.scheme_title,
@@ -291,12 +292,12 @@ export const matchDataMixin = {
     filterMatchListByAppId(appInfo) {
       // 在这里实现APPID过滤
       let show_appinfo = ''
-      
+
       // 检查 appInfo 是否有效
       if (!appInfo || appInfo === '无' || appInfo === '') {
         return ''
       }
-      
+
       try {
         const appInfoTemp = JSON.parse(appInfo)
         for (let i = 0; i < appInfoTemp.length; i++) {
@@ -314,7 +315,7 @@ export const matchDataMixin = {
       } catch (e) {
         return ''
       }
-      
+
       return show_appinfo
     },
 

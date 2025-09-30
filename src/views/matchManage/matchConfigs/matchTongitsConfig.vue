@@ -315,7 +315,7 @@
             <span v-show="showTip" style="color:red; margin-left:10px">注意有相同的排序值</span>
             <el-tooltip class="item" effect="light" placement="right-start">
               <template #content>
-                <div>排序相同，时间相同则会同时展示。排序相同时间不同则大于30分钟的会展示</div>
+                <div>排序相同，赛制id相同,时间相同则会同时展示。排序相同和赛制ID相同,时间不同则大于30分钟的会展示</div>
                 <div>否则会在当前之后按顺序展示</div>
               </template>
               <i class="el-icon-info" />
@@ -837,7 +837,12 @@
           <legend>OB线下赛入座 </legend>
           <el-form-item label="比赛玩家id列表：" :required="true">
             <div>
-              <el-input v-model="editForm.uidObList" style="width: 400px;" placeholder="多个uid用,分开" />
+              <el-input
+                v-model="editForm.uidObList"
+                style="width: 400px;"
+                placeholder="多个uid用,分开，例如：123456,789012,345678"
+                @blur="handleUidInputChange(editForm.uidObList, 'uidObList')"
+              />
             </div>
           </el-form-item>
         </fieldset>
@@ -861,7 +866,7 @@ import { $libDate, $libShow } from '@/utils/common'
 import AppInfo from '../../devTools/appInfo.vue'
 import { log } from 'console'
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
-import { getAllCommonGameConfig, getAllMatchGuidesConfig } from '@/utils/common-game-config'
+import { getAllCommonGameConfig, getAllMatchGuidesConfig,validateUidInput, handleUidInputChange, setNestedProperty } from '@/utils/common-game-config'
 import { IsMars } from '@/utils/env'
 import {
   CHANNEL_OPTIONS,
@@ -1947,10 +1952,10 @@ export default {
       return flag
     },
     async saveMatch() {
-      //SNG 不考虑提前进入时间
-      // if(this.editForm.data.opentMatchType == 1) {
-      //   this.editForm.data.preEnterSeconds = this.editForm.data.preShowSeconds
-      // }
+      //非ob SNG 不考虑提前进入时间
+      if(IsMars() && this.editForm.data.opentMatchType === 1) {
+        this.editForm.data.preEnterSeconds = this.editForm.data.preShowSeconds
+      }
       if (!await this.configCheck()) {
         return
       }
@@ -2467,7 +2472,17 @@ export default {
       if (!this.reubyConfigCheck()) {
         return false
       }
+
       if (this.envProjectName === 'ph_audit') {
+        // 验证比赛玩家ID列表
+        if (this.editForm.uidObList && this.editForm.uidObList.length > 0) {
+          const uidObValidation = validateUidInput(this.editForm.uidObList)
+          if (!uidObValidation.valid) {
+            this.errmsg('ob列表UID错误：' + uidObValidation.message)
+            return false
+          }
+        }
+
         if (this.editForm.uidObList.length > 0) {
           const uidObList = this.editForm.uidObList.split(',')
           let minNum = Math.round(uidObList.length - this.editForm.data.opentMatchMember)
@@ -2994,7 +3009,8 @@ export default {
           method: 'get',
           data: {
             Env: this.env,
-            Path: '/match/rule/list'
+            Path: '/match/rule/list',
+            Gid:2031,
           }
         })
         if (response.RetCode === 0) {
@@ -3088,7 +3104,21 @@ export default {
         }
       }
       return false
-    }
+    },
+    //处理UID输入变化
+    handleUidInputChange(input, fieldPath) {
+      const result = handleUidInputChange(input)
+      if (!result.success) {
+        this.$message.error(result.message)
+        return false
+      }
+      //如果验证通过,格式化输入
+      this.$nextTick(() => {
+        setNestedProperty(this.editForm, fieldPath, result.formattedInput)
+      })
+
+      return true
+    },
   }
 }
 </script>

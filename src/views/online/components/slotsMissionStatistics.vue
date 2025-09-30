@@ -9,7 +9,7 @@
           placeholder="选择日期"
         />
         <el-select v-model="queryGid" size="mini" filterable default-first-option @change="queryKeyInput">
-          <el-option v-for="(o,k) in gidOptions" :key="k" :label="getGameName(o)" :value="parseInt(o)" />
+          <el-option v-for="row in gameOptions" :key="row.key" :label="row.label" :value="row.key" />
         </el-select>
         <el-button type="primary" size="mini" @click="getSlotsMissionStatistics">查询</el-button>
       </el-col>
@@ -283,7 +283,6 @@ export default {
       queryGid: 80,
       queryTime: new Date().getTime(),
       gameOptions: [],
-      gidOptions: {},
       loading: false
     }
   },
@@ -304,16 +303,23 @@ export default {
         data: {}
       }).then(response => {
         if (response.RetCode === 0) {
+          let gameOptionsArr = []
           for (let i = 0; i < response.Data.length; i++) {
-            if (response.Data[i].Gid < 50 || response.Data[i].Gid > 100 && response.Data[i].Gid < 150 || response.Data[i].Gid > 499) {
+            if (response.Data[i].CategoryID != 1) {
               continue
             }
-            this.gameOptions.push({
+            gameOptionsArr.push({
               key: response.Data[i].Gid,
               label: response.Data[i].Name
             })
-            this.gidOptions[response.Data[i].Gid] = response.Data[i].Gid
           }
+
+          // 按label排序
+          gameOptionsArr.sort((a, b) => {
+            return a.label.localeCompare(b.label)
+          })
+
+          this.gameOptions = gameOptionsArr
         }
       })
     },

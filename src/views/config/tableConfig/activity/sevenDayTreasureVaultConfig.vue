@@ -1,96 +1,119 @@
 <template>
   <el-col class="app-container">
     <el-row>
+      <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" />
+    </el-row>
+
+    <el-row>
       <br>
       <el-tabs type="border-card">
         <el-tab-pane label="7日留存活动配置">
-          <el-row :gutter="5">
-            <el-col :span="16">
-              <el-form ref="item" label-width="220px">
-                <el-col :span="12">
-                  <el-form-item label="活动开关：" :rules="dataRule(true,{type:'n',range:'0'})">
-                    <el-switch v-model="item.IsOpen" :active-value="true" :inactive-value="false" />
-                  </el-form-item>
-                </el-col>
-                <el-col>
-                  <el-form-item label="活动开始时间：">
-                    <el-date-picker v-model="item.Activity.StartTime" type="datetime" placeholder="选择开始时间" value-format="timestamp" size="mini" />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="活动结束时间：">
-                    <el-date-picker v-model="item.Activity.EndTime" type="datetime" placeholder="选择结束时间" value-format="timestamp" size="mini" />
-                  </el-form-item>
-                </el-col>
-                <el-col>
-                  <el-form-item label="奖池初始值：" :required="true">
-                    <el-input v-model="item.ActivityExtend.InitBonusPool" style="width: 200px;" placeholder="请输入参数" />
-                  </el-form-item>
-                </el-col>
-                <el-col>
-                  <el-form-item label="奖池最大值：" :required="true">
-                    <el-input v-model="item.ActivityExtend.BonusPoolMax" style="width: 200px;" placeholder="请输入参数" />
-                  </el-form-item>
-                </el-col>
-                <el-col>
-                  <el-form-item label="抽水比例：" :required="true">
-                    <el-input
-                      v-model="item.ActivityExtend.FreeRate"
-                      style="width: 200px;"
-                      placeholder="请输入参数"
-                      suffix-icon="‰"
-                    />
-                  </el-form-item>
-                </el-col>
-                <el-col>
-                  <el-form-item label="玩家占奖池最大比例：" :required="true">
-                    <el-input
-                      v-model="item.ActivityExtend.UserMaxRate"
-                      style="width: 200px;"
-                      placeholder="请输入参数"
-                      suffix-icon="‰"
-                    />
-                  </el-form-item>
-                </el-col>
-                <el-col>
-                  <el-form-item label="星星解锁数量：" :required="true">
-                    <el-input v-model="item.ActivityExtend.StarUnlockCount" style="width: 200px;" placeholder="请输入参数" />
-                  </el-form-item>
-                </el-col>
-                <el-col>
-                  <el-form-item label="发奖持续天数：" :required="true">
-                    <el-input v-model="item.ActivityExtend.GrantKeepDay" style="width: 200px;" placeholder="请输入参数" />
-                  </el-form-item>
-                </el-col>
+          <!-- 整体使用一个 el-row 来包含左右两列 -->
+          <el-row :gutter="20"> <!-- 增加 gutter 保持左右间距 -->
+            <!-- 左侧表单项，占据 12 份宽度 -->
+            <el-col :span="12">
+              <el-form ref="item" :model="item" label-width="180px"> <!-- 调整 label-width 以适应两列布局 -->
+                <el-form-item label="活动开关：" :rules="dataRule(true,{type:'n',range:'0'})">
+                  <el-switch v-model="item.IsOpen" :active-value="true" :inactive-value="false" />
+                </el-form-item>
+                <el-form-item label="活动开始时间：">
+                  <el-date-picker v-model="item.Activity.StartTime" type="datetime" placeholder="选择开始时间" value-format="timestamp" size="mini" style="width: 100%;" />
+                </el-form-item>
+                <el-form-item label="活动结束时间：">
+                  <el-date-picker v-model="item.Activity.EndTime" type="datetime" placeholder="选择结束时间" value-format="timestamp" size="mini" style="width: 100%;" />
+                </el-form-item>
+                <el-form-item label="奖池初始值：" :required="true">
+                  <el-input v-model="item.ActivityExtend.InitBonusPool" placeholder="请输入参数" />
+                </el-form-item>
+                <el-form-item label="奖池最大值：" :required="true">
+                  <el-input v-model="item.ActivityExtend.BonusPoolMax" placeholder="请输入参数" />
+                </el-form-item>
+                <el-form-item label="增加奖池比例(‰)：" :required="true">
+                  <el-input
+                    v-model.number="item.ActivityExtend.FreeRate"
+                    placeholder="请输入参数"
+                    suffix-icon="‰"
+                  />
+                </el-form-item>
+                <el-form-item label="玩家占奖池最大比例(‰)：" :required="true">
+                  <el-input
+                    v-model.number="item.ActivityExtend.UserMaxRate"
+                    placeholder="请输入参数"
+                    suffix-icon="‰"
+                  />
+                </el-form-item>
+                <el-form-item label="星星解锁数量：" :required="true">
+                  <el-input v-model.number="item.ActivityExtend.StarUnlockCount" placeholder="请输入参数" />
+                </el-form-item>
+                <el-form-item label="发奖持续天数：" :required="true">
+                  <el-input v-model.number="item.ActivityExtend.GrantKeepDay" placeholder="请输入参数" />
+                </el-form-item>
+
+                <!-- 规则图片横板/竖版也放在左侧，或者根据需要调整 -->
+                <el-form-item label="规则图片横板：" :required="true">
+                  <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                    <span v-for="(v,k) in item.Activity.RuleImgHor" :key="'hor-'+k" style="display: inline-block; position: relative;">
+                      <span style="position: absolute; top: -15px; right: 1px; cursor: pointer; z-index: 99; color: red;" @click="removeRuleImage(k, 'Hor')">移除</span>
+                      <ImagePicker v-model="item.Activity.RuleImgHor[k]" />
+                    </span>
+                    <el-button @click="addRuleImage('Hor')">添加</el-button>
+                  </div>
+                </el-form-item>
+                <el-form-item label="规则图片竖版：" :required="true">
+                  <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                    <span v-for="(v,k) in item.Activity.RuleImgVer" :key="'ver-'+k" style="display: inline-block; position: relative;">
+                      <span style="position: absolute; top: -15px; right: 1px; cursor: pointer; z-index: 99; color: red;" @click="removeRuleImage(k, 'Vor')">移除</span>
+                      <ImagePicker v-model="item.Activity.RuleImgVer[k]" />
+                    </span>
+                    <el-button @click="addRuleImage('Vor')">添加</el-button>
+                  </div>
+                </el-form-item>
               </el-form>
             </el-col>
-          </el-row>
-          <el-row :gutter="5">
-            <el-form label-width="220px">
-              <el-col :span="12">
-                <el-form-item label="勾选支持的游戏：" :required="true">
-                  <el-input
-                    v-model="filterText"
-                    placeholder="输入关键字进行过滤"
-                  />
-                  <el-tree
-                    ref="tree"
-                    :data="treeData"
-                    show-checkbox
-                    node-key="id"
-                    highlight-current
-                    :props="defaultProps"
-                    :filter-node-method="filterNode"
-                    @check-change="handleCheckChange"
-                  />
-                </el-form-item>
-                <el-form-item label="给选中游戏排序：" :required="true">
-                  <el-button size="mini" type="primary" @click="showGamesSortDialog()">
-                    排序
-                  </el-button>
-                </el-form-item>
-              </el-col>
-            </el-form>
+
+            <el-col :span="12">
+              <fieldset style="margin-top: 0">
+                <legend>游戏入口配置</legend>
+                <el-button type="primary" size="mini" @click="addGameIcon()">添加配置</el-button>
+                <el-button type="success" size="mini" @click="showGamesSortDialog()">排序</el-button>
+                <el-row :gutter="5" style="margin-top: 10px;">
+                  <el-col>
+                    <el-table
+                      :data="item.GameIcon"
+                      border
+                      style="width: 100%"
+                      :cell-style="libShow.DefaultTableCell"
+                    >
+                      <el-table-column prop="Id" label="游戏" width="250"> <!-- 调整列宽 -->
+                        <template slot-scope="scope">
+                          <el-cascader
+                            v-model="scope.row.Id"
+                            :options="treeData"
+                            :props="{ value: 'id', label: 'label', children: 'children', emitPath: false }"
+                            clearable
+                            size="mini"
+                            placeholder="请选择游戏"
+                            style="width: 100%;"
+                          />
+                        </template>
+                      </el-table-column>
+                      <el-table-column prop="Img" label="图片" width="250"> <!-- 调整列宽 -->
+                        <template slot-scope="scope">
+                          <div style="text-align: center;">
+                            <ImagePicker v-model="scope.row.Img" size="mini" />
+                          </div>
+                        </template>
+                      </el-table-column>
+                      <el-table-column label="操作" column-key="op" width="80"> <!-- 调整列宽 -->
+                        <template slot-scope="scope">
+                          <el-button size="mini" icon="el-icon-delete" @click="removeGameIcon(scope.$index)" />
+                        </template>
+                      </el-table-column>
+                    </el-table>
+                  </el-col>
+                </el-row>
+              </fieldset>
+            </el-col>
           </el-row>
         </el-tab-pane>
 
@@ -133,6 +156,46 @@
                     size="mini"
                     type="warning"
                     @click="handleDelete(scope.row)"
+                  >删除
+                  </el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-form>
+        </el-tab-pane>
+
+        <el-tab-pane label="宝箱配置">
+          <el-button size="mini" type="primary" icon="el-icon-plus" @click="handleCreateBonusIcon()">
+            添加配置
+          </el-button>
+
+          <el-form ref="BonusIcon" v-model="item.BonusIcon" label-width="150px" style="margin-top: 10px">
+            <el-table
+              :data="item.BonusIcon"
+              border
+              style="width: 100%"
+              :cell-style="libShow.DefaultTableCell"
+            >
+              <el-table-column prop="Img" label="宝箱图片" width="200">
+                <template slot-scope="scope">
+                  <ImagePicker v-model="scope.row.Img" />
+                </template>
+              </el-table-column>
+              <el-table-column prop="StarCount" label="星星数量" width="200">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.StarCount" size="mini" />
+                </template>
+              </el-table-column>
+              <el-table-column
+                label="操作"
+                column-key="op"
+                width="250"
+              >
+                <template slot-scope="scope">
+                  <el-button
+                    size="mini"
+                    type="warning"
+                    @click="handleDeleteBonusIcon(scope.$index)"
                   >删除
                   </el-button>
                 </template>
@@ -306,14 +369,14 @@
                   <!-- 数量输入 -->
                   <el-table-column prop="Num" label="数量">
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.Num" size="mini" />
+                      <el-input v-model="scope.row.Num" size="mini" />
                     </template>
                   </el-table-column>
 
                   <!-- 图片输入 -->
-                  <el-table-column prop="Img" label="图片">
+                  <el-table-column prop="Img" label="图片" width="120">
                     <template slot-scope="scope">
-                      <el-input v-model="scope.row.Img" size="mini" />
+                      <ImagePicker v-model="scope.row.Img" />
                     </template>
                   </el-table-column>
 
@@ -452,10 +515,15 @@ export default {
           Whitelist: {
             AppIdList: [],
             SiteIdList: []
-          }
+          },
+          GameIdList: [],
+          RuleImgHor: [],
+          RuleImgVer: []
         },
         ActivityExtend: {},
-        TaskConfig: []
+        TaskConfig: [],
+        BonusIcon: [],
+        GameIcon: []
       },
       GamesSorted: [
         {
@@ -546,14 +614,6 @@ export default {
       ITEM_DAY_TYPE_OPTIONS
     }
   },
-  watch: {
-    filterText(val) {
-      this.$refs.tree.filter(val)
-    },
-    gameIdCfg(val) {
-
-    }
-  },
   created() {
     this.getData()
     this.env = store.getters.env || this.env
@@ -582,18 +642,46 @@ export default {
       this.edit.item.TaskItem = []
     },
     showGamesSortDialog() {
+      if (!this.item.GameIcon || this.item.GameIcon.length === 0) {
+        this.$message.warning('没有可排序的游戏配置')
+        return
+      }
+
+      // 映射 GameIcon 生成 GamesSorted
+      this.GamesSorted = this.item.GameIcon.map((g, index) => {
+        // 通过 treeData 查找游戏名
+        const gameName = this.findGameNameById(g.Id)
+        return {
+          GameId: g.Id,
+          Name: gameName,
+          OrderNo: index + 1 // 初始用顺序号
+        }
+      })
       this.edit.gamesSortDialogVisible = true
+    },
+    findGameNameById(id) {
+      let name = ''
+      function dfs(list) {
+        for (let i = 0; i < list.length; i++) {
+          const node = list[i]
+          if (node.id === id) {
+            name = node.label
+            return
+          }
+          if (node.children && node.children.length > 0) {
+            dfs(node.children)
+          }
+        }
+      }
+      dfs(this.treeData)
+      return name || `ID: ${id}`
     },
     saveGamesSort() {
       this.edit.gamesSortDialogVisible = false
-      // 根据排序编号重新排序
-      this.GamesSorted.sort((a, b) => {
-        return a.OrderNo - b.OrderNo
-      })
-      // 保存排序
-      this.item.Activity.GameIdList = []
-      this.GamesSorted.forEach(item => {
-        this.item.Activity.GameIdList.push(item.GameId)
+      // 根据排序后的 GamesSorted 重新排列 GameIcon
+      const sortedIds = this.GamesSorted.map(g => g.GameId)
+      this.item.GameIcon.sort((a, b) => {
+        return sortedIds.indexOf(a.Id) - sortedIds.indexOf(b.Id)
       })
     },
     onOrderNoChange() {
@@ -602,6 +690,7 @@ export default {
       })
     },
     handleEdit(ob) {
+      this.edit.isEdit = true
       this.edit.item = JSON.parse(JSON.stringify(ob))
       for (let i = 0; i < this.edit.item.TaskItem.length; i++) {
         if (this.edit.item.TaskItem[i].ConditionType === 2) {
@@ -617,51 +706,12 @@ export default {
     },
     handleDelete(ob) {
       const $this = this
-      this.$confirm('是否确认删除此奖池配置?', '提示', { type: 'warning' }).then(() => {
+      this.$confirm('是否确认删除此配置?', '提示', { type: 'warning' }).then(() => {
         const delIndex = $this.item.TaskConfig.findIndex(item => item.TaskID === ob.TaskID)
         this.item.TaskConfig.splice(delIndex, 1)
       }).catch(() => {
         console.log('取消')
       })
-    },
-    addWhite() {
-      if (this.item.CurId === '' || this.item.CurId === null) {
-        return
-      }
-      const numbers = this.item.CurId.split(',').filter(num => !isNaN(num))
-      const insertList = []
-      for (let i = 0; i < numbers.length; i++) {
-        if (isNaN(numbers[i])) {
-          continue
-        }
-        const num = parseInt(numbers[i], 10)
-        if (isNaN(num)) {
-          continue
-        }
-        var bExit = false
-        for (let j = 0; j < this.item.WhitelistCfg.UidList.length; j++) {
-          if (this.item.WhitelistCfg.UidList[j].uid === num) {
-            bExit = true
-            break
-          }
-        }
-
-        if (!bExit) {
-          insertList.push(num)
-        }
-      }
-      let isShow = false
-      for (let i = 0; i < insertList.length; i++) {
-        this.item.WhitelistCfg.UidList.push({
-          'uid': insertList[i]
-        })
-        isShow = true
-      }
-      if (isShow) {
-        const showMsg = '白名单添加成功'
-        Message.success(showMsg)
-      }
-      console.log(this.item.WhitelistCfg.UidList)
     },
     delRow(row) {
       const newList = []
@@ -672,13 +722,6 @@ export default {
         newList.push(this.item.WhitelistCfg.UidList[key])
       }
       this.item.WhitelistCfg.UidList = newList
-    },
-    getWhiteList() {
-      const whiteList = []
-      for (const key in this.item.WhitelistCfg.UidList) {
-        whiteList.push(this.item.WhitelistCfg.UidList[key].uid)
-      }
-      return whiteList
     },
     getData() {
       const $this = this
@@ -707,10 +750,14 @@ export default {
     saveData() {
       // 设置修改后数据
       var tableData = JSON.parse(JSON.stringify(this.item))
-      tableData.StartTime /= 1000
-      tableData.EndTime /= 1000
+      tableData.Activity.StartTime /= 1000
+      tableData.Activity.EndTime /= 1000
       tableData.ActivityExtend.InitBonusPool *= 1000
       tableData.ActivityExtend.BonusPoolMax *= 1000
+      tableData.Activity.GameIdList = []
+      for (const key in tableData.GameIcon) {
+        tableData.Activity.GameIdList.push(tableData.GameIcon[key].Id)
+      }
       this.$refs.compare.SetNewVal(tableData)
       this.$refs.compare.Compare(function(isEdit) {
         if (!isEdit) {
@@ -741,46 +788,6 @@ export default {
       setTimeout(() => {
         this.IsUpdate = false
       }, 1000)
-    },
-    updateGamesSorted() {
-      this.GamesSorted = []
-      if (this.item.Activity.GameIdList && this.item.Activity.GameIdList.length) {
-        for (let i = 0; i < this.item.Activity.GameIdList.length; i++) {
-          const gameId = this.item.Activity.GameIdList[i]
-          let name = ''
-          for (let j = 0; j < this.treeData.length; j++) {
-            const cty = this.treeData[j]
-            for (let k = 0; k < cty.children.length; k++) {
-              const game = cty.children[k]
-              if (game.id === gameId) {
-                name = game.label
-                break
-              }
-            }
-          }
-          this.GamesSorted.push({ GameId: gameId, Name: name, OrderNo: i + 1 })
-        }
-      }
-    },
-    handleCheckChange(data, checked, indeterminate) {
-      console.log('handleCheckChange', data, checked, indeterminate)
-      if (data.label === 'Slot' || data.label === 'Poker' || data.label === 'Casino') {
-        return
-      }
-
-      const index = this.item.Activity.GameIdList.indexOf(data.id)
-      if (checked) {
-        if (index < 0) {
-          this.item.Activity.GameIdList.push(data.id)
-        }
-      } else {
-        if (index >= 0) {
-          this.item.Activity.GameIdList.splice(index, 1)
-        }
-      }
-
-      // 更新选中游戏的排序
-      this.updateGamesSorted()
     },
     onAppIdOptionsChange() {
       console.log('onAppIdOptionsChange', this.item.Activity.Whitelist.AppIdList)
@@ -825,10 +832,6 @@ export default {
             }
             this.treeData.push(cty)
           }
-
-          // 更新选中游戏的排序
-          this.updateGamesSorted()
-          this.$refs.tree.setCheckedKeys(this.item.GameIdCfg)
         }
       })
     },
@@ -862,13 +865,8 @@ export default {
     saveTask() {
       let index = 0
       if (this.edit.isEdit) {
-        for (let i = 0; i < this.item.TaskConfig.length; i++) {
-          if (this.item.TaskConfig[i].TaskID === this.edit.item.TaskID) {
-            this.item.TaskConfig[i] = JSON.parse(JSON.stringify(this.edit.item))
-            index = i
-            break
-          }
-        }
+        index = this.item.TaskConfig.findIndex(item => item.TaskID === this.edit.item.TaskID)
+        this.$set(this.item.TaskConfig, index, JSON.parse(JSON.stringify(this.edit.item)))
       } else {
         const foundItem = this.item.TaskConfig.find(item => item.TaskID === this.edit.item.TaskID)
         if (foundItem) {
@@ -885,6 +883,8 @@ export default {
         for (let j = 0; j < this.item.TaskConfig[index].TaskItem[i].Reward.length; j++) {
           if (this.item.TaskConfig[index].TaskItem[i].Reward[j].RewardType === 1) {
             this.item.TaskConfig[index].TaskItem[i].Reward[j].Num *= 1000
+          } else {
+            this.item.TaskConfig[index].TaskItem[i].Reward[j].Num = parseInt(this.item.TaskConfig[index].TaskItem[i].Reward[j].Num, 10)
           }
         }
       }
@@ -992,6 +992,54 @@ export default {
         }
         return ''
       }
+    },
+    handleCreateBonusIcon() {
+      this.item.BonusIcon.push({
+        Img: '',
+        StarCount: 0
+      })
+    },
+    handleDeleteBonusIcon(index) {
+      this.$confirm('是否确认删除此配置?', '提示', { type: 'warning' }).then(() => {
+        this.item.BonusIcon.splice(index, 1)
+      }).catch(() => {
+        console.log('取消')
+      })
+    },
+    addRuleImage(type) {
+      if (type === 'Hor') {
+        if (this.item.Activity.RuleImgHor) {
+          this.item.Activity.RuleImgHor.push('')
+        } else {
+          this.$set(this.item.Activity, 'RuleImgHor', [''])
+        }
+      } else if (type === 'Vor') {
+        if (this.item.Activity.RuleImgVer) {
+          this.item.Activity.RuleImgVer.push('')
+        } else {
+          this.$set(this.item.Activity, 'RuleImgVer', [''])
+        }
+      }
+    },
+    removeRuleImage(index, type) {
+      if (type === 'Hor') {
+        this.item.Activity.RuleImgHor.splice(index, 1)
+      } else if (type === 'Vor') {
+        this.item.Activity.RuleImgVer.splice(index, 1)
+      }
+    },
+    addGameIcon() {
+      const item = {
+        Id: 0,
+        Img: ''
+      }
+      if (!this.item.GameIcon) {
+        this.$set(this.item, 'GameIcon', [])
+      }
+      this.item.GameIcon.push(item)
+    },
+    removeGameIcon(index) {
+      this.item.GameIcon.splice(index, 1)
     }
   }
 }

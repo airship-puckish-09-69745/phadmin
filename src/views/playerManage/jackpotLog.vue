@@ -493,6 +493,7 @@ export default {
         { 'value': 210, 'label': 'LuckySpirits' },
         { 'value': 216, 'label': 'Phoenix' },
         { 'value': 134, 'label': 'Pusoy JP' },
+        { 'value': 135, 'label': 'SUPER COLOR' },
       ],
       appConfig: [
         { 'value': 0, 'label': '全部' },
@@ -562,7 +563,7 @@ export default {
       prizeForm: {
         ChangeNum: 0,
         ChangeRobotNum: 0,
-        
+
         GrandChangeNum: 0,
         MajorChangeNum: 0,
         GrandChangeRobotNum: 0,
@@ -915,7 +916,7 @@ export default {
             type: 'success'
           })
         } else {
-          this.$message.error('操作失败')            
+          this.$message.error('操作失败')
         }
       })
     },
@@ -963,7 +964,7 @@ export default {
           this.prizeForm.GrandChangeRobotNum = 0
           this.prizeForm.MajorChangeRobotNum = 0
         } else {
-          this.$message.error('操作失败')            
+          this.$message.error('操作失败')
         }
       })
     },

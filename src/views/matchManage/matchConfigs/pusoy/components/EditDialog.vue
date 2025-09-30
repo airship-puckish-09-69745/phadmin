@@ -73,7 +73,8 @@
           <span v-show="showTip" style="color:red; margin-left:10px">注意有相同的排序值</span>
           <el-tooltip class="item" effect="light" placement="right-start">
             <template #content>
-              <div>排序相同，时间相同则会同时展示。排序相同时间不同则大于30分钟的会展示</div>
+              <div>排序相同，赛制id相同,时间相同则会同时展示。排序相同和赛制ID相同,时间不同则大于30分钟的会展示</div>
+              <div>否则会在当前之后按顺序展示</div>
             </template>
             <i class="el-icon-info" />
           </el-tooltip>
@@ -386,20 +387,20 @@ export default {
     handleDcReportChange(value) {
       this.$emit('dc-report-change', value)
     },
-    
+
     // 奖励模型相关事件处理
     handleAwardTypeChange(value) {
       this.$emit('award-type-change', value)
     },
-    
+
     handlePrizeTemplateChange(value) {
       this.$emit('prize-template-change', value)
     },
-    
+
     handlePrizeRateChange(value) {
       this.$emit('prize-rate-change', value)
     },
-    
+
     handleRewardTypeRadioChange(value) {
       this.$emit('reward-type-radio-change', value)
     },
@@ -435,18 +436,6 @@ export default {
     },
     handleEndRankChange(rankIndex, value) {
       this.$emit('end-rank-change', rankIndex, value)
-    },
-    handleAwardTypeChange(awardType) {
-      this.$emit('award-type-change', awardType)
-    },
-    handlePrizeTemplateChange(value) {
-      this.$emit('prize-template-change', value)
-    },
-    handlePrizeRateChange(value) {
-      this.$emit('prize-rate-change', value)
-    },
-    handleRewardTypeRadioChange(value) {
-      this.$emit('reward-type-radio-change', value)
     }
   }
 }
