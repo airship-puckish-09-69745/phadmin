@@ -164,7 +164,8 @@ export default {
         { 'label': '大厅无次数+报大赛-弹窗', 'value': 3 },
         { 'label': '等待界面-弹窗', 'value': 4 },
         { 'label': '结算界面-弹窗', 'value': 5 },
-        { 'label': '内嵌老虎机-弹窗', 'value': 6}
+        { 'label': '比赛内内嵌老虎机-弹窗', 'value': 6 },
+        { 'label': '比赛大厅页面-弹窗', 'value': 7 }
       ],
       activeCollapseIndex: '',
       subKey: 'match_guide_list_new',
