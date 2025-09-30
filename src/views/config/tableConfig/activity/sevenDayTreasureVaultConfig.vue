@@ -28,6 +28,16 @@
                 <el-form-item label="奖池最大值：" :required="true">
                   <el-input v-model="item.ActivityExtend.BonusPoolMax" placeholder="请输入参数" />
                 </el-form-item>
+                <el-form-item label="奖池金额类型：" :required="true" class="form-item left-align">
+                  <el-select v-model="item.ActivityExtend.BonusRewardType" class="type-select">
+                    <el-option
+                      v-for="cond in bonusTypeOptions"
+                      :key="cond.value"
+                      :label="cond.label"
+                      :value="cond.value"
+                    />
+                  </el-select>
+                </el-form-item>
                 <el-form-item label="增加奖池比例(‰)：" :required="true">
                   <el-input
                     v-model.number="item.ActivityExtend.FreeRate"
@@ -594,6 +604,10 @@ export default {
         children: 'children',
         disabled: 'disabled'
       },
+      bonusTypeOptions: [
+        { value: 1, label: '金币(投注金)' },
+        { value: 4, label: '金币(返水金)' }
+      ],
       taskTypeOptions: [
         { value: 1, label: '单次' },
         { value: 2, label: '循环' }
@@ -604,7 +618,8 @@ export default {
         { value: 3, label: '下注次数' }
       ],
       rewardTypeOptions: [
-        { value: 1, label: '金币' },
+        { value: 1, label: '金币(投注金)' },
+        { value: 4, label: '金币(返水金)' },
         { value: 2, label: '星星' },
         { value: 3, label: '道具' }
       ],
