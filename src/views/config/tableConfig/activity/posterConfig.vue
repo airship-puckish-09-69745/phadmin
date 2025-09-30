@@ -111,36 +111,34 @@
         </el-tab-pane>
 
         <el-tab-pane label="海报配置">
-          <el-row :gutter="5">
-            <el-form label-width="220px">
-              <el-col :span="24">
-                <el-form-item label="海报图片横板：" :required="true">
-                  <el-col v-for="(v,k) in edit.item.PosterImgHor" :span="2">
-                    <span style="display: inline-block; position: relative;">
-                      <span style="position: absolute; top: -20px; right: 1px; cursor: pointer; z-index: 99" @click="removePosterImage(k, 'Hor')">移除</span>
-                      <ImagePicker v-model="edit.item.PosterImgHor[k]" />
-                    </span>
-                  </el-col>
-                  <span style="position: relative;">
-                    <el-button @click="addPosterImage('Hor')">添加</el-button>
-                  </span>
-                </el-form-item>
-              </el-col>
-              <el-col :span="24">
-                <el-form-item label="海报图片竖版：" :required="true">
-                  <el-col v-for="(v,k) in edit.item.PosterImgVer" :span="2">
-                    <span style="display: inline-block; position: relative;">
-                      <span style="position: absolute; top: -20px; right: 1px; cursor: pointer; z-index: 99" @click="removePosterImage(k, 'Vor')">移除</span>
-                      <ImagePicker v-model="edit.item.PosterImgVer[k]" />
-                    </span>
-                  </el-col>
-                  <span style="position: relative;">
-                    <el-button @click="addPosterImage('Vor')">添加</el-button>
-                  </span>
-                </el-form-item>
-              </el-col>
-            </el-form>
-          </el-row>
+          <el-form label-width="220px">
+            <el-form-item label="海报图片横板：" :required="true">
+              <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end;">
+                <span v-for="(v,k) in edit.item.PosterImgHor" :key="'poster-hor-'+k" style="display: inline-block; position: relative;">
+                  <span style="position: absolute; top: -15px; right: 1px; cursor: pointer; z-index: 99; color: red;" @click="removePosterImage(k, 'Hor')">移除</span>
+                  <ImagePicker v-model="edit.item.PosterImgHor[k]" size="mini" />
+                </span>
+                <el-button @click="addPosterImage('Hor')">添加</el-button>
+              </div>
+            </el-form-item>
+
+            <el-form-item label="海报图片竖版：" :required="true">
+              <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end;">
+                <span v-for="(v,k) in edit.item.PosterImgVer" :key="'poster-ver-'+k" style="display: inline-block; position: relative;">
+                  <span style="position: absolute; top: -15px; right: 1px; cursor: pointer; z-index: 99; color: red;" @click="removePosterImage(k, 'Vor')">移除</span>
+                  <ImagePicker v-model="edit.item.PosterImgVer[k]" size="mini" />
+                </span>
+                <el-button @click="addPosterImage('Vor')">添加</el-button>
+              </div>
+            </el-form-item>
+
+            <!-- 关闭按钮，直接放在 el-form-item 中，与上方图片对齐 -->
+            <el-form-item label="关闭按钮：" :required="true">
+              <div style="display: flex; align-items: center;">
+                <ImagePicker v-model="edit.item.CloseImg" size="mini" />
+              </div>
+            </el-form-item>
+          </el-form>
 
           <fieldset style="margin-top: 20px">
             <legend>
@@ -263,6 +261,7 @@ function newItem() {
     EndTime: 0,
     PosterImgHor: [],
     PosterImgVer: [],
+    CloseImg: '',
     GameIcon: [],
     GameId: []
   }
