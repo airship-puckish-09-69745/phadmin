@@ -28,7 +28,7 @@
                 <el-form-item label="奖池最大值：" :required="true">
                   <el-input v-model="item.ActivityExtend.BonusPoolMax" placeholder="请输入参数" />
                 </el-form-item>
-                <el-form-item label="抽水比例(‰)：" :required="true">
+                <el-form-item label="增加奖池比例(‰)：" :required="true">
                   <el-input
                     v-model.number="item.ActivityExtend.FreeRate"
                     placeholder="请输入参数"
