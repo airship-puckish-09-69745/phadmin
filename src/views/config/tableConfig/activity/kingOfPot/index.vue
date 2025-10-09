@@ -196,7 +196,8 @@
               <el-col :span="11">
                 <el-form-item label="Site白名单：" prop="item.site">
                   <SiteSelect
-                    v-model="edit.item.site"
+                    v-model="edit.item.sites"
+                    multiple
                   />
                 </el-form-item>
               </el-col>
@@ -252,7 +253,7 @@ function newItem() {
   return {
     id: 0,
     appId: 1000002,
-    site: 'Dev',
+    sites: ['Dev'],
     actName: '',
     activityId: 16,
     startTime: new Date().getTime(),
@@ -373,6 +374,7 @@ export default {
           item.dailyBonusLimit /= 1000
           item.totalBonusLimit /= 1000
           item.gameTasks = JSON.parse(item.gameTasks)
+          item.sites = JSON.parse(item.sites)
 
           for (let i = 0; i < item.gameTasks.length; i++) {
             const gameTask = item.gameTasks[i]
@@ -512,6 +514,10 @@ export default {
         Message.error('请填写活动名称')
         return
       }
+      if (this.edit.item.sites.length === 0) {
+        Message.error('请选择站点')
+        return
+      }
       if (this.edit.item.gameIds.length === 0) {
         Message.error('请选择游戏')
         return
@@ -582,6 +588,7 @@ export default {
       copyItem.totalBonusLimit *= 1000
       copyItem.gameIds = JSON.stringify(copyItem.gameIds)
       copyItem.gameTasks = JSON.stringify(copyItem.gameTasks)
+      copyItem.sites = JSON.stringify(copyItem.sites)
 
       return copyItem
     },
