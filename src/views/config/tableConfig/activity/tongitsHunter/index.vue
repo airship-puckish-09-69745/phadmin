@@ -686,6 +686,27 @@ export default {
     },
     handleGamesChange(selectedGames) {
       console.log('selectedGames', selectedGames)
+      const subGameIds = selectedGames.map(game => game.id)
+      console.log('subGameIds', subGameIds)
+      // 将新增游戏的任务也新增到gameTasks中
+      for (let i = 0; i < selectedGames.length; i++) {
+        const game = selectedGames[i]
+        if (!this.edit.item.gameIds.includes(game.id)) {
+          this.edit.item.gameTasks.push(newGameTask(game.id))
+          this.edit.item.gameIds.push(game.id)
+          console.log('add gameTask gameId:', game.id)
+        }
+      }
+      // 移除已删除游戏的任务
+      for (let i = 0; i < this.edit.item.gameTasks.length; i++) {
+        const gameTask = this.edit.item.gameTasks[i]
+        if (!subGameIds.includes(gameTask.gameId)) {
+          this.edit.item.gameTasks.splice(i, 1)
+          this.edit.item.gameIds.splice(i, 1)
+          i--
+        }
+      }
+      this.edit.activeTag = this.gameNames[this.edit.item.gameIds[0]]
     }
   }
 }
