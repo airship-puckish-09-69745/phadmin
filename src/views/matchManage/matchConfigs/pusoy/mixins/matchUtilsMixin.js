@@ -475,7 +475,7 @@ export const matchUtilsMixin = {
       } else { // 付费报名
         // 投注金
         this.configs.betScenesCfgs = [
-          { 'value': 23, 'label': '仅限GZ任意游戏投注金【pusoy免费赛】' }
+          { 'value': 1, 'label': '任意游戏投注金' }
         ]
         // 返水金
         this.configs.rebateScenesCfgs = [
