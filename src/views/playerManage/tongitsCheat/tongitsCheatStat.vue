@@ -8,6 +8,8 @@
             <el-option label="tongits pot" :value="22" />
             <el-option label="tongits laizi" :value="28" />
             <el-option label="tongits quick" :value="29" />
+            <el-option label="pusoy" :value="21" />
+            <el-option label="pusoy wild" :value="126" />
           </el-select>
         </el-form-item>
         <el-form-item label="开始日期：">
@@ -264,7 +266,7 @@ export default {
         if (response.RetCode === 0) {
           const objs = response.Data || []
           $this.ret = response.Data
-          this.totalCount = response.Data.length
+          this.totalCount = objs.length
           $this.tableData = objs
 
           for (let i=0; i<this.totalCount; i++) {
