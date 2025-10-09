@@ -541,6 +541,10 @@ export default {
           Message.error('请添加场次底注对应的任务配置')
           return
         }
+        if (gameTask.anteTasks.length > 5) {
+          Message.error('场次底注对应任务最多配置5个')
+          return
+        }
 
         for (let j = 0; j < gameTask.anteTasks.length; j++) {
           const taskIds = []
