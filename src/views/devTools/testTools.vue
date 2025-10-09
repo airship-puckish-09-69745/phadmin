@@ -57,12 +57,12 @@
     <el-row :gutter="5" style="margin-top: 30px">
       <fieldset style="margin-top:10px">
         <legend>对比身份</legend>
-        <el-form :inline="true" ref="trustTestForm" :model="trustTestForm">
+        <el-form :inline="true" ref="trustCompForm" :model="trustCompForm">
           <el-form-item label="Uid">
-            <el-input placeholder="请输入内容" v-model.number="trustTestForm.Uid" size="mini"></el-input>
+            <el-input placeholder="请输入内容" v-model.number="trustCompForm.Uid" size="mini"></el-input>
           </el-form-item>
           <el-form-item label="Gid">
-            <el-select placeholder="请输入内容" v-model.number="trustTestForm.Gid" size="mini">
+            <el-select placeholder="请输入内容" v-model.number="trustCompForm.Gid" size="mini">
               <el-option
                 v-for="item in trustTestGame"
                 :key="item.value"
@@ -72,10 +72,10 @@
             </el-select>
           </el-form-item>
           <el-form-item label="疑似分加减">
-            <el-input v-model.number="trustTestForm.CheatScore" size="mini" placeholder="正加负减"/>
+            <el-input v-model.number="trustCompForm.CheatScore" size="mini" placeholder="正加负减"/>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" size="mini" @click="addCheatScore(trustTestForm.Uid,trustTestForm.Gid,trustTestForm.CheatScore)">提交</el-button>
+            <el-button type="primary" size="mini" @click="addCheatScore(trustCompForm.Uid,trustCompForm.Gid,trustCompForm.CheatScore)">提交</el-button>
           </el-form-item>
         </el-form>
         <el-table
@@ -126,9 +126,16 @@ export default {
         Identity: 4,
         CheatScore: 0,
       },
+      trustCompForm: {
+        Uid: 0,
+        Gid: 22,
+        Identity: 4,
+        CheatScore: 0,
+      },
       trustTestGame: [
         {value: 22, label: 'Tongits'},
-        {value: 21, label: 'Pusoy'}
+        {value: 21, label: 'Pusoy'},
+        {value: 126, label: 'Pusoy Wild'}
       ],
       trustTestIdentity: [
         {value: 1, label: '低危用户'},

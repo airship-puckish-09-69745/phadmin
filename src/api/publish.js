@@ -51,9 +51,6 @@ export function getView(keyID, envEmpty) {
       keyID: keyID
     },
     envEmpty: envEmpty
-  }).catch(error => {
-    console.log('getView request failed:', error)
-    throw error
   })
 }
 
