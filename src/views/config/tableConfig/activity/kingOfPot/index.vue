@@ -196,7 +196,8 @@
               <el-col :span="11">
                 <el-form-item label="Site白名单：" prop="item.site">
                   <SiteSelect
-                    v-model="edit.item.site"
+                    v-model="edit.item.sites"
+                    multiple
                   />
                 </el-form-item>
               </el-col>
@@ -252,7 +253,7 @@ function newItem() {
   return {
     id: 0,
     appId: 1000002,
-    site: 'Dev',
+    sites: ['Dev'],
     actName: '',
     activityId: 16,
     startTime: new Date().getTime(),
@@ -373,6 +374,7 @@ export default {
           item.dailyBonusLimit /= 1000
           item.totalBonusLimit /= 1000
           item.gameTasks = JSON.parse(item.gameTasks)
+          item.sites = JSON.parse(item.sites)
 
           for (let i = 0; i < item.gameTasks.length; i++) {
             const gameTask = item.gameTasks[i]
@@ -512,6 +514,10 @@ export default {
         Message.error('请填写活动名称')
         return
       }
+      if (this.edit.item.sites.length === 0) {
+        Message.error('请选择站点')
+        return
+      }
       if (this.edit.item.gameIds.length === 0) {
         Message.error('请选择游戏')
         return
@@ -530,9 +536,10 @@ export default {
       }
 
       for (let i = 0; i < this.edit.item.gameTasks.length; i++) {
+        const gameName = this.gameNames[this.edit.item.gameIds[i]] || '未知'
         const gameTask = this.edit.item.gameTasks[i]
         if (gameTask.anteTasks.length === 0) {
-          Message.error('请添加场次底注对应的任务配置')
+          Message.error(`请添加${gameName}场次底注对应的任务配置`)
           return
         }
 
@@ -544,21 +551,29 @@ export default {
             return
           }
           if (anteTask.tasks.length === 0) {
-            Message.error(`请添加场次底注${anteTask.antes}对应的任务`)
+            Message.error(`请添加${gameName}场次底注${anteTask.antes}对应的任务配置`)
+            return
+          }
+          if (anteTask.tasks.length > 5) {
+            Message.error(`${gameName}场次底注${anteTask.antes}对应的任务配置最多只能添加5个`)
             return
           }
           for (let k = 0; k < anteTask.tasks.length; k++) {
             const task = anteTask.tasks[k]
+            if (task.id === '' || task.id === 0 || task.id === undefined) {
+              Message.error(`${gameName}场次底注${anteTask.antes}对应的任务ID不能为空`)
+              return
+            }
             if (taskIds.indexOf(task.id) !== -1) {
-              Message.error(`场次底注${anteTask.antes}对应的任务ID不能重复`)
+              Message.error(`${gameName}场次底注${anteTask.antes}对应的任务ID不能重复`)
               return
             }
             if (task.type === 0 || task.timesRequired === 0 || task.bonus === 0) {
-              Message.error(`场次底注${anteTask.antes}对应的任务次数不能为0`)
+              Message.error(`${gameName}场次底注${anteTask.antes}对应的任务数值不能为0`)
               return
             }
             if (k > 0 && task.timesRequired <= anteTask.tasks[k - 1].timesRequired) {
-              Message.error(`场次底注${anteTask.antes}对应的次数要求必须大于前一个任务的次数要求`)
+              Message.error(`${gameName}场次底注${anteTask.antes}对应的次数要求必须大于前一个任务的次数要求`)
               return
             }
             taskIds.push(task.id)
@@ -582,6 +597,7 @@ export default {
       copyItem.totalBonusLimit *= 1000
       copyItem.gameIds = JSON.stringify(copyItem.gameIds)
       copyItem.gameTasks = JSON.stringify(copyItem.gameTasks)
+      copyItem.sites = JSON.stringify(copyItem.sites)
 
       return copyItem
     },
