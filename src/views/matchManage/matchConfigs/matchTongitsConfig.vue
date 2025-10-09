@@ -1243,7 +1243,8 @@ export default {
       } else { // 付费报名
         // 投注金
         this.betScenesCfgs = [
-          { 'value': 1, 'label': '任意游戏投注' }
+          //{ 'value': 1, 'label': '任意游戏投注' }
+          { 'value': 15, 'label': '仅限GZ任意游戏投注金【Tongits付费赛】' }
         ]
         // 返水金
         this.rebateScenesCfgs = [
