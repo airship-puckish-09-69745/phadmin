@@ -1169,6 +1169,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/freespinConfig'),
             name: 'freespin_cfg',
             meta: { title: 'F reeSpin ◐' }
+          },
+          {
+            path: 'limbo_cfg',
+            component: () => import('@/views/config/tableConfig/limboConfig'),
+            name: 'limbo_cfg',
+            meta: { title: 'L imbo ◐' }
           }
         ]
       },
