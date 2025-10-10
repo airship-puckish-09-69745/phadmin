@@ -955,6 +955,7 @@ export default {
               this.gameMap[response.Data[i].Gid] = response.Data[i].Name
             }
           }
+          console.log('gameMap',this.gameMap)
         }
       })
     },
