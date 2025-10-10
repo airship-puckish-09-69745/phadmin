@@ -778,6 +778,14 @@ export default {
           }
         }
       }
+      if (this.richCardGameMap === null) {
+        this.$set(this, 'richCardGameMap', {})
+        for (let i = 0; i < this.gameData.length; i++) {
+          if (this.cfgData.openGames[this.gameData[i].Gid]) {
+            this.richCardGameMap[this.gameData[i].Gid] = this.gameData[i].Name
+          }
+        }
+      }
       this.edit.visible = true
     },
     handleDelete(ob) {
@@ -969,6 +977,14 @@ export default {
         ConditionTarget: 0,
         Reward: []
       })
+      if (this.richCardGameMap === null) {
+        this.$set(this, 'richCardGameMap', {})
+        for (let i = 0; i < this.gameData.length; i++) {
+          if (this.cfgData.openGames[this.gameData[i].Gid]) {
+            this.richCardGameMap[this.gameData[i].Gid] = this.gameData[i].Name
+          }
+        }
+      }
     },
     // 删除任务
     removeTask(index) {
@@ -1050,14 +1066,6 @@ export default {
         }
         this.edit.currentRichCard.TaskIndex = taskIndex
         this.edit.currentRichCard.RewardIndex = rewardIndex
-        if (this.richCardGameMap === null) {
-          this.$set(this, 'richCardGameMap', {})
-          for (let i = 0; i < this.gameData.length; i++) {
-            if (this.cfgData.openGames[this.gameData[i].Gid]) {
-              this.richCardGameMap[this.gameData[i].Gid] = this.gameData[i].Name
-            }
-          }
-        }
         this.edit.richCardDialogVisible = true
       }
     },
