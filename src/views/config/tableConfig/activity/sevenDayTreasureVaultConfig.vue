@@ -832,7 +832,6 @@ export default {
       })
     },
     getMissionData() {
-      const $this = this
       request({
         url: '/customizeconfig/one',
         method: 'get',
@@ -841,8 +840,7 @@ export default {
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          $this.form = response.Data || { Data: '{}' }
-          const o = JSON.parse(this.form.Data)
+          const o = JSON.parse(response.Data.Data)
           const openGames = {}
           for (const k in o.BuyFreeList) {
             openGames[o.BuyFreeList[k].SlotsType] = o.BuyFreeList[k].Open
