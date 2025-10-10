@@ -26,7 +26,8 @@ export const ITEM_TYPE_OPTIONS = [
   { 'value': 2, 'label': '头像框', disabled: false },
   { 'value': 3, 'label': '德州门票', disabled: false },
   { 'value': 4, 'label': '德州头像框', disabled: false },
-  { 'value': 5, 'label': 'SlotFreeSpin', disabled: false }
+  { 'value': 5, 'label': 'SlotFreeSpin', disabled: false },
+  { 'value': 6, 'label': 'Pusoy门票', disabled: false },
 ]
 
 // 道具过期时间下拉框
@@ -73,6 +74,9 @@ export const PROP_TYPE_OPTIONS = {
   PROP_TYPE_TEXAS_TICKET: 3,    //德州参赛券
   PROP_TYPE_TEXAS_AVATAR: 4,    //德州头像框
   PROP_TYPE_SLOT_FREE_SPIN: 5,  //slot freespin
+  PROP_TYPE_PUSOY_TICKET: 6,    //Pusoy参赛券
+  PROP_TYPE_TICKET_NEW:7,      //新版Tongits门票 带交易ID
+  PROP_TYPE_TEXAS_TICKET_NEW:8, //新版德州参赛券 带交易ID
 }
 // 操作类型
 export const PROP_SOURCE_OPTIONS = [
@@ -116,7 +120,7 @@ export const  BET_SCENES_CFG_OPTIONS = [
 
 ]
 
-// 比赛全局ID集合
+// 比赛Tongits全局ID集合
 export const MATCH_UNIQUE_ID_CFG =[
   { 'value': 0, 'label': '无' },
   { 'value': 10001, 'label': '188Free' },
@@ -127,6 +131,19 @@ export const MATCH_UNIQUE_ID_CFG =[
   { 'value': 10006, 'label': 'P100' },
   { 'value': 10007, 'label': 'P300' },
   { 'value': 10008, 'label': 'GTCC 2005' },
+]
+
+// 比赛Pusoy全局ID集合
+export const MATCH_PUSOY_UNIQUE_ID_CFG =[
+  { 'value': 0, 'label': '无' },
+  { 'value': 20001, 'label': '188Free' },
+  { 'value': 20002, 'label': '12888Free' },
+  { 'value': 20003, 'label': 'P10' },
+  { 'value': 20004, 'label': 'P20' },
+  { 'value': 20005, 'label': 'P40' },
+  { 'value': 20006, 'label': 'P100' },
+  { 'value': 20007, 'label': 'P300' },
+  { 'value': 20008, 'label': 'GTCC 2005' },
 ]
 
 //牌桌TableId

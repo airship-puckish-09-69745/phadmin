@@ -38,7 +38,7 @@
           {{ scope.row.IsDisabled === 1 ? '禁用' : '未禁用' }}
         </template>
       </el-table-column>
-      <el-table-column prop="Versions" label="配置版本列表" width="900px">
+      <el-table-column prop="Versions" label="配置版本列表" width="1000px">
         <template slot-scope="scope" >
           <el-table :data="scope.row.Versions" stripe style="font-size: 10px">
             <el-table-column prop="Version" label="版本号" width="80px">
@@ -54,7 +54,7 @@
                 <span v-else  style="color: red">{{'未就绪'}}</span>
               </template>
             </el-table-column>
-            <el-table-column label="操作" width="420px">
+            <el-table-column label="操作" width="600px">
               <template slot-scope="versionScope">
 
 <!--                <el-button @click="openCreateVersionScriptsDialog(scope.$index, versionScope.$index)" type="success"-->
@@ -69,8 +69,10 @@
                            size="mini" >复制版本</el-button>
                 <el-button @click="querySlotBase(scope.row.PlanId)" type="primary"
                            size="mini">查询</el-button>
-                <el-button @click="showTips(2,scope.$index, versionScope.$index)" type="danger"
-                           size="mini">删除</el-button>
+                <!-- <el-button @click="showTips(2,scope.$index, versionScope.$index)" type="danger"
+                           size="mini">删除版本</el-button> -->
+                <el-button @click="delScripts(scope.row.PlanId, versionScope.row.Version)" type="danger"
+                           size="mini">清理剧本</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -1708,6 +1710,32 @@ export default {
     },
     makeContent(key, addData, delData, editData) {
       return '【' + this.getGameName(this.queryGid) + '】'
+    },
+    delScripts(planId, planVer) {
+      const $this = this
+      this.$confirm('该操作具有高风险，是否继续？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        request({
+          url: '/dataProxy/info',
+          method: 'post',
+          data: {
+            Path: '/slotsStat/clean/scripts',
+            gid: $this.queryGid,
+            planId: planId,
+            planVer: planVer
+          }
+        }).then(response => {
+          if (response.RetCode !== 0 && typeof response.Data !== 'object') {
+            Message.error("没有创建剧本，请先创建剧本再选择")
+            row.IsReady = false
+          }
+        })
+      }).catch(() => {
+        console.log('取消')
+      })
     }
   }
 }

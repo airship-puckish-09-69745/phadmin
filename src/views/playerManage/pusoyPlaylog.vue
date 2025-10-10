@@ -242,7 +242,7 @@
       </el-table-column>
 
 
-      <template v-if="gid===21 || gid===126">
+      <template v-if="gid===21 || gid===126 || gid===134">
         <el-table-column
           prop="IsRobot"
           label="玩家类型"
@@ -3428,6 +3428,7 @@
     <uno-log v-if="gameLogComponent.gid === 117" :game-log="gameLogComponent" @closeDialog="closeDialog" />
     <pusoyWild-log v-if="gameLogComponent.gid === 126" :game-log="gameLogComponent" @closeDialog="closeDialog" />
     <pusoyGame-log v-if="gameLogComponent.gid === 21" :game-log="gameLogComponent" @closeDialog="closeDialog" />
+    <pusoyJP-log v-if="gameLogComponent.gid === 134" :game-log="gameLogComponent" @closeDialog="closeDialog" />
     <el-row>
       <line-chart :chart-data="chartData" height="600px" />
     </el-row>
@@ -3455,6 +3456,7 @@ import GinRummy from '@/views/playerManage/components/GinRummy.vue'
 import UnoLog from '@/views/playerManage/components/UnoLog.vue'
 import PusoyWildLog from '@/views/playerManage/components/PusoyWildLog.vue'
 import PusoyGameLog from '@/views/playerManage/components/PusoyGameLog.vue'
+import PusoyJPLog from '@/views/playerManage/components/PusoyJPLog.vue'
 
 const filterMap = {
   IsPractice: {
@@ -3497,7 +3499,8 @@ export default {
     UidInput,
     LineChart,
     PusoyWildLog,
-    PusoyGameLog
+    PusoyGameLog,
+    PusoyJPLog
   },
   data() {
     return {
@@ -3784,7 +3787,7 @@ export default {
         4: 'MINI'
       },
       libMoney: new MoneyShow(['MoneyChanged', 'PayoffAmount', 'MoneyNow', 'ServiceFee', 'TableMoney', 'TotalValidBet', 'PotChange']),
-      LogComponentGameIds: [107, 108, 32, 111, 110, 49, 47, 48, 112, 115, 116, 117, 126,21],
+      LogComponentGameIds: [107, 108, 32, 111, 110, 49, 47, 48, 112, 115, 116, 117, 126,21,134],
       uidMap: {},
       isRobotMap: {}
     }

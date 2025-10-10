@@ -586,6 +586,7 @@ import Publish from '@/components/Publish'
 import GameLevel from '@/components/GameLevel'
 import MoneyInput from '@/components/MoneyInput'
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
+import { IsMars } from '@/utils/env'
 
 const filterMap = {}
 
@@ -671,7 +672,10 @@ export default {
         { key: '[1]快速盲注配置', value: 1 },
         { key: '[2]小赛2m升盲', value: 2 },
         { key: '[3]Daily Free', value: 3 },
-        { key: '[4]新2m升盲', value: 4 }
+        { key: '[4]新2m升盲', value: 4 },
+        { key: '[5]Turbo盲注', value: 5 },
+        { key: '[6]3M标准', value: 6 },
+        { key: '[7]深筹大赛200P+', value: 7 }
       ],
       TemplateTypeConfig: [
         { key: '固定奖励', value: 0 },
@@ -789,7 +793,9 @@ export default {
   created() {
     this.env = store.getters.env || this.env
     this.getList()
-    this.getMatchProps()
+    if (!IsMars()) {
+      this.getMatchProps()
+    } 
     /*this.getMatchPropsV1()*/
   },
   methods: {
@@ -920,7 +926,7 @@ export default {
               objs[o].RaceEndDate = new Date(objs[o].RaceEndDate * 1000)
             }
 
-            if (objs[o].RaceBeginTime === 0) {
+            if (objs[o].RaceBeginTime < 0) {
               objs[o].RaceBeginTime = new Date()
             } else {
               objs[o].RaceBeginTime = new Date(objs[o].RaceBeginTime * 1000 - 8 * 3600 * 1000)
@@ -931,7 +937,7 @@ export default {
               objs[o].BgImage = ''
             }
 
-            if (objs[o].RaceEndTime === 0) {
+            if (objs[o].RaceEndTime < 0) {
               objs[o].RaceEndTime = new Date()
             } else {
               objs[o].RaceEndTime = new Date(objs[o].RaceEndTime * 1000 - 8 * 3600 * 1000)
@@ -1082,7 +1088,7 @@ export default {
       postData.RaceBeginDate = this.timeToTimestamp(postData.RaceBeginDate)
       postData.RaceEndDate = this.timeToTimestamp(postData.RaceEndDate)
       postData.RaceBeginTime = this.timeToTimestamp(postData.RaceBeginTime) % (24 * 3600) + 8 * 3600
-      if (postData.RaceBeginTime > 86400) {
+      if (postData.RaceBeginTime >= 86400) {
         postData.RaceBeginTime = postData.RaceBeginTime - 86400
       }
       postData.RaceEndTime = this.timeToTimestamp(postData.RaceEndTime) % (24 * 3600) + 8 * 3600
@@ -1284,6 +1290,7 @@ export default {
       return gameName
     },
     getMatchProps() {
+      console.log("==>getMatchProps<==")
       const _this = this
       request({
         url: '/dataProxy/info',

@@ -295,7 +295,10 @@
               />
             </el-select>
           </el-form-item>
-          <el-form-item label="最低开赛人数：" :required="true">
+          <el-form-item v-if="editForm.data.opentMatchType===2"  label="最低开赛人数：" :required="true">
+            <el-input v-model="editForm.data.opentMatchMember" style="width: 200px;" placeholder="请填写开赛人数" />
+          </el-form-item>
+          <el-form-item v-if="editForm.data.opentMatchType===1"  label="比赛开赛人数：" :required="true">
             <el-input v-model="editForm.data.opentMatchMember" style="width: 200px;" placeholder="请填写开赛人数" />
           </el-form-item>
           <el-form-item label="封面图片URL：" :required="true">
@@ -304,7 +307,7 @@
           <el-form-item label="白名单开关：" :required="true">
             <el-radio v-for="item in whileListCfgs" :key="item.value" v-model="editForm.whileList.type" :label="item.value">{{ item.label }}</el-radio>
           </el-form-item>
-          <el-form-item v-if="editForm.whileList.type==1" label="白名单设置：" :required="true">
+          <el-form-item v-if="editForm.whileList.type===1" label="白名单设置：" :required="true">
             <el-input v-model="editForm.whileList.data" style="width: 400px;" placeholder="多个uid用,分开" />
           </el-form-item>
           <el-form-item label="排序值：" :required="true">
@@ -312,7 +315,7 @@
             <span v-show="showTip" style="color:red; margin-left:10px">注意有相同的排序值</span>
             <el-tooltip class="item" effect="light" placement="right-start">
               <template #content>
-                <div>排序相同，时间相同则会同时展示。排序相同时间不同则大于30分钟的会展示</div>
+                <div>排序相同，赛制id相同,时间相同则会同时展示。排序相同和赛制ID相同,时间不同则大于30分钟的会展示</div>
                 <div>否则会在当前之后按顺序展示</div>
               </template>
               <i class="el-icon-info" />
@@ -344,7 +347,7 @@
           <el-form-item label="GTCC线上决赛补位白名单:" :required="true">
             <el-radio v-for="item in whileListCfgs" :key="item.value" v-model="editForm.signExtra.gtccWhiteList.type" :label="item.value">{{ item.label }}</el-radio>
           </el-form-item>
-          <el-form-item v-if="editForm.signExtra.gtccWhiteList.type==1" label="白名单设置：" :required="true">
+          <el-form-item v-if="editForm.signExtra.gtccWhiteList.type===1" label="白名单设置：" :required="true">
             <el-input v-model="editForm.signExtra.gtccWhiteList.data" style="width: 400px;" placeholder="多个uid用,分开" />
           </el-form-item>
 
@@ -362,7 +365,7 @@
               />
             </el-select>
           </el-form-item>
-          <el-form-item v-if="editForm.data.repeatType == 0" :label="getMatchStartTimeLabel()" :required="true">
+          <el-form-item v-if="editForm.data.repeatType === 0" :label="getMatchStartTimeLabel()" :required="true">
             <el-date-picker
               v-model="editForm.loopDetail.onceTime"
               format="yyyy-MM-dd HH:mm"
@@ -374,11 +377,11 @@
               end-placeholder="结束日期"
               align="right"
             />
-            <el-tooltip v-if="editForm.data.opentMatchType == 1" class="item" effect="dark" content="人满开赛时结束时间无意义，但必须大于开始时间" placement="right-start">
+            <el-tooltip v-if="editForm.data.opentMatchType === 1" class="item" effect="dark" content="人满开赛时结束时间无意义，但必须大于开始时间" placement="right-start">
               <i class="el-icon-info" />
             </el-tooltip>
           </el-form-item>
-          <el-form-item v-if="editForm.data.repeatType != 0" label="比赛开始日期：" :required="true">
+          <el-form-item v-if="editForm.data.repeatType !== 0" label="比赛开始日期：" :required="true">
             <el-date-picker
               v-model="editForm.loopDetail.loopStartDate"
               size="mini"
@@ -416,7 +419,7 @@
               placeholder="结束时间"
             />
           </el-form-item>
-          <el-form-item v-if="editForm.data.repeatType == 2" label="循环时间段：" :required="true">
+          <el-form-item v-if="editForm.data.repeatType === 2" label="循环时间段：" :required="true">
             <el-button type="normal" size="mini" @click="addLoopItem()">添加时段</el-button>
             <el-table
               :data="editForm.loopDetail.loopData"
@@ -476,19 +479,19 @@
               </el-table-column>
             </el-table>
           </el-form-item>
-          <el-form-item v-if="editForm.data.opentMatchType==2" label="提前显示时间(秒)：" :required="true">
+          <el-form-item  label="提前显示时间(秒)：" :required="true">
             <el-input v-model.number="editForm.data.preShowSeconds" style="width: 200px;" placeholder="请填写提前显示时间" />
           </el-form-item>
-          <el-form-item v-if="editForm.data.opentMatchType==1" label="创建时间(秒)" :required="true">
+          <el-form-item v-if="envProjectName === 'ph_audit' && editForm.data.opentMatchType===1" label="创建时间(秒)" :required="true">
             <el-input v-model.number="editForm.data.preShowSeconds" style="width: 200px;" placeholder="请填写创建时间" />
-            <el-tooltip v-if="editForm.data.opentMatchType == 1" class="item" effect="dark" content="比赛开始时间=最后开赛时间-创建时间" placement="right-start">
+            <el-tooltip v-if="envProjectName === 'ph_audit' && editForm.data.opentMatchType === 1" class="item" effect="dark" content="比赛开始时间=最后开赛时间-创建时间" placement="right-start">
               <i class="el-icon-info" />
             </el-tooltip>
           </el-form-item>
-          <el-form-item v-if="editForm.data.opentMatchType==2" label="提前进入时间(秒)：" :required="true">
+          <el-form-item v-if="editForm.data.opentMatchType===2" label="提前进入时间(秒)：" :required="true">
             <el-input v-model.number="editForm.data.preEnterSeconds" style="width: 200px;" placeholder="请填写提前进入时间" />
           </el-form-item>
-          <el-form-item v-if="editForm.data.opentMatchType==2" label="延迟进入时间(秒)：" :required="true">
+          <el-form-item v-if="editForm.data.opentMatchType===2" label="延迟进入时间(秒)：" :required="true">
             <el-input v-model.number="editForm.data.delayEnterSeconds" style="width: 200px;" placeholder="请填写延迟进入时间" />
           </el-form-item>
         </fieldset>
@@ -514,14 +517,15 @@
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
+                :disabled="checkSngSignTypeDisable(item.value)"
               />
             </el-select>
           </el-form-item>
-          <el-form-item v-if="editForm.data.signUpType == 0 || editForm.data.signUpType == 3" label="报名费：" :required="true">
+          <el-form-item v-if="editForm.data.signUpType === 0 || editForm.data.signUpType === 3" label="报名费：" :required="true">
             <el-input v-model.number="editForm.data.signUpNum" style="width: 200px;" size="mini" placeholder="请填写金币数量" />
           </el-form-item>
 
-          <el-form-item v-if=" editForm.data.signUpType == 2 || editForm.data.signUpType == 3" label="门票：" :required="true">
+          <el-form-item v-if=" editForm.data.signUpType === 2 || editForm.data.signUpType === 3" label="门票：" :required="true">
             <el-select v-model="editForm.signExtra.propId" placeholder="请选择" size="mini">
               <el-option
                 v-for="item in matchTicketsCfgs"
@@ -532,15 +536,15 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item v-if=" editForm.data.signUpType == 2 || editForm.data.signUpType == 3" label="门票数量：" :required="true">
+          <el-form-item v-if=" editForm.data.signUpType === 2 || editForm.data.signUpType === 3" label="门票数量：" :required="true">
             <el-input v-model.number="editForm.signExtra.propNum" style="width: 180px;" size="mini" placeholder="请填写门票数量" />
           </el-form-item>
 
-          <el-form-item v-if="editForm.data.signUpType == 1" label="今日投注下限(0不限制)：" :required="true">
+          <el-form-item v-if="editForm.data.signUpType === 1" label="今日投注下限(0不限制)：" :required="true">
             <el-input v-model.number="editForm.signExtra.betCnt" style="width: 200px;" size="mini" placeholder="请填写限制数值" />
           </el-form-item>
 
-          <el-form-item v-if="editForm.data.signUpType ==1" label="是否启用每日限制：" :required="true">
+          <el-form-item v-if="editForm.data.signUpType ===1" label="是否启用每日限制：" :required="true">
             <!-- <el-input v-model="editForm.data.openDaysLimit" style="width: 200px;" placeholder="1限制0不限制" /> -->
             <el-switch
               v-model="editForm.data.openDaysLimit"
@@ -552,7 +556,7 @@
               inactive-text="否"
             />
           </el-form-item>
-          <el-form-item label="比赛最大人数：" :required="true">
+          <el-form-item v-if="editForm.data.opentMatchType===2" label="比赛最大人数：" :required="true">
             <el-input v-model.number="editForm.signExtra.matchMaxLimit" style="width: 180px;" size="mini" placeholder="请填写最大数量" />
           </el-form-item>
 
@@ -564,8 +568,8 @@
           </el-form-item>
         </fieldset>
 
-        <fieldset>
-          <legend>Rebuy报名条件</legend>
+        <fieldset v-if="editForm.data.opentMatchType===2">
+          <legend> Rebuy报名条件</legend>
           <el-row>
             <el-col :span="11">
               <el-form-item label="是否支持rebuy:" :required="true">
@@ -660,8 +664,12 @@
         </fieldset>
         <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
           <legend>奖励信息</legend>
-          <el-form-item label="奖励模型：" :required="true">
+          <el-form-item v-if="editForm.data.opentMatchType===2" label="奖励模型：" :required="true">
             <el-radio v-for="item in prizeModleCfgs" :key="item.value" v-model="editForm.prizeExtra.awardType" :label="item.value">{{ item.label }} </el-radio>
+          </el-form-item>
+
+          <el-form-item v-if="editForm.data.opentMatchType===1" label="奖励模型：" :required="true">
+            <el-radio v-for="item in prizeModleSngCfgs" :key="item.value" v-model="editForm.prizeExtra.awardType" :label="item.value">{{ item.label }} </el-radio>
           </el-form-item>
           <el-button style="margin-bottom: 10px;" type="normal" size="mini" @click="addRankRewards()">添加</el-button>
           <el-table
@@ -824,6 +832,20 @@
             />
           </el-form-item>
         </fieldset>
+
+        <fieldset v-if="this.envProjectName === 'ph_audit'">
+          <legend>OB线下赛入座 </legend>
+          <el-form-item label="比赛玩家id列表：" :required="true">
+            <div>
+              <el-input
+                v-model="editForm.uidObList"
+                style="width: 400px;"
+                placeholder="多个uid用,分开，例如：123456,789012,345678"
+                @blur="handleUidInputChange(editForm.uidObList, 'uidObList')"
+              />
+            </div>
+          </el-form-item>
+        </fieldset>
         <el-divider />
         <el-form-item>
           <el-button size="medium" type="primary" icon="el-icon-s-order" @click="saveMatch()">保存比赛配置</el-button>
@@ -844,7 +866,7 @@ import { $libDate, $libShow } from '@/utils/common'
 import AppInfo from '../../devTools/appInfo.vue'
 import { log } from 'console'
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
-import { getAllCommonGameConfig, getAllMatchGuidesConfig } from '@/utils/common-game-config'
+import { getAllCommonGameConfig, getAllMatchGuidesConfig,validateUidInput, handleUidInputChange, setNestedProperty } from '@/utils/common-game-config'
 import { IsMars } from '@/utils/env'
 import {
   CHANNEL_OPTIONS,
@@ -949,6 +971,9 @@ export default {
         { 'value': 0, 'label': '固定奖励' },
         { 'value': 1, 'label': '动态奖励' }
       ],
+      prizeModleSngCfgs: [
+        { 'value': 0, 'label': '固定奖励' },
+      ],
       // 比赛全局ID集合
       matchUniqueIdCfgs: [
         { 'value': 0, 'label': '无' },
@@ -986,6 +1011,7 @@ export default {
         visable: false,
         title: '',
         isAdd: false,
+        uidObList: '',
         data: {
           id: 0,
           name: '',
@@ -1072,7 +1098,7 @@ export default {
             type: 0,
             data: ''
           },
-
+          obMatchList: ''
         },
         prizeExtra: {
           awardType: 0,
@@ -1125,7 +1151,7 @@ export default {
       },
       showDevTool: false,
       showTip: false,
-      propsTypeList: [1, 2] // 门票 头像框
+      propsTypeList: [PROP_TYPE_OPTIONS.PROP_TYPE_TICKET, PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME] // 门票 头像框
     }
   },
   computed: {
@@ -1217,7 +1243,8 @@ export default {
       } else { // 付费报名
         // 投注金
         this.betScenesCfgs = [
-          { 'value': 1, 'label': '任意游戏投注' }
+          //{ 'value': 1, 'label': '任意游戏投注' }
+          { 'value': 15, 'label': '仅限GZ任意游戏投注金【Tongits付费赛】' }
         ]
         // 返水金
         this.rebateScenesCfgs = [
@@ -1658,6 +1685,7 @@ export default {
       if (id === 0) {
         this.disableOpenType(false, 0)
         this.editForm.title = '新增比赛配置'
+        this.editForm.uidObList = ''
         this.editForm.data = {
           id: 0,
           name: '',
@@ -1767,7 +1795,8 @@ export default {
           gtccWhiteList:{
             type:0,
             data:''
-          }
+          },
+          obMatchList: ''
         }
 
         this.editForm.prizeExtra = {
@@ -1859,13 +1888,19 @@ export default {
         if (this.editForm.signExtra.reubyExtra === undefined) {
           this.rebuyConfigReset()
         }
-        if(this.editForm.signExtra.gtccWhiteList === undefined) {
-          this.editForm.signExtra.gtccWhiteList={}
+        if (this.editForm.signExtra.gtccWhiteList === undefined) {
+          this.editForm.signExtra.gtccWhiteList = {}
           this.editForm.signExtra.gtccWhiteList.type = 0
-          this.editForm.signExtra.gtccWhiteList.data=''
+          this.editForm.signExtra.gtccWhiteList.data = ''
         }
+        // ob线下赛录入的名单
+        if (this.editForm.signExtra.obMatchList === undefined) {
+          this.editForm.signExtra.obMatchList = ''
+        }
+        this.editForm.uidObList = this.editForm.signExtra.obMatchList
+
         this.editForm.prizeExtra = JSON.parse(editData.prize_extra)
-        if(editData.list_extra  !== null &&  editData.list_extra !=="null"){
+        if (editData.list_extra !== null && editData.list_extra !== "null") {
           this.editForm.listExtra = JSON.parse(editData.list_extra)
         }
         this.showCsCfgs = []
@@ -1918,7 +1953,8 @@ export default {
       return flag
     },
     async saveMatch() {
-      if (this.editForm.data.opentMatchType == 1) {
+      //非ob SNG 不考虑提前进入时间
+      if(IsMars() && this.editForm.data.opentMatchType === 1) {
         this.editForm.data.preEnterSeconds = this.editForm.data.preShowSeconds
       }
       if (!await this.configCheck()) {
@@ -1948,7 +1984,7 @@ export default {
           break
         }
       }
-
+      this.editForm.signExtra.obMatchList = this.editForm.uidObList
       const rankReward = JSON.stringify(this.editForm.rankRewards)
       const whileDetail = JSON.stringify(this.editForm.whileList)
       let repeatDetail = ''
@@ -2014,8 +2050,7 @@ export default {
           DcReport: this.editForm.data.dcReport,
           SignExtra: JSON.stringify(this.editForm.signExtra),
           PrizeExtra: JSON.stringify(this.editForm.prizeExtra),
-          ListExtra: JSON.stringify(this.editForm.listExtra),
-
+          ListExtra: JSON.stringify(this.editForm.listExtra)
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -2028,6 +2063,7 @@ export default {
           this.editForm.visable = false
           this.singleCopy.isCopy = false
           this.singleCopy.id = 0
+          this.editForm.uidObList = ''
           return
         } else {
           let errMsg = '新增比赛配置失败！'
@@ -2428,8 +2464,8 @@ export default {
           this.editForm.prizeExtra.sceneId = 5 // 没有任何限制的返水金
         }
       }
-
-      if (this.editForm.data.preShowSeconds <= 0 || this.editForm.data.preEnterSeconds <= 0) {
+      //mtt 才检测提前显示时间
+      if (this.editForm.data.opentMatchType===2 && (this.editForm.data.preShowSeconds <= 0 || this.editForm.data.preEnterSeconds <= 0)) {
         this.errmsg('提前进入时间 或者是提前显示时间不能配置为0')
         return false
       }
@@ -2437,6 +2473,27 @@ export default {
       if (!this.reubyConfigCheck()) {
         return false
       }
+
+      if (this.envProjectName === 'ph_audit') {
+        // 验证比赛玩家ID列表
+        if (this.editForm.uidObList && this.editForm.uidObList.length > 0) {
+          const uidObValidation = validateUidInput(this.editForm.uidObList)
+          if (!uidObValidation.valid) {
+            this.errmsg('ob列表UID错误：' + uidObValidation.message)
+            return false
+          }
+        }
+
+        if (this.editForm.uidObList.length > 0) {
+          const uidObList = this.editForm.uidObList.split(',')
+          let minNum = Math.round(uidObList.length - this.editForm.data.opentMatchMember)
+          if (minNum !== 0) {
+            this.errmsg('开赛人数不等与配置表数量')
+            return false
+          }
+        }
+      }
+
       return true
     },
 
@@ -2628,7 +2685,7 @@ export default {
       return false
     },
     getMatchStartTimeLabel() {
-      if (this.editForm.data.opentMatchType == 2) {
+      if(this.editForm.data.opentMatchType === 2){
         return '开赛时间'
       } else {
         return '最后开赛时间'
@@ -2953,7 +3010,8 @@ export default {
           method: 'get',
           data: {
             Env: this.env,
-            Path: '/match/rule/list'
+            Path: '/match/rule/list',
+            Gid:2031,
           }
         })
         if (response.RetCode === 0) {
@@ -3028,6 +3086,17 @@ export default {
         console.log(error)
       } finally {}
     },
+    //检查sng报名条件显示
+    checkSngSignTypeDisable(value) {
+      if (this.editForm.data.opentMatchType === 2) {
+        return false
+      }
+      //sng只显示付费赛
+      if(!IsMars()  && this.editForm.data.opentMatchType === 1 && ([1,2,3].includes(value))) {
+        return true
+      }
+      return false
+    },
     // 校验赛制ID是否已经发布
     async checkRuleIdIsPublish(ruleId) {
       for (var j = 0; j < this.csIdCfg.length; j++) {
@@ -3036,7 +3105,21 @@ export default {
         }
       }
       return false
-    }
+    },
+    //处理UID输入变化
+    handleUidInputChange(input, fieldPath) {
+      const result = handleUidInputChange(input)
+      if (!result.success) {
+        this.$message.error(result.message)
+        return false
+      }
+      //如果验证通过,格式化输入
+      this.$nextTick(() => {
+        setNestedProperty(this.editForm, fieldPath, result.formattedInput)
+      })
+
+      return true
+    },
   }
 }
 </script>

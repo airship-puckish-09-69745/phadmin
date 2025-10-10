@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-row>
-      <publish primary-key="ruleId" key-id="MatchRule" :env-empty="true" :attr-names="AttrNames" />
+      <publish primary-key="ruleId" key-id="MatchRulePusoy" :env-empty="true" :attr-names="AttrNames" />
     </el-row>
     <el-row>
       <el-form :model="form" label-width="100px" :inline="true" size="mini">
@@ -492,7 +492,7 @@ export default {
         {"value":2,"label":"固定比列(%)"},
       ],
       tableData: [],
-      limit: 10,
+      limit: 100,
       total: 0,
       page: 1,
       selfBuild:0, //普通比赛的赛制
@@ -576,13 +576,13 @@ export default {
                 let one = JSON.parse(this.tableData[i].stage_detail)
                 for (let step = 0; step < one.length; step++) {
                   const element = one[step];
-                  if(element.system_type == 1 && !element.system_strike_out.hasOwnProperty("wait_queue")) {
+                  if (element.system_type === 1 && !element.system_strike_out.hasOwnProperty("wait_queue")) {
                     one[step].system_strike_out.wait_queue = {
                       "player_num":0, //发车人数
                       "wait_time":0, //等待时间
                     }
                   }
-                  if(element.system_type == 1 && !element.system_strike_out.promotion_rule.score_brought_in.hasOwnProperty("min_score")){
+                  if (element.system_type === 1 && !element.system_strike_out.promotion_rule.score_brought_in.hasOwnProperty("min_score")){
                     one[step].system_strike_out.promotion_rule.score_brought_in.min_score = 0
                     one[step].system_strike_out.promotion_rule.score_brought_in.open_min_score = false
                   }
@@ -591,7 +591,7 @@ export default {
               }
             }
           } else {
-            this.total=0;
+            this.total = 0;
             this.tableData = [];
           }
         }
@@ -610,8 +610,8 @@ export default {
     },
     updateStatus(id, val) {
       let status = 0
-      for (let i=0;i<this.tableData.length;i++) {
-        if (this.tableData[i].id == id) {
+      for (let i = 0; i < this.tableData.length; i++) {
+        if (this.tableData[i].id === id) {
           this.tableData[i].openShow = val
           if (val) {
             this.tableData[i].status = 0
@@ -636,7 +636,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           let showMsg = "启用赛制配置成功！"
-          if (status == 1) {
+          if (status === 1) {
             showMsg = "禁用赛制配置成功！"
           }
           Message.success(showMsg)
@@ -651,9 +651,8 @@ export default {
     checkForm(id) {
       this.editForm.title = "赛制配置"
       this.editForm.isAdd = false
-      for (let i=0;i<this.tableData.length;i++) {
-          if (this.tableData[i].id == id) {
-
+      for (let i=0; i < this.tableData.length; i++) {
+          if (this.tableData[i].id === id) {
             //Message.info("测试111：" + JSON.stringify([this.tableData[i].game_id]))
 
             this.editForm.data = this.tableData[i]
@@ -666,9 +665,9 @@ export default {
             const ruleExtraStr = this.tableData[i].rule_extra;
             let rule_extra
             try {
-              rule_extra = ruleExtraStr ? JSON.parse(ruleExtraStr) : { skip_strikeout:0 };
+              rule_extra = ruleExtraStr ? JSON.parse(ruleExtraStr) : { skip_strikeout: 0 };
             } catch (e) {
-              rule_extra = {skip_strikeout:0 }; // 解析失败时使用默认值
+              rule_extra = { skip_strikeout: 0 }; // 解析失败时使用默认值
             }
             this.editForm.data.rule_extra = rule_extra;
             break
@@ -677,7 +676,7 @@ export default {
       this.editForm.visable = true
     },
     showForm(id) {
-      if (id == 0) {
+      if (id === 0) {
         this.editForm.title = "新增赛制配置"
         this.editForm.data = {
           "id": 0,
@@ -698,29 +697,25 @@ export default {
       } else {
         this.editForm.title = "编辑赛制配置"
         this.editForm.isAdd = false
-        for (let i=0;i<this.tableData.length;i++) {
-          if (this.tableData[i].id == id) {
-
+        for (let i = 0; i < this.tableData.length; i++) {
+          if (this.tableData[i].id === id) {
             //Message.info("测试111：" + JSON.stringify([this.tableData[i].game_id]))
             this.editForm.data = this.tableData[i]
-            if(!this.editForm.data.hasOwnProperty("rule_type")){
+            if (!this.editForm.data.hasOwnProperty("rule_type")) {
               this.editForm.data.rule_type = 0
             }
             let gameId = parseInt(this.tableData[i].game_id, 10);
-
             this.editForm.data.game_id = [gameId]
             this.tableData[i].game_id = [gameId]
-
             //fix rule_extra
             const ruleExtraStr = this.tableData[i].rule_extra;
             let rule_extra
             try {
               rule_extra = ruleExtraStr ? JSON.parse(ruleExtraStr) : { skip_strikeout:0 };
             } catch (e) {
-              rule_extra = { skip_strikeout:0 }; // 解析失败时使用默认值
+              rule_extra = { skip_strikeout: 0 }; // 解析失败时使用默认值
             }
             this.editForm.data.rule_extra = rule_extra;
-
             break
           }
         }
@@ -728,18 +723,18 @@ export default {
       this.editForm.visable = true
     },
     changeRoundTotal(val, stageIndex) {
-      for(let i=0;i<this.editForm.data.stage_detail.length;i++) {
-        if (this.editForm.data.stage_detail[i].stage_index == stageIndex) {
+      for (let i = 0; i < this.editForm.data.stage_detail.length; i++) {
+        if (this.editForm.data.stage_detail[i].stage_index === stageIndex) {
           let oldLen = this.editForm.data.stage_detail[i].system_reach_out.round_config.length
           if (oldLen > val) {
-            for (let j=0; j<oldLen;j++) {
-              if (j == val) {
+            for (let j = 0; j < oldLen; j++) {
+              if (j === val) {
                 this.editForm.data.stage_detail[i].system_reach_out.round_config.splice(val, oldLen-val)
               }
             }
           } else {
             let diffNum = val - oldLen
-            for (let j=0;j<diffNum;j++) {
+            for (let j = 0; j < diffNum; j++) {
               this.editForm.data.stage_detail[i].system_reach_out.round_config.push({
                 "index": oldLen+1+j,                 //第几轮
                 "play_round": 0,            //玩牌局数
@@ -757,18 +752,18 @@ export default {
       }
     },
     changeGrowTotal(val, stageIndex) {
-      for(let i=0;i<this.editForm.data.stage_detail.length;i++) {
-        if (this.editForm.data.stage_detail[i].stage_index == stageIndex) {
+      for(let i = 0; i < this.editForm.data.stage_detail.length; i++) {
+        if (this.editForm.data.stage_detail[i].stage_index === stageIndex) {
           let oldLen = this.editForm.data.stage_detail[i].system_strike_out.bottom_score_growth.init_score_grow_detail.length
           if (oldLen > val) {
-            for (let j=0; j<oldLen;j++) {
-              if (j == val) {
+            for (let j = 0; j < oldLen; j++) {
+              if (j === val) {
                 this.editForm.data.stage_detail[i].system_strike_out.bottom_score_growth.init_score_grow_detail.splice(val, oldLen-val)
               }
             }
           } else {
             let diffNum = val - oldLen
-            for (let j=0;j<diffNum;j++) {
+            for (let j = 0; j < diffNum; j++) {
               this.editForm.data.stage_detail[i].system_strike_out.bottom_score_growth.init_score_grow_detail.push({
                 "index": oldLen+1+j,                 //第几轮
                 "duration": 80,            //时长
@@ -781,18 +776,18 @@ export default {
       }
     },
     changeDisuseGrowTotal(val, stageIndex) {
-      for(let i=0;i<this.editForm.data.stage_detail.length;i++) {
-        if (this.editForm.data.stage_detail[i].stage_index == stageIndex) {
+      for (let i = 0; i < this.editForm.data.stage_detail.length; i++) {
+        if (this.editForm.data.stage_detail[i].stage_index === stageIndex) {
           let oldLen = this.editForm.data.stage_detail[i].system_strike_out.disuse_score_growth.disuse_score_grow_detail.length
           if (oldLen > val) {
-            for (let j=0; j<oldLen;j++) {
-              if (j == val) {
-                this.editForm.data.stage_detail[i].system_strike_out.disuse_score_growth.disuse_score_grow_detail.splice(val, oldLen-val)
+            for (let j = 0; j < oldLen; j++) {
+              if (j === val) {
+                this.editForm.data.stage_detail[i].system_strike_out.disuse_score_growth.disuse_score_grow_detail.splice(val, oldLen - val)
               }
             }
           } else {
             let diffNum = val - oldLen
-            for (let j=0;j<diffNum;j++) {
+            for (let j = 0; j < diffNum; j++) {
               this.editForm.data.stage_detail[i].system_strike_out.disuse_score_growth.disuse_score_grow_detail.push({
                 "index": oldLen+1+j,                 //第几轮
                 "duration": 80,            //时长
@@ -994,7 +989,7 @@ export default {
     },
     handleShowDevTools() {
       // 浏览器设置ShowDev=1才可以看到开发工具
-      if (window.ShowDev == 1) {
+      if (window.ShowDev === 1) {
         this.showDevTool = !this.showDevTool
       }
     },
@@ -1044,7 +1039,7 @@ export default {
         return false
       }
       for (let i = 0; i < this.editForm.data.stage_detail.length; i++) {
-        //打立出局阶段配置检查
+        // 打立出局阶段配置检查
         if (this.editForm.data.stage_detail[i].system_type === 1) {
           const strikeOutStage = this.editForm.data.stage_detail[i]
           if (strikeOutStage.alloc_type !== 1) {
@@ -1059,7 +1054,7 @@ export default {
             this.errmsg('班车配置错误')
             return false
           }
-          //底分检查
+          // 底分检查
           if (strikeOutStage.system_strike_out.bottom_score_growth.type > 1) {
             this.editForm.data.stage_detail[i].system_strike_out.bottom_score_growth.open = 1
             if (strikeOutStage.system_strike_out.bottom_score_growth.init_score_grow_detail.length > 0) {
@@ -1084,7 +1079,7 @@ export default {
               }
             }
           }
-          //淘汰分检查
+          // 淘汰分检查
           if (strikeOutStage.system_strike_out.disuse_score_growth.type > 1) {
             this.editForm.data.stage_detail[i].system_strike_out.disuse_score_growth.open = 1
 
@@ -1108,7 +1103,7 @@ export default {
               }
             }
           }
-          //结束规则检查
+          // 结束规则检查
           if (strikeOutStage.system_strike_out.end_rule.end_method === 1 || strikeOutStage.system_strike_out.end_rule.end_method === 3) {
             if (strikeOutStage.system_strike_out.end_rule.lave_user_number <= 0) {
               this.errmsg('打立出局阶段的结束人数值无效！')
@@ -1127,7 +1122,7 @@ export default {
               return false
             }
           }
-          //晋级规则检查
+          // 晋级规则检查
           if (strikeOutStage.system_strike_out.promotion_rule.score_sort_type !== 1) {
             this.errmsg('打立出局阶段的晋级排行规则不支持！')
             return false
@@ -1137,7 +1132,7 @@ export default {
             return false
           }
           if (strikeOutStage.system_strike_out.promotion_rule.user_number % 4 !== 0) {
-            this.errmsg('打立出局阶段的晋级人数值必须是4的倍数！')
+            this.errmsg('打立出局阶段的晋级人数值必须4倍数！')
             return false
           }
           if (strikeOutStage.system_strike_out.promotion_rule.score_brought_in.score_method === 1 && strikeOutStage.system_strike_out.promotion_rule.score_brought_in.score_multiple <= 0) {
@@ -1177,21 +1172,29 @@ export default {
               return false
             }
           }
-          lastUserNum = reachOutStage.system_reach_out.round_config[0].promotion_user
+          let lastMaxUserNum = reachOutStage.system_reach_out.round_config[0].promotion_user
+          let lastRound = reachOutStage.system_reach_out.round_config.length
           for (let i = 0; i < reachOutStage.system_reach_out.round_config.length; i++) {
             const round = reachOutStage.system_reach_out.round_config[i]
             if (round.play_round <= 0 || round.play_round > 1000) {
               this.errmsg('定局积分第' + round.index + '轮的局数值无效!')
               return false
             }
-            if (round.promotion_user > lastUserNum) {
+            if (lastUserNum > 0 && lastMaxUserNum > lastUserNum) {
+              this.errmsg('定局积分第' + round.index + '轮的底晋级人数不能大于晋级规则晋级人数!')
+              return false
+            }
+            if (round.promotion_user > lastMaxUserNum) {
               this.errmsg('定局积分第' + round.index + '轮的晋级人数不能大于前一轮的晋级人数!')
               return false
             } else if (round.promotion_user % 4 !== 0) {
-              //this.errmsg('定局积分第' + round.index + '轮的晋级人数必须是4的倍数!')
-              //return false
+              // 最后一轮无需最4的倍数
+              if (i < lastRound - 1) {
+                this.errmsg('定局积分第' + round.index + '轮的晋级人数必须是4的倍数!')
+                return false
+              }
             } else {
-              lastUserNum = round.promotion_user
+              lastMaxUserNum = round.promotion_user
             }
             if (reachOutStage.system_reach_out.score_method === 1 && round.score_multiple <= 0) {
               this.errmsg('定局积分第' + round.index + '轮的底分开方加倍数无效!')
@@ -1207,7 +1210,7 @@ export default {
           return false
         }
       }
-      //sng
+      // sng
       if (this.editForm.data.rule_type === 1 || this.editForm.data.rule_extra.skip_strikeout === 0) {
         this.editForm.data.rule_extra.skip_strikeout = 0
       }

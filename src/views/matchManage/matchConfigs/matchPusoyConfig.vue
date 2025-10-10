@@ -322,7 +322,7 @@
           <el-form-item label="比赛全局ID：" :required="true">
             <el-select v-model="editForm.signExtra.matchUniqueId" placeholder="请选择" size="mini">
               <el-option
-                v-for="item in matchUniqueIdCfgs"
+                v-for="item in MATCH_PUSOY_UNIQUE_ID_CFG"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -851,7 +851,7 @@ import {
   APPID_OPTIONS,
   ITEM_DAY_TYPE_OPTIONS,
   PROP_TYPE_OPTIONS,
-  MATCH_TABLE_SCENE_ID_CFG, MATCH_LIST_TAG_OPTIONS, MATCH_IUPSTREAM_TYPE_OPTIONS, MATCH_PUSOY_TABLE_SCENE_ID_CFG
+  MATCH_PUSOY_UNIQUE_ID_CFG, MATCH_LIST_TAG_OPTIONS, MATCH_IUPSTREAM_TYPE_OPTIONS, MATCH_PUSOY_TABLE_SCENE_ID_CFG
 } from '@/utils/options'
 
 export default {
@@ -871,6 +871,7 @@ export default {
       MATCH_PUSOY_TABLE_SCENE_ID_CFG,
       MATCH_LIST_TAG_OPTIONS,
       MATCH_IUPSTREAM_TYPE_OPTIONS,
+      MATCH_PUSOY_UNIQUE_ID_CFG,
       form: {
         gameId: MATCH_IUPSTREAM_TYPE_OPTIONS.MATCH_UPSTREAM_TYPE_PUSOY,
         status: -1,
@@ -951,19 +952,6 @@ export default {
       prizeModleCfgs: [
         { 'value': 0, 'label': '固定奖励' },
         { 'value': 1, 'label': '动态奖励' }
-      ],
-      // 比赛全局ID集合
-      matchUniqueIdCfgs: [
-        { 'value': 0, 'label': '无' },
-        { 'value': 10001, 'label': '188Free' },
-        { 'value': 10002, 'label': '12888Free' },
-        { 'value': 10003, 'label': 'P10' },
-        { 'value': 10004, 'label': 'P20' },
-        { 'value': 10005, 'label': 'P40' },
-        { 'value': 10006, 'label': 'P100' },
-        { 'value': 10007, 'label': 'P300' },
-        { 'value': 10008, 'label': 'GTCC 2005' },
-        { 'value': 10009, 'label': 'Yamaha Moto' }
       ],
       prizeTemplateCfg: [],
       matchPropsCfgs: [], // 比赛道具信息
@@ -1127,7 +1115,7 @@ export default {
       },
       showDevTool: false,
       showTip: false,
-      propsTypeList: [1, 2] // 门票 头像框
+      propsTypeList: [PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET,PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME] // 门票 头像框
     }
   },
   computed: {
@@ -2190,7 +2178,7 @@ export default {
             var timestamp = Date.parse(new Date()) / 1000
             for (let i = 0; i < objs.list.length; i++) {
               if (this.propsTypeList.includes(objs.list[i].item_type)) {
-                if (objs.list[i].status === 1 && ((objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET && objs.list[i].expire_time > timestamp) ||
+                if (objs.list[i].status === 1 && ((objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET && objs.list[i].expire_time > timestamp) ||
                   objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME)) {
                   let str = objs.list[i].item_name
                   if (objs.list[i].show_name.length > 0) {
@@ -2205,7 +2193,7 @@ export default {
                     'propsCost': objs.list[i].item_cost,
                     'propsShowName': str
                   })
-                  if (objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET) { // Tongits 门票
+                  if (objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET) { //Pusoy门票
                     this.matchTicketsCfgs.push({
                       'label': str,
                       'value': objs.list[i].id
@@ -2347,8 +2335,8 @@ export default {
       if (this.editForm.data.opentMatchMember <= 0) {
         this.errmsg('开赛人数值无效！')
         return false
-      } else if (this.editForm.data.opentMatchMember % 4 != 0) {
-        this.errmsg('开赛人数值必须是4的倍数！')
+      } else if (this.editForm.data.opentMatchMember < 4) {
+        this.errmsg('最低开赛人数值大于4！')
         return false
       } else if (this.editForm.signExtra.matchMaxLimit > 0 && this.editForm.signExtra.matchMaxLimit < this.editForm.data.opentMatchMember) {
         this.errmsg('报名最大限制必须大于最低开赛人数')
@@ -2933,7 +2921,8 @@ export default {
           method: 'get',
           data: {
             Env: this.env,
-            Path: '/match/rule/list'
+            Path: '/match/rule/list',
+            Gid:2033,
           }
         })
         if (response.RetCode === 0) {

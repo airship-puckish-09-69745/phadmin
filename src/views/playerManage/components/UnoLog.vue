@@ -78,7 +78,7 @@
           <template slot-scope="scope">{{ scope.row.uid }}</template>
         </el-table-column>
         <el-table-column label="Score">
-          <template slot-scope="scope">{{ scope.row.cardsScore / 1000 }}</template>
+          <template slot-scope="scope">{{ scope.row.cardsScore }}</template>
         </el-table-column>
         <el-table-column label="Winner">
           <template slot-scope="scope">{{ scope.row.isWin ? 'Win' : 'loss' }}</template>

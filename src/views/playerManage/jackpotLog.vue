@@ -493,6 +493,7 @@ export default {
         { 'value': 210, 'label': 'LuckySpirits' },
         { 'value': 216, 'label': 'Phoenix' },
         { 'value': 134, 'label': 'Pusoy JP' },
+        { 'value': 135, 'label': 'SUPER COLOR' },
       ],
       appConfig: [
         { 'value': 0, 'label': '全部' },
@@ -506,7 +507,17 @@ export default {
       poolConfig: [
         { 'value': 0, 'label': '全部' },
         { 'value': 1, 'label': '玩家奖池' },
-        { 'value': 2, 'label': '展示奖池' }
+        { 'value': 2, 'label': '展示奖池' },
+
+        { 'value': 3, 'label': '玩家Grand奖池' },
+        { 'value': 4, 'label': '玩家Major奖池' },
+        { 'value': 5, 'label': '玩家Minor奖池' },
+        { 'value': 6, 'label': '玩家Mini奖池' },
+        { 'value': 7, 'label': '展示Grand奖池' },
+        { 'value': 8, 'label': '展示Major奖池' },
+        { 'value': 9, 'label': '展示Minor奖池' },
+        { 'value': 10, 'label': '展示Mini奖池' },
+
       ],
       typeConfig: [
         { 'value': 0, 'label': '全部' },
@@ -552,7 +563,7 @@ export default {
       prizeForm: {
         ChangeNum: 0,
         ChangeRobotNum: 0,
-        
+
         GrandChangeNum: 0,
         MajorChangeNum: 0,
         GrandChangeRobotNum: 0,
@@ -613,6 +624,7 @@ export default {
             // loading.close()
             return
           }
+          console.log("objs.list:", objs.list)
           if (objs.total > 0) {
             _this.totalCount = objs.total
             _this.tableData = objs.list
@@ -904,7 +916,7 @@ export default {
             type: 'success'
           })
         } else {
-          this.$message.error('操作失败')            
+          this.$message.error('操作失败')
         }
       })
     },
@@ -952,7 +964,7 @@ export default {
           this.prizeForm.GrandChangeRobotNum = 0
           this.prizeForm.MajorChangeRobotNum = 0
         } else {
-          this.$message.error('操作失败')            
+          this.$message.error('操作失败')
         }
       })
     },

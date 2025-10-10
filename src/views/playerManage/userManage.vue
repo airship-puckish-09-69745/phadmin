@@ -1783,7 +1783,7 @@ export default {
           }
         }
         if (this.tableData[i].item_type === id && this.tableData[i].status === 1) {
-          if (this.tableData[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET || this.tableData[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET) {
+          if (this.isTicketProp(this.tableData[i].item_type)) {
             let expTime = this.tableData[i].expire_time * 1000
             if (currTime < expTime) {
               this.tableItemData.push({'value': this.tableData[i].id, 'label': str, disabled: false})
@@ -1835,6 +1835,14 @@ export default {
           }))
         }
       })
+    },
+    //是否是门票类型道具
+    isTicketProp(itemType) {
+      return itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET || itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET || itemType === PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET
+    },
+    //是否是头像框道具
+    isAvatarFrameProp(itemType) {
+      return itemType === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME || itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR
     },
     incTrustScore() {
       if (this.env != 'test') {

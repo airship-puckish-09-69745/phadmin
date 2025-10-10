@@ -128,7 +128,7 @@
             <el-form-item label="球运动算法版本：" :required="true" prop="item.MotionAlgorithmsVersion" :rules="dataRule(true,{type:'n',range:'0'})">
               <el-input v-model.number="edit.item.MotionAlgorithmsVersion" placeholder="请输入" />
             </el-form-item>
-          </el-col>          
+          </el-col>
         </el-row>
 
         <fieldset>
@@ -146,7 +146,7 @@
             </el-col>
           </el-row>
         </fieldset>
-        
+
         <fieldset>
           <legend>钱包转出配置 (N = 配置 * 投注额)</legend>
           <el-row>
@@ -279,7 +279,7 @@ export default {
         isEdit: false
       },
 
-      AttrNames: { 
+      AttrNames: {
         CarryLower: '最小携带',
         CarryUpper: '最大携带',
         BallCount: '球数',
@@ -443,12 +443,12 @@ export default {
             if (_data.WalletConfig) {
               console.log(ID, "=>", _data.WalletConfig)
               this.edit.WalletConfig = this.libMoneyRobot.TransForShow(JSON.parse(_data.WalletConfig))
-            }else{
+            } else {
               this.edit.WalletConfig = NewWalletConfig()
             }
             if (_data.RemainBallRatio) {
               this.edit.RemainBallRatio = this.libMoneyRobot.TransForShow(JSON.parse(_data.RemainBallRatio))
-            }else{
+            } else {
               this.edit.RemainBallRatio = NewBallRatio()
             }
           } catch (e) {
@@ -523,7 +523,7 @@ export default {
           Message.warning('最小携带需>=最大赔付，请检查数值正确性！')
           return false
         }
-      }      
+      }
       if (this.edit.WalletConfig) {
         if (this.edit.WalletConfig.SuitableRollOutMoney*this.edit.item.BaseScore < this.edit.item.CarryLower){
           Message.warning('最小携带>=(SuitableRollOutMoney*BaseScore)，请检查数值正确性！')

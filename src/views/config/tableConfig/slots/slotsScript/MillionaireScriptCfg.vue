@@ -403,7 +403,9 @@ export default {
         '204': 'spacetreasure',
         '208': 'candyburst',
         '220': 'goldendragon',
-        '221': 'goldendragonmars'
+        '221': 'goldendragonmars',
+        '214': 'pumpkincash',
+        '224': 'supermahjong'
       }
     }
   },
@@ -575,19 +577,26 @@ export default {
         method: 'get',
         data: {}
       }).then(response => {
+        let optionArr = []
         if (response.RetCode === 0) {
           for (let i = 0; i < response.Data.length; i++) {
-            if (response.Data[i].Gid < 50 || response.Data[i].Gid > 100 && response.Data[i].Gid < 150 || response.Data[i].Gid > 499) {
+           if (response.Data[i].CategoryID != 1) {
               continue
             }
-            this.gameOptions.push({
+            optionArr.push({
               key: response.Data[i].Gid,
               label: response.Data[i].Name
             })
           }
-          this.gameOptions.push({ key: 100180, label: 'Fishing Master(额外加注)' })
-          this.gameOptions.push({ key: 100186, label: 'Mahjong Jackpot(额外加注)' })
+          optionArr.push({ key: 100180, label: 'Fishing Master(额外加注)' })
+          optionArr.push({ key: 100186, label: 'Mahjong Jackpot(额外加注)' })
         }
+
+        // 排序
+        optionArr.sort((a, b) => {
+            return a.label.localeCompare(b.label)
+          })
+          this.gameOptions = optionArr
       })
     },
 

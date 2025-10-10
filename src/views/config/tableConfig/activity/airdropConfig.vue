@@ -235,6 +235,13 @@
                   </el-form>
                 </el-form-item>
               </el-col>
+              <el-col>
+                <el-form-item label="单个用户最大领奖额：" :required="true">
+                  <el-input v-model.number="edit.item.rewardConfig.userRewardLimit">
+                    <template slot="append">₱</template>
+                  </el-input>
+                </el-form-item>
+              </el-col>
             </el-form>
           </el-row>
         </el-tab-pane>
@@ -611,7 +618,8 @@ function newItem() {
       remainRewardMonitorRate: 90,
       rewardRanges: [
         { minScore: 1, maxScore: 100, minCoefficient: 0.5, maxCoefficient: 1 }
-      ]
+      ],
+      userRewardLimit: 0,
     },
     progressPrizes: [
       /*{
@@ -1081,6 +1089,7 @@ export default {
 
       const copyItem = JSON.parse(JSON.stringify(this.edit.item))
       copyItem.rewardConfig.totalReward *= 1000
+      copyItem.rewardConfig.userRewardLimit *= 1000
       copyItem.rewardConfig.rewardRanges.forEach(item => {
         item.minScore *= 1000
         item.maxScore *= 1000
@@ -1331,6 +1340,11 @@ export default {
           item.taskConfig = JSON.parse(item.taskConfig)
           item.rewardConfig = JSON.parse(item.rewardConfig)
           item.rewardConfig.totalReward = item.rewardConfig.totalReward / 1000
+          if (item.rewardConfig.userRewardLimit) {
+            item.rewardConfig.userRewardLimit = item.rewardConfig.userRewardLimit / 1000
+          } else {
+            item.rewardConfig['userRewardLimit'] = 0
+          }
           item.progressPrizes = JSON.parse(item.progressPrizes)
           item.userTypes = JSON.parse(item.userTypes)
 

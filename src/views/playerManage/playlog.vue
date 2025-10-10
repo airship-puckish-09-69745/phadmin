@@ -3197,11 +3197,17 @@
                 <el-image style="width: 37px; height: 50px" :src="getBuracoCardUrl(item)" />
               </div>
             </el-card>
-            <div v-for="c in scope.row.handcards" class="block"><!--手牌-->
+          </template>
+        </el-table-column>
+        <!--
+        <el-table-column prop="handcards" label="handcards" width="650px" >
+          <template slot-scope="scope">
+            <div v-for="c in scope.row.handcards" class="block">
               <el-image style="width: 37px; height: 50px" :src="getBuracoCardUrl(c)" />
             </div>
           </template>
         </el-table-column>
+      -->
       </el-table>
     </el-dialog>
 
@@ -3315,6 +3321,14 @@
       :game-log="gameLogComponent.detail"
       :game-log-visible="gameLogComponent.visible"
       :gid="115"
+      :uid="clickRowUid"
+      @closeDialog="closeDialog"
+    />
+    <mini-super-color-detail-log
+      v-if="gameLogComponent.gid === 135"
+      :game-log="gameLogComponent.detail"
+      :game-log-visible="gameLogComponent.visible"
+      :gid="135"
       :uid="clickRowUid"
       @closeDialog="closeDialog"
     />
@@ -3458,6 +3472,7 @@ import GinRummy from '@/views/playerManage/components/GinRummy.vue'
 import UnoLog from '@/views/playerManage/components/UnoLog.vue'
 import PusoyWildLog from '@/views/playerManage/components/PusoyWildLog.vue'
 import PusoyGameLog from '@/views/playerManage/components/PusoyGameLog.vue'
+import MiniSuperColorDetailLog from '@/views/playerManage/components/MiniSuperColorLog.vue';
 
 const filterMap = {
   IsPractice: {
@@ -3485,6 +3500,7 @@ function newChartData() {
 export default {
   // eslint-disable-next-line vue/no-unused-components
   components: {
+    MiniSuperColorDetailLog,
     UnoLog,
     GinRummy,
     MultiPlayerNiuNiuDetailLog,
@@ -3787,7 +3803,7 @@ export default {
         4: 'MINI'
       },
       libMoney: new MoneyShow(['MoneyChanged', 'PayoffAmount', 'MoneyNow', 'ServiceFee', 'TableMoney', 'TotalValidBet', 'PotChange']),
-      LogComponentGameIds: [107, 108, 32, 111, 110, 49, 47, 48, 112, 115, 116, 117, 126,21],
+      LogComponentGameIds: [107, 108, 32, 111, 110, 49, 47, 48, 112, 115, 116, 117, 126,21,135],
       uidMap: {},
       isRobotMap: {}
     }
@@ -4366,36 +4382,39 @@ export default {
               this.BuracoDetail.actionLogs[i].groups.push(val)
             }
         }
+
+        /*
         //玩家手牌
         let uId = this.BuracoDetail.actionLogs[i].uid
-        if (this.BuracoDetail.actionLogs[i].actionType == 0) {  //发牌
+        if (this.BuracoDetail.actionLogs[i].actionType == 0 || this.BuracoDetail.actionLogs[i].actionType == 4) {  //发牌/弃牌堆给玩家
           userHandCards.set(uId, this.BuracoDetail.actionLogs[i].opCards)
-          this.BuracoDetail.actionLogs[i].handcards = this.BuracoDetail.actionLogs[i].opCards
-        } else if (this.BuracoDetail.actionLogs[i].actionType == 2    //摸牌堆
-          || this.BuracoDetail.actionLogs[i].actionType == 4){   //弃牌堆给玩家
-            //添加牌
+        } else if (this.BuracoDetail.actionLogs[i].actionType == 2){    //摸牌堆
           let handCards = userHandCards.get(uId)
-          handCards = handCards.concat(this.BuracoDetail.actionLogs[i].opCards)
-          userHandCards.set(uId,handCards)
-          this.BuracoDetail.actionLogs[i].handcards = handCards
+          for (let c of this.BuracoDetail.actionLogs[i].opCards){
+            handCards.push(c)
+          }
         } else if (this.BuracoDetail.actionLogs[i].actionType == 3 //摸组弃牌
           || this.BuracoDetail.actionLogs[i].actionType == 5  //弃牌
           || this.BuracoDetail.actionLogs[i].actionType == 6 //扩组牌
           || this.BuracoDetail.actionLogs[i].actionType == 12 //新组合
         ){
-          //删除牌
           let handCards = userHandCards.get(uId)
           for (let opcard of this.BuracoDetail.actionLogs[i].opCards) {
             for (let n = 0; n < handCards.length; n ++){
               if (opcard == handCards[n]) {
-                handCards = handCards.splice(n, 1)
+                handCards.splice(n, 1)
                 break
               }
             }
           }
-          userHandCards.set(uId, handCards)
-          this.BuracoDetail.actionLogs[i].handcards = handCards
+          if (this.BuracoDetail.actionLogs[i].actionType == 5) {//弃牌后刷新显示
+            this.BuracoDetail.actionLogs[i].handcards = new Array()
+            for (let c of handCards){
+              this.BuracoDetail.actionLogs[i].handcards.push(c)
+            }
+          }
         }
+      */
       }
       console.log('this.BuracoData => ', this.BuracoDetail)
       this.BuracoDetailVisible = true
@@ -5636,8 +5655,11 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
     },
     getBuracoCardUrl(card) {
       let c = (card & 0x0ff)
+      let idx = (card & 0xf00)
+      if ((idx === 0) && (c > 0x60)) { //兼容0x100和0x60定义
+        c = c - 0x50
+      }
       let color = (c >> 4) & 0xf
-      color = (color - 1)%5 + 1  //兼容0x111 和 0x61定义
       if (color == 5) {//王
         c = 2
       }
