@@ -61,12 +61,12 @@
                 <el-form :inline="true">
                   <el-col :span="8">
                     <el-form-item label="火箭发射倍率范围：>">
-                      <el-input v-model.number="item.RewardMulMin" size="mini" ></el-input>
+                      <el-input v-model.number="item.RewardMulMin" size="mini" ><template  slot="append">X</template></el-input>
                     </el-form-item>
                   </el-col>
                   <el-col :span="8">
-                    <el-form-item label="<">
-                      <el-input v-model.number="item.RewardMulMax" size="mini" ></el-input>
+                    <el-form-item label="<=">
+                      <el-input v-model.number="item.RewardMulMax" size="mini" ><template  slot="append">X</template></el-input>
                     </el-form-item>
                   </el-col>
                   
@@ -128,7 +128,7 @@
 
                   <el-table-column label="火箭赔率点" width="280px">
                     <template slot-scope="scope">
-                      <el-input v-model="item.BonusCfg[scope.$index].Reward" size="mini" />
+                      <el-input v-model="item.BonusCfg[scope.$index].Reward" size="mini" ><template  slot="append">X</template></el-input>
                     </template>
                   </el-table-column>
 
