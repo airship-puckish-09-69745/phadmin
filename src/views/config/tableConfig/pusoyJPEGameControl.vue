@@ -760,7 +760,7 @@ export default {
     },
     checkControlRangeSave() {
    //   console.log(" this.editGameControl",  this.editGameControl)
-
+      this.editGameControl.GameControl.ControlRange[0].MoveRange = this.editGameControl.GameControl.ControlRange[1].MoveRange
       this.editGameControl.GameControl.ControlRange[3].MoveRange = this.editGameControl.GameControl.ControlRange[4].MoveRange
       const ControlRange = []
       for (let i = 0; i < this.editGameControl.GameControl.ControlRange.length; i++) {
