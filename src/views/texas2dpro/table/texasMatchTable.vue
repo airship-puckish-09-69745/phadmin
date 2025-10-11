@@ -708,6 +708,11 @@ export default {
         { key: '[6]188投注金', value: 6 },
         { key: '[7]1288投注金', value: 7 },
         { key: '[8]2888投注金', value: 8 },
+        { key: '[54]', value: 54 },
+        { key: '[55]', value: 55 },
+        { key: '[56]', value: 56 },
+        { key: '[57]', value: 57 },
+      ],
       ],
       appidInfoCfgs: [
         { 'value': 1000002, 'label': 'dayusenlin' },
