@@ -367,11 +367,11 @@
                   <el-table-column prop="Prop" label="道具">
                     <template slot-scope="scope">
                       <el-input
-                        :value="formatPropValue(scope.row.Prop)"
+                        :value="formatPropValue(scope.row.Prop, scope.row.RichCard, scope.row.RewardType)"
                         size="mini"
-                        :disabled="scope.row.RewardType !== 3"
-                        :class="{ 'clickable': scope.row.RewardType === 3 }"
-                        @click.native.stop="scope.row.RewardType === 3 && showPropDialog(index, scope.$index)"
+                        :disabled="scope.row.RewardType !== 3 && scope.row.RewardType !== 5"
+                        :class="{ 'clickable': scope.row.RewardType === 3 || scope.row.RewardType === 5 }"
+                        @click.native.stop="showPropDialog(index, scope.$index)"
                       />
                     </template>
                   </el-table-column>
@@ -485,6 +485,53 @@
         </el-form>
       </el-dialog>
 
+      <el-dialog
+        title="富裕卡配置"
+        :visible.sync="edit.richCardDialogVisible"
+        :close-on-click-modal="false"
+        :close-on-press-escape="false"
+        :width="'30%'"
+        :max-width="'250px'"
+        :modal="false"
+      >
+        <el-form ref="robotForm" :model="edit.currentRichCard" label-width="200px">
+          <el-form-item v-model="edit.currentRichCard.GameId" label="游戏：" :required="true" label-width="120px">
+            <el-select v-model="edit.currentRichCard.GameId" filterable placeholder="游戏筛选" size="mini">
+              <el-option
+                v-for="(k,v) in richCardGameMap"
+                :label="k"
+                :value="parseInt(v)"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="富裕卡：" label-width="120px" :required="true">
+            <el-cascader
+              v-model="edit.currentRichCard.richCardSelect"
+              :options="cfgData.richCardList"
+              :props="{ expandTrigger: 'hover' }"
+            />
+          </el-form-item>
+          <el-form-item label="时间：" label-width="120px" :required="true">
+            <template>
+              <el-select v-model="edit.currentRichCard.Time" size="mini" placeholder="请选择">
+                <el-option
+                  v-for="option in ITEM_DAY_TYPE_OPTIONS"
+                  :key="option.value"
+                  :label="option.label"
+                  :value="option.value"
+                  :disabled="true"
+                />
+              </el-select>
+            </template>
+          </el-form-item>
+          <el-row style="margin-top: 10px">
+            <el-col :span="10" :offset="10">
+              <el-button type="primary" size="medium" @click="saveRichCard()">保存</el-button>
+            </el-col>
+          </el-row>
+        </el-form>
+      </el-dialog>
+
       <el-row>
         <br>
         <el-button type="primary" @click="saveData">保存</el-button>
@@ -583,6 +630,7 @@ export default {
             Reward: [{
               RewardType: null,
               Prop: null,
+              RichCard: null,
               Num: 0,
               Img: ''
             }]
@@ -593,6 +641,14 @@ export default {
         currentProp: {
           ItemType: null,
           PropID: null,
+          Time: null,
+          TaskIndex: null,
+          RewardIndex: null
+        },
+        richCardDialogVisible: false,
+        currentRichCard: {
+          GameId: null,
+          richCardSelect: [],
           Time: null,
           TaskIndex: null,
           RewardIndex: null
@@ -621,15 +677,20 @@ export default {
         { value: 1, label: '金币(投注金)' },
         { value: 4, label: '金币(返水金)' },
         { value: 2, label: '星星' },
-        { value: 3, label: '道具' }
+        { value: 3, label: '道具' },
+        { value: 5, label: '富裕卡' }
       ],
       propsConfig: [],
       tableItemData: [],
       ITEM_TYPE_OPTIONS,
-      ITEM_DAY_TYPE_OPTIONS
+      ITEM_DAY_TYPE_OPTIONS,
+      gameData: [],
+      richCardGameMap: null,
+      cfgData: {}
     }
   },
   created() {
+    this.getMissionData()
     this.getData()
     this.env = store.getters.env || this.env
     this.getItemList()
@@ -717,6 +778,14 @@ export default {
           }
         }
       }
+      if (this.richCardGameMap === null) {
+        this.$set(this, 'richCardGameMap', {})
+        for (let i = 0; i < this.gameData.length; i++) {
+          if (this.cfgData.openGames[this.gameData[i].Gid]) {
+            this.richCardGameMap[this.gameData[i].Gid] = this.gameData[i].Name
+          }
+        }
+      }
       this.edit.visible = true
     },
     handleDelete(ob) {
@@ -762,6 +831,43 @@ export default {
         }
       })
     },
+    getMissionData() {
+      request({
+        url: '/customizeconfig/one',
+        method: 'get',
+        data: {
+          SubKey: 'slotsmission'
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const o = JSON.parse(response.Data.Data)
+          const openGames = {}
+          for (const k in o.BuyFreeList) {
+            openGames[o.BuyFreeList[k].SlotsType] = o.BuyFreeList[k].Open
+          }
+
+          const richCardList = []
+          for (const k in o.RichCardList) {
+            const item = {
+              value: o.RichCardList[k].RichCardLevel,
+              label: '星级' + o.RichCardList[k].RichCardLevel,
+              children: []
+            }
+            for (const i in o.RichCardList[k].Bets) {
+              item.children.push({
+                value: o.RichCardList[k].Bets[i],
+                label: '金额 ' + o.RichCardList[k].Bets[i] / 1000
+              })
+            }
+            richCardList.push(item)
+          }
+          this.cfgData = {
+            openGames: openGames,
+            richCardList: richCardList
+          }
+        }
+      })
+    },
     saveData() {
       // 设置修改后数据
       var tableData = JSON.parse(JSON.stringify(this.item))
@@ -792,7 +898,7 @@ export default {
         if (response.RetCode === 0) {
           const showMsg = '保存成功'
           Message.success(showMsg)
-          this.getData()
+          // this.getData()
           return
         } else {
           const errMsg = '保存成功失败！'
@@ -847,6 +953,16 @@ export default {
             }
             this.treeData.push(cty)
           }
+
+          for (let i = 0; i < response.Data.length; i++) {
+            if (response.Data[i].Gid < 50 || response.Data[i].Gid > 100 && response.Data[i].Gid < 150 || response.Data[i].Gid > 499) {
+              continue
+            }
+            this.gameData.push({
+              Gid: response.Data[i].Gid,
+              Name: response.Data[i].Name
+            })
+          }
         }
       })
     },
@@ -859,6 +975,14 @@ export default {
         ConditionTarget: 0,
         Reward: []
       })
+      if (this.richCardGameMap === null) {
+        this.$set(this, 'richCardGameMap', {})
+        for (let i = 0; i < this.gameData.length; i++) {
+          if (this.cfgData.openGames[this.gameData[i].Gid]) {
+            this.richCardGameMap[this.gameData[i].Gid] = this.gameData[i].Name
+          }
+        }
+      }
     },
     // 删除任务
     removeTask(index) {
@@ -869,6 +993,7 @@ export default {
       task.Reward.push({
         RewardType: null,
         Prop: null,
+        RichCard: null,
         Num: 0,
         Img: ''
       })
@@ -906,23 +1031,41 @@ export default {
       this.edit.visible = false
     },
     showPropDialog(taskIndex, rewardIndex) {
-      const prop = this.edit.item.TaskItem[taskIndex].Reward[rewardIndex].Prop
-      if (prop !== null) {
-        this.edit.currentProp.PropID = prop.PropID
-        this.edit.currentProp.Time = prop.Time
-        for (let i = 0; i < this.tableData.length; i++) {
-          if (this.tableData[i].id === prop.PropID) {
-            this.edit.currentProp.ItemType = this.tableData[i].item_type
+      if (this.edit.item.TaskItem[taskIndex].Reward[rewardIndex].RewardType === 3) {
+        const prop = this.edit.item.TaskItem[taskIndex].Reward[rewardIndex].Prop
+        if (prop !== null) {
+          this.edit.currentProp.PropID = prop.PropID
+          this.edit.currentProp.Time = prop.Time
+          for (let i = 0; i < this.tableData.length; i++) {
+            if (this.tableData[i].id === prop.PropID) {
+              this.edit.currentProp.ItemType = this.tableData[i].item_type
+            }
           }
+        } else {
+          this.edit.currentProp.PropID = null
+          this.edit.currentProp.ItemType = null
+          this.edit.currentProp.Time = null
         }
+        this.edit.currentProp.TaskIndex = taskIndex
+        this.edit.currentProp.RewardIndex = rewardIndex
+        this.edit.propDialogVisible = true
       } else {
-        this.edit.currentProp.PropID = null
-        this.edit.currentProp.ItemType = null
-        this.edit.currentProp.Time = null
+        const richCard = this.edit.item.TaskItem[taskIndex].Reward[rewardIndex].RichCard
+        if (richCard !== null) {
+          this.edit.currentRichCard.GameId = richCard.SlotsType
+          this.edit.currentRichCard.Time = richCard.Time
+          this.$set(this.edit.currentRichCard, 'richCardSelect', [])
+          this.edit.currentRichCard.richCardSelect.push(richCard.Level)
+          this.edit.currentRichCard.richCardSelect.push(richCard.Bet)
+        } else {
+          this.edit.currentRichCard.GameId = null
+          this.edit.currentRichCard.Time = 2
+          this.edit.currentRichCard.richCardSelect = null
+        }
+        this.edit.currentRichCard.TaskIndex = taskIndex
+        this.edit.currentRichCard.RewardIndex = rewardIndex
+        this.edit.richCardDialogVisible = true
       }
-      this.edit.currentProp.TaskIndex = taskIndex
-      this.edit.currentProp.RewardIndex = rewardIndex
-      this.edit.propDialogVisible = true
     },
     getItemList() {
       request({
@@ -990,10 +1133,21 @@ export default {
         PropID: this.edit.currentProp.PropID,
         Time: this.edit.currentProp.Time
       }
+      this.edit.item.TaskItem[this.edit.currentProp.TaskIndex].Reward[this.edit.currentProp.RewardIndex].RichCard = null
       this.edit.propDialogVisible = false
     },
-    formatPropValue(prop) {
-      if (prop !== null) {
+    saveRichCard() {
+      this.edit.item.TaskItem[this.edit.currentRichCard.TaskIndex].Reward[this.edit.currentRichCard.RewardIndex].RichCard = {
+        SlotsType: this.edit.currentRichCard.GameId,
+        Time: this.edit.currentRichCard.Time
+      }
+      this.edit.item.TaskItem[this.edit.currentRichCard.TaskIndex].Reward[this.edit.currentRichCard.RewardIndex].RichCard.Level = this.edit.currentRichCard.richCardSelect[0]
+      this.edit.item.TaskItem[this.edit.currentRichCard.TaskIndex].Reward[this.edit.currentRichCard.RewardIndex].RichCard.Bet = this.edit.currentRichCard.richCardSelect[1]
+      this.edit.item.TaskItem[this.edit.currentRichCard.TaskIndex].Reward[this.edit.currentRichCard.RewardIndex].Prop = null
+      this.edit.richCardDialogVisible = false
+    },
+    formatPropValue(prop, richCard, rewardType) {
+      if (rewardType === 3 && prop !== null) {
         const item = this.tableData.find(item => item.id === prop.PropID)
         if (item !== null) {
           let str = item.item_name
@@ -1006,6 +1160,10 @@ export default {
           return str
         }
         return ''
+      } else if (rewardType === 5 && richCard !== null) {
+        let str = this.richCardGameMap[richCard.SlotsType]
+        str = str + '(' + richCard.Bet / 1000 + ')'
+        return str
       }
     },
     handleCreateBonusIcon() {
