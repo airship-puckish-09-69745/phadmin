@@ -713,7 +713,6 @@ export default {
         { key: '[56]', value: 56 },
         { key: '[57]', value: 57 },
       ],
-      ],
       appidInfoCfgs: [
         { 'value': 1000002, 'label': 'dayusenlin' },
         { 'value': 1000003, 'label': 'testaccount' },
