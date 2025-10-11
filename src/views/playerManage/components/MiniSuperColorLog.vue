@@ -227,7 +227,8 @@ export default {
       const dicesTmp = []
       for (let i = 0; i < dices.length; i++) {
         const dice = dices[i]
-        dicesTmp.push(this.ColorOption[dice].Name)
+        const option = this.ColorOption.find(item => item.Id === dice)
+        dicesTmp.push(option.Name)
       }
       return dicesTmp.join('，')
     },
@@ -236,8 +237,9 @@ export default {
         return '-'
       }
       const dice = this.Dices[this.SuperIndex]
+      const option = this.ColorOption.find(item => item.Id === dice)
       const superOdd = (this.SuperOdd / 1000).toFixed(2)
-      return this.ColorOption[dice].Name + '(' + superOdd + '倍)'
+      return option.Name + '(' + superOdd + '倍)'
     },
     initData(val) {
       const gameLog = val
