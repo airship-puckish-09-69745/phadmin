@@ -587,6 +587,7 @@ import GameLevel from '@/components/GameLevel'
 import MoneyInput from '@/components/MoneyInput'
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
 import { IsMars } from '@/utils/env'
+import {ITEM_TYPE_OPTIONS, PROP_TYPE_OPTIONS} from "@/utils/options";
 
 const filterMap = {}
 
@@ -643,7 +644,7 @@ function newItem() {
     AppInfoStr: '',
     OpenDaysLimit: 0,
     SignUpType: 0,
-    SignUpExtra: { 
+    SignUpExtra: {
       propsId: 0,
       propsType: 0,
       propsNum:0,
@@ -799,7 +800,7 @@ export default {
     this.getList()
     if (!IsMars()) {
       this.getMatchProps()
-    } 
+    }
     /*this.getMatchPropsV1()*/
   },
   methods: {
@@ -1248,8 +1249,8 @@ export default {
         console.log("no change return")
         return "没有修改!"
       }
-    
-      let str = "" 
+
+      let str = ""
       let has = false
       for (let i=0; i<this.tableData.length; i++) {
         const row = this.tableData[i]
@@ -1374,7 +1375,7 @@ export default {
           } else {
             this.edit.item.SignUpExtra.propsCost = this.matchPropsCfgs[i].propsCost
           }
-          
+
           this.edit.item.SignUpExtra.propsName = this.matchPropsCfgs[i].propsName
         }
         for (var j=0; j<this.edit.item.RankRewardsExtra.length; j++){
@@ -1388,7 +1389,7 @@ export default {
             this.edit.item.RankRewardsExtra[j].propsReward.propsName = this.matchPropsCfgs[i].propsName
           }
         }
-      }  
+      }
     },
     getPropsExpireTime(propsId, propsType) {
       for (var i=0; i<this.matchPropsCfgs.length; i++){
@@ -1396,7 +1397,7 @@ export default {
           return this.matchPropsCfgs[i].propsExpireTime
         }
       }
-      return 0  
+      return 0
     },
     checkPropsExpire(postData){
       if (postData.SignUpType === 0) {
@@ -1406,15 +1407,14 @@ export default {
       if (postData.SignUpType > 0) {
         if (this.edit.item.SignUpExtra.propsId * this.edit.item.SignUpExtra.propsType * this.edit.item.SignUpExtra.propsNum === 0 ) {
           return true
-        } 
+        }
         var timestamp = Date.parse(new Date())/1000
         var endTime = postData.RaceEndDate
         if (postData.RaceType == 0) {
           endTime = postData.RaceBeginDate
         }
-        var expire_time = this.getPropsExpireTime(this.edit.item.SignUpExtra.propsId, this.edit.item.SignUpExtra.propsType) 
-        console.log(postData.RaceEndDate, expire_time)
-        if (expire_time < endTime && this.edit.item.SignUpExtra.propsType !== 4) {
+        var expire_time = this.getPropsExpireTime(this.edit.item.SignUpExtra.propsId, this.edit.item.SignUpExtra.propsType)
+        if (this.edit.item.SignUpExtra.propsType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET &&  expire_time < endTime && this.edit.item.SignUpExtra.propsType !== 4) {
           return true
         }
       }
@@ -1424,7 +1424,7 @@ export default {
           return true
         }
         expire_time = this.getPropsExpireTime(this.edit.item.RankRewardsExtra[j].propsReward.propsId, this.edit.item.RankRewardsExtra[j].propsReward.propsType)
-        if (expire_time < endTime && this.edit.item.RankRewardsExtra[j].propsReward.propsType !== 4) {
+        if (this.edit.item.SignUpExtra.propsType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET && expire_time < endTime && this.edit.item.RankRewardsExtra[j].propsReward.propsType !== 4) {
           return true
         }
       }
