@@ -187,7 +187,7 @@ export default {
       guideRecord: [],
       showAddNew:true,
       useSceneCfg: [
-        { 'label': '【tongits】比赛大厅页面-弹窗', 'value': 1 }
+        { 'label': '【tongits】比赛大厅页面-弹窗', 'value': 7 }
       ],
       activeCollapseIndex: '',
       subKey: 'match_hall_guide_list',
