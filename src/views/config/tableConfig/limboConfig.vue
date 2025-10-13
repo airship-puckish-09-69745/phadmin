@@ -27,6 +27,22 @@
 
           <el-tab-pane label="基础配置">
             <el-col :span="16" :offset="3">
+
+              <el-col :span="24" :offset="5">
+                <el-form :inline="true">
+                  <el-col :span="8">
+                    <el-form-item label="用户离开房间时间(s):">
+                      <el-input v-model.number="item.NoticeTime" size="mini" />
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="保底奖池抽水">
+                      <el-input v-model.number="item.FeeRate" size="mini" ><template  slot="append">%</template></el-input>
+                    </el-form-item>
+                  </el-col>
+                </el-form>
+              </el-col>
+
               <el-col :span="24" :offset="5">
                 <el-form :inline="true">
                   <el-col :span="8">
