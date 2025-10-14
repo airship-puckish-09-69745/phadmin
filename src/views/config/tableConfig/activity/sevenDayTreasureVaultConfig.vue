@@ -498,7 +498,7 @@
           <el-form-item v-model="edit.currentRichCard.GameId" label="游戏：" :required="true" label-width="120px">
             <el-select v-model="edit.currentRichCard.GameId" filterable placeholder="游戏筛选" size="mini">
               <el-option
-                v-for="(k,v) in gameMap"
+                v-for="(k,v) in richCardGameMap"
                 :label="k"
                 :value="parseInt(v)"
               />
@@ -684,13 +684,14 @@ export default {
       tableItemData: [],
       ITEM_TYPE_OPTIONS,
       ITEM_DAY_TYPE_OPTIONS,
-      gameMap: {},
+      gameData: [],
+      richCardGameMap: null,
       cfgData: {}
     }
   },
   created() {
-    this.getData()
     this.getMissionData()
+    this.getData()
     this.env = store.getters.env || this.env
     this.getItemList()
   },
@@ -777,6 +778,14 @@ export default {
           }
         }
       }
+      if (this.richCardGameMap === null) {
+        this.$set(this, 'richCardGameMap', {})
+        for (let i = 0; i < this.gameData.length; i++) {
+          if (this.cfgData.openGames[this.gameData[i].Gid]) {
+            this.richCardGameMap[this.gameData[i].Gid] = this.gameData[i].Name
+          }
+        }
+      }
       this.edit.visible = true
     },
     handleDelete(ob) {
@@ -823,7 +832,6 @@ export default {
       })
     },
     getMissionData() {
-      const $this = this
       request({
         url: '/customizeconfig/one',
         method: 'get',
@@ -832,8 +840,7 @@ export default {
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          $this.form = response.Data || { Data: '{}' }
-          const o = JSON.parse(this.form.Data)
+          const o = JSON.parse(response.Data.Data)
           const openGames = {}
           for (const k in o.BuyFreeList) {
             openGames[o.BuyFreeList[k].SlotsType] = o.BuyFreeList[k].Open
@@ -891,7 +898,7 @@ export default {
         if (response.RetCode === 0) {
           const showMsg = '保存成功'
           Message.success(showMsg)
-          this.getData()
+          // this.getData()
           return
         } else {
           const errMsg = '保存成功失败！'
@@ -951,11 +958,11 @@ export default {
             if (response.Data[i].Gid < 50 || response.Data[i].Gid > 100 && response.Data[i].Gid < 150 || response.Data[i].Gid > 499) {
               continue
             }
-            if (this.cfgData.openGames[response.Data[i].Gid]) {
-              this.gameMap[response.Data[i].Gid] = response.Data[i].Name
-            }
+            this.gameData.push({
+              Gid: response.Data[i].Gid,
+              Name: response.Data[i].Name
+            })
           }
-          console.log('gameMap',this.gameMap)
         }
       })
     },
@@ -968,6 +975,14 @@ export default {
         ConditionTarget: 0,
         Reward: []
       })
+      if (this.richCardGameMap === null) {
+        this.$set(this, 'richCardGameMap', {})
+        for (let i = 0; i < this.gameData.length; i++) {
+          if (this.cfgData.openGames[this.gameData[i].Gid]) {
+            this.richCardGameMap[this.gameData[i].Gid] = this.gameData[i].Name
+          }
+        }
+      }
     },
     // 删除任务
     removeTask(index) {
@@ -1146,7 +1161,7 @@ export default {
         }
         return ''
       } else if (rewardType === 5 && richCard !== null) {
-        let str = this.gameMap[richCard.SlotsType]
+        let str = this.richCardGameMap[richCard.SlotsType]
         str = str + '(' + richCard.Bet / 1000 + ')'
         return str
       }

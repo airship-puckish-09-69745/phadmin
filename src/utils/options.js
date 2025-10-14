@@ -28,6 +28,9 @@ export const ITEM_TYPE_OPTIONS = [
   { 'value': 4, 'label': '德州头像框', disabled: false },
   { 'value': 5, 'label': 'SlotFreeSpin', disabled: false },
   { 'value': 6, 'label': 'Pusoy门票', disabled: false },
+  { 'value': 7, 'label': '新版Tongits门票', disabled: false },
+  { 'value': 8, 'label': '新版德州参赛券', disabled: false },
+  { 'value': 9, 'label': '新版Pusoy门票', disabled: false },
 ]
 
 // 道具过期时间下拉框
@@ -77,6 +80,7 @@ export const PROP_TYPE_OPTIONS = {
   PROP_TYPE_PUSOY_TICKET: 6,    //Pusoy参赛券
   PROP_TYPE_TICKET_NEW:7,      //新版Tongits门票 带交易ID
   PROP_TYPE_TEXAS_TICKET_NEW:8, //新版德州参赛券 带交易ID
+  PROP_TYPE_PUSOY_TICKET_NEW:9, //新版Pusoy门票 带交易ID
 }
 // 操作类型
 export const PROP_SOURCE_OPTIONS = [
