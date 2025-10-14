@@ -142,7 +142,7 @@ export default {
         { 'value': 'GP', 'label': 'GP' },
         { 'value': 'PG', 'label': 'PG' },
         { 'value': 'TG', 'label': 'TG' },
-        { 'value': 'Dev', 'label': 'DEV' }
+        { 'value': 'DEV', 'label': 'DEV' }
       ],
       channel_ids:[],
       csCfgs: [],
