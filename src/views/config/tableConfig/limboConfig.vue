@@ -144,13 +144,13 @@
 
                   <el-table-column label="火箭赔率点" width="280px">
                     <template slot-scope="scope">
-                      <el-input v-model="item.BonusCfg[scope.$index].Reward" size="mini" ><template  slot="append">X</template></el-input>
+                      <el-input v-model.number="item.BonusCfg[scope.$index].Reward" size="mini" ><template  slot="append">X</template></el-input>
                     </template>
                   </el-table-column>
 
                   <el-table-column label="Bunus倍数">
                     <template slot-scope="scope">
-                      <el-input v-model="item.BonusCfg[scope.$index].Mul" size="mini" />
+                      <el-input v-model.number="item.BonusCfg[scope.$index].Mul" size="mini" />
                     </template>
                   </el-table-column>
                   
@@ -186,13 +186,13 @@
                   </el-table-column>
                   <el-table-column label="区间" width="280px">
                     <template slot-scope="scope">
-                      <el-input v-model="item.FlyDelay[scope.$index].Area" size="mini" />
+                      <el-input v-model.number="item.FlyDelay[scope.$index].Area" size="mini" />
                     </template>
                   </el-table-column>
 
                   <el-table-column label="延迟">
                     <template slot-scope="scope">
-                      <el-input v-model="item.FlyDelay[scope.$index].Delay" size="mini" ><template  slot="append">second</template></el-input>
+                      <el-input v-model.number="item.FlyDelay[scope.$index].Delay" size="mini" ><template  slot="append">second</template></el-input>
                     </template>
                   </el-table-column>
                   
@@ -307,7 +307,7 @@
         <el-form-item label="火箭终点:">
           <el-form :inline="true">
             <el-col :span="8">
-                <el-input v-model="item.Card" size="mini" />
+                <el-input v-model.number="item.Card" size="mini" />
             </el-col>
           </el-form>
         </el-form-item>
@@ -443,6 +443,9 @@ export default {
           }
         }
         ret.BetMoneyLevel[i].TableMoney = (betItem)
+      }
+      for (const i in this.item.BonusCfg) {
+        
       }
 
       ret.CarryLower *= 1000
