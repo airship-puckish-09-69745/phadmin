@@ -75,7 +75,8 @@ export const PRIZE_MODEL_CONFIGS = [
 // 道具类型配置
 export const PROP_TYPE_OPTIONS = {
   PROP_TYPE_AVATAR_FRAME: 2,  // 头像框类型
-  PROP_TYPE_PUSOY_TICKET: 6   // Pusoy 门票类型
+  PROP_TYPE_PUSOY_TICKET: 6,  // Pusoy 门票类型
+  PROP_TYPE_PUSOY_TICKET_NEW: 9 // 新版Pusoy门票 带交易ID
 }
 
 // 道具信息配置

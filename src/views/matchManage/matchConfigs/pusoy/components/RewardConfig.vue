@@ -77,9 +77,17 @@
             </li>
 
             <!-- 道具过期天数 - 固定奖励模式 -->
-            <li v-if="prizeExtra.awardType === 0 && scope.row.propsReward != null && getPropsRewardItem(scope.row.propsReward.propsId, scope.row.propsReward.propsNum, scope.row.propsReward.propExpireDays).propsType === 2" style="list-style: none;">
+            <li v-if="prizeExtra.awardType === 0 && scope.row.propsReward != null && checkPropNeedExpireDays(scope.row.propsReward.propsId, scope.row.propsReward.propsNum, scope.row.propsReward.propExpireDays)" style="list-style: none;">
               <span>过期天数：</span>
-              <el-input v-model.number="scope.row.propsReward.propExpireDays" style="width: 100px;" size="mini" placeholder="填天数" @input="handlePropsExpireChange(scope.$index, $event)" />
+              <el-select v-model="scope.row.propsReward.propExpireDays" placeholder="请选择" size="mini" style="width:150px" @change="handlePropsExpireChange(scope.$index, $event)">
+                <el-option
+                  v-for="item in ITEM_DAY_TYPE_OPTIONS()"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                  :disabled="item.disabled===propValidExpireDays(scope.row.propsReward.propsId, item.value)"
+                />
+              </el-select>
             </li>
 
             <!-- 动态奖励模式 - 道具奖励 -->
@@ -100,9 +108,17 @@
             </li>
 
             <!-- 道具过期天数 -->
-            <li v-if="prizeExtra.awardType === 1 && scope.row.propsReward != null && getPropsRewardItem(scope.row.propsReward.propsId, scope.row.propsReward.propsNum, scope.row.propsReward.propExpireDays).propsType === 2" style="list-style: none;">
+            <li v-if="prizeExtra.awardType === 1 && scope.row.propsReward != null && checkPropNeedExpireDays(scope.row.propsReward.propsId, scope.row.propsReward.propsNum, scope.row.propsReward.propExpireDays)" style="list-style: none;">
               <span>过期天数：</span>
-              <el-input v-model.number="scope.row.propsReward.propExpireDays" style="width: 100px;" size="mini" placeholder="填天数" @input="handlePropsExpireChange(scope.$index, $event)" />
+              <el-select v-model="scope.row.propsReward.propExpireDays" placeholder="请选择" size="mini" style="width:150px" @change="handlePropsExpireChange(scope.$index, $event)">
+              <el-option
+                v-for="item in ITEM_DAY_TYPE_OPTIONS()"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+                :disabled="item.disabled===propValidExpireDays(scope.row.propsReward.propsId, item.value)"
+              />
+              </el-select>
             </li>
           </ul>
         </template>
@@ -151,6 +167,7 @@
 
 <script>
 import { $libShow } from '@/utils/common'
+import {ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS} from "@/utils/options";
 
 export default {
   name: 'RewardConfig',
@@ -205,6 +222,9 @@ export default {
     }
   },
   methods: {
+    ITEM_DAY_TYPE_OPTIONS() {
+      return ITEM_DAY_TYPE_OPTIONS
+    },
     addRankReward() {
       this.$emit('add-rank-reward')
     },
@@ -282,7 +302,31 @@ export default {
         propsNum: 0,
         propExpireDays: -1
       }
-    }
+    },
+    // 道具是否需要过期时间
+    checkPropNeedExpireDays(propsId, propsNum, propExpireDay) {
+      const prop = this.getPropsRewardItem(propsId, propsNum, propExpireDay)
+      return [PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME, PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW].includes(prop.propsType)
+    },
+    // 道具过期时间是否合法
+    propValidExpireDays(propsId, expireDays) {
+      const prop = this.getPropsRewardItem(propsId, 0, 0)
+      switch (prop.propsType) {
+        case PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME:
+          if (expireDays < 0) {
+            return false
+          }
+          break;
+        case PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW:
+          if (expireDays === 0 || expireDays === 365 || expireDays < 0) {
+            return false
+          }
+          break;
+        default:
+          break;
+      }
+      return  true
+    },
   }
 }
 </script>
