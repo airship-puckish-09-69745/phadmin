@@ -682,6 +682,8 @@ export default {
         'activity.userFilterCondition.registerTimeRange': '注册时间',
         'activity.userFilterCondition.betTimesRange': '累计投注次数',
         'activity.userFilterCondition.userTagConfig': '用户标签配置',
+        'activity.userFilterCondition.userTagConfig.tagId': '用户标签ID',
+        'activity.userFilterCondition.userTagConfig.tagValue': '用户标签值',
         id: '活动配置ID',
         name: '活动名称',
         cfgId: '活动配置ID',
