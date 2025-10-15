@@ -235,6 +235,18 @@
                   </el-form>
                 </el-form-item>
               </el-col>
+              <el-col :span="24" v-if="showUserTagCondition">
+                <el-form-item label="用户标签：" :required="false">
+                  <el-select v-model="edit.item.userFilterCondition.userTagConfig.tagValue" placeholder="请选择用户标签">
+                    <el-option
+                      v-for="item in userTagValues"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
               <el-col>
                 <el-form-item label="单个用户最大领奖额：" :required="true">
                   <el-input v-model.number="edit.item.rewardConfig.userRewardLimit">
@@ -641,7 +653,11 @@ function newItem() {
       betTimesRange: {
         min: 0,
         max: 0,
-      }
+      },
+      userTagConfig: {
+        tagId: 20000, // 游戏强度
+        tagValue: 0,
+      },
     }
   }
 }
@@ -665,6 +681,7 @@ export default {
         'activity.userFilterCondition': '筛选用户条件',
         'activity.userFilterCondition.registerTimeRange': '注册时间',
         'activity.userFilterCondition.betTimesRange': '累计投注次数',
+        'activity.userFilterCondition.userTagConfig': '用户标签配置',
         id: '活动配置ID',
         name: '活动名称',
         cfgId: '活动配置ID',
@@ -762,7 +779,8 @@ export default {
         { 'value': 1, 'label': '新增用户' },
         { 'value': 2, 'label': '所有用户' },
         { 'value': 3, 'label': '导入用户' },
-        { 'value': 4, 'label': '筛选用户' }
+        { 'value': 4, 'label': '筛选用户' },
+        { 'value': 5, 'label': '用户标签' },
       ],
 
       // 公共游戏任务类型
@@ -792,6 +810,14 @@ export default {
       filterGameIds: [ 2031, 10002 ],
 
       filterText: '',
+
+      userTagValues: [
+        { 'value': 0, 'label': '未选择' },
+        { 'value': 1, 'label': '无感' },
+        { 'value': 2, 'label': '尝试' },
+        { 'value': 3, 'label': '常玩' },
+        { 'value': 4, 'label': '核心' },
+      ],
 
       defaultProps: {
         label: 'label',
@@ -883,6 +909,9 @@ export default {
     },
     showUserFilterCondition() {
       return this.edit.item.userTypes.includes(4) // 4 筛选用户
+    },
+    showUserTagCondition() {
+      return this.edit.item.userTypes.includes(5) // 5 用户标签
     },
   },
   methods: {
@@ -1085,6 +1114,10 @@ export default {
           Message.error('请选择注册时间')
           return
         }
+      }
+      if (this.edit.item.userTypes[0] === 5 && this.edit.item.userFilterCondition.userTagConfig.tagValue === 0) {
+        Message.error('请选择用户标签')
+        return
       }
 
       const copyItem = JSON.parse(JSON.stringify(this.edit.item))
@@ -1318,6 +1351,7 @@ export default {
         // 查询已导入的用户id列表
         this.getImportedUidList()
       } else {
+        this.sentRewardAmount = 0
         this.$refs.tree.setCheckedKeys([])
       }
     },
@@ -1361,6 +1395,13 @@ export default {
                 min: 0,
                 max: 0
               },
+            }
+          }
+
+          if (item.userFilterCondition.userTagConfig === undefined) {
+            item.userFilterCondition['userTagConfig'] = {
+              tagId: 20000, // 游戏强度
+              tagValue: 0,
             }
           }
 
