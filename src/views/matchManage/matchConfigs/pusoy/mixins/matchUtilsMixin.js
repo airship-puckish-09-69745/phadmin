@@ -4,6 +4,7 @@
  */
 import { Message } from 'element-ui'
 import { MATCH_IUPSTREAM_TYPE_OPTIONS } from '@/utils/options'
+import { PROP_TYPE_OPTIONS } from '../utils/matchConfigConstants'
 
 export const matchUtilsMixin = {
   methods: {
@@ -445,6 +446,17 @@ export const matchUtilsMixin = {
       }
     },
 
+    /**
+     * 检查道具是否需要过期时间
+     * @param {number} propsId - 道具ID
+     * @param {number} propsNum - 道具数量
+     * @param {number} propExpireDays - 过期天数
+     * @returns {boolean} 是否需要过期时间
+     */
+    checkPropNeedExpireDays(propsId, propsNum, propExpireDays) {
+      const prop = this.getPropsRewardItem(propsId, propsNum, propExpireDays)
+      return [PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME, PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW].includes(prop.propsType)
+    },
 
     /**
      * 设置更新后的类型配置选项（根据报名类型动态设置）
