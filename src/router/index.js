@@ -2196,6 +2196,12 @@ export const asyncRoutes = [
         component: () => import('@/views/config/tableConfig/activity/posterConfig.vue'),
         name: 'posterConfig',
         meta: { title: '引流海报', noCache: true }
+      },
+      {
+        path: 'halloweenConfig',
+        component: () => import('@/views/config/tableConfig/activity/halloween/halloweenConfig.vue'),
+        name: 'halloweenConfig',
+        meta: { title: '万圣节活动配置', noCache: true }
       }
     ]
   },
