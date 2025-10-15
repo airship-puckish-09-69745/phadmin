@@ -1796,6 +1796,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/treasurebowlmars_slots_cfg'),
                 name: 'treasurebowlmars_slots_cfg',
                 meta: { title: 'TreasureBowl(审)' }
+              },
+              {
+                path: 'goldendragonmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/goldendragonmars_slots_cfg'),
+                name: 'goldendragonmars_slots_cfg',
+                meta: { title: 'GoldenDragon(审)' }
               }
             ]
           },
@@ -3582,6 +3588,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'Phoenixmars_slots_log',
             meta: { title: 'Phoenix(审)', gid: 217 }
+          },
+          {
+            path: 'goldendragonmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'goldendragonmars_slots_log',
+            meta: { title: 'GoldenDragon(审)', gid: 221 }
           }
         ]
       },
