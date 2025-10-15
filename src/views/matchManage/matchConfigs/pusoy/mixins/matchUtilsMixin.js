@@ -429,6 +429,7 @@ export const matchUtilsMixin = {
               propsName: this.configs.matchPropsCfgs[i].propsName,
               propsIcon: this.configs.matchPropsCfgs[i].propsIcon,
               propsAttr: this.configs.matchPropsCfgs[i].propsAttr,
+              propCost:this.configs.matchPropsCfgs[i].propsCost,
               propsNum: propsNum,
               propExpireDays: propExpireDays
             }
@@ -442,7 +443,8 @@ export const matchUtilsMixin = {
         propsIcon: '',
         propsAttr: '',
         propsNum: 0,
-        propExpireDays: -1
+        propExpireDays: -1,
+        propCost:0
       }
     },
 

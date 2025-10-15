@@ -215,7 +215,7 @@ export const matchFormMixin = {
             })
           }
         }
-
+        console.log("saveMatch rankReward 1111",rankReward)
         // 发送请求
         const response = await request({
           url: '/matchconfig/match/config/create',
@@ -509,21 +509,20 @@ export const matchFormMixin = {
 
       // 修复报名和重买道具信息
       const propsInfo =  this.configs.matchPropsCfgs || []
-      console.log("propsInfo ,",this.configs.matchPropsCfgs)
       for (let i = 0; i < propsInfo.length; i++) {
         const prop = propsInfo[i]
 
         // 修复报名道具信息
         if (prop.propsId === this.editForm.signExtra.propId) {
           this.editForm.signExtra.propType = prop.propsType
-          this.editForm.signExtra.propCost = prop.propCost || prop.propsCost
+          this.editForm.signExtra.propCost = prop.propsCost
           this.editForm.signExtra.propName = prop.propsName
         }
 
         // 修复重买道具信息
         if (prop.propsId === this.editForm.signExtra.reubyExtra.rebuyPropId) {
           this.editForm.signExtra.reubyExtra.rebuyPropType = prop.propsType
-          this.editForm.signExtra.reubyExtra.rebuyPropCost = prop.propCost || prop.propsCost
+          this.editForm.signExtra.reubyExtra.rebuyPropCost = prop.propsCost
           this.editForm.signExtra.reubyExtra.rebuyPropName = prop.propsName
         }
       }
