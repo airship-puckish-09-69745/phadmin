@@ -521,7 +521,8 @@ export default {
     },
 
     getItemShowName(item_type) {
-      if (item_type === null) {
+
+      if (item_type === "null") {
         return ''
       }
       let exitData = JSON.parse(item_type)

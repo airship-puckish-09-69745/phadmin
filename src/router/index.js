@@ -2462,6 +2462,20 @@ export const asyncRoutes = [
         ]
       },
       {
+        path: 'matchHallOperations',
+        component: () => import('@/views/empty'),
+        name: 'matchHallOperations',
+        meta: { title: '游戏嵌入-赛事大厅', noCache: true },
+        children: [
+          {
+            path: 'matchHallGuideList',
+            component: () => import('@/views/matchManage/matchHallOperations/matchHallGuide.vue'),
+            name: 'matchHallGuideList',
+            meta: { title: '游戏嵌入-赛事大厅', noCache: true }
+          }
+        ]
+      },
+      {
         path: 'selfBuildMatch',
         component: () => import('@/views/empty'),
         redirect: 'noRedirect',

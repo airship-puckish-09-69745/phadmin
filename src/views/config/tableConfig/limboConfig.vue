@@ -27,11 +27,32 @@
 
           <el-tab-pane label="基础配置">
             <el-col :span="16" :offset="3">
+
+              <el-col :span="24" :offset="5">
+                <el-form :inline="true">
+                  <el-col :span="8">
+                    <el-form-item label="用户离开房间时间(s):">
+                      <el-input v-model.number="item.NoticeTime" size="mini" />
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="保底奖池抽水">
+                      <el-input v-model.number="item.FeeRate" size="mini" ><template  slot="append">%</template></el-input>
+                    </el-form-item>
+                  </el-col>
+                </el-form>
+              </el-col>
+
               <el-col :span="24" :offset="5">
                 <el-form :inline="true">
                   <el-col :span="8">
                     <el-form-item label="最大人数:">
                       <el-input v-model.number="item.MaxPlayer" size="mini" />
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="进场限制:">
+                      <el-input v-model.number="item.CarryLower" size="mini" />
                     </el-form-item>
                   </el-col>
                 </el-form>
@@ -44,11 +65,6 @@
                       <el-input v-model="item.RTP" size="mini" ><template  slot="append">%</template></el-input>
                     </el-form-item>
                   </el-col>
-                </el-form>
-              </el-col>
-
-              <el-col :span="24" :offset="5">
-                <el-form :inline="true">
                   <el-col :span="8">
                     <el-form-item label="最大下注金额:">
                       <el-input v-model.number="item.MaxBet" size="mini" />
@@ -128,13 +144,13 @@
 
                   <el-table-column label="火箭赔率点" width="280px">
                     <template slot-scope="scope">
-                      <el-input v-model="item.BonusCfg[scope.$index].Reward" size="mini" ><template  slot="append">X</template></el-input>
+                      <el-input v-model.number="item.BonusCfg[scope.$index].Reward" size="mini" ><template  slot="append">X</template></el-input>
                     </template>
                   </el-table-column>
 
                   <el-table-column label="Bunus倍数">
                     <template slot-scope="scope">
-                      <el-input v-model="item.BonusCfg[scope.$index].Mul" size="mini" />
+                      <el-input v-model.number="item.BonusCfg[scope.$index].Mul" size="mini" />
                     </template>
                   </el-table-column>
                   
@@ -170,13 +186,13 @@
                   </el-table-column>
                   <el-table-column label="区间" width="280px">
                     <template slot-scope="scope">
-                      <el-input v-model="item.FlyDelay[scope.$index].Area" size="mini" />
+                      <el-input v-model.number="item.FlyDelay[scope.$index].Area" size="mini" />
                     </template>
                   </el-table-column>
 
                   <el-table-column label="延迟">
                     <template slot-scope="scope">
-                      <el-input v-model="item.FlyDelay[scope.$index].Delay" size="mini" ><template  slot="append">second</template></el-input>
+                      <el-input v-model.number="item.FlyDelay[scope.$index].Delay" size="mini" ><template  slot="append">second</template></el-input>
                     </template>
                   </el-table-column>
                   
@@ -291,7 +307,7 @@
         <el-form-item label="火箭终点:">
           <el-form :inline="true">
             <el-col :span="8">
-                <el-input v-model="item.Card" size="mini" />
+                <el-input v-model.number="item.Card" size="mini" />
             </el-col>
           </el-form>
         </el-form-item>
@@ -398,6 +414,7 @@ export default {
 
             this.transMoneyForShow()
 
+            item.CarryLower /= 1000
             item.RTP /= 1000
             item.RobotCarryMin /= 1000
             item.RobotCarryMax /= 1000
@@ -427,7 +444,11 @@ export default {
         }
         ret.BetMoneyLevel[i].TableMoney = (betItem)
       }
+      for (const i in this.item.BonusCfg) {
+        
+      }
 
+      ret.CarryLower *= 1000
       ret.RTP *= 1000
       ret.RobotCarryMin *= 1000
       ret.RobotCarryMax *= 1000

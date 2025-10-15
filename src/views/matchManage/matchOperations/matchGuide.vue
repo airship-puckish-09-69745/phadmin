@@ -164,8 +164,7 @@ export default {
         { 'label': '【tongits】大厅无次数+报大赛-弹窗', 'value': 3 },
         { 'label': '【tongits】等待界面-弹窗', 'value': 4 },
         { 'label': '【tongits】结算界面-弹窗', 'value': 5 },
-        { 'label': '【tongits】比赛内内嵌老虎机-弹窗', 'value': 6 },
-        { 'label': '【tongits】比赛大厅页面-弹窗', 'value': 7 }
+        { 'label': '【tongits】比赛内内嵌老虎机-弹窗', 'value': 6 }
       ],
       activeCollapseIndex: '',
       subKey: 'match_guide_list_new',

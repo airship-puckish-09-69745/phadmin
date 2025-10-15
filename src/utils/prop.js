@@ -10,7 +10,6 @@ export const SLOT_GAME_CONFIG =[
   { 'value': 192, 'label': 'Bounty Raid(Bounty Raid)', 'configKey':'',disabled: false },
   { 'value': 168, 'label': 'Pharaoh\'s Treasure', 'configKey':'',disabled: false },
   {'value': 84, 'label': 'Fortune Ace', 'configKey':'',disabled: false },
-  {'value': 186, 'label': 'Mahjong Jackpot', 'configKey':'',disabled: false },
   {'value': 164, 'label': 'Mahjong Fortune', 'configKey':'',disabled: false },
 ]
 
