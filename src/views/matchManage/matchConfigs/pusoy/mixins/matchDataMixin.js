@@ -228,13 +228,13 @@ export const matchDataMixin = {
 
             this.configs.matchTicketsCfgs = []
             const timestamp = Date.now() / 1000
-            const propsTypeList = [PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET, PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME]
+            const propsTypeList = [PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET, PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME,PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW]
 
             for (const item of data.list) {
               if (propsTypeList.includes(item.item_type)) {
                 if (item.status === 1 &&
                     ((item.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET && item.expire_time > timestamp) ||
-                     item.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME)) {
+                     item.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME || item.item_type=== PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW)) {
 
                   const showName = item.show_name ? `${item.item_name}(${item.show_name})` : item.item_name
 
@@ -248,7 +248,7 @@ export const matchDataMixin = {
                     propsShowName: showName
                   })
 
-                  if (item.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET) {
+                  if (item.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET||item.item_type=== PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW) {
                     this.configs.matchTicketsCfgs.push({
                       label: showName,
                       value: item.id

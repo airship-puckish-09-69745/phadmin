@@ -1017,6 +1017,7 @@ export default {
         index = this.item.TaskConfig.length - 1
       }
       for (let i = 0; i < this.item.TaskConfig[index].TaskItem.length; i++) {
+        this.item.TaskConfig[index].TaskItem[i].ConditionTarget = Number(this.item.TaskConfig[index].TaskItem[i].ConditionTarget)
         if (this.item.TaskConfig[index].TaskItem[i].ConditionType === 2) {
           this.item.TaskConfig[index].TaskItem[i].ConditionTarget *= 1000
         }

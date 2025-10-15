@@ -161,7 +161,7 @@
              <el-input v-model="editForm.itemExtra.showName" style="width: 200px;" placeholder="请填写后台名称" />
            </el-form-item>
 
-           <el-form-item v-if="isTicketProp(editForm.data.itemType)" label="道具价值：" :required="true">
+           <el-form-item v-if="isTicketProp(editForm.data.itemType) || isTicketPropNew(editForm.data.itemType)" label="道具价值：" :required="true">
              <el-input v-model.number="editForm.data.itemCost" style="width: 200px;" placeholder="请填写道具价值" />
            </el-form-item>
 
@@ -506,7 +506,7 @@ export default {
       var ret = 0
       for(var i = 0; i < this.tableData.length; i++) {
         const item_type = this.tableData[i].item_type
-        if (this.isTicketProp(item_type) && this.tableData[i].id === item_id ) {
+        if ((this.isTicketProp(item_type) || this.isTicketPropNew(item_type)) && this.tableData[i].id === item_id ) {
           ret  = this.tableData[i].item_cost
           break
         }
@@ -521,7 +521,8 @@ export default {
     },
 
     getItemShowName(item_type) {
-      if (item_type === null) {
+
+      if (item_type === "null") {
         return ''
       }
       let exitData = JSON.parse(item_type)
@@ -897,7 +898,7 @@ export default {
       if (this.isAvatarFrameProp(this.editForm.data.itemType)) {
         this.editForm.data.itemCost = 0
         this.slotFreeSpinPropReset()
-      } else if  (this.isTicketProp(this.editForm.data.itemType)) {
+      } else if  (this.isTicketProp(this.editForm.data.itemType) || this.isTicketPropNew(this.editForm.data.itemType)) {
         this.slotFreeSpinPropReset()
         if (typeof this.editForm.data.itemCost === 'undefined' || this.editForm.data.itemCost === null || this.editForm.data.itemCost === '') {
           this.errmsg('请填写道具价值')
@@ -955,6 +956,9 @@ export default {
     //是否是门票类型道具
     isTicketProp(itemType) {
       return itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET || itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET || itemType === PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET
+    },
+    isTicketPropNew(itemType) {
+      return itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET_NEW || itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW || itemType === PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW
     },
     //是否是头像框道具
     isAvatarFrameProp(itemType) {
