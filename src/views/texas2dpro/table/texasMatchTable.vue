@@ -1311,20 +1311,17 @@ export default {
           var timestamp = Date.parse(new Date())/1000
           if (objs.total > 0) {
             for (let i=0;i<objs.list.length;i++) {
-
-
-              if ((objs.list[i].item_type !== 3 && objs.list[i].item_type !== 4) || objs.list[i].status !== 1 || (objs.list[i].item_type === 3 && objs.list[i].expire_time < timestamp)) {
-                continue
+              if(objs.list[i].status ===1 && ((objs.list[i].item_type===3 && objs.list[i].expire_time>timestamp) || objs.list[i].item_type===8)) {
+                this.matchPropsCfgs.push({
+                  'propsType': objs.list[i].item_type,
+                  'propsId': objs.list[i].id,
+                  'propsName': objs.list[i].item_name,
+                  'propsIcon': objs.list[i].image,
+                  'propsAttr': objs.list[i].item_describe,
+                  'propsCost': objs.list[i].item_cost,
+                  'propsExpireTime': objs.list[i].expire_time,
+                })
               }
-              this.matchPropsCfgs.push({
-                'propsType': objs.list[i].item_type,
-                'propsId': objs.list[i].id,
-                'propsName': objs.list[i].item_name,
-                'propsIcon': objs.list[i].image,
-                'propsAttr': objs.list[i].item_describe,
-                'propsCost': objs.list[i].item_cost,
-                'propsExpireTime': objs.list[i].expire_time,
-              })
             }
           }
         }
