@@ -420,24 +420,24 @@ export default {
         }
 
         this.$emit('saveData')
-        this.lock = false
+        this.form.Data = JSON.stringify(tmp)
+        request({
+          url: 'customizeconfig/update',
+          method: 'post',
+          data: this.form
+        }).then(response => {
+          if (response.RetCode === 0) {
+            this.$message.success('保存成功')
+          } else {
+            this.$message.error('保存失败！' + response.Data)
+          }
+        })
+        // this.lock = false
       })
 
-      this.form.Data = JSON.stringify(tmp)
-      request({
-        url: 'customizeconfig/update',
-        method: 'post',
-        data: this.form
-      }).then(response => {
-        if (response.RetCode === 0) {
-          this.$message.success('保存成功')
-        } else {
-          this.$message.error('保存失败！' + response.Data)
-        }
-      })
-      setTimeout(() => {
-        this.IsUpdate = false
-      }, 1000)
+      // setTimeout(() => {
+      //   this.IsUpdate = false
+      // }, 1000)
     },
     handleAdd() {
       this.edit.item = newItem()
