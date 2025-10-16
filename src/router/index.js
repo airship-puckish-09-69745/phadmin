@@ -2965,6 +2965,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_livecolorgame',
             meta: { title: 'L ive ColorGame - ◐', gid: 129 }
+          },
+          {
+            path: 'playlog_limbo',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_limbo',
+            meta: { title: 'L imbo ◐', gid: 136 }
           }
 
           /*
