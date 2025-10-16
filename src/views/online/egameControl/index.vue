@@ -359,7 +359,7 @@ export default {
           console.log('tableMoneyOptions', objs)
           if (objs.length > 0) {
             const options = objs.map(item => ({
-              value: item.TableMoney,
+              value: item.TableMoney / 1000,
               label: item.TableMoney / 1000
             }))
             // 将顺序反转
