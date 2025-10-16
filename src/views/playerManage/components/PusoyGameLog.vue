@@ -51,7 +51,7 @@
         <template slot-scope="scope">{{ scope.row.moneyTotal / 1000 }}</template>
       </el-table-column>
       <el-table-column prop="moneyTotal" label="用户类型" width="120">
-        <template slot-scope="scope">{{ getRobotType(scope.row.RobotId,scope.row.RobotLevel,scope.row.userType) }}</template>
+        <template slot-scope="scope">{{ getRobotType(scope.row.RobotId,scope.row.RobotLevel,scope.row.userType,scope.row.RobotDefenceLevel) }}</template>
       </el-table-column>
     </el-table>
     <br>
@@ -233,8 +233,8 @@ export default {
       this.pusoyDetail = obj
       this.pusoyDetailVisible = true
     },
-    getRobotType(robotId, robotLevel,userType) {
-      console.log(robotId, robotLevel,userType)
+    getRobotType(robotId, robotLevel,userType,robotDefenceLevel) {
+      console.log(robotId, robotLevel,userType,robotDefenceLevel)
       if (robotId == 0) {
         if (userType === 0 ||userType === undefined) {
           return '真人'
@@ -244,6 +244,10 @@ export default {
           return '真人-黑子'
         }
       } else {
+        if (robotDefenceLevel !== undefined && robotDefenceLevel > 0) {
+          return getRobotDefenceLevel(robotDefenceLevel)
+        }
+
         switch (robotLevel) {
           case 1:
             return '机器人-强放'
@@ -261,7 +265,31 @@ export default {
             return '机器人-未知'
         }
       }
-    }
+    },
+
+    getRobotDefenceLevel(level) {
+      if (level === 0) {
+        return ''
+      } else if (level === 3) {
+        return '贴防 -- 陪玩'
+      } else if (level === 4) {
+        return '贴防 -- 弱杀'
+      } else if (level === 5) {
+        return '贴防 -- 强杀'
+      } else if (level === 6) {
+        return '贴防 -- 防作弊'
+      } else if (level === 7) {
+        return '预贴防 -- 陪玩'
+      } else if (level === 8) {
+        return '预贴防 -- 弱杀'
+      } else if (level === 9) {
+        return '预贴防 -- 强杀'
+      } else if (level === 10) {
+        return '贴防 -- 锁血强杀'
+      } else if (level === 11) {
+        return '预贴防 --  锁血强杀'
+      }
+    },
 
   }
 }
