@@ -228,7 +228,7 @@
                   </el-table-column>
                   <el-table-column
                     prop="RewardMin"
-                    label="最小奖励金额"
+                    label="任务条件"
                     width="100"
                   >
                     <template slot-scope="scope">
@@ -262,26 +262,6 @@
               <el-col :span="11">
                 <el-form-item label="有效下注条件：" prop="edit.item.LimitRewardCfg.ConditionValue">
                   <el-input v-model.number="edit.item.LimitRewardCfg.ConditionValue" placeholder="请填写有效下注"></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="11">
-                <el-form-item label="展示最小值：" prop="edit.item.LimitRewardCfg.ShowMinNum">
-                  <el-input v-model.number="edit.item.LimitRewardCfg.ShowMinNum" placeholder="请填展示最小值"></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="11">
-                <el-form-item label="展示最大值：" prop="edit.item.LimitRewardCfg.ShowMaxNum">
-                  <el-input v-model.number="edit.item.LimitRewardCfg.ShowMaxNum" placeholder="请填展示最大值"></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="11">
-                <el-form-item label="奖励最小值：" prop="edit.item.LimitRewardCfg.RewardMinValue">
-                  <el-input v-model.number="edit.item.LimitRewardCfg.RewardMinValue" placeholder="请填奖励最小值"></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="11">
-                <el-form-item label="奖励最大值：" prop="edit.item.LimitRewardCfg.ConditionValue">
-                  <el-input v-model.number="edit.item.LimitRewardCfg.RewardMaxValue" placeholder="请填奖励最大值"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="11">
@@ -338,7 +318,7 @@
           </el-row>
         </el-tab-pane>
 
-        <el-tab-pane label="奖励配置">
+        <el-tab-pane label="大奖励配置">
           <el-form ref="item" label-width="220px">
             <el-row :gutter="5">
               <el-col>

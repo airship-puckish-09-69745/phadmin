@@ -18,12 +18,12 @@
           <el-table-column
             prop="id"
             label="ID"
-            width="120"
+            width="70"
           />
           <el-table-column
             prop="tag_type"
             label="标签类型"
-            width="100"
+            width="120"
           >
             <template slot-scope="scope">
               {{ tagTypeName(scope.row.tag_type) }}
@@ -32,7 +32,7 @@
           <el-table-column
             prop="tag_id"
             label="标签"
-            width="100"
+            width="140"
           >
             <template slot-scope="scope">
               {{ tagIdName(scope.row.tag_id) }}
@@ -49,11 +49,11 @@
           </el-table-column>
           <el-table-column
             prop="tag_gid"
-            label="游戏名称"
+            label="关联游戏"
             width="150"
           >
             <template slot-scope="scope">
-              {{ gameName(scope.row.tag_gid) }}
+              <div v-html="gameName(scope.row)"></div>
             </template>
           </el-table-column>
           <el-table-column
@@ -69,7 +69,7 @@
             label="标签定义"
           >
             <template slot-scope="scope">
-              {{ attrName(scope.row) }}
+              <div v-html="attrName(scope.row)"></div>
             </template>
           </el-table-column>
           <el-table-column
@@ -117,7 +117,7 @@
       <el-dialog
         title="标签信息"
         :visible.sync="syncInfo"
-        width="30%"
+        width="40%"
         >
         <span>
           <el-form ref="form" :model="form" label-width="150px">
@@ -132,14 +132,8 @@
               </el-select>
             </el-form-item>
             <el-form-item label="标签：">
-              <el-select v-model="form.tag_id" placeholder="placeholder" >
-                <el-option
-                    v-for="opt in fieldOptions"
-                    :key="opt.value"
-                    :label="opt.label"
-                    :value="opt.value"
-                />
-              </el-select>
+              <el-cascader v-model="form.tag_ids" :options="fieldOptions" :show-all-levels="false" @change="cascaderChange">
+              </el-cascader>
             </el-form-item>
             <el-form-item v-if="gameIntensity()" label="字段：">
               <el-select v-model="form.tag_val" placeholder="placeholder">
@@ -151,10 +145,37 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item v-if="form.tag_id===10003" label="连续天数：">
+            <el-form-item v-if="showSlotsOptions()" label="选择游戏：">
+              <el-select v-model="form.gids" filterable multiple placeholder="placeholder">
+                <el-option
+                    v-for="opt in slotsOptions"
+                    :key="opt.value"
+                    :label="opt.label"
+                    :value="opt.value"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item v-if="showDaysOptions()" label="连续天数：">
               <el-col :span="8">
-                <el-input v-model.number="form.days" placeholder="placeholder"></el-input>
+                <el-input v-model.number="form.days" placeholder="placeholder">
+                  <template slot="append">{{ appendDayName(form.tag_id) }}</template>
+                </el-input>
               </el-col>
+            </el-form-item>
+            <el-form-item v-if="form.tag_id===50007" label="每日下注次数：">
+              <el-col :span="8">
+                <el-input v-model.number="form.leastBetTimes" placeholder="placeholder">
+                  <template slot="prepend">≥</template>
+                </el-input>
+              </el-col>
+            </el-form-item>
+            <el-form-item v-if="form.tag_type===5 && form.tag_id!==50008 && form.tag_id!==50001" label="区间配置：">
+              <range-config
+                :txt-name="areaPageName(form)"
+                :light="form.light"
+                :medium="form.medium"
+                :heavy="form.heavy"
+              />
             </el-form-item>
             <el-form-item v-if="form.tag_id===10004" label="降低系数：">
               <el-col :span="8">
@@ -302,7 +323,7 @@
               label="游戏"
             >
               <template slot-scope="scope">
-                {{ gameName(scope.row.gid) }}
+                <div v-html="gameName(scope.row)"></div>
               </template>
             </el-table-column>
             <el-table-column
@@ -362,9 +383,10 @@
   import store from '@/store'
   import { Message } from 'element-ui'
   import DateTimeShow from '@/components/DatetimeShow'
+  import RangeConfig from '@/components/RangeConfig/index.vue'
   
   export default {
-    components: { Compare, Publish, DateTimeShow, UidInput },
+    components: { Compare, Publish, DateTimeShow, UidInput, RangeConfig },
     data() {
       return {
         AttrNames: {
@@ -411,6 +433,38 @@
           {value: 4, label: '赛事类型', children: [
             {value: 40001, label: '免费'},
             {value: 40002, label: '付费'},
+          ]},
+          {value: 5, label: 'Slots用户类型', children: [
+            {value: 50001, label: '新增用户'},
+            {value: 50002, label: '登录天数'},
+            {value: 50003, label: '携带金额'},
+            {value: 50004, label: '下注次数'},
+            {value: 50005, label: '下注额度'},
+            {value: 50006, label: '日均下注额度'},
+            {value: 50007, label: '连续下注天数'},
+            {value: 50008, label: '回归用户'},
+            {value: 50009, label: '最近中奖上限'},
+            {value: 50100, label: '主题', children: [
+              {value: 50101, label: '扑克/麻将主题'},
+              {value: 50102, label: '经典寻宝/777主题'},
+              {value: 50103, label: '传说神话主题'},
+              {value: 50104, label: '传统节日主题'},
+              {value: 50105, label: '菲律宾本地化主题'},
+              {value: 50106, label: '动物与自然'},
+            ]},
+            {value: 50200, label: '基础中奖方式', children: [
+              {value: 50201, label: '连线全线'},
+              {value: 50202, label: '连线固定线'},
+              {value: 50203, label: '无线数量中奖'},
+              {value: 50204, label: '无线相连中奖'},
+              {value: 50205, label: '其他'},
+            ]},
+            {value: 50300, label: '小游戏玩法', children: [
+              {value: 50301, label: '固定大奖(mini固定奖励)'},
+              {value: 50302, label: 'JP玩法(滚动全员奖励)'},
+              {value: 50303, label: 'BONUS玩法(3次旋转金币)'},
+              {value: 50304, label: 'FreeSpin玩法(免费旋转)'},
+            ]},
           ]}
         ],
         intensityOptions: [
@@ -419,6 +473,7 @@
           {value: 3, label: '常玩'},
           {value: 4, label: '核心'},
         ],
+        slotsOptions: [],
         pickerOptions: {
           shortcuts: [{
             text: '最近一周',
@@ -450,15 +505,22 @@
         form: {
           tag_type: 2,
           tag_id: 0,
+          tag_ids: [],
           tag_val: 0,
           tag_name: '',
           tag_gid: 22,
+          gids: [],
           loginDay: [0,0],
           roundAvg: {use:false, val: 0},
           validBet: {use:false, val: 0},
           days: 7,
           reduce: 50,
           totalBet: 0,
+          slotsAttr: [],
+          leastBetTimes: 0,
+          light: {start: 0, end: 0},
+          medium: {start: 0, end: 0},
+          heavy: {start: 0, end: 0}
         },
         syncInfo: false,
         syncStat: false,
@@ -491,6 +553,27 @@
       this.selectChange(this.form.tag_type)
     },
     methods: {
+      cascaderChange(value) {
+        if (value.length === 1) {
+          this.form.tag_id = value[0]
+        } else {
+          this.form.tag_id = value[1]
+        }
+        for (const v of this.fieldOptions) {
+          if (v.value === this.form.tag_id) {
+            this.form.tag_name = v.label
+            return
+          }
+          if (v.children) {
+            for (const v2 of v.children) {
+              if (v2.value === this.form.tag_id) {
+                this.form.tag_name = v2.label
+                return
+              }
+            }
+          }
+        }
+      },
       selectChange(value,skip) {
         // console.log(value)
         for (const v of this.tagOptions) {
@@ -510,6 +593,21 @@
           this.form.tag_val = this.intensityOptions[0].value
         }
       },
+      appendDayName(tag_id) {
+        if (tag_id === 50008) {
+          return '日未上线'
+        }
+        return '日'
+      },
+      areaPageName({tag_id, tag_name}) {
+        if (tag_id === 50009) {
+          return '返奖倍数'
+        }
+        if (tag_id < 50100) {
+          return tag_name
+        }
+        return '下注次数'
+      },
       tagTypeName(tag_type) {
         for (const v of this.tagOptions) {
           if (v.value === tag_type) {
@@ -523,6 +621,13 @@
           for (const v2 of v.children) {
             if (v2.value === tag_id) {
               return v2.label
+            }
+            if (v2.children) {
+              for (const v3 of v2.children) {
+                if (v3.value === tag_id) {
+                  return '['+v2.label+']'+v3.label
+                }
+              }
             }
           }
         }
@@ -565,28 +670,37 @@
         }
         return row.tagVal
       },
-      gameName(gid) {
-        if (gid === 0) {
+      gameName(row) {
+        const attr = JSON.parse(row.tag_attr)
+        const gameIds = []
+        if (attr.gids) {
+          gameIds.push(...attr.gids)
+        }
+        if (row.tag_gid > 0) {
+          gameIds.push(row.tag_gid)
+        }
+        if (gameIds.length === 0) {
           return ''
         }
+        const gameIdStr = []
         for (const v of this.gameOptions) {
-          if (v.value === gid) {
-            return v.label
+          if (gameIds.includes(v.value)) {
+            gameIdStr.push(v.label)
           }
         }
-        return gid
+        return gameIdStr.join('<br/>')
       },
       attrName(row) {
         if (row.tag_id === 10002) {
-          return `未在${this.gameName(row.tag_gid)}投注过的用户`
+          return `未在${this.gameName(row)}投注过的用户`
         }
         if (row.tag_attr === '{}') {
-          return ""
+          return this.slotsAttrName(row)
         }
         // console.log(JSON.stringify(row))
         if (row.tag_type === 2) {
           const attr = JSON.parse(row.tag_attr)
-          let str = `一周内在${this.gameName(row.tag_gid)}登录天数在区间[${attr.loginDay[0]}-${attr.loginDay[1]}]`
+          let str = `一周内在${this.gameName(row)}登录天数在区间[${attr.loginDay[0]}-${attr.loginDay[1]}]`
           if (attr.roundAvg.use) {
             str += `,日均玩牌局数>=${attr.roundAvg.val}`
           }
@@ -600,8 +714,31 @@
         } else if (row.tag_id === 10004) {
           const attr = JSON.parse(row.tag_attr)
           return `最近一自然周的总有效下注对比前一自然周降低>=${attr.reduce}%且历史有效下注>=${attr.totalBet}`
+        } else if (row.tag_type === 5) {
+          return this.slotsAttrName(row)
         }
+
         return row.tag_attr
+      },
+      slotsAttrName(row) {
+        if (row.tag_type !== 5) {
+          return ''
+        }
+        const attr = JSON.parse(row.tag_attr)
+        // console.log('slotsAttrName',JSON.stringify(row))
+        if (row.tag_id === 50001) {
+          return `首次进入咱们Slots的用户`
+        } else if (row.tag_id === 50008) {
+          return `连续${attr.days}天未上线`
+        }
+        let dayStr = ''
+        if (![50001,50003].includes(row.tag_id)) {
+          dayStr = `连续${attr.days}天`
+        }
+        let str = `轻度用户：${dayStr} ${attr.light.start}≤${this.areaPageName(row)}<${attr.light.end}<br/>`
+        str += `中度用户：${dayStr} ${attr.medium.start}≤${this.areaPageName(row)}<${attr.medium.end}<br/>`
+        str += `重度用户：${dayStr} ${attr.heavy.start}≤${this.areaPageName(row)}<${attr.heavy.end}`
+        return str
       },
       formatTime(ts) {
         return $libDate.FormateSecondStr(ts, 2)
@@ -617,11 +754,26 @@
               // console.log(response.Data[i])
               this.gameOptions.push({
                   value: response.Data[i].Gid,
-                  label: response.Data[i].Scene
+                  label: response.Data[i].Description
               })
+              if (response.Data[i].CategoryID === 1) { // 老虎机
+                this.slotsOptions.push({
+                  value: response.Data[i].Gid,
+                  label: response.Data[i].Description
+                })
+              }
             }
           }
         })
+      },
+      showSlotsOptions() {
+        if (this.form.tag_type !== 5) {
+          return false
+        }
+        return [50100,50200,50300].includes(this.form.tag_ids[0])
+      },
+      showDaysOptions() {
+        return (this.form.tag_id === 10003 || this.form.tag_type === 5) && this.form.tag_id !== 50001 && this.form.tag_id !== 50003
       },
       showGameOptions() {
         return (this.form.tag_type === 2 || this.form.tag_type === 3 || this.form.tag_id === 10002)
@@ -656,6 +808,29 @@
         this.form.id = row.id
         this.form.tag_type = row.tag_type
         this.form.tag_id = row.tag_id
+        for (let i = 0; i < this.tagOptions.length; i++) {
+          if (this.tagOptions[i].value !== row.tag_type) {
+            continue
+          }
+          if (this.tagOptions[i].children) {
+            const children = this.tagOptions[i].children
+            for (let k = 0; k < children.length; k++) {
+              if (children[k].value === row.tag_id) {
+                this.form.tag_ids = [row.tag_id]
+                break
+              }
+              const grandChildren = children[k].children
+              if (grandChildren) {
+                for (let l = 0; l < grandChildren.length; l++) {
+                  if (grandChildren[l].value === row.tag_id) {
+                    this.form.tag_ids = [children[k].value,row.tag_id]
+                    break
+                  }
+                }
+              }
+            }
+          }
+        }
         this.form.tag_val = row.tag_val
         this.form.tag_name = row.tag_name
         this.form.tag_gid = row.tag_gid
@@ -666,10 +841,16 @@
         attr.days && (this.form.days = attr.days)
         attr.reduce && (this.form.reduce = attr.reduce)
         attr.totalBet && (this.form.totalBet = attr.totalBet)
+        attr.light && (this.form.light = attr.light)
+        attr.medium && (this.form.medium = attr.medium)
+        attr.heavy && (this.form.heavy = attr.heavy)
+        attr.gids && (this.form.gids = attr.gids)
+        attr.leastBetTimes && (this.form.leastBetTimes = attr.leastBetTimes)
         this.selectChange(this.form.tag_type,true)
       },
       copy(row) {
         this.syncInfo = true
+        this.isEdit = false
         const attr = JSON.parse(row.tag_attr)
         // this.form.id = row.id
         this.form.tag_id = row.tag_id
@@ -680,17 +861,23 @@
         this.form.status = row.status
         attr.loginDay && (this.form.loginDay = attr.loginDay)
         attr.roundAvg && (this.form.roundAvg = attr.roundAvg)
-        attr.roundAvg && (this.form.validBet = attr.validBet)
+        attr.validBet && (this.form.validBet = attr.validBet)
         attr.days && (this.form.days = attr.days)
         attr.reduce && (this.form.reduce = attr.reduce)
         attr.totalBet && (this.form.totalBet = attr.totalBet)
+        attr.light && (this.form.light = attr.light)
+        attr.medium && (this.form.medium = attr.medium)
+        attr.heavy && (this.form.heavy = attr.heavy)
+        attr.gids && (this.form.gids = attr.gids)
+        attr.leastBetTimes && (this.form.leastBetTimes = attr.leastBetTimes)
         this.selectChange(this.form.tag_type,true)
       },
       add() {
         this.syncInfo = true
+        this.isEdit = false
         this.form.id = 0
         this.form.tag_id = 0
-        if ([10001,10003,10004,40001,40002].includes(this.form.tag_id)) {
+        if ([10001,10003,10004,40001,40002].includes(this.form.tag_id) || this.form.tag_type === 5) {
           this.form.tag_gid = 0
         } else {
           this.form.tag_gid = 22
@@ -744,10 +931,73 @@
             reduce: this.form.reduce,
             totalBet: this.form.totalBet
           })
+        } else if (this.form.tag_type === 5) {
+          if (!this.checkSlotsParam()) {
+            return
+          }
+          this.makeSlotsTagAttr()
         }
         this.syncInfo = false
         this.isEdit?this.tagUpdate():this.tagCreate()
         this.isEdit = false
+      },
+      makeSlotsTagAttr() {
+        const attr = {}
+        if (this.form.tag_id === 50001) { // 新用户
+
+        } else if (this.form.tag_id === 50007) { // 连续下注天数
+          attr.days = this.form.days
+          attr.leastBetTimes = this.form.leastBetTimes
+          attr.light = this.form.light
+          attr.medium = this.form.medium
+          attr.heavy = this.form.heavy
+        } else if (this.form.tag_id < 50100) {
+          attr.days = this.form.days
+          attr.light = this.form.light
+          attr.medium = this.form.medium
+          attr.heavy = this.form.heavy
+        } else if (this.form.tag_id >= 50100 && this.form.tag_id < 50399) { // gid
+          attr.days = this.form.days
+          attr.gids = this.form.gids
+          attr.light = this.form.light
+          attr.medium = this.form.medium
+          attr.heavy = this.form.heavy
+        }
+        this.form.tag_attr = JSON.stringify(attr)
+      },
+      checkSlotsParam() {
+        if ([50008,50001,50002].includes(this.form.tag_id)) { // 新增用户，回归用户，新注册用户
+          return true
+        }
+        this.form.light.start = Number(this.form.light.start)
+        this.form.light.end = Number(this.form.light.end)
+        this.form.medium.start = Number(this.form.medium.start)
+        this.form.medium.end = Number(this.form.medium.end)
+        this.form.heavy.start = Number(this.form.heavy.start)
+        this.form.heavy.end = Number(this.form.heavy.end)
+        
+        // 验证金额区间是否合理
+        if (this.form.light.start < 0 || this.form.light.end < 0 || 
+            this.form.medium.start < 0 || this.form.medium.end < 0 || 
+            this.form.heavy.start < 0 || this.form.heavy.end < 0) {
+          Message.error("金额不能为负数")
+          return false
+        }
+        
+        if (this.form.light.start >= this.form.light.end || 
+            this.form.medium.start >= this.form.medium.end || 
+            this.form.heavy.start >= this.form.heavy.end) {
+          Message.error("起始金额不能大于等于结束金额")
+          return false
+        }
+        
+        if (this.form.light.end > this.form.medium.start || 
+            this.form.medium.end > this.form.heavy.start) {
+          Message.error("金额区间有重叠，请确保轻度<中度<重度的金额区间顺序")
+          return false
+        }
+
+        return true
       },
       setItem(row) {
         console.log(JSON.stringify(row))

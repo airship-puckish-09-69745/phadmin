@@ -415,7 +415,7 @@ export default {
             this.transMoneyForShow()
 
             item.CarryLower /= 1000
-            item.RTP /= 1000
+            item.RTP /= 1000 //四位小数
             item.RobotCarryMin /= 1000
             item.RobotCarryMax /= 1000
 
