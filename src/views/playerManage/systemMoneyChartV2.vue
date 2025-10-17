@@ -424,6 +424,7 @@ export default {
         216: 'Phoenix',
         220: 'Golden Dragon',
         222: 'Lion Fortune',
+        226: 'Fortune Wheel',
         9: 'Teen Patti',
         126: 'Pusoy Wild',
         2031: 'TongitsMtt',
@@ -587,7 +588,7 @@ export default {
         } else {
           this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162, 164, 172, 188, 202,
             198, 192, 180, 166, 170, 176, 182, 174, 186, 178, 194, 184, 168, 196, 190, 200, 204, 206, 208, 210, 212, 214, 216, 218, 220, 222,
-            228)
+            226, 228)
         }
       }
       if (this.showZoogame) {
