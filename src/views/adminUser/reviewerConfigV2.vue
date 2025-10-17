@@ -121,7 +121,6 @@
         <el-form-item label="AppId：" :required="true">
           <el-col :span="20">
             <el-select v-model="edit.item.AppId" placeholder="请选择" @change="onAppIdChange">
-              <el-option label="通用Id" value="0" />
               <el-option v-for="(o,idx) in appInfos" :key="idx" :label="o.Account" :value="o.ID" />
             </el-select>
           </el-col>
@@ -223,7 +222,9 @@ export default {
       clientDB: new ClientTableData([], 1, filterMap),
       search: '',
       libShow: $libShow,
-      appInfos: [],
+      appInfos: [
+        { ID: 0, Account: '0-通用Id' }
+      ],
       edit: {
         visible: false,
         item: newItem(),
