@@ -113,14 +113,14 @@
 
 <script>
 import { $libShow } from '@/utils/common'
-import jackpotAward from "@/views/playerManage/jackpotAward.vue";
+import jackpotAward from '@/views/playerManage/jackpotAward.vue';
 export default {
   name: 'MiniSuperColorDetailLog',
-  computed: {
-    jackpotAward() {
-      return jackpotAward
-    }
-  },
+  // computed: {
+  //   jackpotAward() {
+  //     return jackpotAward
+  //   }
+  // },
   components: {},
   libShow: $libShow,
   props: {

@@ -199,7 +199,7 @@
               <template>
                 <el-select v-model="item.ItemUseTime" size="mini" placeholder="请选择">
                   <el-option v-for="option in ITEM_DAY_TYPE_OPTIONS" :key="option.value"
-                             :label="option.label" :value="option.value" :disabled="option.disabled || (item.ItemType === 5 && (option.value === 0 || option.value === 365))">
+                             :label="option.label" :value="option.value" :disabled="option.disabled || ([5,7,8,9].includes(item.ItemType)&& (option.value === 0 || option.value === 365)) || (option.value === -1 && itemEnv!=='development')">
                   </el-option>
                 </el-select>
               </template>
@@ -516,6 +516,7 @@ export default {
 
       mailEditable: false,
       pickerOptions: $libShow.DefaultDatePickerOptions(),
+      itemEnv: process.env.NODE_ENV, // 项目环境
 
       UserTag: {
         ID: 0,

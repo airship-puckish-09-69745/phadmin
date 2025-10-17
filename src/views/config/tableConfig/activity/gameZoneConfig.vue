@@ -1020,7 +1020,8 @@ export default {
         { label: '红包雨活动-[13]', value: 13 },
         { label: 'free spins-[14]', value: 14 },
         { label: 'TongitsHunter-[15]', value: 15 },
-        { label: 'KingOfPot-[16]', value: 16 }
+        { label: 'KingOfPot-[16]', value: 16 },
+        { label: '万圣节活动-[18]', value: 18 }
       ],
       gameSelect: [],
       activitySelect: [
@@ -1034,7 +1035,8 @@ export default {
         { name: '红包雨活动-[13]', id: 13 },
         { name: 'free spins-[14]', id: 14 },
         { name: 'TongitsHunter-[15]', id: 15 },
-        { name: 'KingOfPot-[16]', id: 16 }
+        { name: 'KingOfPot-[16]', id: 16 },
+        { name: '万圣节活动-[18]', id: 18 }
       ],
       blockGames: [36, 38, 39, 43, 44],
       hallGame: [],
