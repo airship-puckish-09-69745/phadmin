@@ -4,6 +4,7 @@
       <el-form :inline="true">
         <el-form-item label="AppId">
           <el-select v-model="queryByAppId" placeholder="请选择" @change="queryByAppIdChange">
+            <el-option label="全部" value="" />
             <el-option v-for="(o,idx) in appInfos" :key="idx" :label="o.Account" :value="o.ID" />
           </el-select>
         </el-form-item>
@@ -212,6 +213,7 @@ import Publish from '@/components/Publish'
 import qs from 'qs'
 
 const filterMap = {
+  'AppId': -1
 }
 
 function newItem() {
@@ -285,6 +287,10 @@ export default {
       this.refreshShow()
     },
     queryByAppIdChange() {
+      if (this.queryByAppId === '') {
+        this.clearFilter()
+        return
+      }
       this.clientDB.FilterValueMap = {'AppId': this.queryByAppId}
       this.clientDB.FilterData(true)
       this.refreshShow()
