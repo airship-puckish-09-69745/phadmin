@@ -45,18 +45,22 @@
         <el-table-column
           prop="AppId"
           label="AppId"
-          width="150"
-        />
+          width="200"
+        >
+          <template slot-scope="scope">
+            {{ showAppName(scope.row.AppId) }}
+          </template>
+        </el-table-column>
         <el-table-column
           prop="Name"
           label="名称"
-          width="150"
+          width="350"
         />
         <el-table-column
           prop="ConfigKey"
           label="审批Key名"
           sortable
-          min-width="200"
+          width="350"
         />
         <el-table-column
           prop="Reviewers"
@@ -474,6 +478,14 @@ export default {
         }
       })
     },
+    showAppName(appID) {
+      for (let i = 0; i < this.appInfos.length; i++) {
+        if (this.appInfos[i].ID === appID) {
+          return this.appInfos[i].Account
+        }
+      }
+      return `未知AppId:${appID}`
+    }
   }
 }
 </script>
