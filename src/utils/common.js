@@ -433,11 +433,13 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
     return res
   }
 
-  this.FilterData = function() {
+  // 处理筛选相关的逻辑
+  // existVal0 是否存在值为0的项，默认不包含
+  this.FilterData = function(existVal0=false) {
     $this.ShowData = $this.TotalData.filter(
       function(data) {
         for (const f in $this.FilterValueMap) {
-          if ($this.FilterValueMap[f] != 0 && $this.FilterValueMap[f] != data[f]) {
+          if (!existVal0 && $this.FilterValueMap[f] != 0 && $this.FilterValueMap[f] != data[f] || existVal0 && $this.FilterValueMap[f] != data[f]) {
             return false
           }
         }
@@ -550,19 +552,19 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
 
   this.GetTreeDataById = function(ID) {
     const stack = [...$this.TotalData];
-    
+
     while (stack.length > 0) {
-        const current = stack.pop(); 
-        
+        const current = stack.pop();
+
         if (current[this.IDKey] === ID) {
-            return current; 
+            return current;
         }
-        
+
         if (current.children && current.children.length > 0) {
             stack.push(...[...current.children].reverse());
         }
     }
-    
+
     return null; // 未找到
   }
 

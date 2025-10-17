@@ -285,7 +285,8 @@ export default {
       this.refreshShow()
     },
     queryByAppIdChange() {
-      this.clientDB.Search(this.queryByAppId, ['AppId'])
+      this.clientDB.FilterValueMap = {'AppId': this.queryByAppId}
+      this.clientDB.FilterData(true)
       this.refreshShow()
     },
     queryKeyInput() {
