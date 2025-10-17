@@ -243,7 +243,6 @@ export default {
   created() {
     this.env = store.getters.env || this.env
     this.getList()
-    this.initUsers()
     this.getAppInfos()
     console.log(1)
   },
@@ -391,6 +390,7 @@ export default {
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(_data)
           }
+          this.initUsers()
         }
       }
     },
