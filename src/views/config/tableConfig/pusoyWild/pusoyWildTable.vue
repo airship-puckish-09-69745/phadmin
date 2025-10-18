@@ -466,10 +466,10 @@ function newItem() {
     MinPlayMoney: 0,
     RoomLevel: 0,
     MergeSinglePlayer: 0,
-    // WaitAddRobotMaxTimes:0,
-    // WaitUserEnterTimes:0,
-    // AllocScheme:0,
-    // AutoEnterRoomCount:0,
+    WaitAddRobotMaxTimes:0,
+    WaitUserEnterTimes:0,
+    AllocScheme:0,
+    AutoEnterRoomCount:0,
   }
 }
 
