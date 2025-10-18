@@ -67,7 +67,7 @@
         <template slot-scope="scope">{{ scope.row.moneyTotal / 1000 }}</template>
       </el-table-column>
       <el-table-column prop="moneyTotal" label="用户类型" width="120">
-        <template slot-scope="scope">{{ getRobotType(scope.row.RobotId,scope.row.RobotLevel) }}</template>
+        <template slot-scope="scope">{{ getRobotType(scope.row.RobotId,scope.row.RobotLevel,scope.row.userType) }}</template>
       </el-table-column>
     </el-table>
     <br>
@@ -297,15 +297,33 @@ export default {
       this.pusoyWildDetail = obj
       this.pusoyWildDetailVisible = true
     },
-    getRobotType(robotId, robotLevel) {
+    getRobotType(robotId, robotLevel,userType) {
       if (robotId == 0) {
-        return '真人'
-      } else if (robotLevel == 4) {
-        return '机器人--陪玩'
-      } else if (robotLevel == 5) {
-        return '机器人--要赢'
+        if (userType === 0 ||userType === undefined) {
+          return '真人'
+        }else if (userType == 1) {
+          return '真人-疑似'
+        }else if (userType == 2) {
+          return '真人-黑子'
+        }
+      } else {
+        switch (robotLevel) {
+          case 1:
+            return '机器人-强放'
+          case 2:
+            return '机器人-弱放'
+          case 3:
+            return '机器人-陪玩'
+          case 4:
+            return '机器人-弱杀'
+          case 5:
+            return '机器人-强杀'
+          case 6:
+            return '机器人-破产保护'
+          default:
+            return '机器人-未知'
+        }
       }
-      return '机器人'
     }
 
   }

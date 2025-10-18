@@ -290,7 +290,6 @@
                     <el-checkbox label="BP">BP</el-checkbox>
                     <el-checkbox label="AP">AP</el-checkbox>
                     <el-checkbox label="GP">GP</el-checkbox>
-                    <el-checkbox label="TP">TP</el-checkbox>
                     <el-checkbox label="PG">PG</el-checkbox>
                     <el-checkbox label="Dev">DEV</el-checkbox>
                   </el-checkbox-group>

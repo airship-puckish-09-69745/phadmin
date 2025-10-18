@@ -52,7 +52,7 @@
                 <el-table-column prop="index" label="序号" width="50" />
                 <el-table-column prop="game_id" label="游戏名">
                   <template slot-scope="scope">
-                    <el-select v-model="scope.row.game_id" placeholder="请选择" size="mini" @change="handleUpdateGame(scope.row.game_id, schemeIndex, scope.$index)" @focus="onGameFouces">
+                    <el-select v-model="scope.row.game_id" filterable placeholder="请选择" size="mini" @change="handleUpdateGame(scope.row.game_id, schemeIndex, scope.$index)" @focus="onGameFouces">
                       <el-option v-for="game in appGameOptions" :key="game.value" :label="GetGameName(game.game_id)" :value="game.game_id" />
                     </el-select>
                   </template>
@@ -159,12 +159,12 @@ export default {
       guideRecord: [],
 
       useSceneCfg: [
-        { 'label': '投注限制-弹窗', 'value': 1 },
-        { 'label': '大厅无次数-弹窗', 'value': 2 },
-        { 'label': '大厅无次数+报大赛-弹窗', 'value': 3 },
-        { 'label': '等待界面-弹窗', 'value': 4 },
-        { 'label': '结算界面-弹窗', 'value': 5 },
-        { 'label': '内嵌老虎机-弹窗', 'value': 6}
+        { 'label': '【tongits】投注限制-弹窗', 'value': 1 },
+        { 'label': '【tongits】大厅无次数-弹窗', 'value': 2 },
+        { 'label': '【tongits】大厅无次数+报大赛-弹窗', 'value': 3 },
+        { 'label': '【tongits】等待界面-弹窗', 'value': 4 },
+        { 'label': '【tongits】结算界面-弹窗', 'value': 5 },
+        { 'label': '【tongits】比赛内内嵌老虎机-弹窗', 'value': 6 }
       ],
       activeCollapseIndex: '',
       subKey: 'match_guide_list_new',
@@ -477,7 +477,7 @@ export default {
             scene_id: scene.value,
             records: []
           }
-
+          record.label = this.useSceneCfg.find(item => item.value === record.scene_id).label
           if (record.scene_id === 3 || record.scene_id === 4) {
             record.left_time = 0
           }

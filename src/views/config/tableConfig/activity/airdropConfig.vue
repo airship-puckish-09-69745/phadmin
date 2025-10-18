@@ -145,7 +145,7 @@
               </el-col>
               <el-col :span="12">
                 <el-form-item label="参与活动用户类型：" :required="true">
-                  <el-select v-model="edit.item.userTypes" multiple placeholder="请选择" style="width:280px">
+                  <el-select v-model="edit.userType" placeholder="请选择" style="width:280px" @change="onUserTypeChange">
                     <el-option
                       v-for="item in userTypes"
                       :key="item.value"
@@ -194,6 +194,64 @@
                   <el-button class="ml-3" type="danger" @click="delImportedUid">
                     重置已导入的用户ID
                   </el-button>
+                </el-form-item>
+              </el-col>
+              <el-col :span="24" v-if="showUserFilterCondition">
+                <el-form-item label="筛选用户条件：" :required="false">
+                  <el-form label-width="120px" size="mini">
+                    <el-form-item label="用户注册时间：">
+                      <el-date-picker
+                        v-model="edit.registerDateRange"
+                        type="daterange"
+                        align="right"
+                        unlink-panels
+                        range-separator="至"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期"
+                        :picker-options="pickerOptions"
+                        value-format="timestamp"
+                      >
+                      </el-date-picker>
+                    </el-form-item>
+                    <el-form-item label="累计投注次数：">
+                      <el-col :span="6">
+                        <el-input
+                          v-model.number="edit.item.userFilterCondition.betTimesRange.min"
+                          placeholder="输入最小投注次数"
+                          oninput=" if(value < 0 || value === '' || value == null){value = 0;} "
+                        />
+                      </el-col>
+                      <el-col :span="1">
+                        <div style="text-align: center">至</div>
+                      </el-col>
+                      <el-col :span="6">
+                        <el-input
+                          v-model.number="edit.item.userFilterCondition.betTimesRange.max"
+                          placeholder="输入最大投注次数"
+                          oninput=" if(value < 0 || value === '' || value == null){value = 0;} "
+                        />
+                      </el-col>
+                    </el-form-item>
+                  </el-form>
+                </el-form-item>
+              </el-col>
+              <el-col :span="24" v-if="showUserTagCondition">
+                <el-form-item label="用户标签：" :required="false">
+                  <el-select v-model="edit.item.userFilterCondition.userTagConfig.tagValue" placeholder="请选择用户标签">
+                    <el-option
+                      v-for="item in userTagValues"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col>
+                <el-form-item label="单个用户最大领奖额：" :required="true">
+                  <el-input v-model.number="edit.item.rewardConfig.userRewardLimit">
+                    <template slot="append">₱</template>
+                  </el-input>
                 </el-form-item>
               </el-col>
             </el-form>
@@ -462,22 +520,18 @@
             </el-row>
             <el-row>
               <el-col :span="11">
-                <el-form-item label="SiteId白名单：" prop="item.whitelistCfg.appIdList">
-                  <el-select v-model="edit.item.whitelistCfg.siteIdList" multiple placeholder="请选择" style="width: 400px" @change="onSiteIdOptionsChange">
-                    <el-option
-                      v-for="item in siteIdOptions"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
+                <el-form-item label="SiteId白名单：" prop="item.whitelistCfg.siteIdList">
+                  <SiteSelect
+                    v-model="edit.item.whitelistCfg.siteIdList"
+                    multiple
+                  />
                 </el-form-item>
               </el-col>
             </el-row>
           </el-form>
         </el-tab-pane>
 
-        <el-tab-pane label="导入的用户">
+        <el-tab-pane v-if="showImportElement" label="导入的用户">
           <el-row :gutter="5">
             <el-col>
               <el-button type="primary" @click="getImportedUidList()" size="mini">查询</el-button>
@@ -538,6 +592,7 @@ import store from "@/store";
 import request from "@/utils/request";
 import {Message} from "element-ui";
 import {id} from "html-webpack-plugin/lib/chunksorter";
+import SiteSelect from "@/components/SiteSelect/index.vue"
 
 const filterMap = {}
 
@@ -575,7 +630,8 @@ function newItem() {
       remainRewardMonitorRate: 90,
       rewardRanges: [
         { minScore: 1, maxScore: 100, minCoefficient: 0.5, maxCoefficient: 1 }
-      ]
+      ],
+      userRewardLimit: 0,
     },
     progressPrizes: [
       /*{
@@ -587,13 +643,27 @@ function newItem() {
         taskValueRequired: 1,
       }*/
     ],
-    userTypes: [2],
-    importedFilename: ''
+    userTypes: [2], // 2 所有用户
+    importedFilename: '',
+    userFilterCondition: {
+      registerTimeRange: {
+        min: 0,
+        max: 0,
+      },
+      betTimesRange: {
+        min: 0,
+        max: 0,
+      },
+      userTagConfig: {
+        tagId: 20000, // 游戏强度
+        tagValue: 0,
+      },
+    }
   }
 }
 
 export default {
-  components: { ImagePicker, Compare, Publish, GameLevel, MoneyInput },
+  components: { ImagePicker, Compare, Publish, GameLevel, MoneyInput, SiteSelect },
   data() {
     return {
       AttrNames: {
@@ -608,6 +678,12 @@ export default {
         'activity.ruleImgHor': '横向规则图',
         'activity.ruleImgVer': '纵向规则图',
         'activity.gameIdList': '游戏ID配置',
+        'activity.userFilterCondition': '筛选用户条件',
+        'activity.userFilterCondition.registerTimeRange': '注册时间',
+        'activity.userFilterCondition.betTimesRange': '累计投注次数',
+        'activity.userFilterCondition.userTagConfig': '用户标签配置',
+        'activity.userFilterCondition.userTagConfig.tagId': '用户标签ID',
+        'activity.userFilterCondition.userTagConfig.tagValue': '用户标签值',
         id: '活动配置ID',
         name: '活动名称',
         cfgId: '活动配置ID',
@@ -624,7 +700,8 @@ export default {
         taskConfig: '任务配置',
         rewardConfig: '奖励配置',
         progressPrizes: '进度奖励配置',
-        userTypes: '用户类型'
+        userTypes: '用户类型',
+        userFilterCondition: '筛选用户条件',
       },
       edit: {
         CfgId: 0,
@@ -638,6 +715,8 @@ export default {
         importedUidCacheCount: 0,
         importedUidListCount: 0,
         importedUidList: [],
+        userType: 2, // 2 所有用户
+        registerDateRange: [],
         clientDB: new ClientTableData([], 10, filterMap),
       },
       env: 'test',
@@ -681,16 +760,6 @@ export default {
           label: 'BingoPlus测试1000006'
         },
       ],
-
-      siteIdOptions: [
-        { value: 'BP', label: 'BP' },
-        { value: 'AP', label: 'AP' },
-        { value: 'GP', label: 'GP' },
-        { value: 'TP', label: 'TP' },
-        { value: 'PG', label: 'PG' },
-        { value: 'Dev', label: 'Dev' }
-      ],
-
       // 奖励类型
       rewardTypes: [
         // { 'value': 1, 'label': '金币' },
@@ -711,7 +780,9 @@ export default {
       userTypes: [
         { 'value': 1, 'label': '新增用户' },
         { 'value': 2, 'label': '所有用户' },
-        { 'value': 3, 'label': '导入用户' }
+        { 'value': 3, 'label': '导入用户' },
+        { 'value': 4, 'label': '筛选用户' },
+        { 'value': 5, 'label': '用户标签' },
       ],
 
       // 公共游戏任务类型
@@ -741,6 +812,14 @@ export default {
       filterGameIds: [ 2031, 10002 ],
 
       filterText: '',
+
+      userTagValues: [
+        { 'value': 0, 'label': '未选择' },
+        { 'value': 1, 'label': '无感' },
+        { 'value': 2, 'label': '尝试' },
+        { 'value': 3, 'label': '常玩' },
+        { 'value': 4, 'label': '核心' },
+      ],
 
       defaultProps: {
         label: 'label',
@@ -778,6 +857,34 @@ export default {
         { 'value': 365, 'label': '365天', disabled: false },
         { 'value': 0, 'label': '永久', disabled: false }
       ],
+
+      pickerOptions: {
+        shortcuts: [{
+          text: '最近一周',
+          onClick(picker) {
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+            picker.$emit('pick', [start, end]);
+          }
+        }, {
+          text: '最近一个月',
+          onClick(picker) {
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+            picker.$emit('pick', [start, end]);
+          }
+        }, {
+          text: '最近三个月',
+          onClick(picker) {
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+            picker.$emit('pick', [start, end]);
+          }
+        }]
+      },
     }
   },
 
@@ -799,8 +906,15 @@ export default {
       return process.env.VUE_APP_BASE_API + '/other/upload'
     },
     showImportElement() {
-      return this.edit.item.id && this.edit.item.userTypes.includes(3)
-    }
+      console.log('showImportElement this.edit.item.userTypes:', this.edit.item.userTypes)
+      return this.edit.item.id > 0 && this.edit.item.userTypes.includes(3) // 3 导入用户
+    },
+    showUserFilterCondition() {
+      return this.edit.item.userTypes.includes(4) // 4 筛选用户
+    },
+    showUserTagCondition() {
+      return this.edit.item.userTypes.includes(5) // 5 用户标签
+    },
   },
   methods: {
     makeContent(key, addData, delData, editData) {
@@ -940,6 +1054,10 @@ export default {
     handleDelete(ob) {
       this.changeStatus(ob.id, 3, '您确定要将记录状态修改为废弃吗？')
     },
+    onUserTypeChange(val) {
+      this.$set(this.edit.item.userTypes, 0, val)
+      console.log('onUserTypeChange this.edit.item.userTypes:', this.edit.item.userTypes)
+    },
     changeStatus(id, status, msg) {
       // const $this = this
       this.$confirm(msg, '提示', {
@@ -993,9 +1111,20 @@ export default {
         Message.error('请完善任务配置')
         return
       }
+      if (this.edit.item.userTypes[0] === 4) {
+        if (!this.edit.registerDateRange || this.edit.registerDateRange.length === 0) {
+          Message.error('请选择注册时间')
+          return
+        }
+      }
+      if (this.edit.item.userTypes[0] === 5 && this.edit.item.userFilterCondition.userTagConfig.tagValue === 0) {
+        Message.error('请选择用户标签')
+        return
+      }
 
       const copyItem = JSON.parse(JSON.stringify(this.edit.item))
       copyItem.rewardConfig.totalReward *= 1000
+      copyItem.rewardConfig.userRewardLimit *= 1000
       copyItem.rewardConfig.rewardRanges.forEach(item => {
         item.minScore *= 1000
         item.maxScore *= 1000
@@ -1020,6 +1149,12 @@ export default {
         }
       }
 
+      // 确保注册的结束时间是日期的最后一秒
+      const registerEndTime = new Date(this.edit.registerDateRange[1]).setHours(23, 59, 59, 0)
+
+      copyItem.userFilterCondition.registerTimeRange.min = this.edit.registerDateRange[0] / 1000
+      copyItem.userFilterCondition.registerTimeRange.max = registerEndTime / 1000
+
       const data = {}
       data.id = copyItem.id
       data.name = copyItem.name
@@ -1037,11 +1172,11 @@ export default {
       data.progressPrizes = JSON.stringify(copyItem.progressPrizes)
       data.userTypes = JSON.stringify(copyItem.userTypes)
       data.importedFilename = copyItem.importedFilename
+      data.userFilterCondition = JSON.stringify(copyItem.userFilterCondition)
       return data
     },
     handleSave() {
       const data = this.getPostData()
-      data.env = this.env
       console.log('handleSave', data)
       if (data === null || data === undefined) {
         return
@@ -1062,6 +1197,7 @@ export default {
       }
     },
     createData(data) {
+      data['env'] = this.env
       request({
         url: '/airdropconfig/create',
         method: 'post',
@@ -1105,11 +1241,12 @@ export default {
     },
     //************************ 道具配置 ************************
     getPropList() {
+      const $this = this
       request({
         url: '/propsconfig/props/config/list',
         method: 'get',
         data: {
-          Env: this.env,
+          Env: $this.env,
           PageNum: 1,
           PageSize: 1000
         }
@@ -1216,6 +1353,7 @@ export default {
         // 查询已导入的用户id列表
         this.getImportedUidList()
       } else {
+        this.sentRewardAmount = 0
         this.$refs.tree.setCheckedKeys([])
       }
     },
@@ -1238,8 +1376,36 @@ export default {
           item.taskConfig = JSON.parse(item.taskConfig)
           item.rewardConfig = JSON.parse(item.rewardConfig)
           item.rewardConfig.totalReward = item.rewardConfig.totalReward / 1000
+          if (item.rewardConfig.userRewardLimit) {
+            item.rewardConfig.userRewardLimit = item.rewardConfig.userRewardLimit / 1000
+          } else {
+            item.rewardConfig['userRewardLimit'] = 0
+          }
           item.progressPrizes = JSON.parse(item.progressPrizes)
           item.userTypes = JSON.parse(item.userTypes)
+
+          if (item.userFilterCondition && item.userFilterCondition !== '{}' && item.userFilterCondition !== 'null') {
+            item.userFilterCondition = JSON.parse(item.userFilterCondition)
+            this.edit.registerDateRange = [item.userFilterCondition.registerTimeRange.min * 1000, item.userFilterCondition.registerTimeRange.max * 1000]
+          } else {
+            item.userFilterCondition = {
+              registerTimeRange: {
+                min: 0,
+                max: 0
+              },
+              betTimesRange: {
+                min: 0,
+                max: 0
+              },
+            }
+          }
+
+          if (item.userFilterCondition.userTagConfig === undefined) {
+            item.userFilterCondition['userTagConfig'] = {
+              tagId: 20000, // 游戏强度
+              tagValue: 0,
+            }
+          }
 
           for (let i = 0; i < item.rewardConfig.rewardRanges.length; i++) {
             const rewardRange = item.rewardConfig.rewardRanges[i]
@@ -1273,6 +1439,8 @@ export default {
           // 更新选中游戏的排序
           this.updateGamesSorted()
 
+          this.edit.userType = item.userTypes[0]
+
           console.log(this.edit.item.gameIdCfg)
         }
       }
@@ -1284,6 +1452,8 @@ export default {
       this.edit.item = newItem()
       this.edit.isEdit = false
       this.edit.visible = true
+      this.edit.userType = this.edit.item.userTypes[0]
+      this.edit.registerDateRange = []
       console.log(this.edit.item)
     },
     //************************ 修改/添加弹框相关 ************************
@@ -1318,7 +1488,7 @@ export default {
           url: '/airdropconfig/uids/imported/delete',
           method: 'post',
           data: {
-            Env: this.env,
+            Env: $this.env,
             ActCfgId: $this.edit.item.id,
           }
         }).then(response => {

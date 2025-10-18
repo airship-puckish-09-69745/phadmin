@@ -7,34 +7,20 @@
             <el-input v-model.number="cfg.BuyFreeOdds" :required="true" />
           </el-form-item>
 
-          <el-form-item label="进入免费模式的最小赔率" prop="ScatterOdds" :rules="dataRule(true,{type:'n'})">
-            <el-input v-model.number="cfg.ScatterOdds" :required="true" />
+          <el-form-item label="普通模式中奖倍数">
+            <el-input v-model="cfg.MultiStr" placeholder="请输入内容,如1,2,3,5,7"> <template slot="append">用 , 连接</template> </el-input>
           </el-form-item>
 
-          <el-form-item label="免费模式额外增加免费的概率" prop="ScatterPlusRate" :rules="dataRule(true,{type:'n'})">
-            <el-input v-model.number="cfg.ScatterPlusRate" :required="true">
-              <template slot="append">％</template>
-            </el-input>
+          <el-form-item label="普通模式中奖倍数权重">
+            <el-input v-model="cfg.MultiStrWeight" placeholder="请输入内容,如10,10,10,10,10"> <template slot="append">用 , 连接</template> </el-input>
           </el-form-item>
 
-          <el-form-item label="出现金框符号的概率" prop="GoldenSymbolRate" :rules="dataRule(true,{type:'n'})">
-            <el-input v-model.number="cfg.GoldenSymbolRate" :required="true">
-              <template slot="append">‰</template>
-            </el-input>
+          <el-form-item label="免费模式中奖倍数">
+            <el-input v-model="cfg.FreeMultiStr" placeholder="请输入内容,如2,4,6,8,10"> <template slot="append">用 , 连接</template> </el-input>
           </el-form-item>
 
-          <el-form-item label="金框符号获得随机倍率的概率" prop="GoldenSymbolOddsRate" :rules="dataRule(true,{type:'n'})">
-            <el-input v-model.number="cfg.GoldenSymbolOddsRate" :required="true">
-              <template slot="append">‰</template>
-            </el-input>
-          </el-form-item>
-
-          <el-form-item label="金框符号获得的倍率范围">
-            <el-input v-model="cfg.GoldenSymbolOddsRange" placeholder="请输入内容,如1,2,100"> <template slot="append">多个值用 , 连接。如1,2,100</template> </el-input>
-          </el-form-item>
-
-          <el-form-item label="金框符号获得的倍率权重">
-            <el-input v-model="cfg.GoldenSymbolOddsWeights" placeholder="请输入内容,如1,2,100"> <template slot="append">多个值用 , 连接。如1,2,100</template> </el-input>
+          <el-form-item label="免费模式中奖倍数权重">
+            <el-input v-model="cfg.FreeMultiStrWeight" placeholder="请输入内容,如10,10,10,10,10"> <template slot="append">用 , 连接</template> </el-input>
           </el-form-item>
 
         </el-form>

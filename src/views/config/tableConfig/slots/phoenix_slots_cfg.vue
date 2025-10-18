@@ -1,70 +1,38 @@
 <template>
   <div class="app-container">
-    <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="CustomizeConfig" />
     <el-row :gutter="10" style="margin-top: 30px">
       <el-col :span="24">
-        <el-tabs type="border-card">
-          <el-tab-pane label="基础配置">
+        <el-tabs type="border-card" value="base" @tab-click="onShowTab">
+          <el-tab-pane label="基础配置" name="base">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，重启生效】</h3>
-            <slots-base-cfg v-if="load" v-model="item" @saveData="saveData" />
+            <publish primary-key="ID" :key-id="getFullKey('phoenix_slots_base')" :env-empty="false" compare-type="Object" />
+            <slots-base-cfg v-if="baseCfgBool" v-model="baseCfg" :odds-str="false" @saveData="saveBaseCfg" />
           </el-tab-pane>
-          <el-tab-pane label="符号表配置">
+          <el-tab-pane label="符号表配置" name="symbol">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，重启生效】</h3>
-            <slots-symbol-value v-if="load" v-model="item" @saveData="saveData" />
+            <publish primary-key="ID" :key-id="getFullKey('phoenix_slots_rule')" :env-empty="false" compare-type="Object" />
+            <slots-symbol-value v-if="ruleCfgBool" v-model="ruleCfg" @saveData="saveRuleCfg" />
           </el-tab-pane>
-          <el-tab-pane label="支付线配置">
+          <el-tab-pane label="赔付线配置" name="pay_table">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，重启生效】</h3>
-            <slots-pay-line v-if="load" v-model="item" @saveData="saveData" />
+            <publish primary-key="ID" :key-id="getFullKey('phoenix_slots_base')" :env-empty="false" compare-type="Object" />
+            <slots-pay-table v-if="baseCfgBool" v-model="baseCfg" :symbol-list="ruleCfg.SymbolList" :start-col="3" @saveData="saveBaseCfg" />
           </el-tab-pane>
-          <el-tab-pane label="赔付线配置">
-            <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，重启生效】</h3>
-            <slots-pay-table v-if="load" v-model="item" @saveData="saveData" />
+          <el-tab-pane label="2套轴图标" name="reels_double">
+            <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布】</h3>
+            <publish primary-key="ID" :key-id="getFullKey('phoenix_slots_base')" :env-empty="false" compare-type="Object" />
+            <slots-reels-double v-if="baseCfgBool" v-model="baseCfg" :symbol-list="ruleCfg.SymbolList" @saveData="saveBaseCfg" />
           </el-tab-pane>
-          <el-tab-pane label="轴图标配置">
+          <el-tab-pane label="拓展配置" name="scatter">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，发布即生效】</h3>
-            <slots-reels-icon v-if="load" v-model="item" @saveData="saveData" />
+            <publish primary-key="ID" :key-id="getFullKey('phoenix_slots_ext')" :env-empty="false" compare-type="Object" />
+            <slots-phoenix-ext v-if="extCfgBool" v-model="extCfg" :base-bet="baseCfg.BaseBet" @saveData="saveExtCfg" />
           </el-tab-pane>
-          <!--
-          <el-tab-pane label="Jackpot配置">
-            <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，重启生效】</h3>
-            <slots-jackpot v-if="load" v-model="item" @saveData="saveData"></slots-jackpot>
-          </el-tab-pane>
-          -->
-          <el-tab-pane label="2套轴图标" name="reels">
+          <el-tab-pane label="剧本" name="script">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，发布即生效】</h3>
-            <slots-reels-double v-if="load" v-model="item" @saveData="saveData" />
+            <publish primary-key="ID" :key-id="getFullKey('phoenix_slots_rule')" :env-empty="false" compare-type="Object" />
+            <slots-script v-if="ruleCfgBool" v-model="ruleCfg" :bets="baseCfg.BetListAct" @saveData="saveRuleCfg" />
           </el-tab-pane>
-          <el-tab-pane label="Wild玩法配置">
-            <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，发布即生效】</h3>
-            <slots-wild-pattern v-if="load" v-model="item" @saveData="saveData" />
-          </el-tab-pane>
-          <el-tab-pane label="Scatter玩法配置">
-            <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，发布即生效】</h3>
-            <slots-scatter-pattern v-if="load" v-model="item" @saveData="saveData" />
-          </el-tab-pane>
-          <el-tab-pane label="大奖配置">
-            <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，发布即生效】</h3>
-            <slots-winner-cfg v-if="load" v-model="item" @saveData="saveData" />
-          </el-tab-pane>
-          <el-tab-pane label="小黑屋配置">
-            <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，发布即生效】</h3>
-            <slots-vup v-if="load" v-model="item" :hide-bonus-mode="true" @saveData="saveData" />
-          </el-tab-pane>
-          <el-tab-pane label="剧本">
-            <publish primary-key="ID" key-id="CustomizeCfg_phoenix_slots_script" :env-empty="false" compare-type="Object" />
-            <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，发布即生效】</h3>
-            <slots-script v-if="load" v-model="script" :bets="rawBets" @saveData="saveScript" />
-          </el-tab-pane>
-          <!--
-              <el-tab-pane label="Jackpot奖池" name="pools">
-                <slots-jackpot-pools :slotId="51"></slots-jackpot-pools>
-              </el-tab-pane>
-          -->
-          <!--
-              <el-tab-pane label="Jackpot奖池配置">
-                <slots-jackpot-phoenix v-model="item" @saveData="saveData"></slots-jackpot-phoenix>
-              </el-tab-pane>
-          -->
         </el-tabs>
       </el-col>
     </el-row>
@@ -76,161 +44,185 @@
 </template>
 
 <script>
-import { Message } from 'element-ui'
 import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import request from '@/utils/request'
-import slotsBaseCfg from './components/base_cfg'
-import slotsSymbolValue from './components/symbol_value'
-import slotsPayLine from './components/pay_line'
-import slotsPayTable from './components/pay_table_rate'
-import slotsReelsIcon from './components/reels_icon'
-import slotsJackpot from './components/jackpot'
-import slotsWildPattern from './components/wild_pattern'
-import slotsScatterPattern from './components/scatter_pattern'
-import slotsJackpotPools from './components/jackpot_pools'
-import slotsWinnerCfg from './components/winner_cfg'
-import slotsVup from './components/slots_vup'
-import slotsReelsDouble from './components/reels_double'
-import slotsScript from './components/slots_script'
-// import slotsJackpotPhoenix from './components/jackpot_phoenix'
+import slotsBaseCfg from './components_x/ireland_base_cfg'
+import slotsSymbolValue from './components_x/symbol_value'
+import slotsPayLine from './components_x/pay_line'
+import slotsPayTable from './components_x/pay_table_rate'
+import slotsReelsIcon from './components_x/aladdin_reels_icon'
+import slotsPhoenixExt from './components_x/phoenix_ext'
+import slotsBigWinnerCfg from './components_x/big_winner_cfg'
+import slotsVup from './components_x/slots_vup'
+import slotsReelsDouble from './components_x/reels_double'
+import slotsRowReelsDouble from './components_x/row_reels_double'
+import slotsScript from './components_x/slots_script'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: { Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotsJackpot, slotsWildPattern, slotsScatterPattern, slotsJackpotPools, slotsWinnerCfg, slotsVup, slotsReelsDouble, slotsScript },
+  components: { Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotsPhoenixExt, slotsRowReelsDouble, slotsBigWinnerCfg, slotsVup, slotsReelsDouble, slotsScript },
   data() {
     return {
-      item: {},
-      script: {},
-      scriptFrm: {},
-      load: false,
-      rawBets: [],
-      form: {
-      },
+      activeTab: 'base',
+      baseCfg: {},
+      baseCfgBool: false,
+      ruleCfg: {},
+      ruleCfgBool: false,
+      extCfg: {},
+      extCfgBool: false,
+      baseForm: {},
+      ruleForm: {},
+      extForm: {},
       txt: '',
-      subKey: 'phoenix_slots_cfg'
+      subKey: 'phoenix_slots_base',
+      inc: 0
     }
   },
-
   created() {
-    this.getScript()
     this.getData()
-    console.log(1)
   },
   methods: {
-    getFullKey() {
-      return 'CustomizeCfg_' + this.subKey
+    getFullKey(k) {
+      return 'CustomizeCfg_' + k
     },
-    async getData() {
-      const response = await request({
+    getData() {
+      // 加载基础数值配置
+      request({
         url: '/customizeconfig/one',
         method: 'get',
         data: {
           SubKey: this.subKey
         }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.baseForm = response.Data || {}
+          if (response.Data && response.Data.Data !== '') {
+            const cfg = JSON.parse(response.Data.Data)
+            const BetList = []
+            for (const k in cfg.BetList) {
+              BetList[k] = cfg.BetList[k] / 1000
+            }
+            cfg.Bets = BetList.join(',')
+
+            const OddsList = []
+            for (const k in cfg.OddsList) {
+              OddsList[k] = cfg.OddsList[k]
+            }
+            cfg.OddsStr = OddsList.join(',')
+
+            const BetListAct = []
+            for (const k in cfg.BetList) {
+              for (const t in cfg.OddsList) {
+                BetListAct.push(cfg.BetList[k] * cfg.OddsList[t])
+              }
+            }
+            cfg.BetListAct = BetListAct
+
+            this.baseCfg = cfg
+            // 设置修改之前数据
+            // this.$refs.compare.SetOldVal(response.Data.Data)
+            this.baseCfgBool = true
+          }
+        }
       })
 
-      if (response.RetCode === 0) {
-        console.log('pay table rate cfg', response)
-        this.form = response.Data || {}
-        if (response.Data && response.Data.Data !== '') {
-          const cfg = JSON.parse(response.Data.Data)
-          this.rawBets = []
-          for (const k in cfg.BetList) {
-            this.rawBets.push(cfg.BetList[k])
-            cfg.BetList[k] /= 1000
-          }
-          cfg.Bets = cfg.BetList.join(',')
-          this.item = cfg
-
-          // 设置修改之前数据
-          this.$refs.compare.SetOldVal(response.Data.Data)
-          this.load = true
-        }
-      }
-    },
-    async getScript() {
-      const response = await request({
+      // 加载规则配置
+      request({
         url: '/customizeconfig/one',
         method: 'get',
         data: {
-          SubKey: 'phoenix_slots_script'
+          SubKey: 'phoenix_slots_rule'
         }
-      })
-
-      if (response.RetCode === 0) {
-        console.log('phoenix script cfg', response)
-        this.scriptFrm = response.Data || {}
-        if (response.Data && response.Data.Data !== '') {
-          this.script = JSON.parse(response.Data.Data)
-        }
-      }
-    },
-    saveScript() {
-      this.scriptFrm.Data = JSON.stringify(this.script)
-      request({
-        url: 'customizeconfig/update',
-        method: 'post',
-        data: this.scriptFrm
       }).then(response => {
         if (response.RetCode === 0) {
-          console.log('save script response', response)
-          this.$message.success('保存成功')
-        }
-      })
-    },
-    setData() {
-      if (this.item.Bets) {
-        const bets = this.item.Bets.split(',')
-        this.item.BetList = []
-        for (const i in bets) {
-          this.item.BetList.push(parseInt(bets[i]) / 1000)
-        }
-      }
-
-      this.form.Data = JSON.stringify(this.item)
-      const $this = this
-      // 设置修改后数据
-      this.$refs.compare.SetNewVal(this.form.Data)
-      this.$refs.compare.Compare(function(isEdit) {
-        if (!isEdit) {
-          Message.error('没有任何修改，不需要提交')
-          return
-        }
-
-        request({
-          url: 'customizeconfig/update',
-          method: 'post',
-          data: $this.form
-        }).then(response => {
-          if (response.RetCode === 0) {
-            console.log('base cfg response', response)
-            Message.success('保存成功')
+          this.ruleForm = response.Data || {}
+          if (response.Data && response.Data.Data !== '') {
+            this.ruleCfg = JSON.parse(response.Data.Data)
+            // 设置修改之前数据
+            // this.$refs.compare.SetOldVal(response.Data.Data)
           }
-        })
+          this.ruleCfgBool = true
+        }
+      })
+
+      // 加载扩展配置
+      request({
+        url: '/customizeconfig/one',
+        method: 'get',
+        data: {
+          SubKey: 'phoenix_slots_ext'
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.extForm = response.Data || {}
+          if (response.Data && response.Data.Data !== '') {
+            this.extCfg = JSON.parse(response.Data.Data)
+            console.log('ext-data:', this.extCfg)
+            // 设置修改之前数据
+            // this.$refs.compare.SetOldVal(response.Data.Data)
+          }
+        }
+        this.extCfgBool = true
       })
     },
-    saveData() {
-      if (this.item.Bets) {
-        const bets = this.item.Bets.split(',')
-        this.item.BetList = []
+
+    saveBaseCfg() {
+      if (this.baseCfg.Bets) {
+        const bets = this.baseCfg.Bets.split(',')
+        this.baseCfg.BetList = []
         for (const i in bets) {
-          this.item.BetList.push(parseFloat(bets[i]) * 1000)
+          this.baseCfg.BetList.push(parseFloat(bets[i]) * 1000)
         }
       }
-
-      this.form.Data = JSON.stringify(this.item)
-
+      this.baseForm.Data = JSON.stringify(this.baseCfg)
       request({
         url: 'customizeconfig/update',
         method: 'post',
-        data: this.form
+        data: this.baseForm
       }).then(response => {
         if (response.RetCode === 0) {
-          console.log('saveData response', response)
           this.$message.success('保存成功')
         }
       })
+    },
+
+    saveRuleCfg() {
+      this.ruleForm.Data = JSON.stringify(this.ruleCfg)
+      request({
+        url: 'customizeconfig/update',
+        method: 'post',
+        data: this.ruleForm
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.$message.success('保存成功')
+        }
+      })
+    },
+
+    saveExtCfg() {
+      this.extForm.Data = JSON.stringify(this.extCfg)
+      request({
+        url: 'customizeconfig/update',
+        method: 'post',
+        data: this.extForm
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.$message.success('保存成功')
+        }
+      })
+    },
+
+    onShowTab(tab) {
+      this.activeTab = tab.name
+      // 设置修改之前数据
+      if (this.activeTab === 'base' || this.activeTab === 'pay_table' || this.activeTab === 'reels' || this.activeTab === 'reels_double') {
+        this.$refs.compare.SetOldVal(this.baseForm.Data)
+      } else if (this.activeTab === 'symbol' || this.activeTab === 'pay_line' || this.activeTab === 'script') {
+        this.$refs.compare.SetOldVal(this.ruleForm.Data)
+      } else if (this.activeTab === 'scatter' || this.activeTab === 'bonus') {
+        this.$refs.compare.SetOldVal(this.extForm.Data)
+      }
     }
   }
 }

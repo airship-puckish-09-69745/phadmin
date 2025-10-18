@@ -37,28 +37,19 @@ export default {
         { label: '按时间', value: 0 },
         { label: '按疑似度', value: 1 },
         { label: '按异常局占比', value: 2 },
-        { label: '按拉黑时间', value: 3 }
+        { label: '按拉黑时间', value: 3 },
+        { label: '按历史信任分', value: 4 },
+        { label: '按历史疑似分', value: 5 }
       ],
       cheatType: -1,
       cheatTypeOption: [
         { label: '全部', value: -1 },
-        { label: '普通', value: 0 },
-        { label: '疑似', value: 1 },
-        { label: '黑子', value: 2 }
-      ],
-      CheatType: 0,
-      CheatTypeOption: [
-        { label: '全部', value: 0 },
-        { label: '拆牌喂牌', value: 1 },
-        { label: '单局多次喂牌', value: 2 },
-        { label: '近5局首出喂牌局数>=3', value: 3 },
-        { label: '皇冠FIGHT', value: 4 },
-        { label: '皇冠FOLD', value: 5 },
-        { label: '打一局不拿pot就离开', value: 6 },
-        { label: '大POT高胜率', value: 7 },
-        { label: '大POT多人离开', value: 8 },
-        { label: '玩超多局数且盈利', value: 9 },
-        { label: '名字相似度过高', value: 10 }
+        { label: '低危', value: 1 },
+        { label: '低信', value: 4 },
+        { label: '高信', value: 5 },
+        { label: '疑似', value: 2 },
+        { label: '黑子', value: 3 },
+        { label: '认证高信', value: 6 }
       ],
       maybeMin: 100,
 
@@ -149,6 +140,9 @@ export default {
         }
         let info = ''
         switch (i) {
+          case 0:
+            info = '前伙伴返还分:' + '  加分=' + fieldsScore[i]
+            break
           case 1:
             info = '拆牌喂牌:' + '  加分=' + fieldsScore[i]
             break
@@ -198,12 +192,15 @@ export default {
           fieldsCount.push(0)
         }
       }
-      for (let i = 1; i < fileds.length; i++) {
+      for (let i = 0; i < fileds.length; i++) {
         if (fileds[i] === 0) {
           continue
         }
         let info = ''
         switch (i) {
+          case 0:
+            info = '返还前伙伴分值' + fieldsScore[i]
+            break
           case 1:
             info = '拆牌喂牌:' + '  次数=' + fieldsCount[i] + '  加分=' + fieldsScore[i]
             break
@@ -247,6 +244,9 @@ export default {
       const $this = this
       $this.cheatLogs = []
       $this.clientDB = new ClientTableData([], 1, {})
+      if (this.Uid === '' || this.Uid === undefined) {
+        this.Uid = 0
+      }
       request({
         url: '/dataProxy/info',
         method: 'get',
@@ -272,8 +272,20 @@ export default {
           // /////////////
           for (let i = 0; i < cheatLogRows.length; i++) {
             const row = cheatLogRows[i]
-            if (this.cheatType !== -1 && row.userType !== this.cheatType) {
-              continue
+            if (this.cheatType !== -1) {
+              if (this.cheatType === 6) {
+                if (row.userType !== 3) {
+                  continue
+                }
+              } else if (this.cheatType === 5){
+                if (row.trustLevel !== this.cheatType || row.userType === 3) {
+                  continue
+                }
+              } else {
+                if (row.trustLevel !== this.cheatType) {
+                  continue
+                }
+              }
             }
             const cheatLog = {
               Uid: row.uid,
@@ -287,7 +299,16 @@ export default {
               LastEndTime: row.lastEndTime || 0,
               CheatInfos: [],
               TidCheatLogs: [],
-              Nick: new Set()
+              Nick: new Set(),
+              TrustLevel: 0,
+              TrustScore: 0,
+              TrustMaxScore: 0,
+              RealBlackTime: row.userType === 2 ? row.blackTime : 0  // 真实拉黑时间
+            }
+            if (row.trustScore !== undefined) {
+              cheatLog.TrustScore = row.trustScore
+              cheatLog.TrustLevel = row.trustLevel
+              cheatLog.TrustMaxScore = row.trustMaxScore
             }
             // eslint-disable-next-line no-prototype-builtins
             if (row.hasOwnProperty('maxCheatScore')) {
@@ -302,8 +323,12 @@ export default {
             sortName = 'CheatScore'
           } else if (this.sortType === 2) {
             sortName = 'CheatRadio'
-          }else if (this.sortType === 3) {
-            sortName = 'BlackTime'
+          } else if (this.sortType === 3) {
+            sortName = 'RealBlackTime'
+          } else if (this.sortType === 4) {
+            sortName = 'TrustMaxScore'
+          } else if (this.sortType === 5) {
+            sortName = 'MaxCheatScore'
           }
           $this.clientDB = new ClientTableData(cheatLogs, $this.pageNum, {}, sortName, -1, 'Uid')
           $this.handleCurrentChange(1)
@@ -352,6 +377,7 @@ export default {
                   for (let k = 0; k < tidRow.datas.length; k++) {
                     const cheatRow = tidRow.datas[k]
                     const playCheatLog = {
+                      Uid: cheatRow.uid,
                       EndTime: cheatRow.endTime,
                       CheatScore: cheatRow.cheatScore,
                       LogId: cheatRow.logId,
@@ -359,7 +385,8 @@ export default {
                       CheatOtherUids: cheatRow.cheatOtherUids,
                       Gid: cheatRow.gid,
                       TableMoney: cheatRow.tableMoney,
-                      CheatInfos: this.getCheatInfo(cheatRow.cheatFields, cheatRow.cheatFieldsCount, cheatRow.cheatScores)
+                      CheatInfos: this.getCheatInfo(cheatRow.cheatFields, cheatRow.cheatFieldsCount, cheatRow.cheatScores),
+                      TableCheatScore: cheatRow.tableCheatScore ? cheatRow.tableCheatScore : 0
                     }
                     if (cheatRow.hasOwnProperty('nick')) {
                       nick.add(cheatRow.nick)
@@ -367,6 +394,9 @@ export default {
                       this.saveNicks()
                     }
                     tidCheatLog.PlayCheatLogs.push(playCheatLog)
+                    if (tidCheatLog.FirstCheatTime >= cheatRow.endTime) {
+                      tidCheatLog.FirstCheatTime = cheatRow.endTime
+                    }
                   }
                 }
 
@@ -651,11 +681,18 @@ export default {
       return $libDate.FormateSecondStr(ts, 2)
     },
     changeWhite(row, userType) {
-      const tips = '是否确认将玩家ID为' + row.Uid + '的玩家洗白?'
+      let tips = '是否确认将玩家ID为' + row.Uid + '的玩家洗白?'
+      if (userType === 3) {
+        tips = '是否确认将玩家ID为' + row.Uid + '的玩家设置为认证高信?'
+      }
       this.$confirm(tips, '提示', { type: 'warning' }).then(() => {
         const ob = this.clientDB.GetDataByID(row.Uid)
-        ob.UserType = 0
+        ob.UserType = userType
         ob.CheatScore = 0
+        if (userType === 3) {
+          ob.BlackOperator = this.BlackOperator
+          ob.BlackTime = Math.floor(Date.now() / 1000)
+        }
         this.clientDB.UpdateData2('Uid', ob)
         request({
           url: '/dataProxy/info',
@@ -667,7 +704,7 @@ export default {
             Uid: row.Uid,
             Gid: row.Gid,
             Reason: '',
-            Operator: ''
+            Operator: this.BlackOperator
           }
         }).then(response => {
         })
@@ -710,12 +747,11 @@ export default {
     formatUserNick(row) {
       if (row.Nick.size === 0) {
         const _nick = this.getNick(row.Uid)
-        if (_nick){
+        if (_nick) {
           return _nick
-        }else {
+        } else {
           return '--'
         }
-
       } else {
         const array = Array.from(row.Nick)
         return (array[0] === '' ? '--' : array[0])
@@ -724,11 +760,33 @@ export default {
     formatUserType(row) {
       const userType = row.UserType
       if (userType === 0) {
-        return '信誉'
+        return '普通'
       } else if (userType === 1) {
         return '疑似'
       } else if (userType === 2) {
         return '黑名单'
+      } else if (userType === 3) {
+        return '认证高信'
+      }
+    },
+    formatUserTrustLevel(row) {
+      if (row.UserType === 3) {
+        return '认证高信'
+      }
+      const trustLevel = row.TrustLevel
+      switch (trustLevel) {
+        case 1:
+          return '低危用户'
+        case 2:
+          return '疑似用户'
+        case 3:
+          return '黑子用户'
+        case 4:
+          return '低信用户'
+        case 5:
+          return '高信用户'
+        default:
+          return '--'
       }
     },
     formatCheatInfo(row) {
@@ -748,6 +806,8 @@ export default {
       const userType = row.UserType
       if (userType === 2) {
         return this.formatTimeDate(row.BlackTime)
+      } else if (userType === 3) {
+        return this.formatTimeDate(row.BlackTime)
       } else {
         return '--'
       }
@@ -756,6 +816,8 @@ export default {
       const userType = row.UserType
       if (userType === 2) {
         return '拉黑原因：' + row.BlackReason + '，拉黑人：' + row.BlackOperator
+      } else if (userType === 3) {
+        return '认证高信，操作人：' + row.BlackOperator
       } else {
         return '--'
       }
@@ -767,14 +829,34 @@ export default {
       if (!row.OtherUid || !row.CheatOtherUids) {
         return '----'
       }
+
+      const myUid = row.Uid
+      let partnerTableCheatScore = ''
+      let noPartnerTableCheatScore = ''
+      if (row.TableCheatScore !== undefined && Array.isArray(row.TableCheatScore)) {
+        for (let i = 0; i < row.TableCheatScore.length; i++) {
+          const tableScoreObj = row.TableCheatScore[i]
+          if (row.CheatOtherUids.includes(tableScoreObj.uid)) {
+            partnerTableCheatScore = '(' + tableScoreObj.oldCheatScore + ',' + tableScoreObj.newCheatScore + ')'
+          } else if (tableScoreObj.uid !== myUid) {
+            noPartnerTableCheatScore = '(' + tableScoreObj.oldCheatScore + ',' + tableScoreObj.newCheatScore + ')'
+          }
+        }
+      } else if (row.TableCheatScore !== undefined && typeof row.TableCheatScore === 'number') {
+        partnerTableCheatScore = '(' + row.TableCheatScore + ')'
+      }
+
       const strArray = []
       for (let i = 0; i < row.OtherUid.length; i++) {
         const uid = row.OtherUid[i]
         if (row.CheatOtherUids.includes(uid)) {
-          const redStr = '<span style="color: red">' + row.OtherUid[i] + '</span>'
+          const redStr = '<span style="color: red">' + row.OtherUid[i] + partnerTableCheatScore + '</span>'
           strArray.push(redStr)
+        } else if (uid === myUid) {
+          const blueStr = '<span style="color: blue">' + row.OtherUid[i] + '</span>'
+          strArray.push(blueStr)
         } else {
-          strArray.push(row.OtherUid[i])
+          strArray.push(row.OtherUid[i] + noPartnerTableCheatScore)
         }
       }
       // if (this.GameLogUidsMap.has(row.logId)) {
@@ -830,9 +912,13 @@ export default {
       this.CheatLogVisible = true
       this.CheatLogs = row.CheatInfos
     },
-    showButton(row) {
-      return row.userType === 2
+    showButton(row, userType) {
+      if (userType === 2) {
+        return row.UserType === userType
+      }
+      return true
     },
+
     getValueColor(value) {
       if (value >= this.maybeMin) return '#ff0000'
       return '#000000'
@@ -851,6 +937,24 @@ export default {
         return 'Tongits QUICK'
       } else {
         return '未知游戏'
+      }
+    },
+    changeSortType() {
+      let sortName = 'UpdateTime'
+      if (this.sortType === 1) {
+        sortName = 'CheatScore'
+      } else if (this.sortType === 2) {
+        sortName = 'CheatRadio'
+      } else if (this.sortType === 3) {
+        sortName = 'RealBlackTime'
+      } else if (this.sortType === 4) {
+        sortName = 'TrustMaxScore'
+      } else if (this.sortType === 5) {
+        sortName = 'MaxCheatScore'
+      }
+      if (this.clientDB.TotalData.length !== 0) {
+        this.clientDB = new ClientTableData(this.clientDB.TotalData, this.pageNum, {}, sortName, -1, 'Uid')
+        this.refreshShow()
       }
     }
   }
@@ -890,7 +994,7 @@ export default {
           <!--          <el-button size="mini" type="primary" icon="el-icon-plus" @click="getCheatData">刷新</el-button>-->
         </el-form-item>
         <el-form-item label="排序方式：">
-          <el-select v-model.number="sortType" placeholder="请选择">
+          <el-select v-model.number="sortType" placeholder="请选择" @change="changeSortType">
             <el-option
               v-for="itemSort in sortTypeOption"
               :key="itemSort.value"
@@ -940,15 +1044,36 @@ export default {
             <span>{{ formatUserNick(scope.row) }}</span>
           </template>
         </el-table-column>
+        <!--        <el-table-column-->
+        <!--          label="身份"-->
+        <!--          width="80"-->
+        <!--          align="center"-->
+        <!--        >-->
+        <!--          <template slot-scope="scope">-->
+        <!--            <span>{{ formatUserType(scope.row) }}</span>-->
+        <!--          </template>-->
+        <!--        </el-table-column>-->
         <el-table-column
-          label="身份"
+          label="信任等级"
           width="80"
           align="center"
         >
           <template slot-scope="scope">
-            <span>{{ formatUserType(scope.row) }}</span>
+            <span>{{ formatUserTrustLevel(scope.row) }}</span>
           </template>
         </el-table-column>
+        <el-table-column
+          prop="TrustScore"
+          label="信任分"
+          width="80"
+          align="center"
+        />
+        <el-table-column
+          prop="TrustMaxScore"
+          label="历史最高信任分"
+          width="80"
+          align="center"
+        />
         <el-table-column
           prop="CheatScore"
           label="疑似度"
@@ -982,8 +1107,8 @@ export default {
         </el-table-column>
         <el-table-column
           prop="BlackTime"
-          label="拉⿊时间"
-          width="160"
+          label="操作时间"
+          width="100"
           align="center"
         >
           <template slot-scope="scope">
@@ -991,8 +1116,8 @@ export default {
           </template>
         </el-table-column>
         <el-table-column
-          label="拉⿊信息"
-          width="300"
+          label="操作信息"
+          width="200"
           align="center"
         >
           <template slot-scope="scope">
@@ -1002,7 +1127,7 @@ export default {
         <el-table-column
           prop="LastEndTime"
           label="最近牌局时间"
-          width="160"
+          width="100"
           align="center"
         >
           <template slot-scope="scope">
@@ -1012,7 +1137,7 @@ export default {
         <el-table-column
           prop="UpdateTime"
           label="最近作弊时间"
-          width="160"
+          width="100"
           align="center"
         >
           <template slot-scope="scope">
@@ -1080,7 +1205,7 @@ export default {
                       </template>
                     </el-table-column>
 
-                    <el-table-column width="200" label="在该桌其他真⼈玩家id">
+                    <el-table-column width="500" label="在该桌其他真⼈玩家id">
                       <template slot-scope="scopeInfo">
                         <p v-html="formatOtherUids(scopeInfo.row)" />
                       </template>
@@ -1117,15 +1242,18 @@ export default {
         </el-table-column>
         <el-table-column
           label="操作"
-          width="200"
+          width="300"
           align="center"
         >
           <template slot-scope="scope">
-            <el-button type="primary" size="small" :disabled="showButton(scope.row)" @click="changeWhite(scope.row,0)">
+            <el-button type="primary" size="small" @click="changeWhite(scope.row,0)">
               洗白
             </el-button>
-            <el-button type="primary" size="small" :disabled="showButton(scope.row)" @click="changeBlack(scope.row,2)">
+            <el-button type="primary" size="small" :disabled="showButton(scope.row,2)" @click="changeBlack(scope.row,2)">
               拉黑
+            </el-button>
+            <el-button type="primary" size="small" @click="changeWhite(scope.row,3)">
+              认证高信
             </el-button>
           </template>
         </el-table-column>

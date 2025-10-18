@@ -194,10 +194,11 @@
       <el-table-column
         prop="IsRobot"
         label="玩家类型"
-        width="120px"
+        width="150px"
       >
         <template slot-scope="scope">
-          {{ showRobotLevel(scope.row.IsRobot,scope.row.RobotLevel) }}
+            <el-tag>{{ showRobotLevel(scope.row.IsRobot,scope.row.RobotLevel,scope.row.RobotDefenceLevel) }}{{showTrustLevel(scope.row.IsRobot,scope.row.TrustLevel)}}</el-tag>
+            <el-tag v-if="scope.row.UserType" :type="scope.row.UserType <= 1 ? 'primary' : 'danger'">{{ showUserType(scope.row.IsRobot,scope.row.UserType) }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column
@@ -458,7 +459,7 @@
           width="120px"
         >
           <template slot-scope="scope">
-            {{ showRobotLevel(scope.row.IsRobot,scope.row.RobotLevel) }}
+            {{ showRobotLevel(scope.row.IsRobot,scope.row.RobotLevel,scope.row.RobotDefenceLevel) }}
           </template>
         </el-table-column>
         <template v-if="gid === 24">
@@ -628,36 +629,127 @@ export default {
 
       return cfg[mode] ? cfg[mode] : mode
     },
-    showRobotLevel(isRobot,level) {
+    showRobotLevel(isRobot,level,defenceLevel) {
       if (isRobot!=0 && level==0) {
         level = isRobot
       }
-      switch (level) {
-        case -1 :
-          return '机器人'
-        case 0:
-          return '真人'
-        case 1:
-          return '机器人--强放'
-        case 2:
-          return '机器人--弱放'
-        case 3:
-          return '机器人--陪玩'
-        case 4:
-          return '机器人--弱杀'
-        case 5:
-          return '机器人--强杀'
-        case 6:
-          return '机器人--贴防'
-        case 8:
-          return '一级杀手机器人'
-        case 9:
-          return '二级杀手机器人'
-        case 10:
-          return '收割机器人'
-        default:
-          return level <= 7 ? '陪玩机器人' : level
+      if (defenceLevel <= 0 || defenceLevel === undefined) {
+        switch (level) {
+          case -1 :
+            return '机器人'
+          case 0:
+            return '真人'
+          case 1:
+            return '机器人--强放'
+          case 2:
+            return '机器人--弱放'
+          case 3:
+            return '机器人--陪玩'
+          case 4:
+            return '机器人--弱杀'
+          case 5:
+            return '机器人--强杀'
+          case 8:
+            return '一级杀手机器人'
+          case 9:
+            return '二级杀手机器人'
+          case 10:
+            return '收割机器人'
+          default:
+            return level <= 7 ? '陪玩机器人' : level
+        }
+      } else {
+        switch (defenceLevel) {
+          case 3 :
+            return '机器人贴防 -- 陪玩'
+          case 4:
+            return '机器人贴防 -- 弱杀'
+          case 5:
+            return '机器人贴防 -- 强杀'
+          case 6:
+            return '机器人贴防 -- 防作弊'
+          case 7:
+            return '机器人预贴防 -- 陪玩'
+          case 8:
+            return '机器人预贴防 -- 弱杀'
+          case 9:
+            return '机器人预贴防 -- 强杀'
+          case 10:
+            return '机器人贴防 -- 锁血强杀'
+          case 11:
+            return '机器人预贴防 --  锁血强杀'
+          default:
+            return '机器人贴防 -- ' + defenceLevel
+        }
       }
+
+    },
+    // showRobotLevel(isRobot,level) {
+    //   if (isRobot!=0 && level==0) {
+    //     level = isRobot
+    //   }
+    //   switch (level) {
+    //     case -1 :
+    //       return '机器人'
+    //     case 0:
+    //       return '真人'
+    //     case 1:
+    //       return '机器人--强放'
+    //     case 2:
+    //       return '机器人--弱放'
+    //     case 3:
+    //       return '机器人--陪玩'
+    //     case 4:
+    //       return '机器人--弱杀'
+    //     case 5:
+    //       return '机器人--强杀'
+    //     case 6:
+    //       return '机器人--贴防'
+    //     case 8:
+    //       return '一级杀手机器人'
+    //     case 9:
+    //       return '二级杀手机器人'
+    //     case 10:
+    //       return '收割机器人'
+    //     default:
+    //       return level <= 7 ? '陪玩机器人' : level
+    //   }
+    // },
+    showTrustLevel(isRobot,level) {
+      if (isRobot) {
+        return ''
+      }
+      switch (level) {
+        case 1:
+          return '--低危用户'
+        case 2:
+          return '--疑似用户'
+        case 3:
+          return '--黑子用户'
+        case 4:
+          return '--低信用户'
+        case 5:
+          return '--高信用户'
+        default:
+          return ''
+      }
+    },
+    showUserType(isRobot,userType) {
+      if (isRobot) {
+        return ''
+      }
+      if (userType === 4) {
+        return '低信用户'
+      } else if (userType === 5) {
+        return '高信用户'
+      } else if (userType === 2) {
+        return "疑似用户"
+      } else if (userType === 3) {
+        return "黑子用户"
+      } else if (userType === 1) {
+        return "低危用户"
+      }
+      return ""
     },
     showRoomLevel(level) {
       switch (level) {

@@ -6,8 +6,8 @@
         <el-form inline label-width="90px" :inline="true" size="small">
           <el-form-item label="日期：">
             <el-date-picker
-              :default-time="['00:00:00', '23:59:59']"
               v-model="timeRange"
+              :default-time="['00:00:00', '23:59:59']"
               type="datetimerange"
               value-format="timestamp"
               :picker-options="pickerOptions"
@@ -22,15 +22,15 @@
             <el-input v-model.number="item.uid" placeholder="Uid" size="mini" />
           </el-form-item>
           <el-form-item label="交易id">
-            <el-input v-model="item.txId" placeholder="交易id" size="mini" style="width: 225px"/>
+            <el-input v-model="item.txId" placeholder="交易id" size="mini" style="width: 225px" />
           </el-form-item>
           <el-form-item label="状态">
-          <el-select v-model.number="item.status" placeholder="请选择" size="mini">
-            <el-option label="所有" :value="0" />
-            <el-option label="等待重试" :value="1" />
-            <el-option label="正在重试" :value="2" />
-            <el-option label="重试成功" :value="3" />
-          </el-select>
+            <el-select v-model.number="item.status" placeholder="请选择" size="mini">
+              <el-option label="所有" :value="0" />
+              <el-option label="等待重试" :value="1" />
+              <el-option label="正在重试" :value="2" />
+              <el-option label="重试成功" :value="3" />
+            </el-select>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" size="mini" @click="getData">查询</el-button>
@@ -39,7 +39,7 @@
         </el-form>
 
       </el-col>
-      <el-col :span="15"/>
+      <el-col :span="15" />
       <el-col>
         <el-table
           :data="tableData"
@@ -71,25 +71,25 @@
             </template>
           </el-table-column>
 
-<!--          <el-table-column label="交易id" width="220px">-->
-<!--            <template slot-scope="scope">-->
-<!--              {{ scope.row.TxId }}-->
-<!--            </template>-->
-<!--          </el-table-column>-->
-<!--          <el-table-column label="回合id" width="220px">-->
-<!--            <template slot-scope="scope">-->
-<!--              {{ scope.row.RoundId }}-->
-<!--            </template>-->
-<!--          </el-table-column>-->
+          <!--          <el-table-column label="交易id" width="220px">-->
+          <!--            <template slot-scope="scope">-->
+          <!--              {{ scope.row.TxId }}-->
+          <!--            </template>-->
+          <!--          </el-table-column>-->
+          <!--          <el-table-column label="回合id" width="220px">-->
+          <!--            <template slot-scope="scope">-->
+          <!--              {{ scope.row.RoundId }}-->
+          <!--            </template>-->
+          <!--          </el-table-column>-->
           <el-table-column label="失败金额">
             <template slot-scope="scope">
-              <span    v-if="scope.row.EndRoundParamsFail" >{{scope.row.EndRoundParamsFail?parseInt(scope.row.EndRoundParamsFail.Data[0].PayoffAmount) / 1000:0}}</span>
-              <span    v-else-if="scope.row.BetParamsFail" >{{scope.row.BetParamsFail?parseInt(scope.row.BetParamsFail.BetAmount) / 1000:0}}</span>
-              <span    v-else-if="scope.row.RolloutParamsFail" >{{scope.row.RolloutParamsFail?parseInt(scope.row.RolloutParamsFail.Amount) / 1000:0}}</span>
-              <span    v-else-if="scope.row.RollinParamsFail" >{{scope.row.RollinParamsFail?parseInt(scope.row.RollinParamsFail.Amount) / 1000:0}}</span>
-              <span    v-else-if="scope.row.GameSettleParamsFail" >{{scope.row.GameSettleParamsFail?parseInt(scope.row.GameSettleParamsFail.TotalPayoffAmount) / 1000:0}}</span>
-              <span   v-else-if="scope.row.VasCostParamsFail" >{{scope.row.VasCostParamsFail?parseInt(scope.row.VasCostParamsFail.Amount) / 1000:0}}</span>
-              <span  v-else>{{ getAmount(scope.row) }}</span>
+              <span v-if="scope.row.EndRoundParamsFail">{{ scope.row.EndRoundParamsFail?parseInt(scope.row.EndRoundParamsFail.Data[0].PayoffAmount) / 1000:0 }}</span>
+              <span v-else-if="scope.row.BetParamsFail">{{ scope.row.BetParamsFail?parseInt(scope.row.BetParamsFail.BetAmount) / 1000:0 }}</span>
+              <span v-else-if="scope.row.RolloutParamsFail">{{ scope.row.RolloutParamsFail?parseInt(scope.row.RolloutParamsFail.Amount) / 1000:0 }}</span>
+              <span v-else-if="scope.row.RollinParamsFail">{{ scope.row.RollinParamsFail?parseInt(scope.row.RollinParamsFail.Amount) / 1000:0 }}</span>
+              <span v-else-if="scope.row.GameSettleParamsFail">{{ scope.row.GameSettleParamsFail?parseInt(scope.row.GameSettleParamsFail.TotalPayoffAmount) / 1000:0 }}</span>
+              <span v-else-if="scope.row.VasCostParamsFail">{{ scope.row.VasCostParamsFail?parseInt(scope.row.VasCostParamsFail.Amount) / 1000:0 }}</span>
+              <span v-else>{{ getAmount(scope.row) }}</span>
             </template>
           </el-table-column>
           <el-table-column label="操作类型">
@@ -123,9 +123,9 @@
               {{ scope.row.ExtData }}
             </template>
           </el-table-column>
-          <el-table-column label="查看id" >
+          <el-table-column label="查看id">
             <template slot-scope="scope">
-              <el-button  @click="showTxId(scope.row)"> 查看id</el-button>
+              <el-button @click="showTxId(scope.row)"> 查看id</el-button>
             </template>
           </el-table-column>
           <el-table-column label="操作">
@@ -140,24 +140,24 @@
       <el-col :span="12">
         <div class="block">
           <el-pagination
-              background
-              :current-page="item.currPage"
-              :page-sizes="[20]"
-              :page-size="item.limit"
-              layout=" prev, next"
-              :total="totalCount"
-              @size-change="handleSizeChange"
-              @current-change="handleCurrentChange"
+            background
+            :current-page="item.currPage"
+            :page-sizes="[20]"
+            :page-size="item.limit"
+            layout=" prev, next"
+            :total="totalCount"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
           />
         </div>
       </el-col>
     </el-row>
 
-    <el-dialog   :visible.sync="visibleID" >
+    <el-dialog :visible.sync="visibleID">
       <el-descriptions border column="1">
-        <el-descriptions-item label="交易id">{{ showRow.TxId}}</el-descriptions-item>
-        <el-descriptions-item label="回合id">{{ showRow.RoundId}}</el-descriptions-item>
-        <el-descriptions-item  v-if="showRow.Status == 3" label="下注状态" >{{ showRow.Valid}}</el-descriptions-item>
+        <el-descriptions-item label="交易id">{{ showRow.TxId }}</el-descriptions-item>
+        <el-descriptions-item label="回合id">{{ showRow.RoundId }}</el-descriptions-item>
+        <el-descriptions-item v-if="showRow.Status == 3" label="下注状态">{{ showRow.Valid }}</el-descriptions-item>
       </el-descriptions>
     </el-dialog>
   </div>
@@ -168,15 +168,15 @@ import Compare from '@/components/Compare/index.vue'
 import Publish from '@/components/Publish/index.vue'
 import request from '@/utils/request'
 import MoneyInput from '@/components/MoneyInput/index.vue'
-import {$libDate, $libShow, ClientTableData} from "@/utils/common";
-import {Message} from "element-ui";
-import { base64 } from 'jszip/lib/support';
+import { $libDate, $libShow, ClientTableData } from '@/utils/common'
+import { Message } from 'element-ui'
+import { base64 } from 'jszip/lib/support'
 const filterMap = {
 
 }
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: {Compare, Publish, MoneyInput},
+  components: { Compare, Publish, MoneyInput },
   data() {
     return {
       timeRange: [$libDate.GetDayBegin(new Date()), $libDate.GetDayEnd(new Date())],
@@ -190,35 +190,39 @@ export default {
         gid: 0,
         app: 0,
         txId: '',
-        status: 0,
+        status: 0
       },
-      showRow:{},
-      visibleID:false,
+      showRow: {},
+      visibleID: false,
       tableData: [],
       gameMap: {},
       failTypeMap: {
-        1: '派彩失败', 2: '游戏结算失败', 3: '转入失败', 4: '下注失败',5:'转出失败',6:'增值业务失败',7:'比赛报名',8:'比赛结束',10: 'CP下注失败',11: 'CP结算失败',12: 'CP离开回退失败',13:'CP打赏失败',14:'再次买入失败'
+        1: '派彩失败', 2: '游戏结算失败', 3: '转入失败', 4: '下注失败', 5: '转出失败', 6: '增值业务失败',
+        7: '比赛报名', 8: '比赛结束', 10: 'CP下注失败',
+        11: 'CP结算失败', 12: 'CP离开回退失败', 13: 'CP打赏失败', 14: '再次买入失败',
+        16: '下注并派彩失败', 17: '创建门票失败', 18: '门票更新失败'
       },
       statusMap: {
-        1: '等待重试', 2: '正在重试', 3: '重试成功',
+        1: '等待重试', 2: '正在重试', 3: '重试成功'
       },
-      actTypeMap:{
-        1000 :'玩牌赢',
-        1001 :'玩牌输',
-        2000 :'下注',
-        2001 :'登录',
-        2002 :'刷新',
-        2003 :'回合结束',
-        2004 :'回退',
-        2005 :'增值',
-        2006 :'从平台转出',
-        2007 :'内部结算',
-        2008 :'游戏结算',
-        2009:'转入平台',
-        2010:'比赛报名',
-        2011:'比赛结束',
+      actTypeMap: {
+        1000: '玩牌赢',
+        1001: '玩牌输',
+        2000: '下注',
+        2001: '登录',
+        2002: '刷新',
+        2003: '回合结束',
+        2004: '回退',
+        2005: '增值',
+        2006: '从平台转出',
+        2007: '内部结算',
+        2008: '游戏结算',
+        2009: '转入平台',
+        2010: '比赛报名',
+        2011: '比赛结束',
+        2014: '下注并派彩'
       },
-      totalCount: 0,
+      totalCount: 0
     }
   },
   created() {
@@ -240,8 +244,8 @@ export default {
       let uid = 0
       if ($this.item.uid === '') {
         uid = 0
-      }else {
-        let exp = /^[0-9]*$/;
+      } else {
+        const exp = /^[0-9]*$/
         if (!exp.test($this.item.uid)) {
           Message.error('请输入正确的uid')
           return
@@ -263,22 +267,22 @@ export default {
           Gid: $this.item.gid,
           App: $this.item.app,
           TxId: $this.item.txId,
-          Status: $this.item.status,
+          Status: $this.item.status
         }
       }).then(response => {
         $this.tableData = []
-        console.log("===========",response.Data)
+        console.log('===========', response.Data)
         if (response.RetCode === 0) {
           if (response.Data == 'no Data') {
             Message.error('no Data')
             return
           }
           $this.tableData = response.Data
-          if (response.Data.length >= $this.item.limit){
-            $this.totalCount = ($this.item.offset - 1) * $this.item.limit +$this.item.limit +1
+          if (response.Data.length >= $this.item.limit) {
+            $this.totalCount = ($this.item.offset - 1) * $this.item.limit + $this.item.limit + 1
           }
         }
-        console.log("========",response)
+        console.log('========', response)
       })
     },
 
@@ -298,9 +302,9 @@ export default {
         }
       })
     },
-    showTxId(row){
+    showTxId(row) {
       this.showRow = row
-      this.visibleID =true
+      this.visibleID = true
     },
     getGameList() {
       request({
@@ -315,72 +319,79 @@ export default {
         }
       })
     },
-    retry(txid){
+    retry(txid) {
       request({
         url: '/dataProxy/info',
         method: 'post',
         data: {
           Path: '/wallet/retry/faillog',
-          TxId: txid,
+          TxId: txid
         }
       }).then(response => {
-        console.log("=====", response)
+        console.log('=====', response)
         if (response.RetCode === 0) {
-          Message.success("重试成功！")
+          Message.success('重试成功！')
         }
       })
     },
-    retryTimeFailLog(){
+    retryTimeFailLog() {
       request({
         url: '/dataProxy/info',
         method: 'post',
         data: {
           Path: '/wallet/retry/time/faillog',
-          retryTime: parseInt(new Date().getTime() / 1000),
+          retryTime: parseInt(new Date().getTime() / 1000)
         }
       }).then(response => {
-        console.log("=====", response)
+        console.log('=====', response)
         if (response.RetCode === 0) {
           Message.success(response.Data)
           this.getData()
         }
       })
     },
-    getAmount(data){
+    getAmount(data) {
       if (data.FailType == 7) {
-        let sub  = JSON.parse(data.CommonFailParamsJsonString)
-        console.log("json data",JSON.parse(data.CommonFailParamsJsonString));
-        return sub.EntryFee/1000
-      }else if (data.FailType == 8) {
-        let sub  = JSON.parse(data.CommonFailParamsJsonString)
-        console.log("json data",JSON.parse(data.CommonFailParamsJsonString));
-        if(sub.MatchStatus == 1) {
+        const sub = JSON.parse(data.CommonFailParamsJsonString)
+        console.log('json data', JSON.parse(data.CommonFailParamsJsonString))
+        return sub.EntryFee / 1000
+      } else if (data.FailType == 8) {
+        const sub = JSON.parse(data.CommonFailParamsJsonString)
+        console.log('json data', JSON.parse(data.CommonFailParamsJsonString))
+        if (sub.MatchStatus == 1) {
+          if (sub.HighPrecision == 1) { // 高精度
+            return sub.Amount / 1000000
+          }
           return sub.Amount / 1000
-        }else{
-          return "退费："+(sub.Amount/1000)
+        } else {
+          return '退费：' + (sub.Amount / 1000)
         }
-      }else if (data.FailType == 10) {
-        let sub  = JSON.parse(data.CommonFailParamsJsonString)
-        console.log("json data",JSON.parse(data.CommonFailParamsJsonString));
+      } else if (data.FailType == 10) {
+        const sub = JSON.parse(data.CommonFailParamsJsonString)
+        console.log('json data', JSON.parse(data.CommonFailParamsJsonString))
         return sub.Amount / 1000
-      }else if (data.FailType == 11) {
-        let sub  = JSON.parse(data.CommonFailParamsJsonString)
-        console.log("json data",JSON.parse(data.CommonFailParamsJsonString));
-        return sub.HoldingAmount / 1000- sub.BetAmount / 1000+sub.PayoffAmount / 1000
-      }else if (data.FailType == 12) {
-        let sub  = JSON.parse(data.CommonFailParamsJsonString)
-        console.log("json data",JSON.parse(data.CommonFailParamsJsonString));
+      } else if (data.FailType == 11) {
+        const sub = JSON.parse(data.CommonFailParamsJsonString)
+        console.log('json data', JSON.parse(data.CommonFailParamsJsonString))
+        return sub.HoldingAmount / 1000 - sub.BetAmount / 1000 + sub.PayoffAmount / 1000
+      } else if (data.FailType == 12) {
+        const sub = JSON.parse(data.CommonFailParamsJsonString)
+        console.log('json data', JSON.parse(data.CommonFailParamsJsonString))
         return sub.Amount / 1000
-      }else if (data.FailType == 13) {
-        let sub  = JSON.parse(data.CommonFailParamsJsonString)
-        console.log("json data",JSON.parse(data.CommonFailParamsJsonString));
+      } else if (data.FailType == 13) {
+        const sub = JSON.parse(data.CommonFailParamsJsonString)
+        console.log('json data', JSON.parse(data.CommonFailParamsJsonString))
         return sub.GiftAmount / 1000
-      }else if (data.FailType == 14) {
-        let sub  = JSON.parse(data.CommonFailParamsJsonString)
-        console.log("json data",JSON.parse(data.CommonFailParamsJsonString));
+      } else if (data.FailType == 14) {
+        const sub = JSON.parse(data.CommonFailParamsJsonString)
+        console.log('json data', JSON.parse(data.CommonFailParamsJsonString))
         return sub.Amount / 1000
-      }else{
-        if (data.hasOwnProperty("BetParams")) {
+      } else if (data.FailType == 16) {
+        const sub = JSON.parse(data.CommonFailParamsJsonString)
+        console.log('json data', JSON.parse(data.CommonFailParamsJsonString))
+        return '下注:' + (sub.BetAmount / 1000) + ' | 派彩:' + sub.PayoffAmount / 1000
+      } else {
+        if (data.hasOwnProperty('BetParams')) {
           return data.BetParamsFail.BetAmount / 1000
         }
         return 0
@@ -392,9 +403,9 @@ export default {
       this.getData()
     },
     handleCurrentChange(val) {
-      this.item.offset= val
+      this.item.offset = val
       this.getData()
-    },
+    }
 
   }
 }

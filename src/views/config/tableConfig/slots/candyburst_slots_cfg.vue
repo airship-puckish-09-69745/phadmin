@@ -10,7 +10,7 @@
           </el-tab-pane>
           <el-tab-pane label="符号表配置" name="symbol">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，重启生效】</h3>
-            <publish primary-key="ID" :key-id="getFullKey('candyburst_slots_base')" :env-empty="false" compare-type="Object" />
+            <publish primary-key="ID" :key-id="getFullKey('candyburst_slots_rule')" :env-empty="false" compare-type="Object" />
             <slots-symbol-value v-if="ruleCfgBool" v-model="ruleCfg" @saveData="saveRuleCfg" />
           </el-tab-pane>
           <el-tab-pane label="赔付线配置" name="pay_table">
@@ -23,10 +23,15 @@
             <publish primary-key="ID" :key-id="getFullKey('candyburst_slots_base')" :env-empty="false" compare-type="Object" />
             <slots-reels-double v-if="baseCfgBool" v-model="baseCfg" :symbol-list="ruleCfg.SymbolList" @saveData="saveBaseCfg" />
           </el-tab-pane>
+          <el-tab-pane label="进入免费方案配置" name="scatter_trigger_plans">
+            <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布】</h3>
+            <publish primary-key="ID" :key-id="getFullKey('candyburst_slots_base')" :env-empty="false" compare-type="Object" />
+            <slots-free-trigger-plans v-if="baseCfgBool" v-model="baseCfg" :odds-str="false" :scatter-trigger-plans="baseCfg.scatterTriggerPlans" @saveData="saveBaseCfg" />
+          </el-tab-pane>
           <el-tab-pane label="拓展配置" name="scatter">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，发布即生效】</h3>
             <publish primary-key="ID" :key-id="getFullKey('candyburst_slots_ext')" :env-empty="false" compare-type="Object" />
-            <slots-candyburst-ext v-if="extCfgBool" v-model="extCfg" @saveData="saveExtCfg" />
+            <slots-candyburst-ext v-if="extCfgBool" v-model="extCfg" :base-bet="baseCfg.BaseBet" @saveData="saveExtCfg" />
           </el-tab-pane>
           <el-tab-pane label="剧本" name="script">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，发布即生效】</h3>
@@ -58,10 +63,12 @@ import slotsVup from './components_x/slots_vup'
 import slotsReelsDouble from './components_x/reels_double'
 import slotsRowReelsDouble from './components_x/row_reels_double'
 import slotsScript from './components_x/slots_script'
+import slotsBountyraidExt from "@/views/config/tableConfig/slots/components_x/bountyraid_ext.vue";
+import SlotsFreeTriggerPlans from "@/views/config/tableConfig/slots/components_x/slotsFreeTriggerPlans.vue";
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: { Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotsCandyburstExt, slotsRowReelsDouble, slotsBigWinnerCfg, slotsVup, slotsReelsDouble, slotsScript },
+  components: {SlotsFreeTriggerPlans, slotsBountyraidExt, Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotsCandyburstExt, slotsRowReelsDouble, slotsBigWinnerCfg, slotsVup, slotsReelsDouble, slotsScript },
   data() {
     return {
       activeTab: 'base',
@@ -105,11 +112,11 @@ export default {
             }
             cfg.Bets = BetList.join(',')
 
-            const OddsList = []
-            for (const k in cfg.BetOddsList) {
-              OddsList[k] = cfg.BetOddsList[k] / 1000
-            }
-            cfg.OddsStr = OddsList.join(',')
+            // const OddsList = []
+            // for (const k in cfg.BetOddsList) {
+            //   OddsList[k] = cfg.BetOddsList[k] / 1000
+            // }
+            // cfg.OddsStr = OddsList.join(',')
 
             const BetListAct = []
             for (const k in cfg.BetList) {

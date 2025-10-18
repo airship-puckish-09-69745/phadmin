@@ -202,6 +202,7 @@
 <script>
 import { $libDate, $libShow } from '@/utils/common'
 import request from '@/utils/request'
+import { Message } from 'element-ui'
 export default {
   name: 'JackpotAward',
   data() {
@@ -252,7 +253,10 @@ export default {
         { 'value': 128, 'label': 'Tongits JP' },
         { 'value': 129, 'label': 'Live Color' },
         { 'value': 132, 'label': '新版扫雷' },
-        { 'value': 210, 'label': 'LuckySpirits' }
+        { 'value': 210, 'label': 'LuckySpirits' },
+        { 'value': 216, 'label': 'Phoenix' },
+        { 'value': 134, 'label': 'Pusoy JP' },
+        { 'value': 135, 'label': 'SUPER COLOR' },
       ],
       userTypeConfig: [
         { 'value': -1, 'label': '全部' },
@@ -283,7 +287,8 @@ export default {
       prizeForm: {
         ChangeNum: 0,
         ChangeRobotNum: 0
-      }
+      },
+      oldParams: ''
     }
   },
   created() {
@@ -301,7 +306,18 @@ export default {
     }
   },
   methods: {
+    getParamsStr() {
+      return this.pageNum + ',' + this.searchForm.gameId + ',' + this.searchForm.awardType + ',' + this.searchForm.uid +
+        ',' + this.searchForm.isRobot + ',' + this.searchForm.app + ',' + this.searchForm.level + ',' + $libDate.SelectTimeToIndiaByZone(this.searchForm.date) / 1000
+    },
+    isParamsChange() {
+      return this.oldParams !== this.getParamsStr()
+    },
     search() {
+      if (this.isParamsChange()) {
+        this.currentPage = 1
+        this.oldParams = this.getParamsStr()
+      }
       const _this = this
       // const loading = this.$loading({
       //     lock: true,
@@ -423,6 +439,7 @@ export default {
     // },
     handleSizeChange(val) {
       this.pageNum = val
+      this.currentPage = 1
       this.search()
     },
     handleCurrentChange(val) {

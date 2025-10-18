@@ -36,6 +36,22 @@
                     <el-date-picker v-model="item.EveryDayEndTime" type="datetime" placeholder="选择结束时间" format="HH:mm" size="mini" />
                   </el-form-item>
                 </el-col>
+                <el-col >
+                  <el-form-item label="单日弹窗次数：">
+                    <el-input v-model.number="item.ShowTimes" style="width: 200px;" placeholder="请输入限制数量"/>
+                    <el-tooltip class="item" effect="light" placement="right-start">
+                      <template #content>
+                        <div>配置1则所有用户单日只弹出1次该弹窗，配置0则该弹窗不主动弹出，配置-1则该弹窗次数为无限</div>
+                      </template>
+                      <i class="el-icon-info" />
+                    </el-tooltip>
+                  </el-form-item>
+                </el-col>
+                <el-col >
+                  <el-form-item label="活动展示金额：">
+                    <el-input v-model.number="item.ShowGold" style="width: 200px;" placeholder="请输入显示金额数量" />
+                  </el-form-item>
+                </el-col>
                 <el-col>
                   <el-form-item label="每日黄金红包总发放限制：" :required="true">
                     <el-input v-model="item.SingleLimitNum" style="width: 200px;" placeholder="请输入限制数量" />
@@ -69,6 +85,17 @@
                 <el-col>
                   <el-form-item label="限制红包发送金币额度：" :required="true">
                     <el-input v-model="item.LimitMaxNum" style="width: 200px;" placeholder="请输入限制数量" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="消息推送开关：" :rules="dataRule(true,{type:'n',range:'0'})">
+                    <el-switch v-model="item.IsSend" :active-value="true" :inactive-value="false" />
+                    <el-tooltip class="item" effect="light" placement="right-start">
+                      <template #content>
+                        <div>控制推送红包任务进度</div>
+                      </template>
+                      <i class="el-icon-info" />
+                    </el-tooltip>
                   </el-form-item>
                 </el-col>
               </el-form>
@@ -488,15 +515,8 @@
                 </el-form-item>
               </el-col>
               <el-col>
-                <el-form-item label="SiteId白名单：" prop="item.WhitelistCfg.AppIdList">
-                  <el-select v-model="item.WhitelistCfg.SiteIdList" multiple placeholder="请选择" style="width: 400px" @change="onSiteIdOptionsChange">
-                    <el-option
-                      v-for="item in siteIdOptions"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
+                <el-form-item label="SiteId白名单：" prop="item.WhitelistCfg.SiteIdList">
+                  <SiteSelect v-model="item.WhitelistCfg.SiteIdList" multiple placeholder="请选择" style="width: 400px" />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -566,6 +586,7 @@ import request from "@/utils/request";
 import Compare from "@/components/Compare/index.vue";
 import store from '@/store'
 import {getCustomize, updateCustomize} from "@/api/custome_configV2";
+import SiteSelect from '@/components/SiteSelect/index.vue'
 
 function newPrizePoolCfg() {
   return {
@@ -593,7 +614,7 @@ function newRedPoolCfg() {
 }
 
 export default {
-  components: {Compare, ImagePicker, Publish},
+  components: {Compare, ImagePicker, Publish, SiteSelect},
   watch: {
     filterText(val) {
       this.$refs.tree.filter(val);
@@ -615,11 +636,14 @@ export default {
       IsUpdate: false,
       item: {
         IsOpen: true,
+        IsSend: true,
         StartTime: 0,
         EndTime: 0,
         EveryDayStartTime: 0,
         EveryDayEndTime: 0,
+        ShowTimes: 0,
         SockGainRatio: 10,
+        ShowGold: 0,
         RuleImgHor: [],
         RuleImgVer: [],
         RewardUseSceneId: 0,
@@ -723,16 +747,6 @@ export default {
           label: '正式1000005'
         },
       ],
-
-      siteIdOptions: [
-        { value: 'BP', label: 'BP' },
-        { value: 'AP', label: 'AP' },
-        { value: 'GP', label: 'GP' },
-        { value: 'TP', label: 'TP' },
-        { value: 'PG', label: 'PG' },
-        { value: 'Dev', label: 'Dev' }
-      ],
-
       // 奖励类型
       rewardTypes: [
         { 'value': 1, 'label': '黄金红包' },
@@ -1142,6 +1156,11 @@ export default {
             $this.item.IsWhite = old.IsWhite
             $this.item.StartTime = old.StartTime * 1000
             $this.item.EndTime = old.EndTime * 1000
+            $this.item.ShowGold = old.ShowGold
+            $this.item.ShowTimes = old.ShowTimes
+            if (old.IsSend !== null) {
+              $this.item.IsSend = old.IsSend
+            }
             $this.item.EveryDayStartTime = this.getStartMidnightTimestamp(old.EveryDayStartTime * 1000)
             $this.item.EveryDayEndTime = this.getEndMidnightTimestamp(old.EveryDayStartTime * 1000,old.EveryDayEndTime * 1000)
             $this.item.LimitReceiveNum1 = old.LimitReceiveNum1 / 1000
@@ -1200,10 +1219,13 @@ export default {
       var whiteList = this.getWhiteList()
       var tableData = {
         IsOpen: this.item.IsOpen,
+        IsSend: this.item.IsSend,
         StartTime: startTime,
         EndTime: endTime,
         EveryDayStartTime: everyStartTime,
         EveryDayEndTime: everyEndTime,
+        ShowGold: this.item.ShowGold,
+        ShowTimes: this.item.ShowTimes,
         SingleLimitNum: Math.ceil(this.item.SingleLimitNum * 1000),
         EveryDayLimitNum: Math.ceil(this.item.EveryDayLimitNum * 1000),
         SumLimitNum: Math.ceil(this.item.SumLimitNum * 1000),

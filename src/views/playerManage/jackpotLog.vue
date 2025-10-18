@@ -178,7 +178,7 @@
 
     <el-dialog
       v-if="(searchForm.gameId === 150 || searchForm.gameId === 156 || searchForm.gameId === 166|| searchForm.gameId === 174 || searchForm.gameId === 196 || searchForm.gameId === 204 ||
-        searchForm.gameId === 210) && searchForm.level === 0"
+        searchForm.gameId === 210 || searchForm.gameId === 216) && searchForm.level === 0"
       title="奖池信息"
       :modal="false"
       :visible.sync="prizeVisible"
@@ -296,6 +296,92 @@
     </el-dialog>
 
     <el-dialog
+      v-else-if="searchForm.gameId === 134"
+      title="奖池信息"
+      :modal="false"
+      :visible.sync="prizeVisible"
+    >
+      <el-descriptions title="">
+        <el-descriptions-item label="用户奖池(Grand+Major)">{{ toRupee(prizeInfo.UserPool) }}</el-descriptions-item>
+        <el-descriptions-item label="用户Grand奖池">{{ toRupee(prizeInfo.GrandUserPool) }}</el-descriptions-item>
+        <el-descriptions-item label="用户Major奖池">{{ toRupee(prizeInfo.MajorUserPool) }}</el-descriptions-item>
+        <el-descriptions-item v-if="envProjectName=='ph'" label="展示奖池(Grand+Major)">{{ toRupee(prizeInfo.ShowPool) }}</el-descriptions-item>
+        <el-descriptions-item v-if="envProjectName=='ph'" label="展示Grand奖池">{{ toRupee(prizeInfo.GrandShowPool) }}</el-descriptions-item>
+        <el-descriptions-item v-if="envProjectName=='ph'" label="展示Major奖池">{{ toRupee(prizeInfo.MajorShowPool) }}</el-descriptions-item>
+        <el-descriptions-item label="最后更新时间">{{ formatTime(prizeInfo.UpdateTime) }}</el-descriptions-item>
+      </el-descriptions>
+      <el-form :model="prizeForm">
+        <el-form-item >
+          <template #label>
+            <span style="color: #ff0000">手动修改玩家奖池数量(慎用)：</span>
+          </template>
+          <el-col :span="2">
+            <el-tooltip class="item" effect="dark" content="如Grand+Major不等于当前奖池数量时" placement="left-start">
+              <i class="el-icon-info" />
+            </el-tooltip>
+          </el-col>
+          <el-col :span="8">
+            <el-input v-model="prizeForm.ChangeNum" size="mini" />
+          </el-col>
+          <el-col :span="8">
+            <el-button style="margin-left: 10px;" type="primary" size="mini" @click="changePusoyTotalPrizePool(false, 0)">保存</el-button>
+          </el-col>
+        </el-form-item>
+        <el-form-item v-if="envProjectName=='ph'">
+          <template #label>
+            <span style="color: #ff0000">手动修改展示奖池数量(慎用)：</span>
+          </template>
+          <el-col :span="2">
+            <el-tooltip class="item" effect="dark" content="如Grand+Major不等于当前奖池数量时" placement="left-start">
+              <i class="el-icon-info" />
+            </el-tooltip>
+          </el-col>
+          <el-col :span="8">
+            <el-input v-model="prizeForm.ChangeRobotNum" size="mini" />
+          </el-col>
+          <el-col :span="8">
+            <el-button style="margin-left: 10px;" type="primary" size="mini" @click="changePusoyTotalPrizePool(true, 0)">保存</el-button>
+          </el-col>
+        </el-form-item>
+        <el-form-item label="手动修改玩家Grand奖池数量：">
+          <el-col :span="8">
+            <el-input v-model="prizeForm.GrandChangeNum" size="mini" />
+          </el-col>
+          <el-col :span="8">
+            <el-button style="margin-left: 10px;" type="primary" size="mini" @click="changePusoyJPPrizePool(false, 1);changePusoyTotalPrizePool(false, 1)">保存</el-button>
+          </el-col>
+        </el-form-item>
+        <el-form-item label="手动修改玩家Major奖池数量：">
+          <el-col :span="8">
+            <el-input v-model="prizeForm.MajorChangeNum" size="mini" />
+          </el-col>
+          <el-col :span="8">
+            <el-button style="margin-left: 10px;" type="primary" size="mini" @click="changePusoyJPPrizePool(false, 2);changePusoyTotalPrizePool(false, 2)">保存</el-button>
+          </el-col>
+        </el-form-item>
+
+        <el-form-item v-if="envProjectName=='ph'" label="手动修改展示Grand奖池数量：">
+          <el-col :span="8">
+            <el-input v-model="prizeForm.GrandChangeRobotNum" size="mini" />
+          </el-col>
+          <el-col :span="8">
+            <el-button style="margin-left: 10px;" type="primary" size="mini" @click="changePusoyJPPrizePool(true, 1);changePusoyTotalPrizePool(true, 1)">保存</el-button>
+          </el-col>
+        </el-form-item>
+        <el-form-item v-if="envProjectName=='ph'" label="手动修改展示Major奖池数量：">
+          <el-col :span="8">
+            <el-input v-model="prizeForm.MajorChangeRobotNum" size="mini" />
+          </el-col>
+          <el-col :span="8">
+            <el-button style="margin-left: 10px;" type="primary" size="mini" @click="changePusoyJPPrizePool(true, 2);changePusoyTotalPrizePool(true, 2)">保存</el-button>
+          </el-col>
+        </el-form-item>
+
+        <el-form-item />
+      </el-form>
+    </el-dialog>
+
+    <el-dialog
       v-else
       title="奖池信息"
       :modal="false"
@@ -367,7 +453,7 @@ export default {
   data() {
     return {
       submap: { 90: 'moneycoming_slots_base', 150: 'supergemiii_slots_base', 166: 'firelink_slots_base', 174: 'treasurebowl_slots_base', 196: 'goldminer_slots_base', 204: 'spacetreasure_slots_base',
-        210: 'luckyspirits_slots_base' },
+        210: 'luckyspirits_slots_base', 216: 'phoenix_slots_base' },
       searchForm: {
         date: $libDate.GetDayBegin(new Date().getTime()),
         gameId: 25,
@@ -404,7 +490,10 @@ export default {
         { 'value': 128, 'label': 'Tongits JP' },
         { 'value': 129, 'label': 'Live Color' },
         { 'value': 132, 'label': '新版扫雷' },
-        { 'value': 210, 'label': 'LuckySpirits' }
+        { 'value': 210, 'label': 'LuckySpirits' },
+        { 'value': 216, 'label': 'Phoenix' },
+        { 'value': 134, 'label': 'Pusoy JP' },
+        { 'value': 135, 'label': 'SUPER COLOR' },
       ],
       appConfig: [
         { 'value': 0, 'label': '全部' },
@@ -418,7 +507,17 @@ export default {
       poolConfig: [
         { 'value': 0, 'label': '全部' },
         { 'value': 1, 'label': '玩家奖池' },
-        { 'value': 2, 'label': '展示奖池' }
+        { 'value': 2, 'label': '展示奖池' },
+
+        { 'value': 3, 'label': '玩家Grand奖池' },
+        { 'value': 4, 'label': '玩家Major奖池' },
+        { 'value': 5, 'label': '玩家Minor奖池' },
+        { 'value': 6, 'label': '玩家Mini奖池' },
+        { 'value': 7, 'label': '展示Grand奖池' },
+        { 'value': 8, 'label': '展示Major奖池' },
+        { 'value': 9, 'label': '展示Minor奖池' },
+        { 'value': 10, 'label': '展示Mini奖池' },
+
       ],
       typeConfig: [
         { 'value': 0, 'label': '全部' },
@@ -447,7 +546,11 @@ export default {
       prizeInfo: {
         UserPool: 0,
         ShowPool: 0,
-        UpdateTime: 0
+        UpdateTime: 0,
+        GrandUserPool: 0,
+        GrandShowPool: 0,
+        MajorUserPool: 0,
+        MajorShowPool: 0,
       },
       itemProgressVisible: false,
       itemProgressInfo: {
@@ -459,7 +562,12 @@ export default {
       envProjectName: process.env.VUE_APP_PROJECT,
       prizeForm: {
         ChangeNum: 0,
-        ChangeRobotNum: 0
+        ChangeRobotNum: 0,
+
+        GrandChangeNum: 0,
+        MajorChangeNum: 0,
+        GrandChangeRobotNum: 0,
+        MajorChangeRobotNum: 0,
       },
       itemForm: {
         progressChange: 0,
@@ -516,6 +624,7 @@ export default {
             // loading.close()
             return
           }
+          console.log("objs.list:", objs.list)
           if (objs.total > 0) {
             _this.totalCount = objs.total
             _this.tableData = objs.list
@@ -576,7 +685,8 @@ export default {
           console.error('Error processing BetList:', error)
           this.levelConfig = [{ 'value': 0, 'label': '全部' }]
         })
-      } else if (this.searchForm.gameId === 150 || this.searchForm.gameId === 166 || this.searchForm.gameId === 196 || this.searchForm.gameId === 204 || this.searchForm.gameId === 210) {
+      } else if (this.searchForm.gameId === 150 || this.searchForm.gameId === 166 || this.searchForm.gameId === 196 || this.searchForm.gameId === 204 || this.searchForm.gameId === 210 ||
+        this.searchForm.gameId === 216) {
         // 调用 getData() 获取 BetList 数组
         this.getData().then(cfg => {
           this.levelConfig = [{ 'value': 0, 'label': '全部' }]
@@ -636,7 +746,7 @@ export default {
     showInfo() {
       const _this = this
       // 检查是否 gameId 为 150 且 level 为 0
-      const gameIds = [150, 90, 156, 166, 174, 196, 204, 210] // 定义一个数组存储需要检查的 gameId
+      const gameIds = [150, 90, 156, 166, 174, 196, 204, 210, 216] // 定义一个数组存储需要检查的 gameId
       if (gameIds.includes(this.searchForm.gameId) && this.searchForm.level === 0) {
         // 循环所有 levelConfig 值（除 value === 0）
         const promises = this.levelConfig
@@ -761,6 +871,98 @@ export default {
             message: '操作成功！',
             type: 'success'
           })
+        } else {
+          this.$message.error('操作失败')
+        }
+      })
+    },
+    changePusoyJPPrizePool(isRobot, jpType) { //pusoy 更新指定奖池
+      const _this = this
+      let changeNum = _this.prizeForm.ChangeNum
+      let robotFlag = 0
+      if (isRobot) {
+        robotFlag = 1
+        changeNum = _this.prizeForm.ChangeRobotNum
+        if (jpType === 1){
+          changeNum = _this.prizeForm.GrandChangeRobotNum
+        } else if (jpType === 2) {
+          changeNum = _this.prizeForm.MajorChangeRobotNum
+        }
+      }else{
+        if (jpType === 1){
+          changeNum = _this.prizeForm.GrandChangeNum
+        } else if (jpType === 2) {
+          changeNum = _this.prizeForm.MajorChangeNum
+        }
+      }
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Env: _this.env,
+          Path: '/jackpot/operate',
+          GameId: _this.searchForm.gameId,
+          ChangeNum: changeNum * 1000,
+          App: _this.searchForm.app,
+          Level: _this.searchForm.level,
+          IsRobot: robotFlag,
+          JackpotType: jpType //pusoyJP 更新指定奖池
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          _this.showInfo()
+          this.$message({
+            message: '操作成功！',
+            type: 'success'
+          })
+        } else {
+          this.$message.error('操作失败')
+        }
+      })
+    },
+    changePusoyTotalPrizePool(isRobot, jpType) { //pusoyJP 更新总奖池
+      const _this = this
+      let changeNum = _this.prizeForm.ChangeNum
+      let robotFlag = 0
+      if (isRobot) {
+        robotFlag = 1
+        changeNum = _this.prizeForm.ChangeRobotNum
+        if (jpType == 1){
+          changeNum = _this.prizeForm.GrandChangeRobotNum
+        } else if (jpType == 2) {
+          changeNum = _this.prizeForm.MajorChangeRobotNum
+        }
+      }else{
+        if (jpType == 1){
+          changeNum = _this.prizeForm.GrandChangeNum
+        } else if (jpType == 2) {
+          changeNum = _this.prizeForm.MajorChangeNum
+        }
+      }
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Env: _this.env,
+          Path: '/jackpot/operate',
+          GameId: _this.searchForm.gameId,
+          ChangeNum: changeNum * 1000,
+          App: _this.searchForm.app,
+          Level: _this.searchForm.level,
+          IsRobot: robotFlag,
+          JackpotType: 0 //pusoyJP 总奖池
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          _this.showInfo()
+          this.$message({
+            message: '操作成功！',
+            type: 'success'
+          })
+          this.prizeForm.GrandChangeNum = 0
+          this.prizeForm.MajorChangeNum = 0
+          this.prizeForm.GrandChangeRobotNum = 0
+          this.prizeForm.MajorChangeRobotNum = 0
         } else {
           this.$message.error('操作失败')
         }

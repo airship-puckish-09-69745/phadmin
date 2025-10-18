@@ -307,15 +307,8 @@
                 </el-form-item>
               </el-col>
               <el-col>
-                <el-form-item label="SiteId白名单：" prop="item.WhitelistCfg.AppIdList">
-                  <el-select v-model="item.WhitelistCfg.SiteIdList" multiple placeholder="请选择" style="width: 400px" @change="onSiteIdOptionsChange">
-                    <el-option
-                      v-for="item in siteIdOptions"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
+                <el-form-item label="SiteId白名单：" prop="item.WhitelistCfg.SiteIdList">
+                  <SiteSelect v-model="item.WhitelistCfg.SiteIdList" multiple placeholder="请选择" style="width: 400px" />
                 </el-form-item>
               </el-col>
               <el-col :span="10">
@@ -422,6 +415,7 @@ import request from "@/utils/request";
 import Compare from "@/components/Compare/index.vue";
 import store from '@/store'
 import {getCustomize, updateCustomize} from "@/api/custome_configV2";
+import SiteSelect from '@/components/SiteSelect/index.vue'
 
 function newPrizePoolCfg() {
   return {
@@ -435,7 +429,7 @@ function newPrizePoolCfg() {
 }
 
 export default {
-  components: {Compare, ImagePicker, Publish},
+  components: {Compare, ImagePicker, Publish, SiteSelect},
   watch: {
     filterText(val) {
       this.$refs.tree.filter(val);

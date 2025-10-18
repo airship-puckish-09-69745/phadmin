@@ -50,7 +50,7 @@ export default {
         { 'value': 'BP', 'label': 'BP' },
         { 'value': 'AP', 'label': 'AP' },
         { 'value': 'GP', 'label': 'GP' },
-        { 'value': 'TP', 'label': 'TP' },
+        // { 'value': 'TP', 'label': 'TP' },
         { 'value': 'PG', 'label': 'PG' },
         { 'value': 'Dev', 'label': 'Dev' }
       ],

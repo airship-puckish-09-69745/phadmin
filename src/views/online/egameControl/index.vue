@@ -53,7 +53,7 @@
           <template slot-scope="scope">
             <!-- 场次如果是-1则显示为全部 -->
             <span v-if="column.prop === 'table_money'">
-              {{ scope.row[column.prop] === -1 ? '全部' : scope.row[column.prop] }}
+              {{ scope.row[column.prop] === -1 ? '全部' : scope.row[column.prop] /1000}}
             </span>
             <!-- 系统总净胜分需要除以1000 -->
             <span v-else-if="column.prop === 'system_money'">
@@ -359,7 +359,7 @@ export default {
           console.log('tableMoneyOptions', objs)
           if (objs.length > 0) {
             const options = objs.map(item => ({
-              value: item.TableMoney,
+              value: item.TableMoney / 1000,
               label: item.TableMoney / 1000
             }))
             // 将顺序反转

@@ -166,6 +166,26 @@
               inactive-text="否">
             </el-switch>
         </el-form-item>
+        <el-form-item v-if="editForm.data.rule_type===0" label="是否GTCC：" :required="true">
+          <el-switch
+            style="display: block"
+            v-model="editForm.data.rule_extra.skip_strikeout"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+            :active-value='1'
+            :inactive-value='0'
+            active-text="是"
+            inactive-text="否">
+          </el-switch>
+          <span v-show="showTip" style="color:red; margin-left:10px"></span>
+          <el-tooltip class="item" effect="light" placement="right-start">
+            <template #content>
+              <div>一个特殊的字段开关,是基于MTT SNG赛制下的一个独立字段</div>
+            </template>
+            <i class="el-icon-info" />
+          </el-tooltip>
+          <span style="color:red; margin-left:10px">[gtcc赛制字段,请慎重勾选,有疑问请联系开发]</span>
+        </el-form-item>
         <el-form-item v-if="editForm.data.rule_type===0" label="MTT开赛人数:" :required="true">
           <el-input style="width: 200px;" v-model.number="editForm.data.start_num" placeholder="请填写开赛人数" />
         </el-form-item>
@@ -483,7 +503,7 @@ export default {
         title: "",
         isAdd: false,
         data: {
-
+          rule_extra:{'skip_strikeout':0},
         }
       },
       AttrNames: {
@@ -492,6 +512,9 @@ export default {
         gid: "支持的游戏id",
         initScore: "初始积分",
         stages: "比赛阶段配置",
+        self_build:"是否是自建赛",
+        start_num:"开赛人数",
+        rule_extra:"拓展信息",
       },
       showDevTool: false
     }
@@ -630,6 +653,15 @@ export default {
 
             this.editForm.data.game_id = [gameId]
             this.tableData[i].game_id = [gameId]
+            //fix rule_extra
+            const ruleExtraStr = this.tableData[i].rule_extra;
+            let rule_extra
+            try {
+              rule_extra = ruleExtraStr ? JSON.parse(ruleExtraStr) : { skip_strikeout:0 };
+            } catch (e) {
+              rule_extra = { skip_strikeout: 0 }; // 解析失败时使用默认值
+            }
+            this.editForm.data.rule_extra = rule_extra;
 
             break
         }
@@ -649,7 +681,11 @@ export default {
           "status": 0,
           "modifier": "",
           "update_time": 0,
-          "start_num":0 //开赛人数
+          "start_num":0, //开赛人数
+          "rule_extra":{
+            "skip_strikeout":0,
+          }
+
         }
         this.editForm.isAdd = true
         this.addStage()
@@ -669,6 +705,16 @@ export default {
 
             this.editForm.data.game_id = [gameId]
             this.tableData[i].game_id = [gameId]
+
+            //fix rule_extra
+            const ruleExtraStr = this.tableData[i].rule_extra;
+            let rule_extra
+            try {
+              rule_extra = ruleExtraStr ? JSON.parse(ruleExtraStr) : { skip_strikeout:0 };
+            } catch (e) {
+              rule_extra = { skip_strikeout:0 }; // 解析失败时使用默认值
+            }
+            this.editForm.data.rule_extra = rule_extra;
 
             break
           }
@@ -867,6 +913,9 @@ export default {
           }
         }
       })
+      this.editForm.data.rule_extra = {
+        'skip_strikeout':0,
+      }
     },
     saveStage() {
       let stageDetail = JSON.stringify(this.editForm.data.stage_detail)
@@ -892,6 +941,7 @@ export default {
           RuleType:this.editForm.data.rule_type,
           SelfBuild:this.selfBuild,
           StartNum:this.editForm.data.start_num,
+          RuleExtra:JSON.stringify(this.editForm.data.rule_extra),
         }
       }).then(response => {
         if (response.RetCode === 0) {

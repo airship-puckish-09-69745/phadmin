@@ -2319,29 +2319,36 @@ export default {
         method: 'get',
         data: {}
       }).then(response => {
+        let gameOptionsArr = []
         if (response.RetCode === 0) {
           for (let i = 0; i < response.Data.length; i++) {
-            if (response.Data[i].Gid < 50 || response.Data[i].Gid > 100 && response.Data[i].Gid < 150 || response.Data[i].Gid > 499) {
+            if (response.Data[i].CategoryID != 1) {
               continue
             }
 
-            this.gameOptions.push({
+            gameOptionsArr.push({
               key: response.Data[i].Gid,
               label: response.Data[i].Name
             })
             this.gameScene[response.Data[i].Gid] = response.Data[i].Scene
             this.gidOptions[response.Data[i].Gid] = response.Data[i].Gid
           }
+
           this.gidOptions[100180] ='Fishing Master(额外加注)'
-          this.gameOptions.push({
+          gameOptionsArr.push({
             key: 100180,
             label: 'Fishing Master(额外加注)'
           })
           this.gidOptions[100186] ='Mahjong Jackpot(额外加注)'
-          this.gameOptions.push({
+          gameOptionsArr.push({
             key: 100186,
             label: 'Mahjong Jackpot(额外加注)'
           })
+          // 对gameOptionsArr按游戏名称排序
+          gameOptionsArr.sort((a, b) => {
+            return a.label.localeCompare(b.label)
+          })
+          this.gameOptions = gameOptionsArr
         }
       })
     },

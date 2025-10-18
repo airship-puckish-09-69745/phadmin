@@ -145,7 +145,7 @@
           label="命中"
           width="70"
         />
-        <template v-if="[150,156,166,174,196,204,210].indexOf(gid) >= 0">
+        <template v-if="[150,156,166,174,196,204,210,216].indexOf(gid) >= 0">
           <el-table-column
             header-align="center"
             label="Jackpot"
@@ -261,6 +261,8 @@
             <el-table-column  prop="ActLogObj.HitBigPrize" label="命中大奖"><template slot-scope="scope"><span v-if="scope.row.ActLogObj.HitBigPrize" style="color:red">是</span><span v-else>-</span></template></el-table-column>
             <el-table-column  prop="ActLogObj.BigPrizeHitReason" label="大奖原因"><template slot-scope="scope">{{ showBigPrizeReason(scope.row.ActLogObj.BigPrizeHitReason) }}</template></el-table-column>
             <el-table-column  prop="ActLogObj.BigPrizeCfgId" label="大奖用户群ID" />
+            <el-table-column  prop="ActLogObj.UserPoolOdds" label="小奖池加赠倍数" />
+            <el-table-column  prop="ActLogObj.UserPoolAmount" label="小奖池剩余余额" :formatter="toRupee" />
 
           </el-table-column>
         </template>
@@ -347,7 +349,7 @@ export default {
       totalCount: 0,
       currentPage: 0,
       pageNum: 20,
-      typeNames: { 0: '主游戏', 1: 'wild', 2: 'scatter', 3: 'jackpot' },
+      typeNames: { 0: '主游戏', 1: 'wild', 2: 'scatter', 3: 'jackpot', 5: 'FreeSpin' },
       showDetail: false,
       detailContent: '',
       detailPayLine: 0
@@ -365,7 +367,9 @@ export default {
   methods: {
     // V2剧本
     isActV2(gid) {
-      return [78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 154, 156, 158, 160, 162, 164, 166, 170, 172, 188, 198, 192, 180, 176, 182, 174, 178, 168, 196, 184, 202, 190, 200, 204, 206, 208, 210, 212].indexOf(gid) >= 0
+      return [78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 154, 156, 158, 160, 162, 164, 166, 170,
+        172, 188, 198, 192, 180, 176, 182, 174, 178, 168, 196, 184, 202, 190, 200, 204, 206, 208, 210,
+        212, 216, 218, 220, 228].indexOf(gid) >= 0
     },
     // 收集剧本
     isActCollect(gid) {
@@ -603,7 +607,8 @@ export default {
               objs[i]['ActLogObj'] = {}
             }
 
-            if ($this.gid === 150 || $this.gid === 156 || $this.gid === 166 || $this.gid === 174 || $this.gid === 196 || $this.gid === 204 || $this.gid === 210) {
+            if ($this.gid === 150 || $this.gid === 156 || $this.gid === 166 || $this.gid === 174 || $this.gid === 196 ||
+              $this.gid === 204 || $this.gid === 210 || $this.gid === 216) {
               if (objs[i]['JackpotLog'] && objs[i]['JackpotLog'] !== 'null') {
                 objs[i]['JackpotLogObj'] = JSON.parse(objs[i]['JackpotLog'])
               } else {
@@ -659,7 +664,8 @@ export default {
               objs[i]['ActLogObj'] = {}
             }
 
-            if ($this.gid === 150 || $this.gid === 156 || $this.gid === 166 || $this.gid === 174 || $this.gid === 196 || $this.gid === 204 || $this.gid === 210) {
+            if ($this.gid === 150 || $this.gid === 156 || $this.gid === 166 || $this.gid === 174 || $this.gid === 196 ||
+              $this.gid === 204 || $this.gid === 210 || $this.gid === 216) {
               if (objs[i]['JackpotLog'] && objs[i]['JackpotLog'] !== 'null') {
                 objs[i]['JackpotLogObj'] = JSON.parse(objs[i]['JackpotLog'])
               } else {
@@ -676,7 +682,7 @@ export default {
             tmp.push(this.formatNumber(objs[i].ReturnBet / 1000))
             tmp.push(this.formatNumber(objs[i].ServiceFee / 1000))
             tmp.push(objs[i].PayLine)
-            if ([150, 156, 166, 174, 196, 204, 210].indexOf(this.gid) >= 0) {
+            if ([150, 156, 166, 174, 196, 204, 210, 216].indexOf(this.gid) >= 0) {
               tmp.push(this.getJPFee(objs[i].JackpotLogObj, 4))
               tmp.push(this.getJPFee(objs[i].JackpotLogObj, 3))
               tmp.push(this.getJPFee(objs[i].JackpotLogObj, 2))
@@ -730,6 +736,8 @@ export default {
                 tmp.push(actLogObj.IsLotteryLimit ? '是' : '否')
                 tmp.push(actLogObj.ScriptV3PlanId)
                 tmp.push(actLogObj.ScriptV3PlanVer)
+                tmp.push(actLogObj.UserPoolOdds)
+                tmp.push(actLogObj.UserPoolAmount)
               }
             }
             this.exportData.push(tmp)

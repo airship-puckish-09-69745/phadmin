@@ -396,13 +396,15 @@ export default {
         202: 'FortunateEbisu',
         206: 'LuckyWineglass',
         212: 'PirateShip',
+        218: 'WrathOfZeus2',
+        228: 'JokerAce',
         188: 'StreetFighting',
         190: 'Arcane Egypt',
         192: 'BountyRaid',
         180: 'FishingMaster',
         172: 'WrathOfZeus',
         122: 'Filipino Mahjong',
-        123: 'Mines Battle',
+        123: 'MINES SHOWDOWN',
         124: 'Jackpot Wheel',
         125: 'Free Spin',
         170: 'Epic Ace',
@@ -419,6 +421,9 @@ export default {
         208: 'Candy Burst',
         210: 'Lucky Spirits',
         214: 'PumpkinCash',
+        216: 'Phoenix',
+        220: 'Golden Dragon',
+        222: 'Lion Fortune',
         9: 'Teen Patti',
         126: 'Pusoy Wild',
         2031: 'TongitsMtt',
@@ -427,8 +432,10 @@ export default {
         129: 'Live Color',
         130: 'Remi',
         131: 'Remi Pro',
-        132: 'MinesMagic',
+        132: 'Mines Magic',
+        134: 'Pusoy JP',
         1: 'Rummy',
+        135: 'Super Color',
         10000: '汇总'
       },
 
@@ -436,7 +443,7 @@ export default {
       users: [],
       // 糖果传奇调用addGameNames特殊处理
       defaultOrder: [10000, 15, 22, 28, 29, 2031, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103, 104, 105, 106, 111, 6, 32, 2032,
-        35, 37, 107, 108, 110, 112, 115, 46, 47, 48, 49, 113, 118, 123, 117, 116, 126, 127, 128, 129, 132], // 糖果传奇调用addGameNames特殊处理
+        35, 37, 107, 108, 110, 112, 115, 46, 47, 48, 49, 113, 118, 123, 117, 116, 126, 127, 128, 129, 132, 134, 135], // 糖果传奇调用addGameNames特殊处理
       selectType: 1,
 
       selectOrder: 1,
@@ -574,9 +581,13 @@ export default {
         this.defaultOrder.push(76, 77, 78, 81, 79, 80, 82, 83, 175, 165, 169)
       } else {
         if (IsProd()) { // 线上
-          this.defaultOrder.push(76, 80, 78, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162, 164, 166, 170, 172, 174, 176, 178, 180, 182, 168, 186, 184, 188, 190, 192, 194, 196, 198, 200, 202, 204, 208, 210, 214)
+          this.defaultOrder.push(76, 80, 78, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162, 164, 166, 170, 172,
+            174, 176, 178, 180, 182, 168, 186, 184, 188, 190, 192, 194, 196, 198, 200, 202, 204, 206, 208, 210, 212, 214, 216, 218, 220,
+            222)
         } else {
-          this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162, 164, 172, 188, 202, 198, 192, 180, 166, 170, 176, 182, 174, 186, 178, 194, 184, 168, 196, 190, 200, 204, 206, 208, 210, 212, 214)
+          this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162, 164, 172, 188, 202,
+            198, 192, 180, 166, 170, 176, 182, 174, 186, 178, 194, 184, 168, 196, 190, 200, 204, 206, 208, 210, 212, 214, 216, 218, 220, 222,
+            228)
         }
       }
       if (this.showZoogame) {
@@ -601,7 +612,7 @@ export default {
       return true
     },
     isPoker(o) {
-      const pokerTypes = [22, 21, 28, 15, 23, 29, 34, 32, 49, 46, 35, 113, 120, 123, 117, 116, 126, 128]
+      const pokerTypes = [22, 21, 28, 15, 23, 29, 34, 32, 49, 46, 35, 113, 120, 123, 117, 116, 126, 128, 134]
       for (let i = 0; i < pokerTypes.length; i++) {
         if (pokerTypes[i] === o) {
           return true

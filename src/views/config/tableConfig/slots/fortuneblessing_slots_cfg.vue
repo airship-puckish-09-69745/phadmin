@@ -36,7 +36,12 @@
           <el-tab-pane label="拓展配置" name="scatter">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，发布即生效】</h3>
             <publish primary-key="ID" :key-id="getFullKey('fortuneblessing_slots_ext')" :env-empty="false" compare-type="Object" />
-            <slots-fortuneblessing-ext v-if="extCfgBool" v-model="extCfg" @saveData="saveExtCfg" />
+            <slots-fortuneblessing-ext v-if="extCfgBool" v-model="extCfg" :base-bet="baseCfg.BaseBet" @saveData="saveExtCfg" />
+          </el-tab-pane>
+          <el-tab-pane label="进入免费方案配置" name="scatter_trigger_plans">
+            <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布】</h3>
+            <publish primary-key="ID" :key-id="getFullKey('fortuneblessing_slots_base')" :env-empty="false" compare-type="Object" />
+            <slots-free-trigger-plans v-if="baseCfgBool" v-model="baseCfg" :odds-str="false" :scatter-trigger-plans="baseCfg.scatterTriggerPlans" @saveData="saveBaseCfg" />
           </el-tab-pane>
           <el-tab-pane label="剧本" name="script">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，发布即生效】</h3>
@@ -66,10 +71,14 @@ import slotsFortuneblessingExt from './components_x/fortuneblessing_ext'
 import slotsReelsDouble from './components_x/reels_double'
 import slotsScript from './components_x/slots_script'
 import slotsSymbolcountReels from "@/views/config/tableConfig/slots/components_x/symbolcount_reels.vue";
+import SlotsFreeTriggerPlans from "@/views/config/tableConfig/slots/components_x/slotsFreeTriggerPlans.vue";
+import slotsCandyburstExt from "@/views/config/tableConfig/slots/components_x/candyburst_ext.vue";
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: {slotsSymbolcountReels, Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotsFortuneblessingExt, slotsReelsDouble, slotsScript },
+  components: {
+    slotsCandyburstExt,
+    SlotsFreeTriggerPlans, slotsSymbolcountReels, Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotsFortuneblessingExt, slotsReelsDouble, slotsScript },
   data() {
     return {
       activeTab: 'base',

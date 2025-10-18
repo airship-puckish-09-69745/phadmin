@@ -1,6 +1,7 @@
 <template>
   <div class="app-container">
     <el-row>
+      <h3>老虎机大奖模拟计算</h3>
       <el-form label-width="90px" :inline="true" size="small">
         <el-form-item label="UID：" :required="true" label-width="150px">
           <el-input v-model.number="queryUid" autosize @change="cleanResult"></el-input>
@@ -35,6 +36,34 @@
         <el-table-column prop="user_play" label="玩牌局数" width="200" />
       </el-table>
     </el-row>
+
+    <hr />
+
+    <el-row>
+      <h3>老虎机用户进入免费模拟计算</h3>
+      <el-form label-width="90px" :inline="true" size="small">
+        <el-form-item label="游戏">
+          <el-select v-model="freeModeQuery.gid" size="mini" filterable default-first-option>
+            <el-option v-for="row in gameOptions" :key="row.key" :label="row.label" :value="row.key"  />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="倍数：" :required="true" label-width="150px">
+          <el-input v-model.number="freeModeQuery.odds" autosize></el-input>
+        </el-form-item>
+        <el-form-item label="今日下注次数：" :required="true" label-width="150px">
+          <el-input v-model.number="freeModeQuery.playTimes" autosize></el-input>
+        </el-form-item>
+        <el-form-item label="今日进入免费次数：" :required="true" label-width="150px">
+          <el-input v-model.number="freeModeQuery.freeTimes" autosize></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" size="mini" @click="getEnterFreeModeRates">计算进入免费模式概率</el-button>
+        </el-form-item>
+      </el-form>
+      <br />
+      <p>概率：{{showFreeModeRates(freeModeResult.found, freeModeResult.rates)}}</p>
+      <p>匹配规则：{{freeModeResult.rule}}</p>
+    </el-row>
   </div>
 </template>
 
@@ -65,7 +94,18 @@ export default {
       queryUid: 0,
       queryGid: 0,
       gameOptions: [], //游戏列表
-      showUserPrizeCfg: false
+      showUserPrizeCfg: false,
+      freeModeQuery: {
+        gid: 0,
+        odds: 0,
+        playTimes: 0,
+        freeTimes: 0
+      },
+      freeModeResult: {
+        found: false,
+        rates: 0,
+        rule: ''
+      }
     }
   },
 
@@ -222,6 +262,47 @@ export default {
     cleanResult() {
       this.statData = []
       this.showUserPrizeCfg = false
+    },
+
+    getEnterFreeModeRates() {
+      const $this = this
+      $this.loading = true
+      this.cleanFreeModeResult()
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Path: '/slotsStat/enter/free/mode/rates',
+          Env: store.getters.env,
+          SlotsType: this.freeModeQuery.gid,
+          Odds: this.freeModeQuery.odds,
+          PlayTimes: this.freeModeQuery.playTimes,
+          FreeTimes: this.freeModeQuery.freeTimes
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.freeModeResult.found = response.Data.found || false
+          this.freeModeResult.rates = response.Data.rates || 0
+          this.freeModeResult.rule = response.Data.rule
+        }
+        $this.loading = false
+      }).catch(function() {
+        $this.loading = false
+      })
+    },
+
+    cleanFreeModeResult() {
+      this.freeModeResult.found = false
+      this.freeModeResult.rates = 0
+      this.freeModeResult.rule = ''
+    },
+
+    showFreeModeRates(found, rates) {
+      if (!found) {
+        return '默认概率'
+      } else {
+        return rates + '%'
+      }
     }
   }
 }

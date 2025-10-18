@@ -54,14 +54,7 @@
 
                 <el-col :span="11">
                   <el-form-item label="支持的SiteId：" :required="true">
-                    <el-select v-model="item.SiteIdList" multiple placeholder="请选择" style="width: 400px">
-                      <el-option
-                        v-for="item in channelIdCfgs"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                      />
-                    </el-select>
+                    <SiteSelect v-model="item.SiteIdList" multiple placeholder="请选择" style="width: 400px" />
                   </el-form-item>
                 </el-col>
 
@@ -329,14 +322,7 @@
                 </el-col>
                 <el-col :span="11">
                   <el-form-item label="支持的SiteId：" :required="true">
-                    <el-select v-model="item.GameEvent.SiteIdList" multiple placeholder="请选择" style="width: 400px">
-                      <el-option
-                        v-for="item in channelIdCfgs"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                      />
-                    </el-select>
+                    <SiteSelect v-model="item.GameEvent.SiteIdList" multiple placeholder="请选择" style="width: 400px" />
                   </el-form-item>
                 </el-col>
               </el-form>
@@ -823,6 +809,7 @@ import { Message } from 'element-ui'
 import request from '@/utils/request'
 import Compare from '@/components/Compare/index.vue'
 import {getCustomize, updateCustomize} from "@/api/custome_configV2";
+import SiteSelect from '@/components/SiteSelect/index.vue'
 
 function newItem() {
   return { Gid: 1, GameIconLink: '', GameSort: 1, IsOpen: true }
@@ -837,7 +824,7 @@ function newItemZoneGame() {
   return { Desc: '', Index: -1, Gids: [], IsOpen: false, Games: [{ Gid: 1, IconLink: '', GameSort: 1, IsOpen: true }], AppId: 1000002, ChannelId: [] }
 }
 export default {
-  components: { Compare, ImagePicker, Publish },
+  components: { Compare, ImagePicker, Publish, SiteSelect },
   data() {
     return {
       subKey: 'gameZone_cfg',
@@ -863,7 +850,6 @@ export default {
         { 'value': 'BP', 'label': 'BP' },
         { 'value': 'AP', 'label': 'AP' },
         { 'value': 'GP', 'label': 'GP' },
-        { 'value': 'TP', 'label': 'TP' },
         { 'value': 'PG', 'label': 'PG' },
         { 'value': 'Dev', 'label': 'Dev' }
       ],
@@ -1032,7 +1018,11 @@ export default {
         { label: '复活节活动-[10]', value: 10 },
         { label: '新手任务活动-[11]', value: 11 },
         { label: '空投活动-[12]', value: 12 },
-        { label: '红包雨活动-[13]', value: 13 }
+        { label: '红包雨活动-[13]', value: 13 },
+        { label: 'free spins-[14]', value: 14 },
+        { label: 'TongitsHunter-[15]', value: 15 },
+        { label: 'KingOfPot-[16]', value: 16 },
+        { label: '万圣节活动-[18]', value: 18 }
       ],
       gameSelect: [],
       activitySelect: [
@@ -1043,7 +1033,11 @@ export default {
         { name: 'Banargay-[9]', id: 9 },
         { name: '复活节活动-[10]', id: 10 },
         { name: '新手任务活动-[11]', id: 11 },
-        { name: '红包雨活动-[13]', id: 13 }
+        { name: '红包雨活动-[13]', id: 13 },
+        { name: 'free spins-[14]', id: 14 },
+        { name: 'TongitsHunter-[15]', id: 15 },
+        { name: 'KingOfPot-[16]', id: 16 },
+        { name: '万圣节活动-[18]', id: 18 }
       ],
       blockGames: [36, 38, 39, 43, 44],
       hallGame: [],
@@ -1738,7 +1732,7 @@ export default {
         if (data.Index === id) {
           if (data.AppId == null) {
             data.AppId = 1000002
-            data.ChannelId = ['BP', 'AP', 'GP', 'TP', 'PG', 'Dev']
+            data.ChannelId = ['BP', 'AP', 'GP', 'PG', 'Dev']
           }
           if (Array.isArray(data.AppId)) {
             data.AppId = 1000002

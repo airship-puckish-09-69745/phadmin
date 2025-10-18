@@ -776,18 +776,18 @@ export default {
             for (let j = 0; j < data.SafePoolMoneyCfg.length; j++) {
               this.aiTableMoneys.push(data.SafePoolMoneyCfg[j].TableMoney)
               if (!this.tableMoneys.includes(data.SafePoolMoneyCfg[j].TableMoney)) {
-                this.$alert('场次配置的底注有变更，请点此<a style="font-weight: bolder" href="#/tableConfig/lucky9RobotSetting" target="_blank">【机器人缓冲池配置】</a>同步修改并发布', { dangerouslyUseHTMLString: true })
+                this.$alert('场次配置的底注有变更，请点此<a style="font-weight: bolder" href="#/tableConfig/CorePokersCfg/Lucky9Cfg/lucky9TableAiConfig" target="_blank">【机器人配置】</a>同步修改并发布', { dangerouslyUseHTMLString: true })
                 return
                 // this.isTableMoneysChanged = true
               }
             }
             if (this.tableMoneys.length !== this.aiTableMoneys.length) {
-              this.$alert('场次配置的底注有变更，请点此<a style="font-weight: bolder" href="#/tableConfig/lucky9RobotSetting" target="_blank">【机器人缓冲池配置】</a>同步修改并发布', { dangerouslyUseHTMLString: true })
+              this.$alert('场次配置的底注有变更，请点此<a style="font-weight: bolder" href="#/tableConfig/CorePokersCfg/Lucky9Cfg/lucky9TableAiConfig" target="_blank">【机器人配置】</a>同步修改并发布', { dangerouslyUseHTMLString: true })
               return
             }
             for (let i = 0; i < this.tableMoneys.length; i++) {
               if (!this.aiTableMoneys.includes(this.tableMoneys[i])) {
-                this.$alert('场次配置的底注有变更，请点此<a style="font-weight: bolder" href="#/tableConfig/lucky9RobotSetting" target="_blank">【机器人缓冲池配置】</a>同步修改并发布', { dangerouslyUseHTMLString: true })
+                this.$alert('场次配置的底注有变更，请点此<a style="font-weight: bolder" href="#/tableConfig/CorePokersCfg/Lucky9Cfg/lucky9TableAiConfig" target="_blank">【机器人配置】</a>同步修改并发布', { dangerouslyUseHTMLString: true })
                 return
               }
             }

@@ -10,7 +10,7 @@
           </el-tab-pane>
           <el-tab-pane label="符号表配置" name="symbol">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，重启生效】</h3>
-            <publish primary-key="ID" :key-id="getFullKey('spacetreasure_slots_base')" :env-empty="false" compare-type="Object" />
+            <publish primary-key="ID" :key-id="getFullKey('spacetreasure_slots_rule')" :env-empty="false" compare-type="Object" />
             <slots-symbol-value v-if="ruleCfgBool" v-model="ruleCfg" @saveData="saveRuleCfg" />
           </el-tab-pane>
           <el-tab-pane label="赔付线配置" name="pay_table">
@@ -31,7 +31,7 @@
           <el-tab-pane label="拓展配置" name="scatter">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，发布即生效】</h3>
             <publish primary-key="ID" :key-id="getFullKey('spacetreasure_slots_ext')" :env-empty="false" compare-type="Object" />
-            <slots-spacetreasure-ext v-if="extCfgBool" v-model="extCfg" @saveData="saveExtCfg" />
+            <slots-spacetreasure-ext v-if="extCfgBool" v-model="extCfg" :base-bet="baseCfg.BaseBet" @saveData="saveExtCfg" />
           </el-tab-pane>
           <el-tab-pane label="剧本" name="script">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，发布即生效】</h3>
@@ -63,10 +63,11 @@ import slotsVup from './components_x/slots_vup'
 import slotsReelsDouble from './components_x/reels_double'
 import slotsRowReelsDouble from './components_x/row_reels_double'
 import slotsScript from './components_x/slots_script'
+import slotsLuckyspiritsExt from "@/views/config/tableConfig/slots/components_x/luckyspirits_ext.vue";
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: { Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotsSpacetreasureExt, slotsRowReelsDouble, slotsBigWinnerCfg, slotsVup, slotsReelsDouble, slotsScript },
+  components: {slotsLuckyspiritsExt, Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotsSpacetreasureExt, slotsRowReelsDouble, slotsBigWinnerCfg, slotsVup, slotsReelsDouble, slotsScript },
   data() {
     return {
       activeTab: 'base',

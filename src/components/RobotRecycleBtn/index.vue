@@ -55,7 +55,7 @@ export default {
             Path: '/usercommonrobot/recycling',
             uid: this.uid,
             gid: this.gid,
-            currentMoney: this.currentMoney
+            currentMoney: parseFloat(this.currentMoney.toFixed(4))
           }
         }).then(response => {
           if (response.RetCode === 0) {

@@ -122,6 +122,9 @@
             {{ showRoomLevel(scope.row.RoomLevel) }}
           </template>
         </el-table-column>
+        <el-table-column prop="AllocScheme" label="配桌方案" width="150" >
+          <template slot-scope="scope"> {{ getAllocSchemeName(scope.row.AllocScheme ) }} </template>
+        </el-table-column>
         <el-table-column
           label="状态"
           width="150"
@@ -371,7 +374,50 @@
               </el-select>
             </el-form-item>
           </el-col>
+
+          <el-col :span="11">
+            <el-form-item
+              label="自动补陪玩机器人人数要求："
+              prop="item.AutoEnterRoomCount"
+              :rules="dataRule(true,{type:'n',range:'0'})"
+            >
+              <el-input v-model.number="edit.item.AutoEnterRoomCount" />
+            </el-form-item>
+          </el-col>
         </el-row>
+
+        <el-row>
+          <el-col :span="11">
+            <el-form-item
+              label="匹配机器人最高等待时间："
+              prop="item.WaitAddRobotMaxTimes"
+              :rules="dataRule(true,{type:'n',range:'0'})"
+            >
+              <el-input v-model.number="edit.item.WaitAddRobotMaxTimes" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item
+              label="匹配玩家入桌等待时间："
+              prop="item.WaitUserEnterTimes"
+              :rules="dataRule(true,{type:'n',range:'0'})"
+            >
+              <el-input v-model.number="edit.item.WaitUserEnterTimes" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="20">
+            <el-form-item label="配桌方案：" :required="true">
+              <el-radio-group v-model.number="edit.item.AllocScheme">
+                <el-radio :label="0">常规</el-radio>
+                <el-radio :label="3">动态匹配</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
         <el-form-item>
           <el-row>
             <el-col :span="12" :offset="10">
@@ -432,7 +478,11 @@ function newItem() {
     HideLevel: 0,
     MinPlayMoney: 0,
     RoomLevel: 0,
-    MergeSinglePlayer: 0
+    MergeSinglePlayer: 0,
+    WaitAddRobotMaxTimes: 0,
+    WaitUserEnterTimes: 0,
+    AllocScheme: 0,
+    AutoEnterRoomCount: 0
   }
 }
 
@@ -485,7 +535,11 @@ export default {
         MinPlayMoney: '最小玩牌金额',
         HideLevel: '进入该场次后隐藏场次',
         RoomLevel: '房间类型',
-        MergeSinglePlayer: '被动匹配开关'
+        MergeSinglePlayer: '被动匹配开关',
+        AllocScheme: '配桌方案',
+        WaitAddRobotMaxTimes: '匹配机器人最高等待时间',
+        WaitUserEnterTimes: '匹配玩家入桌等待时间',
+        AutoEnterRoomCount: '自动补陪玩机器人人数要求'
       }
     }
   },
@@ -702,6 +756,17 @@ export default {
         this.createSave(this.getPostData())
       }
       this.edit.visible = false
+    },
+    getAllocSchemeName(plan){
+      if(plan==1) {
+        return "班车"
+      }else if(plan==2){
+        return "信誉分"
+      }else if(plan==3){
+        return "动态匹配"
+      }else{
+        return "常规"
+      }
     }
   }
 }

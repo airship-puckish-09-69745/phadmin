@@ -37,6 +37,9 @@ export default {
     yShowPercentageSign: {
       type: Boolean,
       default: false
+    },
+    max: {
+      type: Number
     }
   },
   data() {
@@ -105,6 +108,10 @@ export default {
         axisTick: {
           show: false
         }
+      }
+      if (this.max) {
+        yAxis.type = 'value'
+        yAxis.max = this.max
       }
       if (this.yShowPercentageSign) {
         yAxis.axisLabel = {

@@ -36,7 +36,7 @@
           <el-tab-pane label="拓展配置" name="scatter">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，发布即生效】</h3>
             <publish primary-key="ID" :key-id="getFullKey('puppyhome_slots_ext')" :env-empty="false" compare-type="Object" />
-            <slots-puppyhome-ext v-if="extCfgBool" v-model="extCfg" @saveData="saveExtCfg" />
+            <slots-puppyhome-ext v-if="extCfgBool" v-model="extCfg" :base-bet="baseCfg.BaseBet" @saveData="saveExtCfg" />
           </el-tab-pane>
           <el-tab-pane label="剧本" name="script">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，发布即生效】</h3>
@@ -68,10 +68,13 @@ import slotsVup from './components_x/slots_vup'
 import slotsReelsDouble from './components_x/reels_double'
 import slotsScript from './components_x/slots_script'
 import SlotsFreeTriggerPlans from "@/views/config/tableConfig/slots/components_x/slotsFreeTriggerPlans.vue";
+import SlotsSharkkingdomExt from "@/views/config/tableConfig/slots/components_x/sharkkingdom_ext.vue";
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: {SlotsFreeTriggerPlans, Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotsPuppyhomeExt, slotsBigWinnerCfg, slotsVup, slotsReelsDouble, slotsScript },
+  components: {
+    SlotsSharkkingdomExt,
+    SlotsFreeTriggerPlans, Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotsPuppyhomeExt, slotsBigWinnerCfg, slotsVup, slotsReelsDouble, slotsScript },
   data() {
     return {
       activeTab: 'base',

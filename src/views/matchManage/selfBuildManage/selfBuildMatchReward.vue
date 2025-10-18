@@ -80,7 +80,7 @@
                      </el-select>
                      <el-select v-if="scope.row.rewardItems.getType === 2" v-model="scope.row.rewardItems.sceneId" placeholder="请选择投注金" size="mini" style="width:150px">
                        <el-option
-                         v-for="scene in BET_SCENES_CFG_OPTIONS"
+                         v-for="scene in selfBuildBetScenesCfgs"
                          :key="scene.value"
                          :label="scene.label"
                          :value="scene.value"
@@ -217,6 +217,9 @@ export default {
         item: newItem(),
         isEdit: false
       },
+      selfBuildBetScenesCfgs: [
+        { 'value': 19, 'label': '仅限GZ任意游戏投注【Tongits自建赛奖励】'}
+      ],
     }
 
   },
@@ -414,8 +417,8 @@ export default {
     },
     //检测投注金
     isInBetScenes(scene) {
-      for (let index = 0; index < this.BET_SCENES_CFG_OPTIONS.length; index++) {
-        if (this.BET_SCENES_CFG_OPTIONS[index].value === scene) {
+      for (let index = 0; index < this.selfBuildBetScenesCfgs.length; index++) {
+        if (this.selfBuildBetScenesCfgs[index].value === scene) {
           return true
         }
       }

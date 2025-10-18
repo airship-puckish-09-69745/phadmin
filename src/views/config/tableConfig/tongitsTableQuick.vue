@@ -378,6 +378,67 @@
         </el-row>
 
         <el-row>
+          <el-col :span="11">
+            <el-form-item
+              label="自动满桌匹配人数要求："
+              prop="item.AutoEnterRoomCount"
+              :rules="dataRule(true,{type:'n',range:'0'})"
+            >
+              <el-input v-model.number="edit.item.AutoEnterRoomCount" />
+            </el-form-item>
+          </el-col>
+
+
+          <el-col :span="11">
+            <el-form-item
+              label="低信可信："
+              :required="true"
+              prop="item.HideCarry"
+              :rules="dataRule(true,{type:'n',range:'0'})"
+            >
+              <el-switch
+                v-model="edit.item.IsAllowTowLowTrustSit"
+                :active-value="1"
+                :inactive-value="0"
+              />
+            </el-form-item>
+          </el-col>
+
+        </el-row>
+
+        <el-row>
+          <el-col :span="11">
+            <el-form-item
+              label="是否开启信任分配桌："
+              :required="true"
+              prop="item.HideCarry"
+              :rules="dataRule(true,{type:'n',range:'0'})"
+            >
+              <el-switch
+                v-model="edit.item.IsTrustScoreEnterRoom"
+                :active-value="1"
+                :inactive-value="0"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item
+              label="低危可信："
+              :required="true"
+              prop="item.HideCarry"
+              :rules="dataRule(true,{type:'n',range:'0'})"
+            >
+              <el-switch
+                v-model="edit.item.IsLowRiskBelieve"
+                :active-value="1"
+                :inactive-value="0"
+              />
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+
+        <el-row>
           <el-col :span="20">
             <el-form-item label="配桌方案：" :required="true">
               <el-radio-group v-model.number="edit.item.AllocScheme">
@@ -570,7 +631,11 @@ function newItem() {
     RoomLevel: 0,
     WaitAddRobotMaxTimes:0,
     WaitUserEnterTimes:0,
-    AllocScheme:0
+    AllocScheme:0,
+    AutoEnterRoomCount:0,
+    IsAllowTowLowTrustSit:0,
+    IsTrustScoreEnterRoom:0,
+    IsLowRiskBelieve:0
   }
 }
 
@@ -633,6 +698,10 @@ export default {
         AllocScheme:'配桌方案',
         WaitAddRobotMaxTimes:'匹配机器人最高等待时间',
         WaitUserEnterTimes:'匹配玩家入桌等待时间',
+        AutoEnterRoomCount:'自动满桌匹配人数要求',
+        IsAllowTowLowTrustSit:'低信可信',
+        IsTrustScoreEnterRoom:'是否信任分配桌',
+        IsLowRiskBelieve:'低危可信',
         // 'RobotConfig.Common.RobotCarryMoneyStart': '机器人最小携带',
         // 'RobotConfig.Common.RobotCarryMoneyEnd': '机器人最大携带',
         // 'RobotConfig.Common.RobotMaxPlayTimesStart': '机器人玩牌次数下限',
@@ -861,6 +930,12 @@ export default {
         Message.warning('下限不能大于上限，请检查数值正确性！')
         return false
       }
+
+      if (this.edit.item.IsAllowTowLowTrustSit==0 && this.edit.item.IsLowRiskBelieve==1){
+        Message.warning('低信可信关闭后，低危可信不能开启')
+        return false
+      }
+
       if (this.edit.item.MinPlayMoney > this.edit.item.CarryLower) {
         Message.error('【最小玩牌金额】必须小于等于【最小携带】，请检查数值正确性！')
         return false

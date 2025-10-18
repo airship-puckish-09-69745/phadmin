@@ -1,10 +1,14 @@
 <template>
-  <div>
+  <div class="slots_free_trigger_plans">
     <el-row>
       <el-col :span="12" :offset="3">
         <el-tabs v-model="activeTab">
           <el-tab-pane label="进入免费方案配置" name="script">
             <el-button type="primary" @click="showDialog">今日已玩牌局数配置</el-button>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <el-tooltip content="1.需要首行标题;2.导入覆盖" effect="dark" placement="top">
+              <input type="file" accept=".xlsx, .xls" size="small" @change="handleFileUpload">
+            </el-tooltip>
             <span style="margin-left:10px;color:#909399"></span>
 
             <el-table :data="cfg.ScatterTriggerPlans">
@@ -71,13 +75,27 @@
           </div>
         </el-form-item>
         <el-form-item label="免费旋转触发次数">
+          <template #label>
+            <span>
+              今日已玩牌局数配置
+              <el-tooltip
+                content="小于等于被标识为1,大于等于被标识为2"
+                placement="top"
+                effect="light">
+                <i class="el-icon-question" style="margin-left: 5px; color: #909399;"></i>
+              </el-tooltip>
+            </span>
+          </template>
           <div style="display: flex; gap: 30px;">
             <el-select v-model="ScatterTriggerPlans.FreeTimesCompareOperator" placeholder="请选择活动区域">
               <el-option label="小于等于" :value="1"></el-option>
               <el-option label="大于等于" :value="2"></el-option>
             </el-select>
-            <el-input v-model.number="ScatterTriggerPlans.FreeTimesCompareValue" placeholder="请输入内容" class="input-with-select"
-                      style="width: 200px"/>
+            <el-input
+              v-model.number="ScatterTriggerPlans.FreeTimesCompareValue"
+              placeholder="请输入内容"
+              class="input-with-select"
+              style="width: 200px"/>
           </div>
         </el-form-item>
       </el-form>
@@ -125,6 +143,7 @@
 <script>
 import {Message} from 'element-ui';
 import Compare from '@/components/Compare/index.vue';
+import XLSX from 'xlsx'
 
 export default {
   name: 'SlotsFreeTriggerPlans',
@@ -136,13 +155,13 @@ export default {
   props: {
     slotsData: {
       type: Object,
-      default: function() {
+      default: function () {
         return {}
       }
     },
     scatterTriggerPlans: {
       type: Array,
-      default: function() {
+      default: function () {
         return []
       }
     }
@@ -159,6 +178,9 @@ export default {
         dialogTitle: '局数配置',
         dialogVisible: false,
         currentConf: []
+      },
+      edit: {
+        fileList: []
       }
     }
   },
@@ -168,6 +190,47 @@ export default {
     })
   },
   methods: {
+    handleFileUpload(event) {
+      const file = event.target.files[0];
+      // eslint-disable-next-line no-empty
+      if (file !== undefined) {
+        this.removeAllConfig()
+        this.resetScatterTriggerPlans()
+      }
+      if (file) {
+        const reader = new FileReader()
+        reader.onload = (e) => {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, {type: 'array'});
+          const sheetNames = workbook.SheetNames;
+          sheetNames.forEach((sheetName) => {
+            const worksheet = workbook.Sheets[sheetName];
+            const json = XLSX.utils.sheet_to_json(worksheet, {header: 1});
+            this.resetScatterTriggerPlans()
+            json.forEach((row, index) => {
+              if (index > 0) {
+                this.ScatterTriggerPlans.PlayTimesMin = json[1][0]
+                this.ScatterTriggerPlans.PlayTimesMax = json[1][1]
+                this.ScatterTriggerPlans.FreeTimesCompareOperator = json[1][2]
+                this.ScatterTriggerPlans.FreeTimesCompareValue = json[1][3]
+                this.ScatterTriggerPlans.currentConf.push({OddsMin: row[4], OddsMax: row[5], Rates: row[6]})
+              }
+            })
+            this.ScatterTriggerPlans.editIndex = undefined//
+            this.saveConfig()
+          })
+        }
+        reader.readAsArrayBuffer(file)
+        this.$forceUpdate()
+      }
+    },
+    resetScatterTriggerPlans() {
+      this.ScatterTriggerPlans.PlayTimesMin = 0
+      this.ScatterTriggerPlans.PlayTimesMax = 0
+      this.ScatterTriggerPlans.FreeTimesCompareOperator = 0
+      this.ScatterTriggerPlans.FreeTimesCompareValue = 0
+      this.ScatterTriggerPlans.currentConf = []
+    },
     showDialog() {
       this.ScatterTriggerPlans.dialogTitle = '添加配置'
       this.ScatterTriggerPlans.PlayTimesMin = 0
@@ -193,7 +256,7 @@ export default {
     submitFrm() {
       const $this = this
       this.$refs.compare.SetNewVal(this.getDiffData())
-      this.$refs.compare.Compare(function(isEdit) {
+      this.$refs.compare.Compare(function (isEdit) {
         if (!isEdit) {
           $this.$message.error('没有任何修改，不需要提交')
           return
@@ -209,37 +272,75 @@ export default {
     removeConfigRow(index) {
       this.ScatterTriggerPlans.currentConf.splice(index, 1)
     },
+    removeAllConfig() {
+      this.cfg.ScatterTriggerPlans = []
+    },
     removeConfig(index) {
       this.cfg.ScatterTriggerPlans.splice(index, 1)
+    },
+    checkConfig() {
+      if (this.ScatterTriggerPlans.PlayTimesMax < 0 ||
+        this.ScatterTriggerPlans.PlayTimesMin < 0 ||
+        this.ScatterTriggerPlans.FreeTimesCompareOperator < 0 ||
+        // eslint-disable-next-line no-empty
+        this.ScatterTriggerPlans.FreeTimesCompareValue < 0) {
+        Message.error(`数值不能小于0,请检查`)
+        return false
+      }
+
+      // 最小局数与最大局数的校验
+      // eslint-disable-next-line no-self-compare
+      if (this.ScatterTriggerPlans.PlayTimesMax < this.ScatterTriggerPlans.PlayTimesMin) {
+        Message.error(`最小局数不能大于最大局数,请检查`)
+        return false
+      }
+      if (this.ScatterTriggerPlans.PlayTimesMin === 0 && this.ScatterTriggerPlans.PlayTimesMax === 0) {
+        Message.error('最小局数与最大局数不能都设置为0,请检查')
+        return false
+      }
+      if (this.ScatterTriggerPlans.FreeTimesCompareOperator !== 1 && this.ScatterTriggerPlans.FreeTimesCompareOperator !== 2) {
+        Message.error('大于小于输入错误,请检查')
+        return false
+      }
+      // eslint-disable-next-line no-undef
+      let isNumError = false
+      let isNumNeg = false
+      let isRatesGte100 = false
+      this.ScatterTriggerPlans.currentConf.forEach((item) => {
+        if (item.OddsMin > item.OddsMax) {
+          isNumError = true
+        }
+        if (item.OddsMin < 0 || item.Rates < 0 || item.OddsMax < 0) {
+          isNumNeg = true
+        }
+        if (item.Rates > 100) {
+          isRatesGte100 = true
+        }
+      })
+      if (isNumNeg) {
+        Message.error('配置的数值小于0')
+        return false
+      }
+      if (isRatesGte100) {
+        Message.error('触发scatter的概率大于100')
+        return false
+      }
+      if (isNumError) {
+        Message.error('最小倍数不能大于最大倍数,请检查')
+        return false
+      }
+      return true
     },
     saveConfig() {
       if (!this.cfg.ScatterTriggerPlans) {
         this.cfg.ScatterTriggerPlans = []
       }
 
-      // 最小局数与最大局数的校验
-      // eslint-disable-next-line no-self-compare
-      if (this.ScatterTriggerPlans.PlayTimesMax < this.ScatterTriggerPlans.PlayTimesMin) {
-        Message.error(`最小局数不能大于最大局数`)
+      // 校验
+      if (!this.checkConfig()) {
         return
       }
-      if (this.ScatterTriggerPlans.PlayTimesMin === 0 && this.ScatterTriggerPlans.PlayTimesMax === 0) {
-        Message.error('最小局数与最大局数不能都设置为0')
-        return
-      }
-
-      // eslint-disable-next-line no-undef
-      let isNumError = false
-      this.ScatterTriggerPlans.currentConf.forEach((item) => {
-        if (item.OddsMin > item.OddsMax) {
-          isNumError = true
-        }
-      })
-      if (isNumError) {
-        Message.error('最小倍数不能大于最大倍数')
-        return
-      }
-      if (this.ScatterTriggerPlans.editIndex >= 0) {
+      if (this.ScatterTriggerPlans.editIndex >= 0) { // 编辑模式的保存
         this.$set(this.cfg.ScatterTriggerPlans, this.ScatterTriggerPlans.editIndex, {
           PlayTimesMin: this.ScatterTriggerPlans.PlayTimesMin,
           PlayTimesMax: this.ScatterTriggerPlans.PlayTimesMax,
@@ -247,7 +348,7 @@ export default {
           FreeTimesCompareValue: this.ScatterTriggerPlans.FreeTimesCompareValue,
           Ranges: this.ScatterTriggerPlans.currentConf
         })
-      } else {
+      } else { // 新增模式的保存
         this.cfg.ScatterTriggerPlans.push({
           PlayTimesMin: this.ScatterTriggerPlans.PlayTimesMin,
           PlayTimesMax: this.ScatterTriggerPlans.PlayTimesMax,
@@ -271,5 +372,7 @@ export default {
 </script>
 
 <style scoped>
-
+.slots_free_trigger_plans {
+  margin-top: 60px;
+}
 </style>

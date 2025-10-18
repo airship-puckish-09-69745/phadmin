@@ -82,7 +82,11 @@
             <template v-if="item.WalletType==1">
               <el-button size="mini" @click="refreshWalletMoney">刷新资产</el-button>
             </template>
+            <el-button size="mini" @click="showPayWithdrawLog" v-if="hasPayWithdrawLogPerm">充提明细</el-button>
           </el-descriptions-item>
+          <el-descriptions-item label="总充值：" v-if="hasPayWithdrawLogPerm">{{ formatNumber(PayWithdrawSummary.PayAmount / 1000) }}</el-descriptions-item>
+          <el-descriptions-item label="总提现：" v-if="hasPayWithdrawLogPerm">{{ formatNumber(PayWithdrawSummary.WithdrawAmount / 1000) }}</el-descriptions-item>
+          <el-descriptions-item label="首充时间：" v-if="hasPayWithdrawLogPerm"><DateTimeShow v-if="PayWithdrawSummary.FirstPayTime>0" :show-type="2" :timestamp="PayWithdrawSummary.FirstPayTime/1000" /></el-descriptions-item>
           <el-descriptions-item label="钱包类型：" :span="3">{{ item.WalletType==1?'单一钱包':'转账钱包' }}</el-descriptions-item>
           <el-descriptions-item label="平台注册时间：" :span="4"><DateTimeShow v-if="item.PlatRegisterTime>0" :show-type="2" :timestamp="item.PlatRegisterTime/1000" /></el-descriptions-item>
           <el-descriptions-item label="UID注册时间："><DateTimeShow :show-type="2" :timestamp="item.RegisterTime" /></el-descriptions-item>
@@ -159,53 +163,66 @@
             <el-tag v-if="credit.blackList.length > 0" type="danger">高危</el-tag>
             <el-button type="success" size="mini" style="margin-left: 10px;" @click="TagCreditDetail=true">详情</el-button>
           </el-descriptions-item>
-          <el-descriptions-item label="手动添加道具:">
-            <el-col :span="2"> {{'道具类型:'}} </el-col>
-            <el-col  :span="3">
+
+          <el-descriptions-item label="添加道具:" :span="4">
+            <el-col :span="1"> {{'类型:'}} </el-col>
+            <el-col  :span="2">
               <el-select v-model.number="item.ItemType" size="mini" placeholder="请选择" @change="ShowItemList(item.ItemType)">
-                <el-option
-                  v-for="option in itemTypeCfgs"
-                  :key="option.value"
-                  :label="option.label"
-                  :value="option.value"
-                  :disabled="option.disabled"
+                <el-option v-for="option in ITEM_TYPE_OPTIONS" :key="option.value" :label="option.label" :value="option.value" :disabled="option.disabled"
                 ></el-option>
               </el-select>
             </el-col>
-            <el-col :span="2" :offset="1"> {{'道具名称:'}} </el-col>
+            <el-col :span="1" :offset="1"> {{'名称:'}} </el-col>
             <el-col :span="3">
               <template>
-                <el-select v-model.number="item.ItemCfgId" size="mini" placeholder="请选择" @change="ShowItemTime(item.ItemCfgId)">
-                  <el-option
-                    v-for="option in tableItemData"
-                    :key="option.value"
-                    :label="option.label"
-                    :value="option.value"
-                    :disabled="option.disabled"
+                <el-select v-model.number="item.ItemCfgId" size="mini" placeholder="请选择" @change="handleItemChange(item.ItemCfgId)">
+                  <el-option v-for="option in tableItemData" :key="option.value" :label="option.label" :value="option.value" :disabled="disableByPropId(option.value)"
                   ></el-option>
                 </el-select>
               </template>
             </el-col>
-            <el-col :span="2" :offset="1"> {{'道具数量:'}} </el-col>
+            <el-col :span="1" :offset="1"> {{'数量:'}} </el-col>
             <el-col :span="2">
               <el-input v-model.number="item.ItemNum" size="mini" />
             </el-col>
-            <el-col v-show="item.ItemType === 2 || item.ItemType === 4" :span="1" :offset="1"> {{'可用时间:'}} </el-col>
-            <el-col v-show="item.ItemType === 2 ||item.ItemType === 4" :span="2">
+            <el-col v-show="(item.ItemType===PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN) && isNegativeItemNum" :span="1" :offset="1"> {{'UUID:'}} </el-col>
+            <el-col  v-show="(item.ItemType===PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN) && isNegativeItemNum" :span="2">
+              <template>
+                <el-select v-model="propFrom.ItemUuId" :key="item.ItemCfgId" size="mini" placeholder="请选择">
+                  <el-option v-for="option in tablePropUuIdData" :key="option.value" :label="option.label" :value="option.value"
+                  ></el-option>
+                </el-select>
+              </template>
+            </el-col>
+            <el-col v-show="(item.ItemType === 2 || item.ItemType === 4 || item.ItemType === 5 ||[7,8,9].includes(item.ItemType))&&!isNegativeItemNum" :span="1" :offset="1"> {{'时间:'}} </el-col>
+            <el-col v-show="(item.ItemType === 2 ||item.ItemType === 4 || item.ItemType === 5 ||[7,8,9].includes(item.ItemType)) && !isNegativeItemNum" :span="2">
               <template>
                 <el-select v-model="item.ItemUseTime" size="mini" placeholder="请选择">
-                  <el-option
-                    v-for="option in dayTypeCfgs"
-                    :key="option.value"
-                    :label="option.label"
-                    :value="option.value"
-                    :disabled="option.disabled"
-                  ></el-option>
+                  <el-option v-for="option in ITEM_DAY_TYPE_OPTIONS" :key="option.value"
+                             :label="option.label" :value="option.value" :disabled="option.disabled || (item.ItemType === 5 && (option.value === 0 || option.value === 365))">
+                  </el-option>
                 </el-select>
               </template>
             </el-col>
             <el-col :span="3" :offset="1">
               <el-button type="primary" size="mini" @click="saveItemInfo">提交</el-button>
+            </el-col>
+          </el-descriptions-item>
+
+          <el-descriptions-item label="tongits信任分：" :span="1" >
+            <el-col :span="8">
+              <el-tag>{{ formatNumber(item.TrustScore) }}</el-tag>
+              <el-tag v-if="item.TrustType == 1" type="success">低危用户</el-tag>
+              <el-tag v-if="item.TrustType == 4" type="success">低信用户</el-tag>
+              <el-tag v-if="item.TrustType == 5" type="success">高信用户</el-tag>
+              <el-tag v-if="item.TrustType == 2" type="success">疑似用户</el-tag>
+              <el-tag v-if="item.TrustType == 3" type="success">黑子用户</el-tag>
+            </el-col>
+            <el-col :span="6" v-if="env==='test'">
+              <el-input v-model.number="cheatScore" size="mini" placeholder="正加负减"/>
+            </el-col>
+            <el-col :span="4" v-if="env==='test'">
+              <el-button type="primary" size="mini" @click="incTrustScore()">增加信任分</el-button>
             </el-col>
           </el-descriptions-item>
         </el-descriptions>
@@ -387,6 +404,8 @@ import store from '@/store'
 import { Message } from 'element-ui'
 import { toRupee, numberFormat } from '@/utils'
 import DateTimeShow from '@/components/DatetimeShow'
+import {ITEM_TYPE_OPTIONS, ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS} from '@/utils/options'
+import payWithdrawLog from "@/views/playerManage/payWithdrawLog.vue";
 
 function NewRelationSummary() {
   return {
@@ -460,18 +479,19 @@ export default {
         Phone: '',
         IsSetLoginPwd: false,
         IsSetPayPwd: false,
-        ItemCfgId: 0,
-        ItemType: 0,
-        ItemUseTime: 0,
-        ItemQuality: 0,
-        ItemStartTime: 0,
-        ItemExpireTime: 0,
-        ItemNum: 0
       },
+      cheatScore: 0,
       total: 0,
       tableData: [], //头像框和门票物品配置表数据
       tableItemData: [],
-      tableTimeData: [],
+      tablePropUuIdData:[],
+      ItemCfgId: 0,
+      ItemType: 0,
+      ItemUseTime: 1,
+      ItemNum:0,
+      propFrom:{
+        ItemUuId:'',
+      },
       libShowMoney: new MoneyShow(['BonusTotal', 'BonusValid', 'Gullak', 'LimitedMoney', 'FreeMoney', 'BaseValue', 'ProduceValue', 'MCBetValue', 'MCSystemGot', 'PayValue']),
       moneyType: 1,
       money: 0,
@@ -487,6 +507,7 @@ export default {
 
       hasEditPerm: false,
       hasCustomerPerm: false,
+      hasPayWithdrawLogPerm: false,
 
       UserTags: [],
       tagRecs: [],
@@ -525,19 +546,6 @@ export default {
         { 'label': 'Tongits Laizi', 'value': 28 },
         { 'label': 'Tongits Quick', 'value': 29 }
       ],
-      itemTypeCfgs: [
-        { 'value': 1, 'label': 'Tongits门票', disabled: false },
-        { 'value': 2, 'label': '头像框', disabled: false },
-        { 'value': 3, 'label': '德州门票', disabled: false },
-        { 'value': 4, 'label': '德州头像框', disabled: false }
-      ],
-      dayTypeCfgs: [
-        { 'value': 1, 'label': '1天', disabled: false },
-        { 'value': 7, 'label': '7天', disabled: false },
-        { 'value': 30, 'label': '30天', disabled: false },
-        { 'value': 365, 'label': '365天', disabled: false },
-        { 'value': 0, 'label': '永久', disabled: false }
-      ],
       // 修改调控结果
       paySchemaDialog: false,
       paySchemaEdit: {
@@ -572,7 +580,15 @@ export default {
       RelationSummary: NewRelationSummary(),
       UserIpDevice: [], // 用户IP设备
       SameIp: [], // 同IP
-      SameDevice: [] // 同设备
+      SameDevice: [], // 同设备
+      ITEM_TYPE_OPTIONS,
+      ITEM_DAY_TYPE_OPTIONS,
+      PROP_TYPE_OPTIONS,
+      PayWithdrawSummary: {
+        PayAmount: 0,
+        WithdrawAmount: 0,
+        FirstPayTime: 0,
+      }
     }
   },
   computed: {
@@ -619,12 +635,16 @@ export default {
       } else {
         return this.formatNumber(this.item.BaseValue * this.item.PlayWinLimit / 100)
       }
-    }
+    },
+    isNegativeItemNum() {
+      return this.item.ItemNum < 0; // 检测是否为负数
+    },
   },
   created() {
     const pers = store.getters.pers
     this.hasEditPerm = (pers['USER_MANAGEMENT'] & 2) > 0
     this.hasCustomerPerm = (pers['CUTOMER'] & 2) > 0
+    this.hasPayWithdrawLogPerm = (pers['PAY_WITHDRAW_LOG'] & 1) > 0
     this.getAppInfo()
   },
   mounted() {
@@ -1348,11 +1368,15 @@ export default {
         Message.error('请输入道具数量')
         return
       }
-      if (this.item.ItemType === 2 || this.item.ItemType === 4) {
+      if ( this.item.ItemNum > 0 && [2,4,5,7,8,9].includes(this.item.ItemType)) {
         if (typeof this.item.ItemUseTime === 'undefined') {
           Message.error('请选择时间')
           return
         }
+      }
+      if(this.item.ItemType===5 && this.item.ItemNum < 0 && (this.propFrom.ItemUuId===''||this.propFrom.ItemUuId===undefined)){
+        Message.error('扣除free spin道具 需要勾选UUID')
+        return
       }
 
       let msg = '确定添加物品吗?'
@@ -1360,7 +1384,7 @@ export default {
         msg = '确定扣除物品吗?'
       }
       let tmpTime = 0
-      if (this.item.ItemType === 2 || this.item.ItemType === 4) {
+      if ([2,4,5,7,8,9].includes(this.item.ItemType)) {
         tmpTime = this.item.ItemUseTime
       }
       this.$confirm(msg, '提示', {
@@ -1381,8 +1405,7 @@ export default {
             ItemNum: this.item.ItemNum,
             ItemType: this.item.ItemType,
             UseTime: tmpTime,
-            Quality: this.item.ItemQuality,
-            ExpireTime: this.item.ItemExpireTime,
+            ItemUuid:this.propFrom.ItemUuId,
             Author:store.getters.name,
             ActMsg: '管理后台By ' + store.getters.name
           }
@@ -1392,6 +1415,8 @@ export default {
             this.item.ItemType = 0
             this.item.ItemCfgId = 0
             this.item.ItemNum = 0
+            this.item.ItemUseTime = 1
+            this.propFrom.ItemUuId=''
           }
         })
       }).catch(() => {
@@ -1419,6 +1444,7 @@ export default {
           $this.item = $this.libShowMoney.TransForShow(response.Data || $this.item)
           $this.$EventBus.$emit('uid-change', $this.item.Uid)
           $this.getCredit()
+          $this.getPayWithdrawSummary()
         }
       })
     },
@@ -1492,6 +1518,32 @@ export default {
           $this.$refs.uidInput.saveUid($this.item.Uid)
           $this.getTags()
           $this.getCredit()
+          $this.getPayWithdrawSummary()
+        }
+      })
+    },
+    getPayWithdrawSummary() {
+      if (this.item.Uid === 0) {
+        Message.error('请输入正确的Uid')
+        return
+      }
+      const $this = this
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Env: this.env,
+          Path: '/user/pay/withdraw/summary',
+          Uid: this.item.Uid
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          $this.PayWithdrawSummary.PayAmount = response.Data.PayAmount
+          $this.PayWithdrawSummary.WithdrawAmount = response.Data.WithdrawAmount
+          $this.PayWithdrawSummary.FirstPayTime = response.Data.FirstPayTime
+          console.log("PayWithdrawSummary.PayAmount:", $this.PayWithdrawSummary.PayAmount)
+          console.log("PayWithdrawSummary.WithdrawAmount:", $this.PayWithdrawSummary.WithdrawAmount)
+          console.log("PayWithdrawSummary.FirstPayTime:", $this.PayWithdrawSummary.FirstPayTime)
         }
       })
     },
@@ -1613,6 +1665,15 @@ export default {
         }
       })
     },
+    showPayWithdrawLog() {
+      const uid = this.item.Uid
+      this.$router.push({
+        path: '/player/payWithdrawLog',
+        query: {
+          Uid: uid
+        }
+      })
+    },
     clearCreditData() {
       this.$confirm("确定清除信誉分数据吗？", '提示', {
         confirmButtonText: '确定',
@@ -1660,7 +1721,7 @@ export default {
             Env: $this.env,
             Path: '/user/credit/save',
             Uid: $this.credit.uid,
-            ExtScore: $this.creditChange*1000
+            ExtScore: $this.creditChange * 1000
           }
         }).then(response => {
           if (response.RetCode === 0) {
@@ -1688,7 +1749,7 @@ export default {
         data: {
           Env: this.env,
           PageNum: 1,
-          PageSize: 100
+          PageSize: 200
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -1704,15 +1765,14 @@ export default {
         }
       })
     },
+    //获取展示名称
     ShowItemList(id) {
       this.tableItemData = []
+      this.tablePropUuIdData = []
+      this.item.ItemCfgId = null
+      this.propFrom.ItemUuId = ''
       let currTime = new Date().getTime()
-      console.log("++++++++++++++++++1333333+++++++++++++++++++++")
-      console.log(this.tableData)
       for (let i = 0; i < this.tableData.length; i++) {
-        if (this.tableData[i].item_type === 4) {
-          console.log(this.tableData[i])
-        }
         let str = this.tableData[i].item_name
         if (this.tableData[i].item_extra.length > 0) {
           let exitData = JSON.parse(this.tableData[i].item_extra)
@@ -1723,40 +1783,96 @@ export default {
           }
         }
         if (this.tableData[i].item_type === id && this.tableData[i].status === 1) {
-          if (this.tableData[i].item_type !== 2 && this.tableData[i].item_type !== 4) {
+          if (this.isTicketProp(this.tableData[i].item_type)) {
             let expTime = this.tableData[i].expire_time * 1000
             if (currTime < expTime) {
-              var dataList = { 'value': this.tableData[i].id, 'label': str, disabled: false }
-              this.tableItemData.push(dataList)
+              this.tableItemData.push({'value': this.tableData[i].id, 'label': str, disabled: false})
             }
           } else {
-            var dList = { 'value': this.tableData[i].id, 'label': str, disabled: false }
-            this.tableItemData.push(dList)
+            this.tableItemData.push({'value': this.tableData[i].id, 'label': str, disabled: false})
           }
+
         }
       }
     },
-    ShowItemTime(itemId) {
-      this.tableTimeData = []
-      for (let i = 0; i < this.tableData.length; i++) {
-        if (this.tableData[i].id === itemId) {
-          const time_type = JSON.parse(this.tableData[i].time_type)
-          for (let j = 0; j < time_type.length; j++) {
-            var msg = time_type[j] + '天'
-            if (time_type[j] === 0) {
-              msg = '永久'
-            }
-            var dataList = { 'value': time_type[j], 'label': msg, disabled: false }
-            this.tableTimeData.push(dataList)
+
+    disableByPropId(propId){
+      for(let i=0; i < this.tableData.length;i++){
+        if(this.tableData[i].id === propId && this.tableData[i].item_type ===  PROP_TYPE_OPTIONS.PROP_TYPE_TICKET){
+          if(this.tableData[i].item_extra !== null && JSON.parse(this.tableData[i].item_extra).specialAttr=== 1 ){ //如果是邀请函
+            return true
           }
-          this.item.ItemStartTime = this.tableData[i].create_time
-          this.item.ItemExpireTime = this.tableData[i].expire_time
-          this.item.ItemQuality = this.tableData[i].quality
-          break
         }
       }
-    }
+      return false
+    },
 
+    handleItemChange() {
+      this.propFrom.ItemUuId = ''
+      this.tablePropUuIdData = [] // 清空UUID选项列表
+      this.ShowItemUUIDDetail(this.item.ItemCfgId) // 如果需要立即加载新的UUID列表
+    },
+    //展示道具的子属性UUID
+    ShowItemUUIDDetail(itemId) {
+      if (this.item.Uid === 0) {
+        Message.error('请输入正确的Uid')
+        return
+      }
+      request({
+        url: '/dataProxy/info',
+        method: 'post',
+        data: {
+          Env: this.env,
+          Path: '/user/prop/refresh',
+          Uid: this.item.Uid,
+          PropId: itemId,
+        }
+      }).then(response => {
+        if (response.RetCode === 0 && response.Data != null && response.Data.length > 0) {
+          this.tablePropUuIdData = response.Data.map(uuid => ({
+            value: uuid, // 确保是字符串或数字
+            label: uuid, // 确保是字符串
+          }))
+        }
+      })
+    },
+    //是否是门票类型道具
+    isTicketProp(itemType) {
+      return itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET || itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET || itemType === PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET
+    },
+    //是否是头像框道具
+    isAvatarFrameProp(itemType) {
+      return itemType === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME || itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR
+    },
+    incTrustScore() {
+      if (this.env != 'test') {
+        return
+      }
+      if (this.cheatScore === 0) {
+        this.$message.error('请输入一个不为0的数据')
+        return
+      }
+      const $this = this
+      request({
+        url: '/dataProxy/info',
+        method: 'post',
+        data: {
+          Env: $this.env,
+          Path: '/user/cheat/update',
+          Uid: $this.item.Uid,
+          Gid: 22,
+          Score: $this.cheatScore
+        }
+      }).then(response => {
+        console.log('update tag ', response)
+        if (response.RetCode === 0) {
+          $this.getInfo()
+          $this.getTags()
+        } else {
+          $this.$message.error('更新失败')
+        }
+      })
+    },
   }
 }
 </script>

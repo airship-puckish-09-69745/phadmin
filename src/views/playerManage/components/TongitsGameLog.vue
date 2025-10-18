@@ -13,7 +13,8 @@
       <tr>
         <td v-for="one in FinishArray">
           用户：{{ one.Uid }} - {{ one.Nick }}<br>
-          {{ one.isRobot?'机器人':getUserType(one.UserType) }} {{ one.RobotDefenceLevel?getRobotDefenceLevel(one.RobotDefenceLevel): getRobotLevel(one.RobotLevel) }}
+          {{ one.isRobot?'机器人':getUserType(one.UserType) }} {{ one.RobotDefenceLevel?getRobotDefenceLevel(one.RobotDefenceLevel): getRobotLevel(one.RobotLevel) }}<br>
+          {{ showCheatType(one.isRobot,one.TrustLevel) }}
         </td>
       </tr>
     </table>
@@ -325,6 +326,7 @@ export default {
         finishArray.push({
           Uid: one.uid,
           Nick: one.nick,
+          UserType: one.UserType,
           bonusCardMoney: val.players[j].bonusCardMoney,
           burnedMoney: val.players[j].burnedMoney,
           challengeMoney: val.players[j].challengeMoney,
@@ -344,7 +346,7 @@ export default {
           RobotLevel: val.players[j].RobotLevel,
           RobotWeight: val.players[j].RobotWeight,
           RobotDefenceLevel: val.players[j].RobotDefenceLevel,
-          UserType: val.players[j].UserType
+          TrustLevel: val.players[j].TrustLevel
         })
         console.log("uid:", val.players[j].uid, " ; isRobot:", val.players[j].character > 0)
       }
@@ -485,6 +487,23 @@ export default {
       } else if (userType === 2) {
         return '真人--黑'
       }
+    },
+    showCheatType(isRobot,userType) {
+      if (isRobot) {
+        return ''
+      }
+      if (userType === 4) {
+        return '低信用户'
+      } else if (userType === 5) {
+        return '高信用户'
+      } else if (userType === 2) {
+        return "疑似用户"
+      } else if (userType === 3) {
+        return "黑子用户"
+      } else if (userType === 1) {
+        return "低危用户"
+      }
+      return ""
     },
     getControlLevel(lv) {
       if (lv == 1) {

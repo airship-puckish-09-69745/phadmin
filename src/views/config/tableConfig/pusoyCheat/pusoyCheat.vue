@@ -51,7 +51,7 @@ export default {
           $this.form = response.Data || {}
           if (response.Data && response.Data.Data !== '' && response.Data.Data !== '{}') {
             $this.CheatCfg = JSON.parse(response.Data.Data)
-            if (!$this.CheatCfg.AutoWhite) {
+            if ($this.CheatCfg.AutoWhite === undefined) {
               $this.CheatCfg.AutoWhite = 10 // 默认值
             }
             if ($this.CheatCfg.IsAutoWhite === undefined) {

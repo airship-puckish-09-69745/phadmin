@@ -66,18 +66,25 @@
               lazy></el-image>
           </template>
         </el-table-column>
-        <el-table-column prop="item_cost" label="道具价值"/>
+        <el-table-column prop="item_cost" label="道具价值">
+          <template slot-scope="scope">
+            {{ getItemCost(scope.row.id) }}
+          </template>
+        </el-table-column>
 
         <el-table-column
           prop="show_text"
           label="扩展信息"
         >
           <template slot-scope="scope">
-            <span v-if="scope.row.item_type == 1 || scope.row.item_type === 3">
+            <span v-if="isTicketProp(scope.row.item_type)">
               创建时间:{{ formatTime(scope.row.create_time)}} / 结束时间:{{ formatTime(scope.row.expire_time)}}
             </span>
-            <span v-if="scope.row.item_type == 2 ||scope.row.item_type === 4">
+            <span v-if="isAvatarFrameProp( scope.row.item_type)">
               品质:{{getQualityName(scope.row.quality)}} 可用时间:{{getShowText(scope.row.id)}} 描述:这是一个头像框
+            </span>
+            <span v-if="scope.row.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN">
+              slot:{{getSlotFreSpinPropDescReturnGameName(scope.row.item_extra)}} betAmount:{{getSlotFreSpinPropDescReturnBetAmount(scope.row.item_extra)}}
             </span>
           </template>
 
@@ -109,118 +116,150 @@
         >
           <template slot-scope="scope">
             <el-button  size="mini" icon="el-icon-edit" @click="showForm(scope.row.id)">编辑</el-button>
-            <el-button v-if="scope.row.status==2" size="mini" type="success" @click="handleUpdate(scope.row.id)">上架</el-button>
-            <el-button v-if="scope.row.status==1" size="mini" type="danger" @click="handleUpdate(scope.row.id)">下架</el-button>
-            <el-button v-if="itemEnv=='development' &&  scope.row.status==2" size="mini" type="danger" @click="handleDelete(scope.row.id, false)">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-    </el-row>
-    <el-row type="flex" justify="center">
-      <div class="block">
-        <el-pagination
-          :current-page="page"
-          :page-sizes="[10, 20, 30, 40]"
-          :page-size="limit"
-          layout="slot, total, sizes, prev, next"
-          prev-text="上一页"
-          next-text="下一页"
-          :total="total"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-        >
-          <span class="pageSizeInput" style="padding-right: 10px">
-            当前页：{{ page }}/{{ Math.ceil(total/limit) }}
-          </span>
-        </el-pagination>
-      </div>
-    </el-row>
-    <el-dialog
-      :title="editForm.title"
-      :visible.sync="editForm.visable"
-      :close-on-click-modal="false"
-      :close-on-press-escape="false"
-      width="900px"
-    >
-      <el-form :model="editForm.data" label-width="200px" size="mini">
-        <fieldset>
-          <legend>道具信息</legend>
-          <el-form-item label="道具名称：" :required="true">
-            <el-input v-model="editForm.data.itemName" style="width: 200px;" placeholder="请填写道具名称" />
-          </el-form-item>
+            <el-button v-if="scope.row.status===2" size="mini" type="success" @click="handleUpdate(scope.row.id)">上架</el-button>
+            <el-button v-if="scope.row.status===1" size="mini" type="danger" @click="handleUpdate(scope.row.id)">下架</el-button>
+            <el-button v-if="scope.row.status===2" size="mini" type="danger" @click="handleDelete(scope.row.id, false)">删除</el-button>
+           <!-- <el-button v-if="itemEnv==='development' &&  scope.row.status===2" size="mini" type="danger" @click="handleDelete(scope.row.id, false)">删除</el-button> -->
+           </template>
+         </el-table-column>
+       </el-table>
+     </el-row>
+     <el-row type="flex" justify="center">
+       <div class="block">
+         <el-pagination
+           :current-page="page"
+           :page-sizes="[10, 20, 30, 40]"
+           :page-size="limit"
+           layout="slot, total, sizes, prev, next"
+           prev-text="上一页"
+           next-text="下一页"
+           :total="total"
+           @size-change="handleSizeChange"
+           @current-change="handleCurrentChange"
+         >
+           <span class="pageSizeInput" style="padding-right: 10px">
+             当前页：{{ page }}/{{ Math.ceil(total/limit) }}
+           </span>
+         </el-pagination>
+       </div>
+     </el-row>
+     <el-dialog
+       :title="editForm.title"
+       :visible.sync="editForm.visable"
+       :close-on-click-modal="false"
+       :close-on-press-escape="false"
+       width="900px"
+     >
+       <el-form :model="editForm.data" label-width="200px" size="mini">
+         <fieldset>
+           <legend>道具信息</legend>
+           <el-form-item label="道具名称：" :required="true">
+             <el-input v-model="editForm.data.itemName" style="width: 200px;" placeholder="请填写道具名称" />
+           </el-form-item>
 
-          <el-form-item label="后台名称：" :required="true">
-            <el-input v-model="editForm.itemExtra.showName" style="width: 200px;" placeholder="请填写后台名称" />
-          </el-form-item>
+           <el-form-item label="后台名称：" :required="true">
+             <el-input v-model="editForm.itemExtra.showName" style="width: 200px;" placeholder="请填写后台名称" />
+           </el-form-item>
 
-          <el-form-item v-if="editForm.data.itemType != 2  && editForm.data.itemType != 4" label="道具价值：" :required="true">
-            <el-input v-model.number="editForm.data.itemCost" style="width: 200px;" placeholder="请填写道具价值" />
-          </el-form-item>
+           <el-form-item v-if="isTicketProp(editForm.data.itemType) || isTicketPropNew(editForm.data.itemType)" label="道具价值：" :required="true">
+             <el-input v-model.number="editForm.data.itemCost" style="width: 200px;" placeholder="请填写道具价值" />
+           </el-form-item>
 
-          <el-form-item v-if="editForm.data.itemType === 2 || editForm.data.itemType === 4" label="品质：" :required="true">
-            <el-select v-model="editForm.data.quality" style="width: 200px;" :disabled="!editForm.isAdd" placeholder="请选择道具品质分类">
-              <el-option
-                v-for="item in qualityTypeCfgs"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-                :disabled="item.disabled"
-              />
-            </el-select>
-          </el-form-item>
+           <el-form-item v-if="isAvatarFrameProp(editForm.data.itemType)" label="品质：" :required="true">
+             <el-select v-model="editForm.data.quality" style="width: 200px;" :disabled="!editForm.isAdd" placeholder="请选择道具品质分类">
+               <el-option
+                 v-for="item in qualityTypeCfgs"
+                 :key="item.value"
+                 :label="item.label"
+                 :value="item.value"
+                 :disabled="item.disabled"
+               />
+             </el-select>
+           </el-form-item>
 
-          <el-form-item label="道具描述：" :required="true">
-            <el-input v-model="editForm.data.describe" style="width: 400px;" placeholder="请填写道具描述" />
-          </el-form-item>
+           <el-form-item label="道具描述：" :required="true">
+             <el-input v-model="editForm.data.describe" style="width: 400px;" placeholder="请填写道具描述" />
+           </el-form-item>
 
-          <el-form-item label="道具类别：" :required="true">
-            <el-select v-model="editForm.data.itemType" style="width: 200px;" :disabled="!editForm.isAdd" placeholder="请选择道具分类">
-              <el-option
-                v-for="item in ITEM_TYPE_OPTIONS"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-                :disabled="item.disabled"
-              />
-            </el-select>
-          </el-form-item>
+           <el-form-item label="道具类别：" :required="true">
+             <el-select v-model="editForm.data.itemType" style="width: 200px;" :disabled="!editForm.isAdd" placeholder="请选择道具分类">
+               <el-option
+                 v-for="item in ITEM_TYPE_OPTIONS"
+                 :key="item.value"
+                 :label="item.label"
+                 :value="item.value"
+                 :disabled="item.disabled"
+               />
+             </el-select>
+           </el-form-item>
 
-          <el-form-item v-if="editForm.data.itemType === 1" label="道具特殊属性：" :required="true">
-            <el-select  v-model="editForm.itemExtra.specialAttr" style="width: 200px;" :disabled="!editForm.isAdd" placeholder="请选择道具特殊属性">
-              <el-option
-                v-for="item in itemSpecialAttrCfgs"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-                :disabled="item.disabled"
-              />
-            </el-select>
-          </el-form-item>
-          <el-form-item v-if="editForm.data.itemType != 2 && editForm.data.itemType != 4"  label="道具过期时间：" :required="true">
-            <el-date-picker
-              v-model="editForm.itemEndDate"
-              style="width: 200px;"
-              type="date"
-              :disabled="!editForm.isAdd"
-              placeholder="选择过期日期"
-            />
-            <span style="color:black; margin-left:10px">[00:00:00]</span>
-          </el-form-item>
+           <el-form-item v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET" label="道具特殊属性：" :required="true">
+             <el-select  v-model="editForm.itemExtra.specialAttr" style="width: 200px;" :disabled="!editForm.isAdd" placeholder="请选择道具特殊属性">
+               <el-option
+                 v-for="item in itemSpecialAttrCfgs"
+                 :key="item.value"
+                 :label="item.label"
+                 :value="item.value"
+                 :disabled="item.disabled"
+               />
+             </el-select>
+           </el-form-item>
 
-          <el-form-item label="排序：" :required="true">
-            <el-input v-model.number="editForm.data.sort" style="width: 200px;" placeholder="请填写排序id" />
-          </el-form-item>
+           <el-form-item v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN" label="游戏类别：" :required="true">
+             <el-select  v-model="editForm.itemExtra.specialAttr" style="width: 200px;" :disabled="!editForm.isAdd" placeholder="请选择游戏类别" @change="changeCategory()">
+               <el-option
+                 v-for="item in freeSpinItemAttrCfg" :key="item.value" :label="item.label" :value="item.value" :disabled="item.disabled"/>
+             </el-select>
+           </el-form-item>
 
-          <el-form-item label="道具ICON：" :required="true">
-            <ImagePicker v-model="editForm.data.image" />
-          </el-form-item>
-        </fieldset>
-        <el-form-item>
-          <el-button size="medium" type="primary" icon="el-icon-s-order" @click="saveItemConfig()">保存道具配置</el-button>
-        </el-form-item>
-      </el-form>
-    </el-dialog>
-    <!--对比组件-->
+           <el-row>
+             <el-col :span="11">
+               <el-form-item   v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN && editForm.itemExtra.specialAttr === 1" label="关联游戏:" :required="true">
+                   <el-select v-model="editForm.itemExtra.gid" placeholder="请选择" size="mini" :disabled="!editForm.isAdd"  multiple  @change="setSlotBetAmountStyle(editForm.itemExtra.specialAttr)">
+                     <el-option v-for="item in SLOT_GAME_CONFIG" :key="item.value" :label="item.label" :value="item.value" :disabled="item.disabled"/>
+                   </el-select>
+               </el-form-item>
+
+               <el-form-item   v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN && editForm.itemExtra.specialAttr === 2" label="关联游戏:" :required="true">
+                 <el-select v-model="editForm.itemExtra.gid" placeholder="请选择" size="mini" :disabled="!editForm.isAdd"  multiple  @change="setSlotBetAmountStyle(editForm.itemExtra.specialAttr)">
+                   <el-option v-for="item in BETTING_GAME_CONFIG" :key="item.value" :label="item.label" :value="item.value" :disabled="item.disabled"/>
+                 </el-select>
+               </el-form-item>
+             </el-col>
+
+               <el-col :span="11">
+                 <el-form-item   v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN" label="betAmount:" :required="true">
+                   <el-select v-model="editForm.itemExtra.betAmount" placeholder="请选择" size="mini" :disabled="!editForm.isAdd">
+                     <el-option v-for="item in slotDefaultBetAmount" :key="item.value" :label="item.label" :value="item.value" :disabled="item.disabled"/>
+                   </el-select>
+                 </el-form-item>
+               </el-col>
+           </el-row>
+           <el-form-item v-if="isTicketProp(editForm.data.itemType)"  label="道具过期时间：" :required="true">
+             <el-date-picker
+               v-model="editForm.itemEndDate"
+               style="width: 200px;"
+               type="date"
+               :disabled="!editForm.isAdd"
+               placeholder="选择过期日期"
+             />
+             <span style="color:black; margin-left:10px">[00:00:00]</span>
+           </el-form-item>
+
+           <el-form-item v-if="editForm.data.itemType !== PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN" label="排序：" :required="false">
+             <el-input v-model.number="editForm.data.sort" style="width: 200px;" placeholder="请填写排序id" />
+           </el-form-item>
+
+           <el-form-item  label="道具ICON：" :required="false">
+             <ImagePicker v-model="editForm.data.image" />
+           </el-form-item>
+         </fieldset>
+         <el-form-item>
+           <el-button size="medium" type="primary" icon="el-icon-s-order" @click="saveItemConfig()">保存道具配置</el-button>
+         </el-form-item>
+       </el-form>
+     </el-dialog>
+     <!--对比组件-->
     <compare ref="compare" />
   </div>
 
@@ -234,15 +273,23 @@ import request from '@/utils/request'
 import DateTimeShow from '@/components/DatetimeShow'
 import { $libDate, $libShow } from '@/utils/common'
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
-import { ITEM_TYPE_OPTIONS, ITEM_DAY_TYPE_OPTIONS } from '@/utils/options'
+import {ITEM_TYPE_OPTIONS, ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS} from '@/utils/options'
+import {SLOT_GAME_CONFIG,BETTING_GAME_CONFIG} from  '@/utils/prop'
 
 export default {
   name: 'PropsConfig',
+  computed: {
+    PROP_TYPE_OPTIONS() {
+      return PROP_TYPE_OPTIONS
+    }
+  },
   components: { Compare, Publish, DateTimeShow, ImagePicker },
   data() {
     return {
       ITEM_TYPE_OPTIONS,
       ITEM_DAY_TYPE_OPTIONS,
+      BETTING_GAME_CONFIG,
+      SLOT_GAME_CONFIG,
       libShow: $libShow,
       pickerOptions: $libShow.DefaultDatePickerOptions(),
       selectTime: [$libDate.GetDayBegin(new Date().setSeconds(0)), $libDate.GetDayEnd(new Date().setSeconds(0))],
@@ -255,6 +302,12 @@ export default {
         { 'value': 4, 'label': 'Qualifying Round One 预选赛回合1', disabled: false },
         { 'value': 5, 'label': 'Qualifying Round Two 预选赛回合 2', disabled: false },
         { 'value': 6, 'label': 'Qualifying Round Three 预选赛回合3', disabled: false },
+        { 'value': 7, 'label': 'Qualifying Round Four 预选赛回合4', disabled: false },
+      ],
+      //free spin 道具子属性
+      freeSpinItemAttrCfg:[
+        { 'value': 1, 'label': 'Slot游戏', disabled: false },
+        { 'value': 2, 'label': '下注类游戏', disabled: false },
       ],
 
       statusCfgs: [
@@ -268,6 +321,10 @@ export default {
         { 'value': 4, 'label': 'C', disabled: false },
         { 'value': 5, 'label': '无品质', disabled: false }
       ],
+      slotDefaultBetAmount:[
+       // 样式 { 'value': 300, 'label': 'bet-0.3', disabled: false },
+      ],
+
       raw: {},
       tableData: [],
       deleteData: [],
@@ -297,7 +354,9 @@ export default {
         },
         itemExtra: {
           specialAttr: 0,
-          showName: ''
+          showName: '',
+          gid:[],
+          betAmount: 0,
         },
         itemEndDate: $libDate.GetDayBegin(new Date().setSeconds(0))
       },
@@ -314,7 +373,8 @@ export default {
         createTime: '创建时间',
         id: '道具ID',
         propExtra:'拓展信息'
-      }
+      },
+      slotBetAmountCfg: new Map(), //slot 下注数值
     }
   },
   created(){
@@ -323,6 +383,7 @@ export default {
   },
   mounted(){
     this.getList()
+    this.getSlotBetAmountCfg()
   },
   methods: {
 
@@ -385,7 +446,9 @@ export default {
         }
         this.editForm.itemExtra = {
           specialAttr: 0,
-          showName: ''
+          showName: '',
+          gid:[],
+          betAmount: 0,
         }
         this.checkAll()
         this.editForm.itemEndDate = $libDate.GetDayBegin(new Date().setSeconds(0))
@@ -398,7 +461,7 @@ export default {
         this.editForm.visable = true
 
         for (let i = 0; i < this.tableData.length; i++) {
-          if (this.tableData[i].id == id) {
+          if (this.tableData[i].id === id) {
             editData = this.tableData[i]
             break
           }
@@ -409,7 +472,7 @@ export default {
         }
 
         const time_type = JSON.parse(editData.time_type)
-        if (editData.item_extra && editData.item_extra != 'null' && editData.item_extra != 'undefined') {
+        if (editData.item_extra) {
           this.editForm.itemExtra = JSON.parse(editData.item_extra)
         }
         this.editForm.data = {
@@ -439,8 +502,27 @@ export default {
       return itemTypeName
     },
 
+    getItemCost(item_id){
+      var ret = 0
+      for(var i = 0; i < this.tableData.length; i++) {
+        const item_type = this.tableData[i].item_type
+        if ((this.isTicketProp(item_type) || this.isTicketPropNew(item_type)) && this.tableData[i].id === item_id ) {
+          ret  = this.tableData[i].item_cost
+          break
+        }
+        if (item_type ===PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN && this.tableData[i].id === item_id ) {
+          if(this.tableData[i].item_extra.trim().length > 0) {
+            ret = JSON.parse(this.tableData[i].item_extra).betAmount / 1000
+            break
+          }
+        }
+      }
+      return ret
+    },
+
     getItemShowName(item_type) {
-      if (item_type === null) {
+
+      if (item_type === "null") {
         return ''
       }
       let exitData = JSON.parse(item_type)
@@ -471,11 +553,36 @@ export default {
       }
       return name
     },
+
+    getSlotFreSpinPropDescReturnGameName(itemExtra){
+      var name = ''
+      let extraData = JSON.parse(itemExtra)
+      for(var i = 0; i < this.SLOT_GAME_CONFIG.length;i++){
+          if (this.SLOT_GAME_CONFIG[i].value === extraData.gid) {
+            name = this.SLOT_GAME_CONFIG[i].label
+            break
+          }
+      }
+      return name
+    },
+
+    getSlotFreSpinPropDescReturnBetAmount(itemExtra) {
+      var name = ''
+      let extraData = JSON.parse(itemExtra)
+      for(var i = 0; i < this.slotDefaultBetAmount.length;i++){
+        if (this.slotDefaultBetAmount[i].value === extraData.betAmount) {
+          name = this.slotDefaultBetAmount[i].label
+          break
+        }
+      }
+      return name
+    },
+
     getShowText(id) {
       var showTextName = ''
       let editData = {}
       for (let i = 0; i < this.tableData.length; i++) {
-        if (this.tableData[i].id == id) {
+        if (this.tableData[i].id === id) {
           editData = this.tableData[i]
           break
         }
@@ -483,7 +590,7 @@ export default {
       const time_type = JSON.parse(editData.time_type)
       for (var i = 0; i < this.ITEM_DAY_TYPE_OPTIONS.length; i++) {
         for (var j = 0; j < time_type.length; j++) {
-          if (this.ITEM_DAY_TYPE_OPTIONS[i].value == time_type[j]) {
+          if (this.ITEM_DAY_TYPE_OPTIONS[i].value === time_type[j]) {
             showTextName += this.ITEM_DAY_TYPE_OPTIONS[i].label
             if (j < time_type.length - 1) {
               showTextName += ','
@@ -560,7 +667,6 @@ export default {
       let del = new Set()
       //新增取newVal
       if (addData) {
-        console.log("addData",addData)
         for (var i=0; i<addData.length; i++) {
           for (let ele of addData[i]) {
               add.add(ele.newVal)
@@ -568,7 +674,6 @@ export default {
         }
       }
       if (delData) {
-        console.log("delData",delData)
         for (var i=0; i<delData.length; i++) {
           for (let ele of delData[i]) {
               del.add(ele.oldVal)
@@ -582,7 +687,7 @@ export default {
           console.log(edit.Head.id)
         }
       }
-      if (change.size + del.size + add.size == 0) {
+      if (change.size + del.size + add.size === 0) {
         console.log('no change return')
         return "没有修改!"
       }
@@ -699,7 +804,7 @@ export default {
       const timeList = JSON.stringify(this.editForm.data.timeType)
       if (this.editForm.data.ID === 0) {
         this.editForm.data.status = 1
-        if(this.editForm.data.itemType === 1 && this.editForm.itemExtra.specialAttr ===0){
+        if(this.editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET && this.editForm.itemExtra.specialAttr ===0){
           this.$confirm('当前配置的是Tongits门票,没有配道具子属性,确定是否需要配道具子属性', '提醒')
             .then(()=>{
               this.dataUpdateRequest(true,expireTime, timeList)
@@ -728,41 +833,80 @@ export default {
         showConfirmButton: false
       })
     },
-    timeToSec(time) {
-      var s = ''
-      var hour = time.split(':')[0]
-      var min = time.split(':')[1]
-      var sec = time.split(':')[2]
 
-      s = Number(hour * 3600) + Number(min * 60) + Number(sec)
-
-      return s
+    slotFreeSpinPropReset(){
+      this.editForm.itemExtra.betAmount = 0
+      this.editForm.itemExtra.gid = []
     },
 
+    getSlotBetAmountCfg(){
+      // for (let i = 0; i < this.SLOT_GAME_CONFIG.length; i++) {
+      //   request({
+      //     url: '/customizeconfig/one',
+      //     method: 'get',
+      //     data: {
+      //       SubKey: this.SLOT_GAME_CONFIG[i].configKey,
+      //     }
+      //   }).then(response => {
+      //     if (response.RetCode === 0 && response.Data && response.Data.Data !== '')  {
+      //       const data = JSON.parse(response.Data.Data)
+      //       if (this.SLOT_GAME_CONFIG[i].value === 20){
+      //         this.slotBetAmountCfg.set(this.SLOT_GAME_CONFIG[i].value,data.TableMoneyList)
+      //
+      //       }else{
+      //         this.slotBetAmountCfg.set(this.SLOT_GAME_CONFIG[i].value,data.BetList)
+      //       }
+      //     }
+      //   })
+      // }
+
+      //根据free spin道具的子类型(1:slot类 2: 下注类)
+      this.slotBetAmountCfg.set(1,[300,1000,2000,3000,5000])
+      this.slotBetAmountCfg.set(2, [1000, 2000, 3000, 5000, 10000])
+
+    },
+    //设置样式
+    setSlotBetAmountStyle(indexId){
+      const oneBetAmountCfg = this.slotBetAmountCfg.get(indexId)
+      console.log(" oneBetAmountCfg ",indexId, oneBetAmountCfg)
+      // 样式 { 'value': 300, 'label': 'bet-0.3', disabled: false },
+      this.slotDefaultBetAmount = []
+      for (let i = 0; i < oneBetAmountCfg.length; i++) {
+        let amount = oneBetAmountCfg[i]/1000
+        this.slotDefaultBetAmount.push({'value': oneBetAmountCfg[i], 'label': 'bet-'+ amount.toString(), disabled: false })
+      }
+    },
+    //切换类别
+    changeCategory(){
+      this.editForm.itemExtra.gid = []
+    },
     configCheck() {
-      if (this.editForm.data.itemName == '') {
+      if (this.editForm.data.itemName === '') {
         this.errmsg('请填写道具名称')
         return false
       }
 
-      if (this.editForm.data.itemType == 0) {
+      if (this.editForm.data.itemType === 0) {
         this.errmsg('请选择道具分类')
         return false
       }
-      if (this.editForm.data.itemType != 1){
+
+      if (![PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN, PROP_TYPE_OPTIONS.PROP_TYPE_TICKET].includes(this.editForm.data.itemType)) {
         this.editForm.itemExtra.specialAttr = 0
       }
 
-      if (this.editForm.data.itemType === 2 || this.editForm.data.itemType === 4) {
+      if (this.isAvatarFrameProp(this.editForm.data.itemType)) {
         this.editForm.data.itemCost = 0
-      } else {
+        this.slotFreeSpinPropReset()
+      } else if  (this.isTicketProp(this.editForm.data.itemType) || this.isTicketPropNew(this.editForm.data.itemType)) {
+        this.slotFreeSpinPropReset()
         if (typeof this.editForm.data.itemCost === 'undefined' || this.editForm.data.itemCost === null || this.editForm.data.itemCost === '') {
           this.errmsg('请填写道具价值')
           return false
         }
       }
 
-      if (this.editForm.data.describe == '') {
+      if (this.editForm.data.describe === '') {
         this.errmsg('请填写道具描述')
         return false
       }
@@ -771,18 +915,32 @@ export default {
         return false
       }
 
-      if (this.editForm.data.image == '') {
+      if (this.editForm.data.image === '') {
         this.errmsg('请上传Icon图')
         return false
       }
 
-      if (this.editForm.data.itemType == 2 || this.editForm.data.itemType === 4) {
-        if (this.editForm.data.itemType == 2  && this.editForm.data.quality === 0) {
+      if(this.editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN){
+        if(this.editForm.itemExtra.specialAttr <= 0){
+          this.errmsg('请确认游戏类型')
+          return false
+        }
+        if(this.editForm.itemExtra.gid.length === 0) {
+          this.errmsg('请选择关联游戏')
+          return false
+        }
+        if(this.editForm.itemExtra.betAmount === 0) {
+          this.errmsg('请选择下注金额')
+          return false
+        }
+      }
+      if (this.isAvatarFrameProp(this.editForm.data.itemType)) {
+        if (this.editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME  && this.editForm.data.quality === 0) {
           this.errmsg('请选择品质')
           return false
         }
-      } else {
-        if (this.editForm.data.ID == 0) {
+      } else if (this.isTicketProp(this.editForm.data.itemType)) {
+        if (this.editForm.data.ID === 0) {
           let expireTime = 0
           expireTime = (Math.floor(this.editForm.itemEndDate / 1000))
           let currTime = new Date().getTime()
@@ -794,7 +952,18 @@ export default {
         }
       }
       return true
-    }
+    },
+    //是否是门票类型道具
+    isTicketProp(itemType) {
+      return itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET || itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET || itemType === PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET
+    },
+    isTicketPropNew(itemType) {
+      return itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET_NEW || itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW || itemType === PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW
+    },
+    //是否是头像框道具
+    isAvatarFrameProp(itemType) {
+      return itemType === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME || itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR
+    },
   }
 }
 </script>

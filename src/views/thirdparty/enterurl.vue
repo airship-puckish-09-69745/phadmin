@@ -20,10 +20,10 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item v-model="item.directScene" label="进入场景：" :required="true" label-width="100px">
-          <el-select v-model="item.directScene" filterable placeholder="请选择" size="mini">
+        <el-form-item v-model="item.gid" label="进入场景：" :required="true" label-width="100px">
+          <el-select v-model="item.gid" filterable placeholder="请选择" size="mini">
             <el-option
-              v-for="row in directScenes"
+              v-for="row in gameOptions"
               :label="row.name"
               :value="row.val"
             />
@@ -47,24 +47,24 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item v-model="item.path" label="进厅 path：" label-width="110px">
-          <el-select v-model="item.path" placeholder="请选择" size="mini">
-            <el-option label="常规" value="1" />
-            <el-option label="Banner（返回gamefun.ph）" value="2" />
-          </el-select>
-        </el-form-item>
+        <!--        <el-form-item v-model="item.path" label="进厅 path：" label-width="110px">-->
+        <!--          <el-select v-model="item.path" placeholder="请选择" size="mini">-->
+        <!--            <el-option label="常规" value="1" />-->
+        <!--            <el-option label="Banner（返回gamefun.ph）" value="2" />-->
+        <!--          </el-select>-->
+        <!--        </el-form-item>-->
         <el-form-item v-model="item.need_test_uri" label="指定链接类型：" :required="true" label-width="140px">
           <el-select v-model="item.need_test_uri" placeholder="请选择" size="mini">
             <el-option label="平台配置链接" value="0" />
             <el-option label="预发布" value="1" />
           </el-select>
         </el-form-item>
-        <el-form-item v-model="item.debug" label="调试模式：" :required="true" label-width="140px">
-          <el-select v-model="item.debug" placeholder="请选择" size="mini">
-            <el-option label="否" value="0" />
-            <el-option label="是" value="1" />
-          </el-select>
-        </el-form-item>
+        <!--        <el-form-item v-model="item.debug" label="调试模式：" :required="true" label-width="140px">-->
+        <!--          <el-select v-model="item.debug" placeholder="请选择" size="mini">-->
+        <!--            <el-option label="否" value="0" />-->
+        <!--            <el-option label="是" value="1" />-->
+        <!--          </el-select>-->
+        <!--        </el-form-item>-->
         <el-form-item v-model="item.cashier" label="充值链接：" label-width="140px">
           <el-input v-model="item.cashier" />
         </el-form-item>
@@ -86,14 +86,44 @@
             />
           </el-select>
         </el-form-item>
+<!--        <el-form-item v-model="item.gid" label="游戏：" label-width="100px">-->
+<!--          <el-tooltip class="item" effect="dark" content="此处有值时，优先取此处关连的场景。比如：游戏选了【pusoy比赛】,进入场景选了【color】，此时进入【pusoy比赛】。" placement="right-start">-->
+<!--            <i class="el-icon-info" />-->
+<!--          </el-tooltip>-->
+<!--          <el-select v-model="item.gid" filterable allow-create default-first-option placeholder="请选择" size="mini">-->
+<!--            <el-option-->
+<!--              v-for="row in gameOptions"-->
+<!--              :label="row.name"-->
+<!--              :value="row.val"-->
+<!--            />-->
+<!--          </el-select>-->
+<!--        </el-form-item>-->
         <el-form-item v-if="item.activity === 'tournament' || item.activity === 'matchjoin'" v-model="item.activity_val" label="活动附加值：" label-width="100px">
           <el-input v-model="item.activity_val" />
         </el-form-item>
         <el-form-item v-model="item.live_id" label="直播ID：" label-width="100px">
           <el-input v-model="item.live_id" />
         </el-form-item>
-        <el-form-item v-model="item.gp_ext" label="GP扩展字段：" label-width="100px">
-          <el-input v-model="item.gp_ext" />
+        <el-form-item v-model="gpVip" label="GP VIP 等级：" label-width="100px">
+          <el-tooltip class="item" effect="dark" content="站点为 GP 时才生效。" placement="right-start">
+            <i class="el-icon-info" />
+          </el-tooltip>
+          <el-select v-model="gpVip" filterable allow-create default-first-option placeholder="请选择" size="mini">
+            <el-option
+              v-for="row in gpVipOptions"
+              :label="row.name"
+              :value="row.val"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item v-model="ekycPassed" label="ekyc 是否认证：" label-width="100px">
+          <el-select v-model="ekycPassed" filterable allow-create default-first-option placeholder="请选择" size="mini">
+            <el-option
+              v-for="row in ekycOptions"
+              :label="row.name"
+              :value="row.val"
+            />
+          </el-select>
         </el-form-item>
         <!-- <el-form-item label="KYC状态" label-width="100px">
           <el-select v-model="item.kyc" placeholder="请选择" size="mini">
@@ -348,6 +378,56 @@ export default {
           val: 'tournament_-4'
         }
       ],
+      gameOptions: [
+        {
+          name: '无',
+          val: ''
+        }
+      ],
+      gpVipOptions: [
+        {
+          name: '无',
+          val: 0
+        },
+        {
+          name: '1',
+          val: 1
+        },
+        {
+          name: '2',
+          val: 2
+        },
+        {
+          name: '3',
+          val: 3
+        },
+        {
+          name: '4',
+          val: 4
+        },
+        {
+          name: '5',
+          val: 5
+        },
+        {
+          name: '6',
+          val: 6
+        },
+        {
+          name: '7',
+          val: 7
+        }
+      ],
+      ekycOptions: [
+        {
+          name: '未认证',
+          val: 0
+        },
+        {
+          name: '已认证',
+          val: 1
+        }
+      ],
       appInfo: [],
       tableData: [],
       env: 'dev',
@@ -366,12 +446,15 @@ export default {
         path: '1',
         source: 'glife.bingoplus.com',
         activity: '',
+        gid: '',
         live_id: '',
-        gp_ext: '{"vip":1}',
+        gp_ext: '{"vip":1,"ekycPassed":1}',
         kyc: '0',
         activity_val: '',
         r_time: Date.parse(new Date())
       },
+      gpVip: 1,
+      ekycPassed: 1,
       libShow: $libShow,
       expiredTime: 0,
       enterUrl: ''
@@ -456,6 +539,11 @@ export default {
           id: 1000041,
           agentId: 'IndiaH5GameDev',
           desc: 'IndiaH5Game[1000041]【印度H5】'
+        },
+        {
+          id: 1000049,
+          agentId: 'zoogameDev',
+          desc: 'zoogame 开发'
         }
       ]
     }
@@ -464,6 +552,9 @@ export default {
   methods: {
     formatNumber(n) {
       return n.toLocaleString()
+    },
+    isShowMatchGameOption(activityVal) {
+      return activityVal === 'tournament' || activityVal === 'tournament_-1' || activityVal === 'tournament_-2'
     },
     enterurl(local) {
       this.item.nick = ''
@@ -487,6 +578,7 @@ export default {
       if (activityVal === 'tournament' || activityVal === 'matchjoin' && this.item.activity_val !== '') {
         activityVal += '_' + this.item.activity_val
       }
+      const gpExt = '{"vip":' + this.gpVip + ',"ekycPassed":' + this.ekycPassed + '}'
       request({
         url: '/dataProxy/info',
         method: 'post',
@@ -508,7 +600,8 @@ export default {
           source: this.item.source,
           activity: activityVal,
           live_id: this.item.live_id,
-          gp_ext: this.item.gp_ext
+          gp_ext: gpExt,
+          gid: this.item.gid
           // kyc: this.item.kyc,
           // r_time: this.item.r_time/1000
         }
@@ -568,6 +661,7 @@ export default {
             item.name = objs[i].Name
             item.val = objs[i].Scene
             $this.directScenes.push(item)
+            $this.gameOptions.push({ val: objs[i].GameID, name: objs[i].Name })
           }
         }
       })

@@ -16,7 +16,7 @@ export const CHANNEL_OPTIONS = [
   { 'value': 'BP', 'label': 'BP' },
   { 'value': 'AP', 'label': 'AP' },
   { 'value': 'GP', 'label': 'GP' },
-  { 'value': 'TP', 'label': 'TP' },
+  //{ 'value': 'TP', 'label': 'TP' },
   { 'value': 'PG', 'label': 'PG' },
   { 'value': 'Dev', 'label': 'Dev' }
 ]
@@ -25,11 +25,21 @@ export const ITEM_TYPE_OPTIONS = [
   { 'value': 1, 'label': 'Tongits门票', disabled: false },
   { 'value': 2, 'label': '头像框', disabled: false },
   { 'value': 3, 'label': '德州门票', disabled: false },
-  { 'value': 4, 'label': '德州头像框', disabled: false }
+  { 'value': 4, 'label': '德州头像框', disabled: false },
+  { 'value': 5, 'label': 'SlotFreeSpin', disabled: false },
+  { 'value': 6, 'label': 'Pusoy门票', disabled: false },
+  { 'value': 7, 'label': '新版Tongits门票', disabled: false },
+  { 'value': 8, 'label': '新版德州参赛券', disabled: false },
+  { 'value': 9, 'label': '新版Pusoy门票', disabled: false },
 ]
 
 // 道具过期时间下拉框
 export const ITEM_DAY_TYPE_OPTIONS = [
+  { 'value': 1, 'label': '1天', disabled: false },
+  { 'value': 2, 'label': '2天', disabled: false },
+  { 'value': 3, 'label': '3天', disabled: false },
+  { 'value': 4, 'label': '4天', disabled: false },
+  { 'value': 5, 'label': '5天', disabled: false },
   { 'value': 7, 'label': '7天', disabled: false },
   { 'value': 30, 'label': '30天', disabled: false },
   { 'value': 365, 'label': '365天', disabled: false },
@@ -62,10 +72,15 @@ export const ITEM_STATUS_OPTIONS = [
 
 //头像框常量枚举定义
 export const PROP_TYPE_OPTIONS = {
-  PROP_TYPE_TICKET : 1,        //门票
-  PROP_TYPE_AVATAR_FRAME:2,    //头像框
-  PROP_TYPE_TEXAS_TICKET:3,    //德州参赛券
-  PROP_TYPE_TEXAS_AVATAR:4,    //德州头像框
+  PROP_TYPE_TICKET: 1,        //门票
+  PROP_TYPE_AVATAR_FRAME: 2,    //头像框
+  PROP_TYPE_TEXAS_TICKET: 3,    //德州参赛券
+  PROP_TYPE_TEXAS_AVATAR: 4,    //德州头像框
+  PROP_TYPE_SLOT_FREE_SPIN: 5,  //slot freespin
+  PROP_TYPE_PUSOY_TICKET: 6,    //Pusoy参赛券
+  PROP_TYPE_TICKET_NEW:7,      //新版Tongits门票 带交易ID
+  PROP_TYPE_TEXAS_TICKET_NEW:8, //新版德州参赛券 带交易ID
+  PROP_TYPE_PUSOY_TICKET_NEW:9, //新版Pusoy门票 带交易ID
 }
 // 操作类型
 export const PROP_SOURCE_OPTIONS = [
@@ -82,7 +97,8 @@ export const PROP_SOURCE_OPTIONS = [
   { value: 11, label: '道具过期' },
   { value: 12, label: '红包活动' },
   { value: 13, label: 'rebuy' },
-  { value: 14, label: 'rebuy回退' }
+  { value: 14, label: 'rebuy回退' },
+  { value: 16, label: 'free spin' }
 ]
 
 //奖励分类
@@ -104,5 +120,72 @@ export const  BET_SCENES_CFG_OPTIONS = [
   { 'value': 1, 'label': '任意游戏投注' },
   { 'value': 2, 'label': '仅限Poker类游戏投注' },
   { 'value': 3, 'label': '仅限Slots类游戏投注' },
-  { 'value': 4, 'label': '仅限Tongits游戏投注' }
+  { 'value': 4, 'label': '仅限Tongits游戏投注' },
+
 ]
+
+// 比赛Tongits全局ID集合
+export const MATCH_UNIQUE_ID_CFG =[
+  { 'value': 0, 'label': '无' },
+  { 'value': 10001, 'label': '188Free' },
+  { 'value': 10002, 'label': '12888Free' },
+  { 'value': 10003, 'label': 'P10' },
+  { 'value': 10004, 'label': 'P20' },
+  { 'value': 10005, 'label': 'P40' },
+  { 'value': 10006, 'label': 'P100' },
+  { 'value': 10007, 'label': 'P300' },
+  { 'value': 10008, 'label': 'GTCC 2005' },
+]
+
+// 比赛Pusoy全局ID集合
+export const MATCH_PUSOY_UNIQUE_ID_CFG =[
+  { 'value': 0, 'label': '无' },
+  { 'value': 20001, 'label': '188Free' },
+  { 'value': 20002, 'label': '12888Free' },
+  { 'value': 20003, 'label': 'P10' },
+  { 'value': 20004, 'label': 'P20' },
+  { 'value': 20005, 'label': 'P40' },
+  { 'value': 20006, 'label': 'P100' },
+  { 'value': 20007, 'label': 'P300' },
+  { 'value': 20008, 'label': 'GTCC 2005' },
+]
+
+//牌桌TableId
+export const MATCH_TABLE_SCENE_ID_CFG =[
+  { 'value': 0, 'label': '免费赛桌面' },
+  { 'value': 1, 'label': '付费赛桌面' },
+  { 'value': 2, 'label': 'GTCC预选赛1' },
+  { 'value': 3, 'label': 'GTCC预选赛2' },
+  { 'value': 4, 'label': 'GTCC预选赛3' },
+  { 'value': 5, 'label': 'Table5' },
+]
+  //Pusoy 牌桌TableId
+export const MATCH_PUSOY_TABLE_SCENE_ID_CFG =[
+  { 'value': 100, 'label': '免费赛桌面' },
+  { 'value': 101, 'label': '付费赛桌面' },
+]
+
+//比赛页签选项
+export const MATCH_LIST_TAG_OPTIONS = [
+  { 'value': 0, 'label': 'All', disabled: false },
+  { 'value': 1, 'label': 'Events', disabled: false },
+  { 'value': 2, 'label': 'FREE', disabled: false },
+  { 'value': 3, 'label': 'Pro Arena', disabled: false },
+  { 'value': 4, 'label': 'GTCC', disabled: false },
+  { 'value': 5, 'label': 'GTCC预选赛', disabled: false },
+  { 'value': 6, 'label': 'GTCC特别赛', disabled: false },
+]
+
+//比赛GameId选项
+export const MATCH_GAME_ID_CFG_OPTIONS = [
+  { 'value': 2031, 'label': 'Tongits', disabled: false },
+  { 'value': 2032, 'label': 'TexasMtt', disabled: false },
+  { 'value': 2033, 'label': 'Pusoy', disabled: false },
+]
+
+//比赛GameID 宏定义
+export const MATCH_IUPSTREAM_TYPE_OPTIONS = {
+  MATCH_UPSTREAM_TYPE_TONGITS: 2031,        //tongits
+  UPSTREAM_TYPE_TEXAS_MTT:2032,             //德州MTT
+  MATCH_UPSTREAM_TYPE_PUSOY: 2033,          //pusoy
+}

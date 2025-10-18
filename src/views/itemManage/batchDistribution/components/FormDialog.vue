@@ -42,6 +42,7 @@
               :key="item.value"
               :label="item.label"
               :value="item.value"
+              :disabled="disableByPropId(item.value)"
             />
           </el-select>
         </div>
@@ -49,7 +50,7 @@
           数量：
           <el-input v-model.number="form.PropDetails.prop_num" type="number" placeholder="请输入道具数量" style="width: calc(100% - 80px);" />
         </div>
-        <div class="form-item-item" v-if="itemType == 2 || itemType== 4" >
+        <div class="form-item-item" v-if="itemType === 2 || itemType=== 4 || itemType=== 5" >
           过期时间：
           <el-select v-model="form.PropDetails.prop_expire_days" placeholder="请选择过期时间" style="width: calc(100% - 100px);" @focus="onItemSelectorFocus">
             <el-option
@@ -57,6 +58,7 @@
               :key="item.value"
               :label="item.label"
               :value="item.value"
+              :disabled="item.disabled || (itemType === 5 && (item.value === 0 || item.value ===365))"
             />
           </el-select>
         </div>
@@ -73,7 +75,7 @@
 </template>
 
 <script>
-import {ITEM_TYPE_OPTIONS, APPID_OPTIONS, ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS} from '@/utils/options'
+import { ITEM_TYPE_OPTIONS, APPID_OPTIONS, ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS } from '@/utils/options'
 import request from '@/utils/request'
 import { Message } from 'element-ui'
 export default {
@@ -239,24 +241,23 @@ export default {
       if (filteredItems === null) {
         return
       }
+
+      // 先按 item_name 排序
+      const sortedItems = [...filteredItems].sort((a, b) => {
+        return a.item_name.localeCompare(b.item_name)
+      })
       this.itemOptions = []
-      for (let i = 0; i < filteredItems.length; i++) {
-        let str = filteredItems[i].item_name
-        if (filteredItems[i].item_extra.length > 0) {
-          let exitData = JSON.parse(filteredItems[i].item_extra)
-          if (exitData != null) {
-            if (exitData.showName != null) {
-              if (exitData.showName.length > 0) {
-                str = str + '(' + exitData.showName + ')'
-              }
-            }
-          }
+      for (let i = 0; i < sortedItems.length; i++) {
+        let str = sortedItems[i].item_name
+        if (sortedItems[i].show_name) {
+          str += `(${sortedItems[i].show_name})`
         }
         this.itemOptions.push({
-          value: filteredItems[i].id,
+          value: sortedItems[i].id,
           label: str
         })
       }
+
     },
     /**
      * 校验表单各项输入
@@ -309,14 +310,14 @@ export default {
      * 由于没有提供道具下拉框接口，这里使用列表的接口，size为100
      */
     getItemList() {
-      request({
-        url: '/propsconfig/props/config/list',
-        method: 'get',
-        data: {
-          Env: this.env,
-          PageNum: 1,
-          PageSize: 100
-        }
+        request({
+          url: '/dataProxy/info',
+          method: 'get',
+          data: {
+            Env: this.env,
+            Path: '/match/props/config/list',
+            PropType: 0
+          }
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || {}
@@ -325,12 +326,10 @@ export default {
             this.total = objs.total
             this.itemList = []
             for (let i = 0; i < objs.total; i++) {
-              if (objs.list[i].status === 1 &&  (objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET ||
-                objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET)  && objs.list[i].expire_time > timestamp) {
+              if (objs.list[i].status === 1 && this.isTicketProp(objs.list[i].item_type) && objs.list[i].expire_time > timestamp) {
                 this.itemList.push(objs.list[i])
               }
-              if (objs.list[i].status === 1 &&  (objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME ||
-                objs.list[i].item_type ===  PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR)){
+              if (objs.list[i].status === 1 && (this.isAvatarFrameProp(objs.list[i].item_type) || objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN)) {
                 this.itemList.push(objs.list[i])
               }
             }
@@ -352,6 +351,7 @@ export default {
       this.form.PropDetails.prop_num = 1
       this.form.PropDetails.prop_expire_days = 1
       const filteredItems = this.itemList.filter(item => item.item_type === value)
+      console.log("筛选后的道具列表", filteredItems)
       this.updateItemOption(filteredItems)
       console.log('道具下拉框选项', this.itemOptions)
     },
@@ -385,6 +385,18 @@ export default {
       }
       return params
     },
+    // 根据道具id禁用某些道具选项
+    disableByPropId(propId){
+      // for(let i=0; i < this.itemList.length;i++){
+      //   if(this.itemList[i].id === propId && this.itemList[i].item_type ===  PROP_TYPE_OPTIONS.PROP_TYPE_TICKET){
+      //     if(this.itemList[i].item_extra !== null && JSON.parse(this.itemList[i].item_extra).specialAttr=== 1 ){ //如果是邀请函
+      //       return true
+      //     }
+      //   }
+      // }
+      return false
+
+    },
     /**
      * 切换id类型时，清空应用id
      */
@@ -393,6 +405,16 @@ export default {
         this.form.SendDetails.app_id = ''
       }
     },
+
+    //是否是门票类型道具
+    isTicketProp(itemType) {
+      return itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET || itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET || itemType === PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET
+    },
+    //是否是头像框道具
+    isAvatarFrameProp(itemType) {
+      return itemType === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME || itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR
+    },
+
     hasDuplicates(arr) {
     const map = new Map()
     let emptyArr = []

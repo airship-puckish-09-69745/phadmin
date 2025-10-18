@@ -23,16 +23,9 @@
             <el-input v-model="cfg.FreeMultiStrWeight" placeholder="请输入内容,如10,10,10,10,10"> <template slot="append">用 , 连接</template> </el-input>
           </el-form-item>
 
-          <el-form-item label="免费模式 新增乘数符号 (数量)权重">
-            <el-input v-model="cfg.SymbolMulNumWt" placeholder="100,1,2,3"> <template slot="append">用,连接 如100,1,2,3 代表新增0个的权重是100 1为1 2为2</template> </el-input>
+          <el-form-item label="免费模式 新增特殊符号权重">
+            <el-input v-model="cfg.BonusSymbolWt" placeholder="100,1,2,3"> <template slot="append">用,连接 每个格子中出现空/乘数/红包/金红包符号的权重</template> </el-input>
           </el-form-item>
-          <el-form-item label="免费模式 新增红包符号 (数量)权重">
-            <el-input v-model="cfg.SymbolRedNumWt" placeholder="100,1,2"> <template slot="append">用,连接 如100,1,2,3 代表新增0个的权重是100 1为1 2为2</template> </el-input>
-          </el-form-item>
-          <el-form-item label="免费模式 新增金红包符号 (数量)权重">
-            <el-input v-model="cfg.SymbolGoldNumWt" placeholder="100,1,2,3"> <template slot="append">用,连接 如1,2,3 代表新增0个的权重是100 1为1 2为2</template> </el-input>
-          </el-form-item>
-
         </el-form>
       </el-col>
     </el-row>
