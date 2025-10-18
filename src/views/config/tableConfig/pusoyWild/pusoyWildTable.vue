@@ -117,6 +117,12 @@
             {{ RoomLevelMap[scope.row.RoomLevel] }}
           </template>
         </el-table-column>
+
+        <el-table-column prop="AllocScheme" label="配桌方案" width="150" >
+          <template slot-scope="scope"> {{ getAllocSchemeName(scope.row.AllocScheme ) }} </template>
+        </el-table-column>
+
+
         <el-table-column
           prop="Status"
           label="状态"
@@ -357,8 +363,19 @@
             </el-form-item>
           </el-col>
         </el-row>
+            <el-row>
+        <el-col :span="11">
+            <el-form-item
+              label="自动补陪玩机器人人数要求："
+              prop="item.AutoEnterRoomCount"
+              :rules="dataRule(true,{type:'n',range:'0'})"
+            >
+              <el-input v-model.number="edit.item.AutoEnterRoomCount" />
+            </el-form-item>
+          </el-col>
+        </el-row>
 
-        <!-- <el-row>
+        <el-row>
           <el-col :span="11">
             <el-form-item
               label="匹配机器人最高等待时间："
@@ -379,33 +396,17 @@
           </el-col>
         </el-row>
 
-
-
-        <el-row>
-          <el-col :span="11">
-            <el-form-item
-              label="自动补陪玩机器人人数要求："
-              prop="item.AutoEnterRoomCount"
-              :rules="dataRule(true,{type:'n',range:'0'})"
-            >
-              <el-input v-model.number="edit.item.AutoEnterRoomCount" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-
         <el-row>
           <el-col :span="20">
             <el-form-item label="配桌方案：" :required="true">
               <el-radio-group v-model.number="edit.item.AllocScheme">
                 <el-radio :label="0">常规</el-radio>
-                <el-radio :label="1">班车</el-radio>
-                <el-radio :label="2">信誉分</el-radio>
                 <el-radio :label="3">动态匹配</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
-        </el-row> -->
+        </el-row>
+       
 
         <el-form-item>
           <el-row>
@@ -729,6 +730,17 @@ export default {
         this.createSave(this.getPostData())
       }
       this.edit.visible = false
+    },
+     getAllocSchemeName(plan){
+      if(plan==1) {
+        return "班车"
+      }else if(plan==2){
+        return "信誉分"
+      }else if(plan==3){
+        return "动态匹配"
+      }else{
+        return "常规"
+      }
     }
   }
 }
