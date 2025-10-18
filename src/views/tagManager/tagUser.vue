@@ -237,6 +237,13 @@
             if (v2.value === tag_id) {
               return v.value
             }
+            if (v2.children && v2.children.length > 0) {
+              for (const v3 of v2.children) {
+                if (v3.value === tag_id) {
+                  return v.value
+                }
+              }
+            }
           }
         }
         return 0
