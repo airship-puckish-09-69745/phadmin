@@ -9,10 +9,28 @@
         <el-cascader v-model="form.tag_ids" :options="tagOptions" :show-all-levels="false" @change="cascaderChange"></el-cascader>
         <el-button v-if="!needTagValue()" type="primary" style="margin-left: 15px;" @click="setInfo">添加</el-button>
       </el-form-item>
+      <el-form-item v-if="needGameValue()" label="关联游戏：">
+        <el-select v-model="form.tag_gid" placeholder="请选择关联游戏">
+          <el-option
+              v-for="opt in gameOptions"
+              :key="opt.value"
+              :label="opt.label"
+              :value="opt.value"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item v-if="needTagValue()" label="标签值：">
-        <el-select v-if="selectTagValue()" v-model="form.tag_val" placeholder="请选择标签级别">
+        <el-select v-if="selectTagValue()&&form.tag_type === 5" v-model="form.tag_val" placeholder="请选择标签级别">
           <el-option
               v-for="opt in gradeOptions"
+              :key="opt.value"
+              :label="opt.label"
+              :value="opt.value"
+          />
+        </el-select>
+        <el-select v-if="selectTagValue()&&form.tag_id === 20000" v-model="form.tag_val" placeholder="请选择标签级别">
+          <el-option
+              v-for="opt in intensityOptions"
               :key="opt.value"
               :label="opt.label"
               :value="opt.value"
@@ -28,15 +46,15 @@
 import request from '@/utils/request'
 import store from '@/store'
 export default {
-  name: 'TestSign',
+  name: 'TagUser',
   components: {},
   data() {
     return {
       form: {
-        uid: '',
+        uid: 11253536,
         tag_type: 2,
         tag_id: 20000,
-        tag_ids: [20000],
+        tag_ids: [2,20000],
         tag_val: 1,
         tag_gid: 22
       },
@@ -94,24 +112,74 @@ export default {
           ]},
         ]}
       ],
+      gameOptions:[],
+      slotsOptions: [],
       gradeOptions: [
         {value: 1, label: '普通用户'},
         {value: 2, label: '中等用户'},
         {value: 3, label: '重度用户'},
       ],
+      intensityOptions: [
+        {value: 1, label: '无感'},
+        {value: 2, label: '尝试'},
+        {value: 3, label: '常玩'},
+        {value: 4, label: '核心'},
+      ]
     }
   },
   computed: {},
   created() {
     this.env = store.getters.env || this.env
+    this.tagList()
+    this.getGameList()
   },
   methods: {
+    tagList() {
+      request({
+        url: '/tagconfig/tag/list',
+        method: 'get',
+        data: {
+          Env: this.env,
+          PageNum: 0,
+          PageSize: 10000,
+          TagId: 0,
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objs = response.Data || {}
+          console.log(response.Data)
+        }
+      })
+    },
+    getGameList() {
+      request({
+        url: '/thirdpartygames/all',
+        method: 'get',
+        data: {}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          for (let i = 0; i < response.Data.length; i++) {
+            // console.log(response.Data[i])
+            this.gameOptions.push({
+                value: response.Data[i].Gid,
+                label: response.Data[i].Description
+            })
+            if (response.Data[i].CategoryID === 1) { // 老虎机
+              this.slotsOptions.push({
+                value: response.Data[i].Gid,
+                label: response.Data[i].Description
+              })
+            }
+          }
+        }
+      })
+    },
     getInfo() {
       const $this = this
       this.saveFlag = false
       let searchUid = 0
-      if (this.form.Uid > 0) {
-        searchUid = this.form.Uid
+      if (this.form.uid > 0) {
+        searchUid = this.form.uid
       }
       request({
         url: '/dataProxy/info',
@@ -119,31 +187,29 @@ export default {
         data: {
           Env: this.env,
           Uid: searchUid,
+          Gid: this.form.tag_gid,
+          TagId: this.form.tag_id,
           Path: '/tools/tag'
         }
       }).then(response => {
         console.log(response)
         if (response.RetCode === 0) {
-          this.form.DayNum = response.Data.GotCount
-          this.form.LastSignTime = response.Data.LastSignTime * 1000
-          this.saveFlag = true
+          console.log(response.Data)
+          this.form.tag_val = response.Data.tagVal
         }
       })
     },
     setInfo() {
       const $this = this
-      if (!this.saveFlag) {
-        this.$message.error('请先查询用户签到信息是否存在！')
-        return
-      }
       request({
         url: '/dataProxy/info',
         method: 'post',
         data: {
           Env: this.env,
-          Uid: this.form.Uid,
-          SignCount: this.form.DayNum,
-          LastSignTime: this.form.LastSignTime / 1000,
+          Uid: this.form.uid,
+          Gid: this.form.tag_gid,
+          TagId: this.form.tag_id,
+          TagVal: this.form.tag_val,
           Path: '/tools/tag'
         }
       }).then(response => {
@@ -181,6 +247,12 @@ export default {
       if (this.form.tag_type === 5 && ![50001,50008].includes(this.form.tag_id)) {
         return true
       }
+    },
+    needGameValue() {
+      if ([20000].includes(this.form.tag_id)) {
+        return true
+      }
+      return false
     }
   }
 }

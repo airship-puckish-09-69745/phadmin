@@ -101,37 +101,37 @@
                 </el-col>
                 <el-col :span="12">
                   <el-form-item label="单人单日发放阈值：" :required="true">
-                    <el-input v-model="edit.item.LimitTaskMinValue" />
+                    <el-input v-model.number="edit.item.LimitTaskMinValue" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
                   <el-form-item label="单日总发放阈值：" :required="true">
-                    <el-input v-model="edit.item.LimitTaskMaxValue" />
+                    <el-input v-model.number="edit.item.LimitTaskMaxValue" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
                   <el-form-item label="活动总发放阈值：" :required="true">
-                    <el-input v-model="edit.item.LimitTaskSumValue" />
+                    <el-input v-model.number="edit.item.LimitTaskSumValue" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
                   <el-form-item label="下注任务展示最小值：" :required="true">
-                    <el-input v-model="edit.item.ShowTaskMinValue" />
+                    <el-input v-model.number="edit.item.ShowTaskMinValue" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
                   <el-form-item label="下注任务展示最大值：" :required="true">
-                    <el-input v-model="edit.item.ShowTaskMaxValue" />
+                    <el-input v-model.number="edit.item.ShowTaskMaxValue" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
                   <el-form-item label="糖果大奖展示最小值：" :required="true">
-                    <el-input v-model="edit.item.ShowEggMinValue" />
+                    <el-input v-model.number="edit.item.ShowEggMinValue" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
                   <el-form-item label="糖果大奖展示最大值：" :required="true">
-                    <el-input v-model="edit.item.ShowEggMaxValue" />
+                    <el-input v-model.number="edit.item.ShowEggMaxValue" />
                   </el-form-item>
                 </el-col>
               </el-form>
