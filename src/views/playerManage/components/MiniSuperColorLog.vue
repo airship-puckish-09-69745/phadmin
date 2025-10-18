@@ -32,15 +32,21 @@
       </el-descriptions-item>
       <el-descriptions-item>
         <template slot="label">
+          超级骰子：
+        </template>
+        {{ showSuperDice() }}
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template slot="label">
           JACKPOT骰子：
         </template>
         {{ showDice(JackpotDices) }}
       </el-descriptions-item>
       <el-descriptions-item>
         <template slot="label">
-          超级骰子：
+          JACKPOT奖励：
         </template>
-        {{ showSuperDice() }}
+        {{ showMoney(JackpotAward) }}
       </el-descriptions-item>
     </el-descriptions>
 
@@ -107,8 +113,14 @@
 
 <script>
 import { $libShow } from '@/utils/common'
+import jackpotAward from "@/views/playerManage/jackpotAward.vue";
 export default {
   name: 'MiniSuperColorDetailLog',
+  computed: {
+    jackpotAward() {
+      return jackpotAward
+    }
+  },
   components: {},
   libShow: $libShow,
   props: {
@@ -208,13 +220,15 @@ export default {
       return (odd / 1000).toFixed(0)
     },
     showBetAreaName(id) {
-      return this.ColorOption[id].Name
+      const option = this.ColorOption.find(item => item.Id === id)
+      return option ? option.Name : '-'
     },
     showDice(dices) {
       const dicesTmp = []
       for (let i = 0; i < dices.length; i++) {
         const dice = dices[i]
-        dicesTmp.push(this.ColorOption[dice].Name)
+        const option = this.ColorOption.find(item => item.Id === dice)
+        dicesTmp.push(option.Name)
       }
       return dicesTmp.join('，')
     },
@@ -223,8 +237,9 @@ export default {
         return '-'
       }
       const dice = this.Dices[this.SuperIndex]
+      const option = this.ColorOption.find(item => item.Id === dice)
       const superOdd = (this.SuperOdd / 1000).toFixed(2)
-      return this.ColorOption[dice].Name + '(' + superOdd + '倍)'
+      return option.Name + '(' + superOdd + '倍)'
     },
     initData(val) {
       const gameLog = val
@@ -244,6 +259,7 @@ export default {
         if (this.Uid === superColorGameLog.players[playersKey].uid) {
           this.Player = superColorGameLog.players[playersKey]
           this.Money = this.Player.moneyEnd
+          this.JackpotAward = this.Player.jackpotAward
           return
         }
       }

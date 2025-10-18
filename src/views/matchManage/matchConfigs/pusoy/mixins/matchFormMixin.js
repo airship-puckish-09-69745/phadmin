@@ -120,7 +120,7 @@ export const matchFormMixin = {
           this.filterCsCfgsByGameId(this.editForm.data.gameId)
         }
 
-        
+
       } else {
         this.editForm.title = '添加比赛'
         this.editForm.isAdd = true
@@ -215,7 +215,7 @@ export const matchFormMixin = {
             })
           }
         }
-
+        console.log("saveMatch rankReward 1111",rankReward)
         // 发送请求
         const response = await request({
           url: '/matchconfig/match/config/create',
@@ -330,12 +330,14 @@ export const matchFormMixin = {
       if (this.editForm.prizeExtra.awardType === 0) {
         this.editForm.prizeExtra.rewardType = 1
         this.editForm.prizeExtra.sceneId = 0
+        console.log("checkRewardCfg rewards",this.editForm.rankRewards)
         if (!await this.checkRewardCfg(this.editForm.rankRewards)) {
           return false
         }
       }
 
       if (this.editForm.prizeExtra.awardType === 1) {
+        //console.log("checkDynamicRewardCfg rewards",this.editForm.rankRewards)
         if (!await this.checkDynamicRewardCfg(this.editForm.rankRewards)) {
           return false
         }
@@ -507,21 +509,20 @@ export const matchFormMixin = {
 
       // 修复报名和重买道具信息
       const propsInfo =  this.configs.matchPropsCfgs || []
-      console.log("propsInfo ,",this.configs.matchPropsCfgs)
       for (let i = 0; i < propsInfo.length; i++) {
         const prop = propsInfo[i]
 
         // 修复报名道具信息
         if (prop.propsId === this.editForm.signExtra.propId) {
           this.editForm.signExtra.propType = prop.propsType
-          this.editForm.signExtra.propCost = prop.propCost || prop.propsCost
+          this.editForm.signExtra.propCost = prop.propsCost
           this.editForm.signExtra.propName = prop.propsName
         }
 
         // 修复重买道具信息
         if (prop.propsId === this.editForm.signExtra.reubyExtra.rebuyPropId) {
           this.editForm.signExtra.reubyExtra.rebuyPropType = prop.propsType
-          this.editForm.signExtra.reubyExtra.rebuyPropCost = prop.propCost || prop.propsCost
+          this.editForm.signExtra.reubyExtra.rebuyPropCost = prop.propsCost
           this.editForm.signExtra.reubyExtra.rebuyPropName = prop.propsName
         }
       }
@@ -726,7 +727,6 @@ export const matchFormMixin = {
           Message.error('名次配置必须连续')
           return false
         }
-
         if (element.hasOwnProperty('propsReward') && element.hasOwnProperty('rewardItems') && element.propsReward.propsId <= 0 && element.rewardItems[0].getNum <= 0) {
           Message.error('当前名次没有配任何奖励,请检查')
           return false
@@ -741,8 +741,8 @@ export const matchFormMixin = {
           return false
         }
         if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0 &&
-          this.getPropsRewardItem(element.propsReward.propsId, element.propsReward.propsNum, element.propsReward.propExpireDays).propsType === 2 && element.propsReward.propExpireDays < 0) {
-          Message.error('请选择头像框过期时间')
+          this.checkPropNeedExpireDays(element.propsReward.propsId, element.propsReward.propsNum, element.propsReward.propExpireDays) && element.propsReward.propExpireDays < 0) {
+          Message.error('请选择道具过期天数')
           return false
         }
 
@@ -828,8 +828,8 @@ export const matchFormMixin = {
           return false
         }
         if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0 &&
-          this.getPropsRewardItem(element.propsReward.propsId, element.propsReward.propsNum, element.propsReward.propExpireDays).propsType === 2 && element.propsReward.propExpireDays < 0) {
-          Message.error('请选择头像框过期时间')
+          this.checkPropNeedExpireDays(element.propsReward.propsId,element.propsReward.propsNum, element.propsReward.propExpireDays) &&  element.propsReward.propExpireDays < 0) {
+          Message.error('请选择道具过期天数')
           return false
         }
         if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0) {
@@ -1011,14 +1011,18 @@ export const matchFormMixin = {
      * 处理开始排名变化
      */
     handleStartRankChange(rankIndex, value) {
-      this.editForm.rankRewards[rankIndex].startRank = value
+      // 將字符串轉換為數字
+      const numericValue = parseInt(value, 10)
+      this.editForm.rankRewards[rankIndex].startRank = isNaN(numericValue) ? 0 : numericValue
     },
 
     /**
      * 处理结束排名变化
      */
     handleEndRankChange(rankIndex, value) {
-      this.editForm.rankRewards[rankIndex].endRank = value
+      // 將字符串轉換為數字
+      const numericValue = parseInt(value, 10)
+      this.editForm.rankRewards[rankIndex].endRank = isNaN(numericValue) ? 0 : numericValue
     }
   }
 }

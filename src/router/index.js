@@ -1796,6 +1796,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/treasurebowlmars_slots_cfg'),
                 name: 'treasurebowlmars_slots_cfg',
                 meta: { title: 'TreasureBowl(审)' }
+              },
+              {
+                path: 'goldendragonmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/goldendragonmars_slots_cfg'),
+                name: 'goldendragonmars_slots_cfg',
+                meta: { title: 'GoldenDragon(审)' }
               }
             ]
           },
@@ -2190,6 +2196,12 @@ export const asyncRoutes = [
         component: () => import('@/views/config/tableConfig/activity/posterConfig.vue'),
         name: 'posterConfig',
         meta: { title: '引流海报', noCache: true }
+      },
+      {
+        path: 'halloweenConfig',
+        component: () => import('@/views/config/tableConfig/activity/halloween/halloweenConfig.vue'),
+        name: 'halloweenConfig',
+        meta: { title: '万圣节活动配置', noCache: true }
       }
     ]
   },
@@ -2452,6 +2464,20 @@ export const asyncRoutes = [
             component: () => import('@/views/matchManage/matchOperations/texasTongis/index.vue'),
             name: 'texasTongis',
             meta: { title: 'kyc配置', noCache: true }
+          }
+        ]
+      },
+      {
+        path: 'matchHallOperations',
+        component: () => import('@/views/empty'),
+        name: 'matchHallOperations',
+        meta: { title: '游戏嵌入-赛事大厅', noCache: true },
+        children: [
+          {
+            path: 'matchHallGuideList',
+            component: () => import('@/views/matchManage/matchHallOperations/matchHallGuide.vue'),
+            name: 'matchHallGuideList',
+            meta: { title: '游戏嵌入-赛事大厅', noCache: true }
           }
         ]
       },
@@ -3582,6 +3608,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'Phoenixmars_slots_log',
             meta: { title: 'Phoenix(审)', gid: 217 }
+          },
+          {
+            path: 'goldendragonmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'goldendragonmars_slots_log',
+            meta: { title: 'GoldenDragon(审)', gid: 221 }
           }
         ]
       },

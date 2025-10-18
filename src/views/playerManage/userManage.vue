@@ -194,8 +194,8 @@
                 </el-select>
               </template>
             </el-col>
-            <el-col v-show="(item.ItemType === 2 || item.ItemType === 4 || item.ItemType === 5)&&!isNegativeItemNum" :span="1" :offset="1"> {{'时间:'}} </el-col>
-            <el-col v-show="(item.ItemType === 2 ||item.ItemType === 4 || item.ItemType === 5) && !isNegativeItemNum" :span="2">
+            <el-col v-show="(item.ItemType === 2 || item.ItemType === 4 || item.ItemType === 5 ||[7,8,9].includes(item.ItemType))&&!isNegativeItemNum" :span="1" :offset="1"> {{'时间:'}} </el-col>
+            <el-col v-show="(item.ItemType === 2 ||item.ItemType === 4 || item.ItemType === 5 ||[7,8,9].includes(item.ItemType)) && !isNegativeItemNum" :span="2">
               <template>
                 <el-select v-model="item.ItemUseTime" size="mini" placeholder="请选择">
                   <el-option v-for="option in ITEM_DAY_TYPE_OPTIONS" :key="option.value"
@@ -1368,7 +1368,7 @@ export default {
         Message.error('请输入道具数量')
         return
       }
-      if ( this.item.ItemNum > 0 && (this.item.ItemType === 2 || this.item.ItemType === 4 || this.item.ItemType === 5)) {
+      if ( this.item.ItemNum > 0 && [2,4,5,7,8,9].includes(this.item.ItemType)) {
         if (typeof this.item.ItemUseTime === 'undefined') {
           Message.error('请选择时间')
           return
@@ -1384,7 +1384,7 @@ export default {
         msg = '确定扣除物品吗?'
       }
       let tmpTime = 0
-      if (this.item.ItemType === 2 || this.item.ItemType === 4 || this.item.ItemType === 5) {
+      if ([2,4,5,7,8,9].includes(this.item.ItemType)) {
         tmpTime = this.item.ItemUseTime
       }
       this.$confirm(msg, '提示', {

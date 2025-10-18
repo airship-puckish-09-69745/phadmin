@@ -1151,7 +1151,7 @@ export default {
       },
       showDevTool: false,
       showTip: false,
-      propsTypeList: [PROP_TYPE_OPTIONS.PROP_TYPE_TICKET, PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME] // 门票 头像框
+      propsTypeList: [PROP_TYPE_OPTIONS.PROP_TYPE_TICKET, PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME,PROP_TYPE_OPTIONS.PROP_TYPE_TICKET_NEW] // 门票 头像框
     }
   },
   computed: {
@@ -2225,7 +2225,7 @@ export default {
             for (let i = 0; i < objs.list.length; i++) {
               if (this.propsTypeList.includes(objs.list[i].item_type)) {
                 if (objs.list[i].status === 1 && ((objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET && objs.list[i].expire_time > timestamp) ||
-                  objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME)) {
+                  objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME || objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET_NEW)) {
                   let str = objs.list[i].item_name
                   if (objs.list[i].show_name.length > 0) {
                     str = str + '(' + objs.list[i].show_name + ')'
@@ -2239,7 +2239,7 @@ export default {
                     'propsCost': objs.list[i].item_cost,
                     'propsShowName': str
                   })
-                  if (objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET) { // Tongits 门票
+                  if (objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET || objs.list[i].item_type ===PROP_TYPE_OPTIONS.PROP_TYPE_TICKET_NEW ) { // Tongits 门票
                     this.matchTicketsCfgs.push({
                       'label': str,
                       'value': objs.list[i].id

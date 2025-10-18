@@ -832,7 +832,6 @@ export default {
       })
     },
     getMissionData() {
-      const $this = this
       request({
         url: '/customizeconfig/one',
         method: 'get',
@@ -841,8 +840,7 @@ export default {
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          $this.form = response.Data || { Data: '{}' }
-          const o = JSON.parse(this.form.Data)
+          const o = JSON.parse(response.Data.Data)
           const openGames = {}
           for (const k in o.BuyFreeList) {
             openGames[o.BuyFreeList[k].SlotsType] = o.BuyFreeList[k].Open
@@ -1019,6 +1017,7 @@ export default {
         index = this.item.TaskConfig.length - 1
       }
       for (let i = 0; i < this.item.TaskConfig[index].TaskItem.length; i++) {
+        this.item.TaskConfig[index].TaskItem[i].ConditionTarget = Number(this.item.TaskConfig[index].TaskItem[i].ConditionTarget)
         if (this.item.TaskConfig[index].TaskItem[i].ConditionType === 2) {
           this.item.TaskConfig[index].TaskItem[i].ConditionTarget *= 1000
         }

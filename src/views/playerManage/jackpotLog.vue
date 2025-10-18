@@ -327,7 +327,7 @@
             <el-button style="margin-left: 10px;" type="primary" size="mini" @click="changePusoyTotalPrizePool(false, 0)">保存</el-button>
           </el-col>
         </el-form-item>
-        <el-form-item>
+        <el-form-item v-if="envProjectName=='ph'">
           <template #label>
             <span style="color: #ff0000">手动修改展示奖池数量(慎用)：</span>
           </template>
@@ -360,7 +360,7 @@
           </el-col>
         </el-form-item>
 
-        <el-form-item label="手动修改展示Grand奖池数量：">
+        <el-form-item v-if="envProjectName=='ph'" label="手动修改展示Grand奖池数量：">
           <el-col :span="8">
             <el-input v-model="prizeForm.GrandChangeRobotNum" size="mini" />
           </el-col>
@@ -368,7 +368,7 @@
             <el-button style="margin-left: 10px;" type="primary" size="mini" @click="changePusoyJPPrizePool(true, 1);changePusoyTotalPrizePool(true, 1)">保存</el-button>
           </el-col>
         </el-form-item>
-        <el-form-item label="手动修改展示Major奖池数量：">
+        <el-form-item v-if="envProjectName=='ph'" label="手动修改展示Major奖池数量：">
           <el-col :span="8">
             <el-input v-model="prizeForm.MajorChangeRobotNum" size="mini" />
           </el-col>

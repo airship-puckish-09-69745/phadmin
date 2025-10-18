@@ -402,8 +402,10 @@ export default {
         '202': 'fortunateebisu',
         '204': 'spacetreasure',
         '208': 'candyburst',
+        '206': 'luckywineglass',
         '220': 'goldendragon',
         '221': 'goldendragonmars',
+        '212': 'pirateship',
         '214': 'pumpkincash',
         '224': 'supermahjong'
       }
