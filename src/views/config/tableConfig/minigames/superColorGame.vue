@@ -113,7 +113,7 @@
                         label="1颗"
                       >
                         <template slot-scope="scope">
-                          <el-input v-model.number="scope.row.Odds[0].Odd" style="width:120px;" size="mini">
+                          <el-input v-model="scope.row.Odds[0].Odd" style="width:120px;" size="mini">
                             <template slot="append">X</template>
                           </el-input>
                         </template>
@@ -122,7 +122,7 @@
                         label="2颗"
                       >
                         <template slot-scope="scope">
-                          <el-input v-if="scope.row.Odds[1]!==undefined" v-model.number="scope.row.Odds[1].Odd" style="width:120px;" size="mini">
+                          <el-input v-if="scope.row.Odds[1]!==undefined" v-model="scope.row.Odds[1].Odd" style="width:120px;" size="mini">
                             <template slot="append">X</template>
                           </el-input>
                         </template>
@@ -131,7 +131,7 @@
                         label="3颗"
                       >
                         <template slot-scope="scope">
-                          <el-input v-if="scope.row.Odds[2]!==undefined" v-model.number="scope.row.Odds[2].Odd" style="width:120px;" size="mini">
+                          <el-input v-if="scope.row.Odds[2]!==undefined" v-model="scope.row.Odds[2].Odd" style="width:120px;" size="mini">
                             <template slot="append">X</template>
                           </el-input>
                         </template>
