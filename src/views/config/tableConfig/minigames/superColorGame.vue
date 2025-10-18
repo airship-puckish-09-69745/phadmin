@@ -422,6 +422,31 @@
                 </el-row>
 
               </fieldset>
+              <fieldset style="margin-top:10px">
+                <legend>总的机器人下注</legend>
+                <el-alert
+                  type="success"
+                  description="在一局游戏内机器人下注相关配置"
+                />
+                <el-row>
+                  <el-col :span="8">
+                    <el-form-item label="下注机器人数的上限：">
+                      <el-col :span="10">
+                        <el-input v-model.number="item.RobotCfg.BetRobotMaxCount" size="mini" />
+                      </el-col>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="8">
+                    <el-form-item label="机器人最大下注区域数：">
+                      <el-col :span="8">
+                        <el-input v-model.number="item.RobotCfg.BetRobotMaxBetAreaCount" size="mini" />
+                      </el-col>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+              </fieldset>
             </el-col>
           </el-tab-pane>
           <el-tab-pane label="配牌">
@@ -592,7 +617,9 @@ export default {
           MinRealUserCount: 0, // 在线人数下限
           MaxRealUserCount: 50, // 在线人数上限
           MinTotalUserCount: 50, // 总人数下限
-          MaxTotalUserCount: 200// 总人数上限
+          MaxTotalUserCount: 200, // 总人数上限
+          BetRobotMaxCount:0,
+          BetRobotMaxBetAreaCount:0
         },
         BetLevels: [
           {
@@ -677,18 +704,8 @@ export default {
         ChatRobotReplyIntervalMin: 0,
         ChatRobotReplyIntervalMax: 0,
         ChatRobotReplyRate: 0,
-        ChatRobotReplyMaxNum: 0
-        // ChatRobotCfg: {
-        //   IsOpen: false,
-        //   ChatRobotSendIntervalMin: 0,
-        //   ChatRobotSendIntervalMax: 0,
-        //   ChatRobotSendRate: 0,
-        //   ChatRobotSendMaxNum: 0,
-        //   ChatRobotReplyIntervalMin: 0,
-        //   ChatRobotReplyIntervalMax: 0,
-        //   ChatRobotReplyRate: 0,
-        //   ChatRobotReplyMaxNum: 0
-        // }
+        ChatRobotReplyMaxNum: 0,
+
       },
       TestCards: {
         Dices: [1, 1, 1],
