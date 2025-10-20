@@ -36,7 +36,7 @@
         </el-select>
         <div class="form-item-item">
           道具：
-          <el-select v-model="form.PropDetails.prop_id" placeholder="请选择道具" @focus="onItemSelectorFocus">
+          <el-select v-model="form.PropDetails.prop_id" placeholder="请选择道具" @focus="onItemSelectorFocus" @change="handleItemChange">
             <el-option
               v-for="item in itemOptions"
               :key="item.value"
@@ -46,9 +46,20 @@
             />
           </el-select>
         </div>
+        <div v-show="isShowFreeSpinGame" class="form-item-item">
+          游戏：
+          <el-select v-model="form.PropDetails.gids" multiple clearable filterable default-first-option placeholder="请选择道具" @focus="onItemSelectorFocus">
+            <el-option
+              v-for="item in FreeSpinGames"
+              :key="'FreeSpinGames'+item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </div>
         <div class="form-item-item">
           数量：
-          <el-input v-model.number="form.PropDetails.prop_num" type="number" placeholder="请输入道具数量" style="width: calc(100% - 80px);" />
+          <el-input v-model.number="form.PropDetails.prop_num" type="number" placeholder="请输入道具数量" style="width: calc(100% - 80px);" @input="form.PropDetails.prop_num = form.PropDetails.prop_num < 0 ? 0 : form.PropDetails.prop_num" />
         </div>
         <div class="form-item-item" v-if="checkPropNeedExpireDays(itemType)" >
           过期天数：
@@ -106,7 +117,8 @@ export default {
           prop_id: '', // 道具ID
           prop_name: '', // 道具名称
           prop_num: 1,
-          prop_expire_days: 1 // 过期天数
+          prop_expire_days: 1, // 过期天数
+          gids: []
         },
         Remark: '',
         SendDetails: {
@@ -115,7 +127,10 @@ export default {
         }
       },
       itemList: [], // 道具列表
-      itemOptions: [] // 道具下拉框选项, 根据道具类型从道具列表中筛选得到
+      itemOptions: [], // 道具下拉框选项, 根据道具类型从道具列表中筛选得到
+      gameMap: {},
+      isShowFreeSpinGame: false,
+      FreeSpinGames: []
     }
   },
   watch: {
@@ -137,7 +152,6 @@ export default {
           const filteredItems = this.itemList.filter(item => item.item_type === this.itemType)
           this.updateItemOption(filteredItems)
           console.log(this.itemOptions)
-
         } else {
           this.form = {
             AccountType: 2,
@@ -145,7 +159,8 @@ export default {
               prop_id: 0,
               prop_name: '',
               prop_num: 1,
-              prop_expire_days: 1
+              prop_expire_days: 1,
+              gids: []
             },
             Remark: '',
             SendDetails: {
@@ -161,6 +176,7 @@ export default {
   },
   mounted() {
     this.getItemList()
+    this.getGameList()
   },
   methods: {
     /**
@@ -177,7 +193,7 @@ export default {
             }
           })
           this.form.SendDetails.account_details = account_details
-          console.log("11111",this.form.SendDetails.account_details)
+          console.log('11111', this.form.SendDetails.account_details)
 
           // 调用新增或者编辑接口
           if (this.updateForm) {
@@ -257,7 +273,6 @@ export default {
           label: str
         })
       }
-
     },
     /**
      * 校验表单各项输入
@@ -266,7 +281,7 @@ export default {
       if (!this.itemType) {
         this.$message.error('请选择道具类型')
         return false
-      }else if (this.form.PropDetails.prop_id <=0){
+      } else if (this.form.PropDetails.prop_id <= 0) {
         this.$message.error('请选择道具名称')
         return false
       } else if (!this.account) {
@@ -297,10 +312,10 @@ export default {
         this.$message.error('请使用英文逗号分隔id')
         return false
       }
-      let accountArr = this.account.split(',')
-      let repeatArray = this.hasDuplicates(accountArr)
+      const accountArr = this.account.split(',')
+      const repeatArray = this.hasDuplicates(accountArr)
       if (repeatArray.length > 0) {
-        this.$message.error( repeatArray.join(',') + " 账号重复请检查")
+        this.$message.error(repeatArray.join(',') + ' 账号重复请检查')
         return false
       }
       return true
@@ -310,14 +325,14 @@ export default {
      * 由于没有提供道具下拉框接口，这里使用列表的接口，size为100
      */
     getItemList() {
-        request({
-          url: '/dataProxy/info',
-          method: 'get',
-          data: {
-            Env: this.env,
-            Path: '/match/props/config/list',
-            PropType: 0
-          }
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Env: this.env,
+          Path: '/match/props/config/list',
+          PropType: 0
+        }
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || {}
@@ -340,7 +355,22 @@ export default {
           }
         } else {
           this.total = 0
-          this.tableData = []
+          this.itemList = []
+        }
+      })
+    },
+    getGameList() {
+      const $this = this
+      request({
+        url: '/thirdpartygames/all',
+        method: 'get',
+        data: {}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objs = response.Data || []
+          for (let i = 0; i < objs.length; i++) {
+            $this.gameMap[objs[i].Gid] = objs[i].Name
+          }
         }
       })
     },
@@ -355,7 +385,7 @@ export default {
       this.form.PropDetails.prop_num = 1
       this.form.PropDetails.prop_expire_days = 1
       const filteredItems = this.itemList.filter(item => item.item_type === value)
-      console.log("筛选后的道具列表", filteredItems)
+      console.log('筛选后的道具列表', filteredItems)
       this.updateItemOption(filteredItems)
       console.log('道具下拉框选项', this.itemOptions)
     },
@@ -371,6 +401,37 @@ export default {
         this.form.PropDetails.prop_num = 1
         this.form.PropDetails.prop_expire_days = 1
       }
+    },
+    handleItemChange(val) {
+      this.checkShowFreeSpinGame()
+    },
+    checkShowFreeSpinGame() {
+      this.isShowFreeSpinGame = false
+      if (!this.form.PropDetails.prop_id) { return false }
+      for (let i = 0; i < this.itemList.length; i++) {
+        if (this.itemList[i].id === this.form.PropDetails.prop_id && this.itemList[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN) {
+          if (!this.itemList[i].item_extra) { return false }
+          // json 解析 item_extra
+          const extra = JSON.parse(this.itemList[i].item_extra)
+          if (!extra) { return false }
+          if (!extra.gid) { return false }
+          // 排序
+          extra.gid.sort()
+          this.FreeSpinGames = []
+          this.form.PropDetails.gids = []
+          for (let j = 0; j < extra.gid.length; j++) {
+            // 默认全选
+            this.form.PropDetails.gids.push(extra.gid[j])
+            this.FreeSpinGames.push({
+              value: extra.gid[j],
+              label: this.showGameName(extra.gid[j])
+            })
+          }
+          this.isShowFreeSpinGame = true
+          return true
+        }
+      }
+      return false
     },
     /**
      * 将form参数转换为后端接口需要的参数
@@ -390,7 +451,7 @@ export default {
       return params
     },
     // 根据道具id禁用某些道具选项
-    disableByPropId(propId){
+    disableByPropId(propId) {
       // for(let i=0; i < this.itemList.length;i++){
       //   if(this.itemList[i].id === propId && this.itemList[i].item_type ===  PROP_TYPE_OPTIONS.PROP_TYPE_TICKET){
       //     if(this.itemList[i].item_extra !== null && JSON.parse(this.itemList[i].item_extra).specialAttr=== 1 ){ //如果是邀请函
@@ -399,7 +460,6 @@ export default {
       //   }
       // }
       return false
-
     },
     /**
      * 切换id类型时，清空应用id
@@ -410,11 +470,11 @@ export default {
       }
     },
 
-    //是否是门票类型道具
+    // 是否是门票类型道具
     isTicketProp(itemType) {
       return itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET || itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET || itemType === PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET
     },
-    //是否是头像框道具
+    // 是否是头像框道具
     isAvatarFrameProp(itemType) {
       return itemType === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME || itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR
     },
@@ -450,18 +510,20 @@ export default {
       }
       return true
     },
-
+    showGameName(gid) {
+      return this.gameMap.hasOwnProperty(gid) ? this.gameMap[gid] : '未知游戏' + gid
+    },
     hasDuplicates(arr) {
-    const map = new Map()
-    let emptyArr = []
-    for (let item of arr) {
-      if (map.has(item)) {
-        emptyArr.push(item)
+      const map = new Map()
+      const emptyArr = []
+      for (const item of arr) {
+        if (map.has(item)) {
+          emptyArr.push(item)
+        }
+        map.set(item, true)
       }
-      map.set(item, true)
+      return emptyArr
     }
-    return emptyArr
-  }
   }
 }
 </script>
