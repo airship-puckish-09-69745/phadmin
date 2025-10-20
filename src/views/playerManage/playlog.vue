@@ -3216,25 +3216,25 @@
         <el-table-column prop="uid" label="uid" width="128px">
           <template slot-scope="scope">{{ scope.row.uid }}</template>
         </el-table-column>
-        <el-table-column prop="nick" label="昵称"  width="180px">
+        <el-table-column prop="nick" label="昵称"  width="150px">
           <template slot-scope="scope">{{ scope.row.nick }}</template>
         </el-table-column>        
-        <el-table-column prop="bet" label="下注"  width="180px">
+        <el-table-column prop="bet" label="下注金额"  width="150px">
           <template slot-scope="scope">{{ scope.row.betMoney }}</template>
         </el-table-column>
-        <el-table-column prop="obMul" label="期望倍数"  width="180px">
+        <el-table-column prop="obMul" label="下注赔率"  width="150px">
           <template slot-scope="scope">{{ scope.row.obMultiple/100 }}</template>
         </el-table-column>
-        <el-table-column prop="payoutMultiple" label="开奖倍数"  width="180px">
+        <el-table-column prop="payoutMultiple" label="爆炸点"  width="150px">
           <template slot-scope="scope">{{ scope.row.payoutMultiple/100 }}</template>
         </el-table-column>
-        <el-table-column prop="moneyChange" label="输赢"  width="180px">
+        <el-table-column prop="moneyChange" label="输赢"  width="150px">
           <template slot-scope="scope">{{ scope.row.moneyChange }}</template>
         </el-table-column>
-        <el-table-column prop="bonusMultiple" label="中bonus倍数"  width="180px">
+        <el-table-column prop="bonusMultiple" label="中bonus倍数"  width="150px">
           <template slot-scope="scope">{{ scope.row.bonusMultiple }}</template>
         </el-table-column>
-        <el-table-column prop="bonusMoney" label="bonus奖励"  width="180px">
+        <el-table-column prop="bonusMoney" label="bonus奖励"  width="150px">
           <template slot-scope="scope">{{ scope.row.bonusMoney }}</template>
         </el-table-column>
       </el-table>

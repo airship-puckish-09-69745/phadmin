@@ -17,7 +17,7 @@
           :header-cell-style="libShow.DefaultTableHeadClass"
           :row-style="{height:'10px'}"
           :cell-style="libShow.DefaultTableCell"
-          style="width: 40%;margin-top:10px;"
+          style="width: 50%;margin-top:10px;"
         >
           <el-table-column
             prop="uid"
@@ -125,6 +125,40 @@
           {value: 4, label: '赛事类型', children: [
             {value: 40001, label: '免费'},
             {value: 40002, label: '付费'},
+          ]},
+          {value: 5, label: 'Slots用户类型', children: [
+            {value: 50001, label: '新增用户'},
+            {value: 50002, label: '登录天数'},
+            {value: 50003, label: '携带金额'},
+            {value: 50004, label: '下注次数'},
+            {value: 50005, label: '下注额度'},
+            {value: 50006, label: '日均下注额度'},
+            {value: 50007, label: '连续下注天数'},
+            {value: 50008, label: '回归用户'},
+            {value: 50009, label: '最近中奖上限'},
+            {value: 50100, label: '主题', children: [
+              {value: 50101, label: '扑克/麻将主题'},
+              {value: 50102, label: '经典寻宝/777主题'},
+              {value: 50103, label: '传说神话主题'},
+              {value: 50104, label: '传统节日主题'},
+              {value: 50105, label: '菲律宾本地化主题'},
+              {value: 50106, label: '动物与自然'},
+              {value: 50107, label: '糖果系列'},
+              {value: 50108, label: '小众系列'},
+            ]},
+            {value: 50200, label: '基础中奖方式', children: [
+              {value: 50201, label: '连线全线'},
+              {value: 50202, label: '连线固定线'},
+              {value: 50203, label: '无线数量中奖'},
+              {value: 50204, label: '无线相连中奖'},
+              {value: 50205, label: '其他'},
+            ]},
+            {value: 50300, label: '小游戏玩法', children: [
+              {value: 50301, label: '固定大奖(mini固定奖励)'},
+              {value: 50302, label: 'JP玩法(滚动全员奖励)'},
+              {value: 50303, label: 'BONUS玩法(3次旋转金币)'},
+              {value: 50304, label: 'FreeSpin玩法(免费旋转)'},
+            ]},
           ]}
         ],
         intensityOptions: [
@@ -132,6 +166,11 @@
           {value: 2, label: '尝试'},
           {value: 3, label: '常玩'},
           {value: 4, label: '核心'},
+        ],
+        slotsValOptions: [
+          {value: 1, label: '轻度用户'},
+          {value: 2, label: '中度用户'},
+          {value: 3, label: '重度用户'},
         ],
         fieldOptions: [],
         form: {
@@ -181,6 +220,13 @@
             if (v2.value === tag_id) {
               return v2.label
             }
+            if (v2.children && v2.children.length > 0) {
+              for (const v3 of v2.children) {
+                if (v3.value === tag_id) {
+                  return v3.label
+                }
+              }
+            }
           }
         }
         return ''
@@ -190,6 +236,13 @@
           for (const v2 of v.children) {
             if (v2.value === tag_id) {
               return v.value
+            }
+            if (v2.children && v2.children.length > 0) {
+              for (const v3 of v2.children) {
+                if (v3.value === tag_id) {
+                  return v.value
+                }
+              }
             }
           }
         }
@@ -204,6 +257,14 @@
       tagFieldName(row) {
         const tagType = this.getTagType(row.tagId)
         console.log("tagType", tagType)
+        if (tagType === 5 && ![50001,50008].includes(row.tagId)) {
+          for (const v of this.slotsValOptions) {
+            if (v.value === row.tagVal) {
+              return v.label
+            }
+          }
+          return 0
+        }
         if (tagType === 2 && row.tagId === 20000) {
           for (const v of this.intensityOptions) {
             if (v.value === row.tagVal) {

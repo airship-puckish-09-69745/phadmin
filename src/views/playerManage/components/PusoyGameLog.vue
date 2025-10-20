@@ -245,7 +245,7 @@ export default {
         }
       } else {
         if (robotDefenceLevel !== undefined && robotDefenceLevel > 0) {
-          return getRobotDefenceLevel(robotDefenceLevel)
+          return this.getRobotDefenceLevel(robotDefenceLevel)
         }
 
         switch (robotLevel) {

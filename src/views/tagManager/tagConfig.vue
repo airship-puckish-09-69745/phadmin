@@ -456,6 +456,8 @@
               {value: 50104, label: '传统节日主题'},
               {value: 50105, label: '菲律宾本地化主题'},
               {value: 50106, label: '动物与自然'},
+              {value: 50107, label: '糖果系列'},
+              {value: 50108, label: '小众系列'},
             ]},
             {value: 50200, label: '基础中奖方式', children: [
               {value: 50201, label: '连线全线'},
@@ -599,6 +601,9 @@
         if (this.gameIntensity()) {
           this.form.tag_val = this.intensityOptions[0].value
         }
+        if (this.form.tag_type === 5) {
+          this.form.tag_gid = 0
+        }
       },
       appendDayName(tag_id) {
         if (tag_id === 50008) {
@@ -739,7 +744,7 @@
           return `连续${attr.days}天未上线`
         }
         let dayStr = ''
-        if (![50001,50003].includes(row.tag_id)) {
+        if (![50001].includes(row.tag_id)) {
           dayStr = `连续${attr.days}天`
         }
         if (row.tag_id === 50009) {
@@ -786,7 +791,7 @@
         return [50100,50200,50300].includes(this.form.tag_ids[0])
       },
       showDaysOptions() {
-        return (this.form.tag_id === 10003 || this.form.tag_type === 5) && this.form.tag_id !== 50001 && this.form.tag_id !== 50003
+        return (this.form.tag_id === 10003 || this.form.tag_type === 5) && this.form.tag_id !== 50001
       },
       showGameOptions() {
         return (this.form.tag_type === 2 || this.form.tag_type === 3 || this.form.tag_id === 10002)

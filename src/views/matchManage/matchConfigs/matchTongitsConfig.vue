@@ -737,7 +737,7 @@
                     </el-select>
                     <el-input v-model.number="scope.row.propsReward.propsNum" style="width: 100px;" size="mini" placeholder="填数量" />
                   </li>
-                  <li v-if="scope.row.propsReward != null && getPropsRewardItem(scope.row.propsReward.propsId,0,0).propsType === 2" style="list-style: none;">
+                  <li v-if="scope.row.propsReward != null && checkPropNeedExpireDays(scope.row.propsReward.propsId)" style="list-style: none;">
                     <span>过期天数：</span>
                     <el-select v-model="scope.row.propsReward.propExpireDays" placeholder="过期天数" size="mini" style="width:200px">
                       <el-option
@@ -745,6 +745,7 @@
                         :key="item.value"
                         :label="item.label"
                         :value="item.value"
+                        :disabled="item.disabled === propValidExpireDays(scope.row.propsReward.propsId, item.value)"
                       />
                     </el-select>
                   </li>
@@ -2550,8 +2551,8 @@ export default {
           return false
         }
         if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0 &&
-          this.getPropsRewardItem(element.propsReward.propsId, 0, 0).propsType === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME && element.propsReward.propExpireDays < 0) {
-          this.errmsg('请选择头像框过期时间')
+          this.checkPropNeedExpireDays(element.propsReward.propsId) && element.propsReward.propExpireDays < 0) {
+          this.errmsg('请选择过期天数')
           return false
         }
 
@@ -2629,8 +2630,8 @@ export default {
           return false
         }
         if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0 &&
-          this.getPropsRewardItem(element.propsReward.propsId, 0, 0).propsType === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME && element.propsReward.propExpireDays < 0) {
-          this.errmsg('请选择头像框过期时间')
+          this.checkPropNeedExpireDays(element.propsReward.propsId) && element.propsReward.propExpireDays < 0) {
+          this.errmsg('请选择过期天数')
           return false
         }
         if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0) {
@@ -3119,6 +3120,30 @@ export default {
       })
 
       return true
+    },
+    // 道具是否需要过期时间
+    checkPropNeedExpireDays(propsId) {
+      const prop = this.getPropsRewardItem(propsId, 0, 0)
+      return [PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME, PROP_TYPE_OPTIONS.PROP_TYPE_TICKET_NEW].includes(prop.propsType);
+    },
+    // 道具过期时间是否合法
+    propValidExpireDays(propsId, expireDays) {
+      const prop = this.getPropsRewardItem(propsId, 0, 0)
+      switch (prop.propsType) {
+        case PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME:
+          if (expireDays < 0) {
+            return false
+          }
+          break;
+        case PROP_TYPE_OPTIONS.PROP_TYPE_TICKET_NEW:
+          if (expireDays === 0 || expireDays === 365 || expireDays < 0) {
+            return false
+          }
+          break;
+        default:
+          break;
+      }
+      return  true
     },
   }
 }
