@@ -268,6 +268,7 @@ function newItem() {
 }
 
 export default {
+  // eslint-disable-next-line vue/no-unused-components
   components: { ImagePicker, Compare, Publish, GameLevel, MoneyInput, SiteSelect },
   data() {
     return {

@@ -601,6 +601,9 @@
         if (this.gameIntensity()) {
           this.form.tag_val = this.intensityOptions[0].value
         }
+        if (this.form.tag_type === 5) {
+          this.form.tag_gid = 0
+        }
       },
       appendDayName(tag_id) {
         if (tag_id === 50008) {
