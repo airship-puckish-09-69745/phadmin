@@ -388,6 +388,7 @@ export default {
       console.log('筛选后的道具列表', filteredItems)
       this.updateItemOption(filteredItems)
       console.log('道具下拉框选项', this.itemOptions)
+      this.checkShowFreeSpinGame()
     },
     /**
      * 当点击道具下拉框选项时，检查道具类型是否已经选择
