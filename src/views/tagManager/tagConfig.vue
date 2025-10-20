@@ -741,7 +741,7 @@
           return `连续${attr.days}天未上线`
         }
         let dayStr = ''
-        if (![50001,50003].includes(row.tag_id)) {
+        if (![50001].includes(row.tag_id)) {
           dayStr = `连续${attr.days}天`
         }
         if (row.tag_id === 50009) {
@@ -788,7 +788,7 @@
         return [50100,50200,50300].includes(this.form.tag_ids[0])
       },
       showDaysOptions() {
-        return (this.form.tag_id === 10003 || this.form.tag_type === 5) && this.form.tag_id !== 50001 && this.form.tag_id !== 50003
+        return (this.form.tag_id === 10003 || this.form.tag_type === 5) && this.form.tag_id !== 50001
       },
       showGameOptions() {
         return (this.form.tag_type === 2 || this.form.tag_type === 3 || this.form.tag_id === 10002)
