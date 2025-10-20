@@ -398,7 +398,7 @@
                   </el-select>
                 </el-col>
               </el-form-item>
-              <el-form-item label="道具数据：" :required="true" prop="edit.item.ShareRewardCfg.ItemNum">
+              <el-form-item label="道具数量：" :required="true" prop="edit.item.ShareRewardCfg.ItemNum">
                 <el-col :span="15">
                   <el-input v-model.number="edit.item.ShareRewardCfg.ItemNum" />
                 </el-col>
