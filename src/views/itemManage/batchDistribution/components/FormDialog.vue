@@ -50,15 +50,15 @@
           数量：
           <el-input v-model.number="form.PropDetails.prop_num" type="number" placeholder="请输入道具数量" style="width: calc(100% - 80px);" />
         </div>
-        <div class="form-item-item" v-if="itemType === 2 || itemType=== 4 || itemType=== 5" >
-          过期时间：
+        <div class="form-item-item" v-if="checkPropNeedExpireDays(itemType)" >
+          过期天数：
           <el-select v-model="form.PropDetails.prop_expire_days" placeholder="请选择过期时间" style="width: calc(100% - 100px);" @focus="onItemSelectorFocus">
             <el-option
               v-for="item in ITEM_DAY_TYPE_OPTIONS"
               :key="item.value"
               :label="item.label"
               :value="item.value"
-              :disabled="item.disabled || (itemType === 5 && (item.value === 0 || item.value ===365))"
+              :disabled="item.disabled === propValidExpireDays(itemType, item.value)"
             />
           </el-select>
         </div>
@@ -332,6 +332,10 @@ export default {
               if (objs.list[i].status === 1 && (this.isAvatarFrameProp(objs.list[i].item_type) || objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN)) {
                 this.itemList.push(objs.list[i])
               }
+              // 新版道具
+              if(objs.list[i].status === 1 && this.isNewTicketProp(objs.list[i].item_type)){
+                this.itemList.push(objs.list[i])
+              }
             }
           }
         } else {
@@ -413,6 +417,38 @@ export default {
     //是否是头像框道具
     isAvatarFrameProp(itemType) {
       return itemType === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME || itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR
+    },
+    //是否是新版道具
+    isNewTicketProp(itemType) {
+      return [PROP_TYPE_OPTIONS.PROP_TYPE_TICKET_NEW,PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW,PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW].includes(itemType)
+    },
+    checkPropNeedExpireDays(itemType) {
+      return [PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME, PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN,PROP_TYPE_OPTIONS.PROP_TYPE_TICKET_NEW,
+        PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW,PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW].includes(itemType);
+    },
+    // 道具过期时间是否合法
+    propValidExpireDays(propType, expireDays) {
+      switch (propType) {
+        case PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME:
+        case PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR:
+          // 頭像框：不能為負數
+          if (expireDays < 0) {
+            return false
+          }
+          break;
+        case PROP_TYPE_OPTIONS.PROP_TYPE_TICKET_NEW:
+        case PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW:
+        case PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW:
+          // 新版票券：不能為0、365或負數
+          if (expireDays === 0 || expireDays === 365 || expireDays < 0) {
+            return false
+          }
+          break;
+        default:
+          // 其他道具類型：默認有效
+          break;
+      }
+      return true
     },
 
     hasDuplicates(arr) {
