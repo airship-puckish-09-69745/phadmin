@@ -170,12 +170,18 @@
               </el-col>
             </el-form-item>
             <el-form-item v-if="form.tag_type===5 && form.tag_id!==50008 && form.tag_id!==50001" label="区间配置：">
-              <range-config
-                :txt-name="areaPageName(form)"
-                :light="form.light"
-                :medium="form.medium"
-                :heavy="form.heavy"
-              />
+              <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                <span>轻度用户：{{ areaPageName(form) }} ≥ </span>
+                <el-input placeholder="起始金额" v-model="form.grade[0]" size="mini" style="width: 120px;"/>
+              </div>
+              <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                <span>中等用户：{{ areaPageName(form) }} ≥ </span>
+                <el-input placeholder="起始金额" v-model="form.grade[1]" size="mini" style="width: 120px;"/>
+              </div>
+              <div style="display: flex; align-items: center;">
+                <span>重度用户：{{ areaPageName(form) }} ≥ </span>
+                <el-input placeholder="起始金额" v-model="form.grade[2]" size="mini" style="width: 120px;"/>
+              </div>
             </el-form-item>
             <el-form-item v-if="form.tag_id===10004" label="降低系数：">
               <el-col :span="8">
@@ -383,10 +389,9 @@
   import store from '@/store'
   import { Message } from 'element-ui'
   import DateTimeShow from '@/components/DatetimeShow'
-  import RangeConfig from '@/components/RangeConfig/index.vue'
   
   export default {
-    components: { Compare, Publish, DateTimeShow, UidInput, RangeConfig },
+    components: { Compare, Publish, DateTimeShow, UidInput },
     data() {
       return {
         AttrNames: {
@@ -451,6 +456,8 @@
               {value: 50104, label: '传统节日主题'},
               {value: 50105, label: '菲律宾本地化主题'},
               {value: 50106, label: '动物与自然'},
+              {value: 50107, label: '糖果系列'},
+              {value: 50108, label: '小众系列'},
             ]},
             {value: 50200, label: '基础中奖方式', children: [
               {value: 50201, label: '连线全线'},
@@ -518,9 +525,7 @@
           totalBet: 0,
           slotsAttr: [],
           leastBetTimes: 0,
-          light: {start: 0, end: 0},
-          medium: {start: 0, end: 0},
-          heavy: {start: 0, end: 0}
+          grade: [0,0,0]
         },
         syncInfo: false,
         syncStat: false,
@@ -554,6 +559,9 @@
     },
     methods: {
       cascaderChange(value) {
+        if (this.form.tag_type === 5) {
+          this.form.tag_gid = 0
+        }
         if (value.length === 1) {
           this.form.tag_id = value[0]
         } else {
@@ -584,10 +592,11 @@
         }
         if (skip) {
           return
-        } 
+        }
         if (this.fieldOptions && this.fieldOptions.length>0) {
           this.form.tag_val = 0
           this.form.tag_id = this.fieldOptions[0].value
+          this.form.tag_ids = [this.form.tag_id]
         }
         if (this.gameIntensity()) {
           this.form.tag_val = this.intensityOptions[0].value
@@ -732,12 +741,18 @@
           return `连续${attr.days}天未上线`
         }
         let dayStr = ''
-        if (![50001,50003].includes(row.tag_id)) {
+        if (![50001].includes(row.tag_id)) {
           dayStr = `连续${attr.days}天`
         }
-        let str = `轻度用户：${dayStr} ${attr.light.start}≤${this.areaPageName(row)}<${attr.light.end}<br/>`
-        str += `中度用户：${dayStr} ${attr.medium.start}≤${this.areaPageName(row)}<${attr.medium.end}<br/>`
-        str += `重度用户：${dayStr} ${attr.heavy.start}≤${this.areaPageName(row)}<${attr.heavy.end}`
+        if (row.tag_id === 50009) {
+          let str = `小奖用户：${dayStr} ${this.areaPageName(row)}>=${attr.grade[0]/1000}<br/>`
+          str += `中奖用户：${dayStr} ${this.areaPageName(row)}>=${attr.grade[1]/1000}<br/>`
+          str += `大奖用户：${dayStr} ${this.areaPageName(row)}>=${attr.grade[2]/1000}`
+          return str
+        }
+        let str = `轻度用户：${dayStr} ${this.areaPageName(row)}>=${attr.grade[0]}<br/>`
+        str += `中度用户：${dayStr} ${this.areaPageName(row)}>=${attr.grade[1]}<br/>`
+        str += `重度用户：${dayStr} ${this.areaPageName(row)}>=${attr.grade[2]}`
         return str
       },
       formatTime(ts) {
@@ -773,7 +788,7 @@
         return [50100,50200,50300].includes(this.form.tag_ids[0])
       },
       showDaysOptions() {
-        return (this.form.tag_id === 10003 || this.form.tag_type === 5) && this.form.tag_id !== 50001 && this.form.tag_id !== 50003
+        return (this.form.tag_id === 10003 || this.form.tag_type === 5) && this.form.tag_id !== 50001
       },
       showGameOptions() {
         return (this.form.tag_type === 2 || this.form.tag_type === 3 || this.form.tag_id === 10002)
@@ -841,9 +856,7 @@
         attr.days && (this.form.days = attr.days)
         attr.reduce && (this.form.reduce = attr.reduce)
         attr.totalBet && (this.form.totalBet = attr.totalBet)
-        attr.light && (this.form.light = attr.light)
-        attr.medium && (this.form.medium = attr.medium)
-        attr.heavy && (this.form.heavy = attr.heavy)
+        attr.grade && (this.form.grade = (this.form.tag_id===50009?[attr.grade[0]/1000,attr.grade[1]/1000,attr.grade[2]/1000]:attr.grade))
         attr.gids && (this.form.gids = attr.gids)
         attr.leastBetTimes && (this.form.leastBetTimes = attr.leastBetTimes)
         this.selectChange(this.form.tag_type,true)
@@ -865,9 +878,7 @@
         attr.days && (this.form.days = attr.days)
         attr.reduce && (this.form.reduce = attr.reduce)
         attr.totalBet && (this.form.totalBet = attr.totalBet)
-        attr.light && (this.form.light = attr.light)
-        attr.medium && (this.form.medium = attr.medium)
-        attr.heavy && (this.form.heavy = attr.heavy)
+        attr.grade && (this.form.grade = (this.form.tag_id===50009?[attr.grade[0]/1000,attr.grade[1]/1000,attr.grade[2]/1000]:attr.grade))
         attr.gids && (this.form.gids = attr.gids)
         attr.leastBetTimes && (this.form.leastBetTimes = attr.leastBetTimes)
         this.selectChange(this.form.tag_type,true)
@@ -948,20 +959,21 @@
         } else if (this.form.tag_id === 50007) { // 连续下注天数
           attr.days = this.form.days
           attr.leastBetTimes = this.form.leastBetTimes
-          attr.light = this.form.light
-          attr.medium = this.form.medium
-          attr.heavy = this.form.heavy
+          attr.grade = this.form.grade
+        } else if (this.form.tag_id === 50009) { // 回归用户
+          attr.days = this.form.days
+          attr.grade = [
+            this.form.grade[0]*1000,
+            this.form.grade[1]*1000,
+            this.form.grade[2]*1000,
+          ]
         } else if (this.form.tag_id < 50100) {
           attr.days = this.form.days
-          attr.light = this.form.light
-          attr.medium = this.form.medium
-          attr.heavy = this.form.heavy
+          attr.grade = this.form.grade
         } else if (this.form.tag_id >= 50100 && this.form.tag_id < 50399) { // gid
           attr.days = this.form.days
           attr.gids = this.form.gids
-          attr.light = this.form.light
-          attr.medium = this.form.medium
-          attr.heavy = this.form.heavy
+          attr.grade = this.form.grade
         }
         this.form.tag_attr = JSON.stringify(attr)
       },
@@ -969,31 +981,21 @@
         if ([50008,50001,50002].includes(this.form.tag_id)) { // 新增用户，回归用户，新注册用户
           return true
         }
-        this.form.light.start = Number(this.form.light.start)
-        this.form.light.end = Number(this.form.light.end)
-        this.form.medium.start = Number(this.form.medium.start)
-        this.form.medium.end = Number(this.form.medium.end)
-        this.form.heavy.start = Number(this.form.heavy.start)
-        this.form.heavy.end = Number(this.form.heavy.end)
+
+        this.form.grade[0] = Number(this.form.grade[0])
+        this.form.grade[1] = Number(this.form.grade[1])
+        this.form.grade[2] = Number(this.form.grade[2])
         
         // 验证金额区间是否合理
-        if (this.form.light.start < 0 || this.form.light.end < 0 || 
-            this.form.medium.start < 0 || this.form.medium.end < 0 || 
-            this.form.heavy.start < 0 || this.form.heavy.end < 0) {
+        if (this.form.grade[0] < 0 || this.form.grade[1] < 0 || 
+            this.form.grade[2] < 0) {
           Message.error("金额不能为负数")
           return false
         }
         
-        if (this.form.light.start >= this.form.light.end || 
-            this.form.medium.start >= this.form.medium.end || 
-            this.form.heavy.start >= this.form.heavy.end) {
-          Message.error("起始金额不能大于等于结束金额")
-          return false
-        }
-        
-        if (this.form.light.end > this.form.medium.start || 
-            this.form.medium.end > this.form.heavy.start) {
-          Message.error("金额区间有重叠，请确保轻度<中度<重度的金额区间顺序")
+        if (this.form.grade[0] >= this.form.grade[1] || 
+            this.form.grade[1] >= this.form.grade[2]) {
+          Message.error("轻度用户不能大于中度用户，中度用户不能大于重度用户")
           return false
         }
 

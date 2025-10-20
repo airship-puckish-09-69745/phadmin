@@ -409,9 +409,9 @@ export default {
       })
     },
     saveData() {
-      const tmp = {
+      const tmp = JSON.parse(JSON.stringify({
         Config: this.tableData
-      }
+      }))
       this.$refs.compare.SetNewVal(tmp)
       this.$refs.compare.Compare((isEdit) => {
         if (!isEdit) {

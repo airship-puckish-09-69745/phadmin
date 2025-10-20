@@ -670,8 +670,8 @@ export default {
       ],
       conditionTypeOptions: [
         { value: 1, label: '登录' },
-        { value: 2, label: '下注值' },
-        { value: 3, label: '下注次数' }
+        { value: 2, label: '下注值' }
+        // { value: 3, label: '下注次数' }
       ],
       rewardTypeOptions: [
         { value: 1, label: '金币(投注金)' },

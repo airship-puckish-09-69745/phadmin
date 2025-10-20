@@ -4154,6 +4154,12 @@ export const asyncRoutes = [
             component: () => import('@/views/devTools/testTools'),
             name: 'testTools',
             meta: { title: '用户身份测试工具', perm: 'CFG_MANAGEMENT' }
+          },
+          {
+            path: 'testTag',
+            component: () => import('@/views/devTools/testTag'),
+            name: 'testTag',
+            meta: { title: '用户标签测试工具', perm: 'CFG_MANAGEMENT' }
           }
         ]
       },
