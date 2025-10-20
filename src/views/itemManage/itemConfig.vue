@@ -38,16 +38,15 @@
           prop="id"
           label="道具ID"
           sortable
-          width="100"
         />
 
         <el-table-column
           prop="item_name"
           label="道具名称"
           show-overflow-tooltip
-          width="150"
+          width="200"
         />
-        <el-table-column prop="show_name" label="后台名称" width="150">
+        <el-table-column prop="show_name" label="后台名称" width="200">
           <template slot-scope="scope">
             {{ getItemShowName(scope.row.item_extra) }}
           </template>
@@ -68,7 +67,7 @@
             />
           </template>
         </el-table-column>
-        <el-table-column prop="item_cost" label="道具价值" width="80">
+        <el-table-column prop="item_cost" label="道具价值" width="100">
           <template slot-scope="scope">
             {{ getItemCost(scope.row.id) }}
           </template>
@@ -77,7 +76,7 @@
         <el-table-column
           prop="show_text"
           label="扩展信息"
-          width="220"
+          width="300"
         >
           <template slot-scope="scope">
             <span v-if="isTicketProp(scope.row.item_type)">
@@ -96,19 +95,16 @@
         <el-table-column
           prop="modifier"
           label="操作人"
-          width="150"
         />
 
         <el-table-column
           prop="sort"
           label="排序"
-          width="100"
         />
 
         <el-table-column
           prop="status"
           label="状态"
-          width="100"
         >
           <template slot-scope="scope">
             {{ getStatusName(scope.row.status) }}
@@ -118,7 +114,7 @@
         <el-table-column
           fixed="right"
           label="操作"
-          width="150"
+          width="250"
         >
           <template slot-scope="scope">
             <el-button size="mini" icon="el-icon-edit" @click="showForm(scope.row.id)">编辑</el-button>
