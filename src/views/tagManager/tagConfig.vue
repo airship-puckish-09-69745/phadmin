@@ -683,13 +683,18 @@
         return row.tagVal
       },
       gameName(row) {
-        const attr = JSON.parse(row.tag_attr)
         const gameIds = []
-        if (attr.gids) {
-          gameIds.push(...attr.gids)
+        if (row.tag_attr) {
+          const attr = JSON.parse(row.tag_attr)
+          if (attr.gids) {
+            gameIds.push(...attr.gids)
+          }
         }
         if (row.tag_gid > 0) {
           gameIds.push(row.tag_gid)
+        }
+        if (row.gid > 0) {
+          gameIds.push(row.gid)
         }
         if (gameIds.length === 0) {
           return ''
@@ -1024,7 +1029,7 @@
             queryBegin: Math.floor(this.item.dateRange[0].getTime()/1000),
             queryEnd: Math.floor(this.item.dateRange[1].getTime()/1000),
             gid: this.item.gid,
-            tagId: this.item.values[1],
+            tagId: this.item.values[this.item.values.length - 1],
             tagVal: this.item.tagVal,
           }
         }).then(response => {
