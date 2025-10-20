@@ -180,20 +180,6 @@
           <el-form ref="item" label-width="220px">
             <el-row>
               <el-col :span="11">
-                <el-form-item label="AppId白名单：" prop="item.appId">
-                  <el-select v-model="edit.item.appId" placeholder="请选择" style="width: 400px">
-                    <el-option
-                      v-for="item in appIdOptions"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="11">
                 <el-form-item label="Site白名单：" prop="item.site">
                   <SiteSelect
                     v-model="edit.item.sites"
@@ -315,21 +301,7 @@ export default {
       gameNames: {
         22: 'TongitsPot',
         28: 'TongitsJoker',
-      },
-      appIdOptions: [
-        {
-          value: 1000002,
-          label: '内部1000002'
-        },
-        {
-          value: 1000003,
-          label: 'GP-BP测试1000003'
-        },
-        {
-          value: 1000005,
-          label: '正式1000005'
-        }
-      ],
+      }
     }
   },
   created() {
