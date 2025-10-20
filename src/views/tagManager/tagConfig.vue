@@ -269,8 +269,9 @@
             <el-form-item label="标签：">
               <el-cascader v-model="item.values" :options="tagOptions" :show-all-levels="false" style="width: 120px;" size="mini"></el-cascader>
             </el-form-item>
-            <el-form-item v-if="item.values[1]==70000" label="字段：">
+            <el-form-item v-if="item.values[1]==20000" label="字段：">
               <el-select v-model="item.tagVal" placeholder="placeholder" style="width: 100px;" size="mini">
+                <el-option :value="0" label="所有"></el-option>
                 <el-option
                     v-for="opt in intensityOptions"
                     :key="opt.value"
