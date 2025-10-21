@@ -178,6 +178,15 @@
         </el-tab-pane>
         <el-tab-pane label="白名单配置">
           <el-form ref="item" label-width="220px">
+            <el-row v-if="version === 'V1'">
+              <el-col>
+                <el-form-item label="AppId白名单：" prop="item.appId">
+                  <AppIdSelect
+                    v-model="edit.item.appId"
+                  />
+                </el-form-item>
+              </el-col>
+            </el-row>
             <el-row>
               <el-col :span="11">
                 <el-form-item label="Site白名单：" prop="item.site">
@@ -210,6 +219,7 @@ import {Message} from "element-ui";
 import SiteSelect from "@/components/SiteSelect/index.vue";
 import GameTreeSelector from "@/components/GamesTreeSelector/index.vue";
 import Compare from "@/components/Compare/index.vue";
+import AppIdSelect from "@/components/AppIdSelect/index.vue";
 
 const filterMap = {}
 
@@ -258,7 +268,8 @@ export default {
     Compare,
     GameTreeSelector,
     SiteSelect,
-    Publish
+    Publish,
+    AppIdSelect,
   },
   data() {
     return {
@@ -293,6 +304,7 @@ export default {
         totalBonus: 0,
       },
       env: 'test',
+      version: store.getters.version || 'V1',
       libDate: $libDate,
       libShow: $libShow,
       tableData: [],

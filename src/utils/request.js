@@ -35,6 +35,7 @@ service.interceptors.request.use(
           config.data.AppId = store.getters.appId
         }
       }
+      config.headers['X-Version'] = store.getters.version
       isHandle = true
     }
     // do something before request is sent
