@@ -611,6 +611,7 @@ export default {
       libShow: $libShow,
       libMoney: new MoneyShow([]),
       statusNames: { 1: '上架', 2: '下架' },
+      BlackOperator: '',
       edit: {
         ID: 0,
         isEdit: false,
@@ -935,7 +936,7 @@ export default {
             dataInfo.WhitelistCfg = item.WhitelistCfg
             dataInfo.RankCfg = item.RankCfg
             dataInfo.LimitRewardCfg = item.LimitRewardCfg
-            dataInfo.ModifyUser = item.ModifyUser
+            dataInfo.ModifyUser = this.BlackOperator
             dataInfo.Status = item.Status
             dataInfo.RewardLimitCfg = item.RewardLimitCfg
             dataInfo.ShareRewardCfg = item.ShareRewardCfg
@@ -1020,7 +1021,7 @@ export default {
             dataInfo.WhitelistCfg = item.WhitelistCfg
             dataInfo.RankCfg = item.RankCfg
             dataInfo.LimitRewardCfg = item.LimitRewardCfg
-            dataInfo.ModifyUser = item.ModifyUser
+            dataInfo.ModifyUser = this.BlackOperator
             dataInfo.Status = item.Status
             dataInfo.RewardLimitCfg = item.RewardLimitCfg
             dataInfo.ShareRewardCfg = item.ShareRewardCfg
@@ -1105,7 +1106,7 @@ export default {
             dataInfo.WhitelistCfg = item.WhitelistCfg
             dataInfo.RankCfg = item.RankCfg
             dataInfo.LimitRewardCfg = item.LimitRewardCfg
-            dataInfo.ModifyUser = item.ModifyUser
+            dataInfo.ModifyUser = this.BlackOperator
             dataInfo.Status = item.Status
             dataInfo.RewardLimitCfg = item.RewardLimitCfg
             dataInfo.ShareRewardCfg = item.ShareRewardCfg
@@ -1231,7 +1232,7 @@ export default {
         dataInfo.WhitelistCfg = item.WhitelistCfg
         dataInfo.RankCfg = item.RankCfg
         dataInfo.LimitRewardCfg = item.LimitRewardCfg
-        dataInfo.ModifyUser = item.ModifyUser
+        dataInfo.ModifyUser = this.BlackOperator
         dataInfo.Status = item.Status
         dataInfo.RewardLimitCfg = item.RewardLimitCfg
         dataInfo.ShareRewardCfg = item.ShareRewardCfg
