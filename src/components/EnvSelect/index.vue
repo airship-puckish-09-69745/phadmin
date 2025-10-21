@@ -18,9 +18,11 @@ export default {
       envOptions: [
         { label: '旧版测试', value: 'test' },
         { label: '旧版线上', value: 'pro' },
-        { label: '新版测试-1000002', value: 'test-1000002' },
-        { label: '新版测试-1000005', value: 'test-1000005' },
-        { label: '新版线上-1000005', value: 'pro-1000005' }
+        { label: '新版测试-1000002-内部', value: 'test-1000002' },
+        { label: '新版测试-1000003-UAT', value: 'test-1000003' },
+        { label: '新版测试-1000005-BP', value: 'test-1000005' },
+        { label: '新版线上-1000002-内部', value: 'pro-1000002' },
+        { label: '新版线上-1000005-BP', value: 'pro-1000005' }
       ],
       oldEnv: ''
     }
@@ -45,30 +47,30 @@ export default {
           this.envOptions = [
             { label: '旧版测试', value: 'test' },
             { label: '旧版线上', value: 'pro' },
-            { label: '新版测试-1000002', value: 'test-1000002' },
-            { label: '新版测试-1000003', value: 'test-1000003' },
-            { label: '新版线上-1000002', value: 'pro-1000002' },
-            { label: '新版线上-1000003', value: 'pro-1000003' }
+            { label: '新版测试-1000002-内部', value: 'test-1000002' },
+            { label: '新版测试-1000003-提审', value: 'test-1000003' },
+            { label: '新版线上-1000002-内部', value: 'pro-1000002' },
+            { label: '新版线上-1000003-提审', value: 'pro-1000003' }
           ]
           break
         case 'ph':
           this.envOptions = [
             { label: '旧版测试', value: 'test' },
             { label: '旧版线上', value: 'pro' },
-            { label: '新版测试-1000002', value: 'test-1000002' },
-            { label: '新版测试-1000005', value: 'test-1000005' },
-            { label: '新版线上-1000002', value: 'pro-1000002' },
-            { label: '新版线上-1000005', value: 'pro-1000005' }
+            { label: '新版测试-1000002-内部', value: 'test-1000002' },
+            { label: '新版测试-1000005-BP', value: 'test-1000005' },
+            { label: '新版线上-1000002-内部', value: 'pro-1000002' },
+            { label: '新版线上-1000005-BP', value: 'pro-1000005' }
           ]
           break
         case 'zoo':
           this.envOptions = [
             { label: '旧版测试', value: 'test' },
             { label: '旧版线上', value: 'pro' },
-            { label: '新版测试-1000002', value: 'test-1000002' },
-            { label: '新版测试-1000005', value: 'test-1000005' },
-            { label: '新版线上-1000002', value: 'pro-1000002' },
-            { label: '新版线上-1000005', value: 'pro-1000005' }
+            { label: '新版测试-1000002-内部', value: 'test-1000002' },
+            { label: '新版测试-1000005-BP', value: 'test-1000005' },
+            { label: '新版线上-1000002-内部', value: 'pro-1000002' },
+            { label: '新版线上-1000005-BP', value: 'pro-1000005' }
           ]
           break
       }
