@@ -873,6 +873,10 @@ export default {
                     rewardInfo.Reward = rewardInfo.Reward / 1000
                   }
                 }
+                for (let i = 0; i < item.LimitRewardCfg.RewardList.length; i++) {
+                  const limitCfg = item.LimitRewardCfg.RewardList[i]
+                  limitCfg.Reward = limitCfg.Reward / 1000
+                }
                 this.tableData.push(item)
               }
             }
@@ -1001,6 +1005,10 @@ export default {
                 rewardInfo.Reward = rewardInfo.Reward * 1000
               }
             }
+            for (let i = 0; i < item.LimitRewardCfg.RewardList.length; i++) {
+              const limitCfg = item.LimitRewardCfg.RewardList[i]
+              limitCfg.Reward = limitCfg.Reward * 1000
+            }
             const dataInfo = {}
             dataInfo.ID = item.ID
             dataInfo.IsOpen = item.IsOpen
@@ -1081,6 +1089,10 @@ export default {
                 const rewardInfo = rankCfg.RewardList[j]
                 rewardInfo.Reward = rewardInfo.Reward * 1000
               }
+            }
+            for (let i = 0; i < item.LimitRewardCfg.RewardList.length; i++) {
+              const limitCfg = item.LimitRewardCfg.RewardList[i]
+              limitCfg.Reward = limitCfg.Reward * 1000
             }
             const dataInfo = {}
             dataInfo.ID = item.ID
@@ -1204,6 +1216,10 @@ export default {
             rewardInfo.Reward = rewardInfo.Reward * 1000
           }
         }
+        for (let i = 0; i < item.LimitRewardCfg.RewardList.length; i++) {
+          const limitCfg = item.LimitRewardCfg.RewardList[i]
+          limitCfg.Reward = limitCfg.Reward * 1000
+        }
         const dataInfo = {}
         dataInfo.ID = item.ID
         dataInfo.IsOpen = item.IsOpen
@@ -1228,9 +1244,7 @@ export default {
         dataInfo.ShowEggMaxValue = item.ShowEggMaxValue
         updateData.HalloweenCfgList.push(dataInfo)
       }
-      console.log("++++++++++++++++++++++4++++++++++++++++++++++")
       this.form.Data = JSON.stringify(updateData)
-      console.log("+++++++++++++++++++++5++++++++++++++++++++++++%s", updateData)
       request({
         url: 'customizeconfig/update',
         method: 'post',
