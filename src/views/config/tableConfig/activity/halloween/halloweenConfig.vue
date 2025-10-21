@@ -755,6 +755,7 @@ export default {
     this.getData()
     this.getGameAll()
     this.getPropList()
+    this.getOperator()
   },
   computed: {
     eggReward: {
@@ -1221,6 +1222,9 @@ export default {
           const limitCfg = item.LimitRewardCfg.RewardList[i]
           limitCfg.Reward = limitCfg.Reward * 1000
         }
+        console.log("+++++++++++++++++1++++++++++++++++")
+        console.log(this.BlackOperator)
+        console.log("+++++++++++++++++2++++++++++++++++")
         const dataInfo = {}
         dataInfo.ID = item.ID
         dataInfo.IsOpen = item.IsOpen
