@@ -114,11 +114,11 @@
 import RatioInput from '@/components/RatioInput'
 import Compare from '@/components/Compare'
 import { DataRule } from '@/utils/common'
-import {Message} from "element-ui";
+import { Message } from 'element-ui'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  name: 'SlotsAtlantisTreasureExt',
+  name: 'SlotsMafiaMayhemExt',
   // eslint-disable-next-line vue/no-unused-components
   components: { RatioInput, Compare },
   model: {
@@ -132,6 +132,7 @@ export default {
         return {}
       }
     },
+    // eslint-disable-next-line vue/require-default-prop
     baseBet: Number
   },
   data() {
