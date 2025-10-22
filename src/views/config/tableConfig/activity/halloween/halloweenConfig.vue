@@ -342,7 +342,7 @@
                     </el-table-column>
                     <el-table-column
                       prop="LimitMax"
-                      label="最大下注"
+                      label="最大下注(小于或等于)"
                       width="100"
                     >
                       <template slot-scope="scope">
@@ -398,7 +398,7 @@
                   </el-select>
                 </el-col>
               </el-form-item>
-              <el-form-item label="道具数据：" :required="true" prop="edit.item.ShareRewardCfg.ItemNum">
+              <el-form-item label="道具数量：" :required="true" prop="edit.item.ShareRewardCfg.ItemNum">
                 <el-col :span="15">
                   <el-input v-model.number="edit.item.ShareRewardCfg.ItemNum" />
                 </el-col>
@@ -611,6 +611,7 @@ export default {
       libShow: $libShow,
       libMoney: new MoneyShow([]),
       statusNames: { 1: '上架', 2: '下架' },
+      BlackOperator: '',
       edit: {
         ID: 0,
         isEdit: false,
@@ -754,6 +755,7 @@ export default {
     this.getData()
     this.getGameAll()
     this.getPropList()
+    this.getOperator()
   },
   computed: {
     eggReward: {
@@ -873,6 +875,10 @@ export default {
                     rewardInfo.Reward = rewardInfo.Reward / 1000
                   }
                 }
+                for (let i = 0; i < item.LimitRewardCfg.RewardList.length; i++) {
+                  const limitCfg = item.LimitRewardCfg.RewardList[i]
+                  limitCfg.Reward = limitCfg.Reward / 1000
+                }
                 this.tableData.push(item)
               }
             }
@@ -931,7 +937,7 @@ export default {
             dataInfo.WhitelistCfg = item.WhitelistCfg
             dataInfo.RankCfg = item.RankCfg
             dataInfo.LimitRewardCfg = item.LimitRewardCfg
-            dataInfo.ModifyUser = item.ModifyUser
+            dataInfo.ModifyUser = this.BlackOperator
             dataInfo.Status = item.Status
             dataInfo.RewardLimitCfg = item.RewardLimitCfg
             dataInfo.ShareRewardCfg = item.ShareRewardCfg
@@ -1001,6 +1007,10 @@ export default {
                 rewardInfo.Reward = rewardInfo.Reward * 1000
               }
             }
+            for (let i = 0; i < item.LimitRewardCfg.RewardList.length; i++) {
+              const limitCfg = item.LimitRewardCfg.RewardList[i]
+              limitCfg.Reward = limitCfg.Reward * 1000
+            }
             const dataInfo = {}
             dataInfo.ID = item.ID
             dataInfo.IsOpen = item.IsOpen
@@ -1012,7 +1022,7 @@ export default {
             dataInfo.WhitelistCfg = item.WhitelistCfg
             dataInfo.RankCfg = item.RankCfg
             dataInfo.LimitRewardCfg = item.LimitRewardCfg
-            dataInfo.ModifyUser = item.ModifyUser
+            dataInfo.ModifyUser = this.BlackOperator
             dataInfo.Status = item.Status
             dataInfo.RewardLimitCfg = item.RewardLimitCfg
             dataInfo.ShareRewardCfg = item.ShareRewardCfg
@@ -1082,6 +1092,10 @@ export default {
                 rewardInfo.Reward = rewardInfo.Reward * 1000
               }
             }
+            for (let i = 0; i < item.LimitRewardCfg.RewardList.length; i++) {
+              const limitCfg = item.LimitRewardCfg.RewardList[i]
+              limitCfg.Reward = limitCfg.Reward * 1000
+            }
             const dataInfo = {}
             dataInfo.ID = item.ID
             dataInfo.IsOpen = item.IsOpen
@@ -1093,7 +1107,7 @@ export default {
             dataInfo.WhitelistCfg = item.WhitelistCfg
             dataInfo.RankCfg = item.RankCfg
             dataInfo.LimitRewardCfg = item.LimitRewardCfg
-            dataInfo.ModifyUser = item.ModifyUser
+            dataInfo.ModifyUser = this.BlackOperator
             dataInfo.Status = item.Status
             dataInfo.RewardLimitCfg = item.RewardLimitCfg
             dataInfo.ShareRewardCfg = item.ShareRewardCfg
@@ -1204,6 +1218,13 @@ export default {
             rewardInfo.Reward = rewardInfo.Reward * 1000
           }
         }
+        for (let i = 0; i < item.LimitRewardCfg.RewardList.length; i++) {
+          const limitCfg = item.LimitRewardCfg.RewardList[i]
+          limitCfg.Reward = limitCfg.Reward * 1000
+        }
+        console.log("+++++++++++++++++1++++++++++++++++")
+        console.log(this.BlackOperator)
+        console.log("+++++++++++++++++2++++++++++++++++")
         const dataInfo = {}
         dataInfo.ID = item.ID
         dataInfo.IsOpen = item.IsOpen
@@ -1215,7 +1236,7 @@ export default {
         dataInfo.WhitelistCfg = item.WhitelistCfg
         dataInfo.RankCfg = item.RankCfg
         dataInfo.LimitRewardCfg = item.LimitRewardCfg
-        dataInfo.ModifyUser = item.ModifyUser
+        dataInfo.ModifyUser = this.BlackOperator
         dataInfo.Status = item.Status
         dataInfo.RewardLimitCfg = item.RewardLimitCfg
         dataInfo.ShareRewardCfg = item.ShareRewardCfg
@@ -1228,9 +1249,7 @@ export default {
         dataInfo.ShowEggMaxValue = item.ShowEggMaxValue
         updateData.HalloweenCfgList.push(dataInfo)
       }
-      console.log("++++++++++++++++++++++4++++++++++++++++++++++")
       this.form.Data = JSON.stringify(updateData)
-      console.log("+++++++++++++++++++++5++++++++++++++++++++++++%s", updateData)
       request({
         url: 'customizeconfig/update',
         method: 'post',

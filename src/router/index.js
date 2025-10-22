@@ -1330,10 +1330,10 @@ export const asyncRoutes = [
                 meta: { title: 'G randAce' }
               },
               {
-                  path: 'jokerace_slots_cfg',
-                  component: () => import('@/views/config/tableConfig/slots/jokerace_slots_cfg'),
-                  name: 'jokerace_slots_cfg',
-                  meta: { title: 'J okerAce' }
+                path: 'jokerace_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/jokerace_slots_cfg'),
+                name: 'jokerace_slots_cfg',
+                meta: { title: 'J okerAce' }
               },
               {
                 path: 'lionfortune_slots_cfg',
@@ -1388,6 +1388,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/millionaire_slots_cfg'),
                 name: 'millionaire_slots_cfg',
                 meta: { title: 'M illionaire' }
+              },
+              {
+                path: 'pahiyaswins_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/pahiyaswins_slots_cfg'),
+                name: 'pahiyaswins_slots_cfg',
+                meta: { title: 'P ahiyasWins' }
               },
               {
                 path: 'pharaohtreasure_slots_cfg',
@@ -3156,10 +3162,10 @@ export const asyncRoutes = [
             meta: { title: 'G oldenDragon', gid: 220 }
           },
           {
-              path: 'jokerace_slots_log',
-              component: () => import('@/views/playerManage/slotsLog'),
-              name: 'jokerace_slots_log',
-              meta: { title: 'J okerAce', gid: 228 }
+            path: 'jokerace_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'jokerace_slots_log',
+            meta: { title: 'J okerAce', gid: 228 }
           },
           {
             path: 'lionfortune_slots_log',
@@ -3215,6 +3221,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'millionaire_slots_log',
             meta: { title: 'M illionaire', gid: 82 }
+          },
+          {
+            path: 'pahiyaswins_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'pahiyaswins_slots_log',
+            meta: { title: 'P ahiyas Win\'s', gid: 230 }
           },
           {
             path: 'pharaohtreasure_slots_log',
@@ -4166,6 +4178,12 @@ export const asyncRoutes = [
             component: () => import('@/views/devTools/testTools'),
             name: 'testTools',
             meta: { title: '用户身份测试工具', perm: 'CFG_MANAGEMENT' }
+          },
+          {
+            path: 'testTag',
+            component: () => import('@/views/devTools/testTag'),
+            name: 'testTag',
+            meta: { title: '用户标签测试工具', perm: 'CFG_MANAGEMENT' }
           }
         ]
       },

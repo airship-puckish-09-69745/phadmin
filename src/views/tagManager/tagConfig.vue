@@ -162,13 +162,6 @@
                 </el-input>
               </el-col>
             </el-form-item>
-            <el-form-item v-if="form.tag_id===50007" label="每日下注次数：">
-              <el-col :span="8">
-                <el-input v-model.number="form.leastBetTimes" placeholder="placeholder">
-                  <template slot="prepend">≥</template>
-                </el-input>
-              </el-col>
-            </el-form-item>
             <el-form-item v-if="form.tag_type===5 && form.tag_id!==50008 && form.tag_id!==50001" label="区间配置：">
               <div style="display: flex; align-items: center; margin-bottom: 10px;">
                 <span>轻度用户：{{ areaPageName(form) }} ≥ </span>
@@ -269,8 +262,9 @@
             <el-form-item label="标签：">
               <el-cascader v-model="item.values" :options="tagOptions" :show-all-levels="false" style="width: 120px;" size="mini"></el-cascader>
             </el-form-item>
-            <el-form-item v-if="item.values[1]==70000" label="字段：">
+            <el-form-item v-if="item.values[1]==20000" label="字段：">
               <el-select v-model="item.tagVal" placeholder="placeholder" style="width: 100px;" size="mini">
+                <el-option :value="0" label="所有"></el-option>
                 <el-option
                     v-for="opt in intensityOptions"
                     :key="opt.value"
@@ -456,6 +450,8 @@
               {value: 50104, label: '传统节日主题'},
               {value: 50105, label: '菲律宾本地化主题'},
               {value: 50106, label: '动物与自然'},
+              {value: 50107, label: '糖果系列'},
+              {value: 50108, label: '小众系列'},
             ]},
             {value: 50200, label: '基础中奖方式', children: [
               {value: 50201, label: '连线全线'},
@@ -522,7 +518,6 @@
           reduce: 50,
           totalBet: 0,
           slotsAttr: [],
-          leastBetTimes: 0,
           grade: [0,0,0]
         },
         syncInfo: false,
@@ -599,6 +594,9 @@
         if (this.gameIntensity()) {
           this.form.tag_val = this.intensityOptions[0].value
         }
+        if (this.form.tag_type === 5) {
+          this.form.tag_gid = 0
+        }
       },
       appendDayName(tag_id) {
         if (tag_id === 50008) {
@@ -609,6 +607,9 @@
       areaPageName({tag_id, tag_name}) {
         if (tag_id === 50009) {
           return '返奖倍数'
+        }
+        if (tag_id === 50007) {
+          return '每日下注次数'
         }
         if (tag_id < 50100) {
           return tag_name
@@ -678,13 +679,18 @@
         return row.tagVal
       },
       gameName(row) {
-        const attr = JSON.parse(row.tag_attr)
         const gameIds = []
-        if (attr.gids) {
-          gameIds.push(...attr.gids)
+        if (row.tag_attr) {
+          const attr = JSON.parse(row.tag_attr)
+          if (attr.gids) {
+            gameIds.push(...attr.gids)
+          }
         }
         if (row.tag_gid > 0) {
           gameIds.push(row.tag_gid)
+        }
+        if (row.gid > 0) {
+          gameIds.push(row.gid)
         }
         if (gameIds.length === 0) {
           return ''
@@ -739,7 +745,7 @@
           return `连续${attr.days}天未上线`
         }
         let dayStr = ''
-        if (![50001,50003].includes(row.tag_id)) {
+        if (![50001].includes(row.tag_id)) {
           dayStr = `连续${attr.days}天`
         }
         if (row.tag_id === 50009) {
@@ -786,7 +792,7 @@
         return [50100,50200,50300].includes(this.form.tag_ids[0])
       },
       showDaysOptions() {
-        return (this.form.tag_id === 10003 || this.form.tag_type === 5) && this.form.tag_id !== 50001 && this.form.tag_id !== 50003
+        return (this.form.tag_id === 10003 || this.form.tag_type === 5) && this.form.tag_id !== 50001
       },
       showGameOptions() {
         return (this.form.tag_type === 2 || this.form.tag_type === 3 || this.form.tag_id === 10002)
@@ -856,7 +862,6 @@
         attr.totalBet && (this.form.totalBet = attr.totalBet)
         attr.grade && (this.form.grade = (this.form.tag_id===50009?[attr.grade[0]/1000,attr.grade[1]/1000,attr.grade[2]/1000]:attr.grade))
         attr.gids && (this.form.gids = attr.gids)
-        attr.leastBetTimes && (this.form.leastBetTimes = attr.leastBetTimes)
         this.selectChange(this.form.tag_type,true)
       },
       copy(row) {
@@ -878,7 +883,6 @@
         attr.totalBet && (this.form.totalBet = attr.totalBet)
         attr.grade && (this.form.grade = (this.form.tag_id===50009?[attr.grade[0]/1000,attr.grade[1]/1000,attr.grade[2]/1000]:attr.grade))
         attr.gids && (this.form.gids = attr.gids)
-        attr.leastBetTimes && (this.form.leastBetTimes = attr.leastBetTimes)
         this.selectChange(this.form.tag_type,true)
       },
       add() {
@@ -956,7 +960,6 @@
 
         } else if (this.form.tag_id === 50007) { // 连续下注天数
           attr.days = this.form.days
-          attr.leastBetTimes = this.form.leastBetTimes
           attr.grade = this.form.grade
         } else if (this.form.tag_id === 50009) { // 回归用户
           attr.days = this.form.days
@@ -1019,7 +1022,7 @@
             queryBegin: Math.floor(this.item.dateRange[0].getTime()/1000),
             queryEnd: Math.floor(this.item.dateRange[1].getTime()/1000),
             gid: this.item.gid,
-            tagId: this.item.values[1],
+            tagId: this.item.values[this.item.values.length - 1],
             tagVal: this.item.tagVal,
           }
         }).then(response => {

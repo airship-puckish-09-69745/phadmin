@@ -149,6 +149,9 @@ export const MATCH_PUSOY_UNIQUE_ID_CFG =[
   { 'value': 20006, 'label': 'P100' },
   { 'value': 20007, 'label': 'P300' },
   { 'value': 20008, 'label': 'GTCC 2005' },
+  { 'value': 20009, 'label': 'P60' },
+  { 'value': 20010, 'label': 'P150' },
+  { 'value': 20011, 'label': 'P400' },
 ]
 
 //牌桌TableId

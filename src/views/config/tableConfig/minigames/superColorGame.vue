@@ -113,7 +113,7 @@
                         label="1颗"
                       >
                         <template slot-scope="scope">
-                          <el-input v-model.number="scope.row.Odds[0].Odd" style="width:120px;" size="mini">
+                          <el-input v-model="scope.row.Odds[0].Odd" style="width:120px;" size="mini">
                             <template slot="append">X</template>
                           </el-input>
                         </template>
@@ -122,7 +122,7 @@
                         label="2颗"
                       >
                         <template slot-scope="scope">
-                          <el-input v-if="scope.row.Odds[1]!==undefined" v-model.number="scope.row.Odds[1].Odd" style="width:120px;" size="mini">
+                          <el-input v-if="scope.row.Odds[1]!==undefined" v-model="scope.row.Odds[1].Odd" style="width:120px;" size="mini">
                             <template slot="append">X</template>
                           </el-input>
                         </template>
@@ -131,7 +131,7 @@
                         label="3颗"
                       >
                         <template slot-scope="scope">
-                          <el-input v-if="scope.row.Odds[2]!==undefined" v-model.number="scope.row.Odds[2].Odd" style="width:120px;" size="mini">
+                          <el-input v-if="scope.row.Odds[2]!==undefined" v-model="scope.row.Odds[2].Odd" style="width:120px;" size="mini">
                             <template slot="append">X</template>
                           </el-input>
                         </template>
@@ -160,11 +160,13 @@
                     <span style="color:red;"> 说明:超级骰子的配置 </span>
                   </el-descriptions-item>
                 </el-descriptions>
-                <el-col :span="7" :offset="0">
-                  <el-form-item label="超级骰子命中的概率">
-                    <el-input v-model.number="item.SuperDice.Probability" :required="true" />
-                  </el-form-item>
-                </el-col>
+                <el-row>
+                  <el-col :span="7" :offset="0">
+                    <el-form-item label="超级骰子命中的概率">
+                      <el-input v-model.number="item.SuperDice.Probability" :required="true" />
+                    </el-form-item>
+                  </el-col>
+                </el-row>
                 <el-row>
                   <el-table
                     ref="filterTable"
@@ -492,9 +494,9 @@
                 </el-select>
               </el-form-item>
               <el-form-item label="超级骰子的赔率：">
-<!--                <el-input v-model.number="resultForm.superDiceOdd" style="width: 150px;" size="mini">-->
-<!--                  <template slot="append">X</template>-->
-<!--                </el-input>-->
+                <!--                <el-input v-model.number="resultForm.superDiceOdd" style="width: 150px;" size="mini">-->
+                <!--                  <template slot="append">X</template>-->
+                <!--                </el-input>-->
                 <el-select v-model="resultForm.superDiceOdd" style="width:120px;">
                   <el-option
                     v-for="typeItem in SuperDiceOddOption "
@@ -618,8 +620,8 @@ export default {
           MaxRealUserCount: 50, // 在线人数上限
           MinTotalUserCount: 50, // 总人数下限
           MaxTotalUserCount: 200, // 总人数上限
-          BetRobotMaxCount:0,
-          BetRobotMaxBetAreaCount:0
+          BetRobotMaxCount: 0,
+          BetRobotMaxBetAreaCount: 0
         },
         BetLevels: [
           {
@@ -704,7 +706,7 @@ export default {
         ChatRobotReplyIntervalMin: 0,
         ChatRobotReplyIntervalMax: 0,
         ChatRobotReplyRate: 0,
-        ChatRobotReplyMaxNum: 0,
+        ChatRobotReplyMaxNum: 0
 
       },
       TestCards: {
@@ -736,7 +738,7 @@ export default {
         types: {
           Data: 'jsonString' // 整个数据项的类型
         }
-      },
+      }
     }
   },
   watch: {
@@ -866,6 +868,7 @@ export default {
 
       for (const i in ret.SuperDice.Odds) {
         ret.SuperDice.Odds[i].Odd *= 1000
+        ret.SuperDice.Odds[i].Weight = parseInt(ret.SuperDice.Odds[i].Weight)
       }
       return ret
     },
@@ -947,7 +950,6 @@ export default {
                 return
               }
             }
-
           }
         }
       }
