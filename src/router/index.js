@@ -1808,6 +1808,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/goldendragonmars_slots_cfg'),
                 name: 'goldendragonmars_slots_cfg',
                 meta: { title: 'GoldenDragon(审)' }
+              },
+              {
+                path: 'lionfortunemars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/lionfortunemars_slots_cfg'),
+                name: 'lionfortunemars_slots_cfg',
+                meta: { title: 'LionFortune(审)' }
               }
             ]
           },
@@ -3632,6 +3638,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'goldendragonmars_slots_log',
             meta: { title: 'GoldenDragon(审)', gid: 221 }
+          },
+          {
+            path: 'lionfortunemars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'lionfortunemars_slots_log',
+            meta: { title: 'LionFortune(审)', gid: 223 }
           }
         ]
       },
