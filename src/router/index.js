@@ -1360,6 +1360,12 @@ export const asyncRoutes = [
                 meta: { title: 'L ucky777' }
               },
               {
+                path: 'mafiamayhem_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/mafiamayhem_slots_cfg'),
+                name: 'mafiamayhem_slots_cfg',
+                meta: { title: 'M afiamayhem' }
+              },
+              {
                 path: 'mahjongfortune_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/mahjongfortune_slots_cfg'),
                 name: 'mahjongfortune_slots_cfg',
@@ -3196,6 +3202,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'majorace_slots_log',
             meta: { title: 'M ajorAce', gid: 162 }
+          },
+          {
+            path: 'mafiamayhem_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'mafiamayhem_slots_log',
+            meta: { title: 'M afiamayhem', gid: 232 }
           },
           {
             path: 'mahjongfortune_slots_log',
