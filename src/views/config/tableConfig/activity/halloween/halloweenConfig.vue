@@ -342,7 +342,7 @@
                     </el-table-column>
                     <el-table-column
                       prop="LimitMax"
-                      label="最大下注"
+                      label="最大下注(小于或等于)"
                       width="100"
                     >
                       <template slot-scope="scope">
