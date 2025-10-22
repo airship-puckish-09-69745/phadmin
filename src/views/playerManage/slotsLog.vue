@@ -145,7 +145,7 @@
           label="命中"
           width="70"
         />
-        <template v-if="[150,156,166,174,196,204,210,216].indexOf(gid) >= 0">
+        <template v-if="[150,156,166,174,196,204,210,216,230].indexOf(gid) >= 0">
           <el-table-column
             header-align="center"
             label="Jackpot"
@@ -369,7 +369,7 @@ export default {
     isActV2(gid) {
       return [78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 154, 156, 158, 160, 162, 164, 166, 170,
         172, 188, 198, 192, 180, 176, 182, 174, 178, 168, 196, 184, 202, 190, 200, 204, 206, 208, 210,
-        212, 216, 218, 220, 228].indexOf(gid) >= 0
+        212, 216, 218, 220, 228, 230,232].indexOf(gid) >= 0
     },
     // 收集剧本
     isActCollect(gid) {
@@ -608,7 +608,7 @@ export default {
             }
 
             if ($this.gid === 150 || $this.gid === 156 || $this.gid === 166 || $this.gid === 174 || $this.gid === 196 ||
-              $this.gid === 204 || $this.gid === 210 || $this.gid === 216) {
+              $this.gid === 204 || $this.gid === 210 || $this.gid === 216 || $this.gid === 230) {
               if (objs[i]['JackpotLog'] && objs[i]['JackpotLog'] !== 'null') {
                 objs[i]['JackpotLogObj'] = JSON.parse(objs[i]['JackpotLog'])
               } else {
@@ -665,7 +665,7 @@ export default {
             }
 
             if ($this.gid === 150 || $this.gid === 156 || $this.gid === 166 || $this.gid === 174 || $this.gid === 196 ||
-              $this.gid === 204 || $this.gid === 210 || $this.gid === 216) {
+              $this.gid === 204 || $this.gid === 210 || $this.gid === 216 || $this.gid === 230) {
               if (objs[i]['JackpotLog'] && objs[i]['JackpotLog'] !== 'null') {
                 objs[i]['JackpotLogObj'] = JSON.parse(objs[i]['JackpotLog'])
               } else {
@@ -682,7 +682,7 @@ export default {
             tmp.push(this.formatNumber(objs[i].ReturnBet / 1000))
             tmp.push(this.formatNumber(objs[i].ServiceFee / 1000))
             tmp.push(objs[i].PayLine)
-            if ([150, 156, 166, 174, 196, 204, 210, 216].indexOf(this.gid) >= 0) {
+            if ([150, 156, 166, 174, 196, 204, 210, 216, 230].indexOf(this.gid) >= 0) {
               tmp.push(this.getJPFee(objs[i].JackpotLogObj, 4))
               tmp.push(this.getJPFee(objs[i].JackpotLogObj, 3))
               tmp.push(this.getJPFee(objs[i].JackpotLogObj, 2))

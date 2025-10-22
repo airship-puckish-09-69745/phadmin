@@ -23,7 +23,7 @@
               </el-form-item>
             </el-col>
             <el-col :span="7" :offset="1">
-              <el-form-item label="RPT:">
+              <el-form-item label="RTP:">
                 <el-input v-model.number="item.RPT" :required="true">
                   <template slot="append">‱</template>
                 </el-input>
@@ -562,6 +562,7 @@ export default {
         { 'Id': 6, 'Name': '红', 'Key': 'red' }
       ],
       DiceIndexOption: [
+        { 'Id': -1, 'Name': '不使用'},
         { 'Id': 0, 'Name': '第一个骰子' },
         { 'Id': 1, 'Name': '第二个骰子' },
         { 'Id': 2, 'Name': '第三个骰子' }

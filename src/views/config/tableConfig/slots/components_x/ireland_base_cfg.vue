@@ -96,6 +96,9 @@
               <el-option label="223:LionFortuneMars" :value="223" />
               <el-option label="226:FortuneWheel" :value="226" />
               <el-option label="227:FortuneWheel Mars" :value="227" />
+              <el-option label="230:PahiyasWins" :value="230" />
+              <el-option label="231:PahiyasWins Mars" :value="231" />
+              <el-option label="232:MafiaMayhem" :value="232" />
             </el-select>
           </el-form-item>
 

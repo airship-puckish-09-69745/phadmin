@@ -162,13 +162,6 @@
                 </el-input>
               </el-col>
             </el-form-item>
-            <el-form-item v-if="form.tag_id===50007" label="每日下注次数：">
-              <el-col :span="8">
-                <el-input v-model.number="form.leastBetTimes" placeholder="placeholder">
-                  <template slot="prepend">≥</template>
-                </el-input>
-              </el-col>
-            </el-form-item>
             <el-form-item v-if="form.tag_type===5 && form.tag_id!==50008 && form.tag_id!==50001" label="区间配置：">
               <div style="display: flex; align-items: center; margin-bottom: 10px;">
                 <span>轻度用户：{{ areaPageName(form) }} ≥ </span>
@@ -525,7 +518,6 @@
           reduce: 50,
           totalBet: 0,
           slotsAttr: [],
-          leastBetTimes: 0,
           grade: [0,0,0]
         },
         syncInfo: false,
@@ -615,6 +607,9 @@
       areaPageName({tag_id, tag_name}) {
         if (tag_id === 50009) {
           return '返奖倍数'
+        }
+        if (tag_id === 50007) {
+          return '每日下注次数'
         }
         if (tag_id < 50100) {
           return tag_name
@@ -753,9 +748,6 @@
         if (![50001].includes(row.tag_id)) {
           dayStr = `连续${attr.days}天`
         }
-        if ([50007].includes(row.tag_id)) {
-          dayStr += ` 每日下注次数≥${attr.leastBetTimes}次`
-        }
         if (row.tag_id === 50009) {
           let str = `小奖用户：${dayStr} ${this.areaPageName(row)}>=${attr.grade[0]/1000}<br/>`
           str += `中奖用户：${dayStr} ${this.areaPageName(row)}>=${attr.grade[1]/1000}<br/>`
@@ -870,7 +862,6 @@
         attr.totalBet && (this.form.totalBet = attr.totalBet)
         attr.grade && (this.form.grade = (this.form.tag_id===50009?[attr.grade[0]/1000,attr.grade[1]/1000,attr.grade[2]/1000]:attr.grade))
         attr.gids && (this.form.gids = attr.gids)
-        attr.leastBetTimes && (this.form.leastBetTimes = attr.leastBetTimes)
         this.selectChange(this.form.tag_type,true)
       },
       copy(row) {
@@ -892,7 +883,6 @@
         attr.totalBet && (this.form.totalBet = attr.totalBet)
         attr.grade && (this.form.grade = (this.form.tag_id===50009?[attr.grade[0]/1000,attr.grade[1]/1000,attr.grade[2]/1000]:attr.grade))
         attr.gids && (this.form.gids = attr.gids)
-        attr.leastBetTimes && (this.form.leastBetTimes = attr.leastBetTimes)
         this.selectChange(this.form.tag_type,true)
       },
       add() {
@@ -970,7 +960,6 @@
 
         } else if (this.form.tag_id === 50007) { // 连续下注天数
           attr.days = this.form.days
-          attr.leastBetTimes = this.form.leastBetTimes
           attr.grade = this.form.grade
         } else if (this.form.tag_id === 50009) { // 回归用户
           attr.days = this.form.days
