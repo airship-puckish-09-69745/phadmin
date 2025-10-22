@@ -1360,6 +1360,12 @@ export const asyncRoutes = [
                 meta: { title: 'L ucky777' }
               },
               {
+                path: 'mafiamayhem_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/mafiamayhem_slots_cfg'),
+                name: 'mafiamayhem_slots_cfg',
+                meta: { title: 'M afiamayhem' }
+              },
+              {
                 path: 'mahjongfortune_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/mahjongfortune_slots_cfg'),
                 name: 'mahjongfortune_slots_cfg',
@@ -1808,6 +1814,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/goldendragonmars_slots_cfg'),
                 name: 'goldendragonmars_slots_cfg',
                 meta: { title: 'GoldenDragon(审)' }
+              },
+              {
+                path: 'lionfortunemars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/lionfortunemars_slots_cfg'),
+                name: 'lionfortunemars_slots_cfg',
+                meta: { title: 'LionFortune(审)' }
               }
             ]
           },
@@ -3192,6 +3204,12 @@ export const asyncRoutes = [
             meta: { title: 'M ajorAce', gid: 162 }
           },
           {
+            path: 'mafiamayhem_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'mafiamayhem_slots_log',
+            meta: { title: 'M afiamayhem', gid: 232 }
+          },
+          {
             path: 'mahjongfortune_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'mahjongfortune_slots_log',
@@ -3632,6 +3650,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'goldendragonmars_slots_log',
             meta: { title: 'GoldenDragon(审)', gid: 221 }
+          },
+          {
+            path: 'lionfortunemars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'lionfortunemars_slots_log',
+            meta: { title: 'LionFortune(审)', gid: 223 }
           }
         ]
       },
