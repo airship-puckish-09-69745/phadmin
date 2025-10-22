@@ -753,6 +753,9 @@
         if (![50001].includes(row.tag_id)) {
           dayStr = `连续${attr.days}天`
         }
+        if ([50007].includes(row.tag_id)) {
+          dayStr += ` 每日下注次数≥${attr.leastBetTimes}次`
+        }
         if (row.tag_id === 50009) {
           let str = `小奖用户：${dayStr} ${this.areaPageName(row)}>=${attr.grade[0]/1000}<br/>`
           str += `中奖用户：${dayStr} ${this.areaPageName(row)}>=${attr.grade[1]/1000}<br/>`
