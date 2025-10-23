@@ -172,6 +172,11 @@
           {value: 2, label: '中度用户'},
           {value: 3, label: '重度用户'},
         ],
+        awardValOptions: [
+          {value: 1, label: '小奖用户'},
+          {value: 2, label: '中将用户'},
+          {value: 3, label: '大奖用户'},
+        ],
         fieldOptions: [],
         form: {
             Uid: 0,
@@ -257,6 +262,14 @@
       tagFieldName(row) {
         const tagType = this.getTagType(row.tagId)
         console.log("tagType", tagType)
+        if (tagType === 5 && [50009].includes(row.tagId)) {
+          for (const v of this.awardValOptions) {
+            if (v.value === row.tagVal) {
+              return v.label
+            }
+          }
+          return 0
+        }
         if (tagType === 5 && ![50001,50008].includes(row.tagId)) {
           for (const v of this.slotsValOptions) {
             if (v.value === row.tagVal) {
