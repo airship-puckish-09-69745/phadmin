@@ -146,7 +146,7 @@
               </el-select>
             </el-form-item>
             <el-form-item v-if="showSlotsOptions()" label="选择游戏：">
-              <el-select v-model="form.gids" filterable multiple placeholder="请选择游戏">
+              <el-select v-model="form.gids" filterable multiple clearable placeholder="请选择游戏">
                 <el-option
                     v-for="opt in slotsOptions"
                     :key="opt.value"
