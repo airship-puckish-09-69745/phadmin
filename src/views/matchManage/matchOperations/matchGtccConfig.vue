@@ -449,10 +449,6 @@ export default {
         this.errmsg("请填写标题")
         return false
       }
-      if (this.editForm.data.match_type === 0) {
-        this.errmsg("请选择赛事类型")
-        return false
-      }
       return true
     }
   }
