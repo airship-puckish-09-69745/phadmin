@@ -50,8 +50,8 @@
           width="70"
         />
         <el-table-column
-          prop="AppID"
-          label="AppId"
+          prop="AppId"
+          label="AppID"
           width="100"
         />
         <el-table-column
