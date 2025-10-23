@@ -60,6 +60,7 @@ export default {
             { label: '新版测试-1000002-内部', value: 'test-1000002' },
             { label: '新版测试-1000003-BP测试', value: 'test-1000003' },
             { label: '新版线上-1000002-内部', value: 'pro-1000002' },
+            { label: '新版线上-1000003-BP测试', value: 'pro-1000003' },
             { label: '新版线上-1000005-BP', value: 'pro-1000005' }
           ]
           break
