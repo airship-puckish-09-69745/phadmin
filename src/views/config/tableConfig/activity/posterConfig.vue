@@ -268,6 +268,7 @@ function newItem() {
 }
 
 export default {
+  // eslint-disable-next-line vue/no-unused-components
   components: { ImagePicker, Compare, Publish, GameLevel, MoneyInput, SiteSelect },
   data() {
     return {
@@ -409,9 +410,9 @@ export default {
       })
     },
     saveData() {
-      const tmp = {
+      const tmp = JSON.parse(JSON.stringify({
         Config: this.tableData
-      }
+      }))
       this.$refs.compare.SetNewVal(tmp)
       this.$refs.compare.Compare((isEdit) => {
         if (!isEdit) {
@@ -420,24 +421,24 @@ export default {
         }
 
         this.$emit('saveData')
-        this.lock = false
+        this.form.Data = JSON.stringify(tmp)
+        request({
+          url: 'customizeconfig/update',
+          method: 'post',
+          data: this.form
+        }).then(response => {
+          if (response.RetCode === 0) {
+            this.$message.success('保存成功')
+          } else {
+            this.$message.error('保存失败！' + response.Data)
+          }
+        })
+        // this.lock = false
       })
 
-      this.form.Data = JSON.stringify(tmp)
-      request({
-        url: 'customizeconfig/update',
-        method: 'post',
-        data: this.form
-      }).then(response => {
-        if (response.RetCode === 0) {
-          this.$message.success('保存成功')
-        } else {
-          this.$message.error('保存失败！' + response.Data)
-        }
-      })
-      setTimeout(() => {
-        this.IsUpdate = false
-      }, 1000)
+      // setTimeout(() => {
+      //   this.IsUpdate = false
+      // }, 1000)
     },
     handleAdd() {
       this.edit.item = newItem()

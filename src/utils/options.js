@@ -43,6 +43,7 @@ export const ITEM_DAY_TYPE_OPTIONS = [
   { 'value': 7, 'label': '7天', disabled: false },
   { 'value': 30, 'label': '30天', disabled: false },
   { 'value': 365, 'label': '365天', disabled: false },
+  { 'value': -1, 'label': '过期道具测试10Mins', disabled: false },
   { 'value': 0, 'label': '永久', disabled: false }
 ]
 
@@ -135,6 +136,16 @@ export const MATCH_UNIQUE_ID_CFG =[
   { 'value': 10006, 'label': 'P100' },
   { 'value': 10007, 'label': 'P300' },
   { 'value': 10008, 'label': 'GTCC 2005' },
+
+  //以下全局ID为GTCC线上赛临时用 不长期占用
+  { 'value': 11001, 'label': 'GTCC日赛' },
+  { 'value': 11002, 'label': 'GTCC周赛' },
+  { 'value': 11003, 'label': 'GTCC月赛' },
+  { 'value': 11004, 'label': 'GTCC线上半决赛' },
+  { 'value': 11005, 'label': 'GTCC线上决赛' },
+  { 'value': 11006, 'label': 'GTCC机酒赛' },
+  { 'value': 11007, 'label': 'GTCC魔戒赛' },
+  { 'value': 11008, 'label': 'GTCC豪客赛' },
 ]
 
 // 比赛Pusoy全局ID集合
@@ -148,6 +159,9 @@ export const MATCH_PUSOY_UNIQUE_ID_CFG =[
   { 'value': 20006, 'label': 'P100' },
   { 'value': 20007, 'label': 'P300' },
   { 'value': 20008, 'label': 'GTCC 2005' },
+  { 'value': 20009, 'label': 'P60' },
+  { 'value': 20010, 'label': 'P150' },
+  { 'value': 20011, 'label': 'P400' },
 ]
 
 //牌桌TableId
@@ -172,8 +186,6 @@ export const MATCH_LIST_TAG_OPTIONS = [
   { 'value': 2, 'label': 'FREE', disabled: false },
   { 'value': 3, 'label': 'Pro Arena', disabled: false },
   { 'value': 4, 'label': 'GTCC', disabled: false },
-  { 'value': 5, 'label': 'GTCC预选赛', disabled: false },
-  { 'value': 6, 'label': 'GTCC特别赛', disabled: false },
 ]
 
 //比赛GameId选项
