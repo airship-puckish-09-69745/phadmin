@@ -168,7 +168,7 @@
                 <el-input placeholder="起始金额" v-model="form.grade[0]" size="mini" style="width: 120px;"/>
               </div>
               <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                <span>中等用户：{{ areaPageName(form) }} ≥ </span>
+                <span>中度用户：{{ areaPageName(form) }} ≥ </span>
                 <el-input placeholder="起始金额" v-model="form.grade[1]" size="mini" style="width: 120px;"/>
               </div>
               <div style="display: flex; align-items: center;">
