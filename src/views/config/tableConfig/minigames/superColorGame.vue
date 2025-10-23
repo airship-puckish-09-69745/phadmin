@@ -15,13 +15,13 @@
               </el-form-item>
             </el-col>
 
-            <el-col :span="7" :offset="3">
-              <el-form-item label="用户长时间未下注提示:">
-                <el-input v-model.number="item.NoticeTime" :required="true" @input="wallpaperInput2">
-                  <template slot="append">秒</template>
-                </el-input>
-              </el-form-item>
-            </el-col>
+<!--            <el-col :span="7" :offset="3">-->
+<!--              <el-form-item label="用户长时间未下注提示:">-->
+<!--                <el-input v-model.number="item.NoticeTime" :required="true" @input="wallpaperInput2">-->
+<!--                  <template slot="append">秒</template>-->
+<!--                </el-input>-->
+<!--              </el-form-item>-->
+<!--            </el-col>-->
             <el-col :span="7" :offset="1">
               <el-form-item label="RTP:">
                 <el-input v-model.number="item.RPT" :required="true">
@@ -29,11 +29,11 @@
                 </el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="7" :offset="3">
-              <el-form-item label="最小携带金额:">
-                <el-input v-model.number="item.MinMoneyCarry" :required="true" />
-              </el-form-item>
-            </el-col>
+<!--            <el-col :span="7" :offset="3">-->
+<!--              <el-form-item label="最小携带金额:">-->
+<!--                <el-input v-model.number="item.MinMoneyCarry" :required="true" />-->
+<!--              </el-form-item>-->
+<!--            </el-col>-->
           </el-tab-pane>
           <el-tab-pane label="玩法配置">
             <el-col :span="16" :offset="3">
@@ -304,38 +304,38 @@
                     </el-form-item>
                   </el-col>
                 </el-row>
-                <el-row>
-                  <el-col :span="11" :offset="1">
-                    <el-form-item label="机器人下注最小筹码：" prop="RobotCfg.MinRobotBetMoney" :rules="dataRule(true,{type:'n',range:'0'})">
-                      <el-col :span="20">
-                        <el-input v-model.number="item.RobotCfg.MinRobotBetMoney" size="mini" :required="true" />
-                      </el-col>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="11">
-                    <el-form-item label="机器人下注最大筹码：" prop="RobotCfg.MaxRobotBetMoney" :rules="dataRule(true,{type:'n',range:'0'})">
-                      <el-col :span="20">
-                        <el-input v-model.number="item.RobotCfg.MaxRobotBetMoney" size="mini" :required="true" />
-                      </el-col>
-                    </el-form-item>
-                  </el-col>
-                </el-row>
-                <el-row>
-                  <el-col :span="11" :offset="1">
-                    <el-form-item label="在线真人人数下限：" prop="RobotCfg.MinRealUserCount" :rules="dataRule(true,{type:'n',range:'0'})">
-                      <el-col :span="20">
-                        <el-input v-model.number="item.RobotCfg.MinRealUserCount" size="mini" :required="true" />
-                      </el-col>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="11">
-                    <el-form-item label="在线人数上限：" prop="RobotCfg.MaxRealUserCount" :rules="dataRule(true,{type:'n',range:'0'})">
-                      <el-col :span="20">
-                        <el-input v-model.number="item.RobotCfg.MaxRealUserCount" size="mini" :required="true" />
-                      </el-col>
-                    </el-form-item>
-                  </el-col>
-                </el-row>
+<!--                <el-row>-->
+<!--                  <el-col :span="11" :offset="1">-->
+<!--                    <el-form-item label="机器人下注最小筹码：" prop="RobotCfg.MinRobotBetMoney" :rules="dataRule(true,{type:'n',range:'0'})">-->
+<!--                      <el-col :span="20">-->
+<!--                        <el-input v-model.number="item.RobotCfg.MinRobotBetMoney" size="mini" :required="true" />-->
+<!--                      </el-col>-->
+<!--                    </el-form-item>-->
+<!--                  </el-col>-->
+<!--                  <el-col :span="11">-->
+<!--                    <el-form-item label="机器人下注最大筹码：" prop="RobotCfg.MaxRobotBetMoney" :rules="dataRule(true,{type:'n',range:'0'})">-->
+<!--                      <el-col :span="20">-->
+<!--                        <el-input v-model.number="item.RobotCfg.MaxRobotBetMoney" size="mini" :required="true" />-->
+<!--                      </el-col>-->
+<!--                    </el-form-item>-->
+<!--                  </el-col>-->
+<!--                </el-row>-->
+<!--                <el-row>-->
+<!--                  <el-col :span="11" :offset="1">-->
+<!--                    <el-form-item label="在线真人人数下限：" prop="RobotCfg.MinRealUserCount" :rules="dataRule(true,{type:'n',range:'0'})">-->
+<!--                      <el-col :span="20">-->
+<!--                        <el-input v-model.number="item.RobotCfg.MinRealUserCount" size="mini" :required="true" />-->
+<!--                      </el-col>-->
+<!--                    </el-form-item>-->
+<!--                  </el-col>-->
+<!--                  <el-col :span="11">-->
+<!--                    <el-form-item label="在线人数上限：" prop="RobotCfg.MaxRealUserCount" :rules="dataRule(true,{type:'n',range:'0'})">-->
+<!--                      <el-col :span="20">-->
+<!--                        <el-input v-model.number="item.RobotCfg.MaxRealUserCount" size="mini" :required="true" />-->
+<!--                      </el-col>-->
+<!--                    </el-form-item>-->
+<!--                  </el-col>-->
+<!--                </el-row>-->
                 <el-row>
                   <el-col :span="11" :offset="1">
                     <el-form-item label="机器人+真人人数下限：" prop="RobotCfg.MinTotalUserCount" :rules="dataRule(true,{type:'n',range:'0'})">
