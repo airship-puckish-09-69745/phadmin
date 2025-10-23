@@ -181,7 +181,7 @@ export default {
       ],
 
       matchInfoCfgs: [
-        { 'value': 0, 'label': 'GTCC活动时间' }
+        { 'value': 0, 'label': 'GTCC活动时间' },
         { 'value': 1, 'label': 'GTCC日赛' },
         { 'value': 2, 'label': 'GTCC周赛' },
         { 'value': 3, 'label': 'GTCC月赛' },
