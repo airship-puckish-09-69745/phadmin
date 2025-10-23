@@ -50,6 +50,11 @@
           width="70"
         />
         <el-table-column
+          prop="AppID"
+          label="AppId"
+          width="100"
+        />
+        <el-table-column
           prop="Title"
           label="主题"
           min-width="200"
@@ -125,6 +130,9 @@
       :close-on-press-escape="false"
     >
       <el-form ref="edit.item" :model="edit.item" label-width="120px" size="small">
+        <el-form-item label="AppId：" :required="true">
+          {{ edit.item.AppId }}
+        </el-form-item>
         <el-form-item label="标题：" :required="true">
           {{ edit.item.Title }}
         </el-form-item>
