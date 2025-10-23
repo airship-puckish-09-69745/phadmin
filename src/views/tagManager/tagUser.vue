@@ -174,7 +174,7 @@
         ],
         awardValOptions: [
           {value: 1, label: '小奖用户'},
-          {value: 2, label: '中将用户'},
+          {value: 2, label: '中奖用户'},
           {value: 3, label: '大奖用户'},
         ],
         fieldOptions: [],
