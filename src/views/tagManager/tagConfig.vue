@@ -146,13 +146,16 @@
               </el-select>
             </el-form-item>
             <el-form-item v-if="showSlotsOptions()" label="选择游戏：">
-              <el-select v-model="form.gids" filterable multiple placeholder="placeholder">
+              <el-select v-model="form.gids" filterable multiple placeholder="请选择游戏">
                 <el-option
                     v-for="opt in slotsOptions"
                     :key="opt.value"
                     :label="opt.label"
                     :value="opt.value"
-                />
+                >
+                  <span style="float: left">{{ opt.label }}</span>
+                  <span style="float: right; color: #8492a6; font-size: 13px">{{ opt.value }}</span>
+                </el-option>
               </el-select>
             </el-form-item>
             <el-form-item v-if="showDaysOptions()" label="连续天数：">
@@ -773,15 +776,26 @@
               // console.log(response.Data[i])
               this.gameOptions.push({
                   value: response.Data[i].Gid,
-                  label: response.Data[i].Description
+                  label: response.Data[i].Name
               })
               if (response.Data[i].CategoryID === 1) { // 老虎机
                 this.slotsOptions.push({
                   value: response.Data[i].Gid,
-                  label: response.Data[i].Description
+                  label: response.Data[i].Name
                 })
               }
             }
+            // 按Name首字母排序
+            this.gameOptions.sort((a, b) => {
+              const nameA = a.label.toUpperCase()
+              const nameB = b.label.toUpperCase()
+              return nameA.localeCompare(nameB)
+            })
+            this.slotsOptions.sort((a, b) => {
+              const nameA = a.label.toUpperCase()
+              const nameB = b.label.toUpperCase()
+              return nameA.localeCompare(nameB)
+            })
           }
         })
       },
