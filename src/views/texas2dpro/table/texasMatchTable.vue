@@ -816,6 +816,8 @@ export default {
     this.getList()
     if (!IsMars()) {
       this.getMatchProps()
+    } else {
+      this.appidInfoCfgs.push( { 'value': 1000008, 'label': 'gli' },)
     }
     /*this.getMatchPropsV1()*/
   },
