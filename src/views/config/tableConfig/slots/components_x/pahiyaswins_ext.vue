@@ -23,12 +23,6 @@
             <el-input v-model="cfg.GoldenSymbolOddsWeights" placeholder="请输入内容,如1,2,100"> <template slot="append">多个值用 , 连接。如1,2,100</template> </el-input>
           </el-form-item>
 
-          <el-form-item label="Scatter触发转盘的概率" prop="TurntableRate" :rules="dataRule(true,{type:'n'})">
-            <el-input v-model.number="cfg.TurntableRate" :required="true">
-              <template slot="append">‰</template>
-            </el-input>
-          </el-form-item>
-
           <el-form-item label="转盘倍数（除JP）">
             <el-input v-model="tempTurntableOdds" placeholder="请输入内容,如10,20,30"> <template slot="append">多个值用 , 连接。如10,20,30</template> </el-input>
           </el-form-item>
@@ -81,8 +75,12 @@
             <el-input v-model.number="cfg.BuyFreeOdds" :required="true" />
           </el-form-item>
 
-          <el-form-item label="进入免费模式的最小赔率" prop="ScatterOdds" :rules="dataRule(true,{type:'n'})">
+          <el-form-item label="进入特殊模式的最小赔率" prop="ScatterOdds" :rules="dataRule(true,{type:'n'})">
             <el-input v-model.number="cfg.ScatterOdds" :required="true" />
+          </el-form-item>
+
+          <el-form-item label="进入特殊模式的权重">
+            <el-input v-model="cfg.EnterSpecialWeights" placeholder="请输入内容,如0,10,20"> <template slot="append">普通、转盘、免费用 , 连接。</template> </el-input>
           </el-form-item>
 
           <el-form-item label="购买免费模式中奖倍数分布V2">

@@ -217,7 +217,7 @@ export default {
       return (money / 1000).toFixed(3)
     },
     showBetOdd(odd) {
-      return (odd / 1000).toFixed(0)
+      return (odd / 1000).toFixed(1)
     },
     showBetAreaName(id) {
       const option = this.ColorOption.find(item => item.Id === id)

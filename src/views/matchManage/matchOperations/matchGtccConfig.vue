@@ -181,11 +181,15 @@ export default {
       ],
 
       matchInfoCfgs: [
-        { 'value': 1, 'label': 'GTCC入口' },
+        { 'value': 0, 'label': 'GTCC活动时间' },
+        { 'value': 1, 'label': 'GTCC日赛' },
         { 'value': 2, 'label': 'GTCC周赛' },
-        { 'value': 3, 'label': 'GTCC预选赛' },
-        { 'value': 4, 'label': 'GTCC线上决赛' },
-        { 'value': 5, 'label': 'GTCC日赛' }
+        { 'value': 3, 'label': 'GTCC月赛' },
+        { 'value': 4, 'label': 'GTCC线上半决赛' },
+        { 'value': 5, 'label': 'GTCC线上决赛' },
+        { 'value': 6, 'label': 'GTCC机酒赛' },
+        { 'value':7 , 'label': 'GTCC魔戒赛' },
+        { 'value': 8, 'label': 'GTCC豪客赛' },
       ],
       statusCfgs: [
         { 'value': 0, 'label': '关闭' },
@@ -443,10 +447,6 @@ export default {
       }
       if (this.editForm.data.name === '') {
         this.errmsg("请填写标题")
-        return false
-      }
-      if (this.editForm.data.match_type === 0) {
-        this.errmsg("请选择赛事类型")
         return false
       }
       return true

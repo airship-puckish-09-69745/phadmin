@@ -1349,23 +1349,6 @@ export default {
     },
     handleAdd() {
       this.edit.item = newItem()
-
-      this.edit.normalEggWeightConfigs = []
-      for (let i = 0; i < this.edit.item.EggCfg.WeightCfg.length; i++) {
-        const eggWeightCfg = this.edit.item.EggCfg.WeightCfg[i]
-        if (eggWeightCfg.ConditionType === 1) {
-          this.edit.normalEggWeightConfigs.push(eggWeightCfg)
-        }
-      }
-
-      this.edit.specialEggWeightConfigs = []
-      for (let i = 0; i < this.edit.item.EggCfg.WeightCfg.length; i++) {
-        const eggWeightCfg = this.edit.item.EggCfg.WeightCfg[i]
-        if (eggWeightCfg.ConditionType === 2) {
-          this.edit.specialEggWeightConfigs.push(eggWeightCfg)
-        }
-      }
-
       this.edit.isEdit = false
       this.edit.visible = true
       console.log(this.edit.item)

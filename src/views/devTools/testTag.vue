@@ -20,7 +20,15 @@
         </el-select>
       </el-form-item>
       <el-form-item v-if="needTagValue()" label="标签值：">
-        <el-select v-if="selectTagValue()&&form.tag_type === 5" v-model="form.tag_val" placeholder="请选择标签级别">
+        <el-select v-if="selectTagValue()&&form.tag_id === 50009" v-model="form.tag_val" placeholder="请选择标签级别">
+          <el-option
+              v-for="opt in awardOptions"
+              :key="opt.value"
+              :label="opt.label"
+              :value="opt.value"
+          />
+        </el-select>
+        <el-select v-else-if="selectTagValue()&&form.tag_type === 5" v-model="form.tag_val" placeholder="请选择标签级别">
           <el-option
               v-for="opt in gradeOptions"
               :key="opt.value"
@@ -28,7 +36,7 @@
               :value="opt.value"
           />
         </el-select>
-        <el-select v-if="selectTagValue()&&form.tag_id === 20000" v-model="form.tag_val" placeholder="请选择标签级别">
+        <el-select v-else-if="selectTagValue()&&form.tag_id === 20000" v-model="form.tag_val" placeholder="请选择标签级别">
           <el-option
               v-for="opt in intensityOptions"
               :key="opt.value"
@@ -115,9 +123,14 @@ export default {
       gameOptions:[],
       slotsOptions: [],
       gradeOptions: [
-        {value: 1, label: '普通用户'},
-        {value: 2, label: '中等用户'},
+        {value: 1, label: '轻度用户'},
+        {value: 2, label: '中度用户'},
         {value: 3, label: '重度用户'},
+      ],
+      awardOptions: [
+        {value: 1, label: '小奖用户'},
+        {value: 2, label: '中奖用户'},
+        {value: 3, label: '大奖用户'},
       ],
       intensityOptions: [
         {value: 1, label: '无感'},
