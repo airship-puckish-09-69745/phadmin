@@ -14,7 +14,7 @@
 
           <el-form-item label="Bonus倍数">
             <el-input v-model="cfg.BonusOdds" placeholder="请输入内容,如2,1">
-              <template slot="append">放大100倍，-1为Wheel</template>
+              <template slot="append">放大100倍</template>
             </el-input>
           </el-form-item>
 
