@@ -1037,6 +1037,12 @@ export const asyncRoutes = [
             meta: { title: 'B lackJack ◐' }
           },
           {
+            path: 'blackJackTableMH',
+            component: () => import('@/views/config/tableConfig/minigames/blackJackTableMH'),
+            name: 'blackJackTableMH',
+            meta: { title: 'B lackJack Multihand ◐' }
+          },
+          {
             path: 'carracing_cfg',
             component: () => import('@/views/config/tableConfig/carracingConfig'),
             name: 'carracing_cfg',
@@ -2904,6 +2910,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_hilo',
             meta: { title: 'H ilo ◐', gid: 102 }
+          },
+          {
+            path: 'playlog_blackjackmh',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_blackjackmh',
+            meta: { title: 'B lackJack Multihand ◐', gid: 137 }
           },
           {
             path: 'playlog_sweeper',
