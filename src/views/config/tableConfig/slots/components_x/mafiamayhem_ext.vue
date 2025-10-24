@@ -30,12 +30,6 @@
             </el-input>
           </el-form-item>
 
-          <el-form-item label="免费模式触发Bonus概率">
-            <el-input v-model.number="cfg.FreeEnterBonusRate">
-              <template slot="append">‰</template>
-            </el-input>
-          </el-form-item>
-
           <el-form-item label="Jackpot抽水比例">
             <el-input v-model.number="cfg.JackpotFeeRate" :required="true">
               <template slot="append">‰</template>
