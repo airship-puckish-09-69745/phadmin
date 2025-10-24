@@ -14,6 +14,9 @@ function getVer() {
 }
 
 export function getCustomize(subKey, appId) {
+  if (appId === undefined) {
+    appId = store.getters.appId
+  }
   const ver = getVer()
   return request({
     url: `/customizeconfig${ver}/one`,
