@@ -48,9 +48,15 @@
             </el-input>
           </el-form-item>
 
-          <el-form-item label="bonus/免费权重">
+          <el-form-item label="普通bonus/免费权重">
+            <el-input v-model="cfg.NormalEnterSpecialWeight" placeholder="请输入内容,如2,4">
+              <template slot="append">用 , 连接。bonus、免费(必中其中之一)</template>
+            </el-input>
+          </el-form-item>
+
+          <el-form-item label="免费再次进入bonus/免费概率">
             <el-input v-model="cfg.EnterSpecialWeight" placeholder="请输入内容,如2,4">
-              <template slot="append">用 , 连接。普通、bonus、免费</template>
+              <template slot="append">用 , 连接。千分之几</template>
             </el-input>
           </el-form-item>
 
@@ -67,13 +73,6 @@
 
           <el-form-item label="普通模式图标金框权重">
             <el-input v-model="cfg.goldenFrameNormalWeight" placeholder=""/>
-          </el-form-item>
-
-          <el-form-item label="奖池中奖概率">
-            <el-input v-model="cfg.JackpotTypeRate"
-                      placeholder="请输入内容,如10,10,10;分别对应MAJOR,MEGA,GRAND中奖概率">
-              <template slot="append">实际值要乘以千万分之一,分别对应Grand、Major、Minor、Mini</template>
-            </el-input>
           </el-form-item>
 
           <el-form-item label="购买免费模式中奖倍数范围V2">
