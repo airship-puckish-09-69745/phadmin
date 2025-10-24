@@ -67,12 +67,12 @@
             </el-input>
           </el-form-item>
 
-          <el-form-item label="免费模式图标金框权重">
-            <el-input v-model="cfg.GoldenFrameFreeWeight" placeholder=""/>
-          </el-form-item>
+<!--          <el-form-item label="免费模式图标金框权重">-->
+<!--            <el-input v-model="cfg.GoldenFrameFreeWeight" placeholder=""/>-->
+<!--          </el-form-item>-->
 
-          <el-form-item label="普通模式图标金框权重">
-            <el-input v-model="cfg.GoldenFrameNormalWeight" placeholder=""/>
+          <el-form-item label="普通模式金框概率">
+            <el-input v-model="cfg.GoldenFrameRate" placeholder=""/>
           </el-form-item>
 
           <el-form-item label="转为Wild与Big Wild权重">
