@@ -67,7 +67,7 @@
           </el-form-item>
 
           <el-form-item label="免费模式图标金框权重">
-            <el-input v-model="cfg.goldenFrameFeeWeight" placeholder=""/>
+            <el-input v-model="cfg.goldenFrameFreeWeight" placeholder=""/>
           </el-form-item>
 
           <el-form-item label="普通模式图标金框权重">
