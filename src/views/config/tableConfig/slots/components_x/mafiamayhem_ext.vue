@@ -67,11 +67,11 @@
           </el-form-item>
 
           <el-form-item label="免费模式图标金框权重">
-            <el-input v-model="cfg.goldenFrameFreeWeight" placeholder=""/>
+            <el-input v-model="cfg.GoldenFrameFreeWeight" placeholder=""/>
           </el-form-item>
 
           <el-form-item label="普通模式图标金框权重">
-            <el-input v-model="cfg.goldenFrameNormalWeight" placeholder=""/>
+            <el-input v-model="cfg.GoldenFrameNormalWeight" placeholder=""/>
           </el-form-item>
 
           <el-form-item label="购买免费模式中奖倍数范围V2">
