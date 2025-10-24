@@ -32,7 +32,7 @@
           </el-form-item>
 
           <el-form-item label="解锁JP下注值">
-            <el-input v-model="tempJackpotSymbolStr" placeholder="请输入内容,如2,4,6,10">
+            <el-input v-model="JackpotUnlockBetStr" placeholder="请输入内容,如2,4,6,10">
               <template slot="append">MINOR和GRAND用 , 连接</template>
             </el-input>
           </el-form-item>
