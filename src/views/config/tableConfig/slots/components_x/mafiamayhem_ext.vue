@@ -38,7 +38,7 @@
 
           <el-form-item label="Jackpot抽水权重">
             <el-input v-model="cfg.JackpotFeeWeight" placeholder="请输入内容,如2,4">
-              <template slot="append">用 , 连接</template>
+              <template slot="append">用 , 连接.对应Grand、Major、Minor、Mini</template>
             </el-input>
           </el-form-item>
 
