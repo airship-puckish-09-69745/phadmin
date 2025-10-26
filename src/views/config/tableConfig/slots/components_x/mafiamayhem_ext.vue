@@ -72,7 +72,7 @@
           <!--          </el-form-item>-->
 
           <el-form-item label="普通模式金框概率">
-            <el-input v-model="cfg.GoldenFrameRate" placeholder="">
+            <el-input v-model.number="cfg.GoldenFrameRate" placeholder="">
               <template slot="append">‰</template>
             </el-input>
           </el-form-item>
