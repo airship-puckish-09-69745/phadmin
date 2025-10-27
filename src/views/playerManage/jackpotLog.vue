@@ -177,8 +177,8 @@
     </el-row>
 
     <el-dialog
-      v-if="(searchForm.gameId === 150 || searchForm.gameId === 156 || searchForm.gameId === 166|| searchForm.gameId === 174 || searchForm.gameId === 196 || searchForm.gameId === 204 ||
-        searchForm.gameId === 210 || searchForm.gameId === 216 || searchForm.gameId === 230) && searchForm.level === 0"
+      v-if="(searchForm.gameId === 150 || searchForm.gameId === 156 || searchForm.gameId === 157 || searchForm.gameId === 166 || searchForm.gameId === 174 || searchForm.gameId === 196 ||
+      searchForm.gameId === 204 || searchForm.gameId === 210 || searchForm.gameId === 216 || searchForm.gameId === 230) && searchForm.level === 0"
       title="奖池信息"
       :modal="false"
       :visible.sync="prizeVisible"
