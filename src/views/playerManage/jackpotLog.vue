@@ -482,6 +482,7 @@ export default {
         { 'value': 124, 'label': 'JackpotWheel' },
         { 'value': 125, 'label': 'FreeSpin' },
         { 'value': 156, 'label': 'CrazyAce' },
+        { 'value': 157, 'label': 'CrazyAceMars' },
         { 'value': 166, 'label': 'FireLink' },
         { 'value': 174, 'label': 'TreasureBowl' },
         { 'value': 186, 'label': 'MahjongJackpot' },
