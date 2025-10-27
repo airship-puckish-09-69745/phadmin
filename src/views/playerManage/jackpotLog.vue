@@ -729,7 +729,7 @@ export default {
           console.error('Error processing BetList:', error)
           this.levelConfig = [{ 'value': 0, 'label': '全部' }]
         })
-      } else if (this.searchForm.gameId === 156 || this.searchForm.gameId === 230) {
+      } else if (this.searchForm.gameId === 156 || this.searchForm.gameId === 157 || this.searchForm.gameId === 230) {
         // 调用 getData() 获取 BetList 数组
         this.levelConfig = [
           { 'value': 0, 'label': '全部' },
@@ -748,7 +748,7 @@ export default {
     showInfo() {
       const _this = this
       // 检查是否 gameId 为 150 且 level 为 0
-      const gameIds = [150, 90, 156, 166, 174, 196, 204, 210, 216, 230] // 定义一个数组存储需要检查的 gameId
+      const gameIds = [150, 90, 156, 157, 166, 174, 196, 204, 210, 216, 230] // 定义一个数组存储需要检查的 gameId
       if (gameIds.includes(this.searchForm.gameId) && this.searchForm.level === 0) {
         // 循环所有 levelConfig 值（除 value === 0）
         const promises = this.levelConfig
