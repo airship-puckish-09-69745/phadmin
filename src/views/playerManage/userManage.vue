@@ -227,13 +227,6 @@
                   <el-option v-for="option in ITEM_DAY_TYPE_OPTIONS" :key="'itemusertime'+option.value"
                              :label="option.label" :value="option.value" :disabled="option.disabled || ([5,7,8,9].includes(item.ItemType)&& (option.value === 0 || option.value === 365)) || (option.value === -1 && itemEnv!=='development')">
                   </el-option>
-                  <el-option
-                    v-for="option in ITEM_DAY_TYPE_OPTIONS"
-                    :key="'itemdaytype'+option.value"
-                    :label="option.label"
-                    :value="option.value"
-                    :disabled="option.disabled || (item.ItemType === 5 && (option.value === 0 || option.value === 365))"
-                  />
                 </el-select>
               </template>
             </el-col>

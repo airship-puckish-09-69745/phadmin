@@ -32,7 +32,7 @@
           </el-form-item>
 
           <el-form-item label="解锁JP下注值">
-            <el-input v-model="tempJackpotSymbolStr" placeholder="请输入内容,如2,4,6,10">
+            <el-input v-model="tempJackpotUnlockBetStr" placeholder="请输入内容,如2,4,6,10">
               <template slot="append">MINOR和GRAND用 , 连接</template>
             </el-input>
           </el-form-item>
@@ -208,7 +208,7 @@ export default {
         currentConf: []
       },
       tempTurntableOdds: '',
-      tempJackpotSymbolStr: '',
+      tempJackpotUnlockBetStr: '',
       tempJackpotHopeStr: '',
       tempJackpotLimitStr: ''
     }
@@ -227,7 +227,7 @@ export default {
     },
     submitFrm() {
       this.cfg.TurntableOdds = this.scaleUp(this.tempTurntableOdds, 100)
-      this.cfg.JackpotSymbolStr = this.scaleUp(this.tempJackpotSymbolStr, 1000)
+      this.cfg.JackpotUnlockBetStr = this.scaleUp(this.tempJackpotUnlockBetStr, 1000)
       this.cfg.JackpotHopeStr = this.scaleUp(this.tempJackpotHopeStr, 1000)
       this.cfg.JackpotLimitStr = this.scaleUp(this.tempJackpotLimitStr, 1000)
 
@@ -255,7 +255,7 @@ export default {
         this.lock = true
 
         this.tempTurntableOdds = this.scaleDown(this.cfg.TurntableOdds, 100)
-        this.tempJackpotSymbolStr = this.scaleDown(this.cfg.JackpotSymbolStr, 1000)
+        this.tempJackpotUnlockBetStr = this.scaleDown(this.cfg.JackpotUnlockBetStr, 1000)
         this.tempJackpotHopeStr = this.scaleDown(this.cfg.JackpotHopeStr, 1000)
         this.tempJackpotLimitStr = this.scaleDown(this.cfg.JackpotLimitStr, 1000)
       }

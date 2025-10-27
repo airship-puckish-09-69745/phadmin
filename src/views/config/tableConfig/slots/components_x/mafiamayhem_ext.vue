@@ -30,21 +30,22 @@
             </el-input>
           </el-form-item>
 
-          <el-form-item label="奖池中奖概率">
-            <el-input v-model="cfg.JackpotTypeRate" placeholder="请输入内容,如10,10,10;分别对应MAJOR,MEGA,GRAND中奖概率">
-              <template slot="append">实际值要乘以千万分之一,分别对应Grand、Major、Minor、Mini</template>
+          <el-form-item label="中大奖概率">
+            <el-input v-model="cfg.JackpotTypeRate"
+                      placeholder="请输入内容,如10,10,10;分别对应MAJOR,MEGA,GRAND中奖概率">
+              <template slot="append">千万分之一,分别对应Grand,Major,Minor,Mini</template>
             </el-input>
           </el-form-item>
 
           <el-form-item label="jackpot大奖倍数">
             <el-input v-model="cfg.JackpotOdds" placeholder="请输入内容,如10,10,10;分别对应MAJOR,MEGA,GRAND倍数">
-              <template slot="append">放大100倍,对应Grand、Major、Minor、Mini</template>
+              <template slot="append">X100倍,对应Grand,Major,Minor,Mini</template>
             </el-input>
           </el-form-item>
 
           <el-form-item label="Jackpot抽水比例">
             <el-input v-model.number="cfg.JackpotFeeRate" :required="true">
-              <template slot="append">‰,对应Grand、Major、Minor、Mini</template>
+              <template slot="append">‰</template>
             </el-input>
           </el-form-item>
 
@@ -66,12 +67,18 @@
             </el-input>
           </el-form-item>
 
-          <el-form-item label="免费模式图标金框权重">
-            <el-input v-model="cfg.goldenFrameFeeWeight" placeholder=""/>
+          <!--          <el-form-item label="免费模式图标金框权重">-->
+          <!--            <el-input v-model="cfg.GoldenFrameFreeWeight" placeholder=""/>-->
+          <!--          </el-form-item>-->
+
+          <el-form-item label="普通模式金框概率">
+            <el-input v-model.number="cfg.GoldenFrameRate" placeholder="">
+              <template slot="append">‰</template>
+            </el-input>
           </el-form-item>
 
-          <el-form-item label="普通模式图标金框权重">
-            <el-input v-model="cfg.goldenFrameNormalWeight" placeholder=""/>
+          <el-form-item label="金框转为Wild与Big Wild权重">
+            <el-input v-model="cfg.WildWeight" placeholder=""/>
           </el-form-item>
 
           <el-form-item label="购买免费模式中奖倍数范围V2">
