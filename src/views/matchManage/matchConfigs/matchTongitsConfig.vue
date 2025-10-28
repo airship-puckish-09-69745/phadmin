@@ -325,7 +325,7 @@
           <el-form-item label="比赛全局ID：" :required="true">
             <el-select v-model="editForm.signExtra.matchUniqueId" placeholder="请选择" size="mini">
               <el-option
-                v-for="item in matchUniqueIdCfgs"
+                v-for="item in MATCH_UNIQUE_ID_CFG"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -876,7 +876,8 @@ import {
   PROP_TYPE_OPTIONS,
   MATCH_TABLE_SCENE_ID_CFG,
   MATCH_LIST_TAG_OPTIONS,
-  MATCH_IUPSTREAM_TYPE_OPTIONS
+  MATCH_IUPSTREAM_TYPE_OPTIONS,
+  MATCH_UNIQUE_ID_CFG
 } from '@/utils/options'
 
 export default {
@@ -896,6 +897,7 @@ export default {
       MATCH_TABLE_SCENE_ID_CFG,
       MATCH_LIST_TAG_OPTIONS,
       MATCH_IUPSTREAM_TYPE_OPTIONS,
+      MATCH_UNIQUE_ID_CFG,
       form: {
         gameId: MATCH_IUPSTREAM_TYPE_OPTIONS.MATCH_UPSTREAM_TYPE_TONGITS,
         status: -1,
@@ -974,19 +976,6 @@ export default {
       ],
       prizeModleSngCfgs: [
         { 'value': 0, 'label': '固定奖励' },
-      ],
-      // 比赛全局ID集合
-      matchUniqueIdCfgs: [
-        { 'value': 0, 'label': '无' },
-        { 'value': 10001, 'label': '188Free' },
-        { 'value': 10002, 'label': '12888Free' },
-        { 'value': 10003, 'label': 'P10' },
-        { 'value': 10004, 'label': 'P20' },
-        { 'value': 10005, 'label': 'P40' },
-        { 'value': 10006, 'label': 'P100' },
-        { 'value': 10007, 'label': 'P300' },
-        { 'value': 10008, 'label': 'GTCC 2005' },
-        { 'value': 10009, 'label': 'Yamaha Moto' }
       ],
       prizeTemplateCfg: [],
       matchPropsCfgs: [], // 比赛道具信息
