@@ -190,7 +190,7 @@ export default {
 
     // 检查循环是否禁用
     repeatLoopDisabled() {
-      if (this.editForm.data.repeatType === 2 && !this.editForm.isAdd) {
+      if (this.editForm.data.repeatType === 2 && !this.editForm.isAdd && !this.editForm.singleCopyExtr.isCopy) {
         return true
       }
       return false

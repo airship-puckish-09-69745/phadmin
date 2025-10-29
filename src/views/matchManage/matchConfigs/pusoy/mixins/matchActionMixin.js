@@ -97,6 +97,7 @@ export const matchActionMixin = {
           Message.success('复制比赛配置成功！')
           const env = this.$store.getters.env
           await this.getMatchList(env)
+          this.handleSetCopyExtr(id)
           return true
         } else {
           Message.error('复制比赛配置失败：' + response.Data)
