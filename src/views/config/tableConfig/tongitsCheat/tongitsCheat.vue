@@ -385,6 +385,7 @@ export default {
         MaybeAdd: 3,
         BlackAdd: 3
       },
+      TableScoreRadio: 0, // 作弊组合加分速度倍数
       nearID: [
         {
           Score: 10,
@@ -720,6 +721,7 @@ export default {
             this.autoWhite = $this.CheatCfg.AutoWhite || this.autoWhite
             const maybeMin = $this.CheatCfg.MaybeMin
             $this.oldCheatMin = maybeMin
+            $this.TableScoreRadio = $this.CheatCfg.TableScoreRadio || 0
             const old = JSON.parse(response.Data.Data)
             // 设置修改之前数据
             $this.$refs.compare.SetOldVal(old)
@@ -735,6 +737,7 @@ export default {
       this.CheatCfg.TableBlackScore = parseInt(this.CheatCfg.TableBlackScore)
       this.CheatCfg.TableTickLeave = parseInt(this.TableTickLeave)
       this.CheatCfg.RepairRadio = parseInt(this.RepairRadio)
+      this.CheatCfg.TableScoreRadio = parseInt(this.TableScoreRadio)
       const potItems = this.potTableBlackTickTableMoneys.split(',')
       this.CheatCfg.PotTableBlackTickTableMoneys = []
       for (const o in potItems) {
@@ -1058,6 +1061,9 @@ export default {
           </el-descriptions-item>
           <el-descriptions-item label="组合作弊离桌人数门槛" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
             <el-input v-model="TableTickLeave" type="number" size="medium" style="width: 120px" />
+          </el-descriptions-item>
+          <el-descriptions-item label="作弊组合加分速度倍数" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
+            <el-input v-model="TableScoreRadio" type="number" size="medium" style="width: 120px" />
           </el-descriptions-item>
           <el-descriptions-item label="POT防作弊机器⼈" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
             <el-button
