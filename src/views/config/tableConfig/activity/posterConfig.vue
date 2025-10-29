@@ -181,6 +181,35 @@
             </el-row>
           </fieldset>
         </el-tab-pane>
+
+        <el-tab-pane label="白名单配置">
+          <el-form label-width="220px">
+            <el-row>
+              <el-col>
+                <el-form-item label="白名单开关：" :rules="dataRule(true,{type:'n',range:'0'})">
+                  <el-switch v-model="edit.item.Whitelist.IsWhite" :active-value="true" :inactive-value="false" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="11">
+                <el-form-item label="AppId白名单：" prop="item.WhitelistCfg.AppIdList">
+                  <el-select v-model="edit.item.Whitelist.AppIdList" multiple placeholder="请选择" style="width: 400px">
+                    <el-option
+                      v-for="item in appIdOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col>
+                <el-form-item label="SiteId白名单：" prop="item.WhitelistCfg.SiteIdList">
+                  <SiteSelect v-model="edit.item.Whitelist.SiteIdList" multiple placeholder="请选择" style="width: 400px" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-form>
+        </el-tab-pane>
       </el-tabs>
       <el-row style="margin-top: 10px">
         <el-button type="primary" @click="handleSave">保存配置</el-button>
@@ -240,7 +269,7 @@
 
 <script>
 
-import {$libDate, $libShow, ClientTableData} from '@/utils/common'
+import {$libDate, $libShow, ClientTableData, DataRule} from '@/utils/common'
 import Publish from '@/components/Publish/index.vue'
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
 import Compare from '@/components/Compare/index.vue'
@@ -263,7 +292,12 @@ function newItem() {
     PosterImgVer: [],
     CloseImg: '',
     GameIcon: [],
-    GameId: []
+    GameId: [],
+    Whitelist: {
+      IsWhite: false,
+      AppIdList: [],
+      SiteIdList: []
+    }
   }
 }
 
@@ -308,6 +342,20 @@ export default {
         {
           GameId: 1, Name: '测试游戏1', OrderNo: 1
         }
+      ],
+      appIdOptions: [
+        {
+          value: 1000002,
+          label: '内部1000002'
+        },
+        {
+          value: 1000003,
+          label: '提审1000003'
+        },
+        {
+          value: 1000005,
+          label: '正式1000005'
+        }
       ]
     }
   },
@@ -321,6 +369,9 @@ export default {
   methods: {
     getFullKey() {
       return 'CustomizeCfg_' + this.subKey
+    },
+    dataRule(required, config) {
+      return DataRule(required, config)
     },
     formatTime(ts) {
       return $libDate.FormateSecondStr(ts, 2)

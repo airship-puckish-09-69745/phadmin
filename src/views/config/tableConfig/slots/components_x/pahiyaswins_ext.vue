@@ -65,6 +65,10 @@
             <el-input v-model.number="cfg.JackpotShowPoolRate" placeholder="请输入内容,如2"><template slot="append">%</template> </el-input>
           </el-form-item>
 
+          <el-form-item label="JP奖池获取周期" prop="JackpotInfoDelay" :rules="dataRule(true,{type:'n'})">
+            <el-input v-model.number="cfg.JackpotInfoDelay" placeholder="请输入内容,如2"><template slot="append">s</template> </el-input>
+          </el-form-item>
+
           <el-form-item label="免费模式额外增加免费的概率" prop="ScatterPlusRate" :rules="dataRule(true,{type:'n'})">
             <el-input v-model.number="cfg.ScatterPlusRate" :required="true">
               <template slot="append">‰</template>
