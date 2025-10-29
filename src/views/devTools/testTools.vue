@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-row :gutter="5" style="margin-top: 30px">
+    <el-row>
       <fieldset style="margin-top:10px">
         <legend>添加身份</legend>
         <el-form :inline="true" ref="trustTestForm" :model="trustTestForm">
@@ -54,7 +54,7 @@
         </el-table>
       </fieldset>
     </el-row>
-    <el-row :gutter="5" style="margin-top: 30px">
+    <el-row>
       <fieldset style="margin-top:10px">
         <legend>对比身份</legend>
         <el-form :inline="true" ref="trustCompForm" :model="trustCompForm">
@@ -114,7 +114,7 @@
 import request from '@/utils/request'
 import store from '@/store'
 export default {
-  name: 'TestKyc',
+  name: 'TrustUser',
   data() {
     return {
       item: {},

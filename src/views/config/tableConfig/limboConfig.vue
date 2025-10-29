@@ -287,6 +287,44 @@
                 </el-table>
               </fieldset>
 
+              <fieldset  v-if="!IsPHAuditEnv()">
+                <legend>小奖池触发重摇</legend>
+                <el-row>
+                  <el-col :span="11" :offset="1">
+                    <el-form-item label="奖池低于某值此时系统输：">
+                      <el-input v-model="item.ReChoiceCfg.LowLotteryPoolReChoice" size="mini" :required="true" />
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="11">
+                    <el-form-item label="重摇概率：">
+                      <el-input v-model.number="item.ReChoiceCfg.LowLotteryPoolReChoiceRate" size="mini"><template slot="append">‱</template></el-input>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-descriptions class="margin-top" border>
+                  <el-descriptions-item>
+                    <span style="color:red;">奖池低于某值此时系统输：当奖池低于X时，玩家赢钱有X%的概率重新摇</span>
+                  </el-descriptions-item>
+                </el-descriptions>
+                <el-row>
+                  <el-col :span="11" :offset="1">
+                    <el-form-item label="奖池大于某值此时系统赢：">
+                      <el-input v-model="item.ReChoiceCfg.HighLotteryPoolReChoice" size="mini" :required="true" />
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="11">
+                    <el-form-item label="重摇概率：">
+                      <el-input v-model.number="item.ReChoiceCfg.HighLotteryPoolReChoiceRate" size="mini"><template slot="append">‱</template></el-input>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-descriptions class="margin-top" border>
+                  <el-descriptions-item>
+                    <span style="color:red;">奖池大于某值此时系统赢：1.当奖池的钱>X.玩家输钱时有X%的概率重新摇 </span>
+                  </el-descriptions-item>
+                </el-descriptions>
+              </fieldset>
+
             </el-col>
           </el-tab-pane>
         </el-tabs>
@@ -346,6 +384,7 @@ export default {
         BonusCfg:[], //bonus配置
         FlyDelay:[], //飞行延迟配置
         RobotCfg:[], //机器人配置
+        ReChoiceCfg:{},
       },
       form: {},
       subKey: 'limbo_cfg',
@@ -378,6 +417,9 @@ export default {
           betMoneyList.push(o / 1000)
         }
         that.item.BetMoneyLevel[j].TableMoney = betMoneyList.join(',')
+      }
+      for (const i in that.item.RobotCfg) {
+        that.item.RobotCfg[i].RewardType /= 100
       }
     },
     getData() {
@@ -414,10 +456,13 @@ export default {
 
             this.transMoneyForShow()
 
+            item.MaxBet /= 1000
             item.CarryLower /= 1000
-            item.RTP /= 1000 //四位小数
+            item.RTP /= 100 //四位小数
             item.RobotCarryMin /= 1000
             item.RobotCarryMax /= 1000
+            item.ReChoiceCfg.LowLotteryPoolReChoice /= 1000
+            item.ReChoiceCfg.HighLotteryPoolReChoice /= 1000
 
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data)
@@ -447,11 +492,17 @@ export default {
       for (const i in this.item.BonusCfg) {
         
       }
+      for (const i in this.item.RobotCfg) {
+        ret.RobotCfg[i].RewardType *= 100
+      }
 
+      ret.MaxBet *= 1000
       ret.CarryLower *= 1000
-      ret.RTP *= 1000
+      ret.RTP *= 100
       ret.RobotCarryMin *= 1000
       ret.RobotCarryMax *= 1000
+      ret.ReChoiceCfg.LowLotteryPoolReChoice *= 1000
+      ret.ReChoiceCfg.HighLotteryPoolReChoice *= 1000
 
       //测试
       if (!ret.openTest || ret.openTest=="1"){
@@ -519,7 +570,7 @@ export default {
           maxId = o.Id
         }
       }
-      this.item.RobotCfg.push({ Id: maxId + 1, RewardType: 1, Rate: [1, 1]})
+      this.item.RobotCfg.push({ Id: maxId + 1, RewardType: 100, Rate: [1, 1]})
     },
     delRobotCfg(index) {
       this.item.RobotCfg.splice(index, 1)

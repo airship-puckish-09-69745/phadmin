@@ -435,7 +435,7 @@
           <el-form-item v-if="edit.item.SignUpType > 0" label="门票：" :required="true">
             <el-select v-model="edit.item.SignUpExtra.propsId" placeholder="请选择" size="mini">
               <el-option
-                v-for="item in matchPropsCfgs"
+                v-for="item in matchTicketsCfgs"
                 :key="item.propsId"
                 :label="item.propsName"
                 :value="item.propsId"
@@ -536,7 +536,18 @@
                       </el-option>
                     </el-select>
                     <el-input v-model.number="scope.row.propsReward.propsNum" style="width: 100px;" size="mini" placeholder="填数量" />
-                    <el-input v-if='isHeadProps(scope.row.propsReward.propsId)' v-model.number="scope.row.propsReward.propsEffectiveTime" style="width: 100px;" size="mini" placeholder="有效时间(天)" />
+                  </li>
+                  <li v-if="scope.row.propsReward != null && checkPropNeedExpireDays(scope.row.propsReward.propsId)" style="list-style: none;">
+                    <span>过期天数：</span>
+                    <el-select v-model="scope.row.propsReward.propsEffectiveTime" placeholder="过期天数" size="mini" style="width:200px">
+                      <el-option
+                        v-for="item in ITEM_DAY_TYPE_OPTIONS"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                        :disabled="item.disabled === propValidExpireDays(scope.row.propsReward.propsId, item.value)"
+                      />
+                    </el-select>
                   </li>
                 </ul>
               </template>
@@ -587,7 +598,7 @@ import GameLevel from '@/components/GameLevel'
 import MoneyInput from '@/components/MoneyInput'
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
 import { IsMars } from '@/utils/env'
-import {ITEM_TYPE_OPTIONS, PROP_TYPE_OPTIONS} from "@/utils/options";
+import {ITEM_TYPE_OPTIONS, PROP_TYPE_OPTIONS,ITEM_DAY_TYPE_OPTIONS} from "@/utils/options";
 
 const filterMap = {}
 
@@ -656,6 +667,7 @@ function newItem() {
     RankRewardsExtraStr:'',
   }
 }
+
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
@@ -737,6 +749,7 @@ export default {
         { 'value': 2, 'label': '金币or门票' }
       ],
       matchPropsCfgs: [],   //比赛道具信息
+      matchTicketsCfgs: [],
       clientDB: new ClientTableData([], 1, filterMap),
       search: '',
       libShow: $libShow,
@@ -792,7 +805,10 @@ export default {
         SignUpType: '报名类型',
         SignUpExtra: '报名门票信息',
         RankRewardsExtra: '门票奖励信息'
-      }
+      },
+      PROP_TYPE_OPTIONS,
+      ITEM_DAY_TYPE_OPTIONS,
+      propsTypeList: [PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET, PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR,PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW] // 门票 头像框
     }
   },
   created() {
@@ -800,6 +816,8 @@ export default {
     this.getList()
     if (!IsMars()) {
       this.getMatchProps()
+    } else {
+      this.appidInfoCfgs.push( { 'value': 1000008, 'label': 'gli' },)
     }
     /*this.getMatchPropsV1()*/
   },
@@ -1176,40 +1194,7 @@ export default {
       }
       this.edit.visible = false
     },
-    getMatchPropsV1() {
-      const _this = this
-      request({
-        url: '/propsconfig/props/config/list',
-        method: 'get',
-        data: {
-          Env: this.env,
-          PageNum: 1,
-          PageSize: 100,
-          PropType: 0,
-        }
-      }).then(response => {
-        if (response.RetCode === 0) {
-          const objs = response.Data || {}
-          var timestamp = Date.parse(new Date())/1000
-          if (objs.total > 0) {
-            for (let i=0;i<objs.list.length;i++) {
-              if ((objs.list[i].item_type !== 3 &&  objs.list[i].item_type !== 4) || objs.list[i].status !== 1 || objs.list[i].expire_time < timestamp) {
-                continue
-              }
-              this.matchPropsCfgs.push({
-                'propsType': objs.list[i].item_type,
-                'propsId': objs.list[i].id,
-                'propsName': objs.list[i].item_name,
-                'propsIcon': objs.list[i].image,
-                'propsAttr': objs.list[i].item_describe,
-                'propsCost': objs.list[i].item_cost,
-                'propsExpireTime': objs.list[i].expire_time,
-              })
-            }
-          }
-        }
-      })
-    },
+
     makeContent(key, addData, delData, editData) {
       console.log(key, JSON.stringify(addData), JSON.stringify(delData), JSON.stringify(editData))
       let change = new Set()
@@ -1295,7 +1280,6 @@ export default {
       return gameName
     },
     getMatchProps() {
-      console.log("==>getMatchProps<==")
       const _this = this
       request({
         url: '/dataProxy/info',
@@ -1311,7 +1295,8 @@ export default {
           var timestamp = Date.parse(new Date())/1000
           if (objs.total > 0) {
             for (let i=0;i<objs.list.length;i++) {
-              if(objs.list[i].status ===1 && ((objs.list[i].item_type===3 && objs.list[i].expire_time>timestamp) || objs.list[i].item_type===8)) {
+              if(objs.list[i].status ===1 && ((objs.list[i].item_type===PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET && objs.list[i].expire_time>timestamp) ||
+                 [PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW,PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR].includes(objs.list[i].item_type) )) { //类型参考 PROP_TYPE_OPTIONS定义
                 this.matchPropsCfgs.push({
                   'propsType': objs.list[i].item_type,
                   'propsId': objs.list[i].id,
@@ -1321,9 +1306,16 @@ export default {
                   'propsCost': objs.list[i].item_cost,
                   'propsExpireTime': objs.list[i].expire_time,
                 })
+                if ([PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET,PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW].includes(objs.list[i].item_type)) { // texas 门票
+                  this.matchTicketsCfgs.push({
+                    'propsId': objs.list[i].id,
+                    'propsName': objs.list[i].item_name
+                  })
+                }
               }
             }
           }
+          console.log('matchTicketsCfgs', this.matchTicketsCfgs)
         }
       })
     },
@@ -1351,7 +1343,7 @@ export default {
           propsIcon: '',
           propsAttr: '',
           propsNum:0,
-          propsEffectiveTime: 0,
+          propsEffectiveTime: -2,
         }
       })
     },
@@ -1420,20 +1412,72 @@ export default {
         if (this.edit.item.RankRewardsExtra[j].propsReward.propsId * this.edit.item.RankRewardsExtra[j].propsReward.propsType * this.edit.item.RankRewardsExtra[j].propsReward.propsNum === 0 ) {
           return true
         }
-        expire_time = this.getPropsExpireTime(this.edit.item.RankRewardsExtra[j].propsReward.propsId, this.edit.item.RankRewardsExtra[j].propsReward.propsType)
-        if (this.edit.item.SignUpExtra.propsType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET && expire_time < endTime && this.edit.item.RankRewardsExtra[j].propsReward.propsType !== 4) {
+        // expire_time = this.getPropsExpireTime(this.edit.item.RankRewardsExtra[j].propsReward.propsId, this.edit.item.RankRewardsExtra[j].propsReward.propsType)
+        // if (this.edit.item.SignUpExtra.propsType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET && expire_time < endTime && this.edit.item.RankRewardsExtra[j].propsReward.propsType !== 4) {
+        //   return true
+        // }
+        if([PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR,PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW].includes(this.edit.item.RankRewardsExtra[j].propsReward.propsType) &&
+          this.edit.item.RankRewardsExtra[j].propsReward.propsEffectiveTime <0){
           return true
         }
       }
       return false
     },
-    isHeadProps(propsId) {
-       for (var i=0; i<this.matchPropsCfgs.length; i++){
-        if (propsId === this.matchPropsCfgs[i].propsId && this.matchPropsCfgs[i].propsType == 4) {
+    // 道具是否需要过期时间
+    checkPropNeedExpireDays(propsId) {
+      for (var i=0; i<this.matchPropsCfgs.length; i++){
+        if (propsId === this.matchPropsCfgs[i].propsId &&  [PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR, PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW].includes(this.matchPropsCfgs[i].propsType)) {
           return true
         }
       }
       return false
+    },
+
+    // 道具过期时间是否合法
+    propValidExpireDays(propsId, expireDays) {
+      const prop = this.getPropsRewardItem(propsId, 0, 0)
+      switch (prop.propsType) {
+        case PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR:
+          if (expireDays < 0) {
+            return false
+          }
+          break;
+        case PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW:
+          if (expireDays === 0 || expireDays === 365 || expireDays < 0) {
+            return false
+          }
+          break;
+        default:
+          break;
+      }
+      return  true
+    },
+
+    getPropsRewardItem(pid) {
+      const one = {
+        propsId: 0,
+        propsType: 0,
+        propsName: '',
+        propsIcon: '',
+        propsAttr: '',
+        propsNum: 0,
+        propCost: 0,
+        propsEffectiveTime: -1,
+      }
+      for (let i = 0; i < this.matchPropsCfgs.length; i++) {
+        const element = this.matchPropsCfgs[i]
+        if (element.propsId === pid) {
+          one.propsId = element.propsId
+          one.propsType = element.propsType
+          one.propsName = element.propsName
+          one.propsIcon = element.propsIcon
+          one.propsAttr = element.propsAttr
+          one.propCost = element.propsCost
+          one.propsExpireTime = element.propsExpireTime
+          break
+        }
+      }
+      return one
     },
     handlerChangeMin(e) {
       // if (parseInt(e) < 2 || parseInt(e) > this.edit.item.TableMaxPlayerNum) {

@@ -244,6 +244,7 @@ export default {
         { 'value': 125, 'label': 'FreeSpin' },
         { 'value': 150, 'label': 'SuperGemIII' },
         { 'value': 156, 'label': 'CrazyAce' },
+        { 'value': 157, 'label': 'CrazyAceMars' },
         { 'value': 82, 'label': 'Millionaire' },
         { 'value': 166, 'label': 'FireLink' },
         { 'value': 174, 'label': 'TreasureBowl' },

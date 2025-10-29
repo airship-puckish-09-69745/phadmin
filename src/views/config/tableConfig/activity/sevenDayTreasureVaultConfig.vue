@@ -670,8 +670,8 @@ export default {
       ],
       conditionTypeOptions: [
         { value: 1, label: '登录' },
-        { value: 2, label: '下注值' },
-        { value: 3, label: '下注次数' }
+        { value: 2, label: '下注值' }
+        // { value: 3, label: '下注次数' }
       ],
       rewardTypeOptions: [
         { value: 1, label: '金币(投注金)' },
@@ -880,7 +880,7 @@ export default {
         tableData.Activity.GameIdList.push(tableData.GameIcon[key].Id)
       }
       this.$refs.compare.SetNewVal(tableData)
-      this.$refs.compare.Compare(function(isEdit) {
+      this.$refs.compare.Compare((isEdit) => {
         if (!isEdit) {
           this.$message.error('没有任何修改，不需要提交')
           return
@@ -888,27 +888,25 @@ export default {
 
         this.$emit('saveData')
         this.lock = false
+        this.form.Data = JSON.stringify(tableData)
+        request({
+          url: 'customizeconfig/update',
+          method: 'post',
+          data: this.form
+        }).then(response => {
+          if (response.RetCode === 0) {
+            const showMsg = '保存成功'
+            this.$message.success(showMsg)
+            // this.getData()
+          } else {
+            const errMsg = '保存成功失败！'
+            this.$message.error(errMsg + response.Data)
+          }
+        })
       })
-      this.form.Data = JSON.stringify(tableData)
-      request({
-        url: 'customizeconfig/update',
-        method: 'post',
-        data: this.form
-      }).then(response => {
-        if (response.RetCode === 0) {
-          const showMsg = '保存成功'
-          Message.success(showMsg)
-          // this.getData()
-          return
-        } else {
-          const errMsg = '保存成功失败！'
-          Message.error(errMsg + response.Data)
-          return
-        }
-      })
-      setTimeout(() => {
-        this.IsUpdate = false
-      }, 1000)
+      // setTimeout(() => {
+      //   this.IsUpdate = false
+      // }, 1000)
     },
     onAppIdOptionsChange() {
       console.log('onAppIdOptionsChange', this.item.Activity.Whitelist.AppIdList)

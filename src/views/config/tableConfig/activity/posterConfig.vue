@@ -268,6 +268,7 @@ function newItem() {
 }
 
 export default {
+  // eslint-disable-next-line vue/no-unused-components
   components: { ImagePicker, Compare, Publish, GameLevel, MoneyInput, SiteSelect },
   data() {
     return {
@@ -409,9 +410,9 @@ export default {
       })
     },
     saveData() {
-      const tmp = {
+      const tmp = JSON.parse(JSON.stringify({
         Config: this.tableData
-      }
+      }))
       this.$refs.compare.SetNewVal(tmp)
       this.$refs.compare.Compare((isEdit) => {
         if (!isEdit) {
