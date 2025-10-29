@@ -418,6 +418,9 @@ export default {
         }
         that.item.BetMoneyLevel[j].TableMoney = betMoneyList.join(',')
       }
+      for (const i in that.item.RobotCfg) {
+        that.item.RobotCfg[i].RewardType /= 100
+      }
     },
     getData() {
       request({
@@ -488,6 +491,9 @@ export default {
       }
       for (const i in this.item.BonusCfg) {
         
+      }
+      for (const i in this.item.RobotCfg) {
+        ret.RobotCfg[i].RewardType *= 100
       }
 
       ret.MaxBet *= 1000
@@ -564,7 +570,7 @@ export default {
           maxId = o.Id
         }
       }
-      this.item.RobotCfg.push({ Id: maxId + 1, RewardType: 1, Rate: [1, 1]})
+      this.item.RobotCfg.push({ Id: maxId + 1, RewardType: 100, Rate: [1, 1]})
     },
     delRobotCfg(index) {
       this.item.RobotCfg.splice(index, 1)
