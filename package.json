@@ -11,6 +11,7 @@
     "lint": "eslint --fix --ext .js,.vue src",
     "build:prod": "vue-cli-service build",
     "build:stage": "vue-cli-service build --mode staging",
+    "build:v2_stage": "vue-cli-service build --mode v2_staging",
     "build:zoo_stage": "vue-cli-service build --mode zoo_staging",
     "build:sh_stage": "vue-cli-service build --mode sh_staging",
     "preview": "node build/index.js --preview",
