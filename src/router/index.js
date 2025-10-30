@@ -1175,7 +1175,14 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/limboConfig'),
             name: 'limbo_cfg',
             meta: { title: 'L imbo ◐' }
-          }
+          },
+          {
+            path: 'luckyScratch_cfg',
+            component: () => import('@/views/config/tableConfig/minigames/luckyScratch.vue'),
+            name: 'luckyScratch_cfg',
+            meta: { title: 'Lucky Scratch ◐' }
+          },
+          
         ]
       },
       {
