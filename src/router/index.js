@@ -1820,6 +1820,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/lionfortunemars_slots_cfg'),
                 name: 'lionfortunemars_slots_cfg',
                 meta: { title: 'LionFortune(审)' }
+              },
+              {
+                path: 'fortunewheelmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/fortunewheelmars_slots_cfg'),
+                name: 'fortunewheelmars_slots_cfg',
+                meta: { title: 'FortuneWheel(审)' }
               }
             ]
           },
@@ -3128,7 +3134,7 @@ export const asyncRoutes = [
           {
             path: 'fortunewheel_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
-            name: 'wrathofzeus2_slots_log',
+            name: 'fortunewheel_slots_log',
             meta: { title: 'F ortuneWheel', gid: 226 }
           },
           {
@@ -3656,6 +3662,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'lionfortunemars_slots_log',
             meta: { title: 'LionFortune(审)', gid: 223 }
+          },
+          {
+            path: 'fortunewheelmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'fortunewheelmars_slots_log',
+            meta: { title: 'FortuneWheel(审)', gid: 227 }
           }
         ]
       },
