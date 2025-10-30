@@ -418,6 +418,7 @@ export default {
     },
     async getUidLogs(row, tidInfos) {
       // console.log(ttt)
+      const now = Date.now()/1000
       const $this = this
       await request({
         url: '/dataProxy/info',
@@ -491,14 +492,17 @@ export default {
                     }
                   }
                 }
-                tidInfos.push({
-                  tid: tidRow.tid,
-                  uid: row.Uid,
-                  firstTime: firstTime,
-                  firstId: firstId,
-                  lastTime: lastTime,
-                  lastId: lastId
-                })
+                if ((now - firstTime < 60*60*24*30) && (now - lastTime < 60*60*24*30)) {
+                  tidInfos.push({
+                    tid: tidRow.tid,
+                    uid: row.Uid,
+                    firstTime: firstTime,
+                    firstId: firstId,
+                    lastTime: lastTime,
+                    lastId: lastId
+                  })
+                }
+
                 console.log("tidInfos",tidInfos)
                 tidCheatLogs.push(tidCheatLog)
               }
