@@ -310,20 +310,21 @@ export default {
               SmallIntensity: 0, //小场洗分强度
               SmallCoefficient: 0 //小场洗分系数
             }
-            if (row.tableMoneyAddScore !== undefined && row.tableMoneyReduceScore !== undefined) {
-              let addScore = 0
-              let reduceScore = 0
+            let addScore = 0
+            let reduceScore = 0
+            if (row.tableMoneyAddScore !== undefined ) {
               for (const tableMoney in row.tableMoneyAddScore) {
                 addScore += row.tableMoneyAddScore[tableMoney] * tableMoney
               }
+            }
+            if (row.tableMoneyReduceScore !== undefined) {
               for (const tableMoney in row.tableMoneyReduceScore) {
                 reduceScore += row.tableMoneyReduceScore[tableMoney] * tableMoney
               }
-              cheatLog.SmallIntensity = (addScore / 1000 + reduceScore / 1000).toFixed(1)
-              cheatLog.SmallCoefficient = (addScore / 1000).toFixed(2)
-              if (reduceScore !== 0) {
-                cheatLog.SmallCoefficient = ((addScore / 1000) / (reduceScore*-1 / 1000)).toFixed(2)
-              }
+            }
+            cheatLog.SmallIntensity = (addScore / 1000 + reduceScore / 1000).toFixed(1)
+            if (reduceScore !== 0) {
+              cheatLog.SmallCoefficient = ((addScore / 1000) / (reduceScore*-1 / 1000)).toFixed(2)
             }
             if (row.trustScore !== undefined) {
               cheatLog.TrustScore = row.trustScore
