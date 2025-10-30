@@ -71,9 +71,15 @@
           <!--            <el-input v-model="cfg.GoldenFrameFreeWeight" placeholder=""/>-->
           <!--          </el-form-item>-->
 
-          <el-form-item label="普通模式金框概率">
+          <el-form-item label="金框概率">
             <el-input v-model.number="cfg.GoldenFrameRate" placeholder="">
-              <template slot="append">‰</template>
+              <template slot="append">%</template>
+            </el-input>
+          </el-form-item>
+
+          <el-form-item label="BigWild的概率%" prop="BigWildRate" :rules="dataRule(true,{type:'n'})">
+            <el-input v-model.number="cfg.BigWildRate" :required="true">
+              <template slot="append">%</template>
             </el-input>
           </el-form-item>
 
