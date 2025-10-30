@@ -85,6 +85,8 @@ export const matchDataMixin = {
           await this.getCsCfgsAsync(env)
         } else {
           // Mars 环境处理
+          await this.getCsIdCfgs(env)
+          await this.getCsCfgsAsync(env)
         }
       } catch (error) {
         // 获取赛制配置错误

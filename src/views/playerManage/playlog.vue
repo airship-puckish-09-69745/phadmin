@@ -3211,6 +3211,35 @@
       </el-table>
     </el-dialog>
 
+    <el-dialog title="Limbo详情" :visible.sync="LimboDetailVisible" width="1200px">
+      <el-table ref="filterTable" :data="LimboDetail.players" border>
+        <el-table-column prop="uid" label="uid" width="128px">
+          <template slot-scope="scope">{{ scope.row.uid }}</template>
+        </el-table-column>
+        <el-table-column prop="nick" label="昵称"  width="150px">
+          <template slot-scope="scope">{{ scope.row.nick }}</template>
+        </el-table-column>        
+        <el-table-column prop="bet" label="下注金额"  width="150px">
+          <template slot-scope="scope">{{ scope.row.betMoney }}</template>
+        </el-table-column>
+        <el-table-column prop="obMul" label="下注赔率"  width="150px">
+          <template slot-scope="scope">{{ scope.row.obMultiple/100 }}</template>
+        </el-table-column>
+        <el-table-column prop="payoutMultiple" label="爆炸点"  width="150px">
+          <template slot-scope="scope">{{ scope.row.payoutMultiple/100 }}</template>
+        </el-table-column>
+        <el-table-column prop="moneyChange" label="输赢"  width="150px">
+          <template slot-scope="scope">{{ scope.row.moneyChange }}</template>
+        </el-table-column>
+        <el-table-column prop="bonusMultiple" label="中bonus倍数"  width="150px">
+          <template slot-scope="scope">{{ scope.row.bonusMultiple }}</template>
+        </el-table-column>
+        <el-table-column prop="bonusMoney" label="bonus奖励"  width="150px">
+          <template slot-scope="scope">{{ scope.row.bonusMoney }}</template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+
     <el-dialog title="TeenPatti详情" :visible.sync="ZJHDetailVisible" width="1600px">
       <div style=" font-size:14px; line-height: 36px; height: 50px; color:red; ">
         <span style="float:left;">{{ '底分:' + ZJHDetail.antes/1000 }}</span>
@@ -3678,6 +3707,9 @@ export default {
       miniSaBongGameVisible: false,
       miniSaBongGameResult: [],
       miniSaBongGameOptions: [],
+
+      LimboDetail:{},
+      LimboDetailVisible:false,
 
       pusoyDetail: {},
       pusoyDetailVisible: false,
@@ -4233,6 +4265,8 @@ export default {
             $this.showTrucoGame(obj)
           } else if (gid === 12 || gid === 133){
             $this.showBuracoGame(obj)
+          } else if (gid === 136){
+            $this.showLimboGame(obj)
           } else {
             $this.showSmallGame(obj)
           }
@@ -4418,6 +4452,11 @@ export default {
       }
       console.log('this.BuracoData => ', this.BuracoDetail)
       this.BuracoDetailVisible = true
+    },
+    showLimboGame(obj){
+      this.LimboDetail.players = []
+      this.LimboDetail.players.push(obj.player)
+      this.LimboDetailVisible = true
     },
     showFilipinoMahjongGame(obj, log) {
       this.FilipinoMahjongDetail = log// obj

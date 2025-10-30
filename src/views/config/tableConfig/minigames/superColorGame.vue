@@ -15,25 +15,25 @@
               </el-form-item>
             </el-col>
 
-            <el-col :span="7" :offset="3">
-              <el-form-item label="用户长时间未下注提示:">
-                <el-input v-model.number="item.NoticeTime" :required="true" @input="wallpaperInput2">
-                  <template slot="append">秒</template>
-                </el-input>
-              </el-form-item>
-            </el-col>
+<!--            <el-col :span="7" :offset="3">-->
+<!--              <el-form-item label="用户长时间未下注提示:">-->
+<!--                <el-input v-model.number="item.NoticeTime" :required="true" @input="wallpaperInput2">-->
+<!--                  <template slot="append">秒</template>-->
+<!--                </el-input>-->
+<!--              </el-form-item>-->
+<!--            </el-col>-->
             <el-col :span="7" :offset="1">
-              <el-form-item label="RPT:">
+              <el-form-item label="RTP:">
                 <el-input v-model.number="item.RPT" :required="true">
                   <template slot="append">‱</template>
                 </el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="7" :offset="3">
-              <el-form-item label="最小携带金额:">
-                <el-input v-model.number="item.MinMoneyCarry" :required="true" />
-              </el-form-item>
-            </el-col>
+<!--            <el-col :span="7" :offset="3">-->
+<!--              <el-form-item label="最小携带金额:">-->
+<!--                <el-input v-model.number="item.MinMoneyCarry" :required="true" />-->
+<!--              </el-form-item>-->
+<!--            </el-col>-->
           </el-tab-pane>
           <el-tab-pane label="玩法配置">
             <el-col :span="16" :offset="3">
@@ -113,7 +113,7 @@
                         label="1颗"
                       >
                         <template slot-scope="scope">
-                          <el-input v-model.number="scope.row.Odds[0].Odd" style="width:120px;" size="mini">
+                          <el-input v-model="scope.row.Odds[0].Odd" style="width:120px;" size="mini">
                             <template slot="append">X</template>
                           </el-input>
                         </template>
@@ -122,7 +122,7 @@
                         label="2颗"
                       >
                         <template slot-scope="scope">
-                          <el-input v-if="scope.row.Odds[1]!==undefined" v-model.number="scope.row.Odds[1].Odd" style="width:120px;" size="mini">
+                          <el-input v-if="scope.row.Odds[1]!==undefined" v-model="scope.row.Odds[1].Odd" style="width:120px;" size="mini">
                             <template slot="append">X</template>
                           </el-input>
                         </template>
@@ -131,7 +131,7 @@
                         label="3颗"
                       >
                         <template slot-scope="scope">
-                          <el-input v-if="scope.row.Odds[2]!==undefined" v-model.number="scope.row.Odds[2].Odd" style="width:120px;" size="mini">
+                          <el-input v-if="scope.row.Odds[2]!==undefined" v-model="scope.row.Odds[2].Odd" style="width:120px;" size="mini">
                             <template slot="append">X</template>
                           </el-input>
                         </template>
@@ -160,11 +160,13 @@
                     <span style="color:red;"> 说明:超级骰子的配置 </span>
                   </el-descriptions-item>
                 </el-descriptions>
-                <el-col :span="7" :offset="0">
-                  <el-form-item label="超级骰子命中的概率">
-                    <el-input v-model.number="item.SuperDice.Probability" :required="true" />
-                  </el-form-item>
-                </el-col>
+                <el-row>
+                  <el-col :span="7" :offset="0">
+                    <el-form-item label="超级骰子命中的概率">
+                      <el-input v-model.number="item.SuperDice.Probability" :required="true" />
+                    </el-form-item>
+                  </el-col>
+                </el-row>
                 <el-row>
                   <el-table
                     ref="filterTable"
@@ -302,38 +304,38 @@
                     </el-form-item>
                   </el-col>
                 </el-row>
-                <el-row>
-                  <el-col :span="11" :offset="1">
-                    <el-form-item label="机器人下注最小筹码：" prop="RobotCfg.MinRobotBetMoney" :rules="dataRule(true,{type:'n',range:'0'})">
-                      <el-col :span="20">
-                        <el-input v-model.number="item.RobotCfg.MinRobotBetMoney" size="mini" :required="true" />
-                      </el-col>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="11">
-                    <el-form-item label="机器人下注最大筹码：" prop="RobotCfg.MaxRobotBetMoney" :rules="dataRule(true,{type:'n',range:'0'})">
-                      <el-col :span="20">
-                        <el-input v-model.number="item.RobotCfg.MaxRobotBetMoney" size="mini" :required="true" />
-                      </el-col>
-                    </el-form-item>
-                  </el-col>
-                </el-row>
-                <el-row>
-                  <el-col :span="11" :offset="1">
-                    <el-form-item label="在线真人人数下限：" prop="RobotCfg.MinRealUserCount" :rules="dataRule(true,{type:'n',range:'0'})">
-                      <el-col :span="20">
-                        <el-input v-model.number="item.RobotCfg.MinRealUserCount" size="mini" :required="true" />
-                      </el-col>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="11">
-                    <el-form-item label="在线人数上限：" prop="RobotCfg.MaxRealUserCount" :rules="dataRule(true,{type:'n',range:'0'})">
-                      <el-col :span="20">
-                        <el-input v-model.number="item.RobotCfg.MaxRealUserCount" size="mini" :required="true" />
-                      </el-col>
-                    </el-form-item>
-                  </el-col>
-                </el-row>
+<!--                <el-row>-->
+<!--                  <el-col :span="11" :offset="1">-->
+<!--                    <el-form-item label="机器人下注最小筹码：" prop="RobotCfg.MinRobotBetMoney" :rules="dataRule(true,{type:'n',range:'0'})">-->
+<!--                      <el-col :span="20">-->
+<!--                        <el-input v-model.number="item.RobotCfg.MinRobotBetMoney" size="mini" :required="true" />-->
+<!--                      </el-col>-->
+<!--                    </el-form-item>-->
+<!--                  </el-col>-->
+<!--                  <el-col :span="11">-->
+<!--                    <el-form-item label="机器人下注最大筹码：" prop="RobotCfg.MaxRobotBetMoney" :rules="dataRule(true,{type:'n',range:'0'})">-->
+<!--                      <el-col :span="20">-->
+<!--                        <el-input v-model.number="item.RobotCfg.MaxRobotBetMoney" size="mini" :required="true" />-->
+<!--                      </el-col>-->
+<!--                    </el-form-item>-->
+<!--                  </el-col>-->
+<!--                </el-row>-->
+<!--                <el-row>-->
+<!--                  <el-col :span="11" :offset="1">-->
+<!--                    <el-form-item label="在线真人人数下限：" prop="RobotCfg.MinRealUserCount" :rules="dataRule(true,{type:'n',range:'0'})">-->
+<!--                      <el-col :span="20">-->
+<!--                        <el-input v-model.number="item.RobotCfg.MinRealUserCount" size="mini" :required="true" />-->
+<!--                      </el-col>-->
+<!--                    </el-form-item>-->
+<!--                  </el-col>-->
+<!--                  <el-col :span="11">-->
+<!--                    <el-form-item label="在线人数上限：" prop="RobotCfg.MaxRealUserCount" :rules="dataRule(true,{type:'n',range:'0'})">-->
+<!--                      <el-col :span="20">-->
+<!--                        <el-input v-model.number="item.RobotCfg.MaxRealUserCount" size="mini" :required="true" />-->
+<!--                      </el-col>-->
+<!--                    </el-form-item>-->
+<!--                  </el-col>-->
+<!--                </el-row>-->
                 <el-row>
                   <el-col :span="11" :offset="1">
                     <el-form-item label="机器人+真人人数下限：" prop="RobotCfg.MinTotalUserCount" :rules="dataRule(true,{type:'n',range:'0'})">
@@ -422,6 +424,31 @@
                 </el-row>
 
               </fieldset>
+              <fieldset style="margin-top:10px">
+                <legend>总的机器人下注</legend>
+                <el-alert
+                  type="success"
+                  description="在一局游戏内机器人下注相关配置"
+                />
+                <el-row>
+                  <el-col :span="8">
+                    <el-form-item label="下注机器人数的上限：">
+                      <el-col :span="10">
+                        <el-input v-model.number="item.RobotCfg.BetRobotMaxCount" size="mini" />
+                      </el-col>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="8">
+                    <el-form-item label="机器人最大下注区域数：">
+                      <el-col :span="8">
+                        <el-input v-model.number="item.RobotCfg.BetRobotMaxBetAreaCount" size="mini" />
+                      </el-col>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+              </fieldset>
             </el-col>
           </el-tab-pane>
           <el-tab-pane label="配牌">
@@ -467,9 +494,9 @@
                 </el-select>
               </el-form-item>
               <el-form-item label="超级骰子的赔率：">
-<!--                <el-input v-model.number="resultForm.superDiceOdd" style="width: 150px;" size="mini">-->
-<!--                  <template slot="append">X</template>-->
-<!--                </el-input>-->
+                <!--                <el-input v-model.number="resultForm.superDiceOdd" style="width: 150px;" size="mini">-->
+                <!--                  <template slot="append">X</template>-->
+                <!--                </el-input>-->
                 <el-select v-model="resultForm.superDiceOdd" style="width:120px;">
                   <el-option
                     v-for="typeItem in SuperDiceOddOption "
@@ -535,6 +562,7 @@ export default {
         { 'Id': 6, 'Name': '红', 'Key': 'red' }
       ],
       DiceIndexOption: [
+        { 'Id': -1, 'Name': '不使用'},
         { 'Id': 0, 'Name': '第一个骰子' },
         { 'Id': 1, 'Name': '第二个骰子' },
         { 'Id': 2, 'Name': '第三个骰子' }
@@ -592,7 +620,9 @@ export default {
           MinRealUserCount: 0, // 在线人数下限
           MaxRealUserCount: 50, // 在线人数上限
           MinTotalUserCount: 50, // 总人数下限
-          MaxTotalUserCount: 200// 总人数上限
+          MaxTotalUserCount: 200, // 总人数上限
+          BetRobotMaxCount: 0,
+          BetRobotMaxBetAreaCount: 0
         },
         BetLevels: [
           {
@@ -678,17 +708,7 @@ export default {
         ChatRobotReplyIntervalMax: 0,
         ChatRobotReplyRate: 0,
         ChatRobotReplyMaxNum: 0
-        // ChatRobotCfg: {
-        //   IsOpen: false,
-        //   ChatRobotSendIntervalMin: 0,
-        //   ChatRobotSendIntervalMax: 0,
-        //   ChatRobotSendRate: 0,
-        //   ChatRobotSendMaxNum: 0,
-        //   ChatRobotReplyIntervalMin: 0,
-        //   ChatRobotReplyIntervalMax: 0,
-        //   ChatRobotReplyRate: 0,
-        //   ChatRobotReplyMaxNum: 0
-        // }
+
       },
       TestCards: {
         Dices: [1, 1, 1],
@@ -719,7 +739,7 @@ export default {
         types: {
           Data: 'jsonString' // 整个数据项的类型
         }
-      },
+      }
     }
   },
   watch: {
@@ -849,6 +869,7 @@ export default {
 
       for (const i in ret.SuperDice.Odds) {
         ret.SuperDice.Odds[i].Odd *= 1000
+        ret.SuperDice.Odds[i].Weight = parseInt(ret.SuperDice.Odds[i].Weight)
       }
       return ret
     },
@@ -930,7 +951,6 @@ export default {
                 return
               }
             }
-
           }
         }
       }

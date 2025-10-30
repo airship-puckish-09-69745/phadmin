@@ -403,11 +403,13 @@ export default {
         '204': 'spacetreasure',
         '208': 'candyburst',
         '206': 'luckywineglass',
+        '210': 'luckyspirits',
         '220': 'goldendragon',
         '221': 'goldendragonmars',
         '212': 'pirateship',
         '214': 'pumpkincash',
-        '224': 'supermahjong'
+        '224': 'supermahjong',
+        '232': 'mafiamayhem'
       }
     }
   },
