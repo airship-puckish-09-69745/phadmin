@@ -909,6 +909,9 @@ export default {
       return CheatRadio + '%'
     },
     showBlackTableMoney(row) {
+      if (row.BlackTableMoney === -1) {
+        return '手动'
+      }
       return (row.BlackTableMoney / 1000).toFixed(1)
     },
     showWhiteTableMoney(row) {
