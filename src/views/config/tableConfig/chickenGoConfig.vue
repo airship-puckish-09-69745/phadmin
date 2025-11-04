@@ -321,10 +321,10 @@ export default {
         }
         ret.BetMoneyLevel[i].TableMoney = (betItem)
       }
-
+      
       for (const i in this.item.OddsCfg) {
         for (const j in this.item.OddsCfg[i]) {
-          ret.item.OddsCfg[i][j].Odds *= 100
+          ret.OddsCfg[i][j].Odds *= 100
         }
       }
 
