@@ -473,7 +473,8 @@ export default {
                       Gid: cheatRow.gid,
                       TableMoney: cheatRow.tableMoney,
                       CheatInfos: this.getCheatInfo(cheatRow.cheatFields, cheatRow.cheatFieldsCount, cheatRow.cheatScores),
-                      TableCheatScore: cheatRow.tableCheatScore ? cheatRow.tableCheatScore : 0
+                      TableCheatScore: cheatRow.tableCheatScore ? cheatRow.tableCheatScore : 0,
+                      TidCheatScore: cheatRow.tidCheatScore ? cheatRow.tidCheatScore : 0
                     }
                     if (cheatRow.hasOwnProperty('nick')) {
                       nick.add(cheatRow.nick)
@@ -979,6 +980,12 @@ export default {
           strArray.push(row.OtherUid[i] + noPartnerTableCheatScore)
         }
       }
+
+      if (row.TidCheatScore !== undefined && Array.isArray(row.TidCheatScore)) {
+        for (let i = 0; i < row.TidCheatScore.length; i++) {
+          strArray.push('(' + row.TidCheatScore[i].uid + ',' + row.TidCheatScore[i].preCheatScore + ',' + row.TidCheatScore[i].nextCheatScore + ')')
+        }
+      }
       // if (this.GameLogUidsMap.has(row.logId)) {
       //   const uids = this.GameLogUidsMap.get(row.logId)
       //   for (let i = 0; i < row.otherUid.length; i++) {
@@ -1460,7 +1467,7 @@ export default {
           </el-form-item>
           <el-form-item>
             <el-col :span="12" :offset="10">
-              <el-button type="primary" size="medium" autofocus="true" @click="save">保存</el-button>
+              <el-button type="primary" size="medium" :autofocus="true" @click="save">保存</el-button>
             </el-col>
           </el-form-item>
         </el-form>
