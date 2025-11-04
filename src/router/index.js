@@ -1175,6 +1175,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/limboConfig'),
             name: 'limbo_cfg',
             meta: { title: 'L imbo ◐' }
+          },
+          {
+            path: 'chickenGo_cfg',
+            component: () => import('@/views/config/tableConfig/chickenGoConfig'),
+            name: 'chickenGo_cfg',
+            meta: { title: 'C hicken Go ◐' }
           }
         ]
       },
