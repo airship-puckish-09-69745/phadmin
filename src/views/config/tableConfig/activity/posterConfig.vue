@@ -108,6 +108,13 @@
               </el-col>
             </el-form>
           </el-row>
+          <el-row>
+            <el-form :model="edit.item" label-width="220px" size="mini">
+              <el-form-item label="支持跳转的站点：" prop="edit.item.SiteIdCanSkip">
+                <SiteSelect v-model="edit.item.SiteIdCanSkip" multiple placeholder="请选择" style="width: 400px" />
+              </el-form-item>
+            </el-form>
+          </el-row>
         </el-tab-pane>
 
         <el-tab-pane label="海报配置">
@@ -191,7 +198,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="11">
-                <el-form-item label="AppId白名单：" prop="item.WhitelistCfg.AppIdList">
+                <el-form-item label="AppId白名单：" prop="item.Whitelist.AppIdList">
                   <el-select v-model="edit.item.Whitelist.AppIdList" multiple placeholder="请选择" style="width: 400px">
                     <el-option
                       v-for="item in appIdOptions"
@@ -203,7 +210,7 @@
                 </el-form-item>
               </el-col>
               <el-col>
-                <el-form-item label="SiteId白名单：" prop="item.WhitelistCfg.SiteIdList">
+                <el-form-item label="SiteId白名单：" prop="item.Whitelist.SiteIdList">
                   <SiteSelect v-model="edit.item.Whitelist.SiteIdList" multiple placeholder="请选择" style="width: 400px" />
                 </el-form-item>
               </el-col>
@@ -297,7 +304,8 @@ function newItem() {
       IsWhite: false,
       AppIdList: [],
       SiteIdList: []
-    }
+    },
+    SiteIdCanSkip: []
   }
 }
 

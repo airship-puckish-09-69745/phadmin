@@ -31,23 +31,8 @@
               <el-col :span="24" :offset="5">
                 <el-form :inline="true">
                   <el-col :span="8">
-                    <el-form-item label="用户离开房间时间(s):">
-                      <el-input v-model.number="item.NoticeTime" size="mini" />
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="8">
                     <el-form-item label="保底奖池抽水">
                       <el-input v-model.number="item.FeeRate" size="mini" ><template  slot="append">%</template></el-input>
-                    </el-form-item>
-                  </el-col>
-                </el-form>
-              </el-col>
-
-              <el-col :span="24" :offset="5">
-                <el-form :inline="true">
-                  <el-col :span="8">
-                    <el-form-item label="最大人数:">
-                      <el-input v-model.number="item.MaxPlayer" size="mini" />
                     </el-form-item>
                   </el-col>
                   <el-col :span="8">
@@ -236,6 +221,7 @@
                     </el-col>                    
                   </el-form>
                 </el-col>
+                <!--
                 <el-col :span="24" :offset="5">
                   <el-form :inline="true">
                     <el-col :span="8">
@@ -245,7 +231,7 @@
                     </el-col>
                   </el-form>
                 </el-col>
-                
+              -->
                 <el-col :span="20">
                   <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="doAddRobotCfg()">添加</el-button>
                 </el-col>
@@ -266,16 +252,22 @@
                   </el-table-column>
 
                   <el-table-column label="中奖概率">
+                    <!--
                     <el-table-column :label="'在线人数<='"> 
+                    -->
                       <template slot-scope="scope">
                         <el-input v-model.number="item.RobotCfg[scope.$index].Rate[0]" size="mini" ><template  slot="append">%</template></el-input>
                       </template>
+                      <!--
                     </el-table-column>
+                  -->
+                    <!--
                     <el-table-column :label="'>在线人数'">
                       <template slot-scope="scope">
                         <el-input v-model.number="item.RobotCfg[scope.$index].Rate[1]" size="mini" ><template  slot="append">%</template></el-input>
                       </template>
                     </el-table-column>
+                  -->
                   </el-table-column>
                   
                   <el-table-column label="操作" width="180px">

@@ -10,7 +10,7 @@
             </el-input>
           </el-form-item>
 
-          <el-form-item label="免费模式消除额外倍数">
+          <el-form-item label="免费模式消除额外倍数增量">
             <el-input v-model.number="cfg.FreeExtraOdds" placeholder="请输入内容"/>
           </el-form-item>
 
