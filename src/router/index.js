@@ -1177,10 +1177,10 @@ export const asyncRoutes = [
             meta: { title: 'L imbo ◐' }
           },
           {
-            path: 'luckyScratch_cfg',
-            component: () => import('@/views/config/tableConfig/minigames/luckyScratch.vue'),
-            name: 'luckyScratch_cfg',
-            meta: { title: 'Lucky Scratch ◐' }
+            path: 'pirateScratch_cfg',
+            component: () => import('@/views/config/tableConfig/minigames/pirateScratch.vue'),
+            name: 'pirateScratch_cfg',
+            meta: { title: 'Pirate Scratch ◐' }
           },
           
         ]
