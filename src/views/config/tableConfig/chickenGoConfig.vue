@@ -315,7 +315,7 @@ export default {
           if (response.Data && response.Data.Data !== '') {
             const item = JSON.parse(response.Data.Data)
             if (!item.OddsCfg) {
-              item['OddsCfg'] = ref([])
+              item['OddsCfg'] = []
               for (const i = 0; i < 4; i ++)
                 item.OddsCfg.push([])
                 item.OddsCfg[i].push({ Id: 0, Odds: 1 })
@@ -411,7 +411,7 @@ export default {
     //步数赔率配置
     doAddOddsCfg(idx) {
       if (!this.item.OddsCfg) {
-        this.item['OddsCfg'] = ref([])
+        this.item['OddsCfg'] = []
       }
       if (!this.item.OddsCfg[idx]) {
         this.item.OddsCfg.push([])
