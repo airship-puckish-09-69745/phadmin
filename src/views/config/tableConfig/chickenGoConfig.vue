@@ -70,7 +70,7 @@
 
                   <el-table-column label="RTP" width="280px">
                     <template slot-scope="scope">
-                      <el-input v-model="item.RTPS[scope.$index]" size="mini" />
+                      <el-input v-model="item.RTPS[scope.$index]" size="mini" ><template  slot="append">%</template></el-input>
                     </template>
                   </el-table-column>
 <!--
@@ -137,7 +137,7 @@
 
                   <el-table-column label="赔率" width="280px">
                     <template slot-scope="scope">
-                      <el-input v-model="item.OddsCfg[index][scope.$index].Odds" size="mini" />
+                      <el-input v-model="item.OddsCfg[index][scope.$index].Odds" size="mini" ><template  slot="append">X</template></el-input>
                     </template>
                   </el-table-column>
                   
@@ -150,6 +150,7 @@
                 </el-table>
               </fieldset>
 
+              <!--小奖池触发重摇-->
               <fieldset  v-if="!IsPHAuditEnv()">
                 <legend>小奖池触发重摇</legend>
                 <el-row>
