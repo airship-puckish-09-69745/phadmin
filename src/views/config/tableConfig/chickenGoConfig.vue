@@ -47,9 +47,11 @@
 
               <!--RTPS-->
               <fieldset style="margin-top:10px">
+                <!--
                 <el-col :span="20">
                   <el-button style="margin-bottom:10px; background-color: #c5ddf0" type="normal" icon="el-icon-plus" size="mini" @click="doAddRTPSLevel()">添加</el-button>
-                </el-col>                
+                </el-col>
+                -->
                 <legend>RTPS配置</legend>
                 <el-table
                   ref="filterTable"
@@ -71,13 +73,13 @@
                       <el-input v-model="item.RTPS[scope.$index]" size="mini" />
                     </template>
                   </el-table-column>
-
+<!--
                   <el-table-column label="操作">
                     <template slot-scope="scope">
                       <el-button type="danger" size="mini" @click="delRowRTPSLevel(scope.$index)">删除</el-button>
                     </template>
                   </el-table-column>
-                  
+    -->              
                 </el-table>
               </fieldset>
               
