@@ -281,7 +281,7 @@ export default {
 
       for (const i in that.item.OddsCfg) {
         for (const j in that.item.OddsCfg[i]) {
-          that.item.OddsCfg[i][j].Odds /= 100
+          that.item.OddsCfg[i][j].Odds = that.item.OddsCfg[i][j].Odds / 100
         }
       }
     },
@@ -346,7 +346,7 @@ export default {
       
       for (const i in this.item.OddsCfg) {
         for (const j in this.item.OddsCfg[i]) {
-          ret.OddsCfg[i][j].Odds *= 100
+          ret.OddsCfg[i][j].Odds = Math.round(this.item.OddsCfg[i][j].Odds * 100)
         }
       }
 
