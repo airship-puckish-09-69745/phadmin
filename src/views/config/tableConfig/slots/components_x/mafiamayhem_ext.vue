@@ -83,9 +83,9 @@
             </el-input>
           </el-form-item>
 
-          <el-form-item label="金框转为Wild与Big Wild权重">
-            <el-input v-model="cfg.WildWeight" placeholder=""/>
-          </el-form-item>
+<!--          <el-form-item label="金框转为Wild与Big Wild权重">-->
+<!--            <el-input v-model="cfg.WildWeight" placeholder=""/>-->
+<!--          </el-form-item>-->
 
           <el-form-item label="购买免费模式中奖倍数范围V2">
             <el-input v-model="cfg.BuyFreeOddsRangeV2" placeholder="请输入内容,如0,150,151,750">
