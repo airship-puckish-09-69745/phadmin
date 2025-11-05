@@ -35,24 +35,7 @@
                       <el-input v-model.number="item.FeeRate" size="mini" ><template  slot="append">%</template></el-input>
                     </el-form-item>
                   </el-col>
-                  <el-col :span="8">
-                    <el-form-item label="进场限制:">
-                      <el-input v-model.number="item.CarryLower" size="mini" />
-                    </el-form-item>
-                  </el-col>
-                </el-form>
-              </el-col>
-              
-              <el-col :span="24" :offset="5">
-                <el-form :inline="true">
-                  <!--
-                  <el-col :span="8">
-                    <el-form-item label="目标RTP:">
-                      <el-input v-model="item.RTP" size="mini" ><template  slot="append">%</template></el-input>
-                    </el-form-item>
-                  </el-col>
-                -->
-
+                  
                   <el-col :span="8">
                     <el-form-item label="超时放弃时间:">
                       <el-input v-model="item.AutoDropTimer" size="mini" ><template  slot="append">秒</template></el-input>
