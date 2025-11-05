@@ -749,7 +749,6 @@ export default {
   },
   created() {
     this.env = store.getters.env || this.env
-    this.getTodayRaffleAmount()
   },
   mounted() {
     this.getList()
@@ -1032,7 +1031,7 @@ export default {
     handleEditDialogOpened() {
       console.log('handleEditDialogOpened edit:' + this.edit.isEdit)
       if (this.edit.isEdit) {
-        this.getTodayRaffleAmount()
+        this.getTodayRaffleAmount(this.edit.item.ID)
         this.$refs.tree.setCheckedKeys(this.edit.item.GameIdCfg)
       } else {
         this.$refs.tree.setCheckedKeys([])
@@ -1328,7 +1327,8 @@ export default {
         url: '/dataProxy/info',
         method: 'get',
         data: {
-          Path: '/activity/easter/today/raffle/amount'
+          Path: '/activity/easter/today/raffle/amount',
+          CfgId: this.edit.item.ID
         }
       }).then(response => {
         if (response.RetCode === 0) {
