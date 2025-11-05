@@ -45,11 +45,13 @@
               
               <el-col :span="24" :offset="5">
                 <el-form :inline="true">
+                  <!--
                   <el-col :span="8">
                     <el-form-item label="目标RTP:">
                       <el-input v-model="item.RTP" size="mini" ><template  slot="append">%</template></el-input>
                     </el-form-item>
                   </el-col>
+                -->
 
                   <el-col :span="8">
                     <el-form-item label="超时放弃时间:">
@@ -59,6 +61,42 @@
 
                 </el-form>
               </el-col>
+
+              <!--RTPS-->
+              <fieldset style="margin-top:10px">
+                <el-col :span="20">
+                  <el-button style="margin-bottom:10px; background-color: #c5ddf0" type="normal" icon="el-icon-plus" size="mini" @click="doAddRTPSLevel()">添加</el-button>
+                </el-col>                
+                <legend>RTPS配置</legend>
+                <el-table
+                  ref="filterTable"
+                  :data="item.RTPS"
+                  border
+                  :header-cell-style="libShow.DefaultTableHeadClass"
+                  :row-style="{height:'10px'}"
+                  :cell-style="libShow.DefaultTableCell"
+                  style="width: 100%"
+                >
+                  <el-table-column label="难度级别" width="90px">
+                    <template slot-scope="scope">
+                      {{getLvName(scope.$index)}}
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column label="RTP" width="280px">
+                    <template slot-scope="scope">
+                      <el-input v-model="item.RTPS[scope.$index]" size="mini" />
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column label="操作">
+                    <template slot-scope="scope">
+                      <el-button type="danger" size="mini" @click="delRowRTPSLevel(scope.$index)">删除</el-button>
+                    </template>
+                  </el-table-column>
+                  
+                </el-table>
+              </fieldset>
               
               <!--bet-->
               <fieldset style="margin-top:10px">
@@ -219,6 +257,7 @@ export default {
   data() {
     return {
       item: {
+        RTPS:[],
         BetMoneyLevel:[], //下注
         OddsCfg:[],
         ReChoiceCfg:{},
@@ -292,7 +331,7 @@ export default {
             this.transMoneyForShow()
 
             item.CarryLower /= 1000 //进场限制
-            item.RTP /= 100 //四位小数
+            //item.RTP /= 100 //四位小数
             item.ReChoiceCfg.LowLotteryPoolReChoice /= 1000
             item.ReChoiceCfg.HighLotteryPoolReChoice /= 1000
 
@@ -329,7 +368,7 @@ export default {
       }
 
       ret.CarryLower *= 1000
-      ret.RTP *= 100
+      //ret.RTP *= 100
       ret.ReChoiceCfg.LowLotteryPoolReChoice *= 1000
       ret.ReChoiceCfg.HighLotteryPoolReChoice *= 1000
 
@@ -339,6 +378,22 @@ export default {
       }
      
       return ret
+    },
+
+    //RTPS
+    doAddRTPSLevel() {
+      if (!this.item.RTPS) {
+        this.item['RTPS'] = []
+      }
+     
+      this.item.RTPS.push(97.5)
+    },
+    delRowRTPSLevel(index) {
+      console.log(index)
+      this.item.RTPS.splice(index, 1)
+    },
+    getLvName(idx) {
+      return this.lv[idx]
     },
 
     //下注
