@@ -255,6 +255,7 @@ export default {
         { 'value': 129, 'label': 'Live Color' },
         { 'value': 132, 'label': '新版扫雷' },
         { 'value': 210, 'label': 'LuckySpirits' },
+        { 'value': 230, 'label': 'Pahiyas Win\'s' },
         { 'value': 232, 'label': 'MafiaMayhem' },
         { 'value': 216, 'label': 'Phoenix' },
         { 'value': 134, 'label': 'Pusoy JP' },
