@@ -282,10 +282,19 @@ export default {
         that.item.BetMoneyLevel[j].TableMoney = betMoneyList.join(',')
       }
 
+      // for (const i in that.item.OddsCfg) {
+      //   for (const j in that.item.OddsCfg[i]) {
+      //     that.item.OddsCfg[i][j].Odds = that.item.OddsCfg[i][j].Odds / 100
+      //   }
+      // }
       for (const i in that.item.OddsCfg) {
-        for (const j in that.item.OddsCfg[i]) {
-          that.item.OddsCfg[i][j].Odds = that.item.OddsCfg[i][j].Odds / 100
+        let odds = []
+        let id = 1
+        for (const j in that.item.OddsCfg[i].OddsItem) {
+          odds.push({Id:id, Odds:that.item.OddsCfg[i].OddsItem[j].Odds / 100})
+          id ++
         }
+        that.item.OddsCfg[i] = odds
       }
 
       for (const i in that.item.RTPS) {
@@ -334,7 +343,7 @@ export default {
     },
     getPostData() {
       const ret = JSON.parse(JSON.stringify(this.item))
-      console.log("上传====>",ret)
+      //console.log("上传====>",ret)
 
       //下注配置
       for (const i in this.item.BetMoneyLevel) {
@@ -349,10 +358,20 @@ export default {
         ret.BetMoneyLevel[i].TableMoney = (betItem)
       }
       
+      // for (const i in this.item.OddsCfg) {
+      //   for (const j in this.item.OddsCfg[i].OddsItem) {
+      //     ret.OddsCfg[i].OddsItem[j].Odds = Math.round(this.item.OddsCfg[i].OddsItem[j].Odds * 100)
+      //   }
+      // }
+      ret.OddsCfg = []
       for (const i in this.item.OddsCfg) {
+        let oddsCfg = []
+        let id = 1
         for (const j in this.item.OddsCfg[i]) {
-          ret.OddsCfg[i][j].Odds = Math.round(this.item.OddsCfg[i][j].Odds * 100)
+          oddsCfg.push({Id:id, Odds:Math.round(this.item.OddsCfg[i][j].Odds * 100)})
+          id ++
         }
+        ret.OddsCfg.push({OddsItem:oddsCfg})
       }
 
       for (const i in this.item.RTPS) {
@@ -366,7 +385,7 @@ export default {
       if (!ret.openTest || ret.openTest=="1"){
         delete ret['Card']
       }
-     
+      console.log("上传====>",ret)
       return ret
     },
 
@@ -375,7 +394,6 @@ export default {
       if (!this.item.RTPS) {
         this.item['RTPS'] = []
       }
-     
       this.item.RTPS.push(97.5)
     },
     delRowRTPSLevel(index) {
