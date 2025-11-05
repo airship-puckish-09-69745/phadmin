@@ -206,7 +206,7 @@
           <el-radio v-model="item.openTest" label="1" :value="false">否</el-radio>
           <el-radio v-model="item.openTest" label="2" :value="true">是</el-radio>
         </el-form-item>
-        <el-form-item label="火箭终点:">
+        <el-form-item label="步数终点:">
           <el-form :inline="true">
             <el-col :span="8">
                 <el-input v-model.number="item.Card" size="mini" />
