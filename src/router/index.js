@@ -1178,7 +1178,7 @@ export const asyncRoutes = [
           },
           {
             path: 'pirateScratch_cfg',
-            component: () => import('@/views/config/tableConfig/minigames/pirateScratch.vue'),
+            component: () => import('@/views/config/tableConfig/pirateScratch.vue'),
             name: 'pirateScratch_cfg',
             meta: { title: 'Pirate Scratch ◐' }
           },

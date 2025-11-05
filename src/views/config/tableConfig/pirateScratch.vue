@@ -1,6 +1,19 @@
 <template>
   <div class="app-container">
     <el-row>
+
+    <fieldset style="margin-top:10px">              
+        <legend>下注配置</legend>
+          <el-form ref="item" :model="item" label-width="200px">
+            <el-col :span="16">
+              <el-form-item label="下注列表">
+                <el-input v-model.number="tmpAutoBetRoundList" size="mini" />
+              </el-form-item>
+            </el-col>
+
+          </el-form>
+
+      </fieldset>
     <fieldset>
       <legend>奖金配置</legend>
       <h4 style="text-align:left;">10面值单个格子奖金出现权重</h4>
@@ -250,167 +263,173 @@ export default {
  components: {
     Publish,
     Compare,
+    
   },
   data() {
       return {
-      item: {
         subKey: 'pirate_scratch_cfg',
         form: {},
-        TenFace:[
-          {
-            Bonus:10000000, 
-            WinPrizeWight: 100,
-            LosePrizeWight: 100
-          },
-          {
-            Bonus:1000000,
-            WinPrizeWight: 100,
-            LosePrizeWight: 100,
-          },{
-            Bonus:500000,
-            WinPrizeWight: 100,
-            LosePrizeWight: 100,
-          },{
-            Bonus:200000,
-            WinPrizeWight: 100,
-            LosePrizeWight: 100,
-          },{
-            Bonus:100000,
-            WinPrizeWight: 100,
-            LosePrizeWight: 100,
-          },{
-            Bonus:50000,
-            WinPrizeWight: 100,
-            LosePrizeWight: 100,
-          },{
-            Bonus:30000,
-            WinPrizeWight: 100,
-            LosePrizeWight: 100,
-          },{
-            Bonus:20000,
-            WinPrizeWight: 100,
-            LosePrizeWight: 100,
-          },{
-            Bonus:10000,
-            WinPrizeWight: 100,
-            LosePrizeWight: 100,
-          },{
-            Bonus:5000,
-            WinPrizeWight: 100,
-            LosePrizeWight: 100,
-          },{
-            Bonus:3000,
-            WinPrizeWight: 100,
-            LosePrizeWight: 100,
-          },{
-            Bonus:2000,
-            WinPrizeWight: 100,
-            LosePrizeWight: 100,
-          },{
-            Bonus:1000,
-            WinPrizeWight: 100,
-            LosePrizeWight: 100,
-          }
-        ],
-        UpTenFace:[
-          {
-            Bonus:10000000, 
-            WinPrizeWight: 100,
-            LosePrizeWight: 100
-          },
-          {
-            Bonus:1000000,
-            WinPrizeWight: 100,
-            LosePrizeWight: 100,
-          },{
-            Bonus:500000,
-            WinPrizeWight: 100,
-            LosePrizeWight: 100,
-          },{
-            Bonus:200000,
-            WinPrizeWight: 100,
-            LosePrizeWight: 100,
-          },{
-            Bonus:100000,
-            WinPrizeWight: 100,
-            LosePrizeWight: 100,
-          },{
-            Bonus:50000,
-            WinPrizeWight: 100,
-            LosePrizeWight: 100,
-          },{
-            Bonus:30000,
-            WinPrizeWight: 100,
-            LosePrizeWight: 100,
-          },{
-            Bonus:20000,
-            WinPrizeWight: 100,
-            LosePrizeWight: 100,
-          },{
-            Bonus:10000,
-            WinPrizeWight: 100,
-            LosePrizeWight: 100,
-          },{
-            Bonus:5000,
-            WinPrizeWight: 100,
-            LosePrizeWight: 100,
-          },{
-            Bonus:3000,
-            WinPrizeWight: 100,
-            LosePrizeWight: 100,
-          },{
-            Bonus:2000,
-            WinPrizeWight: 100,
-            LosePrizeWight: 100,
-          },{
-            Bonus:1000,
-            WinPrizeWight: 100,
-            LosePrizeWight: 100,
-          },
-          ,{
-            Bonus:500,
-            WinPrizeWight: 100,
-            LosePrizeWight: 100,
-          }
-        ],
-        Multiplier:{
-            SingleRatio: 10,
-            SingleWight:[
-                {Cnt: 1, Wight:100},
-                {Cnt: 2, Wight:100},
-                {Cnt: 3, Wight:100},
-            ],
-            SingleFaceWight:[
-                {Multi: 2, Face20Wight:20,Face30Wight:30,Face50Wight:20,Face100Wight:20},
-                {Multi: 3, Face20Wight:20,Face30Wight:30,Face50Wight:20,Face100Wight:20}, 
-                {Multi: 5, Face20Wight:20,Face30Wight:30,Face50Wight:20,Face100Wight:20},
-                {Multi: 10, Face20Wight:20,Face30Wight:30,Face50Wight:20,Face100Wight:20}
+        tmpAutoBetRoundList:"10,25,50,100,200,500,1000,2000",
+        item: {
+          AutoBetRoundList:[10,25,50,100,200,500,1000,2000], //下注
+          TenFace:[
+            {
+              Bonus:10000000, 
+              WinPrizeWight: 100,
+              LosePrizeWight: 100
+            },
+            {
+              Bonus:1000000,
+              WinPrizeWight: 100,
+              LosePrizeWight: 100,
+            },{
+              Bonus:500000,
+              WinPrizeWight: 100,
+              LosePrizeWight: 100,
+            },{
+              Bonus:200000,
+              WinPrizeWight: 100,
+              LosePrizeWight: 100,
+            },{
+              Bonus:100000,
+              WinPrizeWight: 100,
+              LosePrizeWight: 100,
+            },{
+              Bonus:50000,
+              WinPrizeWight: 100,
+              LosePrizeWight: 100,
+            },{
+              Bonus:30000,
+              WinPrizeWight: 100,
+              LosePrizeWight: 100,
+            },{
+              Bonus:20000,
+              WinPrizeWight: 100,
+              LosePrizeWight: 100,
+            },{
+              Bonus:10000,
+              WinPrizeWight: 100,
+              LosePrizeWight: 100,
+            },{
+              Bonus:5000,
+              WinPrizeWight: 100,
+              LosePrizeWight: 100,
+            },{
+              Bonus:3000,
+              WinPrizeWight: 100,
+              LosePrizeWight: 100,
+            },{
+              Bonus:2000,
+              WinPrizeWight: 100,
+              LosePrizeWight: 100,
+            },{
+              Bonus:1000,
+              WinPrizeWight: 100,
+              LosePrizeWight: 100,
+            }
+          ],
+          UpTenFace:[
+            {
+              Bonus:10000000, 
+              WinPrizeWight: 100,
+              LosePrizeWight: 100
+            },
+            {
+              Bonus:1000000,
+              WinPrizeWight: 100,
+              LosePrizeWight: 100,
+            },{
+              Bonus:500000,
+              WinPrizeWight: 100,
+              LosePrizeWight: 100,
+            },{
+              Bonus:200000,
+              WinPrizeWight: 100,
+              LosePrizeWight: 100,
+            },{
+              Bonus:100000,
+              WinPrizeWight: 100,
+              LosePrizeWight: 100,
+            },{
+              Bonus:50000,
+              WinPrizeWight: 100,
+              LosePrizeWight: 100,
+            },{
+              Bonus:30000,
+              WinPrizeWight: 100,
+              LosePrizeWight: 100,
+            },{
+              Bonus:20000,
+              WinPrizeWight: 100,
+              LosePrizeWight: 100,
+            },{
+              Bonus:10000,
+              WinPrizeWight: 100,
+              LosePrizeWight: 100,
+            },{
+              Bonus:5000,
+              WinPrizeWight: 100,
+              LosePrizeWight: 100,
+            },{
+              Bonus:3000,
+              WinPrizeWight: 100,
+              LosePrizeWight: 100,
+            },{
+              Bonus:2000,
+              WinPrizeWight: 100,
+              LosePrizeWight: 100,
+            },{
+              Bonus:1000,
+              WinPrizeWight: 100,
+              LosePrizeWight: 100,
+            },
+            ,{
+              Bonus:500,
+              WinPrizeWight: 100,
+              LosePrizeWight: 100,
+            }
+          ],
+          Multiplier:{
+              SingleRatio: 10,
+              SingleWight:[
+                  {Cnt: 1, Wight:100},
+                  {Cnt: 2, Wight:100},
+                  {Cnt: 3, Wight:100},
+              ],
+              SingleFaceWight:[
+                  {Multi: 2, Face20Wight:20,Face30Wight:30,Face50Wight:20,Face100Wight:20},
+                  {Multi: 3, Face20Wight:20,Face30Wight:30,Face50Wight:20,Face100Wight:20}, 
+                  {Multi: 5, Face20Wight:20,Face30Wight:30,Face50Wight:20,Face100Wight:20},
+                  {Multi: 10, Face20Wight:20,Face30Wight:30,Face50Wight:20,Face100Wight:20}
 
-            ]
+              ]
 
-            
-        },
-        JackpotRegulation:{
-            RandAwards: [
-                { FaceValue: 10,  JackpotRate: 10 },
-                { FaceValue: 20,  JackpotRate: 10 },
-                { FaceValue: 30,  JackpotRate: 10 },
-                { FaceValue: 50,  JackpotRate: 10 },
-                { FaceValue: 100,  JackpotRate: 10 },
-            ],
-             AwardOdds: [
-                {  Odds: 500 ,Wight:100},
-                {  Odds: 100 ,Wight:0},
-                {  Odds: 55 ,Wight:0},
-                {  Odds: 10 ,Wight:0},
-               
-        ],
+              
+          },
+          JackpotRegulation:{
+              RandAwards: [
+                  { FaceValue: 10,  JackpotRate: 10 },
+                  { FaceValue: 20,  JackpotRate: 10 },
+                  { FaceValue: 30,  JackpotRate: 10 },
+                  { FaceValue: 50,  JackpotRate: 10 },
+                  { FaceValue: 100,  JackpotRate: 10 },
+              ],
+              AwardOdds: [
+                  {  Odds: 500 ,Wight:100},
+                  {  Odds: 100 ,Wight:0},
+                  {  Odds: 55 ,Wight:0},
+                  {  Odds: 10 ,Wight:0},
+                
+          ],
         }
       },
     }
   },
    created() {
     this.getData()
+
+    this.transMoneyForShow();
+
   },
   methods: {
         getFullKey() {
@@ -425,7 +444,6 @@ export default {
                 }
             }).then(response => {
                 if (response.RetCode === 0) {
-                console.log('tower cfg', response)
                 this.form = response.Data || {}
                 if (response.Data && response.Data.Data !== '') {
                     const cfg = JSON.parse(response.Data.Data)
@@ -440,38 +458,54 @@ export default {
             })
         },
         getPostData() {
+            this.saveTableMoney();
             const ret = {}
             Object.assign(ret, this.item)
-
-            
-
             return ret
-            },
+          },
         setData() {
+          
         
-        this.form.Data = JSON.stringify(this.getPostData())
-        const $this = this
-        // 设置修改后数据
-        // console.log(this.form.Data)
-        this.$refs.compare.SetNewVal(this.form.Data)
-        this.$refs.compare.Compare(function(isEdit) {
-            if (!isEdit) {
-            Message.error('没有任何修改，不需要提交')
-            return
-            }
+          this.form.Data = JSON.stringify(this.getPostData())
+          const $this = this
+          // 设置修改后数据
+           console.log(this.form.Data)
+          this.$refs.compare.SetNewVal(this.form.Data)
+          this.$refs.compare.Compare(function(isEdit) {
+              if (!isEdit) {
+              Message.error('没有任何修改，不需要提交')
+              return
+              }
 
-            request({
-            url: 'customizeconfig/update',
-            method: 'post',
-            data: $this.form
-            }).then(response => {
-            if (response.RetCode === 0) {
-                console.log('base cfg response', response)
-                Message.success('保存成功')
-            }
-            })
-        })
+              request({
+              url: 'customizeconfig/update',
+              method: 'post',
+              data: $this.form
+              }).then(response => {
+              if (response.RetCode === 0) {
+                  console.log('base cfg response', response)
+                  Message.success('保存成功')
+              }
+              })
+          })
         },
+        transMoneyForShow() {
+          let that = this
+            const betMoneyList = []
+            for (const o of that.item.AutoBetRoundList) {
+              betMoneyList.push(o)
+            }
+            that.tmpAutoBetRoundList = betMoneyList.join(',')  
+          
+      },
+      saveTableMoney() {
+          let betItem = []
+          for (const oElement of this.tmpAutoBetRoundList.split(',')) {
+            betItem.push(oElement)
+          
+            }
+            this.AutoBetRoundList = (betItem)
+      }
     }
 }
 </script>
