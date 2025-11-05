@@ -579,6 +579,7 @@ function newItem() {
     },
     EggShellsPerRaffle: 100,
     EggShellsRaffleFirst: 500,
+    DebugTimeOffset: 0
   }
 }
 
@@ -970,6 +971,9 @@ export default {
       data.EggShellsPerRaffle = this.edit.item.EggShellsPerRaffle
       data.EggShellsRaffleFirst = this.edit.item.EggShellsRaffleFirst
       data.DebugTimeOffset = this.edit.item.DebugTimeOffset
+      if (this.edit.item.WhitelistCfg.AppIdList.length > 0) {
+        data.AppId = this.edit.item.WhitelistCfg.AppIdList[0]
+      }
       return data
     },
     handleSave() {
