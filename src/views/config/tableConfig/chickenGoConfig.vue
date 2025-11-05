@@ -38,7 +38,7 @@
                   
                   <el-col :span="8">
                     <el-form-item label="超时放弃时间:">
-                      <el-input v-model="item.AutoDropTimer" size="mini" ><template  slot="append">秒</template></el-input>
+                      <el-input v-model.number="item.AutoDropTimer" size="mini" ><template  slot="append">秒</template></el-input>
                     </el-form-item>
                   </el-col>
 
@@ -287,6 +287,10 @@ export default {
           that.item.OddsCfg[i][j].Odds = that.item.OddsCfg[i][j].Odds / 100
         }
       }
+
+      for (const i in that.item.RTPS) {
+        that.item.RTPS[i] = that.item.RTPS[i] / 100
+      }
     },
     getData() {
       request({
@@ -316,8 +320,6 @@ export default {
 
             this.transMoneyForShow()
 
-            item.CarryLower /= 1000 //进场限制
-            //item.RTP /= 100 //四位小数
             item.ReChoiceCfg.LowLotteryPoolReChoice /= 1000
             item.ReChoiceCfg.HighLotteryPoolReChoice /= 1000
 
@@ -353,8 +355,10 @@ export default {
         }
       }
 
-      ret.CarryLower *= 1000
-      //ret.RTP *= 100
+      for (const i in this.item.RTPS) {
+        ret.RTPS[i] = Math.round(this.item.RTPS[i] * 100)
+      }
+
       ret.ReChoiceCfg.LowLotteryPoolReChoice *= 1000
       ret.ReChoiceCfg.HighLotteryPoolReChoice *= 1000
 
