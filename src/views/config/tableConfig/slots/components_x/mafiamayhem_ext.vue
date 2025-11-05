@@ -57,7 +57,7 @@
 
           <el-form-item label="普通bonus/免费权重">
             <el-input v-model="cfg.NormalEnterSpecialWeight" placeholder="请输入内容,如2,4">
-              <template slot="append">用 , 连接。bonus、免费(必中其中之一)</template>
+              <template slot="append">用 , 连接。bonus、免费(超过"进入特殊模式的最小赔率"必中其中之一)</template>
             </el-input>
           </el-form-item>
 
@@ -83,9 +83,9 @@
             </el-input>
           </el-form-item>
 
-          <el-form-item label="金框转为Wild与Big Wild权重">
-            <el-input v-model="cfg.WildWeight" placeholder=""/>
-          </el-form-item>
+<!--          <el-form-item label="金框转为Wild与Big Wild权重">-->
+<!--            <el-input v-model="cfg.WildWeight" placeholder=""/>-->
+<!--          </el-form-item>-->
 
           <el-form-item label="购买免费模式中奖倍数范围V2">
             <el-input v-model="cfg.BuyFreeOddsRangeV2" placeholder="请输入内容,如0,150,151,750">
