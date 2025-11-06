@@ -418,6 +418,7 @@ export default {
     },
     async getUidLogs(row, tidInfos) {
       // console.log(ttt)
+      const now = Date.now()/1000
       const $this = this
       await request({
         url: '/dataProxy/info',
@@ -472,7 +473,8 @@ export default {
                       Gid: cheatRow.gid,
                       TableMoney: cheatRow.tableMoney,
                       CheatInfos: this.getCheatInfo(cheatRow.cheatFields, cheatRow.cheatFieldsCount, cheatRow.cheatScores),
-                      TableCheatScore: cheatRow.tableCheatScore ? cheatRow.tableCheatScore : 0
+                      TableCheatScore: cheatRow.tableCheatScore ? cheatRow.tableCheatScore : 0,
+                      TidCheatScore: cheatRow.tidCheatScore ? cheatRow.tidCheatScore : 0
                     }
                     if (cheatRow.hasOwnProperty('nick')) {
                       nick.add(cheatRow.nick)
@@ -491,14 +493,17 @@ export default {
                     }
                   }
                 }
-                tidInfos.push({
-                  tid: tidRow.tid,
-                  uid: row.Uid,
-                  firstTime: firstTime,
-                  firstId: firstId,
-                  lastTime: lastTime,
-                  lastId: lastId
-                })
+                if ((now - firstTime < 60*60*24*30) && (now - lastTime < 60*60*24*30)) {
+                  tidInfos.push({
+                    tid: tidRow.tid,
+                    uid: row.Uid,
+                    firstTime: firstTime,
+                    firstId: firstId,
+                    lastTime: lastTime,
+                    lastId: lastId
+                  })
+                }
+
                 console.log("tidInfos",tidInfos)
                 tidCheatLogs.push(tidCheatLog)
               }
@@ -905,6 +910,9 @@ export default {
       return CheatRadio + '%'
     },
     showBlackTableMoney(row) {
+      if (row.BlackTableMoney === -1) {
+        return '手动'
+      }
       return (row.BlackTableMoney / 1000).toFixed(1)
     },
     showWhiteTableMoney(row) {
@@ -970,6 +978,12 @@ export default {
           strArray.push(blueStr)
         } else {
           strArray.push(row.OtherUid[i] + noPartnerTableCheatScore)
+        }
+      }
+
+      if (row.TidCheatScore !== undefined && Array.isArray(row.TidCheatScore)) {
+        for (let i = 0; i < row.TidCheatScore.length; i++) {
+          strArray.push('(' + row.TidCheatScore[i].uid + ',' + row.TidCheatScore[i].preCheatScore + ',' + row.TidCheatScore[i].nextCheatScore + ')')
         }
       }
       // if (this.GameLogUidsMap.has(row.logId)) {
@@ -1453,7 +1467,7 @@ export default {
           </el-form-item>
           <el-form-item>
             <el-col :span="12" :offset="10">
-              <el-button type="primary" size="medium" autofocus="true" @click="save">保存</el-button>
+              <el-button type="primary" size="medium" :autofocus="true" @click="save">保存</el-button>
             </el-col>
           </el-form-item>
         </el-form>
