@@ -28,9 +28,9 @@
             <el-input v-model="cfg.OuterWheelOdds" placeholder="请输入内容,如2,1"> <template slot="append">用 , 连接</template> </el-input>
           </el-form-item>
 
-          <el-form-item label="普通模式转盘外圈倍数权重">
+<!--           <el-form-item label="普通模式转盘外圈倍数权重">
             <el-input v-model="cfg.OuterWheelWeight" placeholder="请输入内容,如2,1"> <template slot="append">用 , 连接</template> </el-input>
-          </el-form-item>
+          </el-form-item> -->
 
           <el-form-item label="免费模式转盘外圈倍数权重">
             <el-input v-model="cfg.FreeOuterWheelWeight" placeholder="请输入内容,如2,1"> <template slot="append">用 , 连接</template> </el-input>
