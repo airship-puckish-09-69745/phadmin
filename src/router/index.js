@@ -1181,7 +1181,14 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/chickenGoConfig'),
             name: 'chickenGo_cfg',
             meta: { title: 'C hicken Go ◐' }
-          }
+          },
+          {
+            path: 'pirateScratch_cfg',
+            component: () => import('@/views/config/tableConfig/pirateScratch.vue'),
+            name: 'pirateScratch_cfg',
+            meta: { title: 'Pirate Scratch ◐' }
+          },
+          
         ]
       },
       {
