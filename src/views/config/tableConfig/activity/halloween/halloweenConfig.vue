@@ -749,7 +749,6 @@ export default {
   },
   created() {
     this.env = store.getters.env || this.env
-    this.getTodayRaffleAmount()
   },
   mounted() {
     this.getData()
@@ -1268,30 +1267,6 @@ export default {
       })
       this.edit.visible = false
     },
-    createData(data) {
-      request({
-        url: '/easterconfig/create',
-        method: 'post',
-        data: data
-      }).then(response => {
-        if (response.RetCode === 0) {
-          this.getList()
-          Message.success('保存成功！')
-        }
-      })
-    },
-    updateData(data) {
-      request({
-        url: '/easterconfig/update',
-        method: 'post',
-        data: data
-      }).then(response => {
-        if (response.RetCode === 0) {
-          this.getList()
-          Message.success('保存成功！')
-        }
-      })
-    },
     //************************ 修改/添加弹框相关 ************************
     getEditTitle() {
       return this.edit.isEdit ? '修改配置' : '新增配置'
@@ -1306,7 +1281,6 @@ export default {
     handleEditDialogOpened() {
       console.log('handleEditDialogOpened edit:' + this.edit.isEdit)
       if (this.edit.isEdit) {
-        this.getTodayRaffleAmount()
         this.$refs.tree.setCheckedKeys(this.edit.item.GameIdCfg)
       } else {
         this.$refs.tree.setCheckedKeys([])
@@ -1474,24 +1448,6 @@ export default {
       console.log('onSiteIdOptionsChange', this.edit.item.WhitelistCfg.SiteIdList)
     },
     //************************ 白名单相关 ************************
-    getTodayRaffleAmount() {
-      const $this = this
-      request({
-        url: '/dataProxy/info',
-        method: 'get',
-        data: {
-          Path: '/activity/easter/today/raffle/amount'
-        }
-      }).then(response => {
-        if (response.RetCode === 0) {
-          console.log('getTodayRaffleAmount', response.Data)
-          if (response.Data) {
-            $this.todayRaffleAmount = response.Data / 1000
-            console.log('todayRaffleAmount', $this.todayRaffleAmount)
-          }
-        }
-      })
-    },
     //************************ 道具配置 ************************
     getPropList() {
       request({
