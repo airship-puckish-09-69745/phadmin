@@ -245,7 +245,7 @@
                 label: 'LiveColor'
             },
             {
-                value: 136,
+                value: 134,
                 label: 'PusoyJP'
             }
         ],
