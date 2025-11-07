@@ -195,7 +195,7 @@
             <div class="input-group">
               <label>原始链接</label>
               <el-input
-                v-model="replaceUrl"
+                v-model="orgUrl"
                 placeholder="请输入要处理的 URL"
                 size="medium"
                 clearable
@@ -209,11 +209,10 @@
           </el-row>
           <el-row>
             <div class="button-group">
-              <!-- <el-button type="primary" size="medium" @click="replaceUrl()" icon="el-icon-refresh">替换链接</el-button> -->
+              <!-- <el-button type="primary" size="medium" @click="orgUrl()" icon="el-icon-refresh">替换链接</el-button> -->
               <el-button size="medium" icon="el-icon-delete" @click="clearReplaceUrl()">清空</el-button>
               <el-button type="success" size="medium" icon="el-icon-copy-document" @click="copyReplaceUrl()">复制结果</el-button>
               <el-button type="warning" size="medium" icon="el-icon-position" :disabled="!replaceUrlResult" @click="openReplaceUrl()">打开链接</el-button>
-              <el-button type="warning" size="medium" icon="el-icon-position" :disabled="!replaceUrl" @click="decodeUrlPParams()">P参数解析</el-button>
             </div>
           </el-row>
           <el-row>
@@ -390,12 +389,10 @@ export default {
   components: { DateTimeShow, Compare, Publish, UidInput, Clipboard },
   data() {
     return {
-      replaceUrl: '',
+      orgUrl: '',
       replaceUrlResult: '',
       urlChangeTimeout: null, // 用于URL输入防抖
-      needDecodeUrl: '',
       decodedUrl: '',
-      needDecodeUrlChangeTimeout: null, // 用于 P 参数解析 URL 输入防抖
       hasAutoOpened: false, // 标记是否已经自动打开过
       agents: [
         {
@@ -841,21 +838,21 @@ export default {
     // URL 替换工具相关方法
     handleUrlChange() {
       // 当输入框内容变化时自动处理
-      if (this.replaceUrl && this.replaceUrl.trim()) {
+      if (this.orgUrl && this.orgUrl.trim()) {
         // 使用防抖，避免频繁触发
         clearTimeout(this.urlChangeTimeout)
         this.urlChangeTimeout = setTimeout(() => {
           // 只在内容较长时（可能是粘贴的完整URL）才自动处理
-          if (this.replaceUrl.length > 20) {
+          if (this.orgUrl.length > 20) {
             this.autoReplaceAndOpen()
-            this.decodedUrl = this.getPPrarms(this.replaceUrl)
+            this.decodedUrl = this.getPPrarms(this.orgUrl)
           }
         }, 500) // 延迟500ms执行
       }
     },
     autoReplaceAndOpen() {
       // 自动替换 URL 并打开
-      const url = this.replaceUrl.trim()
+      const url = this.orgUrl.trim()
       if (!url) return
 
       // 执行替换逻辑
@@ -874,7 +871,7 @@ export default {
     },
     performUrlReplace() {
       // 替换 URL 逻辑
-      const url = this.replaceUrl.trim()
+      const url = this.orgUrl.trim()
       if (!url) {
         this.$message.warning('请输入要替换的 URL')
         return
@@ -882,7 +879,7 @@ export default {
 
       const index = url.indexOf('?')
       if (index === -1) {
-        this.$message.warning('URL 格式不正确，缺少 ? 参数')
+        this.$message.warning('URL 格式不正确，缺少请求参数')
         return
       }
 
@@ -892,7 +889,7 @@ export default {
       this.$message.success('URL 替换成功！')
     },
     clearReplaceUrl() {
-      this.replaceUrl = ''
+      this.orgUrl = ''
       this.replaceUrlResult = ''
       this.hasAutoOpened = false // 重置自动打开标志
 
@@ -931,16 +928,26 @@ export default {
       window.open(this.replaceUrlResult, '_blank')
       this.$message.success('正在打开链接...')
     },
-    decodeUrlPParams() {
-      this.decodedUrl = this.getPPrarms(this.replaceUrl)
-    },
     getPPrarms(str) {
-      if (!str.startsWith('http')) {
-        return this.decodePPrams(str)
-      } else {
-        // 获取链接种参数 p 的值
-        const p = str.split('?')[1].split('&').find(item => item.startsWith('p=')).split('=')[1]
-        return this.decodePPrams(p)
+      if (!str) return ''
+      try {
+        if (!str.startsWith('http')) {
+          return this.decodePPrams(str)
+        } else {
+          // 使用 URL API 解析更安全
+          const url = new URL(str, window.location.origin)
+          const p = url.searchParams.get('p')
+
+          if (!p) {
+            this.$message.warning('URL 中未找到参数 p')
+            return ''
+          }
+
+          return this.decodePPrams(p)
+        }
+      } catch (error) {
+        this.$message.warning('解析 URL 出错:' + error)
+        return ''
       }
     },
     decodePPrams(str) {
