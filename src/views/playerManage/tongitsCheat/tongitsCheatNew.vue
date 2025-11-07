@@ -312,6 +312,7 @@ export default {
             }
             let addScore = 0
             let reduceScore = 0
+            let score = 0
             if (row.tableMoneyAddScore !== undefined ) {
               for (const tableMoney in row.tableMoneyAddScore) {
                 addScore += row.tableMoneyAddScore[tableMoney] * tableMoney
@@ -322,6 +323,13 @@ export default {
                 reduceScore += row.tableMoneyReduceScore[tableMoney] * tableMoney
               }
             }
+            if (row.tableMoneyScore !== undefined) {
+              for (const tableMoney in row.tableMoneyScore) {
+                score += row.tableMoneyScore[tableMoney] /1000
+              }
+              cheatLog.CheatScore = score.toFixed(3)
+            }
+
             cheatLog.SmallIntensity = (addScore / 1000 + reduceScore / 1000).toFixed(1)
             if (reduceScore !== 0) {
               cheatLog.SmallCoefficient = ((addScore / 1000) / (reduceScore*-1 / 1000)).toFixed(2)
