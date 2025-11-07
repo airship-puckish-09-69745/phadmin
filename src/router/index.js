@@ -1175,7 +1175,20 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/limboConfig'),
             name: 'limbo_cfg',
             meta: { title: 'L imbo ◐' }
-          }
+          },
+          {
+            path: 'chickenGo_cfg',
+            component: () => import('@/views/config/tableConfig/chickenGoConfig'),
+            name: 'chickenGo_cfg',
+            meta: { title: 'C hicken Go ◐' }
+          },
+          {
+            path: 'pirateScratch_cfg',
+            component: () => import('@/views/config/tableConfig/pirateScratch.vue'),
+            name: 'pirateScratch_cfg',
+            meta: { title: 'Pirate Scratch ◐' }
+          },
+          
         ]
       },
       {
@@ -1287,6 +1300,12 @@ export const asyncRoutes = [
                 meta: { title: 'F ortuneWheel' }
               },
               {
+                path: 'fortunetree_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/fortunetree_slots_cfg'),
+                name: 'fortunetree_slots_cfg',
+                meta: { title: 'F ortuneTree' }
+              },
+              {
                 path: 'fortunateebisu_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/fortunateebisu_slots_cfg'),
                 name: 'fortunateebisu_slots_cfg',
@@ -1363,7 +1382,7 @@ export const asyncRoutes = [
                 path: 'mafiamayhem_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/mafiamayhem_slots_cfg'),
                 name: 'mafiamayhem_slots_cfg',
-                meta: { title: 'M afiamayhem' }
+                meta: { title: 'M afiaMayhem' }
               },
               {
                 path: 'mahjongfortune_slots_cfg',
@@ -1820,6 +1839,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/lionfortunemars_slots_cfg'),
                 name: 'lionfortunemars_slots_cfg',
                 meta: { title: 'LionFortune(审)' }
+              },
+              {
+                path: 'fortunewheelmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/fortunewheelmars_slots_cfg'),
+                name: 'fortunewheelmars_slots_cfg',
+                meta: { title: 'FortuneWheel(审)' }
               }
             ]
           },
@@ -3128,8 +3153,14 @@ export const asyncRoutes = [
           {
             path: 'fortunewheel_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
-            name: 'wrathofzeus2_slots_log',
+            name: 'fortunewheel_slots_log',
             meta: { title: 'F ortuneWheel', gid: 226 }
+          },
+          {
+            path: 'fortunetree_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'fortunetree_slots_log',
+            meta: { title: 'F ortuneTree', gid: 234 }
           },
           {
             path: 'grandace_slots_log',
@@ -3207,7 +3238,7 @@ export const asyncRoutes = [
             path: 'mafiamayhem_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'mafiamayhem_slots_log',
-            meta: { title: 'M afiamayhem', gid: 232 }
+            meta: { title: 'M afiaMayhem', gid: 232 }
           },
           {
             path: 'mahjongfortune_slots_log',
@@ -3656,6 +3687,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'lionfortunemars_slots_log',
             meta: { title: 'LionFortune(审)', gid: 223 }
+          },
+          {
+            path: 'fortunewheelmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'fortunewheelmars_slots_log',
+            meta: { title: 'FortuneWheel(审)', gid: 227 }
           }
         ]
       },

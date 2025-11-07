@@ -3218,7 +3218,7 @@
         </el-table-column>
         <el-table-column prop="nick" label="昵称"  width="150px">
           <template slot-scope="scope">{{ scope.row.nick }}</template>
-        </el-table-column>        
+        </el-table-column>
         <el-table-column prop="bet" label="下注金额"  width="150px">
           <template slot-scope="scope">{{ scope.row.betMoney }}</template>
         </el-table-column>
@@ -4763,6 +4763,10 @@ export default {
           return '等'
         case 6 :
           return '跳过'
+        case 7 :
+          return '黑色'
+        case 8 :
+          return '红色'
         default:
           return '-'
       }

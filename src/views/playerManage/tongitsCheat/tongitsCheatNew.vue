@@ -61,7 +61,8 @@ export default {
       },
       BlackOperator: '',
       GameLogUidsMap: new Map(),
-      uidNickMap: {}
+      uidNickMap: {},
+      tidInfos: []
     }
   },
   created() {
@@ -277,7 +278,7 @@ export default {
                 if (row.userType !== 3) {
                   continue
                 }
-              } else if (this.cheatType === 5){
+              } else if (this.cheatType === 5) {
                 if (row.trustLevel !== this.cheatType || row.userType === 3) {
                   continue
                 }
@@ -303,7 +304,35 @@ export default {
               TrustLevel: 0,
               TrustScore: 0,
               TrustMaxScore: 0,
-              RealBlackTime: row.userType === 2 ? row.blackTime : 0  // 真实拉黑时间
+              RealBlackTime: row.userType === 2 ? row.blackTime : 0, // 真实拉黑时间
+              BlackTableMoney: row.blackTableMoney ? row.blackTableMoney : 0,
+              WhiteTableMoney: row.whiteTableMoney ? row.whiteTableMoney : 0,
+              SmallIntensity: 0, //小场洗分强度
+              SmallCoefficient: 0 //小场洗分系数
+            }
+            let addScore = 0
+            let reduceScore = 0
+            let score = 0
+            if (row.tableMoneyAddScore !== undefined ) {
+              for (const tableMoney in row.tableMoneyAddScore) {
+                addScore += row.tableMoneyAddScore[tableMoney] * tableMoney
+              }
+            }
+            if (row.tableMoneyReduceScore !== undefined) {
+              for (const tableMoney in row.tableMoneyReduceScore) {
+                reduceScore += row.tableMoneyReduceScore[tableMoney] * tableMoney
+              }
+            }
+            if (row.tableMoneyScore !== undefined) {
+              for (const tableMoney in row.tableMoneyScore) {
+                score += row.tableMoneyScore[tableMoney] /1000
+              }
+              cheatLog.CheatScore = score.toFixed(3)
+            }
+
+            cheatLog.SmallIntensity = (addScore / 1000 + reduceScore / 1000).toFixed(1)
+            if (reduceScore !== 0) {
+              cheatLog.SmallCoefficient = ((addScore / 1000) / (reduceScore*-1 / 1000)).toFixed(2)
             }
             if (row.trustScore !== undefined) {
               cheatLog.TrustScore = row.trustScore
@@ -335,10 +364,71 @@ export default {
         }
       })
     },
-    getUidLogs(row) {
+    async getTableMoney(tidInfos) {
+      for (let i = 0; i < tidInfos.length; i++) {
+        const tidInfo = tidInfos[i]
+        const uid = tidInfo.uid
+        const firstId = tidInfo.firstId
+        const firstTime = tidInfo.firstTime
+        const lastId = tidInfo.lastId
+        const lastTime = tidInfo.lastTime
+        const firstMoney = await this.getlogMoney(uid, firstTime, firstId, true)
+        const lastMoney = await this.getlogMoney(uid, lastTime, lastId, false)
+        console.log('tid', tidInfo.tid, 'firstTime', firstTime, 'lastTime', lastTime)
+        const ob = this.clientDB.GetDataByID(uid)
+        for (let j = 0; j < ob.TidCheatLogs.length; j++) {
+          const tidCheatLog = ob.TidCheatLogs[j]
+          if (tidCheatLog.Tid === tidInfo.tid) {
+            tidCheatLog.ChangeMoney = lastMoney - firstMoney
+            break
+          }
+        }
+        this.clientDB.UpdateData2('Uid', ob)
+        console.log('firstMoney', firstMoney, 'lastMoney', lastMoney)
+      }
+      console.log('gettablemoney end')
+    },
+    async getlogMoney(uid, time, id, isFirst) {
+      const response = await request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Env: this.env,
+          Path: '/log/detail',
+          ID: id,
+          DateTime: time
+        }
+      })
+
+      if (response.RetCode === 0) {
+        const obj = response.Data || {}
+        const row = obj.Row || {}
+        const players = row.players || []
+        for (let j = 0; j < players.length; j++) {
+          if (players[j].uid === uid) {
+            let money = players[j].moneyTotal
+            if (isFirst) {
+              money = players[j].BeforeMoney
+            }
+            return money
+          }
+        }
+        return 0
+      } else {
+        console.log('getlogMoney error')
+        return 0
+      }
+    },
+    async getUidLogsAndTidInfos(row) {
+      const tidInfos = []
+      await this.getUidLogs(row,tidInfos)
+      await this.getTableMoney(tidInfos)
+    },
+    async getUidLogs(row, tidInfos) {
       // console.log(ttt)
+      const now = Date.now()/1000
       const $this = this
-      request({
+      await request({
         url: '/dataProxy/info',
         method: 'get',
         data: {
@@ -364,6 +454,10 @@ export default {
             if (rowLog.hasOwnProperty('datas')) {
               for (let j = 0; j < rowLog.datas.length; j++) {
                 const tidRow = rowLog.datas[j]
+                let firstTime = 0
+                let firstId = 0
+                let lastTime = 0
+                let lastId = 0
                 const tidCheatLog = {
                   Tid: tidRow.tid,
                   Gid: tidRow.gid,
@@ -371,7 +465,8 @@ export default {
                   CheatScore: tidRow.cheatScore,
                   FirstCheatTime: tidRow.firstCheatTime,
                   CheatInfos: this.getCheatTotalInfo(tidRow.historyCheatField, tidRow.historyCheatFieldCount, tidRow.historyCheatFieldScore),
-                  PlayCheatLogs: []
+                  PlayCheatLogs: [],
+                  ChangeMoney: 0
                 }
                 if (tidRow.hasOwnProperty('datas')) {
                   for (let k = 0; k < tidRow.datas.length; k++) {
@@ -386,7 +481,8 @@ export default {
                       Gid: cheatRow.gid,
                       TableMoney: cheatRow.tableMoney,
                       CheatInfos: this.getCheatInfo(cheatRow.cheatFields, cheatRow.cheatFieldsCount, cheatRow.cheatScores),
-                      TableCheatScore: cheatRow.tableCheatScore ? cheatRow.tableCheatScore : 0
+                      TableCheatScore: cheatRow.tableCheatScore ? cheatRow.tableCheatScore : 0,
+                      TidCheatScore: cheatRow.tidCheatScore ? cheatRow.tidCheatScore : 0
                     }
                     if (cheatRow.hasOwnProperty('nick')) {
                       nick.add(cheatRow.nick)
@@ -396,10 +492,27 @@ export default {
                     tidCheatLog.PlayCheatLogs.push(playCheatLog)
                     if (tidCheatLog.FirstCheatTime >= cheatRow.endTime) {
                       tidCheatLog.FirstCheatTime = cheatRow.endTime
+                      firstTime = cheatRow.endTime
+                      firstId = cheatRow.logId
+                    }
+                    if (lastTime === 0 || lastTime <= cheatRow.endTime) {
+                      lastTime = cheatRow.endTime
+                      lastId = cheatRow.logId
                     }
                   }
                 }
+                if ((now - firstTime < 60*60*24*30) && (now - lastTime < 60*60*24*30)) {
+                  tidInfos.push({
+                    tid: tidRow.tid,
+                    uid: row.Uid,
+                    firstTime: firstTime,
+                    firstId: firstId,
+                    lastTime: lastTime,
+                    lastId: lastId
+                  })
+                }
 
+                console.log("tidInfos",tidInfos)
                 tidCheatLogs.push(tidCheatLog)
               }
             }
@@ -410,7 +523,9 @@ export default {
             this.clientDB.UpdateData2('Uid', ob)
           }
         }
+        console.log('getuidLogs request end')
       })
+      console.log('getuidLogs end')
     },
     getCheatUserType() {
       // console.log(ttt)
@@ -713,15 +828,23 @@ export default {
         console.log('取消')
       })
     },
-    changeBlack(row) {
+    async changeBlack(row) {
       this.BlackVisible = true
       this.editBlack.Uid = row.Uid
       this.editBlack.Reason = '疑似度超过50分'
       this.editBlack.Operator = this.BlackOperator
+      await this.$nextTick()
+      if (!this.$refs.saveBtn) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+      if (this.$refs.saveBtn) {
+        this.$refs.saveBtn.$el.focus()
+      }
     },
     save(row) {
       this.BlackVisible = false
-      console.log(this.editBlack)
+      console.log("saveblack")
+      this.$refs.saveBtn.$el.blur()
       const ob = this.clientDB.GetDataByID(this.editBlack.Uid)
       ob.BlackTime = Math.floor(Date.now() / 1000)
       ob.UserType = 2
@@ -802,6 +925,20 @@ export default {
     formatCheatRadio(CheatRadio) {
       return CheatRadio + '%'
     },
+    showBlackTableMoney(row) {
+      if (row.BlackTableMoney === -1) {
+        return '手动'
+      }
+      return (row.BlackTableMoney / 1000).toFixed(1)
+    },
+    showWhiteTableMoney(row) {
+      return (row.WhiteTableMoney / 1000).toFixed(1)
+      // const whiteTableMoney = row.WhiteTableMoney
+      // if (whiteTableMoney !== 0) {
+      //   return whiteTableMoney / 1000
+      // }
+      // return '--'
+    },
     formatUserBlackTime(row) {
       const userType = row.UserType
       if (userType === 2) {
@@ -857,6 +994,12 @@ export default {
           strArray.push(blueStr)
         } else {
           strArray.push(row.OtherUid[i] + noPartnerTableCheatScore)
+        }
+      }
+
+      if (row.TidCheatScore !== undefined && Array.isArray(row.TidCheatScore)) {
+        for (let i = 0; i < row.TidCheatScore.length; i++) {
+          strArray.push('(' + row.TidCheatScore[i].uid + ',' + row.TidCheatScore[i].preCheatScore + ',' + row.TidCheatScore[i].nextCheatScore + ')')
         }
       }
       // if (this.GameLogUidsMap.has(row.logId)) {
@@ -1075,6 +1218,28 @@ export default {
           align="center"
         />
         <el-table-column
+          prop="TrustMaxScore"
+          label="拉黑场"
+          width="80"
+          align="center"
+        >
+          <template slot-scope="scope">
+            <div>{{ showBlackTableMoney(scope.row) }}</div>
+
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="TrustMaxScore"
+          label="归0场"
+          width="80"
+          align="center"
+        >
+          <template slot-scope="scope">
+            <div>{{ showWhiteTableMoney(scope.row) }}</div>
+
+          </template>
+        </el-table-column>
+        <el-table-column
           prop="CheatScore"
           label="疑似度"
           width="80"
@@ -1125,25 +1290,25 @@ export default {
           </template>
         </el-table-column>
         <el-table-column
-          prop="LastEndTime"
-          label="最近牌局时间"
+          prop="SmallIntensity"
+          label="小场洗分强度"
           width="100"
           align="center"
-        >
-          <template slot-scope="scope">
-            <div>{{ formatTimeDate(scope.row.LastEndTime) }}</div>
-          </template>
-        </el-table-column>
+        />
+<!--          <template slot-scope="scope">-->
+<!--            <div>{{ formatTimeDate(scope.row.LastEndTime) }}</div>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
         <el-table-column
-          prop="UpdateTime"
-          label="最近作弊时间"
+          prop="SmallCoefficient"
+          label="小场洗分系数"
           width="100"
           align="center"
-        >
-          <template slot-scope="scope">
-            <div>{{ formatTimeDate(scope.row.UpdateTime) }}</div>
-          </template>
-        </el-table-column>
+        />
+<!--          <template slot-scope="scope">-->
+<!--            <div>{{ formatTimeDate(scope.row.UpdateTime) }}</div>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
         <el-table-column
           label="详情"
           width="100"
@@ -1152,7 +1317,7 @@ export default {
           <template #default="scope">
             <el-button
               size="mini"
-              @click="getUidLogs(scope.row)"
+              @click="getUidLogsAndTidInfos(scope.row)"
             >
               查询
             </el-button>
@@ -1181,6 +1346,11 @@ export default {
               <el-table-column width="200" property="FirstCheatTime" label="该桌⾸次作弊实锤时间">
                 <template slot-scope="scope">
                   <div>{{ formatTimeDate(scope.row.FirstCheatTime) }}</div>
+                </template>
+              </el-table-column>
+              <el-table-column width="200" property="ChangeMoney" label="该桌输赢金额">
+                <template slot-scope="scope">
+                  <div>{{ showTableMoney(scope.row.ChangeMoney) }}</div>
                 </template>
               </el-table-column>
               <el-table-column width="100" property="CheatScore" label="疑似度增加" />
@@ -1313,7 +1483,7 @@ export default {
           </el-form-item>
           <el-form-item>
             <el-col :span="12" :offset="10">
-              <el-button type="primary" size="medium" autofocus="true" @click="save">保存</el-button>
+              <el-button ref="saveBtn" type="primary" size="medium" @keyup.enter.native="save" @click="save">保存</el-button>
             </el-col>
           </el-form-item>
         </el-form>

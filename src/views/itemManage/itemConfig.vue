@@ -629,7 +629,7 @@ export default {
         }
       }
       // 上架 对过期时间判断
-      if (editData.status === 2 && editData.expire_time < Math.floor(Date.now() / 1000)) {
+      if (editData.status === 2 && [PROP_TYPE_OPTIONS.PROP_TYPE_TICKET,PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET].includes(editData.item_type) && editData.expire_time < Math.floor(Date.now() / 1000)) {
         Message.error('当前道具已经过期不能再上架')
         return
       }
