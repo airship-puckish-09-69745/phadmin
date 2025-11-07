@@ -67,115 +67,112 @@
       </el-col>
     </el-row>
     <el-dialog :title="getEditTitle()"
-      :visible.sync="edit.visible"
-      :close-on-click-modal="false"
-      :close-on-press-escape="false"
-      @opened="handleEditDialogOpened"
-      width="1100px"
+               :visible.sync="edit.visible"
+               :close-on-click-modal="false"
+               :close-on-press-escape="false"
+               @opened="handleEditDialogOpened"
+               width="1100px"
     >
       <el-tabs type="border-card">
         <el-tab-pane label="活动配置">
           <el-row>
-              <el-form label-width="220px" size="mini">
-<!--                <el-form-item label="活动ID：" prop="CfgId" style="display: none">
-                  <el-input v-model="edit.item.CfgId" />
-                </el-form-item>-->
-                <el-col :span="12">
-                  <el-form-item label="是否开启：" prop="IsOpen" :required="true">
-                    <el-switch v-model="edit.item.IsOpen" :active-value="1" :inactive-value="0" />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="展示结束时间：" prop="ShowEndTime" :required="true">
-                    <el-date-picker v-model="edit.item.ShowEndTime" type="datetime" placeholder="选择展示结束时间" value-format="timestamp" />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="活动开始时间：" prop="StartTime" :required="true">
-                    <el-date-picker v-model="edit.item.StartTime" type="datetime" placeholder="选择开始时间" value-format="timestamp" />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="活动结束时间：" prop="EndTime" :required="true">
-                    <el-date-picker v-model="edit.item.EndTime" type="datetime"  placeholder="选择结束时间" value-format="timestamp" />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="下注/赢钱获得蛋壳比例：" :required="true">
-                    <el-input v-model.number="edit.item.EggShellGainRatio" >
-                      <template slot="append">%</template>
-                    </el-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="抽到已收集彩蛋返蛋壳比例：" prop="EggShellReturnRatio" :required="true" >
-                    <el-input v-model="edit.item.EggShellReturnRatio">
-                      <template slot="append">%</template>
-                    </el-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="每抽蛋壳数量：" :required="true">
-                    <el-input v-model="edit.item.EggShellsPerRaffle" />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="首抽蛋壳数量：" :required="true">
-                    <el-input v-model="edit.item.EggShellsRaffleFirst" />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="发放奖励类型：" :required="true">
-                    <el-select v-model="edit.item.RewardCfg.RewardType" placeholder="请选择" style="width:90px">
-                      <el-option
-                        v-for="item in rewardTypes"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                      />
-                    </el-select>
-                    <el-select v-if="edit.item.RewardCfg.RewardType === 2" v-model="edit.item.RewardCfg.UseSceneId" placeholder="请选择投注金" style="width:150px">
-                      <el-option
-                        v-for="scene in betScenes"
-                        :key="scene.value"
-                        :label="scene.label"
-                        :value="scene.value"
-                      />
-                    </el-select>
-                    <el-select v-if="edit.item.RewardCfg.RewardType === 3" v-model="edit.item.RewardCfg.UseSceneId" placeholder="请选择返水金" style="width:150px">
-                      <el-option
-                        v-for="scene in rebateScenes"
-                        :key="scene.value"
-                        :label="scene.label"
-                        :value="scene.value"
-                      />
-                    </el-select>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="集齐彩蛋图鉴奖金：" :required="true">
-                    <el-input v-model.number="edit.item.RewardCfg.BigPrizeReward">
-                      <template slot="append">（₱）</template>
-                    </el-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="当日发奖额阈值：" :required="true">
-                    <el-input v-model.number="edit.item.DayPrizeThreshold">
-                      <template slot="append">（₱）</template>
-                    </el-input>
-                    <span v-if="todayRaffleAmount > edit.item.DayPrizeThreshold" style="color: red">今日发奖已超阈值（{{todayRaffleAmount}}），已开启限制</span>
-                    <span v-else style="color: red">今日发奖总额（{{todayRaffleAmount}}）</span>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="调试时间偏移量（仅测试用）：" :required="true">
-                    <el-input v-model.number="edit.item.DebugTimeOffset">
-                      <template slot="append">秒</template>
-                    </el-input>
-                  </el-form-item>
-                </el-col>
-              </el-form>
+            <el-form label-width="220px" size="mini">
+              <el-col :span="12">
+                <el-form-item label="是否开启：" prop="IsOpen" :required="true">
+                  <el-switch v-model="edit.item.IsOpen" :active-value="1" :inactive-value="0" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="展示结束时间：" prop="ShowEndTime" :required="true">
+                  <el-date-picker v-model="edit.item.ShowEndTime" type="datetime" placeholder="选择展示结束时间" value-format="timestamp" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="活动开始时间：" prop="StartTime" :required="true">
+                  <el-date-picker v-model="edit.item.StartTime" type="datetime" placeholder="选择开始时间" value-format="timestamp" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="活动结束时间：" prop="EndTime" :required="true">
+                  <el-date-picker v-model="edit.item.EndTime" type="datetime"  placeholder="选择结束时间" value-format="timestamp" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="下注/赢钱获得蛋壳比例：" :required="true">
+                  <el-input v-model.number="edit.item.EggShellGainRatio" >
+                    <template slot="append">%</template>
+                  </el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="抽到已收集彩蛋返蛋壳比例：" prop="EggShellReturnRatio" :required="true" >
+                  <el-input v-model="edit.item.EggShellReturnRatio">
+                    <template slot="append">%</template>
+                  </el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="每抽蛋壳数量：" :required="true">
+                  <el-input v-model="edit.item.EggShellsPerRaffle" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="首抽蛋壳数量：" :required="true">
+                  <el-input v-model="edit.item.EggShellsRaffleFirst" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="发放奖励类型：" :required="true">
+                  <el-select v-model="edit.item.RewardCfg.RewardType" placeholder="请选择" style="width:90px">
+                    <el-option
+                      v-for="item in rewardTypes"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                  <el-select v-if="edit.item.RewardCfg.RewardType === 2" v-model="edit.item.RewardCfg.UseSceneId" placeholder="请选择投注金" style="width:150px">
+                    <el-option
+                      v-for="scene in betScenes"
+                      :key="scene.value"
+                      :label="scene.label"
+                      :value="scene.value"
+                    />
+                  </el-select>
+                  <el-select v-if="edit.item.RewardCfg.RewardType === 3" v-model="edit.item.RewardCfg.UseSceneId" placeholder="请选择返水金" style="width:150px">
+                    <el-option
+                      v-for="scene in rebateScenes"
+                      :key="scene.value"
+                      :label="scene.label"
+                      :value="scene.value"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="集齐彩蛋图鉴奖金：" :required="true">
+                  <el-input v-model.number="edit.item.RewardCfg.BigPrizeReward">
+                    <template slot="append">（₱）</template>
+                  </el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="当日发奖额阈值：" :required="true">
+                  <el-input v-model.number="edit.item.DayPrizeThreshold">
+                    <template slot="append">（₱）</template>
+                  </el-input>
+                  <span v-if="todayRaffleAmount > edit.item.DayPrizeThreshold" style="color: red">今日发奖已超阈值（{{todayRaffleAmount}}），已开启限制</span>
+                  <span v-else style="color: red">今日发奖总额（{{todayRaffleAmount}}）</span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="调试时间偏移量（仅测试用）：" :required="true">
+                  <el-input v-model.number="edit.item.DebugTimeOffset">
+                    <template slot="append">秒</template>
+                  </el-input>
+                </el-form-item>
+              </el-col>
+            </el-form>
           </el-row>
           <el-row :gutter="5">
             <el-form label-width="220px">
@@ -458,8 +455,69 @@
           </el-row>
         </el-tab-pane>
 
+        <el-tab-pane label="成就头像框配置">
+          <el-table
+            :data="edit.item.RewardCfg.Achievements"
+            border
+            style="width: 100%"
+            :cell-style="libShow.DefaultTableCell"
+          >
+            <el-table-column
+              prop="Level"
+              label="成就等级"
+              width="100"
+            />
+            <el-table-column
+              prop="Level"
+              label="成就描述"
+            >
+              <template slot-scope="scope">
+                {{ achievementDescriptions[scope.row.Level] || '-' }}
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="PropId"
+              label="头像名称"
+            >
+              <template slot-scope="scope">
+                <el-select v-model.number="scope.row.PropId" placeholder="请选择道具">
+                  <el-option
+                    v-for="item in propOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="PropExpireDays"
+              label="可用时间"
+            >
+              <template slot-scope="scope">
+                <el-select v-model.number="scope.row.PropExpireDays" placeholder="请选择可用时间">
+                  <el-option
+                    v-for="item in propDayTypeOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="PropNum"
+              label="发放数量"
+            >
+              <template slot-scope="scope">
+                <el-input v-model.number="scope.row.PropNum" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-tab-pane>
+
         <el-tab-pane label="白名单配置">
-          <el-form ref="item" label-width="220px">
+          <el-form ref="whitelistCfg" label-width="220px">
             <el-row>
               <el-col :span="11">
                 <el-form-item label="AppId白名单：" prop="item.WhitelistCfg.AppIdList">
@@ -539,6 +597,14 @@ function newEggs() {
   ]
 }
 
+function newAchievements() {
+  return [
+    { Level: 1, PropId: 0, PropType: 2, PropNum: 1, PropExpireDays: 1},
+    { Level: 2, PropId: 0, PropType: 2, PropNum: 1, PropExpireDays: 7},
+    { Level: 3, PropId: 0, PropType: 2, PropNum: 1, PropExpireDays: 30}
+  ]
+}
+
 function newItem() {
   const eggs = newEggs()
   return {
@@ -561,6 +627,7 @@ function newItem() {
       RewardType: 1,
       UseSceneId: 0,
       BigPrizeReward: 88888,
+      Achievements: newAchievements()
     },
     RankCfg: [
       { RankStart: 1, RankEnd: 1, Reward: 28888 },
@@ -579,6 +646,7 @@ function newItem() {
     },
     EggShellsPerRaffle: 100,
     EggShellsRaffleFirst: 500,
+    DebugTimeOffset: 0
   }
 }
 
@@ -744,15 +812,33 @@ export default {
           GameId: 1, Name: '测试游戏1', OrderNo: 1
         }
       ],
+      propType: 2, // 头像框的道具属性值
+      propList: [],
+      // 道具选项列表
+      propOptions: [],
+      // 道具有效时长选项列表
+      propDayTypeOptions: [
+        { 'value': 1, 'label': '1天', disabled: false },
+        { 'value': 3, 'label': '3天', disabled: false },
+        { 'value': 7, 'label': '7天', disabled: false },
+        { 'value': 30, 'label': '30天', disabled: false },
+        { 'value': 365, 'label': '365天', disabled: false },
+        { 'value': 0, 'label': '永久', disabled: false }
+      ],
+      achievementDescriptions: {
+        1: "活动期间抽取过礼物",
+        2: "活动期间解锁奖励礼物",
+        3: "活动期间集齐所有礼物"
+      }
     }
   },
   created() {
     this.env = store.getters.env || this.env
-    this.getTodayRaffleAmount()
   },
   mounted() {
     this.getList()
     this.getGameAll()
+    this.getPropList()
   },
   computed: {
     eggReward: {
@@ -970,6 +1056,9 @@ export default {
       data.EggShellsPerRaffle = this.edit.item.EggShellsPerRaffle
       data.EggShellsRaffleFirst = this.edit.item.EggShellsRaffleFirst
       data.DebugTimeOffset = this.edit.item.DebugTimeOffset
+      if (this.edit.item.WhitelistCfg.AppIdList.length > 0) {
+        data.AppId = this.edit.item.WhitelistCfg.AppIdList[0]
+      }
       return data
     },
     handleSave() {
@@ -1028,7 +1117,7 @@ export default {
     handleEditDialogOpened() {
       console.log('handleEditDialogOpened edit:' + this.edit.isEdit)
       if (this.edit.isEdit) {
-        this.getTodayRaffleAmount()
+        this.getTodayRaffleAmount(this.edit.item.ID)
         this.$refs.tree.setCheckedKeys(this.edit.item.GameIdCfg)
       } else {
         this.$refs.tree.setCheckedKeys([])
@@ -1053,6 +1142,10 @@ export default {
           item.RuleImgVer = JSON.parse(item.RuleImgVer)
           item.DayPrizeThreshold = item.DayPrizeThreshold / 1000
           item.DebugTimeOffset = item.DebugTimeOffset || 0
+
+          if (item.RewardCfg.Achievements === undefined) {
+            item.RewardCfg.Achievements = newAchievements()
+          }
 
           for (let i = 0; i < item.RankCfg.length; i++) {
             const rankCfg = item.RankCfg[i]
@@ -1324,7 +1417,8 @@ export default {
         url: '/dataProxy/info',
         method: 'get',
         data: {
-          Path: '/activity/easter/today/raffle/amount'
+          Path: '/activity/easter/today/raffle/amount',
+          CfgId: this.edit.item.ID
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -1335,7 +1429,58 @@ export default {
           }
         }
       })
-    }
+    },
+    //************************ 道具配置 ************************
+    getPropList() {
+      const $this = this
+      request({
+        url: '/propsconfig/props/config/list',
+        method: 'get',
+        data: {
+          Env: $this.env,
+          PageNum: 1,
+          PageSize: 1000
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objs = response.Data || {}
+          if (objs.total > 0) {
+            //this.propTotal = objs.total
+            this.propList = []
+            this.propList = objs.list
+          }
+        } else {
+          //this.propTotal = objs.total
+          this.propList = []
+        }
+
+        this.getPropOptions(this.propType)
+      })
+    },
+    getPropOptions(propType) {
+      this.propOptions = [
+        { 'value': 0, 'label': '请选择', disabled: false }
+      ]
+      let currTime = new Date().getTime()
+      for (let i = 0; i < this.propList.length; i++) {
+        if (this.propList[i].item_type === 4) {
+          console.log(this.propList[i])
+        }
+        if (this.propList[i].item_type === propType && this.propList[i].status === 1) {
+          if (this.propList[i].item_type !== 2 && this.propList[i].item_type !== 4) {
+            let expTime = this.propList[i].expire_time * 1000
+            if (currTime < expTime) {
+              let dataList = { 'value': this.propList[i].id, 'label': this.propList[i].item_name, disabled: false }
+              this.propOptions.push(dataList)
+            }
+
+          } else {
+            let dList = { 'value': this.propList[i].id, 'label': this.propList[i].item_name, disabled: false }
+            this.propOptions.push(dList)
+          }
+        }
+      }
+    },
   }
 }
 </script>
