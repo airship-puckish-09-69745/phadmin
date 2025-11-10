@@ -24,6 +24,7 @@
                 @row-click="clickData"
                 @sort-change="sortChange">
         <el-table-column prop="ID" label="ID" sortable="custom" width="80" />
+        <el-table-column prop="ActName" label="活动名称" />
         <el-table-column prop="StartTime" label="开始时间">
           <template slot-scope="scope">
             {{ formatTime(scope.row.StartTime) }}
@@ -77,14 +78,14 @@
         <el-tab-pane label="活动配置">
           <el-row>
             <el-form label-width="220px" size="mini">
-              <el-col :span="12">
+              <el-col :span="24">
                 <el-form-item label="是否开启：" prop="IsOpen" :required="true">
                   <el-switch v-model="edit.item.IsOpen" :active-value="1" :inactive-value="0" />
                 </el-form-item>
               </el-col>
-              <el-col :span="12">
-                <el-form-item label="展示结束时间：" prop="ShowEndTime" :required="true">
-                  <el-date-picker v-model="edit.item.ShowEndTime" type="datetime" placeholder="选择展示结束时间" value-format="timestamp" />
+              <el-col :span="24">
+                <el-form-item label="活动名称：" prop="ActName" :required="true">
+                  <el-input v-model="edit.item.ActName" />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
@@ -97,27 +98,32 @@
                   <el-date-picker v-model="edit.item.EndTime" type="datetime"  placeholder="选择结束时间" value-format="timestamp" />
                 </el-form-item>
               </el-col>
+              <el-col :span="24">
+                <el-form-item label="展示结束时间：" prop="ShowEndTime" :required="true">
+                  <el-date-picker v-model="edit.item.ShowEndTime" type="datetime" placeholder="选择展示结束时间" value-format="timestamp" />
+                </el-form-item>
+              </el-col>
               <el-col :span="12">
-                <el-form-item label="下注/赢钱获得蛋壳比例：" :required="true">
+                <el-form-item label="下注/赢钱获得星辰比例：" :required="true">
                   <el-input v-model.number="edit.item.EggShellGainRatio" >
                     <template slot="append">%</template>
                   </el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="抽到已收集彩蛋返蛋壳比例：" prop="EggShellReturnRatio" :required="true" >
+                <el-form-item label="抽到已收集礼物返星辰比例：" prop="EggShellReturnRatio" :required="true" >
                   <el-input v-model="edit.item.EggShellReturnRatio">
                     <template slot="append">%</template>
                   </el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="每抽蛋壳数量：" :required="true">
+                <el-form-item label="每抽星辰数量：" :required="true">
                   <el-input v-model="edit.item.EggShellsPerRaffle" />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="首抽蛋壳数量：" :required="true">
+                <el-form-item label="首抽星辰数量：" :required="true">
                   <el-input v-model="edit.item.EggShellsRaffleFirst" />
                 </el-form-item>
               </el-col>
@@ -150,7 +156,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="集齐彩蛋图鉴奖金：" :required="true">
+                <el-form-item label="集齐礼物图鉴奖金：" :required="true">
                   <el-input v-model.number="edit.item.RewardCfg.BigPrizeReward">
                     <template slot="append">（₱）</template>
                   </el-input>
@@ -274,7 +280,7 @@
           </el-dialog>
         </el-tab-pane>
 
-        <el-tab-pane label="彩蛋配置">
+        <el-tab-pane label="礼物配置">
           <el-row :gutter="5">
             <el-col>
               <el-table
@@ -285,7 +291,7 @@
               >
                 <el-table-column
                   prop="Name"
-                  label="彩蛋名称"
+                  label="礼物名称"
                   width="200"
                 />
                 <el-table-column
@@ -324,11 +330,11 @@
                 <el-table :data="item.Weights">
                   <el-table-column
                     prop="EggId"
-                    label="彩蛋ID"
+                    label="礼物ID"
                   />
                   <el-table-column
                     prop="Name"
-                    label="彩蛋名称"
+                    label="礼物名称"
                   >
                     <template slot-scope="scope">
                       {{ getEggName(scope.row.EggId) }}
@@ -377,11 +383,11 @@
                 <el-table :data="item.Weights">
                   <el-table-column
                     prop="EggId"
-                    label="彩蛋ID"
+                    label="礼物ID"
                   />
                   <el-table-column
                     prop="Name"
-                    label="彩蛋名称"
+                    label="礼物名称"
                   >
                     <template slot-scope="scope">
                       {{ getEggName(scope.row.EggId) }}
@@ -518,7 +524,7 @@
 
         <el-tab-pane label="白名单配置">
           <el-form ref="whitelistCfg" label-width="220px">
-            <el-row>
+            <el-row v-if="version === 'V1'">
               <el-col :span="11">
                 <el-form-item label="AppId白名单：" prop="item.WhitelistCfg.AppIdList">
                   <el-select v-model="edit.item.WhitelistCfg.AppIdList" multiple placeholder="请选择" style="width: 400px" @change="onAppIdOptionsChange">
@@ -570,30 +576,30 @@ const filterMap = {}
 
 function newEggs() {
   return [
-    { EggId: 100, Name: 'Red-X', Reward: 88, Level: 0, Color: 1 },
-    { EggId: 101, Name: 'RED-Ⅰ', Reward: 0.28, Level: 1, Color: 1 },
-    { EggId: 102, Name: 'RED-Ⅱ', Reward: 1.8, Level: 2, Color: 1 },
-    { EggId: 103, Name: 'RED-Ⅲ', Reward: 8.8, Level: 3, Color: 1 },
-    { EggId: 104, Name: 'RED-Ⅳ', Reward: 18, Level: 4, Color: 1 },
-    { EggId: 105, Name: 'RED-Ⅴ', Reward: 28, Level: 5, Color: 1 },
-    { EggId: 200, Name: 'BLUE-X', Reward: 88, Level: 0, Color: 2 },
-    { EggId: 201, Name: 'BLUE-Ⅰ', Reward: 0.28, Level: 1, Color: 2 },
-    { EggId: 202, Name: 'BLUE-Ⅱ', Reward: 1.8, Level: 2, Color: 2 },
-    { EggId: 203, Name: 'BLUE-Ⅲ', Reward: 8.8, Level: 3, Color: 2 },
-    { EggId: 204, Name: 'BLUE-Ⅳ', Reward: 18, Level: 4, Color: 2 },
-    { EggId: 205, Name: 'BLUE-Ⅴ', Reward: 28, Level: 5, Color: 2 },
-    { EggId: 300, Name: 'GREEN-X', Reward: 88, Level: 0, Color: 3 },
-    { EggId: 301, Name: 'GREEN-Ⅰ', Reward: 0.28, Level: 1, Color: 3 },
-    { EggId: 302, Name: 'GREEN-Ⅱ', Reward: 1.8, Level: 2, Color: 3 },
-    { EggId: 303, Name: 'GREEN-Ⅲ', Reward: 8.8, Level: 3, Color: 3 },
-    { EggId: 304, Name: 'GREEN-Ⅳ', Reward: 18, Level: 4, Color: 3 },
-    { EggId: 305, Name: 'GREEN-Ⅴ', Reward: 28, Level: 5, Color: 3 },
-    { EggId: 400, Name: 'YELLOW-X', Reward: 88, Level: 0, Color: 4 },
-    { EggId: 401, Name: 'YELLOW-Ⅰ', Reward: 0.28, Level: 1, Color: 4 },
-    { EggId: 402, Name: 'YELLOW-Ⅱ', Reward: 1.8, Level: 2, Color: 4 },
-    { EggId: 403, Name: 'YELLOW-Ⅲ', Reward: 8.8, Level: 3, Color: 4 },
-    { EggId: 404, Name: 'YELLOW-Ⅳ', Reward: 18, Level: 4, Color: 4 },
-    { EggId: 405, Name: 'YELLOW-Ⅴ', Reward: 28, Level: 5, Color: 4 },
+    { EggId: 100, Name: 'SOCK-X', Reward: 88, Level: 0, Color: 1 },
+    { EggId: 101, Name: 'SOCK-Ⅰ', Reward: 0.28, Level: 1, Color: 1 },
+    { EggId: 102, Name: 'SOCK-Ⅱ', Reward: 1.8, Level: 2, Color: 1 },
+    { EggId: 103, Name: 'SOCK-Ⅲ', Reward: 8.8, Level: 3, Color: 1 },
+    { EggId: 104, Name: 'SOCK-Ⅳ', Reward: 18, Level: 4, Color: 1 },
+    { EggId: 105, Name: 'SOCK-Ⅴ', Reward: 28, Level: 5, Color: 1 },
+    { EggId: 200, Name: 'BOX-X', Reward: 88, Level: 0, Color: 2 },
+    { EggId: 201, Name: 'BOX-Ⅰ', Reward: 0.28, Level: 1, Color: 2 },
+    { EggId: 202, Name: 'BOX-Ⅱ', Reward: 1.8, Level: 2, Color: 2 },
+    { EggId: 203, Name: 'BOX-Ⅲ', Reward: 8.8, Level: 3, Color: 2 },
+    { EggId: 204, Name: 'BOX-Ⅳ', Reward: 18, Level: 4, Color: 2 },
+    { EggId: 205, Name: 'BOX-Ⅴ', Reward: 28, Level: 5, Color: 2 },
+    { EggId: 300, Name: 'BELL-X', Reward: 88, Level: 0, Color: 3 },
+    { EggId: 301, Name: 'BELL-Ⅰ', Reward: 0.28, Level: 1, Color: 3 },
+    { EggId: 302, Name: 'BELL-Ⅱ', Reward: 1.8, Level: 2, Color: 3 },
+    { EggId: 303, Name: 'BELL-Ⅲ', Reward: 8.8, Level: 3, Color: 3 },
+    { EggId: 304, Name: 'BELL-Ⅳ', Reward: 18, Level: 4, Color: 3 },
+    { EggId: 305, Name: 'BELL-Ⅴ', Reward: 28, Level: 5, Color: 3 },
+    { EggId: 400, Name: 'COOKIE-X', Reward: 88, Level: 0, Color: 4 },
+    { EggId: 401, Name: 'COOKIE-Ⅰ', Reward: 0.28, Level: 1, Color: 4 },
+    { EggId: 402, Name: 'COOKIE-Ⅱ', Reward: 1.8, Level: 2, Color: 4 },
+    { EggId: 403, Name: 'COOKIE-Ⅲ', Reward: 8.8, Level: 3, Color: 4 },
+    { EggId: 404, Name: 'COOKIE-Ⅳ', Reward: 18, Level: 4, Color: 4 },
+    { EggId: 405, Name: 'COOKIE-Ⅴ', Reward: 28, Level: 5, Color: 4 },
   ]
 }
 
@@ -610,6 +616,7 @@ function newItem() {
   return {
     ID: 0,
     IsOpen: 1,
+    ActName: '',
     StartTime: Date.parse(new Date().toString()),
     EndTime: Date.parse(new Date().toString()),
     ShowEndTime: Date.parse(new Date().toString()),
@@ -695,6 +702,8 @@ export default {
       libShow: $libShow,
       libMoney: new MoneyShow([]),
       statusNames: { 2: '上架', 6: '下架', 7: '预上架', 8: '预下架' },
+      appId: store.getters.appId || -1,
+      version: store.getters.version || 'V1',
       edit: {
         CfgId: 0,
         isEdit: false,
@@ -705,10 +714,10 @@ export default {
         normalEggWeightConfigs: [],
         specialEggWeightConfigs: [],
         eggs: [
-          { Color: 1, Name: 'RED', Rewards: { 0: 88, 1: 0.28, 2: 1.8, 3: 8.8, 4: 18, 5: 28} },
-          { Color: 2, Name: 'BLUE', Rewards: { 0: 88, 1: 0.28, 2: 1.8, 3: 8.8, 4: 18, 5: 28} },
-          { Color: 3, Name: 'GREEN', Rewards: { 0: 88, 1: 0.28, 2: 1.8, 3: 8.8, 4: 18, 5: 28} },
-          { Color: 4, Name: 'YELLOW', Rewards: { 0: 88, 1: 0.28, 2: 1.8, 3: 8.8, 4: 18, 5: 28} },
+          { Color: 1, Name: 'SOCK', Rewards: { 0: 88, 1: 0.28, 2: 1.8, 3: 8.8, 4: 18, 5: 28} },
+          { Color: 2, Name: 'BOX', Rewards: { 0: 88, 1: 0.28, 2: 1.8, 3: 8.8, 4: 18, 5: 28} },
+          { Color: 3, Name: 'BELL', Rewards: { 0: 88, 1: 0.28, 2: 1.8, 3: 8.8, 4: 18, 5: 28} },
+          { Color: 4, Name: 'COOKIE', Rewards: { 0: 88, 1: 0.28, 2: 1.8, 3: 8.8, 4: 18, 5: 28} },
         ],
         eggColumns: [
           { prop: 'Reward0', label: 'X' },
@@ -723,6 +732,7 @@ export default {
       AttrNames: {
         CfgId: '配置ID',
         IsOpen: '是否开启',
+        ActName: '活动名称',
         StartTime: '开始时间',
         EndTime: '结束时间',
         ShowEndTime: '展示结束时间',
@@ -730,14 +740,14 @@ export default {
         RuleImgHor: '横向规则图',
         RuleImgVer: '纵向规则图',
         WhitelistCfg: '白名单',
-        EggShellGainRatio: '彩蛋获得倍率',
-        EggShellReturnRatio: '彩蛋返还倍率',
+        EggShellGainRatio: '礼物获得倍率',
+        EggShellReturnRatio: '礼物返还倍率',
         DayPrizeThreshold: '每日奖励阈值',
         RewardCfg: '奖励配置',
         RankCfg: '排行榜配置',
-        EggCfg: '彩蛋配置',
-        EggShellsPerRaffle: '每抽蛋壳数量',
-        EggShellsRaffleFirst: '首抽蛋壳数量',
+        EggCfg: '礼物配置',
+        EggShellsPerRaffle: '每抽星辰数量',
+        EggShellsRaffleFirst: '首抽星辰数量',
         DebugTimeOffset: '调试时间偏移',
       },
       treeData: [{
@@ -783,7 +793,7 @@ export default {
 
       // 投注金
       betScenes: [
-        { 'value': 7, 'label': '【复活节彩蛋活动】任意游戏投注' },
+        { 'value': 7, 'label': '【圣诞节礼物活动】任意游戏投注' },
         /*{ 'value': 1, 'label': '任意游戏投注' },
         { 'value': 2, 'label': '仅限Poker类游戏投注' },
         { 'value': 3, 'label': '仅限Slots类游戏投注' },
@@ -1037,6 +1047,10 @@ export default {
 
       this.edit.item.RewardCfg.BigPrizeReward *= 1000
 
+      if (this.edit.item.WhitelistCfg.AppIdList.length === 0 && this.version === 'V2') {
+        this.edit.item.WhitelistCfg.AppIdList = [this.appId]
+      }
+
       const data = {}
       data.ID = this.edit.item.ID
       data.IsOpen = this.edit.item.IsOpen
@@ -1056,9 +1070,7 @@ export default {
       data.EggShellsPerRaffle = this.edit.item.EggShellsPerRaffle
       data.EggShellsRaffleFirst = this.edit.item.EggShellsRaffleFirst
       data.DebugTimeOffset = this.edit.item.DebugTimeOffset
-      if (this.edit.item.WhitelistCfg.AppIdList.length > 0) {
-        data.AppId = this.edit.item.WhitelistCfg.AppIdList[0]
-      }
+      data.ActName = this.edit.item.ActName
       return data
     },
     handleSave() {
@@ -1077,7 +1089,6 @@ export default {
       } else {
         this.createData(data)
       }
-      this.edit.visible = false
     },
     createData(data) {
       request({
@@ -1088,6 +1099,7 @@ export default {
         if (response.RetCode === 0) {
           this.getList()
           Message.success('保存成功！')
+          this.edit.visible = false
         }
       })
     },
@@ -1100,6 +1112,7 @@ export default {
         if (response.RetCode === 0) {
           this.getList()
           Message.success('保存成功！')
+          this.edit.visible = false
         }
       })
     },
