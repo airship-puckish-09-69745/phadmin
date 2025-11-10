@@ -518,7 +518,7 @@
 
         <el-tab-pane label="白名单配置">
           <el-form ref="whitelistCfg" label-width="220px">
-            <el-row>
+            <el-row v-if="version === 'V1'">
               <el-col :span="11">
                 <el-form-item label="AppId白名单：" prop="item.WhitelistCfg.AppIdList">
                   <el-select v-model="edit.item.WhitelistCfg.AppIdList" multiple placeholder="请选择" style="width: 400px" @change="onAppIdOptionsChange">
@@ -695,6 +695,8 @@ export default {
       libShow: $libShow,
       libMoney: new MoneyShow([]),
       statusNames: { 2: '上架', 6: '下架', 7: '预上架', 8: '预下架' },
+      appId: store.getters.appId || -1,
+      version: store.getters.version || 'V1',
       edit: {
         CfgId: 0,
         isEdit: false,
@@ -1037,6 +1039,10 @@ export default {
 
       this.edit.item.RewardCfg.BigPrizeReward *= 1000
 
+      if (this.edit.item.WhitelistCfg.AppIdList.length === 0 && this.version === 'V2') {
+        this.edit.item.WhitelistCfg.AppIdList = [this.appId]
+      }
+
       const data = {}
       data.ID = this.edit.item.ID
       data.IsOpen = this.edit.item.IsOpen
@@ -1056,9 +1062,6 @@ export default {
       data.EggShellsPerRaffle = this.edit.item.EggShellsPerRaffle
       data.EggShellsRaffleFirst = this.edit.item.EggShellsRaffleFirst
       data.DebugTimeOffset = this.edit.item.DebugTimeOffset
-      if (this.edit.item.WhitelistCfg.AppIdList.length > 0) {
-        data.AppId = this.edit.item.WhitelistCfg.AppIdList[0]
-      }
       return data
     },
     handleSave() {
