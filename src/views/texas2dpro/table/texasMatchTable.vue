@@ -599,6 +599,7 @@ import MoneyInput from '@/components/MoneyInput'
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
 import { IsMars } from '@/utils/env'
 import {ITEM_TYPE_OPTIONS, PROP_TYPE_OPTIONS,ITEM_DAY_TYPE_OPTIONS} from "@/utils/options";
+import {GetMatchTicketRightsIdList, IsNewTicketProp} from "@/utils/prop";
 
 const filterMap = {}
 
@@ -1295,22 +1296,43 @@ export default {
           var timestamp = Date.parse(new Date())/1000
           if (objs.total > 0) {
             for (let i=0;i<objs.list.length;i++) {
+              let canPush = false
+              let sceneId = 0
               if(objs.list[i].status ===1 && ((objs.list[i].item_type===PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET && objs.list[i].expire_time>timestamp) ||
                  [PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW,PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR].includes(objs.list[i].item_type) )) { //类型参考 PROP_TYPE_OPTIONS定义
-                this.matchPropsCfgs.push({
-                  'propsType': objs.list[i].item_type,
-                  'propsId': objs.list[i].id,
-                  'propsName': objs.list[i].item_name,
-                  'propsIcon': objs.list[i].image,
-                  'propsAttr': objs.list[i].item_describe,
-                  'propsCost': objs.list[i].item_cost,
-                  'propsExpireTime': objs.list[i].expire_time,
-                })
-                if ([PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET,PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW].includes(objs.list[i].item_type)) { // texas 门票
-                  this.matchTicketsCfgs.push({
+                if (IsNewTicketProp(objs.list[i].item_type)) {
+                  const tickets = GetMatchTicketRightsIdList(objs.list[i].item_type)
+                  console.log("tickets",tickets)
+
+                  for (let j = 0; j < tickets.length; j++) {
+                    if (objs.list[i].id === tickets[j].ticketId) {
+                      canPush = true
+                      sceneId = tickets[j].sceneId
+                      break
+                    }
+                  }
+                }else{
+                  canPush = true
+                }
+                if(canPush){
+                  this.matchPropsCfgs.push({
+                    'propsType': objs.list[i].item_type,
                     'propsId': objs.list[i].id,
-                    'propsName': objs.list[i].item_name
+                    'propsName': objs.list[i].item_name,
+                    'propsIcon': objs.list[i].image,
+                    'propsAttr': objs.list[i].item_describe,
+                    'propsCost': objs.list[i].item_cost,
+                    'propsExpireTime': objs.list[i].expire_time,
+                    'propsSceneId': sceneId,
                   })
+                }
+                if ([PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET,PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW].includes(objs.list[i].item_type)) { // texas 门票
+                  if(canPush) {
+                    this.matchTicketsCfgs.push({
+                      'propsId': objs.list[i].id,
+                      'propsName': objs.list[i].item_name
+                    })
+                  }
                 }
               }
             }
@@ -1344,6 +1366,8 @@ export default {
           propsAttr: '',
           propsNum:0,
           propsEffectiveTime: -2,
+          propsSceneId:0,
+
         }
       })
     },
@@ -1376,6 +1400,7 @@ export default {
               this.edit.item.RankRewardsExtra[j].propsReward.propsCost = this.matchPropsCfgs[i].propsCost
             }
             this.edit.item.RankRewardsExtra[j].propsReward.propsName = this.matchPropsCfgs[i].propsName
+            this.edit.item.RankRewardsExtra[j].propsReward.propsSceneId = this.matchPropsCfgs[i].propsSceneId
           }
         }
       }
@@ -1463,6 +1488,7 @@ export default {
         propsNum: 0,
         propCost: 0,
         propsEffectiveTime: -1,
+        propsSceneId:0,
       }
       for (let i = 0; i < this.matchPropsCfgs.length; i++) {
         const element = this.matchPropsCfgs[i]

@@ -290,7 +290,8 @@ export default {
             propsAttr: this.matchPropsCfgs[i].propsAttr,
             propCost:this.matchPropsCfgs[i].propsCost,
             propsNum: propsNum,
-            propExpireDays: propExpireDays
+            propExpireDays: propExpireDays,
+            propsSceneId: this.matchPropsCfgs[i].propsSceneId,
           }
         }
       }
@@ -302,7 +303,8 @@ export default {
         propsAttr: '',
         propsNum: 0,
         propExpireDays: -1,
-        propCost: 0
+        propCost: 0,
+        propsSceneId: 0,
       }
     },
     // 道具是否需要过期时间
