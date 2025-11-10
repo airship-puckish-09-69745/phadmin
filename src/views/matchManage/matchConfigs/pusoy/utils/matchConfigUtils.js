@@ -32,7 +32,8 @@ export function initRankRewards() {
         propsIcon: '',
         propsAttr: '',
         propsNum: 0,
-        propExpireDays: -1
+        propExpireDays: -1,
+        propsSceneId:0,
       }
     }
   ]

@@ -957,7 +957,8 @@ export const matchFormMixin = {
           propsIcon: '',
           propsAttr: '',
           propsNum: 0,
-          propExpireDays: -1
+          propExpireDays: -1,
+          propsSceneId:0,
         }
       }
       this.editForm.rankRewards.push(newReward)
