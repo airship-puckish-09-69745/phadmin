@@ -18,6 +18,18 @@
             </el-input>
           </el-form-item>
 
+          <el-form-item label="普通模式的额外倍数">
+            <el-input v-model="cfg.ExtraOddsNormal" placeholder="请输入内容,如1,2,3,4,5,6,7,8">
+              <template slot="append">倍数应该是连续的</template>
+            </el-input>
+          </el-form-item>
+
+          <el-form-item label="免费模式的额外倍数">
+            <el-input v-model="cfg.ExtraOddsFree" placeholder="请输入内容,如1,2,3,4,5,6,7,8">
+              <template slot="append">倍数应该是连续的</template>
+            </el-input>
+          </el-form-item>
+
           <el-form-item label="普通模式Bonus倍数权重">
             <el-input v-model="cfg.BonusOddsWeight" placeholder="请输入内容,如2,1">
               <template slot="append">用 , 连接</template>
@@ -83,9 +95,9 @@
             </el-input>
           </el-form-item>
 
-<!--          <el-form-item label="金框转为Wild与Big Wild权重">-->
-<!--            <el-input v-model="cfg.WildWeight" placeholder=""/>-->
-<!--          </el-form-item>-->
+          <!--          <el-form-item label="金框转为Wild与Big Wild权重">-->
+          <!--            <el-input v-model="cfg.WildWeight" placeholder=""/>-->
+          <!--          </el-form-item>-->
 
           <el-form-item label="购买免费模式中奖倍数范围V2">
             <el-input v-model="cfg.BuyFreeOddsRangeV2" placeholder="请输入内容,如0,150,151,750">
