@@ -3,13 +3,34 @@
     <el-row>
       <publish primary-key="ID" key-id="TexasMttTableConfig" :env-empty="true"  :makeContent="makeContent" :check="configCheck" :attr-names="AttrNames" />
     </el-row>
-    <el-row style="padding-top: 5px">
-      <el-col :span="20">
-        <el-button size="mini" type="primary" icon="el-icon-plus" @click="handleCreate()">添加配置项</el-button>
-      </el-col>
-      <el-col :span="2">
-        <el-button type="success" size="mini" icon="el-icon-refresh" @click="getList()">刷新</el-button>
-      </el-col>
+    <el-form :model="form" label-width="100px" :inline="true" size="mini">
+
+      <el-form-item label="APPID：" :required="true">
+        <el-select v-model="form.appId" placeholder="请选择" size="mini">
+          <el-option label="全部" :value="-1" />
+          <el-option
+            v-for="item in APPID_OPTIONS"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item>
+        <el-button size="mini" @click="resetSearch">重置查询条件</el-button>
+        <el-button type="primary" size="mini" @click="getList">查询</el-button>
+      </el-form-item>
+    </el-form>
+
+    <el-row>
+
+    </el-row>
+
+    <el-row>
+      <div style="float: right; margin-bottom: 10px;">
+        <el-button size="mini" icon="el-icon-setting" @click="handleCreate()">添加配置项</el-button>
+        <el-button size="mini" icon="el-icon-plus" @click="getList()">刷新</el-button>
+      </div>
     </el-row>
     <div style="padding-top: 10px">
       <el-table ref="filterTable" :data="tableData" stripe border :header-cell-style="libShow.DefaultTableHeadClass" :row-style="{height:'10px'}" :cell-style="libShow.DefaultTableCell" style="width: 100%" @row-click="clickData" @sort-change="sortChange">
@@ -598,7 +619,13 @@ import GameLevel from '@/components/GameLevel'
 import MoneyInput from '@/components/MoneyInput'
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
 import { IsMars } from '@/utils/env'
-import {ITEM_TYPE_OPTIONS, PROP_TYPE_OPTIONS,ITEM_DAY_TYPE_OPTIONS} from "@/utils/options";
+import {
+  ITEM_TYPE_OPTIONS,
+  PROP_TYPE_OPTIONS,
+  ITEM_DAY_TYPE_OPTIONS,
+  APPID_OPTIONS,
+  MATCH_IUPSTREAM_TYPE_OPTIONS
+} from "@/utils/options";
 import {GetMatchTicketRightsIdList, IsNewTicketProp} from "@/utils/prop";
 
 const filterMap = {}
@@ -809,7 +836,11 @@ export default {
       },
       PROP_TYPE_OPTIONS,
       ITEM_DAY_TYPE_OPTIONS,
-      propsTypeList: [PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET, PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR,PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW] // 门票 头像框
+      propsTypeList: [PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET, PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR,PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW],// 门票 头像框
+      APPID_OPTIONS,
+      form: {
+        appId: -1
+      },
     }
   },
   created() {
@@ -935,7 +966,8 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
-          console.log(objs)
+          //console.log(objs)
+          let tableData = []
           for (const o in objs) {
 
             if (objs[o].RaceBeginDate === 0) {
@@ -954,7 +986,6 @@ export default {
               objs[o].RaceBeginTime = new Date()
             } else {
               objs[o].RaceBeginTime = new Date(objs[o].RaceBeginTime * 1000 - 8 * 3600 * 1000)
-              console.log(objs[o].RaceBeginTime)
             }
 
             if (objs[o].BgImage === ' ') {
@@ -989,15 +1020,19 @@ export default {
                 }
               ]
             }
+            if(this.form.appId > 0 && objs[o].AppInfo[0].appId !== this.form.appId) {
+              continue
+            }
             if (objs[o].SignUpExtraStr !== 'null' && objs[o].SignUpExtraStr !== undefined){
               objs[o].SignUpExtra = JSON.parse(objs[o].SignUpExtraStr)
             }
             if (objs[o].RankRewardsExtraStr !== 'null' && objs[o].RankRewardsExtraStr !== undefined){
               objs[o].RankRewardsExtra = JSON.parse(objs[o].RankRewardsExtraStr)
             }
+            tableData.push(objs[o])
           }
           // this.clientDB = new ClientTableData(this.libMoney.TransForShow(objs), 10, filterMap, 'ID', -1)
-          this.clientDB = new ClientTableData(objs, 10, filterMap, 'ID', -1)
+          this.clientDB = new ClientTableData(tableData, 10, filterMap, 'ID', -1)
           this.handleCurrentChange(1)
         }
       })
@@ -1504,6 +1539,10 @@ export default {
         }
       }
       return one
+    },
+
+    resetSearch() {
+      this.form.appId = -1
     },
     handlerChangeMin(e) {
       // if (parseInt(e) < 2 || parseInt(e) > this.edit.item.TableMaxPlayerNum) {
