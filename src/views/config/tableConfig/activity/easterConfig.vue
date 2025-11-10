@@ -24,6 +24,7 @@
                 @row-click="clickData"
                 @sort-change="sortChange">
         <el-table-column prop="ID" label="ID" sortable="custom" width="80" />
+        <el-table-column prop="ActName" label="活动名称" />
         <el-table-column prop="StartTime" label="开始时间">
           <template slot-scope="scope">
             {{ formatTime(scope.row.StartTime) }}
@@ -77,14 +78,14 @@
         <el-tab-pane label="活动配置">
           <el-row>
             <el-form label-width="220px" size="mini">
-              <el-col :span="12">
+              <el-col :span="24">
                 <el-form-item label="是否开启：" prop="IsOpen" :required="true">
                   <el-switch v-model="edit.item.IsOpen" :active-value="1" :inactive-value="0" />
                 </el-form-item>
               </el-col>
-              <el-col :span="12">
-                <el-form-item label="展示结束时间：" prop="ShowEndTime" :required="true">
-                  <el-date-picker v-model="edit.item.ShowEndTime" type="datetime" placeholder="选择展示结束时间" value-format="timestamp" />
+              <el-col :span="24">
+                <el-form-item label="活动名称：" prop="ActName" :required="true">
+                  <el-input v-model="edit.item.ActName" />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
@@ -95,6 +96,11 @@
               <el-col :span="12">
                 <el-form-item label="活动结束时间：" prop="EndTime" :required="true">
                   <el-date-picker v-model="edit.item.EndTime" type="datetime"  placeholder="选择结束时间" value-format="timestamp" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="24">
+                <el-form-item label="展示结束时间：" prop="ShowEndTime" :required="true">
+                  <el-date-picker v-model="edit.item.ShowEndTime" type="datetime" placeholder="选择展示结束时间" value-format="timestamp" />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
@@ -610,6 +616,7 @@ function newItem() {
   return {
     ID: 0,
     IsOpen: 1,
+    ActName: '',
     StartTime: Date.parse(new Date().toString()),
     EndTime: Date.parse(new Date().toString()),
     ShowEndTime: Date.parse(new Date().toString()),
@@ -725,6 +732,7 @@ export default {
       AttrNames: {
         CfgId: '配置ID',
         IsOpen: '是否开启',
+        ActName: '活动名称',
         StartTime: '开始时间',
         EndTime: '结束时间',
         ShowEndTime: '展示结束时间',
@@ -1062,6 +1070,7 @@ export default {
       data.EggShellsPerRaffle = this.edit.item.EggShellsPerRaffle
       data.EggShellsRaffleFirst = this.edit.item.EggShellsRaffleFirst
       data.DebugTimeOffset = this.edit.item.DebugTimeOffset
+      data.ActName = this.edit.item.ActName
       return data
     },
     handleSave() {
@@ -1080,7 +1089,6 @@ export default {
       } else {
         this.createData(data)
       }
-      this.edit.visible = false
     },
     createData(data) {
       request({
@@ -1091,6 +1099,7 @@ export default {
         if (response.RetCode === 0) {
           this.getList()
           Message.success('保存成功！')
+          this.edit.visible = false
         }
       })
     },
@@ -1103,6 +1112,7 @@ export default {
         if (response.RetCode === 0) {
           this.getList()
           Message.success('保存成功！')
+          this.edit.visible = false
         }
       })
     },
