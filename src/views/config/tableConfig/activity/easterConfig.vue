@@ -24,6 +24,7 @@
                 @row-click="clickData"
                 @sort-change="sortChange">
         <el-table-column prop="ID" label="ID" sortable="custom" width="80" />
+        <el-table-column prop="ActName" label="活动名称" />
         <el-table-column prop="StartTime" label="开始时间">
           <template slot-scope="scope">
             {{ formatTime(scope.row.StartTime) }}
@@ -67,112 +68,117 @@
       </el-col>
     </el-row>
     <el-dialog :title="getEditTitle()"
-      :visible.sync="edit.visible"
-      :close-on-click-modal="false"
-      :close-on-press-escape="false"
-      @opened="handleEditDialogOpened"
-      width="1100px"
+               :visible.sync="edit.visible"
+               :close-on-click-modal="false"
+               :close-on-press-escape="false"
+               @opened="handleEditDialogOpened"
+               width="1100px"
     >
       <el-tabs type="border-card">
         <el-tab-pane label="活动配置">
           <el-row>
-              <el-form label-width="220px" size="mini">
-                <el-col :span="12">
-                  <el-form-item label="是否开启：" prop="IsOpen" :required="true">
-                    <el-switch v-model="edit.item.IsOpen" :active-value="1" :inactive-value="0" />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="展示结束时间：" prop="ShowEndTime" :required="true">
-                    <el-date-picker v-model="edit.item.ShowEndTime" type="datetime" placeholder="选择展示结束时间" value-format="timestamp" />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="活动开始时间：" prop="StartTime" :required="true">
-                    <el-date-picker v-model="edit.item.StartTime" type="datetime" placeholder="选择开始时间" value-format="timestamp" />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="活动结束时间：" prop="EndTime" :required="true">
-                    <el-date-picker v-model="edit.item.EndTime" type="datetime"  placeholder="选择结束时间" value-format="timestamp" />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="下注/赢钱获得星辰比例：" :required="true">
-                    <el-input v-model.number="edit.item.EggShellGainRatio" >
-                      <template slot="append">%</template>
-                    </el-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="抽到已收集礼物返星辰比例：" prop="EggShellReturnRatio" :required="true" >
-                    <el-input v-model="edit.item.EggShellReturnRatio">
-                      <template slot="append">%</template>
-                    </el-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="每抽星辰数量：" :required="true">
-                    <el-input v-model="edit.item.EggShellsPerRaffle" />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="首抽星辰数量：" :required="true">
-                    <el-input v-model="edit.item.EggShellsRaffleFirst" />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="发放奖励类型：" :required="true">
-                    <el-select v-model="edit.item.RewardCfg.RewardType" placeholder="请选择" style="width:90px">
-                      <el-option
-                        v-for="item in rewardTypes"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                      />
-                    </el-select>
-                    <el-select v-if="edit.item.RewardCfg.RewardType === 2" v-model="edit.item.RewardCfg.UseSceneId" placeholder="请选择投注金" style="width:150px">
-                      <el-option
-                        v-for="scene in betScenes"
-                        :key="scene.value"
-                        :label="scene.label"
-                        :value="scene.value"
-                      />
-                    </el-select>
-                    <el-select v-if="edit.item.RewardCfg.RewardType === 3" v-model="edit.item.RewardCfg.UseSceneId" placeholder="请选择返水金" style="width:150px">
-                      <el-option
-                        v-for="scene in rebateScenes"
-                        :key="scene.value"
-                        :label="scene.label"
-                        :value="scene.value"
-                      />
-                    </el-select>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="集齐礼物图鉴奖金：" :required="true">
-                    <el-input v-model.number="edit.item.RewardCfg.BigPrizeReward">
-                      <template slot="append">（₱）</template>
-                    </el-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="当日发奖额阈值：" :required="true">
-                    <el-input v-model.number="edit.item.DayPrizeThreshold">
-                      <template slot="append">（₱）</template>
-                    </el-input>
-                    <span v-if="todayRaffleAmount > edit.item.DayPrizeThreshold" style="color: red">今日发奖已超阈值（{{todayRaffleAmount}}），已开启限制</span>
-                    <span v-else style="color: red">今日发奖总额（{{todayRaffleAmount}}）</span>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="调试时间偏移量（仅测试用）：" :required="true">
-                    <el-input v-model.number="edit.item.DebugTimeOffset">
-                      <template slot="append">秒</template>
-                    </el-input>
-                  </el-form-item>
-                </el-col>
-              </el-form>
+            <el-form label-width="220px" size="mini">
+              <el-col :span="24">
+                <el-form-item label="是否开启：" prop="IsOpen" :required="true">
+                  <el-switch v-model="edit.item.IsOpen" :active-value="1" :inactive-value="0" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="24">
+                <el-form-item label="活动名称：" prop="ActName" :required="true">
+                  <el-input v-model="edit.item.ActName" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="活动开始时间：" prop="StartTime" :required="true">
+                  <el-date-picker v-model="edit.item.StartTime" type="datetime" placeholder="选择开始时间" value-format="timestamp" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="活动结束时间：" prop="EndTime" :required="true">
+                  <el-date-picker v-model="edit.item.EndTime" type="datetime"  placeholder="选择结束时间" value-format="timestamp" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="24">
+                <el-form-item label="展示结束时间：" prop="ShowEndTime" :required="true">
+                  <el-date-picker v-model="edit.item.ShowEndTime" type="datetime" placeholder="选择展示结束时间" value-format="timestamp" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="下注/赢钱获得星辰比例：" :required="true">
+                  <el-input v-model.number="edit.item.EggShellGainRatio" >
+                    <template slot="append">%</template>
+                  </el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="抽到已收集礼物返星辰比例：" prop="EggShellReturnRatio" :required="true" >
+                  <el-input v-model="edit.item.EggShellReturnRatio">
+                    <template slot="append">%</template>
+                  </el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="每抽星辰数量：" :required="true">
+                  <el-input v-model="edit.item.EggShellsPerRaffle" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="首抽星辰数量：" :required="true">
+                  <el-input v-model="edit.item.EggShellsRaffleFirst" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="发放奖励类型：" :required="true">
+                  <el-select v-model="edit.item.RewardCfg.RewardType" placeholder="请选择" style="width:90px">
+                    <el-option
+                      v-for="item in rewardTypes"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                  <el-select v-if="edit.item.RewardCfg.RewardType === 2" v-model="edit.item.RewardCfg.UseSceneId" placeholder="请选择投注金" style="width:150px">
+                    <el-option
+                      v-for="scene in betScenes"
+                      :key="scene.value"
+                      :label="scene.label"
+                      :value="scene.value"
+                    />
+                  </el-select>
+                  <el-select v-if="edit.item.RewardCfg.RewardType === 3" v-model="edit.item.RewardCfg.UseSceneId" placeholder="请选择返水金" style="width:150px">
+                    <el-option
+                      v-for="scene in rebateScenes"
+                      :key="scene.value"
+                      :label="scene.label"
+                      :value="scene.value"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="集齐礼物图鉴奖金：" :required="true">
+                  <el-input v-model.number="edit.item.RewardCfg.BigPrizeReward">
+                    <template slot="append">（₱）</template>
+                  </el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="当日发奖额阈值：" :required="true">
+                  <el-input v-model.number="edit.item.DayPrizeThreshold">
+                    <template slot="append">（₱）</template>
+                  </el-input>
+                  <span v-if="todayRaffleAmount > edit.item.DayPrizeThreshold" style="color: red">今日发奖已超阈值（{{todayRaffleAmount}}），已开启限制</span>
+                  <span v-else style="color: red">今日发奖总额（{{todayRaffleAmount}}）</span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="调试时间偏移量（仅测试用）：" :required="true">
+                  <el-input v-model.number="edit.item.DebugTimeOffset">
+                    <template slot="append">秒</template>
+                  </el-input>
+                </el-form-item>
+              </el-col>
+            </el-form>
           </el-row>
           <el-row :gutter="5">
             <el-form label-width="220px">
@@ -610,6 +616,7 @@ function newItem() {
   return {
     ID: 0,
     IsOpen: 1,
+    ActName: '',
     StartTime: Date.parse(new Date().toString()),
     EndTime: Date.parse(new Date().toString()),
     ShowEndTime: Date.parse(new Date().toString()),
@@ -725,6 +732,7 @@ export default {
       AttrNames: {
         CfgId: '配置ID',
         IsOpen: '是否开启',
+        ActName: '活动名称',
         StartTime: '开始时间',
         EndTime: '结束时间',
         ShowEndTime: '展示结束时间',
@@ -1062,6 +1070,7 @@ export default {
       data.EggShellsPerRaffle = this.edit.item.EggShellsPerRaffle
       data.EggShellsRaffleFirst = this.edit.item.EggShellsRaffleFirst
       data.DebugTimeOffset = this.edit.item.DebugTimeOffset
+      data.ActName = this.edit.item.ActName
       return data
     },
     handleSave() {
@@ -1080,7 +1089,6 @@ export default {
       } else {
         this.createData(data)
       }
-      this.edit.visible = false
     },
     createData(data) {
       request({
@@ -1091,6 +1099,7 @@ export default {
         if (response.RetCode === 0) {
           this.getList()
           Message.success('保存成功！')
+          this.edit.visible = false
         }
       })
     },
@@ -1103,6 +1112,7 @@ export default {
         if (response.RetCode === 0) {
           this.getList()
           Message.success('保存成功！')
+          this.edit.visible = false
         }
       })
     },
