@@ -272,7 +272,7 @@
                         {{ JpTypeMap[scope.row.Level] }}
                       </template>
                     </el-table-column>
-                    <el-table-column label="抽水比例 (‰) (注:不支持小数)" prop="Typ">
+                    <el-table-column label="抽水比例 (‰) (注:不支持小数) (审核服3个数之和要是10的整数倍)" prop="Typ">
                       <template slot-scope="scope">
                         <el-tooltip class="item" effect="dark" content="千分比,1就是0.001" placement="top-start">
                           <el-input

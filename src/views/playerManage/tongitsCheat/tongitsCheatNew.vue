@@ -312,6 +312,7 @@ export default {
             }
             let addScore = 0
             let reduceScore = 0
+            let score = 0
             if (row.tableMoneyAddScore !== undefined ) {
               for (const tableMoney in row.tableMoneyAddScore) {
                 addScore += row.tableMoneyAddScore[tableMoney] * tableMoney
@@ -322,6 +323,13 @@ export default {
                 reduceScore += row.tableMoneyReduceScore[tableMoney] * tableMoney
               }
             }
+            if (row.tableMoneyScore !== undefined) {
+              for (const tableMoney in row.tableMoneyScore) {
+                score += row.tableMoneyScore[tableMoney] /1000
+              }
+              cheatLog.CheatScore = score.toFixed(3)
+            }
+
             cheatLog.SmallIntensity = (addScore / 1000 + reduceScore / 1000).toFixed(1)
             if (reduceScore !== 0) {
               cheatLog.SmallCoefficient = ((addScore / 1000) / (reduceScore*-1 / 1000)).toFixed(2)
@@ -820,15 +828,23 @@ export default {
         console.log('取消')
       })
     },
-    changeBlack(row) {
+    async changeBlack(row) {
       this.BlackVisible = true
       this.editBlack.Uid = row.Uid
       this.editBlack.Reason = '疑似度超过50分'
       this.editBlack.Operator = this.BlackOperator
+      await this.$nextTick()
+      if (!this.$refs.saveBtn) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+      if (this.$refs.saveBtn) {
+        this.$refs.saveBtn.$el.focus()
+      }
     },
     save(row) {
       this.BlackVisible = false
-      console.log(this.editBlack)
+      console.log("saveblack")
+      this.$refs.saveBtn.$el.blur()
       const ob = this.clientDB.GetDataByID(this.editBlack.Uid)
       ob.BlackTime = Math.floor(Date.now() / 1000)
       ob.UserType = 2
@@ -1467,7 +1483,7 @@ export default {
           </el-form-item>
           <el-form-item>
             <el-col :span="12" :offset="10">
-              <el-button type="primary" size="medium" :autofocus="true" @click="save">保存</el-button>
+              <el-button ref="saveBtn" type="primary" size="medium" @keyup.enter.native="save" @click="save">保存</el-button>
             </el-col>
           </el-form-item>
         </el-form>

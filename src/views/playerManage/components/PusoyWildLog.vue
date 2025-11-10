@@ -349,7 +349,7 @@ export default {
       } else if (level === 9) {
         return '预贴防 -- 强杀'
       } else if (level === 10) {
-        return '贴防 -- 锁血强杀'
+        return '预贴防 -- 锁血强杀'
       } else if (level === 11) {
         return '预贴防 --  锁血强杀'
       }

@@ -86,18 +86,18 @@
             />
           </el-select>
         </el-form-item>
-<!--        <el-form-item v-model="item.gid" label="游戏：" label-width="100px">-->
-<!--          <el-tooltip class="item" effect="dark" content="此处有值时，优先取此处关连的场景。比如：游戏选了【pusoy比赛】,进入场景选了【color】，此时进入【pusoy比赛】。" placement="right-start">-->
-<!--            <i class="el-icon-info" />-->
-<!--          </el-tooltip>-->
-<!--          <el-select v-model="item.gid" filterable allow-create default-first-option placeholder="请选择" size="mini">-->
-<!--            <el-option-->
-<!--              v-for="row in gameOptions"-->
-<!--              :label="row.name"-->
-<!--              :value="row.val"-->
-<!--            />-->
-<!--          </el-select>-->
-<!--        </el-form-item>-->
+        <!--        <el-form-item v-model="item.gid" label="游戏：" label-width="100px">-->
+        <!--          <el-tooltip class="item" effect="dark" content="此处有值时，优先取此处关连的场景。比如：游戏选了【pusoy比赛】,进入场景选了【color】，此时进入【pusoy比赛】。" placement="right-start">-->
+        <!--            <i class="el-icon-info" />-->
+        <!--          </el-tooltip>-->
+        <!--          <el-select v-model="item.gid" filterable allow-create default-first-option placeholder="请选择" size="mini">-->
+        <!--            <el-option-->
+        <!--              v-for="row in gameOptions"-->
+        <!--              :label="row.name"-->
+        <!--              :value="row.val"-->
+        <!--            />-->
+        <!--          </el-select>-->
+        <!--        </el-form-item>-->
         <el-form-item v-if="item.activity === 'tournament' || item.activity === 'matchjoin'" v-model="item.activity_val" label="活动附加值：" label-width="100px">
           <el-input v-model="item.activity_val" />
         </el-form-item>
@@ -150,84 +150,107 @@
       <p><span style="font-weight: bolder">注意：</span>链接调试时可能能有版本差异，需要自己手动修改版本号，版本号部分如下红色部分：</p>
       <p>http://192.168.6.16/web-mobile/<span style="color: red">1.0.0.424</span>/main/index.html?p=paramsvalue</p>
     </el-row>
-    <div style="padding-top: 10px">
-      <el-table
-        ref="filterTable"
-        :data="tableData"
-        stripe
-        border
-        :header-cell-style="libShow.DefaultTableHeadClass"
-        :row-style="{height:'10px'}"
-        :cell-style="libShow.DefaultTableCell"
-        style="width: 100%"
-      >
-        <el-table-column
-          prop="EnterUrl"
-          label="链接"
-        />
-        <el-table-column
-          prop="ExpiredTime"
-          label="过期时间"
-        />
-        <!--        <el-table-column-->
-        <!--          label="操作"-->
-        <!--          column-key="op"-->
-        <!--          width="200"-->
-        <!--        >-->
-        <!--          <template slot-scope="scope">-->
-        <!--            <el-button class="ewm-copy-content" type="success" size="mini" :data-clipboard-text="scope.row.EnterUrl" round @click="copyClick(scope.row)">复制链接</el-button> ｜-->
-        <!--            <el-link :href="scope.row.EnterUrl" type="success" target="_blank">打开链接</el-link>-->
-        <!--          </template>-->
-        <!--        </el-table-column>-->
-      </el-table>
-    </div>
-
-    <!-- url替换工具 -->
-    <div class="url-replacer-container">
-      <div class="url-replacer-card">
-        <div class="card-header">
-          <h3>URL 替换工具</h3>
-          <p class="subtitle">将链接中 ? 号前面的内容替换为 http://localhost:7456/</p>
-        </div>
-        
-        <div class="input-group">
-          <label>原始链接</label>
-          <el-input 
-            v-model="replaceUrl" 
-            placeholder="请输入要替换的 URL（粘贴后自动处理）" 
-            size="medium"
-            clearable
-            class="url-textarea"
-            type="textarea"
-            :rows="4"
-            resize="vertical"
-            @input="handleUrlChange"
+    <el-row>
+      <div style="padding-top: 10px">
+        <el-table
+          ref="filterTable"
+          :data="tableData"
+          stripe
+          border
+          :header-cell-style="libShow.DefaultTableHeadClass"
+          :row-style="{height:'10px'}"
+          :cell-style="libShow.DefaultTableCell"
+          style="width: 100%"
+        >
+          <el-table-column
+            prop="EnterUrl"
+            label="链接"
           />
-        </div>
-
-        <div class="button-group">
-          <!-- <el-button type="primary" size="medium" @click="replaceUrl()" icon="el-icon-refresh">替换链接</el-button> -->
-          <el-button size="medium" @click="clearReplaceUrl()" icon="el-icon-delete">清空</el-button>
-          <el-button type="success" size="medium" @click="copyReplaceUrl()" icon="el-icon-copy-document">复制结果</el-button>
-          <el-button type="warning" size="medium" @click="openReplaceUrl()" icon="el-icon-position" :disabled="!replaceUrlResult">打开链接</el-button>
-        </div>
-
-        <div class="input-group result-group">
-          <label>替换后的链接</label>
-          <el-input 
-            v-model="replaceUrlResult" 
-            placeholder="替换后的链接将显示在这里" 
-            size="medium"
-            readonly
-            class="url-textarea result-textarea"
-            type="textarea"
-            :rows="4"
-            resize="vertical"
+          <el-table-column
+            label="P 参数"
+            column-key="op"
+            width="200"
+          >
+            <template slot-scope="scope">
+              {{ getPPrarms(scope.row.EnterUrl) }}
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="ExpiredTime"
+            label="过期时间"
           />
+        </el-table>
+      </div>
+    </el-row>
+
+    <!-- 进厅 url 工具 -->
+    <el-row>
+      <div class="url-replacer-container">
+        <div class="url-replacer-card">
+          <div class="card-header">
+            <h3>进厅 URL 工具</h3>
+            <p class="subtitle">将链接中 ? 号前面的内容替换为 http://localhost:7456/；解析链接中的 p 参数</p>
+          </div>
+          <el-row>
+            <div class="input-group">
+              <label>原始链接</label>
+              <el-input
+                v-model="orgUrl"
+                placeholder="请输入要处理的 URL"
+                size="medium"
+                clearable
+                class="url-textarea"
+                type="textarea"
+                :rows="4"
+                resize="vertical"
+                @input="handleUrlChange"
+              />
+            </div>
+          </el-row>
+          <el-row>
+            <div class="button-group">
+              <!-- <el-button type="primary" size="medium" @click="orgUrl()" icon="el-icon-refresh">替换链接</el-button> -->
+              <el-button size="medium" icon="el-icon-delete" @click="clearReplaceUrl()">清空</el-button>
+              <el-button type="success" size="medium" icon="el-icon-copy-document" @click="copyReplaceUrl()">复制结果</el-button>
+              <el-button type="warning" size="medium" icon="el-icon-position" :disabled="!replaceUrlResult" @click="openReplaceUrl()">打开链接</el-button>
+            </div>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <div class="input-group result-group">
+                <label>替换后的链接</label>
+                <el-input
+                  v-model="replaceUrlResult"
+                  placeholder="替换后的链接将显示在这里"
+                  size="medium"
+                  readonly
+                  class="url-textarea result-textarea"
+                  type="textarea"
+                  :rows="8"
+                  resize="vertical"
+                />
+              </div>
+            </el-col>
+            <el-col :span="12">
+              <div class="input-group result-group">
+                <label>P 参数解析结果：</label>
+                <el-input
+                  v-model="decodedUrl"
+                  placeholder="P 参数解析后的结果将显示在这里"
+                  size="medium"
+                  readonly
+                  class="url-textarea result-textarea"
+                  type="textarea"
+                  :rows="8"
+                  resize="vertical"
+                />
+              </div>
+            </el-col>
+          </el-row>
         </div>
       </div>
-    </div>
-   
+    </el-row>
+
   </div>
 </template>
 
@@ -250,20 +273,19 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   padding: 40px;
   width: 100%;
-  max-width: 600px;
 }
 
 .card-header {
   text-align: center;
   margin-bottom: 30px;
-  
+
   h3 {
     color: #303133;
     font-size: 24px;
     font-weight: 600;
     margin: 0 0 10px 0;
   }
-  
+
   .subtitle {
     color: #909399;
     font-size: 14px;
@@ -273,7 +295,7 @@
 
 .input-group {
   margin-bottom: 25px;
-  
+
   label {
     display: block;
     color: #606266;
@@ -285,7 +307,7 @@
 
 .url-input {
   width: 100%;
-  
+
   &.result-input {
     background-color: #f5f7fa;
   }
@@ -293,7 +315,7 @@
 
 .url-textarea {
   width: 100%;
-  
+
   ::v-deep .el-textarea__inner {
     font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
     font-size: 14px;
@@ -302,17 +324,17 @@
     border-radius: 8px;
     padding: 12px 16px;
     transition: all 0.3s ease;
-    
+
     &:focus {
       border-color: #409eff;
       box-shadow: 0 0 0 3px rgba(64, 158, 255, 0.1);
     }
-    
+
     &:hover {
       border-color: #c0c4cc;
     }
   }
-  
+
   &.result-textarea ::v-deep .el-textarea__inner {
     background-color: #f8f9fa;
     color: #495057;
@@ -340,10 +362,10 @@
   .url-replacer-card {
     padding: 30px 20px;
   }
-  
+
   .button-group {
     flex-direction: column;
-    
+
     .el-button {
       width: 100%;
     }
@@ -367,9 +389,10 @@ export default {
   components: { DateTimeShow, Compare, Publish, UidInput, Clipboard },
   data() {
     return {
-      replaceUrl: '',
+      orgUrl: '',
       replaceUrlResult: '',
       urlChangeTimeout: null, // 用于URL输入防抖
+      decodedUrl: '',
       hasAutoOpened: false, // 标记是否已经自动打开过
       agents: [
         {
@@ -815,31 +838,32 @@ export default {
     // URL 替换工具相关方法
     handleUrlChange() {
       // 当输入框内容变化时自动处理
-      if (this.replaceUrl && this.replaceUrl.trim()) {
+      if (this.orgUrl && this.orgUrl.trim()) {
         // 使用防抖，避免频繁触发
         clearTimeout(this.urlChangeTimeout)
         this.urlChangeTimeout = setTimeout(() => {
           // 只在内容较长时（可能是粘贴的完整URL）才自动处理
-          if (this.replaceUrl.length > 20) {
+          if (this.orgUrl.length > 20) {
             this.autoReplaceAndOpen()
+            this.decodedUrl = this.getPPrarms(this.orgUrl)
           }
         }, 500) // 延迟500ms执行
       }
     },
     autoReplaceAndOpen() {
       // 自动替换 URL 并打开
-      const url = this.replaceUrl.trim()
+      const url = this.orgUrl.trim()
       if (!url) return
-      
+
       // 执行替换逻辑
       this.performUrlReplace()
-      
+
       // 延迟一下确保替换完成，然后打开链接
       this.$nextTick(() => {
         if (this.replaceUrlResult) {
           // 只在第一次替换成功时自动打开，避免每次输入都打开
           if (!this.hasAutoOpened) {
-            this.openReplaceUrl()
+            // this.openReplaceUrl()
             this.hasAutoOpened = true
           }
         }
@@ -847,27 +871,29 @@ export default {
     },
     performUrlReplace() {
       // 替换 URL 逻辑
-      const url = this.replaceUrl.trim()
+      const url = this.orgUrl.trim()
       if (!url) {
         this.$message.warning('请输入要替换的 URL')
         return
       }
-      
+
       const index = url.indexOf('?')
       if (index === -1) {
-        this.$message.warning('URL 格式不正确，缺少 ? 参数')
+        this.$message.warning('URL 格式不正确，缺少请求参数')
         return
       }
-      
+
       const suffix = url.substring(index)
       this.replaceUrlResult = 'http://localhost:7456/' + suffix
-      
+
       this.$message.success('URL 替换成功！')
     },
     clearReplaceUrl() {
-      this.replaceUrl = ''
+      this.orgUrl = ''
       this.replaceUrlResult = ''
       this.hasAutoOpened = false // 重置自动打开标志
+
+      this.decodedUrl = ''
       this.$message.success('已清空')
     },
     copyReplaceUrl() {
@@ -875,21 +901,21 @@ export default {
         this.$message.warning('没有可复制的链接')
         return
       }
-      
+
       const clipboard = new Clipboard('.url-replacer-container', {
         text: () => this.replaceUrlResult
       })
-      
+
       clipboard.on('success', e => {
         this.$message.success('链接已复制到剪贴板')
         clipboard.destroy()
       })
-      
+
       clipboard.on('error', e => {
         this.$message.error('复制失败，请手动复制')
         clipboard.destroy()
       })
-      
+
       // 触发复制
       clipboard.onClick(e)
     },
@@ -898,9 +924,38 @@ export default {
         this.$message.warning('没有可打开的链接')
         return
       }
-      
+
       window.open(this.replaceUrlResult, '_blank')
       this.$message.success('正在打开链接...')
+    },
+    getPPrarms(str) {
+      if (!str) return ''
+      try {
+        if (!str.startsWith('http')) {
+          return this.decodePPrams(str)
+        } else {
+          // 使用 URL API 解析更安全
+          const url = new URL(str, window.location.origin)
+          const p = url.searchParams.get('p')
+
+          if (!p) {
+            this.$message.warning('URL 中未找到参数 p')
+            return ''
+          }
+
+          return this.decodePPrams(p)
+        }
+      } catch (error) {
+        this.$message.warning('解析 URL 出错:' + error)
+        return ''
+      }
+    },
+    decodePPrams(str) {
+      // urldecode str
+      str = decodeURIComponent(str)
+      // base64decode p
+      str = atob(str)
+      return str
     },
     getAllGames() {
       const $this = this

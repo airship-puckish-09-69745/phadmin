@@ -386,6 +386,11 @@ export default {
         BlackAdd: 3
       },
       TableScoreRadio: 0, // 作弊组合加分速度倍数
+
+      TableMoneyReduceDif: 0, // 最小减分场次底分差异
+      TableMoneyReduceMin: 0, // 疑似度最少减分
+      // TableScoreRadio: 0, // 作弊组合加分速度倍数
+
       nearID: [
         {
           Score: 10,
@@ -403,6 +408,8 @@ export default {
       AutoBlack: [
 
       ],
+      TrustCheatScore: [],
+      AllTableMoneyList: [],
       RepairRadio: 70,
       PotTrustRepairType: [],
       PotTrustRepairTypeOption: [
@@ -428,13 +435,19 @@ export default {
 
   created() {
     // this.editAI = NewRobotAIItem()
-    this.getData()
+
+    this.getTableMoneyList()
+    // this.getData()
   },
   methods: {
     getFullKey() {
       return 'CustomizeCfg_' + this.subKey
     },
+    showTableMoney(row) {
+      return (row.TableMoney / 1000).toFixed(1)
+    },
     getData() {
+      console.log('getData')
       const $this = this
       request({
         url: '/customizeconfig/one',
@@ -722,6 +735,30 @@ export default {
             const maybeMin = $this.CheatCfg.MaybeMin
             $this.oldCheatMin = maybeMin
             $this.TableScoreRadio = $this.CheatCfg.TableScoreRadio || 0
+            // 信任分拉黑相关
+            $this.TrustCheatScore = $this.CheatCfg.TrustCheatScore || []
+            for (let i = 0; i < this.AllTableMoneyList.length; i++) {
+              const tableMoney = this.AllTableMoneyList[i]
+              let isExist = false
+              for (let j = 0; j < this.TrustCheatScore.length; j++) {
+                if (this.TrustCheatScore[j].TableMoney === tableMoney) {
+                  isExist = true
+                  break
+                }
+              }
+              if (!isExist) {
+                $this.TrustCheatScore.push({
+                  TableMoney: tableMoney,
+                  TrustScore: 0,
+                  CheatScore: 0,
+                  IsOpen: false
+                })
+              }
+            }
+            this.TableMoneyReduceDif = $this.CheatCfg.TableMoneyReduceDif || 0
+            this.TableMoneyReduceDif = (this.TableMoneyReduceDif/1000).toFixed(1)
+            this.TableMoneyReduceMin = $this.CheatCfg.TableMoneyReduceMin || 0
+            this.TableMoneyReduceMin = (this.TableMoneyReduceMin/1000).toFixed(1)
             const old = JSON.parse(response.Data.Data)
             // 设置修改之前数据
             $this.$refs.compare.SetOldVal(old)
@@ -912,7 +949,7 @@ export default {
       this.CheatCfg.JokerAiConfigRow = this.editJokerAI
       this.CheatCfg.QuickAiConfigRow = this.editQuickAI
 
-      if (this.autoWhite.CheatScore === undefined){
+      if (this.autoWhite.CheatScore === undefined) {
         this.autoWhite.CheatScore = 0
       }
       const autoWhite = {
@@ -922,6 +959,20 @@ export default {
       this.CheatCfg.AutoWhite = autoWhite
       // 拉黑配置
       this.CheatCfg.AutoBlack = this.AutoBlack
+
+      const TrustCheatScore = []
+      for (let i = 0; i < this.TrustCheatScore.length; i++) {
+        const item = this.TrustCheatScore[i]
+        TrustCheatScore.push({
+          TableMoney: parseInt(item.TableMoney),
+          CheatScore: parseInt(item.CheatScore),
+          TrustScore: parseInt(item.TrustScore),
+          IsOpen: item.IsOpen
+        })
+      }
+      this.CheatCfg.TrustCheatScore = TrustCheatScore
+      this.CheatCfg.TableMoneyReduceDif = parseInt(parseFloat(this.TableMoneyReduceDif)*1000)
+      this.CheatCfg.TableMoneyReduceMin = parseInt(parseFloat(this.TableMoneyReduceMin)*1000)
       Object.assign(cpy, this.CheatCfg)
       return JSON.stringify(cpy)
     },
@@ -1018,6 +1069,71 @@ export default {
     delAutoBlackRow(mine, row) {
       console.log('mine:' + mine, row)
       this.AutoBlack.splice(mine, 1)
+    },
+    async getAllTableMoneyList() {
+      await request({
+        url: '/tongitstable/all',
+        method: 'get',
+        data: {
+          PlayMode: 1,
+          Env: this.env,
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objs = response.Data || []
+          for (let i = 0; i < objs.length; i++) {
+            const tableMoney = objs[i].TableMoney
+            if (objs[i].IsPractice === 0 && objs[i].Status === 2 && objs[i].RoomLevel === 0) {
+              this.AllTableMoneyList.push(tableMoney)
+            }
+          }
+        }
+      })
+      await request({
+        url: '/tongitstable/all',
+        method: 'get',
+        data: {
+          PlayMode: 2,
+          Env: this.env,
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objs = response.Data || []
+          for (let i = 0; i < objs.length; i++) {
+            const tableMoney = objs[i].TableMoney
+            if (objs[i].IsPractice === 0 && objs[i].Status === 2 && objs[i].RoomLevel === 0) {
+              this.AllTableMoneyList.push(tableMoney)
+            }
+          }
+        }
+      })
+      await request({
+        url: '/tongitstable/all',
+        method: 'get',
+        data: {
+          PlayMode: 3,
+          Env: this.env,
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objs = response.Data || []
+          for (let i = 0; i < objs.length; i++) {
+            const tableMoney = objs[i].TableMoney
+            if (objs[i].IsPractice === 0 && objs[i].Status === 2 && objs[i].RoomLevel === 0) {
+              this.AllTableMoneyList.push(tableMoney)
+            }
+          }
+        }
+      })
+    },
+    async getTableMoneyList() {
+      await this.getAllTableMoneyList()
+      this.AllTableMoneyList = [...new Set(this.AllTableMoneyList)]
+      this.AllTableMoneyList.sort((a, b) => {
+        return a - b
+      })
+      console.log('AllTableMoneyList', this.AllTableMoneyList)
+      this.getData()
     }
   }
 }
@@ -1064,6 +1180,12 @@ export default {
           </el-descriptions-item>
           <el-descriptions-item label="作弊组合加分速度倍数" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
             <el-input v-model="TableScoreRadio" type="number" size="medium" style="width: 120px" />
+          </el-descriptions-item>
+          <el-descriptions-item label="最小减分场次底分差异" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
+            <el-input v-model="TableMoneyReduceDif" type="number" size="medium" style="width: 120px" />
+          </el-descriptions-item>
+          <el-descriptions-item label="疑似度最少减分" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
+            <el-input v-model="TableMoneyReduceMin" type="number" size="medium" style="width: 120px" />
           </el-descriptions-item>
           <el-descriptions-item label="POT防作弊机器⼈" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
             <el-button
@@ -1520,6 +1642,71 @@ export default {
                     >删除</el-button>
                   </template>
                 </el-table-column>
+
+              </el-table>
+            </div>
+          </el-col>
+        </el-row>
+      </el-tab-pane>
+      <el-tab-pane label="信任分拉黑配置">
+        <el-row style="padding-top: 5px">
+          <h3 style="text-align:center;">信任分拉黑配置</h3>
+          <el-col :span="24">
+            <div style="padding-top: 10px">
+              <el-table
+                :data="TrustCheatScore"
+                stripe
+                border
+                style="width: 100%"
+              >
+                <el-table-column
+                  label="场次"
+                  width="120"
+                >
+                  <template scope="subScope">
+                    <div>{{ showTableMoney(subScope.row) }}</div>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  label="作弊分"
+                  width="120"
+                >
+                  <template scope="subScope">
+                    <el-input v-model.number="subScope.row.CheatScore" />
+                  </template>
+                </el-table-column>
+
+                <el-table-column
+                  label="信任分"
+                  width="120"
+                >
+                  <template scope="subScope">
+                    <el-input v-model.number="subScope.row.TrustScore" />
+                  </template>
+                </el-table-column>
+
+                <el-table-column
+                  label="开关"
+                  width="120"
+                >
+                  <template scope="subScope">
+                    <el-switch
+                      v-model="subScope.row.IsOpen"
+                      active-color="#13ce66"
+                      inactive-color="#ff4949"
+                    />
+                  </template>
+                </el-table-column>
+
+<!--                <el-table-column label="操作" :render-header="(h,obj)=>addAutoBlackButton()">-->
+<!--                  <template scope="subScope">-->
+<!--                    <el-button-->
+<!--                      size="mini"-->
+<!--                      type="danger"-->
+<!--                      @click="delAutoBlackRow(subScope.$index,subScope.row)"-->
+<!--                    >删除</el-button>-->
+<!--                  </template>-->
+<!--                </el-table-column>-->
 
               </el-table>
             </div>

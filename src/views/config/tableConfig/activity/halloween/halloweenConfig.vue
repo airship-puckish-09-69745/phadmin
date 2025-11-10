@@ -749,7 +749,6 @@ export default {
   },
   created() {
     this.env = store.getters.env || this.env
-    this.getTodayRaffleAmount()
   },
   mounted() {
     this.getData()

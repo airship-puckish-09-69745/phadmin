@@ -366,9 +366,11 @@ export default {
       ret.OddsCfg = []
       for (const i in this.item.OddsCfg) {
         let oddsCfg = []
-        let id = 1
+        let id = 1 //步数id
         for (const j in this.item.OddsCfg[i]) {
-          oddsCfg.push({Id:id, Odds:Math.round(this.item.OddsCfg[i][j].Odds * 100)})
+          let tempOdds = Math.round(this.item.OddsCfg[i][j].Odds * 100) //赔率放大100倍
+          let liveRate = Math.round(this.item.RTPS[i] * 1000000 / tempOdds) //计算存活率
+          oddsCfg.push({Id: id, Odds: tempOdds, LiveRate: liveRate})
           id ++
         }
         ret.OddsCfg.push({OddsItem:oddsCfg})
