@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-row>
-      <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" :attr-names="AttrNames" />
+      <publish primary-key="ID" :key-id="getFullKeyBase()" :env-empty="false" compare-type="Object" :attr-names="AttrNames" />
     </el-row>
     <el-row>
       <el-tabs type="border-card">
@@ -10,26 +10,21 @@
             <el-row>
               <el-row>
                 <el-form>
-<!--                  <el-col :span="8" :offset="1">-->
-<!--                    <el-form-item label="用户长时间未敲击踢出(s)">-->
-<!--                      <el-input v-model.number="item.KicKTime" size="mini" />-->
-<!--                    </el-form-item>-->
-<!--                  </el-col>-->
                   <el-col :span="8" :offset="1">
                     <el-form-item label="保底奖池抽水">
-                      <el-input v-model.number="item.FeeRate" size="mini">
+                      <el-input v-model.number="itemBase.FeeRate" size="mini">
                         <template slot="append">%</template>
                       </el-input>
                     </el-form-item>
                   </el-col>
                   <el-col :span="8" :offset="1">
                     <el-form-item label="自动敲击次数(∞用-1表示)">
-                      <el-input v-model="item.AutoTimes" size="mini" />
+                      <el-input v-model="itemBase.AutoTimes" size="mini" />
                     </el-form-item>
                   </el-col>
                   <el-col :span="8" :offset="1">
                     <el-form-item label="用户长时间未敲击提示(提示10s后未选择服务器会踢出玩家)">
-                      <el-input v-model.number="item.NoticeTime" size="mini" >
+                      <el-input v-model.number="itemBase.NoticeTime" size="mini" >
                       <template slot="append">s</template>
                       </el-input>
                     </el-form-item>
@@ -39,7 +34,7 @@
               <fieldset style="margin-top:10px">
                 <el-table
                   ref="filterTable"
-                  :data="item.BetLevel"
+                  :data="itemBase.BetLevel"
                   border
                   :header-cell-style="libShow.DefaultTableHeadClass"
                   :row-style="{height:'10px'}"
@@ -88,7 +83,7 @@
                 <el-tabs type="border-card" stretch>
                   <el-tab-pane label="中奖概率配置">
                     <el-tabs v-if="envProjectName == 'ph_audit'" type="border-card" stretch @tab-click="BuffCfgClick">
-                        <piggy-weight-cfg :piggy-cfg="item.Buff[0].Awards" title="玩法中奖类型和概率" />
+                        <piggy-weight-cfg :piggy-cfg="itemBase.Buff[0].Awards" title="玩法中奖类型和概率" />
                     </el-tabs>
                     <!--      第三层  -->
                     <el-row v-if="envProjectName != 'ph_audit'" style="margin-left: 20px">
@@ -98,38 +93,38 @@
                       <el-tab-pane label="阶段增益1">
                         <el-row style="margin-left: 20px">
                           <span>连续锤击次数[左右闭合区间]:</span>
-                          <el-input v-model.number="item.Buff[0].MixTap" :required="true" size="mini" style="width: 150px" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
+                          <el-input v-model.number="itemBase.Buff[0].MixTap" :required="true" size="mini" style="width: 150px" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
                           <span style="margin-left: 10px;margin-right: 10px">-</span>
-                          <el-input v-model.number="item.Buff[0].MaxTap" :required="true" size="mini" style="width: 150px" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
+                          <el-input v-model.number="itemBase.Buff[0].MaxTap" :required="true" size="mini" style="width: 150px" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
                         </el-row>
-                        <piggy-weight-cfg :piggy-cfg="item.Buff[0].Awards" title="玩法中奖类型和概率" />
+                        <piggy-weight-cfg :piggy-cfg="itemBase.Buff[0].Awards" title="玩法中奖类型和概率" />
                       </el-tab-pane>
                       <el-tab-pane label="阶段增益2">
                         <el-row style="margin-left: 20px">
                           <span>连续锤击次数[左右闭合区间]:</span>
-                          <el-input v-model.number="item.Buff[1].MixTap" :required="true" size="mini" style="width: 150px" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
+                          <el-input v-model.number="itemBase.Buff[1].MixTap" :required="true" size="mini" style="width: 150px" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
                           <span style="margin-left: 10px;margin-right: 10px">-</span>
-                          <el-input v-model.number="item.Buff[1].MaxTap" :required="true" size="mini" style="width: 150px" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
+                          <el-input v-model.number="itemBase.Buff[1].MaxTap" :required="true" size="mini" style="width: 150px" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
                         </el-row>
-                        <piggy-weight-cfg :piggy-cfg="item.Buff[1].Awards" title="玩法中奖类型和概率" />
+                        <piggy-weight-cfg :piggy-cfg="itemBase.Buff[1].Awards" title="玩法中奖类型和概率" />
                       </el-tab-pane>
                       <el-tab-pane label="阶段增益3">
                         <el-row style="margin-left: 20px">
                           <span>连续锤击次数[左右闭合区间]:</span>
-                          <el-input v-model.number="item.Buff[2].MixTap" :required="true" size="mini" style="width: 150px" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
+                          <el-input v-model.number="itemBase.Buff[2].MixTap" :required="true" size="mini" style="width: 150px" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
                           <span style="margin-left: 10px;margin-right: 10px">-</span>
-                          <el-input v-model.number="item.Buff[2].MaxTap" :required="true" size="mini" style="width: 150px" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
+                          <el-input v-model.number="itemBase.Buff[2].MaxTap" :required="true" size="mini" style="width: 150px" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
                         </el-row>
-                        <piggy-weight-cfg :piggy-cfg="item.Buff[2].Awards" title="玩法中奖类型和概率" />
+                        <piggy-weight-cfg :piggy-cfg="itemBase.Buff[2].Awards" title="玩法中奖类型和概率" />
                       </el-tab-pane>
                       <el-tab-pane label="阶段增益4">
                         <el-row style="margin-left: 20px">
                           <span>连续锤击次数[左右闭合区间]:</span>
-                          <el-input v-model.number="item.Buff[3].MixTap" :required="true" size="mini" style="width: 150px" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
+                          <el-input v-model.number="itemBase.Buff[3].MixTap" :required="true" size="mini" style="width: 150px" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
                           <span style="margin-left: 10px;margin-right: 10px">-</span>
-                          <el-input v-model.number="item.Buff[3].MaxTap" :required="true" size="mini" style="width: 150px" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
+                          <el-input v-model.number="itemBase.Buff[3].MaxTap" :required="true" size="mini" style="width: 150px" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
                         </el-row>
-                        <piggy-weight-cfg :piggy-cfg="item.Buff[3].Awards" title="玩法中奖类型和概率" />
+                        <piggy-weight-cfg :piggy-cfg="itemBase.Buff[3].Awards" title="玩法中奖类型和概率" />
                       </el-tab-pane>
                       <el-tab-pane label="阶段增益5">
                         <el-row style="margin-left: 20px">
@@ -137,16 +132,16 @@
                         </el-row>
                         <el-row style="margin-left: 20px">
                           <span>连续锤击次数[左右闭合区间]:</span>
-                          <el-input v-model.number="item.Buff[4].MixTap" :required="true" size="mini" style="width: 150px" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
+                          <el-input v-model.number="itemBase.Buff[4].MixTap" :required="true" size="mini" style="width: 150px" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
                           <span style="margin-left: 10px;margin-right: 10px">-</span>
-                          <el-input v-model.number="item.Buff[4].MaxTap" :required="true" size="mini" style="width: 150px" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
+                          <el-input v-model.number="itemBase.Buff[4].MaxTap" :required="true" size="mini" style="width: 150px" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
                         </el-row>
-                        <piggy-weight-cfg :piggy-cfg="item.Buff[4].Awards" title="玩法中奖类型和概率" />
+                        <piggy-weight-cfg :piggy-cfg="itemBase.Buff[4].Awards" title="玩法中奖类型和概率" />
                       </el-tab-pane>
                     </el-tabs>
                   </el-tab-pane>
                   <el-tab-pane label="金币奖励倍数配置">
-                    <piggy-weight-cfg :piggy-cfg=" item.MoneyOdds" weight-name="权重" val-name="金币倍数 (注:不支持小数)" val-type="1" />
+                    <piggy-weight-cfg :piggy-cfg=" itemBase.MoneyOdds" weight-name="权重" val-name="金币倍数 (注:不支持小数)" val-type="1" />
                   </el-tab-pane>
                 </el-tabs>
               </fieldset>
@@ -163,7 +158,7 @@
                     <el-tabs type="border-card" stretch @tab-click="BuffCfgClick">
                       <el-tab-pane label="1*3滚轴配置">
                         <el-row>
-                          <div v-for="(row,idx) in item.free[0].Spin">
+                          <div v-for="(row,idx) in itemBase.free[0].Spin">
                             <piggy-weight-cfg   v-if="showData(idx)" :select-type="true" :piggy-cfg="row.Choices" :table-title="getSpinTitle(idx)" weight-name="权重" val-name="val (注:不支持小数)" val-type="1" style="width: 800px" />
                           </div>
                         </el-row>
@@ -172,26 +167,26 @@
                         <el-col v-if="envProjectName != 'ph_audit'" :span="24" :offset="1">
                           <el-form inline>
                             <el-form-item label="转轴倍数上限(0,max]">
-                              <el-input v-model.number="item.free[0].SpinOddsMax" size="mini" />
+                              <el-input v-model.number="itemBase.free[0].SpinOddsMax" size="mini" />
                             </el-form-item>
                             <br>
                             <el-form-item label="F中奖次数上限(0,max]">
-                              <el-input v-model.number="item.free[0].FTimesMax" size="mini" />
+                              <el-input v-model.number="itemBase.free[0].FTimesMax" size="mini" />
                             </el-form-item>
                           </el-form>
                         </el-col>
-                        <piggy-weight-cfg :piggy-cfg=" item.free[0].Awards" weight-name="权重" val-name="中奖类型" />
+                        <piggy-weight-cfg :piggy-cfg=" itemBase.free[0].Awards" weight-name="权重" val-name="中奖类型" />
                       </el-tab-pane>
                       <el-tab-pane label="金币奖励倍数配置">
                         <br>
                         <el-col v-if="envProjectName != 'ph_audit'" offset="1">
                           <el-form inline>
                             <el-form-item label="金币*转轴倍数上限(0,max)">
-                              <el-input v-model.number="item.free[0].WonOddsMax" size="mini"/>
+                              <el-input v-model.number="itemBase.free[0].WonOddsMax" size="mini"/>
                             </el-form-item>
                           </el-form>
                         </el-col>
-                        <piggy-weight-cfg :piggy-cfg=" item.free[0].MoneyOdds" weight-name="权重" val-name="金币倍数 (注:不支持小数)" val-type="1" />
+                        <piggy-weight-cfg :piggy-cfg=" itemBase.free[0].MoneyOdds" weight-name="权重" val-name="金币倍数 (注:不支持小数)" val-type="1" />
                       </el-tab-pane>
                     </el-tabs>
                   </el-tab-pane>
@@ -202,7 +197,7 @@
                           <span style="color: red; font-size: 11px">  注: 如果三个轴次数之和或者有一个轴的倍数=0 就不会进入free game模式</span>
                         </el-row>
                         <el-row>
-                          <div v-for="(row,idx) in item.free[1].Spin">
+                          <div v-for="(row,idx) in itemBase.free[1].Spin">
                             <piggy-weight-cfg  v-if="showData(idx)"  :select-type="true" :piggy-cfg="row.Choices" :table-title="getSpinTitle(idx)" weight-name="权重" val-name="val (注:不支持小数)" val-type="1" style="width: 800px" />
                           </div>
                         </el-row>
@@ -211,26 +206,26 @@
                         <el-col v-if="envProjectName != 'ph_audit'" :span="24" :offset="1">
                           <el-form inline>
                             <el-form-item label="转轴倍数上限(0,max]">
-                              <el-input v-model.number="item.free[1].SpinOddsMax" size="mini" />
+                              <el-input v-model.number="itemBase.free[1].SpinOddsMax" size="mini" />
                             </el-form-item>
                             <br>
                             <el-form-item label="F中奖次数上限(0,max]">
-                              <el-input v-model.number="item.free[1].FTimesMax" size="mini" />
+                              <el-input v-model.number="itemBase.free[1].FTimesMax" size="mini" />
                             </el-form-item>
                           </el-form>
                         </el-col>
-                        <piggy-weight-cfg :piggy-cfg=" item.free[1].Awards" weight-name="权重" val-name="中奖类型" />
+                        <piggy-weight-cfg :piggy-cfg=" itemBase.free[1].Awards" weight-name="权重" val-name="中奖类型" />
                       </el-tab-pane>
                       <el-tab-pane label="金币奖励倍数配置">
                         <br>
                         <el-col v-if="envProjectName != 'ph_audit'" offset="1">
                           <el-form inline>
                             <el-form-item label="金币*转轴倍数上限(0,max)">
-                              <el-input v-model.number="item.free[1].WonOddsMax" size="mini"/>
+                              <el-input v-model.number="itemBase.free[1].WonOddsMax" size="mini"/>
                             </el-form-item>
                           </el-form>
                         </el-col>
-                        <piggy-weight-cfg :piggy-cfg=" item.free[1].MoneyOdds" weight-name="权重" val-name="金币倍数 (注:不支持小数)" val-type="1" />
+                        <piggy-weight-cfg :piggy-cfg=" itemBase.free[1].MoneyOdds" weight-name="权重" val-name="金币倍数 (注:不支持小数)" val-type="1" />
                       </el-tab-pane>
                     </el-tabs>
                   </el-tab-pane>
@@ -244,10 +239,10 @@
             <fieldset>
               <el-form inline>
                 <el-form-item v-if="envProjectName != 'ph_audit'" label="磁体->幸运转盘概率"style="margin-left:20px">
-                  <el-input v-model.number="item.Plate.Rate" size="mini" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};"><template slot="append">‰</template></el-input>
+                  <el-input v-model.number="itemBase.Plate.Rate" size="mini" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};"><template slot="append">‰</template></el-input>
                 </el-form-item>
               </el-form>
-              <piggy-weight-cfg :piggy-cfg=" item.Plate.PlateOdds" weight-name="权重" val-name="转盘倍数 (注:不支持小数)" val-type="1" />
+              <piggy-weight-cfg :piggy-cfg=" itemBase.Plate.PlateOdds" weight-name="权重" val-name="转盘倍数 (注:不支持小数)" val-type="1" />
 
             </fieldset>
           </el-col>
@@ -260,7 +255,7 @@
                 <fieldset>
                   <el-table
                     ref="filterTable"
-                    :data="item.Jp"
+                    :data="itemBase.Jp"
                     border
                     :header-cell-style="libShow.DefaultTableHeadClass"
                     :row-style="{height:'10px'}"
@@ -292,7 +287,7 @@
             <el-tab-pane v-if="envProjectName != 'ph_audit'" label="虚拟奖池">
               <el-col :span="16" :offset="3">
                 <fieldset>
-                  <div v-for="(data,idx) in item.Jp">
+                  <div v-for="(data,idx) in itemBase.Jp">
                     <fieldset style="margin-top: 20px;">
                       <legend>{{ JpTypeMap[data.Level] }} </legend>
                       <el-descriptions>
@@ -356,7 +351,7 @@
               <el-row>
                 <fieldset>
                   <el-col  :offset="0" >
-                    <div v-for="(data,idx) in item.Jp">
+                    <div v-for="(data,idx) in itemBase.Jp">
                       <fieldset style="margin-top: 20px;">
                         <legend>{{ JpTypeMap[data.Level] }} </legend>
                         <el-col :span="24">
@@ -373,7 +368,7 @@
                 <fieldset style="margin-top:10px">
                   <legend>Jackpot 奖励配置</legend>
                   <el-table
-                    :data="item.Jp"
+                    :data="itemBase.Jp"
                     border
                     style="width: 100%"
                     :header-cell-style="{textAlign:'center'}"
@@ -503,7 +498,7 @@
               <el-button type="normal" icon="el-icon-edit" size="mini" @click="addRobotNumForm()">添加</el-button>
               <el-table
                   ref="filterTable"
-                  :data="item.RobotCfg.RobotMemberArr"
+                  :data="itemBase.RobotCfg.RobotMemberArr"
                   border
                   :header-cell-style="libShow.DefaultTableHeadClass"
                   :row-style="{height:'10px'}"
@@ -536,14 +531,14 @@
                 <el-col :span="7" :offset="3">
                   <el-form inline>
                     <el-form-item label="敲击次数(min)" :rules="dataRule(true,{type:'n',range:'0'})">
-                      <el-input v-model.number="item.RobotCfg.MinRobotPlayTimes" size="mini" :required="true" />
+                      <el-input v-model.number="itemBase.RobotCfg.MinRobotPlayTimes" size="mini" :required="true" />
                     </el-form-item>
                   </el-form>
                 </el-col>
                 <el-col :span="7" :offset="3">
                   <el-form inline>
                     <el-form-item label="敲击次数(max)" :rules="dataRule(true,{type:'n',range:'0'})">
-                      <el-input v-model.number="item.RobotCfg.MaxRobotPlayTimes" size="mini" :required="true" />
+                      <el-input v-model.number="itemBase.RobotCfg.MaxRobotPlayTimes" size="mini" :required="true" />
                     </el-form-item>
                   </el-form>
                 </el-col>
@@ -551,14 +546,14 @@
                 <el-col :span="7" :offset="3">
                   <el-form inline>
                     <el-form-item label="敲x次后换个hz敲(min)" :rules="dataRule(true,{type:'n',range:'0'})">
-                      <el-input v-model.number="item.RobotCfg.MinRobotChangeTimes" size="mini" :required="true" />
+                      <el-input v-model.number="itemBase.RobotCfg.MinRobotChangeTimes" size="mini" :required="true" />
                     </el-form-item>
                   </el-form>
                 </el-col>
                 <el-col :span="7" :offset="3">
                   <el-form inline>
                     <el-form-item label="敲x次后换个hz敲(max)" :rules="dataRule(true,{type:'n',range:'0'})">
-                      <el-input v-model.number="item.RobotCfg.MaxRobotChangeTimes" size="mini" :required="true" />
+                      <el-input v-model.number="itemBase.RobotCfg.MaxRobotChangeTimes" size="mini" :required="true" />
                     </el-form-item>
                   </el-form>
                 </el-col>
@@ -568,21 +563,21 @@
                     <el-col :span="20" :offset="0">
                       <span style="font-size: 12px">机器的金币中奖权重是正常玩家的x倍 配置如下</span>
                     </el-col>
-                    <piggy-weight-cfg :piggy-cfg="item.RobotCfg.RobotWiMulti" weight-name="权重" val-name="金币权重*multi(支持1位小数)" val-type="1" />
+                    <piggy-weight-cfg :piggy-cfg="itemBase.RobotCfg.RobotWiMulti" weight-name="权重" val-name="金币权重*multi(支持1位小数)" val-type="1" />
                   </div>
                 </el-col>
 
                 <el-col :span="7" :offset="3">
                   <el-form inline>
                     <el-form-item label="敲x次后换个金币中奖权重(min)" :rules="dataRule(true,{type:'n',range:'0'})">
-                      <el-input v-model.number="item.RobotCfg.MinRobotWiChangeTimes" size="mini" :required="true" />
+                      <el-input v-model.number="itemBase.RobotCfg.MinRobotWiChangeTimes" size="mini" :required="true" />
                     </el-form-item>
                   </el-form>
                 </el-col>
                 <el-col :span="7" :offset="3">
                   <el-form inline>
                     <el-form-item label="敲x次后换个金币中奖权重(max)" :rules="dataRule(true,{type:'n',range:'0'})">
-                      <el-input v-model.number="item.RobotCfg.MaxRobotWiChangeTimes" size="mini" :required="true" />
+                      <el-input v-model.number="itemBase.RobotCfg.MaxRobotWiChangeTimes" size="mini" :required="true" />
                     </el-form-item>
                   </el-form>
                 </el-col>
@@ -594,7 +589,7 @@
                 <el-col :span="20" :offset="3">
                   <el-form inline>
                     <el-form-item label="自动敲击概率" :rules="dataRule(true,{type:'n',range:'0'})">
-                      <el-input v-model.number="item.RobotCfg.AutoTapRate" size="mini" :required="true"> <template slot="append">％</template></el-input>
+                      <el-input v-model.number="itemBase.RobotCfg.AutoTapRate" size="mini" :required="true"> <template slot="append">％</template></el-input>
                     </el-form-item>
                   </el-form>
                 </el-col>
@@ -605,14 +600,14 @@
                 <el-col :span="7" :offset="3">
                   <el-form inline>
                     <el-form-item label="敲击间隔(min)" :rules="dataRule(true,{type:'n',range:'0'})">
-                      <el-input v-model.number="item.RobotCfg.MinRobotTapInterval" size="mini" :required="true"> <template slot="append">ms</template></el-input>
+                      <el-input v-model.number="itemBase.RobotCfg.MinRobotTapInterval" size="mini" :required="true"> <template slot="append">ms</template></el-input>
                     </el-form-item>
                   </el-form>
                 </el-col>
                 <el-col :span="7" :offset="3">
                   <el-form inline>
                     <el-form-item label="敲击间隔(max)" :rules="dataRule(true,{type:'n',range:'0'})">
-                      <el-input v-model.number="item.RobotCfg.MaxRobotTapInterval" size="mini" :required="true"> <template slot="append">ms</template></el-input>
+                      <el-input v-model.number="itemBase.RobotCfg.MaxRobotTapInterval" size="mini" :required="true"> <template slot="append">ms</template></el-input>
                     </el-form-item>
                   </el-form>
                 </el-col>
@@ -766,10 +761,11 @@ export default {
   components: { JackpotAward, JackpotDayLimit, PiggyWeightCfg, Compare, Publish, BetAmount },
   data() {
     return {
-      subKey: 'miniPiggy_cfg',
+      subKeyBase: 'goldmaster_knock_base',
+      subKeyExt: 'goldmaster_knock_ext',
       libShow: $libShow,
       envProjectName: process.env.VUE_APP_PROJECT,
-      item: {
+      itemBase: {
         KicKTime: 300,
         NoticeTime: 300,
         FeeRate: 30,
@@ -865,8 +861,11 @@ export default {
     dataRule(required, config) {
       return DataRule(required, config)
     },
-    getFullKey() {
-      return 'CustomizeCfg_' + this.subKey
+    getFullKeyBase() {
+      return 'CustomizeCfg_' + this.subKeyBase
+    },
+    getFullKeyExt() {
+      return 'CustomizeCfg_' + this.subKeyExt
     },
     addJpDayLimit(){
       if (!this.jpDayLimit.NumHours){
@@ -889,14 +888,14 @@ export default {
       return true
     },
     transMoneyForShow() {
-      for (const o of this.item.MoneyOdds) {
+      for (const o of this.itemBase.MoneyOdds) {
         o.Val /= 1000
       }
-      for (const o of this.item.Jp) {
+      for (const o of this.itemBase.Jp) {
         o.MaxBet /= 1000
         o.MinBet /= 1000
       }
-      for (const o of this.item.free) {
+      for (const o of this.itemBase.free) {
         o.WonOddsMax /= 1000
         o.SpinOddsMax /= 1000
         for (const omo of o.MoneyOdds) {
@@ -912,13 +911,13 @@ export default {
           }
         }
       }
-      for (const o of this.item.Plate.PlateOdds) {
+      for (const o of this.itemBase.Plate.PlateOdds) {
         o.Val /= 1000
       }
-      for (const objElement of  this.item.RobotCfg.RobotWiMulti) {
+      for (const objElement of  this.itemBase.RobotCfg.RobotWiMulti) {
         objElement.Val  /=10
       }
-      for (const o of this.item.BetLevel) {
+      for (const o of this.itemBase.BetLevel) {
         if (o.CanBet instanceof Array) {
           for (let i = 0; i < o.CanBet.length; i++) {
             o.CanBet[i] /= 1000
@@ -931,41 +930,41 @@ export default {
       return '[' + data['StartHours'] + ',' + data['EndHours'] + ')点,' + data['NumMin'] + '最少,'+ data['NumMin']+'最多'
     },
     doAdd() {
-      this.item.BetLevel.push({ CanBet: [60, 100, 200, 400, 600, 2000], MaxMoneyBet: 2000, MinMoneyBet: 10 })
+      this.itemBase.BetLevel.push({ CanBet: [60, 100, 200, 400, 600, 2000], MaxMoneyBet: 2000, MinMoneyBet: 10 })
     },
       canbetChange(){
-          this.CanBet=this.item.BetLevel[0].CanBet.split(',')
+          this.CanBet=this.itemBase.BetLevel[0].CanBet.split(',')
       },
     delRow(index) {
-      if (this.item.BetLevel.length <= 1) {
+      if (this.itemBase.BetLevel.length <= 1) {
         Message.error('再删就没了')
         return
       }
-      this.item.BetLevel.splice(index, 1)
+      this.itemBase.BetLevel.splice(index, 1)
     },
     BuffCfgClick(tab, event) {
     },
     saveJpDayLimit(){
-      if (!this.item.Jp[this.jpDayLimit.idx].NumHour){
-        this.item.Jp[this.jpDayLimit.idx]['NumHour']=this.jpDayLimit.NumHours;
+      if (!this.itemBase.Jp[this.jpDayLimit.idx].NumHour){
+        this.itemBase.Jp[this.jpDayLimit.idx]['NumHour']=this.jpDayLimit.NumHours;
       }else {
-        this.item.Jp[this.jpDayLimit.idx].NumHour=this.jpDayLimit.NumHours;
+        this.itemBase.Jp[this.jpDayLimit.idx].NumHour=this.jpDayLimit.NumHours;
       }
       this.jpDayLimit.JpDayLimitVisible=false
     },
     saveIncrJackpotDialog() {
-      this.item.Jp[this.incrJackpotForm.JpIdx].JackpotRegulation.PoolIncrArr[this.incrJackpotForm.dataIdx].TimeArr = this.incrJackpotForm.data
+      this.itemBase.Jp[this.incrJackpotForm.JpIdx].JackpotRegulation.PoolIncrArr[this.incrJackpotForm.dataIdx].TimeArr = this.incrJackpotForm.data
 
-      for (const o of this.item.Jp[this.incrJackpotForm.JpIdx].JackpotRegulation.PoolIncrArr[this.incrJackpotForm.dataIdx].TimeArr) {
+      for (const o of this.itemBase.Jp[this.incrJackpotForm.JpIdx].JackpotRegulation.PoolIncrArr[this.incrJackpotForm.dataIdx].TimeArr) {
         o.PerHourIncr *= 1000
       }
 
       this.incrJackpotForm.visible = false
     },
     saveRobotDialog() {
-      for (var i = 0; i < this.item.RobotCfg.RobotMemberArr.length; i++) {
-        if (this.item.RobotCfg.RobotMemberArr[i].Index == this.robotDialogForm.data.Index) {
-          this.item.RobotCfg.RobotMemberArr[i] = this.robotDialogForm.data
+      for (var i = 0; i < this.itemBase.RobotCfg.RobotMemberArr.length; i++) {
+        if (this.itemBase.RobotCfg.RobotMemberArr[i].Index == this.robotDialogForm.data.Index) {
+          this.itemBase.RobotCfg.RobotMemberArr[i] = this.robotDialogForm.data
           break
         }
       }
@@ -990,12 +989,12 @@ export default {
     },
     addRobotNumForm() {
       let maxId = 0
-      for (const o of this.item.RobotCfg.RobotMemberArr) {
+      for (const o of this.itemBase.RobotCfg.RobotMemberArr) {
         if (o.Index > maxId) {
           maxId = o.Index
         }
       }
-      this.item.RobotCfg.RobotMemberArr.push({
+      this.itemBase.RobotCfg.RobotMemberArr.push({
         Index: maxId + 1,
         StartHour: 0,
         EndHour: 0,
@@ -1043,7 +1042,7 @@ export default {
       }
     },
     getPostData() {
-      const obj = JSON.parse(JSON.stringify(this.item))
+      const obj = JSON.parse(JSON.stringify(this.itemBase))
       for (const o of obj.MoneyOdds) {
         o.Val = parseInt(o.Val * 1000)
       }
@@ -1141,19 +1140,19 @@ export default {
         url: '/customizeconfig/one',
         method: 'get',
         data: {
-          SubKey: this.subKey
+          SubKey: this.subKeyBase
         }
       }).then(response => {
         if (response.RetCode === 0) {
           this.form = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
-            const item = JSON.parse(response.Data.Data)
-            if (!item.RobotCfg.RobotWiMulti){
-              item.RobotCfg["RobotWiMulti"]=[{ Weight: 0, Val: 0 }]
+            const itemBase = JSON.parse(response.Data.Data)
+            if (!itemBase.RobotCfg.RobotWiMulti){
+              itemBase.RobotCfg["RobotWiMulti"]=[{ Weight: 0, Val: 0 }]
             }
 
-            Object.assign(this.item, item)
-            this.CanBet=this.item.BetLevel[0].CanBet
+            Object.assign(this.itemBase, itemBase)
+            this.CanBet=this.itemBase.BetLevel[0].CanBet
             this.transMoneyForShow()
             this.$refs.compare.SetOldVal(response.Data)
           }
