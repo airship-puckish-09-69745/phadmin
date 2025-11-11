@@ -288,12 +288,6 @@ export const asyncRoutes = [
                     component: () => import('@/views/config/tableConfig/tongitsAIListConfig'),
                     name: 'tongitsJokerAIList',
                     meta: { title: 'AI-List ◐', cfgSubKey: 'tongitsJoker_ai_list_cfg', gid: 28, cgiPath: 'tongitsjokerrobotlist' }
-                  },
-                  {
-                    path: 'tongitsJokerAIList',
-                    component: () => import('@/views/config/tableConfig/tongitsAIListConfig'),
-                    name: 'tongitsJokerAIList',
-                    meta: { title: 'AI-List ◐', cfgSubKey: 'tongitsJoker_ai_list_cfg', gid: 28, cgiPath: 'tongitsjokerrobotlist' }
                   }
                 ]
               },
@@ -904,6 +898,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/tongitsjackPotEGameControl'),
                 name: 'tongitsjackPotEGameControl',
                 meta: { title: 'EGame控制配置 ◐' }
+              },
+              {
+                path: 'tongitsJokerAIList',
+                component: () => import('@/views/config/tableConfig/tongitsAIListConfig'),
+                name: 'tongitsJokerAIList',
+                meta: { title: 'AI-List ◐', cfgSubKey: 'tongitsJoker_ai_list_cfg', gid: 28, cgiPath: 'tongitsjokerrobotlist' }
               }
               //  ]
               // }
