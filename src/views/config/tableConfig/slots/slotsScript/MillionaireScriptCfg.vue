@@ -590,7 +590,7 @@ export default {
             }
             optionArr.push({
               key: response.Data[i].Gid,
-              label: response.Data[i].Name
+              label: response.Data[i].Name + ' (GID:' + response.Data[i].Gid + ')'
             })
           }
           optionArr.push({ key: 100180, label: 'Fishing Master(额外加注)' })

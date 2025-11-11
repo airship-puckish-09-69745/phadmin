@@ -898,6 +898,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/tongitsjackPotEGameControl'),
                 name: 'tongitsjackPotEGameControl',
                 meta: { title: 'EGame控制配置 ◐' }
+              },
+              {
+                path: 'tongitsJackPotAIFace',
+                component: () => import('@/views/config/tableConfig/tongitsJackPotAIFaceConfig'),
+                name: 'tongitsJackPotAIFace',
+                meta: { title: 'JackPotJP AI表情 ◐' }
               }
               //  ]
               // }
@@ -1068,12 +1074,6 @@ export const asyncRoutes = [
             meta: { title: 'D ropball ◐' }
           },
           {
-            path: 'GoldMaster',
-            component: () => import('@/views/config/tableConfig/goldmaster'),
-            name: 'GoldMaster',
-            meta: { title: 'G oldMaster◐' }
-          },
-          {
             path: 'hilo_cfg',
             component: () => import('@/views/config/tableConfig/minigames/hilo'),
             name: 'hilo_cfg',
@@ -1194,7 +1194,7 @@ export const asyncRoutes = [
             name: 'pirateScratch_cfg',
             meta: { title: 'Pirate Scratch ◐' }
           },
-
+          
         ]
       },
       {
@@ -2929,12 +2929,6 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_dropBall',
             meta: { title: 'D ropBall ◐', gid: 108 }
-          },
-          {
-            path: 'playlog_goldmaster',
-            component: () => import('@/views/playerManage/playlog'),
-            name: 'playlog_goldmaster',
-            meta: { title: 'G oldMaster ◐', gid: 500 }
           },
           {
             path: 'playlog_hilo',
