@@ -557,8 +557,7 @@
       </el-tabs>
     </el-row>
     <el-row>
-      <el-button type="primary" @click="setData">保存</el-button>
-
+      <el-button type="primary" @click="onClickSave">保存</el-button>
     </el-row>
     <!--对比组件-->
     <compare ref="compareBase" :attr-names="AttrNames" />
@@ -986,8 +985,34 @@ export default {
         return Math.floor(row.MinPool / 10000000) + '~' + Math.floor(row.MaxPool / 10000000) + '万每小时增长'
       }
     },
-    getPostData() {
+    getPostDataBase() {
       const obj = JSON.parse(JSON.stringify(this.itemBase))
+      for (const o of obj.Jp) {
+        for (let i = 0; i < o.JackpotRegulation.RandAwards.length; i++) {
+          o.JackpotCfg[i].AwardRate = o.JackpotRegulation.RandAwards[i].AwardRate
+        }
+      }
+      for (const o of obj.BetLevel) {
+        if (o.CanBet instanceof Array) {
+          for (let i = 0; i < o.CanBet.length; i++) {
+            o.CanBet[i] *= 1000
+          }
+        } else {
+          o.CanBet = o.CanBet.split(',').map(Number)
+          for (let i = 0; i < o.CanBet.length; i++) {
+            o.CanBet[i] *= 1000
+          }
+        }
+      }
+      if (obj.AutoTimes instanceof Array) {
+      } else {
+        obj.AutoTimes = obj.AutoTimes.split(',').map(Number)
+      }
+
+      return obj
+    },
+    getPostDataExt() {
+      const obj = JSON.parse(JSON.stringify(this.itemExt))
       for (const o of obj.MoneyOdds) {
         o.Val = parseInt(o.Val * 1000)
       }
@@ -1014,69 +1039,24 @@ export default {
         o.Val = parseInt(o.Val * 1000)
       }
       for (const o of obj.Jp) {
-        for (let i = 0; i < o.JackpotRegulation.RandAwards.length; i++) {
-          o.JackpotCfg[i].AwardRate = o.JackpotRegulation.RandAwards[i].AwardRate
-        }
         o.MinBet = parseInt(o.MinBet * 1000)
         o.MaxBet = parseInt(o.MaxBet * 1000)
       }
-      for (const o of obj.BetLevel) {
-        if (o.CanBet instanceof Array) {
-          for (let i = 0; i < o.CanBet.length; i++) {
-            o.CanBet[i] *= 1000
-          }
-        } else {
-          o.CanBet = o.CanBet.split(',').map(Number)
-          for (let i = 0; i < o.CanBet.length; i++) {
-            o.CanBet[i] *= 1000
-          }
-        }
-      }
-      if (obj.AutoTimes instanceof Array) {
-      } else {
-        obj.AutoTimes = obj.AutoTimes.split(',').map(Number)
-      }
 
-      for (const objElement of  obj.RobotCfg.RobotWiMulti) {
-        objElement.Val  *=10
-      }
       return obj
     },
 
-    checkData(obj) {
-      const map = {}
-      const list = JSON.parse(JSON.stringify(obj.BetLevel[0].CanBet))
-      for (const o of obj.BetLevel) {
-        if (o.CanBet instanceof Array) {
-          for (let i = 0; i < o.CanBet.length; i++) {
-            map[o.CanBet[i]] = i
-          }
-        } else {
-          o.CanBet = o.CanBet.split(',').map(Number)
-          for (let i = 0; i < o.CanBet.length; i++) {
-            map[o.CanBet[i]] = i
-          }
-        }
-      }
+    checkDataBase(obj) {
+      return true
+    },
+
+    checkDataExt(obj) {
       for (const o of obj.Jp) {
         if (o.MaxBet - o.MinBet <= 0) {
           Message.error('JP最大下注不能小于最小下注')
           return false
         }
-        for (let i = map[o.MaxBet]; i >= map[o.MinBet]; i--) {
-          list[i] = -1
-        }
       }
-      // let str = ''
-      // for (const data of list) {
-      //   if (data != -1) {
-      //     str += data / 1000 + ','
-      //   }
-      // }
-      // if (str.length > 0) {
-      //   Message.error('下注配置区间与下注列表不符，无法保存! 未配置值:' + str)
-      //   return false
-      // }
       return true
     },
 
@@ -1089,7 +1069,7 @@ export default {
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          this.form = response.Data || {}
+          this.formBase = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
             const itemBase = JSON.parse(response.Data.Data)
             if (!itemBase.RobotCfg.RobotWiMulti){
@@ -1113,7 +1093,7 @@ export default {
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          this.form = response.Data || {}
+          this.formExt = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
             const itemExt = JSON.parse(response.Data.Data)
             Object.assign(this.itemExt, itemExt)
@@ -1123,16 +1103,15 @@ export default {
         }
       })
     },
-    setData() {
-      var postData = this.getPostData()
-      if (!this.checkData(postData)) {
+    setDataBase() {
+      var postDataBase = this.getPostDataBase()
+      if (!this.checkDataBase(postDataBase)) {
         return
       }
-      this.form.Data = JSON.stringify(postData)
-      const $this = this
+      this.formBase.Data = JSON.stringify(postDataBase)
+      const $thisBase = this
       // 设置修改后数据
-      this.$refs.compareBase.SetNewVal(this.form)
-      this.$refs.compareExt.SetNewVal(this.form)
+      this.$refs.compareBase.SetNewVal(this.formBase)
       this.$refs.compareBase.Compare(function(isEdit) {
         if (!isEdit) {
           Message.error('没有任何修改，不需要提交')
@@ -1141,7 +1120,7 @@ export default {
         request({
           url: 'customizeconfig/update',
           method: 'post',
-          data: $this.form
+          data: $thisBase.formBase
         }).then(response => {
           if (response.RetCode === 0) {
             console.log('sign reward save', response)
@@ -1149,6 +1128,16 @@ export default {
           }
         })
       })
+    },
+    setDataExt() {
+      // console.log('1111111111111 1')
+      var postDataExt = this.getPostDataExt()
+      if (!this.checkDataExt(postDataExt)) {
+        return
+      }
+      this.formExt.Data = JSON.stringify(postDataExt)
+      const $thisExt = this
+      this.$refs.compareExt.SetNewVal(this.formExt)
       this.$refs.compareExt.Compare(function(isEdit) {
         if (!isEdit) {
           Message.error('没有任何修改，不需要提交')
@@ -1157,7 +1146,7 @@ export default {
         request({
           url: 'customizeconfig/update',
           method: 'post',
-          data: $this.form
+          data: $thisExt.formExt
         }).then(response => {
           if (response.RetCode === 0) {
             console.log('sign reward save', response)
@@ -1165,7 +1154,11 @@ export default {
           }
         })
       })
-    }
+    },
+    onClickSave() {
+      this.setDataBase()
+      this.setDataExt()
+    },
   }
 }
 </script>
