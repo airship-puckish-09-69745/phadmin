@@ -2105,13 +2105,13 @@ export const asyncRoutes = [
         path: 'easterConfig',
         component: () => import('@/views/empty'),
         name: 'easterConfig',
-        meta: { title: '复活节活动配置', noCache: true },
+        meta: { title: '扭蛋机活动配置', noCache: true },
         children: [
           {
             path: 'easterActivityConfig',
             component: () => import('@/views/config/tableConfig/activity/easterConfig'),
             name: 'easterActivityConfig',
-            meta: { title: '复活节活动配置', noCache: true }
+            meta: { title: '扭蛋机活动配置', noCache: true }
           }
         ]
       },
