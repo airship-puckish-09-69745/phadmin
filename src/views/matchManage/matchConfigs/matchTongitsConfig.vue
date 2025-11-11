@@ -869,6 +869,7 @@ import { log } from 'console'
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
 import { getAllCommonGameConfig, getAllMatchGuidesConfig,validateUidInput, handleUidInputChange, setNestedProperty } from '@/utils/common-game-config'
 import { IsMars } from '@/utils/env'
+import { IsNewTicketProp, GetMatchTicketRightsIdList } from '@/utils/prop'
 import {
   CHANNEL_OPTIONS,
   APPID_OPTIONS,
@@ -1191,7 +1192,8 @@ export default {
             propsIcon: '',
             propsAttr: '',
             propsNum: 0,
-            propExpireDays: -1
+            propExpireDays: -1,
+            propsSceneId: 0,
           }
         }
       ]
@@ -1571,7 +1573,8 @@ export default {
           propsName: '',
           propsIcon: '',
           propsAttr: '',
-          propExpireDays: -1
+          propExpireDays: -1,
+          propsSceneId: 0,
         }
       })
     },
@@ -1748,7 +1751,9 @@ export default {
               propsIcon: '',
               propsAttr: '',
               propsNum: 0,
-              propExpireDays: -1
+              propExpireDays: -1,
+              propsSceneId:0
+
             }
           }
         ]
@@ -2207,33 +2212,55 @@ export default {
                 'propsIcon': '',
                 'propsAttr': '',
                 'propsCost': '',
-                'propsShowName': ''
+                'propsShowName': '',
+                'propsSceneId': 0,
               }
             ]
             this.matchTicketsCfgs = []
             var timestamp = Date.parse(new Date()) / 1000
             for (let i = 0; i < objs.list.length; i++) {
               if (this.propsTypeList.includes(objs.list[i].item_type)) {
+                let canPush = false
+                let sceneId = 0
                 if (objs.list[i].status === 1 && ((objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET && objs.list[i].expire_time > timestamp) ||
                   objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME || objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET_NEW)) {
                   let str = objs.list[i].item_name
                   if (objs.list[i].show_name.length > 0) {
                     str = str + '(' + objs.list[i].show_name + ')'
                   }
-                  this.matchPropsCfgs.push({
-                    'propsType': objs.list[i].item_type,
-                    'propsId': objs.list[i].id,
-                    'propsName': objs.list[i].item_name,
-                    'propsIcon': objs.list[i].image,
-                    'propsAttr': objs.list[i].item_describe,
-                    'propsCost': objs.list[i].item_cost,
-                    'propsShowName': str
+                  if (IsNewTicketProp(objs.list[i].item_type)) {
+                    const tickets = GetMatchTicketRightsIdList(objs.list[i].item_type)
+                    console.log("tickets",tickets)
+                    for (let j = 0; j < tickets.length; j++) {
+                      if (objs.list[i].id === tickets[j].ticketId) {
+                        canPush = true
+                        sceneId = tickets[j].sceneId
+                        break
+                      }
+                    }
+                  }else{
+                    canPush = true
+                  }
+                  if (canPush) {
+                    this.matchPropsCfgs.push(
+                      {
+                      'propsType': objs.list[i].item_type,
+                      'propsId': objs.list[i].id,
+                      'propsName': objs.list[i].item_name,
+                      'propsIcon': objs.list[i].image,
+                      'propsAttr': objs.list[i].item_describe,
+                      'propsCost': objs.list[i].item_cost,
+                      'propsShowName': str,
+                      'propsSceneId': sceneId,
                   })
+                }
                   if (objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET || objs.list[i].item_type ===PROP_TYPE_OPTIONS.PROP_TYPE_TICKET_NEW ) { // Tongits 门票
+                    if (canPush) {
                     this.matchTicketsCfgs.push({
-                      'label': str,
-                      'value': objs.list[i].id
-                    })
+                        'label': str,
+                        'value': objs.list[i].id
+                      })
+                    }
                   }
                 }
               }
@@ -2711,7 +2738,8 @@ export default {
         propsNum: propsNum,
         propCost: 0,
         propExpireDays: expireDays,
-        propsShowName: ''
+        propsShowName: '',
+        propsSceneId: 0,
       }
       for (let i = 0; i < this.matchPropsCfgs.length; i++) {
         const element = this.matchPropsCfgs[i]
@@ -2723,6 +2751,7 @@ export default {
           one.propsAttr = element.propsAttr
           one.propCost = element.propsCost
           one.propsShowName = element.propsShowName
+          one.propsSceneId = element.propsSceneId
           break
         }
       }

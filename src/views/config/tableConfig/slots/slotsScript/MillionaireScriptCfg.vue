@@ -404,7 +404,7 @@ export default {
         '208': 'candyburst',
         '206': 'luckywineglass',
         '210': 'luckyspirits',
-        '216': 'phoenix',
+        '216': 'phoenix(v4)',
         '220': 'goldendragon',
         '221': 'goldendragonmars',
         '212': 'pirateship',

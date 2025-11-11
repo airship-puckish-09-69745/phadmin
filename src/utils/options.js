@@ -43,7 +43,6 @@ export const ITEM_DAY_TYPE_OPTIONS = [
   { 'value': 7, 'label': '7天', disabled: false },
   { 'value': 30, 'label': '30天', disabled: false },
   { 'value': 365, 'label': '365天', disabled: false },
-  { 'value': -1, 'label': '过期道具测试10Mins', disabled: false },
   { 'value': 0, 'label': '永久', disabled: false }
 ]
 
@@ -201,3 +200,4 @@ export const MATCH_IUPSTREAM_TYPE_OPTIONS = {
   UPSTREAM_TYPE_TEXAS_MTT:2032,             //德州MTT
   MATCH_UPSTREAM_TYPE_PUSOY: 2033,          //pusoy
 }
+

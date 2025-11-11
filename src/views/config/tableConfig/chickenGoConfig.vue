@@ -315,9 +315,10 @@ export default {
             const item = JSON.parse(response.Data.Data)
             if (!item.OddsCfg) {
               item['OddsCfg'] = []
-              for (const i = 0; i < 4; i ++)
+              for (const i = 0; i < 4; i ++){
                 item.OddsCfg.push([])
                 item.OddsCfg[i].push({ Id: 0, Odds: 1 })
+              }
             }
 
             if (!item.Card){

@@ -898,6 +898,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/tongitsjackPotEGameControl'),
                 name: 'tongitsjackPotEGameControl',
                 meta: { title: 'EGame控制配置 ◐' }
+              },
+              {
+                path: 'tongitsJackPotAIFace',
+                component: () => import('@/views/config/tableConfig/tongitsJackPotAIFaceConfig'),
+                name: 'tongitsJackPotAIFace',
+                meta: { title: 'JackPotJP AI表情 ◐' }
               }
               //  ]
               // }

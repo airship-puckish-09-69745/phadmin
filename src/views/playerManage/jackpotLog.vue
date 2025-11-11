@@ -498,6 +498,7 @@ export default {
         { 'value': 216, 'label': 'Phoenix' },
         { 'value': 134, 'label': 'Pusoy JP' },
         { 'value': 135, 'label': 'SUPER COLOR' },
+        { 'value': 500, 'label': 'GoldMaster' },
       ],
       appConfig: [
         { 'value': 0, 'label': '全部' },
@@ -653,7 +654,7 @@ export default {
         this.levelConfig = [
           { 'value': 1, 'label': 'HIGH' }
         ]
-      } else if (this.searchForm.gameId === 106) {
+      } else if (this.searchForm.gameId === 106 || this.searchForm.gameId === 500) {
         this.levelConfig = [
           { 'value': 0, 'label': '全部' },
           { 'value': 1, 'label': 'grand' },

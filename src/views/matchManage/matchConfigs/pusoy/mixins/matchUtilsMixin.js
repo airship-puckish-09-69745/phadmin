@@ -431,7 +431,8 @@ export const matchUtilsMixin = {
               propsAttr: this.configs.matchPropsCfgs[i].propsAttr,
               propCost:this.configs.matchPropsCfgs[i].propsCost,
               propsNum: propsNum,
-              propExpireDays: propExpireDays
+              propExpireDays: propExpireDays,
+              propsSceneId: this.configs.matchPropsCfgs[i].propsSceneId,
             }
           }
         }
@@ -444,7 +445,8 @@ export const matchUtilsMixin = {
         propsAttr: '',
         propsNum: 0,
         propExpireDays: -1,
-        propCost:0
+        propCost:0,
+        propsSceneId:0 ,
       }
     },
 
