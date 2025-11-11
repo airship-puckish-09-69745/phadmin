@@ -353,6 +353,7 @@ export default {
         if (response.RetCode === 0) {
           this.form = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
+            console.log('response.Data.Data=======>', response.Data.Data)
             const item = JSON.parse(response.Data.Data)
             if (!item.Rate) {
               item['Rate'] = []
@@ -388,40 +389,6 @@ export default {
         }
       })
     },
-
-    setData(obj, src){
-      if (src) {
-        //1
-        if (src.Rate) {
-          obj.Rate.push(src.Rate.join(','))
-        }
-        //2
-        if (src.Type){
-          let typeRate = []
-          for (const i in src.Type) {
-            typeRate.push({Rate: src.TypeRate[i], FaceType: src.Type[i].join(',')})
-          }
-          obj.TypeRate.push(typeRate)
-        }
-        //3
-        if (src.Count){
-          let countRate = []
-          for (const i in src.Count) {
-            countRate.push({Rate: src.CountRate[i], Count: src.Count[i]})
-          }
-          obj.CountRate.push(countRate)
-        }
-        //4
-        if (src.Delay) {
-          let delayRate = []
-          for (const i in src.Delay) {
-            delayRate.push({Rate: src.DelayRate[i], Delay: src.Delay[i].join(',')})
-          }
-          obj.DelayRate.push(delayRate)
-        }
-        //5        
-      }
-    },
     
     transMoneyForShow() {
       let that = this
@@ -455,7 +422,7 @@ export default {
         }
         //5间隔
         if (that.item.FacesReplyCfg.Interval) {
-          //that.item.Interval.push(that.item.FacesReplyCfg.Interval.join(','))
+          that.item.Interval.push(that.item.FacesReplyCfg.Interval.join(','))
         }
       }
       //互动表情(主动)
