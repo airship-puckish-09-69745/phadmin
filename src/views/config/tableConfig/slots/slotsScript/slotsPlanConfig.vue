@@ -918,7 +918,7 @@ export default {
             }
             this.gameOptions.push({
               key: response.Data[i].Gid,
-              label: response.Data[i].Name + '(GID:' + response.Data[i].Gid + ')'
+              label: response.Data[i].Name + ' (GID:' + response.Data[i].Gid + ')'
             })
           }
           this.appendAdditional()
