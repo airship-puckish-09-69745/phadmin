@@ -18,7 +18,7 @@
       <legend>奖金配置</legend>
       <h4 style="text-align:left;">10面值单个格子奖金出现权重</h4>
        <el-table
-              :data="item.TenFace"
+              :data="item.TenBetMoney"
               border
               style="width: 100%"
             >
@@ -51,7 +51,7 @@
 
         <h4 style="text-align:left;">10面值以上单个格子奖金出现权重</h4>
        <el-table
-              :data="item.UpTenFace"
+              :data="item.UpTenBetMoney"
               border
               style="width: 100%"
             >
@@ -96,7 +96,7 @@
                     <el-form-item label="单张彩票出现乘数的概率(%)：" :required="true">
                         <template>
                             <el-input-number
-                            v-model="item.Multiplier.SingleRatio"  type="number" :min=0 :precision="2"
+                            v-model="tmpSingleRatio"  type="number" :min=0 :precision="2"
                             style="width: 100%"> 
                             </el-input-number>
                         </template>
@@ -201,7 +201,7 @@
             width="200"
           >
             <template slot-scope="scope">
-              <span>{{ scope.row.FaceValue }}X</span>
+              <span>{{ scope.row.BetMoney }}X</span>
             </template>
           </el-table-column>
          <el-table-column
@@ -212,7 +212,7 @@
             <span>触发JP概率<span style="color: red;">(万分位: ‱)</span></span>
             </template>
             <template slot-scope="scope">
-              <el-input-number v-model.number="scope.row.JackpotRate" size="mini" type="number"  :min=0 ></el-input-number>
+              <el-input-number v-model.number="scope.row.JackpotRatio" size="mini" type="number"  :min=0 ></el-input-number>
             </template>
             </el-table-column>
     
@@ -270,9 +270,10 @@ export default {
         subKey: 'pirate_scratch_cfg',
         form: {},
         tmpAutoBetRoundList:"10,25,50,100,200,500,1000,2000",
+        tmpSingleRatio: 10,
         item: {
-          AutoBetRoundList:[10,25,50,100,200,500,1000,2000], //下注
-          TenFace:[
+          AutoBetRoundList:[10000,25000,50000,100000,200000,500000,1000000,2000000], //下注
+          TenBetMoney:[
             {
               Bonus:10000000, 
               WinPrizeWight: 100,
@@ -328,7 +329,7 @@ export default {
               LosePrizeWight: 100,
             }
           ],
-          UpTenFace:[
+          UpTenBetMoney:[
             {
               Bonus:10000000, 
               WinPrizeWight: 100,
@@ -408,11 +409,11 @@ export default {
           },
           JackpotRegulation:{
               RandAwards: [
-                  { FaceValue: 10,  JackpotRate: 10 },
-                  { FaceValue: 20,  JackpotRate: 10 },
-                  { FaceValue: 30,  JackpotRate: 10 },
-                  { FaceValue: 50,  JackpotRate: 10 },
-                  { FaceValue: 100,  JackpotRate: 10 },
+                  { BetMoney: 10,  JackpotRatio: 10 },
+                  { BetMoney: 20,  JackpotRatio: 10 },
+                  { BetMoney: 30,  JackpotRatio: 10 },
+                  { BetMoney: 50,  JackpotRatio: 10 },
+                  { BetMoney: 100,  JackpotRatio: 10 },
               ],
               AwardOdds: [
                   {  Odds: 500 ,Wight:100},
@@ -491,21 +492,24 @@ export default {
         },
         transMoneyForShow() {
           let that = this
-            const betMoneyList = []
-            for (const o of that.item.AutoBetRoundList) {
-              betMoneyList.push(o)
-            }
-            that.tmpAutoBetRoundList = betMoneyList.join(',')  
+          const betMoneyList = []
+          for (const o of that.item.AutoBetRoundList) {
+            betMoneyList.push(o/1000)
+          }
+          that.tmpAutoBetRoundList = betMoneyList.join(',')  
+
+          that.tmpSingleRatio = Math.floor(that.item.SingleRatio/100)
           
       },
       saveTableMoney() {
           let betItem = []
           for (const oElement of this.tmpAutoBetRoundList.split(',')) {
-            betItem.push(oElement)
+            betItem.push(oElement*1000)
           
             }
-            this.AutoBetRoundList = (betItem)
-      }
+            this.item.AutoBetRoundList = (betItem)
+            this.item.SingleRatio =  Math.floor(that.tmpSingleRatio*100)
+      },
     }
 }
 </script>
