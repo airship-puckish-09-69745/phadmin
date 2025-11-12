@@ -2289,7 +2289,7 @@
         </el-descriptions-item>
       </el-descriptions>
 
-      <el-table :data="goldmasterLog.detail.kLogs" border title="中奖记录" :row-style="changColor">
+      <el-table :data="goldmasterLog.detail.kLogs" border title="中奖记录" :row-style="changColorGoldMaster">
         <el-table-column prop="typ" label="奖励类型">
           <template slot-scope="scope">{{ GoldMasterTypeOptions[parseKnockExt(scope.row.knockExt).typ] }}</template> //todo:
         </el-table-column>
@@ -5739,6 +5739,19 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
         }
       }
       if (row.typ == '2') {
+        return {
+          color: '#9205a6'
+        }
+      }
+    },
+    changColorGoldMaster({ row }) {
+      const typ = this.parseKnockExt(row.knockExt).typ
+      if (typ == '1') {
+        return {
+          color: 'red'
+        }
+      }
+      if (typ == '2') {
         return {
           color: '#9205a6'
         }
