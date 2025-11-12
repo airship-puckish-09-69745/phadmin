@@ -277,19 +277,20 @@
               <!--机器人下注倍率-->
               <fieldset style="margin-top:10px" v-if="!IsPHAuditEnv()">
                 <legend>机器人下注倍率</legend>
+                <!--
                 <el-col :span="24" :offset="5">
                   <el-form :inline="true">
                     <el-col :span="8">
                       <el-form-item label="随机范围:" style="display: flex; align-items: center">
                         <el-input v-model="item.RobotBetCfg.BetMultipleMin" size="mini" style="width: 100px"></el-input>
-                        <span style="margin: 0 10px">~</span> <!-- 替换第二个 label -->
+                        <span style="margin: 0 10px">~</span>
                         <el-input v-model="item.RobotBetCfg.BetMultipleMax" size="mini" style="width: 100px"></el-input>
-                        <span>X</span> <!-- 统一处理单位 -->
+                        <span>X</span>
                       </el-form-item>
                     </el-col>                    
                   </el-form>
                 </el-col>
-
+              -->
                 <el-table
                   ref="filterTable"
                   :data="item.RobotBetCfg.Rule"
@@ -494,8 +495,8 @@ export default {
             }
             if (!item.RobotBetCfg){
               item.RobotBetCfg = {
-                BetMultipleMin:200,
-                BetMultipleMax:20000,
+                //BetMultipleMin:200,
+                //BetMultipleMax:20000,
                 Rule:[{Integer: 60, Decimal: 60},{Integer: 30, Decimal: 30},{Integer: 10, Decimal: 10}]
               }
             }
@@ -511,8 +512,8 @@ export default {
             item.RobotCarryMax /= 1000
             item.ReChoiceCfg.LowLotteryPoolReChoice /= 1000
             item.ReChoiceCfg.HighLotteryPoolReChoice /= 1000
-            item.RobotBetCfg.BetMultipleMin /=  100
-            item.RobotBetCfg.BetMultipleMax /=  100
+            //item.RobotBetCfg.BetMultipleMin /=  100
+            //item.RobotBetCfg.BetMultipleMax /=  100
 
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data)
@@ -552,8 +553,8 @@ export default {
       ret.RobotCarryMax *= 1000
       ret.ReChoiceCfg.LowLotteryPoolReChoice *= 1000
       ret.ReChoiceCfg.HighLotteryPoolReChoice *= 1000
-      ret.RobotBetCfg.BetMultipleMin *= 100
-      ret.RobotBetCfg.BetMultipleMax *= 100
+      //ret.RobotBetCfg.BetMultipleMin *= 100
+      //ret.RobotBetCfg.BetMultipleMax *= 100
 
       //测试
       if (!ret.openTest || ret.openTest=="1"){
