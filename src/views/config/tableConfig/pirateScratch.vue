@@ -5,12 +5,20 @@
     <fieldset style="margin-top:10px">              
         <legend>下注配置</legend>
           <el-form ref="item" :model="item" label-width="200px">
+            <el-row>
             <el-col :span="16">
               <el-form-item label="下注列表">
                 <el-input v-model.number="tmpAutoBetRoundList" size="mini" />
               </el-form-item>
             </el-col>
-
+          </el-row>
+          <el-row>
+            <el-col :span="6">
+                  <el-form-item label="保底奖池抽水">
+                    <el-input v-model.number="item.FeeRate" size="mini" ><template  slot="append">%</template></el-input>
+                  </el-form-item>
+                </el-col>
+          </el-row>
           </el-form>
 
       </fieldset>
@@ -224,6 +232,15 @@
               border
               style="width: 100%"
             >
+         <el-table-column
+            label="奖励类型"
+            width="200"
+          >
+            <template slot-scope="scope">
+              <span>{{ getRewardName(scope.row.AwardType) }}</span>
+            </template>
+          </el-table-column>
+
           <el-table-column
             label="奖励倍数"
             width="200"
@@ -272,6 +289,7 @@ export default {
         tmpAutoBetRoundList:"10,25,50,100,200,500,1000,2000",
         tmpSingleRatio: 10,
         item: {
+          FeeRate: 1,
           AutoBetRoundList:[10000,25000,50000,100000,200000,500000,1000000,2000000], //下注
           TenBetMoney:[
             {
@@ -416,10 +434,10 @@ export default {
                   { BetMoney: 100,  JackpotRatio: 10 },
               ],
               AwardOdds: [
-                  {  Odds: 500 ,Wight:100},
-                  {  Odds: 100 ,Wight:0},
-                  {  Odds: 55 ,Wight:0},
-                  {  Odds: 10 ,Wight:0},
+                  {AwardType:1,  Odds: 500 ,Wight:100},
+                  {AwardType:2,  Odds: 100 ,Wight:0},
+                  {AwardType:3,  Odds: 55 ,Wight:0},
+                  {AwardType:4,  Odds: 10 ,Wight:0},
                 
           ],
         }
@@ -510,6 +528,16 @@ export default {
             this.item.AutoBetRoundList = (betItem)
             this.item.SingleRatio =  Math.floor(that.tmpSingleRatio*100)
       },
+
+      getRewardName(AwardType) {
+        switch(AwardType) {
+          case 1: return "GRAND"
+          case 2: return "MAJOR"
+          case 3: return "MINOR"
+          case 4: return "MINI"
+          default: return "NOT FOND"
+        }
+      }
     }
 }
 </script>
