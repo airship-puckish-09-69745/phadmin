@@ -29,6 +29,7 @@
             <el-input v-model.number="scope.row.Weight" size="mini" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};" />
           </template>
         </el-table-column>
+
         <el-table-column v-if="selectType" label="类型">
           <template slot-scope="scope" >
           <el-select v-model.number="scope.row.Typ" placeholder="请选择" size="mini">
@@ -37,7 +38,10 @@
           </el-select>
           </template>
         </el-table-column>
+
+        <!--val:类型 / 值-->
         <el-table-column
+          v-if="valType=='0'||valType=='1'"
           prop="Val"
           :label="valName"
         >
@@ -58,6 +62,31 @@
             </span>
           </template>
         </el-table-column>
+
+        <!--val:区间-->
+        <el-table-column
+            v-if="valType=='2'"
+            prop="Val"
+            :label="valNameMin"
+        >
+          <template slot-scope="scope">
+            <span>
+              <el-input v-model.number="scope.row.ValMin" type="number" size="mini" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};" />
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column
+            v-if="valType=='2'"
+            prop="Val"
+            :label="valNameMax"
+        >
+          <template slot-scope="scope">
+            <span>
+              <el-input v-model.number="scope.row.ValMax" type="number" size="mini" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};" />
+            </span>
+          </template>
+        </el-table-column>
+
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button
@@ -94,6 +123,18 @@ export default {
       type: String,
       default: function() {
         return '中奖配置'
+      }
+    },
+    valNameMin: {
+      type: String,
+      default: function() {
+        return 'min'
+      }
+    },
+    valNameMax: {
+      type: String,
+      default: function() {
+        return 'max'
       }
     },
     valType: {

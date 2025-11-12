@@ -1,7 +1,12 @@
 <template>
   <div class="app-container">
-    <el-row>
-      <publish primary-key="ID" :key-id="getFullKeyBase()" :env-empty="false" compare-type="Object" :attr-names="AttrNames" />
+    <el-row type="flex" align="middle" style="margin-bottom: 10px;">
+      <span style="width: 120px; color: #A8A8A8; font-size: 13px; font-weight: bold;position:relative;top:-5px;">都要点一下 base：</span>
+      <publish style="width: 90%;" primary-key="ID" :key-id="getFullKeyBase()" :env-empty="false" compare-type="Object" />
+    </el-row>
+    <el-row type="flex" align="middle" style="margin-bottom: 10px;">
+      <span style="width: 120px; color: #A8A8A8; font-size: 13px; font-weight: bold;position:relative;top:-5px;">都要点一下 ext：</span>
+      <publish style="width: 90%;" primary-key="ID" :key-id="getFullKeyBase()" :env-empty="false" compare-type="Object" />
     </el-row>
     <el-row>
       <el-tabs type="border-card">
@@ -434,7 +439,7 @@
           </el-tabs>
         </el-tab-pane>
         <el-tab-pane v-if="envProjectName != 'ph_audit'" label="机器人配置">
-          <el-row :span="16" :offset="3">
+          <el-row :span="16" :offset="3" style="width: 80%; margin: 0 auto">
             <fieldset style="margin-top:10px">
               <legend>机器人配置</legend>
               <el-descriptions class="margin-top" border>
@@ -474,6 +479,8 @@
                   </template>
                 </el-table-column>
               </el-table>
+              <piggy-weight-cfg :piggy-cfg=" itemBase.RobotCfg.Bets" weight-name="权重" val-name="下注额度" val-type="1" title="下注额度" />
+              <piggy-weight-cfg :piggy-cfg=" itemBase.RobotCfg.OddsRet" weight-name="权重" val-type="2" title="返奖倍数" />
               <el-row>
                 <el-col :span="7" :offset="3">
                   <el-form inline>
@@ -551,6 +558,7 @@
                 </el-col>
 
               </el-row>
+
             </fieldset>
           </el-row>
         </el-tab-pane>
@@ -719,7 +727,6 @@ export default {
           MaxRobotPlayTimes: 0, // 机器人最大玩牌局数
           MinRobotChangeTimes: 0, // 机器人敲多少次以后换个频率敲下限
           MaxRobotChangeTimes: 0, // 机器人敲多少次以后换个频率敲上限
-          RobotWiMulti: [{ Weight: 1, Val: 20 }],
           MinRobotWiChangeTimes: 0, // 机器人敲多少次以后换个金币中奖权重敲下限
           MaxRobotWiChangeTimes: 0, // 机器人敲多少次以后换个金币中奖权重敲上限
           MinRobotTapInterval: 0, // 机器人最小敲击间隔
@@ -1009,6 +1016,10 @@ export default {
         obj.AutoTimes = obj.AutoTimes.split(',').map(Number)
       }
 
+      for (const o of obj.RobotCfg.OddsRet) {
+        o.Val = o.ValMin*1000000+o.ValMax
+      }
+
       return obj
     },
     getPostDataExt() {
@@ -1072,10 +1083,6 @@ export default {
           this.formBase = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
             const itemBase = JSON.parse(response.Data.Data)
-            if (!itemBase.RobotCfg.RobotWiMulti){
-              itemBase.RobotCfg["RobotWiMulti"]=[{ Weight: 0, Val: 0 }]
-            }
-
             Object.assign(this.itemBase, itemBase)
             this.CanBet=this.itemBase.BetLevel[0].CanBet
             this.transMoneyForShowBase()
@@ -1114,7 +1121,7 @@ export default {
       this.$refs.compareBase.SetNewVal(this.formBase)
       this.$refs.compareBase.Compare(function(isEdit) {
         if (!isEdit) {
-          Message.error('没有任何修改，不需要提交')
+          Message.error({message: 'base 没有任何修改，不需要提交', offset: 30})
           return
         }
         request({
@@ -1140,7 +1147,7 @@ export default {
       this.$refs.compareExt.SetNewVal(this.formExt)
       this.$refs.compareExt.Compare(function(isEdit) {
         if (!isEdit) {
-          Message.error('没有任何修改，不需要提交')
+          Message.error({message: 'ext 没有任何修改，不需要提交', offset: 80})
           return
         }
         request({
