@@ -898,6 +898,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/tongitsjackPotEGameControl'),
                 name: 'tongitsjackPotEGameControl',
                 meta: { title: 'EGame控制配置 ◐' }
+              },
+              {
+                path: 'tongitsJackPotAIFace',
+                component: () => import('@/views/config/tableConfig/tongitsJackPotAIFaceConfig'),
+                name: 'tongitsJackPotAIFace',
+                meta: { title: 'JackPotJP AI表情 ◐' }
               }
               //  ]
               // }
@@ -1066,6 +1072,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/dropballConfig'),
             name: 'Dropball_cfg',
             meta: { title: 'D ropball ◐' }
+          },
+          {
+            path: 'GoldMaster',
+            component: () => import('@/views/config/tableConfig/goldmaster'),
+            name: 'GoldMaster',
+            meta: { title: 'G oldMaster◐' }
           },
           {
             path: 'hilo_cfg',
@@ -3014,6 +3026,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_limbo',
             meta: { title: 'L imbo ◐', gid: 136 }
+          },
+          {
+            path: 'playlog_chickengo',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_chickengo',
+            meta: { title: 'C hicken Go ◐', gid: 138 }
           }
 
           /*

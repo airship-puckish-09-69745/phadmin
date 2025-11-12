@@ -4122,14 +4122,14 @@ export default {
     clickData(row, column, event) {
       if (column.label !== 'Uid') {
         this.setRowUid(row.Uid)
-        this.getDetail(row.LogID, row.FinishTime)
+        this.getDetail(row.LogID, row.FinishTime,row.Uid)
       }
     },
     setRowUid(uid) {
       this.sweeperRowUid = uid
       this.clickRowUid = uid
     },
-    getDetail(id, dt) {
+    getDetail(id, dt,uid) {
       const $this = this
       request({
         url: '/dataProxy/info',
@@ -4138,7 +4138,8 @@ export default {
           Env: this.env,
           Path: '/log/detail',
           ID: id,
-          DateTime: dt
+          DateTime: dt,
+          Uid: uid
         }
       }).then(response => {
         if (response.RetCode === 0) {

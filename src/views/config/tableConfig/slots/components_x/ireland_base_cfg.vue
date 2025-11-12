@@ -166,6 +166,7 @@
             <el-input v-model="slotsData.AutoSpinNum[1]"> </el-input>
           </el-form-item>
 
+          <span style="color: red; font-size: 11px;">注: 正式生效日期为填写日期的第二天 </span>
           <el-form-item label="TopWins开始生效日期">
             <el-date-picker
               v-model="topWinsStartTime"
