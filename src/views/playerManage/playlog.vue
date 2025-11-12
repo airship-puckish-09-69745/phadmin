@@ -2289,7 +2289,7 @@
         </el-descriptions-item>
       </el-descriptions>
 
-      <el-table :data="goldmasterLog.detail.kLogs" border title="中奖记录" :row-style="changColor">
+      <el-table :data="goldmasterLog.detail.kLogs" border title="中奖记录" :row-style="changColorGoldMaster">
         <el-table-column prop="typ" label="奖励类型">
           <template slot-scope="scope">{{ GoldMasterTypeOptions[parseKnockExt(scope.row.knockExt).typ] }}</template> //todo:
         </el-table-column>
@@ -3369,6 +3369,46 @@
       </el-table>
     </el-dialog>
 
+    <el-dialog title="ChickenGo详情" :visible.sync="ChickenGoDetailVisible" width="1200px">
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
+        <span style="float:left;">{{ '困难级别:' + geChickenGoLevel(ChickenGoDetail.level) }}</span>
+      </div>
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
+        <span style="float:left;">{{ '下注金额:' + ChickenGoDetail.betMoney }}</span>
+      </div>
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
+        <span style="float:left;">{{ '到达倍率:' + ChickenGoDetail.arriveIn/100 }}</span>
+      </div>
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
+        <span style="float:left;">{{ '获得倍率:' + ChickenGoDetail.multipleResult/100 }}</span>
+      </div>
+      <!--
+      <el-table ref="filterTable" :data="ChickenGoDetail.players" border>
+        <el-table-column prop="level" label="困难级别"  width="150px">
+          <template slot-scope="scope">{{ geChickenGoLevel(scope.row.level) }}</template>
+        </el-table-column>
+        <el-table-column prop="uid" label="uid" width="128px">
+          <template slot-scope="scope">{{ scope.row.uid }}</template>
+        </el-table-column>
+        <el-table-column prop="nick" label="昵称"  width="150px">
+          <template slot-scope="scope">{{ scope.row.nick }}</template>
+        </el-table-column>
+        <el-table-column prop="bet" label="下注金额"  width="150px">
+          <template slot-scope="scope">{{ scope.row.betMoney }}</template>
+        </el-table-column>
+        <el-table-column prop="arriveIn" label="到达倍率"  width="150px">
+          <template slot-scope="scope">{{ scope.row.arriveIn }}</template>
+        </el-table-column>
+        <el-table-column prop="multipleResult" label="获得倍率"  width="150px">
+          <template slot-scope="scope">{{ scope.row.multipleResult/100 }}</template>
+        </el-table-column>
+        <el-table-column prop="moneyChange" label="输赢"  width="150px">
+          <template slot-scope="scope">{{ scope.row.moneyChange }}</template>
+        </el-table-column>
+      </el-table>
+    -->
+    </el-dialog>
+
     <el-dialog title="TeenPatti详情" :visible.sync="ZJHDetailVisible" width="1600px">
       <div style=" font-size:14px; line-height: 36px; height: 50px; color:red; ">
         <span style="float:left;">{{ '底分:' + ZJHDetail.antes/1000 }}</span>
@@ -3839,6 +3879,9 @@ export default {
 
       LimboDetail:{},
       LimboDetailVisible:false,
+
+      ChickenGoDetail:{},
+      ChickenGoDetailVisible:false,
 
       pusoyDetail: {},
       pusoyDetailVisible: false,
@@ -4426,6 +4469,8 @@ export default {
             $this.showBuracoGame(obj)
           } else if (gid === 136){
             $this.showLimboGame(obj)
+          } else if (gid === 138){
+            $this.showChickenGoGame(obj)
           } else {
             $this.showSmallGame(obj)
           }
@@ -4616,6 +4661,22 @@ export default {
       this.LimboDetail.players = []
       this.LimboDetail.players.push(obj.player)
       this.LimboDetailVisible = true
+    },
+    showChickenGoGame(obj){
+      //this.ChickenGoDetail.players = []
+      //this.ChickenGoDetail.players.push(obj.player)
+      this.ChickenGoDetail = obj.player
+      this.ChickenGoDetailVisible = true
+    },
+    geChickenGoLevel(lv){
+      const lvMap = {
+        0: 'null',
+        1: 'Easy',
+        2: 'Medium',
+        3: 'Hard',
+        4: 'Expert'
+      }
+      return lvMap[lv]
     },
     showFilipinoMahjongGame(obj, log) {
       this.FilipinoMahjongDetail = log// obj
@@ -5678,6 +5739,19 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
         }
       }
       if (row.typ == '2') {
+        return {
+          color: '#9205a6'
+        }
+      }
+    },
+    changColorGoldMaster({ row }) {
+      const typ = this.parseKnockExt(row.knockExt).typ
+      if (typ == '1') {
+        return {
+          color: 'red'
+        }
+      }
+      if (typ == '2') {
         return {
           color: '#9205a6'
         }
