@@ -59,7 +59,14 @@
         </div>
         <div class="form-item-item">
           数量：
-          <el-input v-model.number="form.PropDetails.prop_num" type="number" placeholder="请输入道具数量" style="width: calc(100% - 80px);" @input="form.PropDetails.prop_num = form.PropDetails.prop_num < 0 ? 0 : form.PropDetails.prop_num" />
+          <el-input
+            v-model.number="form.PropDetails.prop_num"
+            type="number"
+            placeholder="请输入道具数量"
+            style="width: calc(100% - 80px);"
+            :disabled="[7,8,9].includes(itemType)"
+            @input="form.PropDetails.prop_num = form.PropDetails.prop_num < 0 ? 0 : form.PropDetails.prop_num"
+          />
         </div>
         <div class="form-item-item" v-if="checkPropNeedExpireDays(itemType)" >
           过期天数：
@@ -89,6 +96,7 @@
 import { ITEM_TYPE_OPTIONS, APPID_OPTIONS, ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS } from '@/utils/options'
 import request from '@/utils/request'
 import { Message } from 'element-ui'
+import {GetMatchTicketRightsIdList} from "@/utils/prop";
 export default {
   props: {
     title: {
@@ -118,7 +126,8 @@ export default {
           prop_name: '', // 道具名称
           prop_num: 1,
           prop_expire_days: 1, // 过期天数
-          gids: []
+          gids: [],
+          prop_scene_id:0,   // 道具发放场景ID
         },
         Remark: '',
         SendDetails: {
@@ -384,7 +393,11 @@ export default {
       this.form.PropDetails.prop_name = ''
       this.form.PropDetails.prop_num = 1
       this.form.PropDetails.prop_expire_days = 1
-      const filteredItems = this.itemList.filter(item => item.item_type === value)
+      let filteredItems = this.itemList.filter(item => item.item_type === value)
+      if(this.isNewTicketProp(value)){
+        let tickets = GetMatchTicketRightsIdList(value).map(ticket => ticket.ticketId);
+        filteredItems = filteredItems.filter(item => tickets.includes(item.id));
+      }
       console.log('筛选后的道具列表', filteredItems)
       this.updateItemOption(filteredItems)
       console.log('道具下拉框选项', this.itemOptions)
@@ -404,6 +417,10 @@ export default {
       }
     },
     handleItemChange(val) {
+      //新版本门票默认值1
+      if(this.isNewTicketProp(this.itemType)){
+        this.form.PropDetails.prop_num = 1
+      }
       this.checkShowFreeSpinGame()
     },
     checkShowFreeSpinGame() {
@@ -442,6 +459,16 @@ export default {
       const selectedItem = this.itemList.find(item => item.id === this.form.PropDetails.prop_id)
       // 获取道具名称
       params.PropDetails.prop_name = selectedItem.item_name
+      //判断发放的是否是新版比赛门票 道具，若是则获取对应的比赛门票权益id
+
+      if (this.isNewTicketProp(selectedItem.item_type)) {
+        const matchTicketRightsIdList = GetMatchTicketRightsIdList(selectedItem.item_type);
+        const matchedTicket = matchTicketRightsIdList.find(ticket => ticket.ticketId === selectedItem.id);
+        if (matchedTicket) {
+          params.PropDetails.prop_scene_id = matchedTicket.sceneId;
+        }
+      }
+      // 将粘贴id转换成数组格式
       // 将PropDetails和SendDetails转成字符串格式
       params.PropDetails = JSON.stringify(params.PropDetails)
       params.SendDetails = JSON.stringify(params.SendDetails)

@@ -1189,7 +1189,11 @@ export default {
       console.log(postData)
       return postData
     },
-    checkData() {
+    checkData(postData) {
+      if(postData.SignupFee > 0 && postData.OpenDaysLimit > 0) {
+        Message.error('付费赛不能开启每日限制')
+        return false
+      }
       // if (this.edit.item.CarryLower > this.edit.item.CarryUpper) {
       //   Message.warning('下限不能大于上限，请检查数值正确性！')
       //   return false
@@ -1208,6 +1212,9 @@ export default {
     save() {
       if (this.checkPropsExpire(this.getPostData())) {
         Message.error('门票配置错误')
+        return
+      }
+      if (!this.checkData(this.getPostData())) {
         return
       }
       if (this.edit.isEdit) {
@@ -1336,15 +1343,10 @@ export default {
               if(objs.list[i].status ===1 && ((objs.list[i].item_type===PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET && objs.list[i].expire_time>timestamp) ||
                  [PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW,PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR].includes(objs.list[i].item_type) )) { //类型参考 PROP_TYPE_OPTIONS定义
                 if (IsNewTicketProp(objs.list[i].item_type)) {
-                  const tickets = GetMatchTicketRightsIdList(objs.list[i].item_type)
-                  console.log("tickets",tickets)
-
-                  for (let j = 0; j < tickets.length; j++) {
-                    if (objs.list[i].id === tickets[j].ticketId) {
-                      canPush = true
-                      sceneId = tickets[j].sceneId
-                      break
-                    }
+                  const tickets = GetMatchTicketRightsIdList(objs.list[i].item_type).find(ticket => ticket.ticketId === objs.list[i].id)
+                  if(tickets){
+                    canPush = true
+                    sceneId = tickets[j].sceneId
                   }
                 }else{
                   canPush = true
