@@ -3026,6 +3026,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_limbo',
             meta: { title: 'L imbo ◐', gid: 136 }
+          },
+          {
+            path: 'playlog_chickengo',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_chickengo',
+            meta: { title: 'C hicken Go ◐', gid: 138 }
           }
 
           /*

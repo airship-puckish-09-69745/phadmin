@@ -274,6 +274,59 @@
                 </el-table>
               </fieldset>
 
+              <!--机器人下注倍率-->
+              <fieldset style="margin-top:10px" v-if="!IsPHAuditEnv()">
+                <legend>机器人下注倍率</legend>
+                <el-col :span="24" :offset="5">
+                  <el-form :inline="true">
+                    <el-col :span="8">
+                      <el-form-item label="随机范围:" style="display: flex; align-items: center">
+                        <el-input v-model="item.RobotBetCfg.BetMultipleMin" size="mini" style="width: 100px"></el-input>
+                        <span style="margin: 0 10px">~</span> <!-- 替换第二个 label -->
+                        <el-input v-model="item.RobotBetCfg.BetMultipleMax" size="mini" style="width: 100px"></el-input>
+                        <span>X</span> <!-- 统一处理单位 -->
+                      </el-form-item>
+                    </el-col>                    
+                  </el-form>
+                </el-col>
+
+                <el-table
+                  ref="filterTable"
+                  :data="item.RobotBetCfg.Rule"
+                  border
+                  :header-cell-style="libShow.DefaultTableHeadClass"
+                  :row-style="{height:'10px'}"
+                  :cell-style="libShow.DefaultTableCell"
+                  style="width: 100%"
+                >
+                  <el-table-column label="保留整数位数规则" width="150px">
+                    <template slot-scope="scope">
+                      {{ getRobotBetInteger(scope.$index) }}
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column label="权重">
+                      <template slot-scope="scope">
+                        <el-input v-model.number="item.RobotBetCfg.Rule[scope.$index].Integer" size="mini" ></el-input>
+                      </template>
+                  </el-table-column>
+                  
+                  <el-table-column label="保留小数位数规则" width="150px">
+                    <template slot-scope="scope">
+                      {{ getRobotBetDecimal(scope.$index) }}
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column label="权重">
+                      <template slot-scope="scope">
+                        <el-input v-model.number="item.RobotBetCfg.Rule[scope.$index].Decimal" size="mini" ></el-input>
+                      </template>
+                  </el-table-column>
+
+                </el-table>
+              </fieldset>
+
+              <!--重摇-->
               <fieldset  v-if="!IsPHAuditEnv()">
                 <legend>小奖池触发重摇</legend>
                 <el-row>
@@ -371,6 +424,7 @@ export default {
         BonusCfg:[], //bonus配置
         FlyDelay:[], //飞行延迟配置
         RobotCfg:[], //机器人配置
+        RobotBetCfg:{},
         ReChoiceCfg:{},
       },
       form: {},
@@ -438,6 +492,13 @@ export default {
               item["Card"] = "0"
               item["openTest"] = "1"
             }
+            if (!item.RobotBetCfg){
+              item.RobotBetCfg = {
+                BetMultipleMin:200,
+                BetMultipleMax:20000,
+                Rule:[{Integer: 60, Decimal: 60},{Integer: 30, Decimal: 30},{Integer: 10, Decimal: 10}]
+              }
+            }
 
             Object.assign(this.item, item)
 
@@ -450,6 +511,8 @@ export default {
             item.RobotCarryMax /= 1000
             item.ReChoiceCfg.LowLotteryPoolReChoice /= 1000
             item.ReChoiceCfg.HighLotteryPoolReChoice /= 1000
+            item.RobotBetCfg.BetMultipleMin /=  100
+            item.RobotBetCfg.BetMultipleMax /=  100
 
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data)
@@ -462,7 +525,6 @@ export default {
     },
     getPostData() {
       const ret = JSON.parse(JSON.stringify(this.item))
-      console.log("上传====>",ret)
 
       //下注配置
       for (const i in this.item.BetMoneyLevel) {
@@ -490,12 +552,16 @@ export default {
       ret.RobotCarryMax *= 1000
       ret.ReChoiceCfg.LowLotteryPoolReChoice *= 1000
       ret.ReChoiceCfg.HighLotteryPoolReChoice *= 1000
+      ret.RobotBetCfg.BetMultipleMin *= 100
+      ret.RobotBetCfg.BetMultipleMax *= 100
 
       //测试
       if (!ret.openTest || ret.openTest=="1"){
         delete ret['Card']
       }
-     
+
+      console.log("上传====>",ret)
+
       return ret
     },
 
@@ -561,6 +627,24 @@ export default {
     },
     delRobotCfg(index) {
       this.item.RobotCfg.splice(index, 1)
+    },
+
+    //保留规则
+    getRobotBetInteger(idx) {
+      const dMap = {
+        0: '百位',
+        1: '十位',
+        2: '个位'
+      }
+      return dMap[idx]
+    },    
+    getRobotBetDecimal(idx) {
+      const dMap = {
+        0: '0位',
+        1: '1位',
+        2: '2位'
+      }
+      return dMap[idx]
     },
 
     //落库
