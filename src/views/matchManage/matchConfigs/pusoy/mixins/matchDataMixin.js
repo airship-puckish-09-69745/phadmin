@@ -239,25 +239,20 @@ export const matchDataMixin = {
                 if (item.status === 1 &&
                     ((item.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET && item.expire_time > timestamp) ||
                      item.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME || item.item_type=== PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW)) {
-                      
+
                   const showName = item.show_name ? `${item.item_name}(${item.show_name})` : item.item_name
-                  console.log("propsTypeList 00",propsTypeList)
                   if (IsNewTicketProp(item.item_type)) {
-                    console.log("propsTypeList",propsTypeList)
-                    const tickets = GetMatchTicketRightsIdList(item.item_type)
-                    console.log("tickets",tickets)
-                    for (let j = 0; j < tickets.length; j++) {
-                      if (item.id === tickets[j].ticketId) {
-                        canPush = true
-                        sceneId = tickets[j].sceneId
-                        break
-                      }
+                    const tickets = GetMatchTicketRightsIdList(item.item_type).find(ticket => ticket.ticketId === item.id)
+                    //console.log("tickets",tickets)
+                    if(tickets){
+                      canPush = true
+                      sceneId = tickets.sceneId
                     }
                   }else{
                     canPush = true
                   }
                   if (canPush) {
-                    this.configs.matchPropsCfgs.push({ 
+                    this.configs.matchPropsCfgs.push({
                       propsType: item.item_type,
                       propsId: item.id,
                       propsName: item.item_name,

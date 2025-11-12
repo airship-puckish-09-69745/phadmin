@@ -65,7 +65,6 @@
                       <el-input v-model.number="item.RewardMulMax" size="mini" ><template  slot="append">X</template></el-input>
                     </el-form-item>
                   </el-col>
-                  
                 </el-form>
               </el-col>
               
@@ -188,30 +187,22 @@
               <!--机器人配置-->
               <fieldset style="margin-top:10px" v-if="!IsPHAuditEnv()">
                 <legend>机器人配置</legend>
+
                 <el-col :span="24" :offset="5">
                   <el-form :inline="true">
                     <el-col :span="8">
-                      <el-form-item label="机器人携带Bet下限:">
-                        <el-input v-model.number="item.RobotCarryMin" size="mini" ></el-input>
-                      </el-form-item>
-                    </el-col>
-                    <el-col :span="8">
-                      <el-form-item label="机器人携带Bet上限:">
-                        <el-input v-model.number="item.RobotCarryMax" size="mini" ></el-input>
+                      <el-form-item label="机器人携带Bet:" style="display: flex; align-items: center">
+                        <el-input v-model="item.RobotCarryMin" size="mini" style="width: 100px"></el-input>
+                        <span style="margin: 0 10px">~</span>
+                        <el-input v-model="item.RobotCarryMax" size="mini" style="width: 100px"></el-input>
                       </el-form-item>
                     </el-col>                    
-                  </el-form>
-                </el-col>
-                <el-col :span="24" :offset="5">
-                  <el-form :inline="true">
+                  
                     <el-col :span="8">
-                      <el-form-item label="机器人最小人数:">
-                        <el-input v-model.number="item.RobotCountMin" size="mini" ></el-input>
-                      </el-form-item>
-                    </el-col>
-                    <el-col :span="8">
-                      <el-form-item label="机器人最大人数:">
-                        <el-input v-model.number="item.RobotCountMax" size="mini" ></el-input>
+                      <el-form-item label="机器人人数:" style="display: flex; align-items: center">
+                        <el-input v-model="item.RobotCountMin" size="mini" style="width: 100px"></el-input>
+                        <span style="margin: 0 10px">~</span>
+                        <el-input v-model="item.RobotCountMax" size="mini" style="width: 100px"></el-input>
                       </el-form-item>
                     </el-col>                    
                   </el-form>

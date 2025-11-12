@@ -2229,14 +2229,11 @@ export default {
                     str = str + '(' + objs.list[i].show_name + ')'
                   }
                   if (IsNewTicketProp(objs.list[i].item_type)) {
-                    const tickets = GetMatchTicketRightsIdList(objs.list[i].item_type)
-                    console.log("tickets",tickets)
-                    for (let j = 0; j < tickets.length; j++) {
-                      if (objs.list[i].id === tickets[j].ticketId) {
-                        canPush = true
-                        sceneId = tickets[j].sceneId
-                        break
-                      }
+                    let tickets = GetMatchTicketRightsIdList(objs.list[i].item_type).find(ticket => ticket.ticketId === objs.list[i].id)
+                   // console.log("tickets",tickets)
+                    if(tickets) {
+                      canPush = true
+                      sceneId = tickets.sceneId
                     }
                   }else{
                     canPush = true
