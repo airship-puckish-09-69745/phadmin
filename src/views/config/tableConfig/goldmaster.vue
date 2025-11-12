@@ -480,7 +480,7 @@
                 </el-table-column>
               </el-table>
               <piggy-weight-cfg :piggy-cfg=" itemBase.RobotCfg.Bets" weight-name="权重" val-name="下注额度" val-type="1" title="下注额度" />
-              <piggy-weight-cfg :piggy-cfg=" itemBase.RobotCfg.OddsRet" weight-name="权重" val-type="2" title="返奖倍数max最大支持999999" />
+              <piggy-weight-cfg :piggy-cfg=" itemBase.RobotCfg.OddsRet" weight-name="权重" val-type="2" title="返奖倍数max最大只支持999999" />
               <el-row>
                 <el-col :span="7" :offset="3">
                   <el-form inline>
@@ -1058,6 +1058,16 @@ export default {
     },
 
     checkDataBase(obj) {
+      for (const o of obj.RobotCfg.OddsRet) {
+        if (o.ValMin - o.ValMax > 0) {
+          Message.error('机器人.返奖倍数 min>max')
+          return false
+        }
+        if (o.ValMax > 999999) {
+          Message.error('机器人.返奖倍数 max最大只支持999999')
+          return false
+        }
+      }
       return true
     },
 
