@@ -631,8 +631,8 @@ function newItem() {
     EggShellReturnRatio: 10,
     DayPrizeThreshold: 0,
     RewardCfg:{
-      RewardType: 1,
-      UseSceneId: 0,
+      RewardType: 2,
+      UseSceneId: 7,
       BigPrizeReward: 88888,
       Achievements: newAchievements()
     },
