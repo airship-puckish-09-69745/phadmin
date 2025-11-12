@@ -985,7 +985,7 @@ export default {
     },
     clickData(row, column, event) {
       if (column.label !== 'Uid' && column.label !== '详情') {
-        this.getDetail(row.LogID, row.FinishTime)
+        this.getDetail(row.LogID, row.FinishTime,row.Uid)
       }
     },
     clickData2(row) {
@@ -993,7 +993,7 @@ export default {
       if (!this.clickedRowsID.includes(row.ID)) {
         this.clickedRowsID.push(row.ID)
       }
-      this.getDetail(row.LogID, row.FinishTime)
+      this.getDetail(row.LogID, row.FinishTime,row.Uid)
     },
 
     async getRobotMap() {
@@ -1024,7 +1024,7 @@ export default {
         })
       }
     },
-    getDetail(id, dt) {
+    getDetail(id, dt,uid) {
       const $this = this
 
       request({
@@ -1034,7 +1034,8 @@ export default {
           Env: this.env,
           Path: '/log/detail',
           ID: id,
-          DateTime: dt
+          DateTime: dt,
+          Uid: uid
         }
       }).then(response => {
         if (response.RetCode === 0) {
