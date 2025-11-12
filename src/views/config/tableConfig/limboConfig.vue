@@ -240,9 +240,21 @@
                   :cell-style="libShow.DefaultTableCell"
                   style="width: 100%"
                 >
-                  <el-table-column label="中奖类型" width="280px">
+                  <el-table-column label="中奖类型" width="200px">
                     <template slot-scope="scope">
                       <el-input v-model="item.RobotCfg[scope.$index].RewardType" size="mini" ><template  slot="append">X</template></el-input>
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column label="下注区间：【下限" width="200px">
+                    <template slot-scope="scope">
+                      <el-input v-model="item.RobotCfg[scope.$index].Bet[0]" size="mini" ></el-input>
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column label="上限】" width="200px">
+                    <template slot-scope="scope">
+                      <el-input v-model="item.RobotCfg[scope.$index].Bet[1]" size="mini" ></el-input>
                     </template>
                   </el-table-column>
 
@@ -313,13 +325,13 @@
                   </el-table-column>
                   
                   <el-table-column label="保留小数位数规则" width="150px">
-                    <template slot-scope="scope">
+                    <template slot-scope="scope" v-if="scope.$index == 0 || scope.$index == 1 || scope.$index == 2">
                       {{ getRobotBetDecimal(scope.$index) }}
                     </template>
                   </el-table-column>
 
                   <el-table-column label="权重">
-                      <template slot-scope="scope">
+                      <template slot-scope="scope" v-if="scope.$index == 0 || scope.$index == 1 || scope.$index == 2">
                         <el-input v-model.number="item.RobotBetCfg.Rule[scope.$index].Decimal" size="mini" ></el-input>
                       </template>
                   </el-table-column>
@@ -462,6 +474,9 @@ export default {
       }
       for (const i in that.item.RobotCfg) {
         that.item.RobotCfg[i].RewardType /= 100
+        for (const j in that.item.RobotCfg[i].Bet) {
+          that.item.RobotCfg[i].Bet[j] /= 100
+        }
       }
     },
     getData() {
@@ -486,7 +501,7 @@ export default {
             }
             if (!item.RobotCfg){
               item['RobotCfg'] = []
-              item.RobotCfg.push({ Id: 0, RewardType: 1, Rate: [1, 1]})
+              item.RobotCfg.push({ Id: 0, RewardType: 1, Bet: [200, 20000], Rate: [1, 1]})
             }
 
             if (!item.Card){
@@ -544,6 +559,9 @@ export default {
       }
       for (const i in this.item.RobotCfg) {
         ret.RobotCfg[i].RewardType *= 100
+        for (const j in ret.RobotCfg[i].Bet) {
+          ret.RobotCfg[i].Bet[j] *= 100
+        }
       }
 
       ret.MaxBet *= 1000
@@ -624,7 +642,7 @@ export default {
           maxId = o.Id
         }
       }
-      this.item.RobotCfg.push({ Id: maxId + 1, RewardType: 100, Rate: [1, 1]})
+      this.item.RobotCfg.push({ Id: maxId + 1, RewardType: 100, Bet: [200, 20000], Rate: [1, 1]})
     },
     delRobotCfg(index) {
       this.item.RobotCfg.splice(index, 1)
@@ -633,9 +651,10 @@ export default {
     //保留规则
     getRobotBetInteger(idx) {
       const dMap = {
-        0: '百位',
-        1: '十位',
-        2: '个位'
+        0: '千位',
+        1: '百位',
+        2: '十位',
+        3: '个位'
       }
       return dMap[idx]
     },    
@@ -643,7 +662,8 @@ export default {
       const dMap = {
         0: '0位',
         1: '1位',
-        2: '2位'
+        2: '2位',
+        3: '-'
       }
       return dMap[idx]
     },
