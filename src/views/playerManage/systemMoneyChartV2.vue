@@ -372,6 +372,7 @@ export default {
         48: '9 Ball Plus',
         105: 'Andar Bahar',
         106: 'PIGGY TAP',
+        500: 'Gold Master',
         107: 'Baccarat',
         108: 'Dropball',
         110: 'VideoPoker',
@@ -446,7 +447,7 @@ export default {
       userVisible: false,
       users: [],
       // 糖果传奇调用addGameNames特殊处理
-      defaultOrder: [10000, 15, 22, 28, 29, 2031, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103, 104, 105, 106, 111, 6, 32, 2032,
+      defaultOrder: [10000, 15, 22, 28, 29, 2031, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103, 104, 105, 106,500, 111, 6, 32, 2032,
         35, 37, 107, 108, 110, 112, 115, 46, 47, 48, 49, 113, 118, 123, 117, 116, 126, 127, 128, 129, 132, 134, 135, 136, 138], // 糖果传奇调用addGameNames特殊处理
       selectType: 1,
 
