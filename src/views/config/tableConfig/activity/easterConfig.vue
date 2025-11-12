@@ -129,7 +129,7 @@
               </el-col>
               <el-col :span="12">
                 <el-form-item label="发放奖励类型：" :required="true">
-                  <el-select v-model="edit.item.RewardCfg.RewardType" placeholder="请选择" style="width:90px">
+                  <el-select v-model="edit.item.RewardCfg.RewardType" placeholder="请选择" style="width:90px" disabled>
                     <el-option
                       v-for="item in rewardTypes"
                       :key="item.value"
@@ -137,7 +137,7 @@
                       :value="item.value"
                     />
                   </el-select>
-                  <el-select v-if="edit.item.RewardCfg.RewardType === 2" v-model="edit.item.RewardCfg.UseSceneId" placeholder="请选择投注金" style="width:150px">
+                  <el-select v-if="edit.item.RewardCfg.RewardType === 2" v-model="edit.item.RewardCfg.UseSceneId" placeholder="请选择投注金" style="width:150px" disabled>
                     <el-option
                       v-for="scene in betScenes"
                       :key="scene.value"
