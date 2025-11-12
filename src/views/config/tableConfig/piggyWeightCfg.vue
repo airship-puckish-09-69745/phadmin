@@ -128,13 +128,13 @@ export default {
     valNameMin: {
       type: String,
       default: function() {
-        return 'min'
+        return '[min'
       }
     },
     valNameMax: {
       type: String,
       default: function() {
-        return 'max'
+        return 'max]'
       }
     },
     valType: {
