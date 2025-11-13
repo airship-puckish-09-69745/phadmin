@@ -318,7 +318,7 @@ export default {
         FacesSitDownCfg:{},
         GoodsReplyCfg:{},
       },
-      lv:['互动表情(被动)','互动表情(主动)','互动道具(被动)'],
+      lv:['互动表情(被动)','互动表情(入座主动)','互动道具(被动)'],
       form: {},
       subKey: 'tongitsjp_ai_face_cfg',
       libShow: $libShow,
