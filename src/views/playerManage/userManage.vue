@@ -1837,12 +1837,15 @@ export default {
             //如果是新版门票道具 需要确认所配置的门票是否关联到 权益场景ID 参考 props.js MATCH_TICKET_RIGHTS_ID_CFG_DEV
             if (this.isNewTicketProp(itemType)) {
               const tickets = GetMatchTicketRightsIdList(itemType).map(item => item.ticketId)
+              console.log("tickets: ",tickets)
+              console.log("this.tableData[i].id: ",this.tableData[i].id)
               if (tickets.includes(this.tableData[i].id)) {
                 this.tableItemData.push({'value': Number(this.tableData[i].id), 'label': str, disabled: false})
               }
             } else {
               this.tableItemData.push({'value': Number(this.tableData[i].id), 'label': str, disabled: false})
             }
+            console.log("this.tableItemData ",this.tableItemData)
           }
         }
       }
