@@ -40,14 +40,14 @@ export const MATCH_TICKET_RIGHTS_ID_CFG_DEV = {
 //uat 线上配置
 export const MATCH_TICKET_RIGHTS_ID_CFG_PROD = {
   7: [ // PROP_TYPE_TICKET_NEW
-    { 'ticketId': 331, 'sceneId': 200, 'label': 'Tongits新版门票 带唯一ID-332' },
-    { 'ticketId': 334, 'sceneId': 201, 'label': 'Tongits新版TICKET-334' }
+    { 'ticketId': 322, 'sceneId': 200, 'label': 'Tongits新版门票 带唯一ID-322' },
+   // { 'ticketId': 334, 'sceneId': 201, 'label': 'Tongits新版TICKET-334' }
   ],
   8: [ // PROP_TYPE_TEXAS_TICKET_NEW
-    { 'ticketId': 372, 'sceneId': 200, 'label': 'Texas测试新版德州门票带唯一ID-372' },
+    //{ 'ticketId': 372, 'sceneId': 200, 'label': 'Texas测试新版德州门票带唯一ID-372' },
   ],
   9: [ // PROP_TYPE_PUSOY_TICKET_NEW
-    { 'ticketId': 374, 'sceneId': 200, 'label': 'Pusoy新版门票 带唯一ID-374' },
+    //{ 'ticketId': 374, 'sceneId': 200, 'label': 'Pusoy新版门票 带唯一ID-374' },
   ]
 }
 
