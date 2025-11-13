@@ -161,6 +161,7 @@ export const MATCH_PUSOY_UNIQUE_ID_CFG =[
   { 'value': 20009, 'label': 'P60' },
   { 'value': 20010, 'label': 'P150' },
   { 'value': 20011, 'label': 'P400' },
+  { 'value': 20012, 'label': '6000Free' },
 ]
 
 //牌桌TableId
