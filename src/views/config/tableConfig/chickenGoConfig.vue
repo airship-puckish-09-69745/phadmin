@@ -383,6 +383,7 @@ export default {
 
       ret.ReChoiceCfg.LowLotteryPoolReChoice *= 1000
       ret.ReChoiceCfg.HighLotteryPoolReChoice *= 1000
+      ret.AutoDropTimer *= 1
 
       //测试
       if (!ret.openTest || ret.openTest=="1"){
