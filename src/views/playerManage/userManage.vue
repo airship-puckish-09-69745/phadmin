@@ -205,7 +205,7 @@
             </el-col>
             <el-col :span="1" :offset="1"> {{ '数量:' }} </el-col>
             <el-col :span="2">
-              <el-input v-model.number="item.ItemNum" size="mini" type="number" min="0" @input="item.ItemNum = item.ItemNum < 0 ? 0 : item.ItemNum" />
+              <el-input v-model.number="item.ItemNum" size="mini" type="number" min="0" :disabled="isNewTicketProp(item.ItemType)"  @input="item.ItemNum = item.ItemNum < 0 ? 0 : item.ItemNum" />
             </el-col>
             <el-col v-show="(item.ItemType === 2 || item.ItemType === 4 || item.ItemType === 5 ||[7,8,9].includes(item.ItemType))&&!isNegativeItemNum" :span="1" :offset="1"> {{ '时间:' }} </el-col>
             <el-col v-show="(item.ItemType === 2 ||item.ItemType === 4 || item.ItemType === 5 ||[7,8,9].includes(item.ItemType)) && !isNegativeItemNum" :span="2">
@@ -1814,6 +1814,7 @@ export default {
       this.$set(this.item, 'ItemCfgId', null) // 使用 $set 确保响应式更新
       this.propFrom.ItemUuId = ''
       let itemType = 0
+      // this.item.ItemNum = 0 // 移除此行，避免影響輸入框的值
       const currTime = new Date().getTime()
       for (let i = 0; i < this.tableData.length; i++) {
         let str = this.tableData[i].item_name
@@ -1835,16 +1836,16 @@ export default {
           } else {
             //如果是新版门票道具 需要确认所配置的门票是否关联到 权益场景ID 参考 props.js MATCH_TICKET_RIGHTS_ID_CFG_DEV
             if (this.isNewTicketProp(itemType)) {
-              const tickets = GetMatchTicketRightsIdList(itemType)
-              for (let j = 0; j < tickets.length; j++) {
-                  if (this.tableData[i].id === tickets[j].ticketId) {
-                    this.tableItemData.push({'value': Number(this.tableData[i].id), 'label': str, disabled: false})
-                    break
-                  }
-                }
+              const tickets = GetMatchTicketRightsIdList(itemType).map(item => item.ticketId)
+              console.log("tickets: ",tickets)
+              console.log("this.tableData[i].id: ",this.tableData[i].id)
+              if (tickets.includes(this.tableData[i].id)) {
+                this.tableItemData.push({'value': Number(this.tableData[i].id), 'label': str, disabled: false})
+              }
             } else {
               this.tableItemData.push({'value': Number(this.tableData[i].id), 'label': str, disabled: false})
             }
+            console.log("this.tableItemData ",this.tableItemData)
           }
         }
       }
@@ -1867,6 +1868,9 @@ export default {
       this.tablePropUuIdData = [] // 清空UUID选项列表
       this.ShowItemUUIDDetail(val) // 如果需要立即加载新的UUID列表
       this.checkShowFreeSpinGame()
+      if (this.isNewTicketProp(this.item.ItemType)) {
+        this.item.ItemNum = 1
+      }
     },
     // 展示道具的子属性UUID
     ShowItemUUIDDetail(itemId) {

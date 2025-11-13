@@ -898,6 +898,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/tongitsjackPotEGameControl'),
                 name: 'tongitsjackPotEGameControl',
                 meta: { title: 'EGame控制配置 ◐' }
+              },
+              {
+                path: 'tongitsJackPotAIFace',
+                component: () => import('@/views/config/tableConfig/tongitsJackPotAIFaceConfig'),
+                name: 'tongitsJackPotAIFace',
+                meta: { title: 'JackPotJP AI表情 ◐' }
               }
               //  ]
               // }
@@ -1068,6 +1074,12 @@ export const asyncRoutes = [
             meta: { title: 'D ropball ◐' }
           },
           {
+            path: 'GoldMaster',
+            component: () => import('@/views/config/tableConfig/goldmaster'),
+            name: 'GoldMaster',
+            meta: { title: 'G oldMaster◐' }
+          },
+          {
             path: 'hilo_cfg',
             component: () => import('@/views/config/tableConfig/minigames/hilo'),
             name: 'hilo_cfg',
@@ -1188,7 +1200,7 @@ export const asyncRoutes = [
             name: 'pirateScratch_cfg',
             meta: { title: 'Pirate Scratch ◐' }
           },
-          
+
         ]
       },
       {
@@ -1401,6 +1413,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/majorace_slots_cfg'),
                 name: 'majorace_slots_cfg',
                 meta: { title: 'M ajorAce' }
+              },
+              {
+                path: 'mannypacquiao_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/mannypacquiao_slots_cfg'),
+                name: 'mannypacquiao_slots_cfg',
+                meta: { title: 'M annyPacquiao' }
               },
               {
                 path: 'mayantotem_slots_cfg',
@@ -2925,6 +2943,12 @@ export const asyncRoutes = [
             meta: { title: 'D ropBall ◐', gid: 108 }
           },
           {
+            path: 'playlog_goldmaster',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_goldmaster',
+            meta: { title: 'G oldMaster ◐', gid: 500 }
+          },
+          {
             path: 'playlog_hilo',
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_hilo',
@@ -3014,6 +3038,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_limbo',
             meta: { title: 'L imbo ◐', gid: 136 }
+          },
+          {
+            path: 'playlog_chickengo',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_chickengo',
+            meta: { title: 'C hicken Go ◐', gid: 138 }
           }
 
           /*
@@ -3229,12 +3259,6 @@ export const asyncRoutes = [
             meta: { title: 'L ucky777', gid: 88 }
           },
           {
-            path: 'majorace_slots_log',
-            component: () => import('@/views/playerManage/slotsLog'),
-            name: 'majorace_slots_log',
-            meta: { title: 'M ajorAce', gid: 162 }
-          },
-          {
             path: 'mafiamayhem_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'mafiamayhem_slots_log',
@@ -3252,7 +3276,18 @@ export const asyncRoutes = [
             name: 'mayantotem_slots_log',
             meta: { title: 'M ayanTotem', gid: 178 }
           },
-
+          {
+            path: 'majorace_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'majorace_slots_log',
+            meta: { title: 'M ajorAce', gid: 162 }
+          },
+          {
+            path: 'mannypacquiao_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'mannypacquiao_slots_log',
+            meta: { title: 'M annyPacquiao', gid: 236 }
+          },
           {
             path: 'mahjongjackpot_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),

@@ -4,18 +4,6 @@
       <el-col :span="12" :offset="3">
         <el-form ref="frm2" :model="cfg" label-width="230px">
 
-          <el-form-item label="普通模式Lion替换权重">
-            <el-input v-model="cfg.LionFunctionWeight" placeholder="请输入内容,如2,1"> <template slot="append">用 , 连接(空白、钱币和Lion)</template> </el-input>
-          </el-form-item>
-
-          <el-form-item label="钱币数量权重">
-            <el-input v-model="cfg.CoinCountWeight" placeholder="请输入内容,如2,1"> <template slot="append">用 , 连接</template> </el-input>
-          </el-form-item>
-
-          <el-form-item label="钱币图案权重">
-            <el-input v-model="cfg.CoinSymbolWeight" placeholder="请输入内容,如2,1"> <template slot="append">用 , 连接(从符号标识1开始)</template> </el-input>
-          </el-form-item>
-
           <el-form-item label="免费模式购买倍数">
             <el-input v-model.number="cfg.BuyFreeOdds" placeholder="请输入内容" />
           </el-form-item>
@@ -53,6 +41,31 @@
               <el-table-column label="操作" width="120" header-align="center">
                 <template slot-scope="scope">
                   <el-button type="danger" @click="removeCoinOddsRow(scope.$index)">删除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-tab-pane>
+           <el-tab-pane label="Bonus倍数" name="script1">
+            <el-button type="primary" @click="addBonusOdds">添加配置</el-button>
+            <el-table :data="cfg.BonusOdds">
+              <el-table-column prop="MinOdds" label="最小倍数" width="220">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.MinOdds" :required="true"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column prop="MaxOdds" label="最大倍数" width="220">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.MaxOdds" :required="true"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column prop="InWeight" label="权重" width="220">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.InWeight" :required="true"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column label="操作" width="120" header-align="center">
+                <template slot-scope="scope">
+                  <el-button type="danger" @click="removeBonusOddsRow(scope.$index)">删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -179,6 +192,19 @@ export default {
           FreeWeight: item.FreeWeight.split(',').map(Number)
         })
       }
+    },
+    addBonusOdds() {
+      if (this.cfg.BonusOdds === null) {
+        this.cfg.BonusOdds = []
+      }
+      this.cfg.BonusOdds.push({
+        MinOdds: 0,
+        MaxOdds: 0,
+        InWeight: 0
+      })
+    },
+    removeBonusOddsRow(index) {
+      this.cfg.BonusOdds.splice(index, 1)
     }
   }
 }

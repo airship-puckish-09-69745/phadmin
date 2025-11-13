@@ -2223,6 +2223,135 @@
       </el-table>
     </el-dialog>
 
+    <el-dialog v-if="goldmasterLog.visible" title="黄金矿工 详情" :visible.sync="goldmasterLog.visible" width="1400px">
+      <el-descriptions class="margin-top" title="" :column="5" border>
+        <el-descriptions-item>
+          <template slot="label">
+            UID：
+          </template>
+          {{ goldmasterLog.detail.uid }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            总输赢：
+          </template>
+          <span :style="WinOrLoseColor(goldmasterLog.detail.TotalAddMoney )"> {{
+              formatNumber((goldmasterLog.detail.moneyReturn -goldmasterLog.detail.moneyBet) / 1000)
+            }}</span>
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            结算后金额：
+          </template>
+          {{ formatNumber(goldmasterLog.detail.moneyCur / 1000) }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            记录开始时间：
+          </template>
+          {{ formatTime(goldmasterLog.detail.startTime) }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            记录结束时间：
+          </template>
+          {{ formatTime(goldmasterLog.detail.finishTime) }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            付费敲击次数：
+          </template>
+          {{ goldmasterLog.detail.feeTapTimes }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            总下注金额：
+          </template>
+          {{ goldmasterLog.detail.moneyBet / 1000 }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            台费：
+          </template>
+          {{ goldmasterLog.detail.moneyFee / 1000 }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            累计赢钱：
+          </template>
+          {{ formatNumber(goldmasterLog.detail.moneyReturn / 1000) }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            JP贡献：
+          </template>
+          {{ formatNumber(goldmasterLog.detail.jpContribute / 1000) }}
+        </el-descriptions-item>
+      </el-descriptions>
+
+      <el-table :data="goldmasterLog.detail.kLogs" border title="中奖记录" :row-style="changColorGoldMaster">
+        <el-table-column prop="typ" label="奖励类型">
+          <template slot-scope="scope">{{ GoldMasterTypeOptions[parseKnockExt(scope.row.knockExt).typ] }}</template> //todo:
+        </el-table-column>
+        <el-table-column prop="cards" label="敲击时间" width="110px">
+          <template slot-scope="scope"> {{ formatHMSTime(scope.row.logTime / 1000) }}.{{
+              scope.row.logTime % 1000
+            }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="seat" label="消耗金币">
+          <template slot-scope="scope">{{ scope.row.moneyBet / 1000 }}</template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="下注金额">
+          <template slot-scope="scope">{{ scope.row.moneyCalc / 1000 }}</template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="返奖">
+          <template slot-scope="scope">{{ scope.row.moneyReturn / 1000 }}</template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="记录后金额" width="150px">
+          <template slot-scope="scope">{{ formatNumber(scope.row.moneyCur / 1000) }}</template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="jpLevel">
+          <template slot-scope="scope">{{ GoldMasterJackpotLevel[scope.row.jpLevel] }}</template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="jpTyp">
+          <template slot-scope="scope">{{ scope.row.jpType }}</template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="金币倍数">
+          <template slot-scope="scope">{{ parseKnockExt(scope.row.knockExt).moneyOdds / 1000 }}</template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="转盘倍数">
+          <template slot-scope="scope">{{ parseKnockExt(scope.row.knockExt).plateOdds / 1000 }}</template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="转轴倍数">
+          <template slot-scope="scope">
+            {{ showPigData(scope.row.typ, scope.row.moneyBet) ? (parseKnockExt(scope.row.knockExt).spinOdds / 1000) : 0 }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="F次数收益">
+          <template slot-scope="scope">{{
+              showPigData(scope.row.typ, scope.row.moneyBet) ? parseKnockExt(scope.row.knockExt).timesIn : 0
+            }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="N倍数收益">
+          <template slot-scope="scope">{{
+              showPigData(scope.row.typ, scope.row.moneyBet) ? (parseKnockExt(scope.row.knockExt).oddsIn / 1000) : 0
+            }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="剩余免费次数">
+          <template slot-scope="scope">{{
+              showPigData(scope.row.typ, scope.row.moneyBet) ? parseKnockExt(scope.row.knockExt).timesFree : 0
+            }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="Progress">
+          <template slot-scope="scope">{{ parseKnockExt(scope.row.knockExt).progress }}</template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+
     <el-dialog v-if="piggyLog.visible" title="piggy详情" :visible.sync="piggyLog.visible" width="1400px">
       <el-descriptions class="margin-top" title="" :column="5" border>
         <el-descriptions-item>
@@ -3240,6 +3369,46 @@
       </el-table>
     </el-dialog>
 
+    <el-dialog title="ChickenGo详情" :visible.sync="ChickenGoDetailVisible" width="1200px">
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
+        <span style="float:left;">{{ '困难级别:' + geChickenGoLevel(ChickenGoDetail.level) }}</span>
+      </div>
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
+        <span style="float:left;">{{ '下注金额:' + ChickenGoDetail.betMoney }}</span>
+      </div>
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
+        <span style="float:left;">{{ '到达倍率:' + ChickenGoDetail.arriveIn/100 }}</span>
+      </div>
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
+        <span style="float:left;">{{ '获得倍率:' + ChickenGoDetail.multipleResult/100 }}</span>
+      </div>
+      <!--
+      <el-table ref="filterTable" :data="ChickenGoDetail.players" border>
+        <el-table-column prop="level" label="困难级别"  width="150px">
+          <template slot-scope="scope">{{ geChickenGoLevel(scope.row.level) }}</template>
+        </el-table-column>
+        <el-table-column prop="uid" label="uid" width="128px">
+          <template slot-scope="scope">{{ scope.row.uid }}</template>
+        </el-table-column>
+        <el-table-column prop="nick" label="昵称"  width="150px">
+          <template slot-scope="scope">{{ scope.row.nick }}</template>
+        </el-table-column>
+        <el-table-column prop="bet" label="下注金额"  width="150px">
+          <template slot-scope="scope">{{ scope.row.betMoney }}</template>
+        </el-table-column>
+        <el-table-column prop="arriveIn" label="到达倍率"  width="150px">
+          <template slot-scope="scope">{{ scope.row.arriveIn }}</template>
+        </el-table-column>
+        <el-table-column prop="multipleResult" label="获得倍率"  width="150px">
+          <template slot-scope="scope">{{ scope.row.multipleResult/100 }}</template>
+        </el-table-column>
+        <el-table-column prop="moneyChange" label="输赢"  width="150px">
+          <template slot-scope="scope">{{ scope.row.moneyChange }}</template>
+        </el-table-column>
+      </el-table>
+    -->
+    </el-dialog>
+
     <el-dialog title="TeenPatti详情" :visible.sync="ZJHDetailVisible" width="1600px">
       <div style=" font-size:14px; line-height: 36px; height: 50px; color:red; ">
         <span style="float:left;">{{ '底分:' + ZJHDetail.antes/1000 }}</span>
@@ -3711,6 +3880,9 @@ export default {
       LimboDetail:{},
       LimboDetailVisible:false,
 
+      ChickenGoDetail:{},
+      ChickenGoDetailVisible:false,
+
       pusoyDetail: {},
       pusoyDetailVisible: false,
       pusoyCardTypes: {
@@ -3745,6 +3917,10 @@ export default {
         visible: false,
         detail: {}
       },
+      goldmasterLog: {
+        visible: false,
+        detail: {}
+      },
       pusoySwapDetail: {},
       pusoySwapDetailVisible: false,
       pusoySwapShootOneShow: false,
@@ -3765,7 +3941,23 @@ export default {
         11: 'JP发奖',
         20: '购买free game'
       },
+      GoldMasterTypeOptions: {
+        0: 'None',
+        1: '金币',
+        2: '幸运转盘',
+        3: '转轴',
+        4: 'F次数',
+        5: 'N倍数',
+        10: 'JP',
+        20: '购买free game'
+      },
       piggyJackpotLevle: {
+        0: 'None',
+        1: 'Grand',
+        2: 'Major',
+        3: 'Minor'
+      },
+      GoldMasterJackpotLevel: {
         0: 'None',
         1: 'Grand',
         2: 'Major',
@@ -3846,6 +4038,13 @@ export default {
     this.gid = this.$route.meta.gid
   },
   methods: {
+    parseKnockExt(jsonStr) {
+      try {
+        return JSON.parse(jsonStr || '{}');
+      } catch (e) {
+        return {};
+      }
+    },
     pusoyShowGroupExtra(row) {
       if (row.groupBottom.extraScore > 0 || row.groupMiddle.extraScore > 0 || row.groupTop.extraScore > 0) {
         return '(牌型加分)'
@@ -4170,14 +4369,14 @@ export default {
     clickData(row, column, event) {
       if (column.label !== 'Uid') {
         this.setRowUid(row.Uid)
-        this.getDetail(row.LogID, row.FinishTime)
+        this.getDetail(row.LogID, row.Uid, row.FinishTime)
       }
     },
     setRowUid(uid) {
       this.sweeperRowUid = uid
       this.clickRowUid = uid
     },
-    getDetail(id, dt) {
+    getDetail(id, uid, dt) {
       const $this = this
       request({
         url: '/dataProxy/info',
@@ -4186,7 +4385,8 @@ export default {
           Env: this.env,
           Path: '/log/detail',
           ID: id,
-          DateTime: dt
+          DateTime: dt,
+          Uid: uid,
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -4238,6 +4438,8 @@ export default {
             $this.showSolitaire(obj)
           } else if (gid === 106) {
             $this.showPiggy(obj)
+          } else if (gid === 500) {
+            $this.showGoldMaster(obj, uid)
           } else if ($this.LogComponentGameIds.indexOf(gid) !== -1) {
             $this.showGameLogComponent(obj, gid)
           } else if (gid === 46) {
@@ -4267,6 +4469,8 @@ export default {
             $this.showBuracoGame(obj)
           } else if (gid === 136){
             $this.showLimboGame(obj)
+          } else if (gid === 138){
+            $this.showChickenGoGame(obj)
           } else {
             $this.showSmallGame(obj)
           }
@@ -4457,6 +4661,21 @@ export default {
       this.LimboDetail.players = []
       this.LimboDetail.players.push(obj.player)
       this.LimboDetailVisible = true
+    },
+    showChickenGoGame(obj){
+      //this.ChickenGoDetail.players = []
+      //this.ChickenGoDetail.players.push(obj.player)
+      this.ChickenGoDetail = obj.player
+      this.ChickenGoDetailVisible = true
+    },
+    geChickenGoLevel(lv){
+      const lvMap = {
+        0: 'Easy',
+        1: 'Medium',
+        2: 'Hard',
+        3: 'Expert'
+      }
+      return lvMap[lv]
     },
     showFilipinoMahjongGame(obj, log) {
       this.FilipinoMahjongDetail = log// obj
@@ -4662,6 +4881,14 @@ export default {
     showPiggy(obj) {
       this.piggyLog.detail = obj
       this.piggyLog.visible = true
+    },
+    showGoldMaster(obj, uid) {
+      for (const player of obj.players) {
+        if (player.uid == uid) {
+          this.goldmasterLog.detail = player
+        }
+      }
+      this.goldmasterLog.visible = true
     },
     showBaccaratGame(obj) {
       const names = ['Dealer Win', 'Player Win', 'Tie', 'Dealer Pair', 'Player Pair']
@@ -5511,6 +5738,19 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
         }
       }
       if (row.typ == '2') {
+        return {
+          color: '#9205a6'
+        }
+      }
+    },
+    changColorGoldMaster({ row }) {
+      const typ = this.parseKnockExt(row.knockExt).typ
+      if (typ == '1') {
+        return {
+          color: 'red'
+        }
+      }
+      if (typ == '2') {
         return {
           color: '#9205a6'
         }

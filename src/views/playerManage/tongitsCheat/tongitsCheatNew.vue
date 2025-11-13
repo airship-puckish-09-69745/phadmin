@@ -396,7 +396,8 @@ export default {
           Env: this.env,
           Path: '/log/detail',
           ID: id,
-          DateTime: time
+          DateTime: time,
+          Uid: uid
         }
       })
 
@@ -1017,7 +1018,7 @@ export default {
       // }
       return strArray.join()
     },
-    getDetail(id, dt) {
+    getDetail(id, dt,uid) {
       const $this = this
 
       request({
@@ -1027,7 +1028,8 @@ export default {
           Env: this.env,
           Path: '/log/detail',
           ID: id,
-          DateTime: dt
+          DateTime: dt,
+          Uid: uid
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -1399,7 +1401,7 @@ export default {
                         <el-button
                           type="text"
                           size="small"
-                          @click="getDetail(scopeInfo.row.LogId,scopeInfo.row.EndTime)"
+                          @click="getDetail(scopeInfo.row.LogId,scopeInfo.row.EndTime,scopeInfo.row.Uid)"
                         >查看
                         </el-button>
                       </template>
