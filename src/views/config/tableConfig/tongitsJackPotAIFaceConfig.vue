@@ -98,7 +98,7 @@
                 :key="index"
                 style="margin-top:10px"
               >
-                <legend>{{title}}</legend>
+                <legend style="color: rgb(17, 0, 255); font-weight: bold;">{{title}}</legend>
                 <el-col :span="24" :offset="5">
                   <el-form :inline="true">
                     <el-col :span="8">
