@@ -6,7 +6,7 @@
     </el-row>
     <el-row type="flex" align="middle" style="margin-bottom: 10px;">
       <span style="width: 120px; color: #A8A8A8; font-size: 13px; font-weight: bold;position:relative;top:-5px;">都要点一下 ext：</span>
-      <publish style="width: 90%;" primary-key="ID" :key-id="getFullKeyBase()" :env-empty="false" compare-type="Object" />
+      <publish style="width: 90%;" primary-key="ID" :key-id="getFullKeyExt()" :env-empty="false" compare-type="Object" />
     </el-row>
     <el-row>
       <el-tabs type="border-card">
