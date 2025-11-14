@@ -25,38 +25,57 @@ export const BETTING_GAME_CONFIG =[
 // 比赛门票ID 关联门票权益配置
 // 第一层下标：7 =Tongits, 8=TexasMtt, 9=Pusoy
 export const MATCH_TICKET_RIGHTS_ID_CFG_DEV = {
-  7: [ // PROP_TYPE_TICKET_NEW
-   { 'ticketId': 331, 'sceneId': 200, 'label': 'Tongits新版门票 带唯一ID-332' },
-    { 'ticketId': 334, 'sceneId': 201, 'label': 'Tongits新版TICKET-334' }
+  7: {
+    1000002: [ // PROP_TYPE_TICKET_NEW
+        { 'ticketId': 331, 'sceneId': 200, 'label': 'Tongits新版门票 带唯一ID-332' },
+        { 'ticketId': 334, 'sceneId': 201, 'label': 'Tongits新版TICKET-334' }
+    ],
+    1000003: [ // PROP_TYPE_TICKET_NEW
+      { 'ticketId': 407, 'sceneId': 204, 'label': 'Tongits新版门票 带唯一ID-407' },
+  ]},
+  
+  8: {
+    1000002: [ 
+      { 'ticketId': 372, 'sceneId': 202, 'label': 'Texas测试新版德州门票带唯一ID-372' },
   ],
-  8: [ // PROP_TYPE_TEXAS_TICKET_NEW
-    { 'ticketId': 372, 'sceneId': 202, 'label': 'Texas测试新版德州门票带唯一ID-372' },
-  ],
-  9: [ // PROP_TYPE_PUSOY_TICKET_NEW
-    { 'ticketId': 374, 'sceneId': 203, 'label': 'Pusoy新版门票 带唯一ID-374' },
-  ]
-}
+  1000003: [
+    { 'ticketId': 408, 'sceneId': 205, 'label': '德州新版参赛券-408' }]},
+
+  9: {
+    1000002: [ 
+      { 'ticketId': 374, 'sceneId': 203, 'label': 'Pusoy新版门票 带唯一ID-374' },
+    ],
+    1000003: [
+    { 'ticketId': 409, 'sceneId': 206, 'label': 'Pusoy新版参赛券-409' }]},
+  }
+
 
 //uat 线上配置
 export const MATCH_TICKET_RIGHTS_ID_CFG_PROD = {
-  7: [ // PROP_TYPE_TICKET_NEW
-    { 'ticketId': 322, 'sceneId': 200, 'label': 'Tongits新版门票 带唯一ID-322' },
-   // { 'ticketId': 334, 'sceneId': 201, 'label': 'Tongits新版TICKET-334' }
-  ],
-  8: [ // PROP_TYPE_TEXAS_TICKET_NEW
-    //{ 'ticketId': 372, 'sceneId': 200, 'label': 'Texas测试新版德州门票带唯一ID-372' },
-  ],
-  9: [ // PROP_TYPE_PUSOY_TICKET_NEW
-    //{ 'ticketId': 374, 'sceneId': 200, 'label': 'Pusoy新版门票 带唯一ID-374' },
-  ]
+  7: {
+    1000002: [ // PROP_TYPE_TICKET_NEW
+      { 'ticketId': 322, 'sceneId': 200, 'label': 'Tongits新版门票 带唯一ID-322' },
+      // { 'ticketId': 334, 'sceneId': 201, 'label': 'Tongits新版TICKET-334' }
+    ]
+  },
+  8: {
+    1000002: [ // PROP_TYPE_TEXAS_TICKET_NEW
+      //{ 'ticketId': 372, 'sceneId': 200, 'label': 'Texas测试新版德州门票带唯一ID-372' },
+    ]
+  },
+  9: {
+    1000002: [ // PROP_TYPE_PUSOY_TICKET_NEW
+      //{ 'ticketId': 374, 'sceneId': 200, 'label': 'Pusoy新版门票 带唯一ID-374' },
+    ]
+  }
 }
 
 // 获取比赛门票权益ID列表
-export const GetMatchTicketRightsIdList = (itemType) => {
+export const GetMatchTicketRightsIdList = (itemType,appId) => {
   if (IsProd()) {
-    return MATCH_TICKET_RIGHTS_ID_CFG_PROD[itemType] || []
+    return MATCH_TICKET_RIGHTS_ID_CFG_PROD[itemType][appId] || []
   } else {
-    return MATCH_TICKET_RIGHTS_ID_CFG_DEV[itemType] || []
+    return MATCH_TICKET_RIGHTS_ID_CFG_DEV[itemType][appId] || []
   }
 }
 //是否是新版本门票
