@@ -227,6 +227,7 @@ export const matchDataMixin = {
               propsCost: '',
               propsShowName: '',
               propsSceneId: 0,
+              propsAppId: 0,
             }]
 
             this.configs.matchTicketsCfgs = []
@@ -236,14 +237,22 @@ export const matchDataMixin = {
               if (propsTypeList.includes(item.item_type)) {
                 let canPush = false
                 let sceneId = 0
+                let appId = 0
+                
                 if (item.status === 1 &&
                     ((item.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET && item.expire_time > timestamp) ||
                      item.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME || item.item_type=== PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW)) {
-
                   const showName = item.show_name ? `${item.item_name}(${item.show_name})` : item.item_name
                   if (IsNewTicketProp(item.item_type)) {
-                    const tickets = GetMatchTicketRightsIdList(item.item_type).find(ticket => ticket.ticketId === item.id)
-                    //console.log("tickets",tickets)
+                    if(item.item_extra.length <= 0){
+                      continue
+                    }
+                    const exitData = JSON.parse(item.item_extra)
+                    if(exitData === null || exitData === undefined || exitData.appId === 0 || typeof exitData.appId === 'undefined'){
+                      continue
+                    }
+                    appId = exitData.appId
+                    const tickets = GetMatchTicketRightsIdList(item.item_type, exitData.appId).find(ticket => ticket.ticketId === item.id)
                     if(tickets){
                       canPush = true
                       sceneId = tickets.sceneId
@@ -261,19 +270,24 @@ export const matchDataMixin = {
                       propsCost: item.item_cost,
                       propsShowName: showName,
                       propsSceneId: sceneId,
+                      propsAppId: appId,
                     })
                   }
-                  if (item.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET||item.item_type=== PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW) {
+                  if (item.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET || item.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW) {
                     if (canPush) {
-                    this.configs.matchTicketsCfgs.push({
-                      label: showName,
-                        value: item.id
+                      this.configs.matchTicketsCfgs.push({
+                        'label': showName,
+                        'value': item.id,
+                        'propsAppId': appId,
+                        'propsType': item.item_type,
                       })
                     }
                   }
                 }
               }
+              //console.log("matchTicketsCfgs",this.configs.matchTicketsCfgs)
             }
+            
           }
         }
       } catch (error) {
