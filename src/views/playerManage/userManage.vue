@@ -1383,10 +1383,14 @@ export default {
           Message.error('请选择时间')
           return
         }
+        if(typeof this.item.AppID === 'undefined' || this.item.AppID === 0){
+          Message.error('当前账号没有APPID')
+          return
+        }
       }
       //如果是新门票道具 则确认场景ID字段值
       if(this.isNewTicketProp(this.item.ItemType)){
-        const tickets = GetMatchTicketRightsIdList(this.item.ItemType)
+        const tickets = GetMatchTicketRightsIdList(this.item.ItemType,this.item.AppID)
         if (!tickets || tickets.length === 0) {
           Message.error('未找到对应的门票配置')
           return
@@ -1836,7 +1840,7 @@ export default {
           } else {
             //如果是新版门票道具 需要确认所配置的门票是否关联到 权益场景ID 参考 props.js MATCH_TICKET_RIGHTS_ID_CFG_DEV
             if (this.isNewTicketProp(itemType)) {
-              const tickets = GetMatchTicketRightsIdList(itemType).map(item => item.ticketId)
+              const tickets = GetMatchTicketRightsIdList(itemType,this.item.AppID).map(item => item.ticketId)
               console.log("tickets: ",tickets)
               console.log("this.tableData[i].id: ",this.tableData[i].id)
               if (tickets.includes(this.tableData[i].id)) {
