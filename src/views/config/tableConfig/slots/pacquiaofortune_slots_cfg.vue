@@ -5,37 +5,37 @@
         <el-tabs type="border-card" value="base" @tab-click="onShowTab">
           <el-tab-pane label="基础配置" name="base">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，重启生效】</h3>
-            <publish primary-key="ID" :key-id="getFullKey('mannypacquiao_slots_base')" :env-empty="false" compare-type="Object" />
+            <publish primary-key="ID" :key-id="getFullKey('pacquiaofortune_slots_base')" :env-empty="false" compare-type="Object" />
             <slots-base-cfg v-if="baseCfgBool" v-model="baseCfg" :odds-str="false" @saveData="saveBaseCfg" />
           </el-tab-pane>
           <el-tab-pane label="符号表配置" name="symbol">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，重启生效】</h3>
-            <publish primary-key="ID" :key-id="getFullKey('mannypacquiao_slots_rule')" :env-empty="false" compare-type="Object" />
+            <publish primary-key="ID" :key-id="getFullKey('pacquiaofortune_slots_rule')" :env-empty="false" compare-type="Object" />
             <slots-symbol-value v-if="ruleCfgBool" v-model="ruleCfg" @saveData="saveRuleCfg" />
           </el-tab-pane>
           <el-tab-pane label="赔付线配置" name="pay_table">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，重启生效】</h3>
-            <publish primary-key="ID" :key-id="getFullKey('mannypacquiao_slots_base')" :env-empty="false" compare-type="Object" />
+            <publish primary-key="ID" :key-id="getFullKey('pacquiaofortune_slots_base')" :env-empty="false" compare-type="Object" />
             <slots-pay-table v-if="baseCfgBool" v-model="baseCfg" :symbol-list="ruleCfg.SymbolList" :start-col="3" @saveData="saveBaseCfg" />
           </el-tab-pane>
           <el-tab-pane label="2套轴图标" name="reels_double">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布】</h3>
-            <publish primary-key="ID" :key-id="getFullKey('mannypacquiao_slots_base')" :env-empty="false" compare-type="Object" />
+            <publish primary-key="ID" :key-id="getFullKey('pacquiaofortune_slots_base')" :env-empty="false" compare-type="Object" />
             <slots-reels-double v-if="baseCfgBool" v-model="baseCfg" :symbol-list="ruleCfg.SymbolList" @saveData="saveBaseCfg" />
           </el-tab-pane>
           <el-tab-pane label="进入免费方案配置" name="scatter_trigger_plans">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布】</h3>
-            <publish primary-key="ID" :key-id="getFullKey('mannypacquiao_slots_base')" :env-empty="false" compare-type="Object" />
+            <publish primary-key="ID" :key-id="getFullKey('pacquiaofortune_slots_base')" :env-empty="false" compare-type="Object" />
             <slots-free-trigger-plans v-if="baseCfgBool" v-model="baseCfg" :odds-str="false" :scatter-trigger-plans="baseCfg.scatterTriggerPlans" @saveData="saveBaseCfg" />
           </el-tab-pane>
           <el-tab-pane label="拓展配置" name="scatter">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，发布即生效】</h3>
-            <publish primary-key="ID" :key-id="getFullKey('mannypacquiao_slots_ext')" :env-empty="false" compare-type="Object" />
-            <slots-manny-pacquiao-ext v-if="extCfgBool" v-model="extCfg" :base-bet="baseCfg.BaseBet" @saveData="saveExtCfg" />
+            <publish primary-key="ID" :key-id="getFullKey('pacquiaofortune_slots_ext')" :env-empty="false" compare-type="Object" />
+            <slots-pacquiao-fortune-ext v-if="extCfgBool" v-model="extCfg" :base-bet="baseCfg.BaseBet" @saveData="saveExtCfg" />
           </el-tab-pane>
           <el-tab-pane label="剧本" name="script">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，发布即生效】</h3>
-            <publish primary-key="ID" :key-id="getFullKey('mannypacquiao_slots_rule')" :env-empty="false" compare-type="Object" />
+            <publish primary-key="ID" :key-id="getFullKey('pacquiaofortune_slots_rule')" :env-empty="false" compare-type="Object" />
             <slots-script v-if="ruleCfgBool" v-model="ruleCfg" :bets="baseCfg.BetListAct" @saveData="saveRuleCfg" />
           </el-tab-pane>
         </el-tabs>
@@ -60,12 +60,12 @@ import slotsReelsIcon from './components_x/aladdin_reels_icon'
 import slotsSuperaceExt from './components_x/superace_ext'
 import slotsReelsDouble from './components_x/reels_double'
 import slotsScript from './components_x/slots_script'
-import SlotsMannyPacquiaoExt from "@/views/config/tableConfig/slots/components_x/mannypacquiao_ext.vue"
+import SlotsPacquiaoFortuneExt from "@/views/config/tableConfig/slots/components_x/pacquiaofortune_ext.vue"
 import SlotsFreeTriggerPlans from "@/views/config/tableConfig/slots/components_x/slotsFreeTriggerPlans.vue"
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: {SlotsFreeTriggerPlans, SlotsMannyPacquiaoExt, Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotsSuperaceExt, slotsReelsDouble, slotsScript },
+  components: {SlotsFreeTriggerPlans, SlotsPacquiaoFortuneExt, Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotsSuperaceExt, slotsReelsDouble, slotsScript },
   data() {
     return {
       activeTab: 'base',
@@ -79,7 +79,7 @@ export default {
       ruleForm: {},
       extForm: {},
       txt: '',
-      subKey: 'mannypacquiao_slots_base',
+      subKey: 'pacquiaofortune_slots_base',
       inc: 0
     }
   },
@@ -134,7 +134,7 @@ export default {
         url: '/customizeconfig/one',
         method: 'get',
         data: {
-          SubKey: 'mannypacquiao_slots_rule'
+          SubKey: 'pacquiaofortune_slots_rule'
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -153,7 +153,7 @@ export default {
         url: '/customizeconfig/one',
         method: 'get',
         data: {
-          SubKey: 'mannypacquiao_slots_ext'
+          SubKey: 'pacquiaofortune_slots_ext'
         }
       }).then(response => {
         if (response.RetCode === 0) {

@@ -479,7 +479,7 @@
                   </template>
                 </el-table-column>
               </el-table>
-              <piggy-weight-cfg :piggy-cfg=" itemBase.RobotCfg.Bets" weight-name="权重" val-name="下注额度" val-type="1" title="下注额度" />
+              <piggy-weight-cfg :piggy-cfg=" itemBase.RobotCfg.Bets" weight-name="权重" val-name="下注额度" val-type="1" title="下注额度(和真人下注保持一致)" />
               <piggy-weight-cfg :piggy-cfg=" itemBase.RobotCfg.OddsRet" weight-name="权重" val-type="2" title="返奖倍数max最大只支持999999" />
               <el-row>
                 <el-col :span="7" :offset="3">
@@ -848,6 +848,9 @@ export default {
         }
       }
 
+      for (const o of this.itemBase.RobotCfg.Bets) {
+        o.Val /= 1000
+      }
     },
     transMoneyForShowExt() {
       for (const o of this.itemExt.MoneyOdds) {
@@ -1018,6 +1021,10 @@ export default {
 
       for (const o of obj.RobotCfg.OddsRet) {
         o.Val = o.ValMin*1000000+o.ValMax
+      }
+
+      for (const o of obj.RobotCfg.Bets) {
+        o.Val *= 1000
       }
 
       return obj

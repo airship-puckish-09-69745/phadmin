@@ -126,7 +126,7 @@ import {Message} from "element-ui";
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  name: 'SlotsMannyPacquiaoExt',
+  name: 'SlotsPacquiaoFortuneExt',
   components: { RatioInput, Compare },
   model: {
     prop: 'slotsData',

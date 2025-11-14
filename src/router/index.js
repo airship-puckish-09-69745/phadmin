@@ -1415,12 +1415,6 @@ export const asyncRoutes = [
                 meta: { title: 'M ajorAce' }
               },
               {
-                path: 'mannypacquiao_slots_cfg',
-                component: () => import('@/views/config/tableConfig/slots/mannypacquiao_slots_cfg'),
-                name: 'mannypacquiao_slots_cfg',
-                meta: { title: 'M annyPacquiao' }
-              },
-              {
                 path: 'mayantotem_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/mayantotem_slots_cfg'),
                 name: 'mayantotem_slots_cfg',
@@ -1431,6 +1425,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/millionaire_slots_cfg'),
                 name: 'millionaire_slots_cfg',
                 meta: { title: 'M illionaire' }
+              },
+              {
+                path: 'pacquiaofortune_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/pacquiaofortune_slots_cfg'),
+                name: 'pacquiaofortune_slots_cfg',
+                meta: { title: 'P acquiaoFortune' }
               },
               {
                 path: 'pahiyaswins_slots_cfg',
@@ -3283,12 +3283,6 @@ export const asyncRoutes = [
             meta: { title: 'M ajorAce', gid: 162 }
           },
           {
-            path: 'mannypacquiao_slots_log',
-            component: () => import('@/views/playerManage/slotsLog'),
-            name: 'mannypacquiao_slots_log',
-            meta: { title: 'M annyPacquiao', gid: 236 }
-          },
-          {
             path: 'mahjongjackpot_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'mahjongjackpot_slots_log',
@@ -3299,6 +3293,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'millionaire_slots_log',
             meta: { title: 'M illionaire', gid: 82 }
+          },
+          {
+            path: 'pacquiaofortune_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'pacquiaofortune_slots_log',
+            meta: { title: 'P acquiaoFortune', gid: 236 }
           },
           {
             path: 'pahiyaswins_slots_log',
