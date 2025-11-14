@@ -227,6 +227,7 @@ export const matchDataMixin = {
               propsCost: '',
               propsShowName: '',
               propsSceneId: 0,
+              propsAppId: 0,
             }]
 
             this.configs.matchTicketsCfgs = []
@@ -236,28 +237,31 @@ export const matchDataMixin = {
               if (propsTypeList.includes(item.item_type)) {
                 let canPush = false
                 let sceneId = 0
+                let appId = 0
+                
                 if (item.status === 1 &&
                     ((item.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET && item.expire_time > timestamp) ||
                      item.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME || item.item_type=== PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW)) {
-                      
                   const showName = item.show_name ? `${item.item_name}(${item.show_name})` : item.item_name
-                  console.log("propsTypeList 00",propsTypeList)
                   if (IsNewTicketProp(item.item_type)) {
-                    console.log("propsTypeList",propsTypeList)
-                    const tickets = GetMatchTicketRightsIdList(item.item_type)
-                    console.log("tickets",tickets)
-                    for (let j = 0; j < tickets.length; j++) {
-                      if (item.id === tickets[j].ticketId) {
-                        canPush = true
-                        sceneId = tickets[j].sceneId
-                        break
-                      }
+                    if(item.item_extra.length <= 0){
+                      continue
+                    }
+                    const exitData = JSON.parse(item.item_extra)
+                    if(exitData === null || exitData === undefined || exitData.appId === 0 || typeof exitData.appId === 'undefined'){
+                      continue
+                    }
+                    appId = exitData.appId
+                    const tickets = GetMatchTicketRightsIdList(item.item_type, exitData.appId).find(ticket => ticket.ticketId === item.id)
+                    if(tickets){
+                      canPush = true
+                      sceneId = tickets.sceneId
                     }
                   }else{
                     canPush = true
                   }
                   if (canPush) {
-                    this.configs.matchPropsCfgs.push({ 
+                    this.configs.matchPropsCfgs.push({
                       propsType: item.item_type,
                       propsId: item.id,
                       propsName: item.item_name,
@@ -266,19 +270,24 @@ export const matchDataMixin = {
                       propsCost: item.item_cost,
                       propsShowName: showName,
                       propsSceneId: sceneId,
+                      propsAppId: appId,
                     })
                   }
-                  if (item.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET||item.item_type=== PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW) {
+                  if (item.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET || item.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW) {
                     if (canPush) {
-                    this.configs.matchTicketsCfgs.push({
-                      label: showName,
-                        value: item.id
+                      this.configs.matchTicketsCfgs.push({
+                        'label': showName,
+                        'value': item.id,
+                        'propsAppId': appId,
+                        'propsType': item.item_type,
                       })
                     }
                   }
                 }
               }
+              //console.log("matchTicketsCfgs",this.configs.matchTicketsCfgs)
             }
+            
           }
         }
       } catch (error) {

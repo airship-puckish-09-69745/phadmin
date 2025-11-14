@@ -454,12 +454,13 @@
             </el-select>
           </el-form-item>
           <el-form-item v-if="edit.item.SignUpType > 0" label="门票：" :required="true">
-            <el-select v-model="edit.item.SignUpExtra.propsId" placeholder="请选择" size="mini">
+            <el-select v-model="edit.item.SignUpExtra.propsId" placeholder="请选择" size="mini" @change="setPropsDetail">
               <el-option
                 v-for="item in matchTicketsCfgs"
                 :key="item.propsId"
                 :label="item.propsName"
                 :value="item.propsId"
+                :disabled="checkNewTicketPropDisable(item.propsType,item.propsAppId)"
               >
                <img v-if="item.propsIcon != '' " :src="item.propsIcon" style="height:36px;vertical-align: middle;padding: 4px;"/>
                 <span>{{ item.propsName }}</span>
@@ -468,7 +469,7 @@
           </el-form-item>
 
           <el-form-item v-if="edit.item.SignUpType > 0" label="门票数量：" :required="true">
-            <el-input v-model.number="edit.item.SignUpExtra.propsNum" style="width: 180px;" size="mini" placeholder="请填写门票数量" :required="true"/>
+            <el-input v-model.number="edit.item.SignUpExtra.propsNum" style="width: 180px;" size="mini" :disabled="true" placeholder="请填写门票数量" :required="true"/>
           </el-form-item>
         </fieldset>
         <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
@@ -551,6 +552,7 @@
                         :key="item.propsId"
                         :label="item.propsName"
                         :value="item.propsId"
+                        :disabled="checkNewTicketPropDisable(item.propsType,item.propsAppId)"
                       >
                         <img v-if="item.propsIcon != '' " :src="item.propsIcon" style="height:36px;vertical-align: middle;padding: 4px;"/>
                         <span>{{ item.propsName }}</span>
@@ -1189,7 +1191,11 @@ export default {
       console.log(postData)
       return postData
     },
-    checkData() {
+    checkData(postData) {
+      if(postData.SignupFee > 0 && postData.OpenDaysLimit > 0) {
+        Message.error('付费赛不能开启每日限制')
+        return false
+      }
       // if (this.edit.item.CarryLower > this.edit.item.CarryUpper) {
       //   Message.warning('下限不能大于上限，请检查数值正确性！')
       //   return false
@@ -1208,6 +1214,9 @@ export default {
     save() {
       if (this.checkPropsExpire(this.getPostData())) {
         Message.error('门票配置错误')
+        return
+      }
+      if (!this.checkData(this.getPostData())) {
         return
       }
       if (this.edit.isEdit) {
@@ -1333,18 +1342,26 @@ export default {
             for (let i=0;i<objs.list.length;i++) {
               let canPush = false
               let sceneId = 0
+              let appId = 0
               if(objs.list[i].status ===1 && ((objs.list[i].item_type===PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET && objs.list[i].expire_time>timestamp) ||
                  [PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW,PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR].includes(objs.list[i].item_type) )) { //类型参考 PROP_TYPE_OPTIONS定义
-                if (IsNewTicketProp(objs.list[i].item_type)) {
-                  const tickets = GetMatchTicketRightsIdList(objs.list[i].item_type)
-                  console.log("tickets",tickets)
-
-                  for (let j = 0; j < tickets.length; j++) {
-                    if (objs.list[i].id === tickets[j].ticketId) {
-                      canPush = true
-                      sceneId = tickets[j].sceneId
-                      break
+                  let str = objs.list[i].item_name
+                  if (objs.list[i].show_name.length > 0) {
+                    str = str + '(' + objs.list[i].show_name + ')'
+                  }
+                  if (IsNewTicketProp(objs.list[i].item_type)) {
+                  if(objs.list[i].item_extra.length <=0){
+                    continue
+                  }
+                  const exitData = JSON.parse(objs.list[i].item_extra)
+                  if(exitData === null || exitData === undefined || exitData.appId === 0 || typeof exitData.appId === 'undefined'){
+                      continue
                     }
+                  let tickets = GetMatchTicketRightsIdList(objs.list[i].item_type,exitData.appId).find(ticket => ticket.ticketId === objs.list[i].id)
+                  if(tickets){
+                    canPush = true
+                    sceneId = tickets.sceneId
+                    appId = exitData.appId
                   }
                 }else{
                   canPush = true
@@ -1359,20 +1376,23 @@ export default {
                     'propsCost': objs.list[i].item_cost,
                     'propsExpireTime': objs.list[i].expire_time,
                     'propsSceneId': sceneId,
+                    'propsAppId': appId,
                   })
                 }
                 if ([PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET,PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW].includes(objs.list[i].item_type)) { // texas 门票
                   if(canPush) {
                     this.matchTicketsCfgs.push({
                       'propsId': objs.list[i].id,
-                      'propsName': objs.list[i].item_name
+                      'propsName':  str,// objs.list[i].item_name,
+                      'propsAppId': appId,
+                      'propsType': objs.list[i].item_type,
                     })
                   }
                 }
               }
             }
           }
-          console.log('matchTicketsCfgs', this.matchTicketsCfgs)
+          console.log('1111 matchTicketsCfgs', this.matchTicketsCfgs)
         }
       })
     },
@@ -1438,6 +1458,11 @@ export default {
             this.edit.item.RankRewardsExtra[j].propsReward.propsSceneId = this.matchPropsCfgs[i].propsSceneId
           }
         }
+      }
+      if(this.edit.item.SignUpType > 0) {
+        this.edit.item.SignUpExtra.propsNum = 1
+      }else{
+        this.edit.item.SignUpExtra.propsNum = 0
       }
     },
     getPropsExpireTime(propsId, propsType) {
@@ -1543,6 +1568,13 @@ export default {
 
     resetSearch() {
       this.form.appId = -1
+    },
+
+    checkNewTicketPropDisable(propsType,propsAppId) {
+      if(propsType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW && propsAppId !== this.edit.item.AppInfo[0].appId) {
+        return true
+      }
+      return false
     },
     handlerChangeMin(e) {
       // if (parseInt(e) < 2 || parseInt(e) > this.edit.item.TableMaxPlayerNum) {

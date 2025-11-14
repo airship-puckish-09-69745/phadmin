@@ -195,6 +195,17 @@
             </el-select>
           </el-form-item>
 
+          <el-form-item v-if="[7,8,9].includes(editForm.data.itemType)" label="APPID" :required="true">
+            <el-select v-model="editForm.itemExtra.appId" style="width: 200px;" :disabled="!editForm.isAdd"  placeholder="请选择道具对应的APPID">
+              <el-option
+                v-for="item in APPID_OPTIONS"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+
           <el-form-item v-if="editForm.data.itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET" label="道具特殊属性：" :required="true">
             <el-select v-model="editForm.itemExtra.specialAttr" style="width: 200px;" :disabled="!editForm.isAdd" placeholder="请选择道具特殊属性">
               <el-option
@@ -280,7 +291,7 @@ import request from '@/utils/request'
 import DateTimeShow from '@/components/DatetimeShow'
 import { $libDate, $libShow } from '@/utils/common'
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
-import { ITEM_TYPE_OPTIONS, ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS } from '@/utils/options'
+import { ITEM_TYPE_OPTIONS, ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS,APPID_OPTIONS } from '@/utils/options'
 import { SLOT_GAME_CONFIG, BETTING_GAME_CONFIG } from '@/utils/prop'
 
 export default {
@@ -292,6 +303,7 @@ export default {
       ITEM_DAY_TYPE_OPTIONS,
       BETTING_GAME_CONFIG,
       SLOT_GAME_CONFIG,
+      APPID_OPTIONS,
       freeSpinGameMap: {},
       libShow: $libShow,
       pickerOptions: $libShow.DefaultDatePickerOptions(),
@@ -457,7 +469,8 @@ export default {
           specialAttr: 0,
           showName: '',
           gid: [],
-          betAmount: 0
+          betAmount: 0,
+          appId:1000002
         }
         this.checkAll()
         this.editForm.itemEndDate = $libDate.GetDayBegin(new Date().setSeconds(0))
@@ -911,6 +924,12 @@ export default {
         this.slotFreeSpinPropReset()
         if (typeof this.editForm.data.itemCost === 'undefined' || this.editForm.data.itemCost === null || this.editForm.data.itemCost === '') {
           this.errmsg('请填写道具价值')
+          return false
+        }
+      }
+      if(this.isTicketPropNew(this.editForm.data.itemType)){
+        if (typeof this.editForm.itemExtra.appId === 'undefined' || this.editForm.itemExtra.appId === 0 || this.editForm.itemExtra.appId === '') {
+          this.errmsg('请选择道具对应的APPID')
           return false
         }
       }

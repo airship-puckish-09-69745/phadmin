@@ -65,7 +65,6 @@
                       <el-input v-model.number="item.RewardMulMax" size="mini" ><template  slot="append">X</template></el-input>
                     </el-form-item>
                   </el-col>
-                  
                 </el-form>
               </el-col>
               
@@ -188,30 +187,22 @@
               <!--机器人配置-->
               <fieldset style="margin-top:10px" v-if="!IsPHAuditEnv()">
                 <legend>机器人配置</legend>
+
                 <el-col :span="24" :offset="5">
                   <el-form :inline="true">
                     <el-col :span="8">
-                      <el-form-item label="机器人携带Bet下限:">
-                        <el-input v-model.number="item.RobotCarryMin" size="mini" ></el-input>
-                      </el-form-item>
-                    </el-col>
-                    <el-col :span="8">
-                      <el-form-item label="机器人携带Bet上限:">
-                        <el-input v-model.number="item.RobotCarryMax" size="mini" ></el-input>
+                      <el-form-item label="机器人携带Bet:" style="display: flex; align-items: center">
+                        <el-input v-model="item.RobotCarryMin" size="mini" style="width: 100px"></el-input>
+                        <span style="margin: 0 10px">~</span>
+                        <el-input v-model="item.RobotCarryMax" size="mini" style="width: 100px"></el-input>
                       </el-form-item>
                     </el-col>                    
-                  </el-form>
-                </el-col>
-                <el-col :span="24" :offset="5">
-                  <el-form :inline="true">
+                  
                     <el-col :span="8">
-                      <el-form-item label="机器人最小人数:">
-                        <el-input v-model.number="item.RobotCountMin" size="mini" ></el-input>
-                      </el-form-item>
-                    </el-col>
-                    <el-col :span="8">
-                      <el-form-item label="机器人最大人数:">
-                        <el-input v-model.number="item.RobotCountMax" size="mini" ></el-input>
+                      <el-form-item label="机器人人数:" style="display: flex; align-items: center">
+                        <el-input v-model="item.RobotCountMin" size="mini" style="width: 100px"></el-input>
+                        <span style="margin: 0 10px">~</span>
+                        <el-input v-model="item.RobotCountMax" size="mini" style="width: 100px"></el-input>
                       </el-form-item>
                     </el-col>                    
                   </el-form>
@@ -240,9 +231,21 @@
                   :cell-style="libShow.DefaultTableCell"
                   style="width: 100%"
                 >
-                  <el-table-column label="中奖类型" width="280px">
+                  <el-table-column label="中奖类型" width="200px">
                     <template slot-scope="scope">
                       <el-input v-model="item.RobotCfg[scope.$index].RewardType" size="mini" ><template  slot="append">X</template></el-input>
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column label="下注区间：【下限" width="200px">
+                    <template slot-scope="scope">
+                      <el-input v-model="item.RobotCfg[scope.$index].Bet[0]" size="mini" ></el-input>
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column label="上限】" width="200px">
+                    <template slot-scope="scope">
+                      <el-input v-model="item.RobotCfg[scope.$index].Bet[1]" size="mini" ></el-input>
                     </template>
                   </el-table-column>
 
@@ -277,19 +280,20 @@
               <!--机器人下注倍率-->
               <fieldset style="margin-top:10px" v-if="!IsPHAuditEnv()">
                 <legend>机器人下注倍率</legend>
+                <!--
                 <el-col :span="24" :offset="5">
                   <el-form :inline="true">
                     <el-col :span="8">
                       <el-form-item label="随机范围:" style="display: flex; align-items: center">
                         <el-input v-model="item.RobotBetCfg.BetMultipleMin" size="mini" style="width: 100px"></el-input>
-                        <span style="margin: 0 10px">~</span> <!-- 替换第二个 label -->
+                        <span style="margin: 0 10px">~</span>
                         <el-input v-model="item.RobotBetCfg.BetMultipleMax" size="mini" style="width: 100px"></el-input>
-                        <span>X</span> <!-- 统一处理单位 -->
+                        <span>X</span>
                       </el-form-item>
                     </el-col>                    
                   </el-form>
                 </el-col>
-
+              -->
                 <el-table
                   ref="filterTable"
                   :data="item.RobotBetCfg.Rule"
@@ -312,13 +316,13 @@
                   </el-table-column>
                   
                   <el-table-column label="保留小数位数规则" width="150px">
-                    <template slot-scope="scope">
+                    <template slot-scope="scope" v-if="scope.$index == 0 || scope.$index == 1 || scope.$index == 2">
                       {{ getRobotBetDecimal(scope.$index) }}
                     </template>
                   </el-table-column>
 
                   <el-table-column label="权重">
-                      <template slot-scope="scope">
+                      <template slot-scope="scope" v-if="scope.$index == 0 || scope.$index == 1 || scope.$index == 2">
                         <el-input v-model.number="item.RobotBetCfg.Rule[scope.$index].Decimal" size="mini" ></el-input>
                       </template>
                   </el-table-column>
@@ -461,6 +465,9 @@ export default {
       }
       for (const i in that.item.RobotCfg) {
         that.item.RobotCfg[i].RewardType /= 100
+        for (const j in that.item.RobotCfg[i].Bet) {
+          that.item.RobotCfg[i].Bet[j] /= 100
+        }
       }
     },
     getData() {
@@ -485,7 +492,7 @@ export default {
             }
             if (!item.RobotCfg){
               item['RobotCfg'] = []
-              item.RobotCfg.push({ Id: 0, RewardType: 1, Rate: [1, 1]})
+              item.RobotCfg.push({ Id: 0, RewardType: 1, Bet: [200, 20000], Rate: [1, 1]})
             }
 
             if (!item.Card){
@@ -494,8 +501,8 @@ export default {
             }
             if (!item.RobotBetCfg){
               item.RobotBetCfg = {
-                BetMultipleMin:200,
-                BetMultipleMax:20000,
+                //BetMultipleMin:200,
+                //BetMultipleMax:20000,
                 Rule:[{Integer: 60, Decimal: 60},{Integer: 30, Decimal: 30},{Integer: 10, Decimal: 10}]
               }
             }
@@ -511,8 +518,8 @@ export default {
             item.RobotCarryMax /= 1000
             item.ReChoiceCfg.LowLotteryPoolReChoice /= 1000
             item.ReChoiceCfg.HighLotteryPoolReChoice /= 1000
-            item.RobotBetCfg.BetMultipleMin /=  100
-            item.RobotBetCfg.BetMultipleMax /=  100
+            //item.RobotBetCfg.BetMultipleMin /=  100
+            //item.RobotBetCfg.BetMultipleMax /=  100
 
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data)
@@ -543,6 +550,9 @@ export default {
       }
       for (const i in this.item.RobotCfg) {
         ret.RobotCfg[i].RewardType *= 100
+        for (const j in ret.RobotCfg[i].Bet) {
+          ret.RobotCfg[i].Bet[j] *= 100
+        }
       }
 
       ret.MaxBet *= 1000
@@ -552,8 +562,8 @@ export default {
       ret.RobotCarryMax *= 1000
       ret.ReChoiceCfg.LowLotteryPoolReChoice *= 1000
       ret.ReChoiceCfg.HighLotteryPoolReChoice *= 1000
-      ret.RobotBetCfg.BetMultipleMin *= 100
-      ret.RobotBetCfg.BetMultipleMax *= 100
+      //ret.RobotBetCfg.BetMultipleMin *= 100
+      //ret.RobotBetCfg.BetMultipleMax *= 100
 
       //测试
       if (!ret.openTest || ret.openTest=="1"){
@@ -623,7 +633,7 @@ export default {
           maxId = o.Id
         }
       }
-      this.item.RobotCfg.push({ Id: maxId + 1, RewardType: 100, Rate: [1, 1]})
+      this.item.RobotCfg.push({ Id: maxId + 1, RewardType: 100, Bet: [200, 20000], Rate: [1, 1]})
     },
     delRobotCfg(index) {
       this.item.RobotCfg.splice(index, 1)
@@ -632,9 +642,10 @@ export default {
     //保留规则
     getRobotBetInteger(idx) {
       const dMap = {
-        0: '百位',
-        1: '十位',
-        2: '个位'
+        0: '千位',
+        1: '百位',
+        2: '十位',
+        3: '个位'
       }
       return dMap[idx]
     },    
@@ -642,7 +653,8 @@ export default {
       const dMap = {
         0: '0位',
         1: '1位',
-        2: '2位'
+        2: '2位',
+        3: '-'
       }
       return dMap[idx]
     },
