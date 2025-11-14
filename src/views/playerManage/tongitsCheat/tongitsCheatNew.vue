@@ -314,20 +314,37 @@ export default {
             let reduceScore = 0
             let score = 0
             if (row.tableMoneyAddScore !== undefined ) {
-              for (const tableMoney in row.tableMoneyAddScore) {
-                addScore += row.tableMoneyAddScore[tableMoney] * tableMoney
+              if (typeof row.tableMoneyAddScore === 'string' && row.tableMoneyAddScore !== '') {
+                row.tableMoneyAddScore = JSON.parse(row.tableMoneyAddScore)
+                for (const tableMoney in row.tableMoneyAddScore) {
+                  addScore += row.tableMoneyAddScore[tableMoney] * tableMoney
+                }
+              } else {
+                row.tableMoneyAddScore = {}
               }
+
             }
             if (row.tableMoneyReduceScore !== undefined) {
-              for (const tableMoney in row.tableMoneyReduceScore) {
-                reduceScore += row.tableMoneyReduceScore[tableMoney] * tableMoney
+              if (typeof row.tableMoneyReduceScore === 'string' && row.tableMoneyReduceScore !== '') {
+                row.tableMoneyReduceScore = JSON.parse(row.tableMoneyReduceScore)
+                for (const tableMoney in row.tableMoneyReduceScore) {
+                  reduceScore += row.tableMoneyReduceScore[tableMoney] * tableMoney
+                }
+              } else {
+                row.tableMoneyReduceScore = {}
               }
             }
             if (row.tableMoneyScore !== undefined) {
-              for (const tableMoney in row.tableMoneyScore) {
-                score += row.tableMoneyScore[tableMoney] /1000
+              if (typeof row.tableMoneyScore === 'string' && row.tableMoneyScore !== '') {
+                row.tableMoneyScore = JSON.parse(row.tableMoneyScore)
+                for (const tableMoney in row.tableMoneyScore) {
+                  score += row.tableMoneyScore[tableMoney] / 1000
+                }
+                cheatLog.CheatScore = score.toFixed(3)
+              } else {
+                row.tableMoneyScore = {}
               }
-              cheatLog.CheatScore = score.toFixed(3)
+
             }
 
             cheatLog.SmallIntensity = (addScore / 1000 + reduceScore / 1000).toFixed(1)

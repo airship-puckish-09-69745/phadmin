@@ -68,6 +68,7 @@
                   :key="item.propsId"
                   :label="item.propsName"
                   :value="item.propsId"
+                  :disabled="checkNewTicketPropDisable(item.propsType,item.propsAppId)"
                 >
                   <img v-if="item.propsIcon != '' " :src="item.propsIcon" style="height:36px;vertical-align: middle;">
                   <span>{{ item.propsShowName }}</span>
@@ -99,6 +100,7 @@
                   :key="item.propsId"
                   :label="item.propsName"
                   :value="item.propsId"
+                  :disabled="checkNewTicketPropDisable(item.propsType,item.propsAppId)"
                 >
                   <img v-if="item.propsIcon != '' " :src="item.propsIcon" style="height:36px;vertical-align: middle;">
                   <span>{{ item.propsShowName }}</span>
@@ -167,10 +169,12 @@
 
 <script>
 import { $libShow } from '@/utils/common'
-import {ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS} from "@/utils/options";
+import { ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS } from '@/utils/options'
+import { matchUtilsMixin } from '../mixins/matchUtilsMixin'
 
 export default {
   name: 'RewardConfig',
+  mixins: [matchUtilsMixin],
   props: {
     rankRewards: {
       type: Array,
@@ -203,6 +207,10 @@ export default {
     prizeTemplateCfg: {
       type: Array,
       default: () => []
+    },
+    editForm: {
+      type: Object,
+      required: true
     }
   },
   data() {
@@ -330,7 +338,7 @@ export default {
           break;
       }
       return  true
-    },
+    }
   }
 }
 </script>
