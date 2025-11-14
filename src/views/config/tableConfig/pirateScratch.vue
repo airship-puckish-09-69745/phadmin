@@ -7,8 +7,8 @@
           <el-form ref="item" :model="item" label-width="200px">
             <el-row>
             <el-col :span="16">
-              <el-form-item label="下注列表">
-                <el-input v-model.number="tmpAutoBetRoundList" size="mini" />
+              <el-form-item label="自动下注局数列表">
+                <el-input v-model.number="tmpBetRoundList" size="mini" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -209,7 +209,7 @@
             width="200"
           >
             <template slot-scope="scope">
-              <span>{{ scope.row.BetMoney }}X</span>
+              <span>{{ scope.row.BetMoney }}</span>
             </template>
           </el-table-column>
          <el-table-column
@@ -286,11 +286,11 @@ export default {
       return {
         subKey: 'pirate_scratch_cfg',
         form: {},
-        tmpAutoBetRoundList:"10,25,50,100,200,500,1000,2000",
+        tmpBetRoundList:"10,25,50,100,200,500,1000,2000",
         tmpSingleRatio: 10,
         item: {
           FeeRate: 1,
-          AutoBetRoundList:[10000,25000,50000,100000,200000,500000,1000000,2000000], //下注
+          BetRoundList:[10,25,50,100,200,500,1000,2000], //下注
           TenBetMoney:[
             {
               Bonus:10000000, 
@@ -510,22 +510,22 @@ export default {
         },
         transMoneyForShow() {
           let that = this
-          const betMoneyList = []
-          for (const o of that.item.AutoBetRoundList) {
-            betMoneyList.push(o/1000)
+          const betRoundList = []
+          for (const o of that.item.BetRoundList) {
+            betRoundList.push(o)
           }
-          that.tmpAutoBetRoundList = betMoneyList.join(',')  
+          that.tmpBetRoundList = betRoundList.join(',')  
 
           that.tmpSingleRatio = Math.floor(that.item.SingleRatio/100)
           
       },
       saveTableMoney() {
           let betItem = []
-          for (const oElement of this.tmpAutoBetRoundList.split(',')) {
+          for (const oElement of this.tmpBetRoundList.split(',')) {
             betItem.push(oElement*1000)
           
             }
-            this.item.AutoBetRoundList = (betItem)
+            this.item.BetRoundList = (betItem)
             this.item.SingleRatio =  Math.floor(that.tmpSingleRatio*100)
       },
 
