@@ -96,7 +96,8 @@
 import { ITEM_TYPE_OPTIONS, APPID_OPTIONS, ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS } from '@/utils/options'
 import request from '@/utils/request'
 import { Message } from 'element-ui'
-import {GetMatchTicketRightsIdList} from "@/utils/prop";
+import {GetMatchTicketRightsIdList, MATCH_TICKET_RIGHTS_ID_CFG_PROD, MATCH_TICKET_RIGHTS_ID_CFG_DEV} from "@/utils/prop";
+import {IsProd} from "@/utils/env";
 export default {
   props: {
     title: {
@@ -395,12 +396,30 @@ export default {
       this.form.PropDetails.prop_expire_days = 1
       let filteredItems = this.itemList.filter(item => item.item_type === value)
       if(this.isNewTicketProp(value)){
-        let tickets = GetMatchTicketRightsIdList(value).map(ticket => ticket.ticketId);
-        filteredItems = filteredItems.filter(item => tickets.includes(item.id));
+        //根据当前道具类型获取对应的门票配置
+        const ticketsConfig = IsProd() ? MATCH_TICKET_RIGHTS_ID_CFG_PROD[value] : MATCH_TICKET_RIGHTS_ID_CFG_DEV[value]
+        //console.log('ticketsConfig', ticketsConfig, 'value', value)
+        if(ticketsConfig && typeof ticketsConfig === 'object'){
+          // 收集所有appId下的ticketId
+          const allowedTicketIds = new Set()
+          for(const appId in ticketsConfig){
+            if(ticketsConfig[appId] && Array.isArray(ticketsConfig[appId])){
+              ticketsConfig[appId].forEach(ticket => {
+                if(ticket.ticketId){
+                  allowedTicketIds.add(ticket.ticketId)
+                }
+              })
+            }
+          }
+          // 只保留在允許列表中的道具
+          if(allowedTicketIds.size > 0){
+            filteredItems = filteredItems.filter(item => allowedTicketIds.has(item.id))
+          }
+        }
       }
-      console.log('筛选后的道具列表', filteredItems)
+     // console.log('筛选后的道具列表', filteredItems)
       this.updateItemOption(filteredItems)
-      console.log('道具下拉框选项', this.itemOptions)
+     // console.log('道具下拉框选项', this.itemOptions)
       this.checkShowFreeSpinGame()
     },
     /**
@@ -462,10 +481,14 @@ export default {
       //判断发放的是否是新版比赛门票 道具，若是则获取对应的比赛门票权益id
 
       if (this.isNewTicketProp(selectedItem.item_type)) {
-        const matchTicketRightsIdList = GetMatchTicketRightsIdList(selectedItem.item_type);
-        const matchedTicket = matchTicketRightsIdList.find(ticket => ticket.ticketId === selectedItem.id);
-        if (matchedTicket) {
-          params.PropDetails.prop_scene_id = matchedTicket.sceneId;
+        //根据当前道具类型获取对应的门票配置
+        const ticketsConfig = IsProd() ? MATCH_TICKET_RIGHTS_ID_CFG_PROD[selectedItem.item_type] : MATCH_TICKET_RIGHTS_ID_CFG_DEV[selectedItem.item_type]
+        if(ticketsConfig && typeof ticketsConfig === 'object'){
+          for(const appId in ticketsConfig){
+            if(ticketsConfig[appId] && Array.isArray(ticketsConfig[appId]) && ticketsConfig[appId].some(ticket => ticket.ticketId === selectedItem.id)){
+              params.PropDetails.prop_scene_id = ticketsConfig[appId].find(ticket => ticket.ticketId === selectedItem.id).sceneId
+            }
+          }
         }
       }
       // 将粘贴id转换成数组格式

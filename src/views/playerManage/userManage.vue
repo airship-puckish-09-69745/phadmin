@@ -420,7 +420,7 @@ import DateTimeShow from '@/components/DatetimeShow'
 import { ITEM_TYPE_OPTIONS, ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS } from '@/utils/options'
 import payWithdrawLog from '@/views/playerManage/payWithdrawLog.vue'
 import {IsProd} from "@/utils/env";
-import {MATCH_TICKET_RIGHTS_ID_CFG_DEV} from "@/utils/prop";
+import {MATCH_TICKET_RIGHTS_ID_CFG_DEV, MATCH_TICKET_RIGHTS_ID_CFG_PROD} from "@/utils/prop";
 import { GetMatchTicketRightsIdList,IsNewTicketProp } from '@//utils/prop'
 
 function NewRelationSummary() {
@@ -1390,23 +1390,22 @@ export default {
       }
       //如果是新门票道具 则确认场景ID字段值
       if(this.isNewTicketProp(this.item.ItemType)){
-        const tickets = GetMatchTicketRightsIdList(this.item.ItemType,this.item.AppID)
-        if (!tickets || tickets.length === 0) {
-          Message.error('未找到对应的门票配置')
-          return
-        }
-        for(const t of tickets){
-          if(t.ticketId === this.item.ItemCfgId){
-            this.item.ItemSceneId = t.sceneId
-            break
+        const ticketsConfig = IsProd() ? MATCH_TICKET_RIGHTS_ID_CFG_PROD[this.item.ItemType] : MATCH_TICKET_RIGHTS_ID_CFG_DEV[this.item.ItemType]
+        if(ticketsConfig && typeof ticketsConfig === 'object'){
+          for(const appId in ticketsConfig){
+            if(ticketsConfig[appId] && Array.isArray(ticketsConfig[appId])){
+              const ticket = ticketsConfig[appId].find(ticket => ticket.ticketId === this.item.ItemCfgId)
+              if(ticket){
+                this.item.ItemSceneId = ticket.sceneId
+              }
+            }
           }
         }
-
         if(typeof this.item.ItemSceneId === 'undefined' || this.item.ItemSceneId <=0){
           Message.error('当前道具没有关联到正确的场景ID，请检查道具ID是否正确')
           return
         }
-        console.log("场景ID", this.item.ItemSceneId)
+        //console.log("场景ID", this.item.ItemSceneId)
       }
 
       let msg = '确定添加物品吗?'
@@ -1832,7 +1831,7 @@ export default {
           }
         }
         if (this.tableData[i].item_type === id && this.tableData[i].status === 1) {
-          if (this.isTicketProp(itemType)) {
+          if (this.isTicketProp(itemType)) { // 旧版门票道具
             const expTime = this.tableData[i].expire_time * 1000
             if (currTime < expTime) {
               this.tableItemData.push({ 'value': Number(this.tableData[i].id), 'label': str, disabled: false })
@@ -1840,16 +1839,22 @@ export default {
           } else {
             //如果是新版门票道具 需要确认所配置的门票是否关联到 权益场景ID 参考 props.js MATCH_TICKET_RIGHTS_ID_CFG_DEV
             if (this.isNewTicketProp(itemType)) {
-              const tickets = GetMatchTicketRightsIdList(itemType,this.item.AppID).map(item => item.ticketId)
-              console.log("tickets: ",tickets)
-              console.log("this.tableData[i].id: ",this.tableData[i].id)
-              if (tickets.includes(this.tableData[i].id)) {
-                this.tableItemData.push({'value': Number(this.tableData[i].id), 'label': str, disabled: false})
+              const ticketsConfig = IsProd() ? MATCH_TICKET_RIGHTS_ID_CFG_PROD[itemType] : MATCH_TICKET_RIGHTS_ID_CFG_DEV[itemType]
+              if(ticketsConfig && typeof ticketsConfig === 'object'){
+                for(const appId in ticketsConfig){
+                  if(ticketsConfig[appId] && Array.isArray(ticketsConfig[appId])){
+                    ticketsConfig[appId].forEach(ticket => {
+                      if(ticket.ticketId === this.tableData[i].id){
+                        this.tableItemData.push({'value': Number(this.tableData[i].id), 'label': str, disabled: false})
+                      }
+                    })
+                  }
+                }
               }
-            } else {
+            } else {  //头像框
               this.tableItemData.push({'value': Number(this.tableData[i].id), 'label': str, disabled: false})
             }
-            console.log("this.tableItemData ",this.tableItemData)
+            //console.log("this.tableItemData ",this.tableItemData)
           }
         }
       }
