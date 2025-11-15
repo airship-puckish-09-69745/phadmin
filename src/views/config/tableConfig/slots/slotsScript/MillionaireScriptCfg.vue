@@ -410,7 +410,8 @@ export default {
         '212': 'pirateship',
         '214': 'pumpkincash',
         '224': 'supermahjong',
-        '232': 'mafiamayhem'
+        '232': 'mafiamayhem',
+        '236': 'pacquiaofortune'
       }
     }
   },
