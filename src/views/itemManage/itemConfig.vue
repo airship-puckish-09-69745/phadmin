@@ -88,6 +88,9 @@
             <span v-if="scope.row.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN">
               <span>games:<el-tag v-for="gameName in getSlotFreSpinPropDescReturnGameNames(scope.row.item_extra)" :key="gameName" style="margin-right: 5px;">{{ gameName }}</el-tag></span> <br> betAmount:{{ getSlotFreSpinPropDescReturnBetAmount(scope.row.item_extra) }}
             </span>
+            <span v-if="isTicketPropNew(scope.row.item_type)">
+              APPID:  {{getAppIdName(scope.row.item_extra) }}
+            </span>
           </template>
 
         </el-table-column>
@@ -196,7 +199,7 @@
           </el-form-item>
 
           <el-form-item v-if="[7,8,9].includes(editForm.data.itemType)" label="APPID" :required="true">
-            <el-select v-model="editForm.itemExtra.appId" style="width: 200px;" :disabled="!editForm.isAdd"  placeholder="请选择道具对应的APPID">
+            <el-select v-model="editForm.itemExtra.appId" style="width: 200px;"   placeholder="请选择道具对应的APPID">
               <el-option
                 v-for="item in APPID_OPTIONS"
                 :key="item.value"
@@ -991,7 +994,13 @@ export default {
     // 是否是头像框道具
     isAvatarFrameProp(itemType) {
       return itemType === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME || itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR
-    }
+    },
+    getAppIdName(item_extra) {
+      if(typeof(item_extra) === 'string'){
+        item_extra = JSON.parse(item_extra)
+        return APPID_OPTIONS.find(item => item.value === item_extra.appId).label
+      }
+    },
   }
 }
 </script>
