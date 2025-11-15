@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="page-container" style="padding: 10px">
     <el-row>
-      <publish primary-key="cfgId" key-id="EasterConfig" :env-empty="true" :check="configCheck" :make-content="makeContent" :attr-names="getPublishAttrNames()" :head-attrs="['cfgId']" />
+      <publish primary-key="cfgId" key-id="EasterConfig" :env-empty="false" :check="configCheck" :make-content="makeContent" :attr-names="getPublishAttrNames()" :head-attrs="['cfgId']" />
     </el-row>
     <el-row style="padding-top: 5px">
       <el-col :span="20">
