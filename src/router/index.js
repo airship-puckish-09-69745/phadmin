@@ -1200,6 +1200,12 @@ export const asyncRoutes = [
             name: 'pirateScratch_cfg',
             meta: { title: 'Pirate Scratch ◐' }
           },
+          {
+            path: 'mannyPunch_cfg',
+            component: () => import('@/views/config/tableConfig/mannyPunchConfig.vue'),
+            name: 'mannyPunch_cfg',
+            meta: { title: 'M anny Punch ◐' }
+          },
 
         ]
       },
@@ -3044,6 +3050,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_chickengo',
             meta: { title: 'C hicken Go ◐', gid: 138 }
+          },
+          {
+            path: 'playlog_mannypunch',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_mannypunch',
+            meta: { title: 'M anny Punch ◐', gid: 139 }
           }
 
           /*
