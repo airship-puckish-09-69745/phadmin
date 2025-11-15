@@ -33,16 +33,16 @@ export const MATCH_TICKET_RIGHTS_ID_CFG_DEV = {
     1000003: [ // PROP_TYPE_TICKET_NEW
       { 'ticketId': 407, 'sceneId': 204, 'label': 'Tongits新版门票 带唯一ID-407' },
   ]},
-  
+
   8: {
-    1000002: [ 
+    1000002: [
       { 'ticketId': 372, 'sceneId': 202, 'label': 'Texas测试新版德州门票带唯一ID-372' },
   ],
   1000003: [
     { 'ticketId': 408, 'sceneId': 205, 'label': '德州新版参赛券-408' }]},
 
   9: {
-    1000002: [ 
+    1000002: [
       { 'ticketId': 374, 'sceneId': 203, 'label': 'Pusoy新版门票 带唯一ID-374' },
     ],
     1000003: [
@@ -54,7 +54,7 @@ export const MATCH_TICKET_RIGHTS_ID_CFG_DEV = {
 export const MATCH_TICKET_RIGHTS_ID_CFG_PROD = {
   7: {
     1000002: [ // PROP_TYPE_TICKET_NEW
-      { 'ticketId': 322, 'sceneId': 201, 'label': 'Tongits新版门票 带唯一ID-322' },
+      //{ 'ticketId': 322, 'sceneId': 201, 'label': 'Tongits新版门票 带唯一ID-322' },
     ],
     1000003: [ // PROP_TYPE_TICKET_NEW
       { 'ticketId': 322, 'sceneId': 200, 'label': 'Tongits新版门票 带唯一ID-322'  },
@@ -62,11 +62,17 @@ export const MATCH_TICKET_RIGHTS_ID_CFG_PROD = {
   8: {
     1000002: [ // PROP_TYPE_TEXAS_TICKET_NEW
       //{ 'ticketId': 372, 'sceneId': 200, 'label': 'Texas测试新版德州门票带唯一ID-372' },
+    ],
+    1000003: [ // PROP_TYPE_TEXAS_TICKET_NEW
+      { 'ticketId': 343, 'sceneId': 201, 'label': 'Texas测试新版德州门票带唯一ID-343' },
     ]
   },
   9: {
     1000002: [ // PROP_TYPE_PUSOY_TICKET_NEW
       //{ 'ticketId': 374, 'sceneId': 200, 'label': 'Pusoy新版门票 带唯一ID-374' },
+    ],
+    1000003: [ // PROP_TYPE_TEXAS_TICKET_NEW
+      { 'ticketId': 345, 'sceneId': 202, 'label': 'UAT Pusoy新版比赛门票-345' },
     ]
   }
 }
