@@ -998,6 +998,9 @@ export default {
     getAppIdName(item_extra) {
       if(typeof(item_extra) === 'string'){
         item_extra = JSON.parse(item_extra)
+        if(typeof(item_extra.appId) === 'undefined' || item_extra.appId === 0 || item_extra.appId === ''){
+          return '请选择APPID'
+        }
         return APPID_OPTIONS.find(item => item.value === item_extra.appId).label
       }
     },
