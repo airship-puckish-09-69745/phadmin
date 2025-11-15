@@ -199,7 +199,7 @@
           </el-form-item>
 
           <el-form-item v-if="[7,8,9].includes(editForm.data.itemType)" label="APPID" :required="true">
-            <el-select v-model="editForm.itemExtra.appId" style="width: 200px;"   placeholder="请选择道具对应的APPID">
+            <el-select v-model="editForm.itemExtra.appId" style="width: 200px;" :disabled="!editForm.isAdd"   placeholder="请选择道具对应的APPID">
               <el-option
                 v-for="item in APPID_OPTIONS"
                 :key="item.value"
