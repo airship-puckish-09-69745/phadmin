@@ -871,8 +871,8 @@ import AppInfo from '../../devTools/appInfo.vue'
 import { log } from 'console'
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
 import { getAllCommonGameConfig, getAllMatchGuidesConfig,validateUidInput, handleUidInputChange, setNestedProperty } from '@/utils/common-game-config'
-import { IsMars } from '@/utils/env'
-import { IsNewTicketProp, GetMatchTicketRightsIdList } from '@/utils/prop'
+import { IsMars, IsProd } from '@/utils/env'
+import { IsNewTicketProp, MATCH_TICKET_RIGHTS_ID_CFG_PROD, MATCH_TICKET_RIGHTS_ID_CFG_DEV } from '@/utils/prop'
 import {
   CHANNEL_OPTIONS,
   APPID_OPTIONS,
@@ -2221,6 +2221,7 @@ export default {
               }
             ]
             this.matchTicketsCfgs = []
+            let ticketConfigList = IsProd() ? MATCH_TICKET_RIGHTS_ID_CFG_PROD : MATCH_TICKET_RIGHTS_ID_CFG_DEV
             var timestamp = Date.parse(new Date()) / 1000
             for (let i = 0; i < objs.list.length; i++) {
               if (this.propsTypeList.includes(objs.list[i].item_type)) {
@@ -2241,11 +2242,10 @@ export default {
                    if(exitData === null || exitData === undefined || exitData.appId === 0 || typeof exitData.appId === 'undefined'){
                       continue
                     }
-                    let tickets = GetMatchTicketRightsIdList(objs.list[i].item_type,exitData.appId).find(ticket => ticket.ticketId === objs.list[i].id)
-                    //console.log("tickets",tickets)
-                    if(tickets) {
+                    let ticket = ticketConfigList[exitData.appId].find(ticket => ticket.ticketId === objs.list[i].id)
+                    if(ticket){
                       canPush = true
-                      sceneId = tickets.sceneId
+                      sceneId = ticket.sceneId
                       appId = exitData.appId
                     }
                   }else{
@@ -2276,6 +2276,7 @@ export default {
                     }
                   }
                   //console.log("matchTicketsCfgs",this.matchTicketsCfgs)
+                  //console.log("matchPropsCfgs",this.matchPropsCfgs)
                 }
               }
             }

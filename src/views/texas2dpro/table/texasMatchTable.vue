@@ -620,7 +620,7 @@ import Publish from '@/components/Publish'
 import GameLevel from '@/components/GameLevel'
 import MoneyInput from '@/components/MoneyInput'
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
-import { IsMars } from '@/utils/env'
+import { IsMars,IsProd } from '@/utils/env'
 import {
   ITEM_TYPE_OPTIONS,
   PROP_TYPE_OPTIONS,
@@ -628,7 +628,7 @@ import {
   APPID_OPTIONS,
   MATCH_IUPSTREAM_TYPE_OPTIONS
 } from "@/utils/options";
-import {GetMatchTicketRightsIdList, IsNewTicketProp} from "@/utils/prop";
+import {IsNewTicketProp, MATCH_TICKET_RIGHTS_ID_CFG_PROD, MATCH_TICKET_RIGHTS_ID_CFG_DEV} from "@/utils/prop";
 
 const filterMap = {}
 
@@ -1339,6 +1339,7 @@ export default {
           const objs = response.Data || {}
           var timestamp = Date.parse(new Date())/1000
           if (objs.total > 0) {
+            let ticketConfigList = IsProd() ? MATCH_TICKET_RIGHTS_ID_CFG_PROD : MATCH_TICKET_RIGHTS_ID_CFG_DEV
             for (let i=0;i<objs.list.length;i++) {
               let canPush = false
               let sceneId = 0
@@ -1349,50 +1350,51 @@ export default {
                   if (objs.list[i].show_name.length > 0) {
                     str = str + '(' + objs.list[i].show_name + ')'
                   }
-                  if (IsNewTicketProp(objs.list[i].item_type)) {
-                  if(objs.list[i].item_extra.length <=0){
-                    continue
-                  }
-                  const exitData = JSON.parse(objs.list[i].item_extra)
-                  if(exitData === null || exitData === undefined || exitData.appId === 0 || typeof exitData.appId === 'undefined'){
+                  if (IsNewTicketProp(objs.list[i].item_type)) { //如果是新门票 需要检查 门票场景ID 以及门票APPID
+                    if(objs.list[i].item_extra.length <=0){
                       continue
                     }
-                  let tickets = GetMatchTicketRightsIdList(objs.list[i].item_type,exitData.appId).find(ticket => ticket.ticketId === objs.list[i].id)
-                  if(tickets){
+                    const exitData = JSON.parse(objs.list[i].item_extra)
+                    if(exitData === null || exitData === undefined || exitData.appId === 0 || typeof exitData.appId === 'undefined'){
+                        continue
+                    }
+                    let ticket = ticketConfigList[exitData.appId].find(ticket => ticket.ticketId === objs.list[i].id)
+                    if(ticket){
+                      canPush = true
+                      sceneId = ticket.sceneId
+                      appId = exitData.appId
+                    }
+                  }else{
                     canPush = true
-                    sceneId = tickets.sceneId
-                    appId = exitData.appId
                   }
-                }else{
-                  canPush = true
-                }
-                if(canPush){
-                  this.matchPropsCfgs.push({
-                    'propsType': objs.list[i].item_type,
-                    'propsId': objs.list[i].id,
-                    'propsName': objs.list[i].item_name,
-                    'propsIcon': objs.list[i].image,
-                    'propsAttr': objs.list[i].item_describe,
-                    'propsCost': objs.list[i].item_cost,
-                    'propsExpireTime': objs.list[i].expire_time,
-                    'propsSceneId': sceneId,
-                    'propsAppId': appId,
-                  })
-                }
-                if ([PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET,PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW].includes(objs.list[i].item_type)) { // texas 门票
-                  if(canPush) {
-                    this.matchTicketsCfgs.push({
-                      'propsId': objs.list[i].id,
-                      'propsName':  str,// objs.list[i].item_name,
-                      'propsAppId': appId,
+  
+                  if(canPush){
+                    this.matchPropsCfgs.push({
                       'propsType': objs.list[i].item_type,
+                      'propsId': objs.list[i].id,
+                      'propsName': objs.list[i].item_name,
+                      'propsIcon': objs.list[i].image,
+                      'propsAttr': objs.list[i].item_describe,
+                      'propsCost': objs.list[i].item_cost,
+                      'propsExpireTime': objs.list[i].expire_time,
+                      'propsSceneId': sceneId,
+                      'propsAppId': appId,
                     })
+                    if ([PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET,PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW].includes(objs.list[i].item_type)){
+                      this.matchTicketsCfgs.push({
+                        'propsId': objs.list[i].id,
+                        'propsName':  str,// objs.list[i].item_name,
+                        'propsAppId': appId,
+                        'propsType': objs.list[i].item_type,
+                      })
+                    }
                   }
                 }
-              }
+              
             }
           }
-          console.log('1111 matchTicketsCfgs', this.matchTicketsCfgs)
+          //console.log('1111 matchTicketsCfgs', this.matchTicketsCfgs)
+         // console.log('2222 matchPropsCfgs', this.matchPropsCfgs)
         }
       })
     },
