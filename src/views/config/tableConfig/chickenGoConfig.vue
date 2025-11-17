@@ -254,7 +254,7 @@ export default {
       showSetResultPage: false,
       env:process.env.VUE_APP_PROJECT,
       dialogFormVisible: false,
-      lv:['Easy','Medium','Hard','Expert', 'Master','Nightmare'],
+      lv:['Easy','Medium','Hard','Expert'],//, 'Master','Nightmare'
     }
   },
   created() {
