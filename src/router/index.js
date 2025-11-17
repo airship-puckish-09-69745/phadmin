@@ -2624,6 +2624,12 @@ export const asyncRoutes = [
         component: () => import('@/views/itemManage/batchDistribution/index.vue'),
         name: 'batchDistribution',
         meta: { title: '批量发放', noCache: true }
+      },
+      {
+        path: 'itemUser',
+        component: () => import('@/views/itemManage/itemUser/index.vue'),
+        name: 'itemUser',
+        meta: { title: '使用说明', noCache: true }
       }
     ]
   },
