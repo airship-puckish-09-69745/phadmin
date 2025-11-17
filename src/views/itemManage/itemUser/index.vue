@@ -154,7 +154,7 @@ export default {
         showName: '',
         itemCost: 0,
         describe: '',
-        itemType: '',
+        itemType: 7,
         appId: '',
         sort: 0
       }
