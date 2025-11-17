@@ -62,7 +62,7 @@
                   :cell-style="libShow.DefaultTableCell"
                   style="width: 100%"
                 >
-                  <el-table-column label="难度级别" width="90px">
+                  <el-table-column label="难度级别" width="160px">
                     <template slot-scope="scope">
                       {{getLvName(scope.$index)}}
                     </template>
@@ -254,7 +254,7 @@ export default {
       showSetResultPage: false,
       env:process.env.VUE_APP_PROJECT,
       dialogFormVisible: false,
-      lv:['Easy','Medium','Hard','Expert'],
+      lv:['Easy','Medium','Hard','Expert', 'Master','Nightmare'],
     }
   },
   created() {
