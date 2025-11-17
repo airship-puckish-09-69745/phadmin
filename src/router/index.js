@@ -1195,12 +1195,6 @@ export const asyncRoutes = [
             meta: { title: 'C hicken Go ◐' }
           },
           {
-            path: 'pirateScratch_cfg',
-            component: () => import('@/views/config/tableConfig/pirateScratch.vue'),
-            name: 'pirateScratch_cfg',
-            meta: { title: 'Pirate Scratch ◐' }
-          },
-          {
             path: 'mannyPunch_cfg',
             component: () => import('@/views/config/tableConfig/mannyPunchConfig.vue'),
             name: 'mannyPunch_cfg',

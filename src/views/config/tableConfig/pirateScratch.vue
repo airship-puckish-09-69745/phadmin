@@ -5,12 +5,20 @@
     <fieldset style="margin-top:10px">              
         <legend>下注配置</legend>
           <el-form ref="item" :model="item" label-width="200px">
+            <el-row>
             <el-col :span="16">
-              <el-form-item label="下注列表">
-                <el-input v-model.number="tmpAutoBetRoundList" size="mini" />
+              <el-form-item label="自动下注局数列表">
+                <el-input v-model.number="tmpBetRoundList" size="mini" />
               </el-form-item>
             </el-col>
-
+          </el-row>
+          <el-row>
+            <el-col :span="6">
+                  <el-form-item label="保底奖池抽水">
+                    <el-input v-model.number="item.FeeRate" size="mini" ><template  slot="append">%</template></el-input>
+                  </el-form-item>
+                </el-col>
+          </el-row>
           </el-form>
 
       </fieldset>
@@ -18,7 +26,7 @@
       <legend>奖金配置</legend>
       <h4 style="text-align:left;">10面值单个格子奖金出现权重</h4>
        <el-table
-              :data="item.TenFace"
+              :data="item.TenBetMoney"
               border
               style="width: 100%"
             >
@@ -51,7 +59,7 @@
 
         <h4 style="text-align:left;">10面值以上单个格子奖金出现权重</h4>
        <el-table
-              :data="item.UpTenFace"
+              :data="item.UpTenBetMoney"
               border
               style="width: 100%"
             >
@@ -96,7 +104,7 @@
                     <el-form-item label="单张彩票出现乘数的概率(%)：" :required="true">
                         <template>
                             <el-input-number
-                            v-model="item.Multiplier.SingleRatio"  type="number" :min=0 :precision="2"
+                            v-model="tmpSingleRatio"  type="number" :min=0 :precision="2"
                             style="width: 100%"> 
                             </el-input-number>
                         </template>
@@ -201,7 +209,7 @@
             width="200"
           >
             <template slot-scope="scope">
-              <span>{{ scope.row.FaceValue }}X</span>
+              <span>{{ scope.row.BetMoney }}</span>
             </template>
           </el-table-column>
          <el-table-column
@@ -212,7 +220,7 @@
             <span>触发JP概率<span style="color: red;">(万分位: ‱)</span></span>
             </template>
             <template slot-scope="scope">
-              <el-input-number v-model.number="scope.row.JackpotRate" size="mini" type="number"  :min=0 ></el-input-number>
+              <el-input-number v-model.number="scope.row.JackpotRatio" size="mini" type="number"  :min=0 ></el-input-number>
             </template>
             </el-table-column>
     
@@ -224,6 +232,15 @@
               border
               style="width: 100%"
             >
+         <el-table-column
+            label="奖励类型"
+            width="200"
+          >
+            <template slot-scope="scope">
+              <span>{{ getRewardName(scope.row.AwardType) }}</span>
+            </template>
+          </el-table-column>
+
           <el-table-column
             label="奖励倍数"
             width="200"
@@ -269,10 +286,12 @@ export default {
       return {
         subKey: 'pirate_scratch_cfg',
         form: {},
-        tmpAutoBetRoundList:"10,25,50,100,200,500,1000,2000",
+        tmpBetRoundList:"10,25,50,100,200,500,1000,2000",
+        tmpSingleRatio: 10,
         item: {
-          AutoBetRoundList:[10,25,50,100,200,500,1000,2000], //下注
-          TenFace:[
+          FeeRate: 1,
+          BetRoundList:[10,25,50,100,200,500,1000,2000], //下注
+          TenBetMoney:[
             {
               Bonus:10000000, 
               WinPrizeWight: 100,
@@ -328,7 +347,7 @@ export default {
               LosePrizeWight: 100,
             }
           ],
-          UpTenFace:[
+          UpTenBetMoney:[
             {
               Bonus:10000000, 
               WinPrizeWight: 100,
@@ -408,17 +427,17 @@ export default {
           },
           JackpotRegulation:{
               RandAwards: [
-                  { FaceValue: 10,  JackpotRate: 10 },
-                  { FaceValue: 20,  JackpotRate: 10 },
-                  { FaceValue: 30,  JackpotRate: 10 },
-                  { FaceValue: 50,  JackpotRate: 10 },
-                  { FaceValue: 100,  JackpotRate: 10 },
+                  { BetMoney: 10,  JackpotRatio: 10 },
+                  { BetMoney: 20,  JackpotRatio: 10 },
+                  { BetMoney: 30,  JackpotRatio: 10 },
+                  { BetMoney: 50,  JackpotRatio: 10 },
+                  { BetMoney: 100,  JackpotRatio: 10 },
               ],
               AwardOdds: [
-                  {  Odds: 500 ,Wight:100},
-                  {  Odds: 100 ,Wight:0},
-                  {  Odds: 55 ,Wight:0},
-                  {  Odds: 10 ,Wight:0},
+                  {AwardType:1,  Odds: 500 ,Wight:100},
+                  {AwardType:2,  Odds: 100 ,Wight:0},
+                  {AwardType:3,  Odds: 55 ,Wight:0},
+                  {AwardType:4,  Odds: 10 ,Wight:0},
                 
           ],
         }
@@ -491,20 +510,33 @@ export default {
         },
         transMoneyForShow() {
           let that = this
-            const betMoneyList = []
-            for (const o of that.item.AutoBetRoundList) {
-              betMoneyList.push(o)
-            }
-            that.tmpAutoBetRoundList = betMoneyList.join(',')  
+          const betRoundList = []
+          for (const o of that.item.BetRoundList) {
+            betRoundList.push(o)
+          }
+          that.tmpBetRoundList = betRoundList.join(',')  
+
+          that.tmpSingleRatio = Math.floor(that.item.SingleRatio/100)
           
       },
       saveTableMoney() {
           let betItem = []
-          for (const oElement of this.tmpAutoBetRoundList.split(',')) {
-            betItem.push(oElement)
+          for (const oElement of this.tmpBetRoundList.split(',')) {
+            betItem.push(oElement*1000)
           
             }
-            this.AutoBetRoundList = (betItem)
+            this.item.BetRoundList = (betItem)
+            this.item.SingleRatio =  Math.floor(that.tmpSingleRatio*100)
+      },
+
+      getRewardName(AwardType) {
+        switch(AwardType) {
+          case 1: return "GRAND"
+          case 2: return "MAJOR"
+          case 3: return "MINOR"
+          case 4: return "MINI"
+          default: return "NOT FOND"
+        }
       }
     }
 }
