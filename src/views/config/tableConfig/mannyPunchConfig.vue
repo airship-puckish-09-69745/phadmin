@@ -118,6 +118,7 @@
               <!--难度场次步数配置-->
               <fieldset v-for="(title, index) in lv"
                 :key="index"
+                v-if="item.RTPS[index]"
                 style="margin-top:10px"
               >
                 <el-col :span="20">
