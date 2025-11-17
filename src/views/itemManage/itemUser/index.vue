@@ -106,7 +106,7 @@
         <el-tag type="success" size="small" class="highlight-tag">【仅1000003 1000005 需要申请】</el-tag>
       </div>
       <div class="step-content">
-        <p>为每一个创建好的门票向平台方申请门票权益配置,以配置的每一个门票为单位,提供门票配置ID给平台方,得到门票权益配置再提供给开发。</p>
+        <p>为每一个创建好的门票向平台方申请门票权益配置,以每一个门票为单位,提供门票配置ID给平台方,得到门票权益配置再提供给开发。</p>
       </div>
     </el-row>
 
@@ -118,7 +118,7 @@
         <span class="step-title">配置门票权益</span>
       </div>
       <div class="step-content">
-        <p>开发需要根据门票配置ID、门票权益配置ID。在prop.js中配置对应的门票权益配置。</p>
+        <p>开发需要根据门票配置ID、门票权益配置。在prop.js中配置对应的门票权益配置信息。</p>
       </div>
     </el-row>
 
