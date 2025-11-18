@@ -53,7 +53,7 @@
             prop="upTime"
             label="更新时间"
             width="200"
-          > 
+          >
             <template slot-scope="scope">
               {{ formatTime(scope.row.upTime) }}
             </template>
@@ -62,13 +62,13 @@
       </el-row>
     </div>
   </template>
-  
+
   <style>
   .tooltip-button {
     margin-right: 10px;
   }
   </style>
-  
+
   <script>
   import Compare from '@/components/Compare'
   import Publish from '@/components/Publish'
@@ -78,7 +78,7 @@
   import store from '@/store'
   import { Message } from 'element-ui'
   import DateTimeShow from '@/components/DatetimeShow'
-  
+
   export default {
     components: { Compare, Publish, DateTimeShow, UidInput },
     data() {
@@ -127,15 +127,15 @@
             {value: 40002, label: '付费'},
           ]},
           {value: 5, label: 'Slots用户类型', children: [
-            {value: 50001, label: '新增用户'},
-            {value: 50002, label: '登录天数'},
-            {value: 50003, label: '携带金额'},
-            {value: 50004, label: '下注次数'},
-            {value: 50005, label: '下注额度'},
-            {value: 50006, label: '日均下注额度'},
-            {value: 50007, label: '连续下注天数'},
-            {value: 50008, label: '回归用户'},
-            {value: 50009, label: '最近中奖上限'},
+            {value: 50001, label: 'Slots新增用户'},
+            {value: 50002, label: 'Slots登录天数'},
+            {value: 50003, label: 'Slots携带金额'},
+            {value: 50004, label: 'Slots下注次数'},
+            {value: 50005, label: 'Slots下注额度'},
+            {value: 50006, label: 'Slots日均下注额度'},
+            {value: 50007, label: 'Slots连续下注天数'},
+            {value: 50008, label: 'Slots回归用户'},
+            {value: 50009, label: 'Slots最近中奖上限'},
             {value: 50100, label: '主题', children: [
               {value: 50101, label: '扑克/麻将主题'},
               {value: 50102, label: '经典寻宝/777主题'},
@@ -335,7 +335,7 @@
       getInfo() {
         if (this.form.Uid === 0) {
           Message.error("请输入Uid")
-          return 
+          return
         }
         request({
           url: '/dataProxy/info',
@@ -363,6 +363,5 @@
       }
     }
   }
-  
+
   </script>
-  
