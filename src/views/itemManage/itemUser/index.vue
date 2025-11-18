@@ -10,7 +10,7 @@
         <span class="step-number">1:</span>
         <span class="step-title">首先在后台创建门票, 新门票需要勾选APPID</span>
       </div>
-      
+
       <el-card class="form-card" shadow="never">
         <div slot="header" class="card-header">
           <span class="section-title">-道具信息-</span>
@@ -118,7 +118,8 @@
         <span class="step-title">配置门票权益</span>
       </div>
       <div class="step-content">
-        <p>开发需要根据门票配置ID、门票权益配置。在prop.js中配置对应的门票权益配置信息。</p>
+        <p>1.开发需要根据门票配置ID、门票权益配置。在prop.js中配置对应的门票权益配置信息。</p>
+        <p>2.开发需要在phgames项目的WebSingleWalletService服务中 添加新增加的门票配置ID。</p>
       </div>
     </el-row>
 
@@ -134,7 +135,7 @@
     </el-row>
 
 
-     
+
   </div>
 </template>
 
