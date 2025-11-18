@@ -243,10 +243,17 @@ export default {
   data() {
     return {
       item: {
+        FeeRate:0,
+        AutoDropTimer:0,
         RTPS:[],
         BetMoneyLevel:[], //下注
         OddsCfg:[],
-        ReChoiceCfg:{},
+        ReChoiceCfg:{
+          LowLotteryPoolReChoice:0, 
+          LowLotteryPoolReChoiceRate:0, 
+          HighLotteryPoolReChoice:0, 
+          HighLotteryPoolReChoiceRate: 0
+        },
       },
       form: {},
       subKey: 'chicken_go_cfg',

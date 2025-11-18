@@ -52,10 +52,10 @@
                   <el-button style="margin-bottom:10px; background-color: #c5ddf0" type="normal" icon="el-icon-plus" size="mini" @click="doAddRTPSLevel()">添加</el-button>
                 </el-col>
                 
-                <legend>RTPS配置</legend>
+                <legend>基础配置</legend>
                 <el-table
                   ref="filterTable"
-                  :data="item.RTPS"
+                  :data="item.BaseCfg"
                   border
                   :header-cell-style="libShow.DefaultTableHeadClass"
                   :row-style="{height:'10px'}"
@@ -70,7 +70,19 @@
 
                   <el-table-column label="RTP" width="280px">
                     <template slot-scope="scope">
-                      <el-input v-model="item.RTPS[scope.$index]" size="mini" ><template  slot="append">%</template></el-input>
+                      <el-input v-model="item.BaseCfg[scope.$index].Rtp" size="mini" ><template  slot="append">%</template></el-input>
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column label="进入JP奖池百分百" width="280px">
+                    <template slot-scope="scope">
+                      <el-input v-model="item.BaseCfg[scope.$index].IncJPPercent" size="mini" ><template  slot="append">%</template></el-input>
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column label="JP中奖概率" width="280px">
+                    <template slot-scope="scope">
+                      <el-input v-model="item.BaseCfg[scope.$index].WinJPRate" size="mini" ><template  slot="append">%</template></el-input>
                     </template>
                   </el-table-column>
 
@@ -118,7 +130,7 @@
               <!--难度场次步数配置-->
               <fieldset v-for="(title, index) in lv"
                 :key="index"
-                v-if="item.RTPS[index]"
+                v-if="item.BaseCfg[index]"
                 style="margin-top:10px"
               >
                 <el-col :span="20">
@@ -139,6 +151,12 @@
                   <el-table-column label="赔率" width="280px">
                     <template slot-scope="scope">
                       <el-input v-model="item.OddsCfg[index][scope.$index].Odds" size="mini" ><template  slot="append">X</template></el-input>
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column label="出现JP权重" width="280px">
+                    <template slot-scope="scope">
+                      <el-input v-model.number="item.OddsCfg[index][scope.$index].JPWeight" size="mini" ></el-input>
                     </template>
                   </el-table-column>
                   
@@ -244,7 +262,9 @@ export default {
   data() {
     return {
       item: {
-        RTPS:[],
+        FeeRate:3,
+        AutoDropTimer:200,
+        BaseCfg:[],
         BetMoneyLevel:[], //下注
         OddsCfg:[],
         ReChoiceCfg:{},
@@ -287,14 +307,15 @@ export default {
         let odds = []
         let id = 1
         for (const j in that.item.OddsCfg[i].OddsItem) {
-          odds.push({Id:id, Odds:that.item.OddsCfg[i].OddsItem[j].Odds / 100})
+          odds.push({Id:id, Odds:that.item.OddsCfg[i].OddsItem[j].Odds / 100, JPWeight:that.item.OddsCfg[i].OddsItem[j].JPWeight})
           id ++
         }
         that.item.OddsCfg[i] = odds
       }
 
-      for (const i in that.item.RTPS) {
-        that.item.RTPS[i] = that.item.RTPS[i] / 100
+      for (const i in that.item.BaseCfg) {
+        that.item.BaseCfg[i].Rtp = that.item.BaseCfg[i].Rtp / 100
+        that.item.BaseCfg[i].WinJPRate = that.item.BaseCfg[i].WinJPRate / 100
       }
     },
     getData() {
@@ -311,10 +332,12 @@ export default {
             const item = JSON.parse(response.Data.Data)
             if (!item.OddsCfg) {
               item['OddsCfg'] = []
-              for (const i = 0; i < 4; i ++){
-                item.OddsCfg.push([])
-                item.OddsCfg[i].push({ Id: 0, Odds: 1 })
-              }
+            }
+            if (!item.BaseCfg) {
+              item['BaseCfg'] = []
+            }
+            if (!item.ReChoiceCfg) {
+              item['ReChoiceCfg'] = {LowLotteryPoolReChoice:0, LowLotteryPoolReChoiceRate:0, HighLotteryPoolReChoice:0, HighLotteryPoolReChoiceRate: 0}
             }
 
             if (!item.Card){
@@ -360,15 +383,16 @@ export default {
         let id = 1 //步数id
         for (const j in this.item.OddsCfg[i]) {
           let tempOdds = Math.round(this.item.OddsCfg[i][j].Odds * 100) //赔率放大100倍
-          let liveRate = Math.round(this.item.RTPS[i] * 1000000 / tempOdds) //计算存活率
-          oddsCfg.push({Id: id, Odds: tempOdds, LiveRate: liveRate})
+          let liveRate = Math.round(this.item.BaseCfg[i].Rtp * 1000000 / tempOdds) //计算存活率
+          oddsCfg.push({Id: id, Odds: tempOdds, LiveRate: liveRate, JPWeight: this.item.OddsCfg[i][j].JPWeight})
           id ++
         }
         ret.OddsCfg.push({OddsItem:oddsCfg})
       }
 
-      for (const i in this.item.RTPS) {
-        ret.RTPS[i] = Math.round(this.item.RTPS[i] * 100)
+      for (const i in this.item.BaseCfg) {
+        ret.BaseCfg[i].Rtp = Math.round(this.item.BaseCfg[i].Rtp * 100)
+        ret.BaseCfg[i].WinJPRate = Math.round(this.item.BaseCfg[i].WinJPRate * 100)
       }
 
       ret.ReChoiceCfg.LowLotteryPoolReChoice *= 1000
@@ -385,14 +409,14 @@ export default {
 
     //RTPS
     doAddRTPSLevel() {
-      if (!this.item.RTPS) {
-        this.item['RTPS'] = []
+      if (!this.item.BaseCfg) {
+        this.item['BaseCfg'] = []
       }
-      this.item.RTPS.push(97.5)
+      this.item.BaseCfg.push({Rtp: 96, IncJPPercent: 1, WinJPRate: 0.15})
     },
     delRowRTPSLevel(index) {
       console.log(index)
-      this.item.RTPS.splice(index, 1)
+      this.item.BaseCfg.splice(index, 1)
     },
     getLvName(idx) {
       return this.lv[idx]
@@ -424,7 +448,7 @@ export default {
           maxId = o.Id
         }
       }
-      this.item.OddsCfg[idx].push({ Id: maxId + 1, Odds: 1})
+      this.item.OddsCfg[idx].push({ Id: maxId + 1, Odds: 1, JPWeight: 0})
     },
     delOddsCfg(idx, index) {
         this.item.OddsCfg[idx].splice(index, 1)
