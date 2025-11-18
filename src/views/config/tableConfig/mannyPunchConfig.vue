@@ -62,7 +62,7 @@
                   :cell-style="libShow.DefaultTableCell"
                   style="width: 100%"
                 >
-                  <el-table-column label="难度级别" width="90px">
+                  <el-table-column label="难度级别" width="160px">
                     <template slot-scope="scope">
                       {{getLvName(scope.$index)}}
                     </template>
@@ -118,6 +118,7 @@
               <!--难度场次步数配置-->
               <fieldset v-for="(title, index) in lv"
                 :key="index"
+                v-if="item.RTPS[index]"
                 style="margin-top:10px"
               >
                 <el-col :span="20">
@@ -254,7 +255,7 @@ export default {
       showSetResultPage: false,
       env:process.env.VUE_APP_PROJECT,
       dialogFormVisible: false,
-      lv:['Easy','Medium','Hard','Expert'],
+      lv:['Easy','Medium','Hard','Expert', 'Master','Nightmare'],
     }
   },
   created() {

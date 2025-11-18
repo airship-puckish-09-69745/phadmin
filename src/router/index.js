@@ -1863,6 +1863,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/fortunewheelmars_slots_cfg'),
                 name: 'fortunewheelmars_slots_cfg',
                 meta: { title: 'FortuneWheel(审)' }
+              },
+              {
+                path: 'pacquiaofortunemars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/pacquiaofortunemars_slots_cfg'),
+                name: 'pacquiaofortunemars_slots_cfg',
+                meta: { title: 'PacquiaoFortune(审)' }
               }
             ]
           },
@@ -3740,6 +3746,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'fortunewheelmars_slots_log',
             meta: { title: 'FortuneWheel(审)', gid: 227 }
+          },
+          {
+            path: 'pacquiaofortunemars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'pacquiaofortunemars_slots_log',
+            meta: { title: 'PacquiaoFortune(审)', gid: 237 }
           }
         ]
       },
