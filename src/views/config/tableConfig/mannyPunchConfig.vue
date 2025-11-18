@@ -154,9 +154,27 @@
                     </template>
                   </el-table-column>
 
-                  <el-table-column label="出现JP权重" width="280px">
+                  <el-table-column label="出现JP权重" width="150px">
                     <template slot-scope="scope">
                       <el-input v-model.number="item.OddsCfg[index][scope.$index].JPWeight" size="mini" ></el-input>
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column label="中Grand概率" width="150px">
+                    <template slot-scope="scope">
+                      <el-input v-model.number="item.OddsCfg[index][scope.$index].GrandRate" size="mini" ><template  slot="append">%</template></el-input>
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column label="中Major概率" width="150px">
+                    <template slot-scope="scope">
+                      <el-input v-model.number="item.OddsCfg[index][scope.$index].MajorRate" size="mini" ><template  slot="append">%</template></el-input>
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column label="中Minor概率" width="150px">
+                    <template slot-scope="scope">
+                      <el-input v-model.number="item.OddsCfg[index][scope.$index].MinorRate" size="mini" ><template  slot="append">%</template></el-input>
                     </template>
                   </el-table-column>
                   
@@ -210,6 +228,7 @@
 
             </el-col>
           </el-tab-pane>
+          
         </el-tabs>
         <el-col style="margin-top:16px;" :offset="8" :span="8">
           <el-form-item>
@@ -307,7 +326,14 @@ export default {
         let odds = []
         let id = 1
         for (const j in that.item.OddsCfg[i].OddsItem) {
-          odds.push({Id:id, Odds:that.item.OddsCfg[i].OddsItem[j].Odds / 100, JPWeight:that.item.OddsCfg[i].OddsItem[j].JPWeight})
+          odds.push({
+            Id:id, 
+            Odds:that.item.OddsCfg[i].OddsItem[j].Odds / 100, 
+            JPWeight:that.item.OddsCfg[i].OddsItem[j].JPWeight,
+            GrandRate:that.item.OddsCfg[i].OddsItem[j].GrandRate,
+            MajorRate:that.item.OddsCfg[i].OddsItem[j].MajorRate,
+            MinorRate:that.item.OddsCfg[i].OddsItem[j].MinorRate
+          })
           id ++
         }
         that.item.OddsCfg[i] = odds
@@ -337,7 +363,12 @@ export default {
               item['BaseCfg'] = []
             }
             if (!item.ReChoiceCfg) {
-              item['ReChoiceCfg'] = {LowLotteryPoolReChoice:0, LowLotteryPoolReChoiceRate:0, HighLotteryPoolReChoice:0, HighLotteryPoolReChoiceRate: 0}
+              item['ReChoiceCfg'] = {
+                LowLotteryPoolReChoice:0, 
+                LowLotteryPoolReChoiceRate:0, 
+                HighLotteryPoolReChoice:0, 
+                HighLotteryPoolReChoiceRate: 0
+              }
             }
 
             if (!item.Card){
@@ -378,16 +409,29 @@ export default {
         ret.BetMoneyLevel[i].TableMoney = (betItem)
       }
       ret.OddsCfg = []
+      ret.JPTotalWeight = []
       for (const i in this.item.OddsCfg) {
         let oddsCfg = []
         let id = 1 //步数id
+        let totalWeight = 0
         for (const j in this.item.OddsCfg[i]) {
           let tempOdds = Math.round(this.item.OddsCfg[i][j].Odds * 100) //赔率放大100倍
           let liveRate = Math.round(this.item.BaseCfg[i].Rtp * 1000000 / tempOdds) //计算存活率
-          oddsCfg.push({Id: id, Odds: tempOdds, LiveRate: liveRate, JPWeight: this.item.OddsCfg[i][j].JPWeight})
+          totalWeight += this.item.OddsCfg[i][j].JPWeight
+          oddsCfg.push({
+            Id: id, 
+            Odds: tempOdds, 
+            LiveRate: liveRate, 
+            JPWeight: this.item.OddsCfg[i][j].JPWeight,
+            GrandRate: this.item.OddsCfg[i][j].GrandRate,
+            MajorRate: this.item.OddsCfg[i][j].MajorRate,
+            MinorRate: this.item.OddsCfg[i][j].MinorRate,
+          })
           id ++
+          console.log("this.item.OddsCfg[i][j] = ", this.item.OddsCfg[i][j])
         }
         ret.OddsCfg.push({OddsItem:oddsCfg})
+        ret.JPTotalWeight.push(totalWeight)
       }
 
       for (const i in this.item.BaseCfg) {
@@ -448,7 +492,7 @@ export default {
           maxId = o.Id
         }
       }
-      this.item.OddsCfg[idx].push({ Id: maxId + 1, Odds: 1, JPWeight: 0})
+      this.item.OddsCfg[idx].push({ Id: maxId + 1, Odds: 1, JPWeight: 0, GrandRate: 0, MajorRate: 0, MinorRate: 0})
     },
     delOddsCfg(idx, index) {
         this.item.OddsCfg[idx].splice(index, 1)
