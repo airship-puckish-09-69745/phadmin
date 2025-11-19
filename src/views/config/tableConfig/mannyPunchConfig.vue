@@ -662,6 +662,9 @@ export default {
       ret.OddsCfg = []
       ret.JPTotalWeight = [] //总权重
       for (const i in this.item.OddsCfg) {
+        if (!this.item.BaseCfg[i]) {
+            continue
+          }
         let oddsCfg = []
         let id = 1 //步数id
         let totalWeight = 0
