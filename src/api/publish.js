@@ -32,6 +32,9 @@ export function getDiff(opType, keyID, envEmpty, appId) {
  * @param opType
  * @param keyID
  * @param summary 修改的配置，类型为对象型
+ * @param envEmpty true环境变量为空
+ * @param attrInfo
+ * @param appId
  * @returns {*}
  */
 export function submitPublish(opType, keyID, summary, envEmpty, attrInfo, appId) {
