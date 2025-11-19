@@ -848,7 +848,7 @@ export default {
       if (data.JackpotType == 4) {
         return
       }
-      this.dayLimitChange.title = this.JackpotTypeCfg[data.JackpotType] + '(分段限制)'
+      this.dayLimitChange.title = this.JackpotTypes[data.JackpotType].label + '(分段限制)'
       this.dayLimitChange.data = data.DayLimitArr || [{}]
       this.dayLimitChange.visible = true
       this.dayLimitChange.jackpotType = data.JackpotType
