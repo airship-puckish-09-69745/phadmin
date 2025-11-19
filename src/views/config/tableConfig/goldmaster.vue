@@ -512,21 +512,6 @@
                   </el-form>
                 </el-col>
 
-                <el-col :span="7" :offset="3">
-                  <el-form inline>
-                    <el-form-item label="敲x次后换个金币中奖权重(min)" :rules="dataRule(true,{type:'n',range:'0'})">
-                      <el-input v-model.number="itemBase.RobotCfg.MinRobotWiChangeTimes" size="mini" :required="true" />
-                    </el-form-item>
-                  </el-form>
-                </el-col>
-                <el-col :span="7" :offset="3">
-                  <el-form inline>
-                    <el-form-item label="敲x次后换个金币中奖权重(max)" :rules="dataRule(true,{type:'n',range:'0'})">
-                      <el-input v-model.number="itemBase.RobotCfg.MaxRobotWiChangeTimes" size="mini" :required="true" />
-                    </el-form-item>
-                  </el-form>
-                </el-col>
-
                 <el-col :span="20" :offset="3">
                   <span style="font-size: 12px">机器人有x%的概率自动敲击, 不是自动敲击的机器人敲击hz由敲击间隔控制 </span>
                 </el-col>
