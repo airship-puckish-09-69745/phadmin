@@ -2275,8 +2275,8 @@ export default {
                       })
                     }
                   }
-                  //console.log("matchTicketsCfgs",this.matchTicketsCfgs)
-                  //console.log("matchPropsCfgs",this.matchPropsCfgs)
+                  console.log("matchTicketsCfgs",this.matchTicketsCfgs)
+                  console.log("matchPropsCfgs",this.matchPropsCfgs)
                 }
               }
             }
