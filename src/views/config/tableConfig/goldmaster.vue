@@ -833,6 +833,12 @@ export default {
         }
       }
 
+      for (const o of this.itemBase.Jp) {
+        for (let i = 0; i < o.JackpotRegulation.RandAwards.length; i++) {
+          o.JackpotRegulation.RandAwards[i].PoolVal /= 1000
+        }
+      }
+
       for (const o of this.itemBase.RobotCfg.Bets) {
         o.Val /= 1000
       }
@@ -985,6 +991,7 @@ export default {
       for (const o of obj.Jp) {
         for (let i = 0; i < o.JackpotRegulation.RandAwards.length; i++) {
           o.JackpotCfg[i].AwardRate = o.JackpotRegulation.RandAwards[i].AwardRate
+          o.JackpotRegulation.RandAwards[i].PoolVal *= 1000
         }
       }
       for (const o of obj.BetLevel) {
