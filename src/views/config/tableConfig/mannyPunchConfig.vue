@@ -80,12 +80,6 @@
                     </template>
                   </el-table-column>
 
-                  <el-table-column label="JP中奖概率" width="280px">
-                    <template slot-scope="scope">
-                      <el-input v-model="item.BaseCfg[scope.$index].WinJPRate" size="mini" ><template  slot="append">%</template></el-input>
-                    </template>
-                  </el-table-column>
-
                   <el-table-column label="操作">
                     <template slot-scope="scope">
                       <el-button type="danger" size="mini" @click="delRowRTPSLevel(scope.$index)">删除</el-button>
@@ -159,25 +153,7 @@
                       <el-input v-model.number="item.OddsCfg[index][scope.$index].JPWeight" size="mini" ></el-input>
                     </template>
                   </el-table-column>
-                  <!--
-                  <el-table-column label="中Grand概率" width="150px">
-                    <template slot-scope="scope">
-                      <el-input v-model.number="item.OddsCfg[index][scope.$index].GrandRate" size="mini" ><template  slot="append">%</template></el-input>
-                    </template>
-                  </el-table-column>
-
-                  <el-table-column label="中Major概率" width="150px">
-                    <template slot-scope="scope">
-                      <el-input v-model.number="item.OddsCfg[index][scope.$index].MajorRate" size="mini" ><template  slot="append">%</template></el-input>
-                    </template>
-                  </el-table-column>
-
-                  <el-table-column label="中Minor概率" width="150px">
-                    <template slot-scope="scope">
-                      <el-input v-model.number="item.OddsCfg[index][scope.$index].MinorRate" size="mini" ><template  slot="append">%</template></el-input>
-                    </template>
-                  </el-table-column>
-                -->              
+                  
                   <el-table-column label="操作" width="180px">
                     <template slot-scope="scope">
                       <el-button type="danger" size="mini" @click="delOddsCfg(index, scope.$index)">删除</el-button>
@@ -244,6 +220,17 @@
                 </el-col>
               </el-form>
             </el-col>
+            
+            <el-col :span="24" :offset="5">
+              <el-form :inline="true">
+                <el-col :span="8">
+                  <el-form-item label="单局开奖最高开出显示奖池(%)："  v-if="!IsPHAuditEnv()">
+                    <el-input v-model.number="JackpotCfg.ShowPoolLimitRate" size="mini" />
+                  </el-form-item>
+                </el-col>
+              </el-form>
+            </el-col>
+          
             <fieldset style="margin-top:10px" v-if="!IsPHAuditEnv()">
               <legend>jackpot调控配置</legend>
               <el-row>
@@ -299,7 +286,7 @@
                       <el-input v-model.number="scope.row.JackpotRate" ><template slot="append">‰</template></el-input>
                     </template>
                   </el-table-column>
-                  <!--
+                  
                   <el-table-column label="开出的奖池值" prop="PoolVal"   v-if="!IsPHAuditEnv()">
                     <template slot-scope="scope">
                       >=<el-input v-model.number="scope.row.PoolVal" style="width: 120px;" size="mini" :required="true" />
@@ -311,7 +298,8 @@
                       {{ showOpenPoolRate(scope.row.JackpotType, scope.row.RateArr) }}
                     </template>
                   </el-table-column>
-                -->
+                  <!--
+                
                 <el-table-column label="分段限制" prop="DayLimitArr">
                   <template slot-scope="scope">
                     <el-button v-if="scope.row.AwardType == 1" type="primary" icon="el-icon-edit" circle size="mini" @click="showDayLimitDialog(scope.row)" />
@@ -342,7 +330,7 @@
                     {{ showOpenPoolRate(scope.row.JackpotType, scope.row.RateArr) }}
                   </template>
                 </el-table-column>
-                
+                -->
                 </el-table>
               </el-row>
             </fieldset>
@@ -564,10 +552,7 @@ export default {
           odds.push({
             Id:id, 
             Odds:that.item.OddsCfg[i].OddsItem[j].Odds / 100, 
-            JPWeight:that.item.OddsCfg[i].OddsItem[j].JPWeight,
-            // GrandRate:that.item.OddsCfg[i].OddsItem[j].GrandRate,
-            // MajorRate:that.item.OddsCfg[i].OddsItem[j].MajorRate,
-            // MinorRate:that.item.OddsCfg[i].OddsItem[j].MinorRate
+            JPWeight:that.item.OddsCfg[i].OddsItem[j].JPWeight
           })
           id ++
         }
@@ -576,7 +561,6 @@ export default {
 
       for (const i in that.item.BaseCfg) {
         that.item.BaseCfg[i].Rtp = that.item.BaseCfg[i].Rtp / 100
-        that.item.BaseCfg[i].WinJPRate = that.item.BaseCfg[i].WinJPRate / 100
       }
     },
     getData() {
@@ -676,10 +660,7 @@ export default {
             Id: id, 
             Odds: tempOdds, 
             LiveRate: liveRate, 
-            JPWeight: this.item.OddsCfg[i][j].JPWeight,
-            // GrandRate: this.item.OddsCfg[i][j].GrandRate,
-            // MajorRate: this.item.OddsCfg[i][j].MajorRate,
-            // MinorRate: this.item.OddsCfg[i][j].MinorRate,
+            JPWeight: this.item.OddsCfg[i][j].JPWeight
           })
           id ++
           console.log("this.item.OddsCfg[i][j] = ", this.item.OddsCfg[i][j])
@@ -690,7 +671,6 @@ export default {
 
       for (const i in this.item.BaseCfg) {
         ret.BaseCfg[i].Rtp = Math.round(this.item.BaseCfg[i].Rtp * 100)
-        ret.BaseCfg[i].WinJPRate = Math.round(this.item.BaseCfg[i].WinJPRate * 100)
       }
 
       ret.ReChoiceCfg.LowLotteryPoolReChoice *= 1000
@@ -716,7 +696,7 @@ export default {
       if (!this.item.BaseCfg) {
         this.item['BaseCfg'] = []
       }
-      this.item.BaseCfg.push({Rtp: 96, IncJPPercent: 1, WinJPRate: 0.15})
+      this.item.BaseCfg.push({Rtp: 96, IncJPPercent: 1})
     },
     delRowRTPSLevel(index) {
       console.log(index)
@@ -752,7 +732,7 @@ export default {
           maxId = o.Id
         }
       }
-      this.item.OddsCfg[idx].push({ Id: maxId + 1, Odds: 1, JPWeight: 0})//, GrandRate: 0, MajorRate: 0, MinorRate: 0
+      this.item.OddsCfg[idx].push({ Id: maxId + 1, Odds: 1, JPWeight: 0})
     },
     delOddsCfg(idx, index) {
         this.item.OddsCfg[idx].splice(index, 1)
