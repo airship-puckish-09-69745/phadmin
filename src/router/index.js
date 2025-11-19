@@ -1086,6 +1086,12 @@ export const asyncRoutes = [
             meta: { title: 'H ilo ◐' }
           },
           {
+            path: 'hiloPlus_cfg',
+            component: () => import('@/views/config/tableConfig/minigames/hiloPlus'),
+            name: 'hiloPlus_cfg',
+            meta: { title: 'H iloPlus ◐' }
+          },
+          {
             path: 'sweeper',
             component: () => import('@/views/config/tableConfig/sweeperCfg'),
             name: 'sweeperCfg',
@@ -2965,6 +2971,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_hilo',
             meta: { title: 'H ilo ◐', gid: 102 }
+          },
+          {
+            path: 'playlog_hiloPlus',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_hiloPlus',
+            meta: { title: 'H iloPlus ◐', gid: 140 }
           },
           {
             path: 'playlog_sweeper',

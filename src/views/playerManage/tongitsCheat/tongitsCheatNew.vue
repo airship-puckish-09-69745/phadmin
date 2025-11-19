@@ -440,7 +440,7 @@ export default {
     async getUidLogsAndTidInfos(row) {
       const tidInfos = []
       await this.getUidLogs(row,tidInfos)
-      await this.getTableMoney(tidInfos)
+      // await this.getTableMoney(tidInfos)
     },
     async getUidLogs(row, tidInfos) {
       // console.log(ttt)
@@ -516,6 +516,7 @@ export default {
                     if (lastTime === 0 || lastTime <= cheatRow.endTime) {
                       lastTime = cheatRow.endTime
                       lastId = cheatRow.logId
+                      tidCheatLog.ChangeMoney = cheatRow.partnerChangeMoney
                     }
                   }
                 }
