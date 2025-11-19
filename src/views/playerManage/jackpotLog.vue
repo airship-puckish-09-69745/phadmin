@@ -497,6 +497,7 @@ export default {
         { 'value': 216, 'label': 'Phoenix' },
         { 'value': 134, 'label': 'Pusoy JP' },
         { 'value': 135, 'label': 'SUPER COLOR' },
+        { 'value': 140, 'label': 'HiloPlus' },
         { 'value': 500, 'label': 'GoldMaster' },
       ],
       appConfig: [
