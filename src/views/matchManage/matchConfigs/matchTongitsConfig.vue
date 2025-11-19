@@ -2240,11 +2240,11 @@ export default {
                       continue
                     }
                     const exitData = JSON.parse(objs.list[i].item_extra)
-                    onsole.log("ticketID 2222 exitData   ",objs.list[i].id,exitData)
+                    console.log("ticketID 2222 exitData   ",objs.list[i].id,exitData)
                    if(exitData === null || exitData === undefined || exitData.appId === 0 || typeof exitData.appId === 'undefined'){
                       continue
                     }
-                    onsole.log("ticketID 3333  ",objs[i].id)
+                    console.log("ticketID 3333  ",objs[i].id)
                     let ticket = ticketConfigList[exitData.appId].find(ticket => ticket.ticketId === objs.list[i].id)
                     if(ticket){
                       canPush = true
@@ -2278,8 +2278,8 @@ export default {
                       })
                     }
                   }
-                 // console.log("matchTicketsCfgs",this.matchTicketsCfgs)
-                 // console.log("matchPropsCfgs",this.matchPropsCfgs)
+                  console.log("matchTicketsCfgs",this.matchTicketsCfgs)
+                 console.log("matchPropsCfgs",this.matchPropsCfgs)
                 }
               }
             }
