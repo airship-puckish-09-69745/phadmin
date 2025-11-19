@@ -2244,7 +2244,6 @@ export default {
                    if(exitData === null || exitData === undefined || exitData.appId === 0 || typeof exitData.appId === 'undefined'){
                       continue
                     }
-                    console.log("ticketID 3333  ",objs[i].id)
                     let ticket = ticketConfigList[exitData.appId].find(ticket => ticket.ticketId === objs.list[i].id)
                     if(ticket){
                       canPush = true
