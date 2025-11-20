@@ -499,6 +499,7 @@ export default {
         { 'value': 135, 'label': 'SUPER COLOR' },
         { 'value': 140, 'label': 'HiloPlus' },
         { 'value': 500, 'label': 'GoldMaster' },
+        { 'value': 139, 'label': 'Manny Punch' },
       ],
       appConfig: [
         { 'value': 0, 'label': '全部' },
