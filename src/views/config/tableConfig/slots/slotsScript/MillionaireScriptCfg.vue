@@ -19,7 +19,7 @@
           <fieldset style="margin:20px auto;">
             <legend>大奖配置</legend>
             <el-row>
-              <el-col :span="8" :offset="2" style="text-align: center;">
+              <el-col :span="8" style="text-align: center;">
                 <el-form-item label="下注总金额抽水(千分之一)：">
                   <el-input v-model.number="item.BigPrizeCfg.TaxPerThousand" autosize>
                     <template slot="append">‰(千分之一)</template>
@@ -35,7 +35,7 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-col :span="8" :offset="2">
+              <el-col :span="8">
                 <el-form-item label="中奖最大间隔(多少次中一次奖)">
                   <el-input v-model.number="item.BigPrizeCfg.HitSteps">
                     <template slot="append">次</template>
