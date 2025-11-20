@@ -28,6 +28,15 @@ export const MATCH_TICKET_RIGHTS_ID_CFG_DEV = {
           { 'ticketId': 334, 'sceneId': 201, 'label': 'Tongits新版TICKET-334' },
           { 'ticketId': 372, 'sceneId': 202, 'label': 'Texas测试新版德州门票带唯一ID-372' },
           { 'ticketId': 374, 'sceneId': 203, 'label': 'Pusoy新版门票 带唯一ID-374' },
+
+          { 'ticketId':410, 'sceneId':207 , 'label': '冬季赛日赛门票' },
+          { 'ticketId':412, 'sceneId':208 , 'label': '冬季赛周赛门票' },
+          { 'ticketId':413, 'sceneId':209, 'label': '冬季赛月赛门票' },
+          { 'ticketId':414, 'sceneId':210, 'label': '冬季赛semi-final' },
+          { 'ticketId':415, 'sceneId':211, 'label': '冬季赛线上决赛' },
+          { 'ticketId':416, 'sceneId':212 , 'label': '豪客赛门票' },
+          { 'ticketId':417, 'sceneId':213, 'label': '魔戒卫星赛门票' },
+          { 'ticketId':418 , 'sceneId':214, 'label': '机酒赛门票' },
       ],
       1000003: [
         { 'ticketId': 407, 'sceneId': 204, 'label': 'Tongits新版门票 带唯一ID-407' },
@@ -35,7 +44,7 @@ export const MATCH_TICKET_RIGHTS_ID_CFG_DEV = {
         { 'ticketId': 409, 'sceneId': 206, 'label': 'Pusoy新版参赛券-409' },
       ]
     }
-  
+
 
 
 //uat 线上配置

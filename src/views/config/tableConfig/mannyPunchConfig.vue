@@ -73,13 +73,13 @@
                       <el-input v-model="item.BaseCfg[scope.$index].Rtp" size="mini" ><template  slot="append">%</template></el-input>
                     </template>
                   </el-table-column>
-
+                  <!--
                   <el-table-column label="进入JP奖池百分百" width="280px">
                     <template slot-scope="scope">
                       <el-input v-model="item.BaseCfg[scope.$index].IncJPPercent" size="mini" ><template  slot="append">%</template></el-input>
                     </template>
                   </el-table-column>
-
+                -->
                   <el-table-column label="操作">
                     <template slot-scope="scope">
                       <el-button type="danger" size="mini" @click="delRowRTPSLevel(scope.$index)">删除</el-button>
@@ -209,8 +209,8 @@
             <el-col :span="24" :offset="5">
               <el-form :inline="true">
                 <el-col :span="8">
-                  <el-form-item label="奖池保底">
-                    <el-input v-model.number="JackpotCfg.BaseValue" size="mini" ></el-input>
+                  <el-form-item label="jackpot服务费*bet(抽水比例)">
+                    <el-input v-model.number="JackpotCfg.JackpotFee" size="mini" ><template slot="append">‰</template></el-input>
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
@@ -226,6 +226,11 @@
                 <el-col :span="8">
                   <el-form-item label="单局开奖最高开出显示奖池(%)："  v-if="!IsPHAuditEnv()">
                     <el-input v-model.number="JackpotCfg.ShowPoolLimitRate" size="mini" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item label="奖池保底">
+                    <el-input v-model.number="JackpotCfg.BaseValue" size="mini" ></el-input>
                   </el-form-item>
                 </el-col>
               </el-form>
@@ -268,7 +273,7 @@
                       </el-select>
                     </template>
                   </el-table-column>
-                  <el-table-column label="发放占比" prop="Value">
+                  <el-table-column label="发放数量" prop="Value">
                     <template slot-scope="scope">
                       <el-input v-model.number="scope.row.AwardRate" style="width: 180px;" size="mini" :required="true">
                         <template v-if="scope.row.AwardType==1" slot="append">%</template>
@@ -286,7 +291,7 @@
                       <el-input v-model.number="scope.row.JackpotRate" ><template slot="append">‰</template></el-input>
                     </template>
                   </el-table-column>
-                  
+                  <!--
                   <el-table-column label="开出的奖池值" prop="PoolVal"   v-if="!IsPHAuditEnv()">
                     <template slot-scope="scope">
                       >=<el-input v-model.number="scope.row.PoolVal" style="width: 120px;" size="mini" :required="true" />
@@ -298,39 +303,38 @@
                       {{ showOpenPoolRate(scope.row.JackpotType, scope.row.RateArr) }}
                     </template>
                   </el-table-column>
-                  <!--
-                
-                <el-table-column label="分段限制" prop="DayLimitArr">
-                  <template slot-scope="scope">
-                    <el-button v-if="scope.row.AwardType == 1" type="primary" icon="el-icon-edit" circle size="mini" @click="showDayLimitDialog(scope.row)" />
-                    <el-tag v-for="tag, key in scope.row.DayLimitArr" v-if="scope.row.AwardType == 1" :key="key" disable-transitions>{{ showOpenDayLimit(tag) }}</el-tag>
-                  </template>
-                </el-table-column>
-                <el-table-column label="玩家开奖池条件(%)" width="260">
-                  <template slot-scope="scope">
-                    <div v-if="scope.row.AwardType==1">
-                      虚拟*<el-input v-model.number="scope.row.VrPoolRate" style="width: 70px;" size="mini" :required="true" />
-                      &lt; 真实*<el-input v-model.number="scope.row.RealPoolRate" style="width: 70px;" size="mini" :required="true" />
-                    </div>
-                    <span v-if="scope.row.JackpotType==4">
-                      3Bet中奖会判断玩家的个人JP贡献值，中奖额≤贡献值才开，玩家开奖后根据中奖额扣除贡献值
-                    </span>
-                  </template>
-                </el-table-column>
-      
-                <el-table-column label="机器人开奖池值" prop="PoolVal" width="180">
-                  <template v-if="scope.row.AwardType==1" slot-scope="scope">
-                    >=<el-input v-model.number="scope.row.PoolVal" style="width: 120px;" size="mini" :required="true" />
-                  </template>
-                </el-table-column>
-           
-                <el-table-column label="机器人开奖数量概率" prop="RateArr" width="160">
-                  <template slot-scope="scope">
-                    <el-button v-if="scope.row.AwardType == 1" type="primary" icon="el-icon-edit" circle size="mini" @click="showPoolNumDialog(scope.row)" />
-                    {{ showOpenPoolRate(scope.row.JackpotType, scope.row.RateArr) }}
-                  </template>
-                </el-table-column>
-                -->
+                  -->
+                  <el-table-column label="分段限制" prop="DayLimitArr">
+                    <template slot-scope="scope">
+                      <el-button v-if="scope.row.AwardType == 1" type="primary" icon="el-icon-edit" circle size="mini" @click="showDayLimitDialog(scope.row)" />
+                      <el-tag v-for="tag, key in scope.row.DayLimitArr" v-if="scope.row.AwardType == 1" :key="key" disable-transitions>{{ showOpenDayLimit(tag) }}</el-tag>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="玩家开奖池条件(%)" width="260">
+                    <template slot-scope="scope">
+                      <div v-if="scope.row.AwardType==1">
+                        虚拟*<el-input v-model.number="scope.row.VrPoolRate" style="width: 70px;" size="mini" :required="true" />
+                        &lt; 真实*<el-input v-model.number="scope.row.RealPoolRate" style="width: 70px;" size="mini" :required="true" />
+                      </div>
+                      <span v-if="scope.row.JackpotType==4">
+                        3Bet中奖会判断玩家的个人JP贡献值，中奖额≤贡献值才开，玩家开奖后根据中奖额扣除贡献值
+                      </span>
+                    </template>
+                  </el-table-column>
+        
+                  <el-table-column label="机器人开奖池值" prop="PoolVal" width="180">
+                    <template v-if="scope.row.AwardType==1" slot-scope="scope">
+                      >=<el-input v-model.number="scope.row.PoolVal" style="width: 120px;" size="mini" :required="true" />
+                    </template>
+                  </el-table-column>
+            
+                  <el-table-column label="机器人开奖数量概率" prop="RateArr" width="160">
+                    <template slot-scope="scope">
+                      <el-button v-if="scope.row.AwardType == 1" type="primary" icon="el-icon-edit" circle size="mini" @click="showPoolNumDialog(scope.row)" />
+                      {{ showOpenPoolRate(scope.row.JackpotType, scope.row.RateArr) }}
+                    </template>
+                  </el-table-column>
+                  
                 </el-table>
               </el-row>
             </fieldset>
@@ -696,7 +700,7 @@ export default {
       if (!this.item.BaseCfg) {
         this.item['BaseCfg'] = []
       }
-      this.item.BaseCfg.push({Rtp: 96, IncJPPercent: 1})
+      this.item.BaseCfg.push({Rtp: 96})
     },
     delRowRTPSLevel(index) {
       console.log(index)
