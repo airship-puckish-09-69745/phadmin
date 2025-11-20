@@ -131,34 +131,42 @@
           <fieldset style="margin:20px auto;">
             <legend>大奖预热配置</legend>
             <el-row>
-              <el-col :span="8" :offset="4" style="text-align: center;">
+              <el-col :span="8" :offset="4">
                 <el-form-item label="1个Scatter的概率：">
                   <el-input v-model.number="item.WarmUpCfg.Scatter1Rate" autosize>
                     <template slot="append">%(百分之一)</template>
                   </el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="8" style="text-align: center;">
+            </el-row>
+            <el-row>
+              <el-col :span="8" :offset="4">
                 <el-form-item label="2个Scatter的概率：">
                   <el-input v-model.number="item.WarmUpCfg.Scatter2Rate" autosize>
                     <template slot="append">%(百分之一)</template>
                   </el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="8" :offset="4" style="text-align: center;">
+            </el-row>
+            <el-row>
+              <el-col :span="8" :offset="4">
                 <el-form-item label="3个Scatter的概率：">
                   <el-input v-model.number="item.WarmUpCfg.Scatter3Rate" autosize>
                     <template slot="append">%(百分之一)</template>
                   </el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="8">
+            </el-row>
+            <el-row>
+              <el-col :span="8" :offset="4">
                 <el-form-item label="增长系数：">
                   <el-input v-model.number="item.WarmUpCfg.MultiRate">
                     <template slot="append">放大100倍</template>
                   </el-input>
                 </el-form-item>
               </el-col>
+            </el-row>
+            <el-row>
               <el-col :span="8" :offset="4">
                 <el-form-item label="概率上限：">
                   <el-input v-model.number="item.WarmUpCfg.MaxRate">
@@ -166,7 +174,9 @@
                   </el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="8">
+            </el-row>
+            <el-row>
+              <el-col :span="8" :offset="4">
                 <el-form-item label="开关：">
                   <el-radio-group v-model="item.WarmUpCfg.WarmUpEnabled">
                     <el-radio :label="true">启用</el-radio>
