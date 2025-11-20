@@ -138,7 +138,7 @@
                   </el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="8" :offset="4" style="text-align: center;">
+              <el-col :span="8" style="text-align: center;">
                 <el-form-item label="2个Scatter的概率：">
                   <el-input v-model.number="item.WarmUpCfg.Scatter2Rate" autosize>
                     <template slot="append">%(百分之一)</template>
@@ -166,7 +166,7 @@
                   </el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="8" :offset="4">
+              <el-col :span="8">
                 <el-form-item label="开关：">
                   <el-radio-group v-model="item.WarmUpCfg.WarmUpEnabled">
                     <el-radio :label="true">启用</el-radio>
