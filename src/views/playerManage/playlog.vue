@@ -772,6 +772,111 @@
       </el-descriptions>
     </el-dialog>
 
+    <el-dialog title="Blackjackmh牌局详情" :visible.sync="blackjackmhDetailVisible" width="1200px">
+      <el-descriptions class="margin-top" title="" :column="3" border>
+        <el-descriptions-item>
+          <template slot="label">
+            底注：
+          </template>
+          {{ blackjackmhDetail.minBet / 1000 }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            庄家点数：
+          </template>
+          {{ blackjackmhDetail.dealerLog.points }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            牌型：
+          </template>
+          {{
+            blackjackmhDetail.dealerLog.cardType === 1 ? "点牌" : (blackjackmhDetail.dealerLog.cardType === 2 ? "BlackJack" : "爆牌")
+          }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            庄家手牌：
+          </template>
+          <div v-for="card in blackjackmhDetail.dealerLog.cards" class="block">
+            <el-image
+              style="width: 37px; height: 50px"
+              :src="getCardUrl(card)"
+            />
+          </div>
+        </el-descriptions-item>
+      </el-descriptions>
+
+      <el-table :data="[blackjackmhDetail.playerLog]" border>
+        <el-table-column prop="uid" label="UID" />
+        <el-table-column prop="totalBet" label="投注金额">
+          <template slot-scope="scope">
+            <div v-for="(item,index) in scope.row.cardGroupLog">
+              <hr v-if="index > 0" class="blackJackHr">
+              {{ item.bet / 1000 }}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="insurance" label="投保金额">
+          <template slot-scope="scope">
+            {{ scope.row.insurance / 1000 }}
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="cards" label="手牌" width="300px">
+          <template slot-scope="scope">
+            <div v-for="(item,index) in scope.row.cardGroupLog" class="block">
+              <hr v-if="index > 0" class="blackJackHr">
+              {{ '手牌' + (index + 1) + ': ' }}
+              <div v-for="(card) in item.cards" class="block">
+                <el-image
+                  style="width: 37px; height: 50px"
+                  :src="getCardUrl(card)"
+                />
+              </div>
+              <hr v-if="(index > 0) && (item.splitCards.length > 0)" class="blackJackHr">
+              {{ '分牌手牌' + (index + 1) + ': ' }}
+              <div v-for="(card) in item.splitCards" class="block">
+                <el-image
+                  style="width: 37px; height: 50px"
+                  :src="getCardUrl(card)"
+                />
+              </div>
+            </div>
+          </template>
+
+        </el-table-column>
+        <el-table-column label="是否爆牌" width="200px">
+          <template slot-scope="scope">
+            <div v-for="(item,index) in scope.row.cardGroupLog" class="block" style="width: 100%;white-space: pre-wrap;">
+              <hr v-if="index > 0" class="blackJackHr">
+              {{'手牌' + (index + 1) + ': ' + (item.cardType == 1 ? "点牌" : (item.cardType == 2 ? "BlackJack" : "爆牌"))}}
+              <hr v-if="(index > 0) && (item.splitCards.length > 0)" class="blackJackHr">
+              {{'分牌手牌' + (index + 1) + ': ' + (item.splitCardType == 1 ? "点牌" : (item.splitCardType == 2 ? "BlackJack" : "爆牌"))}}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="输赢">
+          <template slot-scope="scope">
+            <div v-for="(item,index) in scope.row.cardGroupLog" class="block" style="width: 100%;white-space: pre-wrap;">
+              <hr v-if="index > 0" class="blackJackHr">
+              {{ item.totalWin / 1000 }}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="moneyBet" label="保险中奖金额">
+          <template slot-scope="scope">
+            {{ scope.row.insurancePay / 1000 }}
+          </template>
+        </el-table-column>
+      </el-table>
+      <br>
+      <el-descriptions title="扩展信息">
+        <el-descriptions-item label="桌子ID">{{ blackjackmhDetail.tid }}</el-descriptions-item>
+        <el-descriptions-item label="Server日志ID">{{ blackjackmhDetail.logId }}</el-descriptions-item>
+      </el-descriptions>
+    </el-dialog>
+
     <el-dialog title="多米诺牌局详情" :visible.sync="dominoDetailVisible" width="1200px">
       <el-descriptions class="margin-top" title="" :column="2" border>
         <el-descriptions-item>
@@ -3830,6 +3935,9 @@ export default {
       blackjackDetail: {},
       blackjackDetailVisible: false,
 
+      blackjackmhDetail: {},
+      blackjackmhDetailVisible: false,
+
       dominoDetail: {},
       dominoDetailVisible: false,
 
@@ -4411,6 +4519,8 @@ export default {
             $this.showBlackjackGame(obj)
           // } else if (gid === 21) {
           //   $this.showPusoyGame(obj)
+          } else if (gid == 137) {
+            $this.showBlackjackmhGame(obj)
           } else if (gid === 100) {
             $this.showTowerGame(obj)
           } else if (gid === 101) {
@@ -5482,6 +5592,11 @@ export default {
       console.log(obj)
       this.blackjackDetail = obj
       this.blackjackDetailVisible = true
+    },
+    showBlackjackmhGame(obj) {
+      console.log(obj)
+      this.blackjackmhDetail = obj
+      this.blackjackmhDetailVisible = true
     },
     showPusoyDosGame(obj) {
       this.pusoyDos.pusoyDosDetail = obj
