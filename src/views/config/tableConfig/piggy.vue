@@ -966,11 +966,11 @@ export default {
         }
       }
 
-      for (const o of this.item.Jp) {
-        for (let i = 0; i < o.JackpotRegulation.RandAwards.length; i++) {
-          o.JackpotRegulation.RandAwards[i].PoolVal /= 1000
-        }
-      }
+      // for (const o of this.item.Jp) {
+      //   for (let i = 0; i < o.JackpotRegulation.RandAwards.length; i++) {
+      //     o.JackpotRegulation.RandAwards[i].PoolVal /= 1000
+      //   }
+      // }
 
     },
     showOpenDayLimit(data) {
@@ -1118,7 +1118,7 @@ export default {
       for (const o of obj.Jp) {
         for (let i = 0; i < o.JackpotRegulation.RandAwards.length; i++) {
           o.JackpotCfg[i].AwardRate = o.JackpotRegulation.RandAwards[i].AwardRate
-          o.JackpotRegulation.RandAwards[i].PoolVal *= 1000
+          // o.JackpotRegulation.RandAwards[i].PoolVal *= 1000
         }
         o.MinBet = parseInt(o.MinBet * 1000)
         o.MaxBet = parseInt(o.MaxBet * 1000)
