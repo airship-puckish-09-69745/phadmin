@@ -1009,6 +1009,7 @@ export default {
         for (let ii = 0; ii < this.edit.eggs.length; ii++) {
           const egg = this.edit.eggs[ii]
           if (egg.Color === eggOrg.Color) {
+            eggOrg.Name = egg.Name + '-' + this.edit.eggColumns[eggOrg.Level].label
             eggOrg.Reward = egg.Rewards[eggOrg.Level] * 1000
           }
         }
