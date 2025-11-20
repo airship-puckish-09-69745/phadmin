@@ -516,7 +516,10 @@ export default {
                     if (lastTime === 0 || lastTime <= cheatRow.endTime) {
                       lastTime = cheatRow.endTime
                       lastId = cheatRow.logId
-                      tidCheatLog.ChangeMoney = cheatRow.partnerChangeMoney
+                      if (cheatRow.partnerChangeMoney) {
+                        tidCheatLog.ChangeMoney = cheatRow.partnerChangeMoney
+                      }
+
                     }
                   }
                 }
