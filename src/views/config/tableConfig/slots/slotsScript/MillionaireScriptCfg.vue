@@ -19,7 +19,7 @@
           <fieldset style="margin:20px auto;">
             <legend>大奖配置</legend>
             <el-row>
-              <el-col :span="8" :offset="4" style="text-align: center;">
+              <el-col :span="8" style="text-align: center;">
                 <el-form-item label="下注总金额抽水(千分之一)：">
                   <el-input v-model.number="item.BigPrizeCfg.TaxPerThousand" autosize>
                     <template slot="append">‰(千分之一)</template>
@@ -33,7 +33,9 @@
                   </el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="8" :offset="4">
+            </el-row>
+            <el-row>
+              <el-col :span="8">
                 <el-form-item label="中奖最大间隔(多少次中一次奖)">
                   <el-input v-model.number="item.BigPrizeCfg.HitSteps">
                     <template slot="append">次</template>
@@ -110,11 +112,11 @@
               <el-button @click="addGroup">添加新的用户群大奖配置</el-button>
             </el-row>
             <el-table :data="item.BigPrizeGroups" stripe border :header-cell-style="libShow.DefaultTableHeadClass" :row-style="{height:'10px'}" :cell-style="libShow.DefaultTableCell" style="width: 100%; margin: 10px auto;">
-              <el-table-column prop="GroupId"  label="分组ID" width="200"><template slot-scope="scope"><el-input v-model.number="scope.row.GroupId" size="mini" /></template></el-table-column>
-              <el-table-column prop="GroupName" label="分组名" width="400"><template slot-scope="scope"><el-input v-model="scope.row.GroupName" size="mini" /></template></el-table-column>
+              <el-table-column prop="GroupId"  label="分组ID" width="100"><template slot-scope="scope"><el-input v-model.number="scope.row.GroupId" size="mini" /></template></el-table-column>
+              <el-table-column prop="GroupName" label="分组名" width="300"><template slot-scope="scope"><el-input v-model="scope.row.GroupName" size="mini" /></template></el-table-column>
               <el-table-column prop="GroupDesc" label="描述" width="400"><template slot-scope="scope"><el-input type="textarea" :rows="3" v-model="scope.row.GroupDesc" size="mini" /></template></el-table-column>
-              <el-table-column prop="HitPerMillion" label="中奖率(百万分之一)" width="300"><template slot-scope="scope"><el-input v-model.number="scope.row.HitPerMillion" size="mini" /></template></el-table-column>
-              <el-table-column prop="Rules" label="筛选条件" width="400">
+              <el-table-column prop="HitPerMillion" label="中奖率(百万分之一)" width="200"><template slot-scope="scope"><el-input v-model.number="scope.row.HitPerMillion" size="mini" /></template></el-table-column>
+              <el-table-column prop="Rules" label="筛选条件" width="300">
                 <template slot-scope="scope"><span v-html="groupRules2Text(scope.$index)"></span></template>
               </el-table-column>
               <el-table-column label="操作列表" width="200">
@@ -131,27 +133,33 @@
           <fieldset style="margin:20px auto;">
             <legend>大奖预热配置</legend>
             <el-row>
-              <el-col :span="8" :offset="4" style="text-align: center;">
+              <el-col :span="8">
                 <el-form-item label="1个Scatter的概率：">
                   <el-input v-model.number="item.WarmUpCfg.Scatter1Rate" autosize>
                     <template slot="append">%(百分之一)</template>
                   </el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="8" :offset="4" style="text-align: center;">
+            </el-row>
+            <el-row>
+              <el-col :span="8">
                 <el-form-item label="2个Scatter的概率：">
                   <el-input v-model.number="item.WarmUpCfg.Scatter2Rate" autosize>
                     <template slot="append">%(百分之一)</template>
                   </el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="8" :offset="4" style="text-align: center;">
+            </el-row>
+            <el-row>
+              <el-col :span="8">
                 <el-form-item label="3个Scatter的概率：">
                   <el-input v-model.number="item.WarmUpCfg.Scatter3Rate" autosize>
                     <template slot="append">%(百分之一)</template>
                   </el-input>
                 </el-form-item>
               </el-col>
+            </el-row>
+            <el-row>
               <el-col :span="8">
                 <el-form-item label="增长系数：">
                   <el-input v-model.number="item.WarmUpCfg.MultiRate">
@@ -159,14 +167,18 @@
                   </el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="8" :offset="4">
+            </el-row>
+            <el-row>
+              <el-col :span="8">
                 <el-form-item label="概率上限：">
                   <el-input v-model.number="item.WarmUpCfg.MaxRate">
                     <template slot="append">‱(万分之一)</template>
                   </el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="8" :offset="4">
+            </el-row>
+            <el-row>
+              <el-col :span="8">
                 <el-form-item label="开关：">
                   <el-radio-group v-model="item.WarmUpCfg.WarmUpEnabled">
                     <el-radio :label="true">启用</el-radio>
@@ -178,7 +190,7 @@
           </fieldset>
           <!-- 大奖预热配置 结束 -->
 
-          <el-col :offset="16" :span="8">
+          <el-col :span="12">
             <el-form-item>
               <el-button type="primary" @click="setData">保存</el-button>
             </el-form-item>
