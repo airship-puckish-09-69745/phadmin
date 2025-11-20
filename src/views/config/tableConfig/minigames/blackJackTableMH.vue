@@ -203,7 +203,13 @@
         ret.betAreas = []
         for (let i = 0; i < this.item.betAreas.length; i++) {
           const obj = JSON.parse(JSON.stringify(this.item.betAreas[i]))
-          obj.moneyOption = ret.minBet * this.item.odds * 1000
+          console.log("hrh test")
+          console.log(this.item.betAreas[i].moneyOption)
+          console.log(obj.moneyOption)
+          console.log(ret.minBet)
+          console.log(obj.odds)
+          obj.moneyOption = ret.minBet * obj.odds * 1000
+          console.log(obj.moneyOption)
           ret.betAreas.push(obj)
         }
 
