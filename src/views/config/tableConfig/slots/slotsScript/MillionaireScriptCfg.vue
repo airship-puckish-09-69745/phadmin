@@ -190,7 +190,7 @@
           </fieldset>
           <!-- 大奖预热配置 结束 -->
 
-          <el-col :offset="16" :span="8">
+          <el-col :offset="2" :span="8">
             <el-form-item>
               <el-button type="primary" @click="setData">保存</el-button>
             </el-form-item>
