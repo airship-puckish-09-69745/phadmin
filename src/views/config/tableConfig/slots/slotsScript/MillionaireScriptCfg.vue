@@ -127,6 +127,57 @@
           </fieldset>
           <!-- 用户群大奖配置 结束 -->
 
+          <!-- 大奖预热配置 开始 -->
+          <fieldset style="margin:20px auto;">
+            <legend>大奖预热配置</legend>
+            <el-row>
+              <el-col :span="8" :offset="4" style="text-align: center;">
+                <el-form-item label="1个Scatter的概率：">
+                  <el-input v-model.number="item.WarmUpCfg.Scatter1Rate" autosize>
+                    <template slot="append">%(百分之一)</template>
+                  </el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8" :offset="4" style="text-align: center;">
+                <el-form-item label="2个Scatter的概率：">
+                  <el-input v-model.number="item.WarmUpCfg.Scatter2Rate" autosize>
+                    <template slot="append">%(百分之一)</template>
+                  </el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8" :offset="4" style="text-align: center;">
+                <el-form-item label="3个Scatter的概率：">
+                  <el-input v-model.number="item.WarmUpCfg.Scatter3Rate" autosize>
+                    <template slot="append">%(百分之一)</template>
+                  </el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="增长系数：">
+                  <el-input v-model.number="item.WarmUpCfg.MultiRate">
+                    <template slot="append">放大100倍</template>
+                  </el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8" :offset="4">
+                <el-form-item label="概率上限：">
+                  <el-input v-model.number="item.WarmUpCfg.MaxRate">
+                    <template slot="append">‱(万分之一)</template>
+                  </el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8" :offset="4">
+                <el-form-item label="开关：">
+                  <el-radio-group v-model="item.WarmUpCfg.WarmUpEnabled">
+                    <el-radio :label="true">启用</el-radio>
+                    <el-radio :label="false">禁用</el-radio>
+                  </el-radio-group>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </fieldset>
+          <!-- 大奖预热配置 结束 -->
+
           <el-col :offset="16" :span="8">
             <el-form-item>
               <el-button type="primary" @click="setData">保存</el-button>
@@ -289,7 +340,15 @@ export default {
           OddsCfg: [],
           Plans: []
         },
-        BigPrizeGroups: []
+        BigPrizeGroups: [],
+        WarmUpCfg: {
+          Scatter1Rate: 0,
+          Scatter2Rate: 0,
+          Scatter3Rate: 0,
+          MultiRate: 0,
+          MaxRate: 0,
+          WarmUpEnabled: false
+        }
       },
       gidOptions: {},
       gameOptions: [],
@@ -549,6 +608,9 @@ export default {
       if (!this.checkBigPrizeGroup()) {
         return false
       }
+      if (!this.checkWarmUpCfg()) {
+        return false
+      }
       this.form.Data = JSON.stringify(this.getPostData())
       const $this = this
       // 设置修改后数据
@@ -780,6 +842,32 @@ export default {
           return false
         }
       }
+      return true
+    },
+
+    //验证预热配置
+    checkWarmUpCfg() {
+      if (this.item.WarmUpCfg.Scatter1Rate < 0 || this.item.WarmUpCfg.Scatter1Rate > 100) {
+        Message.error('预热配置【1个Scatter的概率】请在 0 ~ 100 之间！')
+        return false
+      }
+      if (this.item.WarmUpCfg.Scatter2Rate < 0 || this.item.WarmUpCfg.Scatter2Rate > 100) {
+        Message.error('预热配置【2个Scatter的概率】请在 0 ~ 100 之间！')
+        return false
+      }
+      if (this.item.WarmUpCfg.Scatter3Rate < 0 || this.item.WarmUpCfg.Scatter3Rate > 100) {
+        Message.error('预热配置【3个Scatter的概率】请在 0 ~ 100 之间！')
+        return false
+      }
+      if (this.item.WarmUpCfg.MultiRate < 0 || this.item.WarmUpCfg.MultiRate > 100) {
+        Message.error('预热配置【增长系数】请在 0 ~ 100 之间！')
+        return false
+      }
+      if (this.item.WarmUpCfg.MaxRate < 0 || this.item.WarmUpCfg.MaxRate > 10000) {
+        Message.error('预热配置【概率上限】请在 0 ~ 10000 之间！')
+        return false
+      }
+      this.item.WarmUpCfg.WarmUpEnabled = (this.item.WarmUpCfg.WarmUpEnabled === 'true' ? true : false)
       return true
     },
 
