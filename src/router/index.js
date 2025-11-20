@@ -1086,6 +1086,12 @@ export const asyncRoutes = [
             meta: { title: 'H ilo ◐' }
           },
           {
+            path: 'hiloPlus_cfg',
+            component: () => import('@/views/config/tableConfig/minigames/hiloPlus'),
+            name: 'hiloPlus_cfg',
+            meta: { title: 'H iloPlus ◐' }
+          },
+          {
             path: 'sweeper',
             component: () => import('@/views/config/tableConfig/sweeperCfg'),
             name: 'sweeperCfg',
@@ -1193,12 +1199,6 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/chickenGoConfig'),
             name: 'chickenGo_cfg',
             meta: { title: 'C hicken Go ◐' }
-          },
-          {
-            path: 'pirateScratch_cfg',
-            component: () => import('@/views/config/tableConfig/pirateScratch.vue'),
-            name: 'pirateScratch_cfg',
-            meta: { title: 'Pirate Scratch ◐' }
           },
           {
             path: 'mannyPunch_cfg',
@@ -1869,6 +1869,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/fortunewheelmars_slots_cfg'),
                 name: 'fortunewheelmars_slots_cfg',
                 meta: { title: 'FortuneWheel(审)' }
+              },
+              {
+                path: 'pacquiaofortunemars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/pacquiaofortunemars_slots_cfg'),
+                name: 'pacquiaofortunemars_slots_cfg',
+                meta: { title: 'PacquiaoFortune(审)' }
               }
             ]
           },
@@ -2630,6 +2636,12 @@ export const asyncRoutes = [
         component: () => import('@/views/itemManage/batchDistribution/index.vue'),
         name: 'batchDistribution',
         meta: { title: '批量发放', noCache: true }
+      },
+      {
+        path: 'itemUser',
+        component: () => import('@/views/itemManage/itemUser/index.vue'),
+        name: 'itemUser',
+        meta: { title: '使用说明', noCache: true }
       }
     ]
   },
@@ -2959,6 +2971,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_hilo',
             meta: { title: 'H ilo ◐', gid: 102 }
+          },
+          {
+            path: 'playlog_hiloPlus',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_hiloPlus',
+            meta: { title: 'H iloPlus ◐', gid: 140 }
           },
           {
             path: 'playlog_sweeper',
@@ -3740,6 +3758,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'fortunewheelmars_slots_log',
             meta: { title: 'FortuneWheel(审)', gid: 227 }
+          },
+          {
+            path: 'pacquiaofortunemars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'pacquiaofortunemars_slots_log',
+            meta: { title: 'PacquiaoFortune(审)', gid: 237 }
           }
         ]
       },

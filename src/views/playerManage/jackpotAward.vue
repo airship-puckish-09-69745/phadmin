@@ -255,11 +255,11 @@ export default {
         { 'value': 129, 'label': 'Live Color' },
         { 'value': 132, 'label': '新版扫雷' },
         { 'value': 210, 'label': 'LuckySpirits' },
-        { 'value': 230, 'label': 'Pahiyas Win\'s' },
         { 'value': 232, 'label': 'MafiaMayhem' },
         { 'value': 216, 'label': 'Phoenix' },
         { 'value': 134, 'label': 'Pusoy JP' },
         { 'value': 135, 'label': 'SUPER COLOR' },
+        { 'value': 140, 'label': 'HiloPlus' },
         { 'value': 500, 'label': 'GoldMaster' },
       ],
       userTypeConfig: [

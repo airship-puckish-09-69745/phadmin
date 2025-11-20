@@ -102,7 +102,10 @@
                 <el-col :span="24" :offset="5">
                   <el-form :inline="true">
                     <el-col :span="8">
-                      <el-form-item label="回复概率:">
+                      <el-form-item label="回复概率:" v-if="index!=1">
+                        <el-input v-model="item.Rate[index]" size="mini" ><template  slot="append">%[30,70]区间</template></el-input>
+                      </el-form-item>
+                      <el-form-item label="发送概率:" v-if="index==1">
                         <el-input v-model="item.Rate[index]" size="mini" ><template  slot="append">%[30,70]区间</template></el-input>
                       </el-form-item>
                     </el-col>
@@ -147,7 +150,8 @@
 
                   <el-table-column prop="TableMoney" >
                     <template #header>
-                      <span v-html="'表情ID <br> 0：回复对方发送的表情类型 <br> 1：回复友善类型 <br> 2：回复中立类型 <br> 3：回复敌对类型 <br> 4：回复随机类型 <br> 5：回复对立类型'"></span>
+                      <span v-html="'表情ID <br> 0：回复对方发送的表情类型 <br> 1：回复友善类型 <br> 2：回复中立类型 <br> 3：回复敌对类型 <br> 4：回复随机类型 <br> 5：回复对方发送的对立类型 <br> 6：回复对方发送的表情'" v-if="index!=1"></span>
+                      <span v-html="'表情ID <br> 1：发送友善类型 <br> 2：发送中立类型 <br> 3：发送敌对类型 <br> 4：发送随机类型 '" v-if="index==1"></span>
                     </template>
                     <template slot-scope="scope">
                       <el-input v-model="scope.row.FaceType" size="mini" />
@@ -162,7 +166,8 @@
                 </el-table>
                 <!--=============================-->
                 <el-col :span="20" style="display: flex; align-items: center;">
-                  <b style="font-weight: bold; color: red; margin-right: 10px;">(回复次数)</b>
+                  <b style="font-weight: bold; color: red; margin-right: 10px;" v-if="index!=1">(回复次数)</b>
+                  <b style="font-weight: bold; color: red; margin-right: 10px;" v-if="index==1">(发送次数)</b>
                   <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="doAddCountRate(index)">添加</el-button>
                 </el-col>                
                 
@@ -198,7 +203,8 @@
                 </el-table>
                 <!--=============================-->
                 <el-col :span="20" style="display: flex; align-items: center;">
-                  <b style="font-weight: bold; color: red; margin-right: 10px;">(回复下一个表情时间)</b>
+                  <b style="font-weight: bold; color: red; margin-right: 10px;" v-if="index!=1">(回复下一个表情时间)</b>
+                  <b style="font-weight: bold; color: red; margin-right: 10px;" v-if="index==1">(发送下一个表情时间)</b>
                   <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="doAddDelayRate(index)">添加</el-button>
                 </el-col>                
                 <el-table

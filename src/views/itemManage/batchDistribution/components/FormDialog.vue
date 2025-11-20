@@ -397,7 +397,7 @@ export default {
       let filteredItems = this.itemList.filter(item => item.item_type === value)
       if(this.isNewTicketProp(value)){
         //根据当前道具类型获取对应的门票配置
-        const ticketsConfig = IsProd() ? MATCH_TICKET_RIGHTS_ID_CFG_PROD[value] : MATCH_TICKET_RIGHTS_ID_CFG_DEV[value]
+        const ticketsConfig = IsProd() ? MATCH_TICKET_RIGHTS_ID_CFG_PROD : MATCH_TICKET_RIGHTS_ID_CFG_DEV
         //console.log('ticketsConfig', ticketsConfig, 'value', value)
         if(ticketsConfig && typeof ticketsConfig === 'object'){
           // 收集所有appId下的ticketId
@@ -482,7 +482,7 @@ export default {
 
       if (this.isNewTicketProp(selectedItem.item_type)) {
         //根据当前道具类型获取对应的门票配置
-        const ticketsConfig = IsProd() ? MATCH_TICKET_RIGHTS_ID_CFG_PROD[selectedItem.item_type] : MATCH_TICKET_RIGHTS_ID_CFG_DEV[selectedItem.item_type]
+        const ticketsConfig = IsProd() ? MATCH_TICKET_RIGHTS_ID_CFG_PROD : MATCH_TICKET_RIGHTS_ID_CFG_DEV
         if(ticketsConfig && typeof ticketsConfig === 'object'){
           for(const appId in ticketsConfig){
             if(ticketsConfig[appId] && Array.isArray(ticketsConfig[appId]) && ticketsConfig[appId].some(ticket => ticket.ticketId === selectedItem.id)){

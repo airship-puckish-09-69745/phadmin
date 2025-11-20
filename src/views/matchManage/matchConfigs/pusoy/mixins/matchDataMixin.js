@@ -4,11 +4,11 @@
  */
 import { Message } from 'element-ui'
 import request from '@/utils/request'
-import { IsMars } from '@/utils/env'
+import { IsMars,IsProd } from '@/utils/env'
 import { MATCH_IUPSTREAM_TYPE_OPTIONS } from '@/utils/options'
 import { PROP_TYPE_OPTIONS } from '../utils/matchConfigConstants'
 import { getAllMatchGuidesConfig } from '@/utils/common-game-config'
-import { IsNewTicketProp, GetMatchTicketRightsIdList } from '@/utils/prop'
+import { IsNewTicketProp, MATCH_TICKET_RIGHTS_ID_CFG_PROD, MATCH_TICKET_RIGHTS_ID_CFG_DEV } from '@/utils/prop'
 export const matchDataMixin = {
   methods: {
     /**
@@ -230,6 +230,7 @@ export const matchDataMixin = {
               propsAppId: 0,
             }]
 
+            let ticketConfigList = IsProd() ? MATCH_TICKET_RIGHTS_ID_CFG_PROD : MATCH_TICKET_RIGHTS_ID_CFG_DEV
             this.configs.matchTicketsCfgs = []
             const timestamp = Date.now() / 1000
             const propsTypeList = [PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET, PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME,PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW]
@@ -252,7 +253,7 @@ export const matchDataMixin = {
                       continue
                     }
                     appId = exitData.appId
-                    const tickets = GetMatchTicketRightsIdList(item.item_type, exitData.appId).find(ticket => ticket.ticketId === item.id)
+                    let tickets = ticketConfigList[exitData.appId].find(ticket => ticket.ticketId === objs.list[i].id)
                     if(tickets){
                       canPush = true
                       sceneId = tickets.sceneId
@@ -285,7 +286,8 @@ export const matchDataMixin = {
                   }
                 }
               }
-              //console.log("matchTicketsCfgs",this.configs.matchTicketsCfgs)
+              console.log("matchTicketsCfgs",this.configs.matchTicketsCfgs)
+              console.log("matchPropsCfgs",this.configs.matchPropsCfgs)
             }
             
           }

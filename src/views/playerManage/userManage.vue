@@ -1390,7 +1390,7 @@ export default {
       }
       //如果是新门票道具 则确认场景ID字段值
       if(this.isNewTicketProp(this.item.ItemType)){
-        const ticketsConfig = IsProd() ? MATCH_TICKET_RIGHTS_ID_CFG_PROD[this.item.ItemType] : MATCH_TICKET_RIGHTS_ID_CFG_DEV[this.item.ItemType]
+        const ticketsConfig = IsProd() ? MATCH_TICKET_RIGHTS_ID_CFG_PROD : MATCH_TICKET_RIGHTS_ID_CFG_DEV
         if(ticketsConfig && typeof ticketsConfig === 'object'){
           for(const appId in ticketsConfig){
             if(ticketsConfig[appId] && Array.isArray(ticketsConfig[appId])){
@@ -1839,7 +1839,7 @@ export default {
           } else {
             //如果是新版门票道具 需要确认所配置的门票是否关联到 权益场景ID 参考 props.js MATCH_TICKET_RIGHTS_ID_CFG_DEV
             if (this.isNewTicketProp(itemType)) {
-              const ticketsConfig = IsProd() ? MATCH_TICKET_RIGHTS_ID_CFG_PROD[itemType] : MATCH_TICKET_RIGHTS_ID_CFG_DEV[itemType]
+              const ticketsConfig = IsProd() ? MATCH_TICKET_RIGHTS_ID_CFG_PROD : MATCH_TICKET_RIGHTS_ID_CFG_DEV
               if(ticketsConfig && typeof ticketsConfig === 'object'){
                 for(const appId in ticketsConfig){
                   if(ticketsConfig[appId] && Array.isArray(ticketsConfig[appId])){

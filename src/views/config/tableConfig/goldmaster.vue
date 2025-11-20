@@ -512,21 +512,6 @@
                   </el-form>
                 </el-col>
 
-                <el-col :span="7" :offset="3">
-                  <el-form inline>
-                    <el-form-item label="敲x次后换个金币中奖权重(min)" :rules="dataRule(true,{type:'n',range:'0'})">
-                      <el-input v-model.number="itemBase.RobotCfg.MinRobotWiChangeTimes" size="mini" :required="true" />
-                    </el-form-item>
-                  </el-form>
-                </el-col>
-                <el-col :span="7" :offset="3">
-                  <el-form inline>
-                    <el-form-item label="敲x次后换个金币中奖权重(max)" :rules="dataRule(true,{type:'n',range:'0'})">
-                      <el-input v-model.number="itemBase.RobotCfg.MaxRobotWiChangeTimes" size="mini" :required="true" />
-                    </el-form-item>
-                  </el-form>
-                </el-col>
-
                 <el-col :span="20" :offset="3">
                   <span style="font-size: 12px">机器人有x%的概率自动敲击, 不是自动敲击的机器人敲击hz由敲击间隔控制 </span>
                 </el-col>
@@ -848,6 +833,12 @@ export default {
         }
       }
 
+      for (const o of this.itemBase.Jp) {
+        for (let i = 0; i < o.JackpotRegulation.RandAwards.length; i++) {
+          o.JackpotRegulation.RandAwards[i].PoolVal /= 1000
+        }
+      }
+
       for (const o of this.itemBase.RobotCfg.Bets) {
         o.Val /= 1000
       }
@@ -1000,6 +991,7 @@ export default {
       for (const o of obj.Jp) {
         for (let i = 0; i < o.JackpotRegulation.RandAwards.length; i++) {
           o.JackpotCfg[i].AwardRate = o.JackpotRegulation.RandAwards[i].AwardRate
+          o.JackpotRegulation.RandAwards[i].PoolVal *= 1000
         }
       }
       for (const o of obj.BetLevel) {

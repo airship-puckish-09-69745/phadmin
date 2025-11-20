@@ -17,6 +17,18 @@
             />
           </el-select>
         </el-form-item>
+
+        <el-form-item v-if="isTicketPropNew(form.itemOfType)" label="APPID：" :required="true">
+          <el-select v-model="form.appId" placeholder="请选择" size="mini">
+            <el-option label="全部" :value="-1" />
+            <el-option
+              v-for="item in APPID_OPTIONS"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
         <el-button size="mini" type="primary" @click="selectPageData">查询</el-button>
       </el-form>
 
@@ -122,7 +134,7 @@
           <template slot-scope="scope">
             <el-button size="mini" icon="el-icon-edit" @click="showForm(scope.row.id)">编辑</el-button>
             <el-button v-if="scope.row.status===2" size="mini" type="success" @click="handleUpdate(scope.row.id)">上架</el-button>
-            <el-button v-if="scope.row.status===1" size="mini" type="danger" @click="handleUpdate(scope.row.id)">下架</el-button>
+            <el-button v-if="scope.row.status===1 && !isTicketPropNew(scope.row.item_type)" size="mini" type="danger" @click="handleUpdate(scope.row.id)">下架</el-button>
             <el-button v-if="scope.row.status===2" size="mini" type="danger" @click="handleDelete(scope.row.id, false)">删除</el-button>
             <!-- <el-button v-if="itemEnv==='development' &&  scope.row.status===2" size="mini" type="danger" @click="handleDelete(scope.row.id, false)">删除</el-button> -->
           </template>
@@ -350,7 +362,8 @@ export default {
       total: 0,
       page: 1,
       form: {
-        itemOfType: 0
+        itemOfType: 0,
+        appId:0,
       },
       editForm: {
         visable: false,
@@ -426,9 +439,14 @@ export default {
           const objs = response.Data || {}
           if (objs.total > 0) {
             this.tableData = []
-            this.tableData = objs.list
-            this.total = objs.total
-            this.$refs.compare.SetOldVal(response.Data.Data)
+            console.log("form.appId", this.form)
+            if(this.form.appId > 0){ // 如果appId大于0，则只显示该appId的道具
+              this.tableData = this.getSuitedItemList(objs.list, this.form.appId)
+              this.total = this.tableData.length
+            }else{
+              this.tableData = objs.list
+              this.total = objs.total
+            }
           }
         } else {
           this.total = 0
@@ -1003,6 +1021,18 @@ export default {
         }
         return APPID_OPTIONS.find(item => item.value === item_extra.appId).label
       }
+    },
+    getSuitedItemList(itemList, appId) {
+      const suitedItemList = []
+      for(const obj of itemList){
+        if(typeof(obj.item_extra) === 'string' && obj.item_extra !== ''){
+            const item_extra = JSON.parse(obj.item_extra)
+            if(item_extra.appId === appId){
+              suitedItemList.push(obj)
+            }
+          }
+        }
+      return suitedItemList
     },
   }
 }
