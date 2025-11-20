@@ -272,7 +272,7 @@
                         {{ JpTypeMap[scope.row.Level] }}
                       </template>
                     </el-table-column>
-                    <el-table-column label="抽水比例 (‰) (注:不支持小数)" prop="Typ">
+                    <el-table-column label="抽水比例 (‰) (注:不支持小数) (审核服3个数之和要是10的整数倍)" prop="Typ">
                       <template slot-scope="scope">
                         <el-tooltip class="item" effect="dark" content="千分比,1就是0.001" placement="top-start">
                           <el-input
@@ -966,6 +966,12 @@ export default {
         }
       }
 
+      for (const o of this.item.Jp) {
+        for (let i = 0; i < o.JackpotRegulation.RandAwards.length; i++) {
+          o.JackpotRegulation.RandAwards[i].PoolVal /= 1000
+        }
+      }
+
     },
     showOpenDayLimit(data) {
       return '[' + data['StartHours'] + ',' + data['EndHours'] + ')点,' + data['NumMin'] + '最少,'+ data['NumMin']+'最多'
@@ -1112,6 +1118,7 @@ export default {
       for (const o of obj.Jp) {
         for (let i = 0; i < o.JackpotRegulation.RandAwards.length; i++) {
           o.JackpotCfg[i].AwardRate = o.JackpotRegulation.RandAwards[i].AwardRate
+          o.JackpotRegulation.RandAwards[i].PoolVal *= 1000
         }
         o.MinBet = parseInt(o.MinBet * 1000)
         o.MaxBet = parseInt(o.MaxBet * 1000)

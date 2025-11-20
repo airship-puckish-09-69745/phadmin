@@ -373,6 +373,10 @@ export default {
         // 满足普通筛选条件
         if (actTypes[data.ActType]) return true
 
+        if (selectedTypes.includes(14) && data.ExtData === 'Chat') { // 动态表情
+          return true
+        }
+
         // 特殊类型筛选逻辑
         if (hasSpecial) {
           return (data.ActType === 2010 && data.ActMsg === '2031') ||

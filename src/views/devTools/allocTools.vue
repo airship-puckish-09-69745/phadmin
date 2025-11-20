@@ -243,6 +243,10 @@
             {
                 value: 129,
                 label: 'LiveColor'
+            },
+            {
+                value: 134,
+                label: 'PusoyJP'
             }
         ],
         tableData: [],

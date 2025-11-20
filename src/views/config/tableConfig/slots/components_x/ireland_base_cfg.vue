@@ -99,6 +99,8 @@
               <el-option label="230:PahiyasWins" :value="230" />
               <el-option label="231:PahiyasWins Mars" :value="231" />
               <el-option label="232:MafiaMayhem" :value="232" />
+              <el-option label="236:PacquiaoFortune" :value="236" />
+              <el-option label="237:PacquiaoFortuneMars" :value="237" />
             </el-select>
           </el-form-item>
 
@@ -166,6 +168,7 @@
             <el-input v-model="slotsData.AutoSpinNum[1]"> </el-input>
           </el-form-item>
 
+          <span style="color: red; font-size: 11px;">注: 正式生效日期为填写日期的第二天 </span>
           <el-form-item label="TopWins开始生效日期">
             <el-date-picker
               v-model="topWinsStartTime"

@@ -43,7 +43,6 @@ export const ITEM_DAY_TYPE_OPTIONS = [
   { 'value': 7, 'label': '7天', disabled: false },
   { 'value': 30, 'label': '30天', disabled: false },
   { 'value': 365, 'label': '365天', disabled: false },
-  { 'value': -1, 'label': '过期道具测试10Mins', disabled: false },
   { 'value': 0, 'label': '永久', disabled: false }
 ]
 
@@ -135,7 +134,6 @@ export const MATCH_UNIQUE_ID_CFG =[
   { 'value': 10005, 'label': 'P40' },
   { 'value': 10006, 'label': 'P100' },
   { 'value': 10007, 'label': 'P300' },
-  { 'value': 10008, 'label': 'GTCC 2005' },
 
   //以下全局ID为GTCC线上赛临时用 不长期占用
   { 'value': 11001, 'label': 'GTCC日赛' },
@@ -158,10 +156,10 @@ export const MATCH_PUSOY_UNIQUE_ID_CFG =[
   { 'value': 20005, 'label': 'P40' },
   { 'value': 20006, 'label': 'P100' },
   { 'value': 20007, 'label': 'P300' },
-  { 'value': 20008, 'label': 'GTCC 2005' },
   { 'value': 20009, 'label': 'P60' },
   { 'value': 20010, 'label': 'P150' },
   { 'value': 20011, 'label': 'P400' },
+  { 'value': 20012, 'label': '6000Free' },
 ]
 
 //牌桌TableId
@@ -201,3 +199,4 @@ export const MATCH_IUPSTREAM_TYPE_OPTIONS = {
   UPSTREAM_TYPE_TEXAS_MTT:2032,             //德州MTT
   MATCH_UPSTREAM_TYPE_PUSOY: 2033,          //pusoy
 }
+

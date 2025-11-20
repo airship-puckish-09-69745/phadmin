@@ -18,6 +18,18 @@
             </el-input>
           </el-form-item>
 
+          <el-form-item label="普通模式的额外倍数">
+            <el-input v-model="cfg.ExtraOddsNormalStr" placeholder="请输入内容,如1,2,3,4,5,6,7,8">
+              <template slot="append">倍数只能是连续的</template>
+            </el-input>
+          </el-form-item>
+
+          <el-form-item label="免费模式的额外倍数">
+            <el-input v-model="cfg.ExtraOddsFreeStr" placeholder="请输入内容,如1,2,3,4,5,6,7,8">
+              <template slot="append">倍数只能是连续的</template>
+            </el-input>
+          </el-form-item>
+
           <el-form-item label="普通模式Bonus倍数权重">
             <el-input v-model="cfg.BonusOddsWeight" placeholder="请输入内容,如2,1">
               <template slot="append">用 , 连接</template>
@@ -30,21 +42,22 @@
             </el-input>
           </el-form-item>
 
-          <el-form-item label="奖池中奖概率">
-            <el-input v-model="cfg.JackpotTypeRate" placeholder="请输入内容,如10,10,10;分别对应MAJOR,MEGA,GRAND中奖概率">
-              <template slot="append">实际值要乘以千万分之一,分别对应Grand、Major、Minor、Mini</template>
+          <el-form-item label="中大奖概率">
+            <el-input v-model="cfg.JackpotTypeRate"
+                      placeholder="请输入内容,如10,10,10;分别对应MAJOR,MEGA,GRAND中奖概率">
+              <template slot="append">千万分之一,分别对应Grand,Major,Minor,Mini</template>
             </el-input>
           </el-form-item>
 
           <el-form-item label="jackpot大奖倍数">
             <el-input v-model="cfg.JackpotOdds" placeholder="请输入内容,如10,10,10;分别对应MAJOR,MEGA,GRAND倍数">
-              <template slot="append">放大100倍,对应Grand、Major、Minor、Mini</template>
+              <template slot="append">X100倍,对应Grand,Major,Minor,Mini</template>
             </el-input>
           </el-form-item>
 
           <el-form-item label="Jackpot抽水比例">
             <el-input v-model.number="cfg.JackpotFeeRate" :required="true">
-              <template slot="append">‰,对应Grand、Major、Minor、Mini</template>
+              <template slot="append">‰</template>
             </el-input>
           </el-form-item>
 
@@ -56,7 +69,7 @@
 
           <el-form-item label="普通bonus/免费权重">
             <el-input v-model="cfg.NormalEnterSpecialWeight" placeholder="请输入内容,如2,4">
-              <template slot="append">用 , 连接。bonus、免费(必中其中之一)</template>
+              <template slot="append">用 , 连接。bonus、免费(超过"进入特殊模式的最小赔率"必中其中之一)</template>
             </el-input>
           </el-form-item>
 
@@ -66,13 +79,25 @@
             </el-input>
           </el-form-item>
 
-          <el-form-item label="免费模式图标金框权重">
-            <el-input v-model="cfg.goldenFrameFeeWeight" placeholder=""/>
+          <!--          <el-form-item label="免费模式图标金框权重">-->
+          <!--            <el-input v-model="cfg.GoldenFrameFreeWeight" placeholder=""/>-->
+          <!--          </el-form-item>-->
+
+          <el-form-item label="金框概率">
+            <el-input v-model.number="cfg.GoldenFrameRate" placeholder="">
+              <template slot="append">%</template>
+            </el-input>
           </el-form-item>
 
-          <el-form-item label="普通模式图标金框权重">
-            <el-input v-model="cfg.goldenFrameNormalWeight" placeholder=""/>
+          <el-form-item label="BigWild的概率%" prop="BigWildRate" :rules="dataRule(true,{type:'n'})">
+            <el-input v-model.number="cfg.BigWildRate" :required="true">
+              <template slot="append">%</template>
+            </el-input>
           </el-form-item>
+
+          <!--          <el-form-item label="金框转为Wild与Big Wild权重">-->
+          <!--            <el-input v-model="cfg.WildWeight" placeholder=""/>-->
+          <!--          </el-form-item>-->
 
           <el-form-item label="购买免费模式中奖倍数范围V2">
             <el-input v-model="cfg.BuyFreeOddsRangeV2" placeholder="请输入内容,如0,150,151,750">

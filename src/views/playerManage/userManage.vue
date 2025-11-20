@@ -205,35 +205,15 @@
             </el-col>
             <el-col :span="1" :offset="1"> {{ '数量:' }} </el-col>
             <el-col :span="2">
-              <el-input v-model.number="item.ItemNum" size="mini" type="number" min="0" @input="item.ItemNum = item.ItemNum < 0 ? 0 : item.ItemNum" />
+              <el-input v-model.number="item.ItemNum" size="mini" type="number" min="0" :disabled="isNewTicketProp(item.ItemType)"  @input="item.ItemNum = item.ItemNum < 0 ? 0 : item.ItemNum" />
             </el-col>
-            <!--            <el-col v-show="(item.ItemType===PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN) && isNegativeItemNum" :span="1" :offset="1"> {{ 'UUID:' }} </el-col>-->
-            <!--            <el-col v-show="(item.ItemType===PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN) && isNegativeItemNum" :span="2">
-              <template>
-                <el-select :key="item.ItemCfgId" v-model="propFrom.ItemUuId" size="mini" placeholder="请选择">
-                  <el-option
-                    v-for="option in tablePropUuIdData"
-                    :key="option.value"
-                    :label="option.label"
-                    :value="option.value"
-                  />
-                </el-select>
-              </template>
-            </el-col>-->
             <el-col v-show="(item.ItemType === 2 || item.ItemType === 4 || item.ItemType === 5 ||[7,8,9].includes(item.ItemType))&&!isNegativeItemNum" :span="1" :offset="1"> {{ '时间:' }} </el-col>
             <el-col v-show="(item.ItemType === 2 ||item.ItemType === 4 || item.ItemType === 5 ||[7,8,9].includes(item.ItemType)) && !isNegativeItemNum" :span="2">
               <template>
                 <el-select v-model="item.ItemUseTime" size="mini" placeholder="请选择">
                   <el-option v-for="option in ITEM_DAY_TYPE_OPTIONS" :key="'itemusertime'+option.value"
-                             :label="option.label" :value="option.value" :disabled="option.disabled || ([5,7,8,9].includes(item.ItemType)&& (option.value === 0 || option.value === 365)) || (option.value === -1 && itemEnv!=='development')">
+                             :label="option.label" :value="option.value" :disabled="option.disabled || ([5,7,8,9].includes(item.ItemType)&& (option.value === 0 || option.value === 365))">
                   </el-option>
-                  <el-option
-                    v-for="option in ITEM_DAY_TYPE_OPTIONS"
-                    :key="'itemdaytype'+option.value"
-                    :label="option.label"
-                    :value="option.value"
-                    :disabled="option.disabled || (item.ItemType === 5 && (option.value === 0 || option.value === 365))"
-                  />
                 </el-select>
               </template>
             </el-col>
@@ -439,6 +419,9 @@ import { toRupee, numberFormat } from '@/utils'
 import DateTimeShow from '@/components/DatetimeShow'
 import { ITEM_TYPE_OPTIONS, ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS } from '@/utils/options'
 import payWithdrawLog from '@/views/playerManage/payWithdrawLog.vue'
+import {IsProd} from "@/utils/env";
+import {MATCH_TICKET_RIGHTS_ID_CFG_DEV, MATCH_TICKET_RIGHTS_ID_CFG_PROD} from "@/utils/prop";
+import { GetMatchTicketRightsIdList,IsNewTicketProp } from '@//utils/prop'
 
 function NewRelationSummary() {
   return {
@@ -522,6 +505,7 @@ export default {
       ItemType: 0,
       ItemUseTime: 1,
       ItemNum: 0,
+      ItemSceneId:0, //道具权益场景ID
       propFrom: {
         ItemUuId: ''
       },
@@ -1394,21 +1378,37 @@ export default {
         Message.error('请输入道具数量')
         return
       }
-      if (this.item.ItemNum > 0 && [2, 4, 5, 7, 8, 9].includes(this.item.ItemType)) {
+      if (this.item.ItemNum > 0 && [2, 4, 5, 7, 8, 9].includes(this.item.ItemType)) { //道具数值类型参照 options.js 中 ITEM_DAY_TYPE_OPTIONS
         if (typeof this.item.ItemUseTime === 'undefined') {
           Message.error('请选择时间')
           return
         }
+        if(typeof this.item.AppID === 'undefined' || this.item.AppID === 0){
+          Message.error('当前账号没有APPID')
+          return
+        }
       }
-      if (this.item.ItemType === 5 && this.item.ItemNum < 0 && (this.propFrom.ItemUuId === '' || this.propFrom.ItemUuId === undefined)) {
-        Message.error('扣除free spin道具 需要勾选UUID')
-        return
+      //如果是新门票道具 则确认场景ID字段值
+      if(this.isNewTicketProp(this.item.ItemType)){
+        const ticketsConfig = IsProd() ? MATCH_TICKET_RIGHTS_ID_CFG_PROD : MATCH_TICKET_RIGHTS_ID_CFG_DEV
+        if(ticketsConfig && typeof ticketsConfig === 'object'){
+          for(const appId in ticketsConfig){
+            if(ticketsConfig[appId] && Array.isArray(ticketsConfig[appId])){
+              const ticket = ticketsConfig[appId].find(ticket => ticket.ticketId === this.item.ItemCfgId)
+              if(ticket){
+                this.item.ItemSceneId = ticket.sceneId
+              }
+            }
+          }
+        }
+        if(typeof this.item.ItemSceneId === 'undefined' || this.item.ItemSceneId <=0){
+          Message.error('当前道具没有关联到正确的场景ID，请检查道具ID是否正确')
+          return
+        }
+        //console.log("场景ID", this.item.ItemSceneId)
       }
 
       let msg = '确定添加物品吗?'
-      if (this.item.ItemNum < 0) {
-        msg = '确定扣除物品吗?'
-      }
       let tmpTime = 0
       if ([2, 4, 5, 7, 8, 9].includes(this.item.ItemType)) {
         tmpTime = this.item.ItemUseTime
@@ -1433,6 +1433,7 @@ export default {
             UseTime: tmpTime,
             ItemUuid: this.propFrom.ItemUuId,
             ItemGids: this.ItemFreeSpinGids,
+            ItemSceneId:this.item.ItemSceneId,
             Author: store.getters.name,
             ActMsg: '管理后台By ' + store.getters.name
           }
@@ -1815,9 +1816,12 @@ export default {
       this.tablePropUuIdData = []
       this.$set(this.item, 'ItemCfgId', null) // 使用 $set 确保响应式更新
       this.propFrom.ItemUuId = ''
+      let itemType = 0
+      // this.item.ItemNum = 0 // 移除此行，避免影響輸入框的值
       const currTime = new Date().getTime()
       for (let i = 0; i < this.tableData.length; i++) {
         let str = this.tableData[i].item_name
+        itemType = this.tableData[i].item_type
         if (this.tableData[i].item_extra.length > 0) {
           const exitData = JSON.parse(this.tableData[i].item_extra)
           if (exitData != null) {
@@ -1827,13 +1831,30 @@ export default {
           }
         }
         if (this.tableData[i].item_type === id && this.tableData[i].status === 1) {
-          if (this.isTicketProp(this.tableData[i].item_type)) {
+          if (this.isTicketProp(itemType)) { // 旧版门票道具
             const expTime = this.tableData[i].expire_time * 1000
             if (currTime < expTime) {
               this.tableItemData.push({ 'value': Number(this.tableData[i].id), 'label': str, disabled: false })
             }
           } else {
-            this.tableItemData.push({ 'value': Number(this.tableData[i].id), 'label': str, disabled: false })
+            //如果是新版门票道具 需要确认所配置的门票是否关联到 权益场景ID 参考 props.js MATCH_TICKET_RIGHTS_ID_CFG_DEV
+            if (this.isNewTicketProp(itemType)) {
+              const ticketsConfig = IsProd() ? MATCH_TICKET_RIGHTS_ID_CFG_PROD : MATCH_TICKET_RIGHTS_ID_CFG_DEV
+              if(ticketsConfig && typeof ticketsConfig === 'object'){
+                for(const appId in ticketsConfig){
+                  if(ticketsConfig[appId] && Array.isArray(ticketsConfig[appId])){
+                    ticketsConfig[appId].forEach(ticket => {
+                      if(ticket.ticketId === this.tableData[i].id){
+                        this.tableItemData.push({'value': Number(this.tableData[i].id), 'label': str, disabled: false})
+                      }
+                    })
+                  }
+                }
+              }
+            } else {  //头像框
+              this.tableItemData.push({'value': Number(this.tableData[i].id), 'label': str, disabled: false})
+            }
+            //console.log("this.tableItemData ",this.tableItemData)
           }
         }
       }
@@ -1856,6 +1877,9 @@ export default {
       this.tablePropUuIdData = [] // 清空UUID选项列表
       this.ShowItemUUIDDetail(val) // 如果需要立即加载新的UUID列表
       this.checkShowFreeSpinGame()
+      if (this.isNewTicketProp(this.item.ItemType)) {
+        this.item.ItemNum = 1
+      }
     },
     // 展示道具的子属性UUID
     ShowItemUUIDDetail(itemId) {
@@ -1884,7 +1908,10 @@ export default {
     },
     // 是否是门票类型道具
     isTicketProp(itemType) {
-      return itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET || itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET || itemType === PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET
+      return [PROP_TYPE_OPTIONS.PROP_TYPE_TICKET,PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET,PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET].includes(itemType)
+    },
+    isNewTicketProp(itemType) {
+      return  [PROP_TYPE_OPTIONS.PROP_TYPE_TICKET_NEW,PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW,PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW].includes(itemType)
     },
     // 是否是头像框道具
     isAvatarFrameProp(itemType) {

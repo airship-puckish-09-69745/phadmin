@@ -404,12 +404,14 @@ export default {
         '208': 'candyburst',
         '206': 'luckywineglass',
         '210': 'luckyspirits',
+        '216': 'phoenix',
         '220': 'goldendragon',
         '221': 'goldendragonmars',
         '212': 'pirateship',
         '214': 'pumpkincash',
         '224': 'supermahjong',
-        '232': 'mafiamayhem'
+        '232': 'mafiamayhem',
+        '236': 'pacquiaofortune'
       }
     }
   },
@@ -589,7 +591,7 @@ export default {
             }
             optionArr.push({
               key: response.Data[i].Gid,
-              label: response.Data[i].Name
+              label: response.Data[i].Name + ' (GID:' + response.Data[i].Gid + ')'
             })
           }
           optionArr.push({ key: 100180, label: 'Fishing Master(额外加注)' })
