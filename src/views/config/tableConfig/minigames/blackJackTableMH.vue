@@ -192,8 +192,8 @@
 
           if (this.item.anteSwitch[i].isInit === true) {
               // 设置初始底注
-              ret.minBet = this.item.anteSwitch[i].minBetNum
-              ret.maxBet = this.item.anteSwitch[i].maxBetNum
+              ret.minBet = obj.minBetNum
+              ret.maxBet = obj.maxBetNum
           }
 
           ret.anteSwitch.push(obj)
@@ -203,13 +203,7 @@
         ret.betAreas = []
         for (let i = 0; i < this.item.betAreas.length; i++) {
           const obj = JSON.parse(JSON.stringify(this.item.betAreas[i]))
-          console.log("hrh test")
-          console.log(this.item.betAreas[i].moneyOption)
-          console.log(obj.moneyOption)
-          console.log(ret.minBet)
-          console.log(obj.odds)
           obj.moneyOption = ret.minBet * obj.odds * 1000
-          console.log(obj.moneyOption)
           ret.betAreas.push(obj)
         }
 
