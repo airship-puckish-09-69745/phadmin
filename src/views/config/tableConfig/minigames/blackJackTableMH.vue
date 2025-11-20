@@ -14,7 +14,7 @@
 
         <el-col :span="8" :offset="1">
           <el-form-item label="用户长时间未下注踢出(s):">
-            <el-input v-model.number="item.kicKTime" :required="true" />
+            <el-input v-model.number="item.kickTime" :required="true" />
           </el-form-item>
         </el-col>
 
@@ -129,7 +129,7 @@
         item: {
           feeRate: 3,
           actionTime: 15,
-          kicKTime: 300,
+          kickTime: 300,
           minBet: 1000,
           maxBet: 50000,
           betAreas: [
@@ -183,14 +183,6 @@
       getPostData() {
         const ret = JSON.parse(JSON.stringify(this.item))
   
-        // 计算按钮选项
-        ret.betAreas = []
-        for (let i = 0; i < this.item.betAreas.length; i++) {
-          const obj = JSON.parse(JSON.stringify(this.item.betAreas[i]))
-          obj.moneyOption = this.item.minBet * this.item.odds * 1000
-          ret.betAreas.push(obj)
-        }
-
         // 计算底注档位选项
         ret.anteSwitch = []
         for (let i = 0; i < this.item.anteSwitch.length; i++) {
@@ -206,7 +198,15 @@
 
           ret.anteSwitch.push(obj)
         }
-  
+
+        // 计算按钮选项
+        ret.betAreas = []
+        for (let i = 0; i < this.item.betAreas.length; i++) {
+          const obj = JSON.parse(JSON.stringify(this.item.betAreas[i]))
+          obj.moneyOption = ret.minBet * this.item.odds * 1000
+          ret.betAreas.push(obj)
+        }
+
         return ret
       },
       getData() {
