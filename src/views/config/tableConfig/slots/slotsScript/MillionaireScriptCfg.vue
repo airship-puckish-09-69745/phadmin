@@ -871,8 +871,8 @@ export default {
         Message.error('预热配置【3个Scatter的概率】请在 0 ~ 10000 之间！')
         return false
       }
-      if (this.item.WarmUpCfg.MultiRate < 0 || this.item.WarmUpCfg.MultiRate > 100) {
-        Message.error('预热配置【增长系数】请在 0 ~ 100 之间！')
+      if (this.item.WarmUpCfg.MultiRate < 0) {
+        Message.error('预热配置【增长系数】请大于等于 0 ！')
         return false
       }
       if (this.item.WarmUpCfg.MaxRate < 0 || this.item.WarmUpCfg.MaxRate > 10000) {
