@@ -1230,7 +1230,7 @@ export default {
               $this.item.WhitelistCfg.SiteIdList = old.SiteIdList
             }
             // 检查属性AbTest是否存在
-            if (old.AbTest !== null) {
+            if (old.AbTest !== undefined) {
               $this.item.WhitelistCfg['AbTest'] = old.AbTest
             } else {
               $this.item.WhitelistCfg['AbTest'] = {

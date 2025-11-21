@@ -136,7 +136,7 @@
               <el-col :span="8">
                 <el-form-item label="1个Scatter的概率：">
                   <el-input v-model.number="item.WarmUpCfg.Scatter1Rate" autosize>
-                    <template slot="append">%(百分之一)</template>
+                    <template slot="append">‱(万分之一)</template>
                   </el-input>
                 </el-form-item>
               </el-col>
@@ -145,7 +145,7 @@
               <el-col :span="8">
                 <el-form-item label="2个Scatter的概率：">
                   <el-input v-model.number="item.WarmUpCfg.Scatter2Rate" autosize>
-                    <template slot="append">%(百分之一)</template>
+                    <template slot="append">‱(万分之一)</template>
                   </el-input>
                 </el-form-item>
               </el-col>
@@ -154,7 +154,7 @@
               <el-col :span="8">
                 <el-form-item label="3个Scatter的概率：">
                   <el-input v-model.number="item.WarmUpCfg.Scatter3Rate" autosize>
-                    <template slot="append">%(百分之一)</template>
+                    <template slot="append">‱(万分之一)</template>
                   </el-input>
                 </el-form-item>
               </el-col>
@@ -180,10 +180,9 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item label="开关：">
-                  <el-radio-group v-model="item.WarmUpCfg.WarmUpEnabled">
-                    <el-radio :label="true">启用</el-radio>
-                    <el-radio :label="false">禁用</el-radio>
-                  </el-radio-group>
+                  <el-select v-model="item.WarmUpCfg.WarmUpEnabled" placeholder="Select" style="width: 240px">
+                    <el-option v-for="item in warmUpStatus" :key="item.value" :label="item.label" :value="item.value" />
+                  </el-select>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -401,6 +400,10 @@ export default {
       groupOperators: [
         {'label': '<=', 'value': 1},
         {'label': '>=', 'value': 2}
+      ],
+      warmUpStatus: [
+        {'label': '启用', 'value': true},
+        {'label': '禁用', 'value': false}
       ],
       subKeyMap: {
         '76': 'candypartyway',
@@ -859,27 +862,27 @@ export default {
 
     //验证预热配置
     checkWarmUpCfg() {
-      if (this.item.WarmUpCfg.Scatter1Rate < 0 || this.item.WarmUpCfg.Scatter1Rate > 100) {
-        Message.error('预热配置【1个Scatter的概率】请在 0 ~ 100 之间！')
+      if (this.item.WarmUpCfg.Scatter1Rate < 0 || this.item.WarmUpCfg.Scatter1Rate > 10000) {
+        Message.error('预热配置【1个Scatter的概率】请在 0 ~ 10000 之间！')
         return false
       }
-      if (this.item.WarmUpCfg.Scatter2Rate < 0 || this.item.WarmUpCfg.Scatter2Rate > 100) {
-        Message.error('预热配置【2个Scatter的概率】请在 0 ~ 100 之间！')
+      if (this.item.WarmUpCfg.Scatter2Rate < 0 || this.item.WarmUpCfg.Scatter2Rate > 10000) {
+        Message.error('预热配置【2个Scatter的概率】请在 0 ~ 10000 之间！')
         return false
       }
-      if (this.item.WarmUpCfg.Scatter3Rate < 0 || this.item.WarmUpCfg.Scatter3Rate > 100) {
-        Message.error('预热配置【3个Scatter的概率】请在 0 ~ 100 之间！')
+      if (this.item.WarmUpCfg.Scatter3Rate < 0 || this.item.WarmUpCfg.Scatter3Rate > 10000) {
+        Message.error('预热配置【3个Scatter的概率】请在 0 ~ 10000 之间！')
         return false
       }
-      if (this.item.WarmUpCfg.MultiRate < 0 || this.item.WarmUpCfg.MultiRate > 100) {
-        Message.error('预热配置【增长系数】请在 0 ~ 100 之间！')
+      if (this.item.WarmUpCfg.MultiRate < 0) {
+        Message.error('预热配置【增长系数】请大于等于 0 ！')
         return false
       }
       if (this.item.WarmUpCfg.MaxRate < 0 || this.item.WarmUpCfg.MaxRate > 10000) {
         Message.error('预热配置【概率上限】请在 0 ~ 10000 之间！')
         return false
       }
-      this.item.WarmUpCfg.WarmUpEnabled = (this.item.WarmUpCfg.WarmUpEnabled === 'true' ? true : false)
+      //this.item.WarmUpCfg.WarmUpEnabled = (this.item.WarmUpCfg.WarmUpEnabled === 'true' ? true : false)
       return true
     },
 
