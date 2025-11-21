@@ -181,8 +181,8 @@
               <el-col :span="8">
                 <el-form-item label="开关：">
                   <el-radio-group v-model="item.WarmUpCfg.WarmUpEnabled">
-                    <el-radio :label="true">启用</el-radio>
-                    <el-radio :label="false">禁用</el-radio>
+                    <el-radio :value="true">启用</el-radio>
+                    <el-radio :value="false">禁用</el-radio>
                   </el-radio-group>
                 </el-form-item>
               </el-col>
