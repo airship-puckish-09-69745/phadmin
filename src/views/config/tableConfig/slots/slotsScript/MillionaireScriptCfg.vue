@@ -882,7 +882,7 @@ export default {
         Message.error('预热配置【概率上限】请在 0 ~ 10000 之间！')
         return false
       }
-      this.item.WarmUpCfg.WarmUpEnabled = (this.item.WarmUpCfg.WarmUpEnabled === 'true' ? true : false)
+      //this.item.WarmUpCfg.WarmUpEnabled = (this.item.WarmUpCfg.WarmUpEnabled === 'true' ? true : false)
       return true
     },
 
