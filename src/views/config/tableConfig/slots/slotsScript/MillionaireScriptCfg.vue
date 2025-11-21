@@ -136,7 +136,7 @@
               <el-col :span="8">
                 <el-form-item label="1个Scatter的概率：">
                   <el-input v-model.number="item.WarmUpCfg.Scatter1Rate" autosize>
-                    <template slot="append">%(百分之一)</template>
+                    <template slot="append">‱(万分之一)</template>
                   </el-input>
                 </el-form-item>
               </el-col>
@@ -145,7 +145,7 @@
               <el-col :span="8">
                 <el-form-item label="2个Scatter的概率：">
                   <el-input v-model.number="item.WarmUpCfg.Scatter2Rate" autosize>
-                    <template slot="append">%(百分之一)</template>
+                    <template slot="append">‱(万分之一)</template>
                   </el-input>
                 </el-form-item>
               </el-col>
@@ -154,7 +154,7 @@
               <el-col :span="8">
                 <el-form-item label="3个Scatter的概率：">
                   <el-input v-model.number="item.WarmUpCfg.Scatter3Rate" autosize>
-                    <template slot="append">%(百分之一)</template>
+                    <template slot="append">‱(万分之一)</template>
                   </el-input>
                 </el-form-item>
               </el-col>
@@ -859,16 +859,16 @@ export default {
 
     //验证预热配置
     checkWarmUpCfg() {
-      if (this.item.WarmUpCfg.Scatter1Rate < 0 || this.item.WarmUpCfg.Scatter1Rate > 100) {
-        Message.error('预热配置【1个Scatter的概率】请在 0 ~ 100 之间！')
+      if (this.item.WarmUpCfg.Scatter1Rate < 0 || this.item.WarmUpCfg.Scatter1Rate > 10000) {
+        Message.error('预热配置【1个Scatter的概率】请在 0 ~ 10000 之间！')
         return false
       }
-      if (this.item.WarmUpCfg.Scatter2Rate < 0 || this.item.WarmUpCfg.Scatter2Rate > 100) {
-        Message.error('预热配置【2个Scatter的概率】请在 0 ~ 100 之间！')
+      if (this.item.WarmUpCfg.Scatter2Rate < 0 || this.item.WarmUpCfg.Scatter2Rate > 10000) {
+        Message.error('预热配置【2个Scatter的概率】请在 0 ~ 10000 之间！')
         return false
       }
-      if (this.item.WarmUpCfg.Scatter3Rate < 0 || this.item.WarmUpCfg.Scatter3Rate > 100) {
-        Message.error('预热配置【3个Scatter的概率】请在 0 ~ 100 之间！')
+      if (this.item.WarmUpCfg.Scatter3Rate < 0 || this.item.WarmUpCfg.Scatter3Rate > 10000) {
+        Message.error('预热配置【3个Scatter的概率】请在 0 ~ 10000 之间！')
         return false
       }
       if (this.item.WarmUpCfg.MultiRate < 0 || this.item.WarmUpCfg.MultiRate > 100) {
