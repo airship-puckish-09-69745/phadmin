@@ -223,7 +223,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="11">
-                <el-form-item label="AppId白名单：" prop="item.WhitelistCfg.AppIdList">
+                <el-form-item label="AppId白名单：" prop="item.Whitelist.AppIdList">
                   <el-select v-model="item.Activity.Whitelist.AppIdList" multiple placeholder="请选择" style="width: 400px" @change="onAppIdOptionsChange">
                     <el-option
                       v-for="item in appIdOptions"
@@ -235,8 +235,24 @@
                 </el-form-item>
               </el-col>
               <el-col>
-                <el-form-item label="SiteId白名单：" prop="item.WhitelistCfg.SiteIdList">
+                <el-form-item label="SiteId白名单：" prop="item.Whitelist.SiteIdList">
                   <SiteSelect v-model="item.Activity.Whitelist.SiteIdList" multiple placeholder="请选择" style="width: 400px" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="11">
+                <el-form-item label="A/B测试开关：" prop="item.Activity.Whitelist.AbTest">
+                  <el-switch v-model="item.Activity.Whitelist.AbTest.switch" :active-value="true" :inactive-value="false" active-text="开启" inactive-text="关闭" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="11">
+                <el-form-item label="B分组比例：" prop="item.Activity.Whitelist.AbTest.bPercent">
+                  <el-input v-model.number="item.Activity.Whitelist.AbTest.bPercent" oninput=" if(value < 0 || value === '' || value == null){value = 0;} ">
+                    <template slot="append">%</template>
+                  </el-input>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -571,7 +587,11 @@ export default {
         Activity: {
           Whitelist: {
             AppIdList: [],
-            SiteIdList: []
+            SiteIdList: [],
+            AbTest: {
+              switch: false,
+              bPercent: 0
+            }
           },
           GameIdList: [],
           RuleImgHor: [],
@@ -825,7 +845,13 @@ export default {
             $this.item.Activity.EndTime *= 1000
             $this.item.ActivityExtend.InitBonusPool /= 1000
             $this.item.ActivityExtend.BonusPoolMax /= 1000
-            this.$refs.compare.SetOldVal(old)
+            if ($this.item.Activity.Whitelist.AbTest === undefined) {
+              $this.$set($this.item.Activity.Whitelist, 'AbTest', {
+                switch: false,
+                bPercent: 0
+              })
+            }
+            $this.$refs.compare.SetOldVal(old)
           }
           this.getGameAll()
         }

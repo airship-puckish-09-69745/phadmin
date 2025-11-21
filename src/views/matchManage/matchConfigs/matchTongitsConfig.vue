@@ -2235,10 +2235,12 @@ export default {
                     str = str + '(' + objs.list[i].show_name + ')'
                   }
                   if (IsNewTicketProp(objs.list[i].item_type)) {
+                    console.log("ticketID ",objs.list[i].id ,objs.list[i])
                     if (objs.list[i].item_extra.length <=  0) {
                       continue
                     }
                     const exitData = JSON.parse(objs.list[i].item_extra)
+                    console.log("ticketID 2222 exitData   ",objs.list[i].id,exitData)
                    if(exitData === null || exitData === undefined || exitData.appId === 0 || typeof exitData.appId === 'undefined'){
                       continue
                     }
@@ -2275,8 +2277,8 @@ export default {
                       })
                     }
                   }
-                  //console.log("matchTicketsCfgs",this.matchTicketsCfgs)
-                  //console.log("matchPropsCfgs",this.matchPropsCfgs)
+                  console.log("matchTicketsCfgs",this.matchTicketsCfgs)
+                 console.log("matchPropsCfgs",this.matchPropsCfgs)
                 }
               }
             }

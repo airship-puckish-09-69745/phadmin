@@ -134,7 +134,6 @@ export const MATCH_UNIQUE_ID_CFG =[
   { 'value': 10005, 'label': 'P40' },
   { 'value': 10006, 'label': 'P100' },
   { 'value': 10007, 'label': 'P300' },
-  { 'value': 10008, 'label': 'GTCC 2005' },
 
   //以下全局ID为GTCC线上赛临时用 不长期占用
   { 'value': 11001, 'label': 'GTCC日赛' },
@@ -157,7 +156,6 @@ export const MATCH_PUSOY_UNIQUE_ID_CFG =[
   { 'value': 20005, 'label': 'P40' },
   { 'value': 20006, 'label': 'P100' },
   { 'value': 20007, 'label': 'P300' },
-  { 'value': 20008, 'label': 'GTCC 2005' },
   { 'value': 20009, 'label': 'P60' },
   { 'value': 20010, 'label': 'P150' },
   { 'value': 20011, 'label': 'P400' },

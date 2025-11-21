@@ -3830,6 +3830,9 @@ export default {
       blackjackDetail: {},
       blackjackDetailVisible: false,
 
+      blackjackmhDetail: {},
+      blackjackmhDetailVisible: false,
+
       dominoDetail: {},
       dominoDetailVisible: false,
 
@@ -4411,6 +4414,8 @@ export default {
             $this.showBlackjackGame(obj)
           // } else if (gid === 21) {
           //   $this.showPusoyGame(obj)
+           //} else if (gid == 137) {
+            // $this.showBlackjackmhGame(obj)
           } else if (gid === 100) {
             $this.showTowerGame(obj)
           } else if (gid === 101) {
@@ -4421,6 +4426,8 @@ export default {
             $this.showMiniAbGame(obj)
           } else if (gid === 102) {
             $this.showHiloGame(obj)
+          } else if (gid === 140) {
+            $this.showHiloPlusGame(obj)
           } else if (gid === 103) {
             $this.showWindropGame(obj)
           } else if (gid === 119) {
@@ -4982,6 +4989,18 @@ export default {
       this.hiloJackpotAward = obj.Hilo.JackpotAward / 1000
       this.hiloTotalOdds = obj.Hilo.TotalOdds
     },
+    showHiloPlusGame(obj) {
+      this.hiloVisible = true
+      this.hiloCardList = obj.HiloPlus.CardList
+      console.log(this.hiloCardList)
+      const hiloOp = []
+      this.hiloStopFlag = obj.HiloPlus.StopFlag
+      this.hiloOpRecord = hiloOp.join(' ')
+      this.hiloJackpotContribute = obj.HiloPlus.JackpotContribute / 1000
+      this.hiloJackpotContributeTotal = obj.HiloPlus.JackpotContributeTotal / 1000
+      this.hiloJackpotAward = obj.HiloPlus.JackpotAward / 1000
+      this.hiloTotalOdds = obj.HiloPlus.TotalOdds
+    },
     selectHiloNotation(notation) {
       switch (notation) {
         case 1 :
@@ -5468,6 +5487,11 @@ export default {
       console.log(obj)
       this.blackjackDetail = obj
       this.blackjackDetailVisible = true
+    },
+    showBlackjackmhGame(obj) {
+      console.log(obj)
+      this.blackjackmhDetail = obj
+      this.blackjackmhDetailVisible = true
     },
     showPusoyDosGame(obj) {
       this.pusoyDos.pusoyDosDetail = obj

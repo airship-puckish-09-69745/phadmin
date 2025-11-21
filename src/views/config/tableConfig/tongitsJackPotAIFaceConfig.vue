@@ -150,7 +150,7 @@
 
                   <el-table-column prop="TableMoney" >
                     <template #header>
-                      <span v-html="'表情ID <br> 0：回复对方发送的表情类型 <br> 1：回复友善类型 <br> 2：回复中立类型 <br> 3：回复敌对类型 <br> 4：回复随机类型 <br> 5：回复对立类型'" v-if="index!=1"></span>
+                      <span v-html="'表情ID <br> 0：回复对方发送的表情类型 <br> 1：回复友善类型 <br> 2：回复中立类型 <br> 3：回复敌对类型 <br> 4：回复随机类型 <br> 5：回复对方发送的对立类型 <br> 6：回复对方发送的表情'" v-if="index!=1"></span>
                       <span v-html="'表情ID <br> 1：发送友善类型 <br> 2：发送中立类型 <br> 3：发送敌对类型 <br> 4：发送随机类型 '" v-if="index==1"></span>
                     </template>
                     <template slot-scope="scope">
