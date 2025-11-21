@@ -3397,6 +3397,18 @@
       <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
         <span style="float:left;">{{ '获得倍率:' + MannyPunchDetail.multipleResult/100 }}</span>
       </div>
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
+        <span style="float:left;">{{ '获得Jackpot类型:' + MannyPunchDetail.jpType }}</span>
+      </div>
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
+        <span style="float:left;">{{ '获得Jackpot数量:' + MannyPunchDetail.jpNum }}</span>
+      </div>
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
+        <span style="float:left;">{{ '本局Jackpot贡献:' + MannyPunchDetail.jpContribute }}</span>
+      </div>
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
+        <span style="float:left;">{{ '总Jackpot贡献:' + MannyPunchDetail.jpTotalContribute }}</span>
+      </div>
     </el-dialog>
 
     <el-dialog title="TeenPatti详情" :visible.sync="ZJHDetailVisible" width="1600px">
@@ -3829,6 +3841,9 @@ export default {
 
       blackjackDetail: {},
       blackjackDetailVisible: false,
+
+      blackjackmhDetail: {},
+      blackjackmhDetailVisible: false,
 
       dominoDetail: {},
       dominoDetailVisible: false,
@@ -4411,6 +4426,8 @@ export default {
             $this.showBlackjackGame(obj)
           // } else if (gid === 21) {
           //   $this.showPusoyGame(obj)
+           //} else if (gid == 137) {
+            // $this.showBlackjackmhGame(obj)
           } else if (gid === 100) {
             $this.showTowerGame(obj)
           } else if (gid === 101) {
@@ -4668,7 +4685,9 @@ export default {
         0: 'Easy',
         1: 'Medium',
         2: 'Hard',
-        3: 'Expert'
+        3: 'Expert',
+        4: 'Master',
+        5: 'Nightmare'
       }
       return lvMap[lv]
     },
@@ -4681,7 +4700,9 @@ export default {
         0: 'Easy',
         1: 'Medium',
         2: 'Hard',
-        3: 'Expert'
+        3: 'Expert',
+        4: 'Master',
+        5: 'Nightmare'
       }
       return lvMap[lv]
     },
@@ -5482,6 +5503,11 @@ export default {
       console.log(obj)
       this.blackjackDetail = obj
       this.blackjackDetailVisible = true
+    },
+    showBlackjackmhGame(obj) {
+      console.log(obj)
+      this.blackjackmhDetail = obj
+      this.blackjackmhDetailVisible = true
     },
     showPusoyDosGame(obj) {
       this.pusoyDos.pusoyDosDetail = obj

@@ -101,7 +101,7 @@
           </el-select>
         </template>
         <template slot-scope="scope">
-          {{ clientDB.GetShowValue('ActType', scope.row.ActType) }}
+          {{ getActTypeName(scope.row.ActType, scope.row.ExtData) }}
         </template>
       </el-table-column>
       <el-table-column prop="ActMsg" label="操作说明" min-width="300">
@@ -227,7 +227,7 @@ const filterMap = {
     11: '管理后台',
     12: '月卡每日奖励',
     13: '月卡头款',
-    14: '动态表情',
+    14: '互动道具',
     17: '邀请账号提现',
     29: '老虎机下注',
     30: '老虎机返奖',
@@ -262,7 +262,7 @@ const filterMap = {
     3001: '比赛结束，营销接口发奖',
     3002: '德州比赛营销接口派彩',
     3003: '摇钱树活动营销接口派彩',
-    3004: '复活节活动营销接口派彩',
+    3004: '圣诞节活动营销接口派彩',
     3005: '直播抽奖接口派彩',
     10000: 'Tongits比赛流水' // 混合类型查询 act_type=2010 and act_msg='2031' || act_type=3001
   }
@@ -387,6 +387,13 @@ export default {
 
       this.clientDB.Page.SetTotalCount(this.clientDB.ShowData.length)
       this.refreshShow()
+    },
+    getActTypeName(actType, extData) {
+      const name = this.clientDB.GetShowValue('ActType', actType)
+      if (actType === 2005 && extData === 'Chat') {
+        return '互动道具'
+      }
+      return name
     },
     getActName(type, msg) {
       // 单一钱包类型
