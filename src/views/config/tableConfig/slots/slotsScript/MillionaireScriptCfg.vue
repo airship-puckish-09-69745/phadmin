@@ -180,10 +180,9 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item label="开关：">
-                  <el-radio-group v-model="item.WarmUpCfg.WarmUpEnabled">
-                    <el-radio :value="true">启用</el-radio>
-                    <el-radio :value="false">禁用</el-radio>
-                  </el-radio-group>
+                  <el-select v-model="item.WarmUpCfg.WarmUpEnabled" placeholder="Select" style="width: 240px">
+                    <el-option v-for="item in warmUpStatus" :key="item.value" :label="item.label" :value="item.value" />
+                  </el-select>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -401,6 +400,10 @@ export default {
       groupOperators: [
         {'label': '<=', 'value': 1},
         {'label': '>=', 'value': 2}
+      ],
+      warmUpStatus: [
+        {'label': '启用', 'value': true},
+        {'label': '禁用', 'value': false}
       ],
       subKeyMap: {
         '76': 'candypartyway',
