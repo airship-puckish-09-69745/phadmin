@@ -3397,6 +3397,18 @@
       <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
         <span style="float:left;">{{ '获得倍率:' + MannyPunchDetail.multipleResult/100 }}</span>
       </div>
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
+        <span style="float:left;">{{ '获得Jackpot类型:' + MannyPunchDetail.jpType }}</span>
+      </div>
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
+        <span style="float:left;">{{ '获得Jackpot数量:' + MannyPunchDetail.jpNum }}</span>
+      </div>
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
+        <span style="float:left;">{{ '本局Jackpot贡献:' + MannyPunchDetail.jpContribute }}</span>
+      </div>
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
+        <span style="float:left;">{{ '总Jackpot贡献:' + MannyPunchDetail.jpTotalContribute }}</span>
+      </div>
     </el-dialog>
 
     <el-dialog title="TeenPatti详情" :visible.sync="ZJHDetailVisible" width="1600px">
@@ -4673,7 +4685,9 @@ export default {
         0: 'Easy',
         1: 'Medium',
         2: 'Hard',
-        3: 'Expert'
+        3: 'Expert',
+        4: 'Master',
+        5: 'Nightmare'
       }
       return lvMap[lv]
     },
@@ -4686,7 +4700,9 @@ export default {
         0: 'Easy',
         1: 'Medium',
         2: 'Hard',
-        3: 'Expert'
+        3: 'Expert',
+        4: 'Master',
+        5: 'Nightmare'
       }
       return lvMap[lv]
     },
