@@ -3830,6 +3830,9 @@ export default {
       blackjackDetail: {},
       blackjackDetailVisible: false,
 
+      blackjackmhDetail: {},
+      blackjackmhDetailVisible: false,
+
       dominoDetail: {},
       dominoDetailVisible: false,
 
@@ -4411,6 +4414,8 @@ export default {
             $this.showBlackjackGame(obj)
           // } else if (gid === 21) {
           //   $this.showPusoyGame(obj)
+           //} else if (gid == 137) {
+            // $this.showBlackjackmhGame(obj)
           } else if (gid === 100) {
             $this.showTowerGame(obj)
           } else if (gid === 101) {
@@ -5482,6 +5487,11 @@ export default {
       console.log(obj)
       this.blackjackDetail = obj
       this.blackjackDetailVisible = true
+    },
+    showBlackjackmhGame(obj) {
+      console.log(obj)
+      this.blackjackmhDetail = obj
+      this.blackjackmhDetailVisible = true
     },
     showPusoyDosGame(obj) {
       this.pusoyDos.pusoyDosDetail = obj
