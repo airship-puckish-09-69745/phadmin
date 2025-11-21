@@ -2521,12 +2521,6 @@ export const asyncRoutes = [
             meta: { title: 'Tcc名单配置', noCache: true }
           },
           {
-            path: 'matchGtccConfig',
-            component: () => import('@/views/matchManage/matchOperations/matchGtccConfig.vue'),
-            name: 'matchGtccConfig',
-            meta: { title: 'GTCC配置', noCache: true }
-          },
-          {
             path: 'matchBroadcast',
             component: () => import('@/views/matchManage/matchOperations/matchBroadcast/index.vue'),
             name: 'matchBroadcast',
@@ -2543,7 +2537,28 @@ export const asyncRoutes = [
             component: () => import('@/views/matchManage/matchOperations/texasTongis/index.vue'),
             name: 'texasTongis',
             meta: { title: 'kyc配置', noCache: true }
-          }
+          },
+          {
+            path: 'matchTpcc',
+            component: () => import('@/views/empty'),
+            name: 'matchTPCCPrize',
+            meta: { title: 'TPCC配置', noCache: true },
+            children: [
+              {
+                path: 'matchTPCCPrize',
+                component: () => import('@/views/matchManage/matchOperations/matchTpcc/matchGtccPrize.vue'),
+                name: 'matchTPCCPrize',
+                meta: { title: 'TPCC邀请函配置', noCache: true }
+              },
+              {
+                path: 'matchGtccConfig',
+                component: () => import('@/views/matchManage/matchOperations/matchTpcc/matchGtccConfig.vue'),
+                name: 'matchGtccConfig',
+                meta: { title: 'TPCC赛事时间配置', noCache: true }
+              }
+            ],
+          },
+
         ]
       },
       {
