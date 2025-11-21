@@ -101,7 +101,7 @@
           </el-select>
         </template>
         <template slot-scope="scope">
-          {{ clientDB.GetShowValue('ActType', scope.row.ActType) }}
+          {{ getActTypeName(scope.row.ActType, scope.row.ExtData) }}
         </template>
       </el-table-column>
       <el-table-column prop="ActMsg" label="操作说明" min-width="300">
@@ -387,6 +387,13 @@ export default {
 
       this.clientDB.Page.SetTotalCount(this.clientDB.ShowData.length)
       this.refreshShow()
+    },
+    getActTypeName(actType, extData) {
+      const name = this.clientDB.GetShowValue('ActType', actType)
+      if (actType === 2005 && extData === 'Chat') {
+        return '互动道具'
+      }
+      return name
     },
     getActName(type, msg) {
       // 单一钱包类型
