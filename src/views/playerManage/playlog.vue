@@ -848,7 +848,7 @@
                 />
               </div>
               <br>
-              <span v-if="item.splitCards.length > 0">
+              <span v-if="item.splitCards && item.splitCards.length > 0">
                 {{ '分牌手牌' + (item.id + 1) + ': ' }}
               </span>
               <div v-for="(card) in item.splitCards" class="block">
@@ -857,7 +857,7 @@
                   :src="getCardUrl(card)"
                 />
               </div>
-              <div v-if="item.splitCards.length <= 0" class="block" style="height: 50px">
+              <div v-if="item.splitCards && item.splitCards.length <= 0" class="block" style="height: 50px">
               </div>
               <hr v-if="index !== scope.row.cardGroupLog.length - 1" class="blackJackmhHr"/>
             </div>
@@ -871,7 +871,7 @@
                 {{'手牌' + (item.id + 1) + ': ' + (item.cardType == 1 ? "点牌" : (item.cardType == 2 ? "BlackJack" : "爆牌"))}}
               </span>
               <br>
-              <span v-if="item.splitCards.length > 0">
+              <span v-if="item.splitCards && item.splitCards.length > 0">
                 {{'分牌手牌' + (item.id + 1) + ': ' + (item.splitCardType == 1 ? "点牌" : (item.splitCardType == 2 ? "BlackJack" : "爆牌"))}}
               </span>
               <hr v-if="index !== scope.row.cardGroupLog.length - 1" class="blackJackmhHr"/>
