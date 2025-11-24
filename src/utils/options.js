@@ -144,6 +144,12 @@ export const MATCH_UNIQUE_ID_CFG =[
   { 'value': 11006, 'label': 'GTCC机酒赛' },
   { 'value': 11007, 'label': 'GTCC魔戒赛' },
   { 'value': 11008, 'label': 'GTCC豪客赛' },
+
+  //以下全局ID为圣诞活动赛线临时用 不长期占用
+  { 'value': 11101, 'label': '双旦每日iwatch赛' },
+  { 'value': 11102, 'label': '双旦每日IPhone赛' },
+  { 'value': 11103, 'label': '双旦大赛' },
+  { 'value': 11104, 'label': '双旦豪客赛' },
 ]
 
 // 比赛Pusoy全局ID集合
