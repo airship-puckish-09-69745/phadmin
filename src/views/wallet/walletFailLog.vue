@@ -4,6 +4,14 @@
     <el-row :gutter="10" style="margin-top: 30px">
       <el-col :span="24">
         <el-form inline label-width="90px" :inline="true" size="small">
+          <el-select v-model="item.app" filterable placeholder="请选择" size="mini">
+            <el-option
+              v-for="row in appInfo"
+              :key="row.key"
+              :label="row.label"
+              :value="row.key"
+            />
+          </el-select>
           <el-form-item label="日期：">
             <el-date-picker
               v-model="timeRange"
@@ -183,6 +191,7 @@ export default {
       libShow: $libShow,
       clientDB: new ClientTableData([], 1, filterMap),
       pickerOptions: $libShow.DefaultDatePickerOptions(),
+      appInfo: [],
       item: {
         limit: 20,
         offset: 1,
@@ -228,6 +237,7 @@ export default {
   created() {
     this.getGameList()
     this.getData()
+    this.getAppInfo()
   },
   methods: {
     formatTime(ts) {
@@ -405,7 +415,24 @@ export default {
     handleCurrentChange(val) {
       this.item.offset = val
       this.getData()
-    }
+    },
+    getAppInfo() {
+      request({
+        url: '/thirdparties/all',
+        method: 'get',
+        data: {}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          // const objs = response.Data || []
+          for (let i = 0; i < response.Data.length; i++) {
+            this.appInfo.push({
+              key: response.Data[i].ID,
+              label: response.Data[i].Account
+            })
+          }
+        }
+      })
+    },
 
   }
 }
