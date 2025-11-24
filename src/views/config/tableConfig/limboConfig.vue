@@ -389,7 +389,7 @@
         <el-form-item label="火箭终点:">
           <el-form :inline="true">
             <el-col :span="8">
-                <el-input v-model.number="item.Card" size="mini" />
+                <el-input v-model.number="item.Card" size="mini" /><template slot="append">配置放大100倍</template>
             </el-col>
           </el-form>
         </el-form-item>

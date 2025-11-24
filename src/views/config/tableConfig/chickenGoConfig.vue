@@ -150,7 +150,7 @@
                 </el-table>
               </fieldset>
 
-              <!--小奖池触发重摇-->
+              <!--小奖池触发重摇
               <fieldset  v-if="!IsPHAuditEnv()">
                 <legend>小奖池触发重摇</legend>
                 <el-row>
@@ -188,7 +188,7 @@
                   </el-descriptions-item>
                 </el-descriptions>
               </fieldset>
-
+              -->
             </el-col>
           </el-tab-pane>
         </el-tabs>

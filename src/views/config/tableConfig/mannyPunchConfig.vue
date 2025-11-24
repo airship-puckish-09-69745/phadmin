@@ -163,7 +163,7 @@
                 </el-table>
               </fieldset>
 
-              <!--小奖池触发重摇-->
+              <!--小奖池触发重摇
               <fieldset  v-if="!IsPHAuditEnv()">
                 <legend>小奖池触发重摇</legend>
                 <el-row>
@@ -201,7 +201,7 @@
                   </el-descriptions-item>
                 </el-descriptions>
               </fieldset>
-
+              -->
             </el-col>
           </el-tab-pane>
 
@@ -275,7 +275,7 @@
                   </el-table-column>
                   <el-table-column label="发放数量" prop="Value">
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.AwardRate" style="width: 180px;" size="mini" :required="true">
+                      <el-input v-model.number="scope.row.AwardRate" style="width: 140px;" size="mini" :required="true">
                         <template v-if="scope.row.AwardType==1" slot="append">%</template>
                         <template v-if="scope.row.AwardType==2" slot="append">倍</template>
                       </el-input>
@@ -283,7 +283,7 @@
                   </el-table-column>
                   <el-table-column label="每日限制开出个数(0为不限)" prop="DayLimit"   v-if="!IsPHAuditEnv()">
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.DayLimit" :disabled="checkShowDayLimit(scope.row.AwardType)" style="width: 180px;" size="mini" :required="true"><template slot="append">个</template></el-input>
+                      <el-input v-model.number="scope.row.DayLimit" :disabled="checkShowDayLimit(scope.row.AwardType)" style="width: 140px;" size="mini" :required="true"><template slot="append">个</template></el-input>
                     </template>
                   </el-table-column>
                   <el-table-column label="中奖概率" prop="DayLimit"><!--   v-if="IsPHAuditEnv()"-->
