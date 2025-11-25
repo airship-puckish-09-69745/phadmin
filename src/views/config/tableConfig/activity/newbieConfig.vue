@@ -493,6 +493,9 @@ export default {
         ]
       },
 
+      appId: store.getters.appId || -1,
+      version: store.getters.version || 'V1',
+
       GamesSorted: [
         {
           GameId: 1, Name: '测试游戏1', OrderNo: 1
@@ -942,6 +945,11 @@ export default {
       if (!isExit) {
         this.item.GameIdCfg.push(2031)
       }
+
+      if (this.item.WhitelistCfg.AppIdList.length === 0 && this.version === 'V2') {
+        this.item.WhitelistCfg.AppIdList.push(this.appId)
+      }
+
       var tableData = {
         IsOpen: this.item.IsOpen,
         StartTime: startTime,

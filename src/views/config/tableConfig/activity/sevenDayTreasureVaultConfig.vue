@@ -222,7 +222,7 @@
                   <el-switch v-model="item.IsWhite" :active-value="true" :inactive-value="false" />
                 </el-form-item>
               </el-col>
-              <el-col :span="11">
+              <el-col v-if="version === 'V1'" :span="11">
                 <el-form-item label="AppId白名单：" prop="item.Whitelist.AppIdList">
                   <el-select v-model="item.Activity.Whitelist.AppIdList" multiple placeholder="请选择" style="width: 400px" @change="onAppIdOptionsChange">
                     <el-option
@@ -569,6 +569,7 @@ import Compare from '@/components/Compare/index.vue'
 import store from '@/store'
 import SiteSelect from '@/components/SiteSelect/index.vue'
 import { ITEM_DAY_TYPE_OPTIONS, ITEM_TYPE_OPTIONS, PROP_TYPE_OPTIONS } from '@/utils/options'
+import {getCustomize, updateCustomize} from "@/api/custome_configV2";
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
@@ -674,6 +675,8 @@ export default {
           RewardIndex: null
         }
       },
+      appId: store.getters.appId || -1,
+      version: store.getters.version || 'V1',
       filterText: '',
       defaultProps: {
         label: 'label',
@@ -829,13 +832,7 @@ export default {
     },
     getData() {
       const $this = this
-      request({
-        url: '/customizeconfig/one',
-        method: 'get',
-        data: {
-          SubKey: this.subKey
-        }
-      }).then(response => {
+      getCustomize(this.subKey).then(response => {
         if (response.RetCode === 0) {
           $this.form = response.Data || {}
           if (response.Data && response.Data.Data !== '' && response.Data.Data !== '{}') {
@@ -915,11 +912,7 @@ export default {
         this.$emit('saveData')
         this.lock = false
         this.form.Data = JSON.stringify(tableData)
-        request({
-          url: 'customizeconfig/update',
-          method: 'post',
-          data: this.form
-        }).then(response => {
+        updateCustomize(this.form).then(response => {
           if (response.RetCode === 0) {
             const showMsg = '保存成功'
             this.$message.success(showMsg)
