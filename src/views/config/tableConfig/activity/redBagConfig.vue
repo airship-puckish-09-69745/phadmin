@@ -502,7 +502,7 @@
                   <el-switch v-model="item.IsWhite" :active-value="true" :inactive-value="false" />
                 </el-form-item>
               </el-col>
-              <el-col :span="11">
+              <el-col v-if="version === 'V1'" :span="11">
                 <el-form-item label="AppId白名单:" prop="item.WhitelistCfg.AppIdList">
                   <el-select v-model="item.WhitelistCfg.AppIdList" multiple placeholder="请选择" style="width: 400px" @change="onAppIdOptionsChange">
                     <el-option
@@ -733,6 +733,8 @@ export default {
         gamesSortDialogVisible: false,
         cfgType: 0
       },
+      appId: store.getters.appId || -1,
+      version: store.getters.version || 'V1',
       redEdit: {
         visible: false,
         isEdit: false,
@@ -1248,6 +1250,10 @@ export default {
       var everyEndTime = Math.floor(this.item.EveryDayEndTime / 1000)
       var taskCfgData = this.getTaskCfgData(this.item.taskCfgData)
       var whiteList = this.getWhiteList()
+
+      if (this.item.WhitelistCfg.AppIdList.length === 0 && this.version === 'V2') {
+        this.item.WhitelistCfg.AppIdList.push(this.appId)
+      }
       var tableData = {
         IsOpen: this.item.IsOpen,
         IsSend: this.item.IsSend,
