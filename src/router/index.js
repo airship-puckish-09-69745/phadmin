@@ -218,6 +218,12 @@ export const asyncRoutes = [
         component: () => import('@/views/online/egameControl/index.vue'),
         name: 'EGame控制监控',
         meta: { title: 'EGame控制监控' }
+      },
+       {
+        path: 'pokerWaitPlayTimes',
+        component: () => import('@/views/online/pokerPvpWaitPlayTimesStats'),
+        name: 'Poker玩法匹配时长',
+        meta: { title: 'Poker玩法匹配时长' }
       }
     ]
   },
