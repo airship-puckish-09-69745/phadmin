@@ -37,7 +37,7 @@
                         {{ getGameName(scope.row.gid) }}
                     </template>
                 </el-table-column>
-                <el-table-column prop="max_wait_times" label="最长等待时间" sortable="custom" />
+                
                 <el-table-column prop="table_money" label="场次">
                     <template v-slot:header>
                         <el-select v-model="clientDB.FilterValueMap['table_money']" size="mini" @change="handleFilter">
@@ -53,13 +53,17 @@
                         {{ getTableMoney(scope.row.table_money) }}
                     </template>
                 </el-table-column>
-                <el-table-column prop="trust_level" label="信任级别" sortable="custom">
+                <el-table-column prop="trust_level" label="身份" sortable="custom">
                     <template slot-scope="scope">
                         {{ getTrustLevel(scope.row.trust_level) }}
                     </template>
                 </el-table-column>
-                <el-table-column prop="user_count" label="用户数量" sortable="custom" />
-                <el-table-column prop="wait_times_sum" label="等待时长总和" sortable="custom" />
+                <el-table-column prop="wait_times_sum" label="平均开局时长" sortable="custom" >
+                    <template slot-scope="scope">
+                        {{ $libDate.FormatTime(scope.row.wait_times_sum / scope.row.user_count) }}
+                    </template>
+                </el-table-column>
+                <el-table-column prop="max_wait_times" label="最长等待时间" sortable="custom" />
             </el-table>
         </el-row>
         <el-col :offset="16" :span="8">
