@@ -25,7 +25,7 @@
                 <el-table-column prop="gid" label="游戏名称" width="120">
                     <template v-slot:header>
                         <el-select v-model="clientDB.FilterValueMap['gid']" size="mini" @change="handleFilter">
-                            <el-option label="游戏名称" :value="0" />
+                            <el-option label="游戏名称" :value="-1" />
                             <el-option v-for="(o, key) in clientDB.FilterMap['gid']" :key="key" :label="getGameName(o)"
                                 :value="key" />
                         </el-select>
@@ -190,9 +190,12 @@ export default {
                     // 去掉这个里面的-1
                     $this.handleCurrentChange(1)
                     delete $this.clientDB.FilterMap['table_money'][-1]
+                    delete $this.clientDB.FilterMap['gid'][-1]
                     // 场次的全部是 -1 需要使用 FilterValueMap 来筛选
                     $this.clientDB.FilterValueMap['table_money'] = -1
+                    $this.clientDB.FilterValueMap['gid'] = -1
                     $this.handleFilter('table_money', -1)
+                    $this.handleFilter('gid', 0)
                 }
             })
         },
@@ -257,6 +260,9 @@ export default {
         },
 
         getGameName(gid) {
+            if (gid === -1) {
+                return '全部'
+            }
             let name = '' + gid
             for (const i in this.games) {
                 if (this.games[i].value === gid) {
