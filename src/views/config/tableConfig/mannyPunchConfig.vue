@@ -488,7 +488,12 @@ export default {
         BaseCfg:[],
         BetMoneyLevel:[], //下注
         OddsCfg:[],
-        ReChoiceCfg:{},
+        // ReChoiceCfg:{
+        //   LowLotteryPoolReChoice:0, 
+        //   LowLotteryPoolReChoiceRate:0, 
+        //   HighLotteryPoolReChoice:0, 
+        //   HighLotteryPoolReChoiceRate: 0
+        // },
       },
       form: {},
       subKey: 'manny_punch_cfg',
@@ -585,14 +590,6 @@ export default {
             if (!item.BaseCfg) {
               item['BaseCfg'] = []
             }
-            if (!item.ReChoiceCfg) {
-              item['ReChoiceCfg'] = {
-                LowLotteryPoolReChoice:0, 
-                LowLotteryPoolReChoiceRate:0, 
-                HighLotteryPoolReChoice:0, 
-                HighLotteryPoolReChoiceRate: 0
-              }
-            }
             if (item.JackpotCfg && item.JackpotCfg.JackpotRegulation) {
               if (item.JackpotCfg.JackpotRegulation.RandAwards) {
                 this.RandAwards = item.JackpotCfg.JackpotRegulation.RandAwards
@@ -619,8 +616,8 @@ export default {
 
             this.transMoneyForShow()
 
-            item.ReChoiceCfg.LowLotteryPoolReChoice /= 1000
-            item.ReChoiceCfg.HighLotteryPoolReChoice /= 1000
+            // item.ReChoiceCfg.LowLotteryPoolReChoice /= 1000
+            // item.ReChoiceCfg.HighLotteryPoolReChoice /= 1000
 
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data)
@@ -677,8 +674,8 @@ export default {
         ret.BaseCfg[i].Rtp = Math.round(this.item.BaseCfg[i].Rtp * 100)
       }
 
-      ret.ReChoiceCfg.LowLotteryPoolReChoice *= 1000
-      ret.ReChoiceCfg.HighLotteryPoolReChoice *= 1000
+      // ret.ReChoiceCfg.LowLotteryPoolReChoice *= 1000
+      // ret.ReChoiceCfg.HighLotteryPoolReChoice *= 1000
       ret.AutoDropTimer *= 1
 
       if (ret.JackpotCfg.JackpotRegulation){

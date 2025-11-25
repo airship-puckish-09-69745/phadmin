@@ -857,7 +857,7 @@
                   :src="getCardUrl(card)"
                 />
               </div>
-              <div v-if="item.splitCards && item.splitCards.length <= 0" class="block" style="height: 50px">
+              <div v-if="!item.splitCards || item.splitCards.length <= 0" class="block" style="height: 39px">
               </div>
               <hr v-if="index !== scope.row.cardGroupLog.length - 1" class="blackJackmhHr"/>
             </div>
