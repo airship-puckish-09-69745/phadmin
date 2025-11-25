@@ -89,11 +89,11 @@
             </el-input>
           </el-form-item>
 
-          <el-form-item label="BigWild的概率%" prop="BigWildRate" :rules="dataRule(true,{type:'n'})">
-            <el-input v-model.number="cfg.BigWildRate" :required="true">
-              <template slot="append">%</template>
-            </el-input>
-          </el-form-item>
+<!--          <el-form-item label="BigWild的概率%" prop="BigWildRate" :rules="dataRule(true,{type:'n'})">-->
+<!--            <el-input v-model.number="cfg.BigWildRate" :required="true">-->
+<!--              <template slot="append">%</template>-->
+<!--            </el-input>-->
+<!--          </el-form-item>-->
 
           <!--          <el-form-item label="金框转为Wild与Big Wild权重">-->
           <!--            <el-input v-model="cfg.WildWeight" placeholder=""/>-->
