@@ -60,7 +60,7 @@
                 </el-table-column>
                 <el-table-column prop="wait_times_sum" label="平均开局时长" sortable="custom" >
                     <template slot-scope="scope">
-                        {{ $libDate.FormatTime(scope.row.wait_times_sum / scope.row.user_count) }}
+                        {{ formatNumber(scope.row.wait_times_sum / scope.row.user_count) }}
                     </template>
                 </el-table-column>
                 <el-table-column prop="max_wait_times" label="最长等待时间" sortable="custom" />
