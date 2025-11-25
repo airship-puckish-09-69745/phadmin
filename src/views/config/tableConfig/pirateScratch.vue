@@ -127,12 +127,37 @@
               <span>{{ scope.row.Cnt }}</span>
             </template>
           </el-table-column>
-         <el-table-column
-            label="出现权重"
+       <el-table-column
+            label="20面值"
             width="200"
           >
             <template slot-scope="scope">
-              <el-input-number v-model.number="scope.row.Wight" size="mini" type="number"  :min=0 ></el-input-number>
+              <el-input-number v-model.number="scope.row.Face20Wight" size="mini" type="number"  :min=0 ></el-input-number>
+            </template>
+          </el-table-column>
+           <el-table-column
+            label="30面值"
+            width="200"
+          >
+            <template slot-scope="scope">
+              <el-input-number v-model.number="scope.row.Face30Wight" size="mini" type="number"  :min=0 ></el-input-number>
+            </template>
+          </el-table-column>
+         <el-table-column
+            label="50面值"
+            width="200"
+          >
+            <template slot-scope="scope">
+              <el-input-number v-model.number="scope.row.Face50Wight" size="mini" type="number"  :min=0 ></el-input-number>
+            </template>
+          </el-table-column>
+
+           <el-table-column
+            label="100面值"
+            width="200"
+          >
+            <template slot-scope="scope">
+              <el-input-number v-model.number="scope.row.Face100Wight" size="mini" type="number"  :min=0 ></el-input-number>
             </template>
           </el-table-column>
 
@@ -411,9 +436,11 @@ export default {
           Multiplier:{
               SingleRatio: 10,
               SingleWight:[
-                  {Cnt: 1, Wight:100},
-                  {Cnt: 2, Wight:100},
-                  {Cnt: 3, Wight:100},
+                  {Cnt: 0, Face20Wight:20,Face30Wight:30,Face50Wight:20,Face100Wight:20},
+                  {Cnt: 1, Face20Wight:20,Face30Wight:30,Face50Wight:20,Face100Wight:20}, 
+                  {Cnt: 2, Face20Wight:20,Face30Wight:30,Face50Wight:20,Face100Wight:20},
+                  {Cnt: 3, Face20Wight:20,Face30Wight:30,Face50Wight:20,Face100Wight:20}
+
               ],
               SingleFaceWight:[
                   {Multi: 2, Face20Wight:20,Face30Wight:30,Face50Wight:20,Face100Wight:20},
