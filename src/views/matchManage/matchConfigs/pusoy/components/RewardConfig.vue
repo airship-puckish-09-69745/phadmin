@@ -68,6 +68,7 @@
                   :key="item.propsId"
                   :label="item.propsName"
                   :value="item.propsId"
+                  :disabled="checkNewTicketPropDisable(item.propsType,item.propsAppId)"
                 >
                   <img v-if="item.propsIcon != '' " :src="item.propsIcon" style="height:36px;vertical-align: middle;">
                   <span>{{ item.propsShowName }}</span>
@@ -99,6 +100,7 @@
                   :key="item.propsId"
                   :label="item.propsName"
                   :value="item.propsId"
+                  :disabled="checkNewTicketPropDisable(item.propsType,item.propsAppId)"
                 >
                   <img v-if="item.propsIcon != '' " :src="item.propsIcon" style="height:36px;vertical-align: middle;">
                   <span>{{ item.propsShowName }}</span>
@@ -167,10 +169,12 @@
 
 <script>
 import { $libShow } from '@/utils/common'
-import {ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS} from "@/utils/options";
+import { ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS } from '@/utils/options'
+import { matchUtilsMixin } from '../mixins/matchUtilsMixin'
 
 export default {
   name: 'RewardConfig',
+  mixins: [matchUtilsMixin],
   props: {
     rankRewards: {
       type: Array,
@@ -203,6 +207,10 @@ export default {
     prizeTemplateCfg: {
       type: Array,
       default: () => []
+    },
+    editForm: {
+      type: Object,
+      required: true
     }
   },
   data() {
@@ -290,7 +298,8 @@ export default {
             propsAttr: this.matchPropsCfgs[i].propsAttr,
             propCost:this.matchPropsCfgs[i].propsCost,
             propsNum: propsNum,
-            propExpireDays: propExpireDays
+            propExpireDays: propExpireDays,
+            propsSceneId: this.matchPropsCfgs[i].propsSceneId,
           }
         }
       }
@@ -302,7 +311,8 @@ export default {
         propsAttr: '',
         propsNum: 0,
         propExpireDays: -1,
-        propCost: 0
+        propCost: 0,
+        propsSceneId: 0,
       }
     },
     // 道具是否需要过期时间
@@ -328,7 +338,7 @@ export default {
           break;
       }
       return  true
-    },
+    }
   }
 }
 </script>

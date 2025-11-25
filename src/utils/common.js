@@ -94,6 +94,7 @@ export function LibShow() {
     4: '♠'
   }
   this.GameNames = { 2: 'AB', 3: '龙虎', 4: 'JM', 5: 'Car', 6: '7UpD', 7: '红黑', 8: 'AK47', 9: 'TPatti', 10: 'Crash', 13: 'TP War', 14: 'TP真', 15: '德州',
+    500: 'GoldMaster',
     214: 'PumpkinCash',
     202: 'FortunateEbisu',//独占一行
     206: 'LuckyWineglass',//独占一行
@@ -109,10 +110,12 @@ export function LibShow() {
     59: '芝加哥', 60: '糖果派', 61: 'fireKick',
     76: 'Candy Rush', 78: 'SuperGems', 80: 'Candy Craze', 82: 'Millionaire', 84: 'FortuneAce', 86: 'SuperGemsII', 88: 'Lucky777', 90: 'FortuneComing', 92: 'UltraAce', 94: 'Wild Buffalo', 96: 'RomanArena', 98: 'SuperTongit',// slots
     100: 'Tower', 101: 'Sicbo', 102: 'Hilo', 103: 'Windrop', 119: 'Windropc积分', 104: 'Dragon Tiger', 105: 'Andar Bahar', 106: 'PIGGY TAP', 107: 'Mini Baccarat', 108: 'Dropball', 110: 'Video Poker',
-    112: 'Wingo Lottery', 115: 'MultiPlayer NiuNiu', 118: 'Car Racing', 124: 'Jackpot Wheel', 125: 'Free Spin', 127: 'SaBong', 128: 'Tongits JP', 129: 'Live Color', 132: '新版扫雷', 134: 'Pusoy JP', 135: 'SUPER COLOR', 136: 'Limbo',
+    112: 'Wingo Lottery', 115: 'MultiPlayer NiuNiu', 118: 'Car Racing', 124: 'Jackpot Wheel', 125: 'Free Spin', 127: 'SaBong', 128: 'Tongits JP', 129: 'Live Color', 132: '新版扫雷', 134: 'Pusoy JP', 135: 'SUPER COLOR', 136: 'Limbo', 137: 'BlackJackMH',
+    138: 'Chicken Go', 139: 'manny Punch',140:"HiloPlus",
     150: 'SuperGemsIII', 152: 'Aladdin\'s Lamp', 154: 'GrandAce', 156: 'CrazyAce', 172: 'WrathOfZeus', 158: 'SharkKingdom', 160: 'GigaAce', 162: 'MajorAce', 164: 'MahjongFortune', 166: 'FireLink',
     170: 'EpicAce', 176: 'PuppyHome', 182: 'GodOfFortune', 186: 'MahjongJackpot', 174: 'TreasureBowl', 178: 'MayanTotem', 194: 'GoldTrain', 168: 'Pharaoh\'sTreasure', 196: 'GoldMiner', 184: 'Dance of the Lion',
-    190: 'ArcaneEgypt', 198: 'FortuneBlessing', 200: 'AtlantisTreasure', 204: 'SpaceTreasure', 208: 'CandyBurst', 210: 'LuckySpirits', 216: 'Phoenix', 220: 'GoldenDragon', 222: 'LionFortune', 226: 'Fortune Wheel', 232: 'MafiaMayhem'// slots
+    190: 'ArcaneEgypt', 198: 'FortuneBlessing', 200: 'AtlantisTreasure', 204: 'SpaceTreasure', 208: 'CandyBurst', 210: 'LuckySpirits', 216: 'Phoenix', 220: 'GoldenDragon', 222: 'LionFortune', 226: 'Fortune Wheel', 232: 'MafiaMayhem', // slots
+    230: 'PahiyasWins', 236: 'PacquiaoFortune', 234: "Fortune Tree",
   }
 
   this.NumMap = {

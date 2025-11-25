@@ -59,7 +59,14 @@
         </div>
         <div class="form-item-item">
           数量：
-          <el-input v-model.number="form.PropDetails.prop_num" type="number" placeholder="请输入道具数量" style="width: calc(100% - 80px);" @input="form.PropDetails.prop_num = form.PropDetails.prop_num < 0 ? 0 : form.PropDetails.prop_num" />
+          <el-input
+            v-model.number="form.PropDetails.prop_num"
+            type="number"
+            placeholder="请输入道具数量"
+            style="width: calc(100% - 80px);"
+            :disabled="[7,8,9].includes(itemType)"
+            @input="form.PropDetails.prop_num = form.PropDetails.prop_num < 0 ? 0 : form.PropDetails.prop_num"
+          />
         </div>
         <div class="form-item-item" v-if="checkPropNeedExpireDays(itemType)" >
           过期天数：
@@ -89,6 +96,8 @@
 import { ITEM_TYPE_OPTIONS, APPID_OPTIONS, ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS } from '@/utils/options'
 import request from '@/utils/request'
 import { Message } from 'element-ui'
+import {GetMatchTicketRightsIdList, MATCH_TICKET_RIGHTS_ID_CFG_PROD, MATCH_TICKET_RIGHTS_ID_CFG_DEV} from "@/utils/prop";
+import {IsProd} from "@/utils/env";
 export default {
   props: {
     title: {
@@ -118,7 +127,8 @@ export default {
           prop_name: '', // 道具名称
           prop_num: 1,
           prop_expire_days: 1, // 过期天数
-          gids: []
+          gids: [],
+          prop_scene_id:0,   // 道具发放场景ID
         },
         Remark: '',
         SendDetails: {
@@ -384,10 +394,32 @@ export default {
       this.form.PropDetails.prop_name = ''
       this.form.PropDetails.prop_num = 1
       this.form.PropDetails.prop_expire_days = 1
-      const filteredItems = this.itemList.filter(item => item.item_type === value)
-      console.log('筛选后的道具列表', filteredItems)
+      let filteredItems = this.itemList.filter(item => item.item_type === value)
+      if(this.isNewTicketProp(value)){
+        //根据当前道具类型获取对应的门票配置
+        const ticketsConfig = IsProd() ? MATCH_TICKET_RIGHTS_ID_CFG_PROD : MATCH_TICKET_RIGHTS_ID_CFG_DEV
+        //console.log('ticketsConfig', ticketsConfig, 'value', value)
+        if(ticketsConfig && typeof ticketsConfig === 'object'){
+          // 收集所有appId下的ticketId
+          const allowedTicketIds = new Set()
+          for(const appId in ticketsConfig){
+            if(ticketsConfig[appId] && Array.isArray(ticketsConfig[appId])){
+              ticketsConfig[appId].forEach(ticket => {
+                if(ticket.ticketId){
+                  allowedTicketIds.add(ticket.ticketId)
+                }
+              })
+            }
+          }
+          // 只保留在允許列表中的道具
+          if(allowedTicketIds.size > 0){
+            filteredItems = filteredItems.filter(item => allowedTicketIds.has(item.id))
+          }
+        }
+      }
+     // console.log('筛选后的道具列表', filteredItems)
       this.updateItemOption(filteredItems)
-      console.log('道具下拉框选项', this.itemOptions)
+     // console.log('道具下拉框选项', this.itemOptions)
       this.checkShowFreeSpinGame()
     },
     /**
@@ -404,6 +436,10 @@ export default {
       }
     },
     handleItemChange(val) {
+      //新版本门票默认值1
+      if(this.isNewTicketProp(this.itemType)){
+        this.form.PropDetails.prop_num = 1
+      }
       this.checkShowFreeSpinGame()
     },
     checkShowFreeSpinGame() {
@@ -442,6 +478,20 @@ export default {
       const selectedItem = this.itemList.find(item => item.id === this.form.PropDetails.prop_id)
       // 获取道具名称
       params.PropDetails.prop_name = selectedItem.item_name
+      //判断发放的是否是新版比赛门票 道具，若是则获取对应的比赛门票权益id
+
+      if (this.isNewTicketProp(selectedItem.item_type)) {
+        //根据当前道具类型获取对应的门票配置
+        const ticketsConfig = IsProd() ? MATCH_TICKET_RIGHTS_ID_CFG_PROD : MATCH_TICKET_RIGHTS_ID_CFG_DEV
+        if(ticketsConfig && typeof ticketsConfig === 'object'){
+          for(const appId in ticketsConfig){
+            if(ticketsConfig[appId] && Array.isArray(ticketsConfig[appId]) && ticketsConfig[appId].some(ticket => ticket.ticketId === selectedItem.id)){
+              params.PropDetails.prop_scene_id = ticketsConfig[appId].find(ticket => ticket.ticketId === selectedItem.id).sceneId
+            }
+          }
+        }
+      }
+      // 将粘贴id转换成数组格式
       // 将PropDetails和SendDetails转成字符串格式
       params.PropDetails = JSON.stringify(params.PropDetails)
       params.SendDetails = JSON.stringify(params.SendDetails)

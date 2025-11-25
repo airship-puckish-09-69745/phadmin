@@ -532,12 +532,13 @@
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
+                :disabled="checkNewTicketPropDisable(item.propsType,item.propsAppId)"
               />
             </el-select>
           </el-form-item>
 
           <el-form-item v-if=" editForm.data.signUpType === 2 || editForm.data.signUpType === 3" label="门票数量：" :required="true">
-            <el-input v-model.number="editForm.signExtra.propNum" style="width: 180px;" size="mini" placeholder="请填写门票数量" />
+            <el-input v-model.number="editForm.signExtra.propNum" style="width: 180px;" type="number" min="0" :disabled="true" size="mini" placeholder="请填写门票数量" />
           </el-form-item>
 
           <el-form-item v-if="editForm.data.signUpType === 1" label="今日投注下限(0不限制)：" :required="true">
@@ -582,7 +583,7 @@
 
             <el-col :span="11">
               <el-form-item v-if="editForm.signExtra.reubyExtra.supportRebuy===1" label="Rebuy报名条件:" :required="false">
-                <el-select v-model="editForm.signExtra.reubyExtra.rebuySignType" placeholder="请选择" size="mini">
+                <el-select v-model="editForm.signExtra.reubyExtra.rebuySignType" placeholder="请选择" size="mini" @change="handleRebuySignTypeChange()">
                   <el-option
                     v-for="item in RebuySignUpTypeCfgs"
                     :key="item.value"
@@ -609,6 +610,7 @@
                     :key="item.value"
                     :label="item.label"
                     :value="item.value"
+                    :disabled="checkNewTicketPropDisable(item.propsType,item.propsAppId)"
                   />
                 </el-select>
               </el-form-item>
@@ -617,7 +619,7 @@
           <el-row>
             <el-col :span="11">
               <el-form-item v-if="editForm.signExtra.reubyExtra.supportRebuy===1 && (editForm.signExtra.reubyExtra.rebuySignType === 2 || editForm.signExtra.reubyExtra.rebuySignType === 3)" label="Rebuy门票数量：" :required="true">
-                <el-input v-model.number="editForm.signExtra.reubyExtra.rebuyPropNum" style="width: 180px;" size="mini" placeholder="请填写门票数量" />
+                <el-input v-model.number="editForm.signExtra.reubyExtra.rebuyPropNum" style="width: 180px;" type="number" min="0" :disabled="true" size="mini" placeholder="请填写门票数量" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -730,12 +732,13 @@
                         :key="item.propsId"
                         :label="item.propsName"
                         :value="item.propsId"
+                        :disabled="checkNewTicketPropDisable(item.propsType,item.propsAppId)"
                       >
                         <img v-if="item.propsIcon != '' " :src="item.propsIcon" style="height:36px;vertical-align: middle;">
                         <span>{{ item.propsShowName }}</span>
                       </el-option>
                     </el-select>
-                    <el-input v-model.number="scope.row.propsReward.propsNum" style="width: 100px;" size="mini" placeholder="填数量" />
+                    <el-input v-model.number="scope.row.propsReward.propsNum" style="width: 100px;" size="mini" type="number" min="0" placeholder="填数量" />
                   </li>
                   <li v-if="scope.row.propsReward != null && checkPropNeedExpireDays(scope.row.propsReward.propsId)" style="list-style: none;">
                     <span>过期天数：</span>
@@ -868,7 +871,8 @@ import AppInfo from '../../devTools/appInfo.vue'
 import { log } from 'console'
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
 import { getAllCommonGameConfig, getAllMatchGuidesConfig,validateUidInput, handleUidInputChange, setNestedProperty } from '@/utils/common-game-config'
-import { IsMars } from '@/utils/env'
+import { IsMars, IsProd } from '@/utils/env'
+import { IsNewTicketProp, MATCH_TICKET_RIGHTS_ID_CFG_PROD, MATCH_TICKET_RIGHTS_ID_CFG_DEV } from '@/utils/prop'
 import {
   CHANNEL_OPTIONS,
   APPID_OPTIONS,
@@ -1191,7 +1195,8 @@ export default {
             propsIcon: '',
             propsAttr: '',
             propsNum: 0,
-            propExpireDays: -1
+            propExpireDays: -1,
+            propsSceneId: 0,
           }
         }
       ]
@@ -1571,7 +1576,8 @@ export default {
           propsName: '',
           propsIcon: '',
           propsAttr: '',
-          propExpireDays: -1
+          propExpireDays: -1,
+          propsSceneId: 0,
         }
       })
     },
@@ -1748,7 +1754,9 @@ export default {
               propsIcon: '',
               propsAttr: '',
               propsNum: 0,
-              propExpireDays: -1
+              propExpireDays: -1,
+              propsSceneId:0
+
             }
           }
         ]
@@ -2207,34 +2215,70 @@ export default {
                 'propsIcon': '',
                 'propsAttr': '',
                 'propsCost': '',
-                'propsShowName': ''
+                'propsShowName': '',
+                'propsSceneId': 0,
+                'propsAppId': 0,  // 道具所属appId
               }
             ]
             this.matchTicketsCfgs = []
+            let ticketConfigList = IsProd() ? MATCH_TICKET_RIGHTS_ID_CFG_PROD : MATCH_TICKET_RIGHTS_ID_CFG_DEV
             var timestamp = Date.parse(new Date()) / 1000
             for (let i = 0; i < objs.list.length; i++) {
               if (this.propsTypeList.includes(objs.list[i].item_type)) {
+                let canPush = false
+                let sceneId = 0
+                let appId = 0
                 if (objs.list[i].status === 1 && ((objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET && objs.list[i].expire_time > timestamp) ||
                   objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME || objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET_NEW)) {
                   let str = objs.list[i].item_name
                   if (objs.list[i].show_name.length > 0) {
                     str = str + '(' + objs.list[i].show_name + ')'
                   }
-                  this.matchPropsCfgs.push({
-                    'propsType': objs.list[i].item_type,
-                    'propsId': objs.list[i].id,
-                    'propsName': objs.list[i].item_name,
-                    'propsIcon': objs.list[i].image,
-                    'propsAttr': objs.list[i].item_describe,
-                    'propsCost': objs.list[i].item_cost,
-                    'propsShowName': str
-                  })
-                  if (objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET || objs.list[i].item_type ===PROP_TYPE_OPTIONS.PROP_TYPE_TICKET_NEW ) { // Tongits 门票
-                    this.matchTicketsCfgs.push({
-                      'label': str,
-                      'value': objs.list[i].id
-                    })
+                  if (IsNewTicketProp(objs.list[i].item_type)) {
+                    console.log("ticketID ",objs.list[i].id ,objs.list[i])
+                    if (objs.list[i].item_extra.length <=  0) {
+                      continue
+                    }
+                    const exitData = JSON.parse(objs.list[i].item_extra)
+                    console.log("ticketID 2222 exitData   ",objs.list[i].id,exitData)
+                   if(exitData === null || exitData === undefined || exitData.appId === 0 || typeof exitData.appId === 'undefined'){
+                      continue
+                    }
+                    let ticket = ticketConfigList[exitData.appId].find(ticket => ticket.ticketId === objs.list[i].id)
+                    if(ticket){
+                      canPush = true
+                      sceneId = ticket.sceneId
+                      appId = exitData.appId
+                    }
+                  }else{
+                    canPush = true
                   }
+                  if (canPush) {
+                    this.matchPropsCfgs.push(
+                      {
+                      'propsType': objs.list[i].item_type,
+                      'propsId': objs.list[i].id,
+                      'propsName': objs.list[i].item_name,
+                      'propsIcon': objs.list[i].image,
+                      'propsAttr': objs.list[i].item_describe,
+                      'propsCost': objs.list[i].item_cost,
+                      'propsShowName': str,
+                      'propsSceneId': sceneId,
+                      'propsAppId': appId
+                  })
+                }
+                  if (objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET || objs.list[i].item_type ===PROP_TYPE_OPTIONS.PROP_TYPE_TICKET_NEW ) { // Tongits 门票
+                    if (canPush) {
+                    this.matchTicketsCfgs.push({
+                        'label': str,
+                        'value': objs.list[i].id,
+                        'propsAppId': appId,
+                        'propsType': objs.list[i].item_type,
+                      })
+                    }
+                  }
+                  console.log("matchTicketsCfgs",this.matchTicketsCfgs)
+                 console.log("matchPropsCfgs",this.matchPropsCfgs)
                 }
               }
             }
@@ -2711,7 +2755,8 @@ export default {
         propsNum: propsNum,
         propCost: 0,
         propExpireDays: expireDays,
-        propsShowName: ''
+        propsShowName: '',
+        propsSceneId: 0,
       }
       for (let i = 0; i < this.matchPropsCfgs.length; i++) {
         const element = this.matchPropsCfgs[i]
@@ -2723,6 +2768,8 @@ export default {
           one.propsAttr = element.propsAttr
           one.propCost = element.propsCost
           one.propsShowName = element.propsShowName
+          one.propsSceneId = element.propsSceneId
+          one.propsAppId = element.propsAppId
           break
         }
       }
@@ -2815,6 +2862,7 @@ export default {
             this.errmsg('所选择的道具不生效')
             return false
           }
+          this.editForm.signExtra.propNum = 1
         }
       }
       // 金币or门票报名
@@ -2971,6 +3019,8 @@ export default {
             this.errmsg('当前是纯门票或者 金币or门票reuby 请选择门票或者填门票数量')
             return false
           }
+          console.log('this.editForm.signExtra.reubyExtra.rebuyPropNum',this.editForm.signExtra.reubyExtra.rebuyPropNum)
+          this.editForm.signExtra.reubyExtra.rebuyPropNum = 1
         }
       }
       // 买入积分检测
@@ -3114,6 +3164,21 @@ export default {
     checkPropNeedExpireDays(propsId) {
       const prop = this.getPropsRewardItem(propsId, 0, 0)
       return [PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME, PROP_TYPE_OPTIONS.PROP_TYPE_TICKET_NEW].includes(prop.propsType);
+    },
+    //根据比赛的APPID 筛选相应APPID的门票
+    checkNewTicketPropDisable(propsType,appId) {
+      if(IsNewTicketProp(propsType) && appId !== this.editForm.appInfo[0].appId) {
+        return true
+      }
+      return false
+    },
+    // 处理rebuy报名类型变化
+    handleRebuySignTypeChange() {
+      if(this.editForm.signExtra.reubyExtra.rebuySignType === 2 || this.editForm.signExtra.reubyExtra.rebuySignType === 3) {
+        this.editForm.signExtra.reubyExtra.rebuyPropNum = 1
+      } else {
+        this.editForm.signExtra.reubyExtra.rebuyPropNum = 0
+      }
     },
     // 道具过期时间是否合法
     propValidExpireDays(propsId, expireDays) {

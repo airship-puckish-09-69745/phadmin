@@ -71,11 +71,14 @@
               </el-option>
             </el-select>
           </el-form-item>
+          <el-form-item label="场次">
+            <el-input placeholder="请输入内容" v-model.number="trustCompForm.Level" size="mini"></el-input>
+          </el-form-item>
           <el-form-item label="疑似分加减">
             <el-input v-model.number="trustCompForm.CheatScore" size="mini" placeholder="正加负减"/>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" size="mini" @click="addCheatScore(trustCompForm.Uid,trustCompForm.Gid,trustCompForm.CheatScore)">提交</el-button>
+            <el-button type="primary" size="mini" @click="addCheatScore(trustCompForm.Uid,trustCompForm.Gid,trustCompForm.Level,trustCompForm.CheatScore)">提交</el-button>
           </el-form-item>
         </el-form>
         <el-table
@@ -100,9 +103,11 @@
           </el-table-column>
           <el-table-column prop="trustScore" label="信任分系统信任分">
           </el-table-column>
+          <el-table-column prop="maxTrustScore" label="历史最大信任分">
+          </el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
-              <el-button type="primary" size="mini" @click="addCheatScore(scope.row.uid,scope.row.gid,0)">刷新</el-button>
+              <el-button type="primary" size="mini" @click="addCheatScore(scope.row.uid,scope.row.gid,0,0)">刷新</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -129,6 +134,7 @@ export default {
       trustCompForm: {
         Uid: 0,
         Gid: 22,
+        Level: 0,
         Identity: 4,
         CheatScore: 0,
       },
@@ -255,7 +261,7 @@ export default {
         }
       })
     },
-    addCheatScore(uid,gid,cheatScore) {
+    addCheatScore(uid,gid,level,cheatScore) {
       if (this.env != 'test') {
         return
       }
@@ -268,6 +274,7 @@ export default {
           Path: '/user/cheat/score/add',
           Uid: uid,
           Gid: gid,
+          Level: level * 1000,
           Score: cheatScore,
         }
       }).then(response => {

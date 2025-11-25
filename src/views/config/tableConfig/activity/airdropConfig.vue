@@ -528,6 +528,22 @@
                 </el-form-item>
               </el-col>
             </el-row>
+            <el-row>
+              <el-col :span="11">
+                <el-form-item label="A/B测试开关：" prop="item.whitelistCfg.abTest">
+                  <el-switch v-model="edit.item.whitelistCfg.abTest.switch" :active-value="true" :inactive-value="false" active-text="开启" inactive-text="关闭" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="11">
+                <el-form-item label="B分组比例：" prop="item.whitelistCfg.abTest.bPercent">
+                  <el-input v-model.number="edit.item.whitelistCfg.abTest.bPercent" oninput=" if(value < 0 || value === '' || value == null){value = 0;} ">
+                    <template slot="append">%</template>
+                  </el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
           </el-form>
         </el-tab-pane>
 
@@ -616,6 +632,10 @@ function newItem() {
     whitelistCfg: {
       appIdList: [1000002],
       siteIdList: ['Dev'],
+      abTest: {
+        switch: false,
+        bPercent: 0,
+      },
     },
     debugTimeOffset: 0,
     taskConfig: {
@@ -671,6 +691,7 @@ export default {
         'activity.name': '活动名称',
         'activity.whitelist.siteIdList': '站点白名单',
         'activity.whitelist.appIdList': 'AppId白名单',
+        'activity.whitelist.abTest': 'A/B测试配置',
         'activity.status': '配置状态',
         'activity.startTime': '开始时间',
         'activity.endTime': '结束时间',
@@ -1434,6 +1455,13 @@ export default {
             for (let i = 0; i < item.progressPrizes.length; i++) {
               const prize = item.progressPrizes[i]
               prize.taskValueRequired /= 1000
+            }
+          }
+
+          if (item.whitelistCfg.abTest === undefined) {
+            item.whitelistCfg['abTest'] = {
+              switch: false,
+              bPercent: 0,
             }
           }
 

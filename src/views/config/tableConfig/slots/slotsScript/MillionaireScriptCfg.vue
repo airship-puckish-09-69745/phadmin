@@ -19,7 +19,7 @@
           <fieldset style="margin:20px auto;">
             <legend>大奖配置</legend>
             <el-row>
-              <el-col :span="8" :offset="4" style="text-align: center;">
+              <el-col :span="8" style="text-align: center;">
                 <el-form-item label="下注总金额抽水(千分之一)：">
                   <el-input v-model.number="item.BigPrizeCfg.TaxPerThousand" autosize>
                     <template slot="append">‰(千分之一)</template>
@@ -33,7 +33,9 @@
                   </el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="8" :offset="4">
+            </el-row>
+            <el-row>
+              <el-col :span="8">
                 <el-form-item label="中奖最大间隔(多少次中一次奖)">
                   <el-input v-model.number="item.BigPrizeCfg.HitSteps">
                     <template slot="append">次</template>
@@ -110,11 +112,11 @@
               <el-button @click="addGroup">添加新的用户群大奖配置</el-button>
             </el-row>
             <el-table :data="item.BigPrizeGroups" stripe border :header-cell-style="libShow.DefaultTableHeadClass" :row-style="{height:'10px'}" :cell-style="libShow.DefaultTableCell" style="width: 100%; margin: 10px auto;">
-              <el-table-column prop="GroupId"  label="分组ID" width="200"><template slot-scope="scope"><el-input v-model.number="scope.row.GroupId" size="mini" /></template></el-table-column>
-              <el-table-column prop="GroupName" label="分组名" width="400"><template slot-scope="scope"><el-input v-model="scope.row.GroupName" size="mini" /></template></el-table-column>
+              <el-table-column prop="GroupId"  label="分组ID" width="100"><template slot-scope="scope"><el-input v-model.number="scope.row.GroupId" size="mini" /></template></el-table-column>
+              <el-table-column prop="GroupName" label="分组名" width="300"><template slot-scope="scope"><el-input v-model="scope.row.GroupName" size="mini" /></template></el-table-column>
               <el-table-column prop="GroupDesc" label="描述" width="400"><template slot-scope="scope"><el-input type="textarea" :rows="3" v-model="scope.row.GroupDesc" size="mini" /></template></el-table-column>
-              <el-table-column prop="HitPerMillion" label="中奖率(百万分之一)" width="300"><template slot-scope="scope"><el-input v-model.number="scope.row.HitPerMillion" size="mini" /></template></el-table-column>
-              <el-table-column prop="Rules" label="筛选条件" width="400">
+              <el-table-column prop="HitPerMillion" label="中奖率(百万分之一)" width="200"><template slot-scope="scope"><el-input v-model.number="scope.row.HitPerMillion" size="mini" /></template></el-table-column>
+              <el-table-column prop="Rules" label="筛选条件" width="300">
                 <template slot-scope="scope"><span v-html="groupRules2Text(scope.$index)"></span></template>
               </el-table-column>
               <el-table-column label="操作列表" width="200">
@@ -127,7 +129,67 @@
           </fieldset>
           <!-- 用户群大奖配置 结束 -->
 
-          <el-col :offset="16" :span="8">
+          <!-- 大奖预热配置 开始 -->
+          <fieldset style="margin:20px auto;">
+            <legend>大奖预热配置</legend>
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="1个Scatter的概率：">
+                  <el-input v-model.number="item.WarmUpCfg.Scatter1Rate" autosize>
+                    <template slot="append">‱(万分之一)</template>
+                  </el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="2个Scatter的概率：">
+                  <el-input v-model.number="item.WarmUpCfg.Scatter2Rate" autosize>
+                    <template slot="append">‱(万分之一)</template>
+                  </el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="3个Scatter的概率：">
+                  <el-input v-model.number="item.WarmUpCfg.Scatter3Rate" autosize>
+                    <template slot="append">‱(万分之一)</template>
+                  </el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="增长系数：">
+                  <el-input v-model.number="item.WarmUpCfg.MultiRate">
+                    <template slot="append">放大100倍</template>
+                  </el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="概率上限：">
+                  <el-input v-model.number="item.WarmUpCfg.MaxRate">
+                    <template slot="append">‱(万分之一)</template>
+                  </el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="开关：">
+                  <el-select v-model="item.WarmUpCfg.WarmUpEnabled" placeholder="Select" style="width: 240px">
+                    <el-option v-for="item in warmUpStatus" :key="item.value" :label="item.label" :value="item.value" />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </fieldset>
+          <!-- 大奖预热配置 结束 -->
+
+          <el-col :span="12">
             <el-form-item>
               <el-button type="primary" @click="setData">保存</el-button>
             </el-form-item>
@@ -289,7 +351,15 @@ export default {
           OddsCfg: [],
           Plans: []
         },
-        BigPrizeGroups: []
+        BigPrizeGroups: [],
+        WarmUpCfg: {
+          Scatter1Rate: 0,
+          Scatter2Rate: 0,
+          Scatter3Rate: 0,
+          MultiRate: 0,
+          MaxRate: 0,
+          WarmUpEnabled: false
+        }
       },
       gidOptions: {},
       gameOptions: [],
@@ -330,6 +400,10 @@ export default {
       groupOperators: [
         {'label': '<=', 'value': 1},
         {'label': '>=', 'value': 2}
+      ],
+      warmUpStatus: [
+        {'label': '启用', 'value': true},
+        {'label': '禁用', 'value': false}
       ],
       subKeyMap: {
         '76': 'candypartyway',
@@ -410,7 +484,8 @@ export default {
         '212': 'pirateship',
         '214': 'pumpkincash',
         '224': 'supermahjong',
-        '232': 'mafiamayhem'
+        '232': 'mafiamayhem',
+        '236': 'pacquiaofortune'
       }
     }
   },
@@ -548,6 +623,9 @@ export default {
       if (!this.checkBigPrizeGroup()) {
         return false
       }
+      if (!this.checkWarmUpCfg()) {
+        return false
+      }
       this.form.Data = JSON.stringify(this.getPostData())
       const $this = this
       // 设置修改后数据
@@ -590,7 +668,7 @@ export default {
             }
             optionArr.push({
               key: response.Data[i].Gid,
-              label: response.Data[i].Name
+              label: response.Data[i].Name + ' (GID:' + response.Data[i].Gid + ')'
             })
           }
           optionArr.push({ key: 100180, label: 'Fishing Master(额外加注)' })
@@ -779,6 +857,32 @@ export default {
           return false
         }
       }
+      return true
+    },
+
+    //验证预热配置
+    checkWarmUpCfg() {
+      if (this.item.WarmUpCfg.Scatter1Rate < 0 || this.item.WarmUpCfg.Scatter1Rate > 10000) {
+        Message.error('预热配置【1个Scatter的概率】请在 0 ~ 10000 之间！')
+        return false
+      }
+      if (this.item.WarmUpCfg.Scatter2Rate < 0 || this.item.WarmUpCfg.Scatter2Rate > 10000) {
+        Message.error('预热配置【2个Scatter的概率】请在 0 ~ 10000 之间！')
+        return false
+      }
+      if (this.item.WarmUpCfg.Scatter3Rate < 0 || this.item.WarmUpCfg.Scatter3Rate > 10000) {
+        Message.error('预热配置【3个Scatter的概率】请在 0 ~ 10000 之间！')
+        return false
+      }
+      if (this.item.WarmUpCfg.MultiRate < 0) {
+        Message.error('预热配置【增长系数】请大于等于 0 ！')
+        return false
+      }
+      if (this.item.WarmUpCfg.MaxRate < 0 || this.item.WarmUpCfg.MaxRate > 10000) {
+        Message.error('预热配置【概率上限】请在 0 ~ 10000 之间！')
+        return false
+      }
+      //this.item.WarmUpCfg.WarmUpEnabled = (this.item.WarmUpCfg.WarmUpEnabled === 'true' ? true : false)
       return true
     },
 

@@ -12,7 +12,7 @@ import {
   initWhiteList,
   initSignExtra,
   initListExtra,
-  initPrizeExtra
+  initPrizeExtra, initSingleCopy
 } from '../utils/matchConfigUtils'
 
 export const matchFormMixin = {
@@ -154,6 +154,7 @@ export const matchFormMixin = {
       this.editForm.signExtra = initSignExtra()
       this.editForm.listExtra = initListExtra()
       this.editForm.prizeExtra = initPrizeExtra()
+      this.editForm.singleCopyExtr = initSingleCopy()
     },
 
     /**
@@ -215,7 +216,6 @@ export const matchFormMixin = {
             })
           }
         }
-        console.log("saveMatch rankReward 1111",rankReward)
         // 发送请求
         const response = await request({
           url: '/matchconfig/match/config/create',
@@ -257,6 +257,8 @@ export const matchFormMixin = {
           if (this.editForm.data.id > 0) {
             showMsg = '编辑比赛配置成功！'
           }
+          this.editForm.singleCopyExtr.Id = 0
+          this.editForm.singleCopyExtr.isCopy = false
           Message.success(showMsg)
           this.closeEditDialog()
           // 重新加载列表
@@ -330,7 +332,7 @@ export const matchFormMixin = {
       if (this.editForm.prizeExtra.awardType === 0) {
         this.editForm.prizeExtra.rewardType = 1
         this.editForm.prizeExtra.sceneId = 0
-        console.log("checkRewardCfg rewards",this.editForm.rankRewards)
+        //console.log("checkRewardCfg rewards",this.editForm.rankRewards)
         if (!await this.checkRewardCfg(this.editForm.rankRewards)) {
           return false
         }
@@ -955,7 +957,8 @@ export const matchFormMixin = {
           propsIcon: '',
           propsAttr: '',
           propsNum: 0,
-          propExpireDays: -1
+          propExpireDays: -1,
+          propsSceneId:0,
         }
       }
       this.editForm.rankRewards.push(newReward)
@@ -1023,6 +1026,10 @@ export const matchFormMixin = {
       // 將字符串轉換為數字
       const numericValue = parseInt(value, 10)
       this.editForm.rankRewards[rankIndex].endRank = isNaN(numericValue) ? 0 : numericValue
+    },
+    handleSetCopyExtr(ID) {
+      this.editForm.singleCopyExtr.isCopy = true
+      this.editForm.singleCopyExtr.id = ID
     }
-  }
+  },
 }

@@ -161,7 +161,19 @@
           prop="app"
           label="应用ID"
           width="90"
-        />
+        >
+          <template v-slot:header>
+            <el-select v-model="clientDB.FilterValueMap['app']" size="mini" @change="handleFilter">
+              <el-option label="应用ID" :value="0" />
+              <el-option v-for="(o,key) in clientDB.FilterMap['app']" :key="key" :label="o" :value="key" />
+            </el-select>
+          </template>
+          <template slot-scope="scope">
+            {{ clientDB.GetShowValue('app', scope.row.app) }}
+          </template>
+        </el-table-column>
+
+
         <el-table-column
           prop="channel"
           label="渠道"
@@ -469,7 +481,8 @@ import RobotRecycleBtn from '@/components/RobotRecycleBtn'
 import LineChart from '../../playerManage/components/LineChart'
 const filterMap = {
   currentTableMoney: 'all',
-  allowTableMoney: 'all'
+  allowTableMoney: 'all',
+  app: 'all'
 }
 function newItem() {
   return { 'nick': '', 'money': 0, 'initMoney': 0, 'channel': '', 'account': '', 'icon': '', 'app': '', 'allowTableMoney': 0 }

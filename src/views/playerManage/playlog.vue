@@ -772,6 +772,146 @@
       </el-descriptions>
     </el-dialog>
 
+    <el-dialog title="Blackjackmh牌局详情" :visible.sync="blackjackmhDetailVisible" width="1200px">
+      <el-descriptions class="margin-top" title="" :column="3" border>
+        <el-descriptions-item>
+          <template slot="label">
+            底注：
+          </template>
+          {{ blackjackmhDetail.minBet / 1000 }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            庄家点数：
+          </template>
+          {{ blackjackmhDetail.dealerLog.points }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            牌型：
+          </template>
+          {{
+            blackjackmhDetail.dealerLog.cardType === 1 ? "点牌" : (blackjackmhDetail.dealerLog.cardType === 2 ? "BlackJack" : "爆牌")
+          }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            庄家手牌：
+          </template>
+          <div v-for="card in blackjackmhDetail.dealerLog.cards" class="block">
+            <el-image
+              style="width: 37px; height: 50px"
+              :src="getCardUrl(card)"
+            />
+          </div>
+        </el-descriptions-item>
+      </el-descriptions>
+
+      <el-table :data="[blackjackmhDetail.playerLog]" border>
+        <el-table-column prop="uid" label="UID" />
+        <el-table-column prop="totalBet" label="Lucky Bet金额">
+          <template slot-scope="scope">
+            <div v-for="(item,index) in scope.row.cardGroupLog" class="blackJackmhBox">
+              {{ item.luckyBet / 1000 }}
+              <hr v-if="index !== scope.row.cardGroupLog.length - 1" class="blackJackmhHr"/>
+            </div>
+           
+          </template>
+        </el-table-column>
+        <el-table-column prop="totalBet" label="投注金额">
+          <template slot-scope="scope">
+            <div v-for="(item,index) in scope.row.cardGroupLog" class="blackJackmhBox">
+              {{ item.bet / 1000 }}
+              <hr v-if="index !== scope.row.cardGroupLog.length - 1" class="blackJackmhHr"/>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="insurance" label="投保金额">
+          <template slot-scope="scope">
+            <div v-for="(item,index) in scope.row.cardGroupLog" class="blackJackmhBox">
+              {{ item.insurance / 1000 }}
+              <hr v-if="index !== scope.row.cardGroupLog.length - 1" class="blackJackmhHr"/>
+            </div>
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="cards" label="手牌" width="300px">
+          <template slot-scope="scope">
+            <div v-for="(item,index) in scope.row.cardGroupLog" class="blackJackmhBlock">
+              <span v-if="item.cards.length > 0">
+                {{ '手牌' + (item.id + 1) + ': ' }}
+              </span>
+              <div v-for="(card) in item.cards" class="block">
+                <el-image
+                  style="width: 37px; height: 50px"
+                  :src="getCardUrl(card)"
+                />
+              </div>
+              <br>
+              <span v-if="item.splitCards && item.splitCards.length > 0">
+                {{ '分牌手牌' + (item.id + 1) + ': ' }}
+              </span>
+              <div v-for="(card) in item.splitCards" class="block">
+                <el-image
+                  style="width: 37px; height: 50px"
+                  :src="getCardUrl(card)"
+                />
+              </div>
+              <div v-if="!item.splitCards || item.splitCards.length <= 0" class="block" style="height: 39px">
+              </div>
+              <hr v-if="index !== scope.row.cardGroupLog.length - 1" class="blackJackmhHr"/>
+            </div>
+          </template>
+        </el-table-column>
+        
+        <el-table-column label="是否爆牌" width="200px">
+          <template slot-scope="scope">
+            <div v-for="(item,index) in scope.row.cardGroupLog" class="blackJackmhBox">
+              <span v-if="item.cards.length > 0">
+                {{'手牌' + (item.id + 1) + ': ' + (item.cardType == 1 ? "点牌" : (item.cardType == 2 ? "BlackJack" : "爆牌"))}}
+              </span>
+              <br>
+              <span v-if="item.splitCards && item.splitCards.length > 0">
+                {{'分牌手牌' + (item.id + 1) + ': ' + (item.splitCardType == 1 ? "点牌" : (item.splitCardType == 2 ? "BlackJack" : "爆牌"))}}
+              </span>
+              <hr v-if="index !== scope.row.cardGroupLog.length - 1" class="blackJackmhHr"/>
+            </div>
+           
+          </template>
+        </el-table-column>
+        <el-table-column label="Lucky Bet输赢">
+          <template slot-scope="scope">
+            <div v-for="(item,index) in scope.row.cardGroupLog" class="blackJackmhBox">
+              {{ item.luckyWin / 1000 }}
+              <hr v-if="index !== scope.row.cardGroupLog.length - 1" class="blackJackmhHr"/>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="比牌输赢">
+          <template slot-scope="scope">
+            <div v-for="(item,index) in scope.row.cardGroupLog" class="blackJackmhBox">
+              {{ item.normalBetWin / 1000 }}
+              <hr v-if="index !== scope.row.cardGroupLog.length - 1" class="blackJackmhHr"/>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="moneyBet" label="保险中奖金额">
+          <template slot-scope="scope">
+            <div v-for="(item,index) in scope.row.cardGroupLog"  class="blackJackmhBox">
+              {{ item.insurancePay / 1000 }}
+              <hr v-if="index !== scope.row.cardGroupLog.length - 1" class="blackJackmhHr"/>
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+      
+
+      <el-descriptions title="扩展信息">
+        <el-descriptions-item label="桌子ID">{{ blackjackmhDetail.tid }}</el-descriptions-item>
+        <el-descriptions-item label="Server日志ID">{{ blackjackmhDetail.logId }}</el-descriptions-item>
+      </el-descriptions>
+    </el-dialog>
+    
     <el-dialog title="多米诺牌局详情" :visible.sync="dominoDetailVisible" width="1200px">
       <el-descriptions class="margin-top" title="" :column="2" border>
         <el-descriptions-item>
@@ -2223,6 +2363,135 @@
       </el-table>
     </el-dialog>
 
+    <el-dialog v-if="goldmasterLog.visible" title="黄金矿工 详情" :visible.sync="goldmasterLog.visible" width="1400px">
+      <el-descriptions class="margin-top" title="" :column="5" border>
+        <el-descriptions-item>
+          <template slot="label">
+            UID：
+          </template>
+          {{ goldmasterLog.detail.uid }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            总输赢：
+          </template>
+          <span :style="WinOrLoseColor(goldmasterLog.detail.TotalAddMoney )"> {{
+              formatNumber((goldmasterLog.detail.moneyReturn -goldmasterLog.detail.moneyBet) / 1000)
+            }}</span>
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            结算后金额：
+          </template>
+          {{ formatNumber(goldmasterLog.detail.moneyCur / 1000) }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            记录开始时间：
+          </template>
+          {{ formatTime(goldmasterLog.detail.startTime) }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            记录结束时间：
+          </template>
+          {{ formatTime(goldmasterLog.detail.finishTime) }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            付费敲击次数：
+          </template>
+          {{ goldmasterLog.detail.feeTapTimes }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            总下注金额：
+          </template>
+          {{ goldmasterLog.detail.moneyBet / 1000 }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            台费：
+          </template>
+          {{ goldmasterLog.detail.moneyFee / 1000 }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            累计赢钱：
+          </template>
+          {{ formatNumber(goldmasterLog.detail.moneyReturn / 1000) }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            JP贡献：
+          </template>
+          {{ formatNumber(goldmasterLog.detail.jpContribute / 1000) }}
+        </el-descriptions-item>
+      </el-descriptions>
+
+      <el-table :data="goldmasterLog.detail.kLogs" border title="中奖记录" :row-style="changColorGoldMaster">
+        <el-table-column prop="typ" label="奖励类型">
+          <template slot-scope="scope">{{ GoldMasterTypeOptions[parseKnockExt(scope.row.knockExt).typ] }}</template> //todo:
+        </el-table-column>
+        <el-table-column prop="cards" label="敲击时间" width="110px">
+          <template slot-scope="scope"> {{ formatHMSTime(scope.row.logTime / 1000) }}.{{
+              scope.row.logTime % 1000
+            }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="seat" label="消耗金币">
+          <template slot-scope="scope">{{ scope.row.moneyBet / 1000 }}</template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="下注金额">
+          <template slot-scope="scope">{{ scope.row.moneyCalc / 1000 }}</template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="返奖">
+          <template slot-scope="scope">{{ scope.row.moneyReturn / 1000 }}</template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="记录后金额" width="150px">
+          <template slot-scope="scope">{{ formatNumber(scope.row.moneyCur / 1000) }}</template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="jpLevel">
+          <template slot-scope="scope">{{ GoldMasterJackpotLevel[scope.row.jpLevel] }}</template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="jpTyp">
+          <template slot-scope="scope">{{ scope.row.jpType }}</template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="金币倍数">
+          <template slot-scope="scope">{{ parseKnockExt(scope.row.knockExt).moneyOdds / 1000 }}</template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="转盘倍数">
+          <template slot-scope="scope">{{ parseKnockExt(scope.row.knockExt).plateOdds / 1000 }}</template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="转轴倍数">
+          <template slot-scope="scope">
+            {{ showPigData(scope.row.typ, scope.row.moneyBet) ? (parseKnockExt(scope.row.knockExt).spinOdds / 1000) : 0 }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="F次数收益">
+          <template slot-scope="scope">{{
+              showPigData(scope.row.typ, scope.row.moneyBet) ? parseKnockExt(scope.row.knockExt).timesIn : 0
+            }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="N倍数收益">
+          <template slot-scope="scope">{{
+              showPigData(scope.row.typ, scope.row.moneyBet) ? (parseKnockExt(scope.row.knockExt).oddsIn / 1000) : 0
+            }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="剩余免费次数">
+          <template slot-scope="scope">{{
+              showPigData(scope.row.typ, scope.row.moneyBet) ? parseKnockExt(scope.row.knockExt).timesFree : 0
+            }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="Progress">
+          <template slot-scope="scope">{{ parseKnockExt(scope.row.knockExt).progress }}</template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+
     <el-dialog v-if="piggyLog.visible" title="piggy详情" :visible.sync="piggyLog.visible" width="1400px">
       <el-descriptions class="margin-top" title="" :column="5" border>
         <el-descriptions-item>
@@ -3218,7 +3487,7 @@
         </el-table-column>
         <el-table-column prop="nick" label="昵称"  width="150px">
           <template slot-scope="scope">{{ scope.row.nick }}</template>
-        </el-table-column>        
+        </el-table-column>
         <el-table-column prop="bet" label="下注金额"  width="150px">
           <template slot-scope="scope">{{ scope.row.betMoney }}</template>
         </el-table-column>
@@ -3238,6 +3507,48 @@
           <template slot-scope="scope">{{ scope.row.bonusMoney }}</template>
         </el-table-column>
       </el-table>
+    </el-dialog>
+
+    <el-dialog title="ChickenGo详情" :visible.sync="ChickenGoDetailVisible" width="1200px">
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
+        <span style="float:left;">{{ '困难级别:' + getChickenGoLevel(ChickenGoDetail.level) }}</span>
+      </div>
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
+        <span style="float:left;">{{ '下注金额:' + ChickenGoDetail.betMoney }}</span>
+      </div>
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
+        <span style="float:left;">{{ '到达倍率:' + ChickenGoDetail.arriveIn/100 }}</span>
+      </div>
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
+        <span style="float:left;">{{ '获得倍率:' + ChickenGoDetail.multipleResult/100 }}</span>
+      </div>
+    </el-dialog>
+
+    <el-dialog title="MannyPunch详情" :visible.sync="MannyPunchDetailVisible" width="1200px">
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
+        <span style="float:left;">{{ '困难级别:' + getMannyPunchLevel(MannyPunchDetail.level) }}</span>
+      </div>
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
+        <span style="float:left;">{{ '下注金额:' + MannyPunchDetail.betMoney }}</span>
+      </div>
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
+        <span style="float:left;">{{ '到达倍率:' + MannyPunchDetail.arriveIn/100 }}</span>
+      </div>
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
+        <span style="float:left;">{{ '获得倍率:' + MannyPunchDetail.multipleResult/100 }}</span>
+      </div>
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
+        <span style="float:left;">{{ '获得Jackpot类型:' + MannyPunchDetail.jpType }}</span>
+      </div>
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
+        <span style="float:left;">{{ '获得Jackpot数量:' + MannyPunchDetail.jpNum }}</span>
+      </div>
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
+        <span style="float:left;">{{ '本局Jackpot贡献:' + MannyPunchDetail.jpContribute }}</span>
+      </div>
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
+        <span style="float:left;">{{ '总Jackpot贡献:' + MannyPunchDetail.jpTotalContribute }}</span>
+      </div>
     </el-dialog>
 
     <el-dialog title="TeenPatti详情" :visible.sync="ZJHDetailVisible" width="1600px">
@@ -3671,6 +3982,9 @@ export default {
       blackjackDetail: {},
       blackjackDetailVisible: false,
 
+      blackjackmhDetail: {"dealerLog":{"cards":[],"totalWin":0,"points":0,"cardType":0},"playerLog":{"cardGroupLog":[{"id":0,"cards":[],"splitCards":[],"bet":0,"luckyBet":0,"luckyWin":0,"insurance":0,"insurancePay":0,"totalWin":0,"normalBetWin":0,"cardType":0,"splitCardType":0}],"uid":0,"totalBet":0,"moneyChange":0,"moneyTaxed":0,"moneyCurrent":0,"moneyBefore":0,"walletType":0,"moneyTrueWin":0},"minBet":0,"tid":0,"logId":0},
+      blackjackmhDetailVisible: false,
+
       dominoDetail: {},
       dominoDetailVisible: false,
 
@@ -3711,6 +4025,12 @@ export default {
       LimboDetail:{},
       LimboDetailVisible:false,
 
+      ChickenGoDetail:{},
+      ChickenGoDetailVisible:false,
+
+      MannyPunchDetail:{},
+      MannyPunchDetailVisible:false,
+
       pusoyDetail: {},
       pusoyDetailVisible: false,
       pusoyCardTypes: {
@@ -3745,6 +4065,10 @@ export default {
         visible: false,
         detail: {}
       },
+      goldmasterLog: {
+        visible: false,
+        detail: {}
+      },
       pusoySwapDetail: {},
       pusoySwapDetailVisible: false,
       pusoySwapShootOneShow: false,
@@ -3765,7 +4089,23 @@ export default {
         11: 'JP发奖',
         20: '购买free game'
       },
+      GoldMasterTypeOptions: {
+        0: 'None',
+        1: '金币',
+        2: '幸运转盘',
+        3: '转轴',
+        4: 'F次数',
+        5: 'N倍数',
+        10: 'JP',
+        20: '购买free game'
+      },
       piggyJackpotLevle: {
+        0: 'None',
+        1: 'Grand',
+        2: 'Major',
+        3: 'Minor'
+      },
+      GoldMasterJackpotLevel: {
         0: 'None',
         1: 'Grand',
         2: 'Major',
@@ -3846,6 +4186,13 @@ export default {
     this.gid = this.$route.meta.gid
   },
   methods: {
+    parseKnockExt(jsonStr) {
+      try {
+        return JSON.parse(jsonStr || '{}');
+      } catch (e) {
+        return {};
+      }
+    },
     pusoyShowGroupExtra(row) {
       if (row.groupBottom.extraScore > 0 || row.groupMiddle.extraScore > 0 || row.groupTop.extraScore > 0) {
         return '(牌型加分)'
@@ -4170,14 +4517,14 @@ export default {
     clickData(row, column, event) {
       if (column.label !== 'Uid') {
         this.setRowUid(row.Uid)
-        this.getDetail(row.LogID, row.FinishTime)
+        this.getDetail(row.LogID, row.Uid, row.FinishTime)
       }
     },
     setRowUid(uid) {
       this.sweeperRowUid = uid
       this.clickRowUid = uid
     },
-    getDetail(id, dt) {
+    getDetail(id, uid, dt) {
       const $this = this
       request({
         url: '/dataProxy/info',
@@ -4186,7 +4533,8 @@ export default {
           Env: this.env,
           Path: '/log/detail',
           ID: id,
-          DateTime: dt
+          DateTime: dt,
+          Uid: uid,
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -4218,6 +4566,8 @@ export default {
             $this.showBlackjackGame(obj)
           // } else if (gid === 21) {
           //   $this.showPusoyGame(obj)
+          } else if (gid == 137) {
+            $this.showBlackjackmhGame(obj)
           } else if (gid === 100) {
             $this.showTowerGame(obj)
           } else if (gid === 101) {
@@ -4228,6 +4578,8 @@ export default {
             $this.showMiniAbGame(obj)
           } else if (gid === 102) {
             $this.showHiloGame(obj)
+          } else if (gid === 140) {
+            $this.showHiloPlusGame(obj)
           } else if (gid === 103) {
             $this.showWindropGame(obj)
           } else if (gid === 119) {
@@ -4238,6 +4590,8 @@ export default {
             $this.showSolitaire(obj)
           } else if (gid === 106) {
             $this.showPiggy(obj)
+          } else if (gid === 500) {
+            $this.showGoldMaster(obj, uid)
           } else if ($this.LogComponentGameIds.indexOf(gid) !== -1) {
             $this.showGameLogComponent(obj, gid)
           } else if (gid === 46) {
@@ -4267,6 +4621,10 @@ export default {
             $this.showBuracoGame(obj)
           } else if (gid === 136){
             $this.showLimboGame(obj)
+          } else if (gid === 138){
+            $this.showChickenGoGame(obj)
+          } else if (gid === 139){
+            $this.showMannyPunchGame(obj)
           } else {
             $this.showSmallGame(obj)
           }
@@ -4457,6 +4815,36 @@ export default {
       this.LimboDetail.players = []
       this.LimboDetail.players.push(obj.player)
       this.LimboDetailVisible = true
+    },
+    showChickenGoGame(obj){
+      this.ChickenGoDetail = obj.player
+      this.ChickenGoDetailVisible = true
+    },
+    getChickenGoLevel(lv){
+      const lvMap = {
+        0: 'Easy',
+        1: 'Medium',
+        2: 'Hard',
+        3: 'Expert',
+        4: 'Master',
+        5: 'Nightmare'
+      }
+      return lvMap[lv]
+    },
+    showMannyPunchGame(obj){
+      this.MannyPunchDetail = obj.player
+      this.MannyPunchDetailVisible = true
+    },
+    getMannyPunchLevel(lv){
+      const lvMap = {
+        0: 'Easy',
+        1: 'Medium',
+        2: 'Hard',
+        3: 'Expert',
+        4: 'Master',
+        5: 'Nightmare'
+      }
+      return lvMap[lv]
     },
     showFilipinoMahjongGame(obj, log) {
       this.FilipinoMahjongDetail = log// obj
@@ -4663,6 +5051,14 @@ export default {
       this.piggyLog.detail = obj
       this.piggyLog.visible = true
     },
+    showGoldMaster(obj, uid) {
+      for (const player of obj.players) {
+        if (player.uid == uid) {
+          this.goldmasterLog.detail = player
+        }
+      }
+      this.goldmasterLog.visible = true
+    },
     showBaccaratGame(obj) {
       const names = ['Dealer Win', 'Player Win', 'Tie', 'Dealer Pair', 'Player Pair']
       this.baccaratDealerCards = obj.dealerCard
@@ -4749,6 +5145,18 @@ export default {
       this.hiloJackpotAward = obj.Hilo.JackpotAward / 1000
       this.hiloTotalOdds = obj.Hilo.TotalOdds
     },
+    showHiloPlusGame(obj) {
+      this.hiloVisible = true
+      this.hiloCardList = obj.HiloPlus.CardList
+      console.log(this.hiloCardList)
+      const hiloOp = []
+      this.hiloStopFlag = obj.HiloPlus.StopFlag
+      this.hiloOpRecord = hiloOp.join(' ')
+      this.hiloJackpotContribute = obj.HiloPlus.JackpotContribute / 1000
+      this.hiloJackpotContributeTotal = obj.HiloPlus.JackpotContributeTotal / 1000
+      this.hiloJackpotAward = obj.HiloPlus.JackpotAward / 1000
+      this.hiloTotalOdds = obj.HiloPlus.TotalOdds
+    },
     selectHiloNotation(notation) {
       switch (notation) {
         case 1 :
@@ -4763,6 +5171,10 @@ export default {
           return '等'
         case 6 :
           return '跳过'
+        case 7 :
+          return '黑色'
+        case 8 :
+          return '红色'
         default:
           return '-'
       }
@@ -5232,6 +5644,15 @@ export default {
       this.blackjackDetail = obj
       this.blackjackDetailVisible = true
     },
+    showBlackjackmhGame(obj) {
+      console.log(obj)
+      if (obj.BlackjackMH) {
+        this.blackjackmhDetail = obj.BlackjackMH
+        this.blackjackmhDetail.tid = obj.tid
+        this.blackjackmhDetail.logId = obj.logId
+        this.blackjackmhDetailVisible = true
+      }
+    },
     showPusoyDosGame(obj) {
       this.pusoyDos.pusoyDosDetail = obj
       this.pusoyDos.pusoyDosDetailVisible = true
@@ -5507,6 +5928,19 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
         }
       }
       if (row.typ == '2') {
+        return {
+          color: '#9205a6'
+        }
+      }
+    },
+    changColorGoldMaster({ row }) {
+      const typ = this.parseKnockExt(row.knockExt).typ
+      if (typ == '1') {
+        return {
+          color: 'red'
+        }
+      }
+      if (typ == '2') {
         return {
           color: '#9205a6'
         }
@@ -5802,6 +6236,28 @@ ul#sweeperShow li .showStep {
   background-color: #dfe6ec;
   height: 1px;
   border: none;
+}
+
+.blackJackmhHr {
+  width: 200%;
+  margin-left: -10px;
+  background-color: #dfe6ec;
+  height: 1px;
+  border: none;
+}
+
+.blackJackmhBox {
+  height: 118px;            /* 指定高度 */
+  display: flex;
+  flex-direction: column;   /* 垂直方向布局 */
+  justify-content: flex-end; /* 垂直底部对齐 */
+  text-align: center;       /* 水平居中 */
+  border: none;
+}
+
+.blackJackmhBlock {
+  height: 118px;            /* 指定高度 */
+  display: block;
 }
 
 .solitaireHeight {
