@@ -30,7 +30,7 @@
               style="width: 300px"
             >
               <el-option label="新增配置项" value="" />
-              <el-option v-for="key in configKeys" :key="key" :label="key" :value="key" />
+              <el-option v-for="item in configKeys" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
           </el-col>
           <el-col :span="15">
@@ -161,7 +161,7 @@ export default {
       getAllCustomizes(this.env, this.appId).then(response => {
         const objs = response.Data || []
         for (const i in objs) {
-          $this.configKeys.push(objs[i].RedisSubkey)
+          $this.configKeys.push({label: objs[i].RedisSubkey + ' [' + objs[i].Name + ']', value: objs[i].RedisSubkey})
         }
       })
     },
