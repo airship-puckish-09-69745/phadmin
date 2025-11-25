@@ -505,7 +505,7 @@
         <el-tab-pane label="白名单配置">
           <el-form ref="item" label-width="220px">
             <el-row>
-              <el-col :span="11">
+              <el-col v-if="version === 'V1'" :span="11">
                 <el-form-item label="AppId白名单：" prop="item.whitelistCfg.appIdList">
                   <el-select v-model="edit.item.whitelistCfg.appIdList" multiple placeholder="请选择" style="width: 400px" @change="onAppIdOptionsChange">
                     <el-option
@@ -720,6 +720,8 @@ export default {
         clientDB: new ClientTableData([], 10, filterMap),
       },
       env: 'test',
+      appId: store.getters.appId || -1,
+      version: store.getters.version || 'V1',
       statusNames: { 2: '上架', 6: '下架', 7: '预上架', 8: '预下架' },
       tableData: [],
       clientDB: new ClientTableData([], 10, filterMap),
@@ -1155,6 +1157,10 @@ export default {
 
       copyItem.userFilterCondition.registerTimeRange.min = this.edit.registerDateRange[0] / 1000
       copyItem.userFilterCondition.registerTimeRange.max = registerEndTime / 1000
+
+      if (this.edit.item.whitelistCfg.appIdList.length === 0 && this.version === 'V2') {
+        this.edit.item.whitelistCfg.appIdList = [this.appId]
+      }
 
       const data = {}
       data.id = copyItem.id
