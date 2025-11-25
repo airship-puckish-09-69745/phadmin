@@ -103,6 +103,8 @@
           </el-table-column>
           <el-table-column prop="trustScore" label="信任分系统信任分">
           </el-table-column>
+          <el-table-column prop="maxTrustScore" label="历史最大信任分">
+          </el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
               <el-button type="primary" size="mini" @click="addCheatScore(scope.row.uid,scope.row.gid,0,0)">刷新</el-button>
