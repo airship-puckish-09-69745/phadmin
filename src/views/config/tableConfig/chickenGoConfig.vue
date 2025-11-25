@@ -248,12 +248,12 @@ export default {
         RTPS:[],
         BetMoneyLevel:[], //下注
         OddsCfg:[],
-        ReChoiceCfg:{
-          LowLotteryPoolReChoice:0, 
-          LowLotteryPoolReChoiceRate:0, 
-          HighLotteryPoolReChoice:0, 
-          HighLotteryPoolReChoiceRate: 0
-        },
+        // ReChoiceCfg:{
+        //   LowLotteryPoolReChoice:0, 
+        //   LowLotteryPoolReChoiceRate:0, 
+        //   HighLotteryPoolReChoice:0, 
+        //   HighLotteryPoolReChoiceRate: 0
+        // },
       },
       form: {},
       subKey: 'chicken_go_cfg',
@@ -337,8 +337,8 @@ export default {
 
             this.transMoneyForShow()
 
-            item.ReChoiceCfg.LowLotteryPoolReChoice /= 1000
-            item.ReChoiceCfg.HighLotteryPoolReChoice /= 1000
+            // item.ReChoiceCfg.LowLotteryPoolReChoice /= 1000
+            // item.ReChoiceCfg.HighLotteryPoolReChoice /= 1000
 
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data)
@@ -388,8 +388,8 @@ export default {
         ret.RTPS[i] = Math.round(this.item.RTPS[i] * 100)
       }
 
-      ret.ReChoiceCfg.LowLotteryPoolReChoice *= 1000
-      ret.ReChoiceCfg.HighLotteryPoolReChoice *= 1000
+      // ret.ReChoiceCfg.LowLotteryPoolReChoice *= 1000
+      // ret.ReChoiceCfg.HighLotteryPoolReChoice *= 1000
       ret.AutoDropTimer *= 1
 
       //测试
