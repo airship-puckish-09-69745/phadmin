@@ -41,6 +41,12 @@ export default {
         { label: '按历史信任分', value: 4 },
         { label: '按历史疑似分', value: 5 }
       ],
+      registerChannel: 0,
+      registerChannelOption: [
+        { label: '全部', value: 0 },
+        { label: 'CP', value: 1 },
+        { label: '其他', value: 2 }
+      ],
       cheatType: -1,
       cheatTypeOption: [
         { label: '全部', value: -1 },
@@ -62,7 +68,10 @@ export default {
       BlackOperator: '',
       GameLogUidsMap: new Map(),
       uidNickMap: {},
-      tidInfos: []
+      tidInfos: [],
+      CPClientDB: [],
+      OtherClientDB: [],
+      AllClientDB: []
     }
   },
   created() {
@@ -240,6 +249,37 @@ export default {
       }
       return infos
     },
+    async getUserInfo(uidArr) {
+      const $this = this
+      for (const uid of uidArr) {
+        request({
+          url: '/dataProxy/info',
+          method: 'get',
+          data: {
+            Env: this.env,
+            Path: '/user/info',
+            Uid: uid
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            const ob = this.clientDB.GetDataByID(uid)
+            ob.RegisterChannel = response.Data.RegisterChannel ? response.Data.RegisterChannel : ''
+            this.clientDB.UpdateData2('Uid', ob)
+            if (ob.RegisterChannel === 'CP') {
+              this.CPClientDB.push(ob)
+              this.AllClientDB.push(ob)
+            } else {
+              this.OtherClientDB.push(ob)
+              this.AllClientDB.push(ob)
+            }
+          }
+        })
+        await $this.sleep(100)
+      }
+    },
+    sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms))
+    },
     getData() {
       // console.log(ttt)
       const $this = this
@@ -248,6 +288,7 @@ export default {
       if (this.Uid === '' || this.Uid === undefined) {
         this.Uid = 0
       }
+      const uidArr = []
       request({
         url: '/dataProxy/info',
         method: 'get',
@@ -307,13 +348,15 @@ export default {
               RealBlackTime: row.userType === 2 ? row.blackTime : 0, // 真实拉黑时间
               BlackTableMoney: row.blackTableMoney ? row.blackTableMoney : 0,
               WhiteTableMoney: row.whiteTableMoney ? row.whiteTableMoney : 0,
-              SmallIntensity: 0, //小场洗分强度
-              SmallCoefficient: 0 //小场洗分系数
+              SmallIntensity: 0, // 小场洗分强度
+              SmallCoefficient: 0, // 小场洗分系数
+              RegisterChannel: ''
             }
+
             let addScore = 0
             let reduceScore = 0
             let score = 0
-            if (row.tableMoneyAddScore !== undefined ) {
+            if (row.tableMoneyAddScore !== undefined) {
               if (typeof row.tableMoneyAddScore === 'string' && row.tableMoneyAddScore !== '') {
                 row.tableMoneyAddScore = JSON.parse(row.tableMoneyAddScore)
                 for (const tableMoney in row.tableMoneyAddScore) {
@@ -322,7 +365,6 @@ export default {
               } else {
                 row.tableMoneyAddScore = {}
               }
-
             }
             if (row.tableMoneyReduceScore !== undefined) {
               if (typeof row.tableMoneyReduceScore === 'string' && row.tableMoneyReduceScore !== '') {
@@ -344,12 +386,11 @@ export default {
               } else {
                 row.tableMoneyScore = {}
               }
-
             }
 
             cheatLog.SmallIntensity = (addScore / 1000 + reduceScore / 1000).toFixed(1)
             if (reduceScore !== 0) {
-              cheatLog.SmallCoefficient = ((addScore / 1000) / (reduceScore*-1 / 1000)).toFixed(2)
+              cheatLog.SmallCoefficient = ((addScore / 1000) / (reduceScore * -1 / 1000)).toFixed(2)
             }
             if (row.trustScore !== undefined) {
               cheatLog.TrustScore = row.trustScore
@@ -363,6 +404,7 @@ export default {
               cheatLog.MaxCheatScore = 0
             }
             cheatLogs.push(cheatLog)
+            uidArr.push(row.uid)
           }
           let sortName = 'UpdateTime'
           if (this.sortType === 1) {
@@ -378,6 +420,8 @@ export default {
           }
           $this.clientDB = new ClientTableData(cheatLogs, $this.pageNum, {}, sortName, -1, 'Uid')
           $this.handleCurrentChange(1)
+
+          this.getUserInfo(uidArr)
         }
       })
     },
@@ -439,12 +483,12 @@ export default {
     },
     async getUidLogsAndTidInfos(row) {
       const tidInfos = []
-      await this.getUidLogs(row,tidInfos)
-      await this.getTableMoney(tidInfos)
+      await this.getUidLogs(row, tidInfos)
+      // await this.getTableMoney(tidInfos)
     },
     async getUidLogs(row, tidInfos) {
       // console.log(ttt)
-      const now = Date.now()/1000
+      const now = Date.now() / 1000
       const $this = this
       await request({
         url: '/dataProxy/info',
@@ -516,10 +560,13 @@ export default {
                     if (lastTime === 0 || lastTime <= cheatRow.endTime) {
                       lastTime = cheatRow.endTime
                       lastId = cheatRow.logId
+                      if (cheatRow.partnerChangeMoney) {
+                        tidCheatLog.ChangeMoney = cheatRow.partnerChangeMoney
+                      }
                     }
                   }
                 }
-                if ((now - firstTime < 60*60*24*30) && (now - lastTime < 60*60*24*30)) {
+                if ((now - firstTime < 60 * 60 * 24 * 30) && (now - lastTime < 60 * 60 * 24 * 30)) {
                   tidInfos.push({
                     tid: tidRow.tid,
                     uid: row.Uid,
@@ -530,7 +577,7 @@ export default {
                   })
                 }
 
-                console.log("tidInfos",tidInfos)
+                console.log('tidInfos', tidInfos)
                 tidCheatLogs.push(tidCheatLog)
               }
             }
@@ -853,7 +900,7 @@ export default {
       this.editBlack.Operator = this.BlackOperator
       await this.$nextTick()
       if (!this.$refs.saveBtn) {
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise(resolve => setTimeout(resolve, 100))
       }
       if (this.$refs.saveBtn) {
         this.$refs.saveBtn.$el.focus()
@@ -861,7 +908,7 @@ export default {
     },
     save(row) {
       this.BlackVisible = false
-      console.log("saveblack")
+      console.log('saveblack')
       this.$refs.saveBtn.$el.blur()
       const ob = this.clientDB.GetDataByID(this.editBlack.Uid)
       ob.BlackTime = Math.floor(Date.now() / 1000)
@@ -912,20 +959,20 @@ export default {
     },
     formatUserTrustLevel(row) {
       if (row.UserType === 3) {
-        return '认证高信'
+        return '认证高信' + '(' + row.RegisterChannel + ')'
       }
       const trustLevel = row.TrustLevel
       switch (trustLevel) {
         case 1:
-          return '低危用户'
+          return '低危用户' + '(' + row.RegisterChannel + ')'
         case 2:
-          return '疑似用户'
+          return '疑似用户' + '(' + row.RegisterChannel + ')'
         case 3:
-          return '黑子用户'
+          return '黑子用户' + '(' + row.RegisterChannel + ')'
         case 4:
-          return '低信用户'
+          return '低信用户' + '(' + row.RegisterChannel + ')'
         case 5:
-          return '高信用户'
+          return '高信用户' + '(' + row.RegisterChannel + ')'
         default:
           return '--'
       }
@@ -1035,7 +1082,7 @@ export default {
       // }
       return strArray.join()
     },
-    getDetail(id, dt,uid) {
+    getDetail(id, dt, uid) {
       const $this = this
 
       request({
@@ -1118,6 +1165,30 @@ export default {
         this.clientDB = new ClientTableData(this.clientDB.TotalData, this.pageNum, {}, sortName, -1, 'Uid')
         this.refreshShow()
       }
+    },
+    changeRegisterChannel() {
+      let sortName = 'UpdateTime'
+      if (this.sortType === 1) {
+        sortName = 'CheatScore'
+      } else if (this.sortType === 2) {
+        sortName = 'CheatRadio'
+      } else if (this.sortType === 3) {
+        sortName = 'RealBlackTime'
+      } else if (this.sortType === 4) {
+        sortName = 'TrustMaxScore'
+      } else if (this.sortType === 5) {
+        sortName = 'MaxCheatScore'
+      }
+      if (this.registerChannel === 0) {
+        this.clientDB = new ClientTableData(this.AllClientDB, this.pageNum, {}, sortName, -1, 'Uid')
+        this.refreshShow()
+      } else if (this.registerChannel === 1) {
+        this.clientDB = new ClientTableData(this.CPClientDB, this.pageNum, {}, sortName, -1, 'Uid')
+        this.refreshShow()
+      } else {
+        this.clientDB = new ClientTableData(this.OtherClientDB, this.pageNum, {}, sortName, -1, 'Uid')
+        this.refreshShow()
+      }
     }
   }
 }
@@ -1172,6 +1243,16 @@ export default {
               :key="itemCheatType.value"
               :label="itemCheatType.label"
               :value="itemCheatType.value"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="来源：">
+          <el-select v-model.number="registerChannel" placeholder="请选择" @change="changeRegisterChannel">
+            <el-option
+              v-for="itemRC in registerChannelOption"
+              :key="itemRC.value"
+              :label="itemRC.label"
+              :value="itemRC.value"
             />
           </el-select>
         </el-form-item>
@@ -1314,20 +1395,20 @@ export default {
           width="100"
           align="center"
         />
-<!--          <template slot-scope="scope">-->
-<!--            <div>{{ formatTimeDate(scope.row.LastEndTime) }}</div>-->
-<!--          </template>-->
-<!--        </el-table-column>-->
+        <!--          <template slot-scope="scope">-->
+        <!--            <div>{{ formatTimeDate(scope.row.LastEndTime) }}</div>-->
+        <!--          </template>-->
+        <!--        </el-table-column>-->
         <el-table-column
           prop="SmallCoefficient"
           label="小场洗分系数"
           width="100"
           align="center"
         />
-<!--          <template slot-scope="scope">-->
-<!--            <div>{{ formatTimeDate(scope.row.UpdateTime) }}</div>-->
-<!--          </template>-->
-<!--        </el-table-column>-->
+        <!--          <template slot-scope="scope">-->
+        <!--            <div>{{ formatTimeDate(scope.row.UpdateTime) }}</div>-->
+        <!--          </template>-->
+        <!--        </el-table-column>-->
         <el-table-column
           label="详情"
           width="100"

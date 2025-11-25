@@ -1049,6 +1049,12 @@ export const asyncRoutes = [
             meta: { title: 'B lackJack ◐' }
           },
           {
+            path: 'blackJackTableMH',
+            component: () => import('@/views/config/tableConfig/minigames/blackJackTableMH'),
+            name: 'blackJackTableMH',
+            meta: { title: 'B lackJack Multihand ◐' }
+          },
+          {
             path: 'carracing_cfg',
             component: () => import('@/views/config/tableConfig/carracingConfig'),
             name: 'carracing_cfg',
@@ -1090,6 +1096,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/minigames/hilo'),
             name: 'hilo_cfg',
             meta: { title: 'H ilo ◐' }
+          },
+          {
+            path: 'hiloPlus_cfg',
+            component: () => import('@/views/config/tableConfig/minigames/hiloPlus'),
+            name: 'hiloPlus_cfg',
+            meta: { title: 'H iloPlus ◐' }
           },
           {
             path: 'sweeper',
@@ -2515,12 +2527,6 @@ export const asyncRoutes = [
             meta: { title: 'Tcc名单配置', noCache: true }
           },
           {
-            path: 'matchGtccConfig',
-            component: () => import('@/views/matchManage/matchOperations/matchGtccConfig.vue'),
-            name: 'matchGtccConfig',
-            meta: { title: 'GTCC配置', noCache: true }
-          },
-          {
             path: 'matchBroadcast',
             component: () => import('@/views/matchManage/matchOperations/matchBroadcast/index.vue'),
             name: 'matchBroadcast',
@@ -2537,7 +2543,28 @@ export const asyncRoutes = [
             component: () => import('@/views/matchManage/matchOperations/texasTongis/index.vue'),
             name: 'texasTongis',
             meta: { title: 'kyc配置', noCache: true }
-          }
+          },
+          {
+            path: 'matchTpcc',
+            component: () => import('@/views/empty'),
+            name: 'matchTPCCPrize',
+            meta: { title: 'TPCC配置', noCache: true },
+            children: [
+              {
+                path: 'matchTPCCPrize',
+                component: () => import('@/views/matchManage/matchOperations/matchTpcc/matchGtccPrize.vue'),
+                name: 'matchTPCCPrize',
+                meta: { title: 'TPCC邀请函配置', noCache: true }
+              },
+              {
+                path: 'matchGtccConfig',
+                component: () => import('@/views/matchManage/matchOperations/matchTpcc/matchGtccConfig.vue'),
+                name: 'matchGtccConfig',
+                meta: { title: 'TPCC赛事时间配置', noCache: true }
+              }
+            ],
+          },
+
         ]
       },
       {
@@ -2971,6 +2998,18 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_hilo',
             meta: { title: 'H ilo ◐', gid: 102 }
+          },
+          {
+            path: 'playlog_blackjackmh',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_blackjackmh',
+            meta: { title: 'B lackJack Multihand ◐', gid: 137 }
+          },
+          {
+            path: 'playlog_hiloPlus',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_hiloPlus',
+            meta: { title: 'H iloPlus ◐', gid: 140 }
           },
           {
             path: 'playlog_sweeper',

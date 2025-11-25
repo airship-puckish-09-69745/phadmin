@@ -73,19 +73,13 @@
                       <el-input v-model="item.BaseCfg[scope.$index].Rtp" size="mini" ><template  slot="append">%</template></el-input>
                     </template>
                   </el-table-column>
-
+                  <!--
                   <el-table-column label="进入JP奖池百分百" width="280px">
                     <template slot-scope="scope">
                       <el-input v-model="item.BaseCfg[scope.$index].IncJPPercent" size="mini" ><template  slot="append">%</template></el-input>
                     </template>
                   </el-table-column>
-
-                  <el-table-column label="JP中奖概率" width="280px">
-                    <template slot-scope="scope">
-                      <el-input v-model="item.BaseCfg[scope.$index].WinJPRate" size="mini" ><template  slot="append">%</template></el-input>
-                    </template>
-                  </el-table-column>
-
+                -->
                   <el-table-column label="操作">
                     <template slot-scope="scope">
                       <el-button type="danger" size="mini" @click="delRowRTPSLevel(scope.$index)">删除</el-button>
@@ -159,24 +153,6 @@
                       <el-input v-model.number="item.OddsCfg[index][scope.$index].JPWeight" size="mini" ></el-input>
                     </template>
                   </el-table-column>
-
-                  <el-table-column label="中Grand概率" width="150px">
-                    <template slot-scope="scope">
-                      <el-input v-model.number="item.OddsCfg[index][scope.$index].GrandRate" size="mini" ><template  slot="append">%</template></el-input>
-                    </template>
-                  </el-table-column>
-
-                  <el-table-column label="中Major概率" width="150px">
-                    <template slot-scope="scope">
-                      <el-input v-model.number="item.OddsCfg[index][scope.$index].MajorRate" size="mini" ><template  slot="append">%</template></el-input>
-                    </template>
-                  </el-table-column>
-
-                  <el-table-column label="中Minor概率" width="150px">
-                    <template slot-scope="scope">
-                      <el-input v-model.number="item.OddsCfg[index][scope.$index].MinorRate" size="mini" ><template  slot="append">%</template></el-input>
-                    </template>
-                  </el-table-column>
                   
                   <el-table-column label="操作" width="180px">
                     <template slot-scope="scope">
@@ -187,7 +163,7 @@
                 </el-table>
               </fieldset>
 
-              <!--小奖池触发重摇-->
+              <!--小奖池触发重摇
               <fieldset  v-if="!IsPHAuditEnv()">
                 <legend>小奖池触发重摇</legend>
                 <el-row>
@@ -225,7 +201,7 @@
                   </el-descriptions-item>
                 </el-descriptions>
               </fieldset>
-
+              -->
             </el-col>
           </el-tab-pane>
 
@@ -233,14 +209,35 @@
             <el-col :span="24" :offset="5">
               <el-form :inline="true">
                 <el-col :span="8">
+                  <el-form-item label="jackpot服务费*bet(抽水比例)">
+                    <el-input v-model.number="JackpotCfg.JackpotFee" size="mini" ><template slot="append">‰</template></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item label="解锁Jackpot最小下注(放大1000倍)：">
+                    <el-input v-model.number="JackpotCfg.JackpotBetMin" />
+                  </el-form-item>
+                </el-col>
+              </el-form>
+            </el-col>
+            
+            <el-col :span="24" :offset="5">
+              <el-form :inline="true">
+                <el-col :span="8">
+                  <el-form-item label="单局开奖最高开出显示奖池(%)："  v-if="!IsPHAuditEnv()">
+                    <el-input v-model.number="JackpotCfg.ShowPoolLimitRate" size="mini" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
                   <el-form-item label="奖池保底">
                     <el-input v-model.number="JackpotCfg.BaseValue" size="mini" ></el-input>
                   </el-form-item>
                 </el-col>
               </el-form>
             </el-col>
-            <fieldset style="margin-top:10px">
-              <legend>jackpot配置</legend>
+          
+            <fieldset style="margin-top:10px" v-if="!IsPHAuditEnv()">
+              <legend>jackpot调控配置</legend>
               <el-row>
                 <el-table
                   ref="filterJackpotConfig"
@@ -276,14 +273,9 @@
                       </el-select>
                     </template>
                   </el-table-column>
-                  <el-table-column label="开出的奖池值" prop="PoolVal"   v-if="!IsPHAuditEnv()">
-                    <template slot-scope="scope">
-                      >=<el-input v-model.number="scope.row.PoolVal" style="width: 120px;" size="mini" :required="true" />
-                    </template>
-                  </el-table-column>
                   <el-table-column label="发放数量" prop="Value">
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.AwardRate" style="width: 200px;" size="mini" :required="true">
+                      <el-input v-model.number="scope.row.AwardRate" style="width: 140px;" size="mini" :required="true">
                         <template v-if="scope.row.AwardType==1" slot="append">%</template>
                         <template v-if="scope.row.AwardType==2" slot="append">倍</template>
                       </el-input>
@@ -291,12 +283,18 @@
                   </el-table-column>
                   <el-table-column label="每日限制开出个数(0为不限)" prop="DayLimit"   v-if="!IsPHAuditEnv()">
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.DayLimit" :disabled="checkShowDayLimit(scope.row.AwardType)" style="width: 120px;" size="mini" :required="true"><template slot="append">个</template></el-input>
+                      <el-input v-model.number="scope.row.DayLimit" :disabled="checkShowDayLimit(scope.row.AwardType)" style="width: 140px;" size="mini" :required="true"><template slot="append">个</template></el-input>
                     </template>
                   </el-table-column>
-                  <el-table-column label="中奖概率" prop="DayLimit"   v-if="IsPHAuditEnv()">
+                  <el-table-column label="中奖概率" prop="DayLimit"><!--   v-if="IsPHAuditEnv()"-->
                     <template slot-scope="scope">
                       <el-input v-model.number="scope.row.JackpotRate" ><template slot="append">‰</template></el-input>
+                    </template>
+                  </el-table-column>
+                  <!--
+                  <el-table-column label="开出的奖池值" prop="PoolVal"   v-if="!IsPHAuditEnv()">
+                    <template slot-scope="scope">
+                      >=<el-input v-model.number="scope.row.PoolVal" style="width: 120px;" size="mini" :required="true" />
                     </template>
                   </el-table-column>
                   <el-table-column label="开奖数量概率" prop="RateArr"   v-if="!IsPHAuditEnv()">
@@ -305,6 +303,38 @@
                       {{ showOpenPoolRate(scope.row.JackpotType, scope.row.RateArr) }}
                     </template>
                   </el-table-column>
+                  -->
+                  <el-table-column label="分段限制" prop="DayLimitArr">
+                    <template slot-scope="scope">
+                      <el-button v-if="scope.row.AwardType == 1" type="primary" icon="el-icon-edit" circle size="mini" @click="showDayLimitDialog(scope.row)" />
+                      <el-tag v-for="tag, key in scope.row.DayLimitArr" v-if="scope.row.AwardType == 1" :key="key" disable-transitions>{{ showOpenDayLimit(tag) }}</el-tag>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="玩家开奖池条件(%)" width="260">
+                    <template slot-scope="scope">
+                      <div v-if="scope.row.AwardType==1">
+                        虚拟*<el-input v-model.number="scope.row.VrPoolRate" style="width: 70px;" size="mini" :required="true" />
+                        &lt; 真实*<el-input v-model.number="scope.row.RealPoolRate" style="width: 70px;" size="mini" :required="true" />
+                      </div>
+                      <span v-if="scope.row.JackpotType==4">
+                        3Bet中奖会判断玩家的个人JP贡献值，中奖额≤贡献值才开，玩家开奖后根据中奖额扣除贡献值
+                      </span>
+                    </template>
+                  </el-table-column>
+        
+                  <el-table-column label="机器人开奖池值" prop="PoolVal" width="180">
+                    <template v-if="scope.row.AwardType==1" slot-scope="scope">
+                      >=<el-input v-model.number="scope.row.PoolVal" style="width: 120px;" size="mini" :required="true" />
+                    </template>
+                  </el-table-column>
+            
+                  <el-table-column label="机器人开奖数量概率" prop="RateArr" width="160">
+                    <template slot-scope="scope">
+                      <el-button v-if="scope.row.AwardType == 1" type="primary" icon="el-icon-edit" circle size="mini" @click="showPoolNumDialog(scope.row)" />
+                      {{ showOpenPoolRate(scope.row.JackpotType, scope.row.RateArr) }}
+                    </template>
+                  </el-table-column>
+                  
                 </el-table>
               </el-row>
             </fieldset>
@@ -384,6 +414,51 @@
         </el-table-column>
       </el-table>
     </el-dialog>
+
+    <!-- 【dialog】每日限制开出个数 -->
+    <el-dialog
+      :title="dayLimitChange.title"
+      :modal="false"
+      :visible.sync="dayLimitChange.visible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="addDayLimit">添加</el-button>
+      <el-button style="margin-bottom:10px; float:right" type="primary" size="mini" @click="saveDayLimit">保存</el-button>
+      <el-table
+        ref="filterTable"
+        :data="dayLimitChange.data"
+        border
+        :header-cell-style="libShow.DefaultTableHeadClass"
+        :row-style="{height:'10px'}"
+        :cell-style="libShow.DefaultTableCell"
+        style="width: 100%"
+      >
+        <el-table-column type="index" />
+        <el-table-column label="开始小时" prop="StartHours">
+          <template slot-scope="scope">
+            <el-input v-model.number="scope.row.StartHours" style="width: 100px;" size="mini" :required="true" />
+          </template>
+        </el-table-column>
+        <el-table-column label="结束小时(不包含结束时间点)" prop="EndHours">
+          <template slot-scope="scope">
+            <el-input v-model.number="scope.row.EndHours" style="width: 100px;" size="mini" :required="true" />
+          </template>
+        </el-table-column>
+        <el-table-column label="开奖数量" prop="Num">
+          <template slot-scope="scope">
+            <el-input v-model.number="scope.row.Num" style="width: 100px;" size="mini" :required="true" />
+          </template>
+        </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button style="margin-bottom:10px;" type="danger" icon="el-icon-delete" size="mini" @click="removeDayLimitNum(scope.$index)">移除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+
+
     <!--对比组件-->
     <compare ref="compare" />
   </div>
@@ -422,7 +497,7 @@ export default {
       env:process.env.VUE_APP_PROJECT,
       dialogFormVisible: false,
       lv:['Easy','Medium','Hard','Expert', 'Master','Nightmare'],
-      JackpotCfg: {BaseValue:0},
+      JackpotCfg: {BaseValue:0, JackpotBetMin:1000},
       PoolIncrArr: [],
       JackpotTypes: [
         { 'label': 'GRAND', 'value': 1 },
@@ -439,6 +514,13 @@ export default {
         data: [],
         jackpotType: 0
       },
+      dayLimitChange: {
+        visible: false,
+        data: [],
+        jackpotType: 0,
+        title: ''
+      },
+      
 
     }
   },
@@ -474,10 +556,7 @@ export default {
           odds.push({
             Id:id, 
             Odds:that.item.OddsCfg[i].OddsItem[j].Odds / 100, 
-            JPWeight:that.item.OddsCfg[i].OddsItem[j].JPWeight,
-            GrandRate:that.item.OddsCfg[i].OddsItem[j].GrandRate,
-            MajorRate:that.item.OddsCfg[i].OddsItem[j].MajorRate,
-            MinorRate:that.item.OddsCfg[i].OddsItem[j].MinorRate
+            JPWeight:that.item.OddsCfg[i].OddsItem[j].JPWeight
           })
           id ++
         }
@@ -486,7 +565,6 @@ export default {
 
       for (const i in that.item.BaseCfg) {
         that.item.BaseCfg[i].Rtp = that.item.BaseCfg[i].Rtp / 100
-        that.item.BaseCfg[i].WinJPRate = that.item.BaseCfg[i].WinJPRate / 100
       }
     },
     getData() {
@@ -523,7 +601,7 @@ export default {
                 }
               }
             }else{
-              item['JackpotCfg'] = {BaseValue: 0, JackpotRegulation: {RandAwards:[]}}
+              item['JackpotCfg'] = {BaseValue: 0, JackpotBetMin: 1000, JackpotRegulation: {RandAwards:[]}}
             }
             this.JackpotCfg = item.JackpotCfg
             if (item.JackpotCfg && item.JackpotCfg.JackpotRegulation) {
@@ -572,6 +650,9 @@ export default {
       ret.OddsCfg = []
       ret.JPTotalWeight = [] //总权重
       for (const i in this.item.OddsCfg) {
+        if (!this.item.BaseCfg[i]) {
+            continue
+          }
         let oddsCfg = []
         let id = 1 //步数id
         let totalWeight = 0
@@ -583,10 +664,7 @@ export default {
             Id: id, 
             Odds: tempOdds, 
             LiveRate: liveRate, 
-            JPWeight: this.item.OddsCfg[i][j].JPWeight,
-            GrandRate: this.item.OddsCfg[i][j].GrandRate,
-            MajorRate: this.item.OddsCfg[i][j].MajorRate,
-            MinorRate: this.item.OddsCfg[i][j].MinorRate,
+            JPWeight: this.item.OddsCfg[i][j].JPWeight
           })
           id ++
           console.log("this.item.OddsCfg[i][j] = ", this.item.OddsCfg[i][j])
@@ -597,7 +675,6 @@ export default {
 
       for (const i in this.item.BaseCfg) {
         ret.BaseCfg[i].Rtp = Math.round(this.item.BaseCfg[i].Rtp * 100)
-        ret.BaseCfg[i].WinJPRate = Math.round(this.item.BaseCfg[i].WinJPRate * 100)
       }
 
       ret.ReChoiceCfg.LowLotteryPoolReChoice *= 1000
@@ -623,7 +700,7 @@ export default {
       if (!this.item.BaseCfg) {
         this.item['BaseCfg'] = []
       }
-      this.item.BaseCfg.push({Rtp: 96, IncJPPercent: 1, WinJPRate: 0.15})
+      this.item.BaseCfg.push({Rtp: 96})
     },
     delRowRTPSLevel(index) {
       console.log(index)
@@ -659,7 +736,7 @@ export default {
           maxId = o.Id
         }
       }
-      this.item.OddsCfg[idx].push({ Id: maxId + 1, Odds: 1, JPWeight: 0, GrandRate: 0, MajorRate: 0, MinorRate: 0})
+      this.item.OddsCfg[idx].push({ Id: maxId + 1, Odds: 1, JPWeight: 0})
     },
     delOddsCfg(idx, index) {
         this.item.OddsCfg[idx].splice(index, 1)
@@ -753,7 +830,67 @@ export default {
         }
       }
     },
-
+    ////////////////////////////////////////////
+    showDayLimitDialog(data) {
+      if (data.JackpotType == 4) {
+        return
+      }
+      this.dayLimitChange.title = this.JackpotTypes[data.JackpotType].label + '(分段限制)'
+      this.dayLimitChange.data = data.DayLimitArr || [{}]
+      this.dayLimitChange.visible = true
+      this.dayLimitChange.jackpotType = data.JackpotType
+    },
+    addDayLimit() {
+      if (!this.dayLimitChange.data) {
+        this.dayLimitChange['data'] = []
+      }
+      this.dayLimitChange.data.push({ 'StartHours': 0, 'EndHours': 0, 'Num': 0 })
+    },
+    removePoolNum(id) {
+      for (var i = 0; i < this.poolNumChange.data.length; i++) {
+        if (this.poolNumChange.data[i].Id == id) {
+          this.poolNumChange.data.splice(i, 1)
+          break
+        }
+      }
+    },
+    removeDayLimitNum(index) {
+      this.dayLimitChange.data.splice(index, 1)
+    },
+    savePoolNum() {
+      for (var i = 0; i < this.JackpotRandAwards.length; i++) {
+        if (this.poolNumChange.jackpotType == this.JackpotRandAwards[i].JackpotType) {
+          this.JackpotRandAwards[i].RateArr = this.poolNumChange.data
+          break
+        }
+      }
+      this.poolNumChange.visible = false
+    },
+    saveDayLimit() {
+      for (let i = 0; i < this.dayLimitChange.data.length; i++) {
+        if (this.dayLimitChange.data[i].StartHours < 0 || this.dayLimitChange.data[i].EndHours > 24) {
+          Message.error('请输入正确的时间')
+          return
+        }
+        if (this.dayLimitChange.data[i].StartHours > this.dayLimitChange.data[i].EndHours) {
+          Message.error('请输入正确的时间')
+          return
+        }
+      }
+      for (var i = 0; i < this.JackpotRandAwards.length; i++) {
+        if (this.dayLimitChange.jackpotType == this.JackpotRandAwards[i].JackpotType) {
+          if (!this.JackpotRandAwards[i]['DayLimitArr']) {
+            this.JackpotRandAwards[i]['DayLimitArr'] = []
+          }
+          this.JackpotRandAwards[i]['DayLimitArr'] = this.dayLimitChange.data
+          break
+        }
+      }
+      this.dayLimitChange.visible = false
+    },    
+    showOpenDayLimit(data) {
+      return '[' + data['StartHours'] + ',' + data['EndHours'] + ')点：' + data['Num'] + '个'
+    },
   }
 }
 </script>

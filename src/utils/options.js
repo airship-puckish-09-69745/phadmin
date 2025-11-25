@@ -134,7 +134,6 @@ export const MATCH_UNIQUE_ID_CFG =[
   { 'value': 10005, 'label': 'P40' },
   { 'value': 10006, 'label': 'P100' },
   { 'value': 10007, 'label': 'P300' },
-  { 'value': 10008, 'label': 'GTCC 2005' },
 
   //以下全局ID为GTCC线上赛临时用 不长期占用
   { 'value': 11001, 'label': 'GTCC日赛' },
@@ -145,6 +144,12 @@ export const MATCH_UNIQUE_ID_CFG =[
   { 'value': 11006, 'label': 'GTCC机酒赛' },
   { 'value': 11007, 'label': 'GTCC魔戒赛' },
   { 'value': 11008, 'label': 'GTCC豪客赛' },
+
+  //以下全局ID为圣诞活动赛线临时用 不长期占用
+  { 'value': 11101, 'label': '双旦每日iwatch赛' },
+  { 'value': 11102, 'label': '双旦每日IPhone赛' },
+  { 'value': 11103, 'label': '双旦大赛' },
+  { 'value': 11104, 'label': '双旦豪客赛' },
 ]
 
 // 比赛Pusoy全局ID集合
@@ -157,7 +162,6 @@ export const MATCH_PUSOY_UNIQUE_ID_CFG =[
   { 'value': 20005, 'label': 'P40' },
   { 'value': 20006, 'label': 'P100' },
   { 'value': 20007, 'label': 'P300' },
-  { 'value': 20008, 'label': 'GTCC 2005' },
   { 'value': 20009, 'label': 'P60' },
   { 'value': 20010, 'label': 'P150' },
   { 'value': 20011, 'label': 'P400' },

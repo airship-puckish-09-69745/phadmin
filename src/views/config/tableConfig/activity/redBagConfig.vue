@@ -520,6 +520,24 @@
                 </el-form-item>
               </el-col>
             </el-row>
+            <el-row>
+              <el-col :span="11">
+                <el-form-item label="A/B测试开关：" prop="item.WhitelistCfg.AbTest">
+                  <el-switch v-model="item.WhitelistCfg.AbTest.switch" :active-value="true" :inactive-value="false" active-text="开启" inactive-text="关闭" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="9">
+                <el-form-item label="B分组比例：" prop="item.WhitelistCfg.AbTest.bPercent">
+                  <el-input v-model.number="item.WhitelistCfg.AbTest.bPercent" placeholder="请输入B分组比例">
+                    <template slot="append">
+                      %
+                    </template>
+                  </el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
           </el-form>
         </el-tab-pane>
       </el-tabs>
@@ -659,7 +677,11 @@ export default {
         WhitelistCfg: {
           AppIdList: [],
           SiteIdList: [],
-          UidList: []
+          UidList: [],
+          AbTest: {
+            switch: false,
+            bPercent: 0,
+          }
         },
         CurId: '',
         IsWhite: true,
@@ -1207,7 +1229,16 @@ export default {
             if (old.SiteIdList !== null) {
               $this.item.WhitelistCfg.SiteIdList = old.SiteIdList
             }
-            this.$refs.compare.SetOldVal(old)
+            // 检查属性AbTest是否存在
+            if (old.AbTest !== undefined) {
+              $this.item.WhitelistCfg['AbTest'] = old.AbTest
+            } else {
+              $this.item.WhitelistCfg['AbTest'] = {
+                switch: false,
+                bPercent: 0,
+              }
+            }
+            $this.$refs.compare.SetOldVal(old)
           }
           this.getGameAll()
         }
@@ -1245,7 +1276,8 @@ export default {
         WhiteList: whiteList,
         IsWhite: this.item.IsWhite,
         AppIdList: this.item.WhitelistCfg.AppIdList,
-        SiteIdList: this.item.WhitelistCfg.SiteIdList
+        SiteIdList: this.item.WhitelistCfg.SiteIdList,
+        AbTest: this.item.WhitelistCfg.AbTest
       }
       this.form.Data = JSON.stringify(tableData)
       request({

@@ -239,7 +239,7 @@ export const matchDataMixin = {
                 let canPush = false
                 let sceneId = 0
                 let appId = 0
-                
+
                 if (item.status === 1 &&
                     ((item.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET && item.expire_time > timestamp) ||
                      item.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME || item.item_type=== PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW)) {
@@ -253,7 +253,7 @@ export const matchDataMixin = {
                       continue
                     }
                     appId = exitData.appId
-                    let tickets = ticketConfigList[exitData.appId].find(ticket => ticket.ticketId === objs.list[i].id)
+                    let tickets = ticketConfigList[exitData.appId].find(ticket => ticket.ticketId === item.id)
                     if(tickets){
                       canPush = true
                       sceneId = tickets.sceneId
@@ -289,7 +289,7 @@ export const matchDataMixin = {
               console.log("matchTicketsCfgs",this.configs.matchTicketsCfgs)
               console.log("matchPropsCfgs",this.configs.matchPropsCfgs)
             }
-            
+
           }
         }
       } catch (error) {
