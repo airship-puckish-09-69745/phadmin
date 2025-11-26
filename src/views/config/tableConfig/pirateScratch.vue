@@ -1,5 +1,11 @@
 <template>
   <div class="app-container">
+        <el-row>
+      <el-col :span="18">
+        <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" />
+      </el-col>
+    </el-row>
+
     <el-row>
 
     <fieldset style="margin-top:10px">              
@@ -98,22 +104,8 @@
     ⚠️ 针对10面值以上彩票才有乘数配置
         </span>
          </legend>
-         <el-row>
-            <el-form ref="item.Multiplier" :model="item.Multiplier" width="70%">
-                    <el-col :span="8">
-                    <el-form-item label="单张彩票出现乘数的概率(%)：" :required="true">
-                        <template>
-                            <el-input-number
-                            v-model="tmpSingleRatio"  type="number" :min=0 :precision="2"
-                            style="width: 100%"> 
-                            </el-input-number>
-                        </template>
-                    </el-form-item>
-                </el-col>
-            </el-form>
-        </el-row>
-   
-      <h4 style="text-align:left;">单张彩票上乘数出现个数权重</h4>
+
+      <h4 style="text-align:left;">各面值单张彩票上乘数出现个数权重</h4>
        <el-table
               :data="item.Multiplier.SingleWight"
               border
@@ -312,7 +304,6 @@ export default {
         subKey: 'pirate_scratch_cfg',
         form: {},
         tmpBetRoundList:"10,25,50,100,200,500,1000,2000",
-        tmpSingleRatio: 10,
         item: {
           FeeRate: 1,
           BetRoundList:[10,25,50,100,200,500,1000,2000], //下注
@@ -434,7 +425,6 @@ export default {
             }
           ],
           Multiplier:{
-              SingleRatio: 10,
               SingleWight:[
                   {Cnt: 0, Face20Wight:20,Face30Wight:30,Face50Wight:20,Face100Wight:20},
                   {Cnt: 1, Face20Wight:20,Face30Wight:30,Face50Wight:20,Face100Wight:20}, 
@@ -493,9 +483,7 @@ export default {
                 this.form = response.Data || {}
                 if (response.Data && response.Data.Data !== '') {
                     const cfg = JSON.parse(response.Data.Data)
-                    
                     this.item = cfg
-
                     // 设置修改之前数据
                     this.$refs.compare.SetOldVal(response.Data.Data)
                     // this.load = true
@@ -507,6 +495,7 @@ export default {
             this.saveTableMoney();
             const ret = {}
             Object.assign(ret, this.item)
+         //   console.log(this.item)
             return ret
           },
         setData() {
@@ -536,14 +525,12 @@ export default {
           })
         },
         transMoneyForShow() {
-          let that = this
           const betRoundList = []
-          for (const o of that.item.BetRoundList) {
+          for (const o of this.item.BetRoundList) {
             betRoundList.push(o)
           }
-          that.tmpBetRoundList = betRoundList.join(',')  
+          this.tmpBetRoundList = betRoundList.join(',')  
 
-          that.tmpSingleRatio = Math.floor(that.item.SingleRatio/100)
           
       },
       saveTableMoney() {
@@ -553,7 +540,6 @@ export default {
           
             }
             this.item.BetRoundList = (betItem)
-            this.item.SingleRatio =  Math.floor(that.tmpSingleRatio*100)
       },
 
       getRewardName(AwardType) {
