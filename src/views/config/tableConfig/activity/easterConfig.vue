@@ -702,7 +702,7 @@ export default {
       libShow: $libShow,
       libMoney: new MoneyShow([]),
       statusNames: { 2: '上架', 6: '下架', 7: '预上架', 8: '预下架' },
-      appId: store.getters.appId || -1,
+      appId: parseInt(store.getters.appId) || -1,
       version: store.getters.version || 'V1',
       edit: {
         CfgId: 0,
