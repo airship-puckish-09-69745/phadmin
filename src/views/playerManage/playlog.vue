@@ -823,7 +823,7 @@
             <div v-for="(item,index) in scope.row.cardGroupLog" class="blackJackmhBox">
               {{ item.bet / 1000 }}
               <br>
-              <span v-if="item.splitCards && item.splitCards.length > 0 && item.splitBet">
+              <span v-if="item.splitCards && item.splitCards.length > 0 && item.splitBet != null">
               {{ item.splitBet / 1000 }}
               </span>
               <hr v-if="index !== scope.row.cardGroupLog.length - 1" class="blackJackmhHr"/>
@@ -896,7 +896,7 @@
             <div v-for="(item,index) in scope.row.cardGroupLog" class="blackJackmhBox">
               {{ item.normalBetWin / 1000 }}
               <br>
-              <span v-if="item.splitCards && item.splitCards.length > 0 && item.splitNormalBetWin">
+              <span v-if="item.splitCards && item.splitCards.length > 0 && item.splitNormalBetWin != null">
               {{ item.splitNormalBetWin / 1000 }}
               </span>
               <hr v-if="index !== scope.row.cardGroupLog.length - 1" class="blackJackmhHr"/>
