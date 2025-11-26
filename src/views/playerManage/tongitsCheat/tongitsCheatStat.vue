@@ -15,11 +15,11 @@
         </el-form-item>
         <el-form-item label="游戏：" :required="true">
           <el-select v-model="item.gid" placeholder="请选择">
-            <el-option label="tongits类" :value="0" />
+            <el-option label="tongits所有" :value="0" />
             <el-option label="tongits pot" :value="22" />
             <el-option label="tongits laizi" :value="28" />
             <el-option label="tongits quick" :value="29" />
-            <el-option label="pusoy类" :value="1" />
+            <el-option label="pusoy所有" :value="1" />
             <el-option label="pusoy" :value="21" />
             <el-option label="pusoy wild" :value="126" />
           </el-select>
@@ -269,8 +269,8 @@ export default {
         method: 'get',
         data: {
           Env: this.env,
-          AppId: this.appId,
           Path: '/misc/tongits/cheat/stat',
+          appId: this.appId,
           gid: this.item.gid,
           from: this.item.start / 1000,
           to: this.item.end / 1000,
