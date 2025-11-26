@@ -139,6 +139,10 @@ export default {
           formatter: (row, column, cellValue) => {
             return this.transformMoney(cellValue).toLocaleString()
           }
+        },
+        {
+          label: 'appid',
+          prop: 'app'
         }
       ],
       selectedRobots: [], // 列表选中的机器人
