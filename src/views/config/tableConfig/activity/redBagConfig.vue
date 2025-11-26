@@ -587,8 +587,12 @@
       <el-row>
         <br>
         <el-button type="primary" @click="updateData">保存1</el-button>
+        <el-button type="primary" @click="openCopyDialog">复制</el-button>
       </el-row>
     </el-row>
+
+    <customize-config-copy-dialog :config-key="subKey" :from-app-id="appId" :visible="copyDialogVisible" ref="copyDialog" @close="onCloseCopyDialog" />
+
     <!--对比组件-->
     <compare ref="compare" />
   </el-col>
@@ -605,6 +609,7 @@ import Compare from "@/components/Compare/index.vue";
 import store from '@/store'
 import {getCustomize, updateCustomize} from "@/api/custome_configV2";
 import SiteSelect from '@/components/SiteSelect/index.vue'
+import CustomizeConfigCopyDialog from "@/views/config/tableConfig/activity/components/copyDialog/customizeConfig.vue";
 
 function newPrizePoolCfg() {
   return {
@@ -632,7 +637,7 @@ function newRedPoolCfg() {
 }
 
 export default {
-  components: {Compare, ImagePicker, Publish, SiteSelect},
+  components: {CustomizeConfigCopyDialog, Compare, ImagePicker, Publish, SiteSelect},
   watch: {
     filterText(val) {
       this.$refs.tree.filter(val);
@@ -724,6 +729,7 @@ export default {
           GameId: 1, Name: '测试游戏1', OrderNo: 1
         }
       ],
+      copyDialogVisible: false,
 
       edit: {
         raffleLevel: 0,
@@ -733,7 +739,7 @@ export default {
         gamesSortDialogVisible: false,
         cfgType: 0
       },
-      appId: store.getters.appId || -1,
+      appId: parseInt(store.getters.appId) || -1,
       version: store.getters.version || 'V1',
       redEdit: {
         visible: false,
@@ -1642,6 +1648,12 @@ export default {
       }
     },
     //************************ 道具配置 ************************
+    openCopyDialog() {
+      this.copyDialogVisible = true
+    },
+    onCloseCopyDialog() {
+      this.copyDialogVisible = false
+    }
   }
 }
 </script>

@@ -28,6 +28,21 @@ export function getCustomize(subKey, appId) {
   })
 }
 
+export function existCustomize(subKey, appId) {
+  if (appId === undefined) {
+    appId = store.getters.appId
+  }
+  const ver = getVer()
+  return request({
+    url: `/customizeconfig${ver}/exist`,
+    method: 'get',
+    data: {
+      SubKey: subKey,
+      AppId: appId
+    }
+  })
+}
+
 export function createCustomize(data) {
   const ver = getVer()
   return request({
@@ -43,6 +58,22 @@ export function updateCustomize(data) {
     url: `/customizeconfig${ver}/update`,
     method: 'post',
     data: data
+  })
+}
+
+/**
+ * 复制自定义配置
+ */
+export function copyCustomize(subKey, fromAppId, toAppId) {
+  const ver = getVer()
+  return request({
+    url: `/customizeconfig${ver}/copy`,
+    method: 'post',
+    data: {
+      SubKey: subKey,
+      FromAppId: fromAppId,
+      ToAppId: toAppId
+    }
   })
 }
 

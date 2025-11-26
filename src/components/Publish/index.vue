@@ -265,7 +265,7 @@ export default {
     },
     appId: { // 配置的AppId，与AdminConfig中配置AppId对应
       type: Number,
-      default: store.getters.appId
+      default: parseInt(store.getters.appId)
     },
     compareType: { // 发布内容格式，支持：Array, Object, String, CustomizeConfig
       type: String,
