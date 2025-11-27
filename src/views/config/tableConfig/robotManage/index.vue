@@ -23,7 +23,7 @@
           />
         </div>
         <div class="serach-filter-item">
-          <label class="filter-label">机器人站点：</label>
+          <label class="filter-label">机器人渠道：</label>
           <el-select 
             v-model="searchFilter.appID" 
             placeholder="请选择机器人渠道" 
