@@ -40,7 +40,7 @@
               
               <el-col :span="24" :offset="5">
                 <el-form :inline="true">
-                  <el-col :span="8">
+                  <el-col :span="8" v-if="!IsPHAuditEnv()">
                     <el-form-item label="目标RTP:">
                       <el-input v-model="item.RTP" size="mini" ><template  slot="append">%</template></el-input>
                     </el-form-item>
