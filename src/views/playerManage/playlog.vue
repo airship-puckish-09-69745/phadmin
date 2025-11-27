@@ -822,6 +822,10 @@
           <template slot-scope="scope">
             <div v-for="(item,index) in scope.row.cardGroupLog" class="blackJackmhBox">
               {{ item.bet / 1000 }}
+              <br>
+              <span v-if="item.splitCards && item.splitCards.length > 0 && item.splitBet != null">
+              {{ item.splitBet / 1000 }}
+              </span>
               <hr v-if="index !== scope.row.cardGroupLog.length - 1" class="blackJackmhHr"/>
             </div>
           </template>
@@ -839,7 +843,7 @@
           <template slot-scope="scope">
             <div v-for="(item,index) in scope.row.cardGroupLog" class="blackJackmhBlock">
               <span v-if="item.cards.length > 0">
-                {{ '手牌' + (item.id + 1) + ': ' }}
+                {{ '手牌' + (item.id) + ': ' }}
               </span>
               <div v-for="(card) in item.cards" class="block">
                 <el-image
@@ -849,7 +853,7 @@
               </div>
               <br>
               <span v-if="item.splitCards && item.splitCards.length > 0">
-                {{ '分牌手牌' + (item.id + 1) + ': ' }}
+                {{ '分牌手牌' + (item.id) + ': ' }}
               </span>
               <div v-for="(card) in item.splitCards" class="block">
                 <el-image
@@ -868,11 +872,11 @@
           <template slot-scope="scope">
             <div v-for="(item,index) in scope.row.cardGroupLog" class="blackJackmhBox">
               <span v-if="item.cards.length > 0">
-                {{'手牌' + (item.id + 1) + ': ' + (item.cardType == 1 ? "点牌" : (item.cardType == 2 ? "BlackJack" : "爆牌"))}}
+                {{'手牌' + (item.id) + ': ' + (item.cardType == 1 ? "点牌" : (item.cardType == 2 ? "BlackJack" : "爆牌"))}}
               </span>
               <br>
               <span v-if="item.splitCards && item.splitCards.length > 0">
-                {{'分牌手牌' + (item.id + 1) + ': ' + (item.splitCardType == 1 ? "点牌" : (item.splitCardType == 2 ? "BlackJack" : "爆牌"))}}
+                {{'分牌手牌' + (item.id) + ': ' + (item.splitCardType == 1 ? "点牌" : (item.splitCardType == 2 ? "BlackJack" : "爆牌"))}}
               </span>
               <hr v-if="index !== scope.row.cardGroupLog.length - 1" class="blackJackmhHr"/>
             </div>
@@ -891,6 +895,10 @@
           <template slot-scope="scope">
             <div v-for="(item,index) in scope.row.cardGroupLog" class="blackJackmhBox">
               {{ item.normalBetWin / 1000 }}
+              <br>
+              <span v-if="item.splitCards && item.splitCards.length > 0 && item.splitNormalBetWin != null">
+              {{ item.splitNormalBetWin / 1000 }}
+              </span>
               <hr v-if="index !== scope.row.cardGroupLog.length - 1" class="blackJackmhHr"/>
             </div>
           </template>
@@ -5648,8 +5656,8 @@ export default {
       console.log(obj)
       if (obj.BlackjackMH) {
         this.blackjackmhDetail = obj.BlackjackMH
-        this.blackjackmhDetail.tid = obj.tid
-        this.blackjackmhDetail.logId = obj.logId
+        this.blackjackmhDetail.tid = obj.Tid
+        this.blackjackmhDetail.logId = obj.BlackjackMH.logId
         this.blackjackmhDetailVisible = true
       }
     },

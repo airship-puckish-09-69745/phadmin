@@ -329,6 +329,21 @@ export default {
                 }
               }
             }
+            if (row.appId === undefined) {
+              row.appId = 0
+            }
+            if (this.registerChannel === 1){
+              if (row.appId === 0){
+                continue
+              }
+              if (row.appId !== 2000005 && row.appId !== 3000005 && row.appId !== 1000014) {
+                continue
+              }
+            } else if (this.registerChannel === 2){
+              if (row.appId === 2000005 || row.appId === 3000005 || row.appId === 1000014) {
+                continue
+              }
+            }
             const cheatLog = {
               Uid: row.uid,
               CheatScore: row.cheatScore,
@@ -350,7 +365,8 @@ export default {
               WhiteTableMoney: row.whiteTableMoney ? row.whiteTableMoney : 0,
               SmallIntensity: 0, // 小场洗分强度
               SmallCoefficient: 0, // 小场洗分系数
-              RegisterChannel: ''
+              RegisterChannel: '',
+              AppId: 0,
             }
 
             let addScore = 0
@@ -375,6 +391,9 @@ export default {
               } else {
                 row.tableMoneyReduceScore = {}
               }
+            }
+            if (row.appId !== undefined) {
+              cheatLog.AppId = row.appId
             }
             if (row.tableMoneyScore !== undefined) {
               if (typeof row.tableMoneyScore === 'string' && row.tableMoneyScore !== '') {
@@ -421,7 +440,7 @@ export default {
           $this.clientDB = new ClientTableData(cheatLogs, $this.pageNum, {}, sortName, -1, 'Uid')
           $this.handleCurrentChange(1)
 
-          this.getUserInfo(uidArr)
+          // this.getUserInfo(uidArr)
         }
       })
     },
@@ -958,6 +977,12 @@ export default {
       }
     },
     formatUserTrustLevel(row) {
+      if (row.AppId === 2000005 || row.AppId === 3000005 || row.AppId === 1000014) {
+        row.RegisterChannel = 'CP'
+      } else {
+        row.RegisterChannel = 'BP'
+
+      }
       if (row.UserType === 3) {
         return '认证高信' + '(' + row.RegisterChannel + ')'
       }
@@ -1247,7 +1272,8 @@ export default {
           </el-select>
         </el-form-item>
         <el-form-item label="来源：">
-          <el-select v-model.number="registerChannel" placeholder="请选择" @change="changeRegisterChannel">
+<!--          <el-select v-model.number="registerChannel" placeholder="请选择" @change="changeRegisterChannel">-->
+          <el-select v-model.number="registerChannel" placeholder="请选择">
             <el-option
               v-for="itemRC in registerChannelOption"
               :key="itemRC.value"
