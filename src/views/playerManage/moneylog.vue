@@ -2,7 +2,17 @@
   <div class="app-container">
     <el-row>
       <el-form :model="item" label-width="80px" :inline="true" size="small">
-
+        <el-form-item v-if="this.env == 'test'" v-model="appId" label="App：" :required="true" label-width="80px">
+          <el-select v-model="appId" placeholder="请选择" size="mini">
+            <el-option label="所有App" :value="0" />
+            <el-option
+              v-for="row in appInfo"
+              :key="'app'+row.key"
+              :label="row.label"
+              :value="row.key"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item label="UID：" :required="true">
           <UidInput @setUid="function (iUid) { item.Uid = iUid }" />
         </el-form-item>
@@ -300,6 +310,8 @@ export default {
       gameTableData: [],
       gamePanelVisible: false,
       moneyData: [],
+      appId: 0,
+      appInfo: [],
       timeRange: [$libDate.GetDayBegin(new Date()), $libDate.GetDayEnd(new Date())],
       pickerOptions: $libShow.DefaultDatePickerOptions(),
       chartData: newChartData(),
@@ -349,6 +361,7 @@ export default {
   computed: {},
   created() {
     this.env = store.getters.env || this.env
+    this.getAppInfo()
     this.getGameList()
     console.log(1)
   },
@@ -509,7 +522,8 @@ export default {
           Uid: this.item.Uid,
           Type: 0,
           BTime: bTime,
-          ETime: eTime
+          ETime: eTime,
+          AppId: this.appId
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -953,6 +967,23 @@ export default {
         chartData.yData[3].Data.push(ob.baseValue)
       }
       this.chartData = chartData
+    },
+    getAppInfo() {
+      request({
+        url: '/thirdparties/all',
+        method: 'get',
+        data: {}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          // const objs = response.Data || []
+          for (let i = 0; i < response.Data.length; i++) {
+            this.appInfo.push({
+              key: response.Data[i].ID,
+              label: response.Data[i].Account
+            })
+          }
+        }
+      })
     }
   }
 }
