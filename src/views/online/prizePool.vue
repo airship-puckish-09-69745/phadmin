@@ -19,6 +19,9 @@
                 <span v-if="scope.row.Gid===37">
                   {{ getGameName(scope.row.Gid)+' '+scope.row.Ante/1000+'场' }}
                 </span>
+                <span v-else-if="scope.row.Gid===137">
+                  {{ getGameName(scope.row.Gid)+' '+scope.row.Ante/1000+'场' }}
+                </span>
                 <span v-else>
                   {{ getGameName(scope.row.Gid) }}
                 </span>
@@ -106,6 +109,9 @@
           <el-input v-model.number="form.PrizePool" size="medium" :required="true" :placeholder="form.LotteryPool" />
         </el-form-item>
         <el-form-item v-if="form.Gid==37" label="低注：" prop="PrizePool">
+          <el-input v-model.number="form.Ante" size="medium" :required="true" :placeholder="form.Ante" />
+        </el-form-item>
+        <el-form-item v-if="form.Gid==137" label="低注：" prop="PrizePool">
           <el-input v-model.number="form.Ante" size="medium" :required="true" :placeholder="form.Ante" />
         </el-form-item>
       </el-form>

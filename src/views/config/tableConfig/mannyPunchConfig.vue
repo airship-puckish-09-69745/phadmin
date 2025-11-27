@@ -46,13 +46,13 @@
               </el-col>
 
               <!--RTPS-->
-              <fieldset style="margin-top:10px">
+              <fieldset style="margin-top:10px" v-if="!IsPHAuditEnv()">
                 
                 <el-col :span="20">
                   <el-button style="margin-bottom:10px; background-color: #c5ddf0" type="normal" icon="el-icon-plus" size="mini" @click="doAddRTPSLevel()">添加</el-button>
                 </el-col>
                 
-                <legend>基础配置</legend>
+                <legend>RTP配置</legend>
                 <el-table
                   ref="filterTable"
                   :data="item.BaseCfg"
@@ -163,7 +163,7 @@
                 </el-table>
               </fieldset>
 
-              <!--小奖池触发重摇-->
+              <!--小奖池触发重摇
               <fieldset  v-if="!IsPHAuditEnv()">
                 <legend>小奖池触发重摇</legend>
                 <el-row>
@@ -201,7 +201,7 @@
                   </el-descriptions-item>
                 </el-descriptions>
               </fieldset>
-
+              -->
             </el-col>
           </el-tab-pane>
 
@@ -236,7 +236,7 @@
               </el-form>
             </el-col>
           
-            <fieldset style="margin-top:10px" v-if="!IsPHAuditEnv()">
+            <fieldset style="margin-top:10px" ><!--v-if="!IsPHAuditEnv()"-->
               <legend>jackpot调控配置</legend>
               <el-row>
                 <el-table
@@ -275,15 +275,15 @@
                   </el-table-column>
                   <el-table-column label="发放数量" prop="Value">
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.AwardRate" style="width: 180px;" size="mini" :required="true">
+                      <el-input v-model.number="scope.row.AwardRate" style="width: 140px;" size="mini" :required="true">
                         <template v-if="scope.row.AwardType==1" slot="append">%</template>
                         <template v-if="scope.row.AwardType==2" slot="append">倍</template>
                       </el-input>
                     </template>
                   </el-table-column>
-                  <el-table-column label="每日限制开出个数(0为不限)" prop="DayLimit"   v-if="!IsPHAuditEnv()">
+                  <el-table-column label="每日限制开出个数(0为不限)" prop="DayLimit" ><!--v-if="!IsPHAuditEnv()"-->
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.DayLimit" :disabled="checkShowDayLimit(scope.row.AwardType)" style="width: 180px;" size="mini" :required="true"><template slot="append">个</template></el-input>
+                      <el-input v-model.number="scope.row.DayLimit" :disabled="checkShowDayLimit(scope.row.AwardType)" style="width: 140px;" size="mini" :required="true"><template slot="append">个</template></el-input>
                     </template>
                   </el-table-column>
                   <el-table-column label="中奖概率" prop="DayLimit"><!--   v-if="IsPHAuditEnv()"-->
@@ -310,7 +310,7 @@
                       <el-tag v-for="tag, key in scope.row.DayLimitArr" v-if="scope.row.AwardType == 1" :key="key" disable-transitions>{{ showOpenDayLimit(tag) }}</el-tag>
                     </template>
                   </el-table-column>
-                  <el-table-column label="玩家开奖池条件(%)" width="260">
+                  <el-table-column label="玩家开奖池条件(%)" width="260" v-if="!IsPHAuditEnv()">
                     <template slot-scope="scope">
                       <div v-if="scope.row.AwardType==1">
                         虚拟*<el-input v-model.number="scope.row.VrPoolRate" style="width: 70px;" size="mini" :required="true" />
@@ -322,13 +322,13 @@
                     </template>
                   </el-table-column>
         
-                  <el-table-column label="机器人开奖池值" prop="PoolVal" width="180">
+                  <el-table-column label="机器人开奖池值" prop="PoolVal" width="180" v-if="!IsPHAuditEnv()">
                     <template v-if="scope.row.AwardType==1" slot-scope="scope">
                       >=<el-input v-model.number="scope.row.PoolVal" style="width: 120px;" size="mini" :required="true" />
                     </template>
                   </el-table-column>
             
-                  <el-table-column label="机器人开奖数量概率" prop="RateArr" width="160">
+                  <el-table-column label="机器人开奖数量概率" prop="RateArr" width="160" v-if="!IsPHAuditEnv()">
                     <template slot-scope="scope">
                       <el-button v-if="scope.row.AwardType == 1" type="primary" icon="el-icon-edit" circle size="mini" @click="showPoolNumDialog(scope.row)" />
                       {{ showOpenPoolRate(scope.row.JackpotType, scope.row.RateArr) }}
@@ -488,7 +488,12 @@ export default {
         BaseCfg:[],
         BetMoneyLevel:[], //下注
         OddsCfg:[],
-        ReChoiceCfg:{},
+        // ReChoiceCfg:{
+        //   LowLotteryPoolReChoice:0, 
+        //   LowLotteryPoolReChoiceRate:0, 
+        //   HighLotteryPoolReChoice:0, 
+        //   HighLotteryPoolReChoiceRate: 0
+        // },
       },
       form: {},
       subKey: 'manny_punch_cfg',
@@ -585,14 +590,6 @@ export default {
             if (!item.BaseCfg) {
               item['BaseCfg'] = []
             }
-            if (!item.ReChoiceCfg) {
-              item['ReChoiceCfg'] = {
-                LowLotteryPoolReChoice:0, 
-                LowLotteryPoolReChoiceRate:0, 
-                HighLotteryPoolReChoice:0, 
-                HighLotteryPoolReChoiceRate: 0
-              }
-            }
             if (item.JackpotCfg && item.JackpotCfg.JackpotRegulation) {
               if (item.JackpotCfg.JackpotRegulation.RandAwards) {
                 this.RandAwards = item.JackpotCfg.JackpotRegulation.RandAwards
@@ -619,8 +616,8 @@ export default {
 
             this.transMoneyForShow()
 
-            item.ReChoiceCfg.LowLotteryPoolReChoice /= 1000
-            item.ReChoiceCfg.HighLotteryPoolReChoice /= 1000
+            // item.ReChoiceCfg.LowLotteryPoolReChoice /= 1000
+            // item.ReChoiceCfg.HighLotteryPoolReChoice /= 1000
 
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data)
@@ -677,8 +674,8 @@ export default {
         ret.BaseCfg[i].Rtp = Math.round(this.item.BaseCfg[i].Rtp * 100)
       }
 
-      ret.ReChoiceCfg.LowLotteryPoolReChoice *= 1000
-      ret.ReChoiceCfg.HighLotteryPoolReChoice *= 1000
+      // ret.ReChoiceCfg.LowLotteryPoolReChoice *= 1000
+      // ret.ReChoiceCfg.HighLotteryPoolReChoice *= 1000
       ret.AutoDropTimer *= 1
 
       if (ret.JackpotCfg.JackpotRegulation){

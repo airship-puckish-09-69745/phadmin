@@ -20,6 +20,10 @@ export default {
     visible: {
       type: Boolean,
       default: false
+    },
+    appID: {
+      type: Number,
+      default: () => 0
     }
   },
   data() {
@@ -94,7 +98,8 @@ export default {
           data: {
             Env: this.env,
             Path: '/usercommonrobot/import/excel',
-            file: base64
+            file: base64,
+            appId: this.appID
           }
         }).then(response => {
           // 情况input的value

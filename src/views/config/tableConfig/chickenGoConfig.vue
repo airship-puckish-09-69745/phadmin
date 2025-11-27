@@ -46,13 +46,13 @@
               </el-col>
 
               <!--RTPS-->
-              <fieldset style="margin-top:10px">
+              <fieldset style="margin-top:10px" v-if="!IsPHAuditEnv()">
 
                 <el-col :span="20">
                   <el-button style="margin-bottom:10px; background-color: #c5ddf0" type="normal" icon="el-icon-plus" size="mini" @click="doAddRTPSLevel()">添加</el-button>
                 </el-col>
 
-                <legend>RTPS配置</legend>
+                <legend>RTP配置</legend>
                 <el-table
                   ref="filterTable"
                   :data="item.RTPS"
@@ -150,7 +150,7 @@
                 </el-table>
               </fieldset>
 
-              <!--小奖池触发重摇-->
+              <!--小奖池触发重摇
               <fieldset  v-if="!IsPHAuditEnv()">
                 <legend>小奖池触发重摇</legend>
                 <el-row>
@@ -188,7 +188,7 @@
                   </el-descriptions-item>
                 </el-descriptions>
               </fieldset>
-
+              -->
             </el-col>
           </el-tab-pane>
         </el-tabs>
@@ -248,12 +248,12 @@ export default {
         RTPS:[],
         BetMoneyLevel:[], //下注
         OddsCfg:[],
-        ReChoiceCfg:{
-          LowLotteryPoolReChoice:0, 
-          LowLotteryPoolReChoiceRate:0, 
-          HighLotteryPoolReChoice:0, 
-          HighLotteryPoolReChoiceRate: 0
-        },
+        // ReChoiceCfg:{
+        //   LowLotteryPoolReChoice:0, 
+        //   LowLotteryPoolReChoiceRate:0, 
+        //   HighLotteryPoolReChoice:0, 
+        //   HighLotteryPoolReChoiceRate: 0
+        // },
       },
       form: {},
       subKey: 'chicken_go_cfg',
@@ -337,8 +337,8 @@ export default {
 
             this.transMoneyForShow()
 
-            item.ReChoiceCfg.LowLotteryPoolReChoice /= 1000
-            item.ReChoiceCfg.HighLotteryPoolReChoice /= 1000
+            // item.ReChoiceCfg.LowLotteryPoolReChoice /= 1000
+            // item.ReChoiceCfg.HighLotteryPoolReChoice /= 1000
 
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data)
@@ -388,8 +388,8 @@ export default {
         ret.RTPS[i] = Math.round(this.item.RTPS[i] * 100)
       }
 
-      ret.ReChoiceCfg.LowLotteryPoolReChoice *= 1000
-      ret.ReChoiceCfg.HighLotteryPoolReChoice *= 1000
+      // ret.ReChoiceCfg.LowLotteryPoolReChoice *= 1000
+      // ret.ReChoiceCfg.HighLotteryPoolReChoice *= 1000
       ret.AutoDropTimer *= 1
 
       //测试

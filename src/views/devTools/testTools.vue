@@ -103,6 +103,8 @@
           </el-table-column>
           <el-table-column prop="trustScore" label="信任分系统信任分">
           </el-table-column>
+          <el-table-column prop="maxTrustScore" label="历史最大信任分">
+          </el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
               <el-button type="primary" size="mini" @click="addCheatScore(scope.row.uid,scope.row.gid,0,0)">刷新</el-button>
@@ -204,10 +206,12 @@ export default {
       }).then(response => {
         console.log(JSON.stringify(response))
         if (response.RetCode === 0) {
-          $this.trustTestData = response.Data
-          for (const v of response.Data) {
-            console.log(v)
-            v.inc = 0
+          $this.trustTestData = response.Data || []
+          if (response.Data) {
+            for (const v of response.Data) {
+              console.log(v)
+              v.inc = 0
+            }
           }
         }
       })
@@ -285,6 +289,7 @@ export default {
               $this.trustUserData[i].cheatScore = response.Data.cheatScore
               $this.trustUserData[i].trustType = response.Data.trustType
               $this.trustUserData[i].trustScore = response.Data.trustScore
+              $this.trustUserData[i].maxTrustScore = response.Data.maxTrustScore
               update = true
               break
             }
