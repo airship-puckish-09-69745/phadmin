@@ -24,6 +24,10 @@ export default {
     appID: {
       type: Number,
       default: () => 0
+    },
+    channel: {
+      type: String,
+      default: () => ''
     }
   },
   data() {
@@ -99,7 +103,8 @@ export default {
             Env: this.env,
             Path: '/usercommonrobot/import/excel',
             file: base64,
-            appId: this.appID
+            appId: this.appID,
+            channel: this.channel
           }
         }).then(response => {
           // 情况input的value
