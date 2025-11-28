@@ -313,14 +313,24 @@
           </el-tab-pane>
 
           <el-tab-pane label="白名单配置">
-            <el-form ref="item" label-width="220px">
+            <el-form ref="item" :model="edit.item" label-width="220px">
               <el-row>
-                <el-col :span="11">
-                  <el-form-item label="SiteId白名单：" prop="item.whitelist.siteIdList">
+                <el-col :span="24">
+                  <el-form-item label="是否开启：" prop="activity.whitelist.isOpen" :required="true">
+                    <el-switch v-model="edit.item.activity.whitelist.isOpen" :active-value="true" :inactive-value="false" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="24">
+                  <el-form-item label="SiteId白名单：" prop="item.whitelist.siteIdList" :required="true">
                     <SiteSelect
                       v-model="edit.item.activity.whitelist.siteIdList"
                       multiple
                     />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="24">
+                  <el-form-item label="UID白名单：" prop="item.whitelist.uidList">
+                    <el-input v-model="edit.item.activity.whitelist.uidList" placeholder="请输入UID白名单，多个UID用逗号隔开" />
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -405,8 +415,10 @@ export default {
         'activity.endTime': '结束时间',
         'activity.status': '状态',
         'activity.gameIds': '游戏ID配置',
-        'activity.whitelist': '白名单',
+        'activity.whitelist.isOpen': '是否开启白名单',
+        'activity.whitelist.appIdList': '应用ID白名单',
         'activity.whitelist.siteIdList': '站点白名单',
+        'activity.whitelist.uidList': 'UID白名单',
         'activity.ruleImgHor': '横向规则图',
         'activity.ruleImgVer': '纵向规则图',
         'activity.isOpen': '是否开启',
@@ -581,6 +593,12 @@ export default {
 
       if (item.activity.whitelist.appIdList.length === 0 && this.version === 'V2') {
         item.activity.whitelist.appIdList.push(this.appId)
+      }
+
+      if (this.edit.item.activity.whitelist.uidList !== '') {
+        item.activity.whitelist.uidList = this.edit.item.activity.whitelist.uidList.split(',').map(uid => {
+          return parseInt(uid.trim())
+        })
       }
 
       return item
