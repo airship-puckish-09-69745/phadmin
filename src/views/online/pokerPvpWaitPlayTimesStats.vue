@@ -23,7 +23,7 @@
                     <el-select v-model="clientDB.FilterValueMap['table_money']" size="mini" @change="handleFilter">
                         <el-option label="全部" :value="0" />
                         <el-option label="汇总" :value="-1" />
-                        <el-option v-for="(o, key) in clientDB.FilterMap['table_money']" :key="key" :label="o"
+                        <el-option v-for="(o, key) in clientDB.FilterMap['table_money']" :key="key" :label="getTableMoney(o)"
                             :value="key" />
                     </el-select>
                     </el-form-item>
@@ -292,7 +292,7 @@ export default {
             if (n === -1) {
                 return '汇总'
             }
-            return n
+            return (n/1000).toLocaleString()
         },
 
         // 信任等级枚举
