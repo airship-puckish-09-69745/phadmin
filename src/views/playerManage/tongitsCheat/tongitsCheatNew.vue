@@ -1033,7 +1033,7 @@ export default {
       // return '--'
     },
     showMoney(money) {
-      return (money / 1000).toFixed(3)
+      return (money / 1000).toFixed(1)
     },
     formatUserBlackTime(row) {
       const userType = row.UserType
