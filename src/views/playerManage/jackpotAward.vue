@@ -11,7 +11,7 @@
           />
         </el-form-item>
         <el-form-item label="玩法：">
-          <el-select v-model="searchForm.gameId" placeholder="请选择" @change="changeLevelConfig">
+          <el-select v-model="searchForm.gameId" placeholder="请选择" @change="changeLevelConfig" filterable>
             <el-option
               v-for="item in gameConfig"
               :key="item.value"
