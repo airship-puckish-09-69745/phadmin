@@ -7,11 +7,26 @@
                         start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions" />
                 </el-form-item>
                 <el-form-item label="身份：">
-                    <el-select v-model="item.trustLevel" size="mini">
-                        <el-option v-for="row of trustLevelOptions" :key="row.value" :label="row.label"
-                            :value="row.value" />
+                    <el-select v-model="clientDB.FilterValueMap['trust_level']" size="mini" @change="handleFilter">
+                        <el-option v-for="item in trustLevelOptions" :key="item.value" :label="item.label"
+                            :value="item.value" />
                     </el-select>
                 </el-form-item>
+                <el-form-item label="游戏名称：">
+                    <el-select v-model="clientDB.FilterValueMap['gid']" size="mini" @change="handleFilter">
+                        <el-option label="全部" :value="0" />
+                        <el-option v-for="(o, key) in clientDB.FilterMap['gid']" :key="key" :label="getGameName(o)"
+                            :value="key" />
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="场次：">
+                    <el-select v-model="clientDB.FilterValueMap['table_money']" size="mini" @change="handleFilter">
+                        <el-option label="全部" :value="0" />
+                        <el-option label="汇总" :value="-1" />
+                        <el-option v-for="(o, key) in clientDB.FilterMap['table_money']" :key="key" :label="o"
+                            :value="key" />
+                    </el-select>
+                    </el-form-item>
                 <el-form-item>
                     <el-button type="primary" size="mini" @click="getList">查询</el-button>
                 </el-form-item>
@@ -22,37 +37,17 @@
                 :header-cell-style="libShow.DefaultTableHeadClass" :row-style="{ height: '10px' }"
                 :cell-style="libShow.DefaultTableCell" style="width: 100%;margin-top:10px;" @sort-change="sortChange">
                 <el-table-column prop="rec_day" label="日期" sortable="custom" />
-                <el-table-column prop="gid" label="游戏名称" width="120">
-                    <template v-slot:header>
-                        <el-select v-model="clientDB.FilterValueMap['gid']" size="mini" @change="handleFilter">
-                            <el-option label="游戏名称" :value="-1" />
-                            <el-option v-for="(o, key) in clientDB.FilterMap['gid']" :key="key" :label="getGameName(o)"
-                                :value="key" />
-                        </el-select>
-                        <template slot-scope="scope">
-                            {{ clientDB.GetShowValue('gid', scope.row.gid) }}
-                        </template>
-                    </template>
+                <el-table-column prop="gid" label="游戏名称" width="120" sortable="custom">
                     <template slot-scope="scope">
                         {{ getGameName(scope.row.gid) }}
                     </template>
                 </el-table-column>
-                
-                <el-table-column prop="table_money" label="场次">
-                    <template v-slot:header>
-                        <el-select v-model="clientDB.FilterValueMap['table_money']" size="mini" @change="handleFilter">
-                            <el-option label="场次" :value="-1" />
-                            <el-option v-for="(o, key) in clientDB.FilterMap['table_money']" :key="key" :label="o"
-                                :value="key" />
-                        </el-select>
-                        <template slot-scope="scope">
-                            {{ clientDB.GetShowValue('table_money', scope.row.table_money) }}
-                        </template>
-                    </template>
+                <el-table-column prop="table_money" label="场次" sortable="custom">
                     <template slot-scope="scope">
                         {{ getTableMoney(scope.row.table_money) }}
                     </template>
                 </el-table-column>
+
                 <el-table-column prop="trust_level" label="身份" sortable="custom">
                     <template slot-scope="scope">
                         {{ getTrustLevel(scope.row.trust_level) }}
@@ -84,7 +79,8 @@ import DateTimeShow from '@/components/DatetimeShow'
 import { Message } from 'element-ui'
 const filterMap = {
     gid: 'all',
-    table_money: 'all'
+    table_money: 'all',
+    trust_level: 'all',
 }
 
 export default {
@@ -103,13 +99,14 @@ export default {
             games: [],
             tableData: [],
             trustLevelOptions: [
-                { value: -1, label: '全部' },
-                { value: 0, label: '默认用户' },
+                { value: 0, label: '全部' },
+                { value: -1, label: '汇总' },
                 { value: 1, label: '低危用户' },
                 { value: 2, label: '疑似用户' },
                 { value: 3, label: '黑子用户' },
                 { value: 4, label: '低信任分用户' },
                 { value: 5, label: '高信任分用户' },
+                { value: 6, label: '默认用户' },
             ],
             pickerOptions: {
                 shortcuts: [{
@@ -186,20 +183,52 @@ export default {
                 }
             }).then(response => {
                 if (response.RetCode === 0) {
+                    // 把所有的默认身份从0转换为6
+                    for (let i = 0; i < response.Data.length; i++) {
+                        if (response.Data[i].trust_level === 0) {
+                            response.Data[i].trust_level = 6
+                        }
+                    }
+
+                    // 对数据进行排序，按日期排序，相同日期按游戏名称排序，相同游戏名称按场次排序，相同场次按信任等级排序
+                    response.Data.sort((a, b) => {
+                        if (a.rec_day < b.rec_day) {
+                            return -1
+                        }
+                        if (a.rec_day > b.rec_day) {
+                            return 1
+                        }
+                        if (a.gid < b.gid) {
+                            return -1
+                        }
+                        if (a.gid > b.gid) {
+                            return 1
+                        }
+                        if (a.table_money < b.table_money) {
+                            return -1
+                        }
+                        if (a.table_money > b.table_money) {
+                            return 1
+                        }
+                        if (a.trust_level < b.trust_level) {
+                            return -1
+                        }
+                        if (a.trust_level > b.trust_level) {
+                            return 1
+                        }
+                        return 0
+                    })
+
                     $this.clientDB = new ClientTableData(response.Data || [], 40, {
                         gid: 'all',
-                        table_money: 'all'
+                        table_money: 'all',
+                        trust_level: 'all',
                     }, 'rec_day', -1)
                     this.$forceUpdate()
                     // 去掉这个里面的-1
                     $this.handleCurrentChange(1)
                     delete $this.clientDB.FilterMap['table_money'][-1]
                     delete $this.clientDB.FilterMap['gid'][-1]
-                    // 场次的全部是 -1 需要使用 FilterValueMap 来筛选
-                    $this.clientDB.FilterValueMap['table_money'] = -1
-                    $this.clientDB.FilterValueMap['gid'] = -1
-                    $this.handleFilter('table_money', -1)
-                    $this.handleFilter('gid', 0)
                 }
             })
         },
@@ -223,6 +252,7 @@ export default {
         },
 
         handleFilter(k, v) {
+            console.log('this.clientDB.FilterValueMap=>', this.clientDB.FilterMap['trust_level'])
             console.log('k=>', k, 'v==>', v)
             this.clientDB.FilterData()
             this.refreshShow()
@@ -241,16 +271,22 @@ export default {
         },
 
         getTableMoney(n) {
-            if (n === -1) {
+            if (n === 0) {
                 return '全部'
+            }
+            if (n === -1) {
+                return '汇总'
             }
             return n
         },
 
         // 信任等级枚举
         getTrustLevel(n) {
-            if (n === -1) {
+            if (n === 0) {
                 return '全部'
+            }
+            if (n === -1) {
+                return '汇总'
             }
             for (const i in this.trustLevelOptions) {
                 if (this.trustLevelOptions[i].value === n) {
@@ -265,7 +301,7 @@ export default {
 
         getGameName(gid) {
             if (gid === -1) {
-                return '全部'
+                return '汇总'
             }
             let name = '' + gid
             for (const i in this.games) {
