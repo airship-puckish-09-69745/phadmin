@@ -182,7 +182,10 @@ export default {
               LastEndTime: row.lastEndTime || 0,
               CheatRadio: row.cheatRadio || 0,
               CheatInfos: [],
-              TidCheatLogs: []
+              TidCheatLogs: [],
+              TrustScore: row.trustScore,
+              TrustLevel: row.trustLevel,
+              TrustMaxScore: row.trustMaxScore
             }
             // eslint-disable-next-line no-prototype-builtins
             if (row.maxCheatScore) {
@@ -476,7 +479,51 @@ export default {
       } else {
         return '未知游戏'
       }
-    }
+    },
+    formatUserTrustLevel(row) {
+      if (row.AppId === 2000005 || row.AppId === 3000005 || row.AppId === 1000014) {
+        row.RegisterChannel = 'CP'
+      } else {
+        row.RegisterChannel = 'BP'
+
+      }
+      if (row.UserType === 3) {
+        return '认证高信' + '(' + row.RegisterChannel + ')'
+      }
+      const trustLevel = row.TrustLevel
+      switch (trustLevel) {
+        case 1:
+          return '低危用户' + '(' + row.RegisterChannel + ')'
+        case 2:
+          return '疑似用户' + '(' + row.RegisterChannel + ')'
+        case 3:
+          return '黑子用户' + '(' + row.RegisterChannel + ')'
+        case 4:
+          return '低信用户' + '(' + row.RegisterChannel + ')'
+        case 5:
+          return '高信用户' + '(' + row.RegisterChannel + ')'
+        default:
+          return '--'
+      }
+    },
+    changeSortType() {
+      let sortName = 'UpdateTime'
+      if (this.sortType === 1) {
+        sortName = 'CheatScore'
+      } else if (this.sortType === 2) {
+        sortName = 'CheatRadio'
+      } else if (this.sortType === 3) {
+        sortName = 'RealBlackTime'
+      } else if (this.sortType === 4) {
+        sortName = 'TrustMaxScore'
+      } else if (this.sortType === 5) {
+        sortName = 'MaxCheatScore'
+      }
+      if (this.clientDB.TotalData.length !== 0) {
+        this.clientDB = new ClientTableData(this.clientDB.TotalData, this.pageNum, {}, sortName, -1, 'Uid')
+        this.refreshShow()
+      }
+    },
   }
 }
 </script>
@@ -544,6 +591,27 @@ export default {
           prop="Uid"
           label="玩家ID"
           width="100"
+          align="center"
+        />
+        <el-table-column
+          label="信任等级"
+          width="80"
+          align="center"
+        >
+          <template slot-scope="scope">
+            <span>{{ formatUserTrustLevel(scope.row) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="TrustScore"
+          label="信任分"
+          width="80"
+          align="center"
+        />
+        <el-table-column
+          prop="TrustMaxScore"
+          label="历史最高信任分"
+          width="80"
           align="center"
         />
         <el-table-column
