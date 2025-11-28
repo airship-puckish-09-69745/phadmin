@@ -76,147 +76,159 @@
         <el-tabs type="border-card">
           <el-tab-pane label="基础配置">
             <el-row>
-              <el-form label-width="220px" size="mini">
+              <el-form :model="edit.item" label-width="220px" size="mini">
                 <el-col :span="24">
-                  <el-form-item label="是否开启：" prop="isOpen" :required="true">
-                    <el-switch v-model="edit.item.activity.isOpen" :active-value="1" :inactive-value="0" />
+                  <el-form-item label="是否开启：" prop="activity.isOpen" :required="true">
+                    <el-switch v-model="edit.item.activity.isOpen" :active-value="true" :inactive-value="false" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="24">
-                  <el-form-item label="活动名称：" prop="name" :required="true">
-                    <el-input v-model="edit.item.activity.name" />
+                  <el-form-item label="活动名称：" prop="activity.name" :required="true">
+                    <el-input v-model="edit.item.activity.name" placeholder="请输入活动名称" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
-                  <el-form-item label="活动开始时间：" prop="startTime" :required="true">
+                  <el-form-item label="活动开始时间：" prop="activity.startTime" :required="true" >
                     <el-date-picker v-model="edit.item.activity.startTime" type="datetime" placeholder="选择开始时间" value-format="timestamp" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
-                  <el-form-item label="活动结束时间：" prop="endTime" :required="true">
-                    <el-date-picker v-model="edit.item.activity.endTime" type="datetime"  placeholder="选择结束时间" value-format="timestamp" />
+                  <el-form-item label="活动结束时间：" prop="activity.endTime" :required="true">
+                    <el-date-picker v-model="edit.item.activity.endTime" type="datetime"  placeholder="选择结束时间" value-format="timestamp" @change="onChangeEndTime" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="24">
-                  <el-form-item label="展示结束时间：" prop="showEndTime" :required="true">
+                  <el-form-item label="展示结束时间：" prop="activity.showEndTime" :required="true">
                     <el-date-picker v-model="edit.item.activity.showEndTime" type="datetime" placeholder="选择展示结束时间" value-format="timestamp" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
-                  <el-form-item label="进入排行榜的有效下注：" prop="minBet" :required="true">
-                    <el-input v-model="edit.item.extend.minBet" />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="计入排行榜的有效下注：" prop="minScore" :required="true">
-                    <el-input v-model="edit.item.extend.minScore" />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="玩家奖励上限：" prop="maxReward" :required="true">
-                    <el-input v-model="edit.item.extend.maxReward" />
-                  </el-form-item>
-                </el-col>
-                <el-row :gutter="5">
-                  <el-form label-width="220px">
-                    <el-col :span="24">
-                      <el-form-item label="规则图片横板：" :required="true">
-                        <el-col :span="2" v-for="(v,k) in edit.item.activity.ruleImgHor">
-                          <span style="display: inline-block; position: relative;">
-                            <span style="position: absolute; top: -20px; right: 1px; cursor: pointer; z-index: 99" @click="removeRuleImage(k, 'Hor')">移除</span>
-                            <ImagePicker v-model="edit.item.activity.ruleImgHor[k]" />
-                          </span>
-                        </el-col>
-                        <span style="position: relative;">
-                          <el-button @click="addRuleImage('Hor')">添加</el-button>
-                        </span>
-                      </el-form-item>
-                    </el-col>
-                    <el-col :span="24">
-                      <el-form-item label="规则图片竖版：" :required="true">
-                        <el-col :span="2" v-for="(v,k) in edit.item.activity.ruleImgVer">
-                          <span style="display: inline-block; position: relative;">
-                          <span style="position: absolute; top: -20px; right: 1px; cursor: pointer; z-index: 99" @click="removeRuleImage(k, 'Vor')">移除</span>
-                            <ImagePicker v-model="edit.item.activity.ruleImgVer[k]" />
-                          </span>
-                        </el-col>
-                        <span style="position: relative;">
-                          <el-button @click="addRuleImage('Vor')">添加</el-button>
-                        </span>
-                      </el-form-item>
-                    </el-col>
-                  </el-form>
-                </el-row>
-                <el-row :gutter="5">
-                  <el-form label-width="220px">
-                    <el-col :span="12">
-                      <el-form-item label="勾选支持的游戏：" :required="true">
-                        <el-input
-                          placeholder="输入关键字进行过滤"
-                          v-model="filterText">
-                        </el-input>
-                        <el-tree
-                          :data="treeData"
-                          show-checkbox
-                          node-key="id"
-                          ref="tree"
-                          highlight-current
-                          :props="defaultProps"
-                          :filter-node-method="filterNode"
-                          @check-change="handleGameCheckChange"
-                        >
-                        </el-tree>
-                      </el-form-item>
-                      <el-form-item label="给选中游戏排序：" :required="true">
-                        <el-button size="mini" type="primary" @click="showGamesSortDialog()">
-                          排序
-                        </el-button>
-                      </el-form-item>
-                    </el-col>
-                  </el-form>
-                </el-row>
-                <el-dialog
-                  title="给选中游戏排序"
-                  :visible.sync="edit.gamesSortDialogVisible"
-                  append-to-body
-                >
-                  <el-table
-                    :data="GamesSorted"
-                    border
-                    style="width: 100%"
-                    :cell-style="libShow.DefaultTableCell"
-                  >
-                    <el-table-column
-                      prop="GameId"
-                      label="游戏Id"
-                      width="200"
-                    />
-                    <el-table-column
-                      prop="Name"
-                      label="游戏名称"
-                      width="200"
-                    />
-                    <el-table-column
-                      prop="OrderNo"
-                      label="排序编号"
-                      width="200"
-                    >
-                      <template slot-scope="scope">
-                        <el-input
-                          v-model="scope.row.OrderNo"
-                          size="mini"
-                          oninput=" if(value < 0 || value === '' || value == null){value = 0;} "
-                          @change="onOrderNoChange"
-                        ></el-input>
+                  <el-form-item label="进入排行榜的有效下注：" prop="extend.minBet" :required="true">
+                    <el-input v-model.number="edit.item.extend.minBet" placeholder="请输入有效下注" >
+                      <template slot="append">
+                        （₱）
                       </template>
-                    </el-table-column>
-                  </el-table>
-                  <el-row style="top: 10px">
-                    <el-button type="primary" @click="saveGamesSort">保存</el-button>
-                  </el-row>
-                </el-dialog>
+                    </el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="计入排行榜的有效下注：" prop="extend.minScore" :required="true">
+                    <el-input v-model.number="edit.item.extend.minScore" placeholder="请输入计入排行榜的有效下注" >
+                      <template slot="append">
+                        （₱）
+                      </template>
+                    </el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="玩家奖励上限：" prop="extend.maxReward" :required="true">
+                    <el-input v-model.number="edit.item.extend.maxReward" placeholder="请输入玩家奖励上限" >
+                      <template slot="append">
+                        （₱）
+                      </template>
+                    </el-input>
+                  </el-form-item>
+                </el-col>
               </el-form>
             </el-row>
+            <el-row :gutter="5">
+              <el-form label-width="220px">
+                <el-col :span="24">
+                  <el-form-item label="规则图片横板：" :required="true">
+                    <el-col :span="4" v-for="(v,k) in edit.item.activity.ruleImgHor">
+                      <span style="display: inline-block; position: relative;">
+                        <span style="position: absolute; top: -20px; right: 1px; cursor: pointer; z-index: 99" @click="removeRuleImage(k, 'Hor')">移除</span>
+                        <ImagePicker v-model="edit.item.activity.ruleImgHor[k]" />
+                      </span>
+                    </el-col>
+                    <span style="position: relative;">
+                      <el-button @click="addRuleImage('Hor')">添加</el-button>
+                    </span>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="24">
+                  <el-form-item label="规则图片竖版：" :required="true">
+                    <el-col :span="4" v-for="(v,k) in edit.item.activity.ruleImgVer">
+                      <span style="display: inline-block; position: relative;">
+                      <span style="position: absolute; top: -20px; right: 1px; cursor: pointer; z-index: 99" @click="removeRuleImage(k, 'Vor')">移除</span>
+                        <ImagePicker v-model="edit.item.activity.ruleImgVer[k]" />
+                      </span>
+                    </el-col>
+                    <span style="position: relative;">
+                      <el-button @click="addRuleImage('Vor')">添加</el-button>
+                    </span>
+                  </el-form-item>
+                </el-col>
+              </el-form>
+            </el-row>
+            <el-row :gutter="5">
+              <el-form label-width="220px">
+                <el-col :span="12">
+                  <el-form-item label="勾选支持的游戏：" :required="true">
+                    <el-input
+                      placeholder="输入关键字进行过滤"
+                      v-model="filterText">
+                    </el-input>
+                    <el-tree
+                      :data="treeData"
+                      show-checkbox
+                      node-key="id"
+                      ref="tree"
+                      highlight-current
+                      :props="defaultProps"
+                      :filter-node-method="filterNode"
+                      @check-change="handleGameCheckChange"
+                    >
+                    </el-tree>
+                  </el-form-item>
+                  <el-form-item label="给选中游戏排序：" :required="true">
+                    <el-button size="mini" type="primary" @click="showGamesSortDialog()">
+                      排序
+                    </el-button>
+                  </el-form-item>
+                </el-col>
+              </el-form>
+            </el-row>
+            <el-dialog
+              title="给选中游戏排序"
+              :visible.sync="edit.gamesSortDialogVisible"
+              append-to-body
+            >
+              <el-table
+                :data="GamesSorted"
+                border
+                style="width: 100%"
+                :cell-style="libShow.DefaultTableCell"
+              >
+                <el-table-column
+                  prop="GameId"
+                  label="游戏Id"
+                  width="200"
+                />
+                <el-table-column
+                  prop="Name"
+                  label="游戏名称"
+                  width="200"
+                />
+                <el-table-column
+                  prop="OrderNo"
+                  label="排序编号"
+                  width="200"
+                >
+                  <template slot-scope="scope">
+                    <el-input
+                      v-model="scope.row.OrderNo"
+                      size="mini"
+                      oninput=" if(value < 0 || value === '' || value == null){value = 0;} "
+                      @change="onOrderNoChange"
+                    ></el-input>
+                  </template>
+                </el-table-column>
+              </el-table>
+              <el-row style="top: 10px">
+                <el-button type="primary" @click="saveGamesSort">保存</el-button>
+              </el-row>
+            </el-dialog>
           </el-tab-pane>
 
           <el-tab-pane label="排行榜配置">
@@ -253,7 +265,7 @@
                     </el-input>
                   </el-col>
                 </fieldset>
-                <fieldset style="margin-top: 10px">
+                <fieldset v-if="edit.item.extend.rewardWay === 1" style="margin-top: 10px">
                   <legend>奖励配置</legend>
                   <el-button size="mini" type="primary" @click="handleAddRankReward()">添加</el-button>
                   <el-table
@@ -345,16 +357,17 @@ function newItem() {
     id: 0,
     activity: {
       name: '',
-      startTime: 0,
-      endTime: 0,
+      startTime: Date.parse(new Date().toString()),
+      endTime: Date.parse(new Date().toString()),
+      showEndTime: Date.parse(new Date().toString()) + 1000 * 60 * 60 * 24,
       status: 0,
       gameIds: [],
       whitelist: {
         appIdList: [],
         siteIdList: []
       },
-      ruleImgHor: '',
-      ruleImgVer: '',
+      ruleImgHor: [],
+      ruleImgVer: [],
       isOpen: false,
     },
     extend: {
@@ -387,21 +400,22 @@ export default {
   data() {
     return {
       AttrNames: {
-        activity: '活动信息',
         'activity.name': '活动名称',
         'activity.startTime': '开始时间',
         'activity.endTime': '结束时间',
         'activity.status': '状态',
         'activity.gameIds': '游戏ID配置',
         'activity.whitelist': '白名单',
+        'activity.whitelist.siteIdList': '站点白名单',
         'activity.ruleImgHor': '横向规则图',
         'activity.ruleImgVer': '纵向规则图',
         'activity.isOpen': '是否开启',
-        extend: '扩展配置',
         'extend.minBet': '计入榜单最小有效投注',
         'extend.minScore': '进入榜单最小有效投注',
         'extend.maxReward': '玩家奖励上限',
         'extend.rewardList': '榜单奖励列表',
+        'extend.rewardPercent': '奖励百分比',
+        'extend.rewardWay': '奖励方式',
         modifyUser: '最后修改人',
         updateTime: '更新时间',
       },
@@ -421,6 +435,7 @@ export default {
         visible: false,
         item: newItem(),
         title: "新增",
+        gamesSortDialogVisible: false,
       },
 
       treeData: [{
@@ -438,6 +453,11 @@ export default {
           }]
         }]
       }],
+      defaultProps: {
+        label: 'label',
+        children: 'children',
+        disabled: 'disabled',
+      },
 
       filterText: '',
       filterGameIds: [ 2031, 10002 ],
@@ -515,7 +535,15 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
-          this.clientDB = new ClientTableData(objs, 10, filterMap, 'EndTime', -1)
+          const rows = []
+          for (const obj of objs) {
+            rows.push({
+              ...obj,
+              activity: JSON.parse(obj.activity),
+              extend: JSON.parse(obj.extend),
+            })
+          }
+          this.clientDB = new ClientTableData(rows, 10, filterMap, 'EndTime', -1, 'id')
           this.handleCurrentChange(1)
         }
       }).catch(err => {
@@ -545,23 +573,27 @@ export default {
         console.log('取消')
       })
     },
-    getPostData() {
+    getPostItem() {
+      const item = JSON.parse(JSON.stringify(this.edit.item))
+      item.activity.startTime /= 1000
+      item.activity.endTime /= 1000
+      item.activity.showEndTime /= 1000
 
-      if (this.edit.item.activity.whitelist.appIdList.length === 0 && this.version === 'V2') {
-        this.edit.item.activity.whitelist.appIdList.push(this.appId)
+      if (item.activity.whitelist.appIdList.length === 0 && this.version === 'V2') {
+        item.activity.whitelist.appIdList.push(this.appId)
       }
 
-      const data = {}
-      data.id = this.edit.item.id
-      data.activity = JSON.stringify(this.edit.item.activity)
-      data.extend = JSON.stringify(this.edit.item.extend)
-      return data
+      return item
     },
     handleSave() {
-      const data = this.getPostData()
+      const item = this.getPostItem()
+      const data = {...item}
+      data.activity = JSON.stringify(item.activity)
+      data.extend = JSON.stringify(item.extend)
+
       if (this.edit.isEdit) {
         // 设置修改后数据
-        this.$refs.compare.SetNewVal(data)
+        this.$refs.compare.SetNewVal(item)
         const $this = this
         this.$refs.compare.Compare(function(isEdit) {
           if (!isEdit) {
@@ -607,24 +639,36 @@ export default {
     clickData(row, column, event) {
       console.log('clickData ', row)
       if (column.columnKey !== 'op') {
-        this.initFormData(true, row.ID)
+        this.initFormData(true, row.id)
         this.edit.visible = true
       }
     },
     handleEditDialogOpened() {
       console.log('handleEditDialogOpened edit:' + this.edit.isEdit)
       if (this.edit.isEdit) {
-        this.$refs.tree.setCheckedKeys(this.edit.item.GameIdCfg)
+        this.$refs.tree.setCheckedKeys(this.edit.item.activity.gameIds)
       } else {
         this.$refs.tree.setCheckedKeys([])
       }
     },
     initFormData(bEdit, ID) {
+      console.log('initFormData bEdit:', bEdit, ' ID:', ID)
       this.edit.isEdit = bEdit
       if (ID) {
         const _data = this.clientDB.GetDataByID(ID)
         if (_data) {
+          const item = JSON.parse(JSON.stringify(_data))
+          item.activity.startTime *= 1000
+          item.activity.endTime *= 1000
+          item.activity.showEndTime *= 1000
+          this.edit.item = item
 
+          console.log('initFormData item:', item)
+
+          if (bEdit) {
+            // 设置修改之前数据
+            this.$refs.compare.SetOldVal(_data)
+          }
         }
       } else {
         this.edit.item = {}
@@ -636,22 +680,29 @@ export default {
       this.edit.visible = true
       console.log(this.edit.item)
     },
+    onChangeEndTime() {
+      if (this.edit.item.activity.endTime <= this.edit.item.activity.startTime) {
+        Message.error('结束时间不能早于活动开始时间')
+        return
+      }
+      this.edit.item.activity.showEndTime = this.edit.item.activity.endTime + 1000 * 60 * 60 * 24
+    },
     //************************ 修改/添加弹框相关 ************************
     //************************ 规则图片相关 ************************
     addRuleImage(type) {
       console.log('addRuleImage type:', type)
       if (type === 'Hor') {
-        this.edit.item.RuleImgHor.push('')
+        this.edit.item.activity.ruleImgHor.push('')
       } else {
-        this.edit.item.RuleImgVer.push('')
+        this.edit.item.activity.ruleImgVer.push('')
       }
     },
     removeRuleImage(index, type) {
       console.log('removeRuleImage index:', index, 'type:', type)
       if (type === 'Hor') {
-        this.edit.item.RuleImgHor.splice(index, 1)
+        this.edit.item.activity.ruleImgHor.splice(index, 1)
       } else {
-        this.edit.item.RuleImgVer.splice(index, 1)
+        this.edit.item.activity.ruleImgVer.splice(index, 1)
       }
     },
     //************************ 规则图片相关 ************************
