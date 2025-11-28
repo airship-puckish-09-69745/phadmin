@@ -93,6 +93,11 @@ export default {
                 tableMoney: -1,
                 trustLevel: -1,
             },
+            filterCatch: {
+                gid: 0,
+                table_money: 0,
+                trust_level: 0,
+            },
             clientDB: new ClientTableData([], 1, {}),
             libShow: $libShow,
             timer: null,
@@ -229,6 +234,14 @@ export default {
                     $this.handleCurrentChange(1)
                     delete $this.clientDB.FilterMap['table_money'][-1]
                     delete $this.clientDB.FilterMap['gid'][-1]
+
+                    $this.clientDB.FilterValueMap['gid'] = this.filterCatch.gid
+                    $this.clientDB.FilterValueMap['table_money'] = this.filterCatch.table_money
+                    $this.clientDB.FilterValueMap['trust_level'] = this.filterCatch.trust_level
+
+                    $this.handleFilter('trust_level', $this.clientDB.FilterValueMap['trust_level'])
+                    $this.handleFilter('gid', $this.clientDB.FilterValueMap['gid'])
+                    $this.handleFilter('table_money', $this.clientDB.FilterValueMap['table_money'])
                 }
             })
         },
@@ -252,7 +265,9 @@ export default {
         },
 
         handleFilter(k, v) {
-            console.log('this.clientDB.FilterValueMap=>', this.clientDB.FilterMap['trust_level'])
+            this.filterCatch.gid = this.clientDB.FilterValueMap['gid']
+            this.filterCatch.table_money = this.clientDB.FilterValueMap['table_money']
+            this.filterCatch.trust_level = this.clientDB.FilterValueMap['trust_level']
             console.log('k=>', k, 'v==>', v)
             this.clientDB.FilterData()
             this.refreshShow()
