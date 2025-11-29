@@ -93,7 +93,7 @@
                 <el-col :span="24" :offset="5">
                   <el-form :inline="true">
                     <el-col :span="8">
-                      <el-form-item label="携带Bet:" style="display: flex; align-items: center">
+                      <el-form-item label="携带(tableMoney*random(min, manx)倍):" style="display: flex; align-items: center">
                         <el-input v-model.number="robotLeaveCfg.CarryMultipleMin" size="mini" style="width: 100px"></el-input>
                         <span style="margin: 0 10px">~</span>
                         <el-input v-model.number="robotLeaveCfg.CarryMultipleMax" size="mini" style="width: 100px"></el-input>
@@ -117,7 +117,7 @@
                 <el-col :span="24" :offset="5">
                   <el-form :inline="true">
                     <el-col :span="8">
-                      <el-form-item label="赢局数:" style="display: flex; align-items: center">
+                      <el-form-item label="赢牌局数:" style="display: flex; align-items: center">
                         <el-input v-model.number="robotLeaveCfg.WinCountMin" size="mini" style="width: 100px"></el-input>
                         <span style="margin: 0 10px">~</span>
                         <el-input v-model.number="robotLeaveCfg.WinCountMax" size="mini" style="width: 100px"></el-input>
@@ -129,7 +129,7 @@
                 <el-col :span="24" :offset="5">
                   <el-form :inline="true">
                     <el-col :span="8">
-                      <el-form-item label="输局数:" style="display: flex; align-items: center">
+                      <el-form-item label="输牌局数:" style="display: flex; align-items: center">
                         <el-input v-model.number="robotLeaveCfg.LoseCountMin" size="mini" style="width: 100px"></el-input>
                         <span style="margin: 0 10px">~</span>
                         <el-input v-model.number="robotLeaveCfg.LoseCountMax" size="mini" style="width: 100px"></el-input>
@@ -141,7 +141,7 @@
                 <el-col :span="24" :offset="5">
                   <el-form :inline="true">
                     <el-col :span="8">
-                      <el-form-item label="赢钱倍数(基于实际带入):" style="display: flex; align-items: center">
+                      <el-form-item label="赢钱倍数(基于实际携带):" style="display: flex; align-items: center">
                         <el-input v-model.number="robotLeaveCfg.WinMoneyMinMul" size="mini" style="width: 100px"></el-input>
                         <span style="margin: 0 10px">~</span>
                         <el-input v-model.number="robotLeaveCfg.WinMoneyMaxMul" size="mini" style="width: 100px"></el-input>
@@ -153,7 +153,7 @@
                 <el-col :span="24" :offset="5">
                   <el-form :inline="true">
                     <el-col :span="8">
-                      <el-form-item label="输钱倍数(基于实际带入):" style="display: flex; align-items: center">
+                      <el-form-item label="输钱倍数(基于实际携带):" style="display: flex; align-items: center">
                         <el-input v-model.number="robotLeaveCfg.LoseMoneyMinMul" size="mini" style="width: 100px"></el-input>
                         <span style="margin: 0 10px">~</span>
                         <el-input v-model.number="robotLeaveCfg.LoseMoneyMaxMul" size="mini" style="width: 100px"></el-input>
