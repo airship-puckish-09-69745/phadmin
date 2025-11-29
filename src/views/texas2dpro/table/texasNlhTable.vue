@@ -132,14 +132,6 @@
         </el-row>
         <el-row>
           <el-col :span="11">
-            <el-form-item label="默认买入：" :required="true" prop="item.BaseBuyIn" :rules="dataRule(true,{type:'n',range:'0'})">
-              <el-input v-model.number="edit.item.BaseBuyIn" placeholder="请输入" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-        <el-row>
-          <el-col :span="11">
             <el-form-item label="买入间隔" :required="true" prop="item.IntervalBuyIn" :rules="dataRule(true,{type:'n',range:'1'})">
               <el-input v-model.number="edit.item.IntervalBuyIn" placeholder="请输入" />
             </el-form-item>
@@ -471,7 +463,6 @@ function newItem() {
     TimeConfig: {},
     MinBuyIn: 0,
     MaxBuyIn: 0,
-    BaseBuyIn: 0,
     IntervalBuyIn: 0,
     GPSLimit: 0,
     IPLimit: 0,
@@ -511,7 +502,7 @@ export default {
       search: '',
       libShow: $libShow,
       env: 'test',
-      libMoney: new MoneyShow(['CarryLower', 'CarryUpper', 'SmallBlind', 'MinBuyIn', 'MaxBuyIn', 'BaseBuyIn', 'DelayOpTimeCostMoney', 'ShowPublicCardCostMoney']),
+      libMoney: new MoneyShow(['CarryLower', 'CarryUpper', 'SmallBlind', 'MinBuyIn', 'MaxBuyIn', 'DelayOpTimeCostMoney', 'ShowPublicCardCostMoney']),
       libMoneyRobot: new MoneyShow(['RobotMoneyMin', 'RobotMoneyMax']),
 
       edit: {
@@ -536,7 +527,6 @@ export default {
         TableFee: '台费',
         MinBuyIn: '最低买入',
         MaxBuyIn: '最大买入',
-        BaseBuyIn: '默认买入',
         IntervalBuyIn: '买入间隔',
         LuckyLevelLimitMax: '',
         GPSLimit: '是否GPS限制',
@@ -833,10 +823,6 @@ export default {
       }
       if (this.edit.item.MinBuyIn > this.edit.item.MaxBuyIn) {
         Message.error('【最低买入】必须小于等于【最大买入】，请检查数值正确性！')
-        return false
-      }
-       if (this.edit.item.BaseBuyIn > this.edit.item.MaxBuyIn || this.edit.item.BaseBuyIn < this.edit.item.MinBuyIn) {
-        Message.error('【默认买入】必须小于等于【最大买入】 大于等于【最小买入】，请检查数值正确性！')
         return false
       }
       // TODO 完善
