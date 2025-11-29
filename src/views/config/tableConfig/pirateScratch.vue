@@ -1,5 +1,11 @@
 <template>
   <div class="app-container">
+        <el-row>
+      <el-col :span="18">
+        <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" />
+      </el-col>
+    </el-row>
+
     <el-row>
 
     <fieldset style="margin-top:10px">              
@@ -35,7 +41,7 @@
             width="200"
           >
             <template slot-scope="scope">
-              <span>{{ scope.row.Bonus/1000 || 0 }}</span>
+              <span>{{ scope.row.BonusBet || 0 }}</span>
             </template>
           </el-table-column>
          <el-table-column
@@ -68,7 +74,7 @@
             width="200"
           >
             <template slot-scope="scope">
-              <span>{{ scope.row.Bonus/1000 || 0 }}</span>
+              <span>{{ scope.row.BonusBet || 0 }}</span>
             </template>
           </el-table-column>
          <el-table-column
@@ -98,22 +104,8 @@
     ⚠️ 针对10面值以上彩票才有乘数配置
         </span>
          </legend>
-         <el-row>
-            <el-form ref="item.Multiplier" :model="item.Multiplier" width="70%">
-                    <el-col :span="8">
-                    <el-form-item label="单张彩票出现乘数的概率(%)：" :required="true">
-                        <template>
-                            <el-input-number
-                            v-model="tmpSingleRatio"  type="number" :min=0 :precision="2"
-                            style="width: 100%"> 
-                            </el-input-number>
-                        </template>
-                    </el-form-item>
-                </el-col>
-            </el-form>
-        </el-row>
-   
-      <h4 style="text-align:left;">单张彩票上乘数出现个数权重</h4>
+
+      <h4 style="text-align:left;">各面值单张彩票上乘数出现个数权重</h4>
        <el-table
               :data="item.Multiplier.SingleWight"
               border
@@ -127,12 +119,37 @@
               <span>{{ scope.row.Cnt }}</span>
             </template>
           </el-table-column>
-         <el-table-column
-            label="出现权重"
+       <el-table-column
+            label="20面值(权重)"
             width="200"
           >
             <template slot-scope="scope">
-              <el-input-number v-model.number="scope.row.Wight" size="mini" type="number"  :min=0 ></el-input-number>
+              <el-input-number v-model.number="scope.row.Face20Wight" size="mini" type="number"  :min=0 ></el-input-number>
+            </template>
+          </el-table-column>
+           <el-table-column
+            label="30面值(权重)"
+            width="200"
+          >
+            <template slot-scope="scope">
+              <el-input-number v-model.number="scope.row.Face30Wight" size="mini" type="number"  :min=0 ></el-input-number>
+            </template>
+          </el-table-column>
+         <el-table-column
+            label="50面值(权重)"
+            width="200"
+          >
+            <template slot-scope="scope">
+              <el-input-number v-model.number="scope.row.Face50Wight" size="mini" type="number"  :min=0 ></el-input-number>
+            </template>
+          </el-table-column>
+
+           <el-table-column
+            label="100面值(权重)"
+            width="200"
+          >
+            <template slot-scope="scope">
+              <el-input-number v-model.number="scope.row.Face100Wight" size="mini" type="number"  :min=0 ></el-input-number>
             </template>
           </el-table-column>
 
@@ -153,7 +170,7 @@
             </template>
           </el-table-column>
          <el-table-column
-            label="20面值"
+            label="20面值(权重)"
             width="200"
           >
             <template slot-scope="scope">
@@ -161,7 +178,7 @@
             </template>
           </el-table-column>
            <el-table-column
-            label="30面值"
+            label="30面值(权重)"
             width="200"
           >
             <template slot-scope="scope">
@@ -169,7 +186,7 @@
             </template>
           </el-table-column>
          <el-table-column
-            label="50面值"
+            label="50面值(权重)"
             width="200"
           >
             <template slot-scope="scope">
@@ -178,7 +195,7 @@
           </el-table-column>
 
            <el-table-column
-            label="100面值"
+            label="100面值(权重)"
             width="200"
           >
             <template slot-scope="scope">
@@ -287,133 +304,132 @@ export default {
         subKey: 'pirate_scratch_cfg',
         form: {},
         tmpBetRoundList:"10,25,50,100,200,500,1000,2000",
-        tmpSingleRatio: 10,
         item: {
           FeeRate: 1,
           BetRoundList:[10,25,50,100,200,500,1000,2000], //下注
           TenBetMoney:[
             {
-              Bonus:10000000, 
+              BonusBet:10000, 
               WinPrizeWight: 100,
               LosePrizeWight: 100
             },
             {
-              Bonus:1000000,
+              BonusBet:1000,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             },{
-              Bonus:500000,
+              BonusBet:500,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             },{
-              Bonus:200000,
+              BonusBet:200,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             },{
-              Bonus:100000,
+              BonusBet:100,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             },{
-              Bonus:50000,
+              BonusBet:50,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             },{
-              Bonus:30000,
+              BonusBet:30,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             },{
-              Bonus:20000,
+              BonusBet:20,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             },{
-              Bonus:10000,
+              BonusBet:10,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             },{
-              Bonus:5000,
+              BonusBet:5,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             },{
-              Bonus:3000,
+              BonusBet:3,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             },{
-              Bonus:2000,
+              BonusBet:2,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             },{
-              Bonus:1000,
+              BonusBet:1,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             }
           ],
           UpTenBetMoney:[
             {
-              Bonus:10000000, 
+              BonusBet:10000, 
               WinPrizeWight: 100,
               LosePrizeWight: 100
             },
             {
-              Bonus:1000000,
+              BonusBet:1000,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             },{
-              Bonus:500000,
+              BonusBet:500,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             },{
-              Bonus:200000,
+              BonusBet:200,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             },{
-              Bonus:100000,
+              BonusBet:100,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             },{
-              Bonus:50000,
+              BonusBet:50,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             },{
-              Bonus:30000,
+              BonusBet:30,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             },{
-              Bonus:20000,
+              BonusBet:20,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             },{
-              Bonus:10000,
+              BonusBet:10,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             },{
-              Bonus:5000,
+              BonusBet:5,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             },{
-              Bonus:3000,
+              BonusBet:3,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             },{
-              Bonus:2000,
+              BonusBet:2,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             },{
-              Bonus:1000,
+              BonusBet:1,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
-            },
-            ,{
-              Bonus:500,
+            },{
+              BonusBet:0.5,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             }
           ],
           Multiplier:{
-              SingleRatio: 10,
               SingleWight:[
-                  {Cnt: 1, Wight:100},
-                  {Cnt: 2, Wight:100},
-                  {Cnt: 3, Wight:100},
+                  {Cnt: 0, Face20Wight:20,Face30Wight:30,Face50Wight:20,Face100Wight:20},
+                  {Cnt: 1, Face20Wight:20,Face30Wight:30,Face50Wight:20,Face100Wight:20}, 
+                  {Cnt: 2, Face20Wight:20,Face30Wight:30,Face50Wight:20,Face100Wight:20},
+                  {Cnt: 3, Face20Wight:20,Face30Wight:30,Face50Wight:20,Face100Wight:20}
+
               ],
               SingleFaceWight:[
                   {Multi: 2, Face20Wight:20,Face30Wight:30,Face50Wight:20,Face100Wight:20},
@@ -466,9 +482,7 @@ export default {
                 this.form = response.Data || {}
                 if (response.Data && response.Data.Data !== '') {
                     const cfg = JSON.parse(response.Data.Data)
-                    
                     this.item = cfg
-
                     // 设置修改之前数据
                     this.$refs.compare.SetOldVal(response.Data.Data)
                     // this.load = true
@@ -480,6 +494,7 @@ export default {
             this.saveTableMoney();
             const ret = {}
             Object.assign(ret, this.item)
+         //   console.log(this.item)
             return ret
           },
         setData() {
@@ -509,14 +524,12 @@ export default {
           })
         },
         transMoneyForShow() {
-          let that = this
           const betRoundList = []
-          for (const o of that.item.BetRoundList) {
+          for (const o of this.item.BetRoundList) {
             betRoundList.push(o)
           }
-          that.tmpBetRoundList = betRoundList.join(',')  
+          this.tmpBetRoundList = betRoundList.join(',')  
 
-          that.tmpSingleRatio = Math.floor(that.item.SingleRatio/100)
           
       },
       saveTableMoney() {
@@ -526,7 +539,6 @@ export default {
           
             }
             this.item.BetRoundList = (betItem)
-            this.item.SingleRatio =  Math.floor(that.tmpSingleRatio*100)
       },
 
       getRewardName(AwardType) {

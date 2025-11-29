@@ -51,6 +51,8 @@ export const MATCH_TICKET_RIGHTS_ID_CFG_DEV = {
 export const MATCH_TICKET_RIGHTS_ID_CFG_PROD = {
     1000002: [ // PROP_TYPE_TICKET_NEW
       { 'ticketId': 347, 'sceneId': 200, 'label': 'UAT Tongtis 1000002 测试门票' },
+      { 'ticketId': 355, 'sceneId': 201, 'label': '新版Pusy门票-1000002' },
+      { 'ticketId': 356, 'sceneId': 202, 'label': '新版德州门票UAT用-1000002' },
     ],
     1000003: [ // PROP_TYPE_TICKET_NEW
       { 'ticketId': 322, 'sceneId': 200, 'label': 'Tongits新版门票 带唯一ID-322'  },

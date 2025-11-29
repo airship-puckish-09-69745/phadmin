@@ -40,7 +40,7 @@
               
               <el-col :span="24" :offset="5">
                 <el-form :inline="true">
-                  <el-col :span="8">
+                  <el-col :span="8" v-if="!IsPHAuditEnv()">
                     <el-form-item label="目标RTP:">
                       <el-input v-model="item.RTP" size="mini" ><template  slot="append">%</template></el-input>
                     </el-form-item>
@@ -389,7 +389,7 @@
         <el-form-item label="火箭终点:">
           <el-form :inline="true">
             <el-col :span="8">
-                <el-input v-model.number="item.Card" size="mini" />
+                <el-input v-model.number="item.Card" size="mini" /><template slot="append">配置放大100倍</template>
             </el-col>
           </el-form>
         </el-form-item>

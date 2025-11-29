@@ -115,17 +115,17 @@ export const asyncRoutes = [
     redirect: '/systemMoneyChart',
     meta: { title: '系统健康监测', icon: 'el-icon-pie-chart', perm: 'DATA_MONITOR' },
     children: [
-      // {
-      //   path: 'dashboard',
-      //   component: () => import('@/views/playerManage/systemMoneyChart'),
-      //   name: 'dashboard',
-      //   meta: { title: '系统健康监测 ◐', icon: 'risk', perm: 'KEY_DATA_MONITOR' }
-      // },
       {
         path: '/systemMoneyChart',
         component: () => import('@/views/playerManage/systemMoneyChartV2.vue'),
         name: 'systemMoneyChart',
         meta: { title: '系统健康监测 ◐', icon: 'risk', perm: 'KEY_DATA_MONITOR' }
+      },
+      {
+        path: '/systemMoneyChartApp',
+        component: () => import('@/views/playerManage/systemMoneyChartApp.vue'),
+        name: 'SystemMoneyChartApp',
+        meta: { title: '系统健康监测-分APP ◐', icon: 'risk', perm: 'KEY_DATA_MONITOR' }
       }
     ]
   },
@@ -218,6 +218,12 @@ export const asyncRoutes = [
         component: () => import('@/views/online/egameControl/index.vue'),
         name: 'EGame控制监控',
         meta: { title: 'EGame控制监控' }
+      },
+       {
+        path: 'pokerWaitPlayTimes',
+        component: () => import('@/views/online/pokerPvpWaitPlayTimesStats'),
+        name: 'Poker玩法匹配时长',
+        meta: { title: 'Poker玩法匹配时长' }
       }
     ]
   },
@@ -1212,6 +1218,12 @@ export const asyncRoutes = [
             name: 'mannyPunch_cfg',
             meta: { title: 'M anny Punch ◐' }
           },
+          {
+            path: 'pirateScratch_cfg',
+            component: () => import('@/views/config/tableConfig/pirateScratch.vue'),
+            name: 'pirateScratch_cfg',
+            meta: { title: 'Pirate Scratch ◐' }
+          },
 
         ]
       },
@@ -1425,6 +1437,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/majorace_slots_cfg'),
                 name: 'majorace_slots_cfg',
                 meta: { title: 'M ajorAce' }
+              },
+              {
+                path: 'masskarafortune_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/masskarafortune_slots_cfg'),
+                name: 'masskarafortune_slots_cfg',
+                meta: { title: 'M asskaraFortune' }
               },
               {
                 path: 'mayantotem_slots_cfg',
@@ -2521,12 +2539,6 @@ export const asyncRoutes = [
             meta: { title: 'Tcc名单配置', noCache: true }
           },
           {
-            path: 'matchGtccConfig',
-            component: () => import('@/views/matchManage/matchOperations/matchGtccConfig.vue'),
-            name: 'matchGtccConfig',
-            meta: { title: 'GTCC配置', noCache: true }
-          },
-          {
             path: 'matchBroadcast',
             component: () => import('@/views/matchManage/matchOperations/matchBroadcast/index.vue'),
             name: 'matchBroadcast',
@@ -2543,7 +2555,28 @@ export const asyncRoutes = [
             component: () => import('@/views/matchManage/matchOperations/texasTongis/index.vue'),
             name: 'texasTongis',
             meta: { title: 'kyc配置', noCache: true }
-          }
+          },
+          {
+            path: 'matchTpcc',
+            component: () => import('@/views/empty'),
+            name: 'matchTPCCPrize',
+            meta: { title: 'TPCC配置', noCache: true },
+            children: [
+              {
+                path: 'matchTPCCPrize',
+                component: () => import('@/views/matchManage/matchOperations/matchTpcc/matchGtccPrize.vue'),
+                name: 'matchTPCCPrize',
+                meta: { title: 'TPCC邀请函配置', noCache: true }
+              },
+              {
+                path: 'matchGtccConfig',
+                component: () => import('@/views/matchManage/matchOperations/matchTpcc/matchGtccConfig.vue'),
+                name: 'matchGtccConfig',
+                meta: { title: 'TPCC赛事时间配置', noCache: true }
+              }
+            ],
+          },
+
         ]
       },
       {
@@ -3313,10 +3346,10 @@ export const asyncRoutes = [
             meta: { title: 'M ahjongFortune', gid: 164 }
           },
           {
-            path: 'mayantotem_slots_log',
+            path: 'mahjongjackpot_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
-            name: 'mayantotem_slots_log',
-            meta: { title: 'M ayanTotem', gid: 178 }
+            name: 'mahjongjackpot_slots_log',
+            meta: { title: 'M ahjongJackpot', gid: 186 }
           },
           {
             path: 'majorace_slots_log',
@@ -3325,10 +3358,16 @@ export const asyncRoutes = [
             meta: { title: 'M ajorAce', gid: 162 }
           },
           {
-            path: 'mahjongjackpot_slots_log',
+            path: 'masskarafortune_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
-            name: 'mahjongjackpot_slots_log',
-            meta: { title: 'M ahjongJackpot', gid: 186 }
+            name: 'masskarafortune_slots_log',
+            meta: { title: 'M asskaraFortune', gid: 238 }
+          },
+          {
+            path: 'mayantotem_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'mayantotem_slots_log',
+            meta: { title: 'M ayanTotem', gid: 178 }
           },
           {
             path: 'millionaire_slots_log',

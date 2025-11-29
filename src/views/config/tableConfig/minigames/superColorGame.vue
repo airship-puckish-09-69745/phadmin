@@ -983,7 +983,7 @@ export default {
       this.item.BetLevels.splice(index, 1)
     },
     setResult() {
-      if (this.envProjectName === 'ph_audit' || this.envProjectName === 'production') {
+      if (this.envProjectName === 'production') {
         Message.error('正式环境不能设置')
         return
       }
