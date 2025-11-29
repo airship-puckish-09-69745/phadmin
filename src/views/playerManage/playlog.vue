@@ -886,7 +886,7 @@
         <el-table-column label="Lucky Bet输赢">
           <template slot-scope="scope">
             <div v-for="(item,index) in scope.row.cardGroupLog" class="blackJackmhBox">
-              {{ item.luckyWin - item.luckyBet / 1000 }}
+              {{ (item.luckyWin - item.luckyBet) / 1000 }}
               <hr v-if="index !== scope.row.cardGroupLog.length - 1" class="blackJackmhHr"/>
             </div>
           </template>
