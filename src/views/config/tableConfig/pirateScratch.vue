@@ -41,7 +41,7 @@
             width="200"
           >
             <template slot-scope="scope">
-              <span>{{ scope.row.Bonus/1000 || 0 }}</span>
+              <span>{{ scope.row.Bonus || 0 }}</span>
             </template>
           </el-table-column>
          <el-table-column
@@ -74,7 +74,7 @@
             width="200"
           >
             <template slot-scope="scope">
-              <span>{{ scope.row.Bonus/1000 || 0 }}</span>
+              <span>{{ scope.row.Bonus || 0 }}</span>
             </template>
           </el-table-column>
          <el-table-column
@@ -309,117 +309,117 @@ export default {
           BetRoundList:[10,25,50,100,200,500,1000,2000], //下注
           TenBetMoney:[
             {
-              Bonus:10000000, 
+              Bonus:10000, 
               WinPrizeWight: 100,
               LosePrizeWight: 100
             },
             {
-              Bonus:1000000,
-              WinPrizeWight: 100,
-              LosePrizeWight: 100,
-            },{
-              Bonus:500000,
-              WinPrizeWight: 100,
-              LosePrizeWight: 100,
-            },{
-              Bonus:200000,
-              WinPrizeWight: 100,
-              LosePrizeWight: 100,
-            },{
-              Bonus:100000,
-              WinPrizeWight: 100,
-              LosePrizeWight: 100,
-            },{
-              Bonus:50000,
-              WinPrizeWight: 100,
-              LosePrizeWight: 100,
-            },{
-              Bonus:30000,
-              WinPrizeWight: 100,
-              LosePrizeWight: 100,
-            },{
-              Bonus:20000,
-              WinPrizeWight: 100,
-              LosePrizeWight: 100,
-            },{
-              Bonus:10000,
-              WinPrizeWight: 100,
-              LosePrizeWight: 100,
-            },{
-              Bonus:5000,
-              WinPrizeWight: 100,
-              LosePrizeWight: 100,
-            },{
-              Bonus:3000,
-              WinPrizeWight: 100,
-              LosePrizeWight: 100,
-            },{
-              Bonus:2000,
-              WinPrizeWight: 100,
-              LosePrizeWight: 100,
-            },{
               Bonus:1000,
+              WinPrizeWight: 100,
+              LosePrizeWight: 100,
+            },{
+              Bonus:500,
+              WinPrizeWight: 100,
+              LosePrizeWight: 100,
+            },{
+              Bonus:200,
+              WinPrizeWight: 100,
+              LosePrizeWight: 100,
+            },{
+              Bonus:100,
+              WinPrizeWight: 100,
+              LosePrizeWight: 100,
+            },{
+              Bonus:50,
+              WinPrizeWight: 100,
+              LosePrizeWight: 100,
+            },{
+              Bonus:30,
+              WinPrizeWight: 100,
+              LosePrizeWight: 100,
+            },{
+              Bonus:20,
+              WinPrizeWight: 100,
+              LosePrizeWight: 100,
+            },{
+              Bonus:10,
+              WinPrizeWight: 100,
+              LosePrizeWight: 100,
+            },{
+              Bonus:5,
+              WinPrizeWight: 100,
+              LosePrizeWight: 100,
+            },{
+              Bonus:3,
+              WinPrizeWight: 100,
+              LosePrizeWight: 100,
+            },{
+              Bonus:2,
+              WinPrizeWight: 100,
+              LosePrizeWight: 100,
+            },{
+              Bonus:1,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             }
           ],
           UpTenBetMoney:[
             {
-              Bonus:10000000, 
+              Bonus:10000, 
               WinPrizeWight: 100,
               LosePrizeWight: 100
             },
             {
-              Bonus:1000000,
-              WinPrizeWight: 100,
-              LosePrizeWight: 100,
-            },{
-              Bonus:500000,
-              WinPrizeWight: 100,
-              LosePrizeWight: 100,
-            },{
-              Bonus:200000,
-              WinPrizeWight: 100,
-              LosePrizeWight: 100,
-            },{
-              Bonus:100000,
-              WinPrizeWight: 100,
-              LosePrizeWight: 100,
-            },{
-              Bonus:50000,
-              WinPrizeWight: 100,
-              LosePrizeWight: 100,
-            },{
-              Bonus:30000,
-              WinPrizeWight: 100,
-              LosePrizeWight: 100,
-            },{
-              Bonus:20000,
-              WinPrizeWight: 100,
-              LosePrizeWight: 100,
-            },{
-              Bonus:10000,
-              WinPrizeWight: 100,
-              LosePrizeWight: 100,
-            },{
-              Bonus:5000,
-              WinPrizeWight: 100,
-              LosePrizeWight: 100,
-            },{
-              Bonus:3000,
-              WinPrizeWight: 100,
-              LosePrizeWight: 100,
-            },{
-              Bonus:2000,
-              WinPrizeWight: 100,
-              LosePrizeWight: 100,
-            },{
               Bonus:1000,
+              WinPrizeWight: 100,
+              LosePrizeWight: 100,
+            },{
+              Bonus:500,
+              WinPrizeWight: 100,
+              LosePrizeWight: 100,
+            },{
+              Bonus:200,
+              WinPrizeWight: 100,
+              LosePrizeWight: 100,
+            },{
+              Bonus:100,
+              WinPrizeWight: 100,
+              LosePrizeWight: 100,
+            },{
+              Bonus:50,
+              WinPrizeWight: 100,
+              LosePrizeWight: 100,
+            },{
+              Bonus:30,
+              WinPrizeWight: 100,
+              LosePrizeWight: 100,
+            },{
+              Bonus:20,
+              WinPrizeWight: 100,
+              LosePrizeWight: 100,
+            },{
+              Bonus:10,
+              WinPrizeWight: 100,
+              LosePrizeWight: 100,
+            },{
+              Bonus:5,
+              WinPrizeWight: 100,
+              LosePrizeWight: 100,
+            },{
+              Bonus:3,
+              WinPrizeWight: 100,
+              LosePrizeWight: 100,
+            },{
+              Bonus:2,
+              WinPrizeWight: 100,
+              LosePrizeWight: 100,
+            },{
+              Bonus:1,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             },
             ,{
-              Bonus:500,
+              Bonus:0.5,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             }
