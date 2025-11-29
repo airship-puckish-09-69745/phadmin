@@ -89,11 +89,10 @@
 
         <!--"RobotLeaveCfg":{"CarryMultipleMin":40,"CarryMultipleMax":200,"WinCountMin":10,"WinCountMax":50,"LoseCountMin":10,"LoseCountMax":30,"WinMoneyMinMul":150,"WinMoneyMaxMul":300,"LoseMoneyMinMul":30,"LoseMoneyMaxMul":60}-->
         <el-tab-pane label="机器人离桌配置" >
-          
                 <el-col :span="24" :offset="5">
                   <el-form :inline="true">
                     <el-col :span="8">
-                      <el-form-item label="携带(tableMoney*random(min, manx)倍):" style="display: flex; align-items: center">
+                      <el-form-item label="携带tableMoney*random(min, max):" style="display: flex; align-items: center">
                         <el-input v-model.number="robotLeaveCfg.CarryMultipleMin" size="mini" style="width: 100px"></el-input>
                         <span style="margin: 0 10px">~</span>
                         <el-input v-model.number="robotLeaveCfg.CarryMultipleMax" size="mini" style="width: 100px"></el-input>
@@ -161,7 +160,6 @@
                     </el-col>
                   </el-form>
                 </el-col>
-
         </el-tab-pane>
 
       </el-tabs>
