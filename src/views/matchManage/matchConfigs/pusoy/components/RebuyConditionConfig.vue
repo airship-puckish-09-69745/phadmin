@@ -67,6 +67,7 @@
               :key="item.value"
               :label="item.label"
               :value="item.value"
+              :disabled="checkNewTicketPropDisable(item.propsType,item.propsAppId)"
             />
           </el-select>
         </el-form-item>
@@ -85,6 +86,7 @@
             style="width: 180px;" 
             size="mini" 
             placeholder="请填写门票数量" 
+            :disabled="true"
           />
         </el-form-item>
       </el-col>
@@ -174,8 +176,11 @@
 </template>
 
 <script>
+import { matchUtilsMixin } from '../mixins/matchUtilsMixin'
+
 export default {
   name: 'RebuyConditionConfig',
+  mixins: [matchUtilsMixin],
   props: {
     editForm: {
       type: Object,

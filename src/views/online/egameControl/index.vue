@@ -234,7 +234,9 @@ export default {
         data: {}
       }).then(response => {
         if (response.RetCode === 0) {
-          this.gameOptions = response.Data.map(item => ({
+          // 过滤出游戏id 128, 134
+          const includeGids = [128, 134]
+          this.gameOptions = response.Data.filter(item => includeGids.includes(item.Gid)).map(item => ({
             value: item.Gid,
             label: item.Scene
           }))

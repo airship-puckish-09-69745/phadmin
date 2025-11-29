@@ -144,6 +144,7 @@
 
       <!-- 奖励配置 -->
       <RewardConfig
+        :edit-form="editForm"
         :rank-rewards="editForm.rankRewards"
         :prize-extra="editForm.prizeExtra"
         :get-type-cfgs="getTypeCfgs"

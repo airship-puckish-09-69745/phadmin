@@ -2,12 +2,24 @@
   <div class="app-container">
     <el-row>
       <el-form :model="item" label-width="90px" :inline="true" size="small">
+        <el-form-item v-if="this.env == 'test'" v-model="appId" label="App：" :required="true" label-width="80px">
+          <el-select v-model="appId" placeholder="请选择" size="mini">
+            <el-option label="所有App" :value="0" />
+            <el-option
+              v-for="row in appInfo"
+              :key="'app'+row.key"
+              :label="row.label"
+              :value="row.key"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item label="游戏：" :required="true">
           <el-select v-model="item.gid" placeholder="请选择">
-            <el-option label="tongits" :value="0" />
+            <el-option label="tongits所有" :value="0" />
             <el-option label="tongits pot" :value="22" />
             <el-option label="tongits laizi" :value="28" />
             <el-option label="tongits quick" :value="29" />
+            <el-option label="pusoy所有" :value="1" />
             <el-option label="pusoy" :value="21" />
             <el-option label="pusoy wild" :value="126" />
           </el-select>
@@ -62,7 +74,7 @@
           width="150"
         >
           <template slot-scope="scope">
-            <span v-html="getPercent('login_high_score_cnt',scope.row,scope.row.last)"></span> 
+            <span v-html="getPercent('login_high_score_cnt',scope.row,scope.row.last)"></span>
           </template>
         </el-table-column>
         <el-table-column
@@ -163,10 +175,11 @@ export default {
   components: { DateTimeShow, UidInput },
   data() {
     return {
-      // appId: 1000000,
+      appId: 0,
       appInfo: [],
       env: 'dev',
       item: {
+        appId: '',
         gid: 0,
         start: $libDate.GetDayBegin(new Date().getTime()-86400*7*1000), // Date.parse(new Date(this.dDate(0, 30))),
         end: $libDate.GetDayEnd(new Date().getTime()) // Date.parse(new Date()),
@@ -182,6 +195,7 @@ export default {
   created() {
     this.env = store.getters.env || this.env
     this.item.gameId = 0
+    this.getAppInfo()
     this.getInfo()
   },
   methods: {
@@ -249,13 +263,14 @@ export default {
       //   console.log(`env:${this.env} return`)
       //   return
       // }
-
+      console.log(this.appId)
       request({
         url: '/dataProxy/info',
         method: 'get',
         data: {
           Env: this.env,
           Path: '/misc/tongits/cheat/stat',
+          appId: this.appId,
           gid: this.item.gid,
           from: this.item.start / 1000,
           to: this.item.end / 1000,
@@ -280,6 +295,23 @@ export default {
           if (objs.length === 0) {
             Message.success('查询结果为空')
             return
+          }
+        }
+      })
+    },
+    getAppInfo() {
+      request({
+        url: '/thirdparties/all',
+        method: 'get',
+        data: {}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          // const objs = response.Data || []
+          for (let i = 0; i < response.Data.length; i++) {
+            this.appInfo.push({
+              key: response.Data[i].ID,
+              label: response.Data[i].Account
+            })
           }
         }
       })

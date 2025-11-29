@@ -32,7 +32,8 @@ export function initRankRewards() {
         propsIcon: '',
         propsAttr: '',
         propsNum: 0,
-        propExpireDays: -1
+        propExpireDays: -1,
+        propsSceneId:0,
       }
     }
   ]
@@ -287,3 +288,10 @@ export function initPrizeExtra() {
 
 // 向後兼容的別名
 export const initWhileList = initWhiteList
+
+export function initSingleCopy() {
+  return {
+    id: 0,
+    isCopy: false,
+  }
+}

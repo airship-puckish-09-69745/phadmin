@@ -17,6 +17,18 @@
             />
           </el-select>
         </el-form-item>
+
+        <el-form-item v-if="isTicketPropNew(form.itemOfType)" label="APPID：" :required="true">
+          <el-select v-model="form.appId" placeholder="请选择" size="mini">
+            <el-option label="全部" :value="-1" />
+            <el-option
+              v-for="item in APPID_OPTIONS"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
         <el-button size="mini" type="primary" @click="selectPageData">查询</el-button>
       </el-form>
 
@@ -88,6 +100,9 @@
             <span v-if="scope.row.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN">
               <span>games:<el-tag v-for="gameName in getSlotFreSpinPropDescReturnGameNames(scope.row.item_extra)" :key="gameName" style="margin-right: 5px;">{{ gameName }}</el-tag></span> <br> betAmount:{{ getSlotFreSpinPropDescReturnBetAmount(scope.row.item_extra) }}
             </span>
+            <span v-if="isTicketPropNew(scope.row.item_type)">
+              APPID:  {{getAppIdName(scope.row.item_extra) }}
+            </span>
           </template>
 
         </el-table-column>
@@ -119,7 +134,8 @@
           <template slot-scope="scope">
             <el-button size="mini" icon="el-icon-edit" @click="showForm(scope.row.id)">编辑</el-button>
             <el-button v-if="scope.row.status===2" size="mini" type="success" @click="handleUpdate(scope.row.id)">上架</el-button>
-            <el-button v-if="scope.row.status===1" size="mini" type="danger" @click="handleUpdate(scope.row.id)">下架</el-button>
+            <el-button v-if="scope.row.status===1"  size="mini" type="danger" @click="handleUpdate(scope.row.id)">下架</el-button>
+            <!--<el-button v-if="scope.row.status===1 && !isTicketPropNew(scope.row.item_type)" size="mini" type="danger" @click="handleUpdate(scope.row.id)">下架</el-button> -->
             <el-button v-if="scope.row.status===2" size="mini" type="danger" @click="handleDelete(scope.row.id, false)">删除</el-button>
             <!-- <el-button v-if="itemEnv==='development' &&  scope.row.status===2" size="mini" type="danger" @click="handleDelete(scope.row.id, false)">删除</el-button> -->
           </template>
@@ -191,6 +207,17 @@
                 :label="item.label"
                 :value="item.value"
                 :disabled="item.disabled"
+              />
+            </el-select>
+          </el-form-item>
+
+          <el-form-item v-if="[7,8,9].includes(editForm.data.itemType)" label="APPID" :required="true">
+            <el-select v-model="editForm.itemExtra.appId" style="width: 200px;" :disabled="!editForm.isAdd"   placeholder="请选择道具对应的APPID">
+              <el-option
+                v-for="item in APPID_OPTIONS"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
               />
             </el-select>
           </el-form-item>
@@ -280,7 +307,7 @@ import request from '@/utils/request'
 import DateTimeShow from '@/components/DatetimeShow'
 import { $libDate, $libShow } from '@/utils/common'
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
-import { ITEM_TYPE_OPTIONS, ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS } from '@/utils/options'
+import { ITEM_TYPE_OPTIONS, ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS,APPID_OPTIONS } from '@/utils/options'
 import { SLOT_GAME_CONFIG, BETTING_GAME_CONFIG } from '@/utils/prop'
 
 export default {
@@ -292,6 +319,7 @@ export default {
       ITEM_DAY_TYPE_OPTIONS,
       BETTING_GAME_CONFIG,
       SLOT_GAME_CONFIG,
+      APPID_OPTIONS,
       freeSpinGameMap: {},
       libShow: $libShow,
       pickerOptions: $libShow.DefaultDatePickerOptions(),
@@ -335,7 +363,8 @@ export default {
       total: 0,
       page: 1,
       form: {
-        itemOfType: 0
+        itemOfType: 0,
+        appId:0,
       },
       editForm: {
         visable: false,
@@ -411,9 +440,14 @@ export default {
           const objs = response.Data || {}
           if (objs.total > 0) {
             this.tableData = []
-            this.tableData = objs.list
-            this.total = objs.total
-            this.$refs.compare.SetOldVal(response.Data.Data)
+            console.log("form.appId", this.form)
+            if(this.form.appId > 0){ // 如果appId大于0，则只显示该appId的道具
+              this.tableData = this.getSuitedItemList(objs.list, this.form.appId)
+              this.total = this.tableData.length
+            }else{
+              this.tableData = objs.list
+              this.total = objs.total
+            }
           }
         } else {
           this.total = 0
@@ -457,7 +491,8 @@ export default {
           specialAttr: 0,
           showName: '',
           gid: [],
-          betAmount: 0
+          betAmount: 0,
+          appId:1000002
         }
         this.checkAll()
         this.editForm.itemEndDate = $libDate.GetDayBegin(new Date().setSeconds(0))
@@ -629,7 +664,7 @@ export default {
         }
       }
       // 上架 对过期时间判断
-      if (editData.status === 2 && editData.expire_time < Math.floor(Date.now() / 1000)) {
+      if (editData.status === 2 && [PROP_TYPE_OPTIONS.PROP_TYPE_TICKET,PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET].includes(editData.item_type) && editData.expire_time < Math.floor(Date.now() / 1000)) {
         Message.error('当前道具已经过期不能再上架')
         return
       }
@@ -914,6 +949,12 @@ export default {
           return false
         }
       }
+      if(this.isTicketPropNew(this.editForm.data.itemType)){
+        if (typeof this.editForm.itemExtra.appId === 'undefined' || this.editForm.itemExtra.appId === 0 || this.editForm.itemExtra.appId === '') {
+          this.errmsg('请选择道具对应的APPID')
+          return false
+        }
+      }
 
       if (this.editForm.data.describe === '') {
         this.errmsg('请填写道具描述')
@@ -972,7 +1013,28 @@ export default {
     // 是否是头像框道具
     isAvatarFrameProp(itemType) {
       return itemType === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME || itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR
-    }
+    },
+    getAppIdName(item_extra) {
+      if(typeof(item_extra) === 'string'){
+        item_extra = JSON.parse(item_extra)
+        if(typeof(item_extra.appId) === 'undefined' || item_extra.appId === 0 || item_extra.appId === ''){
+          return '请选择APPID'
+        }
+        return APPID_OPTIONS.find(item => item.value === item_extra.appId).label
+      }
+    },
+    getSuitedItemList(itemList, appId) {
+      const suitedItemList = []
+      for(const obj of itemList){
+        if(typeof(obj.item_extra) === 'string' && obj.item_extra !== ''){
+            const item_extra = JSON.parse(obj.item_extra)
+            if(item_extra.appId === appId){
+              suitedItemList.push(obj)
+            }
+          }
+        }
+      return suitedItemList
+    },
   }
 }
 </script>

@@ -2,7 +2,17 @@
   <div class="app-container">
     <el-row>
       <el-form :model="item" label-width="80px" :inline="true" size="small">
-
+        <el-form-item v-if="this.env == 'test'" v-model="appId" label="App：" :required="true" label-width="80px">
+          <el-select v-model="appId" placeholder="请选择" size="mini">
+            <el-option label="所有App" :value="0" />
+            <el-option
+              v-for="row in appInfo"
+              :key="'app'+row.key"
+              :label="row.label"
+              :value="row.key"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item label="UID：" :required="true">
           <UidInput @setUid="function (iUid) { item.Uid = iUid }" />
         </el-form-item>
@@ -101,7 +111,7 @@
           </el-select>
         </template>
         <template slot-scope="scope">
-          {{ clientDB.GetShowValue('ActType', scope.row.ActType) }}
+          {{ getActTypeName(scope.row.ActType, scope.row.ExtData) }}
         </template>
       </el-table-column>
       <el-table-column prop="ActMsg" label="操作说明" min-width="300">
@@ -227,7 +237,7 @@ const filterMap = {
     11: '管理后台',
     12: '月卡每日奖励',
     13: '月卡头款',
-    14: '动态表情',
+    14: '互动道具',
     17: '邀请账号提现',
     29: '老虎机下注',
     30: '老虎机返奖',
@@ -262,7 +272,7 @@ const filterMap = {
     3001: '比赛结束，营销接口发奖',
     3002: '德州比赛营销接口派彩',
     3003: '摇钱树活动营销接口派彩',
-    3004: '复活节活动营销接口派彩',
+    3004: '圣诞节活动营销接口派彩',
     3005: '直播抽奖接口派彩',
     10000: 'Tongits比赛流水' // 混合类型查询 act_type=2010 and act_msg='2031' || act_type=3001
   }
@@ -300,6 +310,8 @@ export default {
       gameTableData: [],
       gamePanelVisible: false,
       moneyData: [],
+      appId: 0,
+      appInfo: [],
       timeRange: [$libDate.GetDayBegin(new Date()), $libDate.GetDayEnd(new Date())],
       pickerOptions: $libShow.DefaultDatePickerOptions(),
       chartData: newChartData(),
@@ -349,6 +361,7 @@ export default {
   computed: {},
   created() {
     this.env = store.getters.env || this.env
+    this.getAppInfo()
     this.getGameList()
     console.log(1)
   },
@@ -373,6 +386,10 @@ export default {
         // 满足普通筛选条件
         if (actTypes[data.ActType]) return true
 
+        if (selectedTypes.includes(14) && data.ExtData === 'Chat') { // 动态表情
+          return true
+        }
+
         // 特殊类型筛选逻辑
         if (hasSpecial) {
           return (data.ActType === 2010 && data.ActMsg === '2031') ||
@@ -383,6 +400,13 @@ export default {
 
       this.clientDB.Page.SetTotalCount(this.clientDB.ShowData.length)
       this.refreshShow()
+    },
+    getActTypeName(actType, extData) {
+      const name = this.clientDB.GetShowValue('ActType', actType)
+      if (actType === 2005 && extData === 'Chat') {
+        return '互动道具'
+      }
+      return name
     },
     getActName(type, msg) {
       // 单一钱包类型
@@ -498,7 +522,8 @@ export default {
           Uid: this.item.Uid,
           Type: 0,
           BTime: bTime,
-          ETime: eTime
+          ETime: eTime,
+          AppId: this.appId
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -942,6 +967,23 @@ export default {
         chartData.yData[3].Data.push(ob.baseValue)
       }
       this.chartData = chartData
+    },
+    getAppInfo() {
+      request({
+        url: '/thirdparties/all',
+        method: 'get',
+        data: {}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          // const objs = response.Data || []
+          for (let i = 0; i < response.Data.length; i++) {
+            this.appInfo.push({
+              key: response.Data[i].ID,
+              label: response.Data[i].Account
+            })
+          }
+        }
+      })
     }
   }
 }

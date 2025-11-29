@@ -2,6 +2,17 @@
   <div class="app-container">
     <el-row>
       <el-form :model="item" label-width="80px" :inline="true" size="small">
+        <el-form-item v-if="this.env == 'test'" v-model="appId" label="App：" :required="true" label-width="80px">
+          <el-select v-model="appId" placeholder="请选择" size="mini">
+            <el-option label="所有App" :value="0" />
+            <el-option
+              v-for="row in appInfo"
+              :key="'app'+row.key"
+              :label="row.label"
+              :value="row.key"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item label="UID：" :required="true" label-width="150px">
           <UidInput @setUid="function(iUid){item.Uid=iUid}" />
         </el-form-item>
@@ -545,6 +556,8 @@ export default {
       clientDB: new ClientTableData([], 10, {}),
       libShow: $libShow,
       gid: 0,
+      appId: 0,
+      appInfo: [],
       isVup: false,
       item: {
         Uid: 0,
@@ -616,6 +629,7 @@ export default {
   created() {
     this.env = store.getters.env || this.env
     this.gid = this.$route.meta.gid
+    this.getAppInfo()
   },
   methods: {
     showDangerLevel(level) {
@@ -985,7 +999,7 @@ export default {
     },
     clickData(row, column, event) {
       if (column.label !== 'Uid' && column.label !== '详情') {
-        this.getDetail(row.LogID, row.FinishTime)
+        this.getDetail(row.LogID, row.FinishTime,row.Uid)
       }
     },
     clickData2(row) {
@@ -993,7 +1007,7 @@ export default {
       if (!this.clickedRowsID.includes(row.ID)) {
         this.clickedRowsID.push(row.ID)
       }
-      this.getDetail(row.LogID, row.FinishTime)
+      this.getDetail(row.LogID, row.FinishTime,row.Uid)
     },
 
     async getRobotMap() {
@@ -1024,7 +1038,7 @@ export default {
         })
       }
     },
-    getDetail(id, dt) {
+    getDetail(id, dt,uid) {
       const $this = this
 
       request({
@@ -1034,7 +1048,8 @@ export default {
           Env: this.env,
           Path: '/log/detail',
           ID: id,
-          DateTime: dt
+          DateTime: dt,
+          Uid: uid
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -1155,6 +1170,23 @@ export default {
     closeDialog() {
       // console.log("close dialog")
       this.GameLogVisible = false
+    },
+    getAppInfo() {
+      request({
+        url: '/thirdparties/all',
+        method: 'get',
+        data: {}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          // const objs = response.Data || []
+          for (let i = 0; i < response.Data.length; i++) {
+            this.appInfo.push({
+              key: response.Data[i].ID,
+              label: response.Data[i].Account
+            })
+          }
+        }
+      })
     }
   }
 }

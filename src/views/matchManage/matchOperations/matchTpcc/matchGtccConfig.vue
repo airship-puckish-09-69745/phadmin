@@ -190,6 +190,7 @@ export default {
         { 'value': 6, 'label': 'GTCC机酒赛' },
         { 'value':7 , 'label': 'GTCC魔戒赛' },
         { 'value': 8, 'label': 'GTCC豪客赛' },
+        { 'value': 9, 'label': 'GTCC线下赛时间' },
       ],
       statusCfgs: [
         { 'value': 0, 'label': '关闭' },

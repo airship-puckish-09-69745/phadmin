@@ -23,46 +23,10 @@
             <el-input v-model="cfg.GoldenSymbolOddsWeights" placeholder="请输入内容,如1,2,100"> <template slot="append">多个值用 , 连接。如1,2,100</template> </el-input>
           </el-form-item>
 
-          <el-form-item label="转盘倍数（除JP）">
-            <el-input v-model="tempTurntableOdds" placeholder="请输入内容,如10,20,30"> <template slot="append">多个值用 , 连接。如10,20,30</template> </el-input>
-          </el-form-item>
-
-          <el-form-item label="转盘倍数权重（除JP）">
-            <el-input v-model="cfg.TurntableOddsWeights" placeholder="请输入内容,如10,20,30"> <template slot="append">多个值用 , 连接。如10,20,30</template> </el-input>
-          </el-form-item>
-
-          <el-form-item label="解锁JP下注值">
-            <el-input v-model="tempJackpotUnlockBetStr" placeholder="请输入内容,如2,4,6,10">
-              <template slot="append">MINOR和GRAND用 , 连接</template>
+          <el-form-item label="收集符号出现概率" prop="GoldenSymbolOddsRate" :rules="dataRule(true,{type:'n'})">
+            <el-input v-model.number="cfg.CollectSymbolRate" :required="true">
+              <template slot="append">‰</template>
             </el-input>
-          </el-form-item>
-
-          <el-form-item label="JP期望中奖金额">
-            <el-input v-model="tempJackpotHopeStr" placeholder="请输入内容,如2,4,6,10">
-              <template slot="append">MINOR和GRAND用 , 连接</template>
-            </el-input>
-          </el-form-item>
-
-          <el-form-item label="JP中奖限制">
-            <el-input v-model="tempJackpotLimitStr" placeholder="请输入内容,如2,4,6,10">
-              <template slot="append">MINOR和GRAND用 , 连接</template>
-            </el-input>
-          </el-form-item>
-
-          <el-form-item label="发放JP中奖比例">
-            <el-input v-model="cfg.JackpotMultiStr" placeholder="请输入内容,如2,4,6,10"> <template slot="append">MINOR和GRAND用 , 连接单位%</template> </el-input>
-          </el-form-item>
-
-          <el-form-item label="JP抽水比例" prop="JackpotFeeRate" :rules="dataRule(true,{type:'n'})">
-            <el-input v-model.number="cfg.JackpotFeeRate" placeholder="请输入内容,如2"><template slot="append">‰</template> </el-input>
-          </el-form-item>
-
-          <el-form-item label="JP抽水权重">
-            <el-input v-model="cfg.JackpotFeeWeightStr" placeholder="请输入内容,如2,4,6,10"> <template slot="append">MINOR和GRAND用 , 连接</template> </el-input>
-          </el-form-item>
-
-          <el-form-item label="JP奖池滚动比例" prop="BuyFreeOdds" :rules="dataRule(true,{type:'n'})">
-            <el-input v-model.number="cfg.JackpotShowPoolRate" placeholder="请输入内容,如2"><template slot="append">%</template> </el-input>
           </el-form-item>
 
           <el-form-item label="免费模式额外增加免费的概率" prop="ScatterPlusRate" :rules="dataRule(true,{type:'n'})">
@@ -75,12 +39,8 @@
             <el-input v-model.number="cfg.BuyFreeOdds" :required="true" />
           </el-form-item>
 
-          <el-form-item label="进入特殊模式的最小赔率" prop="ScatterOdds" :rules="dataRule(true,{type:'n'})">
+          <el-form-item label="进入免费模式的最小赔率" prop="ScatterOdds" :rules="dataRule(true,{type:'n'})">
             <el-input v-model.number="cfg.ScatterOdds" :required="true" />
-          </el-form-item>
-
-          <el-form-item label="进入特殊模式的权重">
-            <el-input v-model="cfg.EnterSpecialWeights" placeholder="请输入内容,如0,10,20"> <template slot="append">普通、转盘、免费用 , 连接。</template> </el-input>
           </el-form-item>
 
           <el-form-item label="购买免费模式中奖倍数分布V2">
@@ -206,11 +166,7 @@ export default {
         currentBet: '0',
         dialogTitle: '添加配置',
         currentConf: []
-      },
-      tempTurntableOdds: '',
-      tempJackpotUnlockBetStr: '',
-      tempJackpotHopeStr: '',
-      tempJackpotLimitStr: ''
+      }
     }
   },
   created() {
@@ -226,11 +182,6 @@ export default {
       return JSON.parse(JSON.stringify(this.slotsData))
     },
     submitFrm() {
-      this.cfg.TurntableOdds = this.scaleUp(this.tempTurntableOdds, 100)
-      this.cfg.JackpotUnlockBetStr = this.scaleUp(this.tempJackpotUnlockBetStr, 1000)
-      this.cfg.JackpotHopeStr = this.scaleUp(this.tempJackpotHopeStr, 1000)
-      this.cfg.JackpotLimitStr = this.scaleUp(this.tempJackpotLimitStr, 1000)
-
       if (!ValidateVueItem(this.$refs['frm2'])) return false
       const $this = this
       this.$refs.compare.SetNewVal(this.getDiffData())
@@ -253,11 +204,6 @@ export default {
         this.cfg = this.slotsData
         this.$refs.compare.SetOldVal(this.getDiffData())
         this.lock = true
-
-        this.tempTurntableOdds = this.scaleDown(this.cfg.TurntableOdds, 100)
-        this.tempJackpotUnlockBetStr = this.scaleDown(this.cfg.JackpotUnlockBetStr, 1000)
-        this.tempJackpotHopeStr = this.scaleDown(this.cfg.JackpotHopeStr, 1000)
-        this.tempJackpotLimitStr = this.scaleDown(this.cfg.JackpotLimitStr, 1000)
       }
     },
     showDialog() {
