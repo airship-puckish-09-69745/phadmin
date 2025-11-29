@@ -3,8 +3,16 @@
         <el-row>
             <el-form :model="item" label-width="90px" :inline="true" size="small">
                 <el-form-item label="日期：" :required="true">
-                    <el-date-picker v-model="item.date" value-format="timestamp" type="daterange" range-separator="至"
-                        start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions" />
+                    <el-date-picker 
+                        v-model="item.date" 
+                        value-format="timestamp" 
+                        type="daterange" 
+                        range-separator="至"
+                        start-placeholder="开始日期" 
+                        end-placeholder="结束日期" 
+                        :picker-options="pickerOptions"
+                        :disabled="loading"
+                    />
                 </el-form-item>
                 <el-form-item label="身份：">
                     <el-select v-model="clientDB.FilterValueMap['trust_level']" size="mini" @change="handleFilter">
@@ -28,14 +36,15 @@
                     </el-select>
                     </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" size="mini" @click="getList">查询</el-button>
+                    <el-button type="primary" size="mini" @click="getList" :loading="loading">查询</el-button>
                 </el-form-item>
             </el-form>
         </el-row>
         <el-row>
             <el-table ref="filterTable" :data="tableData" stripe max-height="850" border
                 :header-cell-style="libShow.DefaultTableHeadClass" :row-style="{ height: '10px' }"
-                :cell-style="libShow.DefaultTableCell" style="width: 100%;margin-top:10px;" @sort-change="sortChange">
+                :cell-style="libShow.DefaultTableCell" style="width: 100%;margin-top:10px;" @sort-change="sortChange"
+                v-loading="loading">
                 <el-table-column prop="rec_day" label="日期" sortable="custom" />
                 <el-table-column prop="gid" label="游戏名称" width="120" sortable="custom">
                     <template slot-scope="scope">
@@ -98,6 +107,7 @@ export default {
                 table_money: 0,
                 trust_level: 0,
             },
+            loading: false, // 添加加载状态
             clientDB: new ClientTableData([], 1, {}),
             libShow: $libShow,
             timer: null,
@@ -122,7 +132,25 @@ export default {
                         start.setTime(start.getTime() - 3600 * 1000 * 24 * 15);
                         picker.$emit('pick', [start, end]);
                     }
-                }]
+                }],
+                // 修正日期限制逻辑
+                disabledDate: (time) => {
+                    const now = new Date();
+                    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                    
+                    // 1. 不能选择2025年11月01日之前的数据
+                    const minDate = new Date(2025, 10, 1); // 2025年11月01日
+                    
+                    // 2. 不能选择6个月前的数据（从当前日期往前推6个月）
+                    const sixMonthsAgo = new Date();
+                    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+                    
+                    // 取两个限制中的较大值（较晚的日期）
+                    const finalMinDate = minDate > sixMonthsAgo ? minDate : sixMonthsAgo;
+                    
+                    // 禁用规则：早于最小允许日期 或 晚于今天
+                    return time.getTime() < finalMinDate.getTime() || time.getTime() > today.getTime();
+                }
             },
         }
     },
@@ -175,6 +203,8 @@ export default {
                 Message.error('请选择时间')
                 return
             }
+            
+            this.loading = true // 开始加载
             const $this = this
             request({
                 url: '/dataProxy/info',
@@ -243,6 +273,11 @@ export default {
                     $this.handleFilter('gid', $this.clientDB.FilterValueMap['gid'])
                     $this.handleFilter('table_money', $this.clientDB.FilterValueMap['table_money'])
                 }
+                
+                $this.loading = false // 结束加载
+            }).catch(error => {
+                $this.loading = false // 错误时也结束加载
+                console.error('获取数据失败:', error)
             })
         },
 
