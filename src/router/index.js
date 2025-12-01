@@ -3119,6 +3119,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_mannypunch',
             meta: { title: 'M anny Punch ◐', gid: 139 }
+          },
+            {
+            path: 'playlog_pirateScratch',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_pirateScratch',
+            meta: { title: 'P irate Scratch ◐', gid: 141 }
           }
 
           /*

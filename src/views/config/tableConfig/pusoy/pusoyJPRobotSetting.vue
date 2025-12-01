@@ -140,10 +140,10 @@
                 <el-col :span="24" :offset="5">
                   <el-form :inline="true">
                     <el-col :span="8">
-                      <el-form-item label="赢钱倍数(基于实际携带):" style="display: flex; align-items: center">
-                        <el-input v-model.number="robotLeaveCfg.WinMoneyMinMul" size="mini" style="width: 100px"></el-input>
+                      <el-form-item label="赢钱倍数(基于实际携带，不含中JP):" style="display: flex; align-items: center">
+                        <el-input v-model="robotLeaveCfg.WinMoneyMinMul" size="mini" style="width: 100px"></el-input>
                         <span style="margin: 0 10px">~</span>
-                        <el-input v-model.number="robotLeaveCfg.WinMoneyMaxMul" size="mini" style="width: 100px"></el-input>
+                        <el-input v-model="robotLeaveCfg.WinMoneyMaxMul" size="mini" style="width: 100px"></el-input>
                       </el-form-item>
                     </el-col>
                   </el-form>
@@ -153,9 +153,9 @@
                   <el-form :inline="true">
                     <el-col :span="8">
                       <el-form-item label="输钱倍数(基于实际携带):" style="display: flex; align-items: center">
-                        <el-input v-model.number="robotLeaveCfg.LoseMoneyMinMul" size="mini" style="width: 100px"></el-input>
+                        <el-input v-model="robotLeaveCfg.LoseMoneyMinMul" size="mini" style="width: 100px"></el-input>
                         <span style="margin: 0 10px">~</span>
-                        <el-input v-model.number="robotLeaveCfg.LoseMoneyMaxMul" size="mini" style="width: 100px"></el-input>
+                        <el-input v-model="robotLeaveCfg.LoseMoneyMaxMul" size="mini" style="width: 100px"></el-input>
                       </el-form-item>
                     </el-col>
                   </el-form>
@@ -843,6 +843,10 @@ export default {
               LoseMoneyMinMul: 30,
               LoseMoneyMaxMul: 60
             }
+            $this.robotLeaveCfg.WinMoneyMinMul /= 100
+            $this.robotLeaveCfg.WinMoneyMaxMul /= 100
+            $this.robotLeaveCfg.LoseMoneyMinMul /= 100
+            $this.robotLeaveCfg.LoseMoneyMaxMul /= 100
             // 设置修改之前数据
             $this.$refs.compare.SetOldVal(old)
             // 获取底注
@@ -867,7 +871,7 @@ export default {
       cpy.BetMoneyList = []
       cpy.BetMoneyListNew = []
       cpy.RealPlayerGoodWeight = this.realPlayerGoodWeight
-      cpy.RobotLeaveCfg = this.robotLeaveCfg
+      //cpy.RobotLeaveCfg = this.robotLeaveCfg
       for (const i in this.betMoneyList) {
         if (this.betMoneyList[i].IsOpen === 1) {
           cpy.BetMoneyList.push(this.betMoneyList[i].TableMoney)
@@ -903,6 +907,19 @@ export default {
         obj.ShowMoneyMin = parseInt(this.ShowMoneyCfg[o].ShowMoneyMin) * 1000
         obj.ShowMoneyMax = parseInt(this.ShowMoneyCfg[o].ShowMoneyMax) * 1000
         cpy.ShowMoneyCfg.push(obj)
+      }
+      if (this.robotLeaveCfg) {
+        cpy.RobotLeaveCfg = {}
+        cpy.RobotLeaveCfg.CarryMultipleMin = this.robotLeaveCfg.CarryMultipleMin
+        cpy.RobotLeaveCfg.CarryMultipleMax = this.robotLeaveCfg.CarryMultipleMax 
+        cpy.RobotLeaveCfg.WinCountMin = this.robotLeaveCfg.WinCountMin
+        cpy.RobotLeaveCfg.WinCountMax = this.robotLeaveCfg.WinCountMax
+        cpy.RobotLeaveCfg.LoseCountMin = this.robotLeaveCfg.LoseCountMin
+        cpy.RobotLeaveCfg.LoseCountMax = this.robotLeaveCfg.LoseCountMax
+        cpy.RobotLeaveCfg.WinMoneyMinMul = this.robotLeaveCfg.WinMoneyMinMul * 100
+        cpy.RobotLeaveCfg.WinMoneyMaxMul = this.robotLeaveCfg.WinMoneyMaxMul * 100
+        cpy.RobotLeaveCfg.LoseMoneyMinMul = this.robotLeaveCfg.LoseMoneyMinMul * 100
+        cpy.RobotLeaveCfg.LoseMoneyMaxMul = this.robotLeaveCfg.LoseMoneyMaxMul * 100
       }
       return JSON.stringify(cpy)
     },
