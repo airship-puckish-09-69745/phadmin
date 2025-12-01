@@ -112,8 +112,8 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
-                  <el-form-item label="计入排行榜的有效下注：" prop="extend.minScore" :required="true">
-                    <el-input v-model.number="edit.item.extend.minScore" placeholder="请输入计入排行榜的有效下注" >
+                  <el-form-item label="计入排行榜的有效单次下注：" prop="extend.minScore" :required="true">
+                    <el-input v-model="edit.item.extend.minScore" placeholder="请输入计入排行榜的有效单次下注" >
                       <template slot="append">
                         （₱）
                       </template>
@@ -126,6 +126,13 @@
                       <template slot="append">
                         （₱）
                       </template>
+                    </el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="调试时间偏移量（仅测试用）：" :required="true">
+                    <el-input v-model.number="edit.item.debugTimeOffset">
+                      <template slot="append">秒</template>
                     </el-input>
                   </el-form-item>
                 </el-col>
@@ -275,7 +282,7 @@
                     :cell-style="libShow.DefaultTableCell"
                   >
                     <el-table-column
-                      prop="RankStart"
+                      prop="rankStart"
                       label="排名开始"
                       width="100"
                     >
@@ -284,7 +291,7 @@
                       </template>
                     </el-table-column>
                     <el-table-column
-                      prop="RankEnd"
+                      prop="rankEnd"
                       label="排名结束"
                       width="100"
                     >
@@ -293,7 +300,7 @@
                       </template>
                     </el-table-column>
                     <el-table-column
-                      prop="Reward"
+                      prop="reward"
                       label="奖励金额"
                       width="200"
                     >
@@ -321,7 +328,7 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="24">
-                  <el-form-item label="SiteId白名单：" prop="item.whitelist.siteIdList" :required="true">
+                  <el-form-item label="SiteId白名单：" prop="activity.whitelist.siteIdList" :required="true">
                     <SiteSelect
                       v-model="edit.item.activity.whitelist.siteIdList"
                       multiple
@@ -329,7 +336,7 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="24">
-                  <el-form-item label="UID白名单：" prop="item.whitelist.uidList">
+                  <el-form-item label="UID白名单：" prop="activity.whitelist.uidList">
                     <el-input v-model="edit.item.activity.whitelist.uidList" placeholder="请输入UID白名单，多个UID用逗号隔开" />
                   </el-form-item>
                 </el-col>
@@ -374,7 +381,8 @@ function newItem() {
       gameIds: [],
       whitelist: {
         appIdList: [],
-        siteIdList: []
+        siteIdList: [],
+        uidList: '',
       },
       ruleImgHor: [],
       ruleImgVer: [],
@@ -388,6 +396,7 @@ function newItem() {
       rewardPercent: 0,
       rewardWay: 1, // 1. 固定金额 2. 有效投注百分比
     },
+    debugTimeOffset: 0,
   }
 }
 
@@ -590,15 +599,24 @@ export default {
       item.activity.startTime /= 1000
       item.activity.endTime /= 1000
       item.activity.showEndTime /= 1000
+      item.extend.minBet *= 1000
+      item.extend.minScore *= 1000
+      item.extend.maxReward *= 1000
+
+      for (const reward of item.extend.rewardList) {
+        reward.reward *= 1000
+      }
 
       if (item.activity.whitelist.appIdList.length === 0 && this.version === 'V2') {
         item.activity.whitelist.appIdList.push(this.appId)
       }
 
-      if (this.edit.item.activity.whitelist.uidList !== '') {
-        item.activity.whitelist.uidList = this.edit.item.activity.whitelist.uidList.split(',').map(uid => {
+      if (item.activity.whitelist.uidList !== '') {
+        item.activity.whitelist.uidList = item.activity.whitelist.uidList.split(',').map(uid => {
           return parseInt(uid.trim())
         })
+      } else {
+        item.activity.whitelist.uidList = []
       }
 
       return item
@@ -679,6 +697,20 @@ export default {
           item.activity.startTime *= 1000
           item.activity.endTime *= 1000
           item.activity.showEndTime *= 1000
+          item.extend.minBet /= 1000
+          item.extend.minScore /= 1000
+          item.extend.maxReward /= 1000
+
+          for (const reward of item.extend.rewardList) {
+            reward.reward /= 1000
+          }
+
+          if (item.activity.whitelist.uidList.length > 0) {
+            item.activity.whitelist.uidList = item.activity.whitelist.uidList.join(',')
+          } else {
+            item.activity.whitelist.uidList = ''
+          }
+
           this.edit.item = item
 
           console.log('initFormData item:', item)
