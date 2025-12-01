@@ -103,8 +103,8 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
-                  <el-form-item label="进入排行榜的有效下注：" prop="extend.minBet" :required="true">
-                    <el-input v-model.number="edit.item.extend.minBet" placeholder="请输入有效下注" >
+                  <el-form-item label="进入排行榜的有效下注：" prop="extend.minScore" :required="true">
+                    <el-input v-model.number="edit.item.extend.minScore" placeholder="请输入有效下注" >
                       <template slot="append">
                         （₱）
                       </template>
@@ -112,8 +112,8 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
-                  <el-form-item label="计入排行榜的有效单次下注：" prop="extend.minScore" :required="true">
-                    <el-input v-model="edit.item.extend.minScore" placeholder="请输入计入排行榜的有效单次下注" >
+                  <el-form-item label="计入排行榜的有效单次下注：" prop="extend.minBet" :required="true">
+                    <el-input v-model="edit.item.extend.minBet" placeholder="请输入计入排行榜的有效单次下注" >
                       <template slot="append">
                         （₱）
                       </template>
