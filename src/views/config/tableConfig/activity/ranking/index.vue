@@ -121,6 +121,15 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
+                  <el-form-item label="达到进入排行榜要求的奖励：" prop="extend.progressReward" :required="true">
+                    <el-input v-model.number="edit.item.extend.progressReward" placeholder="请输入玩家奖励上限" >
+                      <template slot="append">
+                        （₱）
+                      </template>
+                    </el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
                   <el-form-item label="玩家奖励上限：" prop="extend.maxReward" :required="true">
                     <el-input v-model.number="edit.item.extend.maxReward" placeholder="请输入玩家奖励上限" >
                       <template slot="append">
@@ -130,8 +139,15 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
+                  <el-form-item label="奖励类型：" prop="extend.rewardType" :required="true">
+                    <el-select v-model="edit.item.extend.rewardType" placeholder="请选择奖励类型">
+                      <el-option v-for="item in rewardTypes" :key="item.value" :label="item.label" :value="item.value" />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
                   <el-form-item label="调试时间偏移量（仅测试用）：" :required="true">
-                    <el-input v-model.number="edit.item.debugTimeOffset">
+                    <el-input v-model.number="edit.item.activity.debugTimeOffset">
                       <template slot="append">秒</template>
                     </el-input>
                   </el-form-item>
@@ -374,6 +390,7 @@ function newItem() {
     id: 0,
     activity: {
       name: '',
+      activityId: 19,
       startTime: Date.parse(new Date().toString()),
       endTime: Date.parse(new Date().toString()),
       showEndTime: Date.parse(new Date().toString()) + 1000 * 60 * 60 * 24,
@@ -387,6 +404,7 @@ function newItem() {
       ruleImgHor: [],
       ruleImgVer: [],
       isOpen: false,
+      debugTimeOffset: 0,
     },
     extend: {
       minBet: 0,
@@ -395,8 +413,10 @@ function newItem() {
       rewardList: [],
       rewardPercent: 0,
       rewardWay: 1, // 1. 固定金额 2. 有效投注百分比
-    },
-    debugTimeOffset: 0,
+      rewardType: 3, // 奖励类型 1. 金币 2. 投注金 3. 返水金
+      rewardSceneId: 27,
+      progressReward: 0,
+    }
   }
 }
 
@@ -420,6 +440,7 @@ export default {
     return {
       AttrNames: {
         'activity.name': '活动名称',
+        'activity.activityId': '活动ID',
         'activity.startTime': '开始时间',
         'activity.endTime': '结束时间',
         'activity.status': '状态',
@@ -437,6 +458,9 @@ export default {
         'extend.rewardList': '榜单奖励列表',
         'extend.rewardPercent': '奖励百分比',
         'extend.rewardWay': '奖励方式',
+        'extend.rewardType': '奖励类型',
+        'extend.rewardSceneId': '奖励场景ID',
+        'extend.progressReward': '进度奖励',
         modifyUser: '最后修改人',
         updateTime: '更新时间',
       },
@@ -479,6 +503,13 @@ export default {
         children: 'children',
         disabled: 'disabled',
       },
+
+      // 奖励类型
+      rewardTypes: [
+        { 'value': 1, 'label': '金币' },
+        { 'value': 2, 'label': '投注金' },
+        { 'value': 3, 'label': '返水金' }
+      ],
 
       filterText: '',
       filterGameIds: [ 2031, 10002 ],
@@ -602,6 +633,7 @@ export default {
       item.extend.minBet *= 1000
       item.extend.minScore *= 1000
       item.extend.maxReward *= 1000
+      item.extend.progressReward *= 1000
 
       for (const reward of item.extend.rewardList) {
         reward.reward *= 1000
@@ -700,6 +732,7 @@ export default {
           item.extend.minBet /= 1000
           item.extend.minScore /= 1000
           item.extend.maxReward /= 1000
+          item.extend.progressReward /= 1000
 
           for (const reward of item.extend.rewardList) {
             reward.reward /= 1000
