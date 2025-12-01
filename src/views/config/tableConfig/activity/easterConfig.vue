@@ -1004,8 +1004,10 @@ export default {
         return
       }
 
-      for (let i = 0; i < this.edit.item.EggCfg.Eggs.length; i++) {
-        const eggOrg = this.edit.item.EggCfg.Eggs[i]
+      const item = JSON.parse(JSON.stringify(this.edit.item))
+
+      for (let i = 0; i < item.EggCfg.Eggs.length; i++) {
+        const eggOrg = item.EggCfg.Eggs[i]
         for (let ii = 0; ii < this.edit.eggs.length; ii++) {
           const egg = this.edit.eggs[ii]
           if (egg.Color === eggOrg.Color) {
@@ -1015,7 +1017,7 @@ export default {
         }
       }
 
-      this.edit.item.EggCfg.WeightCfg = []
+      item.EggCfg.WeightCfg = []
       for (let i = 0; i < this.edit.normalEggWeightConfigs.length; i++) {
         const eggWeightCfg = this.edit.normalEggWeightConfigs[i]
         const obj = {
@@ -1025,7 +1027,7 @@ export default {
           RaffleNoList: [],
           Weights: eggWeightCfg.Weights,
         }
-        this.edit.item.EggCfg.WeightCfg.push(obj)
+        item.EggCfg.WeightCfg.push(obj)
       }
       for (let i = 0; i < this.edit.specialEggWeightConfigs.length; i++) {
         const eggWeightCfg = this.edit.specialEggWeightConfigs[i]
@@ -1036,42 +1038,34 @@ export default {
           RaffleNoList: eggWeightCfg.RaffleNoList.split(',').map(item => parseInt(item)),
           Weights: eggWeightCfg.Weights,
         }
-        this.edit.item.EggCfg.WeightCfg.push(obj)
+        item.EggCfg.WeightCfg.push(obj)
       }
 
-      console.log('getPostData: ' + JSON.stringify(this.edit.item.EggCfg))
+      console.log('getPostData: ' + JSON.stringify(item.EggCfg))
 
-      for (let i = 0; i < this.edit.item.RankCfg.length; i++) {
-        const rank = this.edit.item.RankCfg[i]
+      for (let i = 0; i < item.RankCfg.length; i++) {
+        const rank = item.RankCfg[i]
         rank.Reward = rank.Reward * 1000
       }
 
-      this.edit.item.RewardCfg.BigPrizeReward *= 1000
+      item.RewardCfg.BigPrizeReward *= 1000
 
-      if (this.edit.item.WhitelistCfg.AppIdList.length === 0 && this.version === 'V2') {
-        this.edit.item.WhitelistCfg.AppIdList = [this.appId]
+      if (item.WhitelistCfg.AppIdList.length === 0 && this.version === 'V2') {
+        item.WhitelistCfg.AppIdList = [this.appId]
       }
 
-      const data = {}
-      data.ID = this.edit.item.ID
-      data.IsOpen = this.edit.item.IsOpen
-      data.StartTime = this.edit.item.StartTime / 1000
-      data.EndTime = this.edit.item.EndTime / 1000
-      data.ShowEndTime = this.edit.item.ShowEndTime / 1000
-      data.GameIdCfg = JSON.stringify(this.edit.item.GameIdCfg)
-      data.RuleImgHor = JSON.stringify(this.edit.item.RuleImgHor)
-      data.RuleImgVer = JSON.stringify(this.edit.item.RuleImgVer)
-      data.WhitelistCfg = JSON.stringify(this.edit.item.WhitelistCfg)
-      data.EggShellGainRatio = this.edit.item.EggShellGainRatio
-      data.EggShellReturnRatio = this.edit.item.EggShellReturnRatio
-      data.DayPrizeThreshold = this.edit.item.DayPrizeThreshold * 1000
-      data.RewardCfg = JSON.stringify(this.edit.item.RewardCfg)
-      data.RankCfg = JSON.stringify(this.edit.item.RankCfg)
-      data.EggCfg = JSON.stringify(this.edit.item.EggCfg)
-      data.EggShellsPerRaffle = this.edit.item.EggShellsPerRaffle
-      data.EggShellsRaffleFirst = this.edit.item.EggShellsRaffleFirst
-      data.DebugTimeOffset = this.edit.item.DebugTimeOffset
-      data.ActName = this.edit.item.ActName
+      const data = {...item}
+      data.StartTime = item.StartTime / 1000
+      data.EndTime = item.EndTime / 1000
+      data.ShowEndTime = item.ShowEndTime / 1000
+      data.GameIdCfg = JSON.stringify(item.GameIdCfg)
+      data.RuleImgHor = JSON.stringify(item.RuleImgHor)
+      data.RuleImgVer = JSON.stringify(item.RuleImgVer)
+      data.WhitelistCfg = JSON.stringify(item.WhitelistCfg)
+      data.DayPrizeThreshold = item.DayPrizeThreshold * 1000
+      data.RewardCfg = JSON.stringify(item.RewardCfg)
+      data.RankCfg = JSON.stringify(item.RankCfg)
+      data.EggCfg = JSON.stringify(item.EggCfg)
       return data
     },
     handleSave() {
