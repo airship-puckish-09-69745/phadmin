@@ -437,7 +437,7 @@ export default {
       this.GameLogVisible = false
       this.GameWildLogVisible = false
     },
-    getDetail(id, dt) {
+    getDetail(uid, id, dt) {
       const $this = this
       if (id <= 0) {
         return
@@ -449,7 +449,8 @@ export default {
           Env: this.env,
           Path: '/log/detail',
           ID: id,
-          DateTime: dt
+          DateTime: dt,
+          Uid: uid
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -773,7 +774,7 @@ export default {
                         <el-button
                           type="text"
                           size="small"
-                          @click="getDetail(scopeInfo.row.LogId,scopeInfo.row.EndTime)"
+                          @click="getDetail(scopeInfo.row.Uid,scopeInfo.row.LogId,scopeInfo.row.EndTime)"
                         >查看
                         </el-button>
                       </template>

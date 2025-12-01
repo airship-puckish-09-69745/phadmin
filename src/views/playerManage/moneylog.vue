@@ -529,8 +529,8 @@ export default {
         if (response.RetCode === 0) {
           if (response.Data === 'no Data') {
             Message.success('no Data')
-            loading.close()
-            return
+            // loading.close()
+            // return
           }
           let objs = response.Data || []
           objs = $this.libMoney.TransForShow(objs)

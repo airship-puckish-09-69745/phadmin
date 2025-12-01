@@ -41,7 +41,7 @@
             width="200"
           >
             <template slot-scope="scope">
-              <span>{{ scope.row.Bonus/1000 || 0 }}</span>
+              <span>{{ scope.row.BonusBet || 0 }}</span>
             </template>
           </el-table-column>
          <el-table-column
@@ -74,7 +74,7 @@
             width="200"
           >
             <template slot-scope="scope">
-              <span>{{ scope.row.Bonus/1000 || 0 }}</span>
+              <span>{{ scope.row.BonusBet || 0 }}</span>
             </template>
           </el-table-column>
          <el-table-column
@@ -120,7 +120,7 @@
             </template>
           </el-table-column>
        <el-table-column
-            label="20面值"
+            label="20面值(权重)"
             width="200"
           >
             <template slot-scope="scope">
@@ -128,7 +128,7 @@
             </template>
           </el-table-column>
            <el-table-column
-            label="30面值"
+            label="30面值(权重)"
             width="200"
           >
             <template slot-scope="scope">
@@ -136,7 +136,7 @@
             </template>
           </el-table-column>
          <el-table-column
-            label="50面值"
+            label="50面值(权重)"
             width="200"
           >
             <template slot-scope="scope">
@@ -145,7 +145,7 @@
           </el-table-column>
 
            <el-table-column
-            label="100面值"
+            label="100面值(权重)"
             width="200"
           >
             <template slot-scope="scope">
@@ -170,7 +170,7 @@
             </template>
           </el-table-column>
          <el-table-column
-            label="20面值"
+            label="20面值(权重)"
             width="200"
           >
             <template slot-scope="scope">
@@ -178,7 +178,7 @@
             </template>
           </el-table-column>
            <el-table-column
-            label="30面值"
+            label="30面值(权重)"
             width="200"
           >
             <template slot-scope="scope">
@@ -186,7 +186,7 @@
             </template>
           </el-table-column>
          <el-table-column
-            label="50面值"
+            label="50面值(权重)"
             width="200"
           >
             <template slot-scope="scope">
@@ -195,7 +195,7 @@
           </el-table-column>
 
            <el-table-column
-            label="100面值"
+            label="100面值(权重)"
             width="200"
           >
             <template slot-scope="scope">
@@ -309,117 +309,116 @@ export default {
           BetRoundList:[10,25,50,100,200,500,1000,2000], //下注
           TenBetMoney:[
             {
-              Bonus:10000000, 
+              BonusBet:10000, 
               WinPrizeWight: 100,
               LosePrizeWight: 100
             },
             {
-              Bonus:1000000,
+              BonusBet:1000,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             },{
-              Bonus:500000,
+              BonusBet:500,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             },{
-              Bonus:200000,
+              BonusBet:200,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             },{
-              Bonus:100000,
+              BonusBet:100,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             },{
-              Bonus:50000,
+              BonusBet:50,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             },{
-              Bonus:30000,
+              BonusBet:30,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             },{
-              Bonus:20000,
+              BonusBet:20,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             },{
-              Bonus:10000,
+              BonusBet:10,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             },{
-              Bonus:5000,
+              BonusBet:5,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             },{
-              Bonus:3000,
+              BonusBet:3,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             },{
-              Bonus:2000,
+              BonusBet:2,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             },{
-              Bonus:1000,
+              BonusBet:1,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             }
           ],
           UpTenBetMoney:[
             {
-              Bonus:10000000, 
+              BonusBet:10000, 
               WinPrizeWight: 100,
               LosePrizeWight: 100
             },
             {
-              Bonus:1000000,
+              BonusBet:1000,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             },{
-              Bonus:500000,
+              BonusBet:500,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             },{
-              Bonus:200000,
+              BonusBet:200,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             },{
-              Bonus:100000,
+              BonusBet:100,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             },{
-              Bonus:50000,
+              BonusBet:50,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             },{
-              Bonus:30000,
+              BonusBet:30,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             },{
-              Bonus:20000,
+              BonusBet:20,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             },{
-              Bonus:10000,
+              BonusBet:10,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             },{
-              Bonus:5000,
+              BonusBet:5,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             },{
-              Bonus:3000,
+              BonusBet:3,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             },{
-              Bonus:2000,
+              BonusBet:2,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             },{
-              Bonus:1000,
+              BonusBet:1,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
-            },
-            ,{
-              Bonus:500,
+            },{
+              BonusBet:0.5,
               WinPrizeWight: 100,
               LosePrizeWight: 100,
             }

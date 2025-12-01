@@ -115,17 +115,17 @@ export const asyncRoutes = [
     redirect: '/systemMoneyChart',
     meta: { title: '系统健康监测', icon: 'el-icon-pie-chart', perm: 'DATA_MONITOR' },
     children: [
-      // {
-      //   path: 'dashboard',
-      //   component: () => import('@/views/playerManage/systemMoneyChart'),
-      //   name: 'dashboard',
-      //   meta: { title: '系统健康监测 ◐', icon: 'risk', perm: 'KEY_DATA_MONITOR' }
-      // },
       {
         path: '/systemMoneyChart',
         component: () => import('@/views/playerManage/systemMoneyChartV2.vue'),
         name: 'systemMoneyChart',
         meta: { title: '系统健康监测 ◐', icon: 'risk', perm: 'KEY_DATA_MONITOR' }
+      },
+      {
+        path: '/systemMoneyChartApp',
+        component: () => import('@/views/playerManage/systemMoneyChartApp.vue'),
+        name: 'SystemMoneyChartApp',
+        meta: { title: '系统健康监测-分APP ◐', icon: 'risk', perm: 'KEY_DATA_MONITOR' }
       }
     ]
   },
@@ -1224,7 +1224,7 @@ export const asyncRoutes = [
             name: 'pirateScratch_cfg',
             meta: { title: 'Pirate Scratch ◐' }
           },
-          
+
         ]
       },
       {
