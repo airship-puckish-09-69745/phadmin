@@ -308,7 +308,7 @@ import DateTimeShow from '@/components/DatetimeShow'
 import { $libDate, $libShow } from '@/utils/common'
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
 import { ITEM_TYPE_OPTIONS, ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS,APPID_OPTIONS } from '@/utils/options'
-import { SLOT_GAME_CONFIG, BETTING_GAME_CONFIG } from '@/utils/prop'
+import { BETTING_GAME_CONFIG } from '@/utils/prop'
 
 export default {
   name: 'PropsConfig',
@@ -318,7 +318,7 @@ export default {
       ITEM_TYPE_OPTIONS,
       ITEM_DAY_TYPE_OPTIONS,
       BETTING_GAME_CONFIG,
-      SLOT_GAME_CONFIG,
+      SLOT_GAME_CONFIG:[],
       APPID_OPTIONS,
       freeSpinGameMap: {},
       libShow: $libShow,
@@ -420,6 +420,8 @@ export default {
   },
   mounted() {
     this.getList()
+    this.getSlotGameConfig()
+    console.log("------slot game config",this.SLOT_GAME_CONFIG)
     this.getSlotBetAmountCfg()
     this.initFreeSpinGameMap()
   },
@@ -885,25 +887,6 @@ export default {
     },
 
     getSlotBetAmountCfg() {
-      // for (let i = 0; i < this.SLOT_GAME_CONFIG.length; i++) {
-      //   request({
-      //     url: '/customizeconfig/one',
-      //     method: 'get',
-      //     data: {
-      //       SubKey: this.SLOT_GAME_CONFIG[i].configKey,
-      //     }
-      //   }).then(response => {
-      //     if (response.RetCode === 0 && response.Data && response.Data.Data !== '')  {
-      //       const data = JSON.parse(response.Data.Data)
-      //       if (this.SLOT_GAME_CONFIG[i].value === 20){
-      //         this.slotBetAmountCfg.set(this.SLOT_GAME_CONFIG[i].value,data.TableMoneyList)
-      //
-      //       }else{
-      //         this.slotBetAmountCfg.set(this.SLOT_GAME_CONFIG[i].value,data.BetList)
-      //       }
-      //     }
-      //   })
-      // }
 
       // 根据free spin道具的子类型(1:slot类 2: 下注类)
       this.slotBetAmountCfg.set(1, [300, 1000, 2000, 3000, 5000])
@@ -1034,6 +1017,26 @@ export default {
           }
         }
       return suitedItemList
+    },
+    //获取slot游戏配置
+    getSlotGameConfig(){
+      request({
+        url: '/thirdpartygames/all',
+        method: 'get',
+        data: {}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          for (let i = 0; i < response.Data.length; i++) {
+            // console.log(response.Data[i])
+            if (response.Data[i].CategoryID === 1) { // 老虎机
+              this.SLOT_GAME_CONFIG.push({
+                value: response.Data[i].Gid,
+                label: response.Data[i].Name+  "("+response.Data[i].Description + ")",
+              })
+            }
+          }
+        }
+      })
     },
   }
 }
