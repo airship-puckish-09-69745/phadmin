@@ -452,6 +452,7 @@ export default {
         'activity.ruleImgHor': '横向规则图',
         'activity.ruleImgVer': '纵向规则图',
         'activity.isOpen': '是否开启',
+        'activity.debugTimeOffset': '调试时间偏移',
         'extend.minBet': '计入榜单最小有效投注',
         'extend.minScore': '进入榜单最小有效投注',
         'extend.maxReward': '玩家奖励上限',
