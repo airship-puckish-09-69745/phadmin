@@ -189,7 +189,7 @@ export const MATCH_LIST_TAG_OPTIONS = [
   { 'value': 1, 'label': 'Events', disabled: false },
   { 'value': 2, 'label': 'FREE', disabled: false },
   { 'value': 3, 'label': 'Pro Arena', disabled: false },
-  { 'value': 4, 'label': 'GTCC', disabled: false },
+  { 'value': 4, 'label': 'TPCC', disabled: false },
 ]
 
 //比赛GameId选项
