@@ -562,16 +562,16 @@ export default {
       return DataRule(required, config)
     },
     handlePrepare(ob) {
-      this.changeStatus(ob.ID, 2, '您确定要将记录状态修改为"上架"吗？该记录将在发布后同步到外网。')
+      this.changeStatus(ob.id, 2, '您确定要将记录状态修改为"上架"吗？该记录将在发布后同步到外网。')
     },
     handleOffline(ob) {
-      this.changeStatus(ob.ID, 6, '您确定要将记录下架吗？下架的记录将在发布后从线上消失。')
+      this.changeStatus(ob.id, 6, '您确定要将记录下架吗？下架的记录将在发布后从线上消失。')
     },
     handleDelete(ob) {
       const deleteList = []
       deleteList.push(ob)
       this.deleteData = deleteList
-      this.changeStatus(ob.ID, 3, '您确定要将记录状态修改为废弃吗？')
+      this.changeStatus(ob.id, 3, '您确定要将记录状态修改为废弃吗？')
     },
     handleAddRankReward() {
       this.edit.item.extend.rewardList.push(newRewardItem())
