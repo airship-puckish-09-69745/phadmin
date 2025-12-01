@@ -140,7 +140,7 @@
                 <el-col :span="24" :offset="5">
                   <el-form :inline="true">
                     <el-col :span="8">
-                      <el-form-item label="赢钱倍数(基于实际携带):" style="display: flex; align-items: center">
+                      <el-form-item label="赢钱倍数(基于实际携带，不含中JP):" style="display: flex; align-items: center">
                         <el-input v-model="robotLeaveCfg.WinMoneyMinMul" size="mini" style="width: 100px"></el-input>
                         <span style="margin: 0 10px">~</span>
                         <el-input v-model="robotLeaveCfg.WinMoneyMaxMul" size="mini" style="width: 100px"></el-input>
