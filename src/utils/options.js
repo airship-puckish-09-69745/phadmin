@@ -185,7 +185,7 @@ export const MATCH_PUSOY_TABLE_SCENE_ID_CFG =[
 
 //比赛页签选项
 export const MATCH_LIST_TAG_OPTIONS = [
-  { 'value': 0, 'label': 'All', disabled: false },
+  { 'value': 0, 'label': '未分类', disabled: false },
   { 'value': 1, 'label': 'Events', disabled: false },
   { 'value': 2, 'label': 'FREE', disabled: false },
   { 'value': 3, 'label': 'Pro Arena', disabled: false },
