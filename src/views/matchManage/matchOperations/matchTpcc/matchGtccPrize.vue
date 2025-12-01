@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-row>
-      <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" :attr-names="AttrNames" />
+      <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" :on-compare="onCompare" :attr-names="AttrNames" />
     </el-row>
     <el-row>
       <el-form :model="form" label-width="100px" :inline="true" size="mini">
@@ -346,6 +346,47 @@ export default {
         showConfirmButton: false
       })
     },
+    onCompare(pre,pro) {
+      const preVal=JSON.parse(pre.Data)
+      const proVal=JSON.parse(pro.Data)
+      //console.log("邀请函奖励配置对比",preVal)
+      let str = ""
+      // 编辑
+      let has = false
+      for (let i in preVal.tableData) {
+        for (let j in proVal.tableData) {
+          const preItem = preVal.tableData[i]
+          const proItem = proVal.tableData[j]
+          if (preItem.id === proItem.id) {
+            if (JSON.stringify(preItem) !== JSON.stringify(proItem)) {
+              has && (str += "\r\n---");has=true
+              str += `\r\n修改：【${preItem.matchUniqueId}】，${this.getInvitationName(preItem.matchUniqueId)}`
+              str += `\r\n奖励：${JSON.stringify(preItem.rankRewards)}`
+            }
+          } 
+        }
+      }
+      // 新增
+      for (let i in preVal.tableData) {
+        const preItem = preVal.tableData[i]
+        if (!proVal.tableData.some(item=>item.id === preItem.id)) {
+          has && (str += "\r\n---");has=true
+          str += `\r\n增加：【${preItem.matchUniqueId}】，${this.getInvitationName(preItem.matchUniqueId)}`
+          str += `\r\n奖励：${JSON.stringify(preItem.rankRewards)}`
+        }
+      }
+      // 删除
+      for (let i in proVal.tableData) {
+        const proItem = proVal.tableData[i]
+        if (!preVal.tableData.some(item=>item.id === proItem.id)) {
+          has && (str += "\r\n---");has=true
+          str += `\r\n删除：【${proItem.matchUniqueId}】，${this.getInvitationName(proItem.matchUniqueId)}`
+          str += `\r\n奖励：${JSON.stringify(proItem.rankRewards)}`
+        }
+      }
+      console.log("邀请函奖励配置对比",str)
+      return str
+    },
 
     configCheck() {
       if (this.editForm.data.rankRewards.length <= 0) {
@@ -400,6 +441,6 @@ export default {
       }
       return true
     }
-  }
+  },
 }
 </script>
