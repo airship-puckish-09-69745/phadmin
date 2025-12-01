@@ -3540,8 +3540,9 @@
       <div class="grid-container">
         <div class="grid-outer-frame">
             <div class="number-container">
-              <span v-for="num in PirateScratchDetail.openNumber" :key="num" class="grid-cell" style="color: red;">
-                {{ num }}
+              <span  v-for="(item, index) in PirateScratchDetail.openNumber" class="grid-cell">
+                <span v-if="item.isLucky===true" style="color: red;"> {{ item.number }}</span>
+                <span v-if="item.isLucky===false" style="color: black;"> {{ item.number }}</span>
               </span>
           </div>
          <p></p>
@@ -4910,7 +4911,18 @@ export default {
       this.PirateScratchDetail.players = []
       this.PirateScratchDetail.players.push(obj.player)
       this.PirateScratchDetail.blockItems = obj.player.luckyResult.blockItems
-      this.PirateScratchDetail.openNumber = obj.player.luckyResult.openNumber
+       this.PirateScratchDetail.openNumber = []
+      for(let i = 0; i < obj.player.luckyResult.openNumber.length; i++) {
+        let number = obj.player.luckyResult.openNumber[i]
+        let isLucky = false 
+        for (let j = 0; j < obj.player.luckyResult.blockItems.length; j++) {
+          if (obj.player.luckyResult.blockItems[j].number == number) {
+            isLucky = true;
+            break
+          }
+        }
+        this.PirateScratchDetail.openNumber.push({number: number, isLucky: isLucky})
+      }
       this.PirateScratchVisible = true
     },
     showChickenGoGame(obj){
