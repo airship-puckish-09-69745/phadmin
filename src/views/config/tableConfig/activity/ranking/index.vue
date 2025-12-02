@@ -395,7 +395,7 @@ function newItem() {
       endTime: Date.parse(new Date().toString()),
       showEndTime: Date.parse(new Date().toString()) + 1000 * 60 * 60 * 24,
       status: 0,
-      gameIds: [],
+      gameIdList: [],
       whitelist: {
         appIdList: [],
         siteIdList: [],
@@ -444,7 +444,7 @@ export default {
         'activity.startTime': '开始时间',
         'activity.endTime': '结束时间',
         'activity.status': '状态',
-        'activity.gameIds': '游戏ID配置',
+        'activity.gameIdList': '游戏ID配置',
         'activity.whitelist.isOpen': '是否开启白名单',
         'activity.whitelist.appIdList': '应用ID白名单',
         'activity.whitelist.siteIdList': '站点白名单',
@@ -715,7 +715,7 @@ export default {
     handleEditDialogOpened() {
       console.log('handleEditDialogOpened edit:' + this.edit.isEdit)
       if (this.edit.isEdit) {
-        this.$refs.tree.setCheckedKeys(this.edit.item.activity.gameIds)
+        this.$refs.tree.setCheckedKeys(this.edit.item.activity.gameIdList)
       } else {
         this.$refs.tree.setCheckedKeys([])
       }
@@ -839,11 +839,11 @@ export default {
     },
     updateGamesSorted() {
       this.GamesSorted = []
-      if (this.edit.item.activity.gameIds === undefined || this.edit.item.activity.gameIds.length === 0) {
+      if (this.edit.item.activity.gameIdList === undefined || this.edit.item.activity.gameIdList.length === 0) {
         return
       }
-      for (let i = 0; i < this.edit.item.activity.gameIds.length; i++) {
-        const gameId = this.edit.item.activity.gameIds[i]
+      for (let i = 0; i < this.edit.item.activity.gameIdList.length; i++) {
+        const gameId = this.edit.item.activity.gameIdList[i]
         let name = ''
         for (let j = 0; j < this.treeData.length; j++) {
           const cty = this.treeData[j]
@@ -864,21 +864,21 @@ export default {
         return
       }
 
-      const index = this.edit.item.activity.gameIds.indexOf(data.id)
+      const index = this.edit.item.activity.gameIdList.indexOf(data.id)
       if (checked) {
         if (index < 0) {
-          this.edit.item.activity.gameIds.push(data.id)
+          this.edit.item.activity.gameIdList.push(data.id)
         }
       } else {
         if (index >= 0) {
-          this.edit.item.activity.gameIds.splice(index, 1)
+          this.edit.item.activity.gameIdList.splice(index, 1)
         }
       }
 
       // 更新选中游戏的排序
       this.updateGamesSorted()
 
-      console.log(this.edit.item.activity.gameIds)
+      console.log(this.edit.item.activity.gameIdList)
     },
     showGamesSortDialog() {
       this.edit.gamesSortDialogVisible = true
@@ -890,9 +890,9 @@ export default {
         return a.OrderNo - b.OrderNo
       })
       // 保存排序
-      this.edit.item.activity.gameIds = []
+      this.edit.item.activity.gameIdList = []
       this.GamesSorted.forEach(item => {
-        this.edit.item.activity.gameIds.push(item.GameId)
+        this.edit.item.activity.gameIdList.push(item.GameId)
       })
     },
     onOrderNoChange() {
