@@ -46,13 +46,13 @@
               </el-col>
 
               <!--RTPS-->
-              <fieldset style="margin-top:10px">
+              <fieldset style="margin-top:10px" v-if="!IsPHAuditEnv()">
 
                 <el-col :span="20">
                   <el-button style="margin-bottom:10px; background-color: #c5ddf0" type="normal" icon="el-icon-plus" size="mini" @click="doAddRTPSLevel()">添加</el-button>
                 </el-col>
 
-                <legend>RTPS配置</legend>
+                <legend>RTP配置</legend>
                 <el-table
                   ref="filterTable"
                   :data="item.RTPS"

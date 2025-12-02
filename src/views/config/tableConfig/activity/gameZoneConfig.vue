@@ -1015,14 +1015,15 @@ export default {
         { label: '摇钱树活动-[7]', value: 7 },
         { label: 'Poker乐园-[8]', value: 8 },
         { label: 'Banargay-[9]', value: 9 },
-        { label: '复活节活动-[10]', value: 10 },
+        { label: '圣诞节活动-[10]', value: 10 },
         { label: '新手任务活动-[11]', value: 11 },
         { label: '空投活动-[12]', value: 12 },
         { label: '红包雨活动-[13]', value: 13 },
         { label: 'free spins-[14]', value: 14 },
         { label: 'TongitsHunter-[15]', value: 15 },
         { label: 'KingOfPot-[16]', value: 16 },
-        { label: '万圣节活动-[18]', value: 18 }
+        { label: '万圣节活动-[18]', value: 18 },
+        { label: '排行榜活动-[19]', value: 19 }
       ],
       gameSelect: [],
       activitySelect: [
@@ -1031,13 +1032,14 @@ export default {
         { name: '摇钱树活动-[7]', id: 7 },
         { name: 'Poker乐园-[8]', id: 8 },
         { name: 'Banargay-[9]', id: 9 },
-        { name: '复活节活动-[10]', id: 10 },
+        { name: '圣诞节活动-[10]', id: 10 },
         { name: '新手任务活动-[11]', id: 11 },
         { name: '红包雨活动-[13]', id: 13 },
         { name: 'free spins-[14]', id: 14 },
         { name: 'TongitsHunter-[15]', id: 15 },
         { name: 'KingOfPot-[16]', id: 16 },
-        { name: '万圣节活动-[18]', id: 18 }
+        { name: '万圣节活动-[18]', id: 18 },
+        { name: '排行榜活动-[19]', id: 19 }
       ],
       blockGames: [36, 38, 39, 43, 44],
       hallGame: [],

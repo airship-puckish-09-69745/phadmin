@@ -329,6 +329,21 @@ export default {
                 }
               }
             }
+            if (row.appId === undefined) {
+              row.appId = 0
+            }
+            if (this.registerChannel === 1) {
+              if (row.appId === 0) {
+                continue
+              }
+              if (row.appId !== 2000005 && row.appId !== 3000005 && row.appId !== 1000014) {
+                continue
+              }
+            } else if (this.registerChannel === 2) {
+              if (row.appId === 2000005 || row.appId === 3000005 || row.appId === 1000014) {
+                continue
+              }
+            }
             const cheatLog = {
               Uid: row.uid,
               CheatScore: row.cheatScore,
@@ -350,7 +365,9 @@ export default {
               WhiteTableMoney: row.whiteTableMoney ? row.whiteTableMoney : 0,
               SmallIntensity: 0, // 小场洗分强度
               SmallCoefficient: 0, // 小场洗分系数
-              RegisterChannel: ''
+              RegisterChannel: '',
+              AppId: 0,
+              TableTotalChangeMoney: 0
             }
 
             let addScore = 0
@@ -375,6 +392,9 @@ export default {
               } else {
                 row.tableMoneyReduceScore = {}
               }
+            }
+            if (row.appId !== undefined) {
+              cheatLog.AppId = row.appId
             }
             if (row.tableMoneyScore !== undefined) {
               if (typeof row.tableMoneyScore === 'string' && row.tableMoneyScore !== '') {
@@ -421,7 +441,7 @@ export default {
           $this.clientDB = new ClientTableData(cheatLogs, $this.pageNum, {}, sortName, -1, 'Uid')
           $this.handleCurrentChange(1)
 
-          this.getUserInfo(uidArr)
+          // this.getUserInfo(uidArr)
         }
       })
     },
@@ -513,6 +533,7 @@ export default {
             const tidCheatLogs = []
             const rowLog = cheatLogRows[0]
             const nick = new Set()
+            let tableTotalChangeMoney = 0
             if (rowLog.hasOwnProperty('datas')) {
               for (let j = 0; j < rowLog.datas.length; j++) {
                 const tidRow = rowLog.datas[j]
@@ -562,6 +583,7 @@ export default {
                       lastId = cheatRow.logId
                       if (cheatRow.partnerChangeMoney) {
                         tidCheatLog.ChangeMoney = cheatRow.partnerChangeMoney
+                        tableTotalChangeMoney += cheatRow.partnerChangeMoney
                       }
                     }
                   }
@@ -585,6 +607,7 @@ export default {
             const ob = this.clientDB.GetDataByID(row.Uid)
             ob.TidCheatLogs = tidCheatLogs
             ob.Nick = nick
+            ob.TableTotalChangeMoney = tableTotalChangeMoney
             this.clientDB.UpdateData2('Uid', ob)
           }
         }
@@ -958,6 +981,11 @@ export default {
       }
     },
     formatUserTrustLevel(row) {
+      if (row.AppId === 2000005 || row.AppId === 3000005 || row.AppId === 1000014) {
+        row.RegisterChannel = 'CP'
+      } else {
+        row.RegisterChannel = 'BP'
+      }
       if (row.UserType === 3) {
         return '认证高信' + '(' + row.RegisterChannel + ')'
       }
@@ -1003,6 +1031,9 @@ export default {
       //   return whiteTableMoney / 1000
       // }
       // return '--'
+    },
+    showMoney(money) {
+      return (money / 1000).toFixed(1)
     },
     formatUserBlackTime(row) {
       const userType = row.UserType
@@ -1247,7 +1278,8 @@ export default {
           </el-select>
         </el-form-item>
         <el-form-item label="来源：">
-          <el-select v-model.number="registerChannel" placeholder="请选择" @change="changeRegisterChannel">
+          <!--          <el-select v-model.number="registerChannel" placeholder="请选择" @change="changeRegisterChannel">-->
+          <el-select v-model.number="registerChannel" placeholder="请选择">
             <el-option
               v-for="itemRC in registerChannelOption"
               :key="itemRC.value"
@@ -1390,21 +1422,24 @@ export default {
           </template>
         </el-table-column>
         <el-table-column
-          prop="SmallIntensity"
-          label="小场洗分强度"
+          label="作弊组合累计盈利"
           width="100"
           align="center"
-        />
+        >
+          <template slot-scope="scope">
+            <div>{{ showMoney(scope.row.TableTotalChangeMoney) }}</div>
+          </template>
+        </el-table-column>
         <!--          <template slot-scope="scope">-->
         <!--            <div>{{ formatTimeDate(scope.row.LastEndTime) }}</div>-->
         <!--          </template>-->
         <!--        </el-table-column>-->
-        <el-table-column
-          prop="SmallCoefficient"
-          label="小场洗分系数"
-          width="100"
-          align="center"
-        />
+        <!--        <el-table-column-->
+        <!--          prop="SmallCoefficient"-->
+        <!--          label="小场洗分系数"-->
+        <!--          width="100"-->
+        <!--          align="center"-->
+        <!--        />-->
         <!--          <template slot-scope="scope">-->
         <!--            <div>{{ formatTimeDate(scope.row.UpdateTime) }}</div>-->
         <!--          </template>-->

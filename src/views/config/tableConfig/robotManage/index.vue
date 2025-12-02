@@ -3,8 +3,41 @@
     <el-row :gutter="20">
       <div class="serach-filter">
         <div class="serach-filter-item">
-          机器人资产范围：<el-input v-model="searchFilter.moneyLowerLimit" placeholder="资产下限" size="small" type="number" min="0" />
-          ~ <el-input v-model="searchFilter.moneyUpperLimit" placeholder="资产上限" size="small" type="number" min="0" />
+          <label class="filter-label">机器人资产范围：</label>
+          <el-input 
+            v-model="searchFilter.moneyLowerLimit" 
+            placeholder="资产下限" 
+            size="small" 
+            type="number" 
+            min="0"
+            class="money-input"
+          />
+          <span class="money-separator">~</span>
+          <el-input 
+            v-model="searchFilter.moneyUpperLimit" 
+            placeholder="资产上限" 
+            size="small" 
+            type="number" 
+            min="0"
+            class="money-input"
+          />
+        </div>
+        <div class="serach-filter-item">
+          <label class="filter-label">机器人渠道：</label>
+          <el-select 
+            v-model="searchFilter.appID" 
+            placeholder="请选择机器人渠道" 
+            size="small"
+            class="site-select"
+            @change="handleSiteChange"
+          >
+            <el-option 
+              v-for="item in SiteAppIDOptions" 
+              :key="item.Value" 
+              :label="item.Label + '(' + item.Value + ')'" 
+              :value="item.Value"
+            />
+          </el-select>
         </div>
         <div class="serach-filter-item">
           <el-button type="primary" icon="el-icon-search" size="small" @click="onSearch">搜索</el-button>
@@ -55,11 +88,12 @@
       />
     </el-row>
 
-    <AddRobotDialog :visible="importDialogVisible" @reload-list="onSearch" @close="handleImportRobotDialogClose" />
+    <AddRobotDialog :visible="importDialogVisible" :appID="searchFilter.appID" :channel="searchFilter.channel" @reload-list="onSearch" @close="handleImportRobotDialogClose" />
     <LaunchRobotsDialog
       :visible="launchRobotsDialogVisible"
       :selected-robots="selectedRobots"
       :game-options="gameOptions"
+      :appID="searchFilter.appID"
       @close="handleLaunchRobotsDialogClose"
       @reload-list="onSearch"
     />
@@ -71,6 +105,7 @@ import AddRobotDialog from './components/AddRobotDialog.vue'
 import request from '@/utils/request'
 import LaunchRobotsDialog from './components/LaunchRobotsDialog.vue'
 import { $libShow } from '@/utils/common'
+import { get } from 'sortablejs'
 
 export default {
   components: {
@@ -81,9 +116,13 @@ export default {
     return {
       libShow: $libShow,
       searchFilter: {
+        appID: 1000005,
+        channel: 'BP',
         moneyLowerLimit: '',
         moneyUpperLimit: ''
       },
+      subKey: 'robot_site_appid_cfg',
+      SiteAppIDOptions: [],
       robotList: [],
       importDialogVisible: false,
       columns: [
@@ -101,6 +140,10 @@ export default {
           formatter: (row, column, cellValue) => {
             return this.transformMoney(cellValue).toLocaleString()
           }
+        },
+        {
+          label: 'appid',
+          prop: 'app'
         }
       ],
       selectedRobots: [], // 列表选中的机器人
@@ -122,6 +165,7 @@ export default {
   mounted() {
     this.getGameOptions()
     this.onSearch()
+    this.getSiteAppid()
   },
   methods: {
     transformMoney(money) {
@@ -153,8 +197,34 @@ export default {
         }
       })
     },
+    // 获取渠道与对应的APPID
+    getSiteAppid() {
+      const $this = this
+      request({
+        url: '/customizeconfig/one',
+        method: 'get',
+        data: {
+          SubKey: this.subKey
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          if (response.Data && response.Data.Data !== '') {
+            $this.SiteAppIDOptions = JSON.parse(response.Data.Data)
+          }
+        }
+      })
+    },
+    handleSiteChange(value) {
+      // 根据选中的value找到对应的item
+      const selectedItem = this.SiteAppIDOptions.find(item => item.Value === value)
+      if (selectedItem) {
+        this.searchFilter.channel = selectedItem.Label
+      }
+      console.log(this.searchFilter.channel)
+      this.getRobotList()
+    },
     getRobotList() {
-      const { moneyLowerLimit, moneyUpperLimit } = this.searchFilter
+      const { moneyLowerLimit, moneyUpperLimit, appID } = this.searchFilter
       const { currentPage, pageSize } = this.pagination
       const req = {
         Env: this.env,
@@ -168,6 +238,10 @@ export default {
       if (moneyUpperLimit) {
         req.moneyUpperLimit = moneyUpperLimit
       }
+      if (appID) {
+        req.appID = appID
+      }
+
       request({
         url: '/dataProxy/info',
         method: 'get',
@@ -222,19 +296,60 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .serach-filter {
-  &-item {
-    display: inline-block;
-    width: auto;
-    margin-right: 12px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 15px 0;
+  margin-bottom: 10px;
+}
 
-    .el-input {
-      width: 200px;
-    }
+.serach-filter-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-label {
+  font-weight: 500;
+  color: #606266;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.money-input {
+  width: 120px;
+}
+
+.money-separator {
+  color: #909399;
+  font-weight: 500;
+  margin: 0 4px;
+}
+
+.site-select {
+  width: 180px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .serach-filter {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
   }
-  .float-right {
-    float: right;
+  
+  .serach-filter-item {
+    width: 100%;
+  }
+  
+  .money-input {
+    width: 100px;
+  }
+  
+  .site-select {
+    width: 100%;
   }
 }
 </style>

@@ -822,6 +822,10 @@
           <template slot-scope="scope">
             <div v-for="(item,index) in scope.row.cardGroupLog" class="blackJackmhBox">
               {{ item.bet / 1000 }}
+              <br>
+              <span v-if="item.splitCards && item.splitCards.length > 0 && item.splitBet != null">
+              {{ item.splitBet / 1000 }}
+              </span>
               <hr v-if="index !== scope.row.cardGroupLog.length - 1" class="blackJackmhHr"/>
             </div>
           </template>
@@ -839,7 +843,7 @@
           <template slot-scope="scope">
             <div v-for="(item,index) in scope.row.cardGroupLog" class="blackJackmhBlock">
               <span v-if="item.cards.length > 0">
-                {{ '手牌' + (item.id + 1) + ': ' }}
+                {{ '手牌' + (item.id) + ': ' }}
               </span>
               <div v-for="(card) in item.cards" class="block">
                 <el-image
@@ -849,7 +853,7 @@
               </div>
               <br>
               <span v-if="item.splitCards && item.splitCards.length > 0">
-                {{ '分牌手牌' + (item.id + 1) + ': ' }}
+                {{ '分牌手牌' + (item.id) + ': ' }}
               </span>
               <div v-for="(card) in item.splitCards" class="block">
                 <el-image
@@ -868,11 +872,11 @@
           <template slot-scope="scope">
             <div v-for="(item,index) in scope.row.cardGroupLog" class="blackJackmhBox">
               <span v-if="item.cards.length > 0">
-                {{'手牌' + (item.id + 1) + ': ' + (item.cardType == 1 ? "点牌" : (item.cardType == 2 ? "BlackJack" : "爆牌"))}}
+                {{'手牌' + (item.id) + ': ' + (item.cardType == 1 ? "点牌" : (item.cardType == 2 ? "BlackJack" : "爆牌"))}}
               </span>
               <br>
               <span v-if="item.splitCards && item.splitCards.length > 0">
-                {{'分牌手牌' + (item.id + 1) + ': ' + (item.splitCardType == 1 ? "点牌" : (item.splitCardType == 2 ? "BlackJack" : "爆牌"))}}
+                {{'分牌手牌' + (item.id) + ': ' + (item.splitCardType == 1 ? "点牌" : (item.splitCardType == 2 ? "BlackJack" : "爆牌"))}}
               </span>
               <hr v-if="index !== scope.row.cardGroupLog.length - 1" class="blackJackmhHr"/>
             </div>
@@ -882,7 +886,7 @@
         <el-table-column label="Lucky Bet输赢">
           <template slot-scope="scope">
             <div v-for="(item,index) in scope.row.cardGroupLog" class="blackJackmhBox">
-              {{ item.luckyWin / 1000 }}
+              {{ (item.luckyWin - item.luckyBet) / 1000 }}
               <hr v-if="index !== scope.row.cardGroupLog.length - 1" class="blackJackmhHr"/>
             </div>
           </template>
@@ -891,6 +895,10 @@
           <template slot-scope="scope">
             <div v-for="(item,index) in scope.row.cardGroupLog" class="blackJackmhBox">
               {{ item.normalBetWin / 1000 }}
+              <br>
+              <span v-if="item.splitCards && item.splitCards.length > 0 && item.splitNormalBetWin != null">
+              {{ item.splitNormalBetWin / 1000 }}
+              </span>
               <hr v-if="index !== scope.row.cardGroupLog.length - 1" class="blackJackmhHr"/>
             </div>
           </template>
@@ -3509,6 +3517,81 @@
       </el-table>
     </el-dialog>
 
+     <el-dialog title="Pirate Scratch详情" :visible.sync="PirateScratchVisible" width="1200px">
+      <el-table ref="filterTable" :data="PirateScratchDetail.players" border>
+        <el-table-column prop="uid" label="uid" width="128px">
+          <template slot-scope="scope">{{ scope.row.uid }}</template>
+        </el-table-column>
+        <el-table-column prop="nick" label="下注"  width="150px">
+          <template slot-scope="scope">{{ scope.row.betMoney/1000 }}</template>
+        </el-table-column>
+        <el-table-column prop="moneyChange" label="输赢"  width="150px">
+          <template slot-scope="scope">{{ scope.row.moneyChange /1000}}</template>
+        </el-table-column>
+        <el-table-column prop="bonusMultiple" label="jackPot"  width="150px">
+          <template slot-scope="scope">{{ scope.row.JackpotNum /1000}}</template>
+        </el-table-column>
+      </el-table>
+
+   
+
+  
+
+      <div class="grid-container">
+        <div class="grid-outer-frame">
+            <div class="number-container">
+              <span  v-for="(item, index) in PirateScratchDetail.openNumber" class="grid-cell">
+                <span v-if="item.isLucky===true" style="color: red;"> {{ item.number }}</span>
+                <span v-if="item.isLucky===false" style="color: black;"> {{ item.number }}</span>
+              </span>
+          </div>
+         <p></p>
+         <p></p>
+         <p></p>
+          <div class="grid-wrapper">
+            <div 
+              v-for="(item, index) in PirateScratchDetail.blockItems" 
+              :key="index"
+              class="grid-cell"
+            >
+              <div class="cell-top" v-if="item.blockType !== 2">
+
+                 <span v-if="item.isAward===true" style="color: red;">
+                  <span >{{ item.number }}</span>
+                  <span v-if="item.blockType===1">X</span>
+                </span>
+
+                   <span v-if="item.isAward===false" style="color: black;">
+                  <span >{{ item.number }}</span>
+                  <span v-if="item.blockType===1">X</span>
+                </span>
+
+
+
+              </div>
+              <div class="cell-divider" v-if="item.blockType !== 2"></div>
+              <div class="cell-bottom" v-if="item.blockType !== 2">
+                  <span v-if="item.isAward===true" style="color: red;">
+                    {{ item.bonus/1000 }}
+                </span>
+                   <span v-if="item.isAward===false" style="color: black;">
+                    {{ item.bonus/1000 }}
+                </span>
+              </div>
+
+            <div v-if="item.blockType === 2" class="cell-top">
+                <span style="color: red;"> JackPot</span>
+            </div>
+            </div>
+          
+          </div>
+        </div>
+      </div>
+      
+
+
+    </el-dialog>
+
     <el-dialog title="ChickenGo详情" :visible.sync="ChickenGoDetailVisible" width="1200px">
       <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
         <span style="float:left;">{{ '困难级别:' + getChickenGoLevel(ChickenGoDetail.level) }}</span>
@@ -4024,6 +4107,10 @@ export default {
 
       LimboDetail:{},
       LimboDetailVisible:false,
+      
+      PirateScratchDetail:{},
+      PirateScratchVisible:false,
+
 
       ChickenGoDetail:{},
       ChickenGoDetailVisible:false,
@@ -4625,6 +4712,8 @@ export default {
             $this.showChickenGoGame(obj)
           } else if (gid === 139){
             $this.showMannyPunchGame(obj)
+          } else if (gid === 141){
+            $this.showPirateScratchGame(obj)
           } else {
             $this.showSmallGame(obj)
           }
@@ -4815,6 +4904,26 @@ export default {
       this.LimboDetail.players = []
       this.LimboDetail.players.push(obj.player)
       this.LimboDetailVisible = true
+    },
+
+    showPirateScratchGame(obj) {
+       console.log(obj)
+      this.PirateScratchDetail.players = []
+      this.PirateScratchDetail.players.push(obj.player)
+      this.PirateScratchDetail.blockItems = obj.player.luckyResult.blockItems
+       this.PirateScratchDetail.openNumber = []
+      for(let i = 0; i < obj.player.luckyResult.openNumber.length; i++) {
+        let number = obj.player.luckyResult.openNumber[i]
+        let isLucky = false 
+        for (let j = 0; j < obj.player.luckyResult.blockItems.length; j++) {
+          if (obj.player.luckyResult.blockItems[j].number == number) {
+            isLucky = true;
+            break
+          }
+        }
+        this.PirateScratchDetail.openNumber.push({number: number, isLucky: isLucky})
+      }
+      this.PirateScratchVisible = true
     },
     showChickenGoGame(obj){
       this.ChickenGoDetail = obj.player
@@ -5648,8 +5757,8 @@ export default {
       console.log(obj)
       if (obj.BlackjackMH) {
         this.blackjackmhDetail = obj.BlackjackMH
-        this.blackjackmhDetail.tid = obj.tid
-        this.blackjackmhDetail.logId = obj.logId
+        this.blackjackmhDetail.tid = obj.Tid
+        this.blackjackmhDetail.logId = obj.BlackjackMH.logId
         this.blackjackmhDetailVisible = true
       }
     },
@@ -6263,4 +6372,79 @@ ul#sweeperShow li .showStep {
 .solitaireHeight {
   height: 60px;
 }
+
+/* 容器样式 */
+.grid-container {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  justify-content: left;
+  min-height: 100vh;
+  padding: 20px;
+  box-sizing: border-box;
+  background-color: #fff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* 外层自动适配大框：宽度100%，随容器自适应 */
+.grid-outer-frame {
+  border: 3px solid #000; /* 外层粗黑边框 */
+  border-radius: 8px;
+  padding: clamp(15px, 3vw, 25px); /* 内边距自适应（小屏15px，大屏25px） */
+  box-sizing: border-box;
+  background-color: #fff;
+  width: 100%; /* 关键：宽度自适应父容器 */
+  max-width: 600px; /* 防止大屏下大框过宽 */
+}
+
+
+/* 网格容器 */
+.grid-wrapper {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  max-width: 500px;
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+/* 内部单元格样式（黑色边框） */
+.grid-cell {
+  aspect-ratio: 1/1;
+  border: 2px solid #000; /* 内部小方格边框 */
+  border-radius: 4px;
+  padding: 12px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+}
+
+/* 上下部分数字样式 */
+.cell-top, .cell-bottom {
+  font-size: 24px;
+  font-weight: 500;
+  color: #000; /* 黑色数字 */
+}
+
+/* 中间分隔线（黑色+仅占方格一半长度） */
+.cell-divider {
+  width: 50%; /* 仅占方格一半宽度 */
+  height: 1px;
+  background-color: #000; /* 黑色分隔线 */
+}
+
+.number-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap; /* 关键属性，禁止换行 */
+  overflow-x: auto; /* 超出容器宽度时显示横向滚动条 */
+  padding: 8px;
+  border: 1px dashed #ccc;
+  justify-content: center;
+  gap: 20px; /* 设置子元素之间的间隔为20px */
+}
+
 </style>

@@ -5,14 +5,15 @@ import request from "@/utils/request";
 import { PROP_TYPE_OPTIONS } from '@/utils/options';
 import { IsProd } from '@/utils/env';
 
+//走配置
 export const SLOT_GAME_CONFIG =[
-  { 'value': 82, 'label': '百万富翁(Millionire)', 'configKey':'millionaire_slots_base', disabled: false },
-  { 'value': 92, 'label': '超级王牌Go(UltraAce)','configKey':'fortuneacego_slots_base', disabled: false },
-  { 'value': 76, 'label': '糖果派对Way(Candy Rush)', 'configKey':'candypartyway_slots_base',disabled: false },
-  { 'value': 192, 'label': 'Bounty Raid(Bounty Raid)', 'configKey':'',disabled: false },
-  { 'value': 168, 'label': 'Pharaoh\'s Treasure', 'configKey':'',disabled: false },
-  {'value': 84, 'label': 'Fortune Ace', 'configKey':'',disabled: false },
-  {'value': 164, 'label': 'Mahjong Fortune', 'configKey':'',disabled: false },
+  // { 'value': 82, 'label': '百万富翁(Millionire)', 'configKey':'millionaire_slots_base', disabled: false },
+  // { 'value': 92, 'label': '超级王牌Go(UltraAce)','configKey':'fortuneacego_slots_base', disabled: false },
+  // { 'value': 76, 'label': '糖果派对Way(Candy Rush)', 'configKey':'candypartyway_slots_base',disabled: false },
+  // { 'value': 192, 'label': 'Bounty Raid(Bounty Raid)', 'configKey':'',disabled: false },
+  // { 'value': 168, 'label': 'Pharaoh\'s Treasure', 'configKey':'',disabled: false },
+  // {'value': 84, 'label': 'Fortune Ace', 'configKey':'',disabled: false },
+  // {'value': 164, 'label': 'Mahjong Fortune', 'configKey':'',disabled: false },
 ]
 
 //下注类游戏
@@ -51,6 +52,8 @@ export const MATCH_TICKET_RIGHTS_ID_CFG_DEV = {
 export const MATCH_TICKET_RIGHTS_ID_CFG_PROD = {
     1000002: [ // PROP_TYPE_TICKET_NEW
       { 'ticketId': 347, 'sceneId': 200, 'label': 'UAT Tongtis 1000002 测试门票' },
+      { 'ticketId': 355, 'sceneId': 201, 'label': '新版Pusy门票-1000002' },
+      { 'ticketId': 356, 'sceneId': 202, 'label': '新版德州门票UAT用-1000002' },
     ],
     1000003: [ // PROP_TYPE_TICKET_NEW
       { 'ticketId': 322, 'sceneId': 200, 'label': 'Tongits新版门票 带唯一ID-322'  },
