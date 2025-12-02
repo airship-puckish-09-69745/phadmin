@@ -32,7 +32,7 @@
                 <el-form :inline="true">
                   <el-col :span="8">
                     <el-form-item label="保底奖池抽水">
-                      <el-input v-model.number="item.FeeRate" size="mini" ><template  slot="append">%</template></el-input>
+                      <el-input v-model="item.FeeRate" size="mini" ><template  slot="append">%</template></el-input>
                     </el-form-item>
                   </el-col>
                 </el-form>
@@ -513,7 +513,8 @@ export default {
 
             item.MaxBet /= 1000
             item.CarryLower /= 1000
-            item.RTP /= 100 //四位小数
+            item.FeeRate /= 1000
+            item.RTP /= 1000 //三位小数
             item.RobotCarryMin /= 1000
             item.RobotCarryMax /= 1000
             item.ReChoiceCfg.LowLotteryPoolReChoice /= 1000
@@ -557,7 +558,8 @@ export default {
 
       ret.MaxBet *= 1000
       ret.CarryLower *= 1000
-      ret.RTP *= 100
+      ret.FeeRate *= 1000
+      ret.RTP *= 1000
       ret.RobotCarryMin *= 1000
       ret.RobotCarryMax *= 1000
       ret.ReChoiceCfg.LowLotteryPoolReChoice *= 1000
