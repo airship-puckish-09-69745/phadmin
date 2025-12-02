@@ -63,6 +63,8 @@ export default {
   methods: {
     handleChange() {
       this.$emit('input', this.selectedValue)
+      // 触发 change 事件
+      this.$emit('change', this.selectedValue)
     }
   }
 }
