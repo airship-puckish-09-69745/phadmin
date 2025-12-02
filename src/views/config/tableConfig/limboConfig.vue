@@ -513,7 +513,7 @@ export default {
 
             item.MaxBet /= 1000
             item.CarryLower /= 1000
-            if (IsPHAuditEnv()) {
+            if (this.IsPHAuditEnv()) {
               item.FeeRate /= 1
               item.RTP /= 100 //小数
             }else{
@@ -563,7 +563,7 @@ export default {
 
       ret.MaxBet *= 1000
       ret.CarryLower *= 1000
-      if (IsPHAuditEnv()) {
+      if (this.IsPHAuditEnv()) {
         ret.FeeRate *= 1
         ret.RTP = parseInt(ret.RTP) * 100
       }else{
