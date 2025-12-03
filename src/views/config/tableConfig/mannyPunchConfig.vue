@@ -32,7 +32,7 @@
                 <el-form :inline="true">
                   <el-col :span="8">
                     <el-form-item label="保底奖池抽水">
-                      <el-input v-model.number="item.FeeRate" size="mini" ><template  slot="append">%</template></el-input>
+                      <el-input v-model="item.FeeRate" size="mini" ><template  slot="append">%</template></el-input>
                     </el-form-item>
                   </el-col>
                   
@@ -45,8 +45,8 @@
                 </el-form>
               </el-col>
 
-              <!--RTPS-->
-              <fieldset style="margin-top:10px" v-if="!IsPHAuditEnv()">
+              <!--RTPS  v-if="!IsPHAuditEnv()"-->
+              <fieldset style="margin-top:10px" >
                 
                 <el-col :span="20">
                   <el-button style="margin-bottom:10px; background-color: #c5ddf0" type="normal" icon="el-icon-plus" size="mini" @click="doAddRTPSLevel()">添加</el-button>
@@ -618,6 +618,11 @@ export default {
 
             // item.ReChoiceCfg.LowLotteryPoolReChoice /= 1000
             // item.ReChoiceCfg.HighLotteryPoolReChoice /= 1000
+            if (this.IsPHAuditEnv()) {
+              item.FeeRate /= 1
+            }else{
+              item.FeeRate /= 1000
+            }
 
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data)
@@ -682,6 +687,11 @@ export default {
         for (const o of ret.JackpotCfg.JackpotRegulation.RandAwards) {
           o.PoolVal = parseInt(o.PoolVal * 1000)
         }
+      }
+      if (this.IsPHAuditEnv()) {
+        ret.FeeRate *= 1
+      }else{
+        ret.FeeRate *= 1000
       }
 
       //测试
