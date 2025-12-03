@@ -569,7 +569,7 @@ export default {
       }
 
       for (const i in that.item.BaseCfg) {
-        that.item.BaseCfg[i].Rtp = that.item.BaseCfg[i].Rtp / 100
+        that.item.BaseCfg[i].Rtp = that.item.BaseCfg[i].Rtp / 1000
       }
     },
     getData() {
@@ -671,7 +671,7 @@ export default {
       }
 
       for (const i in this.item.BaseCfg) {
-        ret.BaseCfg[i].Rtp = Math.round(this.item.BaseCfg[i].Rtp * 100)
+        ret.BaseCfg[i].Rtp = Math.round(this.item.BaseCfg[i].Rtp * 1000)
       }
 
       // ret.ReChoiceCfg.LowLotteryPoolReChoice *= 1000

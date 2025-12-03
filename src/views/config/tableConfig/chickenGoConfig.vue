@@ -305,7 +305,7 @@ export default {
       }
 
       for (const i in that.item.RTPS) {
-        that.item.RTPS[i] = that.item.RTPS[i] / 100
+        that.item.RTPS[i] = that.item.RTPS[i] / 1000
       }
     },
     getData() {
@@ -385,7 +385,7 @@ export default {
       }
 
       for (const i in this.item.RTPS) {
-        ret.RTPS[i] = Math.round(this.item.RTPS[i] * 100)
+        ret.RTPS[i] = Math.round(this.item.RTPS[i] * 1000)
       }
 
       // ret.ReChoiceCfg.LowLotteryPoolReChoice *= 1000
