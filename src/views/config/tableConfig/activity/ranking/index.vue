@@ -297,7 +297,7 @@
                     </el-input>
                   </el-col>
                 </fieldset>
-                <fieldset v-if="edit.item.extend.rewardWay === 1" style="margin-top: 10px">
+                <fieldset style="margin-top: 10px">
                   <legend>奖励配置</legend>
                   <el-button size="mini" type="primary" @click="handleAddRankReward()">添加</el-button>
                   <el-table
@@ -328,6 +328,7 @@
                       prop="reward"
                       label="奖励金额"
                       width="200"
+                      v-if="edit.item.extend.rewardWay === 1"
                     >
                       <template slot-scope="scope">
                         <el-input v-model.number="scope.row.reward" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
