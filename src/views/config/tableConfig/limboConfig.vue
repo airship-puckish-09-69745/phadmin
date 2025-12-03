@@ -565,10 +565,10 @@ export default {
       ret.CarryLower *= 1000
       if (this.IsPHAuditEnv()) {
         ret.FeeRate *= 1
-        ret.RTP = parseInt(ret.RTP) * 100
+        ret.RTP *= 100
       }else{
         ret.FeeRate *= 1000
-        ret.RTP = parseInt(ret.RTP) * 1000
+        ret.RTP *= 1000
       }
       
       ret.RobotCarryMin *= 1000
