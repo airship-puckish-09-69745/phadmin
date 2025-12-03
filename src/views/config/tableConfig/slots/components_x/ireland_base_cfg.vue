@@ -99,6 +99,8 @@
               <el-option label="230:PahiyasWins" :value="230" />
               <el-option label="231:PahiyasWins Mars" :value="231" />
               <el-option label="232:MafiaMayhem" :value="232" />
+              <el-option label="234:FortuneTree" :value="234" />
+              <el-option label="235:FortuneTreeMars" :value="235" />
               <el-option label="236:PacquiaoFortune" :value="236" />
               <el-option label="237:PacquiaoFortuneMars" :value="237" />
               <el-option label="238:MasskaraFortune" :value="238" />

@@ -150,6 +150,7 @@ export const MATCH_UNIQUE_ID_CFG =[
   { 'value': 11102, 'label': '双旦每日IPhone赛' },
   { 'value': 11103, 'label': '双旦大赛' },
   { 'value': 11104, 'label': '双旦豪客赛' },
+  { 'value': 11105, 'label': '双旦大赛二' },
 ]
 
 // 比赛Pusoy全局ID集合
@@ -185,11 +186,12 @@ export const MATCH_PUSOY_TABLE_SCENE_ID_CFG =[
 
 //比赛页签选项
 export const MATCH_LIST_TAG_OPTIONS = [
-  { 'value': 0, 'label': 'All', disabled: false },
+  { 'value': 0, 'label': '未分类', disabled: false },
   { 'value': 1, 'label': 'Events', disabled: false },
   { 'value': 2, 'label': 'FREE', disabled: false },
   { 'value': 3, 'label': 'Pro Arena', disabled: false },
-  { 'value': 4, 'label': 'GTCC', disabled: false },
+  { 'value': 4, 'label': 'TPCC', disabled: false },
+  { 'value': 5, 'label': 'TPCC Events', disabled: false },
 ]
 
 //比赛GameId选项

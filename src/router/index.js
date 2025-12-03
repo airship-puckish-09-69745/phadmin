@@ -2180,7 +2180,7 @@ export const asyncRoutes = [
           }
         ]
       },
-      {
+      /*{
         path: 'easterConfig',
         component: () => import('@/views/empty'),
         name: 'easterConfig',
@@ -2193,7 +2193,7 @@ export const asyncRoutes = [
             meta: { title: '复活节活动配置', noCache: true }
           }
         ]
-      },
+      },*/
       {
         path: 'newbieConfig',
         component: () => import('@/views/empty'),
@@ -2270,12 +2270,12 @@ export const asyncRoutes = [
         name: 'tongitsHunter',
         meta: { title: 'TongitsHunter配置', noCache: true }
       },
-      {
+      /*{
         path: 'kingOfPot',
         component: () => import('@/views/config/tableConfig/activity/kingOfPot/index.vue'),
         name: 'kingOfPot',
         meta: { title: 'KingOfPot配置', noCache: true }
-      },
+      },*/
       {
         path: 'sevenDayTreasureVault',
         component: () => import('@/views/config/tableConfig/activity/sevenDayTreasureVaultConfig.vue'),
@@ -3119,6 +3119,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_mannypunch',
             meta: { title: 'M anny Punch ◐', gid: 139 }
+          },
+            {
+            path: 'playlog_pirateScratch',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_pirateScratch',
+            meta: { title: 'P irate Scratch ◐', gid: 141 }
           }
 
           /*

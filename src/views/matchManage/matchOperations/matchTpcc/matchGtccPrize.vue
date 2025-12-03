@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-row>
-      <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" :attr-names="AttrNames" />
+      <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" :on-compare="onCompare" :attr-names="AttrNames" />
     </el-row>
     <el-row>
       <el-form :model="form" label-width="100px" :inline="true" size="mini">
@@ -40,7 +40,7 @@
           </template>
         </el-table-column>
 
-  
+
       </el-table>
     </el-row>
 
@@ -60,7 +60,11 @@
               <el-option v-for="item in InvitationUniqueIdCfgs" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
           </el-form-item>
-          
+
+          <el-form-item label="图片URL：" :required="true">
+            <ImagePicker v-model="editForm.data.imagePath" />
+          </el-form-item>
+
           <el-button style="margin-bottom: 10px;" type="normal" size="mini" @click="addRankRewards()">添加</el-button>
           <el-table
             :data="editForm.data.rankRewards"
@@ -128,7 +132,7 @@ export default {
       posterList: {
         'tableData': [],
       },
-    
+
       raw: {},
       limit: 10,
       total: 0,
@@ -142,11 +146,12 @@ export default {
           matchUniqueId: 0,  //比赛全局ID
           invitationId: 0,  //邀请函全局ID
           rankRewards: this.initRankRewards(),
+          imagePath:'',
         }
       },
       AttrNames: {
       },
-     
+
 
       //邀请函全局ID集合
       InvitationUniqueIdCfgs: [
@@ -202,7 +207,7 @@ export default {
       })
     },
 
-   
+
     addRankRewards() {
        var index = 0
        var maxRank = 0
@@ -242,7 +247,8 @@ export default {
           id: 0,
           invitationId: 0,
           matchUniqueId:0,
-          rankRewards: this.initRankRewards()
+          rankRewards: this.initRankRewards(),
+          imagePath: '',
         }
         this.editForm.isAdd = true
       } else {
@@ -267,7 +273,7 @@ export default {
       if (!this.configCheck()) {
         return
       }
-     
+
       //var saveTime = new Date().getTime()
       if (this.editForm.isAdd === false) {
         for (var i = 0; i < this.posterList.tableData.length; i++) {
@@ -275,7 +281,8 @@ export default {
             this.posterList.tableData[i].rankRewards = this.editForm.data.rankRewards
             this.posterList.tableData[i].invitationId = this.editForm.data.invitationId
             this.posterList.tableData[i].matchUniqueId = this.editForm.data.matchUniqueId
-            
+            this.posterList.tableData[i].imagePath = this.editForm.data.imagePath
+
           }
         }
       } else {
@@ -285,6 +292,7 @@ export default {
             'invitationId': this.InvitationUniqueIdCfgs.find(item => item.value === this.editForm.data.matchUniqueId).invitationId,
             'rankRewards': this.editForm.data.rankRewards,
             'matchUniqueId': this.editForm.data.matchUniqueId,
+            'imagePath':this.editForm.data.imagePath,
           }
         )
       }
@@ -346,13 +354,58 @@ export default {
         showConfirmButton: false
       })
     },
+    onCompare(pre,pro) {
+      const preVal=JSON.parse(pre.Data)
+      const proVal=JSON.parse(pro.Data)
+      //console.log("邀请函奖励配置对比",preVal)
+      let str = ""
+      // 编辑
+      let has = false
+      for (let i in preVal.tableData) {
+        for (let j in proVal.tableData) {
+          const preItem = preVal.tableData[i]
+          const proItem = proVal.tableData[j]
+          if (preItem.id === proItem.id) {
+            if (JSON.stringify(preItem) !== JSON.stringify(proItem)) {
+              has && (str += "\r\n---");has=true
+              str += `\r\n修改：【${preItem.matchUniqueId}】，${this.getInvitationName(preItem.matchUniqueId)}`
+              str += `\r\n奖励：${JSON.stringify(preItem.rankRewards)}`
+            }
+          }
+        }
+      }
+      // 新增
+      for (let i in preVal.tableData) {
+        const preItem = preVal.tableData[i]
+        if (!proVal.tableData.some(item=>item.id === preItem.id)) {
+          has && (str += "\r\n---");has=true
+          str += `\r\n增加：【${preItem.matchUniqueId}】，${this.getInvitationName(preItem.matchUniqueId)}`
+          str += `\r\n奖励：${JSON.stringify(preItem.rankRewards)}`
+        }
+      }
+      // 删除
+      for (let i in proVal.tableData) {
+        const proItem = proVal.tableData[i]
+        if (!preVal.tableData.some(item=>item.id === proItem.id)) {
+          has && (str += "\r\n---");has=true
+          str += `\r\n删除：【${proItem.matchUniqueId}】，${this.getInvitationName(proItem.matchUniqueId)}`
+          str += `\r\n奖励：${JSON.stringify(proItem.rankRewards)}`
+        }
+      }
+      console.log("邀请函奖励配置对比",str)
+      return str
+    },
 
     configCheck() {
       if (this.editForm.data.rankRewards.length <= 0) {
         this.errmsg("请添加邀请函奖励配置")
         return false
       }
-      
+      if(this.editForm.data.imagePath ===''){
+        this.errmsg("勾选图片URL")
+        return false
+      }
+
       // 检查每个排名区间的有效性
       for (let i = 0; i < this.editForm.data.rankRewards.length; i++) {
         const reward = this.editForm.data.rankRewards[i]
@@ -365,7 +418,7 @@ export default {
           return false
         }
       }
-      
+
       // 判断排名区间是否有交叉或重叠
       // 两个区间 [a1, a2] 和 [b1, b2] 有重叠当且仅当: a2 >= b1 && b2 >= a1
       for (let i = 0; i < this.editForm.data.rankRewards.length; i++) {
@@ -376,7 +429,7 @@ export default {
           const end1 = range1.endRank
           const start2 = range2.startRank
           const end2 = range2.endRank
-          
+
           // 检查区间是否重叠
           if (end1 >= start2 && end2 >= start1) {
             this.errmsg(`排名区间有交叉：第${i + 1}行 [${start1}, ${end1}] 与第${j + 1}行 [${start2}, ${end2}] 重叠`)
@@ -384,7 +437,7 @@ export default {
           }
         }
       }
-      
+
       if (this.editForm.data.matchUniqueId <= 0) {
         this.errmsg("请选择邀请函")
         return false
@@ -400,6 +453,6 @@ export default {
       }
       return true
     }
-  }
+  },
 }
 </script>
