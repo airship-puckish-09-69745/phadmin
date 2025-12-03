@@ -139,6 +139,15 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
+                  <el-form-item label="活动展示金额：" prop="extend.rewardShow" :required="true">
+                    <el-input v-model.number="edit.item.extend.rewardShow" placeholder="请输入活动展示金额" >
+                      <template slot="append">
+                        （₱）
+                      </template>
+                    </el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
                   <el-form-item label="奖励类型：" prop="extend.rewardType" :required="true">
                     <el-select v-model="edit.item.extend.rewardType" placeholder="请选择奖励类型">
                       <el-option v-for="item in rewardTypes" :key="item.value" :label="item.label" :value="item.value" />
@@ -416,6 +425,7 @@ function newItem() {
       rewardType: 3, // 奖励类型 1. 金币 2. 投注金 3. 返水金
       rewardSceneId: 27,
       progressReward: 0,
+      rewardShow: 0,
     }
   }
 }
@@ -462,6 +472,7 @@ export default {
         'extend.rewardType': '奖励类型',
         'extend.rewardSceneId': '奖励场景ID',
         'extend.progressReward': '进度奖励',
+        'extend.rewardShow': '活动展示金额',
         modifyUser: '最后修改人',
         updateTime: '更新时间',
       },
