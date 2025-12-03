@@ -122,7 +122,7 @@
                 </el-col>
                 <el-col :span="12">
                   <el-form-item label="达到进入排行榜要求的奖励：" prop="extend.progressReward" :required="true">
-                    <el-input v-model.number="edit.item.extend.progressReward" placeholder="请输入玩家奖励上限" >
+                    <el-input v-model="edit.item.extend.progressReward" placeholder="请输入玩家奖励上限" >
                       <template slot="append">
                         （₱）
                       </template>
