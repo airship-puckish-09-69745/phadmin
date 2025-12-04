@@ -620,6 +620,7 @@ export default {
 
             // item.ReChoiceCfg.LowLotteryPoolReChoice /= 1000
             // item.ReChoiceCfg.HighLotteryPoolReChoice /= 1000
+            item.JackpotCfg.BaseValue /= 1000
             if (this.IsPHAuditEnv()) {
               item.FeeRate /= 1
             }else{
@@ -683,6 +684,7 @@ export default {
 
       // ret.ReChoiceCfg.LowLotteryPoolReChoice *= 1000
       // ret.ReChoiceCfg.HighLotteryPoolReChoice *= 1000
+      ret.JackpotCfg.BaseValue *= 1000
       ret.AutoDropTimer *= 1
 
       if (ret.JackpotCfg.JackpotRegulation){
