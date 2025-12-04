@@ -546,7 +546,7 @@ export default {
           case 2: return "MAJOR"
           case 3: return "MINOR"
           case 4: return "MINI"
-          default: return "NOT FOND"
+          default: return "ERROR"
         }
       }
     }
