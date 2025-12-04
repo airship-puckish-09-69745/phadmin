@@ -481,6 +481,9 @@
           </el-form-item>
           <el-form-item  label="提前显示时间(秒)：" :required="true">
             <el-input v-model.number="editForm.data.preShowSeconds" style="width: 200px;" placeholder="请填写提前显示时间" />
+            <span v-if="(editForm.data.opentMatchType === 2)&&(editForm.data.repeatType === 0 || editForm.data.repeatType === 1) && getCalculatedStartTime()" style="color: #409eff; margin-left: 10px;">
+              提前显示时间: {{ getCalculatedStartTime() }}
+            </span>
           </el-form-item>
           <el-form-item v-if="envProjectName === 'ph_audit' && editForm.data.opentMatchType===1" label="创建时间(秒)" :required="true">
             <el-input v-model.number="editForm.data.preShowSeconds" style="width: 200px;" placeholder="请填写创建时间" />
@@ -1173,6 +1176,42 @@ export default {
     // 自动清理过期配置
   },
   methods: {
+    getCalculatedStartTime() {
+      try {
+        let baseTime = null
+        // repeatType = 0: 单场，使用 onceTime[0]
+        if (this.editForm.data.repeatType === 0) {
+          if (this.editForm.loopDetail.onceTime && this.editForm.loopDetail.onceTime[0]) {
+            baseTime = new Date(this.editForm.loopDetail.onceTime[0])
+          }
+        } 
+        // repeatType = 1: 单天单场循环，使用 loopStartDate + single.stime
+        else if (this.editForm.data.repeatType === 1) {
+          if (this.editForm.loopDetail.loopStartDate && this.editForm.loopDetail.single.stime) {
+            const date = new Date(this.editForm.loopDetail.loopStartDate)
+            const timeParts = this.editForm.loopDetail.single.stime.split(':')
+            if (timeParts.length >= 2) {
+              date.setHours(parseInt(timeParts[0]), parseInt(timeParts[1]), parseInt(timeParts[2] || 0))
+              baseTime = date
+            }
+          }
+        }
+        
+        if (!baseTime) {
+          return ''
+        }
+        
+        // 減去提前显示时间
+        const preShowSeconds = this.editForm.data.preShowSeconds || 0
+        const calculatedTimestamp = Math.floor(baseTime.getTime() / 1000) - preShowSeconds
+        
+        // 使用項目中已有的時間格式化方法
+        return $libDate.FormateSecondStr(calculatedTimestamp, 2)
+      } catch (e) {
+        console.error('计算开赛时间错误:', e)
+        return ''
+      }
+    },
     initRankRewards() {
       return [
         {
@@ -2366,7 +2405,23 @@ export default {
       }else{
         this.editForm.signExtra.gtccWhiteList.data = ''
       }
-
+      if(this.editForm.data.repeatType == 0){
+        // 检查时间控件是否已选择
+        if (!this.editForm.loopDetail.onceTime || !Array.isArray(this.editForm.loopDetail.onceTime) || 
+            this.editForm.loopDetail.onceTime[0] == null || this.editForm.loopDetail.onceTime[1] == null ||
+            this.editForm.loopDetail.onceTime[0] == '' || this.editForm.loopDetail.onceTime[1] == '') {
+          this.errmsg('开赛时间不能为空')
+          return false
+        }
+        const bTime = Math.floor(this.editForm.loopDetail.onceTime[0] / 1000)
+        const eTime = Math.floor(this.editForm.loopDetail.onceTime[1] / 1000)
+    
+        //开赛时间or结束时间 不能小于当前时间一年之前的时间
+        if (bTime < Date.now() / 1000 - 365 * 24 * 60 * 60 || eTime < Date.now() / 1000 - 365 * 24 * 60 * 60) {
+          this.errmsg('开赛时间或结束时间不能小于当前时间一年之前的时间')
+          return false
+        }
+      }
       if (this.editForm.data.repeatType == 1) {
         if (Math.floor(this.timeToSec(this.editForm.loopDetail.single.etime)) - Math.floor(this.timeToSec(this.editForm.loopDetail.single.stime)) < 600) {
           this.errmsg('比赛开始结束间隔要大于10分钟！')
