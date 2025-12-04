@@ -377,7 +377,8 @@ export default {
       showZoogame: false,
       appList: [],
       appOptions: [],
-      showLoading: false
+      showLoading: false,
+      showAppNum: 3 // 显示前 n 个应用
     }
   },
   computed: {
@@ -387,18 +388,18 @@ export default {
       'roles'
     ]),
     displayedAppOptions() {
-      // 显示前两个应用
-      return this.appOptions.slice(0, 2)
+      // 显示前n个应用
+      return this.appOptions.slice(0, this.showAppNum)
     },
 
     hiddenAppOptions() {
       // 隐藏其余的应用
-      return this.appOptions.slice(2)
+      return this.appOptions.slice(this.showAppNum)
     },
 
     hasMoreApps() {
       // 判断是否有更多应用需要隐藏
-      return this.appOptions.length > 2
+      return this.appOptions.length > this.showAppNum
     },
     isOtherAppSelected() {
       // 判断当前选中的 appId 是否在隐藏的应用列表中
@@ -431,7 +432,7 @@ export default {
   },
   methods: {
     async getAllData() {
-      await this.getAppInfo()
+      this.getAppInfo()
 
       await this.getAuthorityData()
 
@@ -914,69 +915,70 @@ export default {
         }
       }
     },
-    getAppOrder() {
-      let appOrder = [1000002, 1000049]
-      if (process.env.VUE_APP_PROJECT_NAME === '菲1-菲1-线上环境') {
-        if (this.env === 'Mars') {
-          appOrder = [1000002, 1000003]
+    getAppInfo() {
+      let apps = [
+        {
+          'ID': 1000002,
+          'Account': '内部'
+        },
+        {
+          'ID': 1000003,
+          'Account': 'BP test'
+        },
+        {
+          'ID': 1000049,
+          'Account': 'ZooGameDev'
+        }
+      ]
+      if (process.env.VUE_APP_PROJECT_NAME === '菲1-线上环境') {
+        if (this.env == 'test') {
+          apps = [
+            {
+              'ID': 1000003,
+              'Account': 'BP UAT'
+            },
+            {
+              'ID': 1000012,
+              'Account': 'CP UAT（1000012）'
+            },
+            {
+              'ID': 1000014,
+              'Account': 'CP UAT（1000014）'
+            },
+            {
+              'ID': 1000002,
+              'Account': '内部'
+            }
+          ]
         } else {
-          appOrder = [1000005, 2000005, 1000002, 3000005]
+          apps = [
+            {
+              'ID': 1000005,
+              'Account': 'BP正式'
+            },
+            {
+              'ID': 2000005,
+              'Account': 'CP正式'
+            },
+            {
+              'ID': 1000002,
+              'Account': '内部'
+            }
+          ]
         }
       }
-      return appOrder
-    },
-    getAppInfo() {
-      const $this = this
-      return request({
-        url: '/thirdparties/all',
-        method: 'get',
-        data: {},
-        async: false
-      }).then(response => {
-        if (response.RetCode === 0) {
-          for (const p of response.Data) {
-            if (p.Status !== 2) {
-              continue
-            }
-            this.appList.push(p)
-          }
-        }
-        $this.initAppOptions()
-      })
+      this.appList = apps
+
+      this.initAppOptions(this.appList)
     },
     initAppOptions() {
       if (this.appList.length === 0) {
         return
       }
-      // 指定的应用ID排序数组
-      const specifiedOrder = this.getAppOrder()
-      // 按照指定顺序排序
-      const sortedAppList = [...this.appList].sort((a, b) => {
-        const indexA = specifiedOrder.indexOf(a.ID)
-        const indexB = specifiedOrder.indexOf(b.ID)
-
-        // 如果都在指定数组中，按指定顺序排序
-        if (indexA !== -1 && indexB !== -1) {
-          return indexA - indexB
-        }
-        // 如果只有A在指定数组中，A排在前面
-        if (indexA !== -1 && indexB === -1) {
-          return -1
-        }
-        // 如果只有B在指定数组中，B排在前面
-        if (indexA === -1 && indexB !== -1) {
-          return 1
-        }
-        // 都不在指定数组中，保持原有顺序
-        return 0
-      })
 
       const item = []
       let found = false
-      for (const p of sortedAppList) {
-        if (p.Status !== 2) {
-          continue
-        }
+      for (const p of this.appList) {
         if (p.ID === this.appId) {
           found = true
         }
@@ -985,18 +987,14 @@ export default {
         item.push({
           name: p.Account,
           value: p.ID,
-          intro: p.Intro,
           type: isSelected ? 'success' : 'info'
         })
       }
       this.appOptions = item
-      if (!found && sortedAppList.length > 0) {
+      if (!found) {
         // 如果当前appId不在列表中，默认选择第一个
-        const firstActiveApp = sortedAppList.find(p => p.Status === 2)
-        if (firstActiveApp) {
-          this.appId = firstActiveApp.ID
-          this.initAppOptions()
-        }
+        this.appId = this.appList[0].ID
+        this.initAppOptions()
       }
     },
     handleAppSelect(value) {

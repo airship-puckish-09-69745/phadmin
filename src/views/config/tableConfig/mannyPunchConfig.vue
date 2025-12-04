@@ -223,11 +223,13 @@
             
             <el-col :span="24" :offset="5">
               <el-form :inline="true">
+                <!--
                 <el-col :span="8">
                   <el-form-item label="单局开奖最高开出显示奖池(%)："  v-if="!IsPHAuditEnv()">
                     <el-input v-model.number="JackpotCfg.ShowPoolLimitRate" size="mini" />
                   </el-form-item>
                 </el-col>
+                -->
                 <el-col :span="8">
                   <el-form-item label="奖池保底">
                     <el-input v-model.number="JackpotCfg.BaseValue" size="mini" ></el-input>
@@ -618,6 +620,7 @@ export default {
 
             // item.ReChoiceCfg.LowLotteryPoolReChoice /= 1000
             // item.ReChoiceCfg.HighLotteryPoolReChoice /= 1000
+            item.JackpotCfg.BaseValue /= 1000
             if (this.IsPHAuditEnv()) {
               item.FeeRate /= 1
             }else{
@@ -681,6 +684,7 @@ export default {
 
       // ret.ReChoiceCfg.LowLotteryPoolReChoice *= 1000
       // ret.ReChoiceCfg.HighLotteryPoolReChoice *= 1000
+      ret.JackpotCfg.BaseValue *= 1000
       ret.AutoDropTimer *= 1
 
       if (ret.JackpotCfg.JackpotRegulation){
