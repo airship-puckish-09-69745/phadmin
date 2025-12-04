@@ -1085,12 +1085,12 @@ export const asyncRoutes = [
             name: 'Dropball_cfg',
             meta: { title: 'D ropball ◐' }
           },
-          // {
-          //   path: 'GoldMaster',
-          //   component: () => import('@/views/config/tableConfig/goldmaster'),
-          //   name: 'GoldMaster',
-          //   meta: { title: 'G oldMaster◐' }
-          // },
+          {
+            path: 'GoldMaster',
+            component: () => import('@/views/config/tableConfig/goldmaster'),
+            name: 'GoldMaster',
+            meta: { title: 'G oldMaster◐' }
+          },
           {
             path: 'hilo_cfg',
             component: () => import('@/views/config/tableConfig/minigames/hilo'),
