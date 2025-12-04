@@ -915,17 +915,6 @@ export default {
         }
       }
     },
-    getAppOrder() {
-      let appOrder = [1000002, 1000049]
-      if (process.env.VUE_APP_PROJECT_NAME === '菲1-线上环境') {
-        if (this.env === 'Mars') {
-          appOrder = [1000002, 1000003]
-        } else {
-          appOrder = [1000005, 2000005, 1000002, 3000005]
-        }
-      }
-      return appOrder
-    },
     getAppInfo() {
       let apps = [
         {
@@ -949,8 +938,12 @@ export default {
               'Account': 'BP UAT'
             },
             {
-              'ID': 1000010,
-              'Account': 'CP UAT'
+              'ID': 1000012,
+              'Account': 'CP UAT（1000012）'
+            },
+            {
+              'ID': 1000014,
+              'Account': 'CP UAT（1000014）'
             },
             {
               'ID': 1000002,
