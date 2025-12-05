@@ -14,7 +14,7 @@
             <el-row>
             <el-col :span="16">
               <el-form-item label="自动下注局数列表">
-                <el-input v-model.number="tmpBetRoundList" size="mini" />
+                <el-input v-model ="tmpBetRoundList" size="mini" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -226,7 +226,7 @@
             width="200"
           >
             <template slot-scope="scope">
-              <span>{{ scope.row.BetMoney }}</span>
+              <span>{{ scope.row.BetMoney/1000 }}</span>
             </template>
           </el-table-column>
          <el-table-column
@@ -443,11 +443,11 @@ export default {
           },
           JackpotRegulation:{
               RandAwards: [
-                  { BetMoney: 10,  JackpotRatio: 10 },
-                  { BetMoney: 20,  JackpotRatio: 10 },
-                  { BetMoney: 30,  JackpotRatio: 10 },
-                  { BetMoney: 50,  JackpotRatio: 10 },
-                  { BetMoney: 100,  JackpotRatio: 10 },
+                  { BetMoney: 10000,  JackpotRatio: 10 },
+                  { BetMoney: 20000,  JackpotRatio: 10 },
+                  { BetMoney: 30000,  JackpotRatio: 10 },
+                  { BetMoney: 50000,  JackpotRatio: 10 },
+                  { BetMoney: 100000,  JackpotRatio: 10 },
               ],
               AwardOdds: [
                   {AwardType:1,  Odds: 500 ,Wight:100},
@@ -535,8 +535,7 @@ export default {
       saveTableMoney() {
           let betItem = []
           for (const oElement of this.tmpBetRoundList.split(',')) {
-            betItem.push(oElement*1000)
-          
+              betItem.push(oElement*1)
             }
             this.item.BetRoundList = (betItem)
       },
@@ -547,7 +546,7 @@ export default {
           case 2: return "MAJOR"
           case 3: return "MINOR"
           case 4: return "MINI"
-          default: return "NOT FOND"
+          default: return "ERROR"
         }
       }
     }

@@ -32,7 +32,7 @@
                 <el-form :inline="true">
                   <el-col :span="8">
                     <el-form-item label="保底奖池抽水">
-                      <el-input v-model.number="item.FeeRate" size="mini" ><template  slot="append">%</template></el-input>
+                      <el-input v-model="item.FeeRate" size="mini" ><template  slot="append">%</template></el-input>
                     </el-form-item>
                   </el-col>
 
@@ -45,8 +45,8 @@
                 </el-form>
               </el-col>
 
-              <!--RTPS-->
-              <fieldset style="margin-top:10px" v-if="!IsPHAuditEnv()">
+              <!--RTPS  v-if="!IsPHAuditEnv()"-->
+              <fieldset style="margin-top:10px" >
 
                 <el-col :span="20">
                   <el-button style="margin-bottom:10px; background-color: #c5ddf0" type="normal" icon="el-icon-plus" size="mini" @click="doAddRTPSLevel()">添加</el-button>
@@ -223,11 +223,13 @@
 
             <el-col :span="24" :offset="5">
               <el-form :inline="true">
+                <!--
                 <el-col :span="8">
                   <el-form-item label="单局开奖最高开出显示奖池(%)："  v-if="!IsPHAuditEnv()">
                     <el-input v-model.number="JackpotCfg.ShowPoolLimitRate" size="mini" />
                   </el-form-item>
                 </el-col>
+                -->
                 <el-col :span="8">
                   <el-form-item label="奖池保底">
                     <el-input v-model.number="JackpotCfg.BaseValue" size="mini" ></el-input>
@@ -569,7 +571,7 @@ export default {
       }
 
       for (const i in that.item.BaseCfg) {
-        that.item.BaseCfg[i].Rtp = that.item.BaseCfg[i].Rtp / 100
+        that.item.BaseCfg[i].Rtp = that.item.BaseCfg[i].Rtp / 1000
       }
     },
     getData() {
@@ -618,6 +620,12 @@ export default {
 
             // item.ReChoiceCfg.LowLotteryPoolReChoice /= 1000
             // item.ReChoiceCfg.HighLotteryPoolReChoice /= 1000
+            item.JackpotCfg.BaseValue /= 1000
+            if (this.IsPHAuditEnv()) {
+              item.FeeRate /= 1
+            }else{
+              item.FeeRate /= 1000
+            }
 
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data)
@@ -671,17 +679,23 @@ export default {
       }
 
       for (const i in this.item.BaseCfg) {
-        ret.BaseCfg[i].Rtp = Math.round(this.item.BaseCfg[i].Rtp * 100)
+        ret.BaseCfg[i].Rtp = Math.round(this.item.BaseCfg[i].Rtp * 1000)
       }
 
       // ret.ReChoiceCfg.LowLotteryPoolReChoice *= 1000
       // ret.ReChoiceCfg.HighLotteryPoolReChoice *= 1000
+      ret.JackpotCfg.BaseValue *= 1000
       ret.AutoDropTimer *= 1
 
       if (ret.JackpotCfg.JackpotRegulation){
         for (const o of ret.JackpotCfg.JackpotRegulation.RandAwards) {
           o.PoolVal = parseInt(o.PoolVal * 1000)
         }
+      }
+      if (this.IsPHAuditEnv()) {
+        ret.FeeRate *= 1
+      }else{
+        ret.FeeRate *= 1000
       }
 
       //测试

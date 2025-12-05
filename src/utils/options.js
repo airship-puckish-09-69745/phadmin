@@ -150,6 +150,7 @@ export const MATCH_UNIQUE_ID_CFG =[
   { 'value': 11102, 'label': '双旦每日IPhone赛' },
   { 'value': 11103, 'label': '双旦大赛' },
   { 'value': 11104, 'label': '双旦豪客赛' },
+  { 'value': 11105, 'label': '双旦大赛二' },
 ]
 
 // 比赛Pusoy全局ID集合

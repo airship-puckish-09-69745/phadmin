@@ -11,7 +11,7 @@
       <el-col :span="15">
         <el-form inline>
           <el-form-item label="app_id">
-            <el-select v-model="appId" @change="refreshEnabled">
+            <el-select v-model="appId" @change="refresh">
               <el-option
                 v-for="item in appInfo"
                 :key="item.key"
@@ -20,22 +20,22 @@
               />
             </el-select>
             <el-form-item label="站点渠道">
-              <SiteSelect v-model="channel" :showCP="true" />
+              <SiteSelect v-model="channel" :show-c-p="true" @change="refresh" />
             </el-form-item>
             <el-form-item l>
-              <el-button type="primary" size="mini" @click="refresh">查询</el-button>
+              <el-button v-loading="isLoading" type="primary" size="mini" @click="getData">查询/刷新</el-button>
             </el-form-item>
             <el-form-item label="配置状态">
               <el-switch
-                  v-model="isDisabled"
-                  active-text="启用"
-                  inactive-text="禁用"
-                  active-color="#13ce66"
-                  inactive-color="#ff4949"
-                  :active-value="false"
-                  :inactive-value="true"
-                  @change="disabledSwitch"
-                />
+                v-model="isDisabled"
+                active-text="启用"
+                inactive-text="禁用"
+                active-color="#13ce66"
+                inactive-color="#ff4949"
+                :active-value="false"
+                :inactive-value="true"
+                @change="disabledSwitch"
+              />
             </el-form-item>
           </el-form-item>
         </el-form>
@@ -45,12 +45,10 @@
       <el-col :span="3">
         <el-button type="primary" size="mini" @click="addOne">添加游戏返回配置项</el-button>
       </el-col>
-      <el-col :span="2">
-        <el-button type="success" size="mini" icon="el-icon-refresh" @click="getData()">刷新</el-button>
-      </el-col>
       <el-col :span="24">
         <el-form ref="allCfg" v-model="showData" label-width="150px">
           <el-table
+            v-loading="isLoading"
             :data="showData"
             style="width: 95%"
             border
@@ -94,11 +92,11 @@
               </template>
             </el-table-column>
 
-<!--            <el-table-column label="操作">-->
-<!--              <template slot-scope="scope">-->
-<!--                <el-button type="success" size="mini" @click="editRow(scope.$index, scope.row)">修改</el-button>-->
-<!--              </template>-->
-<!--            </el-table-column>-->
+            <!--            <el-table-column label="操作">-->
+            <!--              <template slot-scope="scope">-->
+            <!--                <el-button type="success" size="mini" @click="editRow(scope.$index, scope.row)">修改</el-button>-->
+            <!--              </template>-->
+            <!--            </el-table-column>-->
           </el-table>
           <br>
           <br>
@@ -141,7 +139,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="渠道">
-          <SiteSelect v-model="item.channel" :showCP="true" />
+          <SiteSelect v-model="item.channel" :show-c-p="true" />
         </el-form-item>
         <el-form-item label="是否需要返回">
           <el-select v-model="item.is_return" placeholder="请选择" size="mini">
@@ -211,7 +209,8 @@ export default {
       showBtn: 0,
       oldData: {},
       selectedGid: 0,
-      DuplicateData: []
+      DuplicateData: [],
+      isLoading: false
     }
   },
   created() {
@@ -254,6 +253,7 @@ export default {
         var data3 = data2.filter(ele => ele.app_id == this.appId)
       }
       this.showData = data3
+      this.refreshEnabled()
     },
 
     newItem() {
@@ -341,6 +341,7 @@ export default {
     },
     getData() {
       const $this = this
+      this.isLoading = true
       // 加载基础数值配置
       request({
         url: '/customizeconfig/one',
@@ -349,6 +350,7 @@ export default {
           SubKey: this.subKey
         }
       }).then(response => {
+        $this.isLoading = false
         if (response.RetCode === 0) {
           $this.form = response.Data || {}
           $this.postData = response.Data || {}
@@ -369,6 +371,8 @@ export default {
             }
           }
         }
+      }).catch(error => {
+        $this.isLoading = false
       })
     },
     setData() {
@@ -409,13 +413,13 @@ export default {
         copyObj(this.allCfg[i], item)
         cfg.push(item)
       }
-      let enableds = []
+      const enableds = []
       for (const i in this.enableds) {
         const item = {}
         copyObj(this.enableds[i], item)
         enableds.push(item)
       }
-      return {datas:cfg, enableds:enableds}
+      return { datas: cfg, enableds: enableds }
     },
     checkData(cfg) {
       for (const i in cfg) {
@@ -484,7 +488,7 @@ export default {
       if (this.enableds === undefined) {
         this.enableds = []
       }
-      for (let i=0; i < this.enableds.length; i++) {
+      for (let i = 0; i < this.enableds.length; i++) {
         if (this.enableds[i].app_id === this.appId && this.enableds[i].channel === this.channel) {
           this.enableds[i].disabled = yes
           find = true
@@ -503,12 +507,12 @@ export default {
     },
     refreshEnabled(val) {
       console.log(this.enableds)
-      console.log(this.appId, this.channel,this.isDisabled)
+      console.log(this.appId, this.channel, this.isDisabled)
       if (this.enableds === undefined) {
         this.isDisabled = false
         return
       }
-      for (let i=0; i < this.enableds.length; i++) {
+      for (let i = 0; i < this.enableds.length; i++) {
         if (this.enableds[i].app_id === this.appId && this.enableds[i].channel === this.channel) {
           this.isDisabled = this.enableds[i].disabled
           return

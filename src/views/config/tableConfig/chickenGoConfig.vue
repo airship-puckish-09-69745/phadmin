@@ -32,7 +32,7 @@
                 <el-form :inline="true">
                   <el-col :span="8">
                     <el-form-item label="保底奖池抽水">
-                      <el-input v-model.number="item.FeeRate" size="mini" ><template  slot="append">%</template></el-input>
+                      <el-input v-model="item.FeeRate" size="mini" ><template  slot="append">%</template></el-input>
                     </el-form-item>
                   </el-col>
                   
@@ -305,7 +305,7 @@ export default {
       }
 
       for (const i in that.item.RTPS) {
-        that.item.RTPS[i] = that.item.RTPS[i] / 100
+        that.item.RTPS[i] = that.item.RTPS[i] / 1000
       }
     },
     getData() {
@@ -339,6 +339,11 @@ export default {
 
             // item.ReChoiceCfg.LowLotteryPoolReChoice /= 1000
             // item.ReChoiceCfg.HighLotteryPoolReChoice /= 1000
+            if (this.IsPHAuditEnv()) {
+              item.FeeRate /= 1
+            }else{
+              item.FeeRate /= 1000
+            }
 
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data)
@@ -385,12 +390,17 @@ export default {
       }
 
       for (const i in this.item.RTPS) {
-        ret.RTPS[i] = Math.round(this.item.RTPS[i] * 100)
+        ret.RTPS[i] = Math.round(this.item.RTPS[i] * 1000)
       }
 
       // ret.ReChoiceCfg.LowLotteryPoolReChoice *= 1000
       // ret.ReChoiceCfg.HighLotteryPoolReChoice *= 1000
       ret.AutoDropTimer *= 1
+      if (this.IsPHAuditEnv()) {
+        ret.FeeRate *= 1
+      }else{
+        ret.FeeRate *= 1000
+      }
 
       //测试
       if (!ret.openTest || ret.openTest=="1"){
