@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    
+
     <el-row>
       <el-col :span="18">
         <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" />
@@ -35,7 +35,7 @@
                       <el-input v-model.number="item.FeeRate" size="mini" ><template  slot="append">%</template></el-input>
                     </el-form-item>
                   </el-col>
-                  
+
                   <el-col :span="8">
                     <el-form-item label="超时放弃时间:">
                       <el-input v-model.number="item.AutoDropTimer" size="mini" ><template  slot="append">秒</template></el-input>
@@ -47,11 +47,11 @@
 
               <!--RTPS-->
               <fieldset style="margin-top:10px" v-if="!IsPHAuditEnv()">
-                
+
                 <el-col :span="20">
                   <el-button style="margin-bottom:10px; background-color: #c5ddf0" type="normal" icon="el-icon-plus" size="mini" @click="doAddRTPSLevel()">添加</el-button>
                 </el-col>
-                
+
                 <legend>RTP配置</legend>
                 <el-table
                   ref="filterTable"
@@ -88,12 +88,12 @@
 
                 </el-table>
               </fieldset>
-              
+
               <!--bet-->
               <fieldset style="margin-top:10px">
                 <el-col :span="20">
                   <el-button style="margin-bottom:10px; background-color: #c5ddf0" type="normal" icon="el-icon-plus" size="mini" @click="doAddBetMoneyLevel()">添加</el-button>
-                </el-col>                
+                </el-col>
                 <legend>下注配置</legend>
                 <el-table
                   ref="filterTable"
@@ -117,10 +117,10 @@
                       <el-button type="danger" size="mini" @click="delRowBetMoneyLevel(scope.$index)">删除</el-button>
                     </template>
                   </el-table-column>
-                  
+
                 </el-table>
               </fieldset>
-              
+
               <!--难度场次步数配置-->
               <fieldset v-for="(title, index) in lv"
                 :key="index"
@@ -130,7 +130,7 @@
                 <el-col :span="20">
                   <el-button style="margin-bottom:10px; background-color: #c5ddf0" type="normal" icon="el-icon-plus" size="mini" @click="doAddOddsCfg(index)">添加</el-button>
                 </el-col>
-                
+
                 <legend>难度场次步数配置 <b span style="font-weight: bold; color: red;">{{title}}</b></legend>
 
                 <el-table ref="filterTable" :data="item.OddsCfg[index]" border
@@ -153,13 +153,13 @@
                       <el-input v-model.number="item.OddsCfg[index][scope.$index].JPWeight" size="mini" ></el-input>
                     </template>
                   </el-table-column>
-                  
+
                   <el-table-column label="操作" width="180px">
                     <template slot-scope="scope">
                       <el-button type="danger" size="mini" @click="delOddsCfg(index, scope.$index)">删除</el-button>
                     </template>
                   </el-table-column>
-                  
+
                 </el-table>
               </fieldset>
 
@@ -220,7 +220,7 @@
                 </el-col>
               </el-form>
             </el-col>
-            
+
             <el-col :span="24" :offset="5">
               <el-form :inline="true">
                 <el-col :span="8">
@@ -235,7 +235,7 @@
                 </el-col>
               </el-form>
             </el-col>
-          
+
             <fieldset style="margin-top:10px" ><!--v-if="!IsPHAuditEnv()"-->
               <legend>jackpot调控配置</legend>
               <el-row>
@@ -321,20 +321,20 @@
                       </span>
                     </template>
                   </el-table-column>
-        
+
                   <el-table-column label="机器人开奖池值" prop="PoolVal" width="180" v-if="!IsPHAuditEnv()">
                     <template v-if="scope.row.AwardType==1" slot-scope="scope">
                       >=<el-input v-model.number="scope.row.PoolVal" style="width: 120px;" size="mini" :required="true" />
                     </template>
                   </el-table-column>
-            
+
                   <el-table-column label="机器人开奖数量概率" prop="RateArr" width="160" v-if="!IsPHAuditEnv()">
                     <template slot-scope="scope">
                       <el-button v-if="scope.row.AwardType == 1" type="primary" icon="el-icon-edit" circle size="mini" @click="showPoolNumDialog(scope.row)" />
                       {{ showOpenPoolRate(scope.row.JackpotType, scope.row.RateArr) }}
                     </template>
                   </el-table-column>
-                  
+
                 </el-table>
               </el-row>
             </fieldset>
@@ -352,7 +352,7 @@
         </el-col>
       </el-form>
     </el-row>
-  
+
     <el-dialog title="测试配置" :visible.sync="dialogFormVisible"   width="550px">
       <el-form  >
         <el-form-item label="是否开启:">
@@ -372,7 +372,7 @@
         <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
       </div>
     </el-dialog>
-  
+
     <!-- 【dialog】jackpot开出奖励 -->
     <el-dialog
       :title="poolNumChange.title"
@@ -489,14 +489,14 @@ export default {
         BetMoneyLevel:[], //下注
         OddsCfg:[],
         // ReChoiceCfg:{
-        //   LowLotteryPoolReChoice:0, 
-        //   LowLotteryPoolReChoiceRate:0, 
-        //   HighLotteryPoolReChoice:0, 
+        //   LowLotteryPoolReChoice:0,
+        //   LowLotteryPoolReChoiceRate:0,
+        //   HighLotteryPoolReChoice:0,
         //   HighLotteryPoolReChoiceRate: 0
         // },
       },
       form: {},
-      subKey: 'manny_punch_cfg',
+      subKey: this.$route.meta.subKey,
       libShow: $libShow,
       showSetResultPage: false,
       env:process.env.VUE_APP_PROJECT,
@@ -525,7 +525,7 @@ export default {
         jackpotType: 0,
         title: ''
       },
-      
+
 
     }
   },
@@ -559,8 +559,8 @@ export default {
         let id = 1
         for (const j in that.item.OddsCfg[i].OddsItem) {
           odds.push({
-            Id:id, 
-            Odds:that.item.OddsCfg[i].OddsItem[j].Odds / 100, 
+            Id:id,
+            Odds:that.item.OddsCfg[i].OddsItem[j].Odds / 100,
             JPWeight:that.item.OddsCfg[i].OddsItem[j].JPWeight
           })
           id ++
@@ -658,9 +658,9 @@ export default {
           let liveRate = Math.round(this.item.BaseCfg[i].Rtp * 1000000 / tempOdds) //计算存活率
           totalWeight += this.item.OddsCfg[i][j].JPWeight
           oddsCfg.push({
-            Id: id, 
-            Odds: tempOdds, 
-            LiveRate: liveRate, 
+            Id: id,
+            Odds: tempOdds,
+            LiveRate: liveRate,
             JPWeight: this.item.OddsCfg[i][j].JPWeight
           })
           id ++
@@ -884,7 +884,7 @@ export default {
         }
       }
       this.dayLimitChange.visible = false
-    },    
+    },
     showOpenDayLimit(data) {
       return '[' + data['StartHours'] + ',' + data['EndHours'] + ')点：' + data['Num'] + '个'
     },
