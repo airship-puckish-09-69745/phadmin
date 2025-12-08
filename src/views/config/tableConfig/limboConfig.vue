@@ -35,6 +35,11 @@
                       <el-input v-model="item.FeeRate" size="mini" ><template  slot="append">%</template></el-input>
                     </el-form-item>
                   </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="高倍率展示概率">
+                      <el-input v-model="item.ShowHighOddsRate" size="mini" ><template  slot="append">%</template></el-input>
+                    </el-form-item>
+                  </el-col>
                 </el-form>
               </el-col>
               
@@ -514,9 +519,11 @@ export default {
             item.MaxBet /= 1000
             item.CarryLower /= 1000
             if (this.IsPHAuditEnv()) {
+              item.ShowHighOddsRate /= 1
               item.FeeRate /= 1
               item.RTP /= 100 //小数
             }else{
+              item.ShowHighOddsRate /= 100
               item.FeeRate /= 1000
               item.RTP /= 1000 //三位小数
             }
@@ -564,9 +571,11 @@ export default {
       ret.MaxBet *= 1000
       ret.CarryLower *= 1000
       if (this.IsPHAuditEnv()) {
+        ret.ShowHighOddsRate *= 1
         ret.FeeRate *= 1
         ret.RTP *= 100
       }else{
+        ret.ShowHighOddsRate *= 100
         ret.FeeRate *= 1000
         ret.RTP *= 1000
       }
