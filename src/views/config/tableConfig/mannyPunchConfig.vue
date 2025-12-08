@@ -288,9 +288,9 @@
                       <el-input v-model.number="scope.row.DayLimit" :disabled="checkShowDayLimit(scope.row.AwardType)" style="width: 140px;" size="mini" :required="true"><template slot="append">个</template></el-input>
                     </template>
                   </el-table-column>
-                  <el-table-column label="中奖概率" prop="DayLimit"><!--   v-if="IsPHAuditEnv()"-->
+                  <el-table-column label="中奖权重(总权重1000)" prop="DayLimit"><!--   v-if="IsPHAuditEnv()"-->
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.JackpotRate" ><template slot="append">‰</template></el-input>
+                      <el-input v-model.number="scope.row.JackpotRate" ><template slot="append">权重值</template></el-input>
                     </template>
                   </el-table-column>
                   <!--
