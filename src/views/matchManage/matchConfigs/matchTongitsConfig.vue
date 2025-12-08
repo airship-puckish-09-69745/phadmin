@@ -71,8 +71,8 @@
       <div style="float: right; margin-bottom: 10px;">
         <el-button size="mini" icon="el-icon-setting" @click="handleShowDevTools()">开发工具</el-button>
         <el-button size="mini" icon="el-icon-plus" @click="showForm(0)">添加比赛</el-button>
-        <el-button size="mini" icon="el-icon-document-copy" @click="copyAll">复制整日</el-button>
-        <el-button size="mini" icon="el-icon-delete" @click="expireAll">下架过往</el-button>
+       <!-- <el-button size="mini" icon="el-icon-document-copy" @click="copyAll">复制整日</el-button> -->
+       <!-- <el-button size="mini" icon="el-icon-delete" @click="expireAll">下架过往</el-button> -->
         <el-button size="mini" icon="el-icon-delete" @click="deleteAllOff">清理下架</el-button>
       </div>
       <el-table
@@ -1184,7 +1184,7 @@ export default {
           if (this.editForm.loopDetail.onceTime && this.editForm.loopDetail.onceTime[0]) {
             baseTime = new Date(this.editForm.loopDetail.onceTime[0])
           }
-        } 
+        }
         // repeatType = 1: 单天单场循环，使用 loopStartDate + single.stime
         else if (this.editForm.data.repeatType === 1) {
           if (this.editForm.loopDetail.loopStartDate && this.editForm.loopDetail.single.stime) {
@@ -1196,15 +1196,15 @@ export default {
             }
           }
         }
-        
+
         if (!baseTime) {
           return ''
         }
-        
+
         // 減去提前显示时间
         const preShowSeconds = this.editForm.data.preShowSeconds || 0
         const calculatedTimestamp = Math.floor(baseTime.getTime() / 1000) - preShowSeconds
-        
+
         // 使用項目中已有的時間格式化方法
         return $libDate.FormateSecondStr(calculatedTimestamp, 2)
       } catch (e) {
@@ -2192,7 +2192,9 @@ export default {
         request({
           url: '/matchconfig/match/config/delete/alloff',
           method: 'post',
-          data: {}
+          data: {
+            Gid:2031,
+          }
         }).then(response => {
           if (response.RetCode === 0) {
             Message.success('清理已下架的比赛配置成功！')
@@ -2407,7 +2409,7 @@ export default {
       }
       if(this.editForm.data.repeatType == 0){
         // 检查时间控件是否已选择
-        if (!this.editForm.loopDetail.onceTime || !Array.isArray(this.editForm.loopDetail.onceTime) || 
+        if (!this.editForm.loopDetail.onceTime || !Array.isArray(this.editForm.loopDetail.onceTime) ||
             this.editForm.loopDetail.onceTime[0] == null || this.editForm.loopDetail.onceTime[1] == null ||
             this.editForm.loopDetail.onceTime[0] == '' || this.editForm.loopDetail.onceTime[1] == '') {
           this.errmsg('开赛时间不能为空')
@@ -2415,7 +2417,7 @@ export default {
         }
         const bTime = Math.floor(this.editForm.loopDetail.onceTime[0] / 1000)
         const eTime = Math.floor(this.editForm.loopDetail.onceTime[1] / 1000)
-    
+
         //开赛时间or结束时间 不能小于当前时间一年之前的时间
         if (bTime < Date.now() / 1000 - 365 * 24 * 60 * 60 || eTime < Date.now() / 1000 - 365 * 24 * 60 * 60) {
           this.errmsg('开赛时间或结束时间不能小于当前时间一年之前的时间')

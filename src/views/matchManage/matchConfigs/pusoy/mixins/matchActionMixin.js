@@ -267,7 +267,9 @@ export const matchActionMixin = {
         const response = await request({
           url: '/matchconfig/match/config/delete/alloff',
           method: 'POST',
-          data: {}
+          data: {
+            Gid:2033,
+          }
         })
 
         if (response.RetCode === 0) {
