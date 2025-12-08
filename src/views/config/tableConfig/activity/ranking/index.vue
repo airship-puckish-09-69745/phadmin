@@ -765,6 +765,11 @@ export default {
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(_data)
           }
+
+          // 更新选中游戏的排序
+          this.updateGamesSorted()
+
+          console.log('this.edit.item.activity.gameIdList:', this.edit.item.activity.gameIdList)
         }
       } else {
         this.edit.item = {}
