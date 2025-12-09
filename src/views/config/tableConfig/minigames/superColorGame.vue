@@ -306,14 +306,14 @@
                 </el-row>
                 <el-row>
                   <el-col :span="11" :offset="1">
-                    <el-form-item label="机器人+真人人数下限：" prop="RobotCfg.MinTotalUserCount" :rules="dataRule(true,{type:'n',range:'0'})">
+                    <el-form-item label="机器人下限：" prop="RobotCfg.MinTotalUserCount" :rules="dataRule(true,{type:'n',range:'0'})">
                       <el-col :span="20">
                         <el-input v-model.number="item.RobotCfg.MinTotalUserCount" size="mini" :required="true" />
                       </el-col>
                     </el-form-item>
                   </el-col>
                   <el-col :span="11">
-                    <el-form-item label="机器人+真人人数上限：" prop="RobotCfg.MaxTotalUserCount" :rules="dataRule(true,{type:'n',range:'0'})">
+                    <el-form-item label="机器人上限：" prop="RobotCfg.MaxTotalUserCount" :rules="dataRule(true,{type:'n',range:'0'})">
                       <el-col :span="20">
                         <el-input v-model.number="item.RobotCfg.MaxTotalUserCount" size="mini" :required="true" />
                       </el-col>
@@ -447,14 +447,14 @@
                 </el-row>
                 <el-row>
                   <el-col :span="11" :offset="1">
-                    <el-form-item label="榜单机器人开始下注时间点下限：" prop="RobotCfg.MinRankRobotStart" :rules="dataRule(true,{type:'n',range:'0'})">
+                    <el-form-item label="榜单机器人开始下注时间点下限（毫秒）：" prop="RobotCfg.MinRankRobotStart" :rules="dataRule(true,{type:'n',range:'0'})">
                       <el-col :span="20">
                         <el-input v-model.number="item.RobotCfg.MinRankRobotStart" size="mini" :required="true" />
                       </el-col>
                     </el-form-item>
                   </el-col>
                   <el-col :span="11">
-                    <el-form-item label="榜单机器人开始下注时间点上限：" prop="RobotCfg.MaxRankRobotStart" :rules="dataRule(true,{type:'n',range:'0'})">
+                    <el-form-item label="榜单机器人开始下注时间点上限（毫秒）：" prop="RobotCfg.MaxRankRobotStart" :rules="dataRule(true,{type:'n',range:'0'})">
                       <el-col :span="20">
                         <el-input v-model.number="item.RobotCfg.MaxRankRobotStart" size="mini" :required="true" />
                       </el-col>
@@ -463,14 +463,14 @@
                 </el-row>
                 <el-row>
                   <el-col :span="11" :offset="1">
-                    <el-form-item label="榜单机器人开始下注时间间隔点下限：" prop="RobotCfg.MinRankRobotTime" :rules="dataRule(true,{type:'n',range:'0'})">
+                    <el-form-item label="榜单机器人开始下注时间间隔点下限（毫秒）：" prop="RobotCfg.MinRankRobotTime" :rules="dataRule(true,{type:'n',range:'0'})">
                       <el-col :span="20">
                         <el-input v-model.number="item.RobotCfg.MinRankRobotTime" size="mini" :required="true" />
                       </el-col>
                     </el-form-item>
                   </el-col>
                   <el-col :span="11">
-                    <el-form-item label="榜单机器人开始下注时间间隔点上限：" prop="RobotCfg.MaxRankRobotTime" :rules="dataRule(true,{type:'n',range:'0'})">
+                    <el-form-item label="榜单机器人开始下注时间间隔点上限（毫秒）：" prop="RobotCfg.MaxRankRobotTime" :rules="dataRule(true,{type:'n',range:'0'})">
                       <el-col :span="20">
                         <el-input v-model.number="item.RobotCfg.MaxRankRobotTime" size="mini" :required="true" />
                       </el-col>
