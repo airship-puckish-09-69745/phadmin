@@ -1182,6 +1182,33 @@ export default {
         } else if (this.item.RobotCfg.MinRobotBetMoney > this.item.RobotCfg.MaxRobotBetMoney) {
           Message.error('“机器人下注最大筹码”不能小于“机器人下注最小筹码”')
           return
+        } else if (this.item.RobotCfg.MinRobotBetAreas > this.item.RobotCfg.MaxRobotBetAreas) {
+          Message.error('“机器人下注最大区域”不能小于“机器人下注最小区域”')
+          return
+        } else if (this.item.RobotCfg.MinRobotBetTimesOffset > this.item.RobotCfg.MaxRobotBetTimesOffset) {
+          Message.error('“机器人下注最大下注次数偏移”不能小于“机器人下注最小下注次数偏移”')
+          return
+        } else if (this.item.RobotCfg.MinRobotBetAreasOffset > this.item.RobotCfg.MaxRobotBetAreasOffset) {
+          Message.error('“机器人下注最大区域偏移”不能小于“机器人下注最小区域偏移”')
+          return
+        } else if (this.item.RobotCfg.MinRobotInitBetMoney > this.item.RobotCfg.MaxRobotInitBetMoney) {
+          Message.error('“机器人下注最大初始筹码”不能小于“机器人下注最小初始筹码”')
+          return
+        } else if (this.item.RobotCfg.MinResetCycle > this.item.RobotCfg.MaxResetCycle) {
+          Message.error('“机器人重置周期最大”不能小于“机器人重置周期最小”')
+          return
+        } else if (this.item.RobotCfg.MinRankRobotMoney > this.item.RobotCfg.MaxRankRobotMoney) {
+          Message.error('“榜单机器人携带金币上限”不能小于“榜单机器人携带金币下限”')
+          return
+        } else if (this.item.RobotCfg.MinRankRobotInitBetMoney > this.item.RobotCfg.MaxRankRobotInitBetMoney) {
+          Message.error('“榜单机器人下注最大初始筹码”不能小于“榜单机器人下注最小初始筹码”')
+          return
+        } else if (this.item.RobotCfg.MinRankRobotStart > this.item.RobotCfg.MaxRankRobotStart) {
+          Message.error('“榜单机器人开始下注时间”不能小于“榜单机器人结束下注时间”')
+          return
+        } else if (this.item.RobotCfg.MinRankRobotTime > this.item.RobotCfg.MaxRankRobotTime) {
+          Message.error('“榜单机器人下注最大时间”不能小于“榜单机器人下注最小时间”')
+          return
         } else {
           let minBetmoney = 0
           for (let i = 0; i < this.item.BetLevels.length; i++) {
