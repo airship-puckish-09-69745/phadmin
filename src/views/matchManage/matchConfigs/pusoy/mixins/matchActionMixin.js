@@ -343,6 +343,29 @@ export const matchActionMixin = {
         await this.getMatchList(env)
       }
     },
+    /**
+     * 排序处理
+     * @param {Object} sortInfo - 排序信息对象
+     * @param {string} sortInfo.prop - 排序的列属性名
+     * @param {string} sortInfo.order - 排序顺序：'ascending'（升序）、'descending'（降序）或 null（取消排序）
+     */
+    handleSortChange({ prop, order }) {
+      if (!order || !prop) {
+        // 取消排序，恢复原始顺序
+        return
+      }
+
+      // 处理结束时间列的自定义排序
+      if (prop === 'end_time') {
+        this.tableData.sort((a, b) => {
+          const timeA = a.end_time || 0
+          const timeB = b.end_time || 0
+          return order === 'ascending' ? timeA - timeB : timeB - timeA
+        })
+      }
+      // 其他列（如 id、sort）使用 Element UI 默认排序
+      // 如果需要自定义其他列的排序，可以在这里添加
+    },
 
     /**
      * 关闭编辑

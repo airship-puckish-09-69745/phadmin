@@ -81,6 +81,7 @@
         :header-cell-style="libShow.DefaultTableHeadClass"
         :cell-style="libShow.TableCell(10)"
         style="width: 100%"
+        @sort-change="handleSortChange"
       >
         <el-table-column
           prop="show_appinfo"
@@ -113,15 +114,22 @@
             <DateTimeShow :show-type="2" :timestamp="row.start_time" />
           </template>
         </el-table-column>
-        <el-table-column
-          prop="end_time"
-          label="结束时间"
-        >
+        <el-table-column prop="end_time" label="结束时间" sortable >
           <template slot-scope="{row}">
-            <DateTimeShow :show-type="2" :timestamp="row.end_time" />
+            <DateTimeShow :show-type="2" :timestamp="row.end_time"  />
           </template>
         </el-table-column>
-
+        <el-table-column
+          prop="IsMatchOver"
+          label="是否结束"
+          width="100"
+        >
+          <template slot-scope="scope">
+            <span :style="{ color: IsMatchOver(scope.row.end_time) === '是' ? '#f56c6c' : '#409eff' }">
+              {{ IsMatchOver(scope.row.end_time) }}
+            </span>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="sort"
           label="赛事排序"
@@ -2276,12 +2284,11 @@ export default {
                     str = str + '(' + objs.list[i].show_name + ')'
                   }
                   if (IsNewTicketProp(objs.list[i].item_type)) {
-                    console.log("ticketID ",objs.list[i].id ,objs.list[i])
                     if (objs.list[i].item_extra.length <=  0) {
                       continue
                     }
                     const exitData = JSON.parse(objs.list[i].item_extra)
-                    console.log("ticketID 2222 exitData   ",objs.list[i].id,exitData)
+                    //console.log("ticketID 2222 exitData   ",objs.list[i].id,exitData)
                    if(exitData === null || exitData === undefined || exitData.appId === 0 || typeof exitData.appId === 'undefined'){
                       continue
                     }
@@ -2318,8 +2325,8 @@ export default {
                       })
                     }
                   }
-                  console.log("matchTicketsCfgs",this.matchTicketsCfgs)
-                 console.log("matchPropsCfgs",this.matchPropsCfgs)
+                  //console.log("matchTicketsCfgs",this.matchTicketsCfgs)
+                 //console.log("matchPropsCfgs",this.matchPropsCfgs)
                 }
               }
             }
@@ -3255,6 +3262,24 @@ export default {
           break;
       }
       return  true
+    },
+  
+    handleSortChange({ prop, order }) {
+      // 处理结束时间列的自定义排序
+      if (prop === 'end_time' && order) {
+        this.tableData.sort((a, b) => {
+          const timeA = a.end_time || 0
+          const timeB = b.end_time || 0
+          return order === 'ascending' ? timeA - timeB : timeB - timeA
+        })
+      }
+    },
+    IsMatchOver(endTime) {
+      
+      const now = new Date().getTime() / 1000
+
+      console.log("endTime",endTime,"now",now)
+      return endTime < now ? '是' : '否'
     },
   }
 }

@@ -54,25 +54,26 @@
       :cell-style="libShow.TableCell(10)"
       style="width: 100%"
       :loading="loading"
+       @sort-change="handleSortChange"
       empty-text="暂无数据"
     >
       <el-table-column
         prop="show_appinfo"
         label="APP信息"
         show-overflow-tooltip
-        min-width="120"
+        width="280"
       />
       <el-table-column
         prop="id"
         label="比赛ID"
         sortable
-        width="100"
+        width="120"
       />
       <el-table-column
         prop="name"
         label="比赛名称"
         show-overflow-tooltip
-        min-width="150"
+        width="250"
       />
       <el-table-column
         prop="game_id"
@@ -95,12 +96,26 @@
       <el-table-column
         prop="end_time"
         label="结束时间"
+        sortable
         width="180"
       >
+      
         <template slot-scope="{row}">
           <DateTimeShow :show-type="2" :timestamp="row.end_time" />
         </template>
       </el-table-column>
+
+      <el-table-column
+          prop="IsMatchOver"
+          label="是否结束"
+          width="100"
+        >
+          <template slot-scope="scope">
+            <span :style="{ color: IsMatchOver(scope.row.end_time) === '是' ? '#f56c6c' : '#409eff' }">
+              {{ IsMatchOver(scope.row.end_time) }}
+            </span>
+          </template>
+        </el-table-column>
       <el-table-column
         prop="sort"
         label="比赛排序"
@@ -124,7 +139,7 @@
       <el-table-column
         prop="update_time"
         label="修改時間"
-        width="180"
+        width="200"
       >
         <template slot-scope="scope">
           {{ formatTime(scope.row.update_time) }}
@@ -364,6 +379,20 @@ export default {
      */
     handleCurrentChange(val) {
       this.$emit('current-change', val)
+    },
+    
+    handleSortChange({ prop, order }) {
+      this.$emit('sort-change', { prop, order })
+    },
+    
+    /**
+     * 判断赛事是否已经结束
+     * @param {number} endTime - 结束时间
+     * @returns {string} 是否结束
+     */
+    IsMatchOver(endTime) {
+      const now = new Date().getTime() / 1000
+      return endTime < now ? '是' : '否'
     }
   }
 }
