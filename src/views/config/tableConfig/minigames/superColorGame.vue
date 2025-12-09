@@ -306,14 +306,14 @@
                 </el-row>
                 <el-row>
                   <el-col :span="11" :offset="1">
-                    <el-form-item label="机器人+真人人数下限：" prop="RobotCfg.MinTotalUserCount" :rules="dataRule(true,{type:'n',range:'0'})">
+                    <el-form-item label="机器人下限：" prop="RobotCfg.MinTotalUserCount" :rules="dataRule(true,{type:'n',range:'0'})">
                       <el-col :span="20">
                         <el-input v-model.number="item.RobotCfg.MinTotalUserCount" size="mini" :required="true" />
                       </el-col>
                     </el-form-item>
                   </el-col>
                   <el-col :span="11">
-                    <el-form-item label="机器人+真人人数上限：" prop="RobotCfg.MaxTotalUserCount" :rules="dataRule(true,{type:'n',range:'0'})">
+                    <el-form-item label="机器人上限：" prop="RobotCfg.MaxTotalUserCount" :rules="dataRule(true,{type:'n',range:'0'})">
                       <el-col :span="20">
                         <el-input v-model.number="item.RobotCfg.MaxTotalUserCount" size="mini" :required="true" />
                       </el-col>
@@ -402,11 +402,94 @@
                     </el-form-item>
                   </el-col>
                 </el-row>
+
+
+<!--                MinRankRobotMoney: 50000, // 榜单机器人金币下限-->
+<!--                MaxRankRobotMoney: 35000000, // 榜单机器人金币上限-->
+<!--                RankRobotRadio: 50, // 榜单机器人比例-->
+<!--                MinRankRobotInitBetMoney: 0, // 机器人初始下注最小筹码-->
+<!--                MaxRankRobotInitBetMoney: 0, // 机器人初始下注最大筹码-->
+<!--                MinRankRobotStart: 1000, // 榜单机器人开始下注时间点-->
+<!--                MaxRankRobotStart: 5000, // 榜单机器人开始下注时间点上限-->
+<!--                MinRankRobotTime: 300, // 榜单机器人开始下注时间间隔点-->
+<!--                MaxRankRobotTime: 700, // 榜单机器人开始下注时间间隔点上限-->
+                <el-row>
+                  <el-col :span="11" :offset="1">
+                    <el-form-item label="榜单机器人金币下限：" prop="RobotCfg.MinRankRobotMoney" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-col :span="20">
+                        <el-input v-model.number="item.RobotCfg.MinRankRobotMoney" size="mini" :required="true" />
+                      </el-col>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="11">
+                    <el-form-item label="榜单机器人金币上限：" prop="RobotCfg.MaxRankRobotMoney" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-col :span="20">
+                        <el-input v-model.number="item.RobotCfg.MaxRankRobotMoney" size="mini" :required="true" />
+                      </el-col>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="11" :offset="1">
+                    <el-form-item label="榜单机器人初始下注最小筹码：" prop="RobotCfg.MinRankRobotInitBetMoney" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-col :span="20">
+                        <el-input v-model.number="item.RobotCfg.MinRankRobotInitBetMoney" size="mini" :required="true" />
+                      </el-col>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="11">
+                    <el-form-item label="榜单机器人初始下注最大筹码：" prop="RobotCfg.MaxRankRobotInitBetMoney" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-col :span="20">
+                        <el-input v-model.number="item.RobotCfg.MaxRankRobotInitBetMoney" size="mini" :required="true" />
+                      </el-col>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="11" :offset="1">
+                    <el-form-item label="榜单机器人开始下注时间点下限（毫秒）：" prop="RobotCfg.MinRankRobotStart" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-col :span="20">
+                        <el-input v-model.number="item.RobotCfg.MinRankRobotStart" size="mini" :required="true" />
+                      </el-col>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="11">
+                    <el-form-item label="榜单机器人开始下注时间点上限（毫秒）：" prop="RobotCfg.MaxRankRobotStart" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-col :span="20">
+                        <el-input v-model.number="item.RobotCfg.MaxRankRobotStart" size="mini" :required="true" />
+                      </el-col>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="11" :offset="1">
+                    <el-form-item label="榜单机器人开始下注时间间隔点下限（毫秒）：" prop="RobotCfg.MinRankRobotTime" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-col :span="20">
+                        <el-input v-model.number="item.RobotCfg.MinRankRobotTime" size="mini" :required="true" />
+                      </el-col>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="11">
+                    <el-form-item label="榜单机器人开始下注时间间隔点上限（毫秒）：" prop="RobotCfg.MaxRankRobotTime" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-col :span="20">
+                        <el-input v-model.number="item.RobotCfg.MaxRankRobotTime" size="mini" :required="true" />
+                      </el-col>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+
                 <el-row>
                   <el-col :span="11" :offset="1">
                     <el-form-item label="机器人下注间隔（毫秒）：" prop="RobotCfg.RobotActionTime" :rules="dataRule(true,{type:'n',range:'0'})">
                       <el-col :span="20">
                         <el-input v-model.number="item.RobotCfg.RobotActionTime" size="mini" :required="true" @input="logChange"/>
+                      </el-col>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="11">
+                    <el-form-item label="榜单机器人比例：" prop="RobotCfg.RankRobotRadio" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-col :span="20">
+                        <el-input v-model.number="item.RobotCfg.RankRobotRadio" size="mini" :required="true" />
                       </el-col>
                     </el-form-item>
                   </el-col>
@@ -692,7 +775,17 @@ export default {
           MaxRobotInitBetMoney: 0, // 机器人初始下注最大筹码
           MinResetCycle: 0, // 机器人重置周期
           MaxResetCycle: 0, // 机器人重置周期
-          RobotActionTime: 200 // 机器人下注时间间隔
+          RobotActionTime: 200, // 机器人下注时间间隔
+
+          MinRankRobotMoney: 50000, // 榜单机器人金币下限
+          MaxRankRobotMoney: 35000000, // 榜单机器人金币上限
+          RankRobotRadio: 50, // 榜单机器人比例
+          MinRankRobotInitBetMoney: 0, // 机器人初始下注最小筹码
+          MaxRankRobotInitBetMoney: 0, // 机器人初始下注最大筹码
+          MinRankRobotStart: 1000, // 榜单机器人开始下注时间点
+          MaxRankRobotStart: 5000, // 榜单机器人开始下注时间点上限
+          MinRankRobotTime: 300, // 榜单机器人开始下注时间间隔点
+          MaxRankRobotTime: 700, // 榜单机器人开始下注时间间隔点上限
         },
         BetLevels: [
           {
@@ -896,6 +989,51 @@ export default {
         this.item.RobotCfg.RobotActionTime = 500
       }
 
+      /////////////////////////
+
+      if (this.item.RobotCfg !== undefined && this.item.RobotCfg.MinRankRobotMoney === undefined) {
+        this.item.RobotCfg.MinRankRobotMoney = 1000
+      }
+      if (this.item.RobotCfg !== undefined && this.item.RobotCfg.MaxRankRobotMoney === undefined) {
+        this.item.RobotCfg.MaxRankRobotMoney = 10000
+      }
+      if (this.item.RobotCfg !== undefined && this.item.RobotCfg.MinRankRobotMoney !== undefined) {
+        this.item.RobotCfg.MinRankRobotMoney /= 1000
+      }
+      if (this.item.RobotCfg !== undefined && this.item.RobotCfg.MaxRankRobotMoney !== undefined) {
+        this.item.RobotCfg.MaxRankRobotMoney /= 1000
+      }
+
+      if (this.item.RobotCfg !== undefined && this.item.RobotCfg.RankRobotRadio === undefined) {
+        this.item.RobotCfg.RankRobotRadio = 30
+      }
+      if (this.item.RobotCfg !== undefined && this.item.RobotCfg.MinRankRobotInitBetMoney === undefined) {
+        this.item.RobotCfg.MinRankRobotInitBetMoney = 10000
+      }
+      if (this.item.RobotCfg !== undefined && this.item.RobotCfg.MinRankRobotInitBetMoney !== undefined) {
+        this.item.RobotCfg.MinRankRobotInitBetMoney /= 1000
+      }
+      if (this.item.RobotCfg !== undefined && this.item.RobotCfg.MaxRankRobotInitBetMoney === undefined) {
+        this.item.RobotCfg.MaxRankRobotInitBetMoney = 100000
+      }
+      if (this.item.RobotCfg !== undefined && this.item.RobotCfg.MaxRankRobotInitBetMoney !== undefined) {
+        this.item.RobotCfg.MaxRankRobotInitBetMoney /= 1000
+      }
+      if (this.item.RobotCfg !== undefined && this.item.RobotCfg.MinRankRobotStart === undefined) {
+        this.item.RobotCfg.MinRankRobotStart = 3000
+      }
+      if (this.item.RobotCfg !== undefined && this.item.RobotCfg.MaxRankRobotStart === undefined) {
+        this.item.RobotCfg.MaxRankRobotStart = 5000
+      }
+      if (this.item.RobotCfg !== undefined && this.item.RobotCfg.MinRankRobotTime === undefined) {
+        this.item.RobotCfg.MinRankRobotTime = 300
+      }
+      if (this.item.RobotCfg !== undefined && this.item.RobotCfg.MaxRankRobotTime === undefined) {
+        this.item.RobotCfg.MaxRankRobotTime = 700
+      }
+
+      ///////////////////////
+
       for (const i in this.item.BetAreas) {
         const betArea = this.item.BetAreas[i]
         betArea.MaxMoneyBet /= 1000
@@ -936,6 +1074,11 @@ export default {
         ret.RobotCfg.MaxRobotBetMoney *= 1000
         ret.RobotCfg.MinRobotInitBetMoney *= 1000
         ret.RobotCfg.MaxRobotInitBetMoney *= 1000
+
+        ret.RobotCfg.MinRankRobotMoney *= 1000
+        ret.RobotCfg.MaxRankRobotMoney *= 1000
+        ret.RobotCfg.MinRankRobotInitBetMoney *= 1000
+        ret.RobotCfg.MaxRankRobotInitBetMoney *= 1000
       }
       if (this.envProjectName !== 'ph_audit') {
         ret.RobotCfg.IsOpen = true
@@ -1038,6 +1181,33 @@ export default {
           return
         } else if (this.item.RobotCfg.MinRobotBetMoney > this.item.RobotCfg.MaxRobotBetMoney) {
           Message.error('“机器人下注最大筹码”不能小于“机器人下注最小筹码”')
+          return
+        } else if (this.item.RobotCfg.MinRobotBetAreas > this.item.RobotCfg.MaxRobotBetAreas) {
+          Message.error('“机器人下注最大区域”不能小于“机器人下注最小区域”')
+          return
+        } else if (this.item.RobotCfg.MinRobotBetTimesOffset > this.item.RobotCfg.MaxRobotBetTimesOffset) {
+          Message.error('“机器人下注最大下注次数偏移”不能小于“机器人下注最小下注次数偏移”')
+          return
+        } else if (this.item.RobotCfg.MinRobotBetAreasOffset > this.item.RobotCfg.MaxRobotBetAreasOffset) {
+          Message.error('“机器人下注最大区域偏移”不能小于“机器人下注最小区域偏移”')
+          return
+        } else if (this.item.RobotCfg.MinRobotInitBetMoney > this.item.RobotCfg.MaxRobotInitBetMoney) {
+          Message.error('“机器人下注最大初始筹码”不能小于“机器人下注最小初始筹码”')
+          return
+        } else if (this.item.RobotCfg.MinResetCycle > this.item.RobotCfg.MaxResetCycle) {
+          Message.error('“机器人重置周期最大”不能小于“机器人重置周期最小”')
+          return
+        } else if (this.item.RobotCfg.MinRankRobotMoney > this.item.RobotCfg.MaxRankRobotMoney) {
+          Message.error('“榜单机器人携带金币上限”不能小于“榜单机器人携带金币下限”')
+          return
+        } else if (this.item.RobotCfg.MinRankRobotInitBetMoney > this.item.RobotCfg.MaxRankRobotInitBetMoney) {
+          Message.error('“榜单机器人下注最大初始筹码”不能小于“榜单机器人下注最小初始筹码”')
+          return
+        } else if (this.item.RobotCfg.MinRankRobotStart > this.item.RobotCfg.MaxRankRobotStart) {
+          Message.error('“榜单机器人开始下注时间”不能小于“榜单机器人结束下注时间”')
+          return
+        } else if (this.item.RobotCfg.MinRankRobotTime > this.item.RobotCfg.MaxRankRobotTime) {
+          Message.error('“榜单机器人下注最大时间”不能小于“榜单机器人下注最小时间”')
           return
         } else {
           let minBetmoney = 0
