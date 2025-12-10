@@ -102,18 +102,18 @@
             </el-table-column>
             <el-table-column prop="invitationId" label="邀请函ID" width="200px">
               <template slot-scope="scope">
-                <el-select 
-                  v-if="getAvailableInvitations().length > 1" 
-                  v-model="scope.row.invitationId" 
-                  placeholder="请选择邀请函" 
-                  size="mini" 
+                <el-select
+                  v-if="getAvailableInvitations().length > 1"
+                  v-model="scope.row.invitationId"
+                  placeholder="请选择邀请函"
+                  size="mini"
                   style="width: 100%;"
                 >
-                  <el-option 
-                    v-for="item in getAvailableInvitations()" 
-                    :key="item.invitationId" 
-                    :label="`${item.invitationId} - ${item.invitationName}`" 
-                    :value="item.invitationId" 
+                  <el-option
+                    v-for="item in getAvailableInvitations()"
+                    :key="item.invitationId"
+                    :label="`${item.invitationId} - ${item.invitationName}`"
+                    :value="item.invitationId"
                   />
                 </el-select>
                 <span v-else-if="getAvailableInvitations().length === 1">
@@ -318,14 +318,14 @@ export default {
         this.editForm.data.invitationList = []
         return
       }
-      
+
       // 查找对应的配置
       const config = this.InvitationUniqueIdCfgs.find(item => item.value === matchUniqueId)
       if (!config || !config.invitationId || !Array.isArray(config.invitationId)) {
         this.editForm.data.invitationList = []
         return
       }
-      
+
       // 根据 invitationId 数组生成表格数据
       this.editForm.data.invitationList = config.invitationId.map(id => {
         // 如果已有数据，保留图片路径
@@ -336,10 +336,11 @@ export default {
           imagePath: existingItem ? existingItem.imagePath : ''
         }
       })
-      
+      //console.log("更新邀请函列表 matchUniqueId.",this.editForm.data.invitationList ,matchUniqueId)
       // 如果只有一个邀请函，自动为所有 rankRewards 赋值
       if (this.editForm.data.invitationList.length === 1) {
         const singleInvitationId = this.editForm.data.invitationList[0].invitationId
+        //console.log("单个邀请函 ID:",singleInvitationId)
         if (this.editForm.data.rankRewards && this.editForm.data.rankRewards.length > 0) {
           this.editForm.data.rankRewards.forEach(reward => {
             if (!reward.invitationId || reward.invitationId === 0) {
