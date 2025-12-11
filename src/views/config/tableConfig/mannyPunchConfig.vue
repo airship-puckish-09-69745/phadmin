@@ -277,7 +277,7 @@
                   </el-table-column>
                   <el-table-column label="发放数量" prop="Value">
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.AwardRate" style="width: 140px;" size="mini" :required="true">
+                      <el-input v-model.number="scope.row.AwardRate" style="width: 100px;" size="mini" :required="true">
                         <template v-if="scope.row.AwardType==1" slot="append">%</template>
                         <template v-if="scope.row.AwardType==2" slot="append">倍</template>
                       </el-input>
@@ -290,7 +290,7 @@
                   </el-table-column>
                   <el-table-column label="中奖权重(总权重1000)" prop="DayLimit"><!--   v-if="IsPHAuditEnv()"-->
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.JackpotRate" ><template slot="append">权重值</template></el-input>
+                      <el-input v-model.number="scope.row.JackpotRate" ><template slot="append">权重</template></el-input>
                     </template>
                   </el-table-column>
                   <!--
@@ -312,7 +312,7 @@
                       <el-tag v-for="tag, key in scope.row.DayLimitArr" v-if="scope.row.AwardType == 1" :key="key" disable-transitions>{{ showOpenDayLimit(tag) }}</el-tag>
                     </template>
                   </el-table-column>
-                  <el-table-column label="玩家开奖池条件(%)" width="260" v-if="!IsPHAuditEnv()">
+                  <el-table-column label="玩家开奖池条件(%)" width="250" v-if="!IsPHAuditEnv()">
                     <template slot-scope="scope">
                       <div v-if="scope.row.AwardType==1">
                         虚拟*<el-input v-model.number="scope.row.VrPoolRate" style="width: 70px;" size="mini" :required="true" />
@@ -324,7 +324,7 @@
                     </template>
                   </el-table-column>
 
-                  <el-table-column label="机器人开奖池值" prop="PoolVal" width="180" v-if="!IsPHAuditEnv()">
+                  <el-table-column label="机器人开奖池值" prop="PoolVal" width="170" v-if="!IsPHAuditEnv()">
                     <template v-if="scope.row.AwardType==1" slot-scope="scope">
                       >=<el-input v-model.number="scope.row.PoolVal" style="width: 120px;" size="mini" :required="true" />
                     </template>

@@ -2,39 +2,43 @@
   <div class="data-table-container">
     <!-- 操作按鈕區域 -->
     <div class="table-actions">
-      <el-button 
-        size="mini" 
-        icon="el-icon-setting" 
+      <el-button
+        size="mini"
+        icon="el-icon-setting"
         @click="handleShowDevTools"
       >
         开发工具
       </el-button>
-      <el-button 
-        size="mini" 
-        icon="el-icon-plus" 
+      <el-button
+        size="mini"
+        icon="el-icon-plus"
         type="primary"
         @click="handleAddMatch"
       >
         添加比赛
       </el-button>
-      <el-button 
-        size="mini" 
-        icon="el-icon-document-copy" 
+
+      <!--
+      <el-button
+        size="mini"
+        icon="el-icon-document-copy"
         @click="handleCopyAll"
       >
         复制整日
       </el-button>
-      <el-button 
-        size="mini" 
-        icon="el-icon-delete" 
+      <el-button
+        size="mini"
+        icon="el-icon-delete"
         type="warning"
         @click="handleExpireAll"
       >
         下架过往
       </el-button>
-      <el-button 
-        size="mini" 
-        icon="el-icon-delete" 
+
+      -->
+      <el-button
+        size="mini"
+        icon="el-icon-delete"
         type="danger"
         @click="handleDeleteAllOff"
       >
@@ -50,25 +54,26 @@
       :cell-style="libShow.TableCell(10)"
       style="width: 100%"
       :loading="loading"
+       @sort-change="handleSortChange"
       empty-text="暂无数据"
     >
       <el-table-column
         prop="show_appinfo"
         label="APP信息"
         show-overflow-tooltip
-        min-width="120"
+        width="280"
       />
       <el-table-column
         prop="id"
         label="比赛ID"
         sortable
-        width="100"
+        width="120"
       />
       <el-table-column
         prop="name"
         label="比赛名称"
         show-overflow-tooltip
-        min-width="150"
+        width="250"
       />
       <el-table-column
         prop="game_id"
@@ -91,12 +96,26 @@
       <el-table-column
         prop="end_time"
         label="结束时间"
+        sortable
         width="180"
       >
+      
         <template slot-scope="{row}">
           <DateTimeShow :show-type="2" :timestamp="row.end_time" />
         </template>
       </el-table-column>
+
+      <el-table-column
+          prop="IsMatchOver"
+          label="是否结束"
+          width="100"
+        >
+          <template slot-scope="scope">
+            <span :style="{ color: IsMatchOver(scope.row.end_time) === '是' ? '#f56c6c' : '#409eff' }">
+              {{ IsMatchOver(scope.row.end_time) }}
+            </span>
+          </template>
+        </el-table-column>
       <el-table-column
         prop="sort"
         label="比赛排序"
@@ -120,7 +139,7 @@
       <el-table-column
         prop="update_time"
         label="修改時間"
-        width="180"
+        width="200"
       >
         <template slot-scope="scope">
           {{ formatTime(scope.row.update_time) }}
@@ -132,18 +151,18 @@
         width="100"
       >
         <template slot-scope="scope">
-          <el-button 
-            v-if="scope.row.openShow == false" 
-            size="mini" 
-            type="success" 
+          <el-button
+            v-if="scope.row.openShow == false"
+            size="mini"
+            type="success"
             @click="handleUpdateStatus(scope.row.id, true)"
           >
             上架
           </el-button>
-          <el-button 
-            v-if="scope.row.openShow == true" 
-            size="mini" 
-            type="danger" 
+          <el-button
+            v-if="scope.row.openShow == true"
+            size="mini"
+            type="danger"
             @click="handleUpdateStatus(scope.row.id, false)"
           >
             下架
@@ -157,18 +176,18 @@
       >
       <template slot-scope="scope">
           <div class="action-buttons">
-            <el-button 
+            <el-button
               v-if="scope.row.Status != 2"
-              size="mini" 
+              size="mini"
               icon="el-icon-edit"
               @click="handleEdit(scope.row)"
             >
               编辑
             </el-button>
-            <el-button 
+            <el-button
               v-if="showDevTool && scope.row.openShow == false"
-              size="mini" 
-              type="danger" 
+              size="mini"
+              type="danger"
               @click="handleDelete(scope.row.id)"
             >
               删除
@@ -259,7 +278,7 @@ export default {
     getGameName(gameId) {
       return getGameName(gameId, this.gameCfgs)
     },
-    
+
     /**
      * 獲取重複類型顯示名稱
      * @param {number} repeatType - 重複類型
@@ -268,7 +287,7 @@ export default {
     getRepeatTypeShow(repeatType) {
       return getRepeatTypeShow(repeatType, this.repeatCfgs)
     },
-    
+
     /**
      * 格式化時間
      * @param {number} timestamp - 時間戳
@@ -277,42 +296,42 @@ export default {
     formatTime(timestamp) {
       return formatTime(timestamp)
     },
-    
+
       /**
        * 显示开发工具
      */
     handleShowDevTools() {
       this.$emit('show-dev-tools')
     },
-    
+
       /**
        * 添加比赛
      */
     handleAddMatch() {
       this.$emit('add-match')
     },
-    
+
       /**
        * 复制整日
      */
     handleCopyAll() {
       this.$emit('copy-all')
     },
-    
+
       /**
        * 下架过往
      */
     handleExpireAll() {
       this.$emit('expire-all')
     },
-    
+
     /**
      * 清理下架
      */
     handleDeleteAllOff() {
       this.$emit('delete-all-off')
     },
-    
+
     /**
      * 更新狀態
      * @param {number} id - 比賽ID
@@ -321,7 +340,7 @@ export default {
     handleUpdateStatus(id, status) {
       this.$emit('update-status', id, status)
     },
-    
+
       /**
        * 编辑比赛
      * @param {Object} row - 比賽數據
@@ -329,7 +348,7 @@ export default {
     handleEdit(row) {
       this.$emit('edit', row)
     },
-    
+
       /**
        * 删除比赛
      * @param {number} id - 比賽ID
@@ -337,7 +356,7 @@ export default {
     handleDelete(id) {
       this.$emit('delete', id)
     },
-    
+
       /**
        * 复制比赛
      * @param {number} id - 比賽ID
@@ -345,7 +364,7 @@ export default {
     handleCopy(id) {
       this.$emit('copy', id)
     },
-    
+
     /**
      * 頁面大小改變
      * @param {number} val - 新的頁面大小
@@ -353,13 +372,27 @@ export default {
     handleSizeChange(val) {
       this.$emit('size-change', val)
     },
-    
+
     /**
      * 當前頁改變
      * @param {number} val - 新的頁碼
      */
     handleCurrentChange(val) {
       this.$emit('current-change', val)
+    },
+    
+    handleSortChange({ prop, order }) {
+      this.$emit('sort-change', { prop, order })
+    },
+    
+    /**
+     * 判断赛事是否已经结束
+     * @param {number} endTime - 结束时间
+     * @returns {string} 是否结束
+     */
+    IsMatchOver(endTime) {
+      const now = new Date().getTime() / 1000
+      return endTime < now ? '是' : '否'
     }
   }
 }

@@ -51,9 +51,17 @@
             {{ formatTime2(scope.row.RaceBeginDate, 1) }}
           </template>
         </el-table-column>
-        <el-table-column prop="RaceType" label="结束日期" width="100">
+        <el-table-column prop="RaceEndDate" label="结束日期" sortable="custom" :sort-method="customSort" width="100">
           <template slot-scope="scope">
             {{ formatTime2(scope.row.RaceEndDate, 1) }}
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="IsMatchOver" label="是否结束" width="100">
+          <template slot-scope="scope">
+            <span :style="{ color: IsMatchOver(scope.row.RaceEndDate) === '是' ? '#f56c6c' : '#409eff' }">
+              {{ IsMatchOver(scope.row.RaceEndDate) }}
+            </span>
           </template>
         </el-table-column>
         <el-table-column prop="RaceType" label="开始时间" width="100">
@@ -1577,6 +1585,22 @@ export default {
         return true
       }
       return false
+    },
+    customSort(a, b) {
+      // RaceEndDate 是 Date 对象，直接比较时间戳
+      const timeA = a.RaceEndDate instanceof Date ? a.RaceEndDate.getTime() : (a.RaceEndDate || 0)
+      const timeB = b.RaceEndDate instanceof Date ? b.RaceEndDate.getTime() : (b.RaceEndDate || 0)
+      return timeA - timeB
+    },
+    //判断赛事是否已经结束
+    IsMatchOver(raceEndDate) {
+      const now = new Date()
+      const endDate = new Date(raceEndDate)
+      if(endDate < now) {
+        return '是'
+      } else {
+        return '否'
+      }
     },
     handlerChangeMin(e) {
       // if (parseInt(e) < 2 || parseInt(e) > this.edit.item.TableMaxPlayerNum) {
