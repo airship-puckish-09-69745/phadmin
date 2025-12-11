@@ -18,6 +18,17 @@
               size="mini"
             />
           </el-form-item>
+          <el-form-item label="操作类型">
+            <el-select v-model="item.actType" placeholder="请选择操作类型" clearable filterable>
+              <el-option label="所有" :value="0" />
+              <el-option
+                v-for="(label, key) in actTypeMap"
+                :key="key"
+                :label="label"
+                :value="key"
+              />
+            </el-select>
+          </el-form-item>
           <el-form-item label="Uid">
             <el-input v-model.number="item.uid" placeholder="Uid" size="mini" />
           </el-form-item>
@@ -32,6 +43,7 @@
               <el-option label="重试成功" :value="3" />
             </el-select>
           </el-form-item>
+
           <el-form-item>
             <el-button type="primary" size="mini" @click="getData">查询</el-button>
             <!--            <el-button type="success" size="mini" @click="retryTimeFailLog">更新派彩时间</el-button>-->
@@ -50,9 +62,14 @@
           :row-style="{height:'10px'}"
           :cell-style="libShow.TableCell(0)"
         >
-          <el-table-column label="上报时间" width="160px">
+          <el-table-column label="失败时间" width="160px">
             <template slot-scope="scope">
-              {{ formatTime(scope.row.FirstTryTime) }}
+              {{ formatTime(scope.row.CTime) }}
+            </template>
+          </el-table-column>
+          <el-table-column label="下次重试时间" width="160px">
+            <template slot-scope="scope">
+              {{ formatTime(scope.row.NextTryTime) }}
             </template>
           </el-table-column>
           <!--          <el-table-column label="游戏">-->
@@ -63,6 +80,16 @@
           <el-table-column label="应用id">
             <template slot-scope="scope">
               {{ scope.row.App }}
+            </template>
+          </el-table-column>
+          <el-table-column label="场景id(内部用)">
+            <template slot-scope="scope">
+              {{ scope.row.SceneId }}
+            </template>
+          </el-table-column>
+          <el-table-column label="场景值(外部用)">
+            <template slot-scope="scope">
+              {{ scope.row.SiteId }}
             </template>
           </el-table-column>
           <el-table-column label="Uid">
@@ -76,20 +103,9 @@
               {{ scope.row.UniqueNo }}
             </template>
           </el-table-column>
-          <!--          <el-table-column label="回合id" width="220px">-->
-          <!--            <template slot-scope="scope">-->
-          <!--              {{ scope.row.RoundId }}-->
-          <!--            </template>-->
-          <!--          </el-table-column>-->
           <el-table-column label="失败金额">
             <template slot-scope="scope">
-              <span v-if="scope.row.EndRoundParamsFail">{{ scope.row.EndRoundParamsFail?parseInt(scope.row.EndRoundParamsFail.Data[0].PayoffAmount) / 1000:0 }}</span>
-              <span v-else-if="scope.row.BetParamsFail">{{ scope.row.BetParamsFail?parseInt(scope.row.BetParamsFail.BetAmount) / 1000:0 }}</span>
-              <span v-else-if="scope.row.RolloutParamsFail">{{ scope.row.RolloutParamsFail?parseInt(scope.row.RolloutParamsFail.Amount) / 1000:0 }}</span>
-              <span v-else-if="scope.row.RollinParamsFail">{{ scope.row.RollinParamsFail?parseInt(scope.row.RollinParamsFail.Amount) / 1000:0 }}</span>
-              <span v-else-if="scope.row.GameSettleParamsFail">{{ scope.row.GameSettleParamsFail?parseInt(scope.row.GameSettleParamsFail.TotalPayoffAmount) / 1000:0 }}</span>
-              <span v-else-if="scope.row.VasCostParamsFail">{{ scope.row.VasCostParamsFail?parseInt(scope.row.VasCostParamsFail.Amount) / 1000:0 }}</span>
-              <span v-else>{{ getAmount(scope.row) }}</span>
+              <span>{{ scope.row.Amount > 0 ? (scope.row.Amount / 1000) : "" }}</span>
             </template>
           </el-table-column>
           <el-table-column label="操作类型">
@@ -97,9 +113,9 @@
               {{ actTypeMap[String(scope.row.ActType)] }}
             </template>
           </el-table-column>
-          <el-table-column label="失败类型">
+          <el-table-column label="发放类型">
             <template slot-scope="scope">
-              {{ failTypeMap[scope.row.FailType] }}
+              {{ VoucherTypeMap[scope.row.VoucherType] }}
             </template>
           </el-table-column>
           <el-table-column label="状态">
@@ -116,11 +132,6 @@
           <el-table-column label="总计重试次数">
             <template slot-scope="scope">
               {{ scope.row.ReTryNum }}
-            </template>
-          </el-table-column>
-          <el-table-column label="扩展数据">
-            <template slot-scope="scope">
-              {{ scope.row.ExtData }}
             </template>
           </el-table-column>
           <!--          <el-table-column label="查看id">-->
@@ -191,17 +202,16 @@ export default {
         gid: 0,
         app: 0,
         UniqueNo: '',
-        status: 0
+        status: 0,
+        actType: 0,
+        sceneId: 0
       },
       showRow: {},
       visibleID: false,
       tableData: [],
       gameMap: {},
-      failTypeMap: {
-        1: '派彩失败', 2: '游戏结算失败', 3: '转入失败', 4: '下注失败', 5: '转出失败', 6: '增值业务失败',
-        7: '比赛报名', 8: '比赛结束', 10: 'CP下注失败',
-        11: 'CP结算失败', 12: 'CP离开回退失败', 13: 'CP打赏失败', 14: '再次买入失败',
-        16: '下注并派彩失败', 17: '创建门票失败', 18: '门票更新失败'
+      VoucherTypeMap: {
+        1: '门票发放', 0: '权益金发放'
       },
       statusMap: {
         1: '等待重试', 2: '正在重试', 3: '重试成功'
@@ -223,7 +233,8 @@ export default {
         '3013': '有效下注排行榜活动营销接口派彩',
         '3014': '7日留存活动',
         '3015': 'Pusoy比赛营销接口派彩',
-        '3016': '万圣节活动营销接口派彩'
+        '3016': '万圣节活动营销接口派彩',
+        '3017': '排名活动营销接口派彩'
       },
       totalCount: 0
     }
@@ -270,8 +281,10 @@ export default {
           Uid: uid,
           Gid: $this.item.gid,
           App: $this.item.app,
-          TxId: $this.item.txId,
-          Status: $this.item.status
+          UniqueNo: $this.item.UniqueNo,
+          Status: $this.item.status,
+          ActType: $this.item.actType,
+          SceneId: $this.item.sceneId
         }
       }).then(response => {
         $this.tableData = []
@@ -279,6 +292,18 @@ export default {
           if (response.Data == 'no Data') {
             Message.error('no Data')
             return
+          }
+          console.log(response.Data)
+
+          // 处理每一项的 FailPayloadJson 字段
+          if (Array.isArray(response.Data)) {
+            response.Data.forEach(item => {
+              item.Amount = null
+              if (item.FailPayloadJson) {
+                var failPayloadObj = JSON.parse(item.FailPayloadJson)
+                item.Amount = failPayloadObj.Amount
+              }
+            })
           }
           $this.tableData = response.Data
           if (response.Data.length >= $this.item.limit) {
