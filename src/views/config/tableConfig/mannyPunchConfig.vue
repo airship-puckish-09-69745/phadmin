@@ -662,6 +662,7 @@ export default {
         let oddsCfg = []
         let id = 1 //步数id
         let totalWeight = 0
+        /*
         for (const j in this.item.OddsCfg[i]) {
           let tempOdds = Math.round(this.item.OddsCfg[i][j].Odds * 100) //赔率放大100倍
           let liveRate = Math.round(this.item.BaseCfg[i].Rtp * 1000000 / tempOdds) //计算存活率
@@ -675,12 +676,12 @@ export default {
           id ++
           console.log("this.item.OddsCfg[i][j] = ", this.item.OddsCfg[i][j])
         }
-        /*
+        */
         let cross = 1
         for (const j in this.item.OddsCfg[i]) {
           let tempOdds = Math.round(this.item.OddsCfg[i][j].Odds * 100) //赔率放大100倍
-          let r = this.item.BaseCfg[i].Rtp/this.item.OddsCfg[i][j].Odds
-          console.log("rtp:", this.item.BaseCfg[i].Rtp, ";odds:", this.item.OddsCfg[i][j].Odds, ";cross:",cross, ";r:",r/cross)
+          let r = (this.item.BaseCfg[i].Rtp/100)/this.item.OddsCfg[i][j].Odds //rtp%
+          console.log("rtp:", this.item.BaseCfg[i].Rtp/100, ";odds:", this.item.OddsCfg[i][j].Odds, ";cross:",cross, ";r:",r/cross, ";liveRate:", Math.round(r/cross * 1000000))
           //let liveRate = Math.round(this.item.BaseCfg[i].Rtp/ * 1000000 / tempOdds) //计算存活率
           let liveRate = Math.round(r/cross * 1000000)
           cross = r
@@ -693,7 +694,7 @@ export default {
           })
           id ++
           console.log("r = ", r, "; this.item.OddsCfg[i][j] = ", this.item.OddsCfg[i][j])
-        }*/
+        }
         ret.OddsCfg.push({OddsItem:oddsCfg})
         ret.JPTotalWeight.push(totalWeight)
       }
