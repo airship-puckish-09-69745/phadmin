@@ -277,7 +277,7 @@
                   </el-table-column>
                   <el-table-column label="发放数量" prop="Value">
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.AwardRate" style="width: 140px;" size="mini" :required="true">
+                      <el-input v-model.number="scope.row.AwardRate" style="width: 100px;" size="mini" :required="true">
                         <template v-if="scope.row.AwardType==1" slot="append">%</template>
                         <template v-if="scope.row.AwardType==2" slot="append">倍</template>
                       </el-input>
@@ -290,7 +290,7 @@
                   </el-table-column>
                   <el-table-column label="中奖权重(总权重1000)" prop="DayLimit"><!--   v-if="IsPHAuditEnv()"-->
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.JackpotRate" ><template slot="append">权重值</template></el-input>
+                      <el-input v-model.number="scope.row.JackpotRate" ><template slot="append">权重</template></el-input>
                     </template>
                   </el-table-column>
                   <!--
@@ -312,7 +312,7 @@
                       <el-tag v-for="tag, key in scope.row.DayLimitArr" v-if="scope.row.AwardType == 1" :key="key" disable-transitions>{{ showOpenDayLimit(tag) }}</el-tag>
                     </template>
                   </el-table-column>
-                  <el-table-column label="玩家开奖池条件(%)" width="260" v-if="!IsPHAuditEnv()">
+                  <el-table-column label="玩家开奖池条件(%)" width="250" v-if="!IsPHAuditEnv()">
                     <template slot-scope="scope">
                       <div v-if="scope.row.AwardType==1">
                         虚拟*<el-input v-model.number="scope.row.VrPoolRate" style="width: 70px;" size="mini" :required="true" />
@@ -324,7 +324,7 @@
                     </template>
                   </el-table-column>
 
-                  <el-table-column label="机器人开奖池值" prop="PoolVal" width="180" v-if="!IsPHAuditEnv()">
+                  <el-table-column label="机器人开奖池值" prop="PoolVal" width="170" v-if="!IsPHAuditEnv()">
                     <template v-if="scope.row.AwardType==1" slot-scope="scope">
                       >=<el-input v-model.number="scope.row.PoolVal" style="width: 120px;" size="mini" :required="true" />
                     </template>
@@ -661,9 +661,14 @@ export default {
         let oddsCfg = []
         let id = 1 //步数id
         let totalWeight = 0
+        let cross = 1
         for (const j in this.item.OddsCfg[i]) {
           let tempOdds = Math.round(this.item.OddsCfg[i][j].Odds * 100) //赔率放大100倍
-          let liveRate = Math.round(this.item.BaseCfg[i].Rtp * 1000000 / tempOdds) //计算存活率
+          let r = this.item.BaseCfg[i].Rtp/this.item.OddsCfg[i][j].Odds
+          console.log("rtp:", this.item.BaseCfg[i].Rtp, ";odds:", this.item.OddsCfg[i][j].Odds, ";cross:",cross, ";r:",r/cross)
+          //let liveRate = Math.round(this.item.BaseCfg[i].Rtp/ * 1000000 / tempOdds) //计算存活率
+          let liveRate = Math.round(r/cross * 1000000)
+          cross = r
           totalWeight += this.item.OddsCfg[i][j].JPWeight
           oddsCfg.push({
             Id: id,
@@ -672,7 +677,7 @@ export default {
             JPWeight: this.item.OddsCfg[i][j].JPWeight
           })
           id ++
-          console.log("this.item.OddsCfg[i][j] = ", this.item.OddsCfg[i][j])
+          console.log("r = ", r, "; this.item.OddsCfg[i][j] = ", this.item.OddsCfg[i][j])
         }
         ret.OddsCfg.push({OddsItem:oddsCfg})
         ret.JPTotalWeight.push(totalWeight)

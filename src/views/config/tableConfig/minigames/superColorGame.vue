@@ -1164,49 +1164,49 @@ export default {
       if (!ValidateVueItem(this.$refs['item'])) return false
 
       if (this.envProjectName !== 'ph_audit') {
-        if (this.item.RobotCfg.MinRealUserCount > this.item.RobotCfg.MaxRealUserCount) {
+        if (this.item.RobotCfg.MinRealUserCount >= this.item.RobotCfg.MaxRealUserCount) {
           Message.error('“在线真人最大人数”不能小于“在线真人最小人数”')
           return
-        } else if (this.item.RobotCfg.MinTotalUserCount > this.item.RobotCfg.MaxTotalUserCount) {
+        } else if (this.item.RobotCfg.MinTotalUserCount >= this.item.RobotCfg.MaxTotalUserCount) {
           Message.error('“在线总人最大人数”不能小于“在线总人最小人数”')
           return
-        } else if (this.item.RobotCfg.MinRobotMoney > this.item.RobotCfg.MaxRobotMoney) {
+        } else if (this.item.RobotCfg.MinRobotMoney >= this.item.RobotCfg.MaxRobotMoney) {
           Message.error('“机器人携带金币上限”不能小于“机器人携带金币下限”')
           return
-        } else if (this.item.RobotCfg.MinRobotPlayTimes > this.item.RobotCfg.MaxRobotPlayTimes) {
+        } else if (this.item.RobotCfg.MinRobotPlayTimes >= this.item.RobotCfg.MaxRobotPlayTimes) {
           Message.error('“机器人最大玩牌次数上限”不能小于“机器人最大玩牌次数下限”')
           return
-        } else if (this.item.RobotCfg.MaxRobotBetTimes < this.item.RobotCfg.MinRobotBetTimes) {
+        } else if (this.item.RobotCfg.MaxRobotBetTimes <= this.item.RobotCfg.MinRobotBetTimes) {
           Message.error('“机器人最大下注次数”不能小于“机器人最小下注次数”')
           return
-        } else if (this.item.RobotCfg.MinRobotBetMoney > this.item.RobotCfg.MaxRobotBetMoney) {
+        } else if (this.item.RobotCfg.MinRobotBetMoney >= this.item.RobotCfg.MaxRobotBetMoney) {
           Message.error('“机器人下注最大筹码”不能小于“机器人下注最小筹码”')
           return
-        } else if (this.item.RobotCfg.MinRobotBetAreas > this.item.RobotCfg.MaxRobotBetAreas) {
+        } else if (this.item.RobotCfg.MinRobotBetAreas >= this.item.RobotCfg.MaxRobotBetAreas) {
           Message.error('“机器人下注最大区域”不能小于“机器人下注最小区域”')
           return
-        } else if (this.item.RobotCfg.MinRobotBetTimesOffset > this.item.RobotCfg.MaxRobotBetTimesOffset) {
+        } else if (this.item.RobotCfg.MinRobotBetTimesOffset >= this.item.RobotCfg.MaxRobotBetTimesOffset) {
           Message.error('“机器人下注最大下注次数偏移”不能小于“机器人下注最小下注次数偏移”')
           return
-        } else if (this.item.RobotCfg.MinRobotBetAreasOffset > this.item.RobotCfg.MaxRobotBetAreasOffset) {
+        } else if (this.item.RobotCfg.MinRobotBetAreasOffset >= this.item.RobotCfg.MaxRobotBetAreasOffset) {
           Message.error('“机器人下注最大区域偏移”不能小于“机器人下注最小区域偏移”')
           return
-        } else if (this.item.RobotCfg.MinRobotInitBetMoney > this.item.RobotCfg.MaxRobotInitBetMoney) {
+        } else if (this.item.RobotCfg.MinRobotInitBetMoney >= this.item.RobotCfg.MaxRobotInitBetMoney) {
           Message.error('“机器人下注最大初始筹码”不能小于“机器人下注最小初始筹码”')
           return
-        } else if (this.item.RobotCfg.MinResetCycle > this.item.RobotCfg.MaxResetCycle) {
+        } else if (this.item.RobotCfg.MinResetCycle >= this.item.RobotCfg.MaxResetCycle) {
           Message.error('“机器人重置周期最大”不能小于“机器人重置周期最小”')
           return
-        } else if (this.item.RobotCfg.MinRankRobotMoney > this.item.RobotCfg.MaxRankRobotMoney) {
+        } else if (this.item.RobotCfg.MinRankRobotMoney >= this.item.RobotCfg.MaxRankRobotMoney) {
           Message.error('“榜单机器人携带金币上限”不能小于“榜单机器人携带金币下限”')
           return
-        } else if (this.item.RobotCfg.MinRankRobotInitBetMoney > this.item.RobotCfg.MaxRankRobotInitBetMoney) {
+        } else if (this.item.RobotCfg.MinRankRobotInitBetMoney >= this.item.RobotCfg.MaxRankRobotInitBetMoney) {
           Message.error('“榜单机器人下注最大初始筹码”不能小于“榜单机器人下注最小初始筹码”')
           return
-        } else if (this.item.RobotCfg.MinRankRobotStart > this.item.RobotCfg.MaxRankRobotStart) {
+        } else if (this.item.RobotCfg.MinRankRobotStart >= this.item.RobotCfg.MaxRankRobotStart) {
           Message.error('“榜单机器人开始下注时间”不能小于“榜单机器人结束下注时间”')
           return
-        } else if (this.item.RobotCfg.MinRankRobotTime > this.item.RobotCfg.MaxRankRobotTime) {
+        } else if (this.item.RobotCfg.MinRankRobotTime >= this.item.RobotCfg.MaxRankRobotTime) {
           Message.error('“榜单机器人下注最大时间”不能小于“榜单机器人下注最小时间”')
           return
         } else {
