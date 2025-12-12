@@ -661,9 +661,11 @@ export default {
         let oddsCfg = []
         let id = 1 //步数id
         let totalWeight = 0
+        let crossRate = 1 //当前步的成功率
         for (const j in this.item.OddsCfg[i]) {
           let tempOdds = Math.round(this.item.OddsCfg[i][j].Odds * 100) //赔率放大100倍
-          let liveRate = Math.round(this.item.BaseCfg[i].Rtp * 1000000 / tempOdds) //计算存活率
+          let liveRate = Math.round(this.item.BaseCfg[i].Rtp * 1000000 / tempOdds / crossRate) //计算存活率
+          crossRate = liveRate //当前步的成功率
           totalWeight += this.item.OddsCfg[i][j].JPWeight
           oddsCfg.push({
             Id: id,
