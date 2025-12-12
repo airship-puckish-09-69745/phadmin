@@ -100,7 +100,7 @@
       </div>
     </div>
   </template>
-  
+
   <script>
   import { Message } from 'element-ui'
   import Compare from '@/components/Compare'
@@ -115,14 +115,33 @@
         tableData: [],
         clientDB: new ClientTableData([], 10, {}),
         libShow: $libShow,
+        actTypeMap: {
+          3000: '比赛营销接口-系统发放',
+          3001: '比赛营销接口派彩',
+          3002: '德州比赛营销接口派彩',
+          3003: '摇钱树活动营销接口派彩',
+          3004: '复活节活动营销接口派彩',
+          3005: '直播抽奖接口派彩',
+          3006: '新手任务活动营销接口派彩',
+          3007: '空投活动营销接口派彩',
+          3008: '红包雨活动营销接口派彩',
+          3009: '活动地图营销接口派彩',
+          3010: 'Poker专题活动营销接口派彩',
+          3011: 'TongitsHunter活动营销接口派彩',
+          3012: 'KingOfPot活动营销接口派彩',
+          3013: '有效下注排行榜活动营销接口派彩',
+          3014: '7日留存活动',
+          3015: 'Pusoy比赛营销接口派彩',
+          3016: '万圣节活动营销接口派彩'
+        }
       }
     },
-  
+
     computed: {
-     
+
     },
     created() {
-      
+
     },
     methods: {
         // 分页处理
@@ -179,4 +198,3 @@
     }
   }
   </script>
-  

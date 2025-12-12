@@ -4423,6 +4423,21 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/marketing',
+    component: Layout,
+    alwaysShow: true,
+    redirect: 'noRedirect',
+    meta: { title: '营销管理', icon: 'el-icon-copy-document', perm: 'PLAYLOG_MANAGEMENT' },
+    children: [
+      {
+        path: 'marketingFailList',
+        component: () => import('@/views/marketing/failLog.vue'),
+        name: 'marketingFailList',
+        meta: { title: '营销失败列表' }
+      }
+    ]
+  },
+  {
     path: '/wallet',
     component: Layout,
     alwaysShow: true,
