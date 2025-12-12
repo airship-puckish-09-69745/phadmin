@@ -212,7 +212,7 @@
               <template>
                 <el-select v-model="item.ItemUseTime" size="mini" placeholder="请选择">
                   <el-option v-for="option in ITEM_DAY_TYPE_OPTIONS" :key="'itemusertime'+option.value"
-                             :label="option.label" :value="option.value" :disabled="option.disabled || ([5,7,8,9].includes(item.ItemType)&& (option.value === 0 || option.value === 365))">
+                             :label="option.label" :value="option.value" :disabled="isItemUseTimeDisabled(option)">
                   </el-option>
                 </el-select>
               </template>
@@ -221,7 +221,6 @@
               <el-button type="primary" size="mini" @click="saveItemInfo">提交</el-button>
             </el-col>
           </el-descriptions-item>
-
           <el-descriptions-item label="tongits信任分：" :span="1">
             <el-col :span="8">
               <el-tag>{{ formatNumber(item.TrustScore) }}</el-tag>
@@ -1945,6 +1944,22 @@ export default {
           $this.$message.error('更新失败')
         }
       })
+    },
+    isItemUseTimeDisabled(option) {
+    
+     
+      // 如果道具类型是 5, 7, 8, 9，且选项值是 0 或 365，则禁用
+      if ([5, 7, 8, 9].includes(this.item.ItemType) && (option.value === 0 || option.value === 365)) {
+        return true
+      }
+      if(option.value < 0 ){
+        //freeSpin
+        if (this.item.ItemType === 5){
+          return false
+        }
+        return true
+      }
+      return false
     },
     checkShowFreeSpinGame() {
       this.isShowFreeSpinGame = false
