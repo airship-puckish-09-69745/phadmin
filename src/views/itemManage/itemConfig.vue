@@ -417,27 +417,26 @@ export default {
   created() {
     this.name = store.getters.name
     this.env = store.getters.env || this.env
-  },
-  mounted() {
-    this.getList()
-    this.getSlotGameConfig()
-    console.log("------slot game config",this.SLOT_GAME_CONFIG)
     this.getSlotBetAmountCfg()
-    this.initFreeSpinGameMap()
+  },
+  async mounted() {
+    await this.getSlotGameConfig()
+    await this.getList()
   },
   methods: {
 
-    getList() {
-      request({
-        url: '/propsconfig/props/config/list',
-        method: 'get',
-        data: {
-          Env: this.env,
-          PageNum: this.page,
-          PageSize: this.limit,
-          PropType: this.form.itemOfType
-        }
-      }).then(response => {
+    async getList() {
+      try {
+        const response = await request({
+          url: '/propsconfig/props/config/list',
+          method: 'get',
+          data: {
+            Env: this.env,
+            PageNum: this.page,
+            PageSize: this.limit,
+            PropType: this.form.itemOfType
+          }
+        })
         if (response.RetCode === 0) {
           const objs = response.Data || {}
           if (objs.total > 0) {
@@ -455,7 +454,11 @@ export default {
           this.total = 0
           this.tableData = []
         }
-      })
+      } catch (error) {
+        console.error('获取道具列表失败:', error)
+        this.total = 0
+        this.tableData = []
+      }
     },
     handleSizeChange(val) {
       this.limit = val
@@ -604,9 +607,12 @@ export default {
       }
       for (let i = 0; i < this.BETTING_GAME_CONFIG.length; i++) {
         this.freeSpinGameMap[this.BETTING_GAME_CONFIG[i].value] = this.BETTING_GAME_CONFIG[i].label
+       
       }
+      //console.log("3333 initFreeSpinGameMap ",this.freeSpinGameMap)
     },
     getSlotFreSpinPropDescReturnGameNames(itemExtra) {
+    
       const names = []
       const extraData = JSON.parse(itemExtra)
       if (!extraData.gid || extraData.gid.length <= 0) return names
@@ -1019,15 +1025,16 @@ export default {
       return suitedItemList
     },
     //获取slot游戏配置
-    getSlotGameConfig(){
-      request({
-        url: '/thirdpartygames/all',
-        method: 'get',
-        data: {}
-      }).then(response => {
+    async getSlotGameConfig(){
+      try {
+        const response = await request({
+          url: '/thirdpartygames/all',
+          method: 'get',
+          data: {}
+        })
         if (response.RetCode === 0) {
           for (let i = 0; i < response.Data.length; i++) {
-            if (response.Data[i].CategoryID === 1 && response.Data[i].status === 2)  { // 老虎机
+            if (response.Data[i].CategoryID === 1 && response.Data[i].Status === 2)  { // 老虎机
               this.SLOT_GAME_CONFIG.push({
                 value: response.Data[i].Gid,
                 label: response.Data[i].Name+  "("+response.Data[i].Description + ")",
@@ -1035,7 +1042,11 @@ export default {
             }
           }
         }
-      })
+    
+        this.initFreeSpinGameMap()
+      } catch (error) {
+        console.error('获取slot游戏配置失败:', error)
+      }
     },
   }
 }
