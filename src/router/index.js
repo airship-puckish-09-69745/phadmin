@@ -1466,7 +1466,13 @@ export const asyncRoutes = [
                 path: 'pacquiaofortune_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/pacquiaofortune_slots_cfg'),
                 name: 'pacquiaofortune_slots_cfg',
-                meta: { title: 'P acquiaoFortune' }
+                meta: { title: 'P acquiaoFortune', gameKey: 'pacquiaofortune' },
+              },
+              {
+                path: 'pacquiaofortuneplaynow_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/pacquiaofortune_slots_cfg'),
+                name: 'pacquiaofortuneplaynow_slots_cfg',
+                meta: { title: 'P acquiaoFortune试玩', gameKey: 'pacquiaofortuneplaynow' }
               },
               {
                 path: 'pahiyaswins_slots_cfg',
@@ -3398,6 +3404,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'pacquiaofortune_slots_log',
             meta: { title: 'P acquiaoFortune', gid: 236 }
+          },
+          {
+            path: 'pacquiaofortuneplaynow_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'pacquiaofortuneplaynow_slots_log',
+            meta: { title: 'P acquiaoFortune试玩', gid: 1236 }
           },
           {
             path: 'pahiyaswins_slots_log',
