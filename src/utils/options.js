@@ -43,7 +43,8 @@ export const ITEM_DAY_TYPE_OPTIONS = [
   { 'value': 7, 'label': '7天', disabled: false },
   { 'value': 30, 'label': '30天', disabled: false },
   { 'value': 365, 'label': '365天', disabled: false },
-  { 'value': 0, 'label': '永久', disabled: false }
+  { 'value': 0, 'label': '永久', disabled: false },
+  { 'value': -1, 'label': 'freeSpin-10分钟测试', disabled: true }
 ]
 
 // 道具发放审批状态

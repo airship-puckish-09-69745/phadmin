@@ -1027,8 +1027,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           for (let i = 0; i < response.Data.length; i++) {
-            // console.log(response.Data[i])
-            if (response.Data[i].CategoryID === 1) { // 老虎机
+            if (response.Data[i].CategoryID === 1 && response.Data[i].status === 2)  { // 老虎机
               this.SLOT_GAME_CONFIG.push({
                 value: response.Data[i].Gid,
                 label: response.Data[i].Name+  "("+response.Data[i].Description + ")",
