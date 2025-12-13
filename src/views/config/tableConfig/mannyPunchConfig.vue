@@ -862,6 +862,16 @@ export default {
         }
       }
     },
+    addPoolNum() {
+      let maxId = 0
+      for (var i = 0; i < this.poolNumChange.data.length; i++) {
+        if (this.poolNumChange.data[i].Id > maxId) {
+          maxId = this.poolNumChange.data[i].Id
+        }
+      }
+      maxId++
+      this.poolNumChange.data.push({ 'Id': maxId, 'Num': 0, 'Rate': 0 })
+    },
     ////////////////////////////////////////////
     showDayLimitDialog(data) {
       if (data.JackpotType == 4) {
