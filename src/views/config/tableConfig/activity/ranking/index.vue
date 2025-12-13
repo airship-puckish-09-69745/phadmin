@@ -656,7 +656,7 @@ export default {
         item.activity.whitelist.appIdList.push(this.appId)
       }
 
-      if (item.activity.whitelist.uidList !== '') {
+      if (item.activity.whitelist.uidList) {
         item.activity.whitelist.uidList = item.activity.whitelist.uidList.split(',').map(uid => {
           return parseInt(uid.trim())
         })
