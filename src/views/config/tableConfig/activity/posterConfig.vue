@@ -115,6 +115,13 @@
               </el-form-item>
             </el-form>
           </el-row>
+          <el-row>
+            <el-form :model="edit.item" label-width="220px" size="mini">
+              <el-form-item label="打点上报code：" prop="name">
+                <el-input v-model.number="edit.item.ReportCode" placeholder="请输入" style="width: 400px"  />
+              </el-form-item>
+            </el-form>
+          </el-row>
         </el-tab-pane>
 
         <el-tab-pane label="海报配置">
@@ -305,7 +312,8 @@ function newItem() {
       AppIdList: [],
       SiteIdList: []
     },
-    SiteIdCanSkip: []
+    SiteIdCanSkip: [],
+    ReportCode: null
   }
 }
 

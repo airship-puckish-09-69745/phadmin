@@ -1216,7 +1216,13 @@ export const asyncRoutes = [
             path: 'mannyPunch_cfg',
             component: () => import('@/views/config/tableConfig/mannyPunchConfig.vue'),
             name: 'mannyPunch_cfg',
-            meta: { title: 'M anny Punch ◐' }
+            meta: { title: 'M anny Punch ◐', subKey: 'manny_punch_cfg' }
+          },
+          {
+            path: 'mannyPunch_playNow_cfg',
+            component: () => import('@/views/config/tableConfig/mannyPunchConfig.vue'),
+            name: 'mannyPunch_playNow_cfg',
+            meta: { title: 'M anny Punch - 试玩 ◐', subKey: 'manny_punch_playNow_cfg' }
           },
           {
             path: 'pirateScratch_cfg',
@@ -1460,7 +1466,13 @@ export const asyncRoutes = [
                 path: 'pacquiaofortune_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/pacquiaofortune_slots_cfg'),
                 name: 'pacquiaofortune_slots_cfg',
-                meta: { title: 'P acquiaoFortune' }
+                meta: { title: 'P acquiaoFortune', gameKey: 'pacquiaofortune' },
+              },
+              {
+                path: 'pacquiaofortuneplaynow_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/pacquiaofortune_slots_cfg'),
+                name: 'pacquiaofortuneplaynow_slots_cfg',
+                meta: { title: 'P acquiaoFortune试玩', gameKey: 'pacquiaofortuneplaynow' }
               },
               {
                 path: 'pahiyaswins_slots_cfg',
@@ -3120,6 +3132,12 @@ export const asyncRoutes = [
             name: 'playlog_mannypunch',
             meta: { title: 'M anny Punch ◐', gid: 139 }
           },
+          {
+            path: 'playlog_mannypunch_playNow',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_mannypunch_playNow',
+            meta: { title: 'M anny Punch - 试玩 ◐', gid: 1139 }
+          },
             {
             path: 'playlog_pirateScratch',
             component: () => import('@/views/playerManage/playlog'),
@@ -3386,6 +3404,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'pacquiaofortune_slots_log',
             meta: { title: 'P acquiaoFortune', gid: 236 }
+          },
+          {
+            path: 'pacquiaofortuneplaynow_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'pacquiaofortuneplaynow_slots_log',
+            meta: { title: 'P acquiaoFortune试玩', gid: 1236 }
           },
           {
             path: 'pahiyaswins_slots_log',
@@ -4407,6 +4431,21 @@ export const asyncRoutes = [
         component: () => import('@/views/devTools/allocTools'),
         name: 'allocTools',
         meta: { title: 'Alloc开发工具' }
+      }
+    ]
+  },
+  {
+    path: '/marketing',
+    component: Layout,
+    alwaysShow: true,
+    redirect: 'noRedirect',
+    meta: { title: '营销管理', icon: 'el-icon-copy-document', perm: 'PLAYLOG_MANAGEMENT' },
+    children: [
+      {
+        path: 'marketingFailList',
+        component: () => import('@/views/marketing/failLog.vue'),
+        name: 'marketingFailList',
+        meta: { title: '营销失败列表' }
       }
     ]
   },

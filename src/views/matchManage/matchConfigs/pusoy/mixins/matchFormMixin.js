@@ -378,6 +378,29 @@ export const matchFormMixin = {
         }
       }
 
+      // 单场赛时间检查
+      if(this.editForm.data.repeatType == 0){
+        // 检查时间控件是否已选择
+        if (!this.editForm.loopDetail.onceTime || !Array.isArray(this.editForm.loopDetail.onceTime) || 
+            this.editForm.loopDetail.onceTime[0] == null || this.editForm.loopDetail.onceTime[1] == null ||
+            this.editForm.loopDetail.onceTime[0] == '' || this.editForm.loopDetail.onceTime[1] == '') {
+              Message.error('开赛时间不能为空')
+          return false
+        }
+        const bTime = Math.floor(this.editForm.loopDetail.onceTime[0] / 1000)
+        const eTime = Math.floor(this.editForm.loopDetail.onceTime[1] / 1000)
+    
+        //开赛时间or结束时间 不能小于当前时间一年之前的时间
+        if (bTime < Date.now() / 1000 - 365 * 24 * 60 * 60 || eTime < Date.now() / 1000 - 365 * 24 * 60 * 60) {
+          Message.error('开赛时间或结束时间不能小于当前时间一年之前的时间')
+          return false
+        }
+        //结束时间跟开始时间要大于10分钟
+        if (eTime - bTime < 600) {
+          Message.error('比赛开始结束间隔要大于10分钟！')
+          return false
+        }
+      }
 
       if (this.editForm.data.repeatType == 1) {
         if (Math.floor(this.timeToSec(this.editForm.loopDetail.single.etime)) - Math.floor(this.timeToSec(this.editForm.loopDetail.single.stime)) < 600) {
@@ -430,9 +453,6 @@ export const matchFormMixin = {
         return false
       } else if (this.editForm.signExtra.matchMaxLimit > 0 && this.editForm.signExtra.matchMaxLimit < this.editForm.data.opentMatchMember) {
            Message.error('报名最大限制必须大于最低开赛人数')
-        return false
-      } else if ((this.editForm.data.repeatType == 0) && ((Math.floor(this.editForm.loopDetail.onceTime[1] / 1000) - Math.floor(this.editForm.loopDetail.onceTime[0] / 1000)) < 600)) {
-        Message.error('比赛开始结束间隔要大于10分钟！')
         return false
       } else if (this.editForm.data.signUpNum < 0) {
         Message.error('报名费数值不能小于零')

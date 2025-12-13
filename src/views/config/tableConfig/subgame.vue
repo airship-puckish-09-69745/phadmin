@@ -317,7 +317,7 @@
                 </el-form-item>
                 <el-form-item label="游戏Key：" :required="true" prop="item.GameKey" :rules="dataRule(true,{type:'s',range:'2'})">
                   <el-col :span="11">
-                    <el-input v-model="edit.item.GameKey" placeholder="开发提供" />
+                    <el-input v-model="edit.item.GameKey" placeholder="开发提供" :disabled="edit.isEdit"/>
                   </el-col>
                 </el-form-item>
                 <el-form-item label="图片：" :required="true" style="position: relative">
