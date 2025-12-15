@@ -918,6 +918,10 @@ export default {
     getAppInfo() {
       let apps = [
         {
+          'ID': 0,
+          'Account': '所有'
+        },
+        {
           'ID': 1000002,
           'Account': '内部'
         },
@@ -933,6 +937,10 @@ export default {
       if (process.env.VUE_APP_PROJECT_NAME === '菲1-线上环境') {
         if (this.env == 'test') {
           apps = [
+            // {
+            //   'ID': 0,
+            //   'Account': '所有'
+            // },
             {
               'ID': 1000003,
               'Account': 'BP UAT'
@@ -952,6 +960,10 @@ export default {
           ]
         } else {
           apps = [
+            // {
+            //   'ID': 0,
+            //   'Account': '所有'
+            // },
             {
               'ID': 1000005,
               'Account': 'BP正式'
