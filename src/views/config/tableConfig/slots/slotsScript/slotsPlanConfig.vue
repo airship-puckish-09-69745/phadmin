@@ -1746,7 +1746,7 @@ export default {
       })
     },
     queryScriptVolatility(gid) {
-      for (const k in response.Data) {
+      for (const k in this.scriptPlanVolatilityStat) {
         this.$set(this.scriptPlanVolatilityStat, k, '0.00')
       }
       request({
