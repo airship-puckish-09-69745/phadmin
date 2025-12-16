@@ -9,7 +9,7 @@
       </el-form-item>
       <el-form-item label="场次" required>
         <el-select v-model="form.session" placeholder="请选择场次" :options="sessionOptions" @focus="handleSessionFocus">
-          <el-option v-for="item in sessionOptions" :key="item" :label="item" :value="item" />
+          <el-option v-for="item in sessionOptions" :key="item" :label="item / 1000" :value="item" />
         </el-select>
       </el-form-item>
       <el-form-item>
