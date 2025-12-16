@@ -688,7 +688,7 @@ export default {
       const items = this.betMoneyList.split(',')
       this.item.TableMoneyList = []
       for (const o in items) {
-        this.item.TableMoneyList.push(parseInt(items[o]) * 1000)
+        this.item.TableMoneyList.push(parseInt(parseFloat(items[o]) * 1000))
       }
       Object.assign(ret, this.item)
       return ret
