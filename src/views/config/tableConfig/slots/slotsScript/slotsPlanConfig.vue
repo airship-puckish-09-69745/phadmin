@@ -1764,7 +1764,7 @@ export default {
           for (const k in this.showItem.Plans) {
             const planId = this.showItem.Plans[k].PlanId
             if (response.Data[planId]) {
-              this.showItem.Plans[k].Volatility = response.Data[planId]
+              this.$set(this.showItem.Plans[k], 'Volatility', response.Data[planId])
             }
           }
         }
