@@ -708,6 +708,7 @@ export default {
       tableMoneyCfg: [
         { 'label': '0.2', 'value': 0.2 },
         { 'label': '1', 'value': 1 },
+        { 'label': '2.5', 'value': 2.5 },
         { 'label': '5', 'value': 5 },
         { 'label': '10', 'value': 10 },
         { 'label': '20', 'value': 20 },
