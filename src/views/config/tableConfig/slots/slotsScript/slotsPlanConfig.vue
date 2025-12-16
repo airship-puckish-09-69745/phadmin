@@ -1756,7 +1756,7 @@ export default {
         url: '/dataProxy/info',
         method: 'get',
         data: {
-          Path: '/slotsStat/scripts/volatility',
+          Path: '/slotsStat/script/volatility',
           gid: $this.queryGid
         }
       }).then(response => {
