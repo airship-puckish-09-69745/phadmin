@@ -1760,6 +1760,7 @@ export default {
             const v = response.Data[k] / 10000
             this.$set(this.scriptPlanVolatilityStat, k, v.toFixed(2))
           }
+          console.log(this.scriptPlanVolatilityStat)
         }
       })
     }
