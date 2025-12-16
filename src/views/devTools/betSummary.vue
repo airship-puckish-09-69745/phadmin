@@ -25,6 +25,9 @@
           size="mini"
         />
       </el-form-item>
+      <el-form-item label="GameId：">
+         <span>22,32,15</span>
+      </el-form-item>
       <el-button type="primary" style="margin-left: 15px;" @click="getInfo">查询</el-button>
     </el-form>
     <!-- 新增：结果展示区域 -->
