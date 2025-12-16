@@ -4390,7 +4390,7 @@ export const asyncRoutes = [
             path: 'betSummary',
             component: () => import('@/views/devTools/betSummary'),
             name: 'betSummary',
-            meta: { title: '投注统计', perm: 'CFG_MANAGEMENT' }
+            meta: { title: 'CP投注统计', perm: 'CFG_MANAGEMENT' }
           }
         ]
       },
