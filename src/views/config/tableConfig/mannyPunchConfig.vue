@@ -1,13 +1,15 @@
 <template>
   <div class="app-container">
-    
+
     <el-row>
       <el-col :span="18">
         <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" />
       </el-col>
-      <el-col :span="2">
+      <!--
+      <el-col :span="2" >
         <el-button type="primary" @click="dialogFormVisible= true" size="mini" > 测试配置</el-button>
       </el-col>
+      -->
     </el-row>
 
     <el-row>
@@ -32,10 +34,10 @@
                 <el-form :inline="true">
                   <el-col :span="8">
                     <el-form-item label="保底奖池抽水">
-                      <el-input v-model.number="item.FeeRate" size="mini" ><template  slot="append">%</template></el-input>
+                      <el-input v-model="item.FeeRate" size="mini" ><template  slot="append">%</template></el-input>
                     </el-form-item>
                   </el-col>
-                  
+
                   <el-col :span="8">
                     <el-form-item label="超时放弃时间:">
                       <el-input v-model.number="item.AutoDropTimer" size="mini" ><template  slot="append">秒</template></el-input>
@@ -45,13 +47,13 @@
                 </el-form>
               </el-col>
 
-              <!--RTPS-->
-              <fieldset style="margin-top:10px" v-if="!IsPHAuditEnv()">
-                
+              <!--RTPS  v-if="!IsPHAuditEnv()"-->
+              <fieldset style="margin-top:10px" >
+
                 <el-col :span="20">
                   <el-button style="margin-bottom:10px; background-color: #c5ddf0" type="normal" icon="el-icon-plus" size="mini" @click="doAddRTPSLevel()">添加</el-button>
                 </el-col>
-                
+
                 <legend>RTP配置</legend>
                 <el-table
                   ref="filterTable"
@@ -88,12 +90,12 @@
 
                 </el-table>
               </fieldset>
-              
+
               <!--bet-->
               <fieldset style="margin-top:10px">
                 <el-col :span="20">
                   <el-button style="margin-bottom:10px; background-color: #c5ddf0" type="normal" icon="el-icon-plus" size="mini" @click="doAddBetMoneyLevel()">添加</el-button>
-                </el-col>                
+                </el-col>
                 <legend>下注配置</legend>
                 <el-table
                   ref="filterTable"
@@ -117,10 +119,10 @@
                       <el-button type="danger" size="mini" @click="delRowBetMoneyLevel(scope.$index)">删除</el-button>
                     </template>
                   </el-table-column>
-                  
+
                 </el-table>
               </fieldset>
-              
+
               <!--难度场次步数配置-->
               <fieldset v-for="(title, index) in lv"
                 :key="index"
@@ -130,7 +132,7 @@
                 <el-col :span="20">
                   <el-button style="margin-bottom:10px; background-color: #c5ddf0" type="normal" icon="el-icon-plus" size="mini" @click="doAddOddsCfg(index)">添加</el-button>
                 </el-col>
-                
+
                 <legend>难度场次步数配置 <b span style="font-weight: bold; color: red;">{{title}}</b></legend>
 
                 <el-table ref="filterTable" :data="item.OddsCfg[index]" border
@@ -153,13 +155,13 @@
                       <el-input v-model.number="item.OddsCfg[index][scope.$index].JPWeight" size="mini" ></el-input>
                     </template>
                   </el-table-column>
-                  
+
                   <el-table-column label="操作" width="180px">
                     <template slot-scope="scope">
                       <el-button type="danger" size="mini" @click="delOddsCfg(index, scope.$index)">删除</el-button>
                     </template>
                   </el-table-column>
-                  
+
                 </el-table>
               </fieldset>
 
@@ -220,14 +222,16 @@
                 </el-col>
               </el-form>
             </el-col>
-            
+
             <el-col :span="24" :offset="5">
               <el-form :inline="true">
+                <!--
                 <el-col :span="8">
                   <el-form-item label="单局开奖最高开出显示奖池(%)："  v-if="!IsPHAuditEnv()">
                     <el-input v-model.number="JackpotCfg.ShowPoolLimitRate" size="mini" />
                   </el-form-item>
                 </el-col>
+                -->
                 <el-col :span="8">
                   <el-form-item label="奖池保底">
                     <el-input v-model.number="JackpotCfg.BaseValue" size="mini" ></el-input>
@@ -235,7 +239,7 @@
                 </el-col>
               </el-form>
             </el-col>
-          
+
             <fieldset style="margin-top:10px" ><!--v-if="!IsPHAuditEnv()"-->
               <legend>jackpot调控配置</legend>
               <el-row>
@@ -275,7 +279,7 @@
                   </el-table-column>
                   <el-table-column label="发放数量" prop="Value">
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.AwardRate" style="width: 140px;" size="mini" :required="true">
+                      <el-input v-model.number="scope.row.AwardRate" style="width: 100px;" size="mini" :required="true">
                         <template v-if="scope.row.AwardType==1" slot="append">%</template>
                         <template v-if="scope.row.AwardType==2" slot="append">倍</template>
                       </el-input>
@@ -286,9 +290,9 @@
                       <el-input v-model.number="scope.row.DayLimit" :disabled="checkShowDayLimit(scope.row.AwardType)" style="width: 140px;" size="mini" :required="true"><template slot="append">个</template></el-input>
                     </template>
                   </el-table-column>
-                  <el-table-column label="中奖概率" prop="DayLimit"><!--   v-if="IsPHAuditEnv()"-->
+                  <el-table-column label="中奖权重(总权重1000)" prop="DayLimit"><!--   v-if="IsPHAuditEnv()"-->
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.JackpotRate" ><template slot="append">‰</template></el-input>
+                      <el-input v-model.number="scope.row.JackpotRate" ><template slot="append">权重</template></el-input>
                     </template>
                   </el-table-column>
                   <!--
@@ -310,7 +314,7 @@
                       <el-tag v-for="tag, key in scope.row.DayLimitArr" v-if="scope.row.AwardType == 1" :key="key" disable-transitions>{{ showOpenDayLimit(tag) }}</el-tag>
                     </template>
                   </el-table-column>
-                  <el-table-column label="玩家开奖池条件(%)" width="260" v-if="!IsPHAuditEnv()">
+                  <el-table-column label="玩家开奖池条件(%)" width="250" v-if="!IsPHAuditEnv()">
                     <template slot-scope="scope">
                       <div v-if="scope.row.AwardType==1">
                         虚拟*<el-input v-model.number="scope.row.VrPoolRate" style="width: 70px;" size="mini" :required="true" />
@@ -321,20 +325,20 @@
                       </span>
                     </template>
                   </el-table-column>
-        
-                  <el-table-column label="机器人开奖池值" prop="PoolVal" width="180" v-if="!IsPHAuditEnv()">
+
+                  <el-table-column label="机器人开奖池值" prop="PoolVal" width="170" v-if="!IsPHAuditEnv()">
                     <template v-if="scope.row.AwardType==1" slot-scope="scope">
                       >=<el-input v-model.number="scope.row.PoolVal" style="width: 120px;" size="mini" :required="true" />
                     </template>
                   </el-table-column>
-            
+
                   <el-table-column label="机器人开奖数量概率" prop="RateArr" width="160" v-if="!IsPHAuditEnv()">
                     <template slot-scope="scope">
                       <el-button v-if="scope.row.AwardType == 1" type="primary" icon="el-icon-edit" circle size="mini" @click="showPoolNumDialog(scope.row)" />
                       {{ showOpenPoolRate(scope.row.JackpotType, scope.row.RateArr) }}
                     </template>
                   </el-table-column>
-                  
+
                 </el-table>
               </el-row>
             </fieldset>
@@ -352,7 +356,7 @@
         </el-col>
       </el-form>
     </el-row>
-  
+
     <el-dialog title="测试配置" :visible.sync="dialogFormVisible"   width="550px">
       <el-form  >
         <el-form-item label="是否开启:">
@@ -372,7 +376,7 @@
         <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
       </div>
     </el-dialog>
-  
+
     <!-- 【dialog】jackpot开出奖励 -->
     <el-dialog
       :title="poolNumChange.title"
@@ -489,14 +493,14 @@ export default {
         BetMoneyLevel:[], //下注
         OddsCfg:[],
         // ReChoiceCfg:{
-        //   LowLotteryPoolReChoice:0, 
-        //   LowLotteryPoolReChoiceRate:0, 
-        //   HighLotteryPoolReChoice:0, 
+        //   LowLotteryPoolReChoice:0,
+        //   LowLotteryPoolReChoiceRate:0,
+        //   HighLotteryPoolReChoice:0,
         //   HighLotteryPoolReChoiceRate: 0
         // },
       },
       form: {},
-      subKey: 'manny_punch_cfg',
+      subKey: this.$route.meta.subKey,
       libShow: $libShow,
       showSetResultPage: false,
       env:process.env.VUE_APP_PROJECT,
@@ -525,7 +529,7 @@ export default {
         jackpotType: 0,
         title: ''
       },
-      
+
 
     }
   },
@@ -559,8 +563,8 @@ export default {
         let id = 1
         for (const j in that.item.OddsCfg[i].OddsItem) {
           odds.push({
-            Id:id, 
-            Odds:that.item.OddsCfg[i].OddsItem[j].Odds / 100, 
+            Id:id,
+            Odds:that.item.OddsCfg[i].OddsItem[j].Odds / 100,
             JPWeight:that.item.OddsCfg[i].OddsItem[j].JPWeight
           })
           id ++
@@ -569,7 +573,7 @@ export default {
       }
 
       for (const i in that.item.BaseCfg) {
-        that.item.BaseCfg[i].Rtp = that.item.BaseCfg[i].Rtp / 100
+        that.item.BaseCfg[i].Rtp = that.item.BaseCfg[i].Rtp / 1000
       }
     },
     getData() {
@@ -618,6 +622,12 @@ export default {
 
             // item.ReChoiceCfg.LowLotteryPoolReChoice /= 1000
             // item.ReChoiceCfg.HighLotteryPoolReChoice /= 1000
+            item.JackpotCfg.BaseValue /= 1000
+            if (this.IsPHAuditEnv()) {
+              item.FeeRate /= 1
+            }else{
+              item.FeeRate /= 1000
+            }
 
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data)
@@ -650,38 +660,65 @@ export default {
         if (!this.item.BaseCfg[i]) {
             continue
           }
+          
         let oddsCfg = []
         let id = 1 //步数id
         let totalWeight = 0
+        /*
         for (const j in this.item.OddsCfg[i]) {
           let tempOdds = Math.round(this.item.OddsCfg[i][j].Odds * 100) //赔率放大100倍
           let liveRate = Math.round(this.item.BaseCfg[i].Rtp * 1000000 / tempOdds) //计算存活率
           totalWeight += this.item.OddsCfg[i][j].JPWeight
           oddsCfg.push({
-            Id: id, 
-            Odds: tempOdds, 
-            LiveRate: liveRate, 
+            Id: id,
+            Odds: tempOdds,
+            LiveRate: liveRate,
             JPWeight: this.item.OddsCfg[i][j].JPWeight
           })
           id ++
           console.log("this.item.OddsCfg[i][j] = ", this.item.OddsCfg[i][j])
+        }
+        */
+        let cross = 1
+        for (const j in this.item.OddsCfg[i]) {
+          let tempOdds = Math.round(this.item.OddsCfg[i][j].Odds * 100) //赔率放大100倍
+          let r = (this.item.BaseCfg[i].Rtp/100)/this.item.OddsCfg[i][j].Odds //rtp%
+          console.log("rtp:", this.item.BaseCfg[i].Rtp/100, ";odds:", this.item.OddsCfg[i][j].Odds, ";cross:",cross, ";r:",r/cross, ";liveRate:", Math.round(r/cross * 1000000))
+          //let liveRate = Math.round(this.item.BaseCfg[i].Rtp/ * 1000000 / tempOdds) //计算存活率
+          let liveRate = Math.round(r/cross * 1000000)
+          cross = r
+          totalWeight += this.item.OddsCfg[i][j].JPWeight
+          oddsCfg.push({
+            Id: id,
+            Odds: tempOdds,
+            LiveRate: liveRate,
+            JPWeight: this.item.OddsCfg[i][j].JPWeight
+          })
+          id ++
+          console.log("r = ", r, "; this.item.OddsCfg[i][j] = ", this.item.OddsCfg[i][j])
         }
         ret.OddsCfg.push({OddsItem:oddsCfg})
         ret.JPTotalWeight.push(totalWeight)
       }
 
       for (const i in this.item.BaseCfg) {
-        ret.BaseCfg[i].Rtp = Math.round(this.item.BaseCfg[i].Rtp * 100)
+        ret.BaseCfg[i].Rtp = Math.round(this.item.BaseCfg[i].Rtp * 1000)
       }
 
       // ret.ReChoiceCfg.LowLotteryPoolReChoice *= 1000
       // ret.ReChoiceCfg.HighLotteryPoolReChoice *= 1000
+      ret.JackpotCfg.BaseValue *= 1000
       ret.AutoDropTimer *= 1
 
       if (ret.JackpotCfg.JackpotRegulation){
         for (const o of ret.JackpotCfg.JackpotRegulation.RandAwards) {
           o.PoolVal = parseInt(o.PoolVal * 1000)
         }
+      }
+      if (this.IsPHAuditEnv()) {
+        ret.FeeRate *= 1
+      }else{
+        ret.FeeRate *= 1000
       }
 
       //测试
@@ -827,6 +864,16 @@ export default {
         }
       }
     },
+    addPoolNum() {
+      let maxId = 0
+      for (var i = 0; i < this.poolNumChange.data.length; i++) {
+        if (this.poolNumChange.data[i].Id > maxId) {
+          maxId = this.poolNumChange.data[i].Id
+        }
+      }
+      maxId++
+      this.poolNumChange.data.push({ 'Id': maxId, 'Num': 0, 'Rate': 0 })
+    },
     ////////////////////////////////////////////
     showDayLimitDialog(data) {
       if (data.JackpotType == 4) {
@@ -884,7 +931,7 @@ export default {
         }
       }
       this.dayLimitChange.visible = false
-    },    
+    },
     showOpenDayLimit(data) {
       return '[' + data['StartHours'] + ',' + data['EndHours'] + ')点：' + data['Num'] + '个'
     },

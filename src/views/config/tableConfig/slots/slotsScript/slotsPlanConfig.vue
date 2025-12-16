@@ -144,8 +144,8 @@
                   <el-checkbox label="PG" value="PG"></el-checkbox>
                   <el-checkbox label="TP" value="TP"></el-checkbox>
                   <el-checkbox label="SP" value="SP"></el-checkbox>
+                  <el-checkbox label="CP" value="CP"></el-checkbox>
                 </el-checkbox-group>
-
         </el-form-item>
         <!--        <el-form-item label="用户类型">-->
         <!--           <el-select v-model.number="addFormData.ScriptRuleDescription.UserType">-->
@@ -1020,7 +1020,7 @@ export default {
         Versions: [
 
         ],
-        ScriptRuleDescription: {Platform:'',UserType:0,TrafficCtrl:0}
+        ScriptRuleDescription: {Platform:'',UserType:0,TrafficCtrl:0, PlatformList:[]}
       }
     },
     addPlan() {

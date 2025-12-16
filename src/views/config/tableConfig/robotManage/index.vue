@@ -23,19 +23,19 @@
           />
         </div>
         <div class="serach-filter-item">
-          <label class="filter-label">机器人站点：</label>
+          <label class="filter-label">机器人渠道：</label>
           <el-select 
             v-model="searchFilter.appID" 
             placeholder="请选择机器人渠道" 
             size="small"
             class="site-select"
-            @change="getRobotList"
+            @change="handleSiteChange"
           >
             <el-option 
               v-for="item in SiteAppIDOptions" 
               :key="item.Value" 
-              :label="item.Label" 
-              :value="item.Value" 
+              :label="item.Label + '(' + item.Value + ')'" 
+              :value="item.Value"
             />
           </el-select>
         </div>
@@ -88,7 +88,7 @@
       />
     </el-row>
 
-    <AddRobotDialog :visible="importDialogVisible" :appID="searchFilter.appID" @reload-list="onSearch" @close="handleImportRobotDialogClose" />
+    <AddRobotDialog :visible="importDialogVisible" :appID="searchFilter.appID" :channel="searchFilter.channel" @reload-list="onSearch" @close="handleImportRobotDialogClose" />
     <LaunchRobotsDialog
       :visible="launchRobotsDialogVisible"
       :selected-robots="selectedRobots"
@@ -117,6 +117,7 @@ export default {
       libShow: $libShow,
       searchFilter: {
         appID: 1000005,
+        channel: 'BP',
         moneyLowerLimit: '',
         moneyUpperLimit: ''
       },
@@ -212,6 +213,15 @@ export default {
           }
         }
       })
+    },
+    handleSiteChange(value) {
+      // 根据选中的value找到对应的item
+      const selectedItem = this.SiteAppIDOptions.find(item => item.Value === value)
+      if (selectedItem) {
+        this.searchFilter.channel = selectedItem.Label
+      }
+      console.log(this.searchFilter.channel)
+      this.getRobotList()
     },
     getRobotList() {
       const { moneyLowerLimit, moneyUpperLimit, appID } = this.searchFilter

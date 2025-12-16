@@ -11,7 +11,7 @@
           />
         </el-form-item>
         <el-form-item label="玩法：">
-          <el-select v-model="searchForm.gameId" placeholder="请选择" @change="changeLevelConfig">
+          <el-select v-model="searchForm.gameId" placeholder="请选择" @change="changeLevelConfig" filterable>
             <el-option
               v-for="item in gameConfig"
               :key="item.value"
@@ -226,7 +226,6 @@ export default {
         { 'value': 1, 'label': '普通场次' }
       ],
       gameConfig: [
-        { 'value': 0, 'label': '全部' },
         { 'value': 25, 'label': 'color game' },
         { 'value': 20, 'label': 'Mines - 扫雷' },
         { 'value': 100, 'label': 'Tower' },
@@ -259,6 +258,7 @@ export default {
         { 'value': 216, 'label': 'Phoenix' },
         { 'value': 134, 'label': 'Pusoy JP' },
         { 'value': 135, 'label': 'SUPER COLOR' },
+        { 'value': 139, 'label': 'Manny Punch' },
         { 'value': 140, 'label': 'HiloPlus' },
         { 'value': 500, 'label': 'GoldMaster' },
       ],

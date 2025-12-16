@@ -373,6 +373,7 @@ export default {
         'Data.BigPrizeCfg.HitPerMillion': ' 中奖概率',
         'Data.BigPrizeCfg.OddsCfg': ' 大奖中奖倍数配置',
         'Data.BigPrizeGroups': ' 用户群大奖配置',
+        'Data.WarmUpCfg': '大奖预热配置',
         types: {
           Data: 'jsonString' // 整个数据项的类型
         }
@@ -485,7 +486,9 @@ export default {
         '214': 'pumpkincash',
         '224': 'supermahjong',
         '232': 'mafiamayhem',
-        '236': 'pacquiaofortune'
+        '236': 'pacquiaofortune',
+        '218': 'wrathofzeus2',
+        '228': 'jokerace'
       }
     }
   },
@@ -602,6 +605,16 @@ export default {
             const item = JSON.parse(response.Data.Data)
             if (typeof item['BigPrizeGroups'] == 'undefined') {
               item['BigPrizeGroups'] = []
+            }
+            if (typeof item['WarmUpCfg'] == 'undefined') {
+              item['WarmUpCfg'] = {
+                Scatter1Rate: 0,
+                Scatter2Rate: 0,
+                Scatter3Rate: 0,
+                MultiRate: 0,
+                MaxRate: 0,
+                WarmUpEnabled: false
+              }
             }
             Object.assign(this.item, item)
             for (const itemElement of item.BetOddsPlans) {
