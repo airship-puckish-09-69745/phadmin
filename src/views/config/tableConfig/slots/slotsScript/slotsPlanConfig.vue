@@ -38,6 +38,11 @@
           {{ scope.row.IsDisabled === 1 ? '禁用' : '未禁用' }}
         </template>
       </el-table-column>
+      <el-table-column prop="Volatility" label="波动率">
+        <template slot-scope="scope">
+          {{ showVolatility(scope.row.Volatility) }}
+        </template>
+      </el-table-column>
       <el-table-column prop="Versions" label="配置版本列表" width="1000px">
         <template slot-scope="scope" >
           <el-table :data="scope.row.Versions" stripe style="font-size: 10px">
@@ -991,6 +996,11 @@ export default {
       for (const o of this.orgDataList) {
         if (this.queryGid === o.SlotsType) {
           let a = JSON.parse(JSON.stringify(o))
+
+          for (const k in a.Data) {
+            a.Data['Volatility'] = 0
+          }
+
           this.showItem.SlotsType = a.SlotsType
           this.showItem.Plans = a.Data
           this.showItem.ID = a.ID
@@ -1736,6 +1746,10 @@ export default {
       }).catch(() => {
         console.log('取消')
       })
+    },
+    showVolatility(n) {
+      n /= 10000
+      return n.toFixed(2)
     }
   }
 }
