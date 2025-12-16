@@ -79,7 +79,7 @@
                 <el-form :inline="true">
                   <el-col :span="8">
                     <el-form-item label="推荐倍率:">
-                      <el-input v-model="item.RecommendMultiple" size="mini" ></el-input>
+                      <el-input v-model="item.RecommendMultiple" size="mini" ><template  slot="append">X</template></el-input>
                     </el-form-item>
                   </el-col>
                 </el-form>
