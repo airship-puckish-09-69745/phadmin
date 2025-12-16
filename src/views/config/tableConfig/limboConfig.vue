@@ -75,6 +75,16 @@
                 </el-form>
               </el-col>
               
+              <el-col :span="24" :offset="5">
+                <el-form :inline="true">
+                  <el-col :span="8">
+                    <el-form-item label="推荐倍率:">
+                      <el-input v-model="item.RecommendMultiple" size="mini" ></el-input>
+                    </el-form-item>
+                  </el-col>
+                </el-form>
+              </el-col>
+              
               <!--bet-->
               <fieldset style="margin-top:10px">
                 <el-col :span="20">
@@ -437,6 +447,7 @@ export default {
         RobotCfg:[], //机器人配置
         RobotBetCfg:{},
         ReChoiceCfg:{},
+        RecommendMultiple:[],//推荐下注倍率
       },
       form: {},
       subKey: 'limbo_cfg',
@@ -535,6 +546,11 @@ export default {
             item.ReChoiceCfg.HighLotteryPoolReChoice /= 1000
             //item.RobotBetCfg.BetMultipleMin /=  100
             //item.RobotBetCfg.BetMultipleMax /=  100
+            let recommendMultiple = []
+            for (const o of item.RecommendMultiple){
+              recommendMultiple.push(o/100)
+            }
+            item.RecommendMultiple = recommendMultiple.join(',')
 
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data)
@@ -588,6 +604,10 @@ export default {
       ret.ReChoiceCfg.HighLotteryPoolReChoice *= 1000
       //ret.RobotBetCfg.BetMultipleMin *= 100
       //ret.RobotBetCfg.BetMultipleMax *= 100
+      ret.RecommendMultiple = []
+      for (const oElement of this.item.RecommendMultiple.split(',')) {
+        ret.RecommendMultiple.push(oElement * 100)
+      }
 
       //测试
       if (!ret.openTest || ret.openTest=="1"){
