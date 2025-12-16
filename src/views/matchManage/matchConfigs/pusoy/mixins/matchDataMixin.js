@@ -253,6 +253,9 @@ export const matchDataMixin = {
                       continue
                     }
                     appId = exitData.appId
+                    if (!ticketConfigList.hasOwnProperty(appId)) {
+                      continue
+                    }
                     let tickets = ticketConfigList[exitData.appId].find(ticket => ticket.ticketId === item.id)
                     if(tickets){
                       canPush = true
