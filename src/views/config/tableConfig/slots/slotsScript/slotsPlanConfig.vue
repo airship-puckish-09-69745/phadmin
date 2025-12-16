@@ -1007,15 +1007,15 @@ export default {
           this.$refs.compare.SetOldVal(JSON.parse(JSON.stringify(this.showItem.Plans)))
           this.proceedData(this.showItem.Plans)
           this.$forceUpdate()
+
+          //查询方案的波动率
+          this.queryScriptVolatility()
           return
         }
       }
       this.showItem.SlotsType = this.queryGid
       this.showItem.Plans = this.newPlansCfg()
       this.showItem.ID = 0
-
-      //查询方案的波动率
-      queryScriptVolatility()
     },
     newItem() {
       return {
