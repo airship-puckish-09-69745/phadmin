@@ -40,7 +40,7 @@
       </el-table-column>
       <el-table-column prop="Volatility" label="波动率">
         <template slot-scope="scope">
-          {{ showVolatility(scope.row.Volatility) }}
+          {{ scriptPlanVolatilityStat[scope.row.PlanId] || '0.00' }}
         </template>
       </el-table-column>
       <el-table-column prop="Versions" label="配置版本列表" width="1000px">
@@ -780,6 +780,8 @@ export default {
         { key: 100180, label: 'Fishing Master(额外加注)' },
         { key: 100186, label: 'Mahjong Jackpot(额外加注)' }
       ],
+
+      scriptPlanVolatilityStat: {}
     }
   },
   created() {
@@ -996,11 +998,6 @@ export default {
       for (const o of this.orgDataList) {
         if (this.queryGid === o.SlotsType) {
           let a = JSON.parse(JSON.stringify(o))
-
-          for (const k in a.Data) {
-            a.Data[k]['Volatility'] = 0
-          }
-
           this.showItem.SlotsType = a.SlotsType
           this.showItem.Plans = a.Data
           this.showItem.ID = a.ID
@@ -1761,18 +1758,12 @@ export default {
         }
       }).then(response => {
         if (response.RetCode !== 0 && typeof response.Data !== 'object') {
-          for (const k in this.showItem.Plans) {
-            const planId = this.showItem.Plans[k].PlanId
-            if (response.Data[planId]) {
-              this.$set(this.showItem.Plans[k], 'Volatility', response.Data[planId])
-            }
+          for (const k in response.Data) {
+            const v = response.Data[k] / 10000
+            this.$set(this.scriptPlanVolatilityStat, k, v.toFixed(2))
           }
         }
       })
-    },
-    showVolatility(n) {
-      n /= 10000
-      return n.toFixed(2)
     }
   }
 }
