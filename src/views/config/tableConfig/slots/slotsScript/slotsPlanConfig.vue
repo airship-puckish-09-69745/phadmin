@@ -998,7 +998,7 @@ export default {
           let a = JSON.parse(JSON.stringify(o))
 
           for (const k in a.Data) {
-            a.Data['Volatility'] = 0
+            a.Data[k]['Volatility'] = 0
           }
 
           this.showItem.SlotsType = a.SlotsType
