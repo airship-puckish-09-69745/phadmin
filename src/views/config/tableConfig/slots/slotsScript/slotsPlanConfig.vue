@@ -1756,13 +1756,13 @@ export default {
         }
       }).then(response => {
         if (response.RetCode !== 0 && typeof response.Data !== 'object') {
-          return
+          this.scriptPlanVolatilityStat = {}
+        } else {
+          for (const k in response.Data) {
+            const v = response.Data[k] / 10000
+            this.$set(this.scriptPlanVolatilityStat, k, v.toFixed(2))
+          }
         }
-        for (const k in response.Data) {
-          const v = response.Data[k] / 10000
-          this.$set(this.scriptPlanVolatilityStat, k, v.toFixed(2))
-        }
-        console.log('波动率:', this.scriptPlanVolatilityStat)
       })
     }
   }
