@@ -35,10 +35,10 @@
             width="140"
           >
             <template slot-scope="scope">
-              {{ tagIdName(scope.row.tag_id) }}
+              <div v-html="tagIdValName(scope.row)"></div>
             </template>
           </el-table-column>
-          <el-table-column
+          <!-- <el-table-column
             prop="tag_name"
             label="标签名称"
             width="120"
@@ -46,7 +46,7 @@
             <template slot-scope="scope">
               {{ tagValName(scope.row) }}
             </template>
-          </el-table-column>
+          </el-table-column> -->
           <el-table-column
             prop="tag_gid"
             label="关联游戏"
@@ -654,6 +654,13 @@
         }
         return ''
       },
+      tagIdValName(row) {
+        let str = this.tagIdName(row.tag_id) + ' ' + this.tagValName(row) + '<br>[tagId='+ row.tag_id + ']'
+        if (row.tag_val>0) {
+          return str + '<br>[tagVal='+ row.tag_val + ']'
+        }
+        return str
+      },
       getTagType(tag_id) {
         for (const v of this.tagOptions) {
           for (const v2 of v.children) {
@@ -752,14 +759,14 @@
           dayStr = `连续${attr.days}天`
         }
         if (row.tag_id === 50009) {
-          let str = `小奖用户：${dayStr} ${this.areaPageName(row)}>=${attr.grade[0]/1000}<br/>`
-          str += `中奖用户：${dayStr} ${this.areaPageName(row)}>=${attr.grade[1]/1000}<br/>`
-          str += `大奖用户：${dayStr} ${this.areaPageName(row)}>=${attr.grade[2]/1000}`
+          let str = `小奖用户（tagVal=1）：${dayStr} ${this.areaPageName(row)}>=${attr.grade[0]/1000}<br/>`
+          str += `中奖用户（tagVal=2）：${dayStr} ${this.areaPageName(row)}>=${attr.grade[1]/1000}<br/>`
+          str += `大奖用户（tagVal=3）：${dayStr} ${this.areaPageName(row)}>=${attr.grade[2]/1000}`
           return str
         }
-        let str = `轻度用户：${dayStr} ${this.areaPageName(row)}>=${attr.grade[0]}<br/>`
-        str += `中度用户：${dayStr} ${this.areaPageName(row)}>=${attr.grade[1]}<br/>`
-        str += `重度用户：${dayStr} ${this.areaPageName(row)}>=${attr.grade[2]}`
+        let str = `轻度用户（tagVal=1）：${dayStr} ${this.areaPageName(row)}>=${attr.grade[0]}<br/>`
+        str += `中度用户（tagVal=2）：${dayStr} ${this.areaPageName(row)}>=${attr.grade[1]}<br/>`
+        str += `重度用户（tagVal=3）：${dayStr} ${this.areaPageName(row)}>=${attr.grade[2]}`
         return str
       },
       formatTime(ts) {

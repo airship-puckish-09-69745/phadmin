@@ -5,9 +5,11 @@
       <el-col :span="18">
         <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" />
       </el-col>
-      <el-col :span="2">
+      <!--
+      <el-col :span="2" >
         <el-button type="primary" @click="dialogFormVisible= true" size="mini" > 测试配置</el-button>
       </el-col>
+      -->
     </el-row>
 
     <el-row>
@@ -662,6 +664,7 @@ export default {
         let oddsCfg = []
         let id = 1 //步数id
         let totalWeight = 0
+        /*
         for (const j in this.item.OddsCfg[i]) {
           let tempOdds = Math.round(this.item.OddsCfg[i][j].Odds * 100) //赔率放大100倍
           let liveRate = Math.round(this.item.BaseCfg[i].Rtp * 1000000 / tempOdds) //计算存活率
@@ -675,12 +678,12 @@ export default {
           id ++
           console.log("this.item.OddsCfg[i][j] = ", this.item.OddsCfg[i][j])
         }
-        /*
+        */
         let cross = 1
         for (const j in this.item.OddsCfg[i]) {
           let tempOdds = Math.round(this.item.OddsCfg[i][j].Odds * 100) //赔率放大100倍
-          let r = this.item.BaseCfg[i].Rtp/this.item.OddsCfg[i][j].Odds
-          console.log("rtp:", this.item.BaseCfg[i].Rtp, ";odds:", this.item.OddsCfg[i][j].Odds, ";cross:",cross, ";r:",r/cross)
+          let r = (this.item.BaseCfg[i].Rtp/100)/this.item.OddsCfg[i][j].Odds //rtp%
+          console.log("rtp:", this.item.BaseCfg[i].Rtp/100, ";odds:", this.item.OddsCfg[i][j].Odds, ";cross:",cross, ";r:",r/cross, ";liveRate:", Math.round(r/cross * 1000000))
           //let liveRate = Math.round(this.item.BaseCfg[i].Rtp/ * 1000000 / tempOdds) //计算存活率
           let liveRate = Math.round(r/cross * 1000000)
           cross = r
@@ -693,7 +696,7 @@ export default {
           })
           id ++
           console.log("r = ", r, "; this.item.OddsCfg[i][j] = ", this.item.OddsCfg[i][j])
-        }*/
+        }
         ret.OddsCfg.push({OddsItem:oddsCfg})
         ret.JPTotalWeight.push(totalWeight)
       }
@@ -860,6 +863,16 @@ export default {
           break
         }
       }
+    },
+    addPoolNum() {
+      let maxId = 0
+      for (var i = 0; i < this.poolNumChange.data.length; i++) {
+        if (this.poolNumChange.data[i].Id > maxId) {
+          maxId = this.poolNumChange.data[i].Id
+        }
+      }
+      maxId++
+      this.poolNumChange.data.push({ 'Id': maxId, 'Num': 0, 'Rate': 0 })
     },
     ////////////////////////////////////////////
     showDayLimitDialog(data) {
