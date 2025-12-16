@@ -995,6 +995,7 @@ export default {
     },
     async queryKeyInput() {
       this.queryBase(this.queryGid)
+      this.queryScriptVolatility(this.queryGid)
       for (const o of this.orgDataList) {
         if (this.queryGid === o.SlotsType) {
           let a = JSON.parse(JSON.stringify(o))
@@ -1004,9 +1005,6 @@ export default {
           this.$refs.compare.SetOldVal(JSON.parse(JSON.stringify(this.showItem.Plans)))
           this.proceedData(this.showItem.Plans)
           this.$forceUpdate()
-
-          //查询方案的波动率
-          this.queryScriptVolatility()
           return
         }
       }
@@ -1747,14 +1745,14 @@ export default {
         console.log('取消')
       })
     },
-    queryScriptVolatility() {
+    queryScriptVolatility(gid) {
       const $this = this
       request({
         url: '/dataProxy/info',
         method: 'get',
         data: {
           Path: '/slotsStat/script/volatility',
-          gid: $this.queryGid
+          gid: gid
         }
       }).then(response => {
         if (response.RetCode !== 0 && typeof response.Data !== 'object') {
