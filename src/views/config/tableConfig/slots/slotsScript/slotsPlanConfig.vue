@@ -1013,6 +1013,9 @@ export default {
       this.showItem.SlotsType = this.queryGid
       this.showItem.Plans = this.newPlansCfg()
       this.showItem.ID = 0
+
+      //查询方案的波动率
+      queryScriptVolatility()
     },
     newItem() {
       return {
@@ -1745,6 +1748,26 @@ export default {
         })
       }).catch(() => {
         console.log('取消')
+      })
+    },
+    queryScriptVolatility() {
+      const $this = this
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Path: '/slotsStat/scripts/volatility',
+          gid: $this.queryGid
+        }
+      }).then(response => {
+        if (response.RetCode !== 0 && typeof response.Data !== 'object') {
+          for (const k in this.showItem.Plans) {
+            const planId = this.showItem.Plans[k].PlanId
+            if (response.Data[planId]) {
+              this.showItem.Plans[k].Volatility = response.Data[planId]
+            }
+          }
+        }
       })
     },
     showVolatility(n) {
