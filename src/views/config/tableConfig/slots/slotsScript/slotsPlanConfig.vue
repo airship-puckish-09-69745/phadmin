@@ -1746,7 +1746,9 @@ export default {
       })
     },
     queryScriptVolatility(gid) {
-      const $this = this
+      for (const k in response.Data) {
+        this.$set(this.scriptPlanVolatilityStat, k, '0.00')
+      }
       request({
         url: '/dataProxy/info',
         method: 'get',
