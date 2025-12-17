@@ -50,9 +50,6 @@ export default {
     return {
       pickerOptions: $libShow.DefaultDatePickerOptions(),
       timeRange: [$libDate.GetDayBegin(new Date()), $libDate.GetDayEnd(new Date())],
-      form: {
-        app: 1000010
-      },
       appOptions: [
         // ===== 测试 / UAT =====
         { label: 'CasinoPlus UAT', value: 1000010 },
@@ -66,6 +63,9 @@ export default {
         { label: 'CasinoPlus 正式', value: 2000005 },
         { label: 'CasinoPlus IGO 正式', value: 3000005 }
       ],
+      form: {
+        app: 1000010
+      },
       slotsOptions: [],
       resultData: null,
       tableData: [
