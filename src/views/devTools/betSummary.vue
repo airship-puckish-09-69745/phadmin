@@ -42,12 +42,13 @@
 <script>
 import request from '@/utils/request'
 import store from '@/store'
-import { $libDate } from '@/utils/common'
+import { $libDate, $libShow } from '@/utils/common'
 export default {
   name: 'TagUser',
   components: {},
   data() {
     return {
+      pickerOptions: $libShow.DefaultDatePickerOptions(),
       timeRange: [$libDate.GetDayBegin(new Date()), $libDate.GetDayEnd(new Date())],
       form: {
         app: 1000010
