@@ -134,10 +134,10 @@
           <template slot-scope="scope">
             <el-button size="mini" icon="el-icon-edit" @click="showForm(scope.row.id)">编辑</el-button>
             <el-button v-if="scope.row.status===2" size="mini" type="success" @click="handleUpdate(scope.row.id)">上架</el-button>
-            <el-button v-if="scope.row.status===1"  size="mini" type="danger" @click="handleUpdate(scope.row.id)">下架</el-button>
-            <!--<el-button v-if="scope.row.status===1 && !isTicketPropNew(scope.row.item_type)" size="mini" type="danger" @click="handleUpdate(scope.row.id)">下架</el-button> -->
-            <el-button v-if="scope.row.status===2" size="mini" type="danger" @click="handleDelete(scope.row.id, false)">删除</el-button>
-            <!-- <el-button v-if="itemEnv==='development' &&  scope.row.status===2" size="mini" type="danger" @click="handleDelete(scope.row.id, false)">删除</el-button> -->
+           <!-- <el-button v-if="scope.row.status===1"  size="mini" type="danger" @click="handleUpdate(scope.row.id)">下架</el-button> -->
+            <el-button v-if="scope.row.status===1 && !isTicketPropNew(scope.row.item_type)" size="mini" type="danger" @click="handleUpdate(scope.row.id)">下架</el-button>
+            <!--<el-button v-if="scope.row.status===2" size="mini" type="danger" @click="handleDelete(scope.row.id, false)">删除</el-button> -->
+             <el-button v-if="itemEnv==='development' &&  scope.row.status===2" size="mini" type="danger" @click="handleDelete(scope.row.id, false)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -607,12 +607,12 @@ export default {
       }
       for (let i = 0; i < this.BETTING_GAME_CONFIG.length; i++) {
         this.freeSpinGameMap[this.BETTING_GAME_CONFIG[i].value] = this.BETTING_GAME_CONFIG[i].label
-       
+
       }
       //console.log("3333 initFreeSpinGameMap ",this.freeSpinGameMap)
     },
     getSlotFreSpinPropDescReturnGameNames(itemExtra) {
-    
+
       const names = []
       const extraData = JSON.parse(itemExtra)
       if (!extraData.gid || extraData.gid.length <= 0) return names
@@ -1042,7 +1042,7 @@ export default {
             }
           }
         }
-    
+
         this.initFreeSpinGameMap()
       } catch (error) {
         console.error('获取slot游戏配置失败:', error)
