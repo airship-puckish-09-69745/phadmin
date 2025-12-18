@@ -5,9 +5,11 @@
       <el-col :span="18">
         <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" />
       </el-col>
-      <el-col :span="2">
+      
+      <el-col :span="2" v-if="IsDev()">
         <el-button type="primary" @click="dialogFormVisible= true" size="mini" > 测试配置</el-button>
       </el-col>
+      
     </el-row>
 
     <el-row>
@@ -380,11 +382,22 @@ export default {
       for (const i in this.item.OddsCfg) {
         let oddsCfg = []
         let id = 1 //步数id
+        // for (const j in this.item.OddsCfg[i]) {
+        //   let tempOdds = Math.round(this.item.OddsCfg[i][j].Odds * 100) //赔率放大100倍
+        //   let liveRate = Math.round(this.item.RTPS[i] * 1000000 / tempOdds) //计算存活率
+        //   oddsCfg.push({Id: id, Odds: tempOdds, LiveRate: liveRate})
+        //   id ++
+        // }
+        let cross = 1
         for (const j in this.item.OddsCfg[i]) {
           let tempOdds = Math.round(this.item.OddsCfg[i][j].Odds * 100) //赔率放大100倍
-          let liveRate = Math.round(this.item.RTPS[i] * 1000000 / tempOdds) //计算存活率
-          oddsCfg.push({Id: id, Odds: tempOdds, LiveRate: liveRate})
+          let r = (this.item.RTPS[i]/100)/this.item.OddsCfg[i][j].Odds //rtp%
+          console.log("rtp:", this.item.RTPS[i]/100, ";odds:", this.item.OddsCfg[i][j].Odds, ";cross:",cross, ";r:",r/cross, ";liveRate:", Math.round(r/cross * 1000000))
+          let liveRate = Math.round(r/cross * 1000000)
+          cross = r
+          oddsCfg.push({Id: id,Odds: tempOdds,LiveRate: liveRate})
           id ++
+          console.log("r = ", r, "; this.item.OddsCfg[i][j] = ", this.item.OddsCfg[i][j])
         }
         ret.OddsCfg.push({OddsItem:oddsCfg})
       }
@@ -499,6 +512,9 @@ export default {
     IsPHAuditEnv(){
       return this.env == 'ph_audit'
     },
+    IsDev() {
+      return process.env.VUE_APP_PROJECT_NAME === '菲1-开发环境'
+    }
   }
 }
 </script>

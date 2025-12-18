@@ -96,26 +96,27 @@ export function LibShow() {
   this.GameNames = { 2: 'AB', 3: '龙虎', 4: 'JM', 5: 'Car', 6: '7UpD', 7: '红黑', 8: 'AK47', 9: 'TPatti', 10: 'Crash', 13: 'TP War', 14: 'TP真', 15: '德州',
     500: 'GoldMaster',
     214: 'PumpkinCash',
-    202: 'FortunateEbisu',//独占一行
-    206: 'LuckyWineglass',//独占一行
-    212: 'PirateShip',//独占一行
-    218: 'WrathOfZeus2',//独占一行
-    228: 'JokerAce',//独占一行
-    188: 'StreetFighting',//独占一行
-    192: 'BountyRaid',//独占一行
-    180: 'FishingMaster',//独占一行
+    202: 'FortunateEbisu', // 独占一行
+    206: 'LuckyWineglass', // 独占一行
+    212: 'PirateShip', // 独占一行
+    218: 'WrathOfZeus2', // 独占一行
+    228: 'JokerAce', // 独占一行
+    188: 'StreetFighting', // 独占一行
+    192: 'BountyRaid', // 独占一行
+    180: 'FishingMaster', // 独占一行
     16: 'Baccarat', 17: 'wingo', 18: '球队标转盘', 19: '动物转盘', 20: '扫雷', 22: 'Tongits', 23: 'Lucky 9', 25: 'Color Game', 31: 'Tongits经典',
     34: 'Pusoy-Dos', 37: 'BlackJack', 46: '多米诺',
     51: '凤凰', 52: '睡美人', 53: '小丑', 	54: ' 黄金列车', 55: '澳洲', 56: '象鼻神', 57: '黄金矿工', 58: '阿拉丁',
     59: '芝加哥', 60: '糖果派', 61: 'fireKick',
-    76: 'Candy Rush', 78: 'SuperGems', 80: 'Candy Craze', 82: 'Millionaire', 84: 'FortuneAce', 86: 'SuperGemsII', 88: 'Lucky777', 90: 'FortuneComing', 92: 'UltraAce', 94: 'Wild Buffalo', 96: 'RomanArena', 98: 'SuperTongit',// slots
+    76: 'Candy Rush', 78: 'SuperGems', 80: 'Candy Craze', 82: 'Millionaire', 84: 'FortuneAce', 86: 'SuperGemsII', 88: 'Lucky777', 90: 'FortuneComing', 92: 'UltraAce', 94: 'Wild Buffalo', 96: 'RomanArena', 98: 'SuperTongit', // slots
     100: 'Tower', 101: 'Sicbo', 102: 'Hilo', 103: 'Windrop', 119: 'Windropc积分', 104: 'Dragon Tiger', 105: 'Andar Bahar', 106: 'PIGGY TAP', 107: 'Mini Baccarat', 108: 'Dropball', 110: 'Video Poker',
     112: 'Wingo Lottery', 115: 'MultiPlayer NiuNiu', 118: 'Car Racing', 124: 'Jackpot Wheel', 125: 'Free Spin', 127: 'SaBong', 128: 'Tongits JP', 129: 'Live Color', 132: '新版扫雷', 134: 'Pusoy JP', 135: 'SUPER COLOR', 136: 'Limbo', 137: 'BlackJackMH',
-    138: 'Chicken Go', 139: 'manny Punch', 140: 'HiloPlus',141: 'Pirate Scratch',
+    138: 'Chicken Go', 139: 'manny Punch', 140: 'HiloPlus', 141: 'Pirate Scratch',
     150: 'SuperGemsIII', 152: 'Aladdin\'s Lamp', 154: 'GrandAce', 156: 'CrazyAce', 172: 'WrathOfZeus', 158: 'SharkKingdom', 160: 'GigaAce', 162: 'MajorAce', 164: 'MahjongFortune', 166: 'FireLink',
     170: 'EpicAce', 176: 'PuppyHome', 182: 'GodOfFortune', 186: 'MahjongJackpot', 174: 'TreasureBowl', 178: 'MayanTotem', 194: 'GoldTrain', 168: 'Pharaoh\'sTreasure', 196: 'GoldMiner', 184: 'Dance of the Lion',
     190: 'ArcaneEgypt', 198: 'FortuneBlessing', 200: 'AtlantisTreasure', 204: 'SpaceTreasure', 208: 'CandyBurst', 210: 'LuckySpirits', 216: 'Phoenix', 220: 'GoldenDragon', 222: 'LionFortune', 226: 'Fortune Wheel', 232: 'MafiaMayhem', // slots
-    230: 'PahiyasWins', 236: 'PacquiaoFortune', 234: 'Fortune Tree', 238: 'MasskaraFortune'
+    230: 'PahiyasWins', 236: 'PacquiaoFortune', 234: 'Fortune Tree', 238: 'MasskaraFortune',
+    1139: 'Manny Punch 试玩'
   }
 
   this.NumMap = {
@@ -330,7 +331,6 @@ export function LibDate() {
     var pattern = /^([01]?\d|2[0-3]):[0-5]?\d$/
     return pattern.test(str)
   }
-
 }
 
 export function Pagination(_totalCount, _pageNum) {
@@ -452,14 +452,14 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
     $this.Page.SetTotalCount($this.ShowData.length)
     $this._sortByProp()
   }
-// 传对应的字段和值然后返回所有
+  // 传对应的字段和值然后返回所有
   this.FilterDataCustomize = function(obj) {
     $this.ShowData = $this.TotalData.filter(
       function(data) {
         for (const f in $this.FilterValueMap) {
           let defaultValue = 0
-          if (obj.hasOwnProperty(f)){
-            defaultValue =parseInt( obj[f])
+          if (obj.hasOwnProperty(f)) {
+            defaultValue = parseInt(obj[f])
           }
           if ($this.FilterValueMap[f] != defaultValue && $this.FilterValueMap[f] != data[f]) {
             return false
@@ -569,11 +569,11 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
     this._sortByProp()
     this.FilterData()
   }
-  this.DelData2 = function(keyName,id) {
+  this.DelData2 = function(keyName, id) {
     for (var i = 0; i < $this.TotalData.length; i++) {
       const item = $this.TotalData[i]
       if (item[keyName] === id) {
-        console.log(item,keyName,id)
+        console.log(item, keyName, id)
         $this.TotalData.splice(i, 1)
         break
       }

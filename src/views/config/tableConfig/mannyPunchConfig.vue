@@ -5,9 +5,11 @@
       <el-col :span="18">
         <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" />
       </el-col>
-      <el-col :span="2">
+      <!--
+      <el-col :span="2" >
         <el-button type="primary" @click="dialogFormVisible= true" size="mini" > 测试配置</el-button>
       </el-col>
+      -->
     </el-row>
 
     <el-row>
@@ -283,7 +285,7 @@
                       </el-input>
                     </template>
                   </el-table-column>
-                  <el-table-column label="每日限制开出个数(0为不限)" prop="DayLimit" ><!--v-if="!IsPHAuditEnv()"-->
+                  <el-table-column label="每日限制开出个数" prop="DayLimit" ><!--v-if="!IsPHAuditEnv()"(0为不限)-->
                     <template slot-scope="scope">
                       <el-input v-model.number="scope.row.DayLimit" :disabled="checkShowDayLimit(scope.row.AwardType)" style="width: 140px;" size="mini" :required="true"><template slot="append">个</template></el-input>
                     </template>

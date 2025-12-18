@@ -38,6 +38,11 @@
           {{ scope.row.IsDisabled === 1 ? '禁用' : '未禁用' }}
         </template>
       </el-table-column>
+      <el-table-column prop="Volatility" label="波动率">
+        <template slot-scope="scope">
+          {{ scriptPlanVolatilityStat[scope.row.PlanId] || '0.00' }}
+        </template>
+      </el-table-column>
       <el-table-column prop="Versions" label="配置版本列表" width="1000px">
         <template slot-scope="scope" >
           <el-table :data="scope.row.Versions" stripe style="font-size: 10px">
@@ -775,6 +780,8 @@ export default {
         { key: 100180, label: 'Fishing Master(额外加注)' },
         { key: 100186, label: 'Mahjong Jackpot(额外加注)' }
       ],
+
+      scriptPlanVolatilityStat: {}
     }
   },
   created() {
@@ -913,7 +920,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           for (let i = 0; i < response.Data.length; i++) {
-            if (response.Data[i].Gid < 50 || response.Data[i].Gid > 100 && response.Data[i].Gid < 150 || response.Data[i].Gid > 499) {
+            if (response.Data[i].Gid < 50 || response.Data[i].Gid > 100 && response.Data[i].Gid < 150 || (response.Data[i].Gid > 499 && response.Data[i].Gid != 1236)) {
               continue
             }
             this.gameOptions.push({
@@ -988,6 +995,7 @@ export default {
     },
     async queryKeyInput() {
       this.queryBase(this.queryGid)
+      this.queryScriptVolatility(this.queryGid)
       for (const o of this.orgDataList) {
         if (this.queryGid === o.SlotsType) {
           let a = JSON.parse(JSON.stringify(o))
@@ -1735,6 +1743,28 @@ export default {
         })
       }).catch(() => {
         console.log('取消')
+      })
+    },
+    queryScriptVolatility(gid) {
+      for (const k in this.scriptPlanVolatilityStat) {
+        this.$set(this.scriptPlanVolatilityStat, k, '0.00')
+      }
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Path: '/slotsStat/script/volatility',
+          gid: gid
+        }
+      }).then(response => {
+        if (response.RetCode !== 0 && typeof response.Data !== 'object') {
+          this.scriptPlanVolatilityStat = {}
+        } else {
+          for (const k in response.Data) {
+            const v = response.Data[k] / 10000
+            this.$set(this.scriptPlanVolatilityStat, k, v.toFixed(2))
+          }
+        }
       })
     }
   }

@@ -1366,6 +1366,9 @@ export default {
                     if(exitData === null || exitData === undefined || exitData.appId === 0 || typeof exitData.appId === 'undefined'){
                         continue
                     }
+                    if (!ticketConfigList.hasOwnProperty(exitData.appId)) {
+                      continue
+                    }
                     let ticket = ticketConfigList[exitData.appId].find(ticket => ticket.ticketId === objs.list[i].id)
                     if(ticket){
                       canPush = true
@@ -1375,7 +1378,7 @@ export default {
                   }else{
                     canPush = true
                   }
-  
+
                   if(canPush){
                     this.matchPropsCfgs.push({
                       'propsType': objs.list[i].item_type,
@@ -1398,7 +1401,7 @@ export default {
                     }
                   }
                 }
-              
+
             }
           }
           //console.log('1111 matchTicketsCfgs', this.matchTicketsCfgs)
