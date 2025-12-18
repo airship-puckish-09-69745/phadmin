@@ -285,7 +285,7 @@
                       </el-input>
                     </template>
                   </el-table-column>
-                  <el-table-column label="每日限制开出个数(0为不限)" prop="DayLimit" ><!--v-if="!IsPHAuditEnv()"-->
+                  <el-table-column label="每日限制开出个数" prop="DayLimit" ><!--v-if="!IsPHAuditEnv()"(0为不限)-->
                     <template slot-scope="scope">
                       <el-input v-model.number="scope.row.DayLimit" :disabled="checkShowDayLimit(scope.row.AwardType)" style="width: 140px;" size="mini" :required="true"><template slot="append">个</template></el-input>
                     </template>
