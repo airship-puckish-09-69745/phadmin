@@ -116,7 +116,7 @@ export function LibShow() {
     170: 'EpicAce', 176: 'PuppyHome', 182: 'GodOfFortune', 186: 'MahjongJackpot', 174: 'TreasureBowl', 178: 'MayanTotem', 194: 'GoldTrain', 168: 'Pharaoh\'sTreasure', 196: 'GoldMiner', 184: 'Dance of the Lion',
     190: 'ArcaneEgypt', 198: 'FortuneBlessing', 200: 'AtlantisTreasure', 204: 'SpaceTreasure', 208: 'CandyBurst', 210: 'LuckySpirits', 216: 'Phoenix', 220: 'GoldenDragon', 222: 'LionFortune', 226: 'Fortune Wheel', 232: 'MafiaMayhem', // slots
     230: 'PahiyasWins', 236: 'PacquiaoFortune', 234: 'Fortune Tree', 238: 'MasskaraFortune',
-    1139: 'Manny Punch 试玩'
+    1139: 'Manny Punch 试玩', 1236: 'PacquiaoFortune试玩'
   }
 
   this.NumMap = {
