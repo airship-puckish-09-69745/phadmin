@@ -2292,6 +2292,9 @@ export default {
                    if(exitData === null || exitData === undefined || exitData.appId === 0 || typeof exitData.appId === 'undefined'){
                       continue
                     }
+                    if (!ticketConfigList.hasOwnProperty(exitData.appId)) {
+                      continue
+                    }
                     let ticket = ticketConfigList[exitData.appId].find(ticket => ticket.ticketId === objs.list[i].id)
                     if(ticket){
                       canPush = true
@@ -3263,7 +3266,7 @@ export default {
       }
       return  true
     },
-  
+
     handleSortChange({ prop, order }) {
       // 处理结束时间列的自定义排序
       if (prop === 'end_time' && order) {
@@ -3275,10 +3278,8 @@ export default {
       }
     },
     IsMatchOver(endTime) {
-      
-      const now = new Date().getTime() / 1000
 
-      console.log("endTime",endTime,"now",now)
+      const now = new Date().getTime() / 1000
       return endTime < now ? '是' : '否'
     },
   }

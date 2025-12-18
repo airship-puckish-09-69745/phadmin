@@ -4385,6 +4385,12 @@ export const asyncRoutes = [
             component: () => import('@/views/devTools/testTag'),
             name: 'testTag',
             meta: { title: '用户标签测试工具', perm: 'CFG_MANAGEMENT' }
+          },
+          {
+            path: 'betSummary',
+            component: () => import('@/views/devTools/betSummary'),
+            name: 'betSummary',
+            meta: { title: 'CP投注统计', perm: 'CFG_MANAGEMENT' }
           }
         ]
       },

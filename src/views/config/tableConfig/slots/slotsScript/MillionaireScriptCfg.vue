@@ -487,6 +487,7 @@ export default {
         '224': 'supermahjong',
         '232': 'mafiamayhem',
         '236': 'pacquiaofortune',
+        '1236': 'pacquiaofortuneplaynow',
         '218': 'wrathofzeus2',
         '228': 'jokerace'
       }
