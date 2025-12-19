@@ -87,7 +87,12 @@
         <el-table-column label="平台" >
           <template slot-scope="scope">
             <el-tag  v-for="tag of scope.row.ScriptRule.PlatformList" >{{tag}}</el-tag>
-        </template>
+          </template>
+        </el-table-column>
+        <el-table-column label="用户标签" >
+          <template slot-scope="scope">
+            <el-tag  v-for="tag of scope.row.ScriptRule.UserTags" >{{showUserTag(tag)}}</el-tag>
+          </template>
         </el-table-column>
 <!--        <el-table-column label="用户类型">-->
 <!--          <template slot-scope="{}" slot="header">-->
@@ -104,9 +109,9 @@
 <!--        </template>-->
 <!--        </el-table-column>-->
         <el-table-column label="流量控制(权重)">
-           <template slot-scope="scope">
-          {{ scope.row.ScriptRule.TrafficCtrl  }}
-        </template>
+          <template slot-scope="scope">
+            {{ scope.row.ScriptRule.TrafficCtrl  }}
+          </template>
         </el-table-column>
       </el-table-column>
       <el-table-column label="操作" width="250px">
