@@ -441,7 +441,6 @@ export default {
           const objs = response.Data || {}
           if (objs.total > 0) {
             this.tableData = []
-            console.log("form.appId", this.form)
             if(this.form.appId > 0){ // 如果appId大于0，则只显示该appId的道具
               this.tableData = this.getSuitedItemList(objs.list, this.form.appId)
               this.total = this.tableData.length
@@ -1006,7 +1005,7 @@ export default {
     getAppIdName(item_extra) {
       if(typeof(item_extra) === 'string' && item_extra !== ''){
        try{
-        const item_extra = JSON.parse(item_extra)
+        item_extra = JSON.parse(item_extra)
         if(typeof(item_extra.appId) === 'undefined' || item_extra.appId === 0 || item_extra.appId === ''){
           return '请选择APPID'
           }
