@@ -453,7 +453,7 @@ export default {
   data() {
     return {
       submap: { 90: 'moneycoming_slots_base', 150: 'supergemiii_slots_base', 166: 'firelink_slots_base', 174: 'treasurebowl_slots_base', 196: 'goldminer_slots_base', 204: 'spacetreasure_slots_base',
-        210: 'luckyspirits_slots_base', 216: 'phoenix_slots_base',232: 'mafiamayhem_slots_base' },
+        210: 'luckyspirits_slots_base', 216: 'phoenix_slots_base',232: 'mafiawars_slots_base' },
       searchForm: {
         date: $libDate.GetDayBegin(new Date().getTime()),
         gameId: 25,
@@ -488,7 +488,7 @@ export default {
         { 'value': 186, 'label': 'MahjongJackpot' },
         { 'value': 196, 'label': 'GoldMiner' },
         { 'value': 204, 'label': 'SpaceTreasure' },
-        { 'value': 232, 'label': 'MafiaMayhem' },
+        { 'value': 232, 'label': 'MafiaWars' },
         { 'value': 128, 'label': 'Tongits JP' },
         { 'value': 129, 'label': 'Live Color' },
         { 'value': 132, 'label': '新版扫雷' },

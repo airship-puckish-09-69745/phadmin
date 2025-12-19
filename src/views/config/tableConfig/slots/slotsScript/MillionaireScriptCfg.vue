@@ -485,7 +485,7 @@ export default {
         '212': 'pirateship',
         '214': 'pumpkincash',
         '224': 'supermahjong',
-        '232': 'mafiamayhem',
+        '232': 'mafiawars',
         '236': 'pacquiaofortune',
         '1236': 'pacquiaofortuneplaynow',
         '218': 'wrathofzeus2',
