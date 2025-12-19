@@ -194,9 +194,10 @@
             <el-col v-show="isShowFreeSpinGame" :span="1" :offset="1"> {{ '游戏:' }} </el-col>
             <el-col v-show="isShowFreeSpinGame" :span="3">
               <template>
-                <el-select :key="item.ItemFreeSpinGids" v-model="ItemFreeSpinGids" multiple clearable filterable default-first-option size="mini" placeholder="请选择">
+                <el-select  v-model="ItemFreeSpinGids" multiple clearable filterable default-first-option size="mini" placeholder="请选择">
                   <el-option
                     v-for="option in FreeSpinGames"
+                    :key="option.value"
                     :label="option.label"
                     :value="option.value"
                   />
@@ -421,6 +422,7 @@ import payWithdrawLog from '@/views/playerManage/payWithdrawLog.vue'
 import {IsProd} from "@/utils/env";
 import {MATCH_TICKET_RIGHTS_ID_CFG_DEV, MATCH_TICKET_RIGHTS_ID_CFG_PROD} from "@/utils/prop";
 import { GetMatchTicketRightsIdList,IsNewTicketProp } from '@//utils/prop'
+import openWindow from '@/utils/open-window'
 
 function NewRelationSummary() {
   return {
