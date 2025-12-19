@@ -630,7 +630,7 @@ function newItem() {
     ruleImgHor: [],
     ruleImgVer: [],
     whitelistCfg: {
-      appIdList: [1000002],
+      appIdList: [],
       siteIdList: ['Dev'],
       abTest: {
         switch: false,
