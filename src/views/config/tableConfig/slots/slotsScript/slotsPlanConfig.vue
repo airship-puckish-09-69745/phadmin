@@ -213,7 +213,7 @@
         </el-form-item>
 
          <el-form-item label="用户标签">
-                <el-checkbox-group v-model="addFormData.ScriptRuleDescription.UserTags" @change="checkedBoxChange">
+                <el-checkbox-group v-model="editFormData.ScriptRuleDescription.UserTags" @change="checkedBoxChange">
                   <el-checkbox v-for="o in userTags" :label="o.label" :value="o.value"></el-checkbox>
                 </el-checkbox-group>
         </el-form-item>
