@@ -37,6 +37,11 @@
               {{ formatTime(scope.row.activity.endTime) }}
             </template>
           </el-table-column>
+          <el-table-column prop="endTime" label="展示结束时间" sortable="custom">
+            <template slot-scope="scope">
+              {{ formatTime(scope.row.activity.showEndTime) }}
+            </template>
+          </el-table-column>
           <el-table-column prop="modifyUser" label="最后修改人" />
           <el-table-column prop="status" label="状态" width="100">
             <template slot-scope="scope">
@@ -149,7 +154,7 @@
                 </el-col>
                 <el-col :span="12">
                   <el-form-item label="奖励类型：" prop="extend.rewardType" :required="true">
-                    <el-select v-model="edit.item.extend.rewardType" placeholder="请选择奖励类型">
+                    <el-select v-model="edit.item.extend.rewardType" placeholder="请选择奖励类型" disabled>
                       <el-option v-for="item in rewardTypes" :key="item.value" :label="item.label" :value="item.value" />
                     </el-select>
                   </el-form-item>
@@ -395,12 +400,15 @@ import {Message} from "element-ui";
 
 const filterMap = {}
 
+const activityId = 19
+
 function newItem() {
   return {
     id: 0,
+    activityId: activityId,
     activity: {
       name: '',
-      activityId: 19,
+      activityId: activityId,
       startTime: Date.parse(new Date().toString()),
       endTime: Date.parse(new Date().toString()),
       showEndTime: Date.parse(new Date().toString()) + 1000 * 60 * 60 * 24,
@@ -423,7 +431,7 @@ function newItem() {
       rewardList: [],
       rewardPercent: 0,
       rewardWay: 1, // 1. 固定金额 2. 有效投注百分比
-      rewardType: 3, // 奖励类型 1. 金币 2. 投注金 3. 返水金
+      rewardType: 2, // 奖励类型 1. 金币 2. 投注金 3. 返水金
       rewardSceneId: 27,
       progressReward: 0,
       rewardShow: 0,
@@ -596,7 +604,9 @@ export default {
       request({
         url: '/rankingconfig/all',
         method: 'get',
-        data: {}
+        data: {
+          'activity_id': activityId,
+        }
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
