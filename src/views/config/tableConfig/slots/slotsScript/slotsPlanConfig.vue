@@ -88,10 +88,6 @@
           <template slot-scope="scope">
             <el-tag  v-for="tag of scope.row.ScriptRule.PlatformList" >{{tag}}</el-tag>
         </template>
-        <el-table-column label="用户标签" >
-          <template slot-scope="scope">
-            <el-tag  v-for="tag of scope.row.ScriptRule.UserTags" >{{showUserTag(tag)}}</el-tag>
-        </template>
         </el-table-column>
 <!--        <el-table-column label="用户类型">-->
 <!--          <template slot-scope="{}" slot="header">-->
