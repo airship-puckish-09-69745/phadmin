@@ -1043,6 +1043,12 @@ export const asyncRoutes = [
             meta: { title: 'B accarat ◐' }
           },
           {
+            path: 'BalloonTap',
+            component: () => import('@/views/config/tableConfig/balloontap'),
+            name: 'BalloonTap',
+            meta: { title: 'B alloonTap◐' }
+          },
+          {
             path: 'blackJackTable',
             component: () => import('@/views/config/tableConfig/blackJackTable'),
             name: 'blackJackTable',

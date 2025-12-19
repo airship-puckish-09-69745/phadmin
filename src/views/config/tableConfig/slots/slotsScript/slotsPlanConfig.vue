@@ -89,11 +89,6 @@
             <el-tag  v-for="tag of scope.row.ScriptRule.PlatformList" >{{tag}}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="用户标签" >
-          <template slot-scope="scope">
-            <el-tag  v-for="tag of scope.row.ScriptRule.UserTags" >{{showUserTag(tag)}}</el-tag>
-          </template>
-        </el-table-column>
 <!--        <el-table-column label="用户类型">-->
 <!--          <template slot-scope="{}" slot="header">-->
 <!--            用户类型-->
@@ -156,12 +151,6 @@
                   <el-checkbox label="CP" value="CP"></el-checkbox>
                 </el-checkbox-group>
         </el-form-item>
-
-         <el-form-item label="用户标签">
-                <el-checkbox-group v-model="addFormData.ScriptRuleDescription.UserTags" @change="checkedBoxChange">
-                  <el-checkbox v-for="o in userTags" :label="o.label" :value="o.value"></el-checkbox>
-                </el-checkbox-group>
-        </el-form-item>
         <!--        <el-form-item label="用户类型">-->
         <!--           <el-select v-model.number="addFormData.ScriptRuleDescription.UserType">-->
         <!--              <el-option label="不限" :value="0" />-->
@@ -209,12 +198,6 @@
                   <el-checkbox label="PG" value="PG"></el-checkbox>
                   <el-checkbox label="TP" value="TP"></el-checkbox>
                   <el-checkbox label="SP" value="SP"></el-checkbox>
-                </el-checkbox-group>
-        </el-form-item>
-
-         <el-form-item label="用户标签">
-                <el-checkbox-group v-model="editFormData.ScriptRuleDescription.UserTags" @change="checkedBoxChange">
-                  <el-checkbox v-for="o in userTags" :label="o.label" :value="o.value"></el-checkbox>
                 </el-checkbox-group>
         </el-form-item>
         <!--        <el-form-item label="用户类型">-->
