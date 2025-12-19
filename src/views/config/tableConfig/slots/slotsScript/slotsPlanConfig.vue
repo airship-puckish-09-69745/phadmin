@@ -87,7 +87,10 @@
         <el-table-column label="平台" >
           <template slot-scope="scope">
             <el-tag  v-for="tag of scope.row.ScriptRule.PlatformList" >{{tag}}</el-tag>
-
+        </template>
+        <el-table-column label="用户标签" >
+          <template slot-scope="scope">
+            <el-tag  v-for="tag of scope.row.ScriptRule.UserTags" >{{showUserTag(tag)}}</el-tag>
         </template>
         </el-table-column>
 <!--        <el-table-column label="用户类型">-->
@@ -152,6 +155,12 @@
                   <el-checkbox label="CP" value="CP"></el-checkbox>
                 </el-checkbox-group>
         </el-form-item>
+
+         <el-form-item label="用户标签">
+                <el-checkbox-group v-model="addFormData.ScriptRuleDescription.UserTags" @change="checkedBoxChange">
+                  <el-checkbox v-for="o in userTags" :label="o.label" :value="o.value"></el-checkbox>
+                </el-checkbox-group>
+        </el-form-item>
         <!--        <el-form-item label="用户类型">-->
         <!--           <el-select v-model.number="addFormData.ScriptRuleDescription.UserType">-->
         <!--              <el-option label="不限" :value="0" />-->
@@ -199,6 +208,12 @@
                   <el-checkbox label="PG" value="PG"></el-checkbox>
                   <el-checkbox label="TP" value="TP"></el-checkbox>
                   <el-checkbox label="SP" value="SP"></el-checkbox>
+                </el-checkbox-group>
+        </el-form-item>
+
+         <el-form-item label="用户标签">
+                <el-checkbox-group v-model="addFormData.ScriptRuleDescription.UserTags" @change="checkedBoxChange">
+                  <el-checkbox v-for="o in userTags" :label="o.label" :value="o.value"></el-checkbox>
                 </el-checkbox-group>
         </el-form-item>
         <!--        <el-form-item label="用户类型">-->
@@ -704,7 +719,7 @@ export default {
         PlanName: '',
         IsDefault: 0,
         IsDisabled: 0,
-        ScriptRuleDescription: {Platform:'',UserType:0,TrafficCtrl:0,PlatformList:[]}
+        ScriptRuleDescription: {Platform:'',UserType:0,TrafficCtrl:0,PlatformList:[],UserTags:[]}
       },
       editDialogVisible: false,
       editFormData: {
@@ -712,7 +727,7 @@ export default {
         PlanName: '',
         IsDefault: 0,
         IsDisabled: 0,
-        ScriptRuleDescription: {Platform:'',UserType:0,TrafficCtrl:0,PlatformList:[]}
+        ScriptRuleDescription: {Platform:'',UserType:0,TrafficCtrl:0,PlatformList:[],UserTags:[]}
       },
       editIndex: -1,
 
@@ -781,7 +796,35 @@ export default {
         { key: 100186, label: 'Mahjong Jackpot(额外加注)' }
       ],
 
-      scriptPlanVolatilityStat: {}
+      scriptPlanVolatilityStat: {},
+      userTags: [
+        {'value': 50001, 'label': 'Slots新增用户'},
+        {'value': 50002, 'label': 'Slots登录天数'},
+        {'value': 50003, 'label': 'Slots携带金额'},
+        {'value': 50004, 'label': 'Slots下注次数'},
+        {'value': 50005, 'label': 'Slots下注额度'},
+        {'value': 50006, 'label': 'Slots日均下注额度'},
+        {'value': 50007, 'label': 'Slots连续下注天数'},
+        {'value': 50008, 'label': 'Slots回归用户'},
+        {'value': 50009, 'label': 'Slots最近中奖上限'},
+        {'value': 50101, 'label': 'Slots扑克/麻将主题'},
+        {'value': 50102, 'label': 'Slots经典寻宝/777主题'},
+        {'value': 50103, 'label': 'Slots传说神话主题'},
+        {'value': 50104, 'label': 'Slots传统节日'},
+        {'value': 50105, 'label': 'Slots菲律宾特色主题'},
+        {'value': 50106, 'label': 'Slots动物与自然主题'},
+        {'value': 50107, 'label': 'Slots糖果系列'},
+        {'value': 50108, 'label': 'Slots小众系列'},
+        {'value': 50201, 'label': '连线全线'},
+        {'value': 50202, 'label': '连线固定线'},
+        {'value': 50203, 'label': '数量中奖'},
+        {'value': 50204, 'label': '无线相连中奖'},
+        {'value': 50205, 'label': '其他'},
+        {'value': 50301, 'label': '固定大奖'},
+        {'value': 50302, 'label': 'JP玩法'},
+        {'value': 50303, 'label': 'Bonus玩法'},
+        {'value': 50304, 'label': 'FreeSpin玩法'}
+      ]
     }
   },
   created() {
@@ -999,6 +1042,11 @@ export default {
       for (const o of this.orgDataList) {
         if (this.queryGid === o.SlotsType) {
           let a = JSON.parse(JSON.stringify(o))
+          for (const k in a.Data) {
+            if (typeof a.Data[k].UserTags == 'undefined') {
+              a.Data[k].UserTags = []
+            }
+          }
           this.showItem.SlotsType = a.SlotsType
           this.showItem.Plans = a.Data
           this.showItem.ID = a.ID
@@ -1028,7 +1076,7 @@ export default {
         Versions: [
 
         ],
-        ScriptRuleDescription: {Platform:'',UserType:0,TrafficCtrl:0, PlatformList:[]}
+        ScriptRuleDescription: {Platform:'',UserType:0,TrafficCtrl:0, PlatformList:[],UserTags:[]}
       }
     },
     addPlan() {
@@ -1766,6 +1814,14 @@ export default {
           }
         }
       })
+    },
+    showUserTag(tag) {
+      for (const k in this.userTags) {
+        if (this.userTags[k].value == tag) {
+          return this.userTags[k].label
+        }
+      }
+      return ''
     }
   }
 }
