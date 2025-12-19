@@ -1044,8 +1044,8 @@ export default {
         if (this.queryGid === o.SlotsType) {
           let a = JSON.parse(JSON.stringify(o))
           for (const k in a.Data) {
-            if (typeof a.Data[k].UserTags == 'undefined') {
-              a.Data[k].UserTags = []
+            if (typeof a.Data[k].ScriptRule.UserTags == 'undefined') {
+              a.Data[k].ScriptRule.UserTags = []
             }
           }
           this.showItem.SlotsType = a.SlotsType
