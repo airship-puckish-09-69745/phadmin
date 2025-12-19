@@ -1822,7 +1822,7 @@ export default {
           return this.userTags[k].label
         }
       }
-      return ''
+      return '未知:' + tag
     }
   }
 }
