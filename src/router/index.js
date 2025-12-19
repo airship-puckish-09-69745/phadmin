@@ -1424,7 +1424,8 @@ export const asyncRoutes = [
                 path: 'mafiamayhem_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/mafiamayhem_slots_cfg'),
                 name: 'mafiamayhem_slots_cfg',
-                meta: { title: 'M afiaMayhem' }
+                // 名字修改
+                meta: { title: 'M afiaWars' }
               },
               {
                 path: 'mahjongfortune_slots_cfg',
@@ -3361,7 +3362,7 @@ export const asyncRoutes = [
             path: 'mafiamayhem_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'mafiamayhem_slots_log',
-            meta: { title: 'M afiaMayhem', gid: 232 }
+            meta: { title: 'M afiaWars', gid: 232 }
           },
           {
             path: 'mahjongfortune_slots_log',

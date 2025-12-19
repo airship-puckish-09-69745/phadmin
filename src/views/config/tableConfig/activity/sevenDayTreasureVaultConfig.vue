@@ -681,8 +681,8 @@ export default {
         disabled: 'disabled'
       },
       bonusTypeOptions: [
-        { value: 1, label: '金币(投注金)' },
-        { value: 4, label: '金币(返水金)' }
+        { value: 1, label: '金币(投注金)' }
+        // { value: 4, label: '金币(返水金)' }
       ],
       taskTypeOptions: [
         { value: 1, label: '单次' },
@@ -695,7 +695,7 @@ export default {
       ],
       rewardTypeOptions: [
         { value: 1, label: '金币(投注金)' },
-        { value: 4, label: '金币(返水金)' },
+        // { value: 4, label: '金币(返水金)' },
         { value: 2, label: '星星' },
         { value: 3, label: '道具' },
         { value: 5, label: '富裕卡' }

@@ -373,7 +373,7 @@ export default {
     getDescription() {
       // eslint-disable-next-line no-empty
       if (this.gid === 232) {
-        return '数据根据Uid分表，需要模糊匹配请输入 0-9 数字查询。输赢图表只支持指定有效Uid查询,MafiaMayhem的bonus模式存在延迟1到3分钟'
+        return '数据根据Uid分表，需要模糊匹配请输入 0-9 数字查询。输赢图表只支持指定有效Uid查询,MafiaWars的bonus模式存在延迟1到3分钟'
       }
       return '数据根据Uid分表，需要模糊匹配请输入 0-9 数字查询。输赢图表只支持指定有效Uid查询'
     },
