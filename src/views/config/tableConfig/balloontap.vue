@@ -191,7 +191,7 @@
                   </el-form>
                 </el-col>
 
-                <el-col :span="7" :offset="3">
+                <el-col :span="24" :offset="3">
                   <el-form inline>
                     <el-form-item label="生成时间" :rules="dataRule(true,{type:'n',range:'0'})">
                       <el-input v-model.number="itemExt.Ctrl.SpeedXMax" size="mini" :required="true"> <template slot="append">ms</template></el-input>
@@ -200,8 +200,15 @@
                 </el-col>
                 <el-col :span="7" :offset="3">
                   <el-form inline>
-                    <el-form-item label="生成个数范围" :rules="dataRule(true,{type:'n',range:'0'})">
-                      <el-input v-model.number="itemExt.Ctrl.CreateNumber" size="mini" :required="true" />
+                    <el-form-item label="生成个数min" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-input v-model.number="itemExt.Ctrl.CreateNumberMin" size="mini" :required="true" />
+                    </el-form-item>
+                  </el-form>
+                </el-col>
+                <el-col :span="7" :offset="3">
+                  <el-form inline>
+                    <el-form-item label="生成个数max" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-input v-model.number="itemExt.Ctrl.CreateNumberMax" size="mini" :required="true" />
                     </el-form-item>
                   </el-form>
                 </el-col>
