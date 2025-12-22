@@ -1536,12 +1536,12 @@ export default {
             this.processBuyReturnCount(strings,buyReturnMoneyTableData,response,key)
           }
           // 步数统计
-          this.scriptStepClientDB  = new ClientTableData(scriptTableData , 100, {}, 'sort', -1);
-          this.scriptStepScatterClientDB  = new ClientTableData(scatterCounts , 100, {}, 'sort', -1);
+          this.scriptStepClientDB  = new ClientTableData(scriptTableData , 200, {}, 'sort', -1);
+          this.scriptStepScatterClientDB  = new ClientTableData(scatterCounts , 200, {}, 'sort', -1);
           // 普通返奖
-          this.ordinaryReturnClientDBNew  = new ClientTableData(ordinaryReturnMoneyTableData , 100, {}, 'sort', -1);
+          this.ordinaryReturnClientDBNew  = new ClientTableData(ordinaryReturnMoneyTableData , 200, {}, 'sort', -1);
           // 购买免费
-          this.buyReturnClientDBNew  = new ClientTableData(buyReturnMoneyTableData , 100, {}, 'sort', -1);
+          this.buyReturnClientDBNew  = new ClientTableData(buyReturnMoneyTableData , 200, {}, 'sort', -1);
 
 
           for (const key in response.Data['script']) {

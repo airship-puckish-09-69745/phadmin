@@ -109,7 +109,7 @@ export const systemMoneyChart = {
         222: 'Lion Fortune',
         226: 'Fortune Wheel',
         230: 'Pahiyas Win\'s',
-        232: 'Mafia Mayhem',
+        232: 'Mafia Wars',
         234: 'Fortune Tree',
         236: 'Pacquiao Fortune',
         238: 'Masskara Fortune',

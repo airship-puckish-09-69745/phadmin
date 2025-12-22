@@ -955,7 +955,7 @@ export default {
         this.item.RobotCfg.MaxRobotBetAreas = 5
       }
       if (this.item.RobotCfg !== undefined && this.item.RobotCfg.MinRobotBetTimesOffset === undefined) {
-        this.item.RobotCfg.MinRobotBetTimesOffset = 2
+        this.item.RobotCfg.MinRobotBetTimesOffset = -2
       }
       if (this.item.RobotCfg !== undefined && this.item.RobotCfg.MaxRobotBetTimesOffset === undefined) {
         this.item.RobotCfg.MaxRobotBetTimesOffset = 2

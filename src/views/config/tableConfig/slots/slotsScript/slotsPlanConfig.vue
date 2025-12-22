@@ -38,6 +38,11 @@
           {{ scope.row.IsDisabled === 1 ? '禁用' : '未禁用' }}
         </template>
       </el-table-column>
+      <el-table-column prop="Volatility" label="波动率">
+        <template slot-scope="scope">
+          {{ scriptPlanVolatilityStat[scope.row.PlanId] || '0.00' }}
+        </template>
+      </el-table-column>
       <el-table-column prop="Versions" label="配置版本列表" width="1000px">
         <template slot-scope="scope" >
           <el-table :data="scope.row.Versions" stripe style="font-size: 10px">
@@ -82,8 +87,7 @@
         <el-table-column label="平台" >
           <template slot-scope="scope">
             <el-tag  v-for="tag of scope.row.ScriptRule.PlatformList" >{{tag}}</el-tag>
-
-        </template>
+          </template>
         </el-table-column>
 <!--        <el-table-column label="用户类型">-->
 <!--          <template slot-scope="{}" slot="header">-->
@@ -100,9 +104,9 @@
 <!--        </template>-->
 <!--        </el-table-column>-->
         <el-table-column label="流量控制(权重)">
-           <template slot-scope="scope">
-          {{ scope.row.ScriptRule.TrafficCtrl  }}
-        </template>
+          <template slot-scope="scope">
+            {{ scope.row.ScriptRule.TrafficCtrl  }}
+          </template>
         </el-table-column>
       </el-table-column>
       <el-table-column label="操作" width="250px">
@@ -699,7 +703,7 @@ export default {
         PlanName: '',
         IsDefault: 0,
         IsDisabled: 0,
-        ScriptRuleDescription: {Platform:'',UserType:0,TrafficCtrl:0,PlatformList:[]}
+        ScriptRuleDescription: {Platform:'',UserType:0,TrafficCtrl:0,PlatformList:[],UserTags:[]}
       },
       editDialogVisible: false,
       editFormData: {
@@ -707,7 +711,7 @@ export default {
         PlanName: '',
         IsDefault: 0,
         IsDisabled: 0,
-        ScriptRuleDescription: {Platform:'',UserType:0,TrafficCtrl:0,PlatformList:[]}
+        ScriptRuleDescription: {Platform:'',UserType:0,TrafficCtrl:0,PlatformList:[],UserTags:[]}
       },
       editIndex: -1,
 
@@ -775,6 +779,36 @@ export default {
         { key: 100180, label: 'Fishing Master(额外加注)' },
         { key: 100186, label: 'Mahjong Jackpot(额外加注)' }
       ],
+
+      scriptPlanVolatilityStat: {},
+      userTags: [
+        {'value': 50001, 'label': 'Slots新增用户'},
+        {'value': 50002, 'label': 'Slots登录天数'},
+        {'value': 50003, 'label': 'Slots携带金额'},
+        {'value': 50004, 'label': 'Slots下注次数'},
+        {'value': 50005, 'label': 'Slots下注额度'},
+        {'value': 50006, 'label': 'Slots日均下注额度'},
+        {'value': 50007, 'label': 'Slots连续下注天数'},
+        {'value': 50008, 'label': 'Slots回归用户'},
+        {'value': 50009, 'label': 'Slots最近中奖上限'},
+        {'value': 50101, 'label': 'Slots扑克/麻将主题'},
+        {'value': 50102, 'label': 'Slots经典寻宝/777主题'},
+        {'value': 50103, 'label': 'Slots传说神话主题'},
+        {'value': 50104, 'label': 'Slots传统节日'},
+        {'value': 50105, 'label': 'Slots菲律宾特色主题'},
+        {'value': 50106, 'label': 'Slots动物与自然主题'},
+        {'value': 50107, 'label': 'Slots糖果系列'},
+        {'value': 50108, 'label': 'Slots小众系列'},
+        {'value': 50201, 'label': '连线全线'},
+        {'value': 50202, 'label': '连线固定线'},
+        {'value': 50203, 'label': '数量中奖'},
+        {'value': 50204, 'label': '无线相连中奖'},
+        {'value': 50205, 'label': '其他'},
+        {'value': 50301, 'label': '固定大奖'},
+        {'value': 50302, 'label': 'JP玩法'},
+        {'value': 50303, 'label': 'Bonus玩法'},
+        {'value': 50304, 'label': 'FreeSpin玩法'}
+      ]
     }
   },
   created() {
@@ -913,7 +947,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           for (let i = 0; i < response.Data.length; i++) {
-            if (response.Data[i].Gid < 50 || response.Data[i].Gid > 100 && response.Data[i].Gid < 150 || response.Data[i].Gid > 499) {
+            if (response.Data[i].Gid < 50 || response.Data[i].Gid > 100 && response.Data[i].Gid < 150 || (response.Data[i].Gid > 499 && response.Data[i].Gid != 1236)) {
               continue
             }
             this.gameOptions.push({
@@ -988,9 +1022,15 @@ export default {
     },
     async queryKeyInput() {
       this.queryBase(this.queryGid)
+      this.queryScriptVolatility(this.queryGid)
       for (const o of this.orgDataList) {
         if (this.queryGid === o.SlotsType) {
           let a = JSON.parse(JSON.stringify(o))
+          for (const k in a.Data) {
+            if (typeof a.Data[k].ScriptRule.UserTags == 'undefined') {
+              a.Data[k].ScriptRule.UserTags = []
+            }
+          }
           this.showItem.SlotsType = a.SlotsType
           this.showItem.Plans = a.Data
           this.showItem.ID = a.ID
@@ -1020,7 +1060,7 @@ export default {
         Versions: [
 
         ],
-        ScriptRuleDescription: {Platform:'',UserType:0,TrafficCtrl:0, PlatformList:[]}
+        ScriptRuleDescription: {Platform:'',UserType:0,TrafficCtrl:0, PlatformList:[],UserTags:[]}
       }
     },
     addPlan() {
@@ -1736,6 +1776,36 @@ export default {
       }).catch(() => {
         console.log('取消')
       })
+    },
+    queryScriptVolatility(gid) {
+      for (const k in this.scriptPlanVolatilityStat) {
+        this.$set(this.scriptPlanVolatilityStat, k, '0.00')
+      }
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Path: '/slotsStat/script/volatility',
+          gid: gid
+        }
+      }).then(response => {
+        if (response.RetCode !== 0 && typeof response.Data !== 'object') {
+          this.scriptPlanVolatilityStat = {}
+        } else {
+          for (const k in response.Data) {
+            const v = response.Data[k] / 10000
+            this.$set(this.scriptPlanVolatilityStat, k, v.toFixed(2))
+          }
+        }
+      })
+    },
+    showUserTag(tag) {
+      for (const k in this.userTags) {
+        if (this.userTags[k].value == tag) {
+          return this.userTags[k].label
+        }
+      }
+      return '未知:' + tag
     }
   }
 }

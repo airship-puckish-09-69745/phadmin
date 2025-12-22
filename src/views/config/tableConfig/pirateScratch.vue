@@ -453,7 +453,6 @@ export default {
                   {AwardType:1,  Odds: 500 ,Wight:100},
                   {AwardType:2,  Odds: 100 ,Wight:0},
                   {AwardType:3,  Odds: 55 ,Wight:0},
-                  {AwardType:4,  Odds: 10 ,Wight:0},
                 
           ],
         }
@@ -482,7 +481,7 @@ export default {
                 this.form = response.Data || {}
                 if (response.Data && response.Data.Data !== '') {
                     const cfg = JSON.parse(response.Data.Data)
-                    this.item = cfg
+                     this.item = cfg
                     // 设置修改之前数据
                     this.$refs.compare.SetOldVal(response.Data.Data)
                     // this.load = true
@@ -545,8 +544,7 @@ export default {
           case 1: return "GRAND"
           case 2: return "MAJOR"
           case 3: return "MINOR"
-          case 4: return "MINI"
-          default: return "ERROR"
+          default: return "NOT FOND"
         }
       }
     }

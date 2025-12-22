@@ -42,29 +42,30 @@
 <script>
 import request from '@/utils/request'
 import store from '@/store'
-import { $libDate } from '@/utils/common'
+import { $libDate, $libShow } from '@/utils/common'
 export default {
   name: 'TagUser',
   components: {},
   data() {
     return {
+      pickerOptions: $libShow.DefaultDatePickerOptions(),
       timeRange: [$libDate.GetDayBegin(new Date()), $libDate.GetDayEnd(new Date())],
+      appOptions: [
+        // ===== 测试 / UAT =====
+        { label: 'CasinoPlus UAT : 1000010', value: 1000010 },
+        { label: 'CasinoPlus UAT-IGO : 1000011', value: 1000011 },
+        { label: 'CasinoPlus QAT : 1000012', value: 1000012 },
+        { label: 'CasinoPlus QAT-IGO : 1000013', value: 1000013 },
+        { label: 'CasinoPlus QAT : 1000014', value: 1000014 },
+        { label: 'CasinoPlus QAT-IGO : 1000015', value: 1000015 },
+
+        // ===== 正式 =====
+        { label: 'CasinoPlus 正式 : 2000005', value: 2000005 },
+        { label: 'CasinoPlus IGO 正式 : 3000005', value: 3000005 }
+      ],
       form: {
         app: 1000010
       },
-      appOptions: [
-        // ===== 测试 / UAT =====
-        { label: 'CasinoPlus UAT', value: 1000010 },
-        { label: 'CasinoPlus UAT-IGO', value: 1000011 },
-        { label: 'CasinoPlus QAT', value: 1000012 },
-        { label: 'CasinoPlus QAT-IGO', value: 1000013 },
-        { label: 'CasinoPlus QAT', value: 1000014 },
-        { label: 'CasinoPlus QAT-IGO', value: 1000015 },
-
-        // ===== 正式 =====
-        { label: 'CasinoPlus 正式', value: 2000005 },
-        { label: 'CasinoPlus IGO 正式', value: 3000005 }
-      ],
       slotsOptions: [],
       resultData: null,
       tableData: [

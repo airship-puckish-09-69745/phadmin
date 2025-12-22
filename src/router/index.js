@@ -1043,6 +1043,12 @@ export const asyncRoutes = [
             meta: { title: 'B accarat ◐' }
           },
           {
+            path: 'BalloonTap',
+            component: () => import('@/views/config/tableConfig/balloontap'),
+            name: 'BalloonTap',
+            meta: { title: 'B alloonTap◐' }
+          },
+          {
             path: 'blackJackTable',
             component: () => import('@/views/config/tableConfig/blackJackTable'),
             name: 'blackJackTable',
@@ -1421,10 +1427,11 @@ export const asyncRoutes = [
                 meta: { title: 'L ucky777' }
               },
               {
-                path: 'mafiamayhem_slots_cfg',
-                component: () => import('@/views/config/tableConfig/slots/mafiamayhem_slots_cfg'),
+                path: 'mafiawars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/mafiawars_slots_cfg.vue'),
                 name: 'mafiamayhem_slots_cfg',
-                meta: { title: 'M afiaMayhem' }
+                // 名字修改
+                meta: { title: 'M afiaWars' }
               },
               {
                 path: 'mahjongfortune_slots_cfg',
@@ -3358,10 +3365,10 @@ export const asyncRoutes = [
             meta: { title: 'L ucky777', gid: 88 }
           },
           {
-            path: 'mafiamayhem_slots_log',
+            path: 'mafiawars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
-            name: 'mafiamayhem_slots_log',
-            meta: { title: 'M afiaMayhem', gid: 232 }
+            name: 'mafiawars_slots_log',
+            meta: { title: 'M afiaWars', gid: 232 }
           },
           {
             path: 'mahjongfortune_slots_log',
