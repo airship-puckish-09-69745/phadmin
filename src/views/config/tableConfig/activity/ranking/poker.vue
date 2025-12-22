@@ -997,6 +997,9 @@ export default {
             if (obj.ShowDatacenter !== 1 || this.filterGameIds.indexOf(obj.Gid) >= 0) {
               continue
             }
+            if (obj.CategoryID !== 2) { // 过滤掉非扑克游戏
+              continue
+            }
 
             const game = {Gid: obj.Gid, Name: obj.Name, Description: obj.Description}
             if (data.hasOwnProperty(obj.CategoryID)) {
