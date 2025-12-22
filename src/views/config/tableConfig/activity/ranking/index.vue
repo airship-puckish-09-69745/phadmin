@@ -669,7 +669,7 @@ export default {
       let maxRankShow = 0
       for (const reward of item.extend.rewardList) {
         reward.reward *= 1000
-        maxRankShow = Math.max(maxRankShow, reward.rank)
+        maxRankShow = Math.max(maxRankShow, reward.rankEnd)
       }
       item.extend.maxRankShow = maxRankShow
 
