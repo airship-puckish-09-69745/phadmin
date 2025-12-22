@@ -3365,9 +3365,9 @@ export const asyncRoutes = [
             meta: { title: 'L ucky777', gid: 88 }
           },
           {
-            path: 'mafiamayhem_slots_log',
+            path: 'mafiawars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
-            name: 'mafiamayhem_slots_log',
+            name: 'mafiawars_slots_log',
             meta: { title: 'M afiaWars', gid: 232 }
           },
           {
