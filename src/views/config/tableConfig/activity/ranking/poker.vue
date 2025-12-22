@@ -562,6 +562,7 @@ export default {
         'activity.activityId': '活动ID',
         'activity.startTime': '开始时间',
         'activity.endTime': '结束时间',
+        'activity.showEndTime': '展示结束时间',
         'activity.status': '状态',
         'activity.gameIdList': '游戏ID配置',
         'activity.whitelist.isOpen': '是否开启白名单',
