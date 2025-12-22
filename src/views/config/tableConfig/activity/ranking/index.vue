@@ -661,9 +661,17 @@ export default {
       item.extend.maxReward *= 1000
       item.extend.progressReward *= 1000
 
+      if (item.extend.rewardList.length === 0) {
+        Message.error('请添加排名奖励配置')
+        return
+      }
+
+      let maxRankShow = 0
       for (const reward of item.extend.rewardList) {
         reward.reward *= 1000
+        maxRankShow = Math.max(maxRankShow, reward.rank)
       }
+      item.extend.maxRankShow = maxRankShow
 
       if (item.activity.whitelist.appIdList.length === 0 && this.version === 'V2') {
         item.activity.whitelist.appIdList.push(this.appId)
@@ -681,6 +689,9 @@ export default {
     },
     handleSave() {
       const item = this.getPostItem()
+      if (item === undefined) {
+        return
+      }
       const data = {...item}
       data.activity = JSON.stringify(item.activity)
       data.extend = JSON.stringify(item.extend)
