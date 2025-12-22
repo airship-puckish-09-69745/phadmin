@@ -1001,6 +1001,9 @@ export default {
             if (obj.CategoryID !== 2) { // 过滤掉非扑克游戏
               continue
             }
+            if (this.tongitsGameIds.indexOf(obj.Gid) < 0) { // 过滤掉非Tongits游戏
+              continue
+            }
 
             const game = {Gid: obj.Gid, Name: obj.Name, Description: obj.Description}
             if (data.hasOwnProperty(obj.CategoryID)) {
