@@ -1427,7 +1427,7 @@ export const asyncRoutes = [
                 meta: { title: 'L ucky777' }
               },
               {
-                path: 'mafiamayhem_slots_cfg',
+                path: 'mafiawars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/mafiawars_slots_cfg.vue'),
                 name: 'mafiamayhem_slots_cfg',
                 // 名字修改
