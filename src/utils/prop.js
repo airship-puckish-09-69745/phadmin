@@ -59,7 +59,32 @@ export const MATCH_TICKET_RIGHTS_ID_CFG_PROD = {
       { 'ticketId': 322, 'sceneId': 200, 'label': 'Tongits新版门票 带唯一ID-322'  },
       { 'ticketId': 343, 'sceneId': 201, 'label': 'Texas测试新版德州门票带唯一ID-343' },
       { 'ticketId': 345, 'sceneId': 202, 'label': 'UAT Pusoy新版比赛门票-345' },
-    ]
+    ],
+  1000005: [
+    { 'ticketId': 396, 'sceneId': 200, 'label': 'Tongits' },
+    { 'ticketId': 397, 'sceneId': 201, 'label': 'Tongits' },
+    { 'ticketId': 398, 'sceneId': 202, 'label': 'Tongits' },
+    { 'ticketId': 399, 'sceneId': 203, 'label': 'Tongits' },
+    { 'ticketId': 400, 'sceneId': 204, 'label': 'Pusoy' },
+    { 'ticketId': 401, 'sceneId': 205, 'label': 'Pusoy' },
+    { 'ticketId': 404, 'sceneId': 206, 'label': 'Pusoy' },
+    { 'ticketId': 403, 'sceneId': 207, 'label': 'Pusoy' },
+    { 'ticketId': 426, 'sceneId': 208, 'label': 'Texas' },
+    { 'ticketId': 425, 'sceneId': 209, 'label': 'Texas' },
+    { 'ticketId': 424, 'sceneId': 210, 'label': 'Texas' },
+    { 'ticketId': 423, 'sceneId': 211, 'label': 'Texas' },
+    { 'ticketId': 429, 'sceneId': 212, 'label': 'Texas' },
+    { 'ticketId': 430, 'sceneId': 213, 'label': 'Texas' },
+
+    { 'ticketId': 448, 'sceneId': 214, 'label': 'Tongits TPCC' },
+    { 'ticketId': 449, 'sceneId': 215, 'label': 'Tongits TPCC' },
+    { 'ticketId': 451, 'sceneId': 216, 'label': 'Tongits TPCC' },
+    { 'ticketId': 450, 'sceneId': 217, 'label': 'Tongits TPCC' },
+    { 'ticketId': 452, 'sceneId': 218, 'label': 'Tongits TPCC' },
+    { 'ticketId': 453, 'sceneId': 219, 'label': 'Tongits TPCC' },
+    { 'ticketId': 455, 'sceneId': 220, 'label': 'Tongits TPCC' },
+    { 'ticketId': 454, 'sceneId': 221, 'label': 'Tongits TPCC' },
+    ],
 }
 
 // 获取比赛门票权益ID列表
