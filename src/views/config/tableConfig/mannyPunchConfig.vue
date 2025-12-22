@@ -5,11 +5,11 @@
       <el-col :span="18">
         <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" />
       </el-col>
-      <!--
-      <el-col :span="2" >
+      
+      <el-col :span="2" v-if="IsDev()">
         <el-button type="primary" @click="dialogFormVisible= true" size="mini" > 测试配置</el-button>
       </el-col>
-      -->
+      
     </el-row>
 
     <el-row>
@@ -817,6 +817,9 @@ export default {
     //是否是审核服
     IsPHAuditEnv(){
       return this.env == 'ph_audit'
+    },
+    IsDev() {
+      return process.env.VUE_APP_PROJECT_NAME === '菲1-开发环境'
     },
 
     checkShowDayLimit(awardType) {

@@ -1023,7 +1023,8 @@ export default {
         { label: 'TongitsHunter-[15]', value: 15 },
         { label: 'KingOfPot-[16]', value: 16 },
         { label: '万圣节活动-[18]', value: 18 },
-        { label: '排行榜活动-[19]', value: 19 }
+        { label: '竖版游戏排行榜活动-[19]', value: 19 },
+        { label: 'Poker类排行榜活动-[20]', value: 20 },
       ],
       gameSelect: [],
       activitySelect: [
@@ -1039,7 +1040,8 @@ export default {
         { name: 'TongitsHunter-[15]', id: 15 },
         { name: 'KingOfPot-[16]', id: 16 },
         { name: '万圣节活动-[18]', id: 18 },
-        { name: '排行榜活动-[19]', id: 19 }
+        { name: '竖版游戏排行榜活动-[19]', id: 19 },
+        { name: 'Poker类排行榜活动-[20]', id: 20 },
       ],
       blockGames: [36, 38, 39, 43, 44],
       hallGame: [],
