@@ -616,6 +616,7 @@ export default {
         '100': '接受Challenge',
         '101': 'Tongits Win'
       },
+      tongitsGameIds: [22, 28, 29, 31, 128],
 
       treeData: [{
         id: 1,
