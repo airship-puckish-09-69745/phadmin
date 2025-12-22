@@ -39,7 +39,7 @@ export default {
         { value: 'BP', label: 'BP', numericValue: 1 },
         { value: 'AP', label: 'AP', numericValue: 2 },
         { value: 'GP', label: 'GP', numericValue: 3 },
-        { value: 'PG', label: 'PG', numericValue: 4 },
+        // { value: 'PG', label: 'PG', numericValue: 4 }, 2025-12-22去除PG
         { value: 'Dev', label: 'Dev', numericValue: 5 },
         // { value: 'SP', label: 'SP', numericValue: 12 },
         { value: 'CP', label: 'CP', numericValue: 16 }

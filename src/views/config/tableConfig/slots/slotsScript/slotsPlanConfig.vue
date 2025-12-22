@@ -141,7 +141,7 @@
                   <el-checkbox label="BP" value="BP"></el-checkbox>
                   <el-checkbox label="AP" value="AP"></el-checkbox>
                   <el-checkbox label="GP" value="GP"></el-checkbox>
-                  <el-checkbox label="PG" value="PG"></el-checkbox>
+                  <!-- <el-checkbox label="PG" value="PG"></el-checkbox> -->
                   <el-checkbox label="TP" value="TP"></el-checkbox>
                   <el-checkbox label="SP" value="SP"></el-checkbox>
                   <el-checkbox label="CP" value="CP"></el-checkbox>
@@ -191,7 +191,7 @@
                   <el-checkbox label="BP" value="BP"></el-checkbox>
                   <el-checkbox label="AP" value="AP"></el-checkbox>
                   <el-checkbox label="GP" value="GP"></el-checkbox>
-                  <el-checkbox label="PG" value="PG"></el-checkbox>
+                  <!-- <el-checkbox label="PG" value="PG"></el-checkbox> -->
                   <el-checkbox label="TP" value="TP"></el-checkbox>
                   <el-checkbox label="SP" value="SP"></el-checkbox>
                 </el-checkbox-group>
@@ -677,7 +677,7 @@ export default {
         {'label': 'BP', 'value': 'BP'},
         {'label': 'GP', 'value': 'GP'},
         {'label': 'AP', 'value': 'AP'},
-        {'label': 'PG', 'value': 'PG'}
+        // {'label': 'PG', 'value': 'PG'} 2025-12-22去除PG
       ],
       queryGid: 82,
       orgDataList: [],

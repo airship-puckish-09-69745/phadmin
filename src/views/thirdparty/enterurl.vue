@@ -477,7 +477,7 @@ export default {
           val: 'vertical'
         }
       ],
-      channels: ['Dev', 'BP', 'GP', 'AP', 'PG'],
+      channels: ['Dev', 'BP', 'GP', 'AP'],
       directScenes: [
         {
           name: '大厅',
