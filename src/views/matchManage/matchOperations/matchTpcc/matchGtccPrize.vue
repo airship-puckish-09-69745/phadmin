@@ -73,9 +73,22 @@
                 {{ scope.row.invitationName }}
               </template>
             </el-table-column>
-            <el-table-column prop="imagePath" label="图片" min-width="250px">
+            <el-table-column prop="imagePath" label="图片" min-width="180px">
               <template slot-scope="scope">
                 <ImagePicker v-model="scope.row.imagePath" />
+              </template>
+            </el-table-column>
+
+              <el-table-column prop="sort" label="排序" min-width="180px">
+              <template slot-scope="scope">
+                <el-input 
+                  :value="scope.row.sort" 
+                  @input="handleSortInput(scope.$index, $event)" 
+                  style="width: 80px;" 
+                  size="mini"
+                  placeholder="请输入排序值" 
+                  type="number"
+                />
               </template>
             </el-table-column>
             </el-table>
@@ -299,6 +312,13 @@ export default {
       return item ? item.label : ''
     },
     /**
+     * 处理排序输入
+     */
+    handleSortInput(index, value) {
+      const numValue = value === '' || value === null || value === undefined ? 0 : Number(value)
+      this.$set(this.editForm.data.invitationList[index], 'sort', isNaN(numValue) ? 0 : numValue)
+    },
+    /**
      * 获取当前可用的邀请函列表（用于下拉框）
      */
     getAvailableInvitations() {
@@ -307,7 +327,8 @@ export default {
       }
       return this.editForm.data.invitationList.map(item => ({
         invitationId: item.invitationId,
-        invitationName: item.invitationName
+        invitationName: item.invitationName,
+        sort: item.sort
       }))
     },
     /**
@@ -327,13 +348,14 @@ export default {
       }
 
       // 根据 invitationId 数组生成表格数据
-      this.editForm.data.invitationList = config.invitationId.map(id => {
-        // 如果已有数据，保留图片路径
+      this.editForm.data.invitationList = config.invitationId.map((id, index) => {
+        // 如果已有数据，保留图片路径和排序值
         const existingItem = this.editForm.data.invitationList.find(item => item.invitationId === id)
         return {
           invitationId: id,
           invitationName: this.getInvitationNameById(id),
-          imagePath: existingItem ? existingItem.imagePath : ''
+          imagePath: existingItem ? existingItem.imagePath : '',
+          sort: existingItem && existingItem.sort !== undefined ? existingItem.sort : (index + 1)
         }
       })
       //console.log("更新邀请函列表 matchUniqueId.",this.editForm.data.invitationList ,matchUniqueId)
@@ -396,10 +418,13 @@ export default {
           // 根据 matchUniqueId 生成邀请函列表
           this.onMatchUniqueIdChange(this.editForm.data.matchUniqueId)
         } else {
-          // 如果已有 invitationList，确保每个项都有正确的名称
-          this.editForm.data.invitationList.forEach(item => {
+          // 如果已有 invitationList，确保每个项都有正确的名称和排序值
+          this.editForm.data.invitationList.forEach((item, index) => {
             if (!item.invitationName) {
-              item.invitationName = this.getInvitationNameById(item.invitationId)
+              this.$set(item, 'invitationName', this.getInvitationNameById(item.invitationId))
+            }
+            if (item.sort === undefined || item.sort === null) {
+              this.$set(item, 'sort', index + 1)
             }
           })
           // 如果只有一个邀请函，自动为所有 rankRewards 赋值
@@ -438,7 +463,7 @@ export default {
             'id': new Date().setSeconds(0),
             'rankRewards': this.editForm.data.rankRewards,
             'matchUniqueId': this.editForm.data.matchUniqueId,
-            'invitationList': this.editForm.data.invitationList
+            'invitationList': this.editForm.data.invitationList,
           }
         )
       }
