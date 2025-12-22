@@ -772,6 +772,11 @@ export default {
       item.extend.maxReward *= 1000
       item.extend.progressReward *= 1000
 
+      if (item.extend.rewardList.length === 0) {
+        Message.error('请添加排名奖励配置')
+        return
+      }
+
       for (const hotTime of item.extend.hotTimes) {
         hotTime.startTime = new Date(hotTime.startTime).getTime() / 1000
         hotTime.endTime = new Date(hotTime.endTime).getTime() / 1000
