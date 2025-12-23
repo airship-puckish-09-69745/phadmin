@@ -36,6 +36,7 @@ export default {
   data() {
     return {
       options: [
+        { value: '', label: '所有', numericValue: 0 },
         { value: 'BP', label: 'BP', numericValue: 1 },
         { value: 'AP', label: 'AP', numericValue: 2 },
         { value: 'GP', label: 'GP', numericValue: 3 },

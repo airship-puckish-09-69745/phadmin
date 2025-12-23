@@ -149,8 +149,8 @@ export default {
       item: {
         uid: '',
         gid: 0,
-        appId: null,
-        site: null,
+        appId: 0,
+        site: '',
         pageNum: 1,
         pageSize: 20
       },
