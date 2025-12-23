@@ -1117,7 +1117,7 @@ export default {
     addPlan() {
 
       // 确保UserTags格式正确
-      this.editFormData.ScriptRuleDescription.UserTagRules = this.selectedUserTags.map(tagId => ({
+      this.addFormData.ScriptRuleDescription.UserTagRules = this.selectedUserTags.map(tagId => ({
         TagId: tagId,
         TagValues: this.tagValues[tagId] || []
       }));
@@ -1884,13 +1884,11 @@ export default {
             this.$set(this.tagValues, tagId, [3]);
           }
         }
-        this.selectedUserTags.push(tagId);
       } else {
         // 如果标签被取消选中，从tagValues中移除对应的值
         if (this.tagValues[tagId]) {
           this.$delete(this.tagValues, tagId);
         }
-        this.selectedUserTags = this.selectedUserTags.filter(id => id !== tagId);
       }
 
       console.log(tagId, isSelected)
