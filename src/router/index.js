@@ -166,6 +166,12 @@ export const asyncRoutes = [
         meta: { title: 'Slots剧本监控V3', perm: 'SLOTS_PROCESS', noCache: true }
       },
       {
+        path: 'richCardRecord',
+        component: () => import('@/views/online/richCardRecord.vue'),
+        name: 'richCardRecord',
+        meta: { title: '富裕卡记录', perm: 'SLOTS_PROCESS', noCache: true }
+      },
+      {
         path: 'piggyStatistics',
         component: () => import('@/views/online/piggyStatistics.vue'),
         name: 'piggyStatistics',
