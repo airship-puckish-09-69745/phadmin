@@ -164,6 +164,13 @@ export const systemMoneyChart = {
         return false
       }
     },
+    isActivity(o) {
+      if (o && o.Bet !== 0) {
+        return true
+      } else {
+        return false
+      }
+    },
     isTexasMaster(o) {
       if (o === 32) {
         return true
