@@ -69,12 +69,12 @@
               {{ scope.row.uid }}
             </template>
           </el-table-column>
-          <el-table-column label="游戏" width="160px">
+          <el-table-column label="游戏">
             <template slot-scope="scope">
               {{ scope.row.gameType }}
             </template>
           </el-table-column>
-          <el-table-column label="平台">
+          <el-table-column label="平台" width="160px">
             <template slot-scope="scope">
               {{ scope.row.site }}
             </template>
@@ -101,7 +101,7 @@
           </el-table-column>
           <el-table-column label="使用时间">
             <template slot-scope="scope">
-              {{ !isNaN(scope.row.useStage) && Number.isInteger(scope.row.useStage) ? formatTime(scope.row.useStage) : scope.row.useStage }}
+              {{ formatTime(scope.row.useStage) }}
             </template>
           </el-table-column>
           <el-table-column label="获得金额">
@@ -135,14 +135,13 @@ import Compare from '@/components/Compare/index.vue'
 import Publish from '@/components/Publish/index.vue'
 import request from '@/utils/request'
 import MoneyInput from '@/components/MoneyInput/index.vue'
-import { $libDate, $libShow, ClientTableData } from '@/utils/common'
+import { $libDate, $libShow } from '@/utils/common'
 import { Message } from 'element-ui'
-import { base64 } from 'jszip/lib/support'
-import SiteSelect from "@/components/SiteSelect/index.vue";
-import store from "@/store";
+import SiteSelect from '@/components/SiteSelect/index.vue'
+import store from '@/store'
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: {SiteSelect, Compare, Publish, MoneyInput },
+  components: { SiteSelect, Compare, Publish, MoneyInput },
   data() {
     return {
       timeRange: [$libDate.GetDayBegin(new Date()), $libDate.GetDayEnd(new Date())],
@@ -166,6 +165,12 @@ export default {
   },
   methods: {
     formatTime(ts) {
+      console.log(ts)
+      const num = parseInt(ts)
+      console.log(num)
+      if (isNaN(num)) {
+        return ts
+      }
       return $libDate.FormateSecondStr(ts, 2)
     },
     getData() {
@@ -232,11 +237,14 @@ export default {
     },
     // 分页处理
     handleSizeChange(val) {
-      this.item.limit = val
+      this.item.pageSize = val
       this.getData()
     },
     handleCurrentChange(val) {
-      this.item.offset = val
+      if (this.tableData.length < this.item.pageSize && val > this.item.pageNum) {
+        return
+      }
+      this.item.pageNum = val
       this.getData()
     },
     getAppInfo() {
@@ -256,7 +264,6 @@ export default {
         }
       })
     }
-
   }
 }
 </script>
