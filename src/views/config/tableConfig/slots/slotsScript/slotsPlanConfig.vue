@@ -1881,7 +1881,7 @@ export default {
           if (this.isBoolTag(tagId)) {
             this.$set(this.tagValues, tagId, [0]);
           } else {
-            this.$set(this.tagValues, tagId, [2]);
+            this.$set(this.tagValues, tagId, [3]);
           }
         }
         this.selectedUserTags.push(tagId);
