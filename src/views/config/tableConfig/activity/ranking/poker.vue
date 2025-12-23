@@ -807,7 +807,7 @@ export default {
           if (key === 'antes') continue
           tongitsScoreItems.push({
             antes: antes * 1000,
-            score: row[key] * 1000,
+            score: row[key] * 10,
             scoreWay: parseInt(key)
           })
         }
@@ -915,14 +915,15 @@ export default {
 
           const tongitsScoreItems = []
           for (const row of item.extend.pokerExtend.tongitsScoreItems) {
+            const score = row.score / 10
             let row2 = tongitsScoreItems.find(item => item.antes === row.antes / 1000)
             if (row2) {
-              row2[row.scoreWay.toString()] = row.score / 1000
+              row2[row.scoreWay.toString()] = score
             } else {
               row2 = {
                 antes: row.antes / 1000
               }
-              row2[row.scoreWay.toString()] = row.score / 1000
+              row2[row.scoreWay.toString()] = score
               tongitsScoreItems.push(row2)
             }
           }
