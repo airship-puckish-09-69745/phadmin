@@ -86,7 +86,7 @@
           </el-table-column>
           <el-table-column label="发放方式">
             <template slot-scope="scope">
-              {{ scope.row.source }}
+              {{ sourceOptions[scope.row.source] }}
             </template>
           </el-table-column>
           <el-table-column label="bet值">
@@ -155,6 +155,11 @@ export default {
         pageSize: 20
       },
       gameOptions: [],
+      sourceOptions: {
+        1: '后台发放',
+        17: '富裕卡任务',
+        18: '7日活动'
+      },
       appInfo: [],
       tableData: []
     }
