@@ -159,6 +159,29 @@
         <!--              <el-option label="大R" :value="3" />-->
         <!--           </el-select>-->
         <!--        </el-form-item>-->
+        <el-form-item label="用户标签">
+          <div class="user-tags-container">
+            <div v-for="(tag, index) in userTags" :key="tag.value"
+                 :class="['user-tag-item', index % 2 === 0 ? 'left-column' : 'right-column']">
+              <el-checkbox
+                :label="tag.value"
+                v-model="selectedUserTags"
+                :value="tag.value"
+                @change="handleUserTagChange(tag.value, $event)">
+                {{tag.label}}
+              </el-checkbox>
+              <el-checkbox-group
+                v-if="!isBoolTag(tag.value) && isTagSelected(tag.value)"
+                v-model="tagValues[tag.value]"
+                :min="1"
+                class="inline-checkbox-group">
+                <el-checkbox :label="1" :value="1">轻度</el-checkbox>
+                <el-checkbox :label="2" :value="2">中度</el-checkbox>
+                <el-checkbox :label="3" :value="3">重度</el-checkbox>
+              </el-checkbox-group>
+            </div>
+          </div>
+        </el-form-item>
         <el-form-item label="流量控制(权重)">
           <el-input v-model.number="addFormData.ScriptRuleDescription.TrafficCtrl" placeholder=" "></el-input>
         </el-form-item>
@@ -203,6 +226,29 @@
         <!--        <el-form-item label="用户类型">-->
         <!--          <el-input  v-model.number="editFormData.ScriptRuleDescription.UserType" placeholder=""></el-input>-->
         <!--        </el-form-item>-->
+        <el-form-item label="用户标签">
+          <div class="user-tags-container">
+            <div v-for="(tag, index) in userTags" :key="tag.value"
+                 :class="['user-tag-item', index % 2 === 0 ? 'left-column' : 'right-column']">
+              <el-checkbox
+                :label="tag.value"
+                v-model="selectedUserTags"
+                :value="tag.value"
+                @change="handleUserTagChange(tag.value, $event)">
+                {{tag.label}}
+              </el-checkbox>
+              <el-checkbox-group
+                v-if="!isBoolTag(tag.value) && isTagSelected(tag.value)"
+                v-model="tagValues[tag.value]"
+                :min="1"
+                class="inline-checkbox-group">
+                <el-checkbox :label="1" :value="1">轻度</el-checkbox>
+                <el-checkbox :label="2" :value="2">中度</el-checkbox>
+                <el-checkbox :label="3" :value="3">重度</el-checkbox>
+              </el-checkbox-group>
+            </div>
+          </div>
+        </el-form-item>
         <el-form-item label="流量控制(权重)">
           <el-input v-model.number="editFormData.ScriptRuleDescription.TrafficCtrl" placeholder=" "></el-input>
         </el-form-item>
@@ -703,7 +749,7 @@ export default {
         PlanName: '',
         IsDefault: 0,
         IsDisabled: 0,
-        ScriptRuleDescription: {Platform:'',UserType:0,TrafficCtrl:0,PlatformList:[],UserTags:[]}
+        ScriptRuleDescription: {Platform:'',UserType:0,TrafficCtrl:0,PlatformList:[],UserTagRules:[]}
       },
       editDialogVisible: false,
       editFormData: {
@@ -711,7 +757,7 @@ export default {
         PlanName: '',
         IsDefault: 0,
         IsDisabled: 0,
-        ScriptRuleDescription: {Platform:'',UserType:0,TrafficCtrl:0,PlatformList:[],UserTags:[]}
+        ScriptRuleDescription: {Platform:'',UserType:0,TrafficCtrl:0,PlatformList:[],UserTagRules:[]}
       },
       editIndex: -1,
 
@@ -781,6 +827,8 @@ export default {
       ],
 
       scriptPlanVolatilityStat: {},
+      selectedUserTags: [],
+      tagValues: {},
       userTags: [
         {'value': 50001, 'label': 'Slots新增用户'},
         {'value': 50002, 'label': 'Slots登录天数'},
@@ -938,7 +986,6 @@ export default {
         })
       })
     },
-
     getGameList() {
       request({
         url: '/thirdpartygames/all',
@@ -1027,8 +1074,8 @@ export default {
         if (this.queryGid === o.SlotsType) {
           let a = JSON.parse(JSON.stringify(o))
           for (const k in a.Data) {
-            if (typeof a.Data[k].ScriptRule.UserTags == 'undefined') {
-              a.Data[k].ScriptRule.UserTags = []
+            if (typeof a.Data[k].ScriptRule.UserTagRules == 'undefined') {
+              a.Data[k].ScriptRule.UserTagRules = []
             }
           }
           this.showItem.SlotsType = a.SlotsType
@@ -1051,6 +1098,10 @@ export default {
       }
     },
     openAddDialog() {
+      // 清空当前选中的标签和值
+      this.selectedUserTags = [];
+      this.tagValues = {};
+
       this.addDialogVisible = true;
       this.addFormData =     {
         PlanId: this.showItem.Plans.length+1,
@@ -1060,10 +1111,17 @@ export default {
         Versions: [
 
         ],
-        ScriptRuleDescription: {Platform:'',UserType:0,TrafficCtrl:0, PlatformList:[],UserTags:[]}
+        ScriptRuleDescription: {Platform:'',UserType:0,TrafficCtrl:0, PlatformList:[],UserTagRules:[]}
       }
     },
     addPlan() {
+
+      // 确保UserTags格式正确
+      this.editFormData.ScriptRuleDescription.UserTagRules = this.selectedUserTags.map(tagId => ({
+        TagId: tagId,
+        TagValues: this.tagValues[tagId] || []
+      }));
+
       const newPlan = {
         PlanId: this.addFormData.PlanId,
         PlanName: this.addFormData.PlanName,
@@ -1085,8 +1143,17 @@ export default {
         ScriptRuleDescription: row.ScriptRule
       };
       this.editIndex = idx
+
+      // 初始化用户标签数据
+      this.initUserTagsData();
     },
     saveEdit() {
+      // 确保UserTags格式正确
+      this.editFormData.ScriptRuleDescription.UserTagRules = this.selectedUserTags.map(tagId => ({
+        TagId: tagId,
+        TagValues: this.tagValues[tagId] || []
+      }));
+
       const updatedPlan = {
         PlanId: this.editFormData.PlanId,
         PlanName: this.editFormData.PlanName,
@@ -1799,6 +1866,62 @@ export default {
         }
       })
     },
+    // 判断标签是否被选中
+    isTagSelected(tagValue) {
+      return this.selectedUserTags.includes(tagValue);
+    },
+    isBoolTag(tagId) {
+      return tagId === 50001 || tagId === 50008
+    },
+    // 处理用户标签变化
+    handleUserTagChange(tagId, isSelected) {
+      if (isSelected) {
+        // 如果标签被选中，确保tagValues中有对应的数组
+        if (!this.tagValues[tagId]) {
+          if (this.isBoolTag(tagId)) {
+            this.$set(this.tagValues, tagId, [0]);
+          } else {
+            this.$set(this.tagValues, tagId, [2]);
+          }
+        }
+        this.selectedUserTags.push(tagId);
+      } else {
+        // 如果标签被取消选中，从tagValues中移除对应的值
+        if (this.tagValues[tagId]) {
+          this.$delete(this.tagValues, tagId);
+        }
+        this.selectedUserTags = this.selectedUserTags.filter(id => id !== tagId);
+      }
+
+      console.log(tagId, isSelected)
+      // 更新UserTags为所需格式
+      this.editFormData.ScriptRuleDescription.UserTagRules = this.selectedUserTags.map(tagId => ({
+        TagId: tagId,
+        TagValues: this.tagValues[tagId] || []
+      }));
+    },
+
+    // 初始化用户标签数据（在打开编辑对话框时调用）
+    initUserTagsData() {
+      // 清空当前选中的标签和值
+      this.selectedUserTags = [];
+      this.tagValues = {};
+
+      // 从editFormData中恢复数据
+      if (this.editFormData.ScriptRuleDescription.UserTagRules &&
+          Array.isArray(this.editFormData.ScriptRuleDescription.UserTagRules)) {
+        for (const userTag of this.editFormData.ScriptRuleDescription.UserTagRules) {
+          if (userTag.TagId) {
+            this.selectedUserTags.push(userTag.TagId);
+            if (userTag.TagValues && Array.isArray(userTag.TagValues)) {
+              this.$set(this.tagValues, userTag.TagId, [...userTag.TagValues]);
+            } else {
+              this.$set(this.tagValues, userTag.TagId, []);
+            }
+          }
+        }
+      }
+    },
     showUserTag(tag) {
       for (const k in this.userTags) {
         if (this.userTags[k].value == tag) {
@@ -1828,5 +1951,41 @@ th {
 
 tr:hover {
   background-color: #f5f5f5;
+}
+
+/* 用户标签两列布局 */
+.user-tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  border: 1px solid #ddd;
+  padding-left: 12px;
+  border-radius: 4px;
+}
+
+.user-tag-item {
+  width: 50%;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+}
+
+.left-column {
+  padding-right: 10px;
+}
+
+.right-column {
+  padding-left: 10px;
+}
+
+/* 使el-checkbox-group不换行显示 */
+.inline-checkbox-group {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  padding-left: 25px;
+}
+
+.inline-checkbox-group .el-checkbox {
+  margin-right: 15px;
+  white-space: nowrap;
 }
 </style>
