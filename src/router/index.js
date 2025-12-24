@@ -4392,6 +4392,12 @@ export const asyncRoutes = [
             component: () => import('@/views/devTools/betSummary'),
             name: 'betSummary',
             meta: { title: 'CP投注统计', perm: 'CFG_MANAGEMENT' }
+          },
+          {
+            path: 'slotsUserTag',
+            component: () => import('@/views/devTools/slotsUserTag'),
+            name: 'slotsUserTag',
+            meta: { title: '老虎机用户标签查询', perm: 'CFG_MANAGEMENT' }
           }
         ]
       },
