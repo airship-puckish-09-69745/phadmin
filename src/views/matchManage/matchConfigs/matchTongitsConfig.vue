@@ -1726,6 +1726,10 @@ export default {
     },
     showForm(id) {
       if (id === 0) {
+        if(this.tableData.length >=100){
+          Message.error('当前赛事配置已达上限100个，请删除不需要的配置后再新增！')
+          return
+        }
         this.disableOpenType(false, 0)
         this.editForm.title = '新增比赛配置'
         this.editForm.uidObList = ''

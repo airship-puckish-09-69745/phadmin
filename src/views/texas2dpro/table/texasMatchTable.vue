@@ -778,7 +778,7 @@ export default {
         { 'value': 'AP', 'label': 'AP' },
         { 'value': 'GP', 'label': 'GP' },
         //{ 'value': 'TP', 'label': 'TP' },
-        { 'value': 'PG', 'label': 'PG' },
+        //{ 'value': 'PG', 'label': 'PG' }, 2025-12-22去除PG
         { 'value': 'Dev', 'label': 'Dev' }
       ],
       signUpTypeCfgs: [
@@ -960,6 +960,11 @@ export default {
     },
 
     handleCreate() {
+      console.log("handleCreate",this.clientDB.GetPage().GetTotalCount())
+      if(this.clientDB.GetPage().GetTotalCount()>=100) {
+        Message.error('当前赛事配置已达上限100个，请删除不需要的配置后再新增！')
+        return
+      }
       this.edit.item = newItem()
       this.edit.isEdit = false
       this.edit.visible = true

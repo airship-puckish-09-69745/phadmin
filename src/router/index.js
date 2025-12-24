@@ -166,6 +166,12 @@ export const asyncRoutes = [
         meta: { title: 'Slots剧本监控V3', perm: 'SLOTS_PROCESS', noCache: true }
       },
       {
+        path: 'richCardRecord',
+        component: () => import('@/views/online/richCardRecord.vue'),
+        name: 'richCardRecord',
+        meta: { title: '富裕卡记录', perm: 'SLOTS_PROCESS', noCache: true }
+      },
+      {
         path: 'piggyStatistics',
         component: () => import('@/views/online/piggyStatistics.vue'),
         name: 'piggyStatistics',
@@ -1043,6 +1049,12 @@ export const asyncRoutes = [
             meta: { title: 'B accarat ◐' }
           },
           {
+            path: 'BalloonTap',
+            component: () => import('@/views/config/tableConfig/balloontap'),
+            name: 'BalloonTap',
+            meta: { title: 'B alloonTap◐' }
+          },
+          {
             path: 'blackJackTable',
             component: () => import('@/views/config/tableConfig/blackJackTable'),
             name: 'blackJackTable',
@@ -1421,8 +1433,8 @@ export const asyncRoutes = [
                 meta: { title: 'L ucky777' }
               },
               {
-                path: 'mafiamayhem_slots_cfg',
-                component: () => import('@/views/config/tableConfig/slots/mafiamayhem_slots_cfg'),
+                path: 'mafiawars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/mafiawars_slots_cfg.vue'),
                 name: 'mafiamayhem_slots_cfg',
                 // 名字修改
                 meta: { title: 'M afiaWars' }
@@ -2969,7 +2981,12 @@ export const asyncRoutes = [
             name: 'playlog_baccarat',
             meta: { title: 'B accarat ◐', gid: 107 }
           },
-
+          {
+            path: 'playlog_balloontap',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_balloontap',
+            meta: { title: 'B alloonTap ◐', gid: 501 }
+          },
           {
             path: 'playlog_blackjack',
             component: () => import('@/views/playerManage/playlog'),
@@ -3359,9 +3376,9 @@ export const asyncRoutes = [
             meta: { title: 'L ucky777', gid: 88 }
           },
           {
-            path: 'mafiamayhem_slots_log',
+            path: 'mafiawars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
-            name: 'mafiamayhem_slots_log',
+            name: 'mafiawars_slots_log',
             meta: { title: 'M afiaWars', gid: 232 }
           },
           {

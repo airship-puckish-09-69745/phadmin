@@ -441,7 +441,6 @@ export default {
           const objs = response.Data || {}
           if (objs.total > 0) {
             this.tableData = []
-            console.log("form.appId", this.form)
             if(this.form.appId > 0){ // 如果appId大于0，则只显示该appId的道具
               this.tableData = this.getSuitedItemList(objs.list, this.form.appId)
               this.total = this.tableData.length
@@ -1004,24 +1003,39 @@ export default {
       return itemType === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME || itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR
     },
     getAppIdName(item_extra) {
-      if(typeof(item_extra) === 'string'){
+      if(typeof(item_extra) === 'string' && item_extra !== ''){
+       try{
         item_extra = JSON.parse(item_extra)
         if(typeof(item_extra.appId) === 'undefined' || item_extra.appId === 0 || item_extra.appId === ''){
           return '请选择APPID'
+          }
+          const found = APPID_OPTIONS.find(item => item.value === item_extra.appId)
+          return found ? found.label : '未知APPID'
+        } catch (error) {
+          console.error('获取APPID名称失败:', error)
+          return '解析失败'
         }
-        return APPID_OPTIONS.find(item => item.value === item_extra.appId).label
       }
+      return '未设置'
     },
     getSuitedItemList(itemList, appId) {
       const suitedItemList = []
+      if(!itemList || !Array.isArray(itemList)){
+        return suitedItemList
+      }
       for(const obj of itemList){
         if(typeof(obj.item_extra) === 'string' && obj.item_extra !== ''){
+          try{
             const item_extra = JSON.parse(obj.item_extra)
             if(item_extra.appId === appId){
               suitedItemList.push(obj)
             }
+          } catch (error) {
+            console.error('解析道具extra失败:', error)
+           
           }
         }
+      }
       return suitedItemList
     },
     //获取slot游戏配置

@@ -161,10 +161,10 @@ export default {
                     value: 3,
                     label: "GP",
                 },
-                {
-                    value: 4,
-                    label: "PG",
-                },
+                // {
+                //     value: 4,
+                //     label: "PG",
+                // },
                 {
                     value: 5,
                     label: "Dev",

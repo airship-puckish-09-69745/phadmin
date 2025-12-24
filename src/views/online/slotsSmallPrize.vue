@@ -122,7 +122,7 @@ export default {
       gameIdMap: [],
       gameNameMap: [],
       // 站点相关
-      allSite: ['全部', 'BP', 'AP', 'GP', 'PG', 'Dev'],
+      allSite: ['全部', 'BP', 'AP', 'GP', 'Dev'],
       // 表格数据
       tableData: [],
       // Slots基础投注Map(不填默认100)gid:baseBet

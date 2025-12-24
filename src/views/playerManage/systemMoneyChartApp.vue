@@ -473,12 +473,14 @@ export default {
         const others = []
 
         for (let i = 0; i < this.defaultOrder.length; i++) {
-          if (this.isPoker(this.defaultOrder[i])) {
-            pokers.push(this.defaultOrder[i])
-          } else if (this.isSlots(this.defaultOrder[i])) {
-            slots.push(this.defaultOrder[i])
-          } else {
-            others.push(this.defaultOrder[i])
+          if (systemMoneyChart.methods.isActivity(this.summary[this.defaultOrder[i]])) {
+            if (this.isPoker(this.defaultOrder[i])) {
+              pokers.push(this.defaultOrder[i])
+            } else if (this.isSlots(this.defaultOrder[i])) {
+              slots.push(this.defaultOrder[i])
+            } else {
+              others.push(this.defaultOrder[i])
+            }
           }
         }
         if (this.selectType === 2) {

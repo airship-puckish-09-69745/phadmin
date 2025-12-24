@@ -290,7 +290,7 @@
                     <el-checkbox label="BP">BP</el-checkbox>
                     <el-checkbox label="AP">AP</el-checkbox>
                     <el-checkbox label="GP">GP</el-checkbox>
-                    <el-checkbox label="PG">PG</el-checkbox>
+                    <!-- <el-checkbox label="PG">PG</el-checkbox> 2025-12-22去除PG -->
                     <el-checkbox label="Dev">DEV</el-checkbox>
                   </el-checkbox-group>
                   <span style="color: red">全部不勾 等于 任意站点都可见。下架入口则不可见</span>

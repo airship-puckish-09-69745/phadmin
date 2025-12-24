@@ -184,7 +184,7 @@ export default {
         { key: 'BP', label: 'BP' },
         { key: 'AP', label: 'AP' },
         { key: 'GP', label: 'GP' },
-        { key: 'PG', label: 'PG' }
+        // { key: 'PG', label: 'PG' }, 2025-12-22去除PG
       ],
       isReturnOptions: [
         { key: 0, label: '否' },
