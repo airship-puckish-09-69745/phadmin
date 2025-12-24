@@ -166,6 +166,12 @@ export const asyncRoutes = [
         meta: { title: 'Slots剧本监控V3', perm: 'SLOTS_PROCESS', noCache: true }
       },
       {
+        path: 'richCardRecord',
+        component: () => import('@/views/online/richCardRecord.vue'),
+        name: 'richCardRecord',
+        meta: { title: '富裕卡记录', perm: 'SLOTS_PROCESS', noCache: true }
+      },
+      {
         path: 'piggyStatistics',
         component: () => import('@/views/online/piggyStatistics.vue'),
         name: 'piggyStatistics',
@@ -2982,7 +2988,12 @@ export const asyncRoutes = [
             name: 'playlog_baccarat',
             meta: { title: 'B accarat ◐', gid: 107 }
           },
-
+          {
+            path: 'playlog_balloontap',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_balloontap',
+            meta: { title: 'B alloonTap ◐', gid: 501 }
+          },
           {
             path: 'playlog_blackjack',
             component: () => import('@/views/playerManage/playlog'),
@@ -4405,6 +4416,18 @@ export const asyncRoutes = [
             component: () => import('@/views/devTools/betSummary'),
             name: 'betSummary',
             meta: { title: 'CP投注统计', perm: 'CFG_MANAGEMENT' }
+          },
+          {
+            path: 'slotsUserTag',
+            component: () => import('@/views/devTools/slotsUserTag'),
+            name: 'slotsUserTag',
+            meta: { title: '老虎机用户标签查询', perm: 'CFG_MANAGEMENT' }
+          },
+          {
+            path: 'slotsUserScriptPlan',
+            component: () => import('@/views/devTools/slotsUserScriptPlan'),
+            name: 'slotsUserScriptPlan',
+            meta: { title: '老虎机剧本方案查询', perm: 'CFG_MANAGEMENT' }
           }
         ]
       },
