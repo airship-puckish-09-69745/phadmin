@@ -2551,12 +2551,12 @@ export const asyncRoutes = [
               }
             ]
           },
-          {
-            path: 'matchTcc',
-            component: () => import('@/views/matchManage/matchOperations/matchTcc.vue'),
-            name: 'matchTcc',
-            meta: { title: 'Tcc名单配置', noCache: true }
-          },
+          // {
+          //   path: 'matchTcc',
+          //   component: () => import('@/views/matchManage/matchOperations/matchTcc.vue'),
+          //   name: 'matchTcc',
+          //   meta: { title: 'Tcc名单配置', noCache: true }
+          // },
           {
             path: 'matchBroadcast',
             component: () => import('@/views/matchManage/matchOperations/matchBroadcast/index.vue'),
@@ -2595,6 +2595,13 @@ export const asyncRoutes = [
               }
             ],
           },
+          {
+            path: 'interfaceWhiteLimit',
+            component: () => import('@/views/matchManage/matchOperations/interfaceLimitWhite.vue'),
+            name: 'interfaceWhiteLimit',
+            meta: { title: '比赛接口白名单', noCache: true }
+          },
+
 
         ]
       },
