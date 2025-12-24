@@ -285,11 +285,29 @@
         </el-table-column>
       </template>
 
-      <el-table-column
-        prop="LogID"
-        label="LogID"
-        min-width="100"
-      />
+      <template v-if="gid!==501">
+        <el-table-column
+            prop="LogID"
+            label="LogID"
+            width="100"
+        >
+          <template slot-scope="scope">
+            {{ scope.row.LogID }}
+          </template>
+        </el-table-column>
+      </template>
+
+      <template v-if="gid===501">
+        <el-table-column
+            prop="Ext"
+            label="Ext"
+            width="100"
+        >
+          <template slot-scope="scope">
+            {{ explainExt(gid, scope.row.ExtendAttr) }}
+          </template>
+        </el-table-column>
+      </template>
     </el-table>
     <el-row type="flex" justify="end">
       <el-col :span="12">
@@ -5791,7 +5809,7 @@ export default {
         }
         for (const i in obj.groupBottom) {
           if (obj.groupBottom[i].uid === obj.players[k].uid) {
-            obj.players[k].groupBottom = obj.groupBottom[i] 
+            obj.players[k].groupBottom = obj.groupBottom[i]
             break
           }
         }
@@ -6067,6 +6085,14 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
           return '比赛场'
         default:
           return level <= 7 ? '陪玩机器人' : level
+      }
+    },
+    explainExt(gid, ext) {
+      switch (gid) {
+        case 501:
+          return ext
+        default:
+          return ext
       }
     },
     showRobotLevel(isRobot,level) {
