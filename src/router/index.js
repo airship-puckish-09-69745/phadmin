@@ -2981,7 +2981,12 @@ export const asyncRoutes = [
             name: 'playlog_baccarat',
             meta: { title: 'B accarat ◐', gid: 107 }
           },
-
+          {
+            path: 'playlog_balloontap',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_balloontap',
+            meta: { title: 'B alloonTap ◐', gid: 501 }
+          },
           {
             path: 'playlog_blackjack',
             component: () => import('@/views/playerManage/playlog'),

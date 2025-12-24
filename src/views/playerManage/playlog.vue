@@ -815,7 +815,7 @@
               {{ item.luckyBet / 1000 }}
               <hr v-if="index !== scope.row.cardGroupLog.length - 1" class="blackJackmhHr"/>
             </div>
-           
+
           </template>
         </el-table-column>
         <el-table-column prop="totalBet" label="投注金额">
@@ -867,7 +867,7 @@
             </div>
           </template>
         </el-table-column>
-        
+
         <el-table-column label="是否爆牌" width="200px">
           <template slot-scope="scope">
             <div v-for="(item,index) in scope.row.cardGroupLog" class="blackJackmhBox">
@@ -880,7 +880,7 @@
               </span>
               <hr v-if="index !== scope.row.cardGroupLog.length - 1" class="blackJackmhHr"/>
             </div>
-           
+
           </template>
         </el-table-column>
         <el-table-column label="Lucky Bet输赢">
@@ -912,14 +912,14 @@
           </template>
         </el-table-column>
       </el-table>
-      
+
 
       <el-descriptions title="扩展信息">
         <el-descriptions-item label="桌子ID">{{ blackjackmhDetail.tid }}</el-descriptions-item>
         <el-descriptions-item label="Server日志ID">{{ blackjackmhDetail.logId }}</el-descriptions-item>
       </el-descriptions>
     </el-dialog>
-    
+
     <el-dialog title="多米诺牌局详情" :visible.sync="dominoDetailVisible" width="1200px">
       <el-descriptions class="margin-top" title="" :column="2" border>
         <el-descriptions-item>
@@ -3533,9 +3533,9 @@
         </el-table-column>
       </el-table>
 
-   
 
-  
+
+
 
       <div class="grid-container">
         <div class="grid-outer-frame">
@@ -3549,8 +3549,8 @@
          <p></p>
          <p></p>
           <div class="grid-wrapper">
-            <div 
-              v-for="(item, index) in PirateScratchDetail.blockItems" 
+            <div
+              v-for="(item, index) in PirateScratchDetail.blockItems"
               :key="index"
               class="grid-cell"
             >
@@ -3583,11 +3583,11 @@
                 <span style="color: red;"> JackPot</span>
             </div>
             </div>
-          
+
           </div>
         </div>
       </div>
-      
+
 
 
     </el-dialog>
@@ -4107,7 +4107,7 @@ export default {
 
       LimboDetail:{},
       LimboDetailVisible:false,
-      
+
       PirateScratchDetail:{},
       PirateScratchVisible:false,
 
@@ -4914,7 +4914,7 @@ export default {
        this.PirateScratchDetail.openNumber = []
       for(let i = 0; i < obj.player.luckyResult.openNumber.length; i++) {
         let number = obj.player.luckyResult.openNumber[i]
-        let isLucky = false 
+        let isLucky = false
         for (let j = 0; j < obj.player.luckyResult.blockItems.length; j++) {
           if (obj.player.luckyResult.blockItems[j].number == number) {
             isLucky = true;
@@ -5791,7 +5791,7 @@ export default {
         }
         for (const i in obj.groupBottom) {
           if (obj.groupBottom[i].uid === obj.players[k].uid) {
-            obj.players[k].groupBottom = obj.groupBottom[i]
+            obj.players[k].groupBottom = obj.groupBottom[i] 
             break
           }
         }
