@@ -29,7 +29,7 @@
           <template slot-scope="scope">{{showTagId(scope.row.TagId)}}</template>
         </el-table-column>
         <el-table-column prop="TagValue" label="用户程度">
-          <template slot-scope="scope">{{showTagValue(scope.row.TagValue)}}</template>
+          <template slot-scope="scope">{{showTagValue(scope.row.TagId, scope.row.TagValue)}}</template>
         </el-table-column>
       </el-table>
     </div>
@@ -52,6 +52,20 @@ export default {
         user_tags: []
       },
       libShow: $libShow,
+      otherTagMap: {
+        '10001': '新增用户',
+        '10002': '新进用户',
+        '10003': '流失用户',
+        '10004': '预流失用户',
+        '20000': '游戏强度',
+        '20001': '登录天数',
+        '20002': '日平局局数',
+        '20003': '有效下注',
+        '30001': '常玩底注',
+        '30002': '最高场次',
+        '40001': '免费',
+        '40002': '付费'
+      },
       slotsTagMap: {
         '50001': '新增用户',
         '50002': '登录天数',
@@ -125,7 +139,6 @@ export default {
           Path: '/slotsStat/user/tags'
         }
       }).then(response => {
-        console.log(response)
         if (response.RetCode === 0) {
           this.form.user_tags = response.Data
         }
@@ -134,12 +147,14 @@ export default {
     showTagId(tagId) {
       if (this.slotsTagMap[tagId]) {
         return '#' + tagId + ' ' + this.slotsTagMap[tagId]
+      } else if (this.otherTagMap[tagId]) {
+        return '#' + tagId + ' ' + this.slotsTagMap[tagId] + '<非老虎机标签>'
       } else {
         return '#' + tagId + ' <无效标签>'
       }
     },
-    showTagValue(tagValue) {
-      if (tagValue > 0 && tagValue < 4) {
+    showTagValue(tagId, tagValue) {
+      if (this.slotsTagMap[tagId] && tagValue > 0 && tagValue < 4) {
         return this.gradeOptions[tagValue]
       }
       return ''
