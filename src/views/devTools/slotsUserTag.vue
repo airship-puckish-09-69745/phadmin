@@ -3,7 +3,6 @@
     <el-form :model="form" label-width="110px" size="small">
       <el-form-item label="用户ID：">
         <el-input v-model="form.uid" placeholder="请输入查询id" style="width: 200px; display: inline-block;" />
-        <el-button type="primary" style="margin-left: 15px;" @click="getInfo">查询</el-button>
       </el-form-item>
       <el-form-item label="老虎机：">
         <el-select v-model="form.tag_gid" placeholder="请选择老虎机">
@@ -15,6 +14,7 @@
           />
         </el-select>
       </el-form-item>
+      <el-button type="primary" style="margin-left: 15px;" @click="getInfo">查询</el-button>
     </el-form>
 
     <div>
