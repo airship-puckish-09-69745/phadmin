@@ -16,7 +16,7 @@
         </el-button>
       </el-row>
       <el-row :gutter="10" style="margin-top: 30px">
-        <h3 style="text-align:center;">比赛接口白名单</h3>
+        <h3 style="text-align:center;">比赛接口白名单(白名单可见,上线后要把白名单全部删掉)</h3>
         <el-col :span="24">
             <div style="padding-top: 10px">
             <el-table
