@@ -36,11 +36,14 @@
   </div>
 </template>
 <script>
+import {Message} from 'element-ui'
 import request from '@/utils/request'
 import store from '@/store'
+import {$libShow} from '@/utils/common'
+import ShowTip from "@/components/Tip/showTip.vue";
 export default {
-  name: 'TagUser',
-  components: {},
+  name: 'SlotsUserTag',
+  components: {ShowTip},
   data() {
     return {
       form: {
@@ -48,6 +51,7 @@ export default {
         tag_gid: 82,
         user_tags: []
       },
+      libShow: $libShow,
       slotsTagMap: {
         '50001': '新增用户',
         '50002': '登录天数',
