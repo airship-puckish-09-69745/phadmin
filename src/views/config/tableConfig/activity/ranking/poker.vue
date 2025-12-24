@@ -436,6 +436,22 @@
                   </el-form-item>
                 </el-col>
               </el-row>
+              <el-row>
+                <el-col :span="11">
+                  <el-form-item label="A/B测试开关：" prop="activity.whitelist.abTest">
+                    <el-switch v-model="edit.item.activity.whitelist.abTest.switch" :active-value="true" :inactive-value="false" active-text="开启" inactive-text="关闭" />
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="11">
+                  <el-form-item label="B分组比例：" prop="activity.whitelist.abTest.bPercent">
+                    <el-input v-model.number="edit.item.activity.whitelist.abTest.bPercent" oninput=" if(value < 0 || value === '' || value == null){value = 0;} ">
+                      <template slot="append">%</template>
+                    </el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
             </el-form>
           </el-tab-pane>
           <el-row style="margin-top: 10px">
@@ -482,6 +498,10 @@ function newItem() {
         appIdList: [],
         siteIdList: [],
         uidList: '',
+        abTest: {
+          switch: false,
+          bPercent: 0,
+        }
       },
       ruleImgHor: [],
       ruleImgVer: [],
@@ -569,6 +589,7 @@ export default {
         'activity.whitelist.appIdList': '应用ID白名单',
         'activity.whitelist.siteIdList': '站点白名单',
         'activity.whitelist.uidList': 'UID白名单',
+        'activity.whitelist.abTest': 'AB测试',
         'activity.ruleImgHor': '横向规则图',
         'activity.ruleImgVer': '纵向规则图',
         'activity.isOpen': '是否开启',
@@ -911,6 +932,13 @@ export default {
             item.activity.whitelist.uidList = item.activity.whitelist.uidList.join(',')
           } else {
             item.activity.whitelist.uidList = ''
+          }
+
+          if (item.activity.whitelist.abTest === undefined) {
+            item.activity.whitelist.abTest = {
+              switch: false,
+              bPercent: 0,
+            }
           }
 
           const tongitsScoreItems = []
