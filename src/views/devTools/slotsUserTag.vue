@@ -121,8 +121,6 @@ export default {
       })
     },
     getInfo() {
-      const $this = this
-      this.saveFlag = false
       let searchUid = 0
       if (this.form.uid > 0) {
         searchUid = this.form.uid
