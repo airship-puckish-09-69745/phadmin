@@ -148,7 +148,7 @@ export default {
       if (this.slotsTagMap[tagId]) {
         return '#' + tagId + ' ' + this.slotsTagMap[tagId]
       } else if (this.otherTagMap[tagId]) {
-        return '#' + tagId + ' ' + this.slotsTagMap[tagId] + '<非老虎机标签>'
+        return '#' + tagId + ' ' + this.otherTagMap[tagId] + '<非老虎机标签>'
       } else {
         return '#' + tagId + ' <无效标签>'
       }
