@@ -46,6 +46,17 @@
               />
             </el-select>
           </el-form-item>
+          <el-form-item label="发放方式">
+            <el-select v-model="item.source" size="mini">
+              <el-option label="所有" :value="0" />
+              <el-option
+                v-for="row in sourceOptions"
+                :key="row.value"
+                :label="row.label"
+                :value="row.value"
+              />
+            </el-select>
+          </el-form-item>
 
           <el-form-item>
             <el-button type="primary" size="mini" @click="getData">查询</el-button>
@@ -86,7 +97,7 @@
           </el-table-column>
           <el-table-column label="发放方式">
             <template slot-scope="scope">
-              {{ sourceOptions[scope.row.source] }}
+              {{ sourceMap[scope.row.source] || '未知' }}
             </template>
           </el-table-column>
           <el-table-column label="bet值">
@@ -120,7 +131,8 @@
             :current-page="item.pageNum"
             :page-sizes="[20]"
             :page-size="item.pageSize"
-            layout=" prev, next"
+            layout="total, prev, pager, next, ->, jumper"
+            :total="totalCount"
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
           />
@@ -151,28 +163,36 @@ export default {
         gid: 0,
         appId: 0,
         site: '',
+        source: 0,
         pageNum: 1,
         pageSize: 20
       },
       gameOptions: [],
-      sourceOptions: {
-        1: '后台发放',
-        17: '富裕卡任务',
-        18: '7日活动'
-      },
+      sourceOptions: [
+        { value: 1, label: '后台发放' },
+        { value: 17, label: '富裕卡任务' },
+        { value: 18, label: '7日活动' }
+      ],
       appInfo: [],
-      tableData: []
+      tableData: [],
+      totalCount: 0
     }
   },
   created() {
     this.getGameList()
     this.getAppInfo()
   },
+  computed: {
+    sourceMap() {
+      return this.sourceOptions.reduce((map, item) => {
+        map[item.value] = item.label
+        return map
+      }, {})
+    }
+  },
   methods: {
     formatTime(ts) {
-      console.log(ts)
       const num = parseInt(ts)
-      console.log(num)
       if (isNaN(num)) {
         return ts
       }
@@ -196,6 +216,7 @@ export default {
           uid: $this.item.uid,
           appId: $this.item.appId,
           site: $this.item.site,
+          source: $this.item.source,
           queryStart: queryStart,
           queryEnd: queryEnd,
           gid: $this.item.gid,
@@ -210,7 +231,8 @@ export default {
             return
           }
           console.log(response.Data)
-          $this.tableData = response.Data
+          $this.tableData = response.Data.list
+          $this.totalCount = response.Data.totalCount
         }
       })
     },
