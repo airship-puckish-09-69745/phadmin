@@ -301,7 +301,7 @@
         <el-table-column
             prop="Ext"
             label="Ext"
-            width="100"
+            width="350"
         >
           <template slot-scope="scope">
             {{ explainExt(gid, scope.row.ExtendAttr) }}
@@ -6088,9 +6088,24 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
       }
     },
     explainExt(gid, ext) {
+      if (!ext) return ''
+      let obj
+      try {
+        obj = typeof ext === 'string' ? JSON.parse(ext) : ext
+      } catch (e) {
+        return ''
+      }
       switch (gid) {
-        case 501:
-          return ext
+        case 501: {
+          if (obj.oddsTarget > 0){
+            obj.oddsTarget=obj.oddsTarget/10
+          }
+          if (obj.oddsTarget === -2){
+            return "气球:"+obj.oddsTarget+"  击杀:"+obj.oddsKill/10+"  PiggyBoom:"+obj.oddsPiggyBoom/10
+          }else {
+            return "气球:"+obj.oddsTarget+"  击杀:"+obj.oddsKill/10
+          }
+        }
         default:
           return ext
       }
