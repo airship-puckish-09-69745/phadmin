@@ -24,6 +24,7 @@
         <el-descriptions-item label="用户平台">{{form.siteId}}</el-descriptions-item>
         <el-descriptions-item label="分配的方案ID">{{form.planId}}</el-descriptions-item>
         <el-descriptions-item label="分配的方案版本">{{form.planVer}}</el-descriptions-item>
+        <el-descriptions-item label="是否切换了方案">{{form.planSwitched ? 'YES!!!' : '-'}}</el-descriptions-item>
       </el-descriptions>
       <h3>与分配的剧本方案相匹配的用户标签列表</h3>
       <el-table :data="form.matchedTags"
@@ -60,6 +61,7 @@ export default {
         siteId: 0,
         planId: 0,
         planVer: 0,
+        planSwitched: false,
         matchedTags: [],
         showResult: false
       },
@@ -154,6 +156,7 @@ export default {
           this.form.siteId = response.Data.siteId
           this.form.planId = response.Data.planId
           this.form.planVer = response.Data.planVer
+          this.form.planSwitched = response.Data.planSwitched
           this.form.matchedTags = response.Data.matchedTags
           this.form.showResult = true
         }
