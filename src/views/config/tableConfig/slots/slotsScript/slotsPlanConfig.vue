@@ -193,9 +193,7 @@
           <el-form-item label="下注次数最小值">
             <el-input v-model.number="addFormData.SwitchRule.SpinMin" placeholder=""></el-input>
           </el-form-item>
-          <el-form-item label="下注金额最小值">
-            <money-input v-model="addFormData.SwitchRule.BetMin" />
-          </el-form-item>
+          <money-input v-model="addFormData.SwitchRule.BetMin" />
           <el-form-item label="切换目标方案ID">
             <el-input v-model.number="addFormData.SwitchRule.TargetPlanId" placeholder=""></el-input>
           </el-form-item>
@@ -275,9 +273,7 @@
           <el-form-item label="下注次数最小值">
             <el-input v-model.number="editFormData.SwitchRule.SpinMin" placeholder=""></el-input>
           </el-form-item>
-          <el-form-item label="下注金额最小值">
-            <money-input v-model="editFormData.SwitchRule.BetMin" />
-          </el-form-item>
+          <money-input v-model="editFormData.SwitchRule.BetMin" />
           <el-form-item label="切换目标方案ID">
             <el-input v-model.number="editFormData.SwitchRule.TargetPlanId" placeholder=""></el-input>
           </el-form-item>
