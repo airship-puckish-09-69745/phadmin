@@ -2601,12 +2601,6 @@ export const asyncRoutes = [
               }
             ],
           },
-          {
-            path: 'interfaceWhiteLimit',
-            component: () => import('@/views/matchManage/matchOperations/interfaceLimitWhite.vue'),
-            name: 'interfaceWhiteLimit',
-            meta: { title: '比赛接口白名单', noCache: true }
-          },
 
 
         ]
