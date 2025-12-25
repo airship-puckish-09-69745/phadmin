@@ -185,6 +185,19 @@
         <el-form-item label="流量控制(权重)">
           <el-input v-model.number="addFormData.ScriptRuleDescription.TrafficCtrl" placeholder=" "></el-input>
         </el-form-item>
+        <fieldset>
+          <legend>方案切换配置</legend>
+          <el-form-item label="统计数据天数">
+            <el-input v-model.number="addFormData.SwitchRule.StatDays" placeholder=""></el-input>
+          </el-form-item>
+          <el-form-item label="下注次数最小值">
+            <el-input v-model.number="addFormData.SwitchRule.SpinMin" placeholder=""></el-input>
+          </el-form-item>
+          <money-input v-model="addFormData.SwitchRule.BetMin" />
+          <el-form-item label="切换目标方案ID">
+            <el-input v-model.number="addFormData.SwitchRule.TargetPlanId" placeholder=""></el-input>
+          </el-form-item>
+        </fieldset>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="addDialogVisible = false">取消</el-button>
@@ -252,6 +265,19 @@
         <el-form-item label="流量控制(权重)">
           <el-input v-model.number="editFormData.ScriptRuleDescription.TrafficCtrl" placeholder=" "></el-input>
         </el-form-item>
+        <fieldset>
+          <legend>方案切换配置</legend>
+          <el-form-item label="统计数据天数">
+            <el-input v-model.number="editFormData.SwitchRule.StatDays" placeholder=""></el-input>
+          </el-form-item>
+          <el-form-item label="下注次数最小值">
+            <el-input v-model.number="editFormData.SwitchRule.SpinMin" placeholder=""></el-input>
+          </el-form-item>
+          <money-input v-model="editFormData.SwitchRule.BetMin" />
+          <el-form-item label="切换目标方案ID">
+            <el-input v-model.number="editFormData.SwitchRule.TargetPlanId" placeholder=""></el-input>
+          </el-form-item>
+        </fieldset>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false">取消</el-button>
@@ -702,6 +728,7 @@ import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import {$libShow, ValidateVueItem} from '@/utils/common'
 import BetAmount from '@/components/BetAmount'
+import MoneyInput from '@/components/MoneyInput'
 import ShowTip from '@/components/Tip/showTip.vue'
 import {SubKeyMap} from '@/constants/subkey'
 import {number} from "echarts/lib/export"
@@ -710,7 +737,7 @@ import store from "@/store";
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: {ShowTip, Compare, Publish, BetAmount},
+  components: {ShowTip, Compare, Publish, BetAmount, MoneyInput},
   data() {
     return {
       showItem: {
@@ -749,7 +776,8 @@ export default {
         PlanName: '',
         IsDefault: 0,
         IsDisabled: 0,
-        ScriptRuleDescription: {Platform:'',UserType:0,TrafficCtrl:0,PlatformList:[],UserTagRules:[]}
+        ScriptRuleDescription: {Platform:'',UserType:0,TrafficCtrl:0,PlatformList:[],UserTagRules:[]},
+        SwitchRule: {StatDays: 0, SpinMin: 0, BetMin: 0, TargetPlanId: 0}
       },
       editDialogVisible: false,
       editFormData: {
@@ -757,7 +785,8 @@ export default {
         PlanName: '',
         IsDefault: 0,
         IsDisabled: 0,
-        ScriptRuleDescription: {Platform:'',UserType:0,TrafficCtrl:0,PlatformList:[],UserTagRules:[]}
+        ScriptRuleDescription: {Platform:'',UserType:0,TrafficCtrl:0,PlatformList:[],UserTagRules:[]},
+        SwitchRule: {StatDays: 0, SpinMin: 0, BetMin: 0, TargetPlanId: 0}
       },
       editIndex: -1,
 
@@ -1128,7 +1157,8 @@ export default {
         IsDefault: this.addFormData.IsDefault,
         IsDisabled: this.addFormData.IsDisabled,
         Versions: [],
-        ScriptRule: this.addFormData.ScriptRuleDescription
+        ScriptRule: this.addFormData.ScriptRuleDescription,
+        SwitchRule: this.addFormData.SwitchRule
       };
       this.showItem.Plans.push(newPlan);
       this.addDialogVisible = false;
@@ -1140,7 +1170,8 @@ export default {
         PlanName: row.PlanName,
         IsDefault: row.IsDefault,
         IsDisabled: row.IsDisabled,
-        ScriptRuleDescription: row.ScriptRule
+        ScriptRuleDescription: row.ScriptRule,
+        SwitchRule: row.SwitchRule || this.addFormData.SwitchRule
       };
       this.editIndex = idx
 
@@ -1160,7 +1191,8 @@ export default {
         IsDefault: this.editFormData.IsDefault,
         IsDisabled: this.editFormData.IsDisabled,
         Versions: this.showItem.Plans[this.editIndex].Versions,
-        ScriptRule: this.editFormData.ScriptRuleDescription
+        ScriptRule: this.editFormData.ScriptRuleDescription,
+        SwitchRule: this.editFormData.SwitchRule
       };
       this.showItem.Plans.splice(this.editIndex, 1, updatedPlan);
       this.editDialogVisible = false;
