@@ -71,7 +71,8 @@ export default {
       tidInfos: [],
       CPClientDB: [],
       OtherClientDB: [],
-      AllClientDB: []
+      AllClientDB: [],
+      CPAppIds:[2000002, 1000010, 1000012, 1000013, 1000010, 1000011, 1000014, 1000015, 1000047, 1000048, 2000005, 3000005]
     }
   },
   created() {
@@ -336,13 +337,19 @@ export default {
               if (row.appId === 0) {
                 continue
               }
-              if (row.appId !== 2000005 && row.appId !== 3000005 && row.appId !== 1000014) {
+              if (!this.CPAppIds.includes(row.appId)){
                 continue
               }
+              // if (row.appId !== 2000005 && row.appId !== 3000005 && row.appId !== 1000014) {
+              //   continue
+              // }
             } else if (this.registerChannel === 2) {
-              if (row.appId === 2000005 || row.appId === 3000005 || row.appId === 1000014) {
+              if (this.CPAppIds.includes(row.appId)){
                 continue
               }
+              // if (row.appId === 2000005 || row.appId === 3000005 || row.appId === 1000014) {
+              //   continue
+              // }
             }
             const cheatLog = {
               Uid: row.uid,
@@ -981,7 +988,8 @@ export default {
       }
     },
     formatUserTrustLevel(row) {
-      if (row.AppId === 2000005 || row.AppId === 3000005 || row.AppId === 1000014) {
+      if (this.CPAppIds.includes(row.AppId)){
+      // if (row.AppId === 2000005 || row.AppId === 3000005 || row.AppId === 1000014) {
         row.RegisterChannel = 'CP'
       } else {
         row.RegisterChannel = 'BP'
