@@ -962,10 +962,10 @@ export default {
           ]
         } else {
           apps = [
-            // {
-            //   'ID': 0,
-            //   'Account': '所有'
-            // },
+            {
+              'ID': 0,
+              'Account': '所有'
+            },
             {
               'ID': 1000005,
               'Account': 'BP正式'
