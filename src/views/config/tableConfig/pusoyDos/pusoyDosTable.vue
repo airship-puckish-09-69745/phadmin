@@ -236,8 +236,8 @@
           @sort-change="sortAppChange"
         >
           <el-table-column
-            prop="ID"
-            label="ID"
+            prop="FromID"
+            label="基座ID"
             sortable="custom"
             width="70"
           />
@@ -577,7 +577,7 @@
       </el-form>
     </el-dialog>
   <el-dialog
-      :title="getEditTitle()"
+      :title="getAppEditTitle()"
       :visible.sync="edit.appVisible"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
@@ -824,6 +824,7 @@ function newItem() {
 function newAppItem() {
   return {
     AppId:'',
+    FromID:'',
     CarryLower: '',
     CarryUpper: '',
     HideCarry: '',
@@ -1150,8 +1151,9 @@ export default {
    initAppFormData(bEdit, ID) {
       this.edit.appIsEdit = bEdit
       if (ID) {
-        const _data = this.clientDB.GetDataByID(ID)
+        const _data = this.AppClientDB.GetDataByID(ID)
         if (_data) {
+          this.edit.appItem.FromID = ID
           Object.assign(this.edit.appItem, _data)
           delete this.edit.appItem.AppExt
           // if (bEdit) {
@@ -1180,9 +1182,23 @@ export default {
     },
 
    handleAppCopy(ob) {
-      this.initAppFormData(false, ob.ID)
-      this.edit.appVisible = true
-      console.log("handleAppCopy", this.edit.appItem)
+    console.log(ob)
+     if (ob && ob.ID) {
+        const _data = this.clientDB.GetDataByID(ob.ID)
+        if (_data) {
+          Object.assign(this.edit.appItem, _data)
+          delete this.edit.appItem.AppExt
+          // if (bEdit) {
+          //   // 设置修改之前数据
+          //   this.$refs.compare.SetOldVal(_data)
+          // }
+        }
+        this.edit.appVisible = true
+        console.log("handleAppCopy", this.edit.appItem)
+      }
+    },
+   getAppEditTitle() {
+     return '修改配置' 
     },
 
 
@@ -1234,6 +1250,7 @@ export default {
         }
         let appItemCopy = JSON.parse(JSON.stringify(this.edit.appItem));
         appItemCopy.AppId =  this.edit.editAppId
+        appItemCopy.FromID = ID
         if (!_data.AppExt) {
           _data.AppExt = []
         } 
