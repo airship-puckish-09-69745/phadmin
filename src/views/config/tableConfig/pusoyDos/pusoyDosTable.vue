@@ -12,6 +12,15 @@
         <p>4，是否启用班车要和排队入桌配置菜单保持一致。</p>
       </el-col>
     </el-row>
+  <el-tabs type="border-card">
+    <el-tab-pane label="基座配置">
+      <el-row>
+      <el-col :span="24" style="text-align: center;">
+        <span style="color: red; font-size: 16px;">
+         基座配置-游戏服启动时读取必要参数
+        </span>
+      </el-col>
+    </el-row>
     <el-row style="padding-top: 5px">
       <el-col :span="20">
         <el-button
@@ -143,6 +152,7 @@
                 @click="handleCopy(scope.row)"
               >复制
               </el-button>
+            
               <el-button
                 v-if="scope.row.Status==6"
                 size="mini"
@@ -179,6 +189,21 @@
               </el-button>
             </template>
           </el-table-column>
+         <el-table-column
+           label="应用差异操作"
+            column-key="appOp"
+            width="250"
+            >
+             <template slot-scope="scope">
+              <el-button
+                  type="warning"
+                  size="mini"
+                  @click="handleAppCopy(scope.row)"
+                >应用复制
+                </el-button>
+              </template>
+         </el-table-column>
+
         </el-table-column>
       </el-table>
       <el-col :offset="16" :span="8">
@@ -195,6 +220,180 @@
         </div>
       </el-col>
     </div>
+    </el-tab-pane>
+     <el-tab-pane label="应用差异配置">
+      <div style="padding-top: 10px">
+        <el-table
+          ref="filterTable"
+          :data="AppTableData"
+          stripe
+          border
+          :header-cell-style="libShow.DefaultTableHeadClass"
+          :row-style="{height:'10px'}"
+          :cell-style="libShow.DefaultTableCell"
+          style="width: 100%"
+          @row-click="clickAppData"
+          @sort-change="sortAppChange"
+        >
+          <el-table-column
+            prop="ID"
+            label="ID"
+            sortable="custom"
+            width="70"
+          />
+           <el-table-column
+            prop="AppId"
+            label="AppId"
+            sortable="custom"
+            width="100"
+          />
+
+          <el-table-column
+            prop="Level"
+            label="Level"
+            sortable="custom"
+            width="100"
+          />
+          <el-table-column
+            prop="TableMoney"
+            label="前注"
+            sortable="custom"
+            width="100"
+          >
+            <template slot-scope="scope">
+              {{ formatNumber(scope.row.TableMoney) }}
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="CarryLower"
+            label="携带"
+            width="200"
+          >
+            <template slot-scope="scope">
+              {{ scope.row.CarryLower }}/{{ scope.row.CarryUpper }}
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="HideCarry"
+            label="隐藏目标值"
+            width="100"
+          >
+            <template slot-scope="scope">
+              {{ formatNumber(scope.row.HideCarry || 0) }}
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="ObjectCount"
+            label="桌子数"
+            width="100"
+          />
+          <el-table-column
+            prop="MaxPlayerCount"
+            label="座位数"
+            width="150"
+          >
+            <template slot-scope="scope">
+              {{ formatNumber(scope.row.MaxPlayerCount) }}
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="RemainAlarm"
+            label="剩余警报"
+            width="150"
+          >
+            <template slot-scope="scope">
+              {{ scope.row.RemainAlarm }}
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="PotScore"
+            label="Pot配置"
+            width="150"
+          >
+            <template slot-scope="scope">
+              {{ scope.row.PotScore }}
+            </template>
+          </el-table-column>
+
+          <el-table-column prop="AllocScheme" label="配桌方案" width="150" >
+            <template slot-scope="scope"> {{ getAllocSchemeName(scope.row.AllocScheme ) }} </template>
+            
+          </el-table-column>
+
+          <el-table-column
+            prop="LastModify"
+            label="最近修改"
+            width="150"
+          >
+            <el-table-column
+              prop="Status"
+              label="状态"
+              width="70"
+            >
+              <template slot-scope="scope">
+                {{ statNames[scope.row.Status] }}
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="操作"
+              column-key="op"
+              width="250"
+            >
+              <template slot-scope="scope">
+                <el-button
+                  v-if="scope.row.Status==6"
+                  size="mini"
+                  type="success"
+                  @click="handlePreOn(scope.row)"
+                >预上
+                </el-button>
+                <el-button
+                  v-if="scope.row.Status==7"
+                  size="mini"
+                  type="success"
+                  @click="handleOn(scope.row)"
+                >上架
+                </el-button>
+                <el-button
+                  v-if="scope.row.Status==2"
+                  size="mini"
+                  type="warning"
+                  @click="handlePreOff(scope.row)"
+                >预下
+                </el-button>
+                <el-button
+                  v-if="scope.row.Status==6"
+                  size="mini"
+                  icon="el-icon-delete"
+                  @click="handleDelete(scope.row)"
+                />
+                <el-button
+                  v-if="scope.row.Status==8"
+                  size="mini"
+                  type="danger"
+                  @click="handleOffline(scope.row)"
+                >下架
+                </el-button>
+              </template>
+            </el-table-column>
+          </el-table-column>
+        </el-table>
+        <el-col :offset="16" :span="8">
+          <div class="block">
+            <el-pagination
+              :current-page="AppClientDB.GetPage().GetCurrentPage()"
+              :page-sizes="[10, 20, 30, 40]"
+              :page-size="AppClientDB.GetPage().GetPageNum()"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="AppClientDB.GetPage().GetTotalCount()"
+              @size-change="handleAppSizeChange"
+              @current-change="handleAppCurrentChange"
+            />
+          </div>
+        </el-col>
+      </div>
+     </el-tab-pane>
+    </el-tabs>
     <el-dialog
       :title="getEditTitle()"
       :visible.sync="edit.visible"
@@ -377,6 +576,200 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+  <el-dialog
+      :title="getEditTitle()"
+      :visible.sync="edit.appVisible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-form ref="edit" :model="edit" label-width="150px" size="small">
+        <el-row v-if="!edit.appIsEdit">
+         <el-col :span="11">
+           <el-form-item label="请选择应用：" :required="true" prop="editAppId">
+            <el-select v-model="edit.editAppId" filterable placeholder="请选择应用id" size="small" style="margin-right: 12px; width: 300px">
+              <el-option
+                v-for="appId in APPID_OPTIONS"
+                :key="appId.value"
+                :label="`${appId.label}-${appId.value}`"
+                :value="appId.value"
+              />
+            </el-select>
+           </el-form-item>
+         </el-col>
+      </el-row>
+
+       <el-row v-if="edit.appIsEdit">
+         <el-col :span="11">
+           <el-form-item label="应用：" :required="true" prop="appItem.AppId">
+            <el-input v-model.number="edit.appItem.AppId" placeholder="请输入"  :disabled="edit.appIsEdit"/>
+           </el-form-item>
+         </el-col>
+      </el-row>
+
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="底注：" :required="true" prop="appItem.TableMoney">
+              <el-select v-model="edit.appItem.TableMoney" placeholder="请选择" :disabled="edit.appIsEdit">
+                <el-option label="0.1" :value="0.1" />
+                <el-option label="0.3" :value="0.3" />
+                <el-option label="0.5" :value="0.5" />
+                <el-option label="1" :value="1" />
+                <el-option label="3" :value="3" />
+                <el-option label="5" :value="5" />
+                <el-option label="10" :value="10" />
+                <el-option label="20" :value="20" />
+                <el-option label="50" :value="50" />
+                <el-option label="100" :value="100" />
+                <el-option label="200" :value="200" />
+                <el-option label="400" :value="400" />
+                <el-option label="500" :value="500" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="9">
+            <el-form-item
+              label="隐藏目标值："
+              :required="true"
+              prop="appItem.HideCarry"
+              :rules="dataRule(true,{type:'n',range:'0'})"
+            >
+              <el-input v-model="edit.appItem.HideCarry" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="2">
+            <el-tooltip class="appItem" effect="dark" content="如果有值，且玩家携带达到此值，则隐藏盖场次" placement="left-start">
+              <i class="el-icon-info" />
+            </el-tooltip>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="11">
+            <el-form-item
+              label="最小携带："
+              :required="true"
+              prop="appItem.CarryLower"
+              :rules="dataRule(true,{type:'n',range:'0'})"
+            >
+              <el-input v-model.number="edit.appItem.CarryLower" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item
+              label="最大携带(练习场初始资金)："
+              :required="true"
+              prop="appItem.CarryUpper"
+              :rules="dataRule(true,{type:'n',range:'1'})"
+            >
+              <el-input v-model.number="edit.appItem.CarryUpper" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="9">
+            <el-form-item
+              label="桌子数量："
+              :required="true"
+              prop="appItem.ObjectCount"
+              :rules="dataRule(true,{type:'n',range:'1'})"
+            >
+              <el-input v-model.number="edit.appItem.ObjectCount" placeholder="桌子数量" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="2">
+            <el-tooltip class="appItem" effect="dark" content="修改需要重启服务器" placement="left-start">
+              <i class="el-icon-info" />
+            </el-tooltip>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="11">
+            <el-form-item
+              label="操作时长(秒)："
+              :required="true"
+              prop="appItem.ActionSeconds"
+              :rules="dataRule(true,{type:'n',range:'5'})"
+            >
+              <el-input v-model.number="edit.appItem.ActionSeconds" placeholder="操作时长" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="9">
+            <el-form-item
+              label="抽水费率："
+              :required="true"
+              prop="appItem.FlowRate"
+              :rules="dataRule(true,{type:'f',range:'0'})"
+            >
+              <el-input v-model="edit.appItem.FlowRate" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="2">
+            <el-tooltip class="appItem" effect="dark" content="抽3%，则填写0.03" placement="left-start">
+              <i class="el-icon-info" />
+            </el-tooltip>
+          </el-col>
+          <el-col :span="11">
+            <game-level v-model="edit.appItem.Level" />
+          </el-col>
+
+        </el-row>
+
+        <el-row>
+          <el-col :span="11">
+            <el-form-item
+              label="最小玩牌金额："
+              :required="true"
+              prop="appItem.MinPlayMoney"
+              :rules="dataRule(true,{type:'n',range:'0'})"
+            >
+              <el-input v-model.number="edit.appItem.MinPlayMoney" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item
+              label="剩余警报："
+              prop="appItem.WatchTimesMax"
+              :rules="dataRule(true,{type:'n',range:'0'})"
+            >
+              <el-input v-model.number="edit.appItem.RemainAlarm" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="11">
+            <el-form-item
+              label="pot配置："
+              prop="appItem.PotScore"
+              :rules="dataRule(true,{type:'n',range:'0'})"
+            >
+              <el-input v-model.number="edit.appItem.PotScore" />
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="11">
+            <el-form-item label="配桌方案：" :required="true">
+              <el-radio-group v-model.number="edit.appItem.AllocScheme">
+                <el-radio :label="0">常规</el-radio>
+                <el-radio :label="1">班车</el-radio>
+                <el-radio :label="2">信誉分</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-form-item>
+           <el-row>
+            <el-col :span="12" :offset="10">
+              <el-button type="primary" size="medium" @click="saveApp">保存应用</el-button>
+            </el-col>
+          </el-row>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
     <!--对比组件-->
     <compare ref="compare" :attr-names="AttrNames" />
   </div>
@@ -392,11 +785,45 @@ import Publish from '@/components/Publish'
 import GameLevel from '@/components/GameLevel'
 import MoneyInput from '@/components/MoneyInput'
 import emojPrice from '@/views/config/baseConfig/emojPrice.vue'
-
+import { APPID_OPTIONS } from '@/utils/options'
 const filterMap = {}
 
 function newItem() {
   return {
+    CarryLower: '',
+    CarryUpper: '',
+    HideCarry: '',
+    TableMoney: '',
+    JokerNum: 0,
+    MaxPlayerCount: 4,
+    ObjectCount: '',
+    FlowRate: '',
+    ActionSeconds: '',
+    WatchTimesMax: 0,
+    IsPractice: 0,
+    Level: 1,
+
+    PlayingMul: 0,
+    PlayingRandMin: 0,
+    PlayingRandMax: 0,
+    DefaultWinRate: 50,
+    LuckyLevelLimitMax: 0,
+    LuckyLevelLimitMoney: 0,
+    MinPlayMoney: 0,
+    Anticheating: 0,
+    RoomLevel: 0,
+    RemainAlarm: 0,
+    PotScore: 0,
+    CreditScoreMode:0,
+    PlayMode: 1,
+    AllocScheme:0,
+    AppExt:[],
+  }
+}
+
+function newAppItem() {
+  return {
+    AppId:'',
     CarryLower: '',
     CarryUpper: '',
     HideCarry: '',
@@ -431,9 +858,12 @@ export default {
   components: { Compare, Publish, GameLevel, MoneyInput },
   data() {
     return {
+      APPID_OPTIONS,
       tableData: [],
+      AppTableData: [],
       statNames: { 2: '上架', 6: '下架', 7: '预上架', 8: '预下架' },
       clientDB: new ClientTableData([], 1, filterMap),
+      AppClientDB: new ClientTableData([], 1, filterMap),
       search: '',
       libShow: $libShow,
       env: 'test',
@@ -442,7 +872,11 @@ export default {
       edit: {
         visible: false,
         item: newItem(),
-        isEdit: false
+        isEdit: false,
+        appVisible: false,
+        appIsEdit: false,
+        editAppId: 0,
+        appItem: newAppItem(),
       },
 
       AttrNames: {
@@ -508,7 +942,7 @@ export default {
     },
     // 操作类函数
     clickData(row, column, event) {
-      if (column.columnKey !== 'op') {
+      if (column.columnKey !== 'op' && column.columnKey !== 'appOp') {
         this.initFormData(true, row.ID)
         this.edit.visible = true
       }
@@ -518,10 +952,13 @@ export default {
       this.edit.item = newItem()
       this.edit.isEdit = false
       this.edit.visible = true
+      this.edit.appVisible = false
+      this.edit.appIsEdit = false 
     },
     handleCopy(ob) {
       this.initFormData(false, ob.ID)
       this.edit.visible = true
+       this.edit.appVisible = false
     },
     getList() {
       request({
@@ -532,10 +969,14 @@ export default {
         }
       }).then(response => {
         if (response.RetCode === 0) {
+          console.log("response.Data",response.Data)
+          const deepCopy = JSON.parse(JSON.stringify(response.Data));
           const objs = response.Data || []
           console.log('objs：', objs)
           this.clientDB = new ClientTableData(this.libMoney.TransForShow(objs), 10, filterMap, 'ID', -1)
           this.handleCurrentChange(1)
+          this.initAppFromObj( deepCopy)
+        
         }
       })
     },
@@ -583,8 +1024,12 @@ export default {
     },
     //* * ********************** 修改/添加弹框相关 *****************
     getEditTitle() {
+      if (this.edit.appVisible) {
+        return "新增应用差异配置"
+      }
       return this.edit.isEdit ? '修改配置' : '新增配置'
     },
+
     initFormData(bEdit, ID) {
       this.edit.isEdit = bEdit
       if (ID) {
@@ -662,6 +1107,144 @@ export default {
       }
       this.edit.visible = false
     },
+
+
+
+    initAppFromObj(objs) {
+      let appExt = []
+      for (let i = 0; i < objs.length; i++) {
+        if (objs[i].AppExt) {
+          appExt.push(objs[i].AppExt)
+        }
+      }
+      this.AppClientDB = new ClientTableData(this.libMoney.TransForShow(appExt), 10, filterMap, 'ID', -1)
+
+      this.handleAppCurrentChange(1);
+    },
+    
+    createAppSave(postData) {
+      this.AppClientDB.AddData(postData)
+      this.refreshAppShow()
+      // request({
+      //   url: '/pusoydostable/create',
+      //   method: 'post',
+      //   data: postData
+      // }).then(response => {
+      //   if (response.RetCode === 0) {
+      //     this.edit.appItem.ID = response.Data.ID
+      //     this.clientDB.AddData(this.edit.appItem)
+      //     this.refreshShow()
+      //     Message.success('保存成功！')
+      //   }
+      // })
+    },
+      // 操作类函数
+    clickAppData(row, column, event) {
+      if (column.columnKey !== 'op') {
+        this.initAppFormData(true, row.ID)
+        this.edit.appVisible = true
+      }
+    },
+
+
+   initAppFormData(bEdit, ID) {
+      this.edit.appIsEdit = bEdit
+      if (ID) {
+        const _data = this.clientDB.GetDataByID(ID)
+        if (_data) {
+          Object.assign(this.edit.appItem, _data)
+          delete this.edit.appItem.AppExt
+          // if (bEdit) {
+          //   // 设置修改之前数据
+          //   this.$refs.compare.SetOldVal(_data)
+          // }
+        }
+      }
+    },
+   // 分页处理
+    refreshAppShow() {
+      this.AppTableData = this.AppClientDB.GetCurrentPageData()
+    },
+    handleAppSizeChange(val) {
+      this.AppClientDB.GetPage().SetPageNum(val)
+      this.refreshAppShow()
+    },
+    handleAppCurrentChange(val) {
+      this.AppClientDB.GetPage().SetPageNo(val)
+      this.refreshAppShow()
+    },
+
+    sortAppChange(ob) {
+      this.AppClientDB.SortByProp(ob.prop, ob.order)
+      this.refreshAppShow()
+    },
+
+   handleAppCopy(ob) {
+      this.initAppFormData(false, ob.ID)
+      this.edit.appVisible = true
+      console.log("handleAppCopy", this.edit.appItem)
+    },
+
+
+    checkAppData() {
+      let ID = this.edit.appItem.ID
+      const _data = this.clientDB.GetDataByID(ID)
+      if (!_data) {
+        // Object.assign(this.edit.item, _data)
+        // if (bEdit) {
+        //   // 设置修改之前数据
+        //   this.$refs.compare.SetOldVal(_data)
+        // }
+        return "配置新增失败"
+      }
+      if (this.edit.editAppId == 0) {
+          Message.warning('应用已存在，请检查数值正确性！')
+        return false
+      }
+
+      if (this.edit.appItem.CarryLower > this.edit.appItem.CarryUpper) {
+        Message.warning('下限不能大于上限，请检查数值正确性！')
+        return false
+      }
+      if (this.edit.appItem.MinPlayMoney > this.edit.appItem.CarryLower) {
+        Message.error('【最小玩牌金额】必须小于等于【最小携带】，请检查数值正确性！')
+        return false
+      }
+
+
+      console.log("checkAppData", _data)
+      if (_data.AppExt) {
+
+        for (let i = 0; i < _data.AppExt.length; i++) {
+          const tmpItem = _data.AppExt[i]
+          if (this.edit.editAppId == tmpItem.AppId) {
+            Message.warning('应用已存在，请检查数值正确性！')
+            return false
+          }
+        }
+      }
+      return true
+    },
+    saveApp() {
+        if (!this.checkAppData()) return 
+        let ID = this.edit.appItem.ID
+        let _data = this.clientDB.GetDataByID(ID)
+        if (!_data) {
+          return "配置新增失败"
+        }
+        let appItemCopy = JSON.parse(JSON.stringify(this.edit.appItem));
+        appItemCopy.AppId =  this.edit.editAppId
+        if (!_data.AppExt) {
+          _data.AppExt = []
+        } 
+        _data.AppExt.push(appItemCopy)
+
+        this.createAppSave(appItemCopy)
+        this.edit.appVisible = false
+    },
+   
+
+
     getAllocSchemeName(plan){
       if(plan==1) {
         return "班车"
