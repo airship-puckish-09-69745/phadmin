@@ -885,7 +885,7 @@ export default {
             }
           })
           this.subMaxLobbyVersion = maxVersion
-          this.clientDB = new ClientTableData(objs, 100, filterMap, 'ID', -1)
+          this.clientDB = new ClientTableData(objs, 200, filterMap, 'ID', -1)
           this.handleCurrentChange(1)
           this.historyMap = response.Data.HistoryMap || {}
         }

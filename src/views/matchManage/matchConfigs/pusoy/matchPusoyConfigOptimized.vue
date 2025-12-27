@@ -44,6 +44,7 @@
         @copy-all="handleCopyAll"
         @expire-all="handleExpireAll"
         @delete-all-off="handleDeleteAllOff"
+        @sort-change="handleSortChange"
       />
 
       <!-- 编辑对话框 -->

@@ -128,6 +128,9 @@
     </el-form-item>
     <el-form-item v-if="editForm.data.opentMatchType==2" label="提前显示时间(秒)：" :required="true">
       <el-input v-model.number="editForm.data.preShowSeconds" style="width: 200px;" placeholder="请填写提前显示时间" />
+      <span v-if="(editForm.data.opentMatchType === 2)&&(editForm.data.repeatType === 0 || editForm.data.repeatType === 1) && getCalculatedStartTime()" style="color: #409eff; margin-left: 10px;">
+              提前显示时间: {{ getCalculatedStartTime() }}
+      </span>
     </el-form-item>
     <el-form-item v-if="editForm.data.opentMatchType==1" label="创建时间(秒)" :required="true">
       <el-input v-model.number="editForm.data.preShowSeconds" style="width: 200px;" placeholder="请填写创建时间" />
@@ -145,7 +148,7 @@
 </template>
 
 <script>
-import { $libShow } from '@/utils/common'
+import { $libShow, $libDate } from '@/utils/common'
 
 export default {
   name: 'LoopConfig',
@@ -219,7 +222,43 @@ export default {
           this.editForm.loopDetail.loopData[i].index = i + 1
         }
       }
-    }
+    },
+    getCalculatedStartTime() {
+      try {
+        let baseTime = null
+        // repeatType = 0: 单场，使用 onceTime[0]
+        if (this.editForm.data.repeatType === 0) {
+          if (this.editForm.loopDetail.onceTime && this.editForm.loopDetail.onceTime[0]) {
+            baseTime = new Date(this.editForm.loopDetail.onceTime[0])
+          }
+        } 
+        // repeatType = 1: 单天单场循环，使用 loopStartDate + single.stime
+        else if (this.editForm.data.repeatType === 1) {
+          if (this.editForm.loopDetail.loopStartDate && this.editForm.loopDetail.single.stime) {
+            const date = new Date(this.editForm.loopDetail.loopStartDate)
+            const timeParts = this.editForm.loopDetail.single.stime.split(':')
+            if (timeParts.length >= 2) {
+              date.setHours(parseInt(timeParts[0]), parseInt(timeParts[1]), parseInt(timeParts[2] || 0))
+              baseTime = date
+            }
+          }
+        }
+        
+        if (!baseTime) {
+          return ''
+        }
+        
+        // 減去提前显示时间
+        const preShowSeconds = this.editForm.data.preShowSeconds || 0
+        const calculatedTimestamp = Math.floor(baseTime.getTime() / 1000) - preShowSeconds
+        
+        // 使用項目中已有的時間格式化方法
+        return $libDate.FormateSecondStr(calculatedTimestamp, 2)
+      } catch (e) {
+        console.error('计算开赛时间错误:', e)
+        return ''
+      }
+    },
   }
 }
 </script>

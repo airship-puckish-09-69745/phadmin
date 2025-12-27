@@ -36,6 +36,8 @@
               <el-option label="GrandAceMars" :value="155" />
               <el-option label="GrandAce" :value="154" />
               <el-option label="GrandAceMars" :value="155" />
+              <el-option label="CrazyAce" :value="156" />
+              <el-option label="CrazyAceMars" :value="157" />
               <el-option label="SharkKingdom" :value="158" />
               <el-option label="SharkKingdomMars" :value="159" />
               <el-option label="GigaAce" :value="160" />
@@ -98,11 +100,14 @@
               <el-option label="227:FortuneWheel Mars" :value="227" />
               <el-option label="230:PahiyasWins" :value="230" />
               <el-option label="231:PahiyasWins Mars" :value="231" />
-              <el-option label="232:MafiaMayhem" :value="232" />
+              <el-option label="232:MafiaWars" :value="232" />
+              <el-option label="234:FortuneTree" :value="234" />
+              <el-option label="235:FortuneTreeMars" :value="235" />
               <el-option label="236:PacquiaoFortune" :value="236" />
               <el-option label="237:PacquiaoFortuneMars" :value="237" />
               <el-option label="238:MasskaraFortune" :value="238" />
               <el-option label="239:MasskaraFortuneMars" :value="239" />
+              <el-option label="1236:PacquiaoFortunePlayNow" :value="1236" />
             </el-select>
           </el-form-item>
 
@@ -184,12 +189,25 @@
             <el-input v-model.number="topWinsLimit" />
           </el-form-item>
 
-          <el-form-item label="是否启用新版剧本">
-            <el-select v-model="slotsData.EnableScriptV3" disabled>
-              <el-option label="启用" :value="true" />
-              <el-option label="禁用" :value="false" />
-            </el-select>
-          </el-form-item>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="是否启用新版剧本">
+                <el-select v-model="slotsData.EnableScriptV3" disabled>
+                  <el-option label="启用" :value="true" />
+                  <el-option label="禁用" :value="false" />
+                </el-select>
+              </el-form-item>
+            </el-col>
+
+            <el-col :span="12">
+              <el-form-item label="是否关闭购买免费">
+                <el-select v-model="slotsData.IsCloseBuyFree" disabled>
+                  <el-option label="是" :value="true" />
+                  <el-option label="否" :value="false" />
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
 
           <el-form-item>
             <el-button type="success" @click="submitFrm">保存</el-button>

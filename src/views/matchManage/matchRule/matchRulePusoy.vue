@@ -1091,10 +1091,11 @@ export default {
             }
 
             for (let j = 0; j < strikeOutStage.system_strike_out.disuse_score_growth.disuse_score_grow_detail.length; j++) {
-              if (strikeOutStage.system_strike_out.disuse_score_growth.disuse_score_grow_detail[j].disuse_score === 0) {
-                this.errmsg('打立出局阶段的淘汰分不能为0！')
-                return false
-              }
+              //pusoy 支持淘汰分为0
+              // if (strikeOutStage.system_strike_out.disuse_score_growth.disuse_score_grow_detail[j].disuse_score === 0) {
+              //   this.errmsg('打立出局阶段的淘汰分不能为0！')
+              //   return false
+              // }
               if (strikeOutStage.system_strike_out.disuse_score_growth.type === 3) {
                 if (strikeOutStage.system_strike_out.disuse_score_growth.disuse_score_grow_detail[j].duration <= 0) {
                   this.errmsg('打立出局阶段的淘汰分增长间隔无效！')

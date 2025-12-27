@@ -373,6 +373,7 @@ export default {
         'Data.BigPrizeCfg.HitPerMillion': ' 中奖概率',
         'Data.BigPrizeCfg.OddsCfg': ' 大奖中奖倍数配置',
         'Data.BigPrizeGroups': ' 用户群大奖配置',
+        'Data.WarmUpCfg': '大奖预热配置',
         types: {
           Data: 'jsonString' // 整个数据项的类型
         }
@@ -484,8 +485,11 @@ export default {
         '212': 'pirateship',
         '214': 'pumpkincash',
         '224': 'supermahjong',
-        '232': 'mafiamayhem',
-        '236': 'pacquiaofortune'
+        '232': 'mafiawars',
+        '236': 'pacquiaofortune',
+        '1236': 'pacquiaofortuneplaynow',
+        '218': 'wrathofzeus2',
+        '228': 'jokerace'
       }
     }
   },
@@ -603,6 +607,16 @@ export default {
             if (typeof item['BigPrizeGroups'] == 'undefined') {
               item['BigPrizeGroups'] = []
             }
+            if (typeof item['WarmUpCfg'] == 'undefined') {
+              item['WarmUpCfg'] = {
+                Scatter1Rate: 0,
+                Scatter2Rate: 0,
+                Scatter3Rate: 0,
+                MultiRate: 0,
+                MaxRate: 0,
+                WarmUpEnabled: false
+              }
+            }
             Object.assign(this.item, item)
             for (const itemElement of item.BetOddsPlans) {
               let str = ''
@@ -620,6 +634,18 @@ export default {
 
     setData() {
       if (!ValidateVueItem(this.$refs['item'])) return false
+      if (this.item.BigPrizeCfg.TaxPerThousand < 0 || this.item.BigPrizeCfg.TaxPerThousand > 1000) {
+        Message.error('下注总金额抽水值必须在 0~1000 之间!')
+        return false
+      }
+      if (this.item.BigPrizeCfg.HitPerMillion < 0 || this.item.BigPrizeCfg.HitPerMillion > 1000000) {
+        Message.error('中奖概率值必须在 0~1000000 之间!')
+        return false
+      }
+      if (this.item.BigPrizeCfg.HitSteps < 0 || this.item.BigPrizeCfg.HitSteps > 100000000) {
+        Message.error('中奖最大间隔值必须在 0~100000000 之间!')
+        return false
+      }
       if (!this.checkBigPrizeGroup()) {
         return false
       }

@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-row>
       <el-form :model="item" label-width="80px" :inline="true" size="small">
-        <el-form-item v-if="this.env == 'test'" v-model="appId" label="App：" :required="true" label-width="80px">
+        <el-form-item v-model="appId" label="App：" :required="true" label-width="80px">
           <el-select v-model="appId" placeholder="请选择" size="mini">
             <el-option label="所有App" :value="0" />
             <el-option
@@ -951,15 +951,16 @@ export default {
           Uid: this.item.Uid,
           IsVup: this.isVup ? 1 : 0,
           Time: $libDate.SelectTimeToIndia(this.item.date) / 1000,
-          Gid: this.gid
+          Gid: this.gid,
+          AppId: this.appId
         }
       }).then(response => {
         if (response.RetCode === 0) {
           let objs = response.Data || []
           if (objs.length === 0 || objs == 'no Data') {
             Message.success('查询结果为空')
-            loading.close()
-            return
+            // loading.close()
+            // return
           }
           objs = $this.libMoney.TransForShow(objs)
           $this.clientDB = new ClientTableData(objs, this.clientDB.GetPage().GetPageNum(), filterMap, 'ID', -1)

@@ -275,7 +275,7 @@ export default {
   data() {
     return {
       tableData: [],
-      statNames: { 0: '正常', 2: '上架', 6: '上架', 1: '关闭', 7: '预上架', 8: '预下架' },
+      statNames: { 0: '正常', 2: '上架', 6: '下架', 1: '关闭', 7: '预上架', 8: '预下架' },
       showNames: { 0: '不显示', 1: '显示' },
       clientDB: new ClientTableData([], 1, filterMap),
       search: '',
@@ -419,7 +419,7 @@ export default {
       this.changeStatus(ob.ID, 8, '您确定要将记录下架吗？下架的记录将在发布后从线上消失。')
     },
     handleOffline(ob) {
-      this.changeStatus(ob.ID, 6, '您确定要将记录展示到数据中心吗？')
+      this.changeStatus(ob.ID, 6, '您确定要将记录下架吗？下架的记录将在发布后从线上消失。')
     },
     handShowDatacenter(ob) {
       this.changeShowDatacenter(ob.ID, 1, '您确定要将记录展示到数据中心吗？')

@@ -437,6 +437,7 @@ export default {
       // 同步到测试
       if (this.env === 'test') {
         warn = 'WarningJustForTest'
+        //warn = 'WarningDev'
         console.log('开发阶段只通知开发服')
         return
       }
