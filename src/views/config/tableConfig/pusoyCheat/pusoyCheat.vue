@@ -61,6 +61,9 @@ export default {
               $this.IsAutoWhite = $this.CheatCfg.IsAutoWhite // 是否开启自动洗白
             }
             this.NearIdCfg = this.CheatCfg.NearID || []
+            for (let i = 0; i < this.NearIdCfg.length; i++) {
+              this.NearIdCfg[i].TableMoney /= 1000
+            }
             const old = JSON.parse(response.Data.Data)
             // 设置修改之前数据
             $this.$refs.compare.SetOldVal(old)
@@ -82,7 +85,13 @@ export default {
       this.CheatCfg.Reduce = parseInt(this.CheatCfg.Reduce)
       this.CheatCfg.AutoWhite = parseInt(this.CheatCfg.AutoWhite)
       this.CheatCfg.IsAutoWhite = this.IsAutoWhite
-      this.CheatCfg.NearID = this.NearIdCfg
+      this.CheatCfg.NearID = []
+      for (let i = 0; i < this.NearIdCfg.length; i++) {
+        this.CheatCfg.NearID.push({
+          TableMoney: this.NearIdCfg[i].TableMoney * 1000,
+          NearId: this.NearIdCfg[i].NearId
+        })
+      }
       Object.assign(cpy, this.CheatCfg)
       return JSON.stringify(cpy)
     },
@@ -111,7 +120,7 @@ export default {
     },
     addNearId() {
       this.NearIdCfg.push({
-        TableMoney: 1000,
+        TableMoney: 1,
         NearId: []
       })
       console.log(this.NearIdCfg)

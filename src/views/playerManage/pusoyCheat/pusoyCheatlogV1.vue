@@ -251,7 +251,8 @@ export default {
                       Gid: cheatRow.Gid,
                       TableMoney: cheatRow.TableMoney,
                       CheatInfos: this.getCheatInfo(cheatRow.CheatType),
-                      Uid:cheatRow.Uid
+                      Uid:cheatRow.Uid,
+                      TableCheatScore: cheatRow.TableCheatScore ? cheatRow.TableCheatScore : []
                     }
                     if (cheatTypeMap.has(cheatRow.CheatType)){
                       cheatTypeMap.set(cheatRow.CheatType, cheatTypeMap.get(cheatRow.CheatType) + 1)
@@ -403,10 +404,26 @@ export default {
       }
     },
     formatOtherUids(row) {
+      // console.log(ttt)
       if (!row.OtherUid || !row.CheatOtherUids) {
         return '----'
       }
       const strArray = []
+      if (row.TableCheatScore.length !== 0){
+        for (let i = 0; i < row.TableCheatScore.length; i++) {
+          const uid = row.TableCheatScore[i].uid
+          let str =''
+          if (row.CheatOtherUids.includes(uid)) {
+            str = '<span style="color: red">' + uid + '(' + row.TableCheatScore[i].oldCheatScore + ',' + row.TableCheatScore[i].newCheatScore + ')</span>'
+          } else {
+            str = '<span >' + uid + '(' + row.TableCheatScore[i].oldCheatScore + ',' + row.TableCheatScore[i].newCheatScore + ')</span>'
+          }
+
+          strArray.push(str)
+        }
+        return strArray.join()
+      }
+
       for (let i = 0; i < row.OtherUid.length; i++) {
         const uid = row.OtherUid[i]
         if (row.CheatOtherUids.includes(uid)) {

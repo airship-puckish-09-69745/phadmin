@@ -67,9 +67,9 @@
             </el-input>
           </el-form-item>
 
-          <el-form-item label="普通bonus/免费权重">
+          <el-form-item label="普通进入bonus/免费权重">
             <el-input v-model="cfg.NormalEnterSpecialWeight" placeholder="请输入内容,如2,4">
-              <template slot="append">用 , 连接。bonus、免费(超过"进入特殊模式的最小赔率"必中其中之一)</template>
+              <template slot="append">用 , 连接。</template>
             </el-input>
           </el-form-item>
 

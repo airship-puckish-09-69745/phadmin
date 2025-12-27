@@ -849,7 +849,7 @@ export default {
         { 'value': 'BP', 'label': 'BP' },
         { 'value': 'AP', 'label': 'AP' },
         { 'value': 'GP', 'label': 'GP' },
-        { 'value': 'PG', 'label': 'PG' },
+        // { 'value': 'PG', 'label': 'PG' }, 2025-12-22去除PG
         { 'value': 'Dev', 'label': 'Dev' }
       ],
       editOtherGameZone: {
@@ -1741,7 +1741,7 @@ export default {
         if (data.Index === id) {
           if (data.AppId == null) {
             data.AppId = 1000002
-            data.ChannelId = ['BP', 'AP', 'GP', 'PG', 'Dev']
+            data.ChannelId = ['BP', 'AP', 'GP', 'Dev']
           }
           if (Array.isArray(data.AppId)) {
             data.AppId = 1000002

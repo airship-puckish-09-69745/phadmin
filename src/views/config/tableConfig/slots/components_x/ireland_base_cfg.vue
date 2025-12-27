@@ -36,6 +36,8 @@
               <el-option label="GrandAceMars" :value="155" />
               <el-option label="GrandAce" :value="154" />
               <el-option label="GrandAceMars" :value="155" />
+              <el-option label="CrazyAce" :value="156" />
+              <el-option label="CrazyAceMars" :value="157" />
               <el-option label="SharkKingdom" :value="158" />
               <el-option label="SharkKingdomMars" :value="159" />
               <el-option label="GigaAce" :value="160" />
@@ -187,12 +189,25 @@
             <el-input v-model.number="topWinsLimit" />
           </el-form-item>
 
-          <el-form-item label="是否启用新版剧本">
-            <el-select v-model="slotsData.EnableScriptV3" disabled>
-              <el-option label="启用" :value="true" />
-              <el-option label="禁用" :value="false" />
-            </el-select>
-          </el-form-item>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="是否启用新版剧本">
+                <el-select v-model="slotsData.EnableScriptV3" disabled>
+                  <el-option label="启用" :value="true" />
+                  <el-option label="禁用" :value="false" />
+                </el-select>
+              </el-form-item>
+            </el-col>
+
+            <el-col :span="12">
+              <el-form-item label="是否关闭购买免费">
+                <el-select v-model="slotsData.IsCloseBuyFree" disabled>
+                  <el-option label="是" :value="true" />
+                  <el-option label="否" :value="false" />
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
 
           <el-form-item>
             <el-button type="success" @click="submitFrm">保存</el-button>
