@@ -778,10 +778,6 @@ export default {
           value: 1000005,
           label: '正式1000005'
         },
-        {
-          value: 1000006,
-          label: 'BingoPlus测试1000006'
-        },
       ],
       // 奖励类型
       rewardTypes: [
