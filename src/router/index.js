@@ -2227,7 +2227,7 @@ export const asyncRoutes = [
           }
         ]
       },
-      {
+      /*{
         path: 'airdropConfig',
         component: () => import('@/views/empty'),
         name: 'airdropConfig',
@@ -2240,8 +2240,8 @@ export const asyncRoutes = [
             meta: { title: '空投活动配置', noCache: true }
           }
         ]
-      },
-      {
+      },*/
+      /*{
         path: 'redBagConfig',
         component: () => import('@/views/empty'),
         name: 'redBagConfig',
@@ -2254,7 +2254,7 @@ export const asyncRoutes = [
             meta: { title: '红包雨活动配置', noCache: true }
           }
         ]
-      },
+      },*/
       {
         path: 'activityMap',
         component: () => import('@/views/empty'),
@@ -2295,12 +2295,12 @@ export const asyncRoutes = [
         name: 'kingOfPot',
         meta: { title: 'KingOfPot配置', noCache: true }
       },*/
-      {
+      /*{
         path: 'sevenDayTreasureVault',
         component: () => import('@/views/config/tableConfig/activity/sevenDayTreasureVaultConfig.vue'),
         name: 'sevenDayTreasureVault',
         meta: { title: '7日留存活动配置', noCache: true }
-      },
+      },*/
       {
         path: 'slotsRankConfig',
         component: () => import('@/views/config/tableConfig/activity/slotsRankCfg.vue'),
