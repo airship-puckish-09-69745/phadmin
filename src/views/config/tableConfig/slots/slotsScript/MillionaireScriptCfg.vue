@@ -634,6 +634,18 @@ export default {
 
     setData() {
       if (!ValidateVueItem(this.$refs['item'])) return false
+      if (this.item.BigPrizeCfg.TaxPerThousand < 0 || this.item.BigPrizeCfg.TaxPerThousand > 1000) {
+        Message.error('下注总金额抽水值必须在 0~1000 之间!')
+        return false
+      }
+      if (this.item.BigPrizeCfg.HitPerMillion < 0 || this.item.BigPrizeCfg.HitPerMillion > 1000000) {
+        Message.error('中奖概率值必须在 0~1000000 之间!')
+        return false
+      }
+      if (this.item.BigPrizeCfg.HitSteps < 0 || this.item.BigPrizeCfg.HitSteps > 100000000) {
+        Message.error('中奖最大间隔值必须在 0~100000000 之间!')
+        return false
+      }
       if (!this.checkBigPrizeGroup()) {
         return false
       }

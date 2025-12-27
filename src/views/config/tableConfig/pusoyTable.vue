@@ -433,9 +433,19 @@
               />
             </el-form-item>
           </el-col>
+          <el-col :span="11">
+            <el-form-item
+              label="4真人可以同桌："
+              :required="true"
+            >
+              <el-switch
+                v-model="edit.item.AllowAllRealPlayer"
+                :active-value="1"
+                :inactive-value="0"
+              />
+            </el-form-item>
+          </el-col>
         </el-row>
-
-
 
         <el-form-item>
           <el-row>
@@ -502,7 +512,8 @@ function newItem() {
     WaitUserEnterTimes: 0,
     AllocScheme: 0,
     AutoEnterRoomCount: 0,
-    IsOnlyShowNewUser:0,
+    IsOnlyShowNewUser: 0,
+    AllowAllRealPlayer: 1,
   }
 }
 
@@ -561,6 +572,7 @@ export default {
         WaitUserEnterTimes: '匹配玩家入桌等待时间',
         AutoEnterRoomCount: '自动补陪玩机器人人数要求',
         IsOnlyShowNewUser:'仅新手可见',
+        AllowAllRealPlayer:'4真人可以同桌',
       }
     }
   },

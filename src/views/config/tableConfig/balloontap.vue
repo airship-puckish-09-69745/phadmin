@@ -240,14 +240,7 @@
               <legend>排行榜配置</legend>
               <el-row style="margin-bottom: 32px;"></el-row>
               <el-row>
-                <el-col :span="7" :offset="3">
-                  <el-form inline>
-                    <el-form-item label="榜单数据过期时间" :rules="dataRule(true,{type:'n',range:'0'})">
-                      <el-input v-model.number="itemBase.RobotRankCfg.Expiration" size="mini" :required="true"> <template slot="append">h</template></el-input>
-                    </el-form-item>
-                  </el-form>
-                </el-col>
-                <el-col :span="7" :offset="3">
+                <el-col :span="24" :offset="3">
                   <el-form inline>
                     <el-form-item label="机器人参与排行榜间隔" :rules="dataRule(true,{type:'n',range:'0'})">
                       <el-input v-model.number="itemBase.RobotRankCfg.Interval" size="mini" :required="true"> <template slot="append">s</template></el-input>
@@ -271,7 +264,7 @@
                 </el-col>
               </el-row>
               <piggy-weight-cfg :piggy-cfg=" itemBase.RobotRankCfg.Bets" weight-name="权重" val-name="下注额度" val-type="1" title="下注额度(和真人下注保持一致)" />
-              <piggy-weight-cfg :piggy-cfg=" itemBase.RobotRankCfg.OddsRet" weight-name="权重" val-type="2" title="返奖倍数max最大只支持999999" />
+              <piggy-weight-cfg :piggy-cfg=" itemBase.RobotRankCfg.OddsRet" weight-name="权重" val-type="2" title="返奖倍数max最大只支持99999" />
             </fieldset>
           </el-row>
         </el-tab-pane>
@@ -503,8 +496,8 @@ export default {
           Message.error('机器人.返奖倍数 min>max')
           return false
         }
-        if (o.ValMax > 999999) {
-          Message.error('机器人.返奖倍数 max最大只支持999999')
+        if (o.ValMax > 99999) {
+          Message.error('机器人.返奖倍数 max最大只支持99999')
           return false
         }
       }

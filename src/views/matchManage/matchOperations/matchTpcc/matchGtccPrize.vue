@@ -81,12 +81,12 @@
 
               <el-table-column prop="sort" label="排序" min-width="180px">
               <template slot-scope="scope">
-                <el-input 
-                  :value="scope.row.sort" 
-                  @input="handleSortInput(scope.$index, $event)" 
-                  style="width: 80px;" 
+                <el-input
+                  :value="scope.row.sort"
+                  @input="handleSortInput(scope.$index, $event)"
+                  style="width: 80px;"
                   size="mini"
-                  placeholder="请输入排序值" 
+                  placeholder="请输入排序值"
                   type="number"
                 />
               </template>
@@ -207,13 +207,13 @@ export default {
       InvitationUniqueIdCfgs: [
        // { 'value': 11002, 'label': 'TPCC周赛-观赛邀请函','invitationId':4},
         { 'value': 11005, 'label': 'TPCC线上决赛-橙色邀请函','invitationId':[1]},
-        { 'value': 11006, 'label': 'TPCC机酒赛-机酒邀请函','invitationId':[2]},
-        { 'value': 11007, 'label': 'TPCC魔戒赛-(魔戒赛邀请函+观赛邀请函)','invitationId':[3,4]},
+        { 'value': 11006, 'label': 'TPCC机酒赛-机酒邀请函','invitationId':[3]},
+        { 'value': 11007, 'label': 'TPCC魔戒赛-(魔戒赛邀请函+观赛邀请函)','invitationId':[2,4]},
       ],
       InvitationIdCfgs: [
         { 'value': 1, 'label': '橙色邀请函' },
-        { 'value': 2, 'label': '机酒邀请函' },
-        { 'value': 3, 'label': '魔戒赛邀请函' },
+        { 'value': 2, 'label': '魔戒赛邀请函' },
+        { 'value': 3, 'label': '机酒邀请函' },
         { 'value': 4, 'label': '观赛邀请函' },
       ],
       subKey: 'match_gtcc_prize_cfg'

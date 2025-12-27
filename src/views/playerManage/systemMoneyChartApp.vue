@@ -473,12 +473,14 @@ export default {
         const others = []
 
         for (let i = 0; i < this.defaultOrder.length; i++) {
-          if (this.isPoker(this.defaultOrder[i])) {
-            pokers.push(this.defaultOrder[i])
-          } else if (this.isSlots(this.defaultOrder[i])) {
-            slots.push(this.defaultOrder[i])
-          } else {
-            others.push(this.defaultOrder[i])
+          if (systemMoneyChart.methods.isActivity(this.summary[this.defaultOrder[i]])) {
+            if (this.isPoker(this.defaultOrder[i])) {
+              pokers.push(this.defaultOrder[i])
+            } else if (this.isSlots(this.defaultOrder[i])) {
+              slots.push(this.defaultOrder[i])
+            } else {
+              others.push(this.defaultOrder[i])
+            }
           }
         }
         if (this.selectType === 2) {
@@ -937,10 +939,10 @@ export default {
       if (process.env.VUE_APP_PROJECT_NAME === '菲1-线上环境') {
         if (this.env == 'test') {
           apps = [
-            // {
-            //   'ID': 0,
-            //   'Account': '所有'
-            // },
+            {
+              'ID': 0,
+              'Account': '所有'
+            },
             {
               'ID': 1000003,
               'Account': 'BP UAT'
@@ -960,10 +962,10 @@ export default {
           ]
         } else {
           apps = [
-            // {
-            //   'ID': 0,
-            //   'Account': '所有'
-            // },
+            {
+              'ID': 0,
+              'Account': '所有'
+            },
             {
               'ID': 1000005,
               'Account': 'BP正式'

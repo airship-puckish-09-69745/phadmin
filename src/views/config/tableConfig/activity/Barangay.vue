@@ -51,7 +51,7 @@ export default {
         { 'value': 'AP', 'label': 'AP' },
         { 'value': 'GP', 'label': 'GP' },
         // { 'value': 'TP', 'label': 'TP' },
-        { 'value': 'PG', 'label': 'PG' },
+        // { 'value': 'PG', 'label': 'PG' }, 2025-12-22去除PG
         { 'value': 'Dev', 'label': 'Dev' }
       ],
     }
