@@ -344,34 +344,34 @@
                   v-if="scope.row.Status==6"
                   size="mini"
                   type="success"
-                  @click="handlePreOn(scope.row)"
+                  @click="handleAppPreOn(scope.row)"
                 >预上
                 </el-button>
                 <el-button
                   v-if="scope.row.Status==7"
                   size="mini"
                   type="success"
-                  @click="handleOn(scope.row)"
+                  @click="handleAppOn(scope.row)"
                 >上架
                 </el-button>
                 <el-button
                   v-if="scope.row.Status==2"
                   size="mini"
                   type="warning"
-                  @click="handlePreOff(scope.row)"
+                  @click="handleAppPreOff(scope.row)"
                 >预下
                 </el-button>
                 <el-button
                   v-if="scope.row.Status==6"
                   size="mini"
                   icon="el-icon-delete"
-                  @click="handleDelete(scope.row)"
+                  @click="handleAppDelete(scope.row)"
                 />
                 <el-button
                   v-if="scope.row.Status==8"
                   size="mini"
                   type="danger"
-                  @click="handleOffline(scope.row)"
+                  @click="handleAppOffline(scope.row)"
                 >下架
                 </el-button>
               </template>
@@ -786,6 +786,7 @@ import GameLevel from '@/components/GameLevel'
 import MoneyInput from '@/components/MoneyInput'
 import emojPrice from '@/views/config/baseConfig/emojPrice.vue'
 import { APPID_OPTIONS } from '@/utils/options'
+import GameReturnConfig from '../../gameCustomConfig/gameReturnConfig.vue'
 const filterMap = {}
 
 function newItem() {
@@ -1025,9 +1026,6 @@ export default {
     },
     //* * ********************** 修改/添加弹框相关 *****************
     getEditTitle() {
-      if (this.edit.appVisible) {
-        return "新增应用差异配置"
-      }
       return this.edit.isEdit ? '修改配置' : '新增配置'
     },
 
@@ -1156,10 +1154,10 @@ export default {
           this.edit.appItem.FromID = ID
           Object.assign(this.edit.appItem, _data)
           delete this.edit.appItem.AppExt
-          // if (bEdit) {
-          //   // 设置修改之前数据
-          //   this.$refs.compare.SetOldVal(_data)
-          // }
+          if (bEdit) {
+            // 设置修改之前数据
+            this.$refs.compare.SetOldVal(_data)
+          }
         }
       }
     },
@@ -1188,21 +1186,29 @@ export default {
         if (_data) {
           Object.assign(this.edit.appItem, _data)
           delete this.edit.appItem.AppExt
-          // if (bEdit) {
-          //   // 设置修改之前数据
-          //   this.$refs.compare.SetOldVal(_data)
-          // }
         }
         this.edit.appVisible = true
+        this.edit.appIsEdit = false;
         console.log("handleAppCopy", this.edit.appItem)
       }
     },
    getAppEditTitle() {
-     return '修改配置' 
+     return this.edit.appIsEdit ?'修改应用配置' : "新增应用差异配置"
     },
 
 
     checkAppData() {
+      if (this.edit.appItem.CarryLower > this.edit.appItem.CarryUpper) {
+        Message.warning('下限不能大于上限，请检查数值正确性！')
+        return false
+      }
+      if (this.edit.appItem.MinPlayMoney > this.edit.appItem.CarryLower) {
+        Message.error('【最小玩牌金额】必须小于等于【最小携带】，请检查数值正确性！')
+        return false
+      }
+      return true
+    },
+    checkHasAppData() {
       let ID = this.edit.appItem.ID
       const _data = this.clientDB.GetDataByID(ID)
       if (!_data) {
@@ -1217,18 +1223,6 @@ export default {
           Message.warning('应用已存在，请检查数值正确性！')
         return false
       }
-
-      if (this.edit.appItem.CarryLower > this.edit.appItem.CarryUpper) {
-        Message.warning('下限不能大于上限，请检查数值正确性！')
-        return false
-      }
-      if (this.edit.appItem.MinPlayMoney > this.edit.appItem.CarryLower) {
-        Message.error('【最小玩牌金额】必须小于等于【最小携带】，请检查数值正确性！')
-        return false
-      }
-
-
-      console.log("checkAppData", _data)
       if (_data.AppExt) {
 
         for (let i = 0; i < _data.AppExt.length; i++) {
@@ -1241,25 +1235,137 @@ export default {
       }
       return true
     },
+
     saveApp() {
         if (!this.checkAppData()) return 
-        let ID = this.edit.appItem.ID
-        let _data = this.clientDB.GetDataByID(ID)
-        if (!_data) {
-          return "配置新增失败"
-        }
-        let appItemCopy = JSON.parse(JSON.stringify(this.edit.appItem));
-        appItemCopy.AppId =  this.edit.editAppId
-        appItemCopy.FromID = ID
-        if (!_data.AppExt) {
-          _data.AppExt = []
-        } 
-        _data.AppExt.push(appItemCopy)
+        if(this.edit.appIsEdit) {
+          this.$refs.compare.SetNewVal(this.edit.appItem)
+          const $this = this
+          this.$refs.compare.Compare(function(isEdit) {
+            if (!isEdit) {
+              Message.error('没有任何修改，不需要提交')
+              return
+            } else {
+              $this.editAppSave($this.getPostAppData())
+              this.edit.appIsEdit = false
+            }
+          })
+        } else {
+           if (!this.checkHasAppData()) return 
 
-        this.createAppSave(appItemCopy)
+          let ID = this.edit.appItem.ID
+          let _data = this.clientDB.GetDataByID(ID)
+          if (!_data) {
+            return "配置新增失败"
+          }
+          let appItemCopy = JSON.parse(JSON.stringify(this.edit.appItem));
+          appItemCopy.AppId =  this.edit.editAppId
+          appItemCopy.FromID = ID
+          appItemCopy.Status = 6
+          if (!_data.AppExt) {
+            _data.AppExt = []
+          } 
+          _data.AppExt.push(appItemCopy)
+          this.createAppSave(appItemCopy)
+            // this.createAppSave(this.libMoney.TransForStore(appItemCopy))
+        }
         this.edit.appVisible = false
+        this.edit.appIsEdit = false
     },
-   
+     getPostAppData() {
+      const postData = this.libMoney.TransForStore(this.edit.appItem)
+      return postData
+    },
+
+    editAppSave(postData) {
+      this.AppClientDB.UpdateData(this.edit.appItem)
+      this.refreshAppShow()
+      Message.success('保存成功！')
+      // request({
+      //   url: 'pusoydostable/update',
+      //   method: 'post',
+      //   data: postData
+      // }).then(response => {
+      //   if (response.RetCode === 0) {
+      //     this.clientDB.UpdateData(this.edit.item)
+      //     this.refreshShow()
+      //     Message.success('保存成功！')
+      //   }
+      // })
+    },
+
+     handleAppPreOn(ob) {
+      this.changeAppStatus(ob.ID, 7, '您确定要将记录状态修改为"预备上架"吗？该记录将在发布后同步到外网。')
+    },
+    handleAppOn(ob) {
+      this.changeAppStatus(ob.ID, 2, '您确定要将记录状态修改为"上架"吗？该记录将在发布后同步到外网。')
+    },
+    handleAppPreOff(ob) {
+      this.changeAppStatus(ob.ID, 8, '您确定要将记录下架吗？下架的记录将在发布后从线上消失。')
+    },
+    handleAppOffline(ob) {
+      this.changeAppStatus(ob.ID, 6, '您确定要将记录下架吗？下架的记录将在发布后从线上消失。')
+    },
+    handleAppDelete(ob) {
+      this.changeAppStatus(ob.ID, 3, '您确定要将记录状态修改为废弃吗？')
+    },
+
+    delAppDataFromBase(ID, appId) {
+        let _data = this.clientDB.GetDataByID(ID)
+        if (!_data || !_data.AppExt) {
+          return 
+        }
+        let AppExtTmp = []
+        for (let i = 0; i < _data.AppExt.length; i++) {
+          const tmp = _data.AppExt[i]
+          if (tmp.AppId == appId) {
+            continue
+          }
+          AppExtTmp.push(tmp)
+        }
+        console.log("appId",appId)
+        _data.AppExt = AppExtTmp
+        console.log(" _data.AppExt", _data)
+
+    },
+
+    changeAppStatus(id, status, msg) {
+      const $this = this
+      this.$confirm(msg, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+       
+        console.log("status", status)
+        if (status == 3) {
+            const _data = this.AppClientDB.GetDataByID(id)
+            if (_data) {
+              $this.delAppDataFromBase(_data.FromID, _data.AppId)
+            }
+            $this.AppClientDB.DelData(id)    
+           
+        } else {
+           $this.AppClientDB.UpdateData({ ID: id, Status: status })
+        }
+        $this.refreshAppShow()
+        // request({
+        //   url: '/pusoydostable/update/status',
+        //   method: 'post',
+        //   data: {
+        //     ID: id,
+        //     status: status
+        //   }
+        // }).then(response => {
+        //   if (response.RetCode === 0) {
+        //     Message.success('修改记录状态成功！')
+        //     $this.clientDB.UpdateData({ ID: id, Status: status })
+        //   }
+        // })
+      }).catch(() => {
+        console.log('取消')
+      })
+    },
 
 
     getAllocSchemeName(plan){
