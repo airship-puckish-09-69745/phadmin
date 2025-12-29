@@ -481,6 +481,12 @@ export const asyncRoutes = [
                 meta: { title: 'PusoyDos ◐' }
               },
               {
+                path: 'PusoyDosServerConfig',
+                component: () => import('@/views/config/tableConfig/pusoyDos/pusoyDosServerConfig'),
+                name: 'PusoyDosServerConfig',
+                meta: { title: 'PusoyDos配置 ◐' }
+              },
+              {
                 path: 'PusoyDosTogether',
                 component: () => import('@/views/config/tableConfig/pusoyDos/pusoyDos_blacklist'),
                 name: 'PusoyDosTogether',
