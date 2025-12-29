@@ -1176,7 +1176,7 @@ export default {
       copyItem.userFilterCondition.registerTimeRange.max = registerEndTime / 1000
 
       if (this.edit.item.whitelistCfg.appIdList.length === 0 && this.version === 'V2') {
-        this.edit.item.whitelistCfg.appIdList = [this.appId]
+        copyItem.whitelistCfg.appIdList = [this.appId]
       }
 
       const data = {}
