@@ -741,7 +741,7 @@ export default {
         clientDB: new ClientTableData([], 10, filterMap),
       },
       env: 'test',
-      appId: store.getters.appId || -1,
+      appId: parseInt(store.getters.appId) || -1,
       version: store.getters.version || 'V1',
       statusNames: { 2: '上架', 6: '下架', 7: '预上架', 8: '预下架' },
       tableData: [],
@@ -1176,7 +1176,7 @@ export default {
       copyItem.userFilterCondition.registerTimeRange.max = registerEndTime / 1000
 
       if (this.edit.item.whitelistCfg.appIdList.length === 0 && this.version === 'V2') {
-        copyItem.whitelistCfg.appIdList = [parseInt(this.appId)]
+        copyItem.whitelistCfg.appIdList = [this.appId]
       }
 
       const data = {}
