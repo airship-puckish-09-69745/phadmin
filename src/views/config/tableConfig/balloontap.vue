@@ -101,6 +101,22 @@
                   </el-form>
                 </el-col>
 
+                <el-col :span="7" :offset="3">
+                  <el-form inline>
+                    <el-form-item label="piggy boom气球个数(min)" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-input v-model.number="itemExt.Calc.NumPiggyBoomMin" size="mini" :required="true" />
+                    </el-form-item>
+                  </el-form>
+                </el-col>
+
+                <el-col :span="7" :offset="3">
+                  <el-form inline>
+                    <el-form-item label="piggy boom气球个数(max)" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-input v-model.number="itemExt.Calc.NumPiggyBoomMax" size="mini" :required="true" />
+                    </el-form-item>
+                  </el-form>
+                </el-col>
+
 
                 <el-col :span="7" :offset="3">
                   <el-form inline>
@@ -114,22 +130,6 @@
                   <el-form inline>
                     <el-form-item label="随机气球倍数(max)" :rules="dataRule(true,{type:'n',range:'0'})">
                       <el-input v-model.number="itemExt.Calc.OddsRandMax" size="mini" :required="true" />
-                    </el-form-item>
-                  </el-form>
-                </el-col>
-
-                <el-col :span="7" :offset="3">
-                  <el-form inline>
-                    <el-form-item label="piggy boom气球个数(min)" :rules="dataRule(true,{type:'n',range:'0'})">
-                      <el-input v-model.number="itemExt.Calc.NumPiggyBoomMin" size="mini" :required="true" />
-                    </el-form-item>
-                  </el-form>
-                </el-col>
-
-                <el-col :span="7" :offset="3">
-                  <el-form inline>
-                    <el-form-item label="piggy boom气球个数(max)" :rules="dataRule(true,{type:'n',range:'0'})">
-                      <el-input v-model.number="itemExt.Calc.NumPiggyBoomMax" size="mini" :required="true" />
                     </el-form-item>
                   </el-form>
                 </el-col>

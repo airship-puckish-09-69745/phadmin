@@ -187,14 +187,14 @@
         </el-form-item>
         <fieldset>
           <legend>方案切换配置</legend>
-          <el-form-item label="统计数据天数">
+          <el-form-item label="统计数据天数(1~7)">
             <el-input v-model.number="addFormData.SwitchRule.StatDays" placeholder=""></el-input>
           </el-form-item>
           <el-form-item label="下注次数最小值">
             <el-input v-model.number="addFormData.SwitchRule.SpinMin" placeholder=""></el-input>
           </el-form-item>
-          <money-input v-model="addFormData.SwitchRule.BetMin" />
-          <el-form-item label="切换目标方案ID">
+          <money-input v-model="addFormData.SwitchRule.BetMin" label="下注金额最小值" />
+          <el-form-item label="切换目标方案ID(0为禁用)">
             <el-input v-model.number="addFormData.SwitchRule.TargetPlanId" placeholder=""></el-input>
           </el-form-item>
         </fieldset>
@@ -267,14 +267,14 @@
         </el-form-item>
         <fieldset>
           <legend>方案切换配置</legend>
-          <el-form-item label="统计数据天数">
+          <el-form-item label="统计数据天数(1~7)">
             <el-input v-model.number="editFormData.SwitchRule.StatDays" placeholder=""></el-input>
           </el-form-item>
           <el-form-item label="下注次数最小值">
             <el-input v-model.number="editFormData.SwitchRule.SpinMin" placeholder=""></el-input>
           </el-form-item>
-          <money-input v-model="editFormData.SwitchRule.BetMin" />
-          <el-form-item label="切换目标方案ID">
+          <money-input v-model="editFormData.SwitchRule.BetMin" label="下注金额最小值" />
+          <el-form-item label="切换目标方案ID(0为禁用)">
             <el-input v-model.number="editFormData.SwitchRule.TargetPlanId" placeholder=""></el-input>
           </el-form-item>
         </fieldset>
@@ -1144,7 +1144,10 @@ export default {
       }
     },
     addPlan() {
-
+      if (this.addFormData.SwitchRule.StatDays < 0 || this.addFormData.SwitchRule.StatDays > 7) {
+        Message.error('方案切换配置的统计数据天数请在1~7天之间!')
+        return
+      }
       // 确保UserTags格式正确
       this.addFormData.ScriptRuleDescription.UserTagRules = this.selectedUserTags.map(tagId => ({
         TagId: tagId,
@@ -1179,6 +1182,11 @@ export default {
       this.initUserTagsData();
     },
     saveEdit() {
+      if (this.editFormData.SwitchRule.StatDays < 0 || this.editFormData.SwitchRule.StatDays > 7) {
+        Message.error('方案切换配置的统计数据天数请在1~7天之间!')
+        return
+      }
+
       // 确保UserTags格式正确
       this.editFormData.ScriptRuleDescription.UserTagRules = this.selectedUserTags.map(tagId => ({
         TagId: tagId,

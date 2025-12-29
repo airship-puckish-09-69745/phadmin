@@ -230,9 +230,22 @@ export default {
             Message.error('no Data')
             return
           }
-          console.log(response.Data)
-          $this.tableData = response.Data.list
-          $this.totalCount = response.Data.totalCount
+          // console.log(response.Data)
+          $this.tableData = response.Data.list || []
+          $this.totalCount = response.Data.totalCount || 0
+
+          // const now = Math.floor(Date.now() / 1000) // 当前时间戳（秒）
+          // const twoDays = 2 * 24 * 60 * 60 // 两天（秒）
+          //
+          // $this.tableData.forEach(item => {
+          //   if (
+          //     item.useStage === '未使用' &&
+          //     item.sendTime &&
+          //     item.sendTime + twoDays < now
+          //   ) {
+          //     item.useStage = '已过期'
+          //   }
+          // })
         }
       })
     },
