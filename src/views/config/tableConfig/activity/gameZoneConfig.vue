@@ -1067,9 +1067,10 @@ export default {
   created() {
     // 先获取配置数据，再获取游戏列表
     this.getData().then(() => {
-      this.getGameAll()
-      this.getMaylikeGameAll()
-      this.getOtherGameZoneAll()
+      this.getGameAll().then(() => {
+        this.getMaylikeGameAll()
+        this.getOtherGameZoneAll()
+      })
     })
   },
   methods: {
@@ -1096,7 +1097,7 @@ export default {
       return data.label.indexOf(value) !== -1
     },
     getGameAll() {
-      request({
+      return request({
         url: '/thirdpartygames/all',
         method: 'get',
         data: {},
@@ -1137,11 +1138,18 @@ export default {
           }
 
           // 使用 $nextTick 确保 DOM 更新后再设置选中状态
-          this.$nextTick(() => {
+          // 增加重试机制，确保组件完全渲染
+          const setCheckedKeys = () => {
             const treeGameZone = this.$refs.treeGameZone
             if (treeGameZone && this.item.GameList && this.item.GameList.length > 0) {
               treeGameZone.setCheckedKeys(this.item.GameList)
+            } else if (!treeGameZone) {
+              // 如果组件还未创建，稍后重试
+              setTimeout(setCheckedKeys, 50)
             }
+          }
+          this.$nextTick(() => {
+            setCheckedKeys()
           })
         }
       })
@@ -1188,7 +1196,7 @@ export default {
       })
     },
     getMaylikeGameAll() {
-      request({
+      return request({
         url: '/thirdpartygames/all',
         method: 'get',
         data: {},
@@ -1227,11 +1235,18 @@ export default {
           }
 
           // 使用 $nextTick 确保 DOM 更新后再设置选中状态
-          this.$nextTick(() => {
+          // 增加重试机制，确保组件完全渲染
+          const setCheckedKeys = () => {
             const treeWinMore = this.$refs.treeWinMore
             if (treeWinMore && this.WinMoreItem.GameList && this.WinMoreItem.GameList.length > 0) {
               treeWinMore.setCheckedKeys(this.WinMoreItem.GameList)
+            } else if (!treeWinMore) {
+              // 如果组件还未创建，稍后重试
+              setTimeout(setCheckedKeys, 50)
             }
+          }
+          this.$nextTick(() => {
+            setCheckedKeys()
           })
         }
       })
