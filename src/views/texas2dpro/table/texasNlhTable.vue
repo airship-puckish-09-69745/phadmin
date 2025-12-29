@@ -511,6 +511,7 @@ function newItem() {
 function NewTableExtra(){
   return{
     DefaultBuyIn:0,
+    BetRounds:0,
   }
 }
 
