@@ -1065,11 +1065,12 @@ export default {
     }
   },
   created() {
-    this.getData()
-    this.getGameAll()
-    this.getMaylikeGameAll()
-    this.getOtherGameZoneAll()
-    console.log(1)
+    // 先获取配置数据，再获取游戏列表
+    this.getData().then(() => {
+      this.getGameAll()
+      this.getMaylikeGameAll()
+      this.getOtherGameZoneAll()
+    })
   },
   methods: {
     getFullKey() {
@@ -1134,14 +1135,14 @@ export default {
             }
             this.treeDataZone.push(ctyZone)
           }
+
+          // 使用 $nextTick 确保 DOM 更新后再设置选中状态
           this.$nextTick(() => {
             const treeGameZone = this.$refs.treeGameZone
-            if (treeGameZone) {
-              // 现在可以安全地使用childComponent
+            if (treeGameZone && this.item.GameList && this.item.GameList.length > 0) {
               treeGameZone.setCheckedKeys(this.item.GameList)
             }
           })
-          // this.$refs.treeGameZone.setCheckedKeys(this.item.GameList)
         }
       })
     },
@@ -1224,14 +1225,14 @@ export default {
             }
             this.mayLikeTreeData.push(cty)
           }
+
+          // 使用 $nextTick 确保 DOM 更新后再设置选中状态
           this.$nextTick(() => {
             const treeWinMore = this.$refs.treeWinMore
-            if (treeWinMore) {
-              // 现在可以安全地使用childComponent
+            if (treeWinMore && this.WinMoreItem.GameList && this.WinMoreItem.GameList.length > 0) {
               treeWinMore.setCheckedKeys(this.WinMoreItem.GameList)
             }
           })
-          // this.$refs.treeWinMore.setCheckedKeys(this.WinMoreItem.GameList)
         }
       })
     },
@@ -1292,7 +1293,7 @@ export default {
     },
     getData() {
       const $this = this
-      request({
+      return request({
         url: '/customizeconfig/one',
         method: 'get',
         data: {
@@ -1348,6 +1349,7 @@ export default {
             this.$refs.compare.SetOldVal(old)
           }
         }
+        return response
       })
     },
     handleCreate() {
@@ -1682,7 +1684,7 @@ export default {
           this.gameZoneOtherGameList = this.editOtherGameZone.item.GameList
           this.$nextTick(() => {
             const treeGameOtherZone = this.$refs.treeGameOtherZone
-            if (treeGameOtherZone) {
+            if (treeGameOtherZone && this.editOtherGameZone.item.GameList && this.editOtherGameZone.item.GameList.length > 0) {
               // 现在可以安全地使用childComponent
               treeGameOtherZone.setCheckedKeys(this.editOtherGameZone.item.GameList)
             }
