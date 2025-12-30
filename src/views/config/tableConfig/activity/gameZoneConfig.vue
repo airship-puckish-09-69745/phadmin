@@ -1065,11 +1065,16 @@ export default {
     }
   },
   created() {
-    this.getData()
-    this.getGameAll()
-    this.getMaylikeGameAll()
-    this.getOtherGameZoneAll()
-    console.log(1)
+    // 先获取配置数据，再获取游戏列表
+    this.getData().then(() => {
+      this.getGameAll().then(() => {
+        // 确保 getGameAll 的 $nextTick 执行后再执行其他方法
+        setTimeout(() => {
+          this.getMaylikeGameAll()
+          this.getOtherGameZoneAll()
+        }, 100)
+      })
+    })
   },
   methods: {
     getFullKey() {
@@ -1095,7 +1100,7 @@ export default {
       return data.label.indexOf(value) !== -1
     },
     getGameAll() {
-      request({
+      return request({
         url: '/thirdpartygames/all',
         method: 'get',
         data: {},
@@ -1134,14 +1139,27 @@ export default {
             }
             this.treeDataZone.push(ctyZone)
           }
-          this.$nextTick(() => {
+
+          // 使用 $nextTick 确保 DOM 更新后再设置选中状态
+          // 增加重试机制，确保组件完全渲染，最多重试20次
+          let retryCount = 0
+          const setCheckedKeys = () => {
+            retryCount++
             const treeGameZone = this.$refs.treeGameZone
-            if (treeGameZone) {
-              // 现在可以安全地使用childComponent
+            console.log(`[setCheckedKeys] 第${retryCount}次尝试: treeGameZone=${!!treeGameZone}, GameList=`, this.item.GameList)
+            if (treeGameZone && this.item.GameList && this.item.GameList.length > 0) {
+              console.log('[setCheckedKeys] 成功设置选中状态:', this.item.GameList)
               treeGameZone.setCheckedKeys(this.item.GameList)
+            } else if (retryCount < 20 && (!treeGameZone || !this.item.GameList)) {
+              // 如果组件还未创建或数据未准备好，稍后重试
+              setTimeout(setCheckedKeys, 50)
+            } else if (retryCount >= 20) {
+              console.warn('[setCheckedKeys] 达到最大重试次数，设置失败')
             }
+          }
+          this.$nextTick(() => {
+            setCheckedKeys()
           })
-          // this.$refs.treeGameZone.setCheckedKeys(this.item.GameList)
         }
       })
     },
@@ -1187,7 +1205,7 @@ export default {
       })
     },
     getMaylikeGameAll() {
-      request({
+      return request({
         url: '/thirdpartygames/all',
         method: 'get',
         data: {},
@@ -1224,14 +1242,27 @@ export default {
             }
             this.mayLikeTreeData.push(cty)
           }
-          this.$nextTick(() => {
+
+          // 使用 $nextTick 确保 DOM 更新后再设置选中状态
+          // 增加重试机制，确保组件完全渲染，最多重试20次
+          let retryCount = 0
+          const setCheckedKeys = () => {
+            retryCount++
             const treeWinMore = this.$refs.treeWinMore
-            if (treeWinMore) {
-              // 现在可以安全地使用childComponent
+            console.log(`[setCheckedKeys-WinMore] 第${retryCount}次尝试: treeWinMore=${!!treeWinMore}, GameList=`, this.WinMoreItem.GameList)
+            if (treeWinMore && this.WinMoreItem.GameList && this.WinMoreItem.GameList.length > 0) {
+              console.log('[setCheckedKeys-WinMore] 成功设置选中状态:', this.WinMoreItem.GameList)
               treeWinMore.setCheckedKeys(this.WinMoreItem.GameList)
+            } else if (retryCount < 20 && (!treeWinMore || !this.WinMoreItem.GameList)) {
+              // 如果组件还未创建或数据未准备好，稍后重试
+              setTimeout(setCheckedKeys, 50)
+            } else if (retryCount >= 20) {
+              console.warn('[setCheckedKeys-WinMore] 达到最大重试次数，设置失败')
             }
+          }
+          this.$nextTick(() => {
+            setCheckedKeys()
           })
-          // this.$refs.treeWinMore.setCheckedKeys(this.WinMoreItem.GameList)
         }
       })
     },
@@ -1292,7 +1323,7 @@ export default {
     },
     getData() {
       const $this = this
-      request({
+      return request({
         url: '/customizeconfig/one',
         method: 'get',
         data: {
@@ -1302,8 +1333,18 @@ export default {
         if (response.RetCode === 0) {
           $this.form = response.Data || {}
           if (response.Data && response.Data.Data !== '' && response.Data.Data !== '{}') {
-            $this.item = JSON.parse(response.Data.Data)
+            const parsedData = JSON.parse(response.Data.Data)
+            // 确保数据完整性
+            if (!parsedData.GameList) {
+              parsedData.GameList = []
+            }
+            if (!parsedData.WinMoreItem) {
+              parsedData.WinMoreItem = []
+            }
+            $this.item = parsedData
             const old = JSON.parse(response.Data.Data)
+            console.log('[getData] 解析后的item.GameList:', $this.item.GameList)
+            console.log('[getData] 解析后的WinMoreItem:', $this.item.WinMoreItem)
             this.item.GameZoneItem.forEach(value => {
               if (value.Id === 2) {
                 this.WinMoreItem = value
@@ -1348,6 +1389,7 @@ export default {
             this.$refs.compare.SetOldVal(old)
           }
         }
+        return response
       })
     },
     handleCreate() {
@@ -1682,7 +1724,7 @@ export default {
           this.gameZoneOtherGameList = this.editOtherGameZone.item.GameList
           this.$nextTick(() => {
             const treeGameOtherZone = this.$refs.treeGameOtherZone
-            if (treeGameOtherZone) {
+            if (treeGameOtherZone && this.editOtherGameZone.item.GameList && this.editOtherGameZone.item.GameList.length > 0) {
               // 现在可以安全地使用childComponent
               treeGameOtherZone.setCheckedKeys(this.editOtherGameZone.item.GameList)
             }

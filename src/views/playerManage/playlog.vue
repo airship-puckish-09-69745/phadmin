@@ -3590,7 +3590,7 @@
               <div class="cell-divider" v-if="item.blockType !== 2"></div>
               <div class="cell-bottom" v-if="item.blockType !== 2">
                   <span v-if="item.isAward===true" style="color: red;">
-                    {{ item.bonus/1000 }}
+                       {{ item.bonus/1000 }}
                 </span>
                    <span v-if="item.isAward===false" style="color: black;">
                     {{ item.bonus/1000 }}
