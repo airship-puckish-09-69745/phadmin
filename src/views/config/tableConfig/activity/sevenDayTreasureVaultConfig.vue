@@ -675,7 +675,7 @@ export default {
           RewardIndex: null
         }
       },
-      appId: store.getters.appId || -1,
+      appId: parseInt(store.getters.appId) || -1,
       version: store.getters.version || 'V1',
       filterText: '',
       defaultProps: {
@@ -902,6 +902,7 @@ export default {
       for (const key in tableData.GameIcon) {
         tableData.Activity.GameIdList.push(tableData.GameIcon[key].Id)
       }
+      tableData.ActivityId.Whitelist.AppIdList = [this.appId]
       this.$refs.compare.SetNewVal(tableData)
       this.$refs.compare.Compare((isEdit) => {
         if (!isEdit) {
