@@ -3,6 +3,7 @@
     <el-row :gutter="10" style="margin-top: 50px">
       <el-col :span="22" :offset="1">
         <el-button type="success" size="mini" @click="getData">刷新</el-button>
+        <el-button type="primary" size="mini" @click="copyDialogVisible=true">从其他APP拷贝</el-button>
       </el-col>
       <el-col :span="22" :offset="1">
         <el-tabs active-name="first">
@@ -115,6 +116,24 @@
       </span>
     </el-dialog>
 
+    <el-dialog
+      title="从其他APP拷贝"
+      :visible.sync="copyForm.copyDialogVisible"
+      width="30%"
+    >
+      <el-form ref="copyForm" :model="copyForm" label-width="120px">
+        <el-form-item label="从其他APP拷贝：" prop="copyFromAppId">
+          <el-select v-model.number="copyForm.copyFromAppId" size="medium" :required="true" placeholder="请选择">
+            <el-option v-for="item in appList" :key="item.key" :label="item.label" :value="item.key" />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="copyForm.copyDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="copyFrom">确 定</el-button>
+      </span>
+    </el-dialog>
+
     <!--对比组件-->
     <compare ref="compare" />
 
@@ -155,10 +174,17 @@ export default {
       dialogVisible: false,
       rowsSpanGameIdMap: {},
       appId: parseInt(store.getters.appId),
+
+      copyForm: {
+        copyFromAppId: 0,
+        copyDialogVisible: false,
+      },
+      appList: [],
     }
   },
   created() {
     this.getData()
+    this.getAppList()
     console.log(1)
   },
   methods: {
@@ -331,7 +357,66 @@ export default {
           }
         })
       })
-    }
+    },
+    copyFrom() {
+      if (!this.copyForm.copyFromAppId) {
+        this.$message.error('请选择来源应用')
+        return
+      }
+
+      const $this = this
+
+      // 是否确认拷贝
+      this.$confirm('确认拷贝来源应用' + this.copyForm.copyFromAppId + '的奖池配置吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        request({
+          url: '/dataProxy/info',
+          method: 'get',
+          data: {
+            Path: '/lotteryschema/copy/prize/pool/from',
+            Env: store.getters.env,
+            FromAppId: this.copyForm.copyFromAppId,
+            ToAppId: this.appId
+          }
+        }).then(response => {
+          console.log('list response', response)
+          if (response.RetCode === 0) {
+            $this.copyDialogVisible = false
+            $this.$message.success('拷贝成功')
+            $this.getData()
+          } else {
+            $this.$message.error(response.Data)
+          }
+        })
+      })
+    },
+    getAppList() {
+      const $this = this
+      request({
+        url: '/thirdparties/all',
+        method: 'get',
+        data: {}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          // const objs = response.Data || []
+          for (let i = 0; i < response.Data.length; i++) {
+            if (response.Data[i].ID === $this.AppId) {
+              continue
+            }
+            this.appList.push({
+              key: response.Data[i].ID,
+              label: response.Data[i].Account
+            })
+          }
+        }
+      })
+    },
+    appInfoLabel(key, label) {
+      return label + '-' + key
+    },
   }
 }
 </script>
