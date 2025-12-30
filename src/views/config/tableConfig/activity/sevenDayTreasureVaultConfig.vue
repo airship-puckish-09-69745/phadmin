@@ -902,7 +902,7 @@ export default {
       for (const key in tableData.GameIcon) {
         tableData.Activity.GameIdList.push(tableData.GameIcon[key].Id)
       }
-      tableData.ActivityId.Whitelist.AppIdList = [this.appId]
+      tableData.Activity.Whitelist.AppIdList = [this.appId]
       this.$refs.compare.SetNewVal(tableData)
       this.$refs.compare.Compare((isEdit) => {
         if (!isEdit) {
