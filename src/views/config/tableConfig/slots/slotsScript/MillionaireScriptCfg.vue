@@ -484,6 +484,7 @@ export default {
         '221': 'goldendragonmars',
         '212': 'pirateship',
         '214': 'pumpkincash',
+        '222': 'lionfortune',
         '224': 'supermahjong',
         '232': 'mafiawars',
         '236': 'pacquiaofortune',
