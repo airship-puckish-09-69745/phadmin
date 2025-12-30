@@ -230,8 +230,12 @@
               </el-radio-group>
             </el-form-item>
           </el-col>
+          <el-col :span="11">
+            <el-form-item label="投注局数：" :required="true" prop="item.TableExtra.BetRounds" :rules="dataRule(true,{type:'n',range:'0'})">
+              <el-input v-model.number="edit.item.TableExtra.BetRounds" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
         </el-row>
-
         <el-row>
           <el-col :span="11">
             <el-form-item label="等级：" :required="true" prop="item.Level" :rules="dataRule(true,{type:'n',range:'0'})">
@@ -507,6 +511,7 @@ function newItem() {
 function NewTableExtra(){
   return{
     DefaultBuyIn:0,
+    BetRounds:0,
   }
 }
 
@@ -573,6 +578,8 @@ export default {
         ForceLookCardPrice: '强制看牌价格',
         TableExtra:{
           DefaultBuyIn:'默认买入',
+           BetRounds:'投注局数' ,
+        
         },
       }
     }
