@@ -194,7 +194,7 @@
                 <el-col :span="24" :offset="3">
                   <el-form inline>
                     <el-form-item label="生成时间" :rules="dataRule(true,{type:'n',range:'0'})">
-                      <el-input v-model.number="itemExt.Ctrl.SpeedXMax" size="mini" :required="true"> <template slot="append">ms</template></el-input>
+                      <el-input v-model.number="itemExt.Ctrl.CreateTime" size="mini" :required="true"> <template slot="append">ms</template></el-input>
                     </el-form-item>
                   </el-form>
                 </el-col>

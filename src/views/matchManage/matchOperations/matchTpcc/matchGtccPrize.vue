@@ -212,7 +212,7 @@ export default {
         { 'value': 11005, 'label': 'TPCC线上决赛-橙色邀请函+观赛邀请函','invitationId':[1,4]},
         { 'value': 11006, 'label': 'TPCC机酒赛-机酒邀请函+观赛邀请函','invitationId':[3,4]},
         { 'value': 11007, 'label': 'TPCC魔戒赛-(魔戒赛邀请函+观赛邀请函)','invitationId':[2,4]},
-        { 'value': 11008, 'label': 'TPCC日赛-观赛邀请函','invitationId':[4]},
+        { 'value': 11008, 'label': 'TPCC豪客赛-观赛邀请函','invitationId':[4]},
       ],
       InvitationIdCfgs: [
         { 'value': 1, 'label': '橙色邀请函' },
