@@ -505,6 +505,9 @@
           <el-form-item v-if="editForm.data.opentMatchType===2" label="延迟进入时间(秒)：" :required="true">
             <el-input v-model.number="editForm.data.delayEnterSeconds" style="width: 200px;" placeholder="请填写延迟进入时间" />
           </el-form-item>
+          <el-form-item v-if="editForm.data.opentMatchType===2" label="延迟报名时间(秒)：" :required="true">
+            <el-input v-model.number="editForm.listExtra.delaySignUpSeconds" style="width: 200px;" placeholder="请填写延迟报名时间" />
+          </el-form-item>
         </fieldset>
         <fieldset>
           <legend>显示控制</legend>
@@ -1114,6 +1117,7 @@ export default {
         },
         listExtra:{
           tableSceneId: 0,  //牌桌场景ID
+          delaySignUpSeconds: 0, //延迟报名时间(秒)
         },
       },
 
@@ -1148,7 +1152,10 @@ export default {
         associateKey: '推荐方案',
         dcReport: '是否上报数据中心',
         propsId: '道具ID',
-        listExtra: '列表拓展信息',
+        listExtra: {
+          tableSceneId: '牌桌场景ID',
+          delaySignUpSeconds: '延迟报名时间(秒)',
+        },
       },
       singleCopy: {
         id: 0,
@@ -1346,7 +1353,7 @@ export default {
                   'ruleType': objs.list[i].rule_type
                 })
                 const stage_detail = JSON.parse(objs.list[i].stage_detail)
-                // console.log("打立初级信息 ", stage_detail)
+                console.log("打立初级信息 ", stage_detail)
                 for (var j = 0; j < stage_detail.length; j++) {
                   if (stage_detail[j].system_type === 1) { // 打立出局
                     // console.log("id:" + objs.list[i].id + " min:" + stage_detail[j].system_strike_out.end_rule.match_minute)
@@ -1857,6 +1864,7 @@ export default {
         }
         this.editForm.listExtra ={
           tableSceneId:0,
+          delaySignUpSeconds: 0,
         }
         this.editForm.isAdd = true
         this.showCsCfgs = this.csCfgs
@@ -2505,6 +2513,11 @@ export default {
           this.errmsg('延迟进入时间不能大于打立出局阶段总时长')
           return false
         }
+        if ((endMin > 0) && ((this.editForm.listExtra.delaySignUpSeconds / 60) > endMin)) {
+          this.errmsg('延迟报名时间不能大于打立出局阶段总时长')
+          return false
+        }
+
 
         const endNum = this.endNumCfgs.get(this.editForm.data.csId)
         const promoteNum = this.promoteNumCfgs.get(this.editForm.data.csId)
@@ -2576,6 +2589,9 @@ export default {
       }
 
       if (!this.reubyConfigCheck()) {
+        return false
+      }
+      if(!this.checkDelaySignUpConfig()){
         return false
       }
 
@@ -3106,6 +3122,18 @@ export default {
         this.errmsg('rebuy截止轮次大于当前赛制打立阶段的最大轮次,请检查配置')
         return false
       }
+      //如果开启了延迟报名时间 则rebuy总时长必须大于延迟报名时间
+      if(this.editForm.listExtra.delaySignUpSeconds >0){
+        let rebuyTotalSecs = 0
+        for (let i = 0; i < this.editForm.signExtra.reubyExtra.reubyRound; i++) {
+          rebuyTotalSecs += disuseScores[i].duration
+        }
+        if (this.editForm.listExtra.delaySignUpSeconds >= rebuyTotalSecs) {
+          this.errmsg('延迟报名时间不能大于等于rebuy总时长')
+          return false
+        }
+
+      }
       return true
     },
 
@@ -3285,6 +3313,25 @@ export default {
 
       const now = new Date().getTime() / 1000
       return endTime < now ? '是' : '否'
+    },
+    checkDelaySignUpConfig(){
+      if(this.editForm.listExtra.delaySignUpSeconds > 0){
+        if(this.editForm.data.opentMatchType === 1){
+          this.errmsg('sng比赛不支持延迟报名')
+          return false
+        }
+        //如果开启了每日多长循环赛
+        if(this.editForm.data.repeatType ===2 && this.editForm.loopDetail.loopData.length >0){
+          for(let i=0;i<this.editForm.loopDetail.loopData.length;i++){
+            if(this.editForm.loopDetail.loopData[i].intervalSeconds < 30*60) {
+              this.errmsg('每日循环赛的间隔时间不能小于30分钟')
+              return false
+            }
+          }
+        }
+        return true
+      }
+      return true
     },
   }
 }
