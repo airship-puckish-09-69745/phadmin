@@ -192,7 +192,10 @@
           <el-row>
             <el-col :span="12">
               <el-form-item label="是否启用新版剧本">
-                <el-select v-model="slotsData.EnableScriptV3" disabled>
+                <el-select
+                    v-model="slotsData.EnableScriptV3"
+                    :disabled="itemEnv !== 'development'"
+                >
                   <el-option label="启用" :value="true" />
                   <el-option label="禁用" :value="false" />
                 </el-select>
@@ -248,6 +251,7 @@ export default {
   },
   data() {
     var data = {
+      itemEnv: process.env.NODE_ENV,
       lock: false,
       recommendBet: this.slotsData.RecommendBet ? this.slotsData.RecommendBet * this.slotsData.BaseBet / 1000 : 0,
       initialWinTypeMinOdds: [],
