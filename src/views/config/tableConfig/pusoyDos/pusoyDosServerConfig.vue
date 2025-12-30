@@ -11,14 +11,14 @@
     </el-row>
     <el-row :gutter="10" style="margin-top: 30px">
       <el-col :span="24">
-        <el-tabs type="border-card" value="common">
+        <el-tabs type="border-card" value="common" @tab-click="handleTabClick">
           <el-tab-pane label="基座配置" name="common">
             <h3 style="text-align:center;color: red;">基座配置-游戏服启动时读取必要参数</h3>
             <pusoy-dos-table />
           </el-tab-pane>
           <el-tab-pane label="应用差异配置" name="different">
             <h3 style="text-align:center;color: red;">应用差异化配置，此配置会重写通用配置</h3>
-            <pusoy-dos-table />
+            <pusoy-dos-table  ref="dosTableRef"/>
           </el-tab-pane>
         </el-tabs>
       </el-col>
@@ -33,5 +33,17 @@
     import PusoyDosTable from './pusoyDosTable.vue'
     export default {
         components: { PusoyDosTable },
+        methods: {
+          handleTabClick(tab) {
+            if (tab.name === 'different') {
+              console.log("aaa.....")
+              // 或者传递参数
+              this.$refs.dosTableRef.handleTabActivated({
+                tabName: 'different',
+                timestamp: new Date()
+              })
+            }
+          }
+        }
     }
 </script>

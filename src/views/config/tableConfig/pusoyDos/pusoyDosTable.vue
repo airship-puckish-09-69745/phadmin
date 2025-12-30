@@ -1,8 +1,11 @@
 <template>
   <div id="app" class="page-container" style="padding: 10px">
-    <el-row>
+    <el-row v-if="isAppKey">
       <publish primary-key="ID" key-id="PusoyDosTableConfig" :env-empty="true" :check="configCheck" :attr-names="AttrNames" />
     </el-row>
+    <!-- <el-row v-if="showTestBtn">
+      <publish primary-key="ID" key-id="PusoyDosTableConfig" :env-empty="true" :check="configCheck" :attr-names="AttrNames" />
+    </el-row> -->
     <el-row style="padding-top: 5px">
       <el-col :span="20">
         <el-button
@@ -229,6 +232,7 @@ export default {
         item: newItem(),
         isEdit: false
       },
+      isAppKey: false,
 
       AttrNames: {
         CarryLower: '最小携带',
@@ -255,11 +259,18 @@ export default {
       }
     }
   },
+
+
   created() {
     this.env = store.getters.env || this.env
     this.getList()
   },
   methods: {
+    handleTabActivated(params) {
+      console.log('标签页激活，参数：', params)
+      this.isAppKey = true
+      // 执行相应的操作
+    },
     formatNumber(n) {
       return n.toLocaleString()
     },
