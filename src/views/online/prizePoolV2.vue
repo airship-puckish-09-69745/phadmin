@@ -3,7 +3,7 @@
     <el-row :gutter="10" style="margin-top: 50px">
       <el-col :span="22" :offset="1">
         <el-button type="success" size="mini" @click="getData">刷新</el-button>
-        <el-button type="primary" size="mini" @click="copyDialogVisible=true">从其他APP拷贝</el-button>
+        <el-button type="primary" size="mini" @click="copyForm.copyDialogVisible=true">从其他APP拷贝</el-button>
       </el-col>
       <el-col :span="22" :offset="1">
         <el-tabs active-name="first">
@@ -384,7 +384,7 @@ export default {
         }).then(response => {
           console.log('list response', response)
           if (response.RetCode === 0) {
-            $this.copyDialogVisible = false
+            $this.copyForm.copyDialogVisible = false
             $this.$message.success('拷贝成功')
             $this.getData()
           } else {
