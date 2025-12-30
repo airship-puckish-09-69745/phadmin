@@ -192,10 +192,7 @@
           <el-row>
             <el-col :span="12">
               <el-form-item label="是否启用新版剧本">
-                <el-select
-                    v-model="slotsData.EnableScriptV3"
-                    :disabled="itemEnv !== 'development'"
-                >
+                <el-select v-model="slotsData.EnableScriptV3" disabled>
                   <el-option label="启用" :value="true" />
                   <el-option label="禁用" :value="false" />
                 </el-select>
