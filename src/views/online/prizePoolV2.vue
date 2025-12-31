@@ -119,15 +119,85 @@
     <el-dialog
       title="从其他APP拷贝"
       :visible.sync="copyForm.copyDialogVisible"
-      width="30%"
+      @opened="onCopyDialogOpened"
+      width="300"
     >
-      <el-form ref="copyForm" :model="copyForm" label-width="120px">
-        <el-form-item label="从其他APP拷贝：" prop="copyFromAppId">
-          <el-select v-model.number="copyForm.copyFromAppId" size="medium" :required="true" placeholder="请选择">
-            <el-option v-for="item in appList" :key="item.key" :label="item.label" :value="item.key" />
+      <el-form ref="copyForm" :model="copyForm">
+        <el-form-item label="请选择要拷贝的APP：" prop="copyFromAppId">
+          <el-select v-model.number="copyForm.copyFromAppId" size="medium" :required="true" placeholder="请选择" @change="onCopyAppChange">
+            <el-option label="未区分APP的奖池" :value="0" />
+            <el-option
+              v-for="item in appList"
+              :key="item.key"
+              :label="appLabel(item.key, item.label)"
+              :value="item.key"
+            />
           </el-select>
         </el-form-item>
       </el-form>
+      <el-tabs active-name="first">
+        <el-tab-pane label="下注类" name="first"><el-table
+          :data="copyForm.casioData"
+          border
+        >
+          <el-table-column
+            prop="Gid"
+            label="子游戏"
+            width="150"
+          >
+            <template slot-scope="scope">
+                <span v-if="scope.row.Gid===37">
+                  {{ getGameName(scope.row.Gid)+' '+scope.row.Ante/1000+'场' }}
+                </span>
+              <span v-else>
+                  {{ getGameName(scope.row.Gid) }}
+                </span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="PrizePool"
+            label="奖池"
+            width="200"
+          >
+            <template slot-scope="scope">
+              <span :style="scope.row.PrizePool/1000>1000000?'color:red':''">{{ Math.floor(scope.row.PrizePool/1000).toLocaleString() }}</span>
+            </template>
+          </el-table-column>
+        </el-table></el-tab-pane>
+        <el-tab-pane label="Slots" name="second"><el-table
+          :data="copyForm.slotsData"
+          :span-method="copyFormObjectSpanMethod"
+          border
+        >
+          <el-table-column
+            prop="Gid"
+            label="子游戏"
+            width="150"
+          >
+            <template slot-scope="scope">
+              {{ getSlotsName(scope.row.Gid) }}
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="Gid"
+            label="类型"
+            width="150"
+          >
+            <template slot-scope="scope">
+              {{ getSlotsfSuffix(scope.row.Gid) }}
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="PrizePool"
+            label="奖池"
+            width="200"
+          >
+            <template slot-scope="scope">
+              <span :style="scope.row.PrizePool/1000>1000000?'color:red':''">{{ Math.floor(scope.row.PrizePool/1000).toLocaleString() }}</span>
+            </template>
+          </el-table-column>
+        </el-table></el-tab-pane>
+      </el-tabs>
       <span slot="footer" class="dialog-footer">
         <el-button @click="copyForm.copyDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="copyFrom">确 定</el-button>
@@ -178,6 +248,9 @@ export default {
       copyForm: {
         copyFromAppId: 0,
         copyDialogVisible: false,
+        slotsData: [],
+        casioData: [],
+        rowsSpanGameIdMap: {},
       },
       appList: [],
     }
@@ -218,13 +291,22 @@ export default {
         }
       }
     },
-/*    isSlots(o) {
-      if (o > 50 && o < 100 || o > 149 && o < 200) {
-        return true
-      } else {
-        return false
+    copyFormObjectSpanMethod({ row, column, rowIndex, columnIndex }) {
+      if (columnIndex === 0) {
+        const gid = parseInt(row.Gid / 100)
+        if (gid in this.copyForm.rowsSpanGameIdMap && row.Gid % 100 === 1) {
+          return {
+            rowspan: this.copyForm.rowsSpanGameIdMap[gid],
+            colspan: 1
+          }
+        } else {
+          return {
+            rowspan: 0,
+            colspan: 0
+          }
+        }
       }
-    },*/
+    },
     handleClose(done) {
       this.dialogVisible = false
       done()
@@ -271,7 +353,10 @@ export default {
           $this.slotsData.sort(function(a, b) {
             return $this.getSlotsName(a.Gid).localeCompare($this.getSlotsName(b.Gid))
           })
-          // $this.tableData.splice(0, 0)
+
+          $this.casioData.sort(function(a, b) {
+            return a.Gid - b.Gid
+          })
         } else {
           $this.$message.error(response.Data)
         }
@@ -359,15 +444,12 @@ export default {
       })
     },
     copyFrom() {
-      if (!this.copyForm.copyFromAppId) {
-        this.$message.error('请选择来源应用')
-        return
-      }
-
       const $this = this
 
+      let appLabel = this.copyForm.copyFromAppId === 0 ? '未区分APP' : this.appList.find(item => item.key === this.copyForm.copyFromAppId).label + '-' +this.copyForm.copyFromAppId
+
       // 是否确认拷贝
-      this.$confirm('确认拷贝来源应用' + this.copyForm.copyFromAppId + '的奖池配置吗？', '提示', {
+      this.$confirm('确认拷贝来源【' + appLabel + '】的奖池配置吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -403,7 +485,7 @@ export default {
         if (response.RetCode === 0) {
           // const objs = response.Data || []
           for (let i = 0; i < response.Data.length; i++) {
-            if (response.Data[i].ID === $this.AppId) {
+            if (response.Data[i].ID === $this.appId) {
               continue
             }
             this.appList.push({
@@ -414,9 +496,62 @@ export default {
         }
       })
     },
-    appInfoLabel(key, label) {
+    appLabel(key, label) {
       return label + '-' + key
     },
+    onCopyDialogOpened() {
+      this.copyForm.copyFromAppId = 0
+      this.onCopyAppChange()
+    },
+    onCopyAppChange() {
+      console.log('onCopyAppChange copyFromAppId', this.copyForm.copyFromAppId)
+
+      const $this = this
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Path: '/lotteryschema/prize/pool/list',
+          Env: store.getters.env,
+          AppId: this.copyForm.copyFromAppId
+        }
+      }).then(response => {
+        console.log('list response', response)
+        const ignore = [2, 3, 4, 5, 7, 8, 9, 13, 14, 16, 17, 18, 19]
+        $this.copyForm.slotsData = []
+        $this.copyForm.casioData = []
+        if (response.RetCode === 0) {
+          $this.copyForm.rowsSpanGameIdMap = {}
+          for (let i = 0; i < response.Data.length; i++) {
+            const item = response.Data[i]
+            if (ignore.includes(item.Gid)) {
+              continue
+            }
+
+            if (item.Gid > 5000) {
+              const gid = parseInt(item.Gid / 100)
+              if (gid in $this.copyForm.rowsSpanGameIdMap) {
+                $this.copyForm.rowsSpanGameIdMap[gid] += 1
+              } else {
+                $this.copyForm.rowsSpanGameIdMap[gid] = 1
+              }
+              $this.copyForm.slotsData.push(item)
+            } else {
+              $this.copyForm.casioData.push(item)
+            }
+          }
+          $this.copyForm.slotsData.sort(function (a, b) {
+            return $this.getSlotsName(a.Gid).localeCompare($this.getSlotsName(b.Gid))
+          })
+
+          $this.copyForm.casioData.sort(function(a, b) {
+            return a.Gid - b.Gid
+          })
+        } else {
+          $this.$message.error(response.Data)
+        }
+      })
+    }
   }
 }
 </script>
