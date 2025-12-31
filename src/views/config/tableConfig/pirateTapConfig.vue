@@ -36,39 +36,14 @@
                       <el-input v-model="item.FeeRate" size="mini" ><template  slot="append">%</template></el-input>
                     </el-form-item>
                   </el-col>
-
+                  <el-col :span="8">
+                    <el-form-item label="推荐下注可游戏次数：">
+                      <el-input v-model.number="item.GameNum" size="mini" />
+                    </el-form-item>
+                  </el-col>
                 </el-form>
               </el-col>
               
-              <el-col :span="24" :offset="5">
-                <el-form :inline="true">
-                  <el-col :span="8">
-                    <el-form-item label="系数:">
-                      <el-input v-model="item.NormalCfg.Coefficient" size="mini" />
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="8">
-                    <el-form-item label="特殊游戏概率:">
-                      <el-input v-model="item.NormalCfg.SpecialGameRate" size="mini" ><template  slot="append">%</template></el-input>
-                    </el-form-item>
-                  </el-col>
-                </el-form>
-              </el-col>
-
-              <el-col :span="24" :offset="5">
-                <el-form :inline="true">
-                  <el-col :span="8">
-                    <el-form-item label="Free Attack权重：">
-                      <el-input v-model.number="item.NormalCfg.FreeAttackWeight" size="mini" />
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="8">
-                    <el-form-item label="Free Spin权重：">
-                      <el-input v-model.number="item.NormalCfg.FreeSpinWeight" size="mini" />
-                    </el-form-item>
-                  </el-col>
-                </el-form>
-              </el-col>
             <el-col :span="16" :offset="3">
               <!--bet-->
               <fieldset style="margin-top:10px">
@@ -103,7 +78,118 @@
               </fieldset>
             </el-col>
             <el-col :span="16" :offset="3">
-              <!--基础配置-->
+              <!--游戏阶段配置-->
+              <fieldset style="margin-top:10px">
+                <el-col :span="20">
+                  <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="doAddStepCfg()">添加</el-button>
+                </el-col>
+                <legend>游戏阶段配置</legend>
+                <el-table
+                  ref="filterGameStepTable"
+                  :data="item.GameNumberStep"
+                  border
+                  :header-cell-style="libShow.DefaultTableHeadClass"
+                  :row-style="{height:'10px'}"
+                  :cell-style="libShow.DefaultTableCell"
+                  style="width: 100%"
+                >
+                  <el-table-column label="次数" prop="Num" width="280px">
+                    <template slot-scope="scope">
+                      <el-input v-model="scope.row.Num" size="mini" />
+                    </template>
+                  </el-table-column>
+                  
+                  <el-table-column label="阶段" prop="Step" width="120px">
+                    <template slot-scope="scope">
+                      <el-input v-model="scope.row.Step" size="mini" />
+                    </template>
+                  </el-table-column>
+                  
+                  <el-table-column label="操作" width="180px">
+                    <template slot-scope="scope">                      
+                      <el-button type="danger" size="mini" @click="delStepCfg(scope.$index)">删除</el-button>
+                    </template>
+                  </el-table-column>
+                  
+                </el-table>
+              </fieldset>
+              
+              <!--重摇-->
+              <fieldset  v-if="!IsPHAuditEnv()">
+                <legend>小奖池触发重摇</legend>
+                <el-row>
+                  <el-col :span="11" :offset="1">
+                    <el-form-item label="奖池低于某值此时系统输：">
+                      <el-input v-model="item.ReChoiceCfg.LowLotteryPoolReChoice" size="mini" :required="true" />
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="11">
+                    <el-form-item label="重摇概率：">
+                      <el-input v-model.number="item.ReChoiceCfg.LowLotteryPoolReChoiceRate" size="mini"><template slot="append">‱</template></el-input>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-descriptions class="margin-top" border>
+                  <el-descriptions-item>
+                    <span style="color:red;">奖池低于某值此时系统输：当奖池低于X时，玩家赢钱有X%的概率重新摇</span>
+                  </el-descriptions-item>
+                </el-descriptions>
+                <el-row>
+                  <el-col :span="11" :offset="1">
+                    <el-form-item label="奖池大于某值此时系统赢：">
+                      <el-input v-model="item.ReChoiceCfg.HighLotteryPoolReChoice" size="mini" :required="true" />
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="11">
+                    <el-form-item label="重摇概率：">
+                      <el-input v-model.number="item.ReChoiceCfg.HighLotteryPoolReChoiceRate" size="mini"><template slot="append">‱</template></el-input>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-descriptions class="margin-top" border>
+                  <el-descriptions-item>
+                    <span style="color:red;">奖池大于某值此时系统赢：1.当奖池的钱>X.玩家输钱时有X%的概率重新摇 </span>
+                  </el-descriptions-item>
+                </el-descriptions>
+              </fieldset>
+            </el-col>
+
+          </el-tab-pane>
+
+          <!--Normal-->
+          <el-tab-pane label="Normal">
+            
+            <el-col :span="24" :offset="5">
+              <el-form :inline="true">
+                <el-col :span="8">
+                  <el-form-item label="系数:">
+                    <el-input v-model="item.NormalCfg.Coefficient" size="mini" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item label="特殊游戏概率:">
+                    <el-input v-model="item.NormalCfg.SpecialGameRate" size="mini" ><template  slot="append">%</template></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-form>
+            </el-col>
+
+            <el-col :span="24" :offset="5">
+              <el-form :inline="true">
+                <el-col :span="8">
+                  <el-form-item label="Free Attack权重：">
+                    <el-input v-model.number="item.NormalCfg.FreeAttackWeight" size="mini" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item label="Free Spin权重：">
+                    <el-input v-model.number="item.NormalCfg.FreeSpinWeight" size="mini" />
+                  </el-form-item>
+                </el-col>
+              </el-form>
+            </el-col>
+
+            <el-col :span="16" :offset="3">
               <fieldset style="margin-top:10px">
                 <el-col :span="20">
                   <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="doAddOddsCfg(0)">添加</el-button>
@@ -156,51 +242,11 @@
                   
                 </el-table>
               </fieldset>
-
-              <!--重摇-->
-              <fieldset  v-if="!IsPHAuditEnv()">
-                <legend>小奖池触发重摇</legend>
-                <el-row>
-                  <el-col :span="11" :offset="1">
-                    <el-form-item label="奖池低于某值此时系统输：">
-                      <el-input v-model="item.ReChoiceCfg.LowLotteryPoolReChoice" size="mini" :required="true" />
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="11">
-                    <el-form-item label="重摇概率：">
-                      <el-input v-model.number="item.ReChoiceCfg.LowLotteryPoolReChoiceRate" size="mini"><template slot="append">‱</template></el-input>
-                    </el-form-item>
-                  </el-col>
-                </el-row>
-                <el-descriptions class="margin-top" border>
-                  <el-descriptions-item>
-                    <span style="color:red;">奖池低于某值此时系统输：当奖池低于X时，玩家赢钱有X%的概率重新摇</span>
-                  </el-descriptions-item>
-                </el-descriptions>
-                <el-row>
-                  <el-col :span="11" :offset="1">
-                    <el-form-item label="奖池大于某值此时系统赢：">
-                      <el-input v-model="item.ReChoiceCfg.HighLotteryPoolReChoice" size="mini" :required="true" />
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="11">
-                    <el-form-item label="重摇概率：">
-                      <el-input v-model.number="item.ReChoiceCfg.HighLotteryPoolReChoiceRate" size="mini"><template slot="append">‱</template></el-input>
-                    </el-form-item>
-                  </el-col>
-                </el-row>
-                <el-descriptions class="margin-top" border>
-                  <el-descriptions-item>
-                    <span style="color:red;">奖池大于某值此时系统赢：1.当奖池的钱>X.玩家输钱时有X%的概率重新摇 </span>
-                  </el-descriptions-item>
-                </el-descriptions>
-              </fieldset>
             </el-col>
-
-          </el-tab-pane>
+          </el-tab-pane>         
 
           <!--Free Attack-->
-          <el-tab-pane label="Free Attack配置">
+          <el-tab-pane label="Free Attack">
             <el-col :span="24" :offset="5">
               <el-form :inline="true">
                 <el-col :span="8">
@@ -305,7 +351,7 @@
           </el-tab-pane>
 
           <!--Free Spin-->
-          <el-tab-pane label="Free Attack配置">
+          <el-tab-pane label="Free Spin">
             <el-col :span="24" :offset="5">
               <el-form :inline="true">
                 <el-col :span="8">
@@ -343,6 +389,7 @@
                     <el-input v-model="item.FreeSpinCfg.MagnetRate" size="mini" ><template  slot="append">%</template></el-input>
                   </el-form-item>
                 </el-col>
+                <!--
                 <el-col :span="8">
                   <el-form-item label="初始奖励个数范围:">
                     <el-input v-model="item.FreeSpinCfg.StartCellArea[0]" size="mini" style="width: 80px" />
@@ -350,6 +397,7 @@
                     <el-input v-model="item.FreeSpinCfg.StartCellArea[1]" size="mini" style="width: 80px" />
                   </el-form-item>
                 </el-col>
+                -->
               </el-form>
             </el-col>
 
@@ -514,6 +562,7 @@ export default {
       item: {
         BetMoneyLevel:[], //下注
         FeeRate:3,
+        GameNum:100,
         ReChoiceCfg:{
           LowLotteryPoolReChoice: 1000,
           LowLotteryPoolReChoiceRate: 10000,
@@ -553,7 +602,8 @@ export default {
           NumTotalWeight:0,
           OddsCfg:[], //倍率配置
           OddsTotalWeight:0,
-        }
+        },
+        GameNumberStep:[], //游戏次数进入阶段配置
       },
       form: {},
       subKey: 'pirate_tap_cfg',
@@ -756,6 +806,23 @@ export default {
     delRowBetMoneyLevel(index) {
       console.log(index)
       this.item.BetMoneyLevel.splice(index, 1)
+    },
+
+    //游戏阶段配置
+    doAddStepCfg() {
+      if (!this.item.GameNumberStep) {
+        this.item['GameNumberStep'] = []
+      }
+      let maxId = 0
+      for (const o of this.item.GameNumberStep) {
+        if (o.Id > maxId) {
+          maxId = o.Id
+        }
+      }
+      this.item.GameNumberStep.push({ Id: maxId + 1, Num: 10, Step: 0})
+    },
+    delStepCfg(index) {
+      this.item.GameNumberStep.splice(index, 1)
     },
 
     //odds
