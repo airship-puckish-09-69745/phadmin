@@ -139,7 +139,12 @@
         <el-tab-pane label="下注类" name="first"><el-table
           :data="copyForm.casioData"
           border
+          @selection-change="onSelectionChange"
         >
+          <el-table-column
+            type="selection"
+            width="55">
+          </el-table-column>
           <el-table-column
             prop="Gid"
             label="子游戏"
@@ -200,7 +205,7 @@
       </el-tabs>
       <span slot="footer" class="dialog-footer">
         <el-button @click="copyForm.copyDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="copyFrom">确 定</el-button>
+        <el-button type="primary" @click="copyFromApp">确 定</el-button>
       </span>
     </el-dialog>
 
@@ -251,6 +256,8 @@ export default {
         slotsData: [],
         casioData: [],
         rowsSpanGameIdMap: {},
+        casioDataGameIds: [],
+        slotsDataGameIds: [],
       },
       appList: [],
     }
@@ -443,13 +450,33 @@ export default {
         })
       })
     },
-    copyFrom() {
+    copyFromApp() {
       const $this = this
 
       let appLabel = this.copyForm.copyFromAppId === 0 ? '未区分APP' : this.appList.find(item => item.key === this.copyForm.copyFromAppId).label + '-' +this.copyForm.copyFromAppId
+      // 合并casioDataGameIds和slotsDataGameIds
+      const gameIds = [...this.copyForm.casioDataGameIds, ...this.copyForm.slotsDataGameIds]
+
+      if (gameIds.length === 0) {
+        this.$message.error('请选择要拷贝的子游戏')
+        return
+      }
+
+      const h = this.$createElement
+
+      let gameNames = []
+      gameIds.forEach(gid => {
+        gameNames.push(h('div', { style: { 'margin-top': '10px', 'padding-left': '10px' } }, $this.getGameName(gid)))
+      })
+
+      const message = h('div', {}, [
+        h('div', {}, '确认拷贝来源【' + appLabel + '】的奖池配置吗？'),
+        h('div', { style: { 'margin-top': '10px' } }, '包括以下子游戏：'),
+        ...gameNames
+      ])
 
       // 是否确认拷贝
-      this.$confirm('确认拷贝来源【' + appLabel + '】的奖池配置吗？', '提示', {
+      this.$confirm(message, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -458,10 +485,11 @@ export default {
           url: '/dataProxy/info',
           method: 'get',
           data: {
-            Path: '/lotteryschema/copy/prize/pool/from',
+            Path: '/lotteryschema/copy/from/app',
             Env: store.getters.env,
             FromAppId: this.copyForm.copyFromAppId,
-            ToAppId: this.appId
+            ToAppId: this.appId,
+            GameIds: gameIds.join(',')
           }
         }).then(response => {
           console.log('list response', response)
@@ -518,6 +546,11 @@ export default {
       }).then(response => {
         console.log('list response', response)
         const ignore = [2, 3, 4, 5, 7, 8, 9, 13, 14, 16, 17, 18, 19]
+
+        // 清空casioDataGameIds和slotsDataGameIds
+        $this.copyForm.casioDataGameIds = []
+        $this.copyForm.slotsDataGameIds = []
+
         $this.copyForm.slotsData = []
         $this.copyForm.casioData = []
         if (response.RetCode === 0) {
@@ -535,9 +568,17 @@ export default {
               } else {
                 $this.copyForm.rowsSpanGameIdMap[gid] = 1
               }
-              $this.copyForm.slotsData.push(item)
+
+              const slotsItem = $this.slotsData.find(sitem => sitem.Gid === item.Gid)
+              if (slotsItem.PrizePool === 0) {
+                $this.copyForm.slotsData.push(item)
+              }
             } else {
-              $this.copyForm.casioData.push(item)
+              const casioItem = $this.casioData.find(citem => citem.Gid === item.Gid)
+              console.log('casioItem:', casioItem)
+              if (casioItem.PrizePool === 0) {
+                $this.copyForm.casioData.push(item)
+              }
             }
           }
           $this.copyForm.slotsData.sort(function (a, b) {
@@ -551,6 +592,10 @@ export default {
           $this.$message.error(response.Data)
         }
       })
+    },
+    onSelectionChange(val) {
+      console.log('onSelectionChange', val)
+      this.copyForm.casioDataGameIds = val.map(item => item.Gid)
     }
   }
 }
