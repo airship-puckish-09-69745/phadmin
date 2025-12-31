@@ -1,11 +1,11 @@
 <template>
   <div id="app" class="page-container" style="padding: 10px">
-    <el-row v-if="isAppKey">
-      <publish primary-key="ID" key-id="PusoyDosTableConfig" :env-empty="true" :check="configCheck" :attr-names="AttrNames" />
+    <el-row v-if="isAppExt === true">
+      <publish-v2 primary-key="ID" key-id="PusoyDosAppExtTableConfig" app-id="1" :env-empty="true" :check="configCheck" :attr-names="AttrNames" />
     </el-row>
-    <!-- <el-row v-if="showTestBtn">
-      <publish primary-key="ID" key-id="PusoyDosTableConfig" :env-empty="true" :check="configCheck" :attr-names="AttrNames" />
-    </el-row> -->
+    <el-row v-if="isAppExt === false">
+      <publish-v2 primary-key="ID" key-id="PusoyDosTableConfig" app-id="2" :env-empty="true" :check="configCheck" :attr-names="AttrNames" />
+    </el-row>
     <el-row style="padding-top: 5px">
       <el-col :span="20">
         <el-button
@@ -47,6 +47,24 @@
       :close-on-press-escape="false"
     >
       <el-form ref="edit" :model="edit" label-width="150px" size="small">
+       <el-row v-if="isAppExt === true">
+         <el-form-item
+              label="应用："
+              :required="true"
+              prop="item.AppId"
+            >
+               <el-select v-model="edit.item.AppId" :disabled="edit.isEdit"   filterable placeholder="请选择应用id">
+              <el-option
+                v-for="item in APPID_OPTIONS"
+                :key="item.value"
+                :label="`${item.label}-${item.value}`"
+                :value="item.value"
+               
+              />
+            </el-select>
+            </el-form-item>
+        </el-row>
+
         <el-row>
           <table-money-select
              :TableMoney.sync="edit.item.TableMoney"
@@ -55,6 +73,9 @@
              :HideCarry.sync="edit.item.HideCarry"
              />
         </el-row>
+
+  
+
         <el-row>
           <table-carry-input
             :CarryLower.sync="edit.item.CarryLower"
@@ -132,7 +153,7 @@ import store from '@/store'
 import request from '@/utils/request'
 import Compare from '@/components/Compare'
 import { Message } from 'element-ui'
-import Publish from '@/components/Publish'
+import PublishV2 from '@/components/Publish'
 import GameLevel from '@/components/GameLevel'
 import MoneyInput from '@/components/MoneyInput'
 import emojPrice from '@/views/config/baseConfig/emojPrice.vue'
@@ -140,11 +161,12 @@ import TableMoneySelect from '../tableCommon/tableMoneySelect.vue'
 import TableCarryInput from '../tableCommon/tableCarryInput.vue'
 import TableServerRequired from '../tableCommon/tableServerRequired.vue'
 import PusoyDosTablePage from './pusoyDosTablePage.vue'
-
+import { APPID_OPTIONS } from '@/utils/options'
 const filterMap = {}
 
 function newItem() {
   return {
+    AppId: 0,
     CarryLower: '',
     CarryUpper: '',
     HideCarry: '',
@@ -177,9 +199,17 @@ function newItem() {
 
 export default {
   name: 'PusoyDosTable',
-  components: { Compare, Publish, GameLevel, MoneyInput,TableMoneySelect,TableCarryInput,TableServerRequired,PusoyDosTablePage },
+  props: {
+    tableType: {
+      type: String,
+      default: 'common',
+      validator: value => ['common', 'different'].includes(value)
+    }
+  },
+  components: { Compare, PublishV2, GameLevel, MoneyInput,TableMoneySelect,TableCarryInput,TableServerRequired,PusoyDosTablePage },
   data() {
     return {
+      APPID_OPTIONS,
       tableMoneyCfg: [
         { 'label': '0.1', 'value': 0.1 },
         { 'label': '0.3', 'value': 0.3 },
@@ -216,6 +246,21 @@ export default {
         "AllocScheme":"配桌方案",
         "operation": "操作",
       },
+      columnAppCfg:{
+        "ID": "ID",
+        "AppId": "应用",
+        "Level": "等级",
+        "TableMoney": "底注",
+        "Carry": "携带",
+        "ObjectCount": "桌子数量",
+        "HideCarry": "隐藏目标值",
+        "MaxPlayerCount": "座位数",
+        "PotScore": "pot配置",
+        "Status": "状态",
+        "AllocScheme":"配桌方案",
+        "operation": "操作",
+      },
+
       currentPage: 1,
       pageSize: 10,
       total: 0,
@@ -232,9 +277,10 @@ export default {
         item: newItem(),
         isEdit: false
       },
-      isAppKey: false,
+      isAppExt: false,
 
       AttrNames: {
+        AppId:'应用',
         CarryLower: '最小携带',
         CarryUpper: '最大携带',
         HideCarry: '隐藏目标值',
@@ -262,15 +308,26 @@ export default {
 
 
   created() {
-    this.env = store.getters.env || this.env
-    this.getList()
   },
+
+  mounted() {
+    this.initialize();
+  },
+
   methods: {
-    handleTabActivated(params) {
-      console.log('标签页激活，参数：', params)
-      this.isAppKey = true
-      // 执行相应的操作
+
+    initialize() {
+        this.env = store.getters.env || this.env
+      console.log("initialize ",this.tableType)
+      if (this.tableType === 'common') {
+         this.isAppExt = false
+      } else if (this.tableType === 'different') {
+          this.isAppExt = true
+          this.columnCfg = this.columnAppCfg
+      }
+      this.getList()
     },
+
     formatNumber(n) {
       return n.toLocaleString()
     },
@@ -329,8 +386,13 @@ export default {
       this.edit.visible = true
     },
     getList() {
+      let url = '/pusoydostable/all'
+      if (this.isAppExt) {
+        url = '/pusoydostableappext/all'
+      }
+      console.log("==========url", url)
       request({
-        url: '/pusoydostable/all',
+        url: url,
         method: 'get',
         data: {
           PlayMode: 1
@@ -357,19 +419,19 @@ export default {
       return true
     },
     handlePreOn(ob) {
-      this.$refs.configTable.changeStatus(ob.ID, 7, '您确定要将记录状态修改为"预备上架"吗？该记录将在发布后同步到外网。')
+      this.changeStatus(ob.ID, 7, '您确定要将记录状态修改为"预备上架"吗？该记录将在发布后同步到外网。')
     },
     handleOn(ob) {
-      this.$refs.configTable.changeStatus(ob.ID, 2, '您确定要将记录状态修改为"上架"吗？该记录将在发布后同步到外网。')
+      this.changeStatus(ob.ID, 2, '您确定要将记录状态修改为"上架"吗？该记录将在发布后同步到外网。')
     },
     handlePreOff(ob) {
-      this.$refs.configTable.changeStatus(ob.ID, 8, '您确定要将记录下架吗？下架的记录将在发布后从线上消失。')
+      this.changeStatus(ob.ID, 8, '您确定要将记录下架吗？下架的记录将在发布后从线上消失。')
     },
     handleOffline(ob) {
-      this.$refs.configTable.changeStatus(ob.ID, 6, '您确定要将记录下架吗？下架的记录将在发布后从线上消失。')
+      this.changeStatus(ob.ID, 6, '您确定要将记录下架吗？下架的记录将在发布后从线上消失。')
     },
     handleDelete(ob) {
-      this.$refs.configTable.changeStatus(ob.ID, 3, '您确定要将记录状态修改为废弃吗？')
+      this.changeStatus(ob.ID, 3, '您确定要将记录状态修改为废弃吗？')
     },
 
     // 子组件 changeStatus 成功后触发的事件，用于更新本地 clientDB
@@ -402,8 +464,12 @@ export default {
       return DataRule(required, config)
     },
     createSave(postData) {
+      let url = '/pusoydostable/create'
+      if (this.isAppExt) {
+        url = '/pusoydostableappext/create'
+      }
       request({
-        url: '/pusoydostable/create',
+        url: url,
         method: 'post',
         data: postData
       }).then(response => {
@@ -420,12 +486,18 @@ export default {
       })
     },
     editSave(postData) {
+      let url = '/pusoydostable/update'
+      if (this.isAppExt) {
+        url = '/pusoydostableappext/update'
+      }
+
       request({
-        url: 'pusoydostable/update',
+        url: url,
         method: 'post',
         data: postData
       }).then(response => {
         if (response.RetCode === 0) {
+          console.log("this.$refs.configTable.updateData",this.$refs.configTable.updateData)
           if (this.$refs.configTable && this.$refs.configTable.updateData) {
             this.$refs.configTable.updateData(this.edit.item)
           }
@@ -446,6 +518,11 @@ export default {
         Message.error('【最小玩牌金额】必须小于等于【最小携带】，请检查数值正确性！')
         return false
       }
+      if (this.isAppExt && this.edit.item.AppId == 0) {
+         Message.error('请选择正确的应用！')
+        return false
+      }
+
       return true
     },
     save() {
@@ -511,13 +588,18 @@ export default {
       this.refreshData()
     },
     changeStatus(id, status, msg,callback) {
+      let url = '/pusoydostable/update/status'
+      if (this.isAppExt) {
+        url = '/pusoydostableappext/update/status'
+      }
+
       this.$confirm(msg, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
         request({
-          url: '/pusoydostable/update/status',
+          url: url,
           method: 'post',
           data: { ID: id, status: status }
         }).then(response => {

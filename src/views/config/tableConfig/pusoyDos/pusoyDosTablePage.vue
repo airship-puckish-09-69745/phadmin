@@ -28,6 +28,7 @@
           :align="column.align || 'center'"
           :fixed="column.fixed"
           :show-overflow-tooltip="column.tooltip !== false"
+          :column-key="column.type"
         >
           <template slot-scope="scope">
             <template v-if="column.formatter">
@@ -50,6 +51,9 @@
                 {{ getStatusText(scope.row[column.prop]) }}
               </el-tag>
             </template>
+            <template v-else-if="column.type === 'app'">
+              {{ scope.row[column.prop] }}
+            </template>
             <!--操作-->
             <template v-else-if="column.type === 'operation'">
               <el-button-group>
@@ -65,7 +69,7 @@
                   size="mini"
                   type="success"
                   icon="el-icon-upload2"
-                  @click="handlePrepare(scope.row)"
+                  @click="handlePreOn(scope.row)"
                 >上架
                 </el-button>
                 <el-button
@@ -182,6 +186,7 @@ export default {
       // 默认完整列定义（当传入 columnsConfig 为字符串数组时使用）
       columns: [
         { prop: 'ID', label: 'ID', width: '80', align: 'center' },
+        { prop: 'AppId', label: '应用', width: '80', type:"app", align: 'center' },
         { prop: 'Level', label: 'Level', width: '100', align: 'center' },
         { prop: 'TableMoney', label: '底注', width: '100', type: 'money', align: 'center' },
         { prop: 'Carry', label: '携带', width: '200', type: 'carry', align: 'center' },
@@ -193,7 +198,8 @@ export default {
         { prop: 'AllocScheme', label: '配桌方案', width: '120', align: 'center', 
           formatter: (row) => this.getAllocSchemeName(row.AllocScheme) },
         { prop: 'Status', label: '状态', width: '100', align: 'center', type: 'status'},
-        { prop: 'operation', label: '操作', type: 'operation', width: '280', fixed: 'right' }
+        { prop: 'operation', label: '操作', type: 'operation', width: '280', fixed: 'right' },
+       
       ],
 
       // 状态映射
@@ -223,7 +229,6 @@ export default {
       if (!this.ColumnCfg || Object.keys(this.ColumnCfg).length === 0) {
         return this.columns.slice()
       }
-
       const seen = new Set()
       const list = []
       for (let i = 0; i < this.columns.length; i++) {
@@ -275,7 +280,6 @@ export default {
     },
 
     getStatusText(status) {
-      console.log("getStatusText:",status);
       return this.statusMap[status]?.text || '未知'
     },
 
@@ -286,8 +290,11 @@ export default {
     },
 
     // 事件处理
-    handleRowClick(row) {
-      this.$emit('row-click', row.ID)
+    handleRowClick(row,column) {
+      console.log("handleRowClick", column)
+      if (column.columnKey !== 'operation') {
+        this.$emit('row-click', row.ID)
+      }
     },
 
     handleSortChange({ column, prop, order }) {
