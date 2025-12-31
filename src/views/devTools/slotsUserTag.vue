@@ -4,16 +4,6 @@
       <el-form-item label="用户ID：">
         <el-input v-model="form.uid" placeholder="请输入查询id" style="width: 200px; display: inline-block;" />
       </el-form-item>
-      <el-form-item label="老虎机：">
-        <el-select v-model="form.tag_gid" placeholder="请选择老虎机">
-          <el-option
-              v-for="opt in slotsGames"
-              :key="opt.value"
-              :label="opt.label"
-              :value="opt.value"
-          />
-        </el-select>
-      </el-form-item>
       <el-button type="primary" style="margin-left: 15px;" @click="getInfo">查询</el-button>
     </el-form>
 
@@ -50,7 +40,6 @@ export default {
     return {
       form: {
         uid: 0,
-        tag_gid: 82,
         user_tags: []
       },
       libShow: $libShow,
@@ -94,34 +83,14 @@ export default {
         '50303': 'BONUS玩法(3次旋转金币)',
         '50304': 'FreeSpin玩法(免费旋转)'
       },
-      slotsGames: [],
       gradeOptions: ['', '轻度', '中度', '重度']
     }
   },
   computed: {},
   created() {
     this.env = store.getters.env || this.env
-    this.getGameList()
   },
   methods: {
-    getGameList() {
-      request({
-        url: '/thirdpartygames/all',
-        method: 'get',
-        data: {}
-      }).then(response => {
-        if (response.RetCode === 0) {
-          for (let i = 0; i < response.Data.length; i++) {
-            if (response.Data[i].CategoryID === 1) { // 老虎机
-              this.slotsGames.push({
-                value: response.Data[i].Gid,
-                label: response.Data[i].Description
-              })
-            }
-          }
-        }
-      })
-    },
     getInfo() {
       let searchUid = 0
       if (this.form.uid > 0) {
@@ -135,7 +104,6 @@ export default {
         data: {
           Env: this.env,
           uid: searchUid,
-          gid: this.form.tag_gid,
           Path: '/slotsStat/user/tags'
         }
       }).then(response => {
