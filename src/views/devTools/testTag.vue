@@ -213,7 +213,7 @@ export default {
       })
     },
     setInfo() {
-      const tag_gid = this.form.tag_gid
+      let tag_gid = this.form.tag_gid
       if (this.form.tag_type === 5) {
         tag_gid = 0
       }
