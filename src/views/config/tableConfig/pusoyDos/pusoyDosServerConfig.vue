@@ -24,8 +24,7 @@
       </el-col>
     </el-row>
 
-    <!--对比组件-->
-    <!-- <compare ref="compare" /> -->
+
 
   </div>
 </template>

@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 function getVer() {
   // return store.getters.version === 'V2' ? 'V2' : ''
-  return V2
+  return 'V2'
 }
 
 /**

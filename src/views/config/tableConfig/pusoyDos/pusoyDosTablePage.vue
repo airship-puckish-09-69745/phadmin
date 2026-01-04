@@ -65,21 +65,35 @@
                 >复制
                 </el-button>
                 <el-button
-                  v-if="scope.row.Status!=2"
+                  v-if="scope.row.Status==6"
+                  size="mini"
+                  type="success"
+                  @click="handlePreOn(scope.row)"
+                >预上
+              </el-button>
+                <el-button
+                  v-if="scope.row.Status==7"
                   size="mini"
                   type="success"
                   icon="el-icon-upload2"
-                  @click="handlePreOn(scope.row)"
+                  @click="handleOn(scope.row)"
                 >上架
                 </el-button>
                 <el-button
-                  v-if="scope.row.Status!=2"
+                v-if="scope.row.Status==2"
+                size="mini"
+                type="warning"
+                @click="handlePreOff(scope.row)"
+              >预下
+              </el-button>
+                <el-button
+                  v-if="scope.row.Status==6"
                   size="mini"
                   icon="el-icon-delete"
                   @click="handleDelete(scope.row)"
                 />
                 <el-button
-                  v-if="scope.row.Status==2"
+                  v-if="scope.row.Status==8"
                   size="mini"
                   type="danger"
                   icon="el-icon-download"

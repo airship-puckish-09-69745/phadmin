@@ -1,10 +1,10 @@
 <template>
   <div id="app" class="page-container" style="padding: 10px">
     <el-row v-if="isAppExt === true">
-      <publish-v2 primary-key="ID" key-id="PusoyDosAppExtTableConfig" app-id="1" :env-empty="true" :check="configCheck" :attr-names="AttrNames" />
+      <publishV2 primary-key="ID" key-id="PusoyDosAppExtTableConfig" :app-id="1" :env-empty="true" :check="configCheck" :attr-names="AttrNames" />
     </el-row>
     <el-row v-if="isAppExt === false">
-      <publish-v2 primary-key="ID" key-id="PusoyDosTableConfig" app-id="2" :env-empty="true" :check="configCheck" :attr-names="AttrNames" />
+      <publishV2 primary-key="ID" key-id="PusoyDosTableConfig" :app-id="2" :env-empty="true" :check="configCheck" :attr-names="AttrNames" />
     </el-row>
     <el-row style="padding-top: 5px">
       <el-col :span="20">
@@ -153,7 +153,7 @@ import store from '@/store'
 import request from '@/utils/request'
 import Compare from '@/components/Compare'
 import { Message } from 'element-ui'
-import PublishV2 from '@/components/Publish'
+import PublishV2 from '@/components/Publish/indexV2.vue'
 import GameLevel from '@/components/GameLevel'
 import MoneyInput from '@/components/MoneyInput'
 import emojPrice from '@/views/config/baseConfig/emojPrice.vue'
@@ -400,7 +400,6 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
-          console.log('objs：', objs)
           // 将处理后的数据传给子组件，由子组件管理 clientDB
           const processed = this.libMoney.TransForShow(objs)
           this.$nextTick(() => {
@@ -605,6 +604,10 @@ export default {
         }).then(response => {
           if (response.RetCode === 0) {
             Message.success('修改记录状态成功！')
+            if (this.$refs.configTable && this.$refs.configTable.updateData) {
+              this.$refs.configTable.updateData({ ID: id, Status: status })
+            }
+
             callback && callback(id, status);
           }
         })

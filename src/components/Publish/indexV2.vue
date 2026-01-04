@@ -260,7 +260,7 @@ export default {
     },
     appId: { // 配置的AppId，与AdminConfig中配置AppId对应
       type: Number,
-      default: ''
+      default: 0
     },
     compareType: { // 发布内容格式，支持：Array, Object, String, CustomizeConfig
       type: String,
@@ -608,12 +608,15 @@ export default {
     },
     toTest() { // 发布到测试
       console.log('test')
+       console.log("this.keyId",this.keyId)
       if (!this.check()) {
         this.$message.error('检测不通过')
         return
       }
       this.isToTest = true
       this.opType = 2 // 应该执行发布到测试的操作
+     
+
       this.getDiff()
     },
     dialogClose() {
