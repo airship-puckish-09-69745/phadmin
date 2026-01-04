@@ -608,7 +608,7 @@ export default {
     },
     toTest() { // 发布到测试
       console.log('test')
-       console.log("this.keyId",this.keyId)
+       console.log("this.keyId",this.keyId, this.appId)
       if (!this.check()) {
         this.$message.error('检测不通过')
         return
