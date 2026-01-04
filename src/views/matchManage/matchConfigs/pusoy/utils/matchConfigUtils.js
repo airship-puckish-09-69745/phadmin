@@ -155,7 +155,9 @@ export function initSignExtra() {
  */
 export function initListExtra() {
   return {
-    tableSceneId: 100
+    tableSceneId: 100,
+    delaySignUpSeconds: 0,
+    
   }
 }
 

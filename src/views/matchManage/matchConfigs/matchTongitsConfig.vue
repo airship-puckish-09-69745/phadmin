@@ -3329,6 +3329,11 @@ export default {
             }
           }
         }
+        //不同时支持延迟进入 跟延迟报名
+        if(this.editForm.data.delayEnterSeconds >0 && this.editForm.listExtra.delaySignUpSeconds >0){
+          this.errmsg('延迟进入时间不能跟延迟报名时间同时配置')
+          return false
+        }
         return true
       }
       return true
