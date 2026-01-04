@@ -104,6 +104,8 @@ export default {
             {value: 50104, label: '传统节日主题'},
             {value: 50105, label: '菲律宾本地化主题'},
             {value: 50106, label: '动物与自然'},
+            {value: 50107, label: '糖果系列'},
+            {value: 50108, label: '小众系列'},
           ]},
           {value: 50200, label: '基础中奖方式', children: [
             {value: 50201, label: '连线全线'},
