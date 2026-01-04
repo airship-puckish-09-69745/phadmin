@@ -362,7 +362,7 @@
                 <fieldset style="margin-top: 10px">
                   <legend>热门时段</legend>
                   <el-button size="mini" type="primary" @click="handleAddHotTime()">添加</el-button>
-                  <el-form :inline="true" v-for="(item, index) in edit.item.activity.hotTimes">
+                  <el-form :inline="true" v-for="(item, index) in edit.item.activity.hotTimeList">
                     <el-form-item :label="`热门时段${index + 1}:`">
                       <el-time-picker
                         v-model="item.startTime"
@@ -507,7 +507,7 @@ function newItem() {
       ruleImgVer: [],
       isOpen: false,
       debugTimeOffset: 0,
-      hotTimes: [
+      hotTimeList: [
         /*{
           startTime: new Date(new Date().toDateString()), // 当天0点
           endTime: new Date(new Date().toDateString() + ' 23:59:59'), // 当天23:59:59
@@ -799,7 +799,7 @@ export default {
         return
       }
 
-      for (const hotTime of item.activity.hotTimes) {
+      for (const hotTime of item.activity.hotTimeList) {
         hotTime.startTime = new Date(hotTime.startTime).getTime() / 1000
         hotTime.endTime = new Date(hotTime.endTime).getTime() / 1000
         hotTime.scoreRatio *= 100
@@ -918,7 +918,7 @@ export default {
           item.extend.maxReward /= 1000
           item.extend.progressReward /= 1000
 
-          for (const hotTime of item.activity.hotTimes) {
+          for (const hotTime of item.activity.hotTimeList) {
             hotTime.startTime = new Date().setTime(hotTime.startTime * 1000)
             hotTime.endTime = new Date().setTime(hotTime.endTime * 1000)
             hotTime.scoreRatio /= 100
@@ -1172,14 +1172,14 @@ export default {
     },
     //************************ 热门时段相关 ************************
     handleAddHotTime() {
-      this.edit.item.activity.hotTimes.push({
+      this.edit.item.activity.hotTimeList.push({
         startTime: '',
         endTime: '',
         scoreRatio: 1
       })
     },
     handleDelHotTime(index) {
-      this.edit.item.activity.hotTimes.splice(index, 1)
+      this.edit.item.activity.hotTimeList.splice(index, 1)
     },
   }
 }
