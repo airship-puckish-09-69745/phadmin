@@ -289,8 +289,8 @@ export const matchDataMixin = {
                   }
                 }
               }
-              console.log("matchTicketsCfgs",this.configs.matchTicketsCfgs)
-              console.log("matchPropsCfgs",this.configs.matchPropsCfgs)
+              //console.log("matchTicketsCfgs",this.configs.matchTicketsCfgs)
+             // console.log("matchPropsCfgs",this.configs.matchPropsCfgs)
             }
 
           }
