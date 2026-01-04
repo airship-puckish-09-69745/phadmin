@@ -213,6 +213,10 @@ export default {
       })
     },
     setInfo() {
+      let tag_gid = this.form.tag_gid
+      if (this.form.tag_type === 5) {
+        tag_gid = 0
+      }
       const $this = this
       request({
         url: '/dataProxy/info',
@@ -220,7 +224,7 @@ export default {
         data: {
           Env: this.env,
           Uid: this.form.uid,
-          Gid: this.form.tag_gid,
+          Gid: tag_gid,
           TagId: this.form.tag_id,
           TagVal: this.form.tag_val,
           Path: '/tools/tag'
@@ -242,7 +246,6 @@ export default {
       this.form.tag_id = value[value.length - 1]
       this.form.tag_val = 1
       this.form.tag_type = value[0]
-
     },
     needTagValue() {
       if ([20000,20001,20002,20003,30001,30002].includes(this.form.tag_id)) {

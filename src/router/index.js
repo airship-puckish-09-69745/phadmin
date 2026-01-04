@@ -1242,6 +1242,12 @@ export const asyncRoutes = [
             name: 'pirateScratch_cfg',
             meta: { title: 'Pirate Scratch ◐' }
           },
+          {
+            path: 'pirateTap_cfg',
+            component: () => import('@/views/config/tableConfig/pirateTapConfig.vue'),
+            name: 'pirateTap_cfg',
+            meta: { title: 'P irate Tap ◐' }
+          },
 
         ]
       },

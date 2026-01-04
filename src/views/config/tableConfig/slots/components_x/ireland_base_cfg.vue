@@ -248,6 +248,7 @@ export default {
   },
   data() {
     var data = {
+      itemEnv: process.env.NODE_ENV,
       lock: false,
       recommendBet: this.slotsData.RecommendBet ? this.slotsData.RecommendBet * this.slotsData.BaseBet / 1000 : 0,
       initialWinTypeMinOdds: [],
