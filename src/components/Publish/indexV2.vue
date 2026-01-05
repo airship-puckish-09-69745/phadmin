@@ -264,7 +264,7 @@ export default {
     },
     compareType: { // 发布内容格式，支持：Array, Object, String, CustomizeConfig
       type: String,
-      default: ''
+      default: 'Array'
     },
     envEmpty: { // 是否区分环境，true表示不区分
       type: Boolean,
