@@ -1140,7 +1140,8 @@ export default {
         Versions: [
 
         ],
-        ScriptRuleDescription: {Platform:'',UserType:0,TrafficCtrl:0, PlatformList:[],UserTagRules:[]}
+        ScriptRuleDescription: {Platform:'',UserType:0,TrafficCtrl:0, PlatformList:[], UserTagRules:[]},
+        SwitchRule: {StatDays: 0, SpinMin: 0, BetMin: 0, TargetPlanId: 0}
       }
     },
     addPlan() {
