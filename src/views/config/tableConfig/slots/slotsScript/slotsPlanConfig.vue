@@ -878,7 +878,7 @@ export default {
         {'value': 50108, 'label': 'Slots小众系列'},
         {'value': 50201, 'label': '连线全线'},
         {'value': 50202, 'label': '连线固定线'},
-        {'value': 50203, 'label': '数量中奖'},
+        {'value': 50203, 'label': '无线数量中奖'},
         {'value': 50204, 'label': '无线相连中奖'},
         {'value': 50205, 'label': '其他'},
         {'value': 50301, 'label': '固定大奖'},
