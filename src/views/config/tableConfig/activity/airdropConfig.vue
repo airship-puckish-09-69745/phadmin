@@ -91,7 +91,7 @@
               </el-col>
               <el-col :span="12">
                 <el-form-item label="活动结束时间：" prop="endTime" :required="true">
-                  <el-date-picker v-model="edit.item.endTime" type="datetime"  placeholder="选择结束时间" value-format="timestamp" />
+                  <el-date-picker v-model="edit.item.endTime" type="datetime"  placeholder="选择结束时间" value-format="timestamp" @change="onChangeEndTime"/>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
@@ -1135,6 +1135,13 @@ export default {
         this.edit.item.userFilterCondition.userTagConfig.tagId = this.edit.userTagIdOptions[0].value
       }
       this.edit.item.userFilterCondition.userTagConfig.tagValue = 0
+    },
+    onChangeEndTime(val) {
+      if (val < this.edit.item.startTime) {
+        Message.error('活动结束时间不能早于活动开始时间')
+        this.edit.item.endTime = this.edit.item.startTime
+      }
+      this.edit.item.showEndTime = this.edit.item.endTime + 1000 * 60 * 60 * 24
     },
     changeStatus(id, status, msg) {
       // const $this = this
