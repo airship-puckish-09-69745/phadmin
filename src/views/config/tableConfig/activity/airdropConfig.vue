@@ -1188,10 +1188,6 @@ export default {
         Message.error('请填写总奖励')
         return
       }
-      if (this.edit.item.rewardConfig.rewardRanges.length === 0) {
-        Message.error('请先添加领奖区间配置')
-        return
-      }
       if (this.edit.item.taskConfig.taskType === 0 || this.edit.item.taskConfig.taskValueRequired === 0 || this.edit.item.taskConfig.taskText === '') {
         Message.error('请完善任务配置')
         return
