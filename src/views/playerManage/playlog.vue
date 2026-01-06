@@ -3654,16 +3654,16 @@
 
     <el-dialog title="PirateTap详情" :visible.sync="PirateTapDetailVisible" width="1200px">
       <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
-        <span style="float:left;">{{ '下注金额:' + PirateTapDetail.betMoney }}</span>
+        <span style="float:left;">{{ '下注金额：' + PirateTapDetail.betMoney }}</span>
+      </div>
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(255, 0, 0); ">
+        <span style="float:left;">{{ '获得倍率：' + PirateTapDetail.totalOdds/100 }}</span>
       </div>
       <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
-        <span style="float:left;">{{ '获得倍率:' + PirateTapDetail.totalOdds/100 }}</span>
+        <span style="float:left;">{{ '获得金币：' + PirateTapDetail.moneyChange }}</span>
       </div>
-      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
-        <span style="float:left;">{{ '获得金币:' + PirateTapDetail.moneyChange }}</span>
-      </div>
-      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
-        <span style="float:left;">{{ '获得Jackpot:' + PirateTapDetail.jpNum/100 }}</span>
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(255, 0, 0); ">
+        <span style="float:left;">{{ '获得Jackpot：' + PirateTapDetail.jpNum/100 }}</span>
       </div>
 
       <el-table ref="filterTable" :data="PirateTapDetail.roundDetail" border>
@@ -3671,7 +3671,11 @@
           <template slot-scope="scope">{{ getPirateTapScene(scope.row.roundMode) }}</template>
         </el-table-column>
         <el-table-column prop="odds" label="获得返奖倍率" width="128px">
-          <template slot-scope="scope">{{ scope.row.winOdds/100 }}</template>
+          <template slot-scope="scope">
+            <span :style="{color:'red'}">
+              {{ scope.row.winOdds > 0 ? scope.row.winOdds/100 : '' }}
+            </span>
+          </template>
         </el-table-column>
         <el-table-column prop="freeGame" label="奖励特殊游戏" width="128px">
           <template slot-scope="scope">{{ getPirateTapScene(scope.row.rewardPlayMode) }}</template>
@@ -3703,7 +3707,11 @@
           </template>
         </el-table-column>
         <el-table-column prop="jackpot" label="jackpot" width="128px">
-          <template slot-scope="scope">{{ scope.row.jackpotOdds/100 }}</template>
+          <template slot-scope="scope">
+            <span :style="{color:'red'}">
+              {{ scope.row.jackpotOdds > 0 ? scope.row.jackpotOdds/100 : '' }}
+            </span>
+          </template>
         </el-table-column>
         <el-table-column prop="cellData" label="3x5 cell" width="390px" align="left">
           <template slot-scope="scope" v-if="getPirateTapCellShow(scope.row)">
@@ -6591,14 +6599,14 @@ ul#sweeperShow li .showStep {
   display: grid;
   grid-template-columns: repeat(5, 1fr); /* 5列等宽 */
   gap: 10px; /* 格子间距 */
-  max-width: 40px; /* 容器最大宽度 */
+  max-width: 300px; /* 容器最大宽度 */
   /*margin: 20px auto;  上下边距20px，水平居中 */
   padding: 10px;
   background-color: #f8f9fa;
   border-radius: 8px;
-  width: 100%; /* 关键3：宽度撑满父容器 */
-  margin: 0; /* 关键4：移除自动居中 */
-  justify-content: left; /* 关键5：内容左对齐 */
+  width: 100%; /*宽度撑满父容器 */
+  margin: 0; /* 移除自动居中 */
+  justify-content: left; /*内容左对齐 */
 }
 
 .grid-item {
@@ -6609,11 +6617,13 @@ ul#sweeperShow li .showStep {
   align-items: center;
   justify-content: center;
   border-radius: 6px;
-  font-size: 18px;
+  font-size: 14px;
   font-weight: bold;
   color: #495057;
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
   transition: all 0.2s ease;
+  width: 40px; /* 直接设置宽度 */
+  height: 40px; /* 同步设置高度 */
 }
 
 .grid-item:hover {
