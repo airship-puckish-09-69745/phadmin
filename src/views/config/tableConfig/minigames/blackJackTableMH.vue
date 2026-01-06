@@ -3,6 +3,18 @@
       <el-row>
         <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" />
       </el-row>
+
+      <el-row v-if="isDevelopment()" type="flex" justify="center">
+        <el-button
+          type="primary"
+          plain
+          style="transform: translateX(150px);"
+          @click="openTool"
+          >
+          21点多手牌配牌工具
+        </el-button>
+      </el-row>
+
       <el-row :gutter="5" style="margin-top: 30px">
       <el-form ref="item" :model="item" label-width="200px">
 
@@ -101,14 +113,15 @@
             </el-row>
           </fieldset>
         </el-col>
-
+        
         <el-col style="margin-top:16px;" :offset="8" :span="8">
           <el-form-item>
             <el-button type="primary" @click="setData">保存</el-button>
           </el-form-item>
         </el-col>
       </el-form>
-    </el-row>
+      </el-row>
+
       <!--对比组件-->
       <compare ref="compare" />
     </div>
@@ -156,13 +169,17 @@
     },
     created() {
       console.log(process.env.VUE_APP_PROJECT_NAME)
-      if (process.env.VUE_APP_PROJECT_NAME === '菲1-开发环境' || process.env.VUE_APP_PROJECT_NAME === '菲1-线上环境' || process.env.VUE_APP_PROJECT_NAME === 'Zoo-线上环境') {
-      }
       this.getData()
     },
     methods: {
       getFullKey() {
         return 'CustomizeCfg_' + this.subKey
+      },
+      isDevelopment() {
+        return process.env.NODE_ENV === 'development'
+      },
+      openTool() {
+        window.open('http://192.168.6.16/blackjackmh.php', '_blank');
       },
       preProcess() {
         for (let i = 0; i < this.item.betAreas.length; i++) {

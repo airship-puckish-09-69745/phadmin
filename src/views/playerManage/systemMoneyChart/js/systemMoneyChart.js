@@ -55,6 +55,7 @@ export const systemMoneyChart = {
         105: 'Andar Bahar',
         106: 'PIGGY TAP',
         500: 'Gold Master',
+        501: 'Balloon Tap',
         107: 'Baccarat',
         108: 'Dropball',
         110: 'VideoPoker',
@@ -108,8 +109,11 @@ export const systemMoneyChart = {
         220: 'Golden Dragon',
         222: 'Lion Fortune',
         226: 'Fortune Wheel',
-        232: 'Mafia Mayhem',
+        230: 'Pahiyas Win\'s',
+        232: 'Mafia Wars',
         234: 'Fortune Tree',
+        236: 'Pacquiao Fortune',
+        238: 'Masskara Fortune',
         9: 'Teen Patti',
         126: 'Pusoy Wild',
         2031: 'TongitsMtt',
@@ -127,11 +131,13 @@ export const systemMoneyChart = {
         138: 'Chicken Go',
         139: 'Manny Punch',
         140: 'HiloPlus',
+        141: 'Pirate Scratch',
+        142: 'Pirate Tap',
         2033: 'PusoyMtt',
         10000: '汇总'
       },
-      defaultOrder: [10000, 15, 22, 28, 29, 2031, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103, 104, 105, 106, 500, 111, 6, 32, 2032,
-        35, 37, 107, 108, 110, 112, 115, 46, 47, 48, 49, 113, 118, 123, 117, 116, 126, 127, 128, 129, 132, 134, 135, 136, 137, 138, 139, 140, 2033] // 糖果传奇调用addGameNames特殊处理
+      defaultOrder: [10000, 15, 22, 28, 29, 2031, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103, 104, 105, 106, 500, 501, 111, 6, 32, 2032,
+        35, 37, 107, 108, 110, 112, 115, 46, 47, 48, 49, 113, 118, 123, 117, 116, 126, 127, 128, 129, 132, 134, 135, 136, 137, 138, 139, 140, 141, 230, 2033, 142] // 糖果传奇调用addGameNames特殊处理
     }
   },
   methods: {
@@ -155,6 +161,13 @@ export const systemMoneyChart = {
     },
     isSlots(o) {
       if ((o > 50 && o < 100) || (o > 149 && o < 500)) {
+        return true
+      } else {
+        return false
+      }
+    },
+    isActivity(o) {
+      if (o && o.Bet !== 0) {
         return true
       } else {
         return false

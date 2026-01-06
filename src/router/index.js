@@ -166,6 +166,12 @@ export const asyncRoutes = [
         meta: { title: 'Slots剧本监控V3', perm: 'SLOTS_PROCESS', noCache: true }
       },
       {
+        path: 'richCardRecord',
+        component: () => import('@/views/online/richCardRecord.vue'),
+        name: 'richCardRecord',
+        meta: { title: '富裕卡记录', perm: 'SLOTS_PROCESS', noCache: true }
+      },
+      {
         path: 'piggyStatistics',
         component: () => import('@/views/online/piggyStatistics.vue'),
         name: 'piggyStatistics',
@@ -1043,6 +1049,12 @@ export const asyncRoutes = [
             meta: { title: 'B accarat ◐' }
           },
           {
+            path: 'BalloonTap',
+            component: () => import('@/views/config/tableConfig/balloontap'),
+            name: 'BalloonTap',
+            meta: { title: 'B alloonTap◐' }
+          },
+          {
             path: 'blackJackTable',
             component: () => import('@/views/config/tableConfig/blackJackTable'),
             name: 'blackJackTable',
@@ -1216,13 +1228,25 @@ export const asyncRoutes = [
             path: 'mannyPunch_cfg',
             component: () => import('@/views/config/tableConfig/mannyPunchConfig.vue'),
             name: 'mannyPunch_cfg',
-            meta: { title: 'M anny Punch ◐' }
+            meta: { title: 'M anny Punch ◐', subKey: 'manny_punch_cfg' }
+          },
+          {
+            path: 'mannyPunch_playNow_cfg',
+            component: () => import('@/views/config/tableConfig/mannyPunchConfig.vue'),
+            name: 'mannyPunch_playNow_cfg',
+            meta: { title: 'M anny Punch - 试玩 ◐', subKey: 'manny_punch_playNow_cfg' }
           },
           {
             path: 'pirateScratch_cfg',
             component: () => import('@/views/config/tableConfig/pirateScratch.vue'),
             name: 'pirateScratch_cfg',
             meta: { title: 'Pirate Scratch ◐' }
+          },
+          {
+            path: 'pirateTap_cfg',
+            component: () => import('@/views/config/tableConfig/pirateTapConfig.vue'),
+            name: 'pirateTap_cfg',
+            meta: { title: 'P irate Tap ◐' }
           },
 
         ]
@@ -1415,10 +1439,11 @@ export const asyncRoutes = [
                 meta: { title: 'L ucky777' }
               },
               {
-                path: 'mafiamayhem_slots_cfg',
-                component: () => import('@/views/config/tableConfig/slots/mafiamayhem_slots_cfg'),
+                path: 'mafiawars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/mafiawars_slots_cfg.vue'),
                 name: 'mafiamayhem_slots_cfg',
-                meta: { title: 'M afiaMayhem' }
+                // 名字修改
+                meta: { title: 'M afiaWars' }
               },
               {
                 path: 'mahjongfortune_slots_cfg',
@@ -1460,7 +1485,13 @@ export const asyncRoutes = [
                 path: 'pacquiaofortune_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/pacquiaofortune_slots_cfg'),
                 name: 'pacquiaofortune_slots_cfg',
-                meta: { title: 'P acquiaoFortune' }
+                meta: { title: 'P acquiaoFortune', gameKey: 'pacquiaofortune' },
+              },
+              {
+                path: 'pacquiaofortuneplaynow_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/pacquiaofortune_slots_cfg'),
+                name: 'pacquiaofortuneplaynow_slots_cfg',
+                meta: { title: 'P acquiaoFortune试玩', gameKey: 'pacquiaofortuneplaynow' }
               },
               {
                 path: 'pahiyaswins_slots_cfg',
@@ -2180,7 +2211,7 @@ export const asyncRoutes = [
           }
         ]
       },
-      {
+      /*{
         path: 'easterConfig',
         component: () => import('@/views/empty'),
         name: 'easterConfig',
@@ -2193,7 +2224,7 @@ export const asyncRoutes = [
             meta: { title: '复活节活动配置', noCache: true }
           }
         ]
-      },
+      },*/
       {
         path: 'newbieConfig',
         component: () => import('@/views/empty'),
@@ -2208,7 +2239,7 @@ export const asyncRoutes = [
           }
         ]
       },
-      {
+      /*{
         path: 'airdropConfig',
         component: () => import('@/views/empty'),
         name: 'airdropConfig',
@@ -2221,8 +2252,8 @@ export const asyncRoutes = [
             meta: { title: '空投活动配置', noCache: true }
           }
         ]
-      },
-      {
+      },*/
+      /*{
         path: 'redBagConfig',
         component: () => import('@/views/empty'),
         name: 'redBagConfig',
@@ -2235,7 +2266,7 @@ export const asyncRoutes = [
             meta: { title: '红包雨活动配置', noCache: true }
           }
         ]
-      },
+      },*/
       {
         path: 'activityMap',
         component: () => import('@/views/empty'),
@@ -2270,18 +2301,18 @@ export const asyncRoutes = [
         name: 'tongitsHunter',
         meta: { title: 'TongitsHunter配置', noCache: true }
       },
-      {
+      /*{
         path: 'kingOfPot',
         component: () => import('@/views/config/tableConfig/activity/kingOfPot/index.vue'),
         name: 'kingOfPot',
         meta: { title: 'KingOfPot配置', noCache: true }
-      },
-      {
+      },*/
+      /*{
         path: 'sevenDayTreasureVault',
         component: () => import('@/views/config/tableConfig/activity/sevenDayTreasureVaultConfig.vue'),
         name: 'sevenDayTreasureVault',
         meta: { title: '7日留存活动配置', noCache: true }
-      },
+      },*/
       {
         path: 'slotsRankConfig',
         component: () => import('@/views/config/tableConfig/activity/slotsRankCfg.vue'),
@@ -2532,12 +2563,12 @@ export const asyncRoutes = [
               }
             ]
           },
-          {
-            path: 'matchTcc',
-            component: () => import('@/views/matchManage/matchOperations/matchTcc.vue'),
-            name: 'matchTcc',
-            meta: { title: 'Tcc名单配置', noCache: true }
-          },
+          // {
+          //   path: 'matchTcc',
+          //   component: () => import('@/views/matchManage/matchOperations/matchTcc.vue'),
+          //   name: 'matchTcc',
+          //   meta: { title: 'Tcc名单配置', noCache: true }
+          // },
           {
             path: 'matchBroadcast',
             component: () => import('@/views/matchManage/matchOperations/matchBroadcast/index.vue'),
@@ -2576,6 +2607,7 @@ export const asyncRoutes = [
               }
             ],
           },
+
 
         ]
       },
@@ -2956,7 +2988,12 @@ export const asyncRoutes = [
             name: 'playlog_baccarat',
             meta: { title: 'B accarat ◐', gid: 107 }
           },
-
+          {
+            path: 'playlog_balloontap',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_balloontap',
+            meta: { title: 'B alloonTap ◐', gid: 501 }
+          },
           {
             path: 'playlog_blackjack',
             component: () => import('@/views/playerManage/playlog'),
@@ -3119,6 +3156,24 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_mannypunch',
             meta: { title: 'M anny Punch ◐', gid: 139 }
+          },
+          {
+            path: 'playlog_mannypunch_playNow',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_mannypunch_playNow',
+            meta: { title: 'M anny Punch - 试玩 ◐', gid: 1139 }
+          },
+          {
+            path: 'playlog_pirateScratch',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_pirateScratch',
+            meta: { title: 'P irate Scratch ◐', gid: 141 }
+          },
+          {
+            path: 'playlog_pirateTap',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_pirateTap',
+            meta: { title: 'P irate Tap ◐', gid: 142 }
           }
 
           /*
@@ -3334,10 +3389,10 @@ export const asyncRoutes = [
             meta: { title: 'L ucky777', gid: 88 }
           },
           {
-            path: 'mafiamayhem_slots_log',
+            path: 'mafiawars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
-            name: 'mafiamayhem_slots_log',
-            meta: { title: 'M afiaMayhem', gid: 232 }
+            name: 'mafiawars_slots_log',
+            meta: { title: 'M afiaWars', gid: 232 }
           },
           {
             path: 'mahjongfortune_slots_log',
@@ -3380,6 +3435,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'pacquiaofortune_slots_log',
             meta: { title: 'P acquiaoFortune', gid: 236 }
+          },
+          {
+            path: 'pacquiaofortuneplaynow_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'pacquiaofortuneplaynow_slots_log',
+            meta: { title: 'P acquiaoFortune试玩', gid: 1236 }
           },
           {
             path: 'pahiyaswins_slots_log',
@@ -4355,6 +4416,24 @@ export const asyncRoutes = [
             component: () => import('@/views/devTools/testTag'),
             name: 'testTag',
             meta: { title: '用户标签测试工具', perm: 'CFG_MANAGEMENT' }
+          },
+          {
+            path: 'betSummary',
+            component: () => import('@/views/devTools/betSummary'),
+            name: 'betSummary',
+            meta: { title: 'CP投注统计', perm: 'CFG_MANAGEMENT' }
+          },
+          {
+            path: 'slotsUserTag',
+            component: () => import('@/views/devTools/slotsUserTag'),
+            name: 'slotsUserTag',
+            meta: { title: '老虎机用户标签查询', perm: 'CFG_MANAGEMENT' }
+          },
+          {
+            path: 'slotsUserScriptPlan',
+            component: () => import('@/views/devTools/slotsUserScriptPlan'),
+            name: 'slotsUserScriptPlan',
+            meta: { title: '老虎机剧本方案查询', perm: 'CFG_MANAGEMENT' }
           }
         ]
       },
@@ -4401,6 +4480,21 @@ export const asyncRoutes = [
         component: () => import('@/views/devTools/allocTools'),
         name: 'allocTools',
         meta: { title: 'Alloc开发工具' }
+      }
+    ]
+  },
+  {
+    path: '/marketing',
+    component: Layout,
+    alwaysShow: true,
+    redirect: 'noRedirect',
+    meta: { title: '营销管理', icon: 'el-icon-copy-document', perm: 'PLAYLOG_MANAGEMENT' },
+    children: [
+      {
+        path: 'marketingFailList',
+        component: () => import('@/views/marketing/failLog.vue'),
+        name: 'marketingFailList',
+        meta: { title: '营销失败列表' }
       }
     ]
   },

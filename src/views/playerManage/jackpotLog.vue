@@ -178,7 +178,7 @@
 
     <el-dialog
       v-if="(searchForm.gameId === 150 || searchForm.gameId === 156 || searchForm.gameId === 157 || searchForm.gameId === 166 || searchForm.gameId === 174 || searchForm.gameId === 196 ||
-      searchForm.gameId === 204 || searchForm.gameId === 210 || searchForm.gameId === 216 || searchForm.gameId === 232) && searchForm.level === 0"
+      searchForm.gameId === 204 || searchForm.gameId === 210 || searchForm.gameId === 216 || searchForm.gameId === 232 ) && searchForm.level === 0"
       title="奖池信息"
       :modal="false"
       :visible.sync="prizeVisible"
@@ -453,7 +453,7 @@ export default {
   data() {
     return {
       submap: { 90: 'moneycoming_slots_base', 150: 'supergemiii_slots_base', 166: 'firelink_slots_base', 174: 'treasurebowl_slots_base', 196: 'goldminer_slots_base', 204: 'spacetreasure_slots_base',
-        210: 'luckyspirits_slots_base', 216: 'phoenix_slots_base',232: 'mafiamayhem_slots_base' },
+        210: 'luckyspirits_slots_base', 216: 'phoenix_slots_base',232: 'mafiawars_slots_base' },
       searchForm: {
         date: $libDate.GetDayBegin(new Date().getTime()),
         gameId: 25,
@@ -488,18 +488,17 @@ export default {
         { 'value': 186, 'label': 'MahjongJackpot' },
         { 'value': 196, 'label': 'GoldMiner' },
         { 'value': 204, 'label': 'SpaceTreasure' },
-        { 'value': 232, 'label': 'MafiaMayhem' },
+        { 'value': 232, 'label': 'MafiaWars' },
         { 'value': 128, 'label': 'Tongits JP' },
         { 'value': 129, 'label': 'Live Color' },
         { 'value': 132, 'label': '新版扫雷' },
         { 'value': 210, 'label': 'LuckySpirits' },
-        { 'value': 232, 'label': 'MafiaMayhem' },
         { 'value': 216, 'label': 'Phoenix' },
         { 'value': 134, 'label': 'Pusoy JP' },
         { 'value': 135, 'label': 'SUPER COLOR' },
         { 'value': 140, 'label': 'HiloPlus' },
         { 'value': 500, 'label': 'GoldMaster' },
-        { 'value': 139, 'label': 'Manny Punch' },
+        { 'value': 139, 'label': 'Manny Punch' }
       ],
       appConfig: [
         { 'value': 0, 'label': '全部' },

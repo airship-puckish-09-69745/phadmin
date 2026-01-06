@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-row>
       <el-form :model="item" label-width="80px" :inline="true" size="small">
-        <el-form-item v-if="this.env == 'test'" v-model="appId" label="App：" :required="true" label-width="80px">
+        <el-form-item v-model="appId" label="App：" :required="true" label-width="80px">
           <el-select v-model="appId" placeholder="请选择" size="mini">
             <el-option label="所有App" :value="0" />
             <el-option
@@ -268,6 +268,7 @@ const filterMap = {
     2010: '比赛报名',
     2011: '比赛结束',
     2012: '金币补偿',
+    2013: '中JACKPOT',
     2014: '下注并派彩',
     3001: '比赛结束，营销接口发奖',
     3002: '德州比赛营销接口派彩',
@@ -302,7 +303,7 @@ export default {
       clientDB: new ClientTableData([], 10, filterMap),
       libShow: $libShow,
       actTypeSort: [1000, 1001, 2, 15, 16, 18, 19, 20, 1, 7, 11, 12, 13, 14, 17, 29, 30, 31, 32, 60, 61,
-        2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 10000],
+        2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 10000],
 
       item: {
         Uid: 0
@@ -341,6 +342,7 @@ export default {
         2010,
         2011,
         2012,
+        2013,
         2014,
       ],
       marketType: [ // 营销金流类型

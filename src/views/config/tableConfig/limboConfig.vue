@@ -5,9 +5,11 @@
       <el-col :span="18">
         <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" />
       </el-col>
-      <el-col :span="2">
+      
+      <el-col :span="2" v-if="IsDev()">
         <el-button type="primary" @click="dialogFormVisible= true" size="mini" > 测试配置</el-button>
       </el-col>
+      
     </el-row>
 
     <el-row>
@@ -32,7 +34,12 @@
                 <el-form :inline="true">
                   <el-col :span="8">
                     <el-form-item label="保底奖池抽水">
-                      <el-input v-model.number="item.FeeRate" size="mini" ><template  slot="append">%</template></el-input>
+                      <el-input v-model="item.FeeRate" size="mini" ><template  slot="append">%</template></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="高倍率展示概率">
+                      <el-input v-model="item.ShowHighOddsRate" size="mini" ><template  slot="append">%</template></el-input>
                     </el-form-item>
                   </el-col>
                 </el-form>
@@ -63,6 +70,16 @@
                   <el-col :span="8">
                     <el-form-item label="<=">
                       <el-input v-model.number="item.RewardMulMax" size="mini" ><template  slot="append">X</template></el-input>
+                    </el-form-item>
+                  </el-col>
+                </el-form>
+              </el-col>
+              
+              <el-col :span="24" :offset="5">
+                <el-form :inline="true">
+                  <el-col :span="8">
+                    <el-form-item label="快选推荐倍率:">
+                      <el-input v-model="item.RecommendMultiple" size="mini" ><template  slot="append">X</template></el-input>
                     </el-form-item>
                   </el-col>
                 </el-form>
@@ -430,6 +447,7 @@ export default {
         RobotCfg:[], //机器人配置
         RobotBetCfg:{},
         ReChoiceCfg:{},
+        RecommendMultiple:[],//推荐下注倍率
       },
       form: {},
       subKey: 'limbo_cfg',
@@ -513,13 +531,26 @@ export default {
 
             item.MaxBet /= 1000
             item.CarryLower /= 1000
-            item.RTP /= 100 //四位小数
+            if (this.IsPHAuditEnv()) {
+              item.ShowHighOddsRate /= 1
+              item.FeeRate /= 1
+              item.RTP /= 100 //小数
+            }else{
+              item.ShowHighOddsRate /= 100
+              item.FeeRate /= 1000
+              item.RTP /= 1000 //三位小数
+            }
             item.RobotCarryMin /= 1000
             item.RobotCarryMax /= 1000
             item.ReChoiceCfg.LowLotteryPoolReChoice /= 1000
             item.ReChoiceCfg.HighLotteryPoolReChoice /= 1000
             //item.RobotBetCfg.BetMultipleMin /=  100
             //item.RobotBetCfg.BetMultipleMax /=  100
+            let recommendMultiple = []
+            for (const o of item.RecommendMultiple){
+              recommendMultiple.push(o/100)
+            }
+            item.RecommendMultiple = recommendMultiple.join(',')
 
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data)
@@ -557,13 +588,26 @@ export default {
 
       ret.MaxBet *= 1000
       ret.CarryLower *= 1000
-      ret.RTP *= 100
+      if (this.IsPHAuditEnv()) {
+        ret.ShowHighOddsRate *= 1
+        ret.FeeRate *= 1
+        ret.RTP *= 100
+      }else{
+        ret.ShowHighOddsRate *= 100
+        ret.FeeRate *= 1000
+        ret.RTP *= 1000
+      }
+      
       ret.RobotCarryMin *= 1000
       ret.RobotCarryMax *= 1000
       ret.ReChoiceCfg.LowLotteryPoolReChoice *= 1000
       ret.ReChoiceCfg.HighLotteryPoolReChoice *= 1000
       //ret.RobotBetCfg.BetMultipleMin *= 100
       //ret.RobotBetCfg.BetMultipleMax *= 100
+      ret.RecommendMultiple = []
+      for (const oElement of this.item.RecommendMultiple.split(',')) {
+        ret.RecommendMultiple.push(oElement * 100)
+      }
 
       //测试
       if (!ret.openTest || ret.openTest=="1"){
@@ -700,6 +744,9 @@ export default {
     //是否是审核服
     IsPHAuditEnv(){
       return this.env == 'ph_audit'
+    },
+    IsDev() {
+      return process.env.VUE_APP_PROJECT_NAME === '菲1-开发环境'
     }
   }
 }

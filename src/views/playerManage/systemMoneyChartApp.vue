@@ -1,17 +1,47 @@
 <template xmlns="http://www.w3.org/1999/html">
   <div class="app-container">
-    <el-row class="search-filter">
-      <el-col :offset="2" :span="2">
-        <el-button size="mini" @click="getInfo(10000, 1)">刷新</el-button>
-      </el-col>
-      <el-col :span="20">
+    <el-row>
+      <el-col :offset="2" :span="20">
         平台:
         <el-button-group>
-          <el-button v-for="p in appOptions" :type="p.type" size="mini" @click="changeApp(p.value)">{{ p.name }}</el-button>
+          <el-button
+            v-for="p in displayedAppOptions"
+            :key="p.value"
+            :type="p.type"
+            size="mini"
+            @click="changeApp(p.value)"
+          >
+            {{ p.name }}
+          </el-button>
+          <el-dropdown
+            v-if="hasMoreApps"
+            trigger="click"
+            @command="handleAppSelect"
+          >
+            <el-button
+              size="mini"
+              :type="isOtherAppSelected ? 'success' : 'info'"
+            >
+              {{ otherButtonLabel }}
+            </el-button>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item
+                v-for="p in hiddenAppOptions"
+                :key="p.value"
+                :command="p.value"
+                :class="{ 'selected-app': p.value === appId }"
+              >
+                {{ p.name }}
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
         </el-button-group>
       </el-col>
+      <el-col :span="2">
+        <el-button size="mini" @click="getInfo(10000, 1)">刷新</el-button>
+      </el-col>
     </el-row>
-    <el-row>
+    <el-row style="margin-top: 5px;">
       <el-col :offset="2" :span="11">
         筛选：
         <el-button-group>
@@ -30,7 +60,7 @@
         </el-button-group>
       </el-col>
     </el-row>
-    <el-row class="panel-group" :gutter="10" v-loading="showLoading">
+    <el-row v-loading="showLoading" class="panel-group" :gutter="10">
       <el-col v-if="HasACC()" :span="4" :xs="6" class="card-panel-col">
         <div
           :class="gid===10000?'card-panel card-panel_selected':'card-panel card-panel_selected_not'"
@@ -347,7 +377,8 @@ export default {
       showZoogame: false,
       appList: [],
       appOptions: [],
-      showLoading: false
+      showLoading: false,
+      showAppNum: 3 // 显示前 n 个应用
     }
   },
   computed: {
@@ -355,7 +386,34 @@ export default {
       'name',
       'avatar',
       'roles'
-    ])
+    ]),
+    displayedAppOptions() {
+      // 显示前n个应用
+      return this.appOptions.slice(0, this.showAppNum)
+    },
+
+    hiddenAppOptions() {
+      // 隐藏其余的应用
+      return this.appOptions.slice(this.showAppNum)
+    },
+
+    hasMoreApps() {
+      // 判断是否有更多应用需要隐藏
+      return this.appOptions.length > this.showAppNum
+    },
+    isOtherAppSelected() {
+      // 判断当前选中的 appId 是否在隐藏的应用列表中
+      return this.hiddenAppOptions.some(app => app.value === this.appId)
+    },
+
+    otherButtonLabel() {
+      // 如果选中的是其他应用，则显示应用名，否则显示"其他"
+      if (this.isOtherAppSelected) {
+        const selectedApp = this.hiddenAppOptions.find(app => app.value === this.appId)
+        return selectedApp ? '其他-' + selectedApp.name : '其他'
+      }
+      return '其他'
+    }
   },
   // mixins: [IsMars],
   created() {
@@ -374,7 +432,7 @@ export default {
   },
   methods: {
     async getAllData() {
-      await this.getAppInfo()
+      this.getAppInfo()
 
       await this.getAuthorityData()
 
@@ -415,12 +473,14 @@ export default {
         const others = []
 
         for (let i = 0; i < this.defaultOrder.length; i++) {
-          if (this.isPoker(this.defaultOrder[i])) {
-            pokers.push(this.defaultOrder[i])
-          } else if (this.isSlots(this.defaultOrder[i])) {
-            slots.push(this.defaultOrder[i])
-          } else {
-            others.push(this.defaultOrder[i])
+          if (systemMoneyChart.methods.isActivity(this.summary[this.defaultOrder[i]])) {
+            if (this.isPoker(this.defaultOrder[i])) {
+              pokers.push(this.defaultOrder[i])
+            } else if (this.isSlots(this.defaultOrder[i])) {
+              slots.push(this.defaultOrder[i])
+            } else {
+              others.push(this.defaultOrder[i])
+            }
           }
         }
         if (this.selectType === 2) {
@@ -473,11 +533,11 @@ export default {
         if (IsProd()) { // 线上
           this.defaultOrder.push(76, 80, 78, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162, 164, 166, 170, 172,
             174, 176, 178, 180, 182, 168, 186, 184, 188, 190, 192, 194, 196, 198, 200, 202, 204, 206, 208, 210, 212, 214, 216, 218, 220,
-            222, 226, 228, 232, 234)
+            222, 226, 228, 232, 234, 236, 238)
         } else {
           this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162, 164, 172, 188, 202,
             198, 192, 180, 166, 170, 176, 182, 174, 186, 178, 194, 184, 168, 196, 190, 200, 204, 206, 208, 210, 212, 214, 216, 218, 220, 222,
-            226, 228, 232, 234)
+            226, 228, 232, 234, 236, 238)
         }
       }
       if (this.showZoogame) {
@@ -858,46 +918,101 @@ export default {
       }
     },
     getAppInfo() {
-      const $this = this
-      return request({
-        url: '/thirdparties/all',
-        method: 'get',
-        data: {},
-        async: false
-      }).then(response => {
-        if (response.RetCode === 0) {
-          for (const p of response.Data) {
-            if (p.Status !== 2) {
-              continue
-            }
-            this.appList.push(p)
-          }
+      let apps = [
+        {
+          'ID': 0,
+          'Account': '所有'
+        },
+        {
+          'ID': 1000002,
+          'Account': '内部'
+        },
+        {
+          'ID': 1000003,
+          'Account': 'BP test'
+        },
+        {
+          'ID': 1000049,
+          'Account': 'ZooGameDev'
         }
-        $this.initAppOptions()
-      })
+      ]
+      if (process.env.VUE_APP_PROJECT_NAME === '菲1-线上环境') {
+        if (this.env == 'test') {
+          apps = [
+            {
+              'ID': 0,
+              'Account': '所有'
+            },
+            {
+              'ID': 1000003,
+              'Account': 'BP UAT'
+            },
+            {
+              'ID': 1000012,
+              'Account': 'CP UAT（1000012）'
+            },
+            {
+              'ID': 1000014,
+              'Account': 'CP UAT（1000014）'
+            },
+            {
+              'ID': 1000002,
+              'Account': '内部'
+            }
+          ]
+        } else {
+          apps = [
+            {
+              'ID': 0,
+              'Account': '所有'
+            },
+            {
+              'ID': 1000005,
+              'Account': 'BP正式'
+            },
+            {
+              'ID': 2000005,
+              'Account': 'CP正式'
+            },
+            {
+              'ID': 1000002,
+              'Account': '内部'
+            }
+          ]
+        }
+      }
+      this.appList = apps
+
+      this.initAppOptions(this.appList)
     },
     initAppOptions() {
       if (this.appList.length === 0) {
         return
       }
+
       const item = []
       let found = false
       for (const p of this.appList) {
         if (p.ID === this.appId) {
           found = true
         }
+        // 更新按钮类型逻辑
+        const isSelected = p.ID === this.appId
         item.push({
           name: p.Account,
           value: p.ID,
-          intro: p.Intro,
-          type: p.ID === this.appId ? 'success' : 'info'
+          type: isSelected ? 'success' : 'info'
         })
       }
       this.appOptions = item
       if (!found) {
+        // 如果当前appId不在列表中，默认选择第一个
         this.appId = this.appList[0].ID
         this.initAppOptions()
       }
+    },
+    handleAppSelect(value) {
+      this.changeApp(value)
     },
     changeApp(app) {
       console.log('changeApp', app)
@@ -1009,4 +1124,9 @@ export default {
     }
   }
 }
+.selected-app {
+  background-color: #90EE90 !important;
+  color: #fff !important;
+}
+
 </style>

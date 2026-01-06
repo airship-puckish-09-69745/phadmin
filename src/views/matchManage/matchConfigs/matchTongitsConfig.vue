@@ -71,8 +71,8 @@
       <div style="float: right; margin-bottom: 10px;">
         <el-button size="mini" icon="el-icon-setting" @click="handleShowDevTools()">开发工具</el-button>
         <el-button size="mini" icon="el-icon-plus" @click="showForm(0)">添加比赛</el-button>
-        <el-button size="mini" icon="el-icon-document-copy" @click="copyAll">复制整日</el-button>
-        <el-button size="mini" icon="el-icon-delete" @click="expireAll">下架过往</el-button>
+       <!-- <el-button size="mini" icon="el-icon-document-copy" @click="copyAll">复制整日</el-button> -->
+       <!-- <el-button size="mini" icon="el-icon-delete" @click="expireAll">下架过往</el-button> -->
         <el-button size="mini" icon="el-icon-delete" @click="deleteAllOff">清理下架</el-button>
       </div>
       <el-table
@@ -81,6 +81,7 @@
         :header-cell-style="libShow.DefaultTableHeadClass"
         :cell-style="libShow.TableCell(10)"
         style="width: 100%"
+        @sort-change="handleSortChange"
       >
         <el-table-column
           prop="show_appinfo"
@@ -113,15 +114,22 @@
             <DateTimeShow :show-type="2" :timestamp="row.start_time" />
           </template>
         </el-table-column>
-        <el-table-column
-          prop="end_time"
-          label="结束时间"
-        >
+        <el-table-column prop="end_time" label="结束时间" sortable >
           <template slot-scope="{row}">
-            <DateTimeShow :show-type="2" :timestamp="row.end_time" />
+            <DateTimeShow :show-type="2" :timestamp="row.end_time"  />
           </template>
         </el-table-column>
-
+        <el-table-column
+          prop="IsMatchOver"
+          label="是否结束"
+          width="100"
+        >
+          <template slot-scope="scope">
+            <span :style="{ color: IsMatchOver(scope.row.end_time) === '是' ? '#f56c6c' : '#409eff' }">
+              {{ IsMatchOver(scope.row.end_time) }}
+            </span>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="sort"
           label="赛事排序"
@@ -481,6 +489,9 @@
           </el-form-item>
           <el-form-item  label="提前显示时间(秒)：" :required="true">
             <el-input v-model.number="editForm.data.preShowSeconds" style="width: 200px;" placeholder="请填写提前显示时间" />
+            <span v-if="(editForm.data.opentMatchType === 2)&&(editForm.data.repeatType === 0 || editForm.data.repeatType === 1) && getCalculatedStartTime()" style="color: #409eff; margin-left: 10px;">
+              提前显示时间: {{ getCalculatedStartTime() }}
+            </span>
           </el-form-item>
           <el-form-item v-if="envProjectName === 'ph_audit' && editForm.data.opentMatchType===1" label="创建时间(秒)" :required="true">
             <el-input v-model.number="editForm.data.preShowSeconds" style="width: 200px;" placeholder="请填写创建时间" />
@@ -493,6 +504,9 @@
           </el-form-item>
           <el-form-item v-if="editForm.data.opentMatchType===2" label="延迟进入时间(秒)：" :required="true">
             <el-input v-model.number="editForm.data.delayEnterSeconds" style="width: 200px;" placeholder="请填写延迟进入时间" />
+          </el-form-item>
+          <el-form-item v-if="editForm.data.opentMatchType===2" label="延迟报名时间(秒)：" :required="true">
+            <el-input v-model.number="editForm.listExtra.delaySignUpSeconds" style="width: 200px;" placeholder="请填写延迟报名时间" />
           </el-form-item>
         </fieldset>
         <fieldset>
@@ -1103,6 +1117,7 @@ export default {
         },
         listExtra:{
           tableSceneId: 0,  //牌桌场景ID
+          delaySignUpSeconds: 0, //延迟报名时间(秒)
         },
       },
 
@@ -1137,7 +1152,10 @@ export default {
         associateKey: '推荐方案',
         dcReport: '是否上报数据中心',
         propsId: '道具ID',
-        listExtra: '列表拓展信息',
+        listExtra: {
+          tableSceneId: '牌桌场景ID',
+          delaySignUpSeconds: '延迟报名时间(秒)',
+        },
       },
       singleCopy: {
         id: 0,
@@ -1173,6 +1191,42 @@ export default {
     // 自动清理过期配置
   },
   methods: {
+    getCalculatedStartTime() {
+      try {
+        let baseTime = null
+        // repeatType = 0: 单场，使用 onceTime[0]
+        if (this.editForm.data.repeatType === 0) {
+          if (this.editForm.loopDetail.onceTime && this.editForm.loopDetail.onceTime[0]) {
+            baseTime = new Date(this.editForm.loopDetail.onceTime[0])
+          }
+        }
+        // repeatType = 1: 单天单场循环，使用 loopStartDate + single.stime
+        else if (this.editForm.data.repeatType === 1) {
+          if (this.editForm.loopDetail.loopStartDate && this.editForm.loopDetail.single.stime) {
+            const date = new Date(this.editForm.loopDetail.loopStartDate)
+            const timeParts = this.editForm.loopDetail.single.stime.split(':')
+            if (timeParts.length >= 2) {
+              date.setHours(parseInt(timeParts[0]), parseInt(timeParts[1]), parseInt(timeParts[2] || 0))
+              baseTime = date
+            }
+          }
+        }
+
+        if (!baseTime) {
+          return ''
+        }
+
+        // 減去提前显示时间
+        const preShowSeconds = this.editForm.data.preShowSeconds || 0
+        const calculatedTimestamp = Math.floor(baseTime.getTime() / 1000) - preShowSeconds
+
+        // 使用項目中已有的時間格式化方法
+        return $libDate.FormateSecondStr(calculatedTimestamp, 2)
+      } catch (e) {
+        console.error('计算开赛时间错误:', e)
+        return ''
+      }
+    },
     initRankRewards() {
       return [
         {
@@ -1299,7 +1353,7 @@ export default {
                   'ruleType': objs.list[i].rule_type
                 })
                 const stage_detail = JSON.parse(objs.list[i].stage_detail)
-                // console.log("打立初级信息 ", stage_detail)
+                console.log("打立初级信息 ", stage_detail)
                 for (var j = 0; j < stage_detail.length; j++) {
                   if (stage_detail[j].system_type === 1) { // 打立出局
                     // console.log("id:" + objs.list[i].id + " min:" + stage_detail[j].system_strike_out.end_rule.match_minute)
@@ -1679,6 +1733,10 @@ export default {
     },
     showForm(id) {
       if (id === 0) {
+        if(this.tableData.length >=100){
+          Message.error('当前赛事配置已达上限100个，请删除不需要的配置后再新增！')
+          return
+        }
         this.disableOpenType(false, 0)
         this.editForm.title = '新增比赛配置'
         this.editForm.uidObList = ''
@@ -1806,6 +1864,7 @@ export default {
         }
         this.editForm.listExtra ={
           tableSceneId:0,
+          delaySignUpSeconds: 0,
         }
         this.editForm.isAdd = true
         this.showCsCfgs = this.csCfgs
@@ -2153,7 +2212,9 @@ export default {
         request({
           url: '/matchconfig/match/config/delete/alloff',
           method: 'post',
-          data: {}
+          data: {
+            Gid:2031,
+          }
         }).then(response => {
           if (response.RetCode === 0) {
             Message.success('清理已下架的比赛配置成功！')
@@ -2235,13 +2296,15 @@ export default {
                     str = str + '(' + objs.list[i].show_name + ')'
                   }
                   if (IsNewTicketProp(objs.list[i].item_type)) {
-                    console.log("ticketID ",objs.list[i].id ,objs.list[i])
                     if (objs.list[i].item_extra.length <=  0) {
                       continue
                     }
                     const exitData = JSON.parse(objs.list[i].item_extra)
-                    console.log("ticketID 2222 exitData   ",objs.list[i].id,exitData)
+                    //console.log("ticketID 2222 exitData   ",objs.list[i].id,exitData)
                    if(exitData === null || exitData === undefined || exitData.appId === 0 || typeof exitData.appId === 'undefined'){
+                      continue
+                    }
+                    if (!ticketConfigList.hasOwnProperty(exitData.appId)) {
                       continue
                     }
                     let ticket = ticketConfigList[exitData.appId].find(ticket => ticket.ticketId === objs.list[i].id)
@@ -2277,8 +2340,8 @@ export default {
                       })
                     }
                   }
-                  console.log("matchTicketsCfgs",this.matchTicketsCfgs)
-                 console.log("matchPropsCfgs",this.matchPropsCfgs)
+                  //console.log("matchTicketsCfgs",this.matchTicketsCfgs)
+                 //console.log("matchPropsCfgs",this.matchPropsCfgs)
                 }
               }
             }
@@ -2366,7 +2429,23 @@ export default {
       }else{
         this.editForm.signExtra.gtccWhiteList.data = ''
       }
+      if(this.editForm.data.repeatType == 0){
+        // 检查时间控件是否已选择
+        if (!this.editForm.loopDetail.onceTime || !Array.isArray(this.editForm.loopDetail.onceTime) ||
+            this.editForm.loopDetail.onceTime[0] == null || this.editForm.loopDetail.onceTime[1] == null ||
+            this.editForm.loopDetail.onceTime[0] == '' || this.editForm.loopDetail.onceTime[1] == '') {
+          this.errmsg('开赛时间不能为空')
+          return false
+        }
+        const bTime = Math.floor(this.editForm.loopDetail.onceTime[0] / 1000)
+        const eTime = Math.floor(this.editForm.loopDetail.onceTime[1] / 1000)
 
+        //开赛时间or结束时间 不能小于当前时间一年之前的时间
+        if (bTime < Date.now() / 1000 - 365 * 24 * 60 * 60 || eTime < Date.now() / 1000 - 365 * 24 * 60 * 60) {
+          this.errmsg('开赛时间或结束时间不能小于当前时间一年之前的时间')
+          return false
+        }
+      }
       if (this.editForm.data.repeatType == 1) {
         if (Math.floor(this.timeToSec(this.editForm.loopDetail.single.etime)) - Math.floor(this.timeToSec(this.editForm.loopDetail.single.stime)) < 600) {
           this.errmsg('比赛开始结束间隔要大于10分钟！')
@@ -2434,6 +2513,11 @@ export default {
           this.errmsg('延迟进入时间不能大于打立出局阶段总时长')
           return false
         }
+        if ((endMin > 0) && ((this.editForm.listExtra.delaySignUpSeconds / 60) > endMin)) {
+          this.errmsg('延迟报名时间不能大于打立出局阶段总时长')
+          return false
+        }
+
 
         const endNum = this.endNumCfgs.get(this.editForm.data.csId)
         const promoteNum = this.promoteNumCfgs.get(this.editForm.data.csId)
@@ -2505,6 +2589,9 @@ export default {
       }
 
       if (!this.reubyConfigCheck()) {
+        return false
+      }
+      if(!this.checkDelaySignUpConfig()){
         return false
       }
 
@@ -3035,6 +3122,19 @@ export default {
         this.errmsg('rebuy截止轮次大于当前赛制打立阶段的最大轮次,请检查配置')
         return false
       }
+      //如果开启了延迟报名时间 则rebuy总时长必须大于延迟报名时间
+      if(this.editForm.listExtra.delaySignUpSeconds >0){
+        let rebuyTotalSecs = 0
+        for (let i = 0; i < this.editForm.signExtra.reubyExtra.reubyRound; i++) {
+          rebuyTotalSecs += disuseScores[i].duration
+        }
+        //note 多加10s判断，因为比赛服务多给了10s的缓冲时间
+        if (this.editForm.listExtra.delaySignUpSeconds + 10 >= rebuyTotalSecs) {
+          this.errmsg('延迟报名时间不能大于等于rebuy总时长')
+          return false
+        }
+
+      }
       return true
     },
 
@@ -3198,6 +3298,46 @@ export default {
           break;
       }
       return  true
+    },
+
+    handleSortChange({ prop, order }) {
+      // 处理结束时间列的自定义排序
+      if (prop === 'end_time' && order) {
+        this.tableData.sort((a, b) => {
+          const timeA = a.end_time || 0
+          const timeB = b.end_time || 0
+          return order === 'ascending' ? timeA - timeB : timeB - timeA
+        })
+      }
+    },
+    IsMatchOver(endTime) {
+
+      const now = new Date().getTime() / 1000
+      return endTime < now ? '是' : '否'
+    },
+    checkDelaySignUpConfig(){
+      if(this.editForm.listExtra.delaySignUpSeconds > 0){
+        if(this.editForm.data.opentMatchType === 1){
+          this.errmsg('sng比赛不支持延迟报名')
+          return false
+        }
+        //如果开启了每日多长循环赛
+        if(this.editForm.data.repeatType ===2 && this.editForm.loopDetail.loopData.length >0){
+          for(let i=0;i<this.editForm.loopDetail.loopData.length;i++){
+            if(this.editForm.loopDetail.loopData[i].intervalSeconds < 30*60) {
+              this.errmsg('每日循环赛的间隔时间不能小于30分钟')
+              return false
+            }
+          }
+        }
+        //不同时支持延迟进入 跟延迟报名
+        if(this.editForm.data.delayEnterSeconds >0 && this.editForm.listExtra.delaySignUpSeconds >0){
+          this.errmsg('延迟进入时间不能跟延迟报名时间同时配置')
+          return false
+        }
+        return true
+      }
+      return true
     },
   }
 }

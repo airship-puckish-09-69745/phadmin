@@ -216,6 +216,7 @@ export default {
         2010 :'比赛报名',
         2011 :'比赛结束',
         2014 :'下注并派彩',
+        2013 :'JACKPOT',
       },
       logTypeMap:{
         1: '登录日志',
@@ -231,6 +232,7 @@ export default {
         11 :'比赛报名',
         12 :'比赛结束',
         15 :'下注并派彩',
+        14 :'中JACKPOT',
       },
       totalCount: 2,
     }

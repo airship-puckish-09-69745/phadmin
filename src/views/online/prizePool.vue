@@ -19,9 +19,6 @@
                 <span v-if="scope.row.Gid===37">
                   {{ getGameName(scope.row.Gid)+' '+scope.row.Ante/1000+'场' }}
                 </span>
-                <span v-else-if="scope.row.Gid===137">
-                  {{ getGameName(scope.row.Gid)+' '+scope.row.Ante/1000+'场' }}
-                </span>
                 <span v-else>
                   {{ getGameName(scope.row.Gid) }}
                 </span>
@@ -43,6 +40,7 @@
             >
               <template slot-scope="scope">
                 <el-button type="primary" size="mini" @click="edit(scope.row)">编辑</el-button>
+                <el-button v-if="scope.row.IsByApp" type="success" size="mini" @click="jumpToNewPage">按AppID设置奖池</el-button>
               </template>
             </el-table-column>
           </el-table></el-tab-pane>
@@ -111,9 +109,6 @@
         <el-form-item v-if="form.Gid==37" label="低注：" prop="PrizePool">
           <el-input v-model.number="form.Ante" size="medium" :required="true" :placeholder="form.Ante" />
         </el-form-item>
-        <el-form-item v-if="form.Gid==137" label="低注：" prop="PrizePool">
-          <el-input v-model.number="form.Ante" size="medium" :required="true" :placeholder="form.Ante" />
-        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
@@ -159,7 +154,8 @@ export default {
       },
       libShow: $libShow,
       dialogVisible: false,
-      rowsSpanGameIdMap: {}
+      rowsSpanGameIdMap: {},
+      PrizePoolV2Url: process.env.VUE_APP_ADMIN_V2_URL + '/#/prizePoolV2'
     }
   },
   created() {
@@ -335,6 +331,10 @@ export default {
           }
         })
       })
+    },
+    jumpToNewPage() {
+      // 跳转到新后台页面
+      window.open(this.PrizePoolV2Url)
     }
   }
 }

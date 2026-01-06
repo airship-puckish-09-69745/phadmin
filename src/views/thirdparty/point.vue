@@ -286,7 +286,7 @@ export default {
           nick: 'bingoplus909'
         }
       ],
-      channels: ['Dev', 'BP', 'GP', 'AP', 'PG'],
+      channels: ['Dev', 'BP', 'GP', 'AP'],
       clientTerminalTypes: [
         {
           name: 'App',

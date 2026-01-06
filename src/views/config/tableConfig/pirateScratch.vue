@@ -14,14 +14,14 @@
             <el-row>
             <el-col :span="16">
               <el-form-item label="自动下注局数列表">
-                <el-input v-model.number="tmpBetRoundList" size="mini" />
+                <el-input v-model ="tmpBetRoundList" size="mini" />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="6">
+            <el-col :span="8">
                   <el-form-item label="保底奖池抽水">
-                    <el-input v-model.number="item.FeeRate" size="mini" ><template  slot="append">%</template></el-input>
+                    <el-input v-model="item.FeeRate" size="mini" ><template  slot="append">%</template></el-input>
                   </el-form-item>
                 </el-col>
           </el-row>
@@ -226,18 +226,18 @@
             width="200"
           >
             <template slot-scope="scope">
-              <span>{{ scope.row.BetMoney }}</span>
+              <span>{{ scope.row.BetMoney/1000 }}</span>
             </template>
           </el-table-column>
          <el-table-column
-            label="触发JP概率(万分位: ‱)"
+            label="触发JP概率(十万分位)"
             width="200"
           >
            <template #header>
-            <span>触发JP概率<span style="color: red;">(万分位: ‱)</span></span>
+            <span>触发JP概率<span style="color: red;">(十万分位)</span></span>
             </template>
             <template slot-scope="scope">
-              <el-input-number v-model.number="scope.row.JackpotRatio" size="mini" type="number"  :min=0 ></el-input-number>
+              <el-input-number v-model.number="scope.row.JackpotRatio" size="mini"   :min=0 :precision=0></el-input-number>
             </template>
             </el-table-column>
     
@@ -443,17 +443,16 @@ export default {
           },
           JackpotRegulation:{
               RandAwards: [
-                  { BetMoney: 10,  JackpotRatio: 10 },
-                  { BetMoney: 20,  JackpotRatio: 10 },
-                  { BetMoney: 30,  JackpotRatio: 10 },
-                  { BetMoney: 50,  JackpotRatio: 10 },
-                  { BetMoney: 100,  JackpotRatio: 10 },
+                  { BetMoney: 10000,  JackpotRatio: 10 },
+                  { BetMoney: 20000,  JackpotRatio: 10 },
+                  { BetMoney: 30000,  JackpotRatio: 10 },
+                  { BetMoney: 50000,  JackpotRatio: 10 },
+                  { BetMoney: 100000,  JackpotRatio: 10 },
               ],
               AwardOdds: [
                   {AwardType:1,  Odds: 500 ,Wight:100},
                   {AwardType:2,  Odds: 100 ,Wight:0},
                   {AwardType:3,  Odds: 55 ,Wight:0},
-                  {AwardType:4,  Odds: 10 ,Wight:0},
                 
           ],
         }
@@ -482,7 +481,8 @@ export default {
                 this.form = response.Data || {}
                 if (response.Data && response.Data.Data !== '') {
                     const cfg = JSON.parse(response.Data.Data)
-                    this.item = cfg
+                     this.item = cfg
+                     this.item.FeeRate /= 1000
                     // 设置修改之前数据
                     this.$refs.compare.SetOldVal(response.Data.Data)
                     // this.load = true
@@ -494,6 +494,8 @@ export default {
             this.saveTableMoney();
             const ret = {}
             Object.assign(ret, this.item)
+            ret.FeeRate *= 1000
+
          //   console.log(this.item)
             return ret
           },
@@ -535,8 +537,7 @@ export default {
       saveTableMoney() {
           let betItem = []
           for (const oElement of this.tmpBetRoundList.split(',')) {
-            betItem.push(oElement*1000)
-          
+              betItem.push(oElement*1)
             }
             this.item.BetRoundList = (betItem)
       },
@@ -546,7 +547,6 @@ export default {
           case 1: return "GRAND"
           case 2: return "MAJOR"
           case 3: return "MINOR"
-          case 4: return "MINI"
           default: return "NOT FOND"
         }
       }

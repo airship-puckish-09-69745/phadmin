@@ -253,6 +253,9 @@ export const matchDataMixin = {
                       continue
                     }
                     appId = exitData.appId
+                    if (!ticketConfigList.hasOwnProperty(appId)) {
+                      continue
+                    }
                     let tickets = ticketConfigList[exitData.appId].find(ticket => ticket.ticketId === item.id)
                     if(tickets){
                       canPush = true
@@ -286,8 +289,8 @@ export const matchDataMixin = {
                   }
                 }
               }
-              console.log("matchTicketsCfgs",this.configs.matchTicketsCfgs)
-              console.log("matchPropsCfgs",this.configs.matchPropsCfgs)
+              //console.log("matchTicketsCfgs",this.configs.matchTicketsCfgs)
+             // console.log("matchPropsCfgs",this.configs.matchPropsCfgs)
             }
 
           }
