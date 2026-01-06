@@ -381,7 +381,7 @@ export const matchFormMixin = {
       // 单场赛时间检查
       if(this.editForm.data.repeatType == 0){
         // 检查时间控件是否已选择
-        if (!this.editForm.loopDetail.onceTime || !Array.isArray(this.editForm.loopDetail.onceTime) || 
+        if (!this.editForm.loopDetail.onceTime || !Array.isArray(this.editForm.loopDetail.onceTime) ||
             this.editForm.loopDetail.onceTime[0] == null || this.editForm.loopDetail.onceTime[1] == null ||
             this.editForm.loopDetail.onceTime[0] == '' || this.editForm.loopDetail.onceTime[1] == '') {
               Message.error('开赛时间不能为空')
@@ -389,7 +389,7 @@ export const matchFormMixin = {
         }
         const bTime = Math.floor(this.editForm.loopDetail.onceTime[0] / 1000)
         const eTime = Math.floor(this.editForm.loopDetail.onceTime[1] / 1000)
-    
+
         //开赛时间or结束时间 不能小于当前时间一年之前的时间
         if (bTime < Date.now() / 1000 - 365 * 24 * 60 * 60 || eTime < Date.now() / 1000 - 365 * 24 * 60 * 60) {
           Message.error('开赛时间或结束时间不能小于当前时间一年之前的时间')
@@ -467,6 +467,10 @@ export const matchFormMixin = {
           Message.error('延迟进入时间不能大于打立出局阶段总时长')
           return false
         }
+        if ((endMin > 0) && ((this.editForm.listExtra.delaySignUpSeconds / 60) > endMin)) {
+          Message.error('延迟报名时间不能大于打立出局阶段总时长')
+          return false
+        }
 
         const endNum = this.configs.endNumCfgs.get(this.editForm.data.csId)
         const promoteNum = this.configs.promoteNumCfgs.get(this.editForm.data.csId)
@@ -509,6 +513,9 @@ export const matchFormMixin = {
         return false
       }
 
+      if (!this.checkDelaySignUpConfig()) {
+        return false
+      }
       return true
     },
 
@@ -632,9 +639,23 @@ export const matchFormMixin = {
           }
         }
       }
-      if (this.configs.reubyGrowCfgs.length <= this.editForm.signExtra.reubyExtra.reubyRound) {
+
+      var grow_total = this.configs.growTotalNumCfgs.get(this.editForm.data.csId)
+      if (grow_total.length <= this.editForm.signExtra.reubyExtra.reubyRound) {
         Message.error('rebuy截止轮次大于当前赛制打立阶段的最大轮次,请检查配置')
         return false
+      }
+      //如果开启了延迟报名时间 则rebuy总时长必须大于延迟报名时间
+      if(this.editForm.listExtra.delaySignUpSeconds >0){
+        let rebuyTotalSecs = 0
+        for (let i = 0; i < this.editForm.signExtra.reubyExtra.reubyRound; i++) {
+          rebuyTotalSecs += disuseScores[i].duration
+        }
+        //note 多加10s判断，因为比赛服务多给了10s的缓冲时间
+        if (this.editForm.listExtra.delaySignUpSeconds +10 >= rebuyTotalSecs) {
+          Message.error('延迟报名时间不能大于等于rebuy总时长')
+          return false
+        }
       }
       return true
     },
@@ -1050,6 +1071,31 @@ export const matchFormMixin = {
     handleSetCopyExtr(ID) {
       this.editForm.singleCopyExtr.isCopy = true
       this.editForm.singleCopyExtr.id = ID
-    }
+    },
+    checkDelaySignUpConfig(){
+      if(this.editForm.listExtra.delaySignUpSeconds > 0){
+        if(this.editForm.data.opentMatchType === 1){
+          this.errmsg('sng比赛不支持延迟报名')
+          return false
+        }
+        //如果开启了每日多长循环赛
+        if(this.editForm.data.repeatType ===2 && this.editForm.loopDetail.loopData.length >0){
+          for(let i=0;i<this.editForm.loopDetail.loopData.length;i++){
+            if(this.editForm.loopDetail.loopData[i].intervalSeconds < 30*60) {
+              this.errmsg('每日循环赛的间隔时间不能小于30分钟')
+              return false
+            }
+          }
+        }
+
+        //不同时支持延迟进入 跟延迟报名
+        if(this.editForm.data.delayEnterSeconds >0 && this.editForm.listExtra.delaySignUpSeconds >0){
+          this.errmsg('延迟进入时间不能跟延迟报名时间同时配置')
+          return false
+        }
+        return true
+      }
+      return true
+    },
   },
 }

@@ -144,6 +144,9 @@
     <el-form-item v-if="editForm.data.opentMatchType==2" label="延迟进入时间(秒)：" :required="true">
       <el-input v-model.number="editForm.data.delayEnterSeconds" style="width: 200px;" placeholder="请填写延迟进入时间" />
     </el-form-item>
+    <el-form-item v-if="editForm.data.opentMatchType===2" label="延迟报名时间(秒)：" :required="true">
+         <el-input v-model.number="editForm.listExtra.delaySignUpSeconds" style="width: 200px;" placeholder="请填写延迟报名时间" />
+    </el-form-item>
   </fieldset>
 </template>
 
