@@ -3684,7 +3684,7 @@
             <span v-if="scope.row.rewardPlayMode == 2">
               {{ scope.row.incrFreeAttackCount }}
             </span>
-            <span v-if="scope.row.rewardPlayMode == 3">
+            <span v-if="scope.row.rewardPlayMode == 3 || (scope.row.roundMode == 3 && scope.row.incrFreeSpinCount > 0)">
               {{ scope.row.incrFreeSpinCount }}
             </span>
           </template>
