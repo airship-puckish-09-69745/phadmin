@@ -3662,10 +3662,11 @@
       <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
         <span style="float:left;">{{ '获得金币：' + PirateTapDetail.moneyChange }}</span>
       </div>
+      <!--
       <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(255, 0, 0); ">
         <span style="float:left;">{{ '获得Jackpot：' + PirateTapDetail.jpNum/100 }}</span>
       </div>
-
+      -->
       <el-table ref="filterTable" :data="PirateTapDetail.roundDetail" border>
         <el-table-column prop="roundMode" label="场景" width="128px">
           <template slot-scope="scope">{{ getPirateTapScene(scope.row.roundMode) }}</template>
@@ -3717,11 +3718,11 @@
           <template slot-scope="scope" v-if="getPirateTapCellShow(scope.row)">
             <div class="grid-container-piratetap">
               <div 
-                v-for="n in scope.row.cellData" 
+                v-for="(o, n) in scope.row.cellData" 
                 :key="n" 
                 class="grid-item"
               >
-                {{ n > 0 ? n/100 : '' }}
+                {{ o > 0 ? o/100 : '' }}
               </div>
             </div>
           </template>
@@ -5060,10 +5061,8 @@ export default {
       this.PirateTapDetail.jpNum = 0      
       for (const o of obj.player.roundDetail) {
         if (o.roundMode === 3) {
-          for (const i of o.cellData) {
-            if (i.jackpotOdds != undefined && i.jackpotOdds > 0)
-              this.PirateTapDetail.jpNum += i.jackpotOdds
-          }
+          console.log("o.cellData =========> ", JSON.stringify(o.cellData))
+          this.PirateTapDetail.jpNum += o.jackpotOdds
         }
       }
     },
