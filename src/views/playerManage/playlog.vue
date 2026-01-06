@@ -5076,7 +5076,7 @@ export default {
       return lvMap[type]
     },
     getPirateTapCellShow(row){
-      return (row.roundMode != undefined && row.roundMode >= 2 && row.cellData != undefined && row.cellData.length > 0)
+      return (row.roundMode && row.roundMode >= 1 && row.cellData && row.cellData.length > 0)
     },
     showFilipinoMahjongGame(obj, log) {
       this.FilipinoMahjongDetail = log// obj
