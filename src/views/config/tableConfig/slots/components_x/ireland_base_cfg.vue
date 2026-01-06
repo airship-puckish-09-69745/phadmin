@@ -266,6 +266,9 @@ export default {
     if (!this.slotsData.AutoSpinNum || this.slotsData.AutoSpinNum.length === 0) {
       this.$set(this.slotsData, 'AutoSpinNum', ['', ''])
     }
+    if (!this.slotsData.IsCloseBuyFree) {
+      this.slotsData.IsCloseBuyFree = false
+    }
     for (const k in this.slotsData.AutoSpinNum) {
       data.initialAutoSpinNum.push(this.slotsData.AutoSpinNum[k])
     }
@@ -301,7 +304,8 @@ export default {
         'AutoSpinNum': autoSpinNum,
         'BetOddsList': this.slotsData.BetOddsList,
         'TopWinsLimit': this.slotsData.TopWinsLimit,
-        'TopWinsStartTime': this.slotsData.TopWinsStartTime
+        'TopWinsStartTime': this.slotsData.TopWinsStartTime,
+        'IsCloseBuyFree': this.slotsData.IsCloseBuyFree
       }
     },
     submitFrm() {
