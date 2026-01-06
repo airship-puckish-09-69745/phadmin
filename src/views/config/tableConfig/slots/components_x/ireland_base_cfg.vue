@@ -201,7 +201,7 @@
 
             <el-col :span="12">
               <el-form-item label="是否关闭购买免费">
-                <el-select v-model="slotsData.IsCloseBuyFree" disabled>
+                <el-select v-model="slotsData.IsCloseBuyFree">
                   <el-option label="是" :value="true" />
                   <el-option label="否" :value="false" />
                 </el-select>
