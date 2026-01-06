@@ -3163,11 +3163,17 @@ export const asyncRoutes = [
             name: 'playlog_mannypunch_playNow',
             meta: { title: 'M anny Punch - 试玩 ◐', gid: 1139 }
           },
-            {
+          {
             path: 'playlog_pirateScratch',
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_pirateScratch',
             meta: { title: 'P irate Scratch ◐', gid: 141 }
+          },
+          {
+            path: 'playlog_pirateTap',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_pirateTap',
+            meta: { title: 'P irate Tap ◐', gid: 142 }
           }
 
           /*
