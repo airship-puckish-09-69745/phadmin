@@ -117,13 +117,13 @@
     </el-dialog>
 
     <el-dialog
-      title="从其他APP拷贝"
+      title="从其他APP奖池同步"
       :visible.sync="copyForm.copyDialogVisible"
       @opened="onCopyDialogOpened"
       width="300"
     >
       <el-form ref="copyForm" :model="copyForm">
-        <el-form-item label="请选择要拷贝的APP：" prop="copyFromAppId">
+        <el-form-item label="请选择要同步的APP奖池：" prop="copyFromAppId">
           <el-select v-model.number="copyForm.copyFromAppId" size="medium" :required="true" placeholder="请选择" @change="onCopyAppChange">
             <el-option label="未区分APP的奖池" :value="0" />
             <el-option
@@ -458,7 +458,7 @@ export default {
       const gameIds = [...this.copyForm.casioDataGameIds, ...this.copyForm.slotsDataGameIds]
 
       if (gameIds.length === 0) {
-        this.$message.error('请选择要拷贝的子游戏')
+        this.$message.error('请选择要同步的子游戏')
         return
       }
 
@@ -470,12 +470,12 @@ export default {
       })
 
       const message = h('div', {}, [
-        h('div', {}, '确认拷贝来源【' + appLabel + '】的奖池配置吗？'),
+        h('div', {}, '确认同步来源【' + appLabel + '】的奖池配置吗？'),
         h('div', { style: { 'margin-top': '10px' } }, '包括以下子游戏：'),
         ...gameNames
       ])
 
-      // 是否确认拷贝
+      // 是否确认同步
       this.$confirm(message, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -495,7 +495,7 @@ export default {
           console.log('list response', response)
           if (response.RetCode === 0) {
             $this.copyForm.copyDialogVisible = false
-            $this.$message.success('拷贝成功')
+            $this.$message.success('同步成功')
             $this.getData()
           } else {
             $this.$message.error(response.Data)
