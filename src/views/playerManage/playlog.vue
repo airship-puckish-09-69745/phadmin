@@ -3713,7 +3713,7 @@
                 :key="n" 
                 class="grid-item"
               >
-                {{ n/100 }}
+                {{ n > 0 ? n/100 : '' }}
               </div>
             </div>
           </template>
