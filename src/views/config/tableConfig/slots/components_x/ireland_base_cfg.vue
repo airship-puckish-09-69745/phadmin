@@ -266,9 +266,6 @@ export default {
     if (!this.slotsData.AutoSpinNum || this.slotsData.AutoSpinNum.length === 0) {
       this.$set(this.slotsData, 'AutoSpinNum', ['', ''])
     }
-    if (!this.slotsData.IsCloseBuyFree) {
-      this.slotsData.IsCloseBuyFree = false
-    }
     for (const k in this.slotsData.AutoSpinNum) {
       data.initialAutoSpinNum.push(this.slotsData.AutoSpinNum[k])
     }
