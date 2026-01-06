@@ -3678,13 +3678,13 @@
         </el-table-column>
         <el-table-column prop="rewardCount" label="奖励/重置次数" width="128px">
           <template slot-scope="scope">
-            <span v-if="scope.row.roundMode == 1">
+            <span v-if="scope.row.rewardPlayMode == 1">
               {{ scope.row.incrFreeNormalCount }}
             </span>
-            <span v-if="scope.row.roundMode == 2">
+            <span v-if="scope.row.rewardPlayMode == 2">
               {{ scope.row.incrFreeAttackCount }}
             </span>
-            <span v-if="scope.row.roundMode == 3">
+            <span v-if="scope.row.rewardPlayMode == 3">
               {{ scope.row.incrFreeSpinCount }}
             </span>
           </template>
@@ -5061,7 +5061,7 @@ export default {
     },
     getPirateTapScene(type){
       const lvMap = {
-        0: '-',
+        0: '',
         1: 'normal',
         2: 'freeAttack',
         3: 'freeSpin',
@@ -6591,7 +6591,7 @@ ul#sweeperShow li .showStep {
   display: grid;
   grid-template-columns: repeat(5, 1fr); /* 5列等宽 */
   gap: 10px; /* 格子间距 */
-  max-width: 30px; /* 容器最大宽度 */
+  max-width: 40px; /* 容器最大宽度 */
   /*margin: 20px auto;  上下边距20px，水平居中 */
   padding: 10px;
   background-color: #f8f9fa;
