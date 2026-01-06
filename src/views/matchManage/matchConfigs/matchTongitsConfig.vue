@@ -3128,7 +3128,8 @@ export default {
         for (let i = 0; i < this.editForm.signExtra.reubyExtra.reubyRound; i++) {
           rebuyTotalSecs += disuseScores[i].duration
         }
-        if (this.editForm.listExtra.delaySignUpSeconds >= rebuyTotalSecs) {
+        //note 多加10s判断，因为比赛服务多给了10s的缓冲时间
+        if (this.editForm.listExtra.delaySignUpSeconds + 10 >= rebuyTotalSecs) {
           this.errmsg('延迟报名时间不能大于等于rebuy总时长')
           return false
         }
@@ -3328,6 +3329,11 @@ export default {
               return false
             }
           }
+        }
+        //不同时支持延迟进入 跟延迟报名
+        if(this.editForm.data.delayEnterSeconds >0 && this.editForm.listExtra.delaySignUpSeconds >0){
+          this.errmsg('延迟进入时间不能跟延迟报名时间同时配置')
+          return false
         }
         return true
       }

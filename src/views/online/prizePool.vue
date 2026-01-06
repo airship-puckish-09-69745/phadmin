@@ -40,6 +40,7 @@
             >
               <template slot-scope="scope">
                 <el-button type="primary" size="mini" @click="edit(scope.row)">编辑</el-button>
+                <el-button v-if="scope.row.IsByApp" type="success" size="mini" @click="jumpToNewPage">按AppID设置奖池</el-button>
               </template>
             </el-table-column>
           </el-table></el-tab-pane>
@@ -153,7 +154,8 @@ export default {
       },
       libShow: $libShow,
       dialogVisible: false,
-      rowsSpanGameIdMap: {}
+      rowsSpanGameIdMap: {},
+      PrizePoolV2Url: process.env.VUE_APP_ADMIN_V2_URL + '/#/prizePoolV2'
     }
   },
   created() {
@@ -329,6 +331,10 @@ export default {
           }
         })
       })
+    },
+    jumpToNewPage() {
+      // 跳转到新后台页面
+      window.open(this.PrizePoolV2Url)
     }
   }
 }
