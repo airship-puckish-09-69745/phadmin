@@ -271,14 +271,38 @@ export default {
     }
     return data
   },
-  updated() {
-    if (this.lock === false) {
-      this.$refs.compare.SetOldVal(this.getDiffData(this.initialWinTypeMinOdds, this.initialBets, this.initialAutoSpinNum))
-      this.lock = true
-      console.log('origin data', this.getDiffData(this.initialWinTypeMinOdds, this.initialBets, this.initialAutoSpinNum))
+  // updated() {
+  //   if (this.lock === false) {
+  //     this.$refs.compare.SetOldVal(this.getDiffData(this.initialWinTypeMinOdds, this.initialBets, this.initialAutoSpinNum))
+  //     this.lock = true
+  //     console.log('origin data', this.getDiffData(this.initialWinTypeMinOdds, this.initialBets, this.initialAutoSpinNum))
+  //   }
+  // },
+  mounted() {
+    this.initCompare()
+  },
+  watch: {
+    slotsData: {
+      deep: true,
+      handler() {
+        if (!this.lock) {
+          this.initCompare()
+        }
+      }
     }
   },
   methods: {
+    initCompare() {
+      this.$nextTick(() => {
+        if (this.$refs.compare) {
+          this.$refs.compare.SetOldVal(
+            this.getDiffData(this.initialWinTypeMinOdds, this.initialBets, this.initialAutoSpinNum)
+          )
+          this.lock = true
+          console.log('origin data', this.getDiffData(this.initialWinTypeMinOdds, this.initialBets, this.initialAutoSpinNum))
+        }
+      })
+    },
     getDiffData(winTypeMinOdds, bets, autoSpinNum) {
       return {
         'SlotsType': this.slotsData.SlotsType,
