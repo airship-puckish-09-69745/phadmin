@@ -1812,6 +1812,12 @@ export const asyncRoutes = [
                 meta: { title: 'MahjongFortune(审)' }
               },
               {
+                path: 'mafiawarsmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/mafiawarsmars_slots_cfg'),
+                name: 'mafiawarsmars_slots_cfg',
+                meta: { title: 'MafiaWars(审)' }
+              },
+              {
                 path: 'mahjongjackpotmars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/mahjongjackpotmars_slots_cfg'),
                 name: 'mahjongjackpotmars_slots_cfg',
@@ -3708,6 +3714,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'majoracemars_slots_log',
             meta: { title: 'MajorAce(审)', gid: 163 }
+          },
+          {
+            path: 'mafiawarsmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'mafiawarsmars_slots_log',
+            meta: { title: 'MafiaWars(审)', gid: 233 }
           },
           {
             path: 'mahjongfortunemars_slots_log',
