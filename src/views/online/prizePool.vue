@@ -58,7 +58,7 @@
             >
               <template slot-scope="scope">
                 <el-button type="primary" size="mini" @click="edit(scope.row)">编辑</el-button>
-                <el-button type="success" size="mini" @click="jumpToNewPage">前往新后台</el-button>
+                <el-button v-if="scope.row.IsByApp" type="success" size="mini" @click="jumpToNewPage">前往新后台</el-button>
               </template>
             </el-table-column>
           </el-table></el-tab-pane>
@@ -111,7 +111,7 @@
             >
               <template slot-scope="scope">
                 <el-button type="primary" size="mini" @click="edit(scope.row)">编辑</el-button>
-                <el-button type="success" size="mini" @click="jumpToNewPage">前往新后台</el-button>
+                <el-button v-if="scope.row.IsByApp" type="success" size="mini" @click="jumpToNewPage">前往新后台</el-button>
               </template>
             </el-table-column>
           </el-table></el-tab-pane>
