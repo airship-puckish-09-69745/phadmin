@@ -1,8 +1,16 @@
 <template>
   <div class="app-container">
-    <el-row :gutter="10" style="margin-top: 50px">
+    <el-row :gutter="10" style="margin-top: 10px">
+      <el-col :span="22" :offset="1">
+        <p style="margin-bottom:30px;color:#dd0000;">
+          注意：支持按APP区分的奖池，需前往新后台配置：
+          1. 登录新后台，切换到目标APP。
+          2. 进入“场次管理-小游戏奖池配置”页面，配置游戏奖池。
+        </p>
+      </el-col>
       <el-col :span="22" :offset="1">
         <el-button type="success" size="mini" @click="getData">刷新</el-button>
+        <el-button type="success" size="mini" @click="jumpToNewPage">按APP配置奖池->前往新后台</el-button>
       </el-col>
       <el-col :span="22" :offset="1">
         <el-tabs active-name="first">
@@ -35,12 +43,22 @@
               </template>
             </el-table-column>
             <el-table-column
+              prop="IsByApp"
+              label="支持按APP区分奖池"
+              width="150"
+            >
+              <template slot-scope="scope">
+                <span v-if="scope.row.IsByApp" style="color: red">{{ scope.row.IsByApp ? '是' : '否' }}</span>
+                <span v-if="!scope.row.IsByApp">{{ scope.row.IsByApp ? '是' : '否' }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
               prop="RecountRate"
               label="操作"
             >
               <template slot-scope="scope">
-                <el-button type="primary" size="mini" @click="edit(scope.row)">编辑</el-button>
-                <el-button v-if="scope.row.IsByApp" type="success" size="mini" @click="jumpToNewPage">按AppID设置奖池</el-button>
+                <el-button v-if="!scope.row.IsByApp" type="primary" size="mini" @click="edit(scope.row)">编辑</el-button>
+                <el-button v-else type="success" size="mini" @click="jumpToNewPage">前往新后台</el-button>
               </template>
             </el-table-column>
           </el-table></el-tab-pane>
@@ -79,11 +97,21 @@
               </template>
             </el-table-column>
             <el-table-column
+              prop="IsByApp"
+              label="按APP区分奖池"
+              width="150"
+            >
+              <template slot-scope="scope">
+                {{ scope.row.IsByApp ? '是' : '否' }}
+              </template>
+            </el-table-column>
+            <el-table-column
               prop="RecountRate"
               label="操作"
             >
               <template slot-scope="scope">
-                <el-button type="primary" size="mini" @click="edit(scope.row)">编辑</el-button>
+                <el-button v-if="!scope.row.IsByApp" type="primary" size="mini" @click="edit(scope.row)">编辑</el-button>
+                <el-button v-else type="success" size="mini" @click="jumpToNewPage">前往新后台</el-button>
               </template>
             </el-table-column>
           </el-table></el-tab-pane>
@@ -155,7 +183,7 @@ export default {
       libShow: $libShow,
       dialogVisible: false,
       rowsSpanGameIdMap: {},
-      PrizePoolV2Url: process.env.VUE_APP_ADMIN_V2_URL + '/#/prizePoolV2'
+      PrizePoolV2Url: process.env.VUE_APP_ADMIN_V2_URL
     }
   },
   created() {

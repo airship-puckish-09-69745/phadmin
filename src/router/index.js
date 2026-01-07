@@ -1812,6 +1812,12 @@ export const asyncRoutes = [
                 meta: { title: 'MahjongFortune(审)' }
               },
               {
+                path: 'mafiawarsmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/mafiawarsmars_slots_cfg'),
+                name: 'mafiawarsmars_slots_cfg',
+                meta: { title: 'MafiaWars(审)' }
+              },
+              {
                 path: 'mahjongjackpotmars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/mahjongjackpotmars_slots_cfg'),
                 name: 'mahjongjackpotmars_slots_cfg',
@@ -1930,6 +1936,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/pacquiaofortunemars_slots_cfg'),
                 name: 'pacquiaofortunemars_slots_cfg',
                 meta: { title: 'PacquiaoFortune(审)' }
+              },
+              {
+                path: 'pahiyaswinsmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/pahiyaswinsmars_slots_cfg'),
+                name: 'pahiyaswinsmars_slots_cfg',
+                meta: { title: 'Pahiyas Wins(审)' }
               }
             ]
           },
@@ -3704,6 +3716,12 @@ export const asyncRoutes = [
             meta: { title: 'MajorAce(审)', gid: 163 }
           },
           {
+            path: 'mafiawarsmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'mafiawarsmars_slots_log',
+            meta: { title: 'MafiaWars(审)', gid: 233 }
+          },
+          {
             path: 'mahjongfortunemars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'mahjongfortunemars_slots_log',
@@ -3876,6 +3894,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'pacquiaofortunemars_slots_log',
             meta: { title: 'PacquiaoFortune(审)', gid: 237 }
+          },
+          {
+            path: 'pahiyaswinsmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'pahiyaswinsmars_slots_log',
+            meta: { title: 'PahiyasWins(审)', gid: 231 }
           }
         ]
       },
