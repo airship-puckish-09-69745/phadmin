@@ -26,7 +26,7 @@
           <el-tab-pane label="拓展配置" name="scatter">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，发布即生效】</h3>
             <publish primary-key="ID" :key-id="getFullKey('mafiawarsmars_slots_ext')" :env-empty="false" compare-type="Object" />
-            <slots-mahjong-fortune-mars-ext v-if="extCfgBool" v-model="extCfg" @saveData="saveExtCfg" />
+            <slots-mafia-wars-mars-ext v-if="extCfgBool" v-model="extCfg" @saveData="saveExtCfg" />
           </el-tab-pane>
         </el-tabs>
       </el-col>
