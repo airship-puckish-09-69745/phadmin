@@ -1930,6 +1930,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/pacquiaofortunemars_slots_cfg'),
                 name: 'pacquiaofortunemars_slots_cfg',
                 meta: { title: 'PacquiaoFortune(审)' }
+              },
+              {
+                path: 'pahiyaswinsmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/pahiyaswinsmars_slots_cfg'),
+                name: 'pahiyaswinsmars_slots_cfg',
+                meta: { title: 'Pahiyas Wins(审)' }
               }
             ]
           },
@@ -3876,6 +3882,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'pacquiaofortunemars_slots_log',
             meta: { title: 'PacquiaoFortune(审)', gid: 237 }
+          },
+          {
+            path: 'pahiyaswinsmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'pahiyaswinsmars_slots_log',
+            meta: { title: 'PahiyasWins(审)', gid: 231 }
           }
         ]
       },
