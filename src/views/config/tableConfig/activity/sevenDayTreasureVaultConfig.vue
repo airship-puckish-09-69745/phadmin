@@ -1309,10 +1309,10 @@ export default {
       this.item.GameIcon.splice(index, 1)
     },
     showUserTagCondition() {
-      return this.item.UserTagConfig[0].TagType.includes(5)
+      return this.item.UserTagConfig[0].TagType === 5
     },
     showUserTagGameIntensityCondition() {
-      return this.item.UserTagConfig[0].TagType.includes(2)
+      return this.item.UserTagConfig[0].TagType === 2
     },
     onTagTypeChange(tagType) {
       const tagOptions = this.userTagOptions.find(item => item.value === tagType)
