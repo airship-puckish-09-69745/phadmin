@@ -4,7 +4,7 @@
       <publishV2 primary-key="ID" key-id="PusoyDosTableConfig" :app-id="1" :env-empty="true" :check="configCheck" :attr-names="AttrNames" />
     </el-row>
     <el-row v-if="isAppExt === true">
-      <publishV2 primary-key="ID" key-id="PusoyDosAppExtTableConfig" :app-id="2" :env-empty="true" :check="configCheck" :attr-names="AttrNames" />
+      <publishV2 primary-key="ID" key-id="PusoyDosTableConfig" :app-id="2" :env-empty="true" :check="configCheck" :attr-names="AttrNames" />
     </el-row>
     <el-row style="padding-top: 5px">
       <el-col :span="20">
