@@ -273,7 +273,7 @@
                 <el-form-item label="标签子类：">
                   <el-select v-model="item.UserTagConfig[0].TagId" placeholder="请选择标签子类">
                     <el-option
-                      v-for="item in edit.userTagIdOptions"
+                      v-for="item in userTagOptions[2].children"
                       :key="item.value"
                       :label="item.label"
                       :value="item.value"
