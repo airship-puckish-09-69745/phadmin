@@ -256,6 +256,44 @@
                 </el-form-item>
               </el-col>
             </el-row>
+            <el-row>
+              <el-col>
+                <el-form-item label="参与活动用户类型：">
+                  <el-select v-model="item.UserTagConfig[0].TagType" placeholder="请选择标签类型" @change="onTagTypeChange">
+                    <el-option
+                      v-for="item in userTagOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col v-if="showUserTagCondition">
+                <el-form-item label="标签子类：">
+                  <el-select v-model="item.UserTagConfig[0].TagId" placeholder="请选择标签子类">
+                    <el-option
+                      v-for="item in edit.userTagIdOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col v-if="showUserTagGameIntensityCondition" :span="24">
+                <el-form-item label="游戏强度：" :required="false">
+                  <el-select v-model="item.UserTagConfig[0].TagValue" placeholder="请选择游戏强度标签">
+                    <el-option
+                      v-for="item in userTagGameIntensityOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
           </el-form>
         </el-tab-pane>
       </el-tabs>
@@ -569,7 +607,7 @@ import Compare from '@/components/Compare/index.vue'
 import store from '@/store'
 import SiteSelect from '@/components/SiteSelect/index.vue'
 import { ITEM_DAY_TYPE_OPTIONS, ITEM_TYPE_OPTIONS, PROP_TYPE_OPTIONS } from '@/utils/options'
-import {getCustomize, updateCustomize} from "@/api/custome_configV2";
+import { getCustomize, updateCustomize } from '@/api/custome_configV2'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
@@ -601,7 +639,8 @@ export default {
         ActivityExtend: {},
         TaskConfig: [],
         BonusIcon: [],
-        GameIcon: []
+        GameIcon: [],
+        UserTagConfig: []
       },
       GamesSorted: [
         {
@@ -709,7 +748,32 @@ export default {
       ITEM_DAY_TYPE_OPTIONS,
       gameData: [],
       richCardGameMap: null,
-      cfgData: {}
+      cfgData: {},
+      // 用户标签类型
+      userTagOptions: [
+        { value: 0, label: '所有', children: [
+          { value: 0, label: '所有' }
+        ]
+        },
+        { value: 2, label: '游戏强度', children: [
+          { value: 20000, label: '游戏强度' }
+        ]
+        },
+        { value: 5, label: 'Slots用户类型', children: [
+          { value: 50001, label: 'Slots新增用户' },
+          { value: 50002, label: 'Slots登录天数' },
+          { value: 50008, label: 'Slots回归用户' }
+        ]
+        }
+      ],
+      // 游戏强度标签值
+      userTagGameIntensityOptions: [
+        { value: 0, label: '未选择' },
+        { value: 1, label: '无感' },
+        { value: 2, label: '尝试' },
+        { value: 3, label: '常玩' },
+        { value: 4, label: '核心' }
+      ]
     }
   },
   created() {
@@ -847,6 +911,13 @@ export default {
                 switch: false,
                 bPercent: 0
               })
+            }
+            if ($this.item.UserTagConfig === undefined) {
+              $this.$set($this.item, 'UserTagConfig', [{
+                TagId: 0,
+                TagValue: 0,
+                TagType: 0
+              }])
             }
             $this.$refs.compare.SetOldVal(old)
           }
@@ -1232,6 +1303,19 @@ export default {
     },
     removeGameIcon(index) {
       this.item.GameIcon.splice(index, 1)
+    },
+    showUserTagCondition() {
+      return this.item.UserTagConfig[0].TagType.includes(5)
+    },
+    showUserTagGameIntensityCondition() {
+      return this.item.UserTagConfig[0].TagType.includes(2)
+    },
+    onTagTypeChange(tagType) {
+      const tagOptions = this.userTagOptions.find(item => item.value === tagType)
+      if (tagOptions.children.length > 0) {
+        this.item.UserTagConfig[0].TagId = tagOptions.children[0].value
+      }
+      this.item.UserTagConfig[0].TagValue = 0
     }
   }
 }
