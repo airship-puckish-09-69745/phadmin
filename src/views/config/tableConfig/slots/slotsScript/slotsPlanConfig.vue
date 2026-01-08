@@ -1237,6 +1237,7 @@ export default {
       };
       this.showItem.Plans.splice(this.editIndex, 1, updatedPlan);
       this.editDialogVisible = false;
+      console.log(JSON.stringify(updatedPlan))
     },
     deletePlan(index) {
       this.showItem.Plans.splice(index, 1);

@@ -3652,6 +3652,84 @@
       </div>
     </el-dialog>
 
+    <el-dialog title="PirateTap详情" :visible.sync="PirateTapDetailVisible" width="1200px">
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
+        <span style="float:left;">{{ '下注金额：' + PirateTapDetail.betMoney }}</span>
+      </div>
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(255, 0, 0); ">
+        <span style="float:left;">{{ '获得倍率：' + PirateTapDetail.totalOdds/100 }}</span>
+      </div>
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
+        <span style="float:left;">{{ '获得金币：' + PirateTapDetail.moneyChange }}</span>
+      </div>
+      <!--
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(255, 0, 0); ">
+        <span style="float:left;">{{ '获得Jackpot：' + PirateTapDetail.jpNum/100 }}</span>
+      </div>
+      -->
+      <el-table ref="filterTable" :data="PirateTapDetail.roundDetail" border>
+        <el-table-column prop="roundMode" label="场景" width="128px">
+          <template slot-scope="scope">{{ getPirateTapScene(scope.row.roundMode) }}</template>
+        </el-table-column>
+        <el-table-column prop="odds" label="获得返奖倍率" width="128px">
+          <template slot-scope="scope">
+            <span :style="{color:'red'}">
+              {{ scope.row.winOdds > 0 ? scope.row.winOdds/100 : '' }}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="freeGame" label="奖励特殊游戏" width="128px">
+          <template slot-scope="scope">{{ getPirateTapScene(scope.row.rewardPlayMode) }}</template>
+        </el-table-column>
+        <el-table-column prop="rewardCount" label="奖励/重置次数" width="128px">
+          <template slot-scope="scope">
+            <span v-if="scope.row.rewardPlayMode == 1">
+              {{ scope.row.incrFreeNormalCount }}
+            </span>
+            <span v-if="scope.row.rewardPlayMode == 2">
+              {{ scope.row.incrFreeAttackCount }}
+            </span>
+            <span v-if="scope.row.rewardPlayMode == 3 || (scope.row.roundMode == 3 && scope.row.incrFreeSpinCount > 0)">
+              {{ scope.row.incrFreeSpinCount }}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="leftCount" label="剩余次数" width="128px">
+          <template slot-scope="scope">
+            <span v-if="scope.row.roundMode == 1">
+              {{ scope.row.normalCount }}
+            </span>
+            <span v-if="scope.row.roundMode == 2">
+              {{ scope.row.freeAttackCount }}
+            </span>
+            <span v-if="scope.row.roundMode == 3">
+              {{ scope.row.freeSpinCount }}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="jackpot" label="jackpot" width="128px">
+          <template slot-scope="scope">
+            <span :style="{color:'red'}">
+              {{ scope.row.jackpotOdds > 0 ? scope.row.jackpotOdds/100 : '' }}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="cellData" label="3x5 cell" width="390px" align="left">
+          <template slot-scope="scope" v-if="getPirateTapCellShow(scope.row)">
+            <div class="grid-container-piratetap">
+              <div 
+                v-for="(o, n) in scope.row.cellData" 
+                :key="n" 
+                class="grid-item"
+              >
+                {{ o > 0 ? o/100 : '' }}
+              </div>
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+
     <el-dialog title="TeenPatti详情" :visible.sync="ZJHDetailVisible" width="1600px">
       <div style=" font-size:14px; line-height: 36px; height: 50px; color:red; ">
         <span style="float:left;">{{ '底分:' + ZJHDetail.antes/1000 }}</span>
@@ -4129,12 +4207,14 @@ export default {
       PirateScratchDetail:{},
       PirateScratchVisible:false,
 
-
       ChickenGoDetail:{},
       ChickenGoDetailVisible:false,
 
       MannyPunchDetail:{},
       MannyPunchDetailVisible:false,
+
+      PirateTapDetail:{},
+      PirateTapDetailVisible:false,
 
       pusoyDetail: {},
       pusoyDetailVisible: false,
@@ -4732,6 +4812,8 @@ export default {
             $this.showMannyPunchGame(obj)
           } else if (gid === 141){
             $this.showPirateScratchGame(obj)
+          } else if (gid === 142){
+            $this.showPirateTapGame(obj)
           } else {
             $this.showSmallGame(obj)
           }
@@ -4925,11 +5007,11 @@ export default {
     },
 
     showPirateScratchGame(obj) {
-       console.log(obj)
+      console.log(obj)
       this.PirateScratchDetail.players = []
       this.PirateScratchDetail.players.push(obj.player)
       this.PirateScratchDetail.blockItems = obj.player.luckyResult.blockItems
-       this.PirateScratchDetail.openNumber = []
+      this.PirateScratchDetail.openNumber = []
       for(let i = 0; i < obj.player.luckyResult.openNumber.length; i++) {
         let number = obj.player.luckyResult.openNumber[i]
         let isLucky = false
@@ -4972,6 +5054,29 @@ export default {
         5: 'Nightmare'
       }
       return lvMap[lv]
+    },
+    showPirateTapGame(obj) {
+      this.PirateTapDetail = obj.player
+      this.PirateTapDetailVisible = true
+      this.PirateTapDetail.jpNum = 0      
+      for (const o of obj.player.roundDetail) {
+        if (o.roundMode === 3) {
+          console.log("o.cellData =========> ", JSON.stringify(o.cellData))
+          this.PirateTapDetail.jpNum += o.jackpotOdds
+        }
+      }
+    },
+    getPirateTapScene(type){
+      const lvMap = {
+        0: '',
+        1: 'normal',
+        2: 'freeAttack',
+        3: 'freeSpin',
+      }
+      return lvMap[type]
+    },
+    getPirateTapCellShow(row){
+      return (row.roundMode && row.roundMode >= 1 && row.cellData && row.cellData.length > 0)
     },
     showFilipinoMahjongGame(obj, log) {
       this.FilipinoMahjongDetail = log// obj
@@ -6420,7 +6525,7 @@ ul#sweeperShow li .showStep {
   flex-direction: column;
   align-items: left;
   justify-content: left;
-  min-height: 100vh;
+  min-height: 10vh;
   padding: 20px;
   box-sizing: border-box;
   background-color: #fff;
@@ -6487,5 +6592,44 @@ ul#sweeperShow li .showStep {
   justify-content: center;
   gap: 20px; /* 设置子元素之间的间隔为20px */
 }
+
+/* pirateTap 3*5 格子 开始 */
+.grid-container-piratetap {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); /* 5列等宽 */
+  gap: 10px; /* 格子间距 */
+  max-width: 300px; /* 容器最大宽度 */
+  /*margin: 20px auto;  上下边距20px，水平居中 */
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  width: 100%; /*宽度撑满父容器 */
+  margin: 0; /* 移除自动居中 */
+  justify-content: left; /*内容左对齐 */
+}
+
+.grid-item {
+  aspect-ratio: 1; /* 保持正方形 */
+  background-color: white;
+  border: 1px solid #dee2e6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #495057;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  transition: all 0.2s ease;
+  width: 40px; /* 直接设置宽度 */
+  height: 40px; /* 同步设置高度 */
+}
+
+.grid-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  background-color: #f1f3f5;
+}
+/* pirateTap 3*5 格子 结束 */
 
 </style>
