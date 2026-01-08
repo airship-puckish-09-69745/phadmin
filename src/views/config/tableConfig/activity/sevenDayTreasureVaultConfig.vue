@@ -640,7 +640,11 @@ export default {
         TaskConfig: [],
         BonusIcon: [],
         GameIcon: [],
-        UserTagConfig: []
+        UserTagConfig: [{
+          TagId: 0,
+          TagValue: 0,
+          TagType: 0
+        }]
       },
       GamesSorted: [
         {
