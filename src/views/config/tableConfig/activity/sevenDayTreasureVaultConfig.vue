@@ -273,7 +273,7 @@
                 <el-form-item label="标签子类：">
                   <el-select v-model="item.UserTagConfig[0].TagId" placeholder="请选择标签子类">
                     <el-option
-                      v-for="item in userTagOptions[2].children"
+                      v-for="item in edit.userTagIdOptions"
                       :key="item.value"
                       :label="item.label"
                       :value="item.value"
@@ -716,7 +716,8 @@ export default {
           Time: null,
           TaskIndex: null,
           RewardIndex: null
-        }
+        },
+        userTagIdOptions: []
       },
       appId: parseInt(store.getters.appId) || -1,
       version: store.getters.version || 'V1',
@@ -1316,8 +1317,9 @@ export default {
     },
     onTagTypeChange(tagType) {
       const tagOptions = this.userTagOptions.find(item => item.value === tagType)
-      if (tagOptions.children.length > 0) {
-        this.item.UserTagConfig[0].TagId = tagOptions.children[0].value
+      this.edit.userTagIdOptions = tagOptions && tagOptions.children || []
+      if (this.edit.userTagIdOptions.length > 0) {
+        this.item.UserTagConfig[0].TagId = this.edit.userTagIdOptions[0].value
       }
       this.item.UserTagConfig[0].TagValue = 0
     }
