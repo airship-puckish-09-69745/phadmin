@@ -781,6 +781,14 @@ export default {
       ]
     }
   },
+  computed: {
+    showUserTagCondition() {
+      return this.item.UserTagConfig.length > 0 ? this.item.UserTagConfig[0].TagType === 5 : false
+    },
+    showUserTagGameIntensityCondition() {
+      return this.item.UserTagConfig.length > 0 ? this.item.UserTagConfig[0].TagType === 2 : false
+    }
+  },
   created() {
     this.getMissionData()
     this.getData()
@@ -1308,12 +1316,6 @@ export default {
     },
     removeGameIcon(index) {
       this.item.GameIcon.splice(index, 1)
-    },
-    showUserTagCondition() {
-      return this.item.UserTagConfig[0].TagType === 5
-    },
-    showUserTagGameIntensityCondition() {
-      return this.item.UserTagConfig[0].TagType === 2
     },
     onTagTypeChange(tagType) {
       const tagOptions = this.userTagOptions.find(item => item.value === tagType)
