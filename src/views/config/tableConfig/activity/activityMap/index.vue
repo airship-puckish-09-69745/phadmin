@@ -33,7 +33,7 @@ import MapConfig from './components/MapConfig/index.vue'
 import WhiteListConfig from './components/WhiteListConfig/index.vue'
 import DetailsConfig from './components/DetailsConfig/index.vue'
 import BonusConfig from './components/BonusConfig/index.vue'
-import request from '@/utils/request'
+import {getCustomize, updateCustomize} from "@/api/custome_configV2";
 export default {
   name: 'ActivityMap',
   components: {
@@ -55,7 +55,11 @@ export default {
         { name: 'Banargay', id: 9 },
         { name: '复活节活动', id: 10 },
         { name: '新手任务活动', id: 11 },
-        { name: '红包雨活动', id: 13 }
+        { name: '红包雨活动', id: 13 },
+        { name: '七日留存活动', id: 17 },
+        { name: '万圣节活动',id: 18 },
+        { name: '竖版排行榜活动', id: 19 },
+        { name: 'Poker排行榜活动', id: 20 },
       ],
       configData: {
         Data: {
@@ -84,12 +88,8 @@ export default {
      * 获取配置数据
      */
     async getConfigData() {
-      const res = await request({
-        url: '/customizeconfig/one',
-        method: 'get',
-        data: {
-          SubKey: this.subKey
-        }
+      const res = await getCustomize({
+        SubKey: this.subKey
       })
 
       if (res.RetCode === 0) {
@@ -133,11 +133,7 @@ export default {
         ...this.configData
       }
       params.Data = JSON.stringify(this.configData.Data)
-      const res = await request({
-        url: 'customizeconfig/update',
-        method: 'post',
-        data: params
-      })
+      const res = await updateCustomize(params)
 
       if (res.RetCode === 0) {
         this.$message.success('配置数据更新成功')

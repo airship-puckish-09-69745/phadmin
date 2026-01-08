@@ -24,7 +24,7 @@
 import request from '@/utils/request'
 import store from '@/store'
 export default {
-  name: 'TestClearGameScheam',
+  name: 'TestClearGameSchema',
   data() {
     return {
       searchForm: {

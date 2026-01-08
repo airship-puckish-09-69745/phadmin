@@ -91,7 +91,7 @@
               </el-col>
               <el-col :span="12">
                 <el-form-item label="活动结束时间：" prop="endTime" :required="true">
-                  <el-date-picker v-model="edit.item.endTime" type="datetime"  placeholder="选择结束时间" value-format="timestamp" />
+                  <el-date-picker v-model="edit.item.endTime" type="datetime"  placeholder="选择结束时间" value-format="timestamp" @change="onChangeEndTime"/>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
@@ -235,11 +235,35 @@
                   </el-form>
                 </el-form-item>
               </el-col>
-              <el-col :span="24" v-if="showUserTagCondition">
-                <el-form-item label="用户标签：" :required="false">
-                  <el-select v-model="edit.item.userFilterCondition.userTagConfig.tagValue" placeholder="请选择用户标签">
+              <el-col v-if="showUserTagCondition">
+                <el-form-item label="标签类型：">
+                  <el-select v-model="edit.item.userFilterCondition.userTagConfig.tagType" placeholder="请选择标签类型" @change="onTagTypeChange">
                     <el-option
-                      v-for="item in userTagValues"
+                      v-for="item in userTagOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col v-if="showUserTagCondition">
+                <el-form-item label="标签子类：">
+                  <el-select v-model="edit.item.userFilterCondition.userTagConfig.tagId" placeholder="请选择标签子类">
+                    <el-option
+                      v-for="item in edit.userTagIdOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="24" v-if="showUserTagGameIntensityCondition">
+                <el-form-item label="游戏强度：" :required="false">
+                  <el-select v-model="edit.item.userFilterCondition.userTagConfig.tagValue" placeholder="请选择游戏强度标签">
+                    <el-option
+                      v-for="item in userTagGameIntensityOptions"
                       :key="item.value"
                       :label="item.label"
                       :value="item.value"
@@ -607,7 +631,6 @@ import MoneyInput from "@/components/MoneyInput/index.vue"
 import store from "@/store";
 import request from "@/utils/request";
 import {Message} from "element-ui";
-import {id} from "html-webpack-plugin/lib/chunksorter";
 import SiteSelect from "@/components/SiteSelect/index.vue"
 
 const filterMap = {}
@@ -675,8 +698,9 @@ function newItem() {
         max: 0,
       },
       userTagConfig: {
-        tagId: 20000, // 游戏强度
+        tagId: 0,
         tagValue: 0,
+        tagType: 0,
       },
     }
   }
@@ -739,9 +763,10 @@ export default {
         userType: 2, // 2 所有用户
         registerDateRange: [],
         clientDB: new ClientTableData([], 10, filterMap),
+        userTagIdOptions: [],
       },
       env: 'test',
-      appId: store.getters.appId || -1,
+      appId: parseInt(store.getters.appId) || -1,
       version: store.getters.version || 'V1',
       statusNames: { 2: '上架', 6: '下架', 7: '预上架', 8: '预下架' },
       tableData: [],
@@ -777,10 +802,6 @@ export default {
         {
           value: 1000005,
           label: '正式1000005'
-        },
-        {
-          value: 1000006,
-          label: 'BingoPlus测试1000006'
         },
       ],
       // 奖励类型
@@ -836,12 +857,26 @@ export default {
 
       filterText: '',
 
-      userTagValues: [
-        { 'value': 0, 'label': '未选择' },
-        { 'value': 1, 'label': '无感' },
-        { 'value': 2, 'label': '尝试' },
-        { 'value': 3, 'label': '常玩' },
-        { 'value': 4, 'label': '核心' },
+      // 用户标签类型
+      userTagOptions: [
+        { value: 2, label: '游戏强度', children: [
+            { value: 20000, label: '游戏强度' },
+          ]
+        },
+        { value: 5, label: 'Slots用户类型', children: [
+            { value: 50001, label: 'Slots新增用户' },
+            { value: 50002, label: 'Slots登录天数' },
+            { value: 50008, label: 'Slots回归用户' },
+          ]
+        },
+      ],
+      // 游戏强度标签值
+      userTagGameIntensityOptions: [
+        { value: 0, label: '未选择' },
+        { value: 1, label: '无感' },
+        { value: 2, label: '尝试' },
+        { value: 3, label: '常玩' },
+        { value: 4, label: '核心' },
       ],
 
       defaultProps: {
@@ -938,6 +973,11 @@ export default {
     },
     showUserTagCondition() {
       return this.edit.item.userTypes.includes(5) // 5 用户标签
+    },
+    showUserTagGameIntensityCondition() {
+      return this.edit.item.userTypes.includes(5) &&
+        this.edit.item.userFilterCondition.userTagConfig.tagType === 2 && // 2=游戏强度
+        this.edit.item.userFilterCondition.userTagConfig.tagId === 20000 // 20000=游戏强度
     },
   },
   methods: {
@@ -1081,6 +1121,27 @@ export default {
     onUserTypeChange(val) {
       this.$set(this.edit.item.userTypes, 0, val)
       console.log('onUserTypeChange this.edit.item.userTypes:', this.edit.item.userTypes)
+
+      if (val !== 5) {
+        this.edit.item.userFilterCondition.userTagConfig.tagType = 0
+        this.edit.item.userFilterCondition.userTagConfig.tagId = 0
+        this.edit.item.userFilterCondition.userTagConfig.tagValue = 0
+      }
+    },
+    onTagTypeChange(tagType) {
+      const tagOptions = this.userTagOptions.find(item => item.value === tagType)
+      this.edit.userTagIdOptions = tagOptions && tagOptions.children || []
+      if (this.edit.userTagIdOptions.length > 0) {
+        this.edit.item.userFilterCondition.userTagConfig.tagId = this.edit.userTagIdOptions[0].value
+      }
+      this.edit.item.userFilterCondition.userTagConfig.tagValue = 0
+    },
+    onChangeEndTime(val) {
+      if (val < this.edit.item.startTime) {
+        Message.error('活动结束时间不能早于活动开始时间')
+        this.edit.item.endTime = this.edit.item.startTime
+      }
+      this.edit.item.showEndTime = this.edit.item.endTime + 1000 * 60 * 60 * 24
     },
     changeStatus(id, status, msg) {
       // const $this = this
@@ -1127,10 +1188,6 @@ export default {
         Message.error('请填写总奖励')
         return
       }
-      if (this.edit.item.rewardConfig.rewardRanges.length === 0) {
-        Message.error('请先添加领奖区间配置')
-        return
-      }
       if (this.edit.item.taskConfig.taskType === 0 || this.edit.item.taskConfig.taskValueRequired === 0 || this.edit.item.taskConfig.taskText === '') {
         Message.error('请完善任务配置')
         return
@@ -1141,9 +1198,19 @@ export default {
           return
         }
       }
-      if (this.edit.item.userTypes[0] === 5 && this.edit.item.userFilterCondition.userTagConfig.tagValue === 0) {
-        Message.error('请选择用户标签')
-        return
+      if (this.edit.item.userTypes[0] === 5) {
+        if (this.edit.item.userFilterCondition.userTagConfig.tagType === 0) {
+          Message.error('请选择标签类型')
+          return
+        }
+        if (this.edit.item.userFilterCondition.userTagConfig.tagId === 0) {
+          Message.error('请选择标签子类')
+          return
+        }
+        if (this.edit.item.userFilterCondition.userTagConfig.tagId === 20000 && this.edit.item.userFilterCondition.userTagConfig.tagValue === 0) {
+          Message.error('请选择游戏强度')
+          return
+        }
       }
 
       const copyItem = JSON.parse(JSON.stringify(this.edit.item))
@@ -1180,7 +1247,7 @@ export default {
       copyItem.userFilterCondition.registerTimeRange.max = registerEndTime / 1000
 
       if (this.edit.item.whitelistCfg.appIdList.length === 0 && this.version === 'V2') {
-        this.edit.item.whitelistCfg.appIdList = [this.appId]
+        copyItem.whitelistCfg.appIdList = [this.appId]
       }
 
       const data = {}
@@ -1428,13 +1495,6 @@ export default {
             }
           }
 
-          if (item.userFilterCondition.userTagConfig === undefined) {
-            item.userFilterCondition['userTagConfig'] = {
-              tagId: 20000, // 游戏强度
-              tagValue: 0,
-            }
-          }
-
           for (let i = 0; i < item.rewardConfig.rewardRanges.length; i++) {
             const rewardRange = item.rewardConfig.rewardRanges[i]
             rewardRange.minScore = rewardRange.minScore / 1000
@@ -1475,6 +1535,8 @@ export default {
           this.updateGamesSorted()
 
           this.edit.userType = item.userTypes[0]
+
+          this.onTagTypeChange(item.userFilterCondition.userTagConfig.tagType)
 
           console.log(this.edit.item.gameIdCfg)
         }

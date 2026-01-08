@@ -362,7 +362,7 @@
                 <fieldset style="margin-top: 10px">
                   <legend>热门时段</legend>
                   <el-button size="mini" type="primary" @click="handleAddHotTime()">添加</el-button>
-                  <el-form :inline="true" v-for="(item, index) in edit.item.extend.hotTimes">
+                  <el-form :inline="true" v-for="(item, index) in edit.item.activity.hotTimeList">
                     <el-form-item :label="`热门时段${index + 1}:`">
                       <el-time-picker
                         v-model="item.startTime"
@@ -507,6 +507,13 @@ function newItem() {
       ruleImgVer: [],
       isOpen: false,
       debugTimeOffset: 0,
+      hotTimeList: [
+        /*{
+          startTime: new Date(new Date().toDateString()), // 当天0点
+          endTime: new Date(new Date().toDateString() + ' 23:59:59'), // 当天23:59:59
+          scoreRatio: 1.5,
+        },*/
+      ],
     },
     extend: {
       minBet: 0,
@@ -520,13 +527,6 @@ function newItem() {
       progressReward: 0,
       rewardShow: 0,
       maxRankShow: 0,
-      hotTimes: [
-        /*{
-          startTime: new Date(new Date().toDateString()), // 当天0点
-          endTime: new Date(new Date().toDateString() + ' 23:59:59'), // 当天23:59:59
-          scoreRatio: 1.5,
-        },*/
-      ],
       pokerExtend: {
         tongitsScoreItems: [
           {
@@ -594,6 +594,7 @@ export default {
         'activity.ruleImgVer': '纵向规则图',
         'activity.isOpen': '是否开启',
         'activity.debugTimeOffset': '调试时间偏移',
+        'activity.hotTimeList': '热门时间配置',
         'extend.minBet': '计入榜单最小有效投注',
         'extend.minScore': '进入榜单最小有效投注',
         'extend.maxReward': '玩家奖励上限',
@@ -605,7 +606,6 @@ export default {
         'extend.progressReward': '进度奖励',
         'extend.rewardShow': '活动展示金额',
         'extend.maxRankShow': '最大展示排名',
-        'extend.hotTimes': '热门时间配置',
         'extend.pokerExtend.tongitsScoreItems': 'Tongits积分奖励配置',
         modifyUser: '最后修改人',
         updateTime: '更新时间',
@@ -799,7 +799,7 @@ export default {
         return
       }
 
-      for (const hotTime of item.extend.hotTimes) {
+      for (const hotTime of item.activity.hotTimeList) {
         hotTime.startTime = new Date(hotTime.startTime).getTime() / 1000
         hotTime.endTime = new Date(hotTime.endTime).getTime() / 1000
         hotTime.scoreRatio *= 100
@@ -918,7 +918,7 @@ export default {
           item.extend.maxReward /= 1000
           item.extend.progressReward /= 1000
 
-          for (const hotTime of item.extend.hotTimes) {
+          for (const hotTime of item.activity.hotTimeList) {
             hotTime.startTime = new Date().setTime(hotTime.startTime * 1000)
             hotTime.endTime = new Date().setTime(hotTime.endTime * 1000)
             hotTime.scoreRatio /= 100
@@ -1172,14 +1172,14 @@ export default {
     },
     //************************ 热门时段相关 ************************
     handleAddHotTime() {
-      this.edit.item.extend.hotTimes.push({
+      this.edit.item.activity.hotTimeList.push({
         startTime: '',
         endTime: '',
         scoreRatio: 1
       })
     },
     handleDelHotTime(index) {
-      this.edit.item.extend.hotTimes.splice(index, 1)
+      this.edit.item.activity.hotTimeList.splice(index, 1)
     },
   }
 }

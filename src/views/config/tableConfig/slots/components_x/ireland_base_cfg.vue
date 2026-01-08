@@ -201,7 +201,7 @@
 
             <el-col :span="12">
               <el-form-item label="是否关闭购买免费">
-                <el-select v-model="slotsData.IsCloseBuyFree" disabled>
+                <el-select v-model="slotsData.IsCloseBuyFree">
                   <el-option label="是" :value="true" />
                   <el-option label="否" :value="false" />
                 </el-select>
@@ -248,6 +248,7 @@ export default {
   },
   data() {
     var data = {
+      itemEnv: process.env.NODE_ENV,
       lock: false,
       recommendBet: this.slotsData.RecommendBet ? this.slotsData.RecommendBet * this.slotsData.BaseBet / 1000 : 0,
       initialWinTypeMinOdds: [],
@@ -270,14 +271,38 @@ export default {
     }
     return data
   },
-  updated() {
-    if (this.lock === false) {
-      this.$refs.compare.SetOldVal(this.getDiffData(this.initialWinTypeMinOdds, this.initialBets, this.initialAutoSpinNum))
-      this.lock = true
-      console.log('origin data', this.getDiffData(this.initialWinTypeMinOdds, this.initialBets, this.initialAutoSpinNum))
+  // updated() {
+  //   if (this.lock === false) {
+  //     this.$refs.compare.SetOldVal(this.getDiffData(this.initialWinTypeMinOdds, this.initialBets, this.initialAutoSpinNum))
+  //     this.lock = true
+  //     console.log('origin data', this.getDiffData(this.initialWinTypeMinOdds, this.initialBets, this.initialAutoSpinNum))
+  //   }
+  // },
+  mounted() {
+    this.initCompare()
+  },
+  watch: {
+    slotsData: {
+      deep: true,
+      handler() {
+        if (!this.lock) {
+          this.initCompare()
+        }
+      }
     }
   },
   methods: {
+    initCompare() {
+      this.$nextTick(() => {
+        if (this.$refs.compare) {
+          this.$refs.compare.SetOldVal(
+            this.getDiffData(this.initialWinTypeMinOdds, this.initialBets, this.initialAutoSpinNum)
+          )
+          this.lock = true
+          console.log('origin data', this.getDiffData(this.initialWinTypeMinOdds, this.initialBets, this.initialAutoSpinNum))
+        }
+      })
+    },
     getDiffData(winTypeMinOdds, bets, autoSpinNum) {
       return {
         'SlotsType': this.slotsData.SlotsType,
@@ -300,7 +325,8 @@ export default {
         'AutoSpinNum': autoSpinNum,
         'BetOddsList': this.slotsData.BetOddsList,
         'TopWinsLimit': this.slotsData.TopWinsLimit,
-        'TopWinsStartTime': this.slotsData.TopWinsStartTime
+        'TopWinsStartTime': this.slotsData.TopWinsStartTime,
+        'IsCloseBuyFree': this.slotsData.IsCloseBuyFree
       }
     },
     submitFrm() {

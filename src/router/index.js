@@ -1242,6 +1242,12 @@ export const asyncRoutes = [
             name: 'pirateScratch_cfg',
             meta: { title: 'Pirate Scratch ◐' }
           },
+          {
+            path: 'pirateTap_cfg',
+            component: () => import('@/views/config/tableConfig/pirateTapConfig.vue'),
+            name: 'pirateTap_cfg',
+            meta: { title: 'P irate Tap ◐' }
+          },
 
         ]
       },
@@ -1806,6 +1812,12 @@ export const asyncRoutes = [
                 meta: { title: 'MahjongFortune(审)' }
               },
               {
+                path: 'mafiawarsmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/mafiawarsmars_slots_cfg'),
+                name: 'mafiawarsmars_slots_cfg',
+                meta: { title: 'MafiaWars(审)' }
+              },
+              {
                 path: 'mahjongjackpotmars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/mahjongjackpotmars_slots_cfg'),
                 name: 'mahjongjackpotmars_slots_cfg',
@@ -1924,6 +1936,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/pacquiaofortunemars_slots_cfg'),
                 name: 'pacquiaofortunemars_slots_cfg',
                 meta: { title: 'PacquiaoFortune(审)' }
+              },
+              {
+                path: 'pahiyaswinsmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/pahiyaswinsmars_slots_cfg'),
+                name: 'pahiyaswinsmars_slots_cfg',
+                meta: { title: 'Pahiyas Wins(审)' }
               }
             ]
           },
@@ -3157,11 +3175,17 @@ export const asyncRoutes = [
             name: 'playlog_mannypunch_playNow',
             meta: { title: 'M anny Punch - 试玩 ◐', gid: 1139 }
           },
-            {
+          {
             path: 'playlog_pirateScratch',
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_pirateScratch',
             meta: { title: 'P irate Scratch ◐', gid: 141 }
+          },
+          {
+            path: 'playlog_pirateTap',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_pirateTap',
+            meta: { title: 'P irate Tap ◐', gid: 142 }
           }
 
           /*
@@ -3692,6 +3716,12 @@ export const asyncRoutes = [
             meta: { title: 'MajorAce(审)', gid: 163 }
           },
           {
+            path: 'mafiawarsmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'mafiawarsmars_slots_log',
+            meta: { title: 'MafiaWars(审)', gid: 233 }
+          },
+          {
             path: 'mahjongfortunemars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'mahjongfortunemars_slots_log',
@@ -3864,6 +3894,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'pacquiaofortunemars_slots_log',
             meta: { title: 'PacquiaoFortune(审)', gid: 237 }
+          },
+          {
+            path: 'pahiyaswinsmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'pahiyaswinsmars_slots_log',
+            meta: { title: 'PahiyasWins(审)', gid: 231 }
           }
         ]
       },
