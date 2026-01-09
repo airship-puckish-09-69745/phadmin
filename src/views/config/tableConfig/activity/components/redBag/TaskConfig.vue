@@ -332,7 +332,8 @@ export default {
         { 'value': 1, 'label': 'Tongits门票', disabled: false },
         { 'value': 2, 'label': '头像框', disabled: false },
         { 'value': 3, 'label': '德州门票', disabled: false },
-        { 'value': 4, 'label': '德州头像框', disabled: false }
+        { 'value': 4, 'label': '德州头像框', disabled: false },
+        { 'value': 5, 'label': 'SlotFreeSpin', disabled: false }
       ],
       propDayTypeOptions: [
         { 'value': 1, 'label': '1天', disabled: false },
@@ -505,13 +506,14 @@ export default {
     },
     // 根据道具类型获取道具选项
     getPropOptionsByType(propType) {
+      console.log(propType)
       const propOptions = []
       const currTime = new Date().getTime()
       for (let i = 0; i < this.propList.length; i++) {
         const prop = this.propList[i]
         if (prop.item_type === propType && prop.status === 1) {
           // 对于非头像框类型，检查是否过期
-          if (prop.item_type !== 2 && prop.item_type !== 4) {
+          if (prop.item_type !== 2 && prop.item_type !== 4 && prop.item_type !== 5) {
             const expTime = prop.expire_time * 1000
             if (currTime < expTime) {
               propOptions.push({
