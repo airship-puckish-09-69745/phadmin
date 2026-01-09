@@ -607,8 +607,8 @@ export default {
             TagType: 0,
             TagValue: 0
           }
-          if (this.item.UserTagConfig && this.item.UserTagConfig.length > 0) {
-            const tagList = this.item.UserTagConfig
+          if (item.UserTagConfig && item.UserTagConfig.length > 0) {
+            const tagList = item.UserTagConfig
             const tagIds = tagList.map(t => t.TagId)
             const first = tagList[0]
 
