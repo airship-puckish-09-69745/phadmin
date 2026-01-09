@@ -262,6 +262,7 @@
                   <el-select
                     v-model="edit.userTagConfig.TagType"
                     placeholder="请选择标签类型"
+                    @change="onTagTypeChange"
                   >
                     <el-option
                       v-for="item in userTagOptions"
@@ -279,9 +280,7 @@
                     v-model="edit.userTagConfig.TagId"
                     placeholder="请选择标签子类"
                     multiple
-                    collapse-tags
-                    collapse-tags-tooltip
-                    style="width: 100%;"
+                    style="width: 400px"
                   >
                     <el-option
                       v-for="item in edit.userTagIdOptions"
@@ -1315,6 +1314,10 @@ export default {
     },
     removeGameIcon(index) {
       this.item.GameIcon.splice(index, 1)
+    },
+    onTagTypeChange(tagType) {
+      const tagOptions = this.userTagOptions.find(item => item.value === tagType)
+      this.edit.userTagIdOptions = tagOptions && tagOptions.children || []
     }
   }
 }
