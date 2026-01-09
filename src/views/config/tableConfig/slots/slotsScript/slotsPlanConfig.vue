@@ -1145,6 +1145,22 @@ export default {
       }
     },
     addPlan() {
+      if (isNaN(parseInt(this.addFormData.SwitchRule.StatDays))) {
+        Message.error('方案切换配置的统计数据天数请在1~7天之间!')
+        return
+      }
+      if (isNaN(parseInt(this.addFormData.SwitchRule.SpinMin))) {
+        Message.error('方案切换配置的最小下注次数必须是个数字!')
+        return
+      }
+      if (isNaN(parseInt(this.addFormData.SwitchRule.BetMin))) {
+        Message.error('方案切换配置的最小下注金额必须是个数字!')
+        return
+      }
+      if (isNaN(parseInt(this.addFormData.SwitchRule.TargetPlanId))) {
+        Message.error('方案切换配置的目标方案ID必须是个数字!')
+        return
+      }
       if (this.addFormData.SwitchRule.StatDays < 0 || this.addFormData.SwitchRule.StatDays > 7) {
         Message.error('方案切换配置的统计数据天数请在1~7天之间!')
         return
@@ -1183,6 +1199,22 @@ export default {
       this.initUserTagsData();
     },
     saveEdit() {
+      if (isNaN(parseInt(this.editFormData.SwitchRule.StatDays))) {
+        Message.error('方案切换配置的统计数据天数请在1~7天之间!')
+        return
+      }
+      if (isNaN(parseInt(this.editFormData.SwitchRule.SpinMin))) {
+        Message.error('方案切换配置的最小下注次数必须是个数字!')
+        return
+      }
+      if (isNaN(parseInt(this.editFormData.SwitchRule.BetMin))) {
+        Message.error('方案切换配置的最小下注金额必须是个数字!')
+        return
+      }
+      if (isNaN(parseInt(this.editFormData.SwitchRule.TargetPlanId))) {
+        Message.error('方案切换配置的目标方案ID必须是个数字!')
+        return
+      }
       if (this.editFormData.SwitchRule.StatDays < 0 || this.editFormData.SwitchRule.StatDays > 7) {
         Message.error('方案切换配置的统计数据天数请在1~7天之间!')
         return

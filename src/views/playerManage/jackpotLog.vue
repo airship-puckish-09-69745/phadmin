@@ -503,7 +503,9 @@ export default {
       appConfig: [
         { 'value': 0, 'label': '全部' },
         { 'value': 1000002, 'label': '1000002' },
-        { 'value': 1000005, 'label': '1000005' }
+        { 'value': 1000005, 'label': '1000005' },
+        { 'value': 2000002, 'label': '2000002' },
+        { 'value': 2000005, 'label': '2000005' }
       ],
       levelConfig: [
         { 'value': 0, 'label': '全部' },
