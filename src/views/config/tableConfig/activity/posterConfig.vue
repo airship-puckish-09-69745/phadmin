@@ -433,7 +433,7 @@ export default {
   },
   computed: {
     showUserTagCondition() {
-      return this.edit.item.UserTagConfig.length > 0 ? this.edit.item.UserTagConfig[0].TagType === 5 : false
+      return this.edit.userTagConfig.TagType === 5
     }
   },
   created() {
