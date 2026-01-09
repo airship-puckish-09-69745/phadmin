@@ -919,6 +919,7 @@ export default {
                 TagType: first.TagType ?? 0,
                 TagValue: first.TagValue ?? first.TagType ?? 0
               }
+              $this.onTagTypeChange($this.edit.userTagConfig.TagType)
             }
             $this.$refs.compare.SetOldVal(old)
           }

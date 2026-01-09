@@ -222,6 +222,42 @@
                 </el-form-item>
               </el-col>
             </el-row>
+            <el-row>
+              <el-col>
+                <el-form-item label="参与活动用户类型：">
+                  <el-select
+                    v-model="edit.userTagConfig.TagType"
+                    placeholder="请选择标签类型"
+                    @change="onTagTypeChange"
+                  >
+                    <el-option
+                      v-for="item in userTagOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+
+              <el-col v-if="showUserTagCondition">
+                <el-form-item label="标签子类：">
+                  <el-select
+                    v-model="edit.userTagConfig.TagId"
+                    placeholder="请选择标签子类"
+                    multiple
+                    style="width: 400px"
+                  >
+                    <el-option
+                      v-for="item in edit.userTagIdOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
           </el-form>
         </el-tab-pane>
       </el-tabs>
@@ -313,7 +349,8 @@ function newItem() {
       SiteIdList: []
     },
     SiteIdCanSkip: [],
-    ReportCode: null
+    ReportCode: null,
+    UserTagConfig: []
   }
 }
 
@@ -330,7 +367,13 @@ export default {
         visible: false,
         isEdit: false,
         item: newItem(),
-        gamesIconSortDialogVisible: false
+        gamesIconSortDialogVisible: false,
+        userTagIdOptions: [],
+        userTagConfig: {
+          TagId: [],
+          TagValue: 0,
+          TagType: 0
+        }
       },
       filterText: '',
       treeData: [{
@@ -372,7 +415,25 @@ export default {
           value: 1000005,
           label: '正式1000005'
         }
+      ],
+      // 用户标签类型
+      userTagOptions: [
+        { value: 0, label: '所有', children: [
+            { value: 0, label: '所有' }
+          ]
+        },
+        { value: 5, label: 'Slots用户类型', children: [
+            { value: 50001, label: 'Slots新增用户' },
+            { value: 50002, label: 'Slots登录天数' },
+            { value: 50008, label: 'Slots回归用户' }
+          ]
+        }
       ]
+    }
+  },
+  computed: {
+    showUserTagCondition() {
+      return this.edit.item.UserTagConfig.length > 0 ? this.edit.item.UserTagConfig[0].TagType === 5 : false
     }
   },
   created() {
@@ -509,6 +570,11 @@ export default {
     },
     handleAdd() {
       this.edit.item = newItem()
+      this.edit.userTagConfig = {
+        TagId: [],
+        TagType: 0,
+        TagValue: 0
+      }
       console.log('GameId', this.edit.item.GameId)
       this.edit.isEdit = false
       this.edit.visible = true
@@ -536,6 +602,23 @@ export default {
           const item = JSON.parse(JSON.stringify(_data))
           item.StartTime = item.StartTime * 1000
           item.EndTime = item.EndTime * 1000
+          this.edit.userTagConfig = {
+            TagId: [],
+            TagType: 0,
+            TagValue: 0
+          }
+          if (this.item.UserTagConfig && this.item.UserTagConfig.length > 0) {
+            const tagList = this.item.UserTagConfig
+            const tagIds = tagList.map(t => t.TagId)
+            const first = tagList[0]
+
+            this.edit.userTagConfig = {
+              TagId: tagIds,
+              TagType: first.TagType ?? 0,
+              TagValue: first.TagValue ?? first.TagType ?? 0
+            }
+            this.onTagTypeChange(this.edit.userTagConfig.TagType)
+          }
           this.edit.item = item
           this.$nextTick(() => {
             if (this.$refs.tree) {
@@ -634,6 +717,15 @@ export default {
       if (!raw.PosterImgVer) raw.PosterImgVer = []
       if (!raw.GameIcon) raw.GameIcon = []
       if (!raw.GameId) raw.GameId = []
+      if (this.edit.userTagConfig && this.edit.userTagConfig.TagId.length > 0) {
+        raw.UserTagConfig = this.edit.userTagConfig.TagId.map(id => ({
+          TagId: id,
+          TagType: this.edit.userTagConfig.TagType,
+          TagValue: this.edit.userTagConfig.TagValue
+        }))
+      } else {
+        raw.UserTagConfig = []
+      }
 
       try {
         if (this.edit.isEdit && raw.ID && raw.ID !== 0) {
@@ -703,6 +795,10 @@ export default {
 
       this.$message.success('排序已保存')
       this.edit.gamesIconSortDialogVisible = false
+    },
+    onTagTypeChange(tagType) {
+      const tagOptions = this.userTagOptions.find(item => item.value === tagType)
+      this.edit.userTagIdOptions = tagOptions && tagOptions.children || []
     }
   }
 }
