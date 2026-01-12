@@ -1122,7 +1122,7 @@ export default {
       this.$set(this.edit.item.userTypes, 0, val)
       console.log('onUserTypeChange this.edit.item.userTypes:', this.edit.item.userTypes)
 
-      if (val !== 5) {
+      if (val !== 5) { // 用户标签
         this.edit.item.userFilterCondition.userTagConfig.tagType = 0
         this.edit.item.userFilterCondition.userTagConfig.tagId = 0
         this.edit.item.userFilterCondition.userTagConfig.tagValue = 0
@@ -1134,7 +1134,10 @@ export default {
       if (this.edit.userTagIdOptions.length > 0) {
         this.edit.item.userFilterCondition.userTagConfig.tagId = this.edit.userTagIdOptions[0].value
       }
-      this.edit.item.userFilterCondition.userTagConfig.tagValue = 0
+      console.log('tagType:', tagType)
+      if (tagType !== 2) { // 游戏强度标签
+        this.edit.item.userFilterCondition.userTagConfig.tagValue = 0
+      }
     },
     onChangeEndTime(val) {
       if (val < this.edit.item.startTime) {
@@ -1480,8 +1483,9 @@ export default {
           item.userTypes = JSON.parse(item.userTypes)
 
           if (item.userFilterCondition && item.userFilterCondition !== '{}' && item.userFilterCondition !== 'null') {
+            console.log('item.userFilterCondition1:', item.userFilterCondition)
             item.userFilterCondition = JSON.parse(item.userFilterCondition)
-            console.log('item.userFilterCondition:', item.userFilterCondition)
+            console.log('item.userFilterCondition2:', item.userFilterCondition)
             this.edit.registerDateRange = [item.userFilterCondition.registerTimeRange.min * 1000, item.userFilterCondition.registerTimeRange.max * 1000]
           } else {
             item.userFilterCondition = {
