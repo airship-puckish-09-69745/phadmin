@@ -12,6 +12,14 @@
       
     </el-row>
 
+    <h3></h3>
+
+    <el-row>
+      <el-col :span="2">
+        <el-button type="success" size="mini" icon="el-icon-refresh" @click="getData()">刷新</el-button>
+      </el-col>
+    </el-row>
+
     <el-row>
       <el-col :span="24">
         <span v-if="item.openTest=='2'">
