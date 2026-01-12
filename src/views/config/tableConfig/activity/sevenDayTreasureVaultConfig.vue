@@ -259,7 +259,11 @@
             <el-row>
               <el-col>
                 <el-form-item label="参与活动用户类型：">
-                  <el-select v-model="item.UserTagConfig[0].TagType" placeholder="请选择标签类型" @change="onTagTypeChange">
+                  <el-select
+                    v-model="edit.userTagConfig.TagType"
+                    placeholder="请选择标签类型"
+                    @change="onTagTypeChange"
+                  >
                     <el-option
                       v-for="item in userTagOptions"
                       :key="item.value"
@@ -269,23 +273,17 @@
                   </el-select>
                 </el-form-item>
               </el-col>
+
               <el-col v-if="showUserTagCondition">
                 <el-form-item label="标签子类：">
-                  <el-select v-model="item.UserTagConfig[0].TagId" placeholder="请选择标签子类">
+                  <el-select
+                    v-model="edit.userTagConfig.TagId"
+                    placeholder="请选择标签子类"
+                    multiple
+                    style="width: 400px"
+                  >
                     <el-option
                       v-for="item in edit.userTagIdOptions"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
-                </el-form-item>
-              </el-col>
-              <el-col v-if="showUserTagGameIntensityCondition" :span="24">
-                <el-form-item label="游戏强度：" :required="false">
-                  <el-select v-model="item.UserTagConfig[0].TagValue" placeholder="请选择游戏强度标签">
-                    <el-option
-                      v-for="item in userTagGameIntensityOptions"
                       :key="item.value"
                       :label="item.label"
                       :value="item.value"
@@ -640,11 +638,7 @@ export default {
         TaskConfig: [],
         BonusIcon: [],
         GameIcon: [],
-        UserTagConfig: [{
-          TagId: 0,
-          TagValue: 0,
-          TagType: 0
-        }]
+        UserTagConfig: []
       },
       GamesSorted: [
         {
@@ -717,7 +711,12 @@ export default {
           TaskIndex: null,
           RewardIndex: null
         },
-        userTagIdOptions: []
+        userTagIdOptions: [],
+        userTagConfig: {
+          TagId: [],
+          TagValue: 0,
+          TagType: 0
+        }
       },
       appId: parseInt(store.getters.appId) || -1,
       version: store.getters.version || 'V1',
@@ -760,33 +759,18 @@ export default {
           { value: 0, label: '所有' }
         ]
         },
-        { value: 2, label: '游戏强度', children: [
-          { value: 20000, label: '游戏强度' }
-        ]
-        },
         { value: 5, label: 'Slots用户类型', children: [
           { value: 50001, label: 'Slots新增用户' },
           { value: 50002, label: 'Slots登录天数' },
           { value: 50008, label: 'Slots回归用户' }
         ]
         }
-      ],
-      // 游戏强度标签值
-      userTagGameIntensityOptions: [
-        { value: 0, label: '未选择' },
-        { value: 1, label: '无感' },
-        { value: 2, label: '尝试' },
-        { value: 3, label: '常玩' },
-        { value: 4, label: '核心' }
       ]
     }
   },
   computed: {
     showUserTagCondition() {
-      return this.item.UserTagConfig.length > 0 ? this.item.UserTagConfig[0].TagType === 5 : false
-    },
-    showUserTagGameIntensityCondition() {
-      return this.item.UserTagConfig.length > 0 ? this.item.UserTagConfig[0].TagType === 2 : false
+      return this.edit.userTagConfig.TagType === 5
     }
   },
   created() {
@@ -925,12 +909,17 @@ export default {
                 bPercent: 0
               })
             }
-            if ($this.item.UserTagConfig === undefined) {
-              $this.$set($this.item, 'UserTagConfig', [{
-                TagId: 0,
-                TagValue: 0,
-                TagType: 0
-              }])
+            if ($this.item.UserTagConfig && $this.item.UserTagConfig.length > 0) {
+              const tagList = $this.item.UserTagConfig
+              const tagIds = tagList.map(t => t.TagId)
+              const first = tagList[0]
+
+              $this.edit.userTagConfig = {
+                TagId: tagIds,
+                TagType: first.TagType ?? 0,
+                TagValue: first.TagValue ?? first.TagType ?? 0
+              }
+              $this.onTagTypeChange($this.edit.userTagConfig.TagType)
             }
             $this.$refs.compare.SetOldVal(old)
           }
@@ -987,6 +976,16 @@ export default {
         tableData.Activity.GameIdList.push(tableData.GameIcon[key].Id)
       }
       tableData.Activity.Whitelist.AppIdList = [this.appId]
+      if (this.edit.userTagConfig && this.edit.userTagConfig.TagId.length > 0) {
+        tableData.UserTagConfig = this.edit.userTagConfig.TagId.map(id => ({
+          TagId: id,
+          TagType: this.edit.userTagConfig.TagType,
+          TagValue: this.edit.userTagConfig.TagValue
+        }))
+      } else {
+        tableData.UserTagConfig = []
+      }
+
       this.$refs.compare.SetNewVal(tableData)
       this.$refs.compare.Compare((isEdit) => {
         if (!isEdit) {
@@ -1320,10 +1319,6 @@ export default {
     onTagTypeChange(tagType) {
       const tagOptions = this.userTagOptions.find(item => item.value === tagType)
       this.edit.userTagIdOptions = tagOptions && tagOptions.children || []
-      if (this.edit.userTagIdOptions.length > 0) {
-        this.item.UserTagConfig[0].TagId = this.edit.userTagIdOptions[0].value
-      }
-      this.item.UserTagConfig[0].TagValue = 0
     }
   }
 }
