@@ -140,10 +140,24 @@
           </el-row>
         </el-tab-pane>
 
-        <el-tab-pane label="客户端表现">
+        <el-tab-pane label="客户端控制">
           <el-row :span="16" :offset="3" style="width: 80%; margin: 0 auto">
             <fieldset style="margin-top:10px">
-              <legend>客户端表现</legend>
+              <legend>默认下注额度</legend>
+              <el-row style="margin-bottom: 32px;"></el-row>
+              <el-row>
+                <el-col :span="7" :offset="3">
+                  <el-form inline>
+                    <el-form-item label="可下注次数min" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-input v-model.number="itemExt.Ctrl.BetTimesMin" size="mini" :required="true"> </el-input>
+                    </el-form-item>
+                  </el-form>
+                </el-col>
+              </el-row>
+            </fieldset>
+
+            <fieldset style="margin-top:10px">
+              <legend>气球表现</legend>
               <el-row style="margin-bottom: 32px;"></el-row>
               <el-row>
                 <el-col :span="7" :offset="3">
