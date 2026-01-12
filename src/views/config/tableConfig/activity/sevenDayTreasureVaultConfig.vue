@@ -256,6 +256,42 @@
                 </el-form-item>
               </el-col>
             </el-row>
+            <el-row>
+              <el-col>
+                <el-form-item label="参与活动用户类型：">
+                  <el-select
+                    v-model="edit.userTagConfig.TagType"
+                    placeholder="请选择标签类型"
+                    @change="onTagTypeChange"
+                  >
+                    <el-option
+                      v-for="item in userTagOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+
+              <el-col v-if="showUserTagCondition">
+                <el-form-item label="标签子类：">
+                  <el-select
+                    v-model="edit.userTagConfig.TagId"
+                    placeholder="请选择标签子类"
+                    multiple
+                    style="width: 400px"
+                  >
+                    <el-option
+                      v-for="item in edit.userTagIdOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
           </el-form>
         </el-tab-pane>
       </el-tabs>
@@ -569,7 +605,7 @@ import Compare from '@/components/Compare/index.vue'
 import store from '@/store'
 import SiteSelect from '@/components/SiteSelect/index.vue'
 import { ITEM_DAY_TYPE_OPTIONS, ITEM_TYPE_OPTIONS, PROP_TYPE_OPTIONS } from '@/utils/options'
-import {getCustomize, updateCustomize} from "@/api/custome_configV2";
+import { getCustomize, updateCustomize } from '@/api/custome_configV2'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
@@ -601,7 +637,8 @@ export default {
         ActivityExtend: {},
         TaskConfig: [],
         BonusIcon: [],
-        GameIcon: []
+        GameIcon: [],
+        UserTagConfig: []
       },
       GamesSorted: [
         {
@@ -673,6 +710,12 @@ export default {
           Time: null,
           TaskIndex: null,
           RewardIndex: null
+        },
+        userTagIdOptions: [],
+        userTagConfig: {
+          TagId: [],
+          TagValue: 0,
+          TagType: 0
         }
       },
       appId: parseInt(store.getters.appId) || -1,
@@ -709,7 +752,25 @@ export default {
       ITEM_DAY_TYPE_OPTIONS,
       gameData: [],
       richCardGameMap: null,
-      cfgData: {}
+      cfgData: {},
+      // 用户标签类型
+      userTagOptions: [
+        { value: 0, label: '所有', children: [
+          { value: 0, label: '所有' }
+        ]
+        },
+        { value: 5, label: 'Slots用户类型', children: [
+          { value: 50001, label: 'Slots新增用户' },
+          { value: 50002, label: 'Slots登录天数' },
+          { value: 50008, label: 'Slots回归用户' }
+        ]
+        }
+      ]
+    }
+  },
+  computed: {
+    showUserTagCondition() {
+      return this.edit.userTagConfig.TagType === 5
     }
   },
   created() {
@@ -848,6 +909,18 @@ export default {
                 bPercent: 0
               })
             }
+            if ($this.item.UserTagConfig && $this.item.UserTagConfig.length > 0) {
+              const tagList = $this.item.UserTagConfig
+              const tagIds = tagList.map(t => t.TagId)
+              const first = tagList[0]
+
+              $this.edit.userTagConfig = {
+                TagId: tagIds,
+                TagType: first.TagType ?? 0,
+                TagValue: first.TagValue ?? first.TagType ?? 0
+              }
+              $this.onTagTypeChange($this.edit.userTagConfig.TagType)
+            }
             $this.$refs.compare.SetOldVal(old)
           }
           this.getGameAll()
@@ -903,6 +976,16 @@ export default {
         tableData.Activity.GameIdList.push(tableData.GameIcon[key].Id)
       }
       tableData.Activity.Whitelist.AppIdList = [this.appId]
+      if (this.edit.userTagConfig && this.edit.userTagConfig.TagId.length > 0) {
+        tableData.UserTagConfig = this.edit.userTagConfig.TagId.map(id => ({
+          TagId: id,
+          TagType: this.edit.userTagConfig.TagType,
+          TagValue: this.edit.userTagConfig.TagValue
+        }))
+      } else {
+        tableData.UserTagConfig = []
+      }
+
       this.$refs.compare.SetNewVal(tableData)
       this.$refs.compare.Compare((isEdit) => {
         if (!isEdit) {
@@ -1232,6 +1315,10 @@ export default {
     },
     removeGameIcon(index) {
       this.item.GameIcon.splice(index, 1)
+    },
+    onTagTypeChange(tagType) {
+      const tagOptions = this.userTagOptions.find(item => item.value === tagType)
+      this.edit.userTagIdOptions = tagOptions && tagOptions.children || []
     }
   }
 }

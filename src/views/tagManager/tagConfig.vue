@@ -15,11 +15,11 @@
           :cell-style="libShow.DefaultTableCell"
           style="width: 100%;margin-top:10px;"
         >
-          <el-table-column
+          <!-- <el-table-column
             prop="id"
             label="ID"
             width="70"
-          />
+          /> -->
           <el-table-column
             prop="tag_type"
             label="标签类型"
@@ -32,7 +32,7 @@
           <el-table-column
             prop="tag_id"
             label="标签"
-            width="140"
+            width="180"
           >
             <template slot-scope="scope">
               <div v-html="tagIdValName(scope.row)"></div>
@@ -50,7 +50,7 @@
           <el-table-column
             prop="tag_gid"
             label="关联游戏"
-            width="150"
+            width="180"
           >
             <template slot-scope="scope">
               <div v-html="gameName(scope.row)"></div>
@@ -77,9 +77,9 @@
             width="250"
           >
             <template slot-scope="scope">
-              <el-button type="primary" size="mini" @click="edit(scope.row)">编辑</el-button>
-              <el-button type="primary" size="mini" @click="copy(scope.row)">复制</el-button>
-              <el-button type="danger" size="mini" @click="tagDelete(scope.row.id)">删除</el-button>
+              <el-button type="primary" size="mini" @click="edit(scope.row)" style="width: 60px;">编辑</el-button>
+              <el-button type="primary" size="mini" @click="copy(scope.row)" style="width: 60px;">复制</el-button>
+              <el-button type="danger" size="mini" @click="tagDelete(scope.row.id)" style="width: 60px;">删除</el-button>
             </template>
           </el-table-column>
           <el-table-column
@@ -146,7 +146,7 @@
               </el-select>
             </el-form-item>
             <el-form-item v-if="showSlotsOptions()" label="选择游戏：">
-              <el-select v-model="form.gids" filterable multiple clearable placeholder="请选择游戏">
+              <el-select v-model="form.gids" filterable :multiple="!showLevelOptions()" clearable placeholder="请选择游戏">
                 <el-option
                     v-for="opt in slotsOptions"
                     :key="opt.value"
@@ -158,14 +158,27 @@
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item v-if="showDaysOptions()" label="连续天数：">
+            <el-form-item v-if="showLevelOptions() || showCarryOptions()" label="选择游戏：">
+              <el-select v-model="form.tag_gid" filterable clearable placeholder="请选择Slots">
+                <el-option
+                    v-for="opt in slotsOptions"
+                    :key="opt.value"
+                    :label="opt.label"
+                    :value="opt.value"
+                >
+                  <span style="float: left">{{ opt.label }}</span>
+                  <span style="float: right; color: #8492a6; font-size: 13px">{{ opt.value }}</span>
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item v-if="showDaysOptions() && !showLevelOptions() && !showCarryOptions()" label="连续天数：">
               <el-col :span="8">
                 <el-input v-model.number="form.days" placeholder="placeholder">
                   <template slot="append">{{ appendDayName(form.tag_id) }}</template>
                 </el-input>
               </el-col>
             </el-form-item>
-            <el-form-item v-if="form.tag_type===5 && form.tag_id!==50008 && form.tag_id!==50001" label="区间配置：">
+            <el-form-item v-if="form.tag_type===5 && form.tag_id!==50008 && form.tag_id!==50001 && !showLevelOptions() && !showCarryOptions()" label="区间配置：">
               <div style="display: flex; align-items: center; margin-bottom: 10px;">
                 <span>轻度用户：{{ areaPageName(form) }} ≥ </span>
                 <el-input placeholder="起始金额" v-model="form.grade[0]" size="mini" style="width: 120px;"/>
@@ -178,6 +191,22 @@
                 <span>重度用户：{{ areaPageName(form) }} ≥ </span>
                 <el-input placeholder="起始金额" v-model="form.grade[2]" size="mini" style="width: 120px;"/>
               </div>
+            </el-form-item>
+            <el-form-item v-if="showLevelOptions()" label="级别配置：">
+              <div v-for="(item, index) in form.grade" :key="index" style="display: flex; align-items: center; margin-bottom: 10px;">
+                <span>{{ index+1 }}级：下注次数 ≥ </span>
+                <el-input placeholder="下注次数" v-model="form.grade[index]" size="mini" style="width: 120px;"/>
+                <el-button type="danger" size="mini" @click="removeGrade(index)">删除</el-button>
+              </div>
+              <el-button type="primary" size="mini" @click="addGrade">添加</el-button>
+            </el-form-item>
+            <el-form-item v-if="showCarryOptions()" label="级别配置：">
+              <div v-for="(item, index) in form.grade" :key="index" style="display: flex; align-items: center; margin-bottom: 10px;">
+                <span>{{ index+1 }}级：携带金额 ≥ </span>
+                <el-input placeholder="携带金额" v-model="form.grade[index]" size="mini" style="width: 120px;"/>
+                <el-button type="danger" size="mini" @click="removeGrade(index)">删除</el-button>
+              </div>
+              <el-button type="primary" size="mini" @click="addGrade">添加</el-button>
             </el-form-item>
             <el-form-item v-if="form.tag_id===10004" label="降低系数：">
               <el-col :span="8">
@@ -371,12 +400,6 @@
     </div>
   </template>
 
-  <style>
-  .tooltip-button {
-    margin-right: 10px;
-  }
-  </style>
-
   <script>
   import Compare from '@/components/Compare'
   import Publish from '@/components/Publish'
@@ -446,6 +469,40 @@
             {value: 50007, label: 'Slots连续下注天数'},
             {value: 50008, label: 'Slots回归用户'},
             {value: 50009, label: 'Slots最近中奖上限'},
+            {label: '第N日玩牌次数', children: [
+              {value: 50010, label: '用户第1日玩牌次数'},
+              {value: 50011, label: '用户第2日玩牌次数'},
+              {value: 50012, label: '用户第3日玩牌次数'},
+              {value: 50013, label: '用户第4日玩牌次数'},
+              {value: 50014, label: '用户第5日玩牌次数'},
+              {value: 50015, label: '用户第6日玩牌次数'},
+              {value: 50016, label: '用户第7日玩牌次数'},
+              {value: 50017, label: '用户第8日玩牌次数'},
+              {value: 50018, label: '用户第9日玩牌次数'},
+              {value: 50029, label: '用户第10日玩牌次数'},
+              {value: 50020, label: '用户第11日玩牌次数'},
+              {value: 50021, label: '用户第12日玩牌次数'},
+              {value: 50022, label: '用户第13日玩牌次数'},
+              {value: 50023, label: '用户第14日玩牌次数'},
+              {value: 50024, label: '用户第15日玩牌次数'},
+            ]},
+            {label: '第N日携带额度', children: [
+              {value: 50025, label: '用户第1日携带额度'},
+              {value: 50026, label: '用户第2日携带额度'},
+              {value: 50027, label: '用户第3日携带额度'},
+              {value: 50028, label: '用户第4日携带额度'},
+              {value: 50029, label: '用户第5日携带额度'},
+              {value: 50030, label: '用户第6日携带额度'},
+              {value: 50031, label: '用户第7日携带额度'},
+              {value: 50032, label: '用户第8日携带额度'},
+              {value: 50033, label: '用户第9日携带额度'},
+              {value: 50034, label: '用户第10日携带额度'},
+              {value: 50035, label: '用户第11日携带额度'},
+              {value: 50036, label: '用户第12日携带额度'},
+              {value: 50037, label: '用户第13日携带额度'},
+              {value: 50038, label: '用户第14日携带额度'},
+              {value: 50039, label: '用户第15日携带额度'},
+            ]},
             {value: 50100, label: '主题', children: [
               {value: 50101, label: '扑克/麻将主题'},
               {value: 50102, label: '经典寻宝/777主题'},
@@ -555,7 +612,7 @@
     },
     methods: {
       cascaderChange(value) {
-        if (this.form.tag_type === 5) {
+        if (this.form.tag_type === 5 && !this.showLevelOptions() && !this.showCarryOptions()) {
           this.form.tag_gid = 0
         }
         if (value.length === 1) {
@@ -597,7 +654,7 @@
         if (this.gameIntensity()) {
           this.form.tag_val = this.intensityOptions[0].value
         }
-        if (this.form.tag_type === 5) {
+        if (this.form.tag_type === 5 && !this.showLevelOptions() && !this.showCarryOptions()) {
           this.form.tag_gid = 0
         }
       },
@@ -636,7 +693,7 @@
             if (v2.children) {
               for (const v3 of v2.children) {
                 if (v3.value === tag_id) {
-                  return '['+v2.label+']'+v3.label
+                  return '['+v2.label+']<br>'+v3.label
                 }
               }
             }
@@ -725,10 +782,10 @@
           const attr = JSON.parse(row.tag_attr)
           let str = `一周内在${this.gameName(row)}登录天数在区间[${attr.loginDay[0]}-${attr.loginDay[1]}]`
           if (attr.roundAvg.use) {
-            str += `,日均玩牌局数>=${attr.roundAvg.val}`
+            str += `,日均玩牌局数≥${attr.roundAvg.val}`
           }
           if (attr.validBet.use) {
-            str += `,有效下注>=${attr.validBet.val}`
+            str += `,有效下注≥${attr.validBet.val}`
           }
           return str
         } else if (row.tag_id === 10003) {
@@ -736,7 +793,7 @@
           return `连续${attr.days}天未进入厅方的游戏用户`
         } else if (row.tag_id === 10004) {
           const attr = JSON.parse(row.tag_attr)
-          return `最近一自然周的总有效下注对比前一自然周降低>=${attr.reduce}%且历史有效下注>=${attr.totalBet}`
+          return `最近一自然周的总有效下注对比前一自然周降低≥${attr.reduce}%且历史有效下注≥${attr.totalBet}`
         } else if (row.tag_type === 5) {
           return this.slotsAttrName(row)
         }
@@ -753,20 +810,38 @@
           return `首次进入咱们Slots的用户`
         } else if (row.tag_id === 50008) {
           return `连续${attr.days}天未上线`
+        } else if (row.tag_id >= 50010 && row.tag_id < 50025) {
+          let str = ''
+          for (let i = 1; i < attr.grade.length; i++) {
+            str += `${i}级：下注次数∈[${attr.grade[i-1]}-${attr.grade[i]})<br/>`
+            if (i === attr.grade.length-1) {
+              str += `${i+1}级：下注次数≥${attr.grade[i]}`
+            }
+          }
+          return str
+        } else if (row.tag_id >= 50025 && row.tag_id < 50040) {
+          let str = ''
+          for (let i = 1; i < attr.grade.length; i++) {
+            str += `${i}级：携带额度∈[${attr.grade[i-1]}-${attr.grade[i]})<br/>`
+            if (i === attr.grade.length-1) {
+              str += `${i+1}级：携带额度≥${attr.grade[i]}`
+            }
+          }
+          return str
         }
         let dayStr = ''
         if (![50001].includes(row.tag_id)) {
           dayStr = `连续${attr.days}天`
         }
         if (row.tag_id === 50009) {
-          let str = `小奖用户（tagVal=1）：${dayStr} ${this.areaPageName(row)}>=${attr.grade[0]/1000}<br/>`
-          str += `中奖用户（tagVal=2）：${dayStr} ${this.areaPageName(row)}>=${attr.grade[1]/1000}<br/>`
-          str += `大奖用户（tagVal=3）：${dayStr} ${this.areaPageName(row)}>=${attr.grade[2]/1000}`
+          let str = `小奖用户（tagVal=1）：${dayStr} ${this.areaPageName(row)}≥${attr.grade[0]/1000}<br/>`
+          str += `中奖用户（tagVal=2）：${dayStr} ${this.areaPageName(row)}≥${attr.grade[1]/1000}<br/>`
+          str += `大奖用户（tagVal=3）：${dayStr} ${this.areaPageName(row)}≥${attr.grade[2]/1000}`
           return str
         }
-        let str = `轻度用户（tagVal=1）：${dayStr} ${this.areaPageName(row)}>=${attr.grade[0]}<br/>`
-        str += `中度用户（tagVal=2）：${dayStr} ${this.areaPageName(row)}>=${attr.grade[1]}<br/>`
-        str += `重度用户（tagVal=3）：${dayStr} ${this.areaPageName(row)}>=${attr.grade[2]}`
+        let str = `轻度用户（tagVal=1）：${dayStr} ${this.areaPageName(row)}≥${attr.grade[0]}<br/>`
+        str += `中度用户（tagVal=2）：${dayStr} ${this.areaPageName(row)}≥${attr.grade[1]}<br/>`
+        str += `重度用户（tagVal=3）：${dayStr} ${this.areaPageName(row)}≥${attr.grade[2]}`
         return str
       },
       formatTime(ts) {
@@ -815,6 +890,12 @@
       showDaysOptions() {
         return (this.form.tag_id === 10003 || this.form.tag_type === 5) && this.form.tag_id !== 50001
       },
+      showLevelOptions() {
+        return (this.form.tag_id >= 50010 && this.form.tag_id < 50025)
+      },
+      showCarryOptions() {
+        return (this.form.tag_id >= 50025 && this.form.tag_id < 50040)
+      },
       showGameOptions() {
         return (this.form.tag_type === 2 || this.form.tag_type === 3 || this.form.tag_id === 10002)
       },
@@ -839,6 +920,12 @@
       click2getInfo() {
         this.page = 1
         this.tagList()
+      },
+      addGrade() {
+        this.form.grade.push(0)
+      },
+      removeGrade(index) {
+        this.form.grade.splice(index, 1)
       },
       edit(row) {
         this.syncInfo = true
@@ -1002,6 +1089,19 @@
       checkSlotsParam() {
         if ([50008,50001,50002].includes(this.form.tag_id)) { // 新增用户，回归用户，新注册用户
           return true
+        }
+
+        if (this.form.tag_id >= 50010 && this.form.tag_id < 50025) { // 连续下注天数
+          if (this.form.tag_gid === 0) {
+            Message.error('请选择Slots游戏')
+            return false
+          }
+          for (let i = 1; i < this.form.grade.length; i++) {
+            if (this.form.grade[i] <= this.form.grade[i-1]) {
+              Message.error('当前等级的起始金额不能小于等于上一级的起始金额')
+              return false
+            }
+          }
         }
 
         this.form.grade[0] = Number(this.form.grade[0])

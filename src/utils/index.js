@@ -375,3 +375,35 @@ export function toRupee(amount) {
 export function numberFormat(amount) {
   return amount.toLocaleString()
 }
+
+/**
+ * 批量将指定字段 * 1000
+ * @param {Object} obj 需要处理的对象
+ * @param {Array<string>} fields 需要处理的字段名数组
+ * @returns {Object} 返回新对象
+ */
+export function mulFields1000(obj, fields) {
+  const result = { ...obj }
+  fields.forEach(key => {
+    if (result[key] !== undefined && result[key] !== null) {
+      result[key] = Math.ceil(Number(result[key]) * 1000)
+    }
+  })
+  return result
+}
+
+/**
+ * 批量将指定字段 / 1000
+ * @param {Object} obj 需要处理的对象
+ * @param {Array<string>} fields 需要处理的字段名数组
+ * @returns {Object} 返回新对象
+ */
+export function divFields1000(obj, fields) {
+  const result = { ...obj }
+  fields.forEach(key => {
+    if (result[key] !== undefined && result[key] !== null) {
+      result[key] = Number(result[key]) / 1000
+    }
+  })
+  return result
+}

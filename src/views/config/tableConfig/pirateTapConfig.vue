@@ -5,11 +5,11 @@
       <el-col :span="18">
         <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" />
       </el-col>
-      <!--
+      
       <el-col :span="2" v-if="IsDev()">
         <el-button type="primary" @click="dialogFormVisible= true" size="mini" > 测试配置</el-button>
       </el-col>
-      -->
+      
     </el-row>
 
     <el-row>
@@ -521,18 +521,31 @@
       </el-form>
     </el-row>
   
-    <el-dialog title="测试配置" :visible.sync="dialogFormVisible"   width="550px">
+    <el-dialog title="测试配置" :visible.sync="dialogFormVisible"   width="700px">
       <el-form  >
         <el-form-item label="是否开启:">
           <el-radio v-model="item.openTest" label="1" :value="false">否</el-radio>
           <el-radio v-model="item.openTest" label="2" :value="true">是</el-radio>
         </el-form-item>
+        <!--
         <el-form-item label="火箭终点:">
           <el-form :inline="true">
             <el-col :span="8">
                 <el-input v-model.number="item.Card" size="mini" /><template slot="append">配置放大100倍</template>
             </el-col>
           </el-form>
+        </el-form-item>
+        -->
+        <el-form-item label="" >
+          <el-col :span="148" >
+            开启测试仅用于不走小奖池判断，不重摇，其他测试均可通过配置数值验证！<br>
+            1：测试必中奖，把0倍返奖的权重配置成0，必随机中一个倍数" <br>
+            2：测试必中某一个倍数奖，把0倍返奖的权重配置成0，其他倍数配置删除，仅留一个测试用的倍数" <br>
+            3：测试必中特殊游戏，将特殊游戏概率调整到100%" <br>
+            4：测试必中某一个特殊游戏，将特殊游戏概率调整到100%，某一个特殊游戏权重配置成0" <br>
+            5：测试必中Jackpot，将粘概率配置成100%" <br>
+            额外说明：考虑触发免费次数太多，总回合数目前写死配置不超过120条，否则直接结束并结算本轮游戏" <br>
+          </el-col>
         </el-form-item>
       </el-form>
 
