@@ -878,7 +878,7 @@ export default {
         {'value': 50108, 'label': 'Slots小众系列'},
         {'value': 50201, 'label': '连线全线'},
         {'value': 50202, 'label': '连线固定线'},
-        {'value': 50203, 'label': '数量中奖'},
+        {'value': 50203, 'label': '无线数量中奖'},
         {'value': 50204, 'label': '无线相连中奖'},
         {'value': 50205, 'label': '其他'},
         {'value': 50301, 'label': '固定大奖'},
@@ -1140,10 +1140,27 @@ export default {
         Versions: [
 
         ],
-        ScriptRuleDescription: {Platform:'',UserType:0,TrafficCtrl:0, PlatformList:[],UserTagRules:[]}
+        ScriptRuleDescription: {Platform:'',UserType:0,TrafficCtrl:0, PlatformList:[], UserTagRules:[]},
+        SwitchRule: {StatDays: 0, SpinMin: 0, BetMin: 0, TargetPlanId: 0}
       }
     },
     addPlan() {
+      if (isNaN(parseInt(this.addFormData.SwitchRule.StatDays))) {
+        Message.error('方案切换配置的统计数据天数请在1~7天之间!')
+        return
+      }
+      if (isNaN(parseInt(this.addFormData.SwitchRule.SpinMin))) {
+        Message.error('方案切换配置的最小下注次数必须是个数字!')
+        return
+      }
+      if (isNaN(parseInt(this.addFormData.SwitchRule.BetMin))) {
+        Message.error('方案切换配置的最小下注金额必须是个数字!')
+        return
+      }
+      if (isNaN(parseInt(this.addFormData.SwitchRule.TargetPlanId))) {
+        Message.error('方案切换配置的目标方案ID必须是个数字!')
+        return
+      }
       if (this.addFormData.SwitchRule.StatDays < 0 || this.addFormData.SwitchRule.StatDays > 7) {
         Message.error('方案切换配置的统计数据天数请在1~7天之间!')
         return
@@ -1182,6 +1199,22 @@ export default {
       this.initUserTagsData();
     },
     saveEdit() {
+      if (isNaN(parseInt(this.editFormData.SwitchRule.StatDays))) {
+        Message.error('方案切换配置的统计数据天数请在1~7天之间!')
+        return
+      }
+      if (isNaN(parseInt(this.editFormData.SwitchRule.SpinMin))) {
+        Message.error('方案切换配置的最小下注次数必须是个数字!')
+        return
+      }
+      if (isNaN(parseInt(this.editFormData.SwitchRule.BetMin))) {
+        Message.error('方案切换配置的最小下注金额必须是个数字!')
+        return
+      }
+      if (isNaN(parseInt(this.editFormData.SwitchRule.TargetPlanId))) {
+        Message.error('方案切换配置的目标方案ID必须是个数字!')
+        return
+      }
       if (this.editFormData.SwitchRule.StatDays < 0 || this.editFormData.SwitchRule.StatDays > 7) {
         Message.error('方案切换配置的统计数据天数请在1~7天之间!')
         return
@@ -1204,6 +1237,7 @@ export default {
       };
       this.showItem.Plans.splice(this.editIndex, 1, updatedPlan);
       this.editDialogVisible = false;
+      console.log(JSON.stringify(updatedPlan))
     },
     deletePlan(index) {
       this.showItem.Plans.splice(index, 1);

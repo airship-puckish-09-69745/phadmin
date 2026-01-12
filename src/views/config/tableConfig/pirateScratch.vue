@@ -482,9 +482,7 @@ export default {
                 if (response.Data && response.Data.Data !== '') {
                     const cfg = JSON.parse(response.Data.Data)
                      this.item = cfg
-                      
-                     item.FeeRate /= 1000
-
+                     this.item.FeeRate /= 1000
                     // 设置修改之前数据
                     this.$refs.compare.SetOldVal(response.Data.Data)
                     // this.load = true
