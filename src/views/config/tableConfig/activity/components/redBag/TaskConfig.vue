@@ -95,172 +95,156 @@
             <el-input v-model.number="editItem.matchNum" placeholder="任务条件" />
           </el-col>
         </el-form-item>
-<!--        <el-form-item v-if="editItem.taskType" label="奖励ID：" :required="true" prop="rewardId">-->
-<!--          <el-col :span="15">-->
-<!--            <el-input v-model.number="editItem.rewardId" />-->
-<!--          </el-col>-->
-<!--        </el-form-item>-->
+        <!--        <el-form-item v-if="editItem.taskType" label="奖励ID：" :required="true" prop="rewardId">-->
+        <!--          <el-col :span="15">-->
+        <!--            <el-input v-model.number="editItem.rewardId" />-->
+        <!--          </el-col>-->
+        <!--        </el-form-item>-->
 
         <el-form-item label="奖励数量：" :required="true" prop="rewardNum">
           <el-col :span="15">
             <el-input v-model.number="editItem.rewardNum" />
           </el-col>
         </el-form-item>
-
-        <!-- 红包配置字段 -->
-        <el-divider content-position="left">红包配置</el-divider>
-        <el-form-item label="红包名称：" :required="true" prop="redId">
-          <el-col :span="15">
-            <el-select v-model.number="editItem.redId" placeholder="请选择" style="width: 250px">
-              <el-option label="黄金红包" :value="1" />
-              <el-option label="铂金红包" :value="2" />
-              <el-option label="钻石红包" :value="3" />
-            </el-select>
-          </el-col>
-        </el-form-item>
-        <el-form-item label="奖励配置：" :required="true">
-          <el-button
-            size="small"
-            type="primary"
-            icon="el-icon-plus"
-            :disabled="editItem.rewardPools.length >= 20"
-            style="margin-bottom: 10px;"
-            @click="addRewardPool"
-          >添加奖池 ({{ editItem.rewardPools.length }}/20)</el-button>
-          <el-table
-            :data="editItem.rewardPools"
-            border
-            size="small"
-            style="width: 100%"
-          >
-            <el-table-column label="奖池" min-width="120">
-              <template slot-scope="scope">
-                <el-input v-model="scope.row.poolName" placeholder="奖池名称" size="mini" />
-              </template>
-            </el-table-column>
-            <el-table-column label="价值区间1" min-width="100">
-              <template slot-scope="scope">
-                <el-input v-model.number="scope.row.value1" placeholder="最小值" size="mini" />
-              </template>
-            </el-table-column>
-            <el-table-column label="价值区间2" min-width="100">
-              <template slot-scope="scope">
-                <el-input v-model.number="scope.row.value2" placeholder="最大值" size="mini" />
-              </template>
-            </el-table-column>
-            <el-table-column label="权重" min-width="100">
-              <template slot-scope="scope">
-                <el-input v-model.number="scope.row.weight" placeholder="权重" size="mini" />
-              </template>
-            </el-table-column>
-            <el-table-column label="数量限制" min-width="100">
-              <template slot-scope="scope">
-                <el-input v-model.number="scope.row.limitNum" placeholder="数量" size="mini" />
-              </template>
-            </el-table-column>
-            <el-table-column label="操作" width="80" align="center">
-              <template slot-scope="scope">
-                <el-button
-                  v-if="scope.$index > 0"
-                  size="mini"
-                  type="danger"
-                  icon="el-icon-delete"
-                  circle
-                  @click="removeRewardPool(scope.$index)"
-                />
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-form-item>
-        <!-- 道具配置字段 -->
-        <el-divider content-position="left">道具配置</el-divider>
-        <el-form-item label="道具配置：" :required="true">
-          <el-button
-            size="small"
-            type="primary"
-            icon="el-icon-plus"
-            :disabled="editItem.propPools.length >= 20"
-            style="margin-bottom: 10px;"
-            @click="addPropPool"
-          >添加道具 ({{ editItem.propPools.length }}/20)</el-button>
-          <el-table
-            :data="editItem.propPools"
-            border
-            size="small"
-            style="width: 100%"
-          >
-            <el-table-column label="道具类型" min-width="140">
-              <template slot-scope="scope">
-                <el-select
-                  v-model="scope.row.propType"
-                  placeholder="请选择"
-                  size="mini"
-                  style="width: 100%"
-                  @change="handlePropTypeChange(scope.row)"
-                >
-                  <el-option
-                    v-for="item in propTypeOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
+        <div v-if="editItem.taskType === 1">
+          <!-- 红包配置字段 -->
+          <el-divider content-position="left">红包配置</el-divider>
+          <el-form-item label="红包名称：" :required="true" prop="redId">
+            <el-col :span="15">
+              <el-select v-model.number="editItem.redId" placeholder="请选择" style="width: 250px">
+                <el-option label="黄金红包" :value="1" />
+                <el-option label="铂金红包" :value="2" />
+                <el-option label="钻石红包" :value="3" />
+              </el-select>
+            </el-col>
+          </el-form-item>
+          <el-form-item label="奖励配置：" :required="true">
+            <el-button
+              size="small"
+              type="primary"
+              icon="el-icon-plus"
+              :disabled="editItem.rewardPools.length >= 20"
+              style="margin-bottom: 10px;"
+              @click="addRewardPool"
+            >添加奖池 ({{ editItem.rewardPools.length }}/20)
+            </el-button>
+            <el-table
+              :data="editItem.rewardPools"
+              border
+              size="small"
+              style="width: 100%"
+            >
+              <el-table-column label="奖池" min-width="120">
+                <template slot-scope="scope">
+                  <el-input v-model="scope.row.poolName" placeholder="奖池名称" size="mini" />
+                </template>
+              </el-table-column>
+              <el-table-column label="价值区间1" min-width="100">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.value1" placeholder="最小值" size="mini" />
+                </template>
+              </el-table-column>
+              <el-table-column label="价值区间2" min-width="100">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.value2" placeholder="最大值" size="mini" />
+                </template>
+              </el-table-column>
+              <el-table-column label="权重" min-width="100">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.weight" placeholder="权重" size="mini" />
+                </template>
+              </el-table-column>
+              <el-table-column label="数量限制" min-width="100">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.limitNum" placeholder="数量" size="mini" />
+                </template>
+              </el-table-column>
+              <el-table-column label="操作" width="80" align="center">
+                <template slot-scope="scope">
+                  <el-button
+                    v-if="scope.$index > 0"
+                    size="mini"
+                    type="danger"
+                    icon="el-icon-delete"
+                    circle
+                    @click="removeRewardPool(scope.$index)"
                   />
-                </el-select>
-              </template>
-            </el-table-column>
-            <el-table-column label="道具名称" min-width="140">
-              <template slot-scope="scope">
-                <el-select
-                  v-model="scope.row.propId"
-                  placeholder="请选择"
-                  size="mini"
-                  style="width: 100%"
-                  @change="handlePropNameChange(scope.row)"
-                >
-                  <el-option
-                    v-for="item in getPropOptionsByType(scope.row.propType)"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  />
-                </el-select>
-              </template>
-            </el-table-column>
-            <el-table-column label="可用时间" min-width="120">
-              <template slot-scope="scope">
-                <el-select
-                  v-model="scope.row.propTime"
-                  placeholder="请选择"
-                  size="mini"
-                  style="width: 100%"
-                >
-                  <el-option
-                    v-for="item in propDayTypeOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  />
-                </el-select>
-              </template>
-            </el-table-column>
-            <el-table-column label="道具数量" min-width="100">
-              <template slot-scope="scope">
-                <el-input v-model.number="scope.row.propNum" placeholder="数量" size="mini" />
-              </template>
-            </el-table-column>
-            <el-table-column label="操作" width="80" align="center">
-              <template slot-scope="scope">
-                <el-button
-                  v-if="scope.$index > 0"
-                  size="mini"
-                  type="danger"
-                  icon="el-icon-delete"
-                  circle
-                  @click="removePropPool(scope.$index)"
-                />
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-form-item>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-form-item>
+        </div>
+        <div v-if="editItem.taskType !== 1">
+          <!-- 道具配置字段 -->
+          <el-divider content-position="left">道具配置</el-divider>
+          <el-form-item label="道具配置：" :required="true">
+            <el-table
+              :data="[editItem.propPools]"
+              border
+              size="small"
+              style="width: 100%"
+            >
+              <el-table-column label="道具类型" min-width="140">
+                <template slot-scope="scope">
+                  <el-select
+                    v-model="scope.row.propType"
+                    placeholder="请选择"
+                    size="mini"
+                    style="width: 100%"
+                    @change="handlePropTypeChange(scope.row)"
+                  >
+                    <el-option
+                      v-for="item in propTypeOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </template>
+              </el-table-column>
+              <el-table-column label="道具名称" min-width="140">
+                <template slot-scope="scope">
+                  <el-select
+                    v-model="scope.row.propId"
+                    placeholder="请选择"
+                    size="mini"
+                    style="width: 100%"
+                    @change="handlePropNameChange(scope.row)"
+                  >
+                    <el-option
+                      v-for="item in getPropOptionsByType(scope.row.propType)"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </template>
+              </el-table-column>
+              <el-table-column label="可用时间" min-width="120">
+                <template slot-scope="scope">
+                  <el-select
+                    v-model="scope.row.propTime"
+                    placeholder="请选择"
+                    size="mini"
+                    style="width: 100%"
+                  >
+                    <el-option
+                      v-for="item in propDayTypeOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </template>
+              </el-table-column>
+              <el-table-column label="道具数量" min-width="100">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.propNum" placeholder="数量" size="mini" />
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-form-item>
+        </div>
 
       </el-form>
       <el-row style="margin-top: 10px">
@@ -297,15 +281,13 @@ function newTaskCfg() {
       }
     ],
     // 道具配置字段
-    propPools: [
-      {
-        propType: 1, // 道具类型
-        propId: 0, // 道具ID
-        propName: '', // 道具名称
-        propTime: 0, // 可用时间
-        propNum: 0 // 道具数量
-      }
-    ]
+    propPools: {
+      propType: 1, // 道具类型
+      propId: 0, // 道具ID
+      propName: '', // 道具名称
+      propTime: 0, // 可用时间
+      propNum: 0 // 道具数量
+    }
   }
 }
 
@@ -388,14 +370,14 @@ export default {
             limitNum: 0
           }]
         }
-        if (!editData.propPools || !Array.isArray(editData.propPools) || editData.propPools.length === 0) {
-          editData.propPools = [{
+        if (!editData.propPools || typeof editData.propPools !== 'object') {
+          editData.propPools = {
             propType: 1,
             propId: 0,
             propName: '',
             propTime: 0,
             propNum: 0
-          }]
+          }
         }
         this.editItem = editData
       }
@@ -466,28 +448,6 @@ export default {
         this.editItem.rewardPools.splice(index, 1)
       } else {
         this.$message.warning('至少需要保留一个奖池配置')
-      }
-    },
-    // 添加道具
-    addPropPool() {
-      if (this.editItem.propPools.length >= 20) {
-        this.$message.warning('最多只能添加20个道具配置')
-        return
-      }
-      this.editItem.propPools.push({
-        propType: 1,
-        propId: 0,
-        propName: '',
-        propTime: 0,
-        propNum: 0
-      })
-    },
-    // 删除道具
-    removePropPool(index) {
-      if (this.editItem.propPools.length > 1) {
-        this.editItem.propPools.splice(index, 1)
-      } else {
-        this.$message.warning('至少需要保留一个道具配置')
       }
     },
     // 处理道具类型变化
