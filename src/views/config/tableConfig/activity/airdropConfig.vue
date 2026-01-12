@@ -1481,6 +1481,7 @@ export default {
 
           if (item.userFilterCondition && item.userFilterCondition !== '{}' && item.userFilterCondition !== 'null') {
             item.userFilterCondition = JSON.parse(item.userFilterCondition)
+            console.log('item.userFilterCondition:', item.userFilterCondition)
             this.edit.registerDateRange = [item.userFilterCondition.registerTimeRange.min * 1000, item.userFilterCondition.registerTimeRange.max * 1000]
           } else {
             item.userFilterCondition = {
