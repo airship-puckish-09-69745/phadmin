@@ -125,6 +125,18 @@
             />
           </el-select>
         </el-form-item>
+        <el-form-item v-model="tableMoney" label="场次底注：" label-width="100px">
+          <el-tooltip class="item" effect="dark" content="进入场景为 Tongits 类时，直接进入指定场次牌桌。" placement="right-start">
+            <i class="el-icon-info" />
+          </el-tooltip>
+          <el-select v-model="tableMoney" filterable allow-create default-first-option placeholder="请选择" size="mini">
+            <el-option
+              v-for="row in tableMoneyOptions"
+              :label="row.name"
+              :value="row.val"
+            />
+          </el-select>
+        </el-form-item>
         <!-- <el-form-item label="KYC状态" label-width="100px">
           <el-select v-model="item.kyc" placeholder="请选择" size="mini">
             <el-option label="否" value='0' />
@@ -616,6 +628,48 @@ export default {
           val: 1
         }
       ],
+      tableMoneyOptions: [
+        {
+          name: '1',
+          val: 1000
+        },
+        {
+          name: '2.5',
+          val: 2500
+        },
+        {
+          name: '5',
+          val: 5000
+        },
+        {
+          name: '10',
+          val: 10000
+        },
+        {
+          name: '20',
+          val: 20000
+        },
+        {
+          name: '50',
+          val: 50000
+        },
+        {
+          name: '100',
+          val: 100000
+        },
+        {
+          name: '200',
+          val: 200000
+        },
+        {
+          name: '500',
+          val: 500000
+        },
+        {
+          name: '1000',
+          val: 1000000
+        }
+      ],
       appInfo: [],
       tableData: [],
       env: 'dev',
@@ -643,6 +697,7 @@ export default {
       },
       gpVip: 1,
       ekycPassed: 1,
+      tableMoney: 0,
       libShow: $libShow,
       expiredTime: 0,
       enterUrl: ''
@@ -766,7 +821,7 @@ export default {
       if (activityVal === 'tournament' || activityVal === 'matchjoin' && this.item.activity_val !== '') {
         activityVal += '_' + this.item.activity_val
       }
-      const gpExt = '{"vip":' + this.gpVip + ',"ekycPassed":' + this.ekycPassed + '}'
+      const gpExt = '{"vip":' + this.gpVip + ',"ekycPassed":' + this.ekycPassed + ',"tableMoney":' + this.tableMoney + '}'
       request({
         url: '/dataProxy/info',
         method: 'post',
