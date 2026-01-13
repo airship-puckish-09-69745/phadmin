@@ -88,6 +88,7 @@
           :FlowRate.sync="edit.item.FlowRate"
           :GameLevel.sync="edit.item.Level"
           :LevelCfg.sync="levelCfg"
+          :TableHideChannel.sync="edit.item.TableHideChannel"
         />
 
         <el-row>
@@ -194,6 +195,7 @@ function newItem() {
     CreditScoreMode:0,
     PlayMode: 1,
     AllocScheme:0,
+    TableHideChannel:'',
   }
 }
 
@@ -309,7 +311,6 @@ export default {
 
   created() {
   },
-
   mounted() {
     this.initialize();
   },
@@ -489,6 +490,7 @@ export default {
       if (this.isAppExt) {
         url = '/pusoydostableappext/update'
       }
+      console.log("TableHideChannel",this.edit.item.TableHideChannel)
 
       request({
         url: url,
