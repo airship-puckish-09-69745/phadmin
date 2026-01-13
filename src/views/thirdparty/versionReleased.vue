@@ -466,6 +466,8 @@ export default {
     },
     checkData() {
       this.$refs['edit.item'].validate(valid => {})
+      // 先去除空格
+      this.trimData()
       if (this.getPostData().Account === '') {
         this.$alert('账户不能为空')
         return false
