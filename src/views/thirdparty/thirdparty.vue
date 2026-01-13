@@ -22,6 +22,7 @@
           size="mini"
           placeholder="输入关键字搜索"
           @input="searchChange"
+          @blur="search = search.trim()"
         />
       </el-col>
     </el-row>
@@ -220,17 +221,17 @@
       <el-form ref="edit.item" :model="edit.item" label-width="250px" size="small">
         <el-form-item label="账号：" :required="true" prop="Account">
           <el-col :span="15">
-            <el-input v-model="edit.item.Account" :disabled="isDisabled" />
+            <el-input v-model="edit.item.Account" :disabled="isDisabled" @blur="edit.item.Account = edit.item.Account.trim()" />
           </el-col>
         </el-form-item>
         <el-form-item label="描述：" :required="true" prop="Intro">
           <el-col :span="15">
-            <el-input v-model="edit.item.Intro" />
+            <el-input v-model="edit.item.Intro" @blur="edit.item.Intro = edit.item.Intro.trim()" />
           </el-col>
         </el-form-item>
         <el-form-item label="菲1IP白名单(多个之间用英文逗号分隔)：" prop="Ip">
           <el-col :span="15">
-            <el-input v-model="edit.item.Ip" />
+            <el-input v-model="edit.item.Ip" @blur="edit.item.Ip = edit.item.Ip.trim()" />
           </el-col>
         </el-form-item>
         <!--        <el-form-item label="菲1gamefun版本：" :required="true" prop="Ver">-->
@@ -245,12 +246,12 @@
         <!--        </el-form-item>-->
         <el-form-item label="菲1客户端子版本：" :required="true" prop="Ver">
           <el-col :span="15">
-            <el-input v-model="edit.item.Ver" />
+            <el-input v-model="edit.item.Ver" @blur="edit.item.Ver = edit.item.Ver.trim()" />
           </el-col>
         </el-form-item>
         <el-form-item label="菲1客户端uri：" :required="true" prop="GameUri">
           <el-col :span="15">
-            <el-input v-model="edit.item.GameUri" />
+            <el-input v-model="edit.item.GameUri" @blur="edit.item.GameUri = edit.item.GameUri.trim()" />
           </el-col>
           <!--          <el-col style="width: auto">-->
           <!--            <el-tooltip class="item" effect="dark" content="版本号占位符： ${ver}" placement="left-start">-->
@@ -260,27 +261,27 @@
         </el-form-item>
         <el-form-item label="菲1客户端预发布子版本：" :required="true" prop="TestVer">
           <el-col :span="15">
-            <el-input v-model="edit.item.TestVer" />
+            <el-input v-model="edit.item.TestVer" @blur="edit.item.TestVer = edit.item.TestVer.trim()" />
           </el-col>
         </el-form-item>
         <el-form-item label="菲1客户端预发布uri：" prop="TestUri">
           <el-col :span="15">
-            <el-input v-model="edit.item.TestUri" />
+            <el-input v-model="edit.item.TestUri" @blur="edit.item.TestUri = edit.item.TestUri.trim()" />
           </el-col>
         </el-form-item>
         <el-form-item label="菲1测试用户白名单（uid，多个用英文逗号分隔）：" prop="TestUids">
           <el-col :span="15">
-            <el-input v-model="edit.item.TestUids" />
+            <el-input v-model="edit.item.TestUids" @blur="edit.item.TestUids = edit.item.TestUids.trim()" />
           </el-col>
         </el-form-item>
         <el-form-item label="德州客户端uri：" prop="TexasUri">
           <el-col :span="15">
-            <el-input v-model="edit.item.TexasUri" />
+            <el-input v-model="edit.item.TexasUri" @blur="edit.item.TexasUri = edit.item.TexasUri.trim()" />
           </el-col>
         </el-form-item>
         <el-form-item label="直播客户端uri：" prop="LiveUri">
           <el-col :span="15">
-            <el-input v-model="edit.item.LiveUri" />
+            <el-input v-model="edit.item.LiveUri" @blur="edit.item.LiveUri = edit.item.LiveUri.trim()" />
           </el-col>
         </el-form-item>
         <el-form-item label="横竖屏：" :required="true" prop="Screen">
@@ -631,6 +632,8 @@ export default {
     },
     checkData() {
       this.$refs['edit.item'].validate(valid => {})
+      // 先去除空格
+      this.trimData()
       if (this.getPostData().Account === '') {
         this.$alert('账户不能为空')
         return false
@@ -647,7 +650,32 @@ export default {
         this.$alert('必须横竖屏选择')
         return false
       }
+      // URL格式验证
+      if (this.edit.item.GameUri && !this.isValidUrl(this.edit.item.GameUri)) {
+        this.$alert('菲1客户端uri格式不正确')
+        return false
+      }
+      if (this.edit.item.TestUri && !this.isValidUrl(this.edit.item.TestUri)) {
+        this.$alert('菲1客户端预发布uri格式不正确')
+        return false
+      }
+      if (this.edit.item.TexasUri && !this.isValidUrl(this.edit.item.TexasUri)) {
+        this.$alert('德州客户端uri格式不正确')
+        return false
+      }
+      if (this.edit.item.LiveUri && !this.isValidUrl(this.edit.item.LiveUri)) {
+        this.$alert('直播客户端uri格式不正确')
+        return false
+      }
       return true
+    },
+    isValidUrl(str) {
+      try {
+        const url = new URL(str)
+        return url.protocol === 'http:' || url.protocol === 'https:'
+      } catch (_) {
+        return false
+      }
     },
     save() {
       if (!this.checkData()) return

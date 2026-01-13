@@ -1248,6 +1248,12 @@ export const asyncRoutes = [
             name: 'pirateTap_cfg',
             meta: { title: 'P irate Tap ◐' }
           },
+          {
+            path: 'miniTripleWheelSpin_cfg',
+            component: () => import('@/views/config/tableConfig/miniTripleWheelSpin.vue'),
+            name: 'miniTripleWheelSpin_cfg',
+            meta: { title: 'T riple Wheel Spin ◐' }
+          },
 
         ]
       },

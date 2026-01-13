@@ -195,7 +195,7 @@
             <el-form-item v-if="showLevelOptions()" label="级别配置：">
               <div v-for="(item, index) in form.grade" :key="index" style="display: flex; align-items: center; margin-bottom: 10px;">
                 <span>{{ index+1 }}级：下注次数 ≥ </span>
-                <el-input placeholder="下注次数" v-model="form.grade[index]" size="mini" style="width: 120px;"/>
+                <el-input placeholder="下注次数" v-model.number="form.grade[index]" size="mini" style="width: 120px;"/>
                 <el-button type="danger" size="mini" @click="removeGrade(index)">删除</el-button>
               </div>
               <el-button type="primary" size="mini" @click="addGrade">添加</el-button>
@@ -203,7 +203,7 @@
             <el-form-item v-if="showCarryOptions()" label="级别配置：">
               <div v-for="(item, index) in form.grade" :key="index" style="display: flex; align-items: center; margin-bottom: 10px;">
                 <span>{{ index+1 }}级：携带金额 ≥ </span>
-                <el-input placeholder="携带金额" v-model="form.grade[index]" size="mini" style="width: 120px;"/>
+                <el-input placeholder="携带金额" v-model.number="form.grade[index]" size="mini" style="width: 120px;"/>
                 <el-button type="danger" size="mini" @click="removeGrade(index)">删除</el-button>
               </div>
               <el-button type="primary" size="mini" @click="addGrade">添加</el-button>
@@ -1091,12 +1091,19 @@
           return true
         }
 
-        if (this.form.tag_id >= 50010 && this.form.tag_id < 50025) { // 连续下注天数
+        if (this.form.tag_id >= 50010 && this.form.tag_id < 50040) { // 第N日玩牌次数,第N日携带额度
           if (this.form.tag_gid === 0) {
             Message.error('请选择Slots游戏')
             return false
           }
-          for (let i = 1; i < this.form.grade.length; i++) {
+          for (let i = 0; i < this.form.grade.length; i++) {
+            if (this.form.grade[i] !== Math.floor(this.form.grade[i])) {
+              Message.error('金额必须为整数')
+              return false
+            }
+            if (i === 0) {
+              continue
+            }
             if (this.form.grade[i] <= this.form.grade[i-1]) {
               Message.error('当前等级的起始金额不能小于等于上一级的起始金额')
               return false
