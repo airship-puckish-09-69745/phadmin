@@ -61,7 +61,7 @@
         prop="show_appinfo"
         label="APP信息"
         show-overflow-tooltip
-        width="280"
+        width="200"
       />
       <el-table-column
         prop="id"
@@ -99,7 +99,7 @@
         sortable
         width="180"
       >
-      
+
         <template slot-scope="{row}">
           <DateTimeShow :show-type="2" :timestamp="row.end_time" />
         </template>
@@ -380,11 +380,11 @@ export default {
     handleCurrentChange(val) {
       this.$emit('current-change', val)
     },
-    
+
     handleSortChange({ prop, order }) {
       this.$emit('sort-change', { prop, order })
     },
-    
+
     /**
      * 判断赛事是否已经结束
      * @param {number} endTime - 结束时间
