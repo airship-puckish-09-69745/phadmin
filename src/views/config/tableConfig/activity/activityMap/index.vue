@@ -55,7 +55,11 @@ export default {
         { name: 'Banargay', id: 9 },
         { name: '复活节活动', id: 10 },
         { name: '新手任务活动', id: 11 },
-        { name: '红包雨活动', id: 13 }
+        { name: '红包雨活动', id: 13 },
+        { name: '七日留存活动', id: 17 },
+        { name: '万圣节活动',id: 18 },
+        { name: '竖版排行榜活动', id: 19 },
+        { name: 'Poker排行榜活动', id: 20 },
       ],
       configData: {
         Data: {
