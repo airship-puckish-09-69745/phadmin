@@ -244,7 +244,6 @@ export default {
           }
         }).then(response => {
           if (response.RetCode === 0) {
-            this.baseForm = response.Data || {}
             if (response.Data && response.Data.Data !== '') {
               const cfg = JSON.parse(response.Data.Data)
               const BetList = []
@@ -284,7 +283,6 @@ export default {
           }
         }).then(response => {
           if (response.RetCode === 0) {
-            this.ruleForm = response.Data || {}
             if (response.Data && response.Data.Data !== '') {
               this.ruleCfg = JSON.parse(response.Data.Data)
               // 设置修改之前数据
@@ -303,7 +301,6 @@ export default {
           }
         }).then(response => {
           if (response.RetCode === 0) {
-            this.extForm = response.Data || {}
             if (response.Data && response.Data.Data !== '') {
               this.extCfg = JSON.parse(response.Data.Data)
               console.log('ext-data:', this.extCfg)
