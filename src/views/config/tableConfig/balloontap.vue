@@ -188,6 +188,9 @@
                     </el-form-item>
                   </el-form>
                 </el-col>
+              </el-row>
+
+              <piggy-weight-cfg :piggy-cfg=" itemExt.Ctrl.CreateInitX" weight-name="权重" val-name="x位置(%)" val-type="1" title="生成气球x轴初始位置" />
 
                 <!-- 气球轨迹控制 -->
                 <el-row style="margin: 20px 0 10px 0;">
@@ -292,7 +295,6 @@
                   </el-col>
                 </el-row>
 
-              </el-row>
             </fieldset>
           </el-row>
         </el-tab-pane>
