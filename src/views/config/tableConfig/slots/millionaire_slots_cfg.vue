@@ -40,6 +40,11 @@
           </el-tab-pane>
         </el-tabs>
       </el-col>
+      <el-col v-if="version === 'V2'" :span="20">
+        <el-select v-model="appId" placeholder="请选择" @change="onAppIdChange">
+          <el-option v-for="(o,idx) in appInfos" :key="idx" :label="o.Account" :value="o.ID" />
+        </el-select>
+      </el-col>
     </el-row>
 
     <!--对比组件-->
@@ -51,7 +56,6 @@
 <script>
 import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
-import request from '@/utils/request'
 import slotsBaseCfg from './components_x/ireland_base_cfg'
 import slotsSymbolValue from './components_x/symbol_value'
 import slotsPayLine from './components_x/pay_line'
@@ -62,13 +66,14 @@ import slotsBigWinnerCfg from './components_x/big_winner_cfg'
 import slotsVup from './components_x/slots_vup'
 import slotsReelsDouble from './components_x/reels_double'
 import slotsScript from './components_x/slots_script'
-import SlotsFreeTriggerPlans from '@/views/config/tableConfig/slots/components_x/slotsFreeTriggerPlans.vue';
-import slotsGoldminerExt from "@/views/config/tableConfig/slots/components_x/goldminer_ext.vue";
-import {getCustomize, updateCustomize} from "@/api/custome_configV2";
+import SlotsFreeTriggerPlans from '@/views/config/tableConfig/slots/components_x/slotsFreeTriggerPlans.vue'
+import { getCustomize, updateCustomize } from '@/api/custome_configV2'
+import request from '@/utils/request'
+import store from "@/store";
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: {slotsGoldminerExt, SlotsFreeTriggerPlans, Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotsMillionaireExt, slotsBigWinnerCfg, slotsVup, slotsReelsDouble, slotsScript },
+  components: { SlotsFreeTriggerPlans, Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotsMillionaireExt, slotsBigWinnerCfg, slotsVup, slotsReelsDouble, slotsScript },
   data() {
     return {
       activeTab: 'base',
@@ -83,11 +88,17 @@ export default {
       extForm: {},
       txt: '',
       subKey: 'millionaire_slots_base',
-      inc: 0
+      inc: 0,
+      appInfos: [
+        { ID: 0, Account: '旧版' }
+      ],
+      appId: 0,
+      version: store.getters.version || 'V1'
     }
   },
   created() {
     this.getData()
+    this.getAppInfos()
   },
   methods: {
     getFullKey(k) {
@@ -199,6 +210,106 @@ export default {
         this.$refs.compare.SetOldVal(this.ruleForm.Data)
       } else if (this.activeTab === 'scatter' || this.activeTab === 'bonus') {
         this.$refs.compare.SetOldVal(this.extForm.Data)
+      }
+    },
+    getAppInfos() {
+      request({
+        url: '/thirdparties/apps',
+        method: 'get',
+        data: {}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          for (let i = 0; i < response.Data.length; i++) {
+            if (response.Data[i].Status !== 2) {
+              continue
+            }
+            this.appInfos.push({
+              ID: response.Data[i].ID,
+              Account: response.Data[i].ID + '-' + response.Data[i].Account
+            })
+          }
+        }
+      })
+    },
+    onAppIdChange() {
+      if (this.appId === 0) {
+        request({
+          url: '/customizeconfig/one',
+          method: 'get',
+          data: {
+            SubKey: this.subKey
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            this.baseForm = response.Data || {}
+            if (response.Data && response.Data.Data !== '') {
+              const cfg = JSON.parse(response.Data.Data)
+              const BetList = []
+              for (const k in cfg.BetList) {
+                BetList[k] = cfg.BetList[k] / 1000
+              }
+              cfg.Bets = BetList.join(',')
+
+              const OddsList = []
+              for (const k in cfg.OddsList) {
+                OddsList[k] = cfg.OddsList[k]
+              }
+              cfg.OddsStr = OddsList.join(',')
+
+              const BetListAct = []
+              for (const k in cfg.BetList) {
+                for (const t in cfg.OddsList) {
+                  BetListAct.push(cfg.BetList[k] * cfg.OddsList[t])
+                }
+              }
+              cfg.BetListAct = BetListAct
+
+              this.baseCfg = cfg
+              // 设置修改之前数据
+              // this.$refs.compare.SetOldVal(response.Data.Data)
+              this.baseCfgBool = true
+            }
+          }
+        })
+
+        // 加载规则配置
+        request({
+          url: '/customizeconfig/one',
+          method: 'get',
+          data: {
+            SubKey: 'millionaire_slots_rule'
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            this.ruleForm = response.Data || {}
+            if (response.Data && response.Data.Data !== '') {
+              this.ruleCfg = JSON.parse(response.Data.Data)
+              // 设置修改之前数据
+              // this.$refs.compare.SetOldVal(response.Data.Data)
+            }
+            this.ruleCfgBool = true
+          }
+        })
+
+        // 加载扩展配置
+        request({
+          url: '/customizeconfig/one',
+          method: 'get',
+          data: {
+            SubKey: 'millionaire_slots_ext'
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            this.extForm = response.Data || {}
+            if (response.Data && response.Data.Data !== '') {
+              this.extCfg = JSON.parse(response.Data.Data)
+              console.log('ext-data:', this.extCfg)
+              // 设置修改之前数据
+              // this.$refs.compare.SetOldVal(response.Data.Data)
+            }
+          }
+          this.extCfgBool = true
+        })
       }
     }
   }
