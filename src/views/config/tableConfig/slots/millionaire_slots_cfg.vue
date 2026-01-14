@@ -1,6 +1,14 @@
 <template>
   <div class="app-container">
     <el-row :gutter="10" style="margin-top: 30px">
+      <el-col v-if="version === 'V2'" :span="20">
+        <el-select v-model="appId" placeholder="请选择" @change="onAppIdChange">
+          <el-option v-for="(o,idx) in appInfos" :key="idx" :label="o.Account" :value="o.ID" />
+        </el-select>
+        <el-button type="primary" icon="el-icon-document-copy" @click="onCopyAllCfg">
+          复制配置
+        </el-button>
+      </el-col>
       <el-col :span="24">
         <el-tabs type="border-card" value="base" @tab-click="onShowTab">
           <el-tab-pane label="基础配置" name="base">
@@ -39,11 +47,6 @@
             <slots-script v-if="ruleCfgBool" v-model="ruleCfg" :bets="baseCfg.BetListAct" @saveData="saveRuleCfg" />
           </el-tab-pane>
         </el-tabs>
-      </el-col>
-      <el-col v-if="version === 'V2'" :span="20">
-        <el-select v-model="appId" placeholder="请选择" @change="onAppIdChange">
-          <el-option v-for="(o,idx) in appInfos" :key="idx" :label="o.Account" :value="o.ID" />
-        </el-select>
       </el-col>
     </el-row>
 
@@ -92,7 +95,7 @@ export default {
       appInfos: [
         { ID: 0, Account: '旧版' }
       ],
-      appId: 0,
+      appId: store.getters.appId || 0,
       version: store.getters.version || 'V1'
     }
   },
@@ -106,7 +109,7 @@ export default {
     },
     getData() {
       // 加载基础数值配置
-      getCustomize(this.subKey).then(response => {
+      getCustomize(this.subKey, this.appId).then(response => {
         if (response.RetCode === 0) {
           this.baseForm = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
@@ -140,7 +143,7 @@ export default {
       })
 
       // 加载规则配置
-      getCustomize('millionaire_slots_rule').then(response => {
+      getCustomize('millionaire_slots_rule', this.appId).then(response => {
         if (response.RetCode === 0) {
           this.ruleForm = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
@@ -153,7 +156,7 @@ export default {
       })
 
       // 加载扩展配置
-      getCustomize('millionaire_slots_ext').then(response => {
+      getCustomize('millionaire_slots_ext', this.appId).then(response => {
         if (response.RetCode === 0) {
           this.extForm = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
@@ -310,7 +313,15 @@ export default {
           }
           this.extCfgBool = true
         })
+      } else {
+        this.getData()
       }
+    },
+    onCopyAllCfg() {
+      this.saveBaseCfg()
+      this.saveRuleCfg()
+      this.saveExtCfg()
+      this.$message.success('所有配置已复制并保存成功！')
     }
   }
 }
