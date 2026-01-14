@@ -64,6 +64,7 @@ import slotsReelsDouble from './components_x/reels_double'
 import slotsScript from './components_x/slots_script'
 import SlotsFreeTriggerPlans from '@/views/config/tableConfig/slots/components_x/slotsFreeTriggerPlans.vue';
 import slotsGoldminerExt from "@/views/config/tableConfig/slots/components_x/goldminer_ext.vue";
+import {getCustomize, updateCustomize} from "@/api/custome_configV2";
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
@@ -94,13 +95,7 @@ export default {
     },
     getData() {
       // 加载基础数值配置
-      request({
-        url: '/customizeconfig/one',
-        method: 'get',
-        data: {
-          SubKey: this.subKey
-        }
-      }).then(response => {
+      getCustomize(this.subKey).then(response => {
         if (response.RetCode === 0) {
           this.baseForm = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
@@ -134,13 +129,7 @@ export default {
       })
 
       // 加载规则配置
-      request({
-        url: '/customizeconfig/one',
-        method: 'get',
-        data: {
-          SubKey: 'millionaire_slots_rule'
-        }
-      }).then(response => {
+      getCustomize('millionaire_slots_rule').then(response => {
         if (response.RetCode === 0) {
           this.ruleForm = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
@@ -153,13 +142,7 @@ export default {
       })
 
       // 加载扩展配置
-      request({
-        url: '/customizeconfig/one',
-        method: 'get',
-        data: {
-          SubKey: 'millionaire_slots_ext'
-        }
-      }).then(response => {
+      getCustomize('millionaire_slots_ext').then(response => {
         if (response.RetCode === 0) {
           this.extForm = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
@@ -182,11 +165,7 @@ export default {
         }
       }
       this.baseForm.Data = JSON.stringify(this.baseCfg)
-      request({
-        url: 'customizeconfig/update',
-        method: 'post',
-        data: this.baseForm
-      }).then(response => {
+      updateCustomize(this.baseForm).then(response => {
         if (response.RetCode === 0) {
           this.$message.success('保存成功')
         }
@@ -195,11 +174,7 @@ export default {
 
     saveRuleCfg() {
       this.ruleForm.Data = JSON.stringify(this.ruleCfg)
-      request({
-        url: 'customizeconfig/update',
-        method: 'post',
-        data: this.ruleForm
-      }).then(response => {
+      updateCustomize(this.ruleForm).then(response => {
         if (response.RetCode === 0) {
           this.$message.success('保存成功')
         }
@@ -208,11 +183,7 @@ export default {
 
     saveExtCfg() {
       this.extForm.Data = JSON.stringify(this.extCfg)
-      request({
-        url: 'customizeconfig/update',
-        method: 'post',
-        data: this.extForm
-      }).then(response => {
+      updateCustomize(this.extForm).then(response => {
         if (response.RetCode === 0) {
           this.$message.success('保存成功')
         }
