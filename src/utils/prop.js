@@ -59,6 +59,12 @@ export const MATCH_TICKET_RIGHTS_ID_CFG_PROD = {
       { 'ticketId': 322, 'sceneId': 200, 'label': 'Tongits新版门票 带唯一ID-322'  },
       { 'ticketId': 343, 'sceneId': 201, 'label': 'Texas测试新版德州门票带唯一ID-343' },
       { 'ticketId': 345, 'sceneId': 202, 'label': 'UAT Pusoy新版比赛门票-345' },
+
+      { 'ticketId': 427, 'sceneId': 203, 'label': 'UATTongits新版TPCC门票 -427'  },
+      { 'ticketId': 471, 'sceneId': 204, 'label': 'UATTongits 带唯一ID-471'  },
+      { 'ticketId': 472, 'sceneId': 205, 'label': 'UATPusoy测试 带唯一ID-472' },
+      { 'ticketId': 473, 'sceneId': 206, 'label': 'UATTexas新版比赛门票-带唯一ID 473' },
+      { 'ticketId': 474, 'sceneId': 207, 'label': 'UAT TPCC-带唯一ID474' },
     ],
   1000005: [
     { 'ticketId': 396, 'sceneId': 200, 'label': 'Tongits' },

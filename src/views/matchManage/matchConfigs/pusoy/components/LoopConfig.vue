@@ -144,6 +144,10 @@
     <el-form-item v-if="editForm.data.opentMatchType==2" label="延迟进入时间(秒)：" :required="true">
       <el-input v-model.number="editForm.data.delayEnterSeconds" style="width: 200px;" placeholder="请填写延迟进入时间" />
     </el-form-item>
+    <el-form-item v-if="editForm.data.opentMatchType===2" label="延迟报名时间(秒)：" :required="true">
+         <el-input v-model.number="editForm.listExtra.delaySignUpSeconds" style="width: 200px;" placeholder="请填写延迟报名时间" />
+      <span style="color: #409eff; margin-left: 10px;"> 延迟报名时间需要小于等于Rebuy时间加额外的10秒 </span>
+    </el-form-item>
   </fieldset>
 </template>
 
@@ -231,7 +235,7 @@ export default {
           if (this.editForm.loopDetail.onceTime && this.editForm.loopDetail.onceTime[0]) {
             baseTime = new Date(this.editForm.loopDetail.onceTime[0])
           }
-        } 
+        }
         // repeatType = 1: 单天单场循环，使用 loopStartDate + single.stime
         else if (this.editForm.data.repeatType === 1) {
           if (this.editForm.loopDetail.loopStartDate && this.editForm.loopDetail.single.stime) {
@@ -243,15 +247,15 @@ export default {
             }
           }
         }
-        
+
         if (!baseTime) {
           return ''
         }
-        
+
         // 減去提前显示时间
         const preShowSeconds = this.editForm.data.preShowSeconds || 0
         const calculatedTimestamp = Math.floor(baseTime.getTime() / 1000) - preShowSeconds
-        
+
         // 使用項目中已有的時間格式化方法
         return $libDate.FormateSecondStr(calculatedTimestamp, 2)
       } catch (e) {
