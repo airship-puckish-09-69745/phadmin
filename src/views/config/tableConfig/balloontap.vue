@@ -135,46 +135,31 @@
                 </el-col>
 
               </el-row>
-              <piggy-weight-cfg :piggy-cfg=" itemExt.Calc.OddsTarget" weight-name="权重" val-name="气球倍数 -1(随机) -2(Piggy)" val-type="1" title="气球类型(倍数仅支持1为小数)" />
+              <piggy-weight-cfg :piggy-cfg=" itemExt.Calc.OddsTarget" weight-name="初始数量" val-name="气球倍数 -1(随机) -2(Piggy)" val-type="1" title="气球初始配置(倍数仅支持1为小数)" />
             </fieldset>
           </el-row>
         </el-tab-pane>
 
-        <el-tab-pane label="客户端表现">
+        <el-tab-pane label="客户端控制">
           <el-row :span="16" :offset="3" style="width: 80%; margin: 0 auto">
             <fieldset style="margin-top:10px">
-              <legend>客户端表现</legend>
+              <legend>默认下注额度</legend>
               <el-row style="margin-bottom: 32px;"></el-row>
               <el-row>
                 <el-col :span="7" :offset="3">
                   <el-form inline>
-                    <el-form-item label="X轴上升速度范围min" :rules="dataRule(true,{type:'n',range:'0'})">
-                      <el-input v-model.number="itemExt.Ctrl.SpeedXMin" size="mini" :required="true"> </el-input>
+                    <el-form-item label="可下注次数min" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-input v-model.number="itemExt.Ctrl.BetTimesMin" size="mini" :required="true"> </el-input>
                     </el-form-item>
                   </el-form>
                 </el-col>
-                <el-col :span="7" :offset="3">
-                  <el-form inline>
-                    <el-form-item label="X轴上升速度范围max" :rules="dataRule(true,{type:'n',range:'0'})">
-                      <el-input v-model.number="itemExt.Ctrl.SpeedXMax" size="mini" :required="true"> </el-input>
-                    </el-form-item>
-                  </el-form>
-                </el-col>
+              </el-row>
+            </fieldset>
 
-                <el-col :span="7" :offset="3">
-                  <el-form inline>
-                    <el-form-item label="Y轴上升速度范围min" :rules="dataRule(true,{type:'n',range:'0'})">
-                      <el-input v-model.number="itemExt.Ctrl.SpeedYMin" size="mini" :required="true" />
-                    </el-form-item>
-                  </el-form>
-                </el-col>
-                <el-col :span="7" :offset="3">
-                  <el-form inline>
-                    <el-form-item label="Y轴上升速度范围max" :rules="dataRule(true,{type:'n',range:'0'})">
-                      <el-input v-model.number="itemExt.Ctrl.SpeedYMax" size="mini" :required="true" />
-                    </el-form-item>
-                  </el-form>
-                </el-col>
+            <fieldset style="margin-top:10px">
+              <legend>气球表现</legend>
+              <el-row style="margin-bottom: 32px;"></el-row>
+              <el-row>
 
                 <el-col :span="7" :offset="3">
                   <el-form inline>
@@ -191,24 +176,17 @@
                   </el-form>
                 </el-col>
 
-                <el-col :span="24" :offset="3">
+                <el-col :span="7" :offset="3">
                   <el-form inline>
-                    <el-form-item label="生成时间" :rules="dataRule(true,{type:'n',range:'0'})">
-                      <el-input v-model.number="itemExt.Ctrl.CreateTime" size="mini" :required="true"> <template slot="append">ms</template></el-input>
+                    <el-form-item label="生成时间min" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-input v-model.number="itemExt.Ctrl.CreateTimeMin" size="mini" :required="true"> <template slot="append">ms</template></el-input>
                     </el-form-item>
                   </el-form>
                 </el-col>
                 <el-col :span="7" :offset="3">
                   <el-form inline>
-                    <el-form-item label="生成个数min" :rules="dataRule(true,{type:'n',range:'0'})">
-                      <el-input v-model.number="itemExt.Ctrl.CreateNumberMin" size="mini" :required="true" />
-                    </el-form-item>
-                  </el-form>
-                </el-col>
-                <el-col :span="7" :offset="3">
-                  <el-form inline>
-                    <el-form-item label="生成个数max" :rules="dataRule(true,{type:'n',range:'0'})">
-                      <el-input v-model.number="itemExt.Ctrl.CreateNumberMax" size="mini" :required="true" />
+                    <el-form-item label="生成时间max" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-input v-model.number="itemExt.Ctrl.CreateTimeMax" size="mini" :required="true"> <template slot="append">ms</template></el-input>
                     </el-form-item>
                   </el-form>
                 </el-col>
