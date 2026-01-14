@@ -480,12 +480,12 @@ export const asyncRoutes = [
             redirect: 'noRedirect',
             meta: { title: 'PusoyDos', noCache: true },
             children: [
-              {
-                path: 'PusoyDosTable',
-                component: () => import('@/views/config/tableConfig/pusoyDos/pusoyDosTable'),
-                name: 'PusoyDosTable',
-                meta: { title: 'PusoyDos ◐' }
-              },
+              // {
+              //   path: 'PusoyDosTable',
+              //   component: () => import('@/views/config/tableConfig/pusoyDos/pusoyDosTable'),
+              //   name: 'PusoyDosTable',
+              //   meta: { title: 'PusoyDos ◐' }
+              // },
               {
                 path: 'PusoyDosServerConfig',
                 component: () => import('@/views/config/tableConfig/pusoyDos/pusoyDosServerConfig'),
