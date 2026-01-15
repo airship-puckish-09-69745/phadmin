@@ -146,21 +146,6 @@
 
                 <el-col :span="7" :offset="3">
                   <el-form inline>
-                    <el-form-item label="气球纵轴生成位置范围min" :rules="dataRule(true,{type:'n',range:'0'})">
-                      <el-input v-model.number="itemExt.Ctrl.CreatePosYMin" size="mini" :required="true" />
-                    </el-form-item>
-                  </el-form>
-                </el-col>
-                <el-col :span="7" :offset="3">
-                  <el-form inline>
-                    <el-form-item label="气球纵轴生成位置范围max" :rules="dataRule(true,{type:'n',range:'0'})">
-                      <el-input v-model.number="itemExt.Ctrl.CreatePosYMax" size="mini" :required="true" />
-                    </el-form-item>
-                  </el-form>
-                </el-col>
-
-                <el-col :span="7" :offset="3">
-                  <el-form inline>
                     <el-form-item label="生成时间min" :rules="dataRule(true,{type:'n',range:'0'})">
                       <el-input v-model.number="itemExt.Ctrl.CreateTimeMin" size="mini" :required="true"> <template slot="append">ms</template></el-input>
                     </el-form-item>
@@ -170,6 +155,21 @@
                   <el-form inline>
                     <el-form-item label="生成时间max" :rules="dataRule(true,{type:'n',range:'0'})">
                       <el-input v-model.number="itemExt.Ctrl.CreateTimeMax" size="mini" :required="true"> <template slot="append">ms</template></el-input>
+                    </el-form-item>
+                  </el-form>
+                </el-col>
+
+                <el-col :span="7" :offset="3">
+                  <el-form inline>
+                    <el-form-item label="气球纵轴生成位置范围min" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-input v-model.number="itemExt.Ctrl.CreatePosYMin" size="mini" :required="true" />
+                    </el-form-item>
+                  </el-form>
+                </el-col>
+                <el-col :span="7" :offset="3">
+                  <el-form inline>
+                    <el-form-item label="气球纵轴生成位置范围max" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-input v-model.number="itemExt.Ctrl.CreatePosYMax" size="mini" :required="true" />
                     </el-form-item>
                   </el-form>
                 </el-col>
@@ -197,8 +197,8 @@
                   <el-col :span="24">
                     <div
                       style="
-                      width: 100%;
-                      margin-left: 0.1%;
+                      width: 97%;
+                      margin-left: 1.5%;
                       display: flex;
                       align-items: center;
                       justify-content: space-between;
@@ -226,8 +226,8 @@
                       border
                       size="mini"
                       style="
-                      width: 100%;
-                      margin-left: 0.1%;"
+                      width: 97%;
+                      margin-left: 1.5%;"
                     >
                       <el-table-column
                         label="气球倍数 -1(随机) -2(piggy)"
@@ -759,6 +759,10 @@ export default {
     },
     saveChoice() {
       for (let i = 0; i < this.choiceDialogData.data.length; i++) {
+        if (this.choiceDialogData.data[i].ValMin > this.choiceDialogData.data[i].ValMax) {
+          Message.error('min>max')
+          return
+        }
       }
       for (var i = 0; i < this.itemExt.Ctrl.OddsCtrl.length; i++) {
         if (this.choiceDialogData.odds == this.itemExt.Ctrl.OddsCtrl[i].Odds) {
