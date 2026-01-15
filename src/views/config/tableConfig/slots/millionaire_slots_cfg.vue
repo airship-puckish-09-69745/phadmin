@@ -70,7 +70,7 @@ import slotsVup from './components_x/slots_vup'
 import slotsReelsDouble from './components_x/reels_double'
 import slotsScript from './components_x/slots_script'
 import SlotsFreeTriggerPlans from '@/views/config/tableConfig/slots/components_x/slotsFreeTriggerPlans.vue'
-import { getCustomize, updateCustomize } from '@/api/custome_configV2'
+import {createCustomize, getCustomize, updateCustomize} from '@/api/custome_configV2'
 import request from '@/utils/request'
 import store from "@/store";
 
@@ -96,7 +96,8 @@ export default {
         { ID: 0, Account: '旧版' }
       ],
       appId: store.getters.appId || 0,
-      version: store.getters.version || 'V1'
+      version: store.getters.version || 'V1',
+      createCfg: false
     }
   },
   created() {
@@ -109,6 +110,7 @@ export default {
     },
     getData() {
       // 加载基础数值配置
+      console.log('appId', store.getters.appId)
       getCustomize(this.subKey, this.appId).then(response => {
         if (response.RetCode === 0) {
           this.baseForm = response.Data || {}
@@ -135,8 +137,10 @@ export default {
             cfg.BetListAct = BetListAct
 
             this.baseCfg = cfg
-            // 设置修改之前数据
-            // this.$refs.compare.SetOldVal(response.Data.Data)
+            if (this.version === 'V2' && store.getters.appId !== this.appId && this.baseCfgBool === false) {
+              this.createCfg = true
+              console.log('this.createCfg', this.createCfg)
+            }
             this.baseCfgBool = true
           }
         }
@@ -179,29 +183,56 @@ export default {
         }
       }
       this.baseForm.Data = JSON.stringify(this.baseCfg)
-      updateCustomize(this.baseForm).then(response => {
-        if (response.RetCode === 0) {
-          this.$message.success('保存成功')
-        }
-      })
+      if (!this.createCfg) {
+        updateCustomize(this.baseForm).then(response => {
+          if (response.RetCode === 0) {
+            this.$message.success('保存成功')
+          }
+        })
+      } else {
+        this.baseForm.AppId = store.getters.appId
+        createCustomize(this.baseForm).then(response => {
+          if (response.RetCode === 0) {
+            console.log('保存成功')
+          }
+        })
+      }
     },
 
     saveRuleCfg() {
       this.ruleForm.Data = JSON.stringify(this.ruleCfg)
-      updateCustomize(this.ruleForm).then(response => {
-        if (response.RetCode === 0) {
-          this.$message.success('保存成功')
-        }
-      })
+      if (!this.createCfg) {
+        updateCustomize(this.ruleForm).then(response => {
+          if (response.RetCode === 0) {
+            this.$message.success('保存成功')
+          }
+        })
+      } else {
+        this.ruleForm.AppId = store.getters.appId
+        createCustomize(this.ruleForm).then(response => {
+          if (response.RetCode === 0) {
+            console.log('保存成功')
+          }
+        })
+      }
     },
 
     saveExtCfg() {
       this.extForm.Data = JSON.stringify(this.extCfg)
-      updateCustomize(this.extForm).then(response => {
-        if (response.RetCode === 0) {
-          this.$message.success('保存成功')
-        }
-      })
+      if (!this.createCfg) {
+        updateCustomize(this.extForm).then(response => {
+          if (response.RetCode === 0) {
+            this.$message.success('保存成功')
+          }
+        })
+      } else {
+        this.extForm.AppId = store.getters.appId
+        createCustomize(this.extForm).then(response => {
+          if (response.RetCode === 0) {
+            console.log('保存成功')
+          }
+        })
+      }
     },
 
     onShowTab(tab) {
@@ -244,6 +275,8 @@ export default {
           }
         }).then(response => {
           if (response.RetCode === 0) {
+            console.log('response.Data', response.Data)
+            this.baseForm = response.Data || {}
             if (response.Data && response.Data.Data !== '') {
               const cfg = JSON.parse(response.Data.Data)
               const BetList = []
@@ -267,8 +300,11 @@ export default {
               cfg.BetListAct = BetListAct
 
               this.baseCfg = cfg
-              // 设置修改之前数据
-              // this.$refs.compare.SetOldVal(response.Data.Data)
+
+              if (this.version === 'V2' && this.baseCfgBool === false) {
+                this.createCfg = true
+                console.log('this.createCfg', this.createCfg)
+              }
               this.baseCfgBool = true
             }
           }
@@ -283,11 +319,13 @@ export default {
           }
         }).then(response => {
           if (response.RetCode === 0) {
+            this.ruleForm = response.Data || {}
             if (response.Data && response.Data.Data !== '') {
               this.ruleCfg = JSON.parse(response.Data.Data)
               // 设置修改之前数据
               // this.$refs.compare.SetOldVal(response.Data.Data)
             }
+
             this.ruleCfgBool = true
           }
         })
@@ -301,6 +339,7 @@ export default {
           }
         }).then(response => {
           if (response.RetCode === 0) {
+            this.extForm = response.Data || {}
             if (response.Data && response.Data.Data !== '') {
               this.extCfg = JSON.parse(response.Data.Data)
               console.log('ext-data:', this.extCfg)
@@ -308,6 +347,7 @@ export default {
               // this.$refs.compare.SetOldVal(response.Data.Data)
             }
           }
+
           this.extCfgBool = true
         })
       } else {
@@ -318,7 +358,10 @@ export default {
       this.saveBaseCfg()
       this.saveRuleCfg()
       this.saveExtCfg()
-      this.$message.success('所有配置已复制并保存成功！')
+      if (this.createCfg === true) {
+        this.$message.success('所有配置已复制并保存成功！')
+      }
+      this.createCfg = false
     }
   }
 }
