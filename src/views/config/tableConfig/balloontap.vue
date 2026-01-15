@@ -190,7 +190,80 @@
                 </el-col>
               </el-row>
 
-              <piggy-weight-cfg :piggy-cfg=" itemExt.Ctrl.CreateInitX" weight-name="权重" val-name="x位置(%)" val-type="1" title="生成气球x轴初始位置" />
+<!--              <piggy-weight-cfg :piggy-cfg=" itemExt.Ctrl.CreateInitX" weight-name="权重" val-name="x位置(%)" val-type="1" title="生成气球x轴初始位置" />-->
+
+              <!-- 生成气球x轴初始位置 -->
+              <el-row style="margin: 20px 0 10px 0;">
+                <el-col :span="24">
+                  <div
+                    style="
+                      width: 97%;
+                      margin-left: 1.5%;
+                      display: flex;
+                      align-items: center;
+                      justify-content: space-between;
+                      padding: 6px 12px;
+                      background: #f5f7fa;
+                      "
+                  >
+                    <span style="font-weight: 540; color: #606266;">
+                      生成气球x轴初始位置
+                    </span>
+                    <el-button
+                      type="primary"
+                      size="mini"
+                      @click="addCreateInitX"
+                    >
+                      添加
+                    </el-button>
+                  </div>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="24">
+                  <el-table
+                    :data="itemExt.Ctrl.CreateInitX"
+                    border
+                    size="mini"
+                    style="
+                      width: 97%;
+                      margin-left: 1.5%;"
+                  >
+                    <el-table-column label="权重" prop="StartHours" min-width="50">
+                      <template slot-scope="scope">
+                        <el-input v-model.number="scope.row.Weight" style="width: 100%;" size="mini" :required="true" />
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="x位置(%)min" prop="StartHours" min-width="50">
+                      <template slot-scope="scope">
+                        <el-input v-model.number="scope.row.ValMin" style="width: 100%;" size="mini" :required="true" />
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="x位置(%)max" prop="StartHours" min-width="50">
+                      <template slot-scope="scope">
+                        <el-input v-model.number="scope.row.ValMax" style="width: 100%;" size="mini" :required="true" />
+                      </template>
+                    </el-table-column>
+
+
+                    <el-table-column
+                      label="操作"
+                      width="100"
+                      align="center"
+                    >
+                      <template slot-scope="scope">
+                        <el-button
+                          size="mini"
+                          type="danger"
+                          @click="removeCreateInitX(scope.$index)"
+                        >
+                          删除
+                        </el-button>
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                </el-col>
+              </el-row>
 
                 <!-- 气球轨迹控制 -->
                 <el-row style="margin: 20px 0 10px 0;">
@@ -739,6 +812,14 @@ export default {
     },
     removeOddsCtr(index) {
       this.itemExt.Ctrl.OddsCtrl.splice(index, 1)
+    },
+
+    addCreateInitX() {
+      const newRow = {}
+      this.itemExt.Ctrl.CreateInitX.push(newRow)
+    },
+    removeCreateInitX(index) {
+      this.itemExt.Ctrl.CreateInitX.splice(index, 1)
     },
 
     showChoiceDialog(data, odds, field, title) {
