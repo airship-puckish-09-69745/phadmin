@@ -231,7 +231,7 @@
                     >
                       <el-table-column
                         label="气球倍数 -1(随机) -2(piggy)"
-                        min-width="70"
+                        min-width="55"
                       >
                         <template slot-scope="scope">
                           <el-input-number
@@ -245,7 +245,7 @@
                         </template>
                       </el-table-column>
 
-                      <el-table-column label="初始数量" prop="StartHours">
+                      <el-table-column label="初始数量" prop="StartHours" min-width="50">
                         <template slot="header">
                           <p style="text-align: center"> 初始数量 </p>
                           <span style="color: red;font-size: 11px">  注: 此项和PiggyBoom算分相关</span>
@@ -255,7 +255,7 @@
                         </template>
                       </el-table-column>
 
-                      <el-table-column label="变向时间" prop="DayLimitArr">
+                      <el-table-column label="变向时间(ms)" prop="DayLimitArr">
                         <template slot-scope="scope">
                           <el-button type="primary" icon="el-icon-edit" circle size="mini" @click="showChoiceDialog(scope.row.TimeTurn, scope.row.Odds,'TimeTurn','变向时间(ms)')" />
                           <el-tag :key="key" disable-transitions>{{ aboutChoiceDialogData(scope.row.TimeTurn) }}</el-tag>
