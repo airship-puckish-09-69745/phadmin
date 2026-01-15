@@ -293,27 +293,11 @@
               </el-form>
             </el-col>
             
-            <!--
-            <el-col :span="24" :offset="5">
-              <el-form :inline="true">
-                <el-col :span="8">
-                  <el-form-item label="每小时局数" v-if="!IsPHAuditEnv()">
-                    <el-input v-model.number="JackpotCfg.PerHourRound" size="mini" />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="8">
-                  <el-form-item label="开奖最高开出显示奖池(%)："  v-if="!IsPHAuditEnv()">
-                    <el-input v-model.number="JackpotCfg.ShowPoolLimitRate" size="mini" />
-                  </el-form-item>
-                </el-col>
-              </el-form>
-            </el-col>
-            -->
-            <fieldset style="margin-top:10px">
-              <legend>jackpot配置</legend>
+            <fieldset style="margin-top:10px" ><!--v-if="!IsPHAuditEnv()"-->
+              <legend>jackpot调控配置</legend>
               <el-row>
                 <el-table
-                  ref="filterTable"
+                  ref="filterJackpotConfig"
                   :data="RandAwards"
                   border
                   :header-cell-style="libShow.DefaultTableHeadClass"
@@ -334,7 +318,7 @@
                       </el-select>
                     </template>
                   </el-table-column>
-                  <el-table-column label="奖励发放类型" prop="AwardType"   v-if="!IsPHAuditEnv()">
+                  <el-table-column label="奖励发放类型" prop="AwardType" v-if="!IsPHAuditEnv()">
                     <template slot-scope="scope">
                       <el-select v-model="scope.row.AwardType">
                         <el-option
@@ -346,27 +330,28 @@
                       </el-select>
                     </template>
                   </el-table-column>
-                  <el-table-column label="开出的奖池值" prop="PoolVal"   v-if="!IsPHAuditEnv()">
-                    <template slot-scope="scope">
-                      >=<el-input v-model.number="scope.row.PoolVal" style="width: 120px;" size="mini" :required="true" />
-                    </template>
-                  </el-table-column>
                   <el-table-column label="发放数量" prop="Value">
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.AwardRate" style="width: 200px;" size="mini" :required="true">
+                      <el-input v-model.number="scope.row.AwardRate" style="width: 140px;" size="mini" :required="true">
                         <template v-if="scope.row.AwardType==1" slot="append">%</template>
                         <template v-if="scope.row.AwardType==2" slot="append">倍</template>
                       </el-input>
                     </template>
                   </el-table-column>
-                  <el-table-column label="每日限制开出个数(0为不限)" prop="DayLimit"   v-if="!IsPHAuditEnv()">
+                  <el-table-column label="每日限制开出个数" prop="DayLimit" ><!--v-if="!IsPHAuditEnv()"(0为不限)-->
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.DayLimit" :disabled="checkShowDayLimit(scope.row.AwardType)" style="width: 120px;" size="mini" :required="true"><template slot="append">个</template></el-input>
+                      <el-input v-model.number="scope.row.DayLimit" :disabled="checkShowDayLimit(scope.row.AwardType)" style="width: 140px;" size="mini" :required="true"><template slot="append">个</template></el-input>
                     </template>
                   </el-table-column>
-                  <el-table-column label="中奖概率" prop="DayLimit"   v-if="IsPHAuditEnv()">
+                  <el-table-column label="中奖权重(总权重1000)" prop="DayLimit"><!--   v-if="IsPHAuditEnv()"-->
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.JackpotRate" ><template slot="append">‰</template></el-input>
+                      <el-input v-model.number="scope.row.JackpotRate" ><template slot="append">权重</template></el-input>
+                    </template>
+                  </el-table-column>
+                  <!--
+                  <el-table-column label="开出的奖池值" prop="PoolVal"   v-if="!IsPHAuditEnv()">
+                    <template slot-scope="scope">
+                      >=<el-input v-model.number="scope.row.PoolVal" style="width: 120px;" size="mini" :required="true" />
                     </template>
                   </el-table-column>
                   <el-table-column label="开奖数量概率" prop="RateArr"   v-if="!IsPHAuditEnv()">
@@ -375,6 +360,38 @@
                       {{ showOpenPoolRate(scope.row.JackpotType, scope.row.RateArr) }}
                     </template>
                   </el-table-column>
+                  -->
+                  <el-table-column label="分段限制" prop="DayLimitArr">
+                    <template slot-scope="scope">
+                      <el-button v-if="scope.row.AwardType == 1" type="primary" icon="el-icon-edit" circle size="mini" @click="showDayLimitDialog(scope.row)" />
+                      <el-tag v-for="tag, key in scope.row.DayLimitArr" v-if="scope.row.AwardType == 1" :key="key" disable-transitions>{{ showOpenDayLimit(tag) }}</el-tag>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="玩家开奖池条件(%)" width="250" v-if="!IsPHAuditEnv()">
+                    <template slot-scope="scope">
+                      <div v-if="scope.row.AwardType==1">
+                        虚拟*<el-input v-model.number="scope.row.VrPoolRate" style="width: 70px;" size="mini" :required="true" />
+                        &lt; 真实*<el-input v-model.number="scope.row.RealPoolRate" style="width: 70px;" size="mini" :required="true" />
+                      </div>
+                      <span v-if="scope.row.JackpotType==4">
+                        3Bet中奖会判断玩家的个人JP贡献值，中奖额≤贡献值才开，玩家开奖后根据中奖额扣除贡献值
+                      </span>
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column label="机器人开奖池值" prop="PoolVal" width="170" v-if="!IsPHAuditEnv()">
+                    <template v-if="scope.row.AwardType==1" slot-scope="scope">
+                      >=<el-input v-model.number="scope.row.PoolVal" style="width: 120px;" size="mini" :required="true" />
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column label="机器人开奖数量概率" prop="RateArr" width="160" v-if="!IsPHAuditEnv()">
+                    <template slot-scope="scope">
+                      <el-button v-if="scope.row.AwardType == 1" type="primary" icon="el-icon-edit" circle size="mini" @click="showPoolNumDialog(scope.row)" />
+                      {{ showOpenPoolRate(scope.row.JackpotType, scope.row.RateArr) }}
+                    </template>
+                  </el-table-column>
+
                 </el-table>
               </el-row>
             </fieldset>
@@ -738,14 +755,28 @@ export default {
         }        
       }
 
+      ret.InnerOddsCfg = []
+      ret.MiddleOddsCfg = []
+      ret.OuterOddsCfg = []
       for (const o of ret.OddsCfg) {
         o.Inner = parseInt(o.Inner * 1000)
         o.Middle = parseInt(o.Middle * 1000)
         o.Outer = parseInt(o.Outer * 1000)
+        if (o.Inner > 0) {
+          ret.InnerOddsCfg.push(o.Inner)
+        }
+        if (o.Middle > 0) {
+          ret.MiddleOddsCfg.push(o.Middle)
+        }
+        if (o.Outer > 0) {
+          ret.OuterOddsCfg.push(o.Outer)
+        }
       }
+      ret.BonusTotalWeight = 0
       for (const o of ret.BonusCfg) {
         o.Odds = parseInt(o.Odds * 1000)
         o.Weight = parseInt(o.Weight * 1)
+        ret.BonusTotalWeight += o.Weight
       }
 
       ret.ReChoiceCfg.LowLotteryPoolReChoice *= 1000
