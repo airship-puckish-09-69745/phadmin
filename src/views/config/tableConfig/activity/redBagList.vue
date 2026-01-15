@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="page-container" style="padding: 10px">
     <el-row>
-      <publish primary-key="cfgId" key-id="RedBagActivity" :env-empty="false" :check="configCheck" compare-type="Array" :make-content="makeContent" :attr-names="AttrNames" :head-attrs="['cfgId', 'activity.name']" />
+      <publish primary-key="id" key-id="RedBagActivity" :env-empty="false" :check="configCheck" compare-type="Array" :make-content="makeContent" :attr-names="AttrNames" :head-attrs="['id', 'activityName']" />
     </el-row>
     <el-row style="padding-top: 5px">
       <el-col :span="20">
@@ -101,6 +101,83 @@ export default {
   data() {
     return {
       AttrNames: {
+        // 基础信息
+        id: '活动配置ID',
+        activityName: '活动名称',
+        startTime: '开始时间',
+        endTime: '结束时间',
+        showEndTime: '展示结束时间',
+        modifyUser: '最后修改人',
+        status: '配置状态',
+        isOpen: '是否开启',
+        isWhite: '是否白名单',
+        isSend: '是否发送',
+
+        // 游戏和奖励类型
+        gameType: '游戏类型',
+        rewardType: '奖励类型',
+        gameIdCfg: '游戏ID配置',
+
+        // 时间配置
+        everyDayStartTime: '每日开始时间',
+        everyDayEndTime: '每日结束时间',
+
+        // 限制和展示配置
+        limitMaxNum: '最大限制数量',
+        showGold: '展示金币数',
+        showTimes: '展示次数',
+
+        // 任务配置
+        taskCfgData: '任务配置数据',
+        'taskCfgData[].id': '任务ID',
+        'taskCfgData[].taskType': '任务类型',
+        'taskCfgData[].matchNum': '匹配次数',
+        'taskCfgData[].gameType': '游戏类型',
+        'taskCfgData[].rewardId': '奖励ID',
+        'taskCfgData[].rewardNum': '奖励数量',
+        'taskCfgData[].rewardType': '奖励类型',
+        'taskCfgData[].rewardName': '奖励名称',
+        'taskCfgData[].rewardTime': '奖励时间',
+        'taskCfgData[].redId': '红包ID',
+
+        // 奖池配置
+        'taskCfgData[].rewardPools': '奖励池配置',
+        'taskCfgData[].rewardPools[].poolName': '奖池名称',
+        'taskCfgData[].rewardPools[].value1': '最小值',
+        'taskCfgData[].rewardPools[].value2': '最大值',
+        'taskCfgData[].rewardPools[].weight': '权重',
+        'taskCfgData[].rewardPools[].limitNum': '限制数量',
+
+        // 道具池配置
+        'taskCfgData[].propPools': '道具池配置',
+        'taskCfgData[].propPools.propType': '道具类型',
+        'taskCfgData[].propPools.propId': '道具ID',
+        'taskCfgData[].propPools.propName': '道具名称',
+        'taskCfgData[].propPools.propTime': '道具时长',
+        'taskCfgData[].propPools.propNum': '道具数量',
+
+        // 白名单配置
+        whiteList: '白名单',
+        whitelistCfg: '白名单配置',
+        siteIdList: '站点ID列表',
+        appIdList: 'AppId列表',
+
+        // A/B测试配置
+        abTest: 'A/B测试配置',
+        'abTest.switch': 'A/B测试开关',
+        'abTest.bPercent': 'B组百分比',
+
+        // 其他配置
+        debugTimeOffset: '调试时间偏移',
+        taskConfig: '任务配置',
+        rewardConfig: '奖励配置',
+        progressPrizes: '进度奖励配置',
+        userTypes: '用户类型',
+        userFilterCondition: '筛选用户条件',
+        ruleImgHor: '横向规则图',
+        ruleImgVer: '纵向规则图',
+
+        // 活动信息(旧字段保留兼容)
         activity: '活动信息',
         'activity.activityName': '活动名称',
         'activity.whitelist.siteIdList': '站点白名单',
@@ -118,25 +195,7 @@ export default {
         'activity.userFilterCondition.betTimesRange': '累计投注次数',
         'activity.userFilterCondition.userTagConfig': '用户标签配置',
         'activity.userFilterCondition.userTagConfig.tagId': '用户标签ID',
-        'activity.userFilterCondition.userTagConfig.tagValue': '用户标签值',
-        id: '活动配置ID',
-        activityName: '活动名称',
-        cfgId: '活动配置ID',
-        startTime: '开始时间',
-        endTime: '结束时间',
-        showEndTime: '展示结束时间',
-        modifyUser: '最后修改人',
-        status: '配置状态',
-        gameIdCfg: '游戏ID配置',
-        ruleImgHor: '横向规则图',
-        ruleImgVer: '纵向规则图',
-        whitelistCfg: '白名单',
-        debugTimeOffset: '调试时间偏移',
-        taskConfig: '任务配置',
-        rewardConfig: '奖励配置',
-        progressPrizes: '进度奖励配置',
-        userTypes: '用户类型',
-        userFilterCondition: '筛选用户条件'
+        'activity.userFilterCondition.userTagConfig.tagValue': '用户标签值'
       },
       env: 'test',
       appId: store.getters.appId || -1,
@@ -183,8 +242,8 @@ export default {
       if (addData.length > 0) {
         for (const i in addData) {
           for (const j in addData[i]) {
-            if (addData[i][j].key === 'activity') {
-              str += `\r\n上架-活动名称:【${addData[i][j].newVal.name}】`
+            if (addData[i][j].key === 'activityName') {
+              str += `\r\n上架-活动名称:【${addData[i][j].newVal}】`
             }
           }
         }
@@ -192,11 +251,11 @@ export default {
       if (delData.length > 0) {
         for (const i in delData) {
           for (const j in delData[i]) {
-            if (delData[i][j].key === 'activity') {
+            if (delData[i][j].key === 'activityName') {
               if (str === '') {
-                str += `下架-活动名称:【${delData[i][j].oldVal.name}】`
+                str += `下架-活动名称:【${delData[i][j].oldVal}】`
               } else {
-                str += `\r\n下架-活动名称:【${delData[i][j].oldVal.name}】`
+                str += `\r\n下架-活动名称:【${delData[i][j].oldVal}】`
               }
             }
           }
@@ -206,9 +265,9 @@ export default {
         for (const i in editData) {
           console.log(editData[i].Head)
           if (str === '') {
-            str += `活动名称:【${editData[i].Head['activity.name']}】`
+            str += `活动名称:【${editData[i].Head.activityName || editData[i].Head.id}】`
           } else {
-            str += `\r\n活动名称:【${editData[i].Head['activity.name']}】`
+            str += `\r\n活动名称:【${editData[i].Head.activityName || editData[i].Head.id}】`
           }
         }
       }
@@ -259,7 +318,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
-          this.clientDB = new ClientTableData(objs, 10, filterMap, 'EndTime', -1, "id")
+          this.clientDB = new ClientTableData(objs, 10, filterMap, 'EndTime', -1, 'id')
           this.handleCurrentChange(1)
         }
       }).catch(err => {
