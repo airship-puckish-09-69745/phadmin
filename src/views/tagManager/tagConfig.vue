@@ -945,6 +945,7 @@
             const children = this.tagOptions[i].children
             for (let k = 0; k < children.length; k++) {
               if (children[k].value === row.tag_id) {
+                this.form.tag_name = children[k].label
                 this.form.tag_ids = [row.tag_id]
                 break
               }
@@ -952,6 +953,7 @@
               if (grandChildren) {
                 for (let l = 0; l < grandChildren.length; l++) {
                   if (grandChildren[l].value === row.tag_id) {
+                    this.form.tag_name = grandChildren[l].label
                     this.form.tag_ids = [children[k].value,row.tag_id]
                     break
                   }
@@ -961,7 +963,9 @@
           }
         }
         this.form.tag_val = row.tag_val
-        this.form.tag_name = row.tag_name
+        if (row.tag_name !== '') {
+          this.form.tag_name = row.tag_name
+        }
         this.form.tag_gid = row.tag_gid
         this.form.status = row.status
         attr.loginDay && (this.form.loginDay = attr.loginDay)
