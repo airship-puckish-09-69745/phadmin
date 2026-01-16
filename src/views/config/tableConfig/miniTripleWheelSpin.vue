@@ -747,12 +747,12 @@ export default {
             'Inner': this.csvData[i][0]*1, 
             'Middle': this.csvData[i][1]*1, 
             'Outer': this.csvData[i][2]*1, 
-            'BackRate': r1,   //退1
-            'InnerRate': r1+r2,  //内
-            'MiddleRate': r1+r2+r3, //中
-            'OuterRate': r1+r2+r3+r4,  //外
-            'KeepRate': r1+r2+r3+r4+r5,   //保持
-            'TotalWeight': r1+r2+r3+r4+r5 //总权重
+            'BackRate': Math.floor(r1),   //退1
+            'InnerRate': Math.floor(r1+r2),  //内
+            'MiddleRate': Math.floor(r1+r2+r3), //中
+            'OuterRate': Math.floor(r1+r2+r3+r4),  //外
+            'KeepRate': Math.floor(r1+r2+r3+r4+r5),   //保持
+            'TotalWeight': Math.floor(r1+r2+r3+r4+r5) //总权重
           })
         }        
       }
