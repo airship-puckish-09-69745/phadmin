@@ -14,7 +14,10 @@
             :default-time="['00:00:00', '23:59:59']"
             type="datetimerange"
             value-format="timestamp"
-            :picker-options="pickerOptions"
+            :picker-options="{
+              ...pickerOptions,
+              disabledDate: (time) => time.getTime() < new Date('2025-08-08 00:00:00').getTime()
+            }"
             range-separator="至"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
@@ -282,8 +285,8 @@ export default {
         this.form.StartTime = Math.floor($libDate.SelectTimeToIndiaByZone(this.timeRange[0]) / 1000)
         this.form.EndTime = Math.floor($libDate.SelectTimeToIndiaByZone(this.timeRange[1]) / 1000)
       }
-      if (this.form.EndTime - this.form.StartTime > 86400) {
-        Message.error('不支持跨天查询')
+      if (this.form.EndTime - this.form.StartTime > 86400 * 31) {
+        Message.error('不能超过 31 天')
         return
       }
 

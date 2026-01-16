@@ -243,6 +243,32 @@
                     >%</template></el-input>
                   </template>
                 </el-table-column>
+                <el-table-column label="渠道" width="400">
+                  <!--                  <template slot-scope="scope">-->
+                  <!--                    <el-input v-model.number="scope.row.Channels" size="mini"><template-->
+                  <!--                      slot="append"-->
+                  <!--                    >%</template></el-input>-->
+                  <!--                  </template>-->
+                  <template slot-scope="scope">
+                    <el-checkbox-group v-model="scope.row.Channels">
+                      <el-checkbox label="BP" />
+                      <el-checkbox label="GP" />
+                      <el-checkbox label="CP" />
+                      <el-checkbox label="AP" />
+                      <el-checkbox label="DEV" />
+                    </el-checkbox-group>
+                  </template>
+                </el-table-column>
+                <el-table-column label="使用casino机器人昵称" width="200">
+                  <template slot-scope="scope">
+                    <el-switch
+                      v-model="scope.row.IsUseCasio"
+                      active-color="#13ce66"
+                      inactive-color="#ff4949"
+                      @change="(val) => handleUseCasino(val, scope.row)"
+                    />
+                  </template>
+                </el-table-column>
                 <el-table-column label="操作" width="100">
                   <template slot-scope="scope">
                     <el-button type="danger" size="mini" @click="delNameCfg(scope.$index)">删除</el-button>
@@ -376,7 +402,9 @@ import robotAiSettingDecision from './tongits/robotAiSettingDecision'
 function newNameCfgItem(nick, probability) {
   return {
     Nick: nick,
-    Probability: probability
+    Probability: probability,
+    Channels: [],
+    IsUseCasio: false
   }
 }
 function newShowMoneyCfg() {
@@ -452,7 +480,7 @@ export default {
       NameCfg: [], // 启动机器人名字配置
       ShowMoneyCfg: [], // 机器人展示资产配置
       AllTableMoneyList: [],
-      RobotExitCfg: { //机器人默认离桌配置
+      RobotExitCfg: { // 机器人默认离桌配置
         PlayTimeMin: 10,
         PlayTimeMax: 20
       },
@@ -497,7 +525,17 @@ export default {
             this.item = cfg
             this.tableData = this.item.Config
             this.actionList = this.item.Action
-            this.NameCfg = this.item.NameCfg || []
+            // this.NameCfg = this.item.NameCfg || []
+            this.NameCfg = []
+            const NameCfg = this.item.NameCfg || []
+            for (const o in NameCfg) {
+              const one = Object.assign({}, NameCfg[o])
+              if (!one.Channels) {
+                one.Channels = []
+                one.IsUseCasio = false
+              }
+              this.NameCfg.push(one)
+            }
             this.RobotExitCfg = this.item.RobotExitCfg || newRobotExitCfg()
             const RobotTableMoneyExitCfg = this.item.RobotTableMoneyExitCfg || []
             const ShowMoneyCfg = this.item.ShowMoneyCfg || []
@@ -633,6 +671,19 @@ export default {
       }
       return true
     },
+    checkNameCfg() {
+      let hasUseCasino = false
+      for (const o in this.NameCfg) {
+        if (this.NameCfg[o].IsUseCasio) {
+          hasUseCasino = true
+        }
+      }
+      if (!hasUseCasino) {
+        Message.error('必须存在一个默认使用casino机器人昵称的配置')
+        return false
+      }
+      return true
+    },
     checkRobotExitCfg() {
       if (this.RobotExitCfg.PlayTimeMin >= this.RobotExitCfg.PlayTimeMax) {
         Message.error('离桌玩牌次数槛错误,最小次数不能大于最大次数')
@@ -645,6 +696,9 @@ export default {
         return
       }
       if (!this.checkRobotExitCfg()) {
+        return
+      }
+      if (!this.checkNameCfg()) {
         return
       }
       this.moneyProc(true)
@@ -820,8 +874,13 @@ export default {
     },
     dataRule(required, config) {
       return DataRule(required, config)
+    },
+    handleUseCasino(change, row) {
+      // console.log(ttt)
+      if (change) {
+        row.Channels = ['BP', 'GP', 'CP', 'AP', 'DEV']
+      }
     }
-
   }
 }
 </script>

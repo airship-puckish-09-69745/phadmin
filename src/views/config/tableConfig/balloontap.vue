@@ -103,23 +103,6 @@
 
                 <el-col :span="7" :offset="3">
                   <el-form inline>
-                    <el-form-item label="piggy boom气球个数(min)" :rules="dataRule(true,{type:'n',range:'0'})">
-                      <el-input v-model.number="itemExt.Calc.NumPiggyBoomMin" size="mini" :required="true" />
-                    </el-form-item>
-                  </el-form>
-                </el-col>
-
-                <el-col :span="7" :offset="3">
-                  <el-form inline>
-                    <el-form-item label="piggy boom气球个数(max)" :rules="dataRule(true,{type:'n',range:'0'})">
-                      <el-input v-model.number="itemExt.Calc.NumPiggyBoomMax" size="mini" :required="true" />
-                    </el-form-item>
-                  </el-form>
-                </el-col>
-
-
-                <el-col :span="7" :offset="3">
-                  <el-form inline>
                     <el-form-item label="随机气球倍数(min)" :rules="dataRule(true,{type:'n',range:'0'})">
                       <el-input v-model.number="itemExt.Calc.OddsRandMin" size="mini" :required="true" />
                     </el-form-item>
@@ -135,7 +118,7 @@
                 </el-col>
 
               </el-row>
-              <piggy-weight-cfg :piggy-cfg=" itemExt.Calc.OddsTarget" weight-name="初始数量" val-name="气球倍数 -1(随机) -2(Piggy)" val-type="1" title="气球初始配置(倍数仅支持1为小数)" />
+<!--              <piggy-weight-cfg :piggy-cfg=" itemExt.Calc.OddsTarget" weight-name="初始数量" val-name="气球倍数 -1(随机) -2(Piggy)" val-type="1" title="气球初始配置(倍数仅支持1为小数)" />-->
             </fieldset>
           </el-row>
         </el-tab-pane>
@@ -163,21 +146,6 @@
 
                 <el-col :span="7" :offset="3">
                   <el-form inline>
-                    <el-form-item label="气球纵轴生成位置范围min" :rules="dataRule(true,{type:'n',range:'0'})">
-                      <el-input v-model.number="itemExt.Ctrl.CreatePosYMin" size="mini" :required="true" />
-                    </el-form-item>
-                  </el-form>
-                </el-col>
-                <el-col :span="7" :offset="3">
-                  <el-form inline>
-                    <el-form-item label="气球纵轴生成位置范围max" :rules="dataRule(true,{type:'n',range:'0'})">
-                      <el-input v-model.number="itemExt.Ctrl.CreatePosYMax" size="mini" :required="true" />
-                    </el-form-item>
-                  </el-form>
-                </el-col>
-
-                <el-col :span="7" :offset="3">
-                  <el-form inline>
                     <el-form-item label="生成时间min" :rules="dataRule(true,{type:'n',range:'0'})">
                       <el-input v-model.number="itemExt.Ctrl.CreateTimeMin" size="mini" :required="true"> <template slot="append">ms</template></el-input>
                     </el-form-item>
@@ -187,6 +155,21 @@
                   <el-form inline>
                     <el-form-item label="生成时间max" :rules="dataRule(true,{type:'n',range:'0'})">
                       <el-input v-model.number="itemExt.Ctrl.CreateTimeMax" size="mini" :required="true"> <template slot="append">ms</template></el-input>
+                    </el-form-item>
+                  </el-form>
+                </el-col>
+
+                <el-col :span="7" :offset="3">
+                  <el-form inline>
+                    <el-form-item label="气球纵轴生成位置范围min" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-input v-model.number="itemExt.Ctrl.CreatePosYMin" size="mini" :required="true" />
+                    </el-form-item>
+                  </el-form>
+                </el-col>
+                <el-col :span="7" :offset="3">
+                  <el-form inline>
+                    <el-form-item label="气球纵轴生成位置范围max" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-input v-model.number="itemExt.Ctrl.CreatePosYMax" size="mini" :required="true" />
                     </el-form-item>
                   </el-form>
                 </el-col>
@@ -205,8 +188,186 @@
                     </el-form-item>
                   </el-form>
                 </el-col>
-
               </el-row>
+
+<!--              <piggy-weight-cfg :piggy-cfg=" itemExt.Ctrl.CreateInitX" weight-name="权重" val-name="x位置(%)" val-type="1" title="生成气球x轴初始位置" />-->
+
+              <!-- 生成气球x轴初始位置 -->
+              <el-row style="margin: 20px 0 10px 0;">
+                <el-col :span="24">
+                  <div
+                    style="
+                      width: 97%;
+                      margin-left: 1.5%;
+                      display: flex;
+                      align-items: center;
+                      justify-content: space-between;
+                      padding: 6px 12px;
+                      background: #f5f7fa;
+                      "
+                  >
+                    <span style="font-weight: 540; color: #606266;">
+                      生成气球x轴初始位置
+                    </span>
+                    <el-button
+                      type="primary"
+                      size="mini"
+                      @click="addCreateInitX"
+                    >
+                      添加
+                    </el-button>
+                  </div>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="24">
+                  <el-table
+                    :data="itemExt.Ctrl.CreateInitX"
+                    border
+                    size="mini"
+                    style="
+                      width: 97%;
+                      margin-left: 1.5%;"
+                  >
+                    <el-table-column label="权重" prop="StartHours" min-width="50">
+                      <template slot-scope="scope">
+                        <el-input v-model.number="scope.row.Weight" style="width: 100%;" size="mini" :required="true" />
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="x位置(%)min" prop="StartHours" min-width="50">
+                      <template slot-scope="scope">
+                        <el-input v-model.number="scope.row.ValMin" style="width: 100%;" size="mini" :required="true" />
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="x位置(%)max" prop="StartHours" min-width="50">
+                      <template slot-scope="scope">
+                        <el-input v-model.number="scope.row.ValMax" style="width: 100%;" size="mini" :required="true" />
+                      </template>
+                    </el-table-column>
+
+
+                    <el-table-column
+                      label="操作"
+                      width="100"
+                      align="center"
+                    >
+                      <template slot-scope="scope">
+                        <el-button
+                          size="mini"
+                          type="danger"
+                          @click="removeCreateInitX(scope.$index)"
+                        >
+                          删除
+                        </el-button>
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                </el-col>
+              </el-row>
+
+                <!-- 气球轨迹控制 -->
+                <el-row style="margin: 20px 0 10px 0;">
+                  <el-col :span="24">
+                    <div
+                      style="
+                      width: 97%;
+                      margin-left: 1.5%;
+                      display: flex;
+                      align-items: center;
+                      justify-content: space-between;
+                      padding: 6px 12px;
+                      background: #f5f7fa;
+                      "
+                    >
+                    <span style="font-weight: 540; color: #606266;">
+                      气球初始数量、轨迹控制
+                    </span>
+                      <el-button
+                        type="primary"
+                        size="mini"
+                        @click="addOddsCtr"
+                      >
+                        添加
+                      </el-button>
+                    </div>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="24">
+                    <el-table
+                      :data="itemExt.Ctrl.OddsCtrl"
+                      border
+                      size="mini"
+                      style="
+                      width: 97%;
+                      margin-left: 1.5%;"
+                    >
+                      <el-table-column
+                        label="气球倍数 -1(随机) -2(piggy)"
+                        min-width="55"
+                      >
+                        <template slot-scope="scope">
+                          <el-input-number
+                            v-model="scope.row.Odds"
+                            :step="0.1"
+                            :controls="false"
+                            size="mini"
+                            placeholder="请输入倍数"
+                            @blur="formatOdds(scope.row)"
+                          />
+                        </template>
+                      </el-table-column>
+
+                      <el-table-column label="初始数量" prop="StartHours" min-width="50">
+                        <template slot="header">
+                          <p style="text-align: center"> 初始数量 </p>
+                          <span style="color: red;font-size: 11px">  注: 此项和PiggyBoom算分相关</span>
+                        </template>
+                        <template slot-scope="scope">
+                          <el-input v-model.number="scope.row.NumInit" style="width: 100px;" size="mini" :required="true" />
+                        </template>
+                      </el-table-column>
+
+                      <el-table-column label="变向时间(ms)" prop="DayLimitArr">
+                        <template slot-scope="scope">
+                          <el-button type="primary" icon="el-icon-edit" circle size="mini" @click="showChoiceDialog(scope.row.TimeTurn, scope.row.Odds,'TimeTurn','变向时间(ms)')" />
+                          <el-tag :key="key" disable-transitions>{{ aboutChoiceDialogData(scope.row.TimeTurn) }}</el-tag>
+                        </template>
+                      </el-table-column>
+
+                      <el-table-column label="x轴速度" prop="DayLimitArr">
+                        <template slot-scope="scope">
+                          <el-button type="primary" icon="el-icon-edit" circle size="mini" @click="showChoiceDialog(scope.row.SpeedX, scope.row.Odds,'SpeedX','x轴速度')" />
+                          <el-tag :key="key" disable-transitions>{{ aboutChoiceDialogData(scope.row.SpeedX) }}</el-tag>
+                        </template>
+                      </el-table-column>
+
+                      <el-table-column label="y轴速度" prop="DayLimitArr">
+                        <template slot-scope="scope">
+                          <el-button type="primary" icon="el-icon-edit" circle size="mini" @click="showChoiceDialog(scope.row.SpeedY, scope.row.Odds,'SpeedY','y轴速度')" />
+                          <el-tag :key="key" disable-transitions>{{ aboutChoiceDialogData(scope.row.SpeedY) }}</el-tag>
+                        </template>
+                      </el-table-column>
+
+                      <el-table-column
+                        label="操作"
+                        width="100"
+                        align="center"
+                      >
+                        <template slot-scope="scope">
+                          <el-button
+                            size="mini"
+                            type="danger"
+                            @click="removeOddsCtr(scope.$index)"
+                          >
+                            删除
+                          </el-button>
+                        </template>
+                      </el-table-column>
+                    </el-table>
+                  </el-col>
+                </el-row>
+
             </fieldset>
           </el-row>
         </el-tab-pane>
@@ -251,6 +412,50 @@
     <el-row>
       <el-button type="primary" @click="onClickSave">保存</el-button>
     </el-row>
+
+    <!-- 【dialog】每日限制开出个数 -->
+    <el-dialog
+      :title="choiceDialogData.title"
+      :modal="false"
+      :visible.sync="choiceDialogData.visible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-button style="margin-bottom:10px; float:right" type="primary" size="mini" @click="saveChoice">保存</el-button>
+      <el-button style="margin-bottom:10px; float:left" type="normal" icon="el-icon-plus" size="mini" @click="addChoice">添加</el-button>
+      <el-table
+        ref="filterTable"
+        :data="choiceDialogData.data"
+        border
+        :header-cell-style="libShow.DefaultTableHeadClass"
+        :row-style="{height:'10px'}"
+        :cell-style="libShow.DefaultTableCell"
+        style="width: 100%"
+      >
+        <el-table-column type="index" />
+        <el-table-column label="权重" prop="Num">
+          <template slot-scope="scope">
+            <el-input v-model.number="scope.row.Weight" style="width: 100px;" size="mini" :required="true" />
+          </template>
+        </el-table-column>
+        <el-table-column label="min" prop="StartHours">
+          <template slot-scope="scope">
+            <el-input v-model.number="scope.row.ValMin" style="width: 100px;" size="mini" :required="true" />
+          </template>
+        </el-table-column>
+        <el-table-column label="max" prop="EndHours">
+          <template slot-scope="scope">
+            <el-input v-model.number="scope.row.ValMax" style="width: 100px;" size="mini" :required="true" />
+          </template>
+        </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button style="margin-bottom:10px;" type="danger" icon="el-icon-delete" size="mini" @click="removeDayLimitNum(scope.$index)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+
     <!--对比组件-->
     <compare ref="compareBase" :attr-names="AttrNames" />
     <compare ref="compareExt" :attr-names="AttrNames" />
@@ -333,7 +538,14 @@ export default {
       },
       AttrNames: {
         'Data.MaxPlayers': '最大人数'
-      }
+      },
+      choiceDialogData: {
+        visible: false,
+        data: [],
+        title: '',
+        field: '',
+        odds: -100,
+      },
     }
   },
   computed: {
@@ -382,10 +594,15 @@ export default {
         o.ValMax /= 10
       }
     },
-    transMoneyForShowExt() { //base 数据->展示
+    transMoneyForShowExt() { //ext 数据->展示
       for (const o of this.itemExt.Calc.OddsTarget) {
         if (o.Val > 0) {
           o.Val /= 10
+        }
+      }
+      for (const o of this.itemExt.Ctrl.OddsCtrl) {
+        if (o.Odds > 0) {
+          o.Odds /= 10
         }
       }
       this.itemExt.Calc.OddsRandMin /= 10
@@ -454,11 +671,16 @@ export default {
       }
       return obj
     },
-    getPostDataExt() { //base 展示->数据
+    getPostDataExt() { //ext 展示->数据
       const obj = JSON.parse(JSON.stringify(this.itemExt))
       for (const o of obj.Calc.OddsTarget) {
         if (o.Val > 0){
           o.Val = parseInt(o.Val * 10)
+        }
+      }
+      for (const o of obj.Ctrl.OddsCtrl) {
+        if (o.Odds > 0){
+          o.Odds = parseInt(o.Odds * 10)
         }
       }
       obj.Calc.OddsRandMin = parseInt(obj.Calc.OddsRandMin * 10)
@@ -580,6 +802,64 @@ export default {
     onClickSave() {
       this.setDataBase()
       this.setDataExt()
+    },
+    addOddsCtr() {
+      console.log(this.itemExt.Ctrl.OddsCtrl)
+      const newRow = {
+        Odds: 0,
+      }
+      this.itemExt.Ctrl.OddsCtrl.push(newRow)
+    },
+    removeOddsCtr(index) {
+      this.itemExt.Ctrl.OddsCtrl.splice(index, 1)
+    },
+
+    addCreateInitX() {
+      const newRow = {}
+      this.itemExt.Ctrl.CreateInitX.push(newRow)
+    },
+    removeCreateInitX(index) {
+      this.itemExt.Ctrl.CreateInitX.splice(index, 1)
+    },
+
+    showChoiceDialog(data, odds, field, title) {
+      this.choiceDialogData.field = field
+      this.choiceDialogData.title = title
+      this.choiceDialogData.data = data || [{}]
+      this.choiceDialogData.visible = true
+      this.choiceDialogData.odds = odds
+    },
+    addChoice() {
+      if (!this.choiceDialogData.data) {
+        this.choiceDialogData['data'] = []
+      }
+      this.choiceDialogData.data.push({ 'Weight': 0, 'ValMin': 0, 'ValMax': 0})
+    },
+    removeDayLimitNum(index) {
+      this.choiceDialogData.data.splice(index, 1)
+    },
+    saveChoice() {
+      for (let i = 0; i < this.choiceDialogData.data.length; i++) {
+        if (this.choiceDialogData.data[i].ValMin > this.choiceDialogData.data[i].ValMax) {
+          Message.error('min>max')
+          return
+        }
+      }
+      for (var i = 0; i < this.itemExt.Ctrl.OddsCtrl.length; i++) {
+        if (this.choiceDialogData.odds == this.itemExt.Ctrl.OddsCtrl[i].Odds) {
+          this.itemExt.Ctrl.OddsCtrl[i][this.choiceDialogData.field] = this.choiceDialogData.data
+          break
+        }
+      }
+      this.choiceDialogData.visible = false
+    },
+    aboutChoiceDialogData(data) {
+      if (!Array.isArray(data)) return ''
+
+      return data
+        .filter(item => item.Weight > 0)
+        .map(item => `[${item.ValMin},${item.ValMax}]:${item.Weight}`)
+        .join('; ')
     },
   }
 }
