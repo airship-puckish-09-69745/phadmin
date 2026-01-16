@@ -649,10 +649,12 @@
         if (this.fieldOptions && this.fieldOptions.length>0) {
           this.form.tag_val = 0
           this.form.tag_id = this.fieldOptions[0].value
+          this.form.tag_name = this.fieldOptions[0].label
           this.form.tag_ids = [this.form.tag_id]
         }
         if (this.gameIntensity()) {
           this.form.tag_val = this.intensityOptions[0].value
+          this.form.tag_name = this.intensityOptions[0].label
         }
         if (this.form.tag_type === 5 && !this.showLevelOptions() && !this.showCarryOptions()) {
           this.form.tag_gid = 0
