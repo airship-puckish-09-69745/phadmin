@@ -1669,11 +1669,11 @@ export default {
 
           for (const key in data) {
             const games = data[key]
-            const cty = {id: 'p-' + key, label: categories[key], children: []}
+            const cty = { id: 'p-' + key, label: categories[key], disabled: false, children: [] }
 
             for (let i = 0; i < games.length; i++) {
               const game = games[i]
-              cty.children.push({id: game.Gid, label: game.Name})
+              cty.children.push({ id: game.Gid, category: categories[key], label: game.Name, disabled: false })
             }
             this.treeData.push(cty)
           }
@@ -1733,7 +1733,6 @@ export default {
     handleGameCheckChange(data, checked, indeterminate) {
       console.log('handleGameCheckChange', data, checked, indeterminate)
       if (data.label === 'Slot' || data.label === 'Poker' || data.label === 'Casino') {
-        console.log('handleGameCheckChange', 'Slot/Poker/Casino')
         return
       }
 
@@ -1747,6 +1746,52 @@ export default {
           this.edit.item.gameIdCfg.splice(idIndex, 1)
         }
       }
+
+      const $this = this
+      // 选中的游戏所属的类别
+      let categoriesSelected = []
+      this.treeData.forEach(cty => {
+        if (cty.children.some(game => $this.edit.item.gameIdCfg.includes(game.id))) {
+          if (!categoriesSelected.includes(cty.label)) {
+            categoriesSelected.push(cty.label)
+          }
+        }
+      })
+
+      console.log('categoriesSelected-----', categoriesSelected)
+
+      // Slot 与 Poker/Casino 类别的选项做互斥处理
+      this.treeData.forEach(cty => {
+        console.log('cty', cty)
+        if (categoriesSelected.length === 0) {
+          cty.disabled = false
+          cty.children.forEach(game => {
+            game.disabled = false
+          })
+          return
+        }
+
+        if (categoriesSelected.includes('Slot')) {
+          if (cty.label === 'Slot') {
+            return
+          }
+          cty.disabled = true
+          cty.children.forEach(game => {
+            game.disabled = true
+            console.log('Poker/Casino game.id', game.id, 'disabled', game.disabled)
+          })
+        }
+
+        if (categoriesSelected.includes('Poker') || categoriesSelected.includes('Casino')) {
+          if (cty.label === 'Slot') {
+            cty.disabled = true
+            cty.children.forEach(game => {
+              game.disabled = true
+              console.log('Slot game.id', game.id, 'disabled', game.disabled)
+            })
+          }
+        }
+      })
 
       // 更新选中游戏的排序
       this.updateGamesSorted()
