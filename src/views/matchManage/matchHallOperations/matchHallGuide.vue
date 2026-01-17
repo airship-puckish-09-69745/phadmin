@@ -140,7 +140,7 @@ export default {
         { 'value': 'BP', 'label': 'BP' },
         { 'value': 'AP', 'label': 'AP' },
         { 'value': 'GP', 'label': 'GP' },
-        { 'value': 'PG', 'label': 'PG' },
+        // { 'value': 'PG', 'label': 'PG' }, 2025-12-22去除PG
         { 'value': 'TG', 'label': 'TG' },
         { 'value': 'DEV', 'label': 'DEV' }
       ],

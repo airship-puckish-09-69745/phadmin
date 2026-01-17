@@ -113,14 +113,14 @@
 
 <script>
 import { $libShow } from '@/utils/common'
-import jackpotAward from "@/views/playerManage/jackpotAward.vue";
+import jackpotAward from '@/views/playerManage/jackpotAward.vue';
 export default {
   name: 'MiniSuperColorDetailLog',
-  computed: {
-    jackpotAward() {
-      return jackpotAward
-    }
-  },
+  // computed: {
+  //   jackpotAward() {
+  //     return jackpotAward
+  //   }
+  // },
   components: {},
   libShow: $libShow,
   props: {
@@ -154,13 +154,13 @@ export default {
         { Id: 4, Name: 'Blue' },
         { Id: 5, Name: 'Green' },
         { Id: 6, Name: 'Red' },
-        { Id: 7, Name: 'YellowWhite' },
-        { Id: 8, Name: 'WhitePurple' },
-        { Id: 9, Name: 'PurpleGreen' },
-        { Id: 10, Name: 'GreenRed' },
-        { Id: 11, Name: 'RedBlue' },
-        { Id: 12, Name: 'BlueYellow' },
-        { Id: 13, Name: 'RedWhite' }
+        // { Id: 7, Name: 'YellowWhite' },
+        // { Id: 8, Name: 'WhitePurple' },
+        // { Id: 9, Name: 'PurpleGreen' },
+        // { Id: 10, Name: 'GreenRed' },
+        // { Id: 11, Name: 'RedBlue' },
+        // { Id: 12, Name: 'BlueYellow' },
+        // { Id: 13, Name: 'RedWhite' }
       ],
       JackpotTypeCfg: {
         1: '一等奖',
@@ -217,7 +217,7 @@ export default {
       return (money / 1000).toFixed(3)
     },
     showBetOdd(odd) {
-      return (odd / 1000).toFixed(0)
+      return (odd / 1000).toFixed(1)
     },
     showBetAreaName(id) {
       const option = this.ColorOption.find(item => item.Id === id)
@@ -268,6 +268,9 @@ export default {
     getSuperColorBetOption(betAreaCfg, betArea) {
       this.SuperColorBetArea = []
       for (const betAreaCfgKey in betAreaCfg) {
+        if (betAreaCfg[betAreaCfgKey].id > 6){
+          continue
+        }
         const tmp = {
           id: betAreaCfg[betAreaCfgKey].id,
           isHit: betAreaCfg[betAreaCfgKey].isHit,

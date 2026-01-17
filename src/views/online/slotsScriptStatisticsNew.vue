@@ -1536,12 +1536,12 @@ export default {
             this.processBuyReturnCount(strings,buyReturnMoneyTableData,response,key)
           }
           // 步数统计
-          this.scriptStepClientDB  = new ClientTableData(scriptTableData , 100, {}, 'sort', -1);
-          this.scriptStepScatterClientDB  = new ClientTableData(scatterCounts , 100, {}, 'sort', -1);
+          this.scriptStepClientDB  = new ClientTableData(scriptTableData , 200, {}, 'sort', -1);
+          this.scriptStepScatterClientDB  = new ClientTableData(scatterCounts , 200, {}, 'sort', -1);
           // 普通返奖
-          this.ordinaryReturnClientDBNew  = new ClientTableData(ordinaryReturnMoneyTableData , 100, {}, 'sort', -1);
+          this.ordinaryReturnClientDBNew  = new ClientTableData(ordinaryReturnMoneyTableData , 200, {}, 'sort', -1);
           // 购买免费
-          this.buyReturnClientDBNew  = new ClientTableData(buyReturnMoneyTableData , 100, {}, 'sort', -1);
+          this.buyReturnClientDBNew  = new ClientTableData(buyReturnMoneyTableData , 200, {}, 'sort', -1);
 
 
           for (const key in response.Data['script']) {
@@ -1988,7 +1988,8 @@ export default {
           90: 'moneycoming',
           92: 'fortuneacego',
           168: 'pharaohtreasure',
-          198: 'fortuneblessing'
+          198: 'fortuneblessing',
+          216: 'phoenix'
         }
         let key = this.gameScene[gid%100000] + '_slots_base'
         for (const k in realKey) {

@@ -418,6 +418,35 @@
           </el-col>
         </el-row>
 
+        <el-row>
+          <el-col :span="11">
+            <el-form-item
+              label="仅新手可见："
+              :required="true"
+              prop="item.HideCarry"
+              :rules="dataRule(true,{type:'n',range:'0'})"
+            >
+              <el-switch
+                v-model="edit.item.IsOnlyShowNewUser"
+                :active-value="1"
+                :inactive-value="0"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item
+              label="4真人可以同桌："
+              :required="true"
+            >
+              <el-switch
+                v-model="edit.item.AllowAllRealPlayer"
+                :active-value="1"
+                :inactive-value="0"
+              />
+            </el-form-item>
+          </el-col>
+        </el-row>
+
         <el-form-item>
           <el-row>
             <el-col :span="12" :offset="10">
@@ -482,7 +511,9 @@ function newItem() {
     WaitAddRobotMaxTimes: 0,
     WaitUserEnterTimes: 0,
     AllocScheme: 0,
-    AutoEnterRoomCount: 0
+    AutoEnterRoomCount: 0,
+    IsOnlyShowNewUser: 0,
+    AllowAllRealPlayer: 1,
   }
 }
 
@@ -539,7 +570,9 @@ export default {
         AllocScheme: '配桌方案',
         WaitAddRobotMaxTimes: '匹配机器人最高等待时间',
         WaitUserEnterTimes: '匹配玩家入桌等待时间',
-        AutoEnterRoomCount: '自动补陪玩机器人人数要求'
+        AutoEnterRoomCount: '自动补陪玩机器人人数要求',
+        IsOnlyShowNewUser:'仅新手可见',
+        AllowAllRealPlayer:'4真人可以同桌',
       }
     }
   },

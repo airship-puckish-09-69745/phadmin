@@ -29,6 +29,11 @@ service.interceptors.request.use(
       } else {
         config.data.Env = store.getters.env
       }
+       if (config.data.AppId !== undefined) {
+        config.headers['X-App-Id'] = config.data.AppId
+        config.headers['X-Version'] = "V2"
+      }
+
       isHandle = true
     }
     // do something before request is sent

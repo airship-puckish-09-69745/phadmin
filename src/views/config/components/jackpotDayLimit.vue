@@ -46,6 +46,10 @@
         </template>
       </el-table-column>
       <el-table-column label="每日限制开出个数(0为不限)" prop="DayLimit" v-if="envProjectName != 'ph_audit'">
+        <template slot="header">
+          <p style="text-align: center">  每日限制开出个数</p>
+          <span style="color: red;font-size: 11px">  注:(0为不限) 不支持>1000(右同) 会卡死游戏</span>
+        </template>
         <template slot-scope="scope">
           <el-input v-if="scope.row.JackpotType!==4" v-model.number="scope.row.DayLimit" :disabled="checkShowDayLimit(scope.row.AwardType)" style="width: 120px;" size="mini" :required="true"><template slot="append">个</template></el-input>
           <el-input v-else v-model.number="scope.row.DayLimit" :disabled="checkShowDayLimit(scope.row.AwardType)" style="width: 120px;" size="mini" :required="true" disabled><template slot="append">个</template></el-input>

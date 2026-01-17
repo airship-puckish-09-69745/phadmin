@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="page-container" style="padding: 10px">
     <el-row>
-      <publish primary-key="cfgId" key-id="KingOfPotConfig" :env-empty="false" compare-type="Array" :attr-names="AttrNames" :head-attrs="['cfgId', 'name']" />
+      <publish primary-key="cfgId" key-id="KingOfPotConfig" :env-empty="true" compare-type="Array" :attr-names="AttrNames" :head-attrs="['cfgId', 'name']" />
     </el-row>
     <el-row style="padding-top: 5px">
       <el-col :span="20">

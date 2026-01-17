@@ -476,6 +476,25 @@
           </el-col>
         </el-row>
 
+        <el-row>
+          <el-col :span="11">
+            <el-form-item
+              label="仅新手可见："
+              :required="true"
+              prop="item.HideCarry"
+              :rules="dataRule(true,{type:'n',range:'0'})"
+            >
+              <el-switch
+                v-model="edit.item.IsOnlyShowNewUser"
+                :active-value="1"
+                :inactive-value="0"
+              />
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+
+
         <!--
         <el-row>
           <el-col :span="11">
@@ -662,8 +681,8 @@ function newItem() {
     AutoEnterRoomCount:0,
     IsAllowTowLowTrustSit:0,
     IsTrustScoreEnterRoom:0,
-    IsLowRiskBelieve:0
-
+    IsLowRiskBelieve:0,
+    IsOnlyShowNewUser:0,
   }
 }
 
@@ -689,6 +708,7 @@ export default {
       tableMoneyCfg: [
         { 'label': '0.2', 'value': 0.2 },
         { 'label': '1', 'value': 1 },
+        { 'label': '2.5', 'value': 2.5 },
         { 'label': '5', 'value': 5 },
         { 'label': '10', 'value': 10 },
         { 'label': '20', 'value': 20 },
@@ -730,6 +750,7 @@ export default {
         IsAllowTowLowTrustSit:'低信可信',
         IsLowRiskBelieve:'低危可信',
         IsTrustScoreEnterRoom:'是否信任分配桌',
+        IsOnlyShowNewUser:'仅新手可见',
         // 'RobotConfig.Common.RobotCarryMoneyStart': '机器人最小携带',
         // 'RobotConfig.Common.RobotCarryMoneyEnd': '机器人最大携带',
         // 'RobotConfig.Common.RobotMaxPlayTimesStart': '机器人玩牌次数下限',

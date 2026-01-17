@@ -45,6 +45,18 @@ export const matchUtilsMixin = {
       }
     },
 
+    /**
+     * 检查新版门票道具是否应该禁用
+     * 根据当前比赛配置的应用ID筛选出对应的门票
+     * @param {Number} propsType - 道具类型
+     * @param {Number} propsAppId - 道具的应用ID
+     * @returns {Boolean} - 如果道具应该被禁用则返回 true
+     */
+    checkNewTicketPropDisable(propsType, propsAppId) {
+      return propsType === PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW && 
+             propsAppId !== this.editForm.appInfo[0].appId
+    },
+
     // /**
     //  * 改变奖励配置
     //  */
@@ -252,6 +264,7 @@ export const matchUtilsMixin = {
       if (value === 1) {
         // 免费报名：重置报名费数量为0
         this.editForm.data.signUpNum = 0
+        this.editForm.signExtra.propNum = 0
       } else if (value === 0) {
         // 付费报名：重置每日限制和投注次数
         this.editForm.data.openDaysLimit = 0
@@ -264,9 +277,11 @@ export const matchUtilsMixin = {
       } else if (value === 2) {
         // 纯门票报名：重置报名费数量为0
         this.editForm.data.signUpNum = 0
+        this.editForm.signExtra.propNum = 1
       } else if (value === 3) {
         // 金币或门票报名：保持报名费数量，但需要选择门票
         // 这里不重置报名费，让用户自己设置
+        this.editForm.signExtra.propNum = 1
       }
 
       // 根据报名类型更新奖励类型配置
@@ -288,6 +303,11 @@ export const matchUtilsMixin = {
     handleRebuySignTypeChange(value) {
       // 处理重买报名类型变化的逻辑
       this.editForm.signExtra.reubyExtra.rebuySignType = value
+      if(value === 2 || value === 3) {
+        this.editForm.signExtra.reubyExtra.rebuyPropNum = 1
+      } else {
+        this.editForm.signExtra.reubyExtra.rebuyPropNum = 0
+      }
     },
 
     /**
@@ -431,7 +451,8 @@ export const matchUtilsMixin = {
               propsAttr: this.configs.matchPropsCfgs[i].propsAttr,
               propCost:this.configs.matchPropsCfgs[i].propsCost,
               propsNum: propsNum,
-              propExpireDays: propExpireDays
+              propExpireDays: propExpireDays,
+              propsSceneId: this.configs.matchPropsCfgs[i].propsSceneId,
             }
           }
         }
@@ -444,7 +465,8 @@ export const matchUtilsMixin = {
         propsAttr: '',
         propsNum: 0,
         propExpireDays: -1,
-        propCost:0
+        propCost:0,
+        propsSceneId:0 ,
       }
     },
 

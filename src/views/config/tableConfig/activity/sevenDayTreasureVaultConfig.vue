@@ -223,7 +223,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="11">
-                <el-form-item label="AppId白名单：" prop="item.WhitelistCfg.AppIdList">
+                <el-form-item label="AppId白名单：" prop="item.Whitelist.AppIdList">
                   <el-select v-model="item.Activity.Whitelist.AppIdList" multiple placeholder="请选择" style="width: 400px" @change="onAppIdOptionsChange">
                     <el-option
                       v-for="item in appIdOptions"
@@ -235,8 +235,24 @@
                 </el-form-item>
               </el-col>
               <el-col>
-                <el-form-item label="SiteId白名单：" prop="item.WhitelistCfg.SiteIdList">
+                <el-form-item label="SiteId白名单：" prop="item.Whitelist.SiteIdList">
                   <SiteSelect v-model="item.Activity.Whitelist.SiteIdList" multiple placeholder="请选择" style="width: 400px" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="11">
+                <el-form-item label="A/B测试开关：" prop="item.Activity.Whitelist.AbTest">
+                  <el-switch v-model="item.Activity.Whitelist.AbTest.switch" :active-value="true" :inactive-value="false" active-text="开启" inactive-text="关闭" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="11">
+                <el-form-item label="B分组比例：" prop="item.Activity.Whitelist.AbTest.bPercent">
+                  <el-input v-model.number="item.Activity.Whitelist.AbTest.bPercent" oninput=" if(value < 0 || value === '' || value == null){value = 0;} ">
+                    <template slot="append">%</template>
+                  </el-input>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -571,7 +587,11 @@ export default {
         Activity: {
           Whitelist: {
             AppIdList: [],
-            SiteIdList: []
+            SiteIdList: [],
+            AbTest: {
+              switch: false,
+              bPercent: 0
+            }
           },
           GameIdList: [],
           RuleImgHor: [],
@@ -661,8 +681,8 @@ export default {
         disabled: 'disabled'
       },
       bonusTypeOptions: [
-        { value: 1, label: '金币(投注金)' },
-        { value: 4, label: '金币(返水金)' }
+        { value: 1, label: '金币(投注金)' }
+        // { value: 4, label: '金币(返水金)' }
       ],
       taskTypeOptions: [
         { value: 1, label: '单次' },
@@ -670,12 +690,12 @@ export default {
       ],
       conditionTypeOptions: [
         { value: 1, label: '登录' },
-        { value: 2, label: '下注值' },
-        { value: 3, label: '下注次数' }
+        { value: 2, label: '下注值' }
+        // { value: 3, label: '下注次数' }
       ],
       rewardTypeOptions: [
         { value: 1, label: '金币(投注金)' },
-        { value: 4, label: '金币(返水金)' },
+        // { value: 4, label: '金币(返水金)' },
         { value: 2, label: '星星' },
         { value: 3, label: '道具' },
         { value: 5, label: '富裕卡' }
@@ -825,7 +845,13 @@ export default {
             $this.item.Activity.EndTime *= 1000
             $this.item.ActivityExtend.InitBonusPool /= 1000
             $this.item.ActivityExtend.BonusPoolMax /= 1000
-            this.$refs.compare.SetOldVal(old)
+            if ($this.item.Activity.Whitelist.AbTest === undefined) {
+              $this.$set($this.item.Activity.Whitelist, 'AbTest', {
+                switch: false,
+                bPercent: 0
+              })
+            }
+            $this.$refs.compare.SetOldVal(old)
           }
           this.getGameAll()
         }
@@ -880,7 +906,7 @@ export default {
         tableData.Activity.GameIdList.push(tableData.GameIcon[key].Id)
       }
       this.$refs.compare.SetNewVal(tableData)
-      this.$refs.compare.Compare(function(isEdit) {
+      this.$refs.compare.Compare((isEdit) => {
         if (!isEdit) {
           this.$message.error('没有任何修改，不需要提交')
           return
@@ -888,27 +914,25 @@ export default {
 
         this.$emit('saveData')
         this.lock = false
+        this.form.Data = JSON.stringify(tableData)
+        request({
+          url: 'customizeconfig/update',
+          method: 'post',
+          data: this.form
+        }).then(response => {
+          if (response.RetCode === 0) {
+            const showMsg = '保存成功'
+            this.$message.success(showMsg)
+            // this.getData()
+          } else {
+            const errMsg = '保存成功失败！'
+            this.$message.error(errMsg + response.Data)
+          }
+        })
       })
-      this.form.Data = JSON.stringify(tableData)
-      request({
-        url: 'customizeconfig/update',
-        method: 'post',
-        data: this.form
-      }).then(response => {
-        if (response.RetCode === 0) {
-          const showMsg = '保存成功'
-          Message.success(showMsg)
-          // this.getData()
-          return
-        } else {
-          const errMsg = '保存成功失败！'
-          Message.error(errMsg + response.Data)
-          return
-        }
-      })
-      setTimeout(() => {
-        this.IsUpdate = false
-      }, 1000)
+      // setTimeout(() => {
+      //   this.IsUpdate = false
+      // }, 1000)
     },
     onAppIdOptionsChange() {
       console.log('onAppIdOptionsChange', this.item.Activity.Whitelist.AppIdList)

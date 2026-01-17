@@ -43,5 +43,6 @@ export const SubKeyMap = {
   200: 'atlantistreasure_slots_base',
   202: 'fortunateebisu_slots_base',
   220: 'goldendragon_slots_base',
+  232: 'mafiawars_slots_base',
   100180: 'fishingmaster_slots_base'
 }

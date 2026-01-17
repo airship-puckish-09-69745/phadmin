@@ -130,6 +130,19 @@
             </el-form-item>
           </el-col>
         </el-row>
+
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="默认买入：" :required="true" prop="item.TableExtra.DefaultBuyIn" :rules="dataRule(true,{type:'n',range:'0'})">
+              <el-input
+                v-model.number="edit.item.TableExtra.DefaultBuyIn"
+                placeholder="请输入"
+                type="number"
+              />
+            </el-form-item>
+          </el-col>
+        </el-row>
+
         <el-row>
           <el-col :span="11">
             <el-form-item label="买入间隔" :required="true" prop="item.IntervalBuyIn" :rules="dataRule(true,{type:'n',range:'1'})">
@@ -217,8 +230,12 @@
               </el-radio-group>
             </el-form-item>
           </el-col>
+          <el-col :span="11">
+            <el-form-item label="投注局数：" :required="true" prop="item.TableExtra.BetRounds" :rules="dataRule(true,{type:'n',range:'0'})">
+              <el-input v-model.number="edit.item.TableExtra.BetRounds" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
         </el-row>
-
         <el-row>
           <el-col :span="11">
             <el-form-item label="等级：" :required="true" prop="item.Level" :rules="dataRule(true,{type:'n',range:'0'})">
@@ -487,7 +504,14 @@ function newItem() {
     InteractDayFreeTimes: 0,
     InteractItemPrice: 0,
     DelayItemPrice: '',
-    ForceLookCardPrice: ''
+    ForceLookCardPrice: '',
+    TableExtra:NewTableExtra(),
+  }
+}
+function NewTableExtra(){
+  return{
+    DefaultBuyIn:0,
+    BetRounds:0,
   }
 }
 
@@ -504,6 +528,7 @@ export default {
       env: 'test',
       libMoney: new MoneyShow(['CarryLower', 'CarryUpper', 'SmallBlind', 'MinBuyIn', 'MaxBuyIn', 'DelayOpTimeCostMoney', 'ShowPublicCardCostMoney']),
       libMoneyRobot: new MoneyShow(['RobotMoneyMin', 'RobotMoneyMax']),
+      libTableExtra: new MoneyShow(['DefaultBuyIn']),
 
       edit: {
         visible: false,
@@ -513,7 +538,8 @@ export default {
         OutsRatio: NewOutsRatio(),
         FeeLimit: NewFeeLimit(),
         DelayItemPrice: '',
-        ForceLookCardPrice: ''
+        ForceLookCardPrice: '',
+        //TableExtra:NewTableExtra(),
       },
 
       AttrNames: {
@@ -549,14 +575,18 @@ export default {
         InteractDayFreeTimes: '互动道具每日免费次数',
         InteractItemPrice: '互动道具每次价格消耗',
         DelayItemPrice: '延时道具消耗',
-        ForceLookCardPrice: '强制看牌价格'
+        ForceLookCardPrice: '强制看牌价格',
+        TableExtra:{
+          DefaultBuyIn:'默认买入',
+           BetRounds:'投注局数' ,
+        
+        },
       }
     }
   },
   created() {
     this.env = store.getters.env || this.env
     this.getList()
-    console.log(1)
   },
   methods: {
     formatNumber(n) {
@@ -619,7 +649,7 @@ export default {
             objs[o].PrefixChip /= 100 // 100倍
             objs[o].RabbitPrice /= 1000
             objs[o].InteractItemPrice /= 1000
-            console.log(objs[o])
+            //console.log("getList ",objs[o])
           }
 
           this.clientDB = new ClientTableData(this.libMoney.TransForShow(objs), 10, filterMap, 'ID', -1)
@@ -698,15 +728,22 @@ export default {
       if (ID) {
         const _data = this.clientDB.GetDataByID(ID)
         if (_data) {
-          // console.log('initFormData 1 _data:', _data)
+         // console.log('initFormData 1 _data:', _data)
           // console.log('initFormData 1 this.edit.item:', this.edit.item)
           Object.assign(this.edit.item, _data)
-          // console.log('initFormData 2 _data:', _data)
+         // console.log('initFormData 2 _data:', _data)
           // console.log('initFormData 2 this.edit.item:', this.edit.item)
           try {
             this.edit.TimeConfig = this.libMoneyRobot.TransForShow(JSON.parse(_data.TimeConfig))
             this.edit.OutsRatio = JSON.parse(_data.OutsRatio)
             this.edit.FeeLimit = JSON.parse(_data.FeeLimitStr)
+            if(_data.TableExtra === "null"   || _data.TableExtra===undefined){
+              this.edit.item.TableExtra = NewTableExtra()
+              //console.log("TableExtra 33333 ",this.edit.item.TableExtra)
+            }else{
+                this.edit.item.TableExtra = this.libTableExtra.TransForShow(JSON.parse(_data.TableExtra))
+             // console.log("----this.edit.TableExtra 44444 ",this.edit.item.TableExtra)
+            }
 
             // this.edit.DelayItemPrice = _data.DelayItemPrice
             // this.edit.ForceLookCardPrice = _data.ForceLookCardPrice
@@ -765,6 +802,7 @@ export default {
             this.edit.FeeLimit = NewFeeLimit()
             this.edit.DelayItemPrice = ''
             this.edit.ForceLookCardPrice = ''
+            //this.edit.TableExtra = NewTableExtra()
           }
           if (bEdit) {
             // 设置修改之前数据
@@ -825,6 +863,14 @@ export default {
         Message.error('【最低买入】必须小于等于【最大买入】，请检查数值正确性！')
         return false
       }
+      if(this.edit.item.TableExtra.DefaultBuyIn <=0 || this.edit.item.TableExtra.DefaultBuyIn === undefined || this.edit.item.TableExtra.DefaultBuyIn === null){
+        Message.error('【默认买入是必填值,且必须大于0】')
+        return false
+      }
+      if(this.edit.item.TableExtra.DefaultBuyIn <this.edit.item.MinBuyIn || this.edit.item.TableExtra.DefaultBuyIn >  this.edit.item.MaxBuyIn){
+        Message.error('【默认买入】必须大于等于【最小买入】 且小于等于【最大买入】 ，请检查数值正确性！')
+        return false
+      }
       // TODO 完善
       return true
     },
@@ -834,7 +880,7 @@ export default {
       this.edit.item.TimeConfig = JSON.stringify(this.edit.TimeConfig)
       this.edit.item.OutsRatio = JSON.stringify(this.edit.OutsRatio)
       this.edit.item.FeeLimit = JSON.stringify(this.edit.FeeLimit)
-
+      this.edit.item.TableExtra = JSON.stringify(this.libTableExtra.TransForStore(this.edit.item.TableExtra))
       var tmpP = this.edit.DelayItemPrice.split(',')
       this.edit.item.DelayItemPrice = ''
       var isFirst = true

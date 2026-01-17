@@ -9,7 +9,7 @@
       </el-form-item>
       <el-form-item label="场次" required>
         <el-select v-model="form.session" placeholder="请选择场次" :options="sessionOptions" @focus="handleSessionFocus">
-          <el-option v-for="item in sessionOptions" :key="item" :label="item" :value="item" />
+          <el-option v-for="item in sessionOptions" :key="item" :label="item / 1000" :value="item" />
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -39,7 +39,11 @@ export default {
     selectedRobots: {
       type: Array,
       default: () => []
-    }
+    },
+    appID: {
+      type: Number,
+      default: () => 0
+    },
   },
   data() {
     return {
@@ -119,7 +123,8 @@ export default {
           Path: '/usercommonrobot/issue',
           uids,
           gid: this.form.game,
-          session: this.form.session
+          session: this.form.session,
+          appId: this.appID
         }
       }).then(response => {
         if (response.RetCode === 0) {

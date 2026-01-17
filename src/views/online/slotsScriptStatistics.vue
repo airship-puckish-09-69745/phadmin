@@ -1907,7 +1907,8 @@ export default {
           90: 'moneycoming',
           92: 'fortuneacego',
           168: 'pharaohtreasure',
-          198: 'fortuneblessing'
+          198: 'fortuneblessing',
+          216: 'phoenix'
         }
         let key = this.gameScene[gid%100000] + '_slots_base'
         for (const k in realKey) {
@@ -2116,7 +2117,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           for (let i = 0; i < response.Data.length; i++) {
-            if (response.Data[i].Gid < 50 || response.Data[i].Gid > 100 && response.Data[i].Gid < 150 || response.Data[i].Gid > 499) {
+            if (response.Data[i].Gid < 50 || response.Data[i].Gid > 100 && response.Data[i].Gid < 150 || (response.Data[i].Gid > 499 && response.Data[i].Gid != 1236)) {
               continue
             }
 

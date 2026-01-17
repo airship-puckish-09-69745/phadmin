@@ -53,7 +53,7 @@
           <template slot-scope="scope">
             <!-- 场次如果是-1则显示为全部 -->
             <span v-if="column.prop === 'table_money'">
-              {{ scope.row[column.prop] === -1 ? '全部' : scope.row[column.prop] }}
+              {{ scope.row[column.prop] === -1 ? '全部' : scope.row[column.prop] /1000}}
             </span>
             <!-- 系统总净胜分需要除以1000 -->
             <span v-else-if="column.prop === 'system_money'">
@@ -234,7 +234,9 @@ export default {
         data: {}
       }).then(response => {
         if (response.RetCode === 0) {
-          this.gameOptions = response.Data.map(item => ({
+          // 过滤出游戏id 128, 134
+          const includeGids = [128, 134]
+          this.gameOptions = response.Data.filter(item => includeGids.includes(item.Gid)).map(item => ({
             value: item.Gid,
             label: item.Scene
           }))

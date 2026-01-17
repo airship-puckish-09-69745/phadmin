@@ -285,11 +285,29 @@
         </el-table-column>
       </template>
 
-      <el-table-column
-        prop="LogID"
-        label="LogID"
-        min-width="100"
-      />
+      <template v-if="gid!==501">
+        <el-table-column
+            prop="LogID"
+            label="LogID"
+            width="100"
+        >
+          <template slot-scope="scope">
+            {{ scope.row.LogID }}
+          </template>
+        </el-table-column>
+      </template>
+
+      <template v-if="gid===501">
+        <el-table-column
+            prop="Ext"
+            label="Ext"
+            width="350"
+        >
+          <template slot-scope="scope">
+            {{ explainExt(gid, scope.row.ExtendAttr) }}
+          </template>
+        </el-table-column>
+      </template>
     </el-table>
     <el-row type="flex" justify="end">
       <el-col :span="12">
@@ -769,6 +787,154 @@
       <el-descriptions title="扩展信息">
         <el-descriptions-item label="桌子ID">{{ blackjackDetail.tid }}</el-descriptions-item>
         <el-descriptions-item label="Server日志ID">{{ blackjackDetail.logId }}</el-descriptions-item>
+      </el-descriptions>
+    </el-dialog>
+
+    <el-dialog title="Blackjackmh牌局详情" :visible.sync="blackjackmhDetailVisible" width="1200px">
+      <el-descriptions class="margin-top" title="" :column="3" border>
+        <el-descriptions-item>
+          <template slot="label">
+            底注：
+          </template>
+          {{ blackjackmhDetail.minBet / 1000 }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            庄家点数：
+          </template>
+          {{ blackjackmhDetail.dealerLog.points }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            牌型：
+          </template>
+          {{
+            blackjackmhDetail.dealerLog.cardType === 1 ? "点牌" : (blackjackmhDetail.dealerLog.cardType === 2 ? "BlackJack" : "爆牌")
+          }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            庄家手牌：
+          </template>
+          <div v-for="card in blackjackmhDetail.dealerLog.cards" class="block">
+            <el-image
+              style="width: 37px; height: 50px"
+              :src="getCardUrl(card)"
+            />
+          </div>
+        </el-descriptions-item>
+      </el-descriptions>
+
+      <el-table :data="[blackjackmhDetail.playerLog]" border>
+        <el-table-column prop="uid" label="UID" />
+        <el-table-column prop="totalBet" label="Lucky Bet金额">
+          <template slot-scope="scope">
+            <div v-for="(item,index) in scope.row.cardGroupLog" class="blackJackmhBox">
+              {{ item.luckyBet / 1000 }}
+              <hr v-if="index !== scope.row.cardGroupLog.length - 1" class="blackJackmhHr"/>
+            </div>
+
+          </template>
+        </el-table-column>
+        <el-table-column prop="totalBet" label="投注金额">
+          <template slot-scope="scope">
+            <div v-for="(item,index) in scope.row.cardGroupLog" class="blackJackmhBox">
+              {{ item.bet / 1000 }}
+              <br>
+              <span v-if="item.splitCards && item.splitCards.length > 0 && item.splitBet != null">
+              {{ item.splitBet / 1000 }}
+              </span>
+              <hr v-if="index !== scope.row.cardGroupLog.length - 1" class="blackJackmhHr"/>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="insurance" label="投保金额">
+          <template slot-scope="scope">
+            <div v-for="(item,index) in scope.row.cardGroupLog" class="blackJackmhBox">
+              {{ item.insurance / 1000 }}
+              <hr v-if="index !== scope.row.cardGroupLog.length - 1" class="blackJackmhHr"/>
+            </div>
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="cards" label="手牌" width="300px">
+          <template slot-scope="scope">
+            <div v-for="(item,index) in scope.row.cardGroupLog" class="blackJackmhBlock">
+              <span v-if="item.cards.length > 0">
+                {{ '手牌' + (item.id) + ': ' }}
+              </span>
+              <div v-for="(card) in item.cards" class="block">
+                <el-image
+                  style="width: 37px; height: 50px"
+                  :src="getCardUrl(card)"
+                />
+              </div>
+              <br>
+              <span v-if="item.splitCards && item.splitCards.length > 0">
+                {{ '分牌手牌' + (item.id) + ': ' }}
+              </span>
+              <div v-for="(card) in item.splitCards" class="block">
+                <el-image
+                  style="width: 37px; height: 50px"
+                  :src="getCardUrl(card)"
+                />
+              </div>
+              <div v-if="!item.splitCards || item.splitCards.length <= 0" class="block" style="height: 39px">
+              </div>
+              <hr v-if="index !== scope.row.cardGroupLog.length - 1" class="blackJackmhHr"/>
+            </div>
+          </template>
+        </el-table-column>
+
+        <el-table-column label="是否爆牌" width="200px">
+          <template slot-scope="scope">
+            <div v-for="(item,index) in scope.row.cardGroupLog" class="blackJackmhBox">
+              <span v-if="item.cards.length > 0">
+                {{'手牌' + (item.id) + ': ' + (item.cardType == 1 ? "点牌" : (item.cardType == 2 ? "BlackJack" : "爆牌"))}}
+              </span>
+              <br>
+              <span v-if="item.splitCards && item.splitCards.length > 0">
+                {{'分牌手牌' + (item.id) + ': ' + (item.splitCardType == 1 ? "点牌" : (item.splitCardType == 2 ? "BlackJack" : "爆牌"))}}
+              </span>
+              <hr v-if="index !== scope.row.cardGroupLog.length - 1" class="blackJackmhHr"/>
+            </div>
+
+          </template>
+        </el-table-column>
+        <el-table-column label="Lucky Bet输赢">
+          <template slot-scope="scope">
+            <div v-for="(item,index) in scope.row.cardGroupLog" class="blackJackmhBox">
+              {{ (item.luckyWin - item.luckyBet) / 1000 }}
+              <hr v-if="index !== scope.row.cardGroupLog.length - 1" class="blackJackmhHr"/>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="比牌输赢">
+          <template slot-scope="scope">
+            <div v-for="(item,index) in scope.row.cardGroupLog" class="blackJackmhBox">
+              {{ item.normalBetWin / 1000 }}
+              <br>
+              <span v-if="item.splitCards && item.splitCards.length > 0 && item.splitNormalBetWin != null">
+              {{ item.splitNormalBetWin / 1000 }}
+              </span>
+              <hr v-if="index !== scope.row.cardGroupLog.length - 1" class="blackJackmhHr"/>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="moneyBet" label="保险中奖金额">
+          <template slot-scope="scope">
+            <div v-for="(item,index) in scope.row.cardGroupLog"  class="blackJackmhBox">
+              {{ item.insurancePay / 1000 }}
+              <hr v-if="index !== scope.row.cardGroupLog.length - 1" class="blackJackmhHr"/>
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+
+
+      <el-descriptions title="扩展信息">
+        <el-descriptions-item label="桌子ID">{{ blackjackmhDetail.tid }}</el-descriptions-item>
+        <el-descriptions-item label="Server日志ID">{{ blackjackmhDetail.logId }}</el-descriptions-item>
       </el-descriptions>
     </el-dialog>
 
@@ -2223,6 +2389,135 @@
       </el-table>
     </el-dialog>
 
+    <el-dialog v-if="goldmasterLog.visible" title="黄金矿工 详情" :visible.sync="goldmasterLog.visible" width="1400px">
+      <el-descriptions class="margin-top" title="" :column="5" border>
+        <el-descriptions-item>
+          <template slot="label">
+            UID：
+          </template>
+          {{ goldmasterLog.detail.uid }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            总输赢：
+          </template>
+          <span :style="WinOrLoseColor(goldmasterLog.detail.TotalAddMoney )"> {{
+              formatNumber((goldmasterLog.detail.moneyReturn -goldmasterLog.detail.moneyBet) / 1000)
+            }}</span>
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            结算后金额：
+          </template>
+          {{ formatNumber(goldmasterLog.detail.moneyCur / 1000) }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            记录开始时间：
+          </template>
+          {{ formatTime(goldmasterLog.detail.startTime) }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            记录结束时间：
+          </template>
+          {{ formatTime(goldmasterLog.detail.finishTime) }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            付费敲击次数：
+          </template>
+          {{ goldmasterLog.detail.feeTapTimes }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            总下注金额：
+          </template>
+          {{ goldmasterLog.detail.moneyBet / 1000 }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            台费：
+          </template>
+          {{ goldmasterLog.detail.moneyFee / 1000 }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            累计赢钱：
+          </template>
+          {{ formatNumber(goldmasterLog.detail.moneyReturn / 1000) }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            JP贡献：
+          </template>
+          {{ formatNumber(goldmasterLog.detail.jpContribute / 1000) }}
+        </el-descriptions-item>
+      </el-descriptions>
+
+      <el-table :data="goldmasterLog.detail.kLogs" border title="中奖记录" :row-style="changColorGoldMaster">
+        <el-table-column prop="typ" label="奖励类型">
+          <template slot-scope="scope">{{ GoldMasterTypeOptions[parseKnockExt(scope.row.knockExt).typ] }}</template> //todo:
+        </el-table-column>
+        <el-table-column prop="cards" label="敲击时间" width="110px">
+          <template slot-scope="scope"> {{ formatHMSTime(scope.row.logTime / 1000) }}.{{
+              scope.row.logTime % 1000
+            }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="seat" label="消耗金币">
+          <template slot-scope="scope">{{ scope.row.moneyBet / 1000 }}</template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="下注金额">
+          <template slot-scope="scope">{{ scope.row.moneyCalc / 1000 }}</template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="返奖">
+          <template slot-scope="scope">{{ scope.row.moneyReturn / 1000 }}</template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="记录后金额" width="150px">
+          <template slot-scope="scope">{{ formatNumber(scope.row.moneyCur / 1000) }}</template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="jpLevel">
+          <template slot-scope="scope">{{ GoldMasterJackpotLevel[scope.row.jpLevel] }}</template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="jpTyp">
+          <template slot-scope="scope">{{ scope.row.jpType }}</template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="金币倍数">
+          <template slot-scope="scope">{{ parseKnockExt(scope.row.knockExt).moneyOdds / 1000 }}</template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="转盘倍数">
+          <template slot-scope="scope">{{ parseKnockExt(scope.row.knockExt).plateOdds / 1000 }}</template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="转轴倍数">
+          <template slot-scope="scope">
+            {{ showPigData(scope.row.typ, scope.row.moneyBet) ? (parseKnockExt(scope.row.knockExt).spinOdds / 1000) : 0 }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="F次数收益">
+          <template slot-scope="scope">{{
+              showPigData(scope.row.typ, scope.row.moneyBet) ? parseKnockExt(scope.row.knockExt).timesIn : 0
+            }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="N倍数收益">
+          <template slot-scope="scope">{{
+              showPigData(scope.row.typ, scope.row.moneyBet) ? (parseKnockExt(scope.row.knockExt).oddsIn / 1000) : 0
+            }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="剩余免费次数">
+          <template slot-scope="scope">{{
+              showPigData(scope.row.typ, scope.row.moneyBet) ? parseKnockExt(scope.row.knockExt).timesFree : 0
+            }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="Progress">
+          <template slot-scope="scope">{{ parseKnockExt(scope.row.knockExt).progress }}</template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+
     <el-dialog v-if="piggyLog.visible" title="piggy详情" :visible.sync="piggyLog.visible" width="1400px">
       <el-descriptions class="margin-top" title="" :column="5" border>
         <el-descriptions-item>
@@ -3211,6 +3506,230 @@
       </el-table>
     </el-dialog>
 
+    <el-dialog title="Limbo详情" :visible.sync="LimboDetailVisible" width="1200px">
+      <el-table ref="filterTable" :data="LimboDetail.players" border>
+        <el-table-column prop="uid" label="uid" width="128px">
+          <template slot-scope="scope">{{ scope.row.uid }}</template>
+        </el-table-column>
+        <el-table-column prop="nick" label="昵称"  width="150px">
+          <template slot-scope="scope">{{ scope.row.nick }}</template>
+        </el-table-column>
+        <el-table-column prop="bet" label="下注金额"  width="150px">
+          <template slot-scope="scope">{{ scope.row.betMoney }}</template>
+        </el-table-column>
+        <el-table-column prop="obMul" label="下注赔率"  width="150px">
+          <template slot-scope="scope">{{ scope.row.obMultiple/100 }}</template>
+        </el-table-column>
+        <el-table-column prop="payoutMultiple" label="爆炸点"  width="150px">
+          <template slot-scope="scope">{{ scope.row.payoutMultiple/100 }}</template>
+        </el-table-column>
+        <el-table-column prop="moneyChange" label="输赢"  width="150px">
+          <template slot-scope="scope">{{ scope.row.moneyChange }}</template>
+        </el-table-column>
+        <el-table-column prop="bonusMultiple" label="中bonus倍数"  width="150px">
+          <template slot-scope="scope">{{ scope.row.bonusMultiple }}</template>
+        </el-table-column>
+        <el-table-column prop="bonusMoney" label="bonus奖励"  width="150px">
+          <template slot-scope="scope">{{ scope.row.bonusMoney }}</template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+
+     <el-dialog title="Pirate Scratch详情" :visible.sync="PirateScratchVisible" width="1200px">
+      <el-table ref="filterTable" :data="PirateScratchDetail.players" border>
+        <el-table-column prop="uid" label="uid" width="128px">
+          <template slot-scope="scope">{{ scope.row.uid }}</template>
+        </el-table-column>
+        <el-table-column prop="nick" label="下注"  width="150px">
+          <template slot-scope="scope">{{ scope.row.betMoney/1000 }}</template>
+        </el-table-column>
+        <el-table-column prop="moneyChange" label="输赢"  width="150px">
+          <template slot-scope="scope">{{ scope.row.moneyChange /1000}}</template>
+        </el-table-column>
+        <el-table-column prop="bonusMultiple" label="jackPot"  width="150px">
+          <template slot-scope="scope">{{ scope.row.JackpotNum /1000}}</template>
+        </el-table-column>
+      </el-table>
+
+
+
+
+
+      <div class="grid-container">
+        <div class="grid-outer-frame">
+            <div class="number-container">
+              <span  v-for="(item, index) in PirateScratchDetail.openNumber" class="grid-cell">
+                <span v-if="item.isLucky===true" style="color: red;"> {{ item.number }}</span>
+                <span v-if="item.isLucky===false" style="color: black;"> {{ item.number }}</span>
+              </span>
+          </div>
+         <p></p>
+         <p></p>
+         <p></p>
+          <div class="grid-wrapper">
+            <div
+              v-for="(item, index) in PirateScratchDetail.blockItems"
+              :key="index"
+              class="grid-cell"
+            >
+              <div class="cell-top" v-if="item.blockType !== 2">
+
+                 <span v-if="item.isAward===true" style="color: red;">
+                  <span >{{ item.number }}</span>
+                  <span v-if="item.blockType===1">X</span>
+                </span>
+
+                   <span v-if="item.isAward===false" style="color: black;">
+                  <span >{{ item.number }}</span>
+                  <span v-if="item.blockType===1">X</span>
+                </span>
+
+
+
+              </div>
+              <div class="cell-divider" v-if="item.blockType !== 2"></div>
+              <div class="cell-bottom" v-if="item.blockType !== 2">
+                  <span v-if="item.isAward===true" style="color: red;">
+                       {{ item.bonus/1000 }}
+                </span>
+                   <span v-if="item.isAward===false" style="color: black;">
+                    {{ item.bonus/1000 }}
+                </span>
+              </div>
+
+            <div v-if="item.blockType === 2" class="cell-top">
+                <span style="color: red;"> JackPot</span>
+            </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+
+
+    </el-dialog>
+
+    <el-dialog title="ChickenGo详情" :visible.sync="ChickenGoDetailVisible" width="1200px">
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
+        <span style="float:left;">{{ '困难级别:' + getChickenGoLevel(ChickenGoDetail.level) }}</span>
+      </div>
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
+        <span style="float:left;">{{ '下注金额:' + ChickenGoDetail.betMoney }}</span>
+      </div>
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
+        <span style="float:left;">{{ '到达倍率:' + ChickenGoDetail.arriveIn/100 }}</span>
+      </div>
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
+        <span style="float:left;">{{ '获得倍率:' + ChickenGoDetail.multipleResult/100 }}</span>
+      </div>
+    </el-dialog>
+
+    <el-dialog title="MannyPunch详情" :visible.sync="MannyPunchDetailVisible" width="1200px">
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
+        <span style="float:left;">{{ '困难级别:' + getMannyPunchLevel(MannyPunchDetail.level) }}</span>
+      </div>
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
+        <span style="float:left;">{{ '下注金额:' + MannyPunchDetail.betMoney }}</span>
+      </div>
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
+        <span style="float:left;">{{ '到达倍率:' + MannyPunchDetail.arriveIn/100 }}</span>
+      </div>
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
+        <span style="float:left;">{{ '获得倍率:' + MannyPunchDetail.multipleResult/100 }}</span>
+      </div>
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
+        <span style="float:left;">{{ '获得Jackpot类型:' + MannyPunchDetail.jpType }}</span>
+      </div>
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
+        <span style="float:left;">{{ '获得Jackpot数量:' + MannyPunchDetail.jpNum }}</span>
+      </div>
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
+        <span style="float:left;">{{ '本局Jackpot贡献:' + MannyPunchDetail.jpContribute }}</span>
+      </div>
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
+        <span style="float:left;">{{ '总Jackpot贡献:' + MannyPunchDetail.jpTotalContribute }}</span>
+      </div>
+    </el-dialog>
+
+    <el-dialog title="PirateTap详情" :visible.sync="PirateTapDetailVisible" width="1200px">
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
+        <span style="float:left;">{{ '下注金额：' + PirateTapDetail.betMoney }}</span>
+      </div>
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(255, 0, 0); ">
+        <span style="float:left;">{{ '获得倍率：' + PirateTapDetail.totalOdds/100 }}</span>
+      </div>
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(0, 0, 0); ">
+        <span style="float:left;">{{ '获得金币：' + PirateTapDetail.moneyChange }}</span>
+      </div>
+      <!--
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:rgb(255, 0, 0); ">
+        <span style="float:left;">{{ '获得Jackpot：' + PirateTapDetail.jpNum/100 }}</span>
+      </div>
+      -->
+      <el-table ref="filterTable" :data="PirateTapDetail.roundDetail" border>
+        <el-table-column prop="roundMode" label="场景" width="128px">
+          <template slot-scope="scope">{{ getPirateTapScene(scope.row.roundMode) }}</template>
+        </el-table-column>
+        <el-table-column prop="odds" label="获得返奖倍率" width="128px">
+          <template slot-scope="scope">
+            <span :style="{color:'red'}">
+              {{ scope.row.winOdds > 0 ? scope.row.winOdds/100 : '' }}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="freeGame" label="奖励特殊游戏" width="128px">
+          <template slot-scope="scope">{{ getPirateTapScene(scope.row.rewardPlayMode) }}</template>
+        </el-table-column>
+        <el-table-column prop="rewardCount" label="奖励/重置次数" width="128px">
+          <template slot-scope="scope">
+            <span v-if="scope.row.rewardPlayMode == 1">
+              {{ scope.row.incrFreeNormalCount }}
+            </span>
+            <span v-if="scope.row.rewardPlayMode == 2">
+              {{ scope.row.incrFreeAttackCount }}
+            </span>
+            <span v-if="scope.row.rewardPlayMode == 3 || (scope.row.roundMode == 3 && scope.row.incrFreeSpinCount > 0)">
+              {{ scope.row.incrFreeSpinCount }}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="leftCount" label="剩余次数" width="128px">
+          <template slot-scope="scope">
+            <span v-if="scope.row.roundMode == 1">
+              {{ scope.row.normalCount }}
+            </span>
+            <span v-if="scope.row.roundMode == 2">
+              {{ scope.row.freeAttackCount }}
+            </span>
+            <span v-if="scope.row.roundMode == 3">
+              {{ scope.row.freeSpinCount }}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="jackpot" label="jackpot" width="128px">
+          <template slot-scope="scope">
+            <span :style="{color:'red'}">
+              {{ scope.row.jackpotOdds > 0 ? scope.row.jackpotOdds/100 : '' }}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="cellData" label="3x5 cell" width="390px" align="left">
+          <template slot-scope="scope" v-if="getPirateTapCellShow(scope.row)">
+            <div class="grid-container-piratetap">
+              <div 
+                v-for="(o, n) in scope.row.cellData" 
+                :key="n" 
+                class="grid-item"
+              >
+                {{ o > 0 ? o/100 : '' }}
+              </div>
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+
     <el-dialog title="TeenPatti详情" :visible.sync="ZJHDetailVisible" width="1600px">
       <div style=" font-size:14px; line-height: 36px; height: 50px; color:red; ">
         <span style="float:left;">{{ '底分:' + ZJHDetail.antes/1000 }}</span>
@@ -3642,6 +4161,9 @@ export default {
       blackjackDetail: {},
       blackjackDetailVisible: false,
 
+      blackjackmhDetail: {"dealerLog":{"cards":[],"totalWin":0,"points":0,"cardType":0},"playerLog":{"cardGroupLog":[{"id":0,"cards":[],"splitCards":[],"bet":0,"luckyBet":0,"luckyWin":0,"insurance":0,"insurancePay":0,"totalWin":0,"normalBetWin":0,"cardType":0,"splitCardType":0}],"uid":0,"totalBet":0,"moneyChange":0,"moneyTaxed":0,"moneyCurrent":0,"moneyBefore":0,"walletType":0,"moneyTrueWin":0},"minBet":0,"tid":0,"logId":0},
+      blackjackmhDetailVisible: false,
+
       dominoDetail: {},
       dominoDetailVisible: false,
 
@@ -3679,6 +4201,21 @@ export default {
       miniSaBongGameResult: [],
       miniSaBongGameOptions: [],
 
+      LimboDetail:{},
+      LimboDetailVisible:false,
+
+      PirateScratchDetail:{},
+      PirateScratchVisible:false,
+
+      ChickenGoDetail:{},
+      ChickenGoDetailVisible:false,
+
+      MannyPunchDetail:{},
+      MannyPunchDetailVisible:false,
+
+      PirateTapDetail:{},
+      PirateTapDetailVisible:false,
+
       pusoyDetail: {},
       pusoyDetailVisible: false,
       pusoyCardTypes: {
@@ -3713,6 +4250,10 @@ export default {
         visible: false,
         detail: {}
       },
+      goldmasterLog: {
+        visible: false,
+        detail: {}
+      },
       pusoySwapDetail: {},
       pusoySwapDetailVisible: false,
       pusoySwapShootOneShow: false,
@@ -3733,7 +4274,23 @@ export default {
         11: 'JP发奖',
         20: '购买free game'
       },
+      GoldMasterTypeOptions: {
+        0: 'None',
+        1: '金币',
+        2: '幸运转盘',
+        3: '转轴',
+        4: 'F次数',
+        5: 'N倍数',
+        10: 'JP',
+        20: '购买free game'
+      },
       piggyJackpotLevle: {
+        0: 'None',
+        1: 'Grand',
+        2: 'Major',
+        3: 'Minor'
+      },
+      GoldMasterJackpotLevel: {
         0: 'None',
         1: 'Grand',
         2: 'Major',
@@ -3814,6 +4371,13 @@ export default {
     this.gid = this.$route.meta.gid
   },
   methods: {
+    parseKnockExt(jsonStr) {
+      try {
+        return JSON.parse(jsonStr || '{}');
+      } catch (e) {
+        return {};
+      }
+    },
     pusoyShowGroupExtra(row) {
       if (row.groupBottom.extraScore > 0 || row.groupMiddle.extraScore > 0 || row.groupTop.extraScore > 0) {
         return '(牌型加分)'
@@ -4138,14 +4702,14 @@ export default {
     clickData(row, column, event) {
       if (column.label !== 'Uid') {
         this.setRowUid(row.Uid)
-        this.getDetail(row.LogID, row.FinishTime)
+        this.getDetail(row.LogID, row.Uid, row.FinishTime)
       }
     },
     setRowUid(uid) {
       this.sweeperRowUid = uid
       this.clickRowUid = uid
     },
-    getDetail(id, dt) {
+    getDetail(id, uid, dt) {
       const $this = this
       request({
         url: '/dataProxy/info',
@@ -4154,7 +4718,8 @@ export default {
           Env: this.env,
           Path: '/log/detail',
           ID: id,
-          DateTime: dt
+          DateTime: dt,
+          Uid: uid,
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -4186,6 +4751,8 @@ export default {
             $this.showBlackjackGame(obj)
           // } else if (gid === 21) {
           //   $this.showPusoyGame(obj)
+          } else if (gid == 137) {
+            $this.showBlackjackmhGame(obj)
           } else if (gid === 100) {
             $this.showTowerGame(obj)
           } else if (gid === 101) {
@@ -4196,6 +4763,8 @@ export default {
             $this.showMiniAbGame(obj)
           } else if (gid === 102) {
             $this.showHiloGame(obj)
+          } else if (gid === 140) {
+            $this.showHiloPlusGame(obj)
           } else if (gid === 103) {
             $this.showWindropGame(obj)
           } else if (gid === 119) {
@@ -4206,6 +4775,8 @@ export default {
             $this.showSolitaire(obj)
           } else if (gid === 106) {
             $this.showPiggy(obj)
+          } else if (gid === 500) {
+            $this.showGoldMaster(obj, uid)
           } else if ($this.LogComponentGameIds.indexOf(gid) !== -1) {
             $this.showGameLogComponent(obj, gid)
           } else if (gid === 46) {
@@ -4233,6 +4804,16 @@ export default {
             $this.showTrucoGame(obj)
           } else if (gid === 12 || gid === 133){
             $this.showBuracoGame(obj)
+          } else if (gid === 136){
+            $this.showLimboGame(obj)
+          } else if (gid === 138){
+            $this.showChickenGoGame(obj)
+          } else if (gid === 139){
+            $this.showMannyPunchGame(obj)
+          } else if (gid === 141){
+            $this.showPirateScratchGame(obj)
+          } else if (gid === 142){
+            $this.showPirateTapGame(obj)
           } else {
             $this.showSmallGame(obj)
           }
@@ -4418,6 +4999,84 @@ export default {
       }
       console.log('this.BuracoData => ', this.BuracoDetail)
       this.BuracoDetailVisible = true
+    },
+    showLimboGame(obj){
+      this.LimboDetail.players = []
+      this.LimboDetail.players.push(obj.player)
+      this.LimboDetailVisible = true
+    },
+
+    showPirateScratchGame(obj) {
+      console.log(obj)
+      this.PirateScratchDetail.players = []
+      this.PirateScratchDetail.players.push(obj.player)
+      this.PirateScratchDetail.blockItems = obj.player.luckyResult.blockItems
+      this.PirateScratchDetail.openNumber = []
+      for(let i = 0; i < obj.player.luckyResult.openNumber.length; i++) {
+        let number = obj.player.luckyResult.openNumber[i]
+        let isLucky = false
+        for (let j = 0; j < obj.player.luckyResult.blockItems.length; j++) {
+          if (obj.player.luckyResult.blockItems[j].number == number) {
+            isLucky = true;
+            break
+          }
+        }
+        this.PirateScratchDetail.openNumber.push({number: number, isLucky: isLucky})
+      }
+      this.PirateScratchVisible = true
+    },
+    showChickenGoGame(obj){
+      this.ChickenGoDetail = obj.player
+      this.ChickenGoDetailVisible = true
+    },
+    getChickenGoLevel(lv){
+      const lvMap = {
+        0: 'Easy',
+        1: 'Medium',
+        2: 'Hard',
+        3: 'Expert',
+        4: 'Master',
+        5: 'Nightmare'
+      }
+      return lvMap[lv]
+    },
+    showMannyPunchGame(obj){
+      this.MannyPunchDetail = obj.player
+      this.MannyPunchDetailVisible = true
+    },
+    getMannyPunchLevel(lv){
+      const lvMap = {
+        0: 'Easy',
+        1: 'Medium',
+        2: 'Hard',
+        3: 'Expert',
+        4: 'Master',
+        5: 'Nightmare'
+      }
+      return lvMap[lv]
+    },
+    showPirateTapGame(obj) {
+      this.PirateTapDetail = obj.player
+      this.PirateTapDetailVisible = true
+      this.PirateTapDetail.jpNum = 0      
+      for (const o of obj.player.roundDetail) {
+        if (o.roundMode === 3) {
+          console.log("o.cellData =========> ", JSON.stringify(o.cellData))
+          this.PirateTapDetail.jpNum += o.jackpotOdds
+        }
+      }
+    },
+    getPirateTapScene(type){
+      const lvMap = {
+        0: '',
+        1: 'normal',
+        2: 'freeAttack',
+        3: 'freeSpin',
+      }
+      return lvMap[type]
+    },
+    getPirateTapCellShow(row){
+      return (row.roundMode && row.roundMode >= 1 && row.cellData && row.cellData.length > 0)
     },
     showFilipinoMahjongGame(obj, log) {
       this.FilipinoMahjongDetail = log// obj
@@ -4624,6 +5283,14 @@ export default {
       this.piggyLog.detail = obj
       this.piggyLog.visible = true
     },
+    showGoldMaster(obj, uid) {
+      for (const player of obj.players) {
+        if (player.uid == uid) {
+          this.goldmasterLog.detail = player
+        }
+      }
+      this.goldmasterLog.visible = true
+    },
     showBaccaratGame(obj) {
       const names = ['Dealer Win', 'Player Win', 'Tie', 'Dealer Pair', 'Player Pair']
       this.baccaratDealerCards = obj.dealerCard
@@ -4710,6 +5377,18 @@ export default {
       this.hiloJackpotAward = obj.Hilo.JackpotAward / 1000
       this.hiloTotalOdds = obj.Hilo.TotalOdds
     },
+    showHiloPlusGame(obj) {
+      this.hiloVisible = true
+      this.hiloCardList = obj.HiloPlus.CardList
+      console.log(this.hiloCardList)
+      const hiloOp = []
+      this.hiloStopFlag = obj.HiloPlus.StopFlag
+      this.hiloOpRecord = hiloOp.join(' ')
+      this.hiloJackpotContribute = obj.HiloPlus.JackpotContribute / 1000
+      this.hiloJackpotContributeTotal = obj.HiloPlus.JackpotContributeTotal / 1000
+      this.hiloJackpotAward = obj.HiloPlus.JackpotAward / 1000
+      this.hiloTotalOdds = obj.HiloPlus.TotalOdds
+    },
     selectHiloNotation(notation) {
       switch (notation) {
         case 1 :
@@ -4724,6 +5403,10 @@ export default {
           return '等'
         case 6 :
           return '跳过'
+        case 7 :
+          return '黑色'
+        case 8 :
+          return '红色'
         default:
           return '-'
       }
@@ -5193,6 +5876,15 @@ export default {
       this.blackjackDetail = obj
       this.blackjackDetailVisible = true
     },
+    showBlackjackmhGame(obj) {
+      console.log(obj)
+      if (obj.BlackjackMH) {
+        this.blackjackmhDetail = obj.BlackjackMH
+        this.blackjackmhDetail.tid = obj.Tid
+        this.blackjackmhDetail.logId = obj.BlackjackMH.logId
+        this.blackjackmhDetailVisible = true
+      }
+    },
     showPusoyDosGame(obj) {
       this.pusoyDos.pusoyDosDetail = obj
       this.pusoyDos.pusoyDosDetailVisible = true
@@ -5473,6 +6165,19 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
         }
       }
     },
+    changColorGoldMaster({ row }) {
+      const typ = this.parseKnockExt(row.knockExt).typ
+      if (typ == '1') {
+        return {
+          color: 'red'
+        }
+      }
+      if (typ == '2') {
+        return {
+          color: '#9205a6'
+        }
+      }
+    },
     showRoomLevel(level) {
       switch (level) {
         case 0:
@@ -5485,6 +6190,29 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
           return '比赛场'
         default:
           return level <= 7 ? '陪玩机器人' : level
+      }
+    },
+    explainExt(gid, ext) {
+      if (!ext) return ''
+      let obj
+      try {
+        obj = typeof ext === 'string' ? JSON.parse(ext) : ext
+      } catch (e) {
+        return ''
+      }
+      switch (gid) {
+        case 501: {
+          if (obj.oddsTarget > 0){
+            obj.oddsTarget=obj.oddsTarget/10
+          }
+          if (obj.oddsTarget === -2){
+            return "气球:"+obj.oddsTarget+"  击杀:"+obj.oddsKill/10+"  PiggyBoom:"+obj.oddsPiggyBoom/10
+          }else {
+            return "气球:"+obj.oddsTarget+"  击杀:"+obj.oddsKill/10
+          }
+        }
+        default:
+          return ext
       }
     },
     showRobotLevel(isRobot,level) {
@@ -5765,7 +6493,143 @@ ul#sweeperShow li .showStep {
   border: none;
 }
 
+.blackJackmhHr {
+  width: 200%;
+  margin-left: -10px;
+  background-color: #dfe6ec;
+  height: 1px;
+  border: none;
+}
+
+.blackJackmhBox {
+  height: 118px;            /* 指定高度 */
+  display: flex;
+  flex-direction: column;   /* 垂直方向布局 */
+  justify-content: flex-end; /* 垂直底部对齐 */
+  text-align: center;       /* 水平居中 */
+  border: none;
+}
+
+.blackJackmhBlock {
+  height: 118px;            /* 指定高度 */
+  display: block;
+}
+
 .solitaireHeight {
   height: 60px;
 }
+
+/* 容器样式 */
+.grid-container {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  justify-content: left;
+  min-height: 10vh;
+  padding: 20px;
+  box-sizing: border-box;
+  background-color: #fff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* 外层自动适配大框：宽度100%，随容器自适应 */
+.grid-outer-frame {
+  border: 3px solid #000; /* 外层粗黑边框 */
+  border-radius: 8px;
+  padding: clamp(15px, 3vw, 25px); /* 内边距自适应（小屏15px，大屏25px） */
+  box-sizing: border-box;
+  background-color: #fff;
+  width: 100%; /* 关键：宽度自适应父容器 */
+  max-width: 600px; /* 防止大屏下大框过宽 */
+}
+
+
+/* 网格容器 */
+.grid-wrapper {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  max-width: 500px;
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+/* 内部单元格样式（黑色边框） */
+.grid-cell {
+  aspect-ratio: 1/1;
+  border: 2px solid #000; /* 内部小方格边框 */
+  border-radius: 4px;
+  padding: 12px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+}
+
+/* 上下部分数字样式 */
+.cell-top, .cell-bottom {
+  font-size: 24px;
+  font-weight: 500;
+  color: #000; /* 黑色数字 */
+}
+
+/* 中间分隔线（黑色+仅占方格一半长度） */
+.cell-divider {
+  width: 50%; /* 仅占方格一半宽度 */
+  height: 1px;
+  background-color: #000; /* 黑色分隔线 */
+}
+
+.number-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap; /* 关键属性，禁止换行 */
+  overflow-x: auto; /* 超出容器宽度时显示横向滚动条 */
+  padding: 8px;
+  border: 1px dashed #ccc;
+  justify-content: center;
+  gap: 20px; /* 设置子元素之间的间隔为20px */
+}
+
+/* pirateTap 3*5 格子 开始 */
+.grid-container-piratetap {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); /* 5列等宽 */
+  gap: 10px; /* 格子间距 */
+  max-width: 300px; /* 容器最大宽度 */
+  /*margin: 20px auto;  上下边距20px，水平居中 */
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  width: 100%; /*宽度撑满父容器 */
+  margin: 0; /* 移除自动居中 */
+  justify-content: left; /*内容左对齐 */
+}
+
+.grid-item {
+  aspect-ratio: 1; /* 保持正方形 */
+  background-color: white;
+  border: 1px solid #dee2e6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #495057;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  transition: all 0.2s ease;
+  width: 40px; /* 直接设置宽度 */
+  height: 40px; /* 同步设置高度 */
+}
+
+.grid-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  background-color: #f1f3f5;
+}
+/* pirateTap 3*5 格子 结束 */
+
 </style>

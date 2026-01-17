@@ -4,6 +4,14 @@
     <el-row :gutter="10" style="margin-top: 30px">
       <el-col :span="24">
         <el-form inline label-width="90px" :inline="true" size="small">
+          <el-select v-model="item.app" filterable placeholder="请选择" size="mini">
+            <el-option
+              v-for="row in appInfo"
+              :key="row.key"
+              :label="row.label"
+              :value="row.key"
+            />
+          </el-select>
           <el-form-item label="日期：">
             <el-date-picker
               v-model="timeRange"
@@ -183,6 +191,7 @@ export default {
       libShow: $libShow,
       clientDB: new ClientTableData([], 1, filterMap),
       pickerOptions: $libShow.DefaultDatePickerOptions(),
+      appInfo: [],
       item: {
         limit: 20,
         offset: 1,
@@ -199,7 +208,7 @@ export default {
       failTypeMap: {
         1: '派彩失败', 2: '游戏结算失败', 3: '转入失败', 4: '下注失败', 5: '转出失败', 6: '增值业务失败',
         7: '比赛报名', 8: '比赛结束', 10: 'CP下注失败',
-        11: 'CP结算失败', 12: 'CP离开回退失败', 13: 'CP打赏失败', 14: '再次买入失败',
+        11: 'CP结算失败', 12: 'CP离开回退失败', 13: 'CP打赏失败', 14: '再次买入失败', 15: '中JACKPOT',
         16: '下注并派彩失败', 17: '创建门票失败', 18: '门票更新失败'
       },
       statusMap: {
@@ -220,7 +229,8 @@ export default {
         2009: '转入平台',
         2010: '比赛报名',
         2011: '比赛结束',
-        2014: '下注并派彩'
+        2014: '下注并派彩',
+        2013: 'JACKPOT'
       },
       totalCount: 0
     }
@@ -228,6 +238,7 @@ export default {
   created() {
     this.getGameList()
     this.getData()
+    this.getAppInfo()
   },
   methods: {
     formatTime(ts) {
@@ -390,7 +401,11 @@ export default {
         const sub = JSON.parse(data.CommonFailParamsJsonString)
         console.log('json data', JSON.parse(data.CommonFailParamsJsonString))
         return '下注:' + (sub.BetAmount / 1000) + ' | 派彩:' + sub.PayoffAmount / 1000
-      } else {
+      }  else if (data.FailType == 15) {
+        const sub = JSON.parse(data.CommonFailParamsJsonString)
+        console.log('json data', JSON.parse(data.CommonFailParamsJsonString))
+        return sub.JackpotAmount / 1000
+      }else {
         if (data.hasOwnProperty('BetParams')) {
           return data.BetParamsFail.BetAmount / 1000
         }
@@ -405,7 +420,24 @@ export default {
     handleCurrentChange(val) {
       this.item.offset = val
       this.getData()
-    }
+    },
+    getAppInfo() {
+      request({
+        url: '/thirdparties/all',
+        method: 'get',
+        data: {}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          // const objs = response.Data || []
+          for (let i = 0; i < response.Data.length; i++) {
+            this.appInfo.push({
+              key: response.Data[i].ID,
+              label: response.Data[i].Account
+            })
+          }
+        }
+      })
+    },
 
   }
 }

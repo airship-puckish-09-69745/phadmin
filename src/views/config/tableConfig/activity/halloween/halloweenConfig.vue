@@ -101,37 +101,37 @@
                 </el-col>
                 <el-col :span="12">
                   <el-form-item label="单人单日发放阈值：" :required="true">
-                    <el-input v-model="edit.item.LimitTaskMinValue" />
+                    <el-input v-model.number="edit.item.LimitTaskMinValue" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
                   <el-form-item label="单日总发放阈值：" :required="true">
-                    <el-input v-model="edit.item.LimitTaskMaxValue" />
+                    <el-input v-model.number="edit.item.LimitTaskMaxValue" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
                   <el-form-item label="活动总发放阈值：" :required="true">
-                    <el-input v-model="edit.item.LimitTaskSumValue" />
+                    <el-input v-model.number="edit.item.LimitTaskSumValue" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
                   <el-form-item label="下注任务展示最小值：" :required="true">
-                    <el-input v-model="edit.item.ShowTaskMinValue" />
+                    <el-input v-model.number="edit.item.ShowTaskMinValue" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
                   <el-form-item label="下注任务展示最大值：" :required="true">
-                    <el-input v-model="edit.item.ShowTaskMaxValue" />
+                    <el-input v-model.number="edit.item.ShowTaskMaxValue" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
                   <el-form-item label="糖果大奖展示最小值：" :required="true">
-                    <el-input v-model="edit.item.ShowEggMinValue" />
+                    <el-input v-model.number="edit.item.ShowEggMinValue" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
                   <el-form-item label="糖果大奖展示最大值：" :required="true">
-                    <el-input v-model="edit.item.ShowEggMaxValue" />
+                    <el-input v-model.number="edit.item.ShowEggMaxValue" />
                   </el-form-item>
                 </el-col>
               </el-form>
@@ -228,7 +228,7 @@
                   </el-table-column>
                   <el-table-column
                     prop="RewardMin"
-                    label="最小奖励金额"
+                    label="任务条件"
                     width="100"
                   >
                     <template slot-scope="scope">
@@ -262,26 +262,6 @@
               <el-col :span="11">
                 <el-form-item label="有效下注条件：" prop="edit.item.LimitRewardCfg.ConditionValue">
                   <el-input v-model.number="edit.item.LimitRewardCfg.ConditionValue" placeholder="请填写有效下注"></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="11">
-                <el-form-item label="展示最小值：" prop="edit.item.LimitRewardCfg.ShowMinNum">
-                  <el-input v-model.number="edit.item.LimitRewardCfg.ShowMinNum" placeholder="请填展示最小值"></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="11">
-                <el-form-item label="展示最大值：" prop="edit.item.LimitRewardCfg.ShowMaxNum">
-                  <el-input v-model.number="edit.item.LimitRewardCfg.ShowMaxNum" placeholder="请填展示最大值"></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="11">
-                <el-form-item label="奖励最小值：" prop="edit.item.LimitRewardCfg.RewardMinValue">
-                  <el-input v-model.number="edit.item.LimitRewardCfg.RewardMinValue" placeholder="请填奖励最小值"></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="11">
-                <el-form-item label="奖励最大值：" prop="edit.item.LimitRewardCfg.ConditionValue">
-                  <el-input v-model.number="edit.item.LimitRewardCfg.RewardMaxValue" placeholder="请填奖励最大值"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="11">
@@ -338,7 +318,7 @@
           </el-row>
         </el-tab-pane>
 
-        <el-tab-pane label="奖励配置">
+        <el-tab-pane label="大奖励配置">
           <el-form ref="item" label-width="220px">
             <el-row :gutter="5">
               <el-col>
@@ -362,7 +342,7 @@
                     </el-table-column>
                     <el-table-column
                       prop="LimitMax"
-                      label="最大下注"
+                      label="最大下注(小于或等于)"
                       width="100"
                     >
                       <template slot-scope="scope">
@@ -418,7 +398,7 @@
                   </el-select>
                 </el-col>
               </el-form-item>
-              <el-form-item label="道具数据：" :required="true" prop="edit.item.ShareRewardCfg.ItemNum">
+              <el-form-item label="道具数量：" :required="true" prop="edit.item.ShareRewardCfg.ItemNum">
                 <el-col :span="15">
                   <el-input v-model.number="edit.item.ShareRewardCfg.ItemNum" />
                 </el-col>
@@ -441,6 +421,13 @@
 
         <el-tab-pane label="白名单配置">
           <el-form ref="item" label-width="220px">
+            <el-row>
+              <el-col :span="11">
+                <el-form-item label="白名单开关：" :rules="dataRule(true,{type:'n',range:'0'})">
+                  <el-switch v-model="edit.item.WhitelistCfg.IsWhite" :active-value="true" :inactive-value="false" />
+                </el-form-item>
+              </el-col>
+            </el-row>
             <el-row>
               <el-col :span="11">
                 <el-form-item label="AppId白名单：" prop="item.WhitelistCfg.AppIdList">
@@ -533,19 +520,7 @@ import { getInfo } from '@/api/user'
 
 const filterMap = {}
 
-function newEggs() {
-  return [
-    { EggId: 100, Name: 'Red-X', Reward: 88, Level: 0, Color: 1 },
-    { EggId: 101, Name: 'RED-Ⅰ', Reward: 0.28, Level: 1, Color: 1 },
-    { EggId: 102, Name: 'RED-Ⅱ', Reward: 1.8, Level: 2, Color: 1 },
-    { EggId: 103, Name: 'RED-Ⅲ', Reward: 8.8, Level: 3, Color: 1 },
-    { EggId: 104, Name: 'RED-Ⅳ', Reward: 18, Level: 4, Color: 1 },
-    { EggId: 105, Name: 'RED-Ⅴ', Reward: 28, Level: 5, Color: 1 }
-  ]
-}
-
 function newItem() {
-  const eggs = newEggs()
   return {
     ID: 0,
     IsOpen: 1,
@@ -557,6 +532,7 @@ function newItem() {
     RuleImgHor: [],
     RuleImgVer: [],
     WhitelistCfg: {
+      IsWhite: false,
       AppIdList: [],
       SiteIdList: []
     },
@@ -614,47 +590,9 @@ function newItem() {
     RewardLimitCfg: [
       { LimitMin: 1, LimitMax: 10, AverageNum: 0.00, RewardList: [] }
     ],
-    EggCfg: {
-      Eggs: eggs,
-      WeightCfg: [newEggWeightCfg(1, eggs), newEggWeightCfg(1, eggs), newEggWeightCfg(2, eggs)],
-    },
     EggShellsPerRaffle: 100,
     EggShellsRaffleFirst: 500
   }
-}
-
-// 新的蛋权重配置
-// conditionType 1=抽奖序号范围 2=特定的一个或多个抽奖序号
-function newEggWeightCfg(conditionType, eggs) {
-  let eggWeightCfg = {}
-  if (conditionType === 1) {
-    eggWeightCfg = {
-      ConditionType: 1,
-      MinRaffleNo: 0,
-      MaxRaffleNo: 0,
-      RaffleNoList: '',
-      Weights: [],
-    }
-  } else {
-    eggWeightCfg = {
-      ConditionType: 2,
-      MinRaffleNo: 0,
-      MaxRaffleNo: 0,
-      RaffleNoList: '',
-      Weights: [],
-    }
-  }
-
-  for (let i = 0; i < eggs.length; i++) {
-    if (eggs[i].Level === 0) {
-      continue
-    }
-    eggWeightCfg.Weights.push({
-      EggId: eggs[i].EggId,
-      Weight: 0,
-    })
-  }
-  return eggWeightCfg
 }
 
 export default {
@@ -673,6 +611,7 @@ export default {
       libShow: $libShow,
       libMoney: new MoneyShow([]),
       statusNames: { 1: '上架', 2: '下架' },
+      BlackOperator: '',
       edit: {
         ID: 0,
         isEdit: false,
@@ -714,7 +653,7 @@ export default {
         EggCfg: '彩蛋配置',
         EggShellsPerRaffle: '每抽蛋壳数量',
         EggShellsRaffleFirst: '首抽蛋壳数量',
-        DebugTimeOffset: '调试时间偏移',
+        DebugTimeOffset: '调试时间偏移'
       },
       treeData: [{
         id: 1,
@@ -810,12 +749,12 @@ export default {
   },
   created() {
     this.env = store.getters.env || this.env
-    this.getTodayRaffleAmount()
   },
   mounted() {
     this.getData()
     this.getGameAll()
     this.getPropList()
+    this.getOperator()
   },
   computed: {
     eggReward: {
@@ -893,20 +832,6 @@ export default {
       }
       return ''
     },
-    addNormalEggWeightConfig() {
-      const eggWeightCfg = newEggWeightCfg(1, this.edit.item.EggCfg.Eggs)
-      this.edit.normalEggWeightConfigs.push(eggWeightCfg)
-    },
-    removeNormalEggWeightConfig(index) {
-      this.edit.normalEggWeightConfigs.splice(index, 1)
-    },
-    addSpecialEggWeightConfig() {
-      const eggWeightCfg = newEggWeightCfg(2, this.edit.item.EggCfg.Eggs)
-      this.edit.specialEggWeightConfigs.push(eggWeightCfg)
-    },
-    removeSpecialEggWeightConfig(index) {
-      this.edit.specialEggWeightConfigs.splice(index, 1)
-    },
     getData() {
       request({
         url: '/customizeconfig/one',
@@ -948,6 +873,10 @@ export default {
                     const rewardInfo = rewardCfg.RewardList[j]
                     rewardInfo.Reward = rewardInfo.Reward / 1000
                   }
+                }
+                for (let i = 0; i < item.LimitRewardCfg.RewardList.length; i++) {
+                  const limitCfg = item.LimitRewardCfg.RewardList[i]
+                  limitCfg.Reward = limitCfg.Reward / 1000
                 }
                 this.tableData.push(item)
               }
@@ -1007,7 +936,7 @@ export default {
             dataInfo.WhitelistCfg = item.WhitelistCfg
             dataInfo.RankCfg = item.RankCfg
             dataInfo.LimitRewardCfg = item.LimitRewardCfg
-            dataInfo.ModifyUser = item.ModifyUser
+            dataInfo.ModifyUser = this.BlackOperator
             dataInfo.Status = item.Status
             dataInfo.RewardLimitCfg = item.RewardLimitCfg
             dataInfo.ShareRewardCfg = item.ShareRewardCfg
@@ -1077,6 +1006,10 @@ export default {
                 rewardInfo.Reward = rewardInfo.Reward * 1000
               }
             }
+            for (let i = 0; i < item.LimitRewardCfg.RewardList.length; i++) {
+              const limitCfg = item.LimitRewardCfg.RewardList[i]
+              limitCfg.Reward = limitCfg.Reward * 1000
+            }
             const dataInfo = {}
             dataInfo.ID = item.ID
             dataInfo.IsOpen = item.IsOpen
@@ -1088,7 +1021,7 @@ export default {
             dataInfo.WhitelistCfg = item.WhitelistCfg
             dataInfo.RankCfg = item.RankCfg
             dataInfo.LimitRewardCfg = item.LimitRewardCfg
-            dataInfo.ModifyUser = item.ModifyUser
+            dataInfo.ModifyUser = this.BlackOperator
             dataInfo.Status = item.Status
             dataInfo.RewardLimitCfg = item.RewardLimitCfg
             dataInfo.ShareRewardCfg = item.ShareRewardCfg
@@ -1158,6 +1091,10 @@ export default {
                 rewardInfo.Reward = rewardInfo.Reward * 1000
               }
             }
+            for (let i = 0; i < item.LimitRewardCfg.RewardList.length; i++) {
+              const limitCfg = item.LimitRewardCfg.RewardList[i]
+              limitCfg.Reward = limitCfg.Reward * 1000
+            }
             const dataInfo = {}
             dataInfo.ID = item.ID
             dataInfo.IsOpen = item.IsOpen
@@ -1169,7 +1106,7 @@ export default {
             dataInfo.WhitelistCfg = item.WhitelistCfg
             dataInfo.RankCfg = item.RankCfg
             dataInfo.LimitRewardCfg = item.LimitRewardCfg
-            dataInfo.ModifyUser = item.ModifyUser
+            dataInfo.ModifyUser = this.BlackOperator
             dataInfo.Status = item.Status
             dataInfo.RewardLimitCfg = item.RewardLimitCfg
             dataInfo.ShareRewardCfg = item.ShareRewardCfg
@@ -1280,6 +1217,13 @@ export default {
             rewardInfo.Reward = rewardInfo.Reward * 1000
           }
         }
+        for (let i = 0; i < item.LimitRewardCfg.RewardList.length; i++) {
+          const limitCfg = item.LimitRewardCfg.RewardList[i]
+          limitCfg.Reward = limitCfg.Reward * 1000
+        }
+        console.log("+++++++++++++++++1++++++++++++++++")
+        console.log(this.BlackOperator)
+        console.log("+++++++++++++++++2++++++++++++++++")
         const dataInfo = {}
         dataInfo.ID = item.ID
         dataInfo.IsOpen = item.IsOpen
@@ -1291,7 +1235,7 @@ export default {
         dataInfo.WhitelistCfg = item.WhitelistCfg
         dataInfo.RankCfg = item.RankCfg
         dataInfo.LimitRewardCfg = item.LimitRewardCfg
-        dataInfo.ModifyUser = item.ModifyUser
+        dataInfo.ModifyUser = this.BlackOperator
         dataInfo.Status = item.Status
         dataInfo.RewardLimitCfg = item.RewardLimitCfg
         dataInfo.ShareRewardCfg = item.ShareRewardCfg
@@ -1304,9 +1248,7 @@ export default {
         dataInfo.ShowEggMaxValue = item.ShowEggMaxValue
         updateData.HalloweenCfgList.push(dataInfo)
       }
-      console.log("++++++++++++++++++++++4++++++++++++++++++++++")
       this.form.Data = JSON.stringify(updateData)
-      console.log("+++++++++++++++++++++5++++++++++++++++++++++++%s", updateData)
       request({
         url: 'customizeconfig/update',
         method: 'post',
@@ -1406,23 +1348,6 @@ export default {
     },
     handleAdd() {
       this.edit.item = newItem()
-
-      this.edit.normalEggWeightConfigs = []
-      for (let i = 0; i < this.edit.item.EggCfg.WeightCfg.length; i++) {
-        const eggWeightCfg = this.edit.item.EggCfg.WeightCfg[i]
-        if (eggWeightCfg.ConditionType === 1) {
-          this.edit.normalEggWeightConfigs.push(eggWeightCfg)
-        }
-      }
-
-      this.edit.specialEggWeightConfigs = []
-      for (let i = 0; i < this.edit.item.EggCfg.WeightCfg.length; i++) {
-        const eggWeightCfg = this.edit.item.EggCfg.WeightCfg[i]
-        if (eggWeightCfg.ConditionType === 2) {
-          this.edit.specialEggWeightConfigs.push(eggWeightCfg)
-        }
-      }
-
       this.edit.isEdit = false
       this.edit.visible = true
       console.log(this.edit.item)

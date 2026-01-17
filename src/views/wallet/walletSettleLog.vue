@@ -6,14 +6,16 @@
         <el-row :gutter="10" style="margin-top: 30px">
           <el-col :span="24">
             <el-form :inline="true" size="small">
-              <el-select v-model="item.app" filterable placeholder="请选择" size="mini">
-                <el-option
-                  v-for="row in appInfo"
-                  :key="row.key"
-                  :label="row.label"
-                  :value="row.key"
-                />
-              </el-select>
+              <el-form-item label="App：">
+                <el-select v-model="item.app" filterable placeholder="请选择" size="mini">
+                  <el-option
+                    v-for="row in appInfo"
+                    :key="row.key"
+                    :label="row.label"
+                    :value="row.key"
+                  />
+                </el-select>
+              </el-form-item>
               <el-form-item label="开始日期：">
                 <el-date-picker
                   v-model="item.start"

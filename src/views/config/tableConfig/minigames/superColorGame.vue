@@ -15,25 +15,25 @@
               </el-form-item>
             </el-col>
 
-            <el-col :span="7" :offset="3">
-              <el-form-item label="用户长时间未下注提示:">
-                <el-input v-model.number="item.NoticeTime" :required="true" @input="wallpaperInput2">
-                  <template slot="append">秒</template>
-                </el-input>
-              </el-form-item>
-            </el-col>
+            <!--            <el-col :span="7" :offset="3">-->
+            <!--              <el-form-item label="用户长时间未下注提示:">-->
+            <!--                <el-input v-model.number="item.NoticeTime" :required="true" @input="wallpaperInput2">-->
+            <!--                  <template slot="append">秒</template>-->
+            <!--                </el-input>-->
+            <!--              </el-form-item>-->
+            <!--            </el-col>-->
             <el-col :span="7" :offset="1">
-              <el-form-item label="RPT:">
+              <el-form-item label="RTP:">
                 <el-input v-model.number="item.RPT" :required="true">
                   <template slot="append">‱</template>
                 </el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="7" :offset="3">
-              <el-form-item label="最小携带金额:">
-                <el-input v-model.number="item.MinMoneyCarry" :required="true" />
-              </el-form-item>
-            </el-col>
+            <!--            <el-col :span="7" :offset="3">-->
+            <!--              <el-form-item label="最小携带金额:">-->
+            <!--                <el-input v-model.number="item.MinMoneyCarry" :required="true" />-->
+            <!--              </el-form-item>-->
+            <!--            </el-col>-->
           </el-tab-pane>
           <el-tab-pane label="玩法配置">
             <el-col :span="16" :offset="3">
@@ -113,7 +113,7 @@
                         label="1颗"
                       >
                         <template slot-scope="scope">
-                          <el-input v-model.number="scope.row.Odds[0].Odd" style="width:120px;" size="mini">
+                          <el-input v-model="scope.row.Odds[0].Odd" style="width:120px;" size="mini">
                             <template slot="append">X</template>
                           </el-input>
                         </template>
@@ -122,7 +122,7 @@
                         label="2颗"
                       >
                         <template slot-scope="scope">
-                          <el-input v-if="scope.row.Odds[1]!==undefined" v-model.number="scope.row.Odds[1].Odd" style="width:120px;" size="mini">
+                          <el-input v-if="scope.row.Odds[1]!==undefined" v-model="scope.row.Odds[1].Odd" style="width:120px;" size="mini">
                             <template slot="append">X</template>
                           </el-input>
                         </template>
@@ -131,7 +131,7 @@
                         label="3颗"
                       >
                         <template slot-scope="scope">
-                          <el-input v-if="scope.row.Odds[2]!==undefined" v-model.number="scope.row.Odds[2].Odd" style="width:120px;" size="mini">
+                          <el-input v-if="scope.row.Odds[2]!==undefined" v-model="scope.row.Odds[2].Odd" style="width:120px;" size="mini">
                             <template slot="append">X</template>
                           </el-input>
                         </template>
@@ -160,11 +160,13 @@
                     <span style="color:red;"> 说明:超级骰子的配置 </span>
                   </el-descriptions-item>
                 </el-descriptions>
-                <el-col :span="7" :offset="0">
-                  <el-form-item label="超级骰子命中的概率">
-                    <el-input v-model.number="item.SuperDice.Probability" :required="true" />
-                  </el-form-item>
-                </el-col>
+                <el-row>
+                  <el-col :span="7" :offset="0">
+                    <el-form-item label="超级骰子命中的概率">
+                      <el-input v-model.number="item.SuperDice.Probability" :required="true" />
+                    </el-form-item>
+                  </el-col>
+                </el-row>
                 <el-row>
                   <el-table
                     ref="filterTable"
@@ -304,48 +306,190 @@
                 </el-row>
                 <el-row>
                   <el-col :span="11" :offset="1">
-                    <el-form-item label="机器人下注最小筹码：" prop="RobotCfg.MinRobotBetMoney" :rules="dataRule(true,{type:'n',range:'0'})">
-                      <el-col :span="20">
-                        <el-input v-model.number="item.RobotCfg.MinRobotBetMoney" size="mini" :required="true" />
-                      </el-col>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="11">
-                    <el-form-item label="机器人下注最大筹码：" prop="RobotCfg.MaxRobotBetMoney" :rules="dataRule(true,{type:'n',range:'0'})">
-                      <el-col :span="20">
-                        <el-input v-model.number="item.RobotCfg.MaxRobotBetMoney" size="mini" :required="true" />
-                      </el-col>
-                    </el-form-item>
-                  </el-col>
-                </el-row>
-                <el-row>
-                  <el-col :span="11" :offset="1">
-                    <el-form-item label="在线真人人数下限：" prop="RobotCfg.MinRealUserCount" :rules="dataRule(true,{type:'n',range:'0'})">
-                      <el-col :span="20">
-                        <el-input v-model.number="item.RobotCfg.MinRealUserCount" size="mini" :required="true" />
-                      </el-col>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="11">
-                    <el-form-item label="在线人数上限：" prop="RobotCfg.MaxRealUserCount" :rules="dataRule(true,{type:'n',range:'0'})">
-                      <el-col :span="20">
-                        <el-input v-model.number="item.RobotCfg.MaxRealUserCount" size="mini" :required="true" />
-                      </el-col>
-                    </el-form-item>
-                  </el-col>
-                </el-row>
-                <el-row>
-                  <el-col :span="11" :offset="1">
-                    <el-form-item label="机器人+真人人数下限：" prop="RobotCfg.MinTotalUserCount" :rules="dataRule(true,{type:'n',range:'0'})">
+                    <el-form-item label="机器人下限：" prop="RobotCfg.MinTotalUserCount" :rules="dataRule(true,{type:'n',range:'0'})">
                       <el-col :span="20">
                         <el-input v-model.number="item.RobotCfg.MinTotalUserCount" size="mini" :required="true" />
                       </el-col>
                     </el-form-item>
                   </el-col>
                   <el-col :span="11">
-                    <el-form-item label="机器人+真人人数上限：" prop="RobotCfg.MaxTotalUserCount" :rules="dataRule(true,{type:'n',range:'0'})">
+                    <el-form-item label="机器人上限：" prop="RobotCfg.MaxTotalUserCount" :rules="dataRule(true,{type:'n',range:'0'})">
                       <el-col :span="20">
                         <el-input v-model.number="item.RobotCfg.MaxTotalUserCount" size="mini" :required="true" />
+                      </el-col>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+
+                <el-row>
+                  <el-col :span="11" :offset="1">
+                    <el-form-item label="机器人最小下注区域数：" prop="RobotCfg.MinRobotBetAreas" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-col :span="20">
+                        <el-input v-model.number="item.RobotCfg.MinRobotBetAreas" size="mini" :required="true" />
+                      </el-col>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="11">
+                    <el-form-item label="机器人最大下注区域数：" prop="RobotCfg.MaxRobotBetAreas" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-col :span="20">
+                        <el-input v-model.number="item.RobotCfg.MaxRobotBetAreas" size="mini" :required="true" />
+                      </el-col>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="11" :offset="1">
+                    <el-form-item label="机器人最小下注次数偏移范围：" prop="RobotCfg.MinRobotBetTimesOffset" :rules="dataRule(true,{type:'n',range:'-10'})">
+                      <el-col :span="20">
+                        <el-input v-model.number="item.RobotCfg.MinRobotBetTimesOffset" size="mini" :required="true" />
+                      </el-col>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="11">
+                    <el-form-item label="机器人最大下注次数偏移范围：" prop="RobotCfg.MaxRobotBetTimesOffset" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-col :span="20">
+                        <el-input v-model.number="item.RobotCfg.MaxRobotBetTimesOffset" size="mini" :required="true" />
+                      </el-col>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="11" :offset="1">
+                    <el-form-item label="机器人最小下注区域数偏移范围：" prop="RobotCfg.MinRobotBetAreasOffset" :rules="dataRule(true,{type:'n',range:'-10'})">
+                      <el-col :span="20">
+                        <el-input v-model.number="item.RobotCfg.MinRobotBetAreasOffset" size="mini" :required="true" />
+                      </el-col>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="11">
+                    <el-form-item label="机器人最大下注区域数偏移范围：" prop="RobotCfg.MaxRobotBetAreasOffset" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-col :span="20">
+                        <el-input v-model.number="item.RobotCfg.MaxRobotBetAreasOffset" size="mini" :required="true" />
+                      </el-col>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="11" :offset="1">
+                    <el-form-item label="机器人初始化下注金额最小值：" prop="RobotCfg.MinRobotInitBetMoney" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-col :span="20">
+                        <el-input v-model.number="item.RobotCfg.MinRobotInitBetMoney" size="mini" :required="true" />
+                      </el-col>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="11">
+                    <el-form-item label="机器人初始化下注金额最大值：" prop="RobotCfg.MaxRobotInitBetMoney" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-col :span="20">
+                        <el-input v-model.number="item.RobotCfg.MaxRobotInitBetMoney" size="mini" :required="true" />
+                      </el-col>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+
+                <el-row>
+                  <el-col :span="11" :offset="1">
+                    <el-form-item label="重置周期最小局数：" prop="RobotCfg.MinResetCycle" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-col :span="20">
+                        <el-input v-model.number="item.RobotCfg.MinResetCycle" size="mini" :required="true" />
+                      </el-col>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="11">
+                    <el-form-item label="重置周期最大局数：" prop="RobotCfg.MaxResetCycle" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-col :span="20">
+                        <el-input v-model.number="item.RobotCfg.MaxResetCycle" size="mini" :required="true" />
+                      </el-col>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+
+
+<!--                MinRankRobotMoney: 50000, // 榜单机器人金币下限-->
+<!--                MaxRankRobotMoney: 35000000, // 榜单机器人金币上限-->
+<!--                RankRobotRadio: 50, // 榜单机器人比例-->
+<!--                MinRankRobotInitBetMoney: 0, // 机器人初始下注最小筹码-->
+<!--                MaxRankRobotInitBetMoney: 0, // 机器人初始下注最大筹码-->
+<!--                MinRankRobotStart: 1000, // 榜单机器人开始下注时间点-->
+<!--                MaxRankRobotStart: 5000, // 榜单机器人开始下注时间点上限-->
+<!--                MinRankRobotTime: 300, // 榜单机器人开始下注时间间隔点-->
+<!--                MaxRankRobotTime: 700, // 榜单机器人开始下注时间间隔点上限-->
+                <el-row>
+                  <el-col :span="11" :offset="1">
+                    <el-form-item label="榜单机器人金币下限：" prop="RobotCfg.MinRankRobotMoney" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-col :span="20">
+                        <el-input v-model.number="item.RobotCfg.MinRankRobotMoney" size="mini" :required="true" />
+                      </el-col>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="11">
+                    <el-form-item label="榜单机器人金币上限：" prop="RobotCfg.MaxRankRobotMoney" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-col :span="20">
+                        <el-input v-model.number="item.RobotCfg.MaxRankRobotMoney" size="mini" :required="true" />
+                      </el-col>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="11" :offset="1">
+                    <el-form-item label="榜单机器人初始下注最小筹码：" prop="RobotCfg.MinRankRobotInitBetMoney" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-col :span="20">
+                        <el-input v-model.number="item.RobotCfg.MinRankRobotInitBetMoney" size="mini" :required="true" />
+                      </el-col>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="11">
+                    <el-form-item label="榜单机器人初始下注最大筹码：" prop="RobotCfg.MaxRankRobotInitBetMoney" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-col :span="20">
+                        <el-input v-model.number="item.RobotCfg.MaxRankRobotInitBetMoney" size="mini" :required="true" />
+                      </el-col>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="11" :offset="1">
+                    <el-form-item label="榜单机器人开始下注时间点下限（毫秒）：" prop="RobotCfg.MinRankRobotStart" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-col :span="20">
+                        <el-input v-model.number="item.RobotCfg.MinRankRobotStart" size="mini" :required="true" />
+                      </el-col>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="11">
+                    <el-form-item label="榜单机器人开始下注时间点上限（毫秒）：" prop="RobotCfg.MaxRankRobotStart" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-col :span="20">
+                        <el-input v-model.number="item.RobotCfg.MaxRankRobotStart" size="mini" :required="true" />
+                      </el-col>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="11" :offset="1">
+                    <el-form-item label="榜单机器人开始下注时间间隔点下限（毫秒）：" prop="RobotCfg.MinRankRobotTime" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-col :span="20">
+                        <el-input v-model.number="item.RobotCfg.MinRankRobotTime" size="mini" :required="true" />
+                      </el-col>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="11">
+                    <el-form-item label="榜单机器人开始下注时间间隔点上限（毫秒）：" prop="RobotCfg.MaxRankRobotTime" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-col :span="20">
+                        <el-input v-model.number="item.RobotCfg.MaxRankRobotTime" size="mini" :required="true" />
+                      </el-col>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+
+                <el-row>
+                  <el-col :span="11" :offset="1">
+                    <el-form-item label="机器人下注间隔（毫秒）：" prop="RobotCfg.RobotActionTime" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-col :span="20">
+                        <el-input v-model.number="item.RobotCfg.RobotActionTime" size="mini" :required="true" @input="logChange"/>
+                      </el-col>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="11">
+                    <el-form-item label="榜单机器人比例：" prop="RobotCfg.RankRobotRadio" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-col :span="20">
+                        <el-input v-model.number="item.RobotCfg.RankRobotRadio" size="mini" :required="true" />
                       </el-col>
                     </el-form-item>
                   </el-col>
@@ -422,6 +566,31 @@
                 </el-row>
 
               </fieldset>
+              <fieldset style="margin-top:10px">
+                <legend>总的机器人下注</legend>
+                <el-alert
+                  type="success"
+                  description="在一局游戏内机器人下注相关配置"
+                />
+                <el-row>
+                  <el-col :span="8">
+                    <el-form-item label="下注机器人数的上限：">
+                      <el-col :span="10">
+                        <el-input v-model.number="item.RobotCfg.BetRobotMaxCount" size="mini" />
+                      </el-col>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="8">
+                    <el-form-item label="机器人最大下注区域数：">
+                      <el-col :span="8">
+                        <el-input v-model.number="item.RobotCfg.BetRobotMaxBetAreaCount" size="mini" />
+                      </el-col>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+              </fieldset>
             </el-col>
           </el-tab-pane>
           <el-tab-pane label="配牌">
@@ -467,9 +636,9 @@
                 </el-select>
               </el-form-item>
               <el-form-item label="超级骰子的赔率：">
-<!--                <el-input v-model.number="resultForm.superDiceOdd" style="width: 150px;" size="mini">-->
-<!--                  <template slot="append">X</template>-->
-<!--                </el-input>-->
+                <!--                <el-input v-model.number="resultForm.superDiceOdd" style="width: 150px;" size="mini">-->
+                <!--                  <template slot="append">X</template>-->
+                <!--                </el-input>-->
                 <el-select v-model="resultForm.superDiceOdd" style="width:120px;">
                   <el-option
                     v-for="typeItem in SuperDiceOddOption "
@@ -535,6 +704,7 @@ export default {
         { 'Id': 6, 'Name': '红', 'Key': 'red' }
       ],
       DiceIndexOption: [
+        { 'Id': -1, 'Name': '不使用' },
         { 'Id': 0, 'Name': '第一个骰子' },
         { 'Id': 1, 'Name': '第二个骰子' },
         { 'Id': 2, 'Name': '第三个骰子' }
@@ -592,7 +762,30 @@ export default {
           MinRealUserCount: 0, // 在线人数下限
           MaxRealUserCount: 50, // 在线人数上限
           MinTotalUserCount: 50, // 总人数下限
-          MaxTotalUserCount: 200// 总人数上限
+          MaxTotalUserCount: 200, // 总人数上限
+          BetRobotMaxCount: 0,
+          BetRobotMaxBetAreaCount: 0,
+          MinRobotBetAreas: 0, // 机器人最小下注区域数
+          MaxRobotBetAreas: 0, // 机器人最大下注区域数
+          MinRobotBetTimesOffset: 0, // 机器人最小下注次数偏移
+          MaxRobotBetTimesOffset: 0, // 机器人最大下注次数偏移
+          MinRobotBetAreasOffset: 0, // 机器人最小下注区域数偏移
+          MaxRobotBetAreasOffset: 0, // 机器人最大下注区域数偏移
+          MinRobotInitBetMoney: 0, // 机器人初始下注最小筹码
+          MaxRobotInitBetMoney: 0, // 机器人初始下注最大筹码
+          MinResetCycle: 0, // 机器人重置周期
+          MaxResetCycle: 0, // 机器人重置周期
+          RobotActionTime: 200, // 机器人下注时间间隔
+
+          MinRankRobotMoney: 50000, // 榜单机器人金币下限
+          MaxRankRobotMoney: 35000000, // 榜单机器人金币上限
+          RankRobotRadio: 50, // 榜单机器人比例
+          MinRankRobotInitBetMoney: 0, // 机器人初始下注最小筹码
+          MaxRankRobotInitBetMoney: 0, // 机器人初始下注最大筹码
+          MinRankRobotStart: 1000, // 榜单机器人开始下注时间点
+          MaxRankRobotStart: 5000, // 榜单机器人开始下注时间点上限
+          MinRankRobotTime: 300, // 榜单机器人开始下注时间间隔点
+          MaxRankRobotTime: 700, // 榜单机器人开始下注时间间隔点上限
         },
         BetLevels: [
           {
@@ -678,17 +871,7 @@ export default {
         ChatRobotReplyIntervalMax: 0,
         ChatRobotReplyRate: 0,
         ChatRobotReplyMaxNum: 0
-        // ChatRobotCfg: {
-        //   IsOpen: false,
-        //   ChatRobotSendIntervalMin: 0,
-        //   ChatRobotSendIntervalMax: 0,
-        //   ChatRobotSendRate: 0,
-        //   ChatRobotSendMaxNum: 0,
-        //   ChatRobotReplyIntervalMin: 0,
-        //   ChatRobotReplyIntervalMax: 0,
-        //   ChatRobotReplyRate: 0,
-        //   ChatRobotReplyMaxNum: 0
-        // }
+
       },
       TestCards: {
         Dices: [1, 1, 1],
@@ -719,7 +902,7 @@ export default {
         types: {
           Data: 'jsonString' // 整个数据项的类型
         }
-      },
+      }
     }
   },
   watch: {
@@ -764,6 +947,93 @@ export default {
       if (this.item.RobotCfg !== undefined && this.item.RobotCfg.MaxRobotBetMoney !== undefined) {
         this.item.RobotCfg.MaxRobotBetMoney /= 1000
       }
+
+      if (this.item.RobotCfg !== undefined && this.item.RobotCfg.MinRobotBetAreas === undefined) {
+        this.item.RobotCfg.MinRobotBetAreas = 1
+      }
+      if (this.item.RobotCfg !== undefined && this.item.RobotCfg.MaxRobotBetAreas === undefined) {
+        this.item.RobotCfg.MaxRobotBetAreas = 5
+      }
+      if (this.item.RobotCfg !== undefined && this.item.RobotCfg.MinRobotBetTimesOffset === undefined) {
+        this.item.RobotCfg.MinRobotBetTimesOffset = -2
+      }
+      if (this.item.RobotCfg !== undefined && this.item.RobotCfg.MaxRobotBetTimesOffset === undefined) {
+        this.item.RobotCfg.MaxRobotBetTimesOffset = 2
+      }
+
+      if (this.item.RobotCfg !== undefined && this.item.RobotCfg.MinRobotBetAreasOffset === undefined) {
+        this.item.RobotCfg.MinRobotBetAreasOffset = 1
+      }
+      if (this.item.RobotCfg !== undefined && this.item.RobotCfg.MaxRobotBetAreasOffset === undefined) {
+        this.item.RobotCfg.MaxRobotBetAreasOffset = 5
+      }
+      if (this.item.RobotCfg !== undefined && this.item.RobotCfg.MinRobotInitBetMoney === undefined) {
+        this.item.RobotCfg.MinRobotInitBetMoney = 1000
+      }
+      if (this.item.RobotCfg !== undefined && this.item.RobotCfg.MaxRobotInitBetMoney === undefined) {
+        this.item.RobotCfg.MaxRobotInitBetMoney = 10000
+      }
+      if (this.item.RobotCfg !== undefined && this.item.RobotCfg.MinRobotInitBetMoney !== undefined) {
+        this.item.RobotCfg.MinRobotInitBetMoney /= 1000
+      }
+      if (this.item.RobotCfg !== undefined && this.item.RobotCfg.MaxRobotInitBetMoney !== undefined) {
+        this.item.RobotCfg.MaxRobotInitBetMoney /= 1000
+      }
+      if (this.item.RobotCfg !== undefined && this.item.RobotCfg.MinResetCycle === undefined) {
+        this.item.RobotCfg.MinResetCycle = 5
+      }
+      if (this.item.RobotCfg !== undefined && this.item.RobotCfg.MaxResetCycle === undefined) {
+        this.item.RobotCfg.MaxResetCycle = 20
+      }
+      if (this.item.RobotCfg !== undefined && this.item.RobotCfg.RobotActionTime === undefined) {
+        this.item.RobotCfg.RobotActionTime = 500
+      }
+
+      /////////////////////////
+
+      if (this.item.RobotCfg !== undefined && this.item.RobotCfg.MinRankRobotMoney === undefined) {
+        this.item.RobotCfg.MinRankRobotMoney = 1000
+      }
+      if (this.item.RobotCfg !== undefined && this.item.RobotCfg.MaxRankRobotMoney === undefined) {
+        this.item.RobotCfg.MaxRankRobotMoney = 10000
+      }
+      if (this.item.RobotCfg !== undefined && this.item.RobotCfg.MinRankRobotMoney !== undefined) {
+        this.item.RobotCfg.MinRankRobotMoney /= 1000
+      }
+      if (this.item.RobotCfg !== undefined && this.item.RobotCfg.MaxRankRobotMoney !== undefined) {
+        this.item.RobotCfg.MaxRankRobotMoney /= 1000
+      }
+
+      if (this.item.RobotCfg !== undefined && this.item.RobotCfg.RankRobotRadio === undefined) {
+        this.item.RobotCfg.RankRobotRadio = 30
+      }
+      if (this.item.RobotCfg !== undefined && this.item.RobotCfg.MinRankRobotInitBetMoney === undefined) {
+        this.item.RobotCfg.MinRankRobotInitBetMoney = 10000
+      }
+      if (this.item.RobotCfg !== undefined && this.item.RobotCfg.MinRankRobotInitBetMoney !== undefined) {
+        this.item.RobotCfg.MinRankRobotInitBetMoney /= 1000
+      }
+      if (this.item.RobotCfg !== undefined && this.item.RobotCfg.MaxRankRobotInitBetMoney === undefined) {
+        this.item.RobotCfg.MaxRankRobotInitBetMoney = 100000
+      }
+      if (this.item.RobotCfg !== undefined && this.item.RobotCfg.MaxRankRobotInitBetMoney !== undefined) {
+        this.item.RobotCfg.MaxRankRobotInitBetMoney /= 1000
+      }
+      if (this.item.RobotCfg !== undefined && this.item.RobotCfg.MinRankRobotStart === undefined) {
+        this.item.RobotCfg.MinRankRobotStart = 3000
+      }
+      if (this.item.RobotCfg !== undefined && this.item.RobotCfg.MaxRankRobotStart === undefined) {
+        this.item.RobotCfg.MaxRankRobotStart = 5000
+      }
+      if (this.item.RobotCfg !== undefined && this.item.RobotCfg.MinRankRobotTime === undefined) {
+        this.item.RobotCfg.MinRankRobotTime = 300
+      }
+      if (this.item.RobotCfg !== undefined && this.item.RobotCfg.MaxRankRobotTime === undefined) {
+        this.item.RobotCfg.MaxRankRobotTime = 700
+      }
+
+      ///////////////////////
+
       for (const i in this.item.BetAreas) {
         const betArea = this.item.BetAreas[i]
         betArea.MaxMoneyBet /= 1000
@@ -802,6 +1072,13 @@ export default {
         ret.RobotCfg.MaxRobotMoney *= 1000
         ret.RobotCfg.MinRobotBetMoney *= 1000
         ret.RobotCfg.MaxRobotBetMoney *= 1000
+        ret.RobotCfg.MinRobotInitBetMoney *= 1000
+        ret.RobotCfg.MaxRobotInitBetMoney *= 1000
+
+        ret.RobotCfg.MinRankRobotMoney *= 1000
+        ret.RobotCfg.MaxRankRobotMoney *= 1000
+        ret.RobotCfg.MinRankRobotInitBetMoney *= 1000
+        ret.RobotCfg.MaxRankRobotInitBetMoney *= 1000
       }
       if (this.envProjectName !== 'ph_audit') {
         ret.RobotCfg.IsOpen = true
@@ -849,6 +1126,7 @@ export default {
 
       for (const i in ret.SuperDice.Odds) {
         ret.SuperDice.Odds[i].Odd *= 1000
+        ret.SuperDice.Odds[i].Weight = parseInt(ret.SuperDice.Odds[i].Weight)
       }
       return ret
     },
@@ -886,23 +1164,50 @@ export default {
       if (!ValidateVueItem(this.$refs['item'])) return false
 
       if (this.envProjectName !== 'ph_audit') {
-        if (this.item.RobotCfg.MinRealUserCount > this.item.RobotCfg.MaxRealUserCount) {
+        if (this.item.RobotCfg.MinRealUserCount >= this.item.RobotCfg.MaxRealUserCount) {
           Message.error('“在线真人最大人数”不能小于“在线真人最小人数”')
           return
-        } else if (this.item.RobotCfg.MinTotalUserCount > this.item.RobotCfg.MaxTotalUserCount) {
+        } else if (this.item.RobotCfg.MinTotalUserCount >= this.item.RobotCfg.MaxTotalUserCount) {
           Message.error('“在线总人最大人数”不能小于“在线总人最小人数”')
           return
-        } else if (this.item.RobotCfg.MinRobotMoney > this.item.RobotCfg.MaxRobotMoney) {
+        } else if (this.item.RobotCfg.MinRobotMoney >= this.item.RobotCfg.MaxRobotMoney) {
           Message.error('“机器人携带金币上限”不能小于“机器人携带金币下限”')
           return
-        } else if (this.item.RobotCfg.MinRobotPlayTimes > this.item.RobotCfg.MaxRobotPlayTimes) {
+        } else if (this.item.RobotCfg.MinRobotPlayTimes >= this.item.RobotCfg.MaxRobotPlayTimes) {
           Message.error('“机器人最大玩牌次数上限”不能小于“机器人最大玩牌次数下限”')
           return
-        } else if (this.item.RobotCfg.MaxRobotBetTimes < this.item.RobotCfg.MinRobotBetTimes) {
+        } else if (this.item.RobotCfg.MaxRobotBetTimes <= this.item.RobotCfg.MinRobotBetTimes) {
           Message.error('“机器人最大下注次数”不能小于“机器人最小下注次数”')
           return
-        } else if (this.item.RobotCfg.MinRobotBetMoney > this.item.RobotCfg.MaxRobotBetMoney) {
+        } else if (this.item.RobotCfg.MinRobotBetMoney >= this.item.RobotCfg.MaxRobotBetMoney) {
           Message.error('“机器人下注最大筹码”不能小于“机器人下注最小筹码”')
+          return
+        } else if (this.item.RobotCfg.MinRobotBetAreas >= this.item.RobotCfg.MaxRobotBetAreas) {
+          Message.error('“机器人下注最大区域”不能小于“机器人下注最小区域”')
+          return
+        } else if (this.item.RobotCfg.MinRobotBetTimesOffset >= this.item.RobotCfg.MaxRobotBetTimesOffset) {
+          Message.error('“机器人下注最大下注次数偏移”不能小于“机器人下注最小下注次数偏移”')
+          return
+        } else if (this.item.RobotCfg.MinRobotBetAreasOffset >= this.item.RobotCfg.MaxRobotBetAreasOffset) {
+          Message.error('“机器人下注最大区域偏移”不能小于“机器人下注最小区域偏移”')
+          return
+        } else if (this.item.RobotCfg.MinRobotInitBetMoney >= this.item.RobotCfg.MaxRobotInitBetMoney) {
+          Message.error('“机器人下注最大初始筹码”不能小于“机器人下注最小初始筹码”')
+          return
+        } else if (this.item.RobotCfg.MinResetCycle >= this.item.RobotCfg.MaxResetCycle) {
+          Message.error('“机器人重置周期最大”不能小于“机器人重置周期最小”')
+          return
+        } else if (this.item.RobotCfg.MinRankRobotMoney >= this.item.RobotCfg.MaxRankRobotMoney) {
+          Message.error('“榜单机器人携带金币上限”不能小于“榜单机器人携带金币下限”')
+          return
+        } else if (this.item.RobotCfg.MinRankRobotInitBetMoney >= this.item.RobotCfg.MaxRankRobotInitBetMoney) {
+          Message.error('“榜单机器人下注最大初始筹码”不能小于“榜单机器人下注最小初始筹码”')
+          return
+        } else if (this.item.RobotCfg.MinRankRobotStart >= this.item.RobotCfg.MaxRankRobotStart) {
+          Message.error('“榜单机器人开始下注时间”不能小于“榜单机器人结束下注时间”')
+          return
+        } else if (this.item.RobotCfg.MinRankRobotTime >= this.item.RobotCfg.MaxRankRobotTime) {
+          Message.error('“榜单机器人下注最大时间”不能小于“榜单机器人下注最小时间”')
           return
         } else {
           let minBetmoney = 0
@@ -930,7 +1235,6 @@ export default {
                 return
               }
             }
-
           }
         }
       }
@@ -963,7 +1267,7 @@ export default {
       this.item.BetLevels.splice(index, 1)
     },
     setResult() {
-      if (this.envProjectName === 'ph_audit' || this.envProjectName === 'production') {
+      if (this.envProjectName === 'production') {
         Message.error('正式环境不能设置')
         return
       }
@@ -1013,6 +1317,9 @@ export default {
           }
         }
       })
+    },
+    logChange(){
+      console.log('logChange',this.item.RobotCfg.RobotActionTime)
     }
   }
 }

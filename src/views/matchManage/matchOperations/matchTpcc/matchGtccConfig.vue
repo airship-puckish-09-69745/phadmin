@@ -1,16 +1,33 @@
 <template>
   <div class="app-container">
     <el-row>
-      <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" :attr-names="AttrNames" />
+      <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" :on-compare="onCompare" :attr-names="AttrNames" />
+    </el-row>
+
+    <el-row>
+      <el-form :model="form" label-width="100px" :inline="true" size="mini">
+        <el-form-item label="阶段类型：" :required="true">
+          <el-select v-model="form.match_type" style="width: 180px;" placeholder="请选择阶段类型">
+            <el-option label="全部" :value="-1" />
+            <el-option
+              v-for="item in matchInfoCfgs"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        <el-button size="mini" type="primary" @click="getList">查询</el-button>
+        <el-button size="mini" icon="el-icon-plus" @click="showForm(0)">添加赛事任务</el-button>
+        </el-form-item>
+      </el-form>
+
     </el-row>
     <el-row>
       <el-form :model="form" label-width="100px" :inline="true" size="mini">
       </el-form>
     </el-row>
     <el-row>
-      <div style="height: 50px;">
-        <el-button type="success" icon="el-icon-plus" size="mini" @click="showForm(0)">添加赛事任务</el-button>
-      </div>
+     
 
       <el-table
         :data="posterList.tableData"
@@ -145,7 +162,8 @@ export default {
       imagePickerVisible: false,
       form: {
         status: -1,
-        app_id: -1
+        app_id: -1,
+        match_type: -1,
       },
       showCsCfgs: [],
       posterList: {
@@ -181,11 +199,16 @@ export default {
       ],
 
       matchInfoCfgs: [
-        { 'value': 1, 'label': 'GTCC入口' },
+        { 'value': 0, 'label': 'GTCC活动时间' },
+        { 'value': 1, 'label': 'GTCC日赛' },
         { 'value': 2, 'label': 'GTCC周赛' },
-        { 'value': 3, 'label': 'GTCC预选赛' },
-        { 'value': 4, 'label': 'GTCC线上决赛' },
-        { 'value': 5, 'label': 'GTCC日赛' }
+        { 'value': 3, 'label': 'GTCC月赛' },
+        { 'value': 4, 'label': 'GTCC线上半决赛' },
+        { 'value': 5, 'label': 'GTCC线上决赛' },
+        { 'value': 6, 'label': 'GTCC机酒赛' },
+        { 'value':7 , 'label': 'GTCC魔戒赛' },
+        { 'value': 8, 'label': 'GTCC豪客赛' },
+        { 'value': 9, 'label': 'GTCC线下赛时间' },
       ],
       statusCfgs: [
         { 'value': 0, 'label': '关闭' },
@@ -242,6 +265,9 @@ export default {
         if (response.RetCode === 0) {
           if (response.Data && response.Data.Data !== '' && response.Data.Data !== '{}') {
             this.posterList = JSON.parse(response.Data.Data)
+            if(this.form.match_type !== -1){
+              this.posterList.tableData = this.selectSuiteMatchTypeData(this.posterList.tableData, this.form.match_type)
+            }
             this.posterList.tableData.sort((a, b) => {
               if (a.status === b.status) {
                 return a.match_type - b.match_type; // 金额降序
@@ -378,7 +404,7 @@ export default {
         )
       }
       this.raw.Data = JSON.stringify(this.posterList)
-      console.log("保存数据 ",this.posterList)
+      //console.log("保存数据 ",this.posterList)
       request({
         url: 'customizeconfig/update',
         method: 'post',
@@ -445,12 +471,66 @@ export default {
         this.errmsg("请填写标题")
         return false
       }
-      if (this.editForm.data.match_type === 0) {
-        this.errmsg("请选择赛事类型")
-        return false
-      }
       return true
-    }
+    },
+    selectSuiteMatchTypeData(tableData, match_type) {
+      const suitedItemList = []
+      for(const obj of tableData){
+        if(obj.match_type === match_type){
+          suitedItemList.push(obj)
+        }
+      }
+      return suitedItemList
+    },
+    onCompare(pre,pro) {
+      try {
+        const preVal=JSON.parse(pre.Data)
+        const proVal=JSON.parse(pro.Data)
+        console.log("赛事配置对比",preVal)
+        console.log("赛事配置对比",proVal)
+        let str = ""
+        // 编辑
+        let has = false
+        if(preVal.tableData && proVal.tableData && Array.isArray(preVal.tableData) && Array.isArray(proVal.tableData)){
+          for(let preItem of preVal.tableData){
+            for(let proItem of proVal.tableData){
+              if(preItem && proItem && preItem.id === proItem.id){
+                if(JSON.stringify(preItem) !== JSON.stringify(proItem)){
+                  has && (str += "\r\n---");has=true
+                  str += `\r\n修改：【${preItem.name}，${this.getMatchTypeName(preItem.match_type)}，${new Date(preItem.start_time*1000).toLocaleString()}，${new Date(preItem.end_time*1000).toLocaleString()}】`
+                }
+              }
+            }
+          }
+        }
+        //新增
+        for(const preItem of preVal.tableData){
+          if(!proVal.tableData.some(item=>item.id === preItem.id)){
+            has && (str += "\r\n---");has=true
+            str += `\r\n增加：【${preItem.name}】，${this.getMatchTypeName(preItem.match_type)}，${new Date(preItem.start_time*1000).toLocaleString()}，${new Date(preItem.end_time*1000).toLocaleString()}`
+          }
+        }
+        //删除 
+        for(const proItem of proVal.tableData){
+          if(!preVal.tableData.some(item=>item.id === proItem.id)){
+            has && (str += "\r\n---");has=true
+            str += `\r\n删除：【${proItem.name}】，${this.getMatchTypeName(proItem.match_type)}，${new Date(proItem.start_time*1000).toLocaleString()}，${new Date(proItem.end_time*1000).toLocaleString()}`
+          }
+        }
+        return str
+      } catch(err) {
+        console.error("onCompare err:", err)
+        return "对比失败：" + err.message
+      }
+    },
+    getMatchTypeName(match_type) {
+      for(const obj of this.matchInfoCfgs){
+        if(obj.value === match_type){
+          return obj.label
+        }
+      }
+      return ''
+    },
   }
 }
 </script>

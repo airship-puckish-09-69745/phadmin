@@ -12,7 +12,7 @@ import {
   initWhiteList,
   initSignExtra,
   initListExtra,
-  initPrizeExtra
+  initPrizeExtra, initSingleCopy
 } from '../utils/matchConfigUtils'
 
 export const matchFormMixin = {
@@ -154,6 +154,7 @@ export const matchFormMixin = {
       this.editForm.signExtra = initSignExtra()
       this.editForm.listExtra = initListExtra()
       this.editForm.prizeExtra = initPrizeExtra()
+      this.editForm.singleCopyExtr = initSingleCopy()
     },
 
     /**
@@ -215,7 +216,6 @@ export const matchFormMixin = {
             })
           }
         }
-        console.log("saveMatch rankReward 1111",rankReward)
         // 发送请求
         const response = await request({
           url: '/matchconfig/match/config/create',
@@ -257,6 +257,8 @@ export const matchFormMixin = {
           if (this.editForm.data.id > 0) {
             showMsg = '编辑比赛配置成功！'
           }
+          this.editForm.singleCopyExtr.Id = 0
+          this.editForm.singleCopyExtr.isCopy = false
           Message.success(showMsg)
           this.closeEditDialog()
           // 重新加载列表
@@ -330,7 +332,7 @@ export const matchFormMixin = {
       if (this.editForm.prizeExtra.awardType === 0) {
         this.editForm.prizeExtra.rewardType = 1
         this.editForm.prizeExtra.sceneId = 0
-        console.log("checkRewardCfg rewards",this.editForm.rankRewards)
+        //console.log("checkRewardCfg rewards",this.editForm.rankRewards)
         if (!await this.checkRewardCfg(this.editForm.rankRewards)) {
           return false
         }
@@ -376,6 +378,29 @@ export const matchFormMixin = {
         }
       }
 
+      // 单场赛时间检查
+      if(this.editForm.data.repeatType == 0){
+        // 检查时间控件是否已选择
+        if (!this.editForm.loopDetail.onceTime || !Array.isArray(this.editForm.loopDetail.onceTime) ||
+            this.editForm.loopDetail.onceTime[0] == null || this.editForm.loopDetail.onceTime[1] == null ||
+            this.editForm.loopDetail.onceTime[0] == '' || this.editForm.loopDetail.onceTime[1] == '') {
+              Message.error('开赛时间不能为空')
+          return false
+        }
+        const bTime = Math.floor(this.editForm.loopDetail.onceTime[0] / 1000)
+        const eTime = Math.floor(this.editForm.loopDetail.onceTime[1] / 1000)
+
+        //开赛时间or结束时间 不能小于当前时间一年之前的时间
+        if (bTime < Date.now() / 1000 - 365 * 24 * 60 * 60 || eTime < Date.now() / 1000 - 365 * 24 * 60 * 60) {
+          Message.error('开赛时间或结束时间不能小于当前时间一年之前的时间')
+          return false
+        }
+        //结束时间跟开始时间要大于10分钟
+        if (eTime - bTime < 600) {
+          Message.error('比赛开始结束间隔要大于10分钟！')
+          return false
+        }
+      }
 
       if (this.editForm.data.repeatType == 1) {
         if (Math.floor(this.timeToSec(this.editForm.loopDetail.single.etime)) - Math.floor(this.timeToSec(this.editForm.loopDetail.single.stime)) < 600) {
@@ -429,9 +454,6 @@ export const matchFormMixin = {
       } else if (this.editForm.signExtra.matchMaxLimit > 0 && this.editForm.signExtra.matchMaxLimit < this.editForm.data.opentMatchMember) {
            Message.error('报名最大限制必须大于最低开赛人数')
         return false
-      } else if ((this.editForm.data.repeatType == 0) && ((Math.floor(this.editForm.loopDetail.onceTime[1] / 1000) - Math.floor(this.editForm.loopDetail.onceTime[0] / 1000)) < 600)) {
-        Message.error('比赛开始结束间隔要大于10分钟！')
-        return false
       } else if (this.editForm.data.signUpNum < 0) {
         Message.error('报名费数值不能小于零')
         return false
@@ -443,6 +465,10 @@ export const matchFormMixin = {
         const endMin = this.configs.endMinuteCfgs.get(this.editForm.data.csId)
         if ((endMin > 0) && ((this.editForm.data.delayEnterSeconds / 60) > endMin)) {
           Message.error('延迟进入时间不能大于打立出局阶段总时长')
+          return false
+        }
+        if ((endMin > 0) && ((this.editForm.listExtra.delaySignUpSeconds / 60) > endMin)) {
+          Message.error('延迟报名时间不能大于打立出局阶段总时长')
           return false
         }
 
@@ -487,6 +513,9 @@ export const matchFormMixin = {
         return false
       }
 
+      if (!this.checkDelaySignUpConfig()) {
+        return false
+      }
       return true
     },
 
@@ -610,9 +639,23 @@ export const matchFormMixin = {
           }
         }
       }
-      if (this.configs.reubyGrowCfgs.length <= this.editForm.signExtra.reubyExtra.reubyRound) {
+
+      var grow_total = this.configs.growTotalNumCfgs.get(this.editForm.data.csId)
+      if (grow_total.length <= this.editForm.signExtra.reubyExtra.reubyRound) {
         Message.error('rebuy截止轮次大于当前赛制打立阶段的最大轮次,请检查配置')
         return false
+      }
+      //如果开启了延迟报名时间 则rebuy总时长必须大于延迟报名时间
+      if(this.editForm.listExtra.delaySignUpSeconds >0){
+        let rebuyTotalSecs = 0
+        for (let i = 0; i < this.editForm.signExtra.reubyExtra.reubyRound; i++) {
+          rebuyTotalSecs += disuseScores[i].duration
+        }
+        //note 多加10s判断，因为比赛服务多给了10s的缓冲时间
+        if (this.editForm.listExtra.delaySignUpSeconds +10 >= rebuyTotalSecs) {
+          Message.error('延迟报名时间不能大于等于rebuy总时长')
+          return false
+        }
       }
       return true
     },
@@ -955,7 +998,8 @@ export const matchFormMixin = {
           propsIcon: '',
           propsAttr: '',
           propsNum: 0,
-          propExpireDays: -1
+          propExpireDays: -1,
+          propsSceneId:0,
         }
       }
       this.editForm.rankRewards.push(newReward)
@@ -1023,6 +1067,35 @@ export const matchFormMixin = {
       // 將字符串轉換為數字
       const numericValue = parseInt(value, 10)
       this.editForm.rankRewards[rankIndex].endRank = isNaN(numericValue) ? 0 : numericValue
-    }
-  }
+    },
+    handleSetCopyExtr(ID) {
+      this.editForm.singleCopyExtr.isCopy = true
+      this.editForm.singleCopyExtr.id = ID
+    },
+    checkDelaySignUpConfig(){
+      if(this.editForm.listExtra.delaySignUpSeconds > 0){
+        if(this.editForm.data.opentMatchType === 1){
+          this.errmsg('sng比赛不支持延迟报名')
+          return false
+        }
+        //如果开启了每日多长循环赛
+        if(this.editForm.data.repeatType ===2 && this.editForm.loopDetail.loopData.length >0){
+          for(let i=0;i<this.editForm.loopDetail.loopData.length;i++){
+            if(this.editForm.loopDetail.loopData[i].intervalSeconds < 30*60) {
+              this.errmsg('每日循环赛的间隔时间不能小于30分钟')
+              return false
+            }
+          }
+        }
+
+        //不同时支持延迟进入 跟延迟报名
+        if(this.editForm.data.delayEnterSeconds >0 && this.editForm.listExtra.delaySignUpSeconds >0){
+          this.errmsg('延迟进入时间不能跟延迟报名时间同时配置')
+          return false
+        }
+        return true
+      }
+      return true
+    },
+  },
 }

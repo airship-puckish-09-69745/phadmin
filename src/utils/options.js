@@ -17,7 +17,7 @@ export const CHANNEL_OPTIONS = [
   { 'value': 'AP', 'label': 'AP' },
   { 'value': 'GP', 'label': 'GP' },
   //{ 'value': 'TP', 'label': 'TP' },
-  { 'value': 'PG', 'label': 'PG' },
+  // { 'value': 'PG', 'label': 'PG' }, 2025-12-22去除PG
   { 'value': 'Dev', 'label': 'Dev' }
 ]
 // 道具类型
@@ -43,7 +43,8 @@ export const ITEM_DAY_TYPE_OPTIONS = [
   { 'value': 7, 'label': '7天', disabled: false },
   { 'value': 30, 'label': '30天', disabled: false },
   { 'value': 365, 'label': '365天', disabled: false },
-  { 'value': 0, 'label': '永久', disabled: false }
+  { 'value': 0, 'label': '永久', disabled: false },
+  { 'value': -1, 'label': 'freeSpin-5分钟测试', disabled: true }
 ]
 
 // 道具发放审批状态
@@ -138,7 +139,23 @@ export const MATCH_UNIQUE_ID_CFG =[
   { 'value': 10005, 'label': 'P40' },
   { 'value': 10006, 'label': 'P100' },
   { 'value': 10007, 'label': 'P300' },
-  { 'value': 10008, 'label': 'GTCC 2005' },
+
+  //以下全局ID为GTCC线上赛临时用 不长期占用
+  { 'value': 11001, 'label': 'GTCC日赛' },
+  { 'value': 11002, 'label': 'GTCC周赛' },
+  { 'value': 11003, 'label': 'GTCC月赛' },
+  { 'value': 11004, 'label': 'GTCC线上半决赛' },
+  { 'value': 11005, 'label': 'GTCC线上决赛' },
+  { 'value': 11006, 'label': 'GTCC机酒赛' },
+  { 'value': 11007, 'label': 'GTCC魔戒赛' },
+  { 'value': 11008, 'label': 'GTCC豪客赛' },
+
+  //以下全局ID为圣诞活动赛线临时用 不长期占用
+  { 'value': 11101, 'label': '双旦每日iwatch赛' },
+  { 'value': 11102, 'label': '双旦每日IPhone赛' },
+  { 'value': 11103, 'label': '双旦大赛' },
+  { 'value': 11104, 'label': '双旦豪客赛' },
+  { 'value': 11105, 'label': '双旦大赛二' },
 ]
 
 // 比赛Pusoy全局ID集合
@@ -151,7 +168,10 @@ export const MATCH_PUSOY_UNIQUE_ID_CFG =[
   { 'value': 20005, 'label': 'P40' },
   { 'value': 20006, 'label': 'P100' },
   { 'value': 20007, 'label': 'P300' },
-  { 'value': 20008, 'label': 'GTCC 2005' },
+  { 'value': 20009, 'label': 'P60' },
+  { 'value': 20010, 'label': 'P150' },
+  { 'value': 20011, 'label': 'P400' },
+  { 'value': 20012, 'label': '6000Free' },
 ]
 
 //牌桌TableId
@@ -171,13 +191,12 @@ export const MATCH_PUSOY_TABLE_SCENE_ID_CFG =[
 
 //比赛页签选项
 export const MATCH_LIST_TAG_OPTIONS = [
-  { 'value': 0, 'label': 'All', disabled: false },
+  { 'value': 0, 'label': '未分类', disabled: false },
   { 'value': 1, 'label': 'Events', disabled: false },
   { 'value': 2, 'label': 'FREE', disabled: false },
   { 'value': 3, 'label': 'Pro Arena', disabled: false },
-  { 'value': 4, 'label': 'GTCC', disabled: false },
-  { 'value': 5, 'label': 'GTCC预选赛', disabled: false },
-  { 'value': 6, 'label': 'GTCC特别赛', disabled: false },
+  { 'value': 4, 'label': 'TPCC', disabled: false },
+  { 'value': 5, 'label': 'TPCC Events', disabled: false },
 ]
 
 //比赛GameId选项
@@ -193,3 +212,4 @@ export const MATCH_IUPSTREAM_TYPE_OPTIONS = {
   UPSTREAM_TYPE_TEXAS_MTT:2032,             //德州MTT
   MATCH_UPSTREAM_TYPE_PUSOY: 2033,          //pusoy
 }
+

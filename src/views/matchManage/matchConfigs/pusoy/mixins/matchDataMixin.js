@@ -4,11 +4,11 @@
  */
 import { Message } from 'element-ui'
 import request from '@/utils/request'
-import { IsMars } from '@/utils/env'
+import { IsMars,IsProd } from '@/utils/env'
 import { MATCH_IUPSTREAM_TYPE_OPTIONS } from '@/utils/options'
 import { PROP_TYPE_OPTIONS } from '../utils/matchConfigConstants'
 import { getAllMatchGuidesConfig } from '@/utils/common-game-config'
-
+import { IsNewTicketProp, MATCH_TICKET_RIGHTS_ID_CFG_PROD, MATCH_TICKET_RIGHTS_ID_CFG_DEV } from '@/utils/prop'
 export const matchDataMixin = {
   methods: {
     /**
@@ -85,6 +85,8 @@ export const matchDataMixin = {
           await this.getCsCfgsAsync(env)
         } else {
           // Mars 环境处理
+          await this.getCsIdCfgs(env)
+          await this.getCsCfgsAsync(env)
         }
       } catch (error) {
         // 获取赛制配置错误
@@ -223,40 +225,74 @@ export const matchDataMixin = {
               propsIcon: '',
               propsAttr: '',
               propsCost: '',
-              propsShowName: ''
+              propsShowName: '',
+              propsSceneId: 0,
+              propsAppId: 0,
             }]
 
+            let ticketConfigList = IsProd() ? MATCH_TICKET_RIGHTS_ID_CFG_PROD : MATCH_TICKET_RIGHTS_ID_CFG_DEV
             this.configs.matchTicketsCfgs = []
             const timestamp = Date.now() / 1000
             const propsTypeList = [PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET, PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME,PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW]
-
             for (const item of data.list) {
               if (propsTypeList.includes(item.item_type)) {
+                let canPush = false
+                let sceneId = 0
+                let appId = 0
+
                 if (item.status === 1 &&
                     ((item.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET && item.expire_time > timestamp) ||
                      item.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME || item.item_type=== PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW)) {
-
                   const showName = item.show_name ? `${item.item_name}(${item.show_name})` : item.item_name
-
-                  this.configs.matchPropsCfgs.push({
-                    propsType: item.item_type,
-                    propsId: item.id,
-                    propsName: item.item_name,
-                    propsIcon: item.image,
-                    propsAttr: item.item_describe,
-                    propsCost: item.item_cost,
-                    propsShowName: showName
-                  })
-
-                  if (item.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET||item.item_type=== PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW) {
-                    this.configs.matchTicketsCfgs.push({
-                      label: showName,
-                      value: item.id
+                  if (IsNewTicketProp(item.item_type)) {
+                    if(item.item_extra.length <= 0){
+                      continue
+                    }
+                    const exitData = JSON.parse(item.item_extra)
+                    if(exitData === null || exitData === undefined || exitData.appId === 0 || typeof exitData.appId === 'undefined'){
+                      continue
+                    }
+                    appId = exitData.appId
+                    if (!ticketConfigList.hasOwnProperty(appId)) {
+                      continue
+                    }
+                    let tickets = ticketConfigList[exitData.appId].find(ticket => ticket.ticketId === item.id)
+                    if(tickets){
+                      canPush = true
+                      sceneId = tickets.sceneId
+                    }
+                  }else{
+                    canPush = true
+                  }
+                  if (canPush) {
+                    this.configs.matchPropsCfgs.push({
+                      propsType: item.item_type,
+                      propsId: item.id,
+                      propsName: item.item_name,
+                      propsIcon: item.image,
+                      propsAttr: item.item_describe,
+                      propsCost: item.item_cost,
+                      propsShowName: showName,
+                      propsSceneId: sceneId,
+                      propsAppId: appId,
                     })
+                  }
+                  if (item.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET || item.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW) {
+                    if (canPush) {
+                      this.configs.matchTicketsCfgs.push({
+                        'label': showName,
+                        'value': item.id,
+                        'propsAppId': appId,
+                        'propsType': item.item_type,
+                      })
+                    }
                   }
                 }
               }
+              //console.log("matchTicketsCfgs",this.configs.matchTicketsCfgs)
+             // console.log("matchPropsCfgs",this.configs.matchPropsCfgs)
             }
+
           }
         }
       } catch (error) {

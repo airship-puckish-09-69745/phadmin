@@ -11,7 +11,7 @@
           />
         </el-form-item>
         <el-form-item label="玩法：">
-          <el-select v-model="searchForm.gameId" placeholder="请选择" @change="changeLevelConfig">
+          <el-select v-model="searchForm.gameId" placeholder="请选择" @change="changeLevelConfig" filterable>
             <el-option
               v-for="item in gameConfig"
               :key="item.value"
@@ -226,7 +226,6 @@ export default {
         { 'value': 1, 'label': '普通场次' }
       ],
       gameConfig: [
-        { 'value': 0, 'label': '全部' },
         { 'value': 25, 'label': 'color game' },
         { 'value': 20, 'label': 'Mines - 扫雷' },
         { 'value': 100, 'label': 'Tower' },
@@ -244,6 +243,7 @@ export default {
         { 'value': 125, 'label': 'FreeSpin' },
         { 'value': 150, 'label': 'SuperGemIII' },
         { 'value': 156, 'label': 'CrazyAce' },
+        { 'value': 157, 'label': 'CrazyAceMars' },
         { 'value': 82, 'label': 'Millionaire' },
         { 'value': 166, 'label': 'FireLink' },
         { 'value': 174, 'label': 'TreasureBowl' },
@@ -254,9 +254,13 @@ export default {
         { 'value': 129, 'label': 'Live Color' },
         { 'value': 132, 'label': '新版扫雷' },
         { 'value': 210, 'label': 'LuckySpirits' },
+        { 'value': 232, 'label': 'mafiawars' },
         { 'value': 216, 'label': 'Phoenix' },
         { 'value': 134, 'label': 'Pusoy JP' },
         { 'value': 135, 'label': 'SUPER COLOR' },
+        { 'value': 139, 'label': 'Manny Punch' },
+        { 'value': 140, 'label': 'HiloPlus' },
+        { 'value': 500, 'label': 'GoldMaster' },
       ],
       userTypeConfig: [
         { 'value': -1, 'label': '全部' },
@@ -369,7 +373,7 @@ export default {
           { 'value': 0, 'label': '全部' },
           { 'value': 2, 'label': 'EXPERT' },
           { 'value': 1, 'label': 'HIGH' }]
-      } else if (this.searchForm.gameId === 106) {
+      } else if (this.searchForm.gameId === 106 || this.searchForm.gameId === 500) {
         this.levelConfig = [
           { 'value': 0, 'label': '全部' },
           { 'value': 1, 'label': 'grand' },

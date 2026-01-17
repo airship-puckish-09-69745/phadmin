@@ -36,6 +36,8 @@
               <el-option label="GrandAceMars" :value="155" />
               <el-option label="GrandAce" :value="154" />
               <el-option label="GrandAceMars" :value="155" />
+              <el-option label="CrazyAce" :value="156" />
+              <el-option label="CrazyAceMars" :value="157" />
               <el-option label="SharkKingdom" :value="158" />
               <el-option label="SharkKingdomMars" :value="159" />
               <el-option label="GigaAce" :value="160" />
@@ -96,6 +98,17 @@
               <el-option label="223:LionFortuneMars" :value="223" />
               <el-option label="226:FortuneWheel" :value="226" />
               <el-option label="227:FortuneWheel Mars" :value="227" />
+              <el-option label="230:PahiyasWins" :value="230" />
+              <el-option label="231:PahiyasWins Mars" :value="231" />
+              <el-option label="232:MafiaWars" :value="232" />
+              <el-option label="233:MafiaWars Mars" :value="233" />
+              <el-option label="234:FortuneTree" :value="234" />
+              <el-option label="235:FortuneTreeMars" :value="235" />
+              <el-option label="236:PacquiaoFortune" :value="236" />
+              <el-option label="237:PacquiaoFortuneMars" :value="237" />
+              <el-option label="238:MasskaraFortune" :value="238" />
+              <el-option label="239:MasskaraFortuneMars" :value="239" />
+              <el-option label="1236:PacquiaoFortunePlayNow" :value="1236" />
             </el-select>
           </el-form-item>
 
@@ -163,6 +176,7 @@
             <el-input v-model="slotsData.AutoSpinNum[1]"> </el-input>
           </el-form-item>
 
+          <span style="color: red; font-size: 11px;">注: 正式生效日期为填写日期的第二天 </span>
           <el-form-item label="TopWins开始生效日期">
             <el-date-picker
               v-model="topWinsStartTime"
@@ -176,12 +190,25 @@
             <el-input v-model.number="topWinsLimit" />
           </el-form-item>
 
-          <el-form-item label="是否启用新版剧本">
-            <el-select v-model="slotsData.EnableScriptV3" disabled>
-              <el-option label="启用" :value="true" />
-              <el-option label="禁用" :value="false" />
-            </el-select>
-          </el-form-item>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="是否启用新版剧本">
+                <el-select v-model="slotsData.EnableScriptV3" disabled>
+                  <el-option label="启用" :value="true" />
+                  <el-option label="禁用" :value="false" />
+                </el-select>
+              </el-form-item>
+            </el-col>
+
+            <el-col :span="12">
+              <el-form-item label="是否关闭购买免费">
+                <el-select v-model="slotsData.IsCloseBuyFree">
+                  <el-option label="是" :value="true" />
+                  <el-option label="否" :value="false" />
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
 
           <el-form-item>
             <el-button type="success" @click="submitFrm">保存</el-button>
@@ -222,6 +249,7 @@ export default {
   },
   data() {
     var data = {
+      itemEnv: process.env.NODE_ENV,
       lock: false,
       recommendBet: this.slotsData.RecommendBet ? this.slotsData.RecommendBet * this.slotsData.BaseBet / 1000 : 0,
       initialWinTypeMinOdds: [],
@@ -244,14 +272,38 @@ export default {
     }
     return data
   },
-  updated() {
-    if (this.lock === false) {
-      this.$refs.compare.SetOldVal(this.getDiffData(this.initialWinTypeMinOdds, this.initialBets, this.initialAutoSpinNum))
-      this.lock = true
-      console.log('origin data', this.getDiffData(this.initialWinTypeMinOdds, this.initialBets, this.initialAutoSpinNum))
+  // updated() {
+  //   if (this.lock === false) {
+  //     this.$refs.compare.SetOldVal(this.getDiffData(this.initialWinTypeMinOdds, this.initialBets, this.initialAutoSpinNum))
+  //     this.lock = true
+  //     console.log('origin data', this.getDiffData(this.initialWinTypeMinOdds, this.initialBets, this.initialAutoSpinNum))
+  //   }
+  // },
+  mounted() {
+    this.initCompare()
+  },
+  watch: {
+    slotsData: {
+      deep: true,
+      handler() {
+        if (!this.lock) {
+          this.initCompare()
+        }
+      }
     }
   },
   methods: {
+    initCompare() {
+      this.$nextTick(() => {
+        if (this.$refs.compare) {
+          this.$refs.compare.SetOldVal(
+            this.getDiffData(this.initialWinTypeMinOdds, this.initialBets, this.initialAutoSpinNum)
+          )
+          this.lock = true
+          console.log('origin data', this.getDiffData(this.initialWinTypeMinOdds, this.initialBets, this.initialAutoSpinNum))
+        }
+      })
+    },
     getDiffData(winTypeMinOdds, bets, autoSpinNum) {
       return {
         'SlotsType': this.slotsData.SlotsType,
@@ -274,7 +326,8 @@ export default {
         'AutoSpinNum': autoSpinNum,
         'BetOddsList': this.slotsData.BetOddsList,
         'TopWinsLimit': this.slotsData.TopWinsLimit,
-        'TopWinsStartTime': this.slotsData.TopWinsStartTime
+        'TopWinsStartTime': this.slotsData.TopWinsStartTime,
+        'IsCloseBuyFree': this.slotsData.IsCloseBuyFree
       }
     },
     submitFrm() {

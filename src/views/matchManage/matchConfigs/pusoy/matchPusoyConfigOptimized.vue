@@ -44,6 +44,7 @@
         @copy-all="handleCopyAll"
         @expire-all="handleExpireAll"
         @delete-all-off="handleDeleteAllOff"
+        @sort-change="handleSortChange"
       />
 
       <!-- 编辑对话框 -->
@@ -146,7 +147,7 @@ import {
   initWhiteList,
   initSignExtra,
   initListExtra,
-  initPrizeExtra
+  initPrizeExtra, initSingleCopy
 } from './utils/matchConfigUtils'
 
 export default {
@@ -231,7 +232,8 @@ export default {
         whileList: initWhiteList(),
         signExtra: initSignExtra(),
         listExtra: initListExtra(),
-        prizeExtra: initPrizeExtra()
+        prizeExtra: initPrizeExtra(),
+        singleCopyExtr:initSingleCopy(),
       },
 
       // 配置数据
@@ -259,7 +261,7 @@ export default {
         guideShowCfgs: [],
         matchListTagOptions: MATCH_LIST_TAG_OPTIONS,
         itemDayTypeOptions: [],
-        
+
 
         // 動態場景配置（通過 getAfterUpdatedSceneSelection 方法生成）
         betScenesCfgs: [],

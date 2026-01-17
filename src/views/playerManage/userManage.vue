@@ -25,7 +25,7 @@
             <el-select v-model="accountForm.AppId" placeholder="请选择" size="mini">
               <el-option
                 v-for="row in appInfo"
-                :key="row.key"
+                :key="'app'+row.key"
                 :label="row.label"
                 :value="row.key"
               />
@@ -82,11 +82,11 @@
             <template v-if="item.WalletType==1">
               <el-button size="mini" @click="refreshWalletMoney">刷新资产</el-button>
             </template>
-            <el-button size="mini" @click="showPayWithdrawLog" v-if="hasPayWithdrawLogPerm">充提明细</el-button>
+            <el-button v-if="hasPayWithdrawLogPerm" size="mini" @click="showPayWithdrawLog">充提明细</el-button>
           </el-descriptions-item>
-          <el-descriptions-item label="总充值：" v-if="hasPayWithdrawLogPerm">{{ formatNumber(PayWithdrawSummary.PayAmount / 1000) }}</el-descriptions-item>
-          <el-descriptions-item label="总提现：" v-if="hasPayWithdrawLogPerm">{{ formatNumber(PayWithdrawSummary.WithdrawAmount / 1000) }}</el-descriptions-item>
-          <el-descriptions-item label="首充时间：" v-if="hasPayWithdrawLogPerm"><DateTimeShow v-if="PayWithdrawSummary.FirstPayTime>0" :show-type="2" :timestamp="PayWithdrawSummary.FirstPayTime/1000" /></el-descriptions-item>
+          <el-descriptions-item v-if="hasPayWithdrawLogPerm" label="总充值：">{{ formatNumber(PayWithdrawSummary.PayAmount / 1000) }}</el-descriptions-item>
+          <el-descriptions-item v-if="hasPayWithdrawLogPerm" label="总提现：">{{ formatNumber(PayWithdrawSummary.WithdrawAmount / 1000) }}</el-descriptions-item>
+          <el-descriptions-item v-if="hasPayWithdrawLogPerm" label="首充时间："><DateTimeShow v-if="PayWithdrawSummary.FirstPayTime>0" :show-type="2" :timestamp="PayWithdrawSummary.FirstPayTime/1000" /></el-descriptions-item>
           <el-descriptions-item label="钱包类型：" :span="3">{{ item.WalletType==1?'单一钱包':'转账钱包' }}</el-descriptions-item>
           <el-descriptions-item label="平台注册时间：" :span="4"><DateTimeShow v-if="item.PlatRegisterTime>0" :show-type="2" :timestamp="item.PlatRegisterTime/1000" /></el-descriptions-item>
           <el-descriptions-item label="UID注册时间："><DateTimeShow :show-type="2" :timestamp="item.RegisterTime" /></el-descriptions-item>
@@ -165,51 +165,64 @@
           </el-descriptions-item>
 
           <el-descriptions-item label="添加道具:" :span="4">
-            <el-col :span="1"> {{'类型:'}} </el-col>
-            <el-col  :span="2">
+            <el-col :span="1"> {{ '类型:' }} </el-col>
+            <el-col :span="2">
               <el-select v-model.number="item.ItemType" size="mini" placeholder="请选择" @change="ShowItemList(item.ItemType)">
-                <el-option v-for="option in ITEM_TYPE_OPTIONS" :key="option.value" :label="option.label" :value="option.value" :disabled="option.disabled"
-                ></el-option>
+                <el-option
+                  v-for="option in ITEM_TYPE_OPTIONS"
+                  :key="'itemtype'+option.value"
+                  :label="option.label"
+                  :value="option.value"
+                  :disabled="option.disabled"
+                />
               </el-select>
             </el-col>
-            <el-col :span="1" :offset="1"> {{'名称:'}} </el-col>
+            <el-col :span="1" :offset="1"> {{ '名称:' }} </el-col>
             <el-col :span="3">
               <template>
-                <el-select v-model.number="item.ItemCfgId" size="mini" placeholder="请选择" @change="handleItemChange(item.ItemCfgId)">
-                  <el-option v-for="option in tableItemData" :key="option.value" :label="option.label" :value="option.value" :disabled="disableByPropId(option.value)"
-                  ></el-option>
+                <el-select v-model.number="item.ItemCfgId" filterable size="mini" placeholder="请选择" @change="handleItemChange">
+                  <el-option
+                    v-for="option in tableItemData"
+                    :key="'itemcfgid'+Number(option.value)"
+                    :label="option.label"
+                    :value="Number(option.value)"
+                    :disabled="disableByPropId(option.value)"
+                  />
                 </el-select>
               </template>
             </el-col>
-            <el-col :span="1" :offset="1"> {{'数量:'}} </el-col>
-            <el-col :span="2">
-              <el-input v-model.number="item.ItemNum" size="mini" />
-            </el-col>
-            <el-col v-show="(item.ItemType===PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN) && isNegativeItemNum" :span="1" :offset="1"> {{'UUID:'}} </el-col>
-            <el-col  v-show="(item.ItemType===PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN) && isNegativeItemNum" :span="2">
+            <el-col v-show="isShowFreeSpinGame" :span="1" :offset="1"> {{ '游戏:' }} </el-col>
+            <el-col v-show="isShowFreeSpinGame" :span="3">
               <template>
-                <el-select v-model="propFrom.ItemUuId" :key="item.ItemCfgId" size="mini" placeholder="请选择">
-                  <el-option v-for="option in tablePropUuIdData" :key="option.value" :label="option.label" :value="option.value"
-                  ></el-option>
+                <el-select  v-model="ItemFreeSpinGids" multiple clearable filterable default-first-option size="mini" placeholder="请选择">
+                  <el-option
+                    v-for="option in FreeSpinGames"
+                    :key="option.value"
+                    :label="option.label"
+                    :value="option.value"
+                  />
                 </el-select>
               </template>
             </el-col>
-            <el-col v-show="(item.ItemType === 2 || item.ItemType === 4 || item.ItemType === 5 ||[7,8,9].includes(item.ItemType))&&!isNegativeItemNum" :span="1" :offset="1"> {{'时间:'}} </el-col>
+            <el-col :span="1" :offset="1"> {{ '数量:' }} </el-col>
+            <el-col :span="2">
+              <el-input v-model.number="item.ItemNum" size="mini" type="number" min="0" :disabled="isNewTicketProp(item.ItemType)"  @input="item.ItemNum = item.ItemNum < 0 ? 0 : item.ItemNum" />
+            </el-col>
+            <el-col v-show="(item.ItemType === 2 || item.ItemType === 4 || item.ItemType === 5 ||[7,8,9].includes(item.ItemType))&&!isNegativeItemNum" :span="1" :offset="1"> {{ '时间:' }} </el-col>
             <el-col v-show="(item.ItemType === 2 ||item.ItemType === 4 || item.ItemType === 5 ||[7,8,9].includes(item.ItemType)) && !isNegativeItemNum" :span="2">
               <template>
                 <el-select v-model="item.ItemUseTime" size="mini" placeholder="请选择">
-                  <el-option v-for="option in ITEM_DAY_TYPE_OPTIONS" :key="option.value"
-                             :label="option.label" :value="option.value" :disabled="option.disabled || (item.ItemType === 5 && (option.value === 0 || option.value === 365))">
+                  <el-option v-for="option in ITEM_DAY_TYPE_OPTIONS" :key="'itemusertime'+option.value"
+                             :label="option.label" :value="option.value" :disabled="isItemUseTimeDisabled(option)">
                   </el-option>
                 </el-select>
               </template>
             </el-col>
-            <el-col :span="3" :offset="1">
+            <el-col :span="1" :offset="1">
               <el-button type="primary" size="mini" @click="saveItemInfo">提交</el-button>
             </el-col>
           </el-descriptions-item>
-
-          <el-descriptions-item label="tongits信任分：" :span="1" >
+          <el-descriptions-item label="tongits信任分：" :span="1">
             <el-col :span="8">
               <el-tag>{{ formatNumber(item.TrustScore) }}</el-tag>
               <el-tag v-if="item.TrustType == 1" type="success">低危用户</el-tag>
@@ -218,10 +231,10 @@
               <el-tag v-if="item.TrustType == 2" type="success">疑似用户</el-tag>
               <el-tag v-if="item.TrustType == 3" type="success">黑子用户</el-tag>
             </el-col>
-            <el-col :span="6" v-if="env==='test'">
-              <el-input v-model.number="cheatScore" size="mini" placeholder="正加负减"/>
+            <el-col v-if="env==='test'" :span="6">
+              <el-input v-model.number="cheatScore" size="mini" placeholder="正加负减" />
             </el-col>
-            <el-col :span="4" v-if="env==='test'">
+            <el-col v-if="env==='test'" :span="4">
               <el-button type="primary" size="mini" @click="incTrustScore()">增加信任分</el-button>
             </el-col>
           </el-descriptions-item>
@@ -253,7 +266,7 @@
         </el-descriptions-item>
         <el-descriptions-item label="增加(减少)信誉分">
           <el-col :span="4">
-            <el-input v-model.number="creditChange" size="mini" style="margin-right: 10px;"/>
+            <el-input v-model.number="creditChange" size="mini" style="margin-right: 10px;" />
           </el-col>
           <el-col :span="2">
             <el-button type="primary" style="margin-right: 100px;" size="mini" @click="saveCreditScore">提交</el-button>
@@ -281,7 +294,7 @@
             <el-row>
               <el-col :span="16">
                 <el-select v-model="selectGid" size="mini">
-                  <el-option v-for="opt in GameOption" :key="opt.value" :label="opt.label" :value="opt.value" />
+                  <el-option v-for="opt in GameOption" :key="'selectGid'+opt.value" :label="opt.label" :value="opt.value" />
                 </el-select>
               </el-col>
               <el-col :span="8">
@@ -322,7 +335,7 @@
             <el-select v-model="UserTag.Color" placeholder="placeholder">
               <el-option
                 v-for="opt in ColorOption"
-                :key="opt.value"
+                :key="'userTagColor'+opt.value"
                 :label="opt.label"
                 :value="opt.value"
               />
@@ -399,13 +412,17 @@ import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import UidInput from '@/components/UidInput'
 import request from '@/utils/request'
-import { $libDate, $libShow, $libType, MoneyShow } from '@/utils/common'
+import { $libDate, $libShow, $libType, ClientTableData, MoneyShow } from '@/utils/common'
 import store from '@/store'
 import { Message } from 'element-ui'
 import { toRupee, numberFormat } from '@/utils'
 import DateTimeShow from '@/components/DatetimeShow'
-import {ITEM_TYPE_OPTIONS, ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS} from '@/utils/options'
-import payWithdrawLog from "@/views/playerManage/payWithdrawLog.vue";
+import { ITEM_TYPE_OPTIONS, ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS } from '@/utils/options'
+import payWithdrawLog from '@/views/playerManage/payWithdrawLog.vue'
+import {IsProd} from "@/utils/env";
+import {MATCH_TICKET_RIGHTS_ID_CFG_DEV, MATCH_TICKET_RIGHTS_ID_CFG_PROD} from "@/utils/prop";
+import { GetMatchTicketRightsIdList,IsNewTicketProp } from '@//utils/prop'
+import openWindow from '@/utils/open-window'
 
 function NewRelationSummary() {
   return {
@@ -478,19 +495,20 @@ export default {
         },
         Phone: '',
         IsSetLoginPwd: false,
-        IsSetPayPwd: false,
+        IsSetPayPwd: false
       },
       cheatScore: 0,
       total: 0,
-      tableData: [], //头像框和门票物品配置表数据
+      tableData: [], // 头像框和门票物品配置表数据
       tableItemData: [],
-      tablePropUuIdData:[],
+      tablePropUuIdData: [],
       ItemCfgId: 0,
       ItemType: 0,
       ItemUseTime: 1,
-      ItemNum:0,
-      propFrom:{
-        ItemUuId:'',
+      ItemNum: 0,
+      ItemSceneId:0, //道具权益场景ID
+      propFrom: {
+        ItemUuId: ''
       },
       libShowMoney: new MoneyShow(['BonusTotal', 'BonusValid', 'Gullak', 'LimitedMoney', 'FreeMoney', 'BaseValue', 'ProduceValue', 'MCBetValue', 'MCSystemGot', 'PayValue']),
       moneyType: 1,
@@ -516,6 +534,7 @@ export default {
 
       mailEditable: false,
       pickerOptions: $libShow.DefaultDatePickerOptions(),
+      itemEnv: process.env.NODE_ENV, // 项目环境
 
       UserTag: {
         ID: 0,
@@ -587,8 +606,12 @@ export default {
       PayWithdrawSummary: {
         PayAmount: 0,
         WithdrawAmount: 0,
-        FirstPayTime: 0,
-      }
+        FirstPayTime: 0
+      },
+      gameMap: {},
+      FreeSpinGames: [], // FreeSpin 道具支持的游戏
+      ItemFreeSpinGids: [],
+      isShowFreeSpinGame: false
     }
   },
   computed: {
@@ -637,8 +660,8 @@ export default {
       }
     },
     isNegativeItemNum() {
-      return this.item.ItemNum < 0; // 检测是否为负数
-    },
+      return this.item.ItemNum < 0 // 检测是否为负数
+    }
   },
   created() {
     const pers = store.getters.pers
@@ -656,6 +679,7 @@ export default {
     }
     this.getInfo()
     this.getItemList()
+    this.getGameList()
   },
   activated() {
     if (this.$route.query && this.$route.query.uid > 0) {
@@ -689,20 +713,7 @@ export default {
       return name
     },
     showGameName(gid) {
-      const games = {
-        1: 'Rummy',
-        2: 'AB',
-        3: '龙虎斗',
-        4: 'JM',
-        5: '车标转轮',
-        6: '7上7下',
-        7: '红黑梅方',
-        8: 'AK',
-        9: 'Teen Patti',
-        10: 'Crash',
-        11: 'TeenPatti百人场'
-      }
-      return games.hasOwnProperty(gid) ? games[gid] : gid
+      return this.gameMap.hasOwnProperty(gid) ? this.gameMap[gid] : '未知游戏' + gid
     },
     showRechargeWithdrawRatio(row) {
       if (row.TotalRecharge <= 0) {
@@ -1368,23 +1379,39 @@ export default {
         Message.error('请输入道具数量')
         return
       }
-      if ( this.item.ItemNum > 0 && [2,4,5,7,8,9].includes(this.item.ItemType)) {
+      if (this.item.ItemNum > 0 && [2, 4, 5, 7, 8, 9].includes(this.item.ItemType)) { //道具数值类型参照 options.js 中 ITEM_DAY_TYPE_OPTIONS
         if (typeof this.item.ItemUseTime === 'undefined') {
           Message.error('请选择时间')
           return
         }
+        if(typeof this.item.AppID === 'undefined' || this.item.AppID === 0){
+          Message.error('当前账号没有APPID')
+          return
+        }
       }
-      if(this.item.ItemType===5 && this.item.ItemNum < 0 && (this.propFrom.ItemUuId===''||this.propFrom.ItemUuId===undefined)){
-        Message.error('扣除free spin道具 需要勾选UUID')
-        return
+      //如果是新门票道具 则确认场景ID字段值
+      if(this.isNewTicketProp(this.item.ItemType)){
+        const ticketsConfig = IsProd() ? MATCH_TICKET_RIGHTS_ID_CFG_PROD : MATCH_TICKET_RIGHTS_ID_CFG_DEV
+        if(ticketsConfig && typeof ticketsConfig === 'object'){
+          for(const appId in ticketsConfig){
+            if(ticketsConfig[appId] && Array.isArray(ticketsConfig[appId])){
+              const ticket = ticketsConfig[appId].find(ticket => ticket.ticketId === this.item.ItemCfgId)
+              if(ticket){
+                this.item.ItemSceneId = ticket.sceneId
+              }
+            }
+          }
+        }
+        if(typeof this.item.ItemSceneId === 'undefined' || this.item.ItemSceneId <=0){
+          Message.error('当前道具没有关联到正确的场景ID，请检查道具ID是否正确')
+          return
+        }
+        //console.log("场景ID", this.item.ItemSceneId)
       }
 
       let msg = '确定添加物品吗?'
-      if(this.item.ItemNum < 0){
-        msg = '确定扣除物品吗?'
-      }
       let tmpTime = 0
-      if ([2,4,5,7,8,9].includes(this.item.ItemType)) {
+      if ([2, 4, 5, 7, 8, 9].includes(this.item.ItemType)) {
         tmpTime = this.item.ItemUseTime
       }
       this.$confirm(msg, '提示', {
@@ -1405,8 +1432,10 @@ export default {
             ItemNum: this.item.ItemNum,
             ItemType: this.item.ItemType,
             UseTime: tmpTime,
-            ItemUuid:this.propFrom.ItemUuId,
-            Author:store.getters.name,
+            ItemUuid: this.propFrom.ItemUuId,
+            ItemGids: this.ItemFreeSpinGids,
+            ItemSceneId:this.item.ItemSceneId,
+            Author: store.getters.name,
             ActMsg: '管理后台By ' + store.getters.name
           }
         }).then(response => {
@@ -1416,7 +1445,9 @@ export default {
             this.item.ItemCfgId = 0
             this.item.ItemNum = 0
             this.item.ItemUseTime = 1
-            this.propFrom.ItemUuId=''
+            this.propFrom.ItemUuId = ''
+            this.ItemFreeSpinGids = []
+            this.isShowFreeSpinGame = false
           }
         })
       }).catch(() => {
@@ -1468,21 +1499,21 @@ export default {
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          $this.credit.creditScore=response.Data.creditScore
-          $this.credit.extScore=response.Data.extScore
-          $this.credit.validBetScore=response.Data.validBetScore
-          $this.credit.playRoundScore=response.Data.playRoundScore
-          $this.credit.ggrScore=response.Data.ggrScore
-          $this.credit.dayVbs=response.Data.dayVbs
-          $this.credit.dayPrs=response.Data.dayPrs
-          $this.credit.dayGgrs=response.Data.dayGgrs
-          $this.credit.creditLevel=response.Data.creditLevel
+          $this.credit.creditScore = response.Data.creditScore
+          $this.credit.extScore = response.Data.extScore
+          $this.credit.validBetScore = response.Data.validBetScore
+          $this.credit.playRoundScore = response.Data.playRoundScore
+          $this.credit.ggrScore = response.Data.ggrScore
+          $this.credit.dayVbs = response.Data.dayVbs
+          $this.credit.dayPrs = response.Data.dayPrs
+          $this.credit.dayGgrs = response.Data.dayGgrs
+          $this.credit.creditLevel = response.Data.creditLevel
           $this.credit.blackList = []
           if (response.Data.blackList !== '') {
-            $this.credit.blackList=JSON.parse(response.Data.blackList)
+            $this.credit.blackList = JSON.parse(response.Data.blackList)
           }
-          $this.credit.uid=response.Data.uid
-          console.log("/user/credit/info:",response.Data)
+          $this.credit.uid = response.Data.uid
+          console.log('/user/credit/info:', response.Data)
         }
       })
     },
@@ -1541,9 +1572,9 @@ export default {
           $this.PayWithdrawSummary.PayAmount = response.Data.PayAmount
           $this.PayWithdrawSummary.WithdrawAmount = response.Data.WithdrawAmount
           $this.PayWithdrawSummary.FirstPayTime = response.Data.FirstPayTime
-          console.log("PayWithdrawSummary.PayAmount:", $this.PayWithdrawSummary.PayAmount)
-          console.log("PayWithdrawSummary.WithdrawAmount:", $this.PayWithdrawSummary.WithdrawAmount)
-          console.log("PayWithdrawSummary.FirstPayTime:", $this.PayWithdrawSummary.FirstPayTime)
+          console.log('PayWithdrawSummary.PayAmount:', $this.PayWithdrawSummary.PayAmount)
+          console.log('PayWithdrawSummary.WithdrawAmount:', $this.PayWithdrawSummary.WithdrawAmount)
+          console.log('PayWithdrawSummary.FirstPayTime:', $this.PayWithdrawSummary.FirstPayTime)
         }
       })
     },
@@ -1599,11 +1630,11 @@ export default {
       }
 
       let optok = false
-      let gids = this.credit.blackList
+      const gids = this.credit.blackList
       if (opt == 1) {
-        for (let i=0;i<gids.length;i++) {
+        for (let i = 0; i < gids.length; i++) {
           if (gids[i] == gid) {
-            gids.splice(i,1)
+            gids.splice(i, 1)
             optok = true
             break
           }
@@ -1627,7 +1658,7 @@ export default {
           Env: this.env,
           Path: '/user/credit/black',
           Uid: this.item.Uid,
-          Gids: JSON.stringify(gids),
+          Gids: JSON.stringify(gids)
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -1675,7 +1706,7 @@ export default {
       })
     },
     clearCreditData() {
-      this.$confirm("确定清除信誉分数据吗？", '提示', {
+      this.$confirm('确定清除信誉分数据吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -1687,21 +1718,21 @@ export default {
           data: {
             Env: $this.env,
             Path: '/user/credit/clear',
-            Uid: $this.credit.uid,
+            Uid: $this.credit.uid
           }
         }).then(response => {
           if (response.RetCode === 0) {
-            $this.credit.creditScore=0
-            $this.credit.validBetScore=0
-            $this.credit.playRoundScore=0
-            $this.credit.extScore=0
-            $this.credit.ggrScore=0
-            $this.credit.creditScore=0
-            $this.credit.dayVbs=0
-            $this.credit.dayPrs=0
-            $this.credit.dayGgrs=0
-            $this.credit.blackList=[]
-            console.log("/user/credit/clear:",response.Data)
+            $this.credit.creditScore = 0
+            $this.credit.validBetScore = 0
+            $this.credit.playRoundScore = 0
+            $this.credit.extScore = 0
+            $this.credit.ggrScore = 0
+            $this.credit.creditScore = 0
+            $this.credit.dayVbs = 0
+            $this.credit.dayPrs = 0
+            $this.credit.dayGgrs = 0
+            $this.credit.blackList = []
+            console.log('/user/credit/clear:', response.Data)
           }
         })
       })
@@ -1765,17 +1796,35 @@ export default {
         }
       })
     },
-    //获取展示名称
+    getGameList() {
+      const $this = this
+      request({
+        url: '/thirdpartygames/all',
+        method: 'get',
+        data: {}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objs = response.Data || []
+          for (let i = 0; i < objs.length; i++) {
+            $this.gameMap[objs[i].Gid] = objs[i].Name
+          }
+        }
+      })
+    },
+    // 获取展示名称
     ShowItemList(id) {
       this.tableItemData = []
       this.tablePropUuIdData = []
-      this.item.ItemCfgId = null
+      this.$set(this.item, 'ItemCfgId', null) // 使用 $set 确保响应式更新
       this.propFrom.ItemUuId = ''
-      let currTime = new Date().getTime()
+      let itemType = 0
+      // this.item.ItemNum = 0 // 移除此行，避免影響輸入框的值
+      const currTime = new Date().getTime()
       for (let i = 0; i < this.tableData.length; i++) {
         let str = this.tableData[i].item_name
+        itemType = this.tableData[i].item_type
         if (this.tableData[i].item_extra.length > 0) {
-          let exitData = JSON.parse(this.tableData[i].item_extra)
+          const exitData = JSON.parse(this.tableData[i].item_extra)
           if (exitData != null) {
             if (exitData.showName != null) {
               str = str + '(' + exitData.showName + ')'
@@ -1783,23 +1832,40 @@ export default {
           }
         }
         if (this.tableData[i].item_type === id && this.tableData[i].status === 1) {
-          if (this.isTicketProp(this.tableData[i].item_type)) {
-            let expTime = this.tableData[i].expire_time * 1000
+          if (this.isTicketProp(itemType)) { // 旧版门票道具
+            const expTime = this.tableData[i].expire_time * 1000
             if (currTime < expTime) {
-              this.tableItemData.push({'value': this.tableData[i].id, 'label': str, disabled: false})
+              this.tableItemData.push({ 'value': Number(this.tableData[i].id), 'label': str, disabled: false })
             }
           } else {
-            this.tableItemData.push({'value': this.tableData[i].id, 'label': str, disabled: false})
+            //如果是新版门票道具 需要确认所配置的门票是否关联到 权益场景ID 参考 props.js MATCH_TICKET_RIGHTS_ID_CFG_DEV
+            if (this.isNewTicketProp(itemType)) {
+              const ticketsConfig = IsProd() ? MATCH_TICKET_RIGHTS_ID_CFG_PROD : MATCH_TICKET_RIGHTS_ID_CFG_DEV
+              if(ticketsConfig && typeof ticketsConfig === 'object'){
+                for(const appId in ticketsConfig){
+                  if(ticketsConfig[appId] && Array.isArray(ticketsConfig[appId])){
+                    ticketsConfig[appId].forEach(ticket => {
+                      if(ticket.ticketId === this.tableData[i].id){
+                        this.tableItemData.push({'value': Number(this.tableData[i].id), 'label': str, disabled: false})
+                      }
+                    })
+                  }
+                }
+              }
+            } else {  //头像框
+              this.tableItemData.push({'value': Number(this.tableData[i].id), 'label': str, disabled: false})
+            }
+            //console.log("this.tableItemData ",this.tableItemData)
           }
-
         }
       }
+      this.checkShowFreeSpinGame()
     },
 
-    disableByPropId(propId){
-      for(let i=0; i < this.tableData.length;i++){
-        if(this.tableData[i].id === propId && this.tableData[i].item_type ===  PROP_TYPE_OPTIONS.PROP_TYPE_TICKET){
-          if(this.tableData[i].item_extra !== null && JSON.parse(this.tableData[i].item_extra).specialAttr=== 1 ){ //如果是邀请函
+    disableByPropId(propId) {
+      for (let i = 0; i < this.tableData.length; i++) {
+        if (this.tableData[i].id === propId && this.tableData[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET) {
+          if (this.tableData[i].item_extra !== null && JSON.parse(this.tableData[i].item_extra).specialAttr === 1) { // 如果是邀请函
             return true
           }
         }
@@ -1807,17 +1873,22 @@ export default {
       return false
     },
 
-    handleItemChange() {
+    handleItemChange(val) {
       this.propFrom.ItemUuId = ''
       this.tablePropUuIdData = [] // 清空UUID选项列表
-      this.ShowItemUUIDDetail(this.item.ItemCfgId) // 如果需要立即加载新的UUID列表
+      this.ShowItemUUIDDetail(val) // 如果需要立即加载新的UUID列表
+      this.checkShowFreeSpinGame()
+      if (this.isNewTicketProp(this.item.ItemType)) {
+        this.item.ItemNum = 1
+      }
     },
-    //展示道具的子属性UUID
+    // 展示道具的子属性UUID
     ShowItemUUIDDetail(itemId) {
       if (this.item.Uid === 0) {
         Message.error('请输入正确的Uid')
         return
       }
+      const $this = this
       request({
         url: '/dataProxy/info',
         method: 'post',
@@ -1825,22 +1896,25 @@ export default {
           Env: this.env,
           Path: '/user/prop/refresh',
           Uid: this.item.Uid,
-          PropId: itemId,
+          PropId: itemId
         }
       }).then(response => {
         if (response.RetCode === 0 && response.Data != null && response.Data.length > 0) {
-          this.tablePropUuIdData = response.Data.map(uuid => ({
+          $this.tablePropUuIdData = response.Data.map(uuid => ({
             value: uuid, // 确保是字符串或数字
-            label: uuid, // 确保是字符串
+            label: uuid // 确保是字符串
           }))
         }
       })
     },
-    //是否是门票类型道具
+    // 是否是门票类型道具
     isTicketProp(itemType) {
-      return itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET || itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET || itemType === PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET
+      return [PROP_TYPE_OPTIONS.PROP_TYPE_TICKET,PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET,PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET].includes(itemType)
     },
-    //是否是头像框道具
+    isNewTicketProp(itemType) {
+      return  [PROP_TYPE_OPTIONS.PROP_TYPE_TICKET_NEW,PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW,PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW].includes(itemType)
+    },
+    // 是否是头像框道具
     isAvatarFrameProp(itemType) {
       return itemType === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME || itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR
     },
@@ -1873,6 +1947,50 @@ export default {
         }
       })
     },
+    isItemUseTimeDisabled(option) {
+    
+     
+      // 如果道具类型是 5, 7, 8, 9，且选项值是 0 或 365，则禁用
+      if ([5, 7, 8, 9].includes(this.item.ItemType) && (option.value === 0 || option.value === 365)) {
+        return true
+      }
+      if(option.value < 0 ){
+        //freeSpin
+        if (this.item.ItemType === 5){
+          return false
+        }
+        return true
+      }
+      return false
+    },
+    checkShowFreeSpinGame() {
+      this.isShowFreeSpinGame = false
+      if (!this.item.ItemCfgId) { return false }
+      for (let i = 0; i < this.tableData.length; i++) {
+        if (this.tableData[i].id === this.item.ItemCfgId && this.tableData[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN) {
+          if (!this.tableData[i].item_extra) { return false }
+          // json 解析 item_extra
+          const extra = JSON.parse(this.tableData[i].item_extra)
+          if (!extra) { return false }
+          if (!extra.gid) { return false }
+          // 排序
+          extra.gid.sort()
+          this.FreeSpinGames = []
+          this.ItemFreeSpinGids = []
+          for (let j = 0; j < extra.gid.length; j++) {
+            // 默认全选
+            this.ItemFreeSpinGids.push(extra.gid[j])
+            this.FreeSpinGames.push({
+              value: extra.gid[j],
+              label: this.showGameName(extra.gid[j])
+            })
+          }
+          this.isShowFreeSpinGame = true
+          return true
+        }
+      }
+      return false
+    }
   }
 }
 </script>

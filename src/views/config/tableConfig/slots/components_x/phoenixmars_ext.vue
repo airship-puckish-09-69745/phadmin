@@ -9,7 +9,7 @@
           </el-form-item>
 
           <el-form-item label="Bonus羽毛个数权重">
-            <el-input v-model.number="cfg.BonusFeatherWeight" placeholder="请输入内容" ><template slot="append">分别对应1,2,3只羽毛</template> </el-input>
+            <el-input v-model="cfg.BonusFeatherWeight" placeholder="请输入内容" ><template slot="append">分别对应1,2,3,4只羽毛</template> </el-input>
           </el-form-item>
 
         </el-form>

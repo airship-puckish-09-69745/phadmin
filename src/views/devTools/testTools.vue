@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-row :gutter="5" style="margin-top: 30px">
+    <el-row>
       <fieldset style="margin-top:10px">
         <legend>添加身份</legend>
         <el-form :inline="true" ref="trustTestForm" :model="trustTestForm">
@@ -54,7 +54,7 @@
         </el-table>
       </fieldset>
     </el-row>
-    <el-row :gutter="5" style="margin-top: 30px">
+    <el-row>
       <fieldset style="margin-top:10px">
         <legend>对比身份</legend>
         <el-form :inline="true" ref="trustCompForm" :model="trustCompForm">
@@ -71,11 +71,14 @@
               </el-option>
             </el-select>
           </el-form-item>
+          <el-form-item label="场次">
+            <el-input placeholder="请输入内容" v-model.number="trustCompForm.Level" size="mini"></el-input>
+          </el-form-item>
           <el-form-item label="疑似分加减">
             <el-input v-model.number="trustCompForm.CheatScore" size="mini" placeholder="正加负减"/>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" size="mini" @click="addCheatScore(trustCompForm.Uid,trustCompForm.Gid,trustCompForm.CheatScore)">提交</el-button>
+            <el-button type="primary" size="mini" @click="addCheatScore(trustCompForm.Uid,trustCompForm.Gid,trustCompForm.Level,trustCompForm.CheatScore)">提交</el-button>
           </el-form-item>
         </el-form>
         <el-table
@@ -100,9 +103,11 @@
           </el-table-column>
           <el-table-column prop="trustScore" label="信任分系统信任分">
           </el-table-column>
+          <el-table-column prop="maxTrustScore" label="历史最大信任分">
+          </el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
-              <el-button type="primary" size="mini" @click="addCheatScore(scope.row.uid,scope.row.gid,0)">刷新</el-button>
+              <el-button type="primary" size="mini" @click="addCheatScore(scope.row.uid,scope.row.gid,0,0)">刷新</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -114,7 +119,7 @@
 import request from '@/utils/request'
 import store from '@/store'
 export default {
-  name: 'TestKyc',
+  name: 'TrustUser',
   data() {
     return {
       item: {},
@@ -129,6 +134,7 @@ export default {
       trustCompForm: {
         Uid: 0,
         Gid: 22,
+        Level: 0,
         Identity: 4,
         CheatScore: 0,
       },
@@ -200,10 +206,12 @@ export default {
       }).then(response => {
         console.log(JSON.stringify(response))
         if (response.RetCode === 0) {
-          $this.trustTestData = response.Data
-          for (const v of response.Data) {
-            console.log(v)
-            v.inc = 0
+          $this.trustTestData = response.Data || []
+          if (response.Data) {
+            for (const v of response.Data) {
+              console.log(v)
+              v.inc = 0
+            }
           }
         }
       })
@@ -255,7 +263,7 @@ export default {
         }
       })
     },
-    addCheatScore(uid,gid,cheatScore) {
+    addCheatScore(uid,gid,level,cheatScore) {
       if (this.env != 'test') {
         return
       }
@@ -268,6 +276,7 @@ export default {
           Path: '/user/cheat/score/add',
           Uid: uid,
           Gid: gid,
+          Level: level * 1000,
           Score: cheatScore,
         }
       }).then(response => {
@@ -280,6 +289,7 @@ export default {
               $this.trustUserData[i].cheatScore = response.Data.cheatScore
               $this.trustUserData[i].trustType = response.Data.trustType
               $this.trustUserData[i].trustScore = response.Data.trustScore
+              $this.trustUserData[i].maxTrustScore = response.Data.maxTrustScore
               update = true
               break
             }
