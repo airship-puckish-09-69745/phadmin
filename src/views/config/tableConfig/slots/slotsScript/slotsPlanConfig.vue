@@ -1237,7 +1237,7 @@ export default {
         IsDisabled: this.addFormData.IsDisabled,
         Versions: [],
         ScriptRule: this.addFormData.ScriptRuleDescription,
-        SwitchRule: this.addFormData.SwitchRule
+        SwitchRule: {StatDays: 0, SpinMin: 0, BetMin: 0, TargetPlanId: 0}
       };
       this.showItem.Plans.push(newPlan);
       this.addDialogVisible = false;
@@ -1250,7 +1250,7 @@ export default {
         IsDefault: row.IsDefault,
         IsDisabled: row.IsDisabled,
         ScriptRuleDescription: row.ScriptRule,
-        SwitchRule: row.SwitchRule || this.addFormData.SwitchRule
+        SwitchRule: row.SwitchRule || {StatDays: 0, SpinMin: 0, BetMin: 0, TargetPlanId: 0}
       };
       this.editIndex = idx
 
