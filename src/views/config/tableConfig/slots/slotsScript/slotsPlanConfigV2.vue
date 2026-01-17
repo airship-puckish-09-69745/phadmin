@@ -1534,7 +1534,7 @@ export default {
           planID: planRow.PlanId,
           gameID: $this.queryGid,
           planVer: row.Version,
-          appID: store.getters.appId || 0
+          appID: store.getters.appId
         }
       }).then(response => {
         if (response.RetCode === 0) {
