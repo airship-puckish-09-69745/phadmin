@@ -490,7 +490,7 @@ export default {
       if (this.isAppExt) {
         url = '/pusoydostableappext/update'
       }
-      console.log("TableHideChannel",this.edit.item.TableHideChannel)
+      //console.log("TableHideChannel",this.edit.item.TableHideChannel)
 
       request({
         url: url,
@@ -498,7 +498,7 @@ export default {
         data: postData
       }).then(response => {
         if (response.RetCode === 0) {
-          console.log("this.$refs.configTable.updateData",this.$refs.configTable.updateData)
+         // console.log("this.$refs.configTable.updateData",this.$refs.configTable.updateData)
           if (this.$refs.configTable && this.$refs.configTable.updateData) {
             this.$refs.configTable.updateData(this.edit.item)
           }
