@@ -1022,7 +1022,8 @@ export default {
           Env: store.getters.env,
           planID: planID,
           gameID: this.queryGid,
-          bets: JSON.stringify(this.currentBaseBet)
+          bets: JSON.stringify(this.currentBaseBet),
+          appID: 0
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -1627,7 +1628,8 @@ export default {
           Path: '/slotsStat/script/plan/data',
           planID:planRow.PlanId,
           gameID:$this.queryGid,
-          planVer:row.Version
+          planVer:row.Version,
+          appID: 0
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -1649,7 +1651,8 @@ export default {
           Path: '/slotsStat/script/plan/data',
           planID:planRow.PlanId,
           gameID:$this.queryGid,
-          planVer:row.Version
+          planVer:row.Version,
+          appID: 0
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -1964,7 +1967,8 @@ export default {
             Path: '/slotsStat/script/plan/data',
             planID:this.showItem.Plans[planIdx].PlanId,
             gameID:$this.queryGid,
-            planVer:row.Version
+            planVer:row.Version,
+            appID: 0
           }
         }).then(response => {
           if (response.RetCode !== 0 && typeof response.Data !== 'object') {
@@ -1992,7 +1996,8 @@ export default {
             Path: '/slotsStat/clean/scripts',
             gid: $this.queryGid,
             planId: planId,
-            planVer: planVer
+            planVer: planVer,
+            appId: 0
           }
         }).then(response => {
           if (response.RetCode !== 0 && typeof response.Data !== 'object') {
@@ -2013,7 +2018,8 @@ export default {
         method: 'get',
         data: {
           Path: '/slotsStat/script/volatility',
-          gid: gid
+          gid: gid,
+          appId: 0
         }
       }).then(response => {
         if (response.RetCode !== 0 && typeof response.Data !== 'object') {
