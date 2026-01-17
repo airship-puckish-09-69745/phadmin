@@ -1466,6 +1466,8 @@ export default {
         this.sentRewardAmount = 0
         this.$refs.tree.setCheckedKeys([])
       }
+      // 更新树状图的 disabled 状态
+      this.updateTreeDisabled()
     },
     initFormData(bEdit, ID) {
       console.log('ID:', ID)
@@ -1738,7 +1740,20 @@ export default {
       this.gameTaskTypes = gameTaskTypes
     },
     updateTreeDisabled() {
+      this.edit.gameCategoriesSelected = []
+
+      const $this = this
+      // 选中的游戏所属的类别
+      this.treeData.forEach(cty => {
+        if (cty.children.some(game => $this.edit.item.gameIdCfg.includes(game.id))) {
+          if (!this.edit.gameCategoriesSelected.includes(cty.label)) {
+            this.edit.gameCategoriesSelected.push(cty.label)
+          }
+        }
+      })
+
       console.log('updateTreeDisabled:', this.edit.gameCategoriesSelected)
+
       // Slot 与 Poker/Casino 类别的选项做互斥处理
       this.treeData.forEach(cty => {
         console.log('cty', cty)
@@ -1779,40 +1794,39 @@ export default {
         }
       })
     },
-    handleGameCheckChange(data, checked, indeterminate) {
-      this.edit.gameCategoriesSelected = []
-      console.log('handleGameCheckChange', data, checked, indeterminate)
-      if (data.label === 'Slot' || data.label === 'Poker' || data.label === 'Casino') {
-        if (checked || indeterminate) {
-          if (!this.edit.gameCategoriesSelected.includes(data.label)) {
-            this.edit.gameCategoriesSelected.push(data.label)
-          }
-        }
-        // 更新树状图的 disabled 状态
-        this.updateTreeDisabled()
-        return
-      }
-
-      const idIndex = this.edit.item.gameIdCfg.indexOf(data.id)
+    updateGameIdsSelected(gameId, checked) {
+      const idIndex = this.edit.item.gameIdCfg.indexOf(gameId)
       if (checked) {
         if (idIndex < 0) {
-          this.edit.item.gameIdCfg.push(data.id)
+          this.edit.item.gameIdCfg.push(gameId)
         }
       } else {
         if (idIndex >= 0) {
           this.edit.item.gameIdCfg.splice(idIndex, 1)
         }
       }
-
-      const $this = this
-      // 选中的游戏所属的类别
-      this.treeData.forEach(cty => {
-        if (cty.children.some(game => $this.edit.item.gameIdCfg.includes(game.id))) {
-          if (!this.edit.gameCategoriesSelected.includes(cty.label)) {
-            this.edit.gameCategoriesSelected.push(cty.label)
-          }
+    },
+    handleGameCheckChange(data, checked, indeterminate) {
+      console.log('handleGameCheckChange', data, checked, indeterminate)
+      if (data.label === 'Slot' || data.label === 'Poker' || data.label === 'Casino') {
+        if (indeterminate) {
+          return
         }
-      })
+        this.treeData.forEach(cty => {
+          if (cty.label === data.label) {
+            cty.children.forEach(game => {
+              // 更新选中的游戏id
+              this.updateGameIdsSelected(game.id, checked)
+            })
+          }
+        })
+        // 更新树状图的 disabled 状态
+        this.updateTreeDisabled()
+        return
+      }
+
+      // 更新选中的游戏id
+      this.updateGameIdsSelected(data.id, checked)
 
       // 更新树状图的 disabled 状态
       this.updateTreeDisabled()
