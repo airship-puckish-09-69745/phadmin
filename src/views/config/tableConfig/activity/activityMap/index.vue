@@ -7,6 +7,7 @@
     <el-row>
       <div style="margin-top: 16px">
         启用开关：<el-switch v-model="configData.Data.Status" active-color="#13ce66" @change="onUpdateStatus" />
+        大奖图标和发放开关：<el-switch v-model="configData.Data.IsOpenReward" active-color="#13ce66" @change="onUpdateBonusStatus" />
       </div>
       <br>
       <el-tabs v-if="configData.Data" type="border-card">
@@ -67,7 +68,8 @@ export default {
           BounusConfig: {}, // 年终大奖侧栏配置
           MapConfig: [], // 活动地图配置
           DetailsConfig: [], // 活动详情配置
-          WhiteList: {} // 白名单配置
+          WhiteList: {}, // 白名单配置
+          IsOpenReward: true // 是否开启大奖图标和发放开关
         }
       } // 存储配置数据
     }
@@ -88,9 +90,7 @@ export default {
      * 获取配置数据
      */
     async getConfigData() {
-      const res = await getCustomize({
-        SubKey: this.subKey
-      })
+      const res = await getCustomize(this.subKey)
 
       if (res.RetCode === 0) {
         const data = res.Data
@@ -118,6 +118,9 @@ export default {
         }
         if (!Data.WhiteList) {
           Data.WhiteList = {}
+        }
+        if (!Data.IsOpenReward) {
+          Data.IsOpenReward = false
         }
       } else {
         this.$message.error('获取配置数据失败: ' + res.RetMsg)
