@@ -381,7 +381,7 @@
         </el-tab-pane>
 
         <el-tab-pane label="领奖配置">
-          <fieldset style="margin-top: 10px">
+          <fieldset v-if="showRewardRangesConfig" style="margin-top: 10px">
             <legend>
               大奖系数配置
             </legend>
@@ -970,6 +970,9 @@ export default {
       return this.edit.item.userTypes.includes(5) &&
         this.edit.item.userFilterCondition.userTagConfig.tagType === 2 && // 2=游戏强度
         this.edit.item.userFilterCondition.userTagConfig.tagId === 20000 // 20000=游戏强度
+    },
+    showRewardRangesConfig() {
+      return !this.edit.gameCategoriesSelected.includes('Slot')
     },
   },
   mounted() {
