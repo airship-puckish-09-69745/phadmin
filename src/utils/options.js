@@ -98,7 +98,11 @@ export const PROP_SOURCE_OPTIONS = [
   { value: 12, label: '红包活动' },
   { value: 13, label: 'rebuy' },
   { value: 14, label: 'rebuy回退' },
-  { value: 16, label: 'free spin' }
+  { value: 16, label: 'free spin' },
+  { value: 17, label: '富裕卡任务' },
+  { value: 18, label: '7日留存活动' },
+  { value: 19, label: '万圣节活动' },
+  { value: 20, label: '复活节活动' },
 ]
 
 //奖励分类
