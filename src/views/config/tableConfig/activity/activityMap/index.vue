@@ -7,7 +7,8 @@
     <el-row>
       <div style="margin-top: 16px">
         启用开关：<el-switch v-model="configData.Data.Status" active-color="#13ce66" @change="onUpdateStatus" />
-        大奖图标和发放开关：<el-switch v-model="configData.Data.IsOpenReward" active-color="#13ce66" @change="onUpdateBonusStatus" />
+        <span style="margin-left: 10px" />
+        大奖图标和发放开关：<el-switch v-model="configData.Data.IsOpenReward" active-color="#13ce66" @change="onUpdateStatus" />
       </div>
       <br>
       <el-tabs v-if="configData.Data" type="border-card">
