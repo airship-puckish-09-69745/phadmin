@@ -153,7 +153,8 @@ export default {
           Path: '/slotsStat/user/stat/data',
           Env: store.getters.env,
           Uid: this.queryUid,
-          SlotsType: this.queryGid
+          SlotsType: this.queryGid,
+          appID: store.getters.appId || 0
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -277,7 +278,8 @@ export default {
           SlotsType: this.freeModeQuery.gid,
           Odds: this.freeModeQuery.odds,
           PlayTimes: this.freeModeQuery.playTimes,
-          FreeTimes: this.freeModeQuery.freeTimes
+          FreeTimes: this.freeModeQuery.freeTimes,
+          AppID: store.getters.appId || 0
         }
       }).then(response => {
         if (response.RetCode === 0) {

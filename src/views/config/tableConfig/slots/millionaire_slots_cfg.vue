@@ -110,7 +110,6 @@ export default {
     },
     getData() {
       // 加载基础数值配置
-      console.log('appId', store.getters.appId)
       getCustomize(this.subKey, this.appId).then(response => {
         if (response.RetCode === 0) {
           this.baseForm = response.Data || {}

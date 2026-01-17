@@ -1910,7 +1910,8 @@ export default {
           Env: store.getters.env,
           queryTime: parseInt(this.bigPrizeForm.date / 1000),
           gid: this.bigPrizeForm.gid,
-          bet: this.bigPrizeForm.bet
+          bet: this.bigPrizeForm.bet,
+          appId: store.getters.appId || 0
         }
       }).then(response => {
         $this.newBigPrize()
@@ -2210,8 +2211,8 @@ export default {
           planVer: this.scripStepForm.planVer,
           typ: typ,
           queryCounter: this.scripStepForm.counter,
-          queryScriptId: this.scripStepForm.scriptId
-
+          queryScriptId: this.scripStepForm.scriptId,
+          appID: store.getters.appId || 0
         }
       }).then(response => {
         if (response.Data.script) {
