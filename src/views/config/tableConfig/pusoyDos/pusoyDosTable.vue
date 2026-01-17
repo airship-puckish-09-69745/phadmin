@@ -309,14 +309,13 @@ export default {
   },
 
 
-  created() {
-  },
-  mounted() {
+ created() {
+    console.log('当前组件类型:', this.tableType) // 这里就能知道是 'common' 还是 'different'
     this.initialize();
   },
 
-  methods: {
 
+  methods: {
     initialize() {
         this.env = store.getters.env || this.env
       console.log("initialize ",this.tableType)
