@@ -118,7 +118,6 @@ export default {
       form: {},
       postData: {},
       gameScene: {},
-      subKey: 'SlotsScriptStatisticsConfig',
       AttrNames: {
         types: {
           Data: 'jsonString' // 整个数据项的类型

@@ -434,9 +434,6 @@ export default {
     },
     onCopyAllCfg() {
       this.setData()
-      if (this.bCreateCfg === true) {
-        this.$message.success('所有配置已复制并保存成功！')
-      }
       this.bCreateCfg = false
     }
   }
