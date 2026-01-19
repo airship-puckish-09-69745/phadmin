@@ -59,15 +59,29 @@
                   </template>
                 </el-table-column>
 
+                <!--非确认版-->
+<!--                <el-table-column prop="Open" label="排行榜开关" width="200">-->
+<!--                  <template slot-scope="scope">-->
+<!--                    <el-switch-->
+<!--                        v-model="scope.row.Open"-->
+<!--                        :active-value="1"-->
+<!--                        :inactive-value="0"-->
+<!--                    />-->
+<!--                  </template>-->
+<!--                </el-table-column>-->
+
+                <!--确认版-->
                 <el-table-column prop="Open" label="排行榜开关" width="200">
                   <template slot-scope="scope">
                     <el-switch
-                        v-model="scope.row.Open"
-                        :active-value="1"
-                        :inactive-value="0"
+                      :value="scope.row.Open"
+                      :active-value="1"
+                      :inactive-value="0"
+                      @change="val => onGameOpenChange(val, scope.row)"
                     />
                   </template>
                 </el-table-column>
+
                 <el-table-column prop="Icon" label="icon" width="200">
                   <template slot-scope="scope">
                     <ImagePicker v-model="scope.row.Icon" />
@@ -253,6 +267,35 @@ export default {
           }
         })
       })
+    },
+    onGameOpenChange(val, row) {
+      // 只拦截：关 → 开
+      if (val === 1 && row.Open === 0) {
+        // 先回滚，防止视觉先打开
+        row.Open = 0
+
+        this.$confirm(
+          `开启[${this.showGameName(row.Gid)}]排行榜前 需确认此游戏前30天的记录都支持回放`,
+          '确认开启',
+          {
+            confirmButtonText: '确认',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }
+        )
+          .then(() => {
+            // 用户确认
+            row.Open = 1
+          })
+          .catch(() => {
+            // 用户取消，保持关闭即可
+          })
+
+        return
+      }
+
+      // 开 → 关，直接关，不弹窗
+      row.Open = 0
     },
     showGameName(gid) {
       return this.gameNameMap[gid]
