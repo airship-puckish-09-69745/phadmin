@@ -413,12 +413,13 @@
       </el-form>
     </el-row>
 
-    <el-dialog title="测试配置" :visible.sync="dialogFormVisible"   width="550px">
+    <el-dialog title="测试配置" :visible.sync="dialogFormVisible"   width="1050px">
       <el-form  >
         <el-form-item label="是否开启:">
           <el-radio v-model="item.openTest" label="1" :value="false">否</el-radio>
           <el-radio v-model="item.openTest" label="2" :value="true">是</el-radio>
         </el-form-item>
+        <!--
         <el-form-item label="步数终点:">
           <el-form :inline="true">
             <el-col :span="8">
@@ -426,6 +427,43 @@
             </el-col>
           </el-form>
         </el-form-item>
+        -->
+        <fieldset style="margin-top:10px">
+                <el-col :span="20">
+                  <el-button style="margin-bottom:10px; background-color: #c5ddf0" type="normal" icon="el-icon-plus" size="mini" @click="doAddTestCards()">添加</el-button>
+                </el-col>
+                <legend>配置</legend>
+                <el-table
+                  ref="filterTable"
+                  :data="item.CardsTestCfg"
+                  border
+                  :header-cell-style="libShow.DefaultTableHeadClass"
+                  :row-style="{height:'10px'}"
+                  :cell-style="libShow.DefaultTableCell"
+                  style="width: 100%"
+                >
+                  <el-table-column type="index" />
+
+                  <el-table-column prop="UID" label="UID" width="170">
+                    <template slot-scope="scope">
+                      <el-input v-model.number="scope.row.Uid" size="mini" />
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column prop="cards" label="test cards" width="640">
+                    <template slot-scope="scope">
+                      <el-input v-model="scope.row.Cards" size="mini" />
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column label="操作" width="124">
+                    <template slot-scope="scope">
+                      <el-button type="danger" size="mini" @click="delRowTestCards(scope.$index)">删除</el-button>
+                    </template>
+                  </el-table-column>
+
+                </el-table>
+              </fieldset>
       </el-form>
 
       <div slot="footer" class="dialog-footer">
@@ -568,6 +606,7 @@ export default {
           { 'Type': 1, 'Name': '奖池百分比' },
           { 'Type': 2, 'Name': '下注额倍数' }
         ],
+        CardsTestCfg: [],
       },
       form: {},
       subKey: "miniTripleWheelSpin_cfg",
@@ -690,6 +729,8 @@ export default {
             if (!item.Card){
               item["Card"] = "0"
               item["openTest"] = "1"
+            }else{
+              item.CardsTestCfg = JSON.parse(item.Card)
             }
 
             Object.assign(this.item, item)
@@ -799,11 +840,26 @@ export default {
       }
 
       //测试
+      if (ret.CardsTestCfg != undefined) {
+        ret.Card = JSON.stringify(ret.CardsTestCfg)
+      }
+      delete ret['CardsTestCfg']
       if (!ret.openTest || ret.openTest=="1"){
         delete ret['Card']
       }
       console.log("上传====>",ret)
       return ret
+    },
+
+    //测试配置
+    doAddTestCards() {
+      if (!this.item.CardsTestCfg) {
+        this.item['CardsTestCfg'] = []
+      }
+      this.item.CardsTestCfg.push({ Uid:0, Cards: '001,002,003,004,005,006,007'})
+    },
+    delRowTestCards(index) {
+      this.item.CardsTestCfg.splice(index, 1)
     },
 
     //下注

@@ -3198,6 +3198,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_pirateTap',
             meta: { title: 'P irate Tap ◐', gid: 142 }
+          },
+          {
+            path: 'playlog_tripleWheelSpin',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_tripleWheelSpin',
+            meta: { title: 'Triple Wheel Spin ◐', gid: 143 }
           }
 
           /*
