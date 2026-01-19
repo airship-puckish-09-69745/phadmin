@@ -4,6 +4,14 @@
       <publish primary-key="ID" :key-id="'CustomizeCfg_' + subKey" :env-empty="false" compare-type="Object"
         :attr-names="AttrNames" />
     </el-row>
+    <el-col v-if="version === 'V2'" :span="20">
+      <el-select v-model="appId" placeholder="请选择" @change="onAppIdChange">
+        <el-option v-for="(o,idx) in appInfos" :key="idx" :label="o.Account" :value="o.ID" />
+      </el-select>
+      <el-button type="primary" icon="el-icon-document-copy" @click="onCopyAllCfg">
+        复制配置
+      </el-button>
+    </el-col>
     <el-col :span="21" :offset="1">
       <el-row>
         <el-divider content-position="left">新手配置</el-divider>
@@ -173,6 +181,8 @@ import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import { $libShow, $libType } from '@/utils/common'
+import {createCustomize, getCustomize, updateCustomize} from "@/api/custome_configV2";
+import store from "@/store";
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
@@ -208,11 +218,18 @@ export default {
         types: {
           Data: 'jsonString' // 整个数据项的类型
         }
-      }
+      },
+      appInfos: [
+        { ID: 0, Account: '旧版' }
+      ],
+      appId: store.getters.appId || 0,
+      version: store.getters.version || 'V1',
+      bCreateCfg: false
     }
   },
   created() {
     this.loadData()
+    this.getAppInfos()
   },
   methods: {
     async loadData() {
@@ -230,18 +247,10 @@ export default {
     },
     getData() {
       const $this = this
-      request({
-        url: '/customizeconfig/one',
-        method: 'get',
-        data: {
-          SubKey: this.subKey
-        }
-      }).then(response => {
-        console.log('getData')
+      getCustomize($this.subKey, $this.appId).then(response => {
         if (response.RetCode === 0) {
-          // console.log('sign reward', response)
           $this.form = response.Data || { Data: '{}' }
-          // console.log($this.form)
+          // console.log('$this.form', $this.form)
           const o = JSON.parse(this.form.Data)
 
           for (const k in o.RichCardList) {
@@ -275,6 +284,11 @@ export default {
 
           // 设置修改之前数据
           this.$refs.compare.SetOldVal(this.form)
+        } else {
+          if (store.getters.appId === this.appId) {
+            this.bCreateCfg = true
+            console.log('this.bCreateCfg', this.bCreateCfg)
+          }
         }
       })
     },
@@ -302,24 +316,33 @@ export default {
       // console.log('postData', postData)
 
       this.form.Data = JSON.stringify(postData)
-      const $this = this
-      // 设置修改后数据
-      this.$refs.compare.SetNewVal(this.form)
-      this.$refs.compare.Compare(function (isEdit) {
-        if (!isEdit) {
-          Message.error('没有任何修改，不需要提交')
-          return
-        }
-        request({
-          url: 'customizeconfig/update',
-          method: 'post',
-          data: $this.form
-        }).then(response => {
+      if (this.bCreateCfg) {
+        this.form.AppId = store.getters.appId
+        this.form.RedisSubkey = this.subKey
+        this.form.Name = 'Slots任务配置'
+        this.form.Description = 'Slots任务配置'
+        this.form.Type = 1
+        createCustomize(this.form).then(response => {
           if (response.RetCode === 0) {
-            Message.success('保存成功')
+            Message.success('保存成功！')
           }
         })
-      })
+      } else {
+        const $this = this
+        // 设置修改后数据
+        this.$refs.compare.SetNewVal(this.form)
+        this.$refs.compare.Compare(function(isEdit) {
+          if (!isEdit) {
+            Message.error('没有任何修改，不需要提交')
+            return
+          }
+          updateCustomize($this.form).then(response => {
+            if (response.RetCode === 0) {
+              Message.success('保存成功')
+            }
+          })
+        })
+      }
     },
     getGameList() {
       request({
@@ -344,6 +367,77 @@ export default {
         }
         console.log('getGameList')
       })
+    },
+    getAppInfos() {
+      request({
+        url: '/thirdparties/apps',
+        method: 'get',
+        data: {}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          for (let i = 0; i < response.Data.length; i++) {
+            if (response.Data[i].Status !== 2) {
+              continue
+            }
+            this.appInfos.push({
+              ID: response.Data[i].ID,
+              Account: response.Data[i].ID + '-' + response.Data[i].Account
+            })
+          }
+        }
+      })
+    },
+    onAppIdChange() {
+      if (this.appId === 0) {
+        const $this = this
+        request({
+          url: '/customizeconfig/one',
+          method: 'get',
+          data: {
+            SubKey: this.subKey
+          }
+        }).then(response => {
+          $this.form = response.Data || { Data: '{}' }
+          // console.log('$this.form', $this.form)
+          const o = JSON.parse(this.form.Data)
+
+          for (const k in o.RichCardList) {
+            const betList = []
+            for (const i in o.RichCardList[k].Bets) {
+              betList[i] = o.RichCardList[k].Bets[i] / 1000
+            }
+            o.RichCardList[k].BetList = betList.join(',')
+          }
+
+          const buyFreeMap = {}
+          const openGames = {}
+          const betRequiredMap = {}
+          for (const k in o.BuyFreeList) {
+            buyFreeMap[o.BuyFreeList[k].SlotsType] = o.BuyFreeList[k].BuyFreeRtpRate
+            openGames[o.BuyFreeList[k].SlotsType] = o.BuyFreeList[k].Open
+            betRequiredMap[o.BuyFreeList[k].SlotsType] = o.BuyFreeList[k].BetRequiredOdds
+          }
+          o.BuyFreeList = []
+          for (const k in this.games) {
+            let rate = 0
+            if (buyFreeMap[this.games[k]] !== undefined) {
+              rate = buyFreeMap[this.games[k]]
+            }
+            o.BuyFreeList.push({ "SlotsType": this.games[k], "Open": openGames[this.games[k]], "BuyFreeRtpRate": rate, "BetRequiredOdds": betRequiredMap[this.games[k]] })
+          }
+
+          this.cfgData = o
+        })
+      } else {
+        this.getData()
+      }
+    },
+    onCopyAllCfg() {
+      this.setData()
+      if (this.bCreateCfg === true) {
+        this.$message.success('所有配置已复制并保存成功！')
+      }
+      this.bCreateCfg = false
     }
   }
 }
