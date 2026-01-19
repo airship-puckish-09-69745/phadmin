@@ -121,35 +121,6 @@
       </el-col>
     </el-row>
 
-    <el-row>
-      <el-col :span="12" :offset="3">
-        <el-tabs v-model="activeTab">
-          <el-tab-pane label="购买免费倍数" name="script">
-            <el-button type="primary" @click="showDialog">添加配置</el-button>
-            <span
-              style="margin-left:10px;color:#909399">(Bet为单线下注大小，Bet=0为默认配置，配置的倍数不能出现0倍的情况)</span>
-
-            <el-table :data="cfg.BuyFreeOddsConf">
-              <el-table-column prop="bet" label="Bet值" width="120">
-                <template slot-scope="scope">
-                  <el-button type="text" @click="editConfig(scope.row)">{{
-                      scope.row.Bet.map(b => b / 1000).join(', ')
-                    }}
-                  </el-button>
-                </template>
-              </el-table-column>
-              <el-table-column label="操作" width="180" header-align="center">
-                <template slot-scope="scope">
-                  <el-button type="primary" @click="editConfig(scope.row)">编辑</el-button>
-                  <el-button type="danger" @click="removeConfig(scope.$index)">删除</el-button>
-                </template>
-              </el-table-column>
-            </el-table>
-          </el-tab-pane>
-        </el-tabs>
-      </el-col>
-    </el-row>
-
     <el-dialog
       :title="buyFreeOddsConf.dialogTitle"
       :visible.sync="buyFreeOddsConf.dialogVisible"
