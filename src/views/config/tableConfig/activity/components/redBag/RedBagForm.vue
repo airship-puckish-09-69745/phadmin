@@ -172,7 +172,18 @@ export default {
     getTaskCfgData(cfgData) {
       return cfgData.map(data => {
         const newData = mulFields1000(data, this.fields)
-        return { ...data, rewardNum: newData.rewardNum }
+        const result = { ...data, rewardNum: newData.rewardNum }
+        // 处理 rewardPools 中的 value1 和 value2（金额字段 * 1000），weight（权重字段 * 100）
+        if (result.rewardPools && Array.isArray(result.rewardPools)) {
+          result.rewardPools = result.rewardPools.map(pool => ({
+            poolName: pool.poolName,
+            value1: Math.round(Number(pool.value1) * 1000),
+            value2: Math.round(Number(pool.value2) * 1000),
+            // weight: Math.round(Number(pool.weight) * 100),
+            limitNum: pool.limitNum
+          }))
+        }
+        return result
       })
     },
     // 处理红包配置，将金额字段 * 1000，权重字段 * 100
@@ -401,10 +412,22 @@ export default {
         //  处理 taskCfgData 中 rewardNum 字段（前端期望的单位）
         if (Array.isArray(data.taskCfgData)) {
           data.taskCfgData = data.taskCfgData.map(item => {
-            if (item.rewardNum !== undefined && item.rewardNum !== null) {
-              return { ...item, rewardNum: Number(item.rewardNum) / 1000 }
+            const newItem = { ...item }
+            // 处理 rewardNum
+            if (newItem.rewardNum !== undefined && newItem.rewardNum !== null) {
+              newItem.rewardNum = Number(newItem.rewardNum) / 1000
             }
-            return item
+            // 处理 rewardPools 中的金额字段（/ 1000）和权重字段（/ 100）
+            if (newItem.rewardPools && Array.isArray(newItem.rewardPools)) {
+              newItem.rewardPools = newItem.rewardPools.map(pool => ({
+                poolName: pool.poolName,
+                value1: Number(pool.value1) / 1000,
+                value2: Number(pool.value2) / 1000,
+                // weight: Number(pool.weight) / 100,
+                limitNum: pool.limitNum
+              }))
+            }
+            return newItem
           })
         }
 
