@@ -179,7 +179,7 @@ export default {
             poolName: pool.poolName,
             value1: Math.round(Number(pool.value1) * 1000),
             value2: Math.round(Number(pool.value2) * 1000),
-            weight: Math.round(Number(pool.weight) * 100),
+            weight: pool.weight,
             limitNum: pool.limitNum
           }))
         }
@@ -213,7 +213,7 @@ export default {
             poolName: pool.poolName,
             value1: Number(pool.value1) / 1000,
             value2: Number(pool.value2) / 1000,
-            weight: Number(pool.weight) / 100,
+            weight: pool.weight,
             limitNum: pool.limitNum
           }))
         }
@@ -317,10 +317,10 @@ export default {
       // 任务配置：包含taskType字段的记录
       // 红包配置：包含redId字段且不包含taskType的记录
       const taskConfigs = this.item.taskCfgData.filter(item => item.taskType)
-      const redBagConfigs = this.item.taskCfgData.filter(item => item.redId && !item.taskType)
+      // const redBagConfigs = this.item.taskCfgData.filter(item => item.redId && !item.taskType)
       let taskCfgData = this.getTaskCfgData(taskConfigs)
       taskCfgData = JSON.stringify(taskCfgData)
-      const redBagCfg = JSON.stringify(this.formatRedBagCfgForSave(redBagConfigs))
+      // const redBagCfg = JSON.stringify(this.formatRedBagCfgForSave(redBagConfigs))
       const gameIdCfg = JSON.stringify(this.item.gameIdCfg)
       const abTest = JSON.stringify(this.item.abTest)
       const whiteList = JSON.stringify(this.getWhiteList())
@@ -350,7 +350,7 @@ export default {
         rewardType: this.item.rewardType, // 奖励类型
         gameType: this.item.gameType, // 玩法大类型
         taskCfgData: taskCfgData, // 任务配置（JSON字符串）
-        redBagCfg: redBagCfg, // 红包价值配置（JSON字符串）
+        // redBagCfg: redBagCfg, // 红包价值配置（JSON字符串）
         gameIdCfg: gameIdCfg, // 游戏ID配置（JSON字符串）
         whiteList: whiteList, // 白名单（JSON字符串）
         isWhite: this.item.isWhite, // 是否白名单
