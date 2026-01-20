@@ -527,7 +527,7 @@ export default {
       try {
         // 异步等待配置检查结果
          const configResult = await this.getOtherConfig(this.edit.item.TableMoney*1000)
-        console.log("configResult",configResult)
+        //console.log("configResult",configResult)
         if (this.isAppExt) {
           if (configResult === undefined) {
               Message.error('基座没有对应的底注且已经上架的配置！')
@@ -545,7 +545,7 @@ export default {
         }
         return true
       } catch (error) {
-        console.error('配置检查失败:', error)
+       // console.error('配置检查失败:', error)
         Message.error('配置检查失败，请稍后重试')
         return false
       }
@@ -658,8 +658,8 @@ export default {
         }).then(response => {
           if (response.RetCode === 0) {
             const objs = response.Data || []
-            console.log("TableMoney",TableMoney)
-             console.log("objs", objs)
+            // console.log("TableMoney",TableMoney)
+            //  console.log("objs", objs)
             for (let i = 0; i < objs.length; i++) {
               if (objs[i].TableMoney == TableMoney && objs[i].Status == 2) {
                
