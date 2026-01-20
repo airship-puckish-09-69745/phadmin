@@ -179,7 +179,7 @@ export default {
             poolName: pool.poolName,
             value1: Math.round(Number(pool.value1) * 1000),
             value2: Math.round(Number(pool.value2) * 1000),
-            // weight: Math.round(Number(pool.weight) * 100),
+            weight: Math.round(Number(pool.weight) * 100),
             limitNum: pool.limitNum
           }))
         }
