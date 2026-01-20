@@ -21,11 +21,11 @@
         </el-tab-pane>
 
         <el-tab-pane label="任务配置">
-          <TaskConfig v-model="item" />
+          <TaskConfig v-model="item"/>
         </el-tab-pane>
 
         <el-tab-pane label="白名单配置">
-          <WhitelistConfig v-model="item" />
+          <WhitelistConfig v-model="item"/>
         </el-tab-pane>
       </el-tabs>
 
@@ -40,10 +40,10 @@
 </template>
 
 <script>
-import { Message } from 'element-ui'
+import {Message} from 'element-ui'
 import request from '@/utils/request'
 import store from '@/store'
-import { mulFields1000, divFields1000 } from '@/utils/index'
+import {divFields1000, mulFields1000} from '@/utils/index'
 import ActivityBaseConfig from './ActivityBaseConfig.vue'
 import TaskConfig from './TaskConfig.vue'
 import WhitelistConfig from './WhitelistConfig.vue'
@@ -172,20 +172,31 @@ export default {
     getTaskCfgData(cfgData) {
       return cfgData.map(data => {
         const newData = mulFields1000(data, this.fields)
-        return { ...data, rewardNum: newData.rewardNum }
+        const result = {...data, rewardNum: newData.rewardNum}
+        // 处理 rewardPools 中的 value1 和 value2（金额字段 * 1000），weight（权重字段 * 100）
+        if (result.rewardPools && Array.isArray(result.rewardPools)) {
+          result.rewardPools = result.rewardPools.map(pool => ({
+            poolName: pool.poolName,
+            value1: Math.round(Number(pool.value1) * 1000),
+            value2: Math.round(Number(pool.value2) * 1000),
+            weight: pool.weight,
+            limitNum: pool.limitNum
+          }))
+        }
+        return result
       })
     },
     // 处理红包配置，将金额字段 * 1000，权重字段 * 100
     formatRedBagCfgForSave(cfgList) {
       return cfgList.map(item => {
-        const newItem = { ...item }
+        const newItem = {...item}
         // 处理rewardPools数组
         if (newItem.rewardPools && Array.isArray(newItem.rewardPools)) {
           newItem.rewardPools = newItem.rewardPools.map(pool => ({
             poolName: pool.poolName,
             value1: Math.round(Number(pool.value1) * 1000),
             value2: Math.round(Number(pool.value2) * 1000),
-            weight: Math.round(Number(pool.weight) * 100),
+            weight: Number(pool.weight),
             limitNum: pool.limitNum
           }))
         }
@@ -195,14 +206,14 @@ export default {
     // 处理红包配置，将金额字段 / 1000，权重字段 / 100
     formatRedBagCfgForEdit(cfgList) {
       return cfgList.map(item => {
-        const newItem = { ...item }
+        const newItem = {...item}
         // 处理rewardPools数组
         if (newItem.rewardPools && Array.isArray(newItem.rewardPools)) {
           newItem.rewardPools = newItem.rewardPools.map(pool => ({
             poolName: pool.poolName,
             value1: Number(pool.value1) / 1000,
             value2: Number(pool.value2) / 1000,
-            weight: Number(pool.weight) / 100,
+            weight: pool.weight,
             limitNum: pool.limitNum
           }))
         }
@@ -306,10 +317,10 @@ export default {
       // 任务配置：包含taskType字段的记录
       // 红包配置：包含redId字段且不包含taskType的记录
       const taskConfigs = this.item.taskCfgData.filter(item => item.taskType)
-      const redBagConfigs = this.item.taskCfgData.filter(item => item.redId && !item.taskType)
+      // const redBagConfigs = this.item.taskCfgData.filter(item => item.redId && !item.taskType)
       let taskCfgData = this.getTaskCfgData(taskConfigs)
       taskCfgData = JSON.stringify(taskCfgData)
-      const redBagCfg = JSON.stringify(this.formatRedBagCfgForSave(redBagConfigs))
+      // const redBagCfg = JSON.stringify(this.formatRedBagCfgForSave(redBagConfigs))
       const gameIdCfg = JSON.stringify(this.item.gameIdCfg)
       const abTest = JSON.stringify(this.item.abTest)
       const whiteList = JSON.stringify(this.getWhiteList())
@@ -339,7 +350,7 @@ export default {
         rewardType: this.item.rewardType, // 奖励类型
         gameType: this.item.gameType, // 玩法大类型
         taskCfgData: taskCfgData, // 任务配置（JSON字符串）
-        redBagCfg: redBagCfg, // 红包价值配置（JSON字符串）
+        // redBagCfg: redBagCfg, // 红包价值配置（JSON字符串）
         gameIdCfg: gameIdCfg, // 游戏ID配置（JSON字符串）
         whiteList: whiteList, // 白名单（JSON字符串）
         isWhite: this.item.isWhite, // 是否白名单
@@ -391,7 +402,7 @@ export default {
         data.whiteList = safeJsonParse(data.whiteList, [])
         data.appIdList = safeJsonParse(data.appIdList, [])
         data.siteIdList = safeJsonParse(data.siteIdList, [])
-        data.abTest = safeJsonParse(data.abTest, { switch: false, bPercent: 0 })
+        data.abTest = safeJsonParse(data.abTest, {switch: false, bPercent: 0})
 
         //  对需要按千倍/百分位处理的字段做统一转换（使用工具函数）
         // divFields1000 会将指定字段除以 1000（反向处理），返回一个新对象
@@ -401,10 +412,22 @@ export default {
         //  处理 taskCfgData 中 rewardNum 字段（前端期望的单位）
         if (Array.isArray(data.taskCfgData)) {
           data.taskCfgData = data.taskCfgData.map(item => {
-            if (item.rewardNum !== undefined && item.rewardNum !== null) {
-              return { ...item, rewardNum: Number(item.rewardNum) / 1000 }
+            const newItem = {...item}
+            // 处理 rewardNum
+            if (newItem.rewardNum !== undefined && newItem.rewardNum !== null) {
+              newItem.rewardNum = Number(newItem.rewardNum) / 1000
             }
-            return item
+            // 处理 rewardPools 中的金额字段（/ 1000）和权重字段（/ 100）
+            if (newItem.rewardPools && Array.isArray(newItem.rewardPools)) {
+              newItem.rewardPools = newItem.rewardPools.map(pool => ({
+                poolName: pool.poolName,
+                value1: Number(pool.value1) / 1000,
+                value2: Number(pool.value2) / 1000,
+                weight: pool.weight,
+                limitNum: pool.limitNum
+              }))
+            }
+            return newItem
           })
         }
 
