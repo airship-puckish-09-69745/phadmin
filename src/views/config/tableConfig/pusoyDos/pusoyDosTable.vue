@@ -523,34 +523,40 @@ export default {
          Message.error('请选择正确的应用！')
         return false
       }
+       let isValild = await this.checkAppData(this.edit.item.TableMoney*1000,this.edit.item.ObjectCount,this.edit.item.Status)
+      return isValild
 
-      try {
-        // 异步等待配置检查结果
-         const configResult = await this.getOtherConfig(this.edit.item.TableMoney*1000)
-        //console.log("configResult",configResult)
-        if (this.isAppExt) {
-          if (configResult === undefined) {
-              Message.error('基座没有对应的底注且已经上架的配置！')
-              return false 
-          }
-          if (configResult.ObjectCount != this.edit.item.ObjectCount) {
-             Message.error('应用配置桌子数量需要和基座配桌一样！')
-              return false 
-          }
-        } else {
-          if (this.edit.item.Status != 2 && configResult != undefined && configResult.Status == 2 && this.edit.item.Level == configResult.Level) {
-             Message.error('有对应的应用差异配置，需要下架应用差异配置，才能继续操作！')
-              return false 
-          }
-        }
-        return true
-      } catch (error) {
-       // console.error('配置检查失败:', error)
-        Message.error('配置检查失败，请稍后重试')
-        return false
-      }
     },
-    async save() {
+
+    async checkAppData(tableMoney,ObjectCount,status) {
+      try {
+          // 异步等待配置检查结果
+          const configResult = await this.getOtherConfig(tableMoney)
+         // console.log("configResult",configResult)
+          if (this.isAppExt) {
+            if (configResult === undefined) {
+                Message.error('基座没有对应的底注且已经上架的配置！')
+                return false 
+            }
+            if (configResult.ObjectCount != ObjectCount) {
+              Message.error('应用配置桌子数量需要和基座配桌一样！')
+                return false 
+            }
+          } else {
+            if (status!= 2 && configResult != undefined && configResult.Status == 2) {
+              Message.error('有对应的应用差异配置，需要下架应用差异配置，才能继续操作！')
+                return false 
+            }
+          }
+          return true
+        } catch (error) {
+        // console.error('配置检查失败:', error)
+          Message.error('配置检查失败，请稍后重试')
+          return false
+        }
+    },
+    
+   async save() {
       let isValild = await this.checkData()
       if (!isValild) return
       if (this.edit.isEdit) {
@@ -613,7 +619,25 @@ export default {
       }
       this.refreshData()
     },
-    changeStatus(id, status, msg,callback) {
+    async changeStatus(id, status, msg,callback) {
+
+      let tableMoney = 0
+      let ObjectCount = 0
+      if (this.$refs.configTable && this.$refs.configTable.clientDB &&this.$refs.configTable.clientDB.TotalData ) {
+        for (let i = 0; i < this.$refs.configTable.clientDB.TotalData.length;i++) {
+          const item = this.$refs.configTable.clientDB.TotalData[i]
+          if (item.ID == id) {
+            tableMoney = item.TableMoney
+            ObjectCount = item.ObjectCount
+            break
+          }
+        }
+      }
+      console.log(" this.$refs.configTable",tableMoney)
+      
+      let isValild = await this.checkAppData(tableMoney*1000,ObjectCount, status)
+      if (!isValild) return
+
       let url = '/pusoydostable/update/status'
       if (this.isAppExt) {
         url = '/pusoydostableappext/update/status'
