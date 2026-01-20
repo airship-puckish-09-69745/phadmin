@@ -12,8 +12,8 @@
               type="date"
               placeholder="选择日期"
               value-format="timestamp"
-            >
-            </el-date-picker>
+              :picker-options="pickerOptions"
+            />
           </el-form-item>
         </el-form>
       </el-col>
@@ -31,8 +31,8 @@
         :row-style="{ height: '10px' }"
         :cell-style="libShow.DefaultTableCell"
         :default-sort="{ prop: 'TodayPayAmount', order: 'descending' }"
-        @sort-change="onSortChange"
         style="padding:10px;width: 100%"
+        @sort-change="onSortChange"
       >
         <el-table-column prop="No" label="排名" width="100" />
         <el-table-column prop="Account" label="平台ID" width="150" />
@@ -76,15 +76,15 @@
 
 <script>
 
-import SiteSelector from "@/components/SiteSelect/index.vue";
-import { $libDate, $libShow, ClientTableData, MoneyShow } from '@/utils/common'
+import SiteSelector from '@/components/SiteSelect/index.vue'
+import { $libShow, ClientTableData, MoneyShow } from '@/utils/common'
 import request from '@/utils/request'
 
 const filterMap = {}
 
 export default {
   name: 'PayWithdrawTop',
-  components: {SiteSelector},
+  components: { SiteSelector },
   data() {
     return {
       form: {
@@ -96,7 +96,12 @@ export default {
       libShow: $libShow,
       libMoney: new MoneyShow(['TodayPayAmount', 'TotalPayAmount', 'TodayWithdrawAmount', 'TotalWithdrawAmount']),
       tableDB: new ClientTableData([], 10, filterMap),
-      tableData: []
+      tableData: [],
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() < new Date('2025-08-08').getTime()
+        }
+      }
     }
   },
   created() {
@@ -159,7 +164,7 @@ export default {
           $this.handleCurrentChange(1)
         }
       })
-    },
+    }
   }
 }
 </script>

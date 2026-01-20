@@ -649,10 +649,12 @@
         if (this.fieldOptions && this.fieldOptions.length>0) {
           this.form.tag_val = 0
           this.form.tag_id = this.fieldOptions[0].value
+          this.form.tag_name = this.fieldOptions[0].label
           this.form.tag_ids = [this.form.tag_id]
         }
         if (this.gameIntensity()) {
           this.form.tag_val = this.intensityOptions[0].value
+          this.form.tag_name = this.intensityOptions[0].label
         }
         if (this.form.tag_type === 5 && !this.showLevelOptions() && !this.showCarryOptions()) {
           this.form.tag_gid = 0
@@ -943,6 +945,7 @@
             const children = this.tagOptions[i].children
             for (let k = 0; k < children.length; k++) {
               if (children[k].value === row.tag_id) {
+                this.form.tag_name = children[k].label
                 this.form.tag_ids = [row.tag_id]
                 break
               }
@@ -950,6 +953,7 @@
               if (grandChildren) {
                 for (let l = 0; l < grandChildren.length; l++) {
                   if (grandChildren[l].value === row.tag_id) {
+                    this.form.tag_name = grandChildren[l].label
                     this.form.tag_ids = [children[k].value,row.tag_id]
                     break
                   }
@@ -959,7 +963,9 @@
           }
         }
         this.form.tag_val = row.tag_val
-        this.form.tag_name = row.tag_name
+        if (row.tag_name !== '') {
+          this.form.tag_name = row.tag_name
+        }
         this.form.tag_gid = row.tag_gid
         this.form.status = row.status
         attr.loginDay && (this.form.loginDay = attr.loginDay)

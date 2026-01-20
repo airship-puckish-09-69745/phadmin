@@ -77,12 +77,12 @@
             width="150"
           >
             <template slot-scope="scope">
-               <span v-if="scope.row.money > scope.row.initMoney" style="color:red">
-              {{ formatNumber(scope.row.money - scope.row.initMoney) }}
-            </span>
+              <span v-if="scope.row.money > scope.row.initMoney" style="color:red">
+                {{ formatNumber(scope.row.money - scope.row.initMoney) }}
+              </span>
               <span v-else style="color:green">
-              {{ formatNumber(scope.row.money - scope.row.initMoney) }}
-            </span>
+                {{ formatNumber(scope.row.money - scope.row.initMoney) }}
+              </span>
             </template>
           </el-table-column>
           <el-table-column
@@ -91,11 +91,11 @@
           >
             <template slot-scope="scope">
               <span v-if="scope.row.money > scope.row.initMoney" style="color:red">
-              {{ ((scope.row.money - scope.row.initMoney)*100/scope.row.initMoney).toFixed(2) }}%
-            </span>
+                {{ ((scope.row.money - scope.row.initMoney)*100/scope.row.initMoney).toFixed(2) }}%
+              </span>
               <span v-else style="color:green">
-              {{ ((scope.row.money - scope.row.initMoney)*100/scope.row.initMoney).toFixed(2) }}%
-            </span>
+                {{ ((scope.row.money - scope.row.initMoney)*100/scope.row.initMoney).toFixed(2) }}%
+              </span>
             </template>
           </el-table-column>
           <el-table-column
@@ -103,7 +103,7 @@
             width="100"
           >
             <template slot-scope="scope">
-              {{ scope.row.gameCount }}/ {{ scope.row.gameCount + scope.row.workCount}}
+              {{ scope.row.gameCount }}/ {{ scope.row.gameCount + scope.row.workCount }}
             </template>
           </el-table-column>
           <el-table-column
@@ -112,7 +112,7 @@
           >
             <template slot-scope="scope">
               <span v-if="scope.row.loserCount > 0" style="color:red">
-                {{ scope.row.loserCount}}
+                {{ scope.row.loserCount }}
               </span>
             </template>
           </el-table-column>
@@ -121,9 +121,9 @@
             width="100"
           >
             <template slot-scope="scope">
-               <span v-if="scope.row.coldCount > 0">
-              {{ scope.row.coldCount }}
-               </span>
+              <span v-if="scope.row.coldCount > 0">
+                {{ scope.row.coldCount }}
+              </span>
             </template>
           </el-table-column>
         </el-table>
@@ -147,11 +147,11 @@
           sortable="custom"
           width="90"
         />
-<!--        <el-table-column-->
-<!--          prop="nick"-->
-<!--          label="昵称"-->
-<!--          width="120"-->
-<!--        />-->
+        <!--        <el-table-column-->
+        <!--          prop="nick"-->
+        <!--          label="昵称"-->
+        <!--          width="120"-->
+        <!--        />-->
         <el-table-column
           prop="account"
           label="账号标识"
@@ -226,6 +226,16 @@
           </template>
         </el-table-column>
 
+        <el-table-column
+          prop="RobotDefenceLevel"
+          label="贴防等级"
+          sortable="custom"
+          width="100"
+        >
+          <template slot-scope="scope">
+            <span>{{ getRobotDefenceLevel(scope.row.RobotDefenceLevel) }}</span>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="allowTableMoney"
           label="允许出现场次"
@@ -411,7 +421,8 @@
               :key="item.value"
               size="mini"
               :type="chartDialog.form.tableMoney === item.value ? 'primary' : 'default'"
-              @click="selectTableMoney(item.value)"      style="margin-right: 10px; margin-bottom: 10px;"
+              style="margin-right: 10px; margin-bottom: 10px;"
+              @click="selectTableMoney(item.value)"
             >
               {{ item.label }}
             </el-button>
@@ -424,15 +435,16 @@
             range-separator="至"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            value-format="timestamp"            style="width: 100%;">
-          </el-date-picker>
+            value-format="timestamp"
+            style="width: 100%;"
+          />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="getRobotList">查询</el-button>
         </el-form-item>
       </el-form>
       <el-row>
-        <line-chart :chart-data="chartData" :max="maxy"  height="600px" />
+        <line-chart :chart-data="chartData" :max="maxy" height="600px" />
       </el-row>
     </el-dialog>
   </div>
@@ -444,7 +456,7 @@ import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import LineChart from '../../../playerManage/components/LineChart'
-import { $libDate, $libShow, ClientTableData, DataRule, MoneyShow } from '@/utils/common'
+import { $libDate, $libShow, ClientTableData } from '@/utils/common'
 import RobotRecycleBtn from '@/components/RobotRecycleBtn'
 const filterMap = {
   currentTableMoney: 'all',
@@ -571,8 +583,8 @@ export default {
       })
     },
     selectTableMoney(tableMoney) {
-      this.chartDialog.form.tableMoney = tableMoney;
-      this.getRobotList(); // 直接触发查询
+      this.chartDialog.form.tableMoney = tableMoney
+      this.getRobotList() // 直接触发查询
     },
     showChartDialog() {
       this.chartDialog.visible = true
@@ -629,7 +641,7 @@ export default {
           // this.pagination.total = 0
           const {
             list,
-            max,
+            max
           } = response.Data
           // console.log('表格数据', list)
           // console.log('折线图数据', max)
@@ -739,16 +751,16 @@ export default {
           for (let i = 0; i < objs.length; i++) {
             const item = objs[i]
             if (statMap[item.allowTableMoney] == null) {
-              statMap[item.allowTableMoney] = { tableMoney: item.allowTableMoney, initMoney: 0, money: 0, gameCount: 0, workCount: 0, coldCount: 0, loserCount:0 }
+              statMap[item.allowTableMoney] = { tableMoney: item.allowTableMoney, initMoney: 0, money: 0, gameCount: 0, workCount: 0, coldCount: 0, loserCount: 0 }
             }
-            if (item.status == 0) {
+            if (item.status === 0) {
               statMap[item.allowTableMoney].coldCount++
             } else {
               statMap[item.allowTableMoney].initMoney += item.initMoney
               statMap[item.allowTableMoney].money += item.money
-              if (item.status == 1) {
+              if (item.status === 1) {
                 statMap[item.allowTableMoney].workCount++
-              } else if (item.status == 2) {
+              } else if (item.status === 2) {
                 statMap[item.allowTableMoney].gameCount++
               }
             }
@@ -757,7 +769,7 @@ export default {
               statMap[item.allowTableMoney].loserCount++
             }
           }
-          this.statItems=[]
+          this.statItems = []
           for (const o in statMap) {
             this.statItems.push(statMap[o])
           }
@@ -784,7 +796,6 @@ export default {
     // 分页处理
     refreshShow() {
       this.tableData = this.clientDB.GetCurrentPageData()
-
     },
     handleSizeChange(val) {
       this.clientDB.GetPage().SetPageNum(val)
@@ -848,16 +859,16 @@ export default {
       this.edit.item.initMoney *= 1000
       this.edit.item.allowTableMoney *= 1000
       const oldData = this.getDataByUid(this.edit.item.uid)
-      if (oldData.nick != this.edit.item.nick) {
+      if (oldData.nick !== this.edit.item.nick) {
         o.nick = this.edit.item.nick
       }
-      if (oldData.icon != this.edit.item.icon) {
+      if (oldData.icon !== this.edit.item.icon) {
         o.icon = this.edit.item.icon
       }
-      if (oldData.initMoney != this.edit.item.initMoney) {
+      if (oldData.initMoney !== this.edit.item.initMoney) {
         o.initMoney = this.edit.item.initMoney
       }
-      if (oldData.allowTableMoney != this.edit.item.allowTableMoney) {
+      if (oldData.allowTableMoney !== this.edit.item.allowTableMoney) {
         o.allowTableMoney = this.edit.item.allowTableMoney
       }
       return o
@@ -952,6 +963,17 @@ export default {
     },
     beforeRemove(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`)
+    },
+    getRobotDefenceLevel(level) {
+      if (level === 0) {
+        return '无'
+      } else if (level === 5) {
+        return '贴-强杀'
+      } else if (level === 7) {
+        return '预贴-陪玩'
+      } else if (level === 11) {
+        return '预贴-锁血强杀'
+      }
     }
   }
 }

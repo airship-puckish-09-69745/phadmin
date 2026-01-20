@@ -246,12 +246,12 @@
         <!--        </el-form-item>-->
         <el-form-item label="菲1客户端子版本：" :required="true" prop="Ver">
           <el-col :span="15">
-            <el-input v-model="edit.item.Ver" @blur="edit.item.Ver = edit.item.Ver.trim()" />
+            <el-input v-model="edit.item.Ver" @blur="edit.item.Ver = edit.item.Ver ? edit.item.Ver.replace(/\s+/g, '') : ''" />
           </el-col>
         </el-form-item>
         <el-form-item label="菲1客户端uri：" :required="true" prop="GameUri">
           <el-col :span="15">
-            <el-input v-model="edit.item.GameUri" @blur="edit.item.GameUri = edit.item.GameUri.trim()" />
+            <el-input v-model="edit.item.GameUri" @blur="edit.item.GameUri = edit.item.GameUri ? edit.item.GameUri.replace(/\s+/g, '') : ''" />
           </el-col>
           <!--          <el-col style="width: auto">-->
           <!--            <el-tooltip class="item" effect="dark" content="版本号占位符： ${ver}" placement="left-start">-->
@@ -261,12 +261,12 @@
         </el-form-item>
         <el-form-item label="菲1客户端预发布子版本：" :required="true" prop="TestVer">
           <el-col :span="15">
-            <el-input v-model="edit.item.TestVer" @blur="edit.item.TestVer = edit.item.TestVer.trim()" />
+            <el-input v-model="edit.item.TestVer" @blur="edit.item.TestVer = edit.item.TestVer ? edit.item.TestVer.replace(/\s+/g, '') : ''" />
           </el-col>
         </el-form-item>
         <el-form-item label="菲1客户端预发布uri：" prop="TestUri">
           <el-col :span="15">
-            <el-input v-model="edit.item.TestUri" @blur="edit.item.TestUri = edit.item.TestUri.trim()" />
+            <el-input v-model="edit.item.TestUri" @blur="edit.item.TestUri = edit.item.TestUri ? edit.item.TestUri.replace(/\s+/g, '') : ''" />
           </el-col>
         </el-form-item>
         <el-form-item label="菲1测试用户白名单（uid，多个用英文逗号分隔）：" prop="TestUids">
@@ -276,12 +276,12 @@
         </el-form-item>
         <el-form-item label="德州客户端uri：" prop="TexasUri">
           <el-col :span="15">
-            <el-input v-model="edit.item.TexasUri" @blur="edit.item.TexasUri = edit.item.TexasUri.trim()" />
+            <el-input v-model="edit.item.TexasUri" @blur="edit.item.TexasUri = edit.item.TexasUri ? edit.item.TexasUri.replace(/\s+/g, '') : ''" />
           </el-col>
         </el-form-item>
         <el-form-item label="直播客户端uri：" prop="LiveUri">
           <el-col :span="15">
-            <el-input v-model="edit.item.LiveUri" @blur="edit.item.LiveUri = edit.item.LiveUri.trim()" />
+            <el-input v-model="edit.item.LiveUri" @blur="edit.item.LiveUri = edit.item.LiveUri ? edit.item.LiveUri.replace(/\s+/g, '') : ''" />
           </el-col>
         </el-form-item>
         <el-form-item label="横竖屏：" :required="true" prop="Screen">
@@ -627,7 +627,15 @@ export default {
     trimData() {
       const itemArr = ['Account', 'Intro', 'Ip', 'Ver', 'GamefunVer', 'GameUri', 'Screen', 'TestUri', 'TestUids', 'TexasUri', 'LiveUri', 'TestVer']
       for (const i in itemArr) {
-        this.edit.item[itemArr[i]] = this.edit.item[itemArr[i]].trim()
+        const value = this.edit.item[itemArr[i]]
+        if (value && typeof value === 'string') {
+          // 对于URI和版本号字段，去除所有空格（包括内部空格）
+          if (['Ver', 'GameUri', 'TestUri', 'TexasUri', 'LiveUri', 'TestVer'].includes(itemArr[i])) {
+            this.edit.item[itemArr[i]] = value.replace(/\s+/g, '')
+          } else {
+            this.edit.item[itemArr[i]] = value.trim()
+          }
+        }
       }
     },
     checkData() {
