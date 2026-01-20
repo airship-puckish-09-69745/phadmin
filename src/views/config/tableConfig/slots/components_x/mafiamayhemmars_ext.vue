@@ -8,9 +8,9 @@
             <el-input v-model.number="cfg.BuyFreeOdds" placeholder="请输入内容"/>
           </el-form-item>
 
-<!--          <el-form-item label="进入特殊模式的最小赔率" prop="ScatterOdds" :rules="dataRule(true,{type:'n'})">-->
-<!--            <el-input v-model.number="cfg.ScatterOdds" :required="true"/>-->
-<!--          </el-form-item>-->
+          <el-form-item label="进入特殊模式的最小赔率" prop="ScatterOdds" :rules="dataRule(true,{type:'n'})">
+            <el-input v-model.number="cfg.ScatterOdds" :required="true"/>
+          </el-form-item>
 
           <el-form-item label="Bonus倍数">
             <el-input v-model="cfg.BonusOdds" placeholder="请输入内容,如2,1">
@@ -18,11 +18,11 @@
             </el-input>
           </el-form-item>
 
-<!--          <el-form-item label="普通模式的额外倍数">-->
-<!--            <el-input v-model="cfg.ExtraOddsNormalStr" placeholder="请输入内容,如1,2,3,4,5,6,7,8">-->
-<!--              <template slot="append">倍数只能是连续的</template>-->
-<!--            </el-input>-->
-<!--          </el-form-item>-->
+          <el-form-item label="普通模式的额外倍数">
+            <el-input v-model="cfg.ExtraOddsNormalStr" placeholder="请输入内容,如1,2,3,4,5,6,7,8">
+              <template slot="append">倍数只能是连续的</template>
+            </el-input>
+          </el-form-item>
 
 <!--          <el-form-item label="免费模式的额外倍数">-->
 <!--            <el-input v-model="cfg.ExtraOddsFreeStr" placeholder="请输入内容,如1,2,3,4,5,6,7,8">-->
@@ -30,17 +30,17 @@
 <!--            </el-input>-->
 <!--          </el-form-item>-->
 
-<!--          <el-form-item label="普通模式Bonus倍数权重">-->
-<!--            <el-input v-model="cfg.BonusOddsWeight" placeholder="请输入内容,如2,1">-->
-<!--              <template slot="append">用 , 连接</template>-->
-<!--            </el-input>-->
-<!--          </el-form-item>-->
+          <el-form-item label="普通模式Bonus倍数权重">
+            <el-input v-model="cfg.BonusOddsWeight" placeholder="请输入内容,如2,1">
+              <template slot="append">用 , 连接</template>
+            </el-input>
+          </el-form-item>
 
-<!--          <el-form-item label="免费模式Bonus倍数权重">-->
-<!--            <el-input v-model="cfg.FreeBonusOddsWeight" placeholder="请输入内容,如2,1">-->
-<!--              <template slot="append">用 , 连接</template>-->
-<!--            </el-input>-->
-<!--          </el-form-item>-->
+          <el-form-item label="免费模式Bonus倍数权重">
+            <el-input v-model="cfg.FreeBonusOddsWeight" placeholder="请输入内容,如2,1">
+              <template slot="append">用 , 连接</template>
+            </el-input>
+          </el-form-item>
 
           <el-form-item label="中大奖概率">
             <el-input v-model="cfg.JackpotTypeRate"
@@ -67,11 +67,11 @@
 <!--            </el-input>-->
 <!--          </el-form-item>-->
 
-<!--          <el-form-item label="普通进入bonus/免费权重">-->
-<!--            <el-input v-model="cfg.NormalEnterSpecialWeight" placeholder="请输入内容,如2,4">-->
-<!--              <template slot="append">用 , 连接。</template>-->
-<!--            </el-input>-->
-<!--          </el-form-item>-->
+          <el-form-item label="普通进入bonus/免费权重">
+            <el-input v-model="cfg.NormalEnterSpecialWeight" placeholder="请输入内容,如2,4">
+              <template slot="append">用 , 连接。</template>
+            </el-input>
+          </el-form-item>
 
 <!--          <el-form-item label="免费再次进入bonus/免费概率">-->
 <!--            <el-input v-model="cfg.FreeEnterSpecialWeight" placeholder="请输入内容,如2,4">-->
@@ -99,25 +99,54 @@
           <!--            <el-input v-model="cfg.WildWeight" placeholder=""/>-->
           <!--          </el-form-item>-->
 
-<!--          <el-form-item label="购买免费模式中奖倍数范围V2">-->
-<!--            <el-input v-model="cfg.BuyFreeOddsRangeV2" placeholder="请输入内容,如0,150,151,750">-->
-<!--              <template slot="append">四个值用 , 连接。如0,150,151,750表示0,150和151,750</template>-->
-<!--            </el-input>-->
-<!--          </el-form-item>-->
+          <el-form-item label="购买免费模式中奖倍数范围V2">
+            <el-input v-model="cfg.BuyFreeOddsRangeV2" placeholder="请输入内容,如0,150,151,750">
+              <template slot="append">四个值用 , 连接。如0,150,151,750表示0,150和151,750</template>
+            </el-input>
+          </el-form-item>
 
-<!--          <el-form-item label="购买免费模式中奖左范围概率V2">-->
-<!--            <el-input v-model.number="cfg.BuyFreeRateV2" placeholder="请输入内容,如800">-->
-<!--              <template slot="append">‰</template>-->
-<!--            </el-input>-->
-<!--          </el-form-item>-->
+          <el-form-item label="购买免费模式中奖左范围概率V2">
+            <el-input v-model.number="cfg.BuyFreeRateV2" placeholder="请输入内容,如800">
+              <template slot="append">‰</template>
+            </el-input>
+          </el-form-item>
 
-<!--          <el-form-item label="购买免费模式中奖倍数分布V2">-->
-<!--            <el-input v-model="cfg.BuyFreeDistributeV2" placeholder="请输入内容,如250,500,70,501,750,50">-->
-<!--              <template slot="append">三个值一组用 , 连接。</template>-->
-<!--            </el-input>-->
-<!--          </el-form-item>-->
+          <el-form-item label="购买免费模式中奖倍数分布V2">
+            <el-input v-model="cfg.BuyFreeDistributeV2" placeholder="请输入内容,如250,500,70,501,750,50">
+              <template slot="append">三个值一组用 , 连接。</template>
+            </el-input>
+          </el-form-item>
 
         </el-form>
+      </el-col>
+    </el-row>
+
+    <el-row>
+      <el-col :span="12" :offset="3">
+        <el-tabs v-model="activeTab">
+          <el-tab-pane label="购买免费倍数" name="script">
+            <el-button type="primary" @click="showDialog">添加配置</el-button>
+            <span
+              style="margin-left:10px;color:#909399">(Bet为单线下注大小，Bet=0为默认配置，配置的倍数不能出现0倍的情况)</span>
+
+            <el-table :data="cfg.BuyFreeOddsConf">
+              <el-table-column prop="bet" label="Bet值" width="120">
+                <template slot-scope="scope">
+                  <el-button type="text" @click="editConfig(scope.row)">{{
+                      scope.row.Bet.map(b => b / 1000).join(', ')
+                    }}
+                  </el-button>
+                </template>
+              </el-table-column>
+              <el-table-column label="操作" width="180" header-align="center">
+                <template slot-scope="scope">
+                  <el-button type="primary" @click="editConfig(scope.row)">编辑</el-button>
+                  <el-button type="danger" @click="removeConfig(scope.$index)">删除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-tab-pane>
+        </el-tabs>
       </el-col>
     </el-row>
 

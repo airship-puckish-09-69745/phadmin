@@ -75,13 +75,13 @@
                       <el-input v-model="item.BaseCfg[scope.$index].Rtp" size="mini" ><template  slot="append">%</template></el-input>
                     </template>
                   </el-table-column>
-                  
-                  <el-table-column label="中JP概率" width="280px">
+                  <!--
+                  <el-table-column label="进入JP奖池百分百" width="280px">
                     <template slot-scope="scope">
-                      <el-input v-model="item.BaseCfg[scope.$index].JPRate" size="mini" ><template  slot="append">%(支持后2位小数)</template></el-input>
+                      <el-input v-model="item.BaseCfg[scope.$index].IncJPPercent" size="mini" ><template  slot="append">%</template></el-input>
                     </template>
                   </el-table-column>
-                
+                -->
                   <el-table-column label="操作">
                     <template slot-scope="scope">
                       <el-button type="danger" size="mini" @click="delRowRTPSLevel(scope.$index)">删除</el-button>
@@ -574,11 +574,6 @@ export default {
 
       for (const i in that.item.BaseCfg) {
         that.item.BaseCfg[i].Rtp = that.item.BaseCfg[i].Rtp / 1000
-        if (that.item.BaseCfg[i].JPRate != undefined) {
-          that.item.BaseCfg[i].JPRate = that.item.BaseCfg[i].JPRate / 100
-        }else{
-          that.item.BaseCfg[i].JPRate = 0
-        }
       }
     },
     getData() {
@@ -684,34 +679,23 @@ export default {
           console.log("this.item.OddsCfg[i][j] = ", this.item.OddsCfg[i][j])
         }
         */
-        let cross = 1 //本步到达率
+        let cross = 1
         for (const j in this.item.OddsCfg[i]) {
           let tempOdds = Math.round(this.item.OddsCfg[i][j].Odds * 100) //赔率放大100倍
           let r = (this.item.BaseCfg[i].Rtp/100)/this.item.OddsCfg[i][j].Odds //rtp%
           console.log("rtp:", this.item.BaseCfg[i].Rtp/100, ";odds:", this.item.OddsCfg[i][j].Odds, ";cross:",cross, ";r:",r/cross, ";liveRate:", Math.round(r/cross * 1000000))
           //let liveRate = Math.round(this.item.BaseCfg[i].Rtp/ * 1000000 / tempOdds) //计算存活率
-          let liveRate = Math.round(r/cross * 1000000) //本步的存活率
+          let liveRate = Math.round(r/cross * 1000000)
           cross = r
           totalWeight += this.item.OddsCfg[i][j].JPWeight
           oddsCfg.push({
             Id: id,
             Odds: tempOdds,
             LiveRate: liveRate,
-            JPWeight: this.item.OddsCfg[i][j].JPWeight,
-            JPRate: 0,
+            JPWeight: this.item.OddsCfg[i][j].JPWeight
           })
           id ++
           console.log("r = ", r, "; this.item.OddsCfg[i][j] = ", this.item.OddsCfg[i][j])
-        }
-        for (let j = 0;  j < oddsCfg.length; j ++){
-          if (j + 1 >= oddsCfg.length) {
-            continue
-          }
-          if (this.item.OddsCfg[i][j].JPWeight == 0) {
-            continue
-          }
-          //jp概率/本步punch成功率 = 本步中jp概率
-          oddsCfg[j].JPRate = Math.floor((this.item.BaseCfg[i].JPRate*1000000 / oddsCfg[j + 1].LiveRate) * 100)
         }
         ret.OddsCfg.push({OddsItem:oddsCfg})
         ret.JPTotalWeight.push(totalWeight)
@@ -719,7 +703,6 @@ export default {
 
       for (const i in this.item.BaseCfg) {
         ret.BaseCfg[i].Rtp = Math.round(this.item.BaseCfg[i].Rtp * 1000)
-        ret.BaseCfg[i].JPRate = Math.round(this.item.BaseCfg[i].JPRate * 100)
       }
 
       // ret.ReChoiceCfg.LowLotteryPoolReChoice *= 1000
@@ -746,22 +729,12 @@ export default {
       return ret
     },
 
-    //下一步到达概率
-    nextStepLiveRate(rtp, odds, cross) {
-      if (cross == 0) {
-        return 0
-      }
-      let tempOdds = Math.round(odds * 100) //赔率放大100倍 C:赔率
-      let r = (rtp/100)/odds //rtp%   D:到达本步概率
-      return r/cross
-    },
-
     //RTPS
     doAddRTPSLevel() {
       if (!this.item.BaseCfg) {
         this.item['BaseCfg'] = []
       }
-      this.item.BaseCfg.push({Rtp: 96, JPRate: 0.01})
+      this.item.BaseCfg.push({Rtp: 96})
     },
     delRowRTPSLevel(index) {
       console.log(index)

@@ -259,7 +259,6 @@ export default {
         { 'value': 134, 'label': 'Pusoy JP' },
         { 'value': 135, 'label': 'SUPER COLOR' },
         { 'value': 139, 'label': 'Manny Punch' },
-        { 'value': 143, 'label': 'Triple Wheel Spin' },
         { 'value': 140, 'label': 'HiloPlus' },
         { 'value': 500, 'label': 'GoldMaster' },
       ],

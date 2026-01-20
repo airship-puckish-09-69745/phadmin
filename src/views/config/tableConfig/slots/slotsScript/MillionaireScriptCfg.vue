@@ -490,8 +490,7 @@ export default {
         '236': 'pacquiaofortune',
         '1236': 'pacquiaofortuneplaynow',
         '218': 'wrathofzeus2',
-        '228': 'jokerace',
-        '226': 'fortunewheel'
+        '228': 'jokerace'
       }
     }
   },

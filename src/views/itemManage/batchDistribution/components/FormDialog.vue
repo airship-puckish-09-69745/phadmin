@@ -68,7 +68,7 @@
             @input="form.PropDetails.prop_num = form.PropDetails.prop_num < 0 ? 0 : form.PropDetails.prop_num"
           />
         </div>
-        <div v-if="checkPropNeedExpireDays(itemType)" class="form-item-item">
+        <div class="form-item-item" v-if="checkPropNeedExpireDays(itemType)" >
           过期天数：
           <el-select v-model="form.PropDetails.prop_expire_days" placeholder="请选择过期时间" style="width: calc(100% - 100px);" @focus="onItemSelectorFocus">
             <el-option
@@ -87,7 +87,7 @@
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="onClose()">取 消</el-button>
-      <el-button type="primary" :loading="isSubmitting" :disabled="isSubmitting" @click="onSubmit()">确 定</el-button>
+      <el-button type="primary" @click="onSubmit()">确 定</el-button>
     </span>
   </el-dialog>
 </template>
@@ -96,8 +96,8 @@
 import { ITEM_TYPE_OPTIONS, APPID_OPTIONS, ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS } from '@/utils/options'
 import request from '@/utils/request'
 import { Message } from 'element-ui'
-import { GetMatchTicketRightsIdList, MATCH_TICKET_RIGHTS_ID_CFG_PROD, MATCH_TICKET_RIGHTS_ID_CFG_DEV } from '@/utils/prop'
-import { IsProd } from '@/utils/env'
+import {GetMatchTicketRightsIdList, MATCH_TICKET_RIGHTS_ID_CFG_PROD, MATCH_TICKET_RIGHTS_ID_CFG_DEV} from "@/utils/prop";
+import {IsProd} from "@/utils/env";
 export default {
   props: {
     title: {
@@ -128,7 +128,7 @@ export default {
           prop_num: 1,
           prop_expire_days: 1, // 过期天数
           gids: [],
-          prop_scene_id: 0 // 道具发放场景ID
+          prop_scene_id:0,   // 道具发放场景ID
         },
         Remark: '',
         SendDetails: {
@@ -140,8 +140,7 @@ export default {
       itemOptions: [], // 道具下拉框选项, 根据道具类型从道具列表中筛选得到
       gameMap: {},
       isShowFreeSpinGame: false,
-      FreeSpinGames: [],
-      isSubmitting: false // 添加提交状态控制
+      FreeSpinGames: []
     }
   },
   watch: {
@@ -194,36 +193,23 @@ export default {
      * 提交先进行前端表单校验
      */
     onSubmit() {
-      // 防连点：如果正在提交中，则直接返回
-      if (this.isSubmitting) {
-        return
-      }
-
       if (this.checkoutForm()) {
         if (this.checkoutId()) {
-          // 设置提交状态为true，防止重复点击
-          this.isSubmitting = true
-
-          try {
-            // 将粘贴id通过英文逗号分隔成数组，格式为[{"account":"lfb","status":0},{"account":"lfb11","status":0}]
-            const account_details = this.account.split(',').map(id => {
-              return {
-                account: id.trim(),
-                status: 0
-              }
-            })
-            this.form.SendDetails.account_details = account_details
-            console.log('11111', this.form.SendDetails.account_details)
-
-            // 调用新增或者编辑接口
-            if (this.updateForm) {
-              this.updateBatchDistribution()
-            } else {
-              this.createBatchDistribution()
+          // 将粘贴id通过英文逗号分隔成数组，格式为[{"account":"lfb","status":0},{"account":"lfb11","status":0}]
+          const account_details = this.account.split(',').map(id => {
+            return {
+              account: id.trim(),
+              status: 0
             }
-          } catch (error) {
-            // 出现异常时也要恢复按钮状态
-            this.isSubmitting = false
+          })
+          this.form.SendDetails.account_details = account_details
+          console.log('11111', this.form.SendDetails.account_details)
+
+          // 调用新增或者编辑接口
+          if (this.updateForm) {
+            this.updateBatchDistribution()
+          } else {
+            this.createBatchDistribution()
           }
         }
       }
@@ -372,7 +358,7 @@ export default {
                 this.itemList.push(objs.list[i])
               }
               // 新版道具
-              if (objs.list[i].status === 1 && this.isNewTicketProp(objs.list[i].item_type)) {
+              if(objs.list[i].status === 1 && this.isNewTicketProp(objs.list[i].item_type)){
                 this.itemList.push(objs.list[i])
               }
             }
@@ -409,31 +395,31 @@ export default {
       this.form.PropDetails.prop_num = 1
       this.form.PropDetails.prop_expire_days = 1
       let filteredItems = this.itemList.filter(item => item.item_type === value)
-      if (this.isNewTicketProp(value)) {
-        // 根据当前道具类型获取对应的门票配置
+      if(this.isNewTicketProp(value)){
+        //根据当前道具类型获取对应的门票配置
         const ticketsConfig = IsProd() ? MATCH_TICKET_RIGHTS_ID_CFG_PROD : MATCH_TICKET_RIGHTS_ID_CFG_DEV
-        // console.log('ticketsConfig', ticketsConfig, 'value', value)
-        if (ticketsConfig && typeof ticketsConfig === 'object') {
+        //console.log('ticketsConfig', ticketsConfig, 'value', value)
+        if(ticketsConfig && typeof ticketsConfig === 'object'){
           // 收集所有appId下的ticketId
           const allowedTicketIds = new Set()
-          for (const appId in ticketsConfig) {
-            if (ticketsConfig[appId] && Array.isArray(ticketsConfig[appId])) {
+          for(const appId in ticketsConfig){
+            if(ticketsConfig[appId] && Array.isArray(ticketsConfig[appId])){
               ticketsConfig[appId].forEach(ticket => {
-                if (ticket.ticketId) {
+                if(ticket.ticketId){
                   allowedTicketIds.add(ticket.ticketId)
                 }
               })
             }
           }
           // 只保留在允許列表中的道具
-          if (allowedTicketIds.size > 0) {
+          if(allowedTicketIds.size > 0){
             filteredItems = filteredItems.filter(item => allowedTicketIds.has(item.id))
           }
         }
       }
-      // console.log('筛选后的道具列表', filteredItems)
+     // console.log('筛选后的道具列表', filteredItems)
       this.updateItemOption(filteredItems)
-      // console.log('道具下拉框选项', this.itemOptions)
+     // console.log('道具下拉框选项', this.itemOptions)
       this.checkShowFreeSpinGame()
     },
     /**
@@ -450,8 +436,8 @@ export default {
       }
     },
     handleItemChange(val) {
-      // 新版本门票默认值1
-      if (this.isNewTicketProp(this.itemType)) {
+      //新版本门票默认值1
+      if(this.isNewTicketProp(this.itemType)){
         this.form.PropDetails.prop_num = 1
       }
       this.checkShowFreeSpinGame()
@@ -492,14 +478,14 @@ export default {
       const selectedItem = this.itemList.find(item => item.id === this.form.PropDetails.prop_id)
       // 获取道具名称
       params.PropDetails.prop_name = selectedItem.item_name
-      // 判断发放的是否是新版比赛门票 道具，若是则获取对应的比赛门票权益id
+      //判断发放的是否是新版比赛门票 道具，若是则获取对应的比赛门票权益id
 
       if (this.isNewTicketProp(selectedItem.item_type)) {
-        // 根据当前道具类型获取对应的门票配置
+        //根据当前道具类型获取对应的门票配置
         const ticketsConfig = IsProd() ? MATCH_TICKET_RIGHTS_ID_CFG_PROD : MATCH_TICKET_RIGHTS_ID_CFG_DEV
-        if (ticketsConfig && typeof ticketsConfig === 'object') {
-          for (const appId in ticketsConfig) {
-            if (ticketsConfig[appId] && Array.isArray(ticketsConfig[appId]) && ticketsConfig[appId].some(ticket => ticket.ticketId === selectedItem.id)) {
+        if(ticketsConfig && typeof ticketsConfig === 'object'){
+          for(const appId in ticketsConfig){
+            if(ticketsConfig[appId] && Array.isArray(ticketsConfig[appId]) && ticketsConfig[appId].some(ticket => ticket.ticketId === selectedItem.id)){
               params.PropDetails.prop_scene_id = ticketsConfig[appId].find(ticket => ticket.ticketId === selectedItem.id).sceneId
             }
           }
@@ -543,13 +529,13 @@ export default {
     isAvatarFrameProp(itemType) {
       return itemType === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME || itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR
     },
-    // 是否是新版道具
+    //是否是新版道具
     isNewTicketProp(itemType) {
-      return [PROP_TYPE_OPTIONS.PROP_TYPE_TICKET_NEW, PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW, PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW].includes(itemType)
+      return [PROP_TYPE_OPTIONS.PROP_TYPE_TICKET_NEW,PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW,PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW].includes(itemType)
     },
     checkPropNeedExpireDays(itemType) {
-      return [PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME, PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN, PROP_TYPE_OPTIONS.PROP_TYPE_TICKET_NEW,
-        PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW, PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW].includes(itemType)
+      return [PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME, PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN,PROP_TYPE_OPTIONS.PROP_TYPE_TICKET_NEW,
+        PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW,PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW].includes(itemType);
     },
     // 道具过期时间是否合法
     propValidExpireDays(propType, expireDays) {
@@ -560,7 +546,7 @@ export default {
           if (expireDays < 0) {
             return false
           }
-          break
+          break;
         case PROP_TYPE_OPTIONS.PROP_TYPE_TICKET_NEW:
         case PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW:
         case PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW:
@@ -568,10 +554,10 @@ export default {
           if (expireDays === 0 || expireDays === 365 || expireDays < 0) {
             return false
           }
-          break
+          break;
         default:
           // 其他道具類型：默認有效
-          break
+          break;
       }
       return true
     },

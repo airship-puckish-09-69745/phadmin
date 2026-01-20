@@ -70,28 +70,6 @@
                     >%</template></el-input>
                   </template>
                 </el-table-column>
-                <el-table-column label="渠道" width="400">
-                  <template slot-scope="scope">
-                    <el-checkbox-group v-model="scope.row.Channels">
-                      <el-checkbox label="BP" />
-                      <el-checkbox label="GP" />
-                      <el-checkbox label="CP" />
-                      <el-checkbox label="AP" />
-                      <el-checkbox label="DEV" />
-                    </el-checkbox-group>
-                  </template>
-                </el-table-column>
-                <el-table-column label="使用casino机器人昵称" width="200">
-                  <template slot-scope="scope">
-                    <el-switch
-                      v-model="scope.row.IsUseCasio"
-                      active-color="#13ce66"
-                      inactive-color="#ff4949"
-                      @change="(val) => handleUseCasino(val, scope.row)"
-                    />
-                  </template>
-                </el-table-column>
-
                 <el-table-column label="操作" width="100">
                   <template slot-scope="scope">
                     <el-button type="danger" size="mini" @click="delNickCfg(scope.$index)">删除</el-button>
@@ -468,9 +446,7 @@ function newRobotCardsPlans() {
 function newNick(nick, probability) {
   return {
     Nick: nick,
-    Probability: probability,
-    Channels: [],
-    IsUseCasio: false
+    Probability: probability
   }
 }
 function newShowMoneyCfg() {
@@ -978,18 +954,6 @@ export default {
             $this.item.RobotCardsPlans = $this.item.RobotCardsPlans || []
             $this.item.RobotLevelCfg = $this.item.RobotLevelCfg || []
             this.item.NickCfg = this.item.NickCfg || []
-
-            const NameCfg = []
-            for (const o in this.item.NickCfg) {
-              const one = Object.assign({}, this.item.NickCfg[o])
-              if (!one.Channels) {
-                one.Channels = []
-                one.IsUseCasio = false
-              }
-              NameCfg.push(one)
-            }
-            this.item.NickCfg =NameCfg
-
             this.item.StopAddCfg = this.item.StopAddCfg || []
             this.item.BetMoneyList = this.item.BetMoneyList || []
             this.item.ShowMoneyCfg = this.item.ShowMoneyCfg || []
@@ -1106,23 +1070,7 @@ export default {
       }
       return JSON.stringify(cpy)
     },
-    checkNameCfg() {
-      let hasUseCasino = false
-      for (const o in this.item.NickCfg) {
-        if (this.item.NickCfg[o].IsUseCasio) {
-          hasUseCasino = true
-        }
-      }
-      if (!hasUseCasino) {
-        Message.error('必须存在一个默认使用casino机器人昵称的配置')
-        return false
-      }
-      return true
-    },
     setData() {
-      if (!this.checkNameCfg()) {
-        return
-      }
       this.form.Data = this.encodeData()
       const $this = this
       // 设置修改后数据
@@ -1488,12 +1436,6 @@ export default {
       }).then(() => {
         this.$delete(this.item.StopAddCfg, idx)
       })
-    },
-    handleUseCasino(change, row) {
-      // console.log(ttt)
-      if (change) {
-        row.Channels = ['BP', 'GP', 'CP', 'AP', 'DEV']
-      }
     }
   }
 }

@@ -507,9 +507,6 @@
           </el-form-item>
           <el-form-item v-if="editForm.data.opentMatchType===2" label="延迟报名时间(秒)：" :required="true">
             <el-input v-model.number="editForm.listExtra.delaySignUpSeconds" style="width: 200px;" placeholder="请填写延迟报名时间" />
-            <span  style="color: #409eff; margin-left: 10px;">
-              延迟报名时间需要小于等于Rebuy时间加额外的10秒
-            </span>
           </el-form-item>
         </fieldset>
         <fieldset>
@@ -2527,14 +2524,14 @@ export default {
         const ruleExtra = this.csExtraCfgs.get(this.editForm.data.csId)
 
         if (this.editForm.data.opentMatchType == 2 && this.editForm.data.opentMatchMember < endNum) {
-          if(ruleExtra == null || ruleExtra.rule_skip_type === 2) { //仅定局阶段赛事不做数值检查
+          if(ruleExtra == null || ruleExtra.skip_strikeout == 0) { //跳过打立阶段赛事不做数值检查
             this.errmsg('开赛人数不能小于打立出局的结束规则的剩余人数')
             return false
           }
         }
 
         if (this.editForm.data.opentMatchType == 2 && this.editForm.data.opentMatchMember < promoteNum) {
-          if(ruleExtra == null || ruleExtra.rule_skip_type ===2 ) { //仅定局阶段阶段赛事不做数值检查
+          if(ruleExtra == null || ruleExtra.skip_strikeout == 0) { //跳过打立阶段赛事不做数值检查
             this.errmsg('开赛人数不能小于打立出局的晋级规则的晋级人数')
             return false
           }

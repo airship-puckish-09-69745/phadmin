@@ -23,18 +23,6 @@
             <el-input v-model="cfg.GoldenSymbolOddsWeights" placeholder="请输入内容,如1,2,100"> <template slot="append">多个值用 , 连接。如1,2,100</template> </el-input>
           </el-form-item>
 
-          <el-form-item label="头行出现金框符号的概率" prop="GoldenSymbolRate" :rules="dataRule(true,{type:'n'})">
-            <el-input v-model.number="cfg.HeadGoldenSymbolRate" :required="true">
-              <template slot="append">‰</template>
-            </el-input>
-          </el-form-item>
-
-          <el-form-item label="头行金框符号获得随机倍率的概率" prop="GoldenSymbolOddsRate" :rules="dataRule(true,{type:'n'})">
-            <el-input v-model.number="cfg.HeadGoldenSymbolOddsRate" :required="true">
-              <template slot="append">‰</template>
-            </el-input>
-          </el-form-item>
-
           <el-form-item label="头行金框符号获得的倍率范围">
             <el-input v-model="cfg.HeadGoldenSymbolOddsRange" placeholder="请输入内容,如1,2,100"> <template slot="append">多个值用 , 连接。如1,2,100</template> </el-input>
           </el-form-item>

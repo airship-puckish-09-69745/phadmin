@@ -480,17 +480,11 @@ export const asyncRoutes = [
             redirect: 'noRedirect',
             meta: { title: 'PusoyDos', noCache: true },
             children: [
-              // {
-              //   path: 'PusoyDosTable',
-              //   component: () => import('@/views/config/tableConfig/pusoyDos/pusoyDosTable'),
-              //   name: 'PusoyDosTable',
-              //   meta: { title: 'PusoyDos ◐' }
-              // },
               {
-                path: 'PusoyDosServerConfig',
-                component: () => import('@/views/config/tableConfig/pusoyDos/pusoyDosServerConfig'),
-                name: 'PusoyDosServerConfig',
-                meta: { title: 'PusoyDos配置 ◐' }
+                path: 'PusoyDosTable',
+                component: () => import('@/views/config/tableConfig/pusoyDos/pusoyDosTable'),
+                name: 'PusoyDosTable',
+                meta: { title: 'PusoyDos ◐' }
               },
               {
                 path: 'PusoyDosTogether',
@@ -3198,12 +3192,6 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_pirateTap',
             meta: { title: 'P irate Tap ◐', gid: 142 }
-          },
-          {
-            path: 'playlog_tripleWheelSpin',
-            component: () => import('@/views/playerManage/playlog'),
-            name: 'playlog_tripleWheelSpin',
-            meta: { title: 'Triple Wheel Spin ◐', gid: 143 }
           }
 
           /*
