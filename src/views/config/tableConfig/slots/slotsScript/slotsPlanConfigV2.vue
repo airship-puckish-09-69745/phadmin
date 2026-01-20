@@ -1497,6 +1497,10 @@ export default {
       const items = this.proceedUpdateData(val)
       this.$refs.compare.SetNewVal(items)
       const $this = this
+      const data = {
+        SlotsType: $this.showItem.SlotsType,
+        Plans: items
+      }
       this.$refs.compare.Compare(function(isEdit) {
         if (!isEdit) {
           Message.error('没有任何修改，不需要提交')
@@ -1505,12 +1509,8 @@ export default {
         if (!$this.checkData()) {
           return
         }
-        const data = {
-          SlotsType: $this.showItem.SlotsType,
-          Plans: items
-        }
-        this.planForm.Data = JSON.stringify(data)
-        updateCustomize(this.planForm).then(response => {
+        $this.planForm.Data = JSON.stringify(data)
+        updateCustomize($this.planForm).then(response => {
           if (response.RetCode === 0) {
             Message.success('保存成功！')
           }
