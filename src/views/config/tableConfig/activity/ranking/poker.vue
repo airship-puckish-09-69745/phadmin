@@ -628,7 +628,7 @@ export default {
         title: "新增",
         gamesSortDialogVisible: false,
         tongitsScoreItems: [],
-        scoreWays: ['1', '2', '100', '101']
+        scoreWays: ['1', '100', '2', '101']
       },
 
       scoreItems: {
