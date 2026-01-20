@@ -30,17 +30,17 @@
 <!--            </el-input>-->
 <!--          </el-form-item>-->
 
-          <el-form-item label="普通模式Bonus倍数权重">
-            <el-input v-model="cfg.BonusOddsWeight" placeholder="请输入内容,如2,1">
-              <template slot="append">用 , 连接</template>
-            </el-input>
-          </el-form-item>
+<!--          <el-form-item label="普通模式Bonus倍数权重">-->
+<!--            <el-input v-model="cfg.BonusOddsWeight" placeholder="请输入内容,如2,1">-->
+<!--              <template slot="append">用 , 连接</template>-->
+<!--            </el-input>-->
+<!--          </el-form-item>-->
 
-          <el-form-item label="免费模式Bonus倍数权重">
-            <el-input v-model="cfg.FreeBonusOddsWeight" placeholder="请输入内容,如2,1">
-              <template slot="append">用 , 连接</template>
-            </el-input>
-          </el-form-item>
+<!--          <el-form-item label="免费模式Bonus倍数权重">-->
+<!--            <el-input v-model="cfg.FreeBonusOddsWeight" placeholder="请输入内容,如2,1">-->
+<!--              <template slot="append">用 , 连接</template>-->
+<!--            </el-input>-->
+<!--          </el-form-item>-->
 
           <el-form-item label="中大奖概率">
             <el-input v-model="cfg.JackpotTypeRate"
