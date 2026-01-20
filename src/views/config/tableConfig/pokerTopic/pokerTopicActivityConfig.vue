@@ -6,6 +6,7 @@
     <el-row style="padding-top: 5px">
       <el-col :span="20">
         <el-button size="mini" type="primary" icon="el-icon-plus" @click="handleCreate()">添加配置项</el-button>
+        <span style="margin-left: 15px; color: red">注意：客户端包已被剔除，如需开启需要先联系客户端处理</span>
       </el-col>
       <el-col :span="2">
         <el-button type="success" size="mini" icon="el-icon-refresh" @click="getList()">刷新</el-button>

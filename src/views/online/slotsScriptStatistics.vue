@@ -1359,7 +1359,8 @@ export default {
           Path: '/slotsStat/statistics',
           Env: store.getters.env,
           queryTime: parseInt(this.queryTime / 1000),
-          gameID: this.queryGid
+          gameID: this.queryGid,
+          appID: store.getters.appId || 0
         }
       }).then(response => {
         // coordinate 返回数据格式，SlotsType_剧本_x_y
@@ -1829,7 +1830,8 @@ export default {
           Env: store.getters.env,
           queryTime: parseInt(this.bigPrizeForm.date / 1000),
           gid: this.bigPrizeForm.gid,
-          bet: this.bigPrizeForm.bet
+          bet: this.bigPrizeForm.bet,
+          appId: store.getters.appId || 0
         }
       }).then(response => {
         $this.newBigPrize()
@@ -2003,8 +2005,8 @@ export default {
           planVer: this.scripStepForm.planVer,
           typ: typ,
           queryCounter: this.scripStepForm.counter,
-          queryScriptId: this.scripStepForm.scriptId
-
+          queryScriptId: this.scripStepForm.scriptId,
+          appID: store.getters.appId || 0
         }
       }).then(response => {
         console.log(response)
