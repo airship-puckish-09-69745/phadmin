@@ -975,6 +975,7 @@ import store from '@/store'
 import XLSX from 'xlsx'
 import { Message } from 'element-ui'
 import slotsMissionstatistics from '@/views/online/components/slotsMissionStatistics.vue'
+import { getCustomize } from "@/api/custome_configV2"
 
 const filterMap = {}
 
@@ -1500,7 +1501,8 @@ export default {
           Path: '/slotsStat/statistics',
           Env: store.getters.env,
           queryTime: parseInt(this.queryTime / 1000),
-          gameID: this.queryGid
+          gameID: this.queryGid,
+          appID: store.getters.appId || 0
         }
       }).then(response => {
         // coordinate 返回数据格式，SlotsType_剧本_x_y
@@ -1938,13 +1940,7 @@ export default {
         if (gid === 88 || gid === 150) {
           key = realKey[gid] + '_slots_rule'
         }
-        request2({
-          url: '/customizeconfig/one',
-          method: 'get',
-          data: {
-            SubKey: key
-          }
-        }).then(response => {
+        getCustomize(key).then(response => {
           if (response.RetCode === 0) {
             this.ruleForm = response.Data || {}
             if (response.Data && response.Data.Data !== '') {
@@ -1999,16 +1995,9 @@ export default {
           }
         }
 
-        request({
-          url: '/customizeconfig/one',
-          method: 'get',
-          data: {
-            SubKey: key
-          }
-        }).then(response => {
+        getCustomize(key).then(response => {
           if (response.RetCode === 0) {
             const baseCfg = JSON.parse(response.Data.Data)
-            console.log('base>>>', baseCfg)
             if (baseCfg.BetList) {
               if (gid > 100000) {
                 let arr = []

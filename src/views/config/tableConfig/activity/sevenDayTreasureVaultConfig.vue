@@ -11,8 +11,18 @@
           <!-- 整体使用一个 el-row 来包含左右两列 -->
           <el-row :gutter="20"> <!-- 增加 gutter 保持左右间距 -->
             <!-- 左侧表单项，占据 12 份宽度 -->
+
             <el-col :span="12">
               <el-form ref="item" :model="item" label-width="180px"> <!-- 调整 label-width 以适应两列布局 -->
+                <el-form-item>
+                  <el-alert
+                    title="注：整个活动真正的结束时间是活动结束时间+任务配置天数+发奖持续天数"
+                    type="warning"
+                    :closable="false"
+                    show-icon
+                  >
+                  </el-alert>
+                </el-form-item>
                 <el-form-item label="活动开关：" :rules="dataRule(true,{type:'n',range:'0'})">
                   <el-switch v-model="item.IsOpen" :active-value="true" :inactive-value="false" />
                 </el-form-item>

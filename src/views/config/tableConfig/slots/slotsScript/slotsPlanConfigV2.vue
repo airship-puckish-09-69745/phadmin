@@ -1330,13 +1330,7 @@ export default {
       this.showItem.Plans[planIndex].Versions.push(copy)
     },
     getConfigData() {
-      request({
-        url: '/customizeconfig/one',
-        method: 'get',
-        data: {
-          SubKey: 'SlotsScriptStatisticsConfig'
-        }
-      }).then(response => {
+      getCustomize('SlotsScriptStatisticsConfig').then(response => {
         if (response.Data.Data !== '') {
           const arr = JSON.parse(response.Data.Data)
           for (const o of arr) {

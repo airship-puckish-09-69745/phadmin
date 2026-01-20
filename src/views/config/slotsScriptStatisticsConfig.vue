@@ -20,13 +20,23 @@
 
           </el-col>
           <el-col :span="15"/>
-          <el-col :span="22">
-            <el-button type="primary" size="mini" @click="addOne">添加</el-button>
-          </el-col>
+          <el-row :gutter="10" style="margin-top: 30px" type="flex" align="middle">
+            <el-col :span="10">
+              <el-button type="primary" size="mini" @click="addOne">添加</el-button>
+            </el-col>
+            <el-col :span="8">
+              <el-button type="success" size="mini" icon="el-icon-refresh" @click="getData()">刷新</el-button>
+            </el-col>
+            <el-col v-if="version === 'V2'" :span="10">
+              <el-select size="mini" v-model="appId" placeholder="请选择" @change="onAppIdChange">
+                <el-option v-for="(o,idx) in appInfos" :key="idx" :label="o.Account" :value="o.ID" />
+              </el-select>
+              <el-button type="primary" size="mini" icon="el-icon-document-copy" @click="onCopyAllCfg">
+                复制配置
+              </el-button>
+            </el-col>
+          </el-row>
 
-          <el-col :span="2">
-            <el-button type="success" size="mini" icon="el-icon-refresh" @click="getData()">刷新</el-button>
-          </el-col>
           <el-col :span="24">
             <el-form ref="tableData" v-model="tableData" label-width="150px">
               <el-table
@@ -192,6 +202,8 @@ import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import MoneyInput from '@/components/MoneyInput'
 import {$libShow, ClientTableData} from '@/utils/common'
+import {createCustomize, getCustomize, updateCustomize} from "@/api/custome_configV2";
+import store from "@/store";
 
 const filterMap = {}
 
@@ -230,11 +242,18 @@ export default {
       queryTime: new Date().getTime(),
       loading: false,
       cfgMap: {},
+      appInfos: [
+        { ID: 0, Account: '旧版' }
+      ],
+      appId: store.getters.appId || 0,
+      version: store.getters.version || 'V1',
+      bCreateCfg: false
     }
   },
   created() {
     this.getData()
     this.getGameList()
+    this.getAppInfos()
   },
   methods: {
 
@@ -318,22 +337,14 @@ export default {
       this.clientDB.UpdateData2("Gid", parse)
       console.log(parse)
       this.refresh()
-
     },
-
     getFullKey(k) {
       return 'CustomizeCfg_' + k
     },
     getData() {
       const $this = this
       // 加载基础数值配置
-      request({
-        url: '/customizeconfig/one',
-        method: 'get',
-        data: {
-          SubKey: this.subKey
-        }
-      }).then(response => {
+      getCustomize(this.subKey, this.appId).then(response => {
         if (response.RetCode === 0) {
           $this.form = response.Data || []
           $this.postData = response.Data || []
@@ -352,6 +363,11 @@ export default {
             this.$refs.compare.SetOldVal(response.Data)
             this.refresh()
           }
+        } else {
+          if (store.getters.appId === this.appId) {
+            this.bCreateCfg = true
+            console.log('this.bCreateCfg', this.bCreateCfg)
+          }
         }
       })
     },
@@ -365,29 +381,32 @@ export default {
     },
     setData() {
       const cfg = this.getCfg()
-      console.log('saveData ===> ', cfg)
-
       this.postData.Data = JSON.stringify(cfg)
       const $this = this
-      // 设置修改后数据
-      this.$refs.compare.SetNewVal(this.postData)
-      this.$refs.compare.Compare(function (isEdit) {
-        if (!isEdit) {
-          Message.error('没有任何修改，不需要提交')
-          return
-        }
-
-        request({
-          url: 'customizeconfig/update',
-          method: 'post',
-          // data: $this.form
-          data: $this.postData
-        }).then(response => {
+      if (this.bCreateCfg) {
+        this.form.AppId = store.getters.appId
+        this.form.Type = 1
+        createCustomize(this.postData).then(response => {
           if (response.RetCode === 0) {
-            Message.success('保存成功')
+            Message.success('保存成功！')
           }
         })
-      })
+      } else {
+        // 设置修改后数据
+        this.$refs.compare.SetNewVal(this.postData)
+        this.$refs.compare.Compare(function(isEdit) {
+          if (!isEdit) {
+            Message.error('没有任何修改，不需要提交')
+            return
+          }
+
+          updateCustomize($this.postData).then(response => {
+            if (response.RetCode === 0) {
+              Message.success('保存成功')
+            }
+          })
+        })
+      }
     },
     getCfg() {
       const cfg = []
@@ -417,9 +436,6 @@ export default {
       }
       return true
     },
-    updateDuplicate(newData, oldData) {
-
-    },
     getGameList() {
       request({
         url: '/thirdpartygames/all',
@@ -428,7 +444,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           for (let i = 0; i < response.Data.length; i++) {
-            if (response.Data[i].Gid < 50 || response.Data[i].Gid > 100 && response.Data[i].Gid < 150 || (response.Data[i].Gid > 499 && response.Data[i].Gid != 1236)) {
+            if (response.Data[i].Gid < 50 || response.Data[i].Gid > 100 && response.Data[i].Gid < 150 || (response.Data[i].Gid > 499 && response.Data[i].Gid !== 1236)) {
               continue
             }
             this.gameOptions.push({
@@ -438,6 +454,60 @@ export default {
           }
         }
       })
+    },
+    getAppInfos() {
+      request({
+        url: '/thirdparties/apps',
+        method: 'get',
+        data: {}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          for (let i = 0; i < response.Data.length; i++) {
+            if (response.Data[i].Status !== 2) {
+              continue
+            }
+            this.appInfos.push({
+              ID: response.Data[i].ID,
+              Account: response.Data[i].ID + '-' + response.Data[i].Account
+            })
+          }
+        }
+      })
+    },
+    onAppIdChange() {
+      if (this.appId === 0) {
+        const $this = this
+        request({
+          url: '/customizeconfig/one',
+          method: 'get',
+          data: {
+            SubKey: this.subKey
+          }
+        }).then(response => {
+          $this.form = response.Data || []
+          $this.postData = response.Data || []
+          if (response.Data && response.Data.Data !== '') {
+            const cfg = JSON.parse(response.Data.Data)
+            for (let o of cfg) {
+              console.log(o.OddsList)
+              let bet = o.Bet
+              for (let i = 0; i < o.OddsList.length; i++) {
+                o.OddsList[i].MaxOdds += parseInt(bet)
+                o.OddsList[i].MinOdds += parseInt(bet)
+              }
+              this.cfgMap[o.Gid] = o.OddsList
+            }
+            this.clientDB = new ClientTableData(cfg, 10, filterMap, 'Gid', -1)
+            this.refresh()
+          }
+        })
+      } else {
+        this.getData()
+      }
+    },
+    onCopyAllCfg() {
+      this.setData()
+      this.bCreateCfg = false
     }
   }
 }
