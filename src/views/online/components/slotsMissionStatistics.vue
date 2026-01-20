@@ -340,7 +340,8 @@ export default {
           Path: '/slotsStat/mission/statistics',
           Env: store.getters.env,
           queryTime: parseInt(this.queryTime / 1000),
-          gameID: this.queryGid
+          gameID: this.queryGid,
+          appID: 0
         }
       }).then(response => {
         const missionTableData = []

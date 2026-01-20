@@ -1359,7 +1359,8 @@ export default {
           Path: '/slotsStat/statistics',
           Env: store.getters.env,
           queryTime: parseInt(this.queryTime / 1000),
-          gameID: this.queryGid
+          gameID: this.queryGid,
+          appID: 0
         }
       }).then(response => {
         // coordinate 返回数据格式，SlotsType_剧本_x_y
