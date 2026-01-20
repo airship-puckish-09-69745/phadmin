@@ -326,6 +326,7 @@ export default {
           this.columnCfg = this.columnAppCfg
       }
       this.getList()
+
     },
 
     formatNumber(n) {
@@ -509,7 +510,7 @@ export default {
       const postData = this.libMoney.TransForStore(this.edit.item)
       return postData
     },
-    checkData() {
+   async  checkData() {
       if (this.edit.item.CarryLower > this.edit.item.CarryUpper) {
         Message.warning('下限不能大于上限，请检查数值正确性！')
         return false
@@ -523,10 +524,35 @@ export default {
         return false
       }
 
-      return true
+      try {
+        // 异步等待配置检查结果
+         const configResult = await this.getOtherConfig(this.edit.item.TableMoney*1000)
+        //console.log("configResult",configResult)
+        if (this.isAppExt) {
+          if (configResult === undefined) {
+              Message.error('基座没有对应的底注且已经上架的配置！')
+              return false 
+          }
+          if (configResult.ObjectCount != this.edit.item.ObjectCount) {
+             Message.error('应用配置桌子数量需要和基座配桌一样！')
+              return false 
+          }
+        } else {
+          if (this.edit.item.Status != 2 && configResult != undefined && configResult.Status == 2 && this.edit.item.Level == configResult.Level) {
+             Message.error('有对应的应用差异配置，需要下架应用差异配置，才能继续操作！')
+              return false 
+          }
+        }
+        return true
+      } catch (error) {
+       // console.error('配置检查失败:', error)
+        Message.error('配置检查失败，请稍后重试')
+        return false
+      }
     },
-    save() {
-      if (!this.checkData()) return
+    async save() {
+      let isValild = await this.checkData()
+      if (!isValild) return
       if (this.edit.isEdit) {
         // 设置修改后数据
         this.$refs.compare.SetNewVal(this.edit.item)
@@ -616,6 +642,40 @@ export default {
         // 取消
       })
     },
+
+    getOtherConfig(TableMoney) {
+      return new Promise((resolve, reject) => {
+        let url = '/pusoydostableappext/all'
+        if (this.isAppExt) {
+            url = '/pusoydostable/all'
+        }
+        request({
+          url: url,
+          method: 'get',
+          data: {
+            PlayMode: 1
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            const objs = response.Data || []
+            // console.log("TableMoney",TableMoney)
+            //  console.log("objs", objs)
+            for (let i = 0; i < objs.length; i++) {
+              if (objs[i].TableMoney == TableMoney && objs[i].Status == 2) {
+               
+                resolve(objs[i])  // 将数据通过 Promise resolve
+                return
+              }
+            }
+            resolve(undefined)  // 未找到对应数据
+          } else {
+            reject(new Error('请求失败'))
+          }
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    }
   },
 }
 </script>

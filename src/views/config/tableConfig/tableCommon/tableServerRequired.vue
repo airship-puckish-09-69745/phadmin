@@ -164,7 +164,7 @@ export default {
     data() {
         return {
             ChannelCfg:[
-                "GP","BP","AP","CP"
+                "GP","BP","AP","CP","Dev"
             ],
             HideChannel:[],
         }
