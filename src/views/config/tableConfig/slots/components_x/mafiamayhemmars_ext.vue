@@ -18,11 +18,11 @@
             </el-input>
           </el-form-item>
 
-          <el-form-item label="普通模式的额外倍数">
-            <el-input v-model="cfg.ExtraOddsNormalStr" placeholder="请输入内容,如1,2,3,4,5,6,7,8">
-              <template slot="append">倍数只能是连续的</template>
-            </el-input>
-          </el-form-item>
+<!--          <el-form-item label="普通模式的额外倍数">-->
+<!--            <el-input v-model="cfg.ExtraOddsNormalStr" placeholder="请输入内容,如1,2,3,4,5,6,7,8">-->
+<!--              <template slot="append">倍数只能是连续的</template>-->
+<!--            </el-input>-->
+<!--          </el-form-item>-->
 
 <!--          <el-form-item label="免费模式的额外倍数">-->
 <!--            <el-input v-model="cfg.ExtraOddsFreeStr" placeholder="请输入内容,如1,2,3,4,5,6,7,8">-->
