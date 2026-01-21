@@ -13,6 +13,11 @@
         <el-form-item label="UID：" :required="true" label-width="150px">
           <UidInput @setUid="function(iUid){item.Uid=iUid}"/>
         </el-form-item>
+        <el-form-item label="App：">
+          <el-select v-model="item.appId" size="mini">
+            <el-option v-for="(o, idx) in appInfos" :key="idx" :label="o.Account" :value="o.ID" />
+          </el-select>
+        </el-form-item>
         <el-form-item label="类型：">
           <el-select v-model="item.actType" size="mini">
             <el-option label="全部" :value="-1"/>
@@ -94,6 +99,11 @@
         <el-table-column
           prop="Uid"
           label="Uid"
+          width="100"
+        />
+        <el-table-column
+          prop="App"
+          label="App"
           width="100"
         />
         <el-table-column
@@ -340,7 +350,8 @@ export default {
       item: {
         Uid: 0,
         date: $libDate.GetDayBegin(new Date().getTime()),
-        actType: -1
+        actType: -1,
+        appId: store.getters.appId || 0
       },
       isVup: false,
       statData: {
@@ -357,17 +368,20 @@ export default {
       typeNames: {0: '主游戏', 1: 'wild', 2: 'scatter', 3: 'jackpot', 5: 'FreeSpin'},
       showDetail: false,
       detailContent: '',
-      detailPayLine: 0
+      detailPayLine: 0,
+      appInfos: [
+        { ID: 0, Account: '全部' }
+      ]
     }
   },
   computed: {},
   created() {
-    console.log(1)
     this.env = store.getters.env || this.env
     this.gid = this.$route.meta.gid
     if (this.gid === 150 || this.gid === 166 || this.gid === 176 || this.gid === 178 || this.gid === 232) {
       this.typeNames[1] = 'bonus'
     }
+    this.getAppInfos()
   },
   methods: {
     getDescription() {
@@ -407,7 +421,8 @@ export default {
           SlotsType: this.gid,
           Time: this.getTime(this.item.date),
           ActType: this.item.actType,
-          IsVup: this.isVup ? 1 : 0
+          IsVup: this.isVup ? 1 : 0,
+          AppId: this.item.appId
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -845,6 +860,25 @@ export default {
         }
       }
       return null
+    },
+    getAppInfos() {
+      request({
+        url: '/thirdparties/apps',
+        method: 'get',
+        data: {}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          for (let i = 0; i < response.Data.length; i++) {
+            if (response.Data[i].Status !== 2) {
+              continue
+            }
+            this.appInfos.push({
+              ID: response.Data[i].ID,
+              Account: response.Data[i].ID + '-' + response.Data[i].Account
+            })
+          }
+        }
+      })
     }
   }
 }
