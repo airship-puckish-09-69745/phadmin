@@ -95,12 +95,6 @@
             <el-input v-model.number="editItem.matchNum" placeholder="任务条件" />
           </el-col>
         </el-form-item>
-
-        <el-form-item label="奖励数量：" :required="true" prop="rewardNum">
-          <el-col :span="15">
-            <el-input v-model.number="editItem.rewardNum" />
-          </el-col>
-        </el-form-item>
         <div v-if="editItem.taskType === 1">
           <!-- 红包配置字段 -->
           <el-divider content-position="left">红包配置</el-divider>
