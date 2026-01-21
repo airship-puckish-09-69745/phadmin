@@ -421,8 +421,7 @@ export default {
           SlotsType: this.gid,
           Time: this.getTime(this.item.date),
           ActType: this.item.actType,
-          IsVup: this.isVup ? 1 : 0,
-          AppId: this.item.appId
+          IsVup: this.isVup ? 1 : 0
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -614,7 +613,8 @@ export default {
           Page: this.currentPage,
           Limit: this.pageNum,
           ActType: this.item.actType,
-          IsVup: this.isVup ? 1 : 0
+          IsVup: this.isVup ? 1 : 0,
+          AppId: this.item.appId
         }
       }).then(response => {
         if (response.RetCode === 0) {
