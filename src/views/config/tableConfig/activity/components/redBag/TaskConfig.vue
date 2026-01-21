@@ -95,11 +95,6 @@
             <el-input v-model.number="editItem.matchNum" placeholder="任务条件" />
           </el-col>
         </el-form-item>
-        <!--        <el-form-item v-if="editItem.taskType" label="奖励ID：" :required="true" prop="rewardId">-->
-        <!--          <el-col :span="15">-->
-        <!--            <el-input v-model.number="editItem.rewardId" />-->
-        <!--          </el-col>-->
-        <!--        </el-form-item>-->
 
         <el-form-item label="奖励数量：" :required="true" prop="rewardNum">
           <el-col :span="15">
@@ -134,6 +129,11 @@
               size="small"
               style="width: 100%"
             >
+              <el-table-column label="红包ID" min-width="120">
+                <template slot-scope="scope">
+                  <el-input v-model="scope.row.id" placeholder="红包id" size="mini" disabled />
+                </template>
+              </el-table-column>
               <el-table-column label="奖池" min-width="120">
                 <template slot-scope="scope">
                   <el-input v-model="scope.row.poolName" placeholder="奖池名称" size="mini" />
@@ -273,6 +273,7 @@ function newTaskCfg() {
     redId: 1,
     rewardPools: [
       {
+        id: 1,
         poolName: '奖池1', // 奖池名称
         value1: 0, // 价值区间1
         value2: 0, // 价值区间2
@@ -360,9 +361,11 @@ export default {
       const task = this.formData.taskCfgData.find(item => item.id === row.id)
       if (task) {
         const editData = JSON.parse(JSON.stringify(task))
-        // 确保 rewardPools 和 propPools 存在且有默认值
+
+        // 确保 rewardPools 存在
         if (!editData.rewardPools || !Array.isArray(editData.rewardPools) || editData.rewardPools.length === 0) {
           editData.rewardPools = [{
+            id: 1,
             poolName: '奖池1',
             value1: 0,
             value2: 0,
@@ -370,6 +373,8 @@ export default {
             limitNum: 0
           }]
         }
+
+        // 确保 propPools 存在
         if (!editData.propPools || typeof editData.propPools !== 'object') {
           editData.propPools = {
             propType: 1,
@@ -379,7 +384,12 @@ export default {
             propNum: 0
           }
         }
+
         this.editItem = editData
+
+        // 在赋值后打印
+        console.log('编辑数据:', this.editItem)
+        console.log('奖池配置:', this.editItem.rewardPools)
       }
     },
     handleDelete(row) {
@@ -435,6 +445,7 @@ export default {
       }
       const nextIndex = this.editItem.rewardPools.length + 1
       this.editItem.rewardPools.push({
+        id: nextIndex,
         poolName: `奖池${nextIndex}`,
         value1: 0,
         value2: 0,

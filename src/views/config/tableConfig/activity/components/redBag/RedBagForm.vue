@@ -21,11 +21,11 @@
         </el-tab-pane>
 
         <el-tab-pane label="任务配置">
-          <TaskConfig v-model="item"/>
+          <TaskConfig v-model="item" />
         </el-tab-pane>
 
         <el-tab-pane label="白名单配置">
-          <WhitelistConfig v-model="item"/>
+          <WhitelistConfig v-model="item" />
         </el-tab-pane>
       </el-tabs>
 
@@ -40,10 +40,10 @@
 </template>
 
 <script>
-import {Message} from 'element-ui'
+import { Message } from 'element-ui'
 import request from '@/utils/request'
 import store from '@/store'
-import {divFields1000, mulFields1000} from '@/utils/index'
+import { divFields1000, mulFields1000 } from '@/utils/index'
 import ActivityBaseConfig from './ActivityBaseConfig.vue'
 import TaskConfig from './TaskConfig.vue'
 import WhitelistConfig from './WhitelistConfig.vue'
@@ -172,15 +172,13 @@ export default {
     getTaskCfgData(cfgData) {
       return cfgData.map(data => {
         const newData = mulFields1000(data, this.fields)
-        const result = {...data, rewardNum: newData.rewardNum}
+        const result = { ...data, rewardNum: newData.rewardNum }
         // 处理 rewardPools 中的 value1 和 value2（金额字段 * 1000），weight（权重字段 * 100）
         if (result.rewardPools && Array.isArray(result.rewardPools)) {
           result.rewardPools = result.rewardPools.map(pool => ({
-            poolName: pool.poolName,
+            ...pool,
             value1: Math.round(Number(pool.value1) * 1000),
-            value2: Math.round(Number(pool.value2) * 1000),
-            weight: pool.weight,
-            limitNum: pool.limitNum
+            value2: Math.round(Number(pool.value2) * 1000)
           }))
         }
         return result
@@ -189,7 +187,7 @@ export default {
     // 处理红包配置，将金额字段 * 1000，权重字段 * 100
     formatRedBagCfgForSave(cfgList) {
       return cfgList.map(item => {
-        const newItem = {...item}
+        const newItem = { ...item }
         // 处理rewardPools数组
         if (newItem.rewardPools && Array.isArray(newItem.rewardPools)) {
           newItem.rewardPools = newItem.rewardPools.map(pool => ({
@@ -206,15 +204,13 @@ export default {
     // 处理红包配置，将金额字段 / 1000，权重字段 / 100
     formatRedBagCfgForEdit(cfgList) {
       return cfgList.map(item => {
-        const newItem = {...item}
+        const newItem = { ...item }
         // 处理rewardPools数组
         if (newItem.rewardPools && Array.isArray(newItem.rewardPools)) {
           newItem.rewardPools = newItem.rewardPools.map(pool => ({
-            poolName: pool.poolName,
+            ...pool,
             value1: Number(pool.value1) / 1000,
-            value2: Number(pool.value2) / 1000,
-            weight: pool.weight,
-            limitNum: pool.limitNum
+            value2: Number(pool.value2) / 1000
           }))
         }
         return newItem
@@ -402,7 +398,7 @@ export default {
         data.whiteList = safeJsonParse(data.whiteList, [])
         data.appIdList = safeJsonParse(data.appIdList, [])
         data.siteIdList = safeJsonParse(data.siteIdList, [])
-        data.abTest = safeJsonParse(data.abTest, {switch: false, bPercent: 0})
+        data.abTest = safeJsonParse(data.abTest, { switch: false, bPercent: 0 })
 
         //  对需要按千倍/百分位处理的字段做统一转换（使用工具函数）
         // divFields1000 会将指定字段除以 1000（反向处理），返回一个新对象
@@ -412,7 +408,7 @@ export default {
         //  处理 taskCfgData 中 rewardNum 字段（前端期望的单位）
         if (Array.isArray(data.taskCfgData)) {
           data.taskCfgData = data.taskCfgData.map(item => {
-            const newItem = {...item}
+            const newItem = { ...item }
             // 处理 rewardNum
             if (newItem.rewardNum !== undefined && newItem.rewardNum !== null) {
               newItem.rewardNum = Number(newItem.rewardNum) / 1000
@@ -420,11 +416,9 @@ export default {
             // 处理 rewardPools 中的金额字段（/ 1000）和权重字段（/ 100）
             if (newItem.rewardPools && Array.isArray(newItem.rewardPools)) {
               newItem.rewardPools = newItem.rewardPools.map(pool => ({
-                poolName: pool.poolName,
+                ...pool,
                 value1: Number(pool.value1) / 1000,
                 value2: Number(pool.value2) / 1000,
-                weight: pool.weight,
-                limitNum: pool.limitNum
               }))
             }
             return newItem
