@@ -73,6 +73,18 @@
               <el-input v-model.number="formData.showGold" style="width: 200px;" placeholder="请输入显示金额数量" />
             </el-form-item>
           </el-col>
+          <el-col :span="12">
+            <el-form-item label="参与活动用户类型：" :required="true">
+              <el-select v-model="formData.userType" placeholder="请选择" style="width:280px" @change="onUserTypeChange">
+                <el-option
+                  v-for="item in userTypes"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
           <el-col>
             <el-form-item label="限制红包发送金币额度：" :required="true">
               <el-input v-model="formData.limitMaxNum" style="width: 200px;" placeholder="请输入限制数量" />
@@ -185,6 +197,7 @@
 
 <script>
 import request from '@/utils/request'
+import {$libDate, $libShow, ClientTableData, MoneyShow} from "@/utils/common";
 
 export default {
   name: 'ActivityBaseConfig',
@@ -200,6 +213,14 @@ export default {
   },
   data() {
     return {
+      userTypes: [
+        { 'value': 1, 'label': '新增用户' },
+        { 'value': 2, 'label': '所有用户' },
+        { 'value': 3, 'label': '导入用户' },
+        { 'value': 4, 'label': '筛选用户' },
+        { 'value': 5, 'label': '用户标签' }
+      ],
+
       filterText: '',
       allTreeData: [],
       treeData: [],

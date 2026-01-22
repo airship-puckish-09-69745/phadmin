@@ -139,6 +139,7 @@ export default {
         ruleImgVer: [],
         rewardUseSceneId: 0,
         limitMaxNum: 0,
+        userType: 2, // 2 所有用户
         appId: -1,
         prizePoolCfg: [],
         gameIdCfg: [],
@@ -345,6 +346,7 @@ export default {
         limitMaxNum: newItem.limitMaxNum, // 最大限领（*1000）
         rewardType: this.item.rewardType, // 奖励类型
         gameType: this.item.gameType, // 玩法大类型
+        userType: this.item.userType, // 玩法大类型
         taskCfgData: taskCfgData, // 任务配置（JSON字符串）
         // redBagCfg: redBagCfg, // 红包价值配置（JSON字符串）
         gameIdCfg: gameIdCfg, // 游戏ID配置（JSON字符串）
