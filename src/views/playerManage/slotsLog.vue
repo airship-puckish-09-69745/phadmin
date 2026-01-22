@@ -15,7 +15,7 @@
         </el-form-item>
         <el-form-item label="App：">
           <el-select v-model="item.appId" size="mini">
-            <el-option v-for="(o, idx) in appInfos" :key="idx" :label="o.Account" :value="o.ID" />
+            <el-option v-for="(o, idx) in appOptions" :key="idx" :label="o.label" :value="o.value" />
           </el-select>
         </el-form-item>
         <el-form-item label="类型：">
@@ -369,8 +369,8 @@ export default {
       showDetail: false,
       detailContent: '',
       detailPayLine: 0,
-      appInfos: [
-        { ID: 0, Account: '全部' }
+      appOptions: [
+        { value: 0, label: '全部' }
       ]
     }
   },
@@ -863,7 +863,7 @@ export default {
     },
     getAppInfos() {
       request({
-        url: '/thirdparties/apps',
+        url: '/thirdparties/all',
         method: 'get',
         data: {}
       }).then(response => {
@@ -872,9 +872,9 @@ export default {
             if (response.Data[i].Status !== 2) {
               continue
             }
-            this.appInfos.push({
-              ID: response.Data[i].ID,
-              Account: response.Data[i].ID + '-' + response.Data[i].Account
+            this.appOptions.push({
+              value: response.Data[i].ID,
+              label: response.Data[i].ID + '-' + response.Data[i].Account
             })
           }
         }

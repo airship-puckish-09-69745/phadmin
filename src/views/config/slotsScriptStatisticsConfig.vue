@@ -29,7 +29,7 @@
             </el-col>
             <el-col v-if="version === 'V2'" :span="10">
               <el-select size="mini" v-model="appId" placeholder="请选择" @change="onAppIdChange">
-                <el-option v-for="(o,idx) in appInfos" :key="idx" :label="o.Account" :value="o.ID" />
+                <el-option v-for="(o,idx) in appOptions" :key="idx" :label="o.label" :value="o.value" />
               </el-select>
               <el-button type="primary" size="mini" icon="el-icon-document-copy" @click="onCopyAllCfg">
                 复制配置
@@ -242,8 +242,8 @@ export default {
       queryTime: new Date().getTime(),
       loading: false,
       cfgMap: {},
-      appInfos: [
-        { ID: 0, Account: '旧版' }
+      appOptions: [
+        { value: 0, label: '旧版' }
       ],
       appId: store.getters.appId || 0,
       version: store.getters.version || 'V1',
@@ -457,7 +457,7 @@ export default {
     },
     getAppInfos() {
       request({
-        url: '/thirdparties/apps',
+        url: '/thirdparties/all',
         method: 'get',
         data: {}
       }).then(response => {
@@ -466,9 +466,9 @@ export default {
             if (response.Data[i].Status !== 2) {
               continue
             }
-            this.appInfos.push({
-              ID: response.Data[i].ID,
-              Account: response.Data[i].ID + '-' + response.Data[i].Account
+            this.appOptions.push({
+              value: response.Data[i].ID,
+              label: response.Data[i].ID + '-' + response.Data[i].Account
             })
           }
         }
