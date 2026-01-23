@@ -144,6 +144,8 @@ export default {
 
           this.$store.dispatch('user/login', this.loginForm)
             .then(() => {
+              // 设置为新版本后台默认的应用环境、版本、应用ID
+              this.setDefaultApp()
               this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
               this.loading = false
             })
@@ -163,7 +165,12 @@ export default {
         }
         return acc
       }, {})
-    }
+    },
+    setDefaultApp() {
+      this.$store.dispatch('app/setEnv', 'test')
+      this.$store.dispatch('app/setVersion', 'V2')
+      this.$store.dispatch('app/setAppId', 1000002)
+    },
     // afterQRScan() {
     //   if (e.key === 'x-admin-oauth-code') {
     //     const code = getQueryObject(e.newValue)

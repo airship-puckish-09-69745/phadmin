@@ -10,8 +10,8 @@
         </el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
-    <el-dropdown trigger="click" @command="handleSetAppId">
-      <span v-if="isNewVersion" class="el-dropdown-link">
+    <el-dropdown v-if="isNewVersion()" trigger="click" @command="handleSetAppId">
+      <span class="el-dropdown-link">
         {{ showAppId() }}<i class="el-icon-arrow-down el-icon--right" />
       </span>
       <el-dropdown-menu slot="dropdown">
@@ -24,7 +24,8 @@
 </template>
 
 <script>
-import request from "@/utils/request";
+import request from '@/utils/request'
+import { isNewVersion, switchNewAppEnv, switchOldAppEnv, switchAppId } from '@/utils/app'
 
 export default {
   data() {
@@ -46,16 +47,13 @@ export default {
   },
   computed: {
     env() {
-      if (this.isNewVersion) {
+      if (isNewVersion()) {
         return 'new-' + this.$store.getters.env
       }
       return this.$store.getters.env
     },
     appId() {
       return parseInt(this.$store.getters.appId)
-    },
-    isNewVersion() {
-      return this.$store.getters.version === 'V2'
     }
   },
   mounted() {
@@ -64,6 +62,7 @@ export default {
     this.getAppIdOptions()
   },
   methods: {
+    isNewVersion,
     getAppIdOptions() {
       request({
         url: '/thirdparties/all',
@@ -101,57 +100,19 @@ export default {
     },
     handleSetEnv(env) {
       if (env.indexOf('-') >= 0) {
-        this.$store.dispatch('app/setEnv', env.split('-')[1])
-        if (this.$store.getters.appId === '') {
-          this.$store.dispatch('app/setAppId', this.appOptions[0].value)
-        }
-        this.$store.dispatch('app/setVersion', 'V2')
+        // 切到新版环境
+        const newEnv = env.split('-')[1]
+        const defaultAppId = this.appOptions ? this.appOptions[0].value : 1000002
+        switchNewAppEnv(newEnv, defaultAppId, this)
       } else {
-        this.$store.dispatch('app/setEnv', env)
-        this.$store.dispatch('app/setAppId', '')
-        this.$store.dispatch('app/setVersion', 'V1')
+        // 切到旧版环境
+        switchOldAppEnv(env, this)
       }
 
       console.log('handleSetEnv env', env)
-
-      const isDiffVersion = env !== this.oldEnv
-      this.refreshView(isDiffVersion)
-      this.$message({
-        message: '切换成功，正在重新刷新页面...',
-        type: 'success'
-      })
-      // 强制刷一下页面，让切环境生效
-      setInterval(function() {
-        window.location.reload()
-      }, 500)
     },
     handleSetAppId(appId) {
-      this.$store.dispatch('app/setAppId', appId)
-      const isDiffAppId = appId !== this.oldAppId
-      this.refreshView(isDiffAppId)
-      this.$message({
-        message: '切换成功，正在重新刷新页面...',
-        type: 'success'
-      })
-      // 强制刷一下页面，让切环境生效
-      setInterval(function() {
-        window.location.reload()
-      }, 500)
-    },
-    refreshView(isDiffVersion) {
-      // In order to make the cached page re-rendered
-      this.$store.dispatch('tagsView/delAllCachedViews', this.$route)
-
-      let { fullPath } = this.$route
-      if (isDiffVersion){
-        fullPath = '/'
-      }
-
-      this.$nextTick(() => {
-        this.$router.replace({
-          path: '/redirect' + fullPath
-        })
-      })
+      switchAppId(appId, this)
     }
   }
 

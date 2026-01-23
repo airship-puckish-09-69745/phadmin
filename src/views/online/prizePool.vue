@@ -157,6 +157,7 @@ import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import store from '@/store'
 import { $libShow, DataRule, ValidateVueItem } from '@/utils/common'
+import { switchNewAppEnv } from '@/utils/app';
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
@@ -362,7 +363,8 @@ export default {
     },
     jumpToNewPage() {
       // 跳转到新后台页面
-      window.open(this.PrizePoolV2Url)
+      const env = this.$store.getters.env
+      switchNewAppEnv(env, 1000002, this, '/prizePoolV2')
     }
   }
 }
