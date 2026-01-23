@@ -216,7 +216,8 @@ export default {
           Path: '/slotsStat/user/big/prize/config',
           Env: store.getters.env,
           Uid: this.queryUid,
-          SlotsType: this.queryGid
+          SlotsType: this.queryGid,
+          AppId: store.getters.appId || 0
         }
       }).then(response => {
         if (response.RetCode === 0) {

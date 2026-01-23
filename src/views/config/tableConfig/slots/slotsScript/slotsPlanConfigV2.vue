@@ -13,7 +13,7 @@
       </el-col>
       <el-col span="10">
         <el-select v-model="appId" placeholder="请选择应用" size="mini" @change="onAppIdChange">
-          <el-option v-for="(o, idx) in appInfos" :key="idx" :label="o.Account" :value="o.ID" />
+          <el-option v-for="(o, idx) in appOptions" :key="idx" :label="o.label" :value="o.value" />
         </el-select>
         <el-button type="primary" icon="el-icon-document-copy" size="mini" @click="onCopyAllCfg">
           复制配置
@@ -906,8 +906,8 @@ export default {
         { 'value': 50303, 'label': 'Bonus玩法' },
         { 'value': 50304, 'label': 'FreeSpin玩法' }
       ],
-      appInfos: [
-        { ID: 0, Account: '旧版' }
+      appOptions: [
+        { value: 0, label: '旧版' }
       ],
       appId: store.getters.appId || 0,
       bCreateCfg: false
@@ -926,7 +926,7 @@ export default {
     },
     getAppInfos() {
       request({
-        url: '/thirdparties/apps',
+        url: '/thirdparties/all',
         method: 'get',
         data: {}
       }).then(response => {
@@ -935,9 +935,9 @@ export default {
             if (response.Data[i].Status !== 2) {
               continue
             }
-            this.appInfos.push({
-              ID: response.Data[i].ID,
-              Account: response.Data[i].ID + '-' + response.Data[i].Account
+            this.appOptions.push({
+              value: response.Data[i].ID,
+              label: response.Data[i].ID + '-' + response.Data[i].Account
             })
           }
         }
@@ -1497,6 +1497,10 @@ export default {
       const items = this.proceedUpdateData(val)
       this.$refs.compare.SetNewVal(items)
       const $this = this
+      const data = {
+        SlotsType: $this.showItem.SlotsType,
+        Plans: items
+      }
       this.$refs.compare.Compare(function(isEdit) {
         if (!isEdit) {
           Message.error('没有任何修改，不需要提交')
@@ -1505,12 +1509,8 @@ export default {
         if (!$this.checkData()) {
           return
         }
-        const data = {
-          SlotsType: $this.showItem.SlotsType,
-          Plans: items
-        }
-        this.planForm.Data = JSON.stringify(data)
-        updateCustomize(this.planForm).then(response => {
+        $this.planForm.Data = JSON.stringify(data)
+        updateCustomize($this.planForm).then(response => {
           if (response.RetCode === 0) {
             Message.success('保存成功！')
           }

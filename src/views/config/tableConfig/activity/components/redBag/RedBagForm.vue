@@ -139,6 +139,7 @@ export default {
         ruleImgVer: [],
         rewardUseSceneId: 0,
         limitMaxNum: 0,
+        userType: 2, // 2 所有用户
         appId: -1,
         prizePoolCfg: [],
         gameIdCfg: [],
@@ -153,7 +154,9 @@ export default {
         isWhite: true,
         taskCfgData: [],
         rewardType: 1, // 默认选中 投注金
-        gameType: 1 // 默认选中 Slot
+        gameType: 1, // 默认选中 Slot
+        userLabel: null // 用户标签
+
       }
     },
     // 生成唯一的本地存储 key，通常用于缓存或区分不同配置类型
@@ -176,11 +179,9 @@ export default {
         // 处理 rewardPools 中的 value1 和 value2（金额字段 * 1000），weight（权重字段 * 100）
         if (result.rewardPools && Array.isArray(result.rewardPools)) {
           result.rewardPools = result.rewardPools.map(pool => ({
-            poolName: pool.poolName,
+            ...pool,
             value1: Math.round(Number(pool.value1) * 1000),
-            value2: Math.round(Number(pool.value2) * 1000),
-            weight: pool.weight,
-            limitNum: pool.limitNum
+            value2: Math.round(Number(pool.value2) * 1000)
           }))
         }
         return result
@@ -210,11 +211,9 @@ export default {
         // 处理rewardPools数组
         if (newItem.rewardPools && Array.isArray(newItem.rewardPools)) {
           newItem.rewardPools = newItem.rewardPools.map(pool => ({
-            poolName: pool.poolName,
+            ...pool,
             value1: Number(pool.value1) / 1000,
-            value2: Number(pool.value2) / 1000,
-            weight: pool.weight,
-            limitNum: pool.limitNum
+            value2: Number(pool.value2) / 1000
           }))
         }
         return newItem
@@ -349,6 +348,8 @@ export default {
         limitMaxNum: newItem.limitMaxNum, // 最大限领（*1000）
         rewardType: this.item.rewardType, // 奖励类型
         gameType: this.item.gameType, // 玩法大类型
+        userType: this.item.userType, // 用户类型
+        userLabel: this.item.userLabel, // 用户标签
         taskCfgData: taskCfgData, // 任务配置（JSON字符串）
         // redBagCfg: redBagCfg, // 红包价值配置（JSON字符串）
         gameIdCfg: gameIdCfg, // 游戏ID配置（JSON字符串）
@@ -359,6 +360,9 @@ export default {
         abTest: abTest, // AB测试配置（JSON字符串）
         status: this.item.status // 活动状态
       }
+
+      console.log(fromData)
+
       // 7. 根据 isEdit 区分调用新增或编辑接口
       if (this.isEdit) {
         this.handleEditData(fromData)
@@ -420,11 +424,9 @@ export default {
             // 处理 rewardPools 中的金额字段（/ 1000）和权重字段（/ 100）
             if (newItem.rewardPools && Array.isArray(newItem.rewardPools)) {
               newItem.rewardPools = newItem.rewardPools.map(pool => ({
-                poolName: pool.poolName,
+                ...pool,
                 value1: Number(pool.value1) / 1000,
                 value2: Number(pool.value2) / 1000,
-                weight: pool.weight,
-                limitNum: pool.limitNum
               }))
             }
             return newItem
@@ -449,7 +451,10 @@ export default {
         if (data.gameType === undefined || data.gameType === null) {
           data.gameType = 1
         }
-
+        //
+        if (typeof data.userLabel === 'string') {
+          data.userLabel = parseInt(data.userLabel, 10)
+        }
         this.item = data
       }
     },

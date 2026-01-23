@@ -73,6 +73,30 @@
               <el-input v-model.number="formData.showGold" style="width: 200px;" placeholder="请输入显示金额数量" />
             </el-form-item>
           </el-col>
+          <el-col :span="12">
+            <el-form-item label="参与活动用户类型：" :required="true">
+              <el-select v-model="formData.userType" placeholder="请选择" style="width:280px" @change="onUserTypeChange">
+                <el-option
+                  v-for="item in userTypes"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col v-if="formData.userType == 5">
+            <el-form-item label="标签子类：">
+              <el-select v-model="formData.userLabel" placeholder="请选择标签子类">
+                <el-option
+                  v-for="item in userTagIdOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
           <el-col>
             <el-form-item label="限制红包发送金币额度：" :required="true">
               <el-input v-model="formData.limitMaxNum" style="width: 200px;" placeholder="请输入限制数量" />
@@ -200,6 +224,15 @@ export default {
   },
   data() {
     return {
+      userTypes: [
+        { 'value': 2, 'label': '所有用户' },
+        { 'value': 5, 'label': '用户标签' }
+      ],
+      userTagIdOptions: [
+        { value: 50001, label: 'Slots新增用户' },
+        { value: 50002, label: 'Slots登录天数' },
+        { value: 50008, label: 'Slots回归用户' }
+      ],
       filterText: '',
       allTreeData: [],
       treeData: [],
@@ -213,10 +246,13 @@ export default {
     }
   },
   computed: {
+    // 计算属性 formData 用于实现 v-model 的双向绑定
     formData: {
+      // formData 作为 v-model 的代理，get 返回父组件传递的 value，
       get() {
         return this.value
       },
+      // set 通过 input 事件通知父组件更新 value
       set(val) {
         this.$emit('input', val)
       }
@@ -236,6 +272,12 @@ export default {
         }
       },
       immediate: true
+    },
+    // 监听用户类型变化，自动设置用户标签默认值
+    'formData.userType'(val) {
+      if (val === 5 && !this.formData.userLabel && this.userTagIdOptions.length > 0) {
+        this.formData.userLabel = this.userTagIdOptions[0].value
+      }
     }
   },
   mounted() {
@@ -271,7 +313,7 @@ export default {
       })
     },
     // 游戏树选中变化
-    handleCheckChange(data, checked, indeterminate) {
+    handleCheckChange(data, checked) {
       if (data.label === 'Slot' || data.label === 'Poker' || data.label === 'Casino') {
         return
       }
@@ -294,6 +336,9 @@ export default {
 
       this.formData.gameIdCfg = gameIdCfg
       this.updateGamesSorted()
+    },
+    onUserTypeChange(val) {
+      // this.$set(this.formData.userType, val);
     },
     // 更新选中游戏的排序列表
     updateGamesSorted() {
