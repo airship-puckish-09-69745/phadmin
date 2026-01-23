@@ -4,7 +4,7 @@
   "description": "A magical vue admin. An out-of-box UI solution for enterprise applications. Newest development stack of vue. Lots of awesome features",
   "author": "Pan <panfree23@gmail.com>",
   "scripts": {
-    "dev": "vue-cli-service serve --port 9527",
+    "dev": "vue-cli-service serve --port 9529",
     "local": "vue-cli-service serve --mode=local",
     "dev.sh": "vue-cli-service serve --mode sh_dev --port 9527",
     "localhost": "vue-cli-service serve --mode localhost",
