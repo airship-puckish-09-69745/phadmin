@@ -1,6 +1,9 @@
 <template>
   <div class="app-container">
-    <el-row :gutter="10" style="margin-top: 50px">
+    <el-row :gutter="10">
+      <el-col :span="22" :offset="1">
+        <div style="color: red; margin-bottom: 10px">当前奖池APP：{{ appId }}</div>
+      </el-col>
       <el-col :span="22" :offset="1">
         <el-button type="success" size="mini" @click="getData">刷新</el-button>
         <el-button type="primary" size="mini" @click="copyForm.copyDialogVisible=true">从其他APP拷贝</el-button>
