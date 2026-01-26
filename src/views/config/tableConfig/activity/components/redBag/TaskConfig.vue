@@ -171,7 +171,7 @@
         <div v-if="editItem.taskType !== 1">
           <!-- 道具配置字段 -->
           <el-divider content-position="left">道具配置</el-divider>
-          <el-form-item label="道具配置：" :required="true">
+          <el-form-item label="道具配置：">
             <el-table
               :data="[editItem.propPools]"
               border
