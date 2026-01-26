@@ -1131,7 +1131,7 @@ export default {
     onTagTypeChange(tagType) {
       const tagOptions = this.userTagOptions.find(item => item.value === tagType)
       this.edit.userTagIdOptions = tagOptions && tagOptions.children || []
-      if (this.edit.userTagIdOptions.length > 0) {
+      if (this.edit.item.userFilterCondition.userTagConfig.tagType !== tagType && this.edit.userTagIdOptions.length > 0) {
         this.edit.item.userFilterCondition.userTagConfig.tagId = this.edit.userTagIdOptions[0].value
       }
       console.log('tagType:', tagType)
