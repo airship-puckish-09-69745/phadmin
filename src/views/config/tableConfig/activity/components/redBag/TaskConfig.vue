@@ -145,7 +145,7 @@
               </el-table-column>
               <el-table-column label="权重" min-width="100">
                 <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.weight" placeholder="权重" size="mini" :min="1"/>
+                  <el-input-number v-model="scope.row.weight" :min="1" size="mini"/>
                 </template>
               </el-table-column>
               <el-table-column label="数量限制" min-width="100">
