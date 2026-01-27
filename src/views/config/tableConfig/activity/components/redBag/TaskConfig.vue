@@ -145,7 +145,7 @@
               </el-table-column>
               <el-table-column label="权重" min-width="100">
                 <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.weight" placeholder="权重" size="mini" />
+                  <el-input v-model.number="scope.row.weight" placeholder="权重" size="mini" :min="1"/>
                 </template>
               </el-table-column>
               <el-table-column label="数量限制" min-width="100">
@@ -271,7 +271,7 @@ function newTaskCfg() {
         poolName: '奖池1', // 奖池名称
         value1: 0, // 价值区间1
         value2: 0, // 价值区间2
-        weight: 0, // 权重
+        weight: 1, // 权重
         limitNum: 0 // 数量限制
       }
     ],
@@ -363,7 +363,7 @@ export default {
             poolName: '奖池1',
             value1: 0,
             value2: 0,
-            weight: 0,
+            weight: 1,
             limitNum: 0
           }]
         }
@@ -443,7 +443,7 @@ export default {
         poolName: `奖池${nextIndex}`,
         value1: 0,
         value2: 0,
-        weight: 0,
+        weight: 1,
         limitNum: 0
       })
     },
