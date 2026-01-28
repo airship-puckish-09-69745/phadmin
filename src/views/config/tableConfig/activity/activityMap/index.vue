@@ -13,6 +13,14 @@
       <br>
       <el-tabs v-if="configData.Data" type="border-card">
         <el-tab-pane label="活动地图">
+          <fieldset style="margin-bottom: 15px">
+            <legend>
+              显示的活动页面
+            </legend>
+            <el-checkbox-group v-model="configData.Data.ShowPages" @change="handleCheckedPagesChange">
+              <el-checkbox v-for="item in showPageOptions" :label="item.value" :key="item.value">{{ item.label }}</el-checkbox>
+            </el-checkbox-group>
+          </fieldset>
           <MapConfig :map-list="configData.Data.MapConfig" :activity-options="activityOptions" @update="handleUpdateMap" @delete="handleDeleteMap" @reload="getConfigData" />
         </el-tab-pane>
         <el-tab-pane label="年终大奖侧栏">
@@ -35,7 +43,7 @@ import MapConfig from './components/MapConfig/index.vue'
 import WhiteListConfig from './components/WhiteListConfig/index.vue'
 import DetailsConfig from './components/DetailsConfig/index.vue'
 import BonusConfig from './components/BonusConfig/index.vue'
-import {getCustomize, updateCustomize} from "@/api/custome_configV2";
+import { getCustomize, updateCustomize } from "@/api/custome_configV2";
 export default {
   name: 'ActivityMap',
   components: {
@@ -63,6 +71,12 @@ export default {
         { name: '竖版排行榜活动', id: 19 },
         { name: 'Poker排行榜活动', id: 20 },
       ],
+      showPageOptions: [
+        { label: 'all', value: 'all' },
+        { label: 'poker', value: 'poker' },
+        { label: 'arcade', value: 'arcade' },
+        { label: 'slots', value: 'slots' }
+      ],
       configData: {
         Data: {
           Status: false,
@@ -70,7 +84,8 @@ export default {
           MapConfig: [], // 活动地图配置
           DetailsConfig: [], // 活动详情配置
           WhiteList: {}, // 白名单配置
-          IsOpenReward: true // 是否开启大奖图标和发放开关
+          IsOpenReward: true, // 是否开启大奖图标和发放开关
+          ShowPages: [] // 显示的页面
         }
       } // 存储配置数据
     }
@@ -122,6 +137,9 @@ export default {
         }
         if (!Data.IsOpenReward) {
           Data.IsOpenReward = false
+        }
+        if (!Data.ShowPages) {
+          Data.ShowPages = []
         }
       } else {
         this.$message.error('获取配置数据失败: ' + res.RetMsg)
@@ -245,6 +263,15 @@ export default {
       } else {
         this.$message.error('地图配置未找到')
       }
+    },
+    /**
+     * 处理显示的活动页面变化
+     * @param val 选中的页面值数组
+     */
+    handleCheckedPagesChange(val) {
+      //this.configData.Data.ShowPages = val
+      console.log('checkedPageChange:', val)
+      this.updateConfigData()
     }
   }
 }
