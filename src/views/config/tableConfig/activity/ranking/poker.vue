@@ -1024,7 +1024,7 @@ export default {
           const data = {}
           for (let i = 0; i < objs.length; i++) {
             const obj = objs[i]
-            if (obj.ShowDatacenter !== 1 || this.filterGameIds.indexOf(obj.Gid) >= 0) {
+            if (this.filterGameIds.indexOf(obj.Gid) >= 0) {
               continue
             }
             if (obj.CategoryID !== 2) { // 过滤掉非扑克游戏
