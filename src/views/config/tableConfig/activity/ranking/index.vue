@@ -76,7 +76,7 @@
         :close-on-click-modal="false"
         :close-on-press-escape="false"
         @opened="handleEditDialogOpened"
-        width="1100px"
+        width="1200px"
       >
         <el-tabs type="border-card">
           <el-tab-pane label="基础配置">
@@ -125,7 +125,7 @@
                     </el-input>
                   </el-form-item>
                 </el-col>
-                <el-col :span="12">
+                <!--<el-col :span="12">
                   <el-form-item label="达到进入排行榜要求的奖励：" prop="extend.progressReward" :required="true">
                     <el-input v-model="edit.item.extend.progressReward" placeholder="请输入玩家奖励上限" >
                       <template slot="append">
@@ -133,7 +133,7 @@
                       </template>
                     </el-input>
                   </el-form-item>
-                </el-col>
+                </el-col>-->
                 <el-col :span="12">
                   <el-form-item label="玩家奖励上限：" prop="extend.maxReward" :required="true">
                     <el-input v-model.number="edit.item.extend.maxReward" placeholder="请输入玩家奖励上限" >
@@ -272,7 +272,72 @@
             <el-row :gutter="5">
               <el-col>
                 <fieldset style="margin-top: 10px">
-                  <legend>奖励方式</legend>
+                  <legend>入榜资格奖励</legend>
+                  <el-form :model="edit.item" label-width="100px" size="mini">
+                    <el-row>
+                      <el-col :span="24">
+                        <el-form-item label="奖励类型：" prop="extend.progressRewardItem.rewardType" :required="true">
+                          <el-select
+                            v-model="edit.item.extend.progressRewardItem.rewardType"
+                            placeholder="请选择奖励类型"
+                            size="mini"
+                          >
+                            <el-option
+                              v-for="item in rewardTypes"
+                              :label="item.label"
+                              :value="item.value"
+                              :key="item.value"
+                            />
+                          </el-select>
+                        </el-form-item>
+                      </el-col>
+                    </el-row>
+                    <el-row v-if="edit.item.extend.progressRewardItem.rewardType === 4">
+                      <el-col>
+                        <el-form-item label="道具类型：" prop="extend.progressRewardItem.rewardSubType" :required="true">
+                          <el-select
+                            v-model="edit.item.extend.progressRewardItem.rewardSubType"
+                            placeholder="请选择道具类型"
+                            size="mini"
+                            @change="updatePropOptions(edit.item.extend.progressRewardItem.rewardSubType, 0)"
+                          >
+                            <el-option
+                              v-for="item in propTypeOptions"
+                              :label="item.label"
+                              :value="item.value"
+                              :key="item.value"
+                            />
+                          </el-select>
+                        </el-form-item>
+                      </el-col>
+                      <el-col :span="24">
+                        <el-form-item label="道具名称：" prop="extend.progressRewardItem.rewardId" :required="true">
+                        <el-select v-model.number="edit.item.extend.progressRewardItem.rewardId" placeholder="请选择道具">
+                            <el-option
+                              v-for="item in getPropOptions(0)"
+                              :key="item.value"
+                              :label="item.label"
+                              :value="item.value"
+                            />
+                          </el-select>
+                        </el-form-item>
+                      </el-col>
+                    </el-row>
+                    <el-row>
+                      <el-col :span="12">
+                        <el-form-item label="奖励数值：" prop="extend.progressReward" :required="true">
+                          <el-input v-model="edit.item.extend.progressRewardItem.rewardNum" placeholder="请输入奖励数值" >
+                            <template slot="append">
+                              （{{ getRewardUnit(edit.item.extend.progressRewardItem.rewardType) }}）
+                            </template>
+                          </el-input>
+                        </el-form-item>
+                      </el-col>
+                    </el-row>
+                  </el-form>
+                </fieldset>
+                <fieldset style="margin-top: 10px">
+                  <legend>排名奖励方式</legend>
                   <el-col :span="5">
                     <el-select
                       v-model="edit.item.extend.rewardWay"
@@ -289,21 +354,9 @@
                       />
                     </el-select>
                   </el-col>
-                  <el-col :span="5">
-                    <el-input
-                      v-if="edit.item.extend.rewardWay === 2"
-                      v-model.number="edit.item.extend.rewardPercent"
-                      placeholder="请输入有效下注百分比"
-                      size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "
-                    >
-                      <template slot="append">
-                        %
-                      </template>
-                    </el-input>
-                  </el-col>
                 </fieldset>
                 <fieldset style="margin-top: 10px">
-                  <legend>奖励配置</legend>
+                  <legend>排名奖励配置</legend>
                   <el-button size="mini" type="primary" @click="handleAddRankReward()">添加</el-button>
                   <el-table
                     :data="edit.item.extend.rewardList"
@@ -330,13 +383,88 @@
                       </template>
                     </el-table-column>
                     <el-table-column
-                      prop="reward"
-                      label="奖励金额"
-                      width="200"
-                      v-if="edit.item.extend.rewardWay === 1"
+                      prop="rewardItem"
+                      label="奖励类型"
                     >
                       <template slot-scope="scope">
-                        <el-input v-model.number="scope.row.reward" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
+                        <el-select v-model.number="scope.row.rewardItem.rewardType" placeholder="请选择奖励类型" @change="onRowRewardTypeChange(scope.row.rewardItem)">
+                          <el-option
+                            v-for="item in rewardTypes"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value"
+                          />
+                        </el-select>
+                      </template>
+                    </el-table-column>
+                    <el-table-column
+                      prop="reward"
+                      width="105"
+                    >
+                      <template slot="header" slot-scope="scope">
+                        {{ edit.item.extend.rewardWay === 1 ? '奖励金额' : '奖励百分比%' }}
+                      </template>
+                      <template slot-scope="scope">
+                        <el-input v-model.number="scope.row.rewardItem.rewardNum" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
+                      </template>
+                    </el-table-column>
+                    <el-table-column
+                      prop="rewardItem"
+                      label="道具类型"
+                    >
+                      <template slot-scope="scope">
+                        <el-select
+                          v-if="showRowPropSelect(scope.row.rewardItem)"
+                          v-model.number="scope.row.rewardItem.rewardSubType"
+                          placeholder="请选择道具类型"
+                          @change="updatePropOptions(scope.row.rewardItem.rewardSubType, scope.$index + 1)"
+                        >
+                          <el-option
+                            v-for="item in propTypeOptions"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value"
+                          />
+                        </el-select>
+                      </template>
+                    </el-table-column>
+                    <el-table-column
+                      prop="rewardItem"
+                      label="道具名称"
+                      width="200"
+                    >
+                      <template slot-scope="scope">
+                        <el-select
+                          v-if="showRowPropSelect(scope.row.rewardItem)"
+                          v-model.number="scope.row.rewardItem.rewardId"
+                          placeholder="请选择道具"
+                        >
+                          <el-option
+                            v-for="item in propOptions[scope.$index + 1]"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value"
+                          />
+                        </el-select>
+                      </template>
+                    </el-table-column>
+                    <el-table-column
+                      prop="rewardItem"
+                      label="可用时间"
+                    >
+                      <template slot-scope="scope">
+                        <el-select
+                          v-if="showPropTimeOptions(scope.row.rewardItem.rewardSubType)"
+                          v-model.number="scope.row.rewardItem.rewardExpireDays"
+                          placeholder="请选择可用时间"
+                        >
+                          <el-option
+                            v-for="item in propDayTypeOptions"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value"
+                          />
+                        </el-select>
                       </template>
                     </el-table-column>
                     <el-table-column label="操作" column-key="op">
@@ -431,19 +559,37 @@ function newItem() {
       rewardList: [],
       rewardPercent: 0,
       rewardWay: 1, // 1. 固定金额 2. 有效投注百分比
-      rewardType: 2, // 奖励类型 1. 金币 2. 投注金 3. 返水金
+      rewardType: 2, // 奖励类型 1. 金币 2. 投注金 3. 返水金 4 .道具
       rewardSceneId: 27,
       progressReward: 0,
       rewardShow: 0,
+      progressRewardItem: {
+        rewardId: 0,
+        rewardNum: 0,
+        rewardType: 2, // 奖励类型 1. 金币 2. 投注金 3. 返水金 4 .道具
+        rewardSubType: 0,
+        rewardExpireDays: 0
+      }
     }
   }
 }
 
 function newRewardItem() {
   return {
+    rewardId: 0,
+    rewardNum: 0,
+    rewardType: 2, // 奖励类型 1. 金币 2. 投注金 3. 返水金 4 .道具
+    rewardSubType: 0,
+    rewardExpireDays: 0
+  }
+}
+
+function newRankRewardItem() {
+  return {
     rankStart: 0,
     rankEnd: 0,
     reward: 0,
+    rewardItem: newRewardItem()
   }
 }
 
@@ -530,9 +676,10 @@ export default {
 
       // 奖励类型
       rewardTypes: [
-        { 'value': 1, 'label': '金币' },
+        // { 'value': 1, 'label': '金币' },
         { 'value': 2, 'label': '投注金' },
-        { 'value': 3, 'label': '返水金' }
+        // { 'value': 3, 'label': '返水金' },
+        { 'value': 4, 'label': '道具' }
       ],
 
       filterText: '',
@@ -542,6 +689,26 @@ export default {
           GameId: 1, Name: '测试游戏1', OrderNo: 1
         }
       ],
+
+      propList: [],
+      propOptions: [],
+      // 道具类型选项列表
+      propTypeOptions: [
+        { 'value': 1, 'label': 'Tongits门票', disabled: false },
+        { 'value': 2, 'label': '头像框', disabled: false },
+        { 'value': 3, 'label': '德州门票', disabled: false },
+        { 'value': 4, 'label': '德州头像框', disabled: false },
+        { 'value': 5, 'label': 'SlotFreeSpin', disabled: false }
+      ],
+      // 道具有效时长选项列表
+      propDayTypeOptions: [
+        { 'value': 1, 'label': '1天', disabled: false },
+        { 'value': 3, 'label': '3天', disabled: false },
+        { 'value': 7, 'label': '7天', disabled: false },
+        { 'value': 30, 'label': '30天', disabled: false },
+        { 'value': 365, 'label': '365天', disabled: false },
+        { 'value': 0, 'label': '永久', disabled: false }
+      ],
     }
   },
   created() {
@@ -550,6 +717,7 @@ export default {
   mounted() {
     this.getList()
     this.getGameAll()
+    this.getPropList()
   },
   methods: {
     formatNumber(n) {
@@ -598,7 +766,7 @@ export default {
       this.changeStatus(ob.id, 3, '您确定要将记录状态修改为废弃吗？')
     },
     handleAddRankReward() {
-      this.edit.item.extend.rewardList.push(newRewardItem())
+      this.edit.item.extend.rewardList.push(newRankRewardItem())
     },
     handleDelRankReward(index) {
       this.edit.item.extend.rewardList.splice(index, 1)
@@ -771,14 +939,24 @@ export default {
           item.extend.maxReward /= 1000
           item.extend.progressReward /= 1000
 
-          for (const reward of item.extend.rewardList) {
-            reward.reward /= 1000
+          for (const rewardCfg of item.extend.rewardList) {
+            rewardCfg.reward /= 1000
+            if (rewardCfg.rewardItem === undefined) {
+              rewardCfg.rewardItem = newRankRewardItem()
+              rewardCfg.rewardItem.rewardNum = rewardCfg.reward
+              rewardCfg.rewardItem.rewardType = 2
+            }
           }
 
           if (item.activity.whitelist.uidList.length > 0) {
             item.activity.whitelist.uidList = item.activity.whitelist.uidList.join(',')
           } else {
             item.activity.whitelist.uidList = ''
+          }
+
+          if (item.extend.progressRewardItem === undefined) {
+            item.extend.progressRewardItem = newRewardItem()
+            item.extend.progressRewardItem.rewardNum = item.extend.progressReward
           }
 
           this.edit.item = item
@@ -944,7 +1122,106 @@ export default {
         return a.OrderNo - b.OrderNo
       })
     },
+    getRewardUnit(rewardType) {
+      if ([1,2].indexOf(rewardType) >= 0) {
+        return '₱'
+      } else if (rewardType === 4) {
+        return '个'
+      } else {
+        return '未知'
+      }
+    },
+    getRewardTypeLabel(rewardType) {
+      const item = this.rewardTypes.find(x => x.value === rewardType)
+      return item ? item.label : '未知'
+    },
+    onRowRewardTypeChange(rewardItem) {
+      if (rewardItem.rewardType !== 4) {
+        rewardItem.rewardId = 0
+        rewardItem.rewardSubType = 0
+        rewardItem.rewardExpireDays = 0
+      } else {
+        rewardItem.rewardExpireDays = 1
+      }
+    },
     //************************ 游戏列表相关 ************************
+    // ************************ 道具配置 ************************
+    getPropList() {
+      const $this = this
+      request({
+        url: '/propsconfig/props/config/list',
+        method: 'get',
+        data: {
+          Env: $this.env,
+          PageNum: 1,
+          PageSize: 1000
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objs = response.Data || {}
+          if (objs.total > 0) {
+            //this.propTotal = objs.total
+            this.propList = []
+            this.propList = objs.list
+          }
+        } else {
+          //this.propTotal = objs.total
+          this.propList = []
+        }
+      })
+    },
+    getPropOptions(index) {
+      if (this.propOptions.length === 0) {
+        return []
+      }
+      return this.propOptions[index]
+    },
+    updatePropOptions(propType, index) {
+      console.log('updatePropOptions-propType:', propType, ' index:', index)
+      this.propOptions[index] = []
+      let currTime = new Date().getTime()
+      for (let i = 0; i < this.propList.length; i++) {
+        const prop = this.propList[i]
+        if (prop.item_type === propType && prop.status === 1) {
+          if (prop.item_type !== 2 && prop.item_type !== 4 && prop.item_type !== 5) {
+            const expTime = prop.expire_time * 1000
+            if (currTime < expTime) {
+              let option = { 'value': prop.id, 'label': prop.item_name, disabled: false }
+              this.propOptions[index].push(option)
+            } else {
+              console.log('道具 type:' + prop.item_type + ' name:' + prop.item_name + '已过期')
+            }
+          } else {
+            let option = { 'value': prop.id, 'label': prop.item_name, disabled: false }
+            this.propOptions[index].push(option)
+          }
+        }
+      }
+    },
+    showPropTimeOptions(propType) {
+      return [2, 5].includes(propType)
+    },
+    showRowPropSelect(rewardItem) {
+      return rewardItem.rewardType === 4
+    },
+    getPropTimeOptions(itemId) {
+      this.propTimeList = []
+      for (let i = 0; i < this.propList.length; i++) {
+        if (this.propList[i].id === itemId) {
+          const time_type = JSON.parse(this.propList[i].time_type)
+          for (let j = 0; j < time_type.length; j++) {
+            let msg = time_type[j] + '天'
+            if (time_type[j] === 0) {
+              msg = '永久'
+            }
+            let dataList = { 'value': time_type[j], 'label': msg, disabled: false }
+            this.propTimeList.push(dataList)
+          }
+          break
+        }
+      }
+    },
+    // ************************ 道具配置 ************************
   }
 }
 </script>
