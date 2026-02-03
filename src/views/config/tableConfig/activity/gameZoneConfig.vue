@@ -1042,6 +1042,7 @@ export default {
         { name: '万圣节活动-[18]', id: 18 },
         { name: '竖版游戏排行榜活动-[19]', id: 19 },
         { name: 'Poker类排行榜活动-[20]', id: 20 },
+        { name: '活动地图-[21]', id: 21 }
       ],
       blockGames: [36, 38, 39, 43, 44],
       hallGame: [],
