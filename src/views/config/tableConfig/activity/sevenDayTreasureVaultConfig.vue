@@ -1114,6 +1114,10 @@ export default {
       task.Reward.splice(index, 1)
     },
     saveTask() {
+      if (!this.checkTask()) {
+        return
+      }
+
       let index = 0
       if (this.edit.isEdit) {
         index = this.item.TaskConfig.findIndex(item => item.TaskID === this.edit.item.TaskID)
@@ -1133,6 +1137,11 @@ export default {
           this.item.TaskConfig[index].TaskItem[i].ConditionTarget *= 1000
         }
         for (let j = 0; j < this.item.TaskConfig[index].TaskItem[i].Reward.length; j++) {
+          if (this.item.TaskConfig[index].TaskItem[i].Reward[j].RewardType === 1 || this.item.TaskConfig[index].TaskItem[i].Reward[j].RewardType === 4 ||
+            this.item.TaskConfig[index].TaskItem[i].Reward[j].RewardType === 2) {
+            this.item.TaskConfig[index].TaskItem[i].Reward[j].Prop = null
+            this.item.TaskConfig[index].TaskItem[i].Reward[j].RichCard = null
+          }
           if (this.item.TaskConfig[index].TaskItem[i].Reward[j].RewardType === 1 || this.item.TaskConfig[index].TaskItem[i].Reward[j].RewardType === 4) {
             this.item.TaskConfig[index].TaskItem[i].Reward[j].Num *= 1000
           } else {
@@ -1141,6 +1150,29 @@ export default {
         }
       }
       this.edit.visible = false
+    },
+    checkTask() {
+      if (!this.edit.isEdit) {
+        const foundItem = this.item.TaskConfig.find(item => item.TaskID === this.edit.item.TaskID)
+        if (foundItem) {
+          Message.error(`已经存在相同的ID值`)
+          return false
+        }
+      }
+
+      for (let i = 0; i < this.edit.item.TaskItem.length; i++) {
+        for (let j = 0; j < this.edit.item.TaskItem[i].Reward.length; j++) {
+          if (this.edit.item.TaskItem[i].Reward[j].RewardType === 3 && this.edit.item.TaskItem[i].Reward[j].Prop === null) {
+            Message.error(`任务` + (i + 1) + '存在奖励类型是道具，而没有配置具体道具信息')
+            return false
+          }
+          if (this.edit.item.TaskItem[i].Reward[j].RewardType === 5 && this.edit.item.TaskItem[i].Reward[j].RichCard === null) {
+            Message.error(`任务` + (i + 1) + '存在奖励类型是富裕卡，而没有配置具体道具信息')
+            return false
+          }
+        }
+      }
+      return true
     },
     showPropDialog(taskIndex, rewardIndex) {
       if (this.edit.item.TaskItem[taskIndex].Reward[rewardIndex].RewardType === 3) {
