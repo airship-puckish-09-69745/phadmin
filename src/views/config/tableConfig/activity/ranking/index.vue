@@ -340,9 +340,27 @@
                       </el-col>
                       <el-col :span="24">
                         <el-form-item label="道具名称：" prop="extend.progressRewardItems[0].rewardId" :required="true">
-                        <el-select v-model.number="edit.item.extend.progressRewardItems[0].rewardId" placeholder="请选择道具">
+                          <el-select v-model.number="edit.item.extend.progressRewardItems[0].rewardId" placeholder="请选择道具">
                             <el-option
                               v-for="item in getPropOptions(0)"
+                              :key="item.value"
+                              :label="item.label"
+                              :value="item.value"
+                            />
+                          </el-select>
+                        </el-form-item>
+                      </el-col>
+                      <el-col :span="24" v-if="showPropTimeOptions(edit.item.extend.progressRewardItems[0].rewardSubType)">
+                        <el-form-item
+                          label="可用时间："
+                          prop="extend.progressRewardItems[0].rewardExpireDays" :required="true"
+                        >
+                          <el-select
+                            v-model.number="edit.item.extend.progressRewardItems[0].rewardExpireDays"
+                            placeholder="请选择可用时间"
+                          >
+                            <el-option
+                              v-for="item in propDayTypeOptions"
                               :key="item.value"
                               :label="item.label"
                               :value="item.value"
@@ -596,7 +614,7 @@ function newItem() {
         rewardNum: 0,
         rewardType: 2, // 奖励类型 1. 金币 2. 投注金 3. 返水金 4 .道具
         rewardSubType: 0,
-        rewardExpireDays: 0
+        rewardExpireDays: 1
       }],
       userFilterType: 0,
       userFilterCondition: {
@@ -613,7 +631,7 @@ function newRewardItem() {
     rewardNum: 0,
     rewardType: 2, // 奖励类型 1. 金币 2. 投注金 3. 返水金 4 .道具
     rewardSubType: 0,
-    rewardExpireDays: 0
+    rewardExpireDays: 1
   }
 }
 
@@ -970,10 +988,12 @@ export default {
       }
 
       if (item.extend.progressRewardItems && item.extend.progressRewardItems.length > 0) {
-        if (item.extend.progressRewardItems[0].rewardType === 2) {
-          item.extend.progressReward *= 1000
-          item.extend.progressRewardItems[0].rewardNum *= 1000
+        const rewardItem = item.extend.progressRewardItems[0]
+        if (rewardItem.rewardType === 2) {
+          rewardItem.rewardNum *= 1000
         }
+        rewardItem.rewardNum = parseInt(rewardItem.rewardNum)
+        item.extend.progressReward = rewardItem.rewardNum
       }
 
       let maxRankShow = 0
@@ -1039,9 +1059,9 @@ export default {
               rewardCfg.rewardItem.rewardType = 2
             }
             if (item.extend.rewardWay === 1) {
-              rewardCfg.reward /= 1000
               rewardCfg.rewardItem.rewardNum /= 1000
             }
+            rewardCfg.reward = rewardCfg.rewardItem.rewardNum
           }
 
           if (item.activity.whitelist.uidList.length > 0) {
@@ -1059,10 +1079,13 @@ export default {
             item.extend.progressRewardItems.push(newRewardItem())
             item.extend.progressRewardItems[0].rewardNum = item.extend.progressReward
           } else if (item.extend.progressRewardItems && item.extend.progressRewardItems.length > 0) {
-            if (item.extend.progressRewardItems[0].rewardType === 2) { // 金币时需要除以1000
-              item.extend.progressReward /= 1000
-              item.extend.progressRewardItems[0].rewardNum /= 1000
+            const rewardItem = item.extend.progressRewardItems[0]
+            if (rewardItem.rewardType === 2) { // 金币时需要除以1000
+              rewardItem.rewardNum /= 1000
             }
+            item.extend.progressReward = rewardItem.rewardNum
+
+            this.updatePropOptions(rewardItem.rewardSubType, 0)
           }
 
           if (item.extend.userFilterCondition === undefined) {
@@ -1122,7 +1145,7 @@ export default {
       if (rewardItem.rewardType === 2) {
         rewardItem.rewardId = 0
         rewardItem.rewardSubType = 0
-        rewardItem.rewardExpireDays = 0
+        rewardItem.rewardExpireDays = 1
       }
     },
     //************************ 修改/添加弹框相关 ************************
