@@ -82,7 +82,7 @@
               {{ scope.row.App }}
             </template>
           </el-table-column>
-          <el-table-column label="场景id(内部用)">
+          <el-table-column label="站点)">
             <template slot-scope="scope">
               {{ scope.row.SceneId }}
             </template>
