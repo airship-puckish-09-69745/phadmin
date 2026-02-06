@@ -277,6 +277,7 @@ export default {
         RuleImgVer: [],
         RewardType: 1,
         RewardUseSceneId: 0,
+        DayPrizeThreshold: 0, // 当日发奖额阈值
         PrizePoolCfg: [],
         RankCfg: [
           { RankStart: 1, RankEnd: 1, Reward: 28888 },
