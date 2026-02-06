@@ -100,7 +100,7 @@
     <!-- 刷新事件：保存成功后刷新列表 -->
     <!-- 打开事件：弹窗打开后的初始化 -->
     <!-- 关闭事件：弹窗关闭时的清理 -->
-    <red-bag-form
+    <treasure-bowl
       :visible.sync="redBagEdit.visible"
       :is-edit="redBagEdit.isEdit"
       :edit-data="redBagEdit.item"
@@ -122,12 +122,12 @@ import Compare from '@/components/Compare/index.vue'
 import store from '@/store'
 import request from '@/utils/request'
 import { Message } from 'element-ui'
-
+import TreasureBowl from './form.vue'
 
 const filterMap = {}
 
 export default {
-  components: { Compare, Publish },
+  components: { Compare, Publish, TreasureBowl },
   data() {
     return {
       AttrNames: {

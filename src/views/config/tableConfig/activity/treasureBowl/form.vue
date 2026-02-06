@@ -1,5 +1,14 @@
 <template>
-  <el-col class="app-container">
+  <el-dialog
+    title="聚宝盆活动配置"
+    :visible.sync="dialogVisible"
+    :close-on-click-modal="false"
+    :close-on-press-escape="false"
+    width="80%"
+    top="5vh"
+    @opened="handleDialogOpened"
+    @close="handleDialogClose"
+  >
     <el-row>
       <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" />
     </el-row>
@@ -42,10 +51,10 @@
                   <el-form-item label="发放奖励类型：">
                     <el-select v-model="item.RewardType" placeholder="请选择" size="mini" style="width:90px">
                       <el-option
-                        v-for="item in rewardTypes"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
+                        v-for="option in rewardTypes"
+                        :key="option.value"
+                        :label="option.label"
+                        :value="option.value"
                       />
                     </el-select>
                     <el-select v-if="item.RewardType === 2" v-model="item.RewardUseSceneId" placeholder="请选择投注金" size="mini" style="width:150px">
@@ -71,8 +80,8 @@
                     <el-input v-model.number="item.DayPrizeThreshold" size="mini">
                       <template slot="append">（₱）</template>
                     </el-input>
-                    <span v-if="todayRaffleAmount > item.DayPrizeThreshold" style="color: red">今日发奖已超阈值（{{todayRaffleAmount}}），已开启限制</span>
-                    <span v-else style="color: red">今日发奖总额（{{todayRaffleAmount}}）</span>
+                    <span v-if="todayRaffleAmount > item.DayPrizeThreshold" style="color: red">今日发奖已超阈值（{{ todayRaffleAmount }}），已开启限制</span>
+                    <span v-else style="color: red">今日发奖总额（{{ todayRaffleAmount }}）</span>
                   </el-form-item>
                 </el-col>
               </el-form>
@@ -82,7 +91,7 @@
             <el-form label-width="220px">
               <el-col :span="24">
                 <el-form-item label="规则图片横板：" :required="true">
-                  <el-col :span="2" v-for="(v,k) in item.RuleImgHor">
+                  <el-col v-for="(_, k) in item.RuleImgHor" :key="'hor-' + k" :span="2">
                     <span style="display: inline-block; position: relative;">
                       <span style="position: absolute; top: -20px; right: 1px; cursor: pointer; z-index: 99" @click="removeRuleImage(k, 'Hor')">移除</span>
                       <ImagePicker v-model="item.RuleImgHor[k]" />
@@ -95,7 +104,7 @@
               </el-col>
               <el-col :span="24">
                 <el-form-item label="规则图片竖版：" :required="true">
-                  <el-col :span="2" v-for="(v,k) in item.RuleImgVer">
+                  <el-col v-for="(_, k) in item.RuleImgVer" :key="'ver-' + k" :span="2">
                     <span style="display: inline-block; position: relative;">
                       <span style="position: absolute; top: -20px; right: 1px; cursor: pointer; z-index: 99" @click="removeRuleImage(k, 'Vor')">移除</span>
                       <ImagePicker v-model="item.RuleImgVer[k]" />
@@ -154,10 +163,10 @@
                 <el-form-item label="AppId白名单：" prop="item.WhitelistCfg.AppIdList">
                   <el-select v-model="item.WhitelistCfg.AppIdList" multiple placeholder="请选择" style="width: 400px" @change="onAppIdOptionsChange">
                     <el-option
-                      v-for="item in appIdOptions"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
+                      v-for="option in appIdOptions"
+                      :key="option.value"
+                      :label="option.label"
+                      :value="option.value"
                     />
                   </el-select>
                 </el-form-item>
@@ -217,14 +226,14 @@
         </el-row>
       </el-dialog>
 
-      <el-row>
-        <br>
-        <el-button type="primary" @click="setData">保存</el-button>
+      <el-row style="margin-top: 20px; text-align: center;">
+        <el-button type="primary" @click="setData">保存配置</el-button>
+        <el-button @click="dialogVisible = false">取消</el-button>
       </el-row>
     </el-row>
     <!--对比组件-->
     <compare ref="compare" />
-  </el-col>
+  </el-dialog>
 </template>
 
 <script>
@@ -243,25 +252,26 @@ import RankingConfig from './components/RankingConfig.vue'
 
 export default {
   components: { Compare, ImagePicker, Publish, SiteSelect, PrizePoolConfig, RankingConfig },
-  watch: {
-    filterText(val) {
-      this.$refs.tree && this.$refs.tree.filter(val)
+  props: {
+    // 控制弹窗显示/隐藏
+    visible: {
+      type: Boolean,
+      default: false
     },
-    // 监听 GameIdCfg 变化，更新选中状态
-    'item.GameIdCfg': {
-      handler() {
-        if (this.$refs.tree) {
-          this.$nextTick(() => {
-            this.$refs.tree.setCheckedKeys(this.item.GameIdCfg || [])
-            this.updateGamesSorted()
-          })
-        }
-      },
-      immediate: false
+    // 是否为编辑模式
+    isEdit: {
+      type: Boolean,
+      default: false
+    },
+    // 编辑时传入的数据
+    editData: {
+      type: Object,
+      default: () => ({})
     }
   },
   data() {
     return {
+      dialogVisible: false, // 弹窗显示状态
       subKey: 'christmas_fortune_tree_cfg',
       libShow: $libShow,
       form: {
@@ -322,7 +332,7 @@ export default {
         {
           value: 1000005,
           label: '正式1000005'
-        },
+        }
       ],
       // 奖励类型选项
       rewardTypes: [
@@ -351,12 +361,113 @@ export default {
       todayRaffleAmount: 0
     }
   },
+  watch: {
+    // 监听父组件传入的 visible 属性
+    visible(val) {
+      this.dialogVisible = val
+      if (val) {
+        // 弹窗打开时的处理
+        if (this.isEdit && Object.keys(this.editData).length > 0) {
+          // 编辑模式：加载编辑数据
+          this.loadEditData()
+        } else if (!this.isEdit) {
+          // 新增模式：重置为默认数据
+          this.resetData()
+        }
+      }
+    },
+    // 监听本地 dialogVisible 变化，同步通知父组件
+    dialogVisible(val) {
+      this.$emit('update:visible', val)
+    },
+    filterText(val) {
+      this.$refs.tree && this.$refs.tree.filter(val)
+    },
+    // 监听 GameIdCfg 变化，更新选中状态
+    'item.GameIdCfg': {
+      handler() {
+        if (this.$refs.tree) {
+          this.$nextTick(() => {
+            this.$refs.tree.setCheckedKeys(this.item.GameIdCfg || [])
+            this.updateGamesSorted()
+          })
+        }
+      },
+      immediate: false
+    }
+  },
   created() {
-    this.getData()
-    this.getTodayRaffleAmount()
-    console.log(1)
+    // 不在 created 中自动加载数据，等待弹窗打开时再加载
   },
   methods: {
+    /**
+     * 弹窗打开后的处理
+     */
+    handleDialogOpened() {
+      console.log('聚宝盆配置弹窗已打开')
+      this.$emit('opened')
+      // 获取配置数据
+      this.getData()
+      this.getTodayRaffleAmount()
+    },
+
+    /**
+     * 弹窗关闭时的处理
+     */
+    handleDialogClose() {
+      console.log('聚宝盆配置弹窗已关闭')
+      this.$emit('close')
+    },
+
+    /**
+     * 加载编辑数据
+     */
+    loadEditData() {
+      if (this.editData && Object.keys(this.editData).length > 0) {
+        // 深拷贝编辑数据到 item
+        this.item = JSON.parse(JSON.stringify(this.editData))
+
+        // TODO: 根据实际需求转换数据格式
+        console.log('加载编辑数据:', this.item)
+      }
+    },
+
+    /**
+     * 重置表单数据为默认值
+     */
+    resetData() {
+      this.item = {
+        IsOpen: true,
+        StartTime: Date.now(),
+        EndTime: Date.now() + 30 * 24 * 60 * 60 * 1000,
+        ShowEndTime: Date.now() + 31 * 24 * 60 * 60 * 1000,
+        SockGainRatio: 10,
+        RuleImgHor: [],
+        RuleImgVer: [],
+        RewardType: 1,
+        RewardUseSceneId: 0,
+        DayPrizeThreshold: 0,
+        PrizePoolCfg: [],
+        RankCfg: [
+          { RankStart: 1, RankEnd: 1, Reward: 28888 },
+          { RankStart: 2, RankEnd: 2, Reward: 18888 },
+          { RankStart: 3, RankEnd: 3, Reward: 8888 },
+          { RankStart: 4, RankEnd: 5, Reward: 2888 },
+          { RankStart: 6, RankEnd: 10, Reward: 1888 },
+          { RankStart: 11, RankEnd: 20, Reward: 888 },
+          { RankStart: 21, RankEnd: 40, Reward: 288 },
+          { RankStart: 41, RankEnd: 70, Reward: 188 },
+          { RankStart: 71, RankEnd: 100, Reward: 88 }
+        ],
+        GameIdCfg: [],
+        WhitelistCfg: {
+          AppIdList: [],
+          SiteIdList: []
+        }
+      }
+      console.log('重置表单数据')
+    },
+
     /**
      * 获取完整的配置Key
      */
@@ -416,7 +527,7 @@ export default {
     updateGamesSorted() {
       const gamesSorted = []
       const gameIdCfg = this.item.GameIdCfg || []
-      
+
       // 遍历所有游戏树，找到选中的游戏
       this.treeData.forEach(category => {
         if (category.children) {
@@ -434,7 +545,7 @@ export default {
           })
         }
       })
-      
+
       // 按 orderNo 排序
       gamesSorted.sort((a, b) => a.orderNo - b.orderNo)
       this.gamesSorted = gamesSorted
@@ -455,7 +566,7 @@ export default {
       this.gamesSortDialogVisible = false
       // 根据排序编号重新排序
       this.gamesSorted.sort((a, b) => a.orderNo - b.orderNo)
-      
+
       // 保存排序后的游戏ID列表
       const gameIdCfg = []
       this.gamesSorted.forEach(item => {
@@ -484,7 +595,7 @@ export default {
         if (response.RetCode === 0) {
           const objs = response.Data || []
           const data = {}
-          
+
           // 按游戏类别分组
           for (let i = 0; i < objs.length; i++) {
             const obj = objs[i]
@@ -504,7 +615,7 @@ export default {
           // 构建游戏树结构
           const categories = { 1: 'Slot', 2: 'Poker', 3: 'Casino' }
           const builtTree = []
-          
+
           for (const key in data) {
             const games = data[key]
             const cty = { id: 'p-' + key, label: categories[key], children: [] }
@@ -693,7 +804,7 @@ export default {
 
       cpy.WhitelistCfg = this.item.WhitelistCfg
 
-      if (this.item.DayPrizeThreshold!= null) {
+      if (this.item.DayPrizeThreshold != null) {
         cpy.DayPrizeThreshold = this.item.DayPrizeThreshold * 1000
       }
 
