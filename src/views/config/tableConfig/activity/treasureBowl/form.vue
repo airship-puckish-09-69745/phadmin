@@ -113,23 +113,22 @@
               <el-col :span="12">
                 <el-form-item label="勾选支持的游戏：" :required="true">
                   <el-input
+                    v-model="filterText"
                     placeholder="输入关键字进行过滤"
-                    v-model="filterText">
-                  </el-input>
+                  />
                   <el-tree
+                    ref="tree"
                     :data="treeData"
                     show-checkbox
                     node-key="id"
-                    ref="tree"
                     highlight-current
                     :props="defaultProps"
                     :filter-node-method="filterNode"
                     @check-change="handleCheckChange"
-                  >
-                  </el-tree>
+                  />
                 </el-form-item>
                 <el-form-item label="给选中游戏排序：" :required="true">
-                  <el-button size="mini" type="primary" @click="showGamesSortDialog()">
+                  <el-button size="mini" type="primary" @click="showGamesSortDialog">
                     排序
                   </el-button>
                 </el-form-item>
@@ -139,205 +138,13 @@
         </el-tab-pane>
 
         <el-tab-pane label="奖池配置">
-          <el-button size="mini" type="primary" icon="el-icon-plus" @click="handleCreate()">
-            添加配置
-          </el-button>
-          <el-form ref="ProtectCfg" v-model="item.PrizePoolCfg" label-width="150px" style="margin-top: 10px">
-            <el-table
-              :data="item.PrizePoolCfg"
-              border
-              style="width: 100%"
-              :cell-style="libShow.DefaultTableCell"
-              @row-click="clickData"
-            >
-              <el-table-column
-                prop="RaffleLevel"
-                label="档次条件"
-                width="200"
-              />
-              <el-table-column
-                prop="SockBaseNum"
-                label="基础道具数量"
-                width="200"
-              />
-              <el-table-column
-                prop="CoefficientMin"
-                label="道具系数范围"
-                width="200"
-              >
-                <template slot-scope="scope">
-                  {{ scope.row.CoefficientMin }} - {{ scope.row.CoefficientMax }}
-                </template>
-              </el-table-column>
-              <el-table-column
-                label="操作"
-                column-key="op"
-                width="250"
-              >
-                <template slot-scope="scope">
-                  <el-button
-                    type="primary"
-                    size="mini"
-                    @click="handleEdit(scope.row)"
-                  >编辑
-                  </el-button>
-                  <el-button
-                    size="mini"
-                    type="warning"
-                    @click="handleDelete(scope.row)"
-                  >删除
-                  </el-button>
-                </template>
-              </el-table-column>
-            </el-table>
-          </el-form>
+          <!-- 使用奖池配置组件 -->
+          <PrizePoolConfig v-model="item" />
         </el-tab-pane>
 
-        <el-dialog
-          :title="getEditTitle()"
-          :visible.sync="edit.visible"
-          :close-on-click-modal="false"
-          :close-on-press-escape="false"
-        >
-          <el-form ref="edit.item" :model="edit.item" label-width="250px" size="small">
-            <el-form-item label="档次条件：" :required="true" prop="RaffleLevel">
-              <el-col :span="15">
-                <el-input v-model.number="edit.item.RaffleLevel"><template slot="append">（₱）</template></el-input>
-              </el-col>
-            </el-form-item>
-
-            <el-form-item label="基础道具数量：" :required="true" prop="SockBaseNum">
-              <el-col :span="15">
-                <el-input v-model.number="edit.item.SockBaseNum" />
-              </el-col>
-            </el-form-item>
-            <el-form-item label="道具系数最小：" :required="true" prop="CoefficientMin">
-              <el-col :span="15">
-                <el-input v-model="edit.item.CoefficientMin" />
-              </el-col>
-            </el-form-item>
-            <el-form-item label="道具系数最大：" :required="true" prop="CoefficientMax">
-              <el-col :span="15">
-                <el-input v-model="edit.item.CoefficientMax" />
-              </el-col>
-            </el-form-item>
-          </el-form>
-          <el-row>
-            <el-col :span="20" :offset="2">
-              <el-button size="mini" type="primary" icon="el-icon-plus" @click="handlePrizeCreate()">
-                添加配置
-              </el-button>
-
-              <el-form ref="ProtectCfg" v-model="edit.item.PrizeCfg" label-width="150px" style="margin-top: 10px">
-                <el-table
-                  :data="edit.item.PrizeCfg"
-                  border
-                  style="width: 100%"
-                  :cell-style="libShow.DefaultTableCell"
-                >
-                  <el-table-column
-                    prop="Reward"
-                    label="真金（₱）"
-                    width="200"
-                  >
-                    <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.Reward" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "><template slot="append">（₱）</template></el-input>
-                    </template>
-                  </el-table-column>
-                  <el-table-column
-                    prop="Weight"
-                    label="中奖权重"
-                    width="200"
-                  >
-                    <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.Weight" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
-                    </template>
-                  </el-table-column>
-                  <el-table-column
-                    prop="PrizeNum"
-                    label="份数"
-                    width="100"
-                  >
-                    <template slot-scope="scope">
-                      {{ scope.row.PrizeUnlimited === true ? '不限' : '' }}
-                      <el-input v-model.number="scope.row.PrizeNum" v-if="scope.row.PrizeUnlimited === false" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
-                    </template>
-                  </el-table-column>
-                  <el-table-column
-                    prop="PrizeUnlimited"
-                    label="是否不限"
-                    width="100"
-                  >
-                    <template slot-scope="scope">
-                      <el-switch v-model="scope.row.PrizeUnlimited" :active-value="true" :inactive-value="false" />
-                    </template>
-                  </el-table-column>
-                  <el-table-column
-                    label="操作"
-                    column-key="op"
-                    width="100"
-                  >
-                    <template slot-scope="scope">
-                      <el-button
-                        size="mini"
-                        type="warning"
-                        @click="handlePrizeDelete(scope.row)"
-                      >删除
-                      </el-button>
-                    </template>
-                  </el-table-column>
-                </el-table>
-              </el-form>
-            </el-col>
-          </el-row>
-          <el-row style="margin-top: 10px">
-            <el-col :span="10" :offset="10">
-              <el-button type="primary" size="medium" @click="save">保存</el-button>
-            </el-col>
-          </el-row>
-        </el-dialog>
-
         <el-tab-pane label="排行榜配置">
-          <el-row :gutter="5">
-            <el-col>
-              <el-form ref="rankCfg" v-model="item.RankCfg" label-width="150px" style="margin-top: 10px">
-                <el-table
-                  :data="item.RankCfg"
-                  border
-                  style="width: 100%"
-                  :cell-style="libShow.DefaultTableCell"
-                >
-                  <el-table-column
-                    prop="RankStart"
-                    label="排名开始"
-                    width="100"
-                  >
-                    <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.RankStart" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
-                    </template>
-                  </el-table-column>
-                  <el-table-column
-                    prop="RankEnd"
-                    label="排名结束"
-                    width="100"
-                  >
-                    <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.RankEnd" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
-                    </template>
-                  </el-table-column>
-                  <el-table-column
-                    prop="Reward"
-                    label="奖励金额"
-                    width="200"
-                  >
-                    <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.Reward" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
-                    </template>
-                  </el-table-column>
-                </el-table>
-              </el-form>
-            </el-col>
-          </el-row>
+          <!-- 使用排行榜配置组件 -->
+          <RankingConfig v-model="item" />
         </el-tab-pane>
 
         <el-tab-pane label="白名单配置">
@@ -367,40 +174,41 @@
         </el-tab-pane>
       </el-tabs>
 
+      <!-- 游戏排序弹窗 -->
       <el-dialog
         title="给选中游戏排序"
-        :visible.sync="edit.gamesSortDialogVisible"
+        :visible.sync="gamesSortDialogVisible"
         :close-on-click-modal="false"
         :close-on-press-escape="false"
+        append-to-body
       >
         <el-table
-          :data="GamesSorted"
+          :data="gamesSorted"
           border
           style="width: 100%"
-          :cell-style="libShow.DefaultTableCell"
         >
           <el-table-column
-            prop="GameId"
+            prop="gameId"
             label="游戏Id"
             width="200"
           />
           <el-table-column
-            prop="Name"
+            prop="name"
             label="游戏名称"
             width="200"
           />
           <el-table-column
-            prop="OrderNo"
+            prop="orderNo"
             label="排序编号"
             width="200"
           >
             <template slot-scope="scope">
               <el-input
-                v-model="scope.row.OrderNo"
+                v-model="scope.row.orderNo"
                 size="mini"
                 oninput=" if(value < 0 || value === '' || value == null){value = 0;} "
                 @change="onOrderNoChange"
-              ></el-input>
+              />
             </template>
           </el-table-column>
         </el-table>
@@ -421,41 +229,35 @@
 
 <script>
 
-import Publish from "@/components/Publish/index.vue";
-import {$libShow, ClientTableData, DataRule} from "@/utils/common";
-import ImagePicker from "@/components/ImagePicker/ImagePicker.vue";
-import {Message} from "element-ui";
-import request from "@/utils/request";
-import Compare from "@/components/Compare/index.vue";
-import {getCustomize, updateCustomize} from "@/api/custome_configV2";
-import SiteSelect from "@/components/SiteSelect/index.vue";
-
-function newPrizePoolCfg() {
-  return {
-    RaffleLevel: 200,
-    RewardMax: 0,
-    SockBaseNum: 10,
-    CoefficientMin: 0.8,
-    CoefficientMax: 1.2,
-    PrizeCfg: [
-      { Reward: 0, Weight: 30, PrizeNum: 0, PrizeUnlimited: true },
-      { Reward: 0, Weight: 90, PrizeNum: 0, PrizeUnlimited: true },
-      { Reward: 0, Weight: 180, PrizeNum: 0, PrizeUnlimited: true },
-      { Reward: 0, Weight: 59700, PrizeNum: 0, PrizeUnlimited: true },
-      { Reward: 0, Weight: 120000, PrizeNum: 0, PrizeUnlimited: true },
-      { Reward: 0, Weight: 120000, PrizeNum: 0, PrizeUnlimited: true }
-    ]
-  }
-}
+import Publish from '@/components/Publish/index.vue'
+import { $libShow, DataRule } from '@/utils/common'
+import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
+import { Message } from 'element-ui'
+import request from '@/utils/request'
+import Compare from '@/components/Compare/index.vue'
+import { getCustomize, updateCustomize } from '@/api/custome_configV2'
+import SiteSelect from '@/components/SiteSelect/index.vue'
+// 引入奖池配置和排行榜配置组件
+import PrizePoolConfig from './components/PrizePoolConfig.vue'
+import RankingConfig from './components/RankingConfig.vue'
 
 export default {
-  components: { Compare, ImagePicker, Publish, SiteSelect },
+  components: { Compare, ImagePicker, Publish, SiteSelect, PrizePoolConfig, RankingConfig },
   watch: {
     filterText(val) {
-      this.$refs.tree.filter(val);
+      this.$refs.tree && this.$refs.tree.filter(val)
     },
-    gameIdCfg(val) {
-
+    // 监听 GameIdCfg 变化，更新选中状态
+    'item.GameIdCfg': {
+      handler() {
+        if (this.$refs.tree) {
+          this.$nextTick(() => {
+            this.$refs.tree.setCheckedKeys(this.item.GameIdCfg || [])
+            this.updateGamesSorted()
+          })
+        }
+      },
+      immediate: false
     }
   },
   data() {
@@ -475,83 +277,8 @@ export default {
         RuleImgVer: [],
         RewardType: 1,
         RewardUseSceneId: 0,
-        PrizePoolCfg: [
-          {
-            RaffleLevel: 200,
-            RewardMax: 38,
-            SockBaseNum: 10,
-            CoefficientMin: 0.8,
-            CoefficientMax: 1.2,
-            PrizeCfg: [
-              { Reward: 38, Weight: 30, PrizeNum: 0, PrizeUnlimited: true },
-              { Reward: 18.8, Weight: 90, PrizeNum: 0, PrizeUnlimited: true },
-              { Reward: 10.8, Weight: 180, PrizeNum: 0, PrizeUnlimited: true },
-              { Reward: 0.38, Weight: 59700, PrizeNum: 0, PrizeUnlimited: true },
-              { Reward: 0.18, Weight: 120000, PrizeNum: 0, PrizeUnlimited: true },
-              { Reward: 0.1, Weight: 120000, PrizeNum: 0, PrizeUnlimited: true }
-            ]
-          },
-          {
-            RaffleLevel: 500,
-            RewardMax: 88,
-            SockBaseNum: 25,
-            CoefficientMin: 0.8,
-            CoefficientMax: 1.2,
-            PrizeCfg: [
-              { Reward: 88, Weight: 30, PrizeNum: 0, PrizeUnlimited: true },
-              { Reward: 38, Weight: 90, PrizeNum: 0, PrizeUnlimited: true },
-              { Reward: 18.8, Weight: 180, PrizeNum: 0, PrizeUnlimited: true },
-              { Reward: 0.88, Weight: 59700, PrizeNum: 0, PrizeUnlimited: true },
-              { Reward: 0.38, Weight: 120000, PrizeNum: 0, PrizeUnlimited: true },
-              { Reward: 0.28, Weight: 120000, PrizeNum: 0, PrizeUnlimited: true }
-            ]
-          },
-          {
-            RaffleLevel: 1000,
-            RewardMax: 188,
-            SockBaseNum: 50,
-            CoefficientMin: 0.8,
-            CoefficientMax: 1.2,
-            PrizeCfg: [
-              { Reward: 188, Weight: 30, PrizeNum: 0, PrizeUnlimited: true },
-              { Reward: 28, Weight: 90, PrizeNum: 0, PrizeUnlimited: true },
-              { Reward: 18.8, Weight: 180, PrizeNum: 0, PrizeUnlimited: true },
-              { Reward: 1.88, Weight: 59700, PrizeNum: 0, PrizeUnlimited: true },
-              { Reward: 1.28, Weight: 120000, PrizeNum: 0, PrizeUnlimited: true },
-              { Reward: 0.88, Weight: 120000, PrizeNum: 0, PrizeUnlimited: true }
-            ]
-          },
-          {
-            RaffleLevel: 2000,
-            RewardMax: 388,
-            SockBaseNum: 100,
-            CoefficientMin: 0.8,
-            CoefficientMax: 1.2,
-            PrizeCfg: [
-              { Reward: 388, Weight: 30, PrizeNum: 0, PrizeUnlimited: true },
-              { Reward: 88, Weight: 90, PrizeNum: 0, PrizeUnlimited: true },
-              { Reward: 28, Weight: 180, PrizeNum: 0, PrizeUnlimited: true },
-              { Reward: 3.88, Weight: 59700, PrizeNum: 0, PrizeUnlimited: true },
-              { Reward: 1.88, Weight: 120000, PrizeNum: 0, PrizeUnlimited: true },
-              { Reward: 1.28, Weight: 120000, PrizeNum: 0, PrizeUnlimited: true }
-            ]
-          },
-          {
-            RaffleLevel: 5000,
-            RewardMax: 888,
-            SockBaseNum: 250,
-            CoefficientMin: 0.8,
-            CoefficientMax: 1.2,
-            PrizeCfg: [
-              { Reward: 888, Weight: 30, PrizeNum: 0, PrizeUnlimited: true },
-              { Reward: 188, Weight: 90, PrizeNum: 0, PrizeUnlimited: true },
-              { Reward: 88, Weight: 180, PrizeNum: 0, PrizeUnlimited: true },
-              { Reward: 8.88, Weight: 59700, PrizeNum: 0, PrizeUnlimited: true },
-              { Reward: 3.88, Weight: 120000, PrizeNum: 0, PrizeUnlimited: true },
-              { Reward: 2.88, Weight: 120000, PrizeNum: 0, PrizeUnlimited: true }
-            ]
-          }
-        ],
+        DayPrizeThreshold: 0, // 当日发奖额阈值
+        PrizePoolCfg: [],
         RankCfg: [
           { RankStart: 1, RankEnd: 1, Reward: 28888 },
           { RankStart: 2, RankEnd: 2, Reward: 18888 },
@@ -561,7 +288,7 @@ export default {
           { RankStart: 11, RankEnd: 20, Reward: 888 },
           { RankStart: 21, RankEnd: 40, Reward: 288 },
           { RankStart: 41, RankEnd: 70, Reward: 188 },
-          { RankStart: 71, RankEnd: 100, Reward: 88 },
+          { RankStart: 71, RankEnd: 100, Reward: 88 }
         ],
         GameIdCfg: [],
         WhitelistCfg: {
@@ -570,46 +297,18 @@ export default {
         }
       },
 
-      GamesSorted: [
-        {
-          GameId: 1, Name: '测试游戏1', OrderNo: 1
-        }
-      ],
+      // 游戏树相关数据
+      allTreeData: [], // 存储所有游戏树数据
+      treeData: [], // 当前显示的游戏树数据（根据游戏类型过滤）
+      gamesSorted: [], // 已选游戏的排序列表
+      gamesSortDialogVisible: false, // 游戏排序弹窗是否显示
+      filterText: '', // 游戏搜索过滤文本
 
-      RaffleLevelList: [
-        { label: 200, value: 200 },
-        { label: 500, value: 500 },
-        { label: 1000, value: 1000 },
-        { label: 2000, value: 2000 },
-        { label: 5000, value: 5000 },
-        { label: 10000, value: 10000 },
-        { label: 20000, value: 20000 },
-        { label: 50000, value: 50000 },
-      ],
-
-      edit: {
-        raffleLevel: 0,
-        visible: false,
-        item: newPrizePoolCfg(),
-        isEdit: false,
-        gamesSortDialogVisible: false,
+      defaultProps: {
+        label: 'label',
+        children: 'children',
+        disabled: 'disabled'
       },
-
-      treeData: [{
-        id: 1,
-        label: '一级 1',
-        children: [{
-          id: 4,
-          label: '二级 1-1',
-          children: [{
-            id: 9,
-            label: '三级 1-1-1'
-          }, {
-            id: 10,
-            label: '三级 1-1-2'
-          }]
-        }]
-      }],
 
       appIdOptions: [
         {
@@ -625,37 +324,31 @@ export default {
           label: '正式1000005'
         },
       ],
-      // 奖励类型
+      // 奖励类型选项
       rewardTypes: [
         { 'value': 1, 'label': '金币' },
         { 'value': 2, 'label': '投注金' },
         { 'value': 3, 'label': '返水金' }
       ],
 
-      // 投注金
+      // 投注金使用场景选项
       betScenes: [
         { 'value': 1, 'label': '任意游戏投注' },
         { 'value': 2, 'label': '仅限Poker类游戏投注' },
         { 'value': 3, 'label': '仅限Slots类游戏投注' },
         { 'value': 4, 'label': '仅限Tongits游戏投注' }
       ],
-      // 返水金
+      // 返水金使用场景选项
       rebateScenes: [
         { 'value': 5, 'label': '没有任何限制的返水金' },
         { 'value': 6, 'label': '有限制倍数的返水金（10倍）' }
       ],
 
-      filterGameIds: [ 2031, 10002 ],
+      // 需要过滤的游戏ID列表
+      filterGameIds: [2031, 10002],
 
-      filterText: '',
-
-      defaultProps: {
-        label: 'label',
-        children: 'children',
-        disabled: 'disabled',
-      },
-
-      todayRaffleAmount: 0,
+      // 当日发奖总额
+      todayRaffleAmount: 0
     }
   },
   created() {
@@ -664,158 +357,247 @@ export default {
     console.log(1)
   },
   methods: {
+    /**
+     * 获取完整的配置Key
+     */
     getFullKey() {
       return 'CustomizeCfg_' + this.subKey
     },
+
+    /**
+     * 数据验证规则
+     */
     dataRule(required, config) {
       return DataRule(required, config)
     },
-    getEditTitle() {
-      this.isDisabled = this.edit.isEdit
-      return this.edit.isEdit ? '修改配置' : '新增配置'
-    },
+
+    /**
+     * 游戏树节点过滤方法
+     */
     filterNode(value, data) {
-      if (!value) return true;
-      return data.label.indexOf(value) !== -1;
+      if (!value) return true
+      return data.label.indexOf(value) !== -1
     },
-    handleCreate() {
-      this.edit.item = newPrizePoolCfg()
-      this.edit.isEdit = false
-      this.edit.visible = true
-    },
-    showGamesSortDialog() {
-      this.edit.gamesSortDialogVisible = true
-    },
-    saveGamesSort() {
-      this.edit.gamesSortDialogVisible = false
-      // 根据排序编号重新排序
-      this.GamesSorted.sort((a, b) => {
-        return a.OrderNo - b.OrderNo
-      })
-      // 保存排序
-      this.item.GameIdCfg = []
-      this.GamesSorted.forEach(item => {
-        this.item.GameIdCfg.push(item.GameId)
-      })
-    },
-    onOrderNoChange() {
-      this.GamesSorted.sort((a, b) => {
-        return a.OrderNo - b.OrderNo
-      })
-    },
-    // 操作类函数
-    clickData(row, column, event) {
-      if (row.status === 2) {
-        return null
-      }
-      if (column.columnKey !== 'op') {
-        this.initFormData(true, row.RaffleLevel)
-        this.edit.visible = true
-      }
-    },
-    initFormData(bEdit, raffleLevel) {
-      this.edit.isEdit = bEdit
-      if (raffleLevel) {
-        const _data = this.getDataByTableMoney(raffleLevel)
-        if (_data) {
-          this.edit.raffleLevel = raffleLevel
-          Object.assign(this.edit.item, _data)
-        }
-      }
-    },
-    handleEdit(ob) {
-      this.initFormData(true, ob.RaffleLevel)
-      this.edit.visible = true
-    },
-    handleDelete(ob) {
-      let $this = this
-      this.$confirm('是否确认删除此奖池配置?', '提示', {type:'warning'}).then(() => {
-        const delIndex = $this.item.PrizePoolCfg.findIndex(item => item.RaffleLevel === ob.RaffleLevel)
-        this.item.PrizePoolCfg.splice(delIndex, 1)
-      }).catch(() => {
-        console.log('取消')
-      })
-    },
-    handlePrizeCreate() {
-      this.edit.item.PrizeCfg.push({ Reward: 0, Weight: 0, PrizeNum: 0, PrizeUnlimited: true })
-    },
-    handlePrizeDelete(ob) {
-      let $this = this
-      this.$confirm('是否确认删除此奖励配置?', '提示', {type:'warning'}).then(() => {
-        const delIndex = $this.edit.item.PrizeCfg.findIndex(item => item.Reward === ob.Reward)
-        this.edit.item.PrizeCfg.splice(delIndex, 1)
-      }).catch(() => {
-        console.log('取消')
-      })
-    },
-    getDataByTableMoney(raffleLevel) {
-      for (let i = 0; i < this.item.PrizePoolCfg.length; i++) {
-        const data = this.item.PrizePoolCfg[i]
-        if (data.RaffleLevel === raffleLevel) {
-          return data
-        }
-      }
-      return null
-    },
-    save() {
-      if (this.edit.isEdit && this.edit.raffleLevel !== this.edit.item.RaffleLevel) {
-        console.log('raffleLevel changed, old:' + this.edit.raffleLevel + ' new:' + this.edit.item.RaffleLevel)
-        for (const o in this.item.PrizePoolCfg) {
-          if (this.item.PrizePoolCfg[o].RaffleLevel === this.edit.raffleLevel) {
-            this.item.PrizePoolCfg[o].RaffleLevel = this.edit.item.RaffleLevel
-            break
-          }
-        }
+
+    /**
+     * 游戏树选中状态变化处理
+     */
+    handleCheckChange(data, checked) {
+      // 不允许选中游戏类别节点（Slot、Poker、Casino）
+      if (data.label === 'Slot' || data.label === 'Poker' || data.label === 'Casino') {
+        return
       }
 
-      // 检查是否有重复的奖励
-      for (let i = 0; i < this.edit.item.PrizeCfg.length; i++) {
-        const prize = this.edit.item.PrizeCfg[i]
-        if (parseInt(prize.Reward*100) === 0) {
-          this.$alert(`[奖励金额：0] 不允许添加`, '提示', {type:'warning'})
-          return
-        }
-        for (let j = i + 1; j < this.edit.item.PrizeCfg.length; j++) {
-          const _prize = this.edit.item.PrizeCfg[j]
-          console.log('_prize.Reward', _prize.Reward, ' prize.Reward', prize.Reward, _prize.Reward === prize.Reward)
-          if (parseInt(_prize.Reward*100) === parseInt(prize.Reward*100)) {
-            this.$alert(`[奖励金额：${prize.Reward}] 已存在，不能重复添加`, '提示', {type:'warning'})
-            return
-          }
-        }
+      // 确保 GameIdCfg 存在
+      if (!this.item.GameIdCfg) {
+        this.item.GameIdCfg = []
       }
 
-      // 查找最大的奖励金额
-      let maxReward = 0
-      this.edit.item.PrizeCfg.forEach(v => {
-        const reward = v.Reward
-        if (reward > maxReward) {
-          maxReward = reward
+      const index = this.item.GameIdCfg.indexOf(data.id)
+      if (checked) {
+        // 选中：添加到列表
+        if (index < 0) {
+          this.item.GameIdCfg.push(data.id)
         }
-      })
-      this.edit.item.RewardMax = maxReward
-      console.log('maxReward:', maxReward)
-
-      const newData = JSON.parse(JSON.stringify(this.edit.item))
-      const index = this.item.PrizePoolCfg.findIndex(item => item.RaffleLevel === this.edit.item.RaffleLevel)
-      if (this.edit.isEdit) {
-        this.item.PrizePoolCfg.splice(index, 1, newData)
       } else {
-        // 如果是新增，检查是否有重复的档次
+        // 取消选中：从列表移除
         if (index >= 0) {
-          this.$alert(`[档次条件：${this.edit.item.RaffleLevel}] 已存在，不能重复添加`, '提示', {type:'warning'})
-          return
+          this.item.GameIdCfg.splice(index, 1)
         }
-        // 新增到
-        this.item.PrizePoolCfg.push(newData)
-        // 按档次金额排序
-        this.item.PrizePoolCfg.sort((a, b) => {
-          return a.RaffleLevel - b.RaffleLevel
-        })
       }
 
-      this.edit.visible = false
+      // 更新游戏排序列表
+      this.updateGamesSorted()
     },
+
+    /**
+     * 更新已选游戏的排序列表
+     */
+    updateGamesSorted() {
+      const gamesSorted = []
+      const gameIdCfg = this.item.GameIdCfg || []
+      
+      // 遍历所有游戏树，找到选中的游戏
+      this.treeData.forEach(category => {
+        if (category.children) {
+          category.children.forEach(game => {
+            if (gameIdCfg.includes(game.id)) {
+              const existIndex = gamesSorted.findIndex(g => g.gameId === game.id)
+              if (existIndex < 0) {
+                gamesSorted.push({
+                  gameId: game.id,
+                  name: game.label,
+                  orderNo: gameIdCfg.indexOf(game.id) + 1
+                })
+              }
+            }
+          })
+        }
+      })
+      
+      // 按 orderNo 排序
+      gamesSorted.sort((a, b) => a.orderNo - b.orderNo)
+      this.gamesSorted = gamesSorted
+    },
+
+    /**
+     * 显示游戏排序弹窗
+     */
+    showGamesSortDialog() {
+      this.updateGamesSorted()
+      this.gamesSortDialogVisible = true
+    },
+
+    /**
+     * 保存游戏排序
+     */
+    saveGamesSort() {
+      this.gamesSortDialogVisible = false
+      // 根据排序编号重新排序
+      this.gamesSorted.sort((a, b) => a.orderNo - b.orderNo)
+      
+      // 保存排序后的游戏ID列表
+      const gameIdCfg = []
+      this.gamesSorted.forEach(item => {
+        gameIdCfg.push(item.gameId)
+      })
+      this.item.GameIdCfg = gameIdCfg
+    },
+
+    /**
+     * 排序号变化时自动排序
+     */
+    onOrderNoChange() {
+      this.gamesSorted.sort((a, b) => a.orderNo - b.orderNo)
+    },
+
+    /**
+     * 获取所有游戏列表并构建树结构
+     */
+    getGameAll() {
+      request({
+        url: '/thirdpartygames/all',
+        method: 'get',
+        data: {},
+        params: { status: 2 }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objs = response.Data || []
+          const data = {}
+          
+          // 按游戏类别分组
+          for (let i = 0; i < objs.length; i++) {
+            const obj = objs[i]
+            // 过滤不需要展示的游戏
+            if (obj.ShowDatacenter !== 1 || this.filterGameIds.indexOf(obj.Gid) >= 0) {
+              continue
+            }
+
+            const game = { Gid: obj.Gid, Name: obj.Name, Description: obj.Description }
+            if (Object.prototype.hasOwnProperty.call(data, obj.CategoryID)) {
+              data[obj.CategoryID].push(game)
+            } else {
+              data[obj.CategoryID] = [game]
+            }
+          }
+
+          // 构建游戏树结构
+          const categories = { 1: 'Slot', 2: 'Poker', 3: 'Casino' }
+          const builtTree = []
+          
+          for (const key in data) {
+            const games = data[key]
+            const cty = { id: 'p-' + key, label: categories[key], children: [] }
+
+            for (let i = 0; i < games.length; i++) {
+              const game = games[i]
+              cty.children.push({ id: game.Gid, label: game.Name })
+            }
+            builtTree.push(cty)
+          }
+
+          this.allTreeData = builtTree
+          // 默认只显示 Poker 游戏（CategoryID = 2）
+          this.applyGameTypeFilter(2)
+
+          // 设置已选中的游戏
+          this.$nextTick(() => {
+            if (this.$refs.tree && this.item.GameIdCfg) {
+              this.$refs.tree.setCheckedKeys(this.item.GameIdCfg)
+              this.updateGamesSorted()
+            }
+          })
+        }
+      })
+    },
+
+    /**
+     * 根据游戏类型过滤显示的游戏树
+     * @param {number} gameType - 游戏类型 (1: Slot, 2: Poker, 3: Casino)
+     */
+    applyGameTypeFilter(gameType) {
+      const selectedKey = 'p-' + gameType
+      this.treeData = this.allTreeData.filter(cty => cty.id === selectedKey)
+
+      // 获取当前类型下所有允许的游戏ID
+      const allowedIds = new Set()
+      this.treeData.forEach(cty => {
+        (cty.children || []).forEach(game => allowedIds.add(game.id))
+      })
+
+      // 过滤掉不在当前类型的游戏ID
+      const filteredIds = (this.item.GameIdCfg || []).filter(id => allowedIds.has(id))
+      if (filteredIds.length !== (this.item.GameIdCfg || []).length) {
+        this.item.GameIdCfg = filteredIds
+      }
+
+      this.$nextTick(() => {
+        if (this.$refs.tree) {
+          this.$refs.tree.setCheckedKeys(this.item.GameIdCfg || [])
+        }
+        this.updateGamesSorted()
+      })
+    },
+
+    /**
+     * 添加规则图片
+     */
+    addRuleImage(type) {
+      if (type === 'Hor') {
+        this.item.RuleImgHor.push('')
+      } else {
+        this.item.RuleImgVer.push('')
+      }
+    },
+
+    /**
+     * 移除规则图片
+     */
+    removeRuleImage(index, type) {
+      if (type === 'Hor') {
+        this.item.RuleImgHor.splice(index, 1)
+      } else {
+        this.item.RuleImgVer.splice(index, 1)
+      }
+    },
+
+    /**
+     * AppId选项变化处理
+     */
+    onAppIdOptionsChange() {
+      console.log('onAppIdOptionsChange', this.item.WhitelistCfg.AppIdList)
+    },
+
+    /**
+     * SiteId选项变化处理
+     */
+    onSiteIdOptionsChange() {
+      console.log('onSiteIdOptionsChange', this.item.WhitelistCfg.SiteIdList)
+    },
+
+    /**
+     * 获取配置数据
+     */
     getData() {
       const $this = this
       getCustomize(this.subKey).then(response => {
@@ -949,115 +731,10 @@ export default {
         })
       })
     },
-    getGameAll() {
-      request({
-        url: '/thirdpartygames/all',
-        method: 'get',
-        data: {},
-        params: {status : 2}
-      }).then(response => {
-        if (response.RetCode === 0) {
-          const objs = response.Data || []
-          const data = {}
-          for (let i = 0; i < objs.length; i++) {
-            const obj = objs[i]
-            if (obj.ShowDatacenter !== 1 || this.filterGameIds.indexOf(obj.Gid) >= 0) {
-              continue
-            }
 
-            const game = {Gid: obj.Gid, Name: obj.Name, Description: obj.Description}
-            if (data.hasOwnProperty(obj.CategoryID)) {
-              data[obj.CategoryID].push(game)
-            } else {
-              data[obj.CategoryID] = [game]
-            }
-          }
-
-          this.treeData = []
-          const categories = {1: 'Slot', 2: 'Poker', 3: 'Casino'}
-
-          for (const key in data) {
-            const games = data[key]
-            const cty = {id: 'p-' + key, label: categories[key], children: []}
-
-            for (let i = 0; i < games.length; i++) {
-              const game = games[i]
-              cty.children.push({id: game.Gid, label: game.Name})
-            }
-            this.treeData.push(cty)
-          }
-
-          // 更新选中游戏的排序
-          this.updateGamesSorted()
-
-          console.log(this.item.GameIdCfg)
-          this.$refs.tree.setCheckedKeys(this.item.GameIdCfg)
-          console.log(data)
-        }
-      })
-    },
-    updateGamesSorted() {
-      this.GamesSorted = []
-      for (let i = 0; i < this.item.GameIdCfg.length; i++) {
-        const gameId = this.item.GameIdCfg[i]
-        let name = ''
-        for (let j = 0; j < this.treeData.length; j++) {
-          const cty = this.treeData[j]
-          for (let k = 0; k < cty.children.length; k++) {
-            const game = cty.children[k]
-            if (game.id === gameId) {
-              name = game.label
-              break
-            }
-          }
-        }
-        this.GamesSorted.push({GameId: gameId, Name: name, OrderNo: i+1})
-      }
-    },
-    handleCheckChange(data, checked, indeterminate) {
-      console.log('handleCheckChange', data, checked, indeterminate)
-      if (data.label === 'Slot' || data.label === 'Poker' || data.label === 'Casino') {
-        return
-      }
-
-      const index = this.item.GameIdCfg.indexOf(data.id)
-      if (checked) {
-        if (index < 0) {
-          this.item.GameIdCfg.push(data.id)
-        }
-      } else {
-        if (index >= 0) {
-          this.item.GameIdCfg.splice(index, 1)
-        }
-      }
-
-      // 更新选中游戏的排序
-      this.updateGamesSorted()
-
-      console.log(this.item.GameIdCfg)
-    },
-    addRuleImage(type) {
-      console.log('addRuleImage type:', type)
-      if (type === 'Hor') {
-        this.item.RuleImgHor.push('')
-      } else {
-        this.item.RuleImgVer.push('')
-      }
-    },
-    removeRuleImage(index, type) {
-      console.log('removeRuleImage index:', index, 'type:', type)
-      if (type === 'Hor') {
-        this.item.RuleImgHor.splice(index, 1)
-      } else {
-        this.item.RuleImgVer.splice(index, 1)
-      }
-    },
-    onAppIdOptionsChange() {
-      console.log('onAppIdOptionsChange', this.item.WhitelistCfg.AppIdList)
-    },
-    onSiteIdOptionsChange() {
-      console.log('onSiteIdOptionsChange', this.item.WhitelistCfg.SiteIdList)
-    },
+    /**
+     * 获取今日发奖总额
+     */
     getTodayRaffleAmount() {
       const $this = this
       request({
