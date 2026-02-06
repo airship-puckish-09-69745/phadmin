@@ -244,7 +244,7 @@ import { $libDate, $LibJsonDiff, $libType, ClientTableData } from '@/utils/commo
 import store from '@/store'
 import request from '@/utils/request'
 import { IsMars } from '@/utils/env'
-import {getCustomize} from "@/api/custome_configV2";
+import { getCustomize, updateCustomize } from "@/api/custome_configV2";
 
 const jsonDiff = require('diff')
 
@@ -549,11 +549,7 @@ export default {
         }
       }
       this.larkConfig.Data = JSON.stringify(this.larkPages)
-      request({
-        url: '/customizeconfig/update',
-        method: 'post',
-        data: this.larkConfig
-      }).then(response => {
+      updateCustomize(this.larkConfig).then(response => {
         if (response.RetCode === 0) {
           add ? this.$message.success(`添加通知成功!`) : this.$message.success(`取消通知成功!`)
         } else {
