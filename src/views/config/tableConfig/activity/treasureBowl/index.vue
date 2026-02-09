@@ -5,7 +5,7 @@
     </el-row>
     <el-row style="padding-top: 5px">
       <el-col :span="20">
-        <el-button size="mini" type="primary" icon="el-icon-plus" @click="openRedBagDialog(false)">新增聚宝盆配置</el-button>
+        <el-button size="mini" type="primary" icon="el-icon-plus" @click="openTreasureBowlDialog(false)">新增聚宝盆配置</el-button>
       </el-col>
       <el-col :span="2">
         <el-button type="success" size="mini" icon="el-icon-refresh" @click="getList()">刷新</el-button>
@@ -72,7 +72,7 @@
         </el-table-column>
         <el-table-column label="操作" column-key="op">
           <template slot-scope="scope">
-            <el-button size="mini" type="primary" icon="el-icon-edit" @click="openRedBagDialog(true,scope.row)">编辑</el-button>
+            <el-button size="mini" type="primary" icon="el-icon-edit" @click="openTreasureBowlDialog(true,scope.row)">编辑</el-button>
             <el-button v-if="scope.row.status!=2" size="mini" type="success" icon="el-icon-upload2" @click="handlePrepare(scope.row)">上架 </el-button>
             <el-button v-if="scope.row.status!=2" size="mini" type="danger" icon="el-icon-delete" @click="handleDelete(scope.row)" >删除</el-button>
             <el-button v-if="scope.row.status==2" size="mini" type="danger" icon="el-icon-download" @click="handleOffline(scope.row)">下架 </el-button>
@@ -101,12 +101,10 @@
     <!-- 打开事件：弹窗打开后的初始化 -->
     <!-- 关闭事件：弹窗关闭时的清理 -->
     <treasure-bowl
-      :visible.sync="redBagEdit.visible"
-      :is-edit="redBagEdit.isEdit"
-      :edit-data="redBagEdit.item"
+      :visible.sync="treasureBowlEdit.visible"
+      :is-edit="treasureBowlEdit.isEdit"
+      :edit-data="treasureBowlEdit.item"
       @refresh="getList"
-      @opened="handleRedBagDialogOpened"
-      @close="handleRedBagDialogClose"
     />
 
     <!--对比组件-->
@@ -130,6 +128,7 @@ export default {
   components: { Compare, Publish, TreasureBowl },
   data() {
     return {
+      // 字段名称映射表（用于对比和展示）
       AttrNames: {
         // 基础信息
         id: '活动配置ID',
@@ -227,35 +226,35 @@ export default {
         'activity.userFilterCondition.userTagConfig.tagId': '用户标签ID',
         'activity.userFilterCondition.userTagConfig.tagValue': '用户标签值'
       },
-      env: 'test',
-      appId: store.getters.appId || -1,
-      version: store.getters.version || 'V1',
-      statusNames: { 2: '上架', 6: '下架', 7: '预上架', 8: '预下架' },
-      tableData: [],
-      clientDB: new ClientTableData([], 10, filterMap),
-      libDate: $libDate,
-      libShow: $libShow,
-      libMoney: new MoneyShow([]),
-      // 选定游戏后对应可选任务类型
-      gameTaskTypes: [],
-      filterText: '',
-      defaultProps: {
+      env: 'test', // 当前环境
+      appId: store.getters.appId || -1, // 应用ID
+      version: store.getters.version || 'V1', // 版本号
+      statusNames: { 2: '上架', 6: '下架', 7: '预上架', 8: '预下架' }, // 状态名称映射
+      tableData: [], // 表格数据
+      clientDB: new ClientTableData([], 10, filterMap), // 客户端数据管理器
+      libDate: $libDate, // 日期工具库
+      libShow: $libShow, // 显示工具库
+      libMoney: new MoneyShow([]), // 金钱显示工具
+
+      // 游戏任务相关
+      gameTaskTypes: [], // 选定游戏后对应可选任务类型
+      filterText: '', // 过滤文本
+      defaultProps: { // 树组件默认属性
         label: 'label',
         children: 'children',
         disabled: 'disabled'
       },
-      // 道具数据列表
-      propList: [],
-      // 道具有效时长列表
-      propTimeList: [],
-      // 道具选项列表
-      propOptions: {},
 
-      // 红包雨配置弹窗相关
-      redBagEdit: {
-        visible: false,
-        isEdit: false,
-        item: {}
+      // 道具相关
+      propList: [], // 道具数据列表
+      propTimeList: [], // 道具有效时长列表
+      propOptions: {}, // 道具选项列表
+
+      // 聚宝盆配置弹窗相关
+      treasureBowlEdit: {
+        visible: false, // 弹窗显示状态
+        isEdit: false, // 是否为编辑模式
+        item: {} // 编辑的数据项
       }
     }
   },
@@ -267,6 +266,14 @@ export default {
     this.getList()
   },
   methods: {
+    /**
+     * 生成发布内容描述
+     * @param {string} key - 键名
+     * @param {Array} addData - 新增数据
+     * @param {Array} delData - 删除数据
+     * @param {Array} editData - 编辑数据
+     * @returns {string} 内容描述
+     */
     makeContent(key, addData, delData, editData) {
       let str = ''
       if (addData.length > 0) {
@@ -303,43 +310,85 @@ export default {
       }
       return str
     },
+    /**
+     * 配置检查
+     * @returns {boolean} 检查结果
+     */
     configCheck() {
       return true
     },
+    /**
+     * 格式化数字（添加千位分隔符）
+     * @param {number} n - 数字
+     * @returns {string} 格式化后的字符串
+     */
     formatNumber(n) {
       return n.toLocaleString()
     },
+    /**
+     * 格式化时间戳
+     * @param {number} ts - 时间戳
+     * @returns {string} 格式化后的时间字符串
+     */
     formatTime(ts) {
       return $libDate.FormateSecondStr(ts, 2)
     },
+    /**
+     * 清除筛选条件
+     */
     clearFilter() {
       this.clientDB.ClearFilterMap()
       this.refreshShow()
     },
+    /**
+     * 执行筛选
+     */
     handleFilter() {
       this.clientDB.FilterData()
       this.refreshShow()
     },
-    // 分页处理
+    /**
+     * 刷新表格显示
+     */
     refreshShow() {
       this.tableData = this.clientDB.GetCurrentPageData()
     },
+    /**
+     * 处理每页显示数量变化
+     * @param {number} val - 每页显示数量
+     */
     handleSizeChange(val) {
       this.clientDB.GetPage().SetPageNum(val)
       this.refreshShow()
     },
+    /**
+     * 处理当前页码变化
+     * @param {number} val - 当前页码
+     */
     handleCurrentChange(val) {
       this.clientDB.GetPage().SetPageNo(val)
       this.refreshShow()
     },
+    /**
+     * 处理排序变化
+     * @param {Object} ob - 排序对象
+     */
     sortChange(ob) {
       this.clientDB.SortByProp(ob.prop, ob.order)
       this.refreshShow()
     },
+    /**
+     * 数据验证规则
+     * @param {boolean} required - 是否必填
+     * @param {Object} config - 配置对象
+     * @returns {Array} 验证规则
+     */
     dataRule(required, config) {
       return DataRule(required, config)
     },
-    // 配置列表
+    /**
+     * 获取配置列表
+     */
     getList() {
       request({
         url: '/redbagactivity/all',
@@ -355,15 +404,33 @@ export default {
         console.log(err)
       })
     },
+    /**
+     * 准备上架
+     * @param {Object} ob - 数据对象
+     */
     handlePrepare(ob) {
       this.changeStatus(ob.id, 2, '您确定要将记录状态修改为"上架"吗？该记录将在发布后同步到外网。')
     },
+    /**
+     * 下架
+     * @param {Object} ob - 数据对象
+     */
     handleOffline(ob) {
       this.changeStatus(ob.id, 6, '您确定要将记录下架吗？下架的记录将在发布后从线上消失。')
     },
+    /**
+     * 删除
+     * @param {Object} ob - 数据对象
+     */
     handleDelete(ob) {
       this.changeStatus(ob.id, 3, '您确定要将记录状态修改为废弃吗？')
     },
+    /**
+     * 修改配置状态
+     * @param {number} id - 配置ID
+     * @param {number} status - 状态值
+     * @param {string} msg - 确认消息
+     */
     changeStatus(id, status, msg) {
       // const $this = this
       this.$confirm(msg, '提示', {
@@ -388,19 +455,28 @@ export default {
         console.log('取消')
       })
     },
-    // ************************ 红包雨配置弹窗相关 ************************
-    openRedBagDialog(isEdit = false, rowData = {}) {
-      this.redBagEdit.visible = true
-      this.redBagEdit.isEdit = isEdit
-
-      this.redBagEdit.item = isEdit ? JSON.parse(JSON.stringify(rowData)) : {}
+    /**
+     * 打开聚宝盆配置弹窗
+     * @param {boolean} isEdit - 是否为编辑模式
+     * @param {Object} rowData - 行数据
+     */
+    openTreasureBowlDialog(isEdit = false, rowData = {}) {
+      this.treasureBowlEdit.visible = true
+      this.treasureBowlEdit.isEdit = isEdit
+      this.treasureBowlEdit.item = isEdit ? JSON.parse(JSON.stringify(rowData)) : {}
     },
-    handleRedBagDialogOpened() {
-      console.log('红包雨配置弹窗已打开')
+    /**
+     * 聚宝盆配置弹窗打开后的处理
+     */
+    handleTreasureBowlDialogOpened() {
+      console.log('聚宝盆配置弹窗已打开')
     },
-    handleRedBagDialogClose() {
-      console.log('红包雨配置弹窗已关闭')
-      this.redBagEdit.item = {}
+    /**
+     * 聚宝盆配置弹窗关闭时的处理
+     */
+    handleTreasureBowlDialogClose() {
+      console.log('聚宝盆配置弹窗已关闭')
+      this.treasureBowlEdit.item = {}
     }
   }
 }

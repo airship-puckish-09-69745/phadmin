@@ -9,6 +9,7 @@
     "dev.sh": "vue-cli-service serve --mode sh_dev --port 9527",
     "localhost": "vue-cli-service serve --mode localhost",
     "lint": "eslint --fix --ext .js,.vue src",
+    "build": "vue-cli-service build --mode localhost",
     "build:prod": "vue-cli-service build",
     "build:stage": "vue-cli-service build --mode staging",
     "build:v2_stage": "vue-cli-service build --mode v2_staging",

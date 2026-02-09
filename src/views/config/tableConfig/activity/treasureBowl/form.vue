@@ -4,52 +4,55 @@
     :visible.sync="dialogVisible"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
-    width="80%"
+    width=" 1200px"
     top="5vh"
     @opened="handleDialogOpened"
     @close="handleDialogClose"
   >
-    <el-row>
-      <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" />
-    </el-row>
 
     <el-row>
       <br>
-      <el-tabs type="border-card">
+      <el-tabs type="border-card" >
         <el-tab-pane label="活动配置">
           <el-row :gutter="5">
             <el-col :span="16">
               <el-form ref="item" label-width="220px">
+                <el-col :span="24">
+                  <!-- 活动名称，占据整行 -->
+                  <el-form-item label="活动名称：" :required="true">
+                    <el-input v-model="item.activityName" placeholder="请输入活动名称" size="mini" />
+                  </el-form-item>
+                </el-col>
                 <el-col :span="12">
                   <el-form-item label="活动开关：" :rules="dataRule(true,{type:'n',range:'0'})">
-                    <el-switch v-model="item.IsOpen" :active-value="true" :inactive-value="false" />
+                    <el-switch v-model="item.isOpen" :active-value="true" :inactive-value="false" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
                   <el-form-item label="展示结束时间：">
-                    <el-date-picker v-model="item.ShowEndTime" type="datetime" placeholder="选择展示结束时间" value-format="timestamp" size="mini" />
+                    <el-date-picker v-model="item.showEndTime" type="datetime" placeholder="选择展示结束时间" value-format="timestamp" size="mini" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
                   <el-form-item label="活动开始时间：">
-                    <el-date-picker v-model="item.StartTime" type="datetime" placeholder="选择开始时间" value-format="timestamp" size="mini" />
+                    <el-date-picker v-model="item.startTime" type="datetime" placeholder="选择开始时间" value-format="timestamp" size="mini" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
                   <el-form-item label="活动结束时间：">
-                    <el-date-picker v-model="item.EndTime" type="datetime" placeholder="选择结束时间" value-format="timestamp" size="mini" />
+                    <el-date-picker v-model="item.endTime" type="datetime" placeholder="选择结束时间" value-format="timestamp" size="mini" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
                   <el-form-item label="下注/赢钱获得道具比例：">
-                    <el-input v-model.number="item.SockGainRatio" size="mini">
+                    <el-input v-model.number="item.sockGainRatio" size="mini">
                       <template slot="append">%</template>
                     </el-input>
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
                   <el-form-item label="发放奖励类型：">
-                    <el-select v-model="item.RewardType" placeholder="请选择" size="mini" style="width:90px">
+                    <el-select v-model="item.rewardType" placeholder="请选择" size="mini" style="width:90px">
                       <el-option
                         v-for="option in rewardTypes"
                         :key="option.value"
@@ -57,65 +60,20 @@
                         :value="option.value"
                       />
                     </el-select>
-                    <el-select v-if="item.RewardType === 2" v-model="item.RewardUseSceneId" placeholder="请选择投注金" size="mini" style="width:150px">
-                      <el-option
-                        v-for="scene in betScenes"
-                        :key="scene.value"
-                        :label="scene.label"
-                        :value="scene.value"
-                      />
-                    </el-select>
-                    <el-select v-if="item.RewardType === 3" v-model="item.RewardUseSceneId" placeholder="请选择返水金" size="mini" style="width:150px">
-                      <el-option
-                        v-for="scene in rebateScenes"
-                        :key="scene.value"
-                        :label="scene.label"
-                        :value="scene.value"
-                      />
-                    </el-select>
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
-                  <el-form-item label="当日发奖额阈值：" :required="true">
-                    <el-input v-model.number="item.DayPrizeThreshold" size="mini">
-                      <template slot="append">（₱）</template>
-                    </el-input>
-                    <span v-if="todayRaffleAmount > item.DayPrizeThreshold" style="color: red">今日发奖已超阈值（{{ todayRaffleAmount }}），已开启限制</span>
-                    <span v-else style="color: red">今日发奖总额（{{ todayRaffleAmount }}）</span>
+                  <el-form-item label="每日发奖上限监控：" :required="true">
+                    <el-input v-model.number="item.dayPrizeThreshold" size="mini" /><span v-if="todayRaffleAmount > item.dayPrizeThreshold" style="color: red">今日发奖已超阈值（{{ todayRaffleAmount }}），已开启限制</span>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="最大发奖总上限监控：" :required="true">
+                    <el-input v-model.number="item.dayPrizeThreshold" size="mini" /><span v-if="todayRaffleAmount > item.dayPrizeThreshold" style="color: red">今日发奖已超阈值（{{ todayRaffleAmount }}），已开启限制</span>
                   </el-form-item>
                 </el-col>
               </el-form>
             </el-col>
-          </el-row>
-          <el-row :gutter="5">
-            <el-form label-width="220px">
-              <el-col :span="24">
-                <el-form-item label="规则图片横板：" :required="true">
-                  <el-col v-for="(_, k) in item.RuleImgHor" :key="'hor-' + k" :span="2">
-                    <span style="display: inline-block; position: relative;">
-                      <span style="position: absolute; top: -20px; right: 1px; cursor: pointer; z-index: 99" @click="removeRuleImage(k, 'Hor')">移除</span>
-                      <ImagePicker v-model="item.RuleImgHor[k]" />
-                    </span>
-                  </el-col>
-                  <span style="position: relative;">
-                    <el-button @click="addRuleImage('Hor')">添加</el-button>
-                  </span>
-                </el-form-item>
-              </el-col>
-              <el-col :span="24">
-                <el-form-item label="规则图片竖版：" :required="true">
-                  <el-col v-for="(_, k) in item.RuleImgVer" :key="'ver-' + k" :span="2">
-                    <span style="display: inline-block; position: relative;">
-                      <span style="position: absolute; top: -20px; right: 1px; cursor: pointer; z-index: 99" @click="removeRuleImage(k, 'Vor')">移除</span>
-                      <ImagePicker v-model="item.RuleImgVer[k]" />
-                    </span>
-                  </el-col>
-                  <span style="position: relative;">
-                    <el-button @click="addRuleImage('Vor')">添加</el-button>
-                  </span>
-                </el-form-item>
-              </el-col>
-            </el-form>
           </el-row>
           <el-row :gutter="5">
             <el-form label-width="220px">
@@ -157,25 +115,11 @@
         </el-tab-pane>
 
         <el-tab-pane label="白名单配置">
-          <el-form ref="item" label-width="220px">
+          <el-form v-if="item.whitelistCfg" ref="item" label-width="220px">
             <el-row>
               <el-col :span="11">
-                <el-form-item label="AppId白名单：" prop="item.WhitelistCfg.AppIdList">
-                  <el-select v-model="item.WhitelistCfg.AppIdList" multiple placeholder="请选择" style="width: 400px" @change="onAppIdOptionsChange">
-                    <el-option
-                      v-for="option in appIdOptions"
-                      :key="option.value"
-                      :label="option.label"
-                      :value="option.value"
-                    />
-                  </el-select>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="11">
-                <el-form-item label="SiteId白名单：" prop="item.WhitelistCfg.SiteIdList">
-                  <SiteSelect v-model="item.WhitelistCfg.SiteIdList" multiple placeholder="请选择" style="width: 400px" @change="onSiteIdOptionsChange" />
+                <el-form-item label="SiteId白名单：" prop="item.whitelistCfg.siteIdList">
+                  <SiteSelect v-model="item.whitelistCfg.siteIdList" multiple placeholder="请选择" style="width: 400px" @change="onSiteIdOptionsChange" />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -237,10 +181,7 @@
 </template>
 
 <script>
-
-import Publish from '@/components/Publish/index.vue'
 import { $libShow, DataRule } from '@/utils/common'
-import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
 import { Message } from 'element-ui'
 import request from '@/utils/request'
 import Compare from '@/components/Compare/index.vue'
@@ -251,7 +192,7 @@ import PrizePoolConfig from './components/PrizePoolConfig.vue'
 import RankingConfig from './components/RankingConfig.vue'
 
 export default {
-  components: { Compare, ImagePicker, Publish, SiteSelect, PrizePoolConfig, RankingConfig },
+  components: { Compare, SiteSelect, PrizePoolConfig, RankingConfig },
   props: {
     // 控制弹窗显示/隐藏
     visible: {
@@ -272,38 +213,40 @@ export default {
   data() {
     return {
       dialogVisible: false, // 弹窗显示状态
-      subKey: 'christmas_fortune_tree_cfg',
-      libShow: $libShow,
-      form: {
+      subKey: 'christmas_fortune_tree_cfg', // 配置的子键名
+      libShow: $libShow, // 通用样式库
+      form: { // 表单数据包装对象
         Data: {}
       },
+      // 活动配置数据对象（统一使用小驼峰命名）
       item: {
-        IsOpen: true,
-        StartTime: 1734278400000,
-        EndTime: 1735487999000,
-        ShowEndTime: 1735574399000,
-        SockGainRatio: 10,
-        RuleImgHor: [],
-        RuleImgVer: [],
-        RewardType: 1,
-        RewardUseSceneId: 0,
-        DayPrizeThreshold: 0, // 当日发奖额阈值
-        PrizePoolCfg: [],
-        RankCfg: [
-          { RankStart: 1, RankEnd: 1, Reward: 28888 },
-          { RankStart: 2, RankEnd: 2, Reward: 18888 },
-          { RankStart: 3, RankEnd: 3, Reward: 8888 },
-          { RankStart: 4, RankEnd: 5, Reward: 2888 },
-          { RankStart: 6, RankEnd: 10, Reward: 1888 },
-          { RankStart: 11, RankEnd: 20, Reward: 888 },
-          { RankStart: 21, RankEnd: 40, Reward: 288 },
-          { RankStart: 41, RankEnd: 70, Reward: 188 },
-          { RankStart: 71, RankEnd: 100, Reward: 88 }
+        activityName: '', // 活动名称
+        isOpen: true, // 是否开启
+        startTime: 1734278400000, // 活动开始时间（毫秒）
+        endTime: 1735487999000, // 活动结束时间（毫秒）
+        showEndTime: 1735574399000, // 展示结束时间（毫秒）
+        sockGainRatio: 10, // 下注/赢钱获得道具比例
+        ruleImgHor: [], // 横向规则图片列表
+        ruleImgVer: [], // 纵向规则图片列表
+        rewardType: 2, // 发放奖励类型（1:金币 2:投注金 3:返水金）
+        rewardUseSceneId: 0, // 奖励使用场景ID
+        dayPrizeThreshold: 0, // 每日发奖额度阈值
+        prizePoolCfg: [], // 奖池配置列表
+        rankCfg: [ // 排行榜配置列表
+          { rankStart: 1, rankEnd: 1, reward: 28888 },
+          { rankStart: 2, rankEnd: 2, reward: 18888 },
+          { rankStart: 3, rankEnd: 3, reward: 8888 },
+          { rankStart: 4, rankEnd: 5, reward: 2888 },
+          { rankStart: 6, rankEnd: 10, reward: 1888 },
+          { rankStart: 11, rankEnd: 20, reward: 888 },
+          { rankStart: 21, rankEnd: 40, reward: 288 },
+          { rankStart: 41, rankEnd: 70, reward: 188 },
+          { rankStart: 71, rankEnd: 100, reward: 88 }
         ],
-        GameIdCfg: [],
-        WhitelistCfg: {
-          AppIdList: [],
-          SiteIdList: []
+        gameIdCfg: [], // 游戏ID配置列表
+        whitelistCfg: { // 白名单配置
+          appIdList: [], // AppId白名单列表
+          siteIdList: [] // SiteId白名单列表
         }
       },
 
@@ -311,15 +254,17 @@ export default {
       allTreeData: [], // 存储所有游戏树数据
       treeData: [], // 当前显示的游戏树数据（根据游戏类型过滤）
       gamesSorted: [], // 已选游戏的排序列表
-      gamesSortDialogVisible: false, // 游戏排序弹窗是否显示
+      gamesSortDialogVisible: false, // 游戏排序弹窗显示状态
       filterText: '', // 游戏搜索过滤文本
 
+      // 游戏树配置
       defaultProps: {
-        label: 'label',
-        children: 'children',
-        disabled: 'disabled'
+        label: 'label', // 节点标签对应字段
+        children: 'children', // 子节点对应字段
+        disabled: 'disabled' // 禁用状态对应字段
       },
 
+      // AppId 选项列表
       appIdOptions: [
         {
           value: 1000002,
@@ -336,22 +281,23 @@ export default {
       ],
       // 奖励类型选项
       rewardTypes: [
-        { 'value': 1, 'label': '金币' },
-        { 'value': 2, 'label': '投注金' },
-        { 'value': 3, 'label': '返水金' }
+        // { value: 1, label: '金币' },
+        { value: 2, label: '投注金' }
+        // { value: 3, label: '返水金' }
       ],
 
       // 投注金使用场景选项
       betScenes: [
-        { 'value': 1, 'label': '任意游戏投注' },
-        { 'value': 2, 'label': '仅限Poker类游戏投注' },
-        { 'value': 3, 'label': '仅限Slots类游戏投注' },
-        { 'value': 4, 'label': '仅限Tongits游戏投注' }
+        { value: 1, label: '任意游戏投注' },
+        { value: 2, label: '仅限Poker类游戏投注' },
+        { value: 3, label: '仅限Slots类游戏投注' },
+        { value: 4, label: '仅限Tongits游戏投注' }
       ],
+
       // 返水金使用场景选项
       rebateScenes: [
-        { 'value': 5, 'label': '没有任何限制的返水金' },
-        { 'value': 6, 'label': '有限制倍数的返水金（10倍）' }
+        { value: 5, label: '没有任何限制的返水金' },
+        { value: 6, label: '有限制倍数的返水金（10倍）' }
       ],
 
       // 需要过滤的游戏ID列表
@@ -383,12 +329,12 @@ export default {
     filterText(val) {
       this.$refs.tree && this.$refs.tree.filter(val)
     },
-    // 监听 GameIdCfg 变化，更新选中状态
-    'item.GameIdCfg': {
+    // 监听 gameIdCfg 变化，更新选中状态
+    'item.gameIdCfg': {
       handler() {
         if (this.$refs.tree) {
           this.$nextTick(() => {
-            this.$refs.tree.setCheckedKeys(this.item.GameIdCfg || [])
+            this.$refs.tree.setCheckedKeys(this.item.gameIdCfg || [])
             this.updateGamesSorted()
           })
         }
@@ -408,7 +354,6 @@ export default {
       this.$emit('opened')
       // 获取配置数据
       this.getData()
-      this.getTodayRaffleAmount()
     },
 
     /**
@@ -437,32 +382,33 @@ export default {
      */
     resetData() {
       this.item = {
-        IsOpen: true,
-        StartTime: Date.now(),
-        EndTime: Date.now() + 30 * 24 * 60 * 60 * 1000,
-        ShowEndTime: Date.now() + 31 * 24 * 60 * 60 * 1000,
-        SockGainRatio: 10,
-        RuleImgHor: [],
-        RuleImgVer: [],
-        RewardType: 1,
-        RewardUseSceneId: 0,
-        DayPrizeThreshold: 0,
-        PrizePoolCfg: [],
-        RankCfg: [
-          { RankStart: 1, RankEnd: 1, Reward: 28888 },
-          { RankStart: 2, RankEnd: 2, Reward: 18888 },
-          { RankStart: 3, RankEnd: 3, Reward: 8888 },
-          { RankStart: 4, RankEnd: 5, Reward: 2888 },
-          { RankStart: 6, RankEnd: 10, Reward: 1888 },
-          { RankStart: 11, RankEnd: 20, Reward: 888 },
-          { RankStart: 21, RankEnd: 40, Reward: 288 },
-          { RankStart: 41, RankEnd: 70, Reward: 188 },
-          { RankStart: 71, RankEnd: 100, Reward: 88 }
+        activityName: '', // 活动名称
+        isOpen: true,
+        startTime: Date.now(),
+        endTime: Date.now() + 30 * 24 * 60 * 60 * 1000,
+        showEndTime: Date.now() + 31 * 24 * 60 * 60 * 1000,
+        sockGainRatio: 10,
+        ruleImgHor: [],
+        ruleImgVer: [],
+        rewardType: 1,
+        rewardUseSceneId: 0,
+        dayPrizeThreshold: 0,
+        prizePoolCfg: [],
+        rankCfg: [
+          { rankStart: 1, rankEnd: 1, reward: 28888 },
+          { rankStart: 2, rankEnd: 2, reward: 18888 },
+          { rankStart: 3, rankEnd: 3, reward: 8888 },
+          { rankStart: 4, rankEnd: 5, reward: 2888 },
+          { rankStart: 6, rankEnd: 10, reward: 1888 },
+          { rankStart: 11, rankEnd: 20, reward: 888 },
+          { rankStart: 21, rankEnd: 40, reward: 288 },
+          { rankStart: 41, rankEnd: 70, reward: 188 },
+          { rankStart: 71, rankEnd: 100, reward: 88 }
         ],
-        GameIdCfg: [],
-        WhitelistCfg: {
-          AppIdList: [],
-          SiteIdList: []
+        gameIdCfg: [],
+        whitelistCfg: {
+          appIdList: [],
+          siteIdList: []
         }
       }
       console.log('重置表单数据')
@@ -499,21 +445,21 @@ export default {
         return
       }
 
-      // 确保 GameIdCfg 存在
-      if (!this.item.GameIdCfg) {
-        this.item.GameIdCfg = []
+      // 确保 gameIdCfg 存在
+      if (!this.item.gameIdCfg) {
+        this.item.gameIdCfg = []
       }
 
-      const index = this.item.GameIdCfg.indexOf(data.id)
+      const index = this.item.gameIdCfg.indexOf(data.id)
       if (checked) {
         // 选中：添加到列表
         if (index < 0) {
-          this.item.GameIdCfg.push(data.id)
+          this.item.gameIdCfg.push(data.id)
         }
       } else {
         // 取消选中：从列表移除
         if (index >= 0) {
-          this.item.GameIdCfg.splice(index, 1)
+          this.item.gameIdCfg.splice(index, 1)
         }
       }
 
@@ -526,7 +472,7 @@ export default {
      */
     updateGamesSorted() {
       const gamesSorted = []
-      const gameIdCfg = this.item.GameIdCfg || []
+      const gameIdCfg = this.item.gameIdCfg || []
 
       // 遍历所有游戏树，找到选中的游戏
       this.treeData.forEach(category => {
@@ -572,7 +518,7 @@ export default {
       this.gamesSorted.forEach(item => {
         gameIdCfg.push(item.gameId)
       })
-      this.item.GameIdCfg = gameIdCfg
+      this.item.gameIdCfg = gameIdCfg
     },
 
     /**
@@ -633,8 +579,8 @@ export default {
 
           // 设置已选中的游戏
           this.$nextTick(() => {
-            if (this.$refs.tree && this.item.GameIdCfg) {
-              this.$refs.tree.setCheckedKeys(this.item.GameIdCfg)
+            if (this.$refs.tree && this.item.gameIdCfg) {
+              this.$refs.tree.setCheckedKeys(this.item.gameIdCfg)
               this.updateGamesSorted()
             }
           })
@@ -657,100 +603,127 @@ export default {
       })
 
       // 过滤掉不在当前类型的游戏ID
-      const filteredIds = (this.item.GameIdCfg || []).filter(id => allowedIds.has(id))
-      if (filteredIds.length !== (this.item.GameIdCfg || []).length) {
-        this.item.GameIdCfg = filteredIds
+      const filteredIds = (this.item.gameIdCfg || []).filter(id => allowedIds.has(id))
+      if (filteredIds.length !== (this.item.gameIdCfg || []).length) {
+        this.item.gameIdCfg = filteredIds
       }
 
       this.$nextTick(() => {
         if (this.$refs.tree) {
-          this.$refs.tree.setCheckedKeys(this.item.GameIdCfg || [])
+          this.$refs.tree.setCheckedKeys(this.item.gameIdCfg || [])
         }
         this.updateGamesSorted()
       })
     },
-
-    /**
-     * 添加规则图片
-     */
-    addRuleImage(type) {
-      if (type === 'Hor') {
-        this.item.RuleImgHor.push('')
-      } else {
-        this.item.RuleImgVer.push('')
-      }
-    },
-
-    /**
-     * 移除规则图片
-     */
-    removeRuleImage(index, type) {
-      if (type === 'Hor') {
-        this.item.RuleImgHor.splice(index, 1)
-      } else {
-        this.item.RuleImgVer.splice(index, 1)
-      }
-    },
-
     /**
      * AppId选项变化处理
      */
     onAppIdOptionsChange() {
-      console.log('onAppIdOptionsChange', this.item.WhitelistCfg.AppIdList)
+      console.log('onAppIdOptionsChange', this.item.whitelistCfg.appIdList)
     },
 
     /**
      * SiteId选项变化处理
      */
     onSiteIdOptionsChange() {
-      console.log('onSiteIdOptionsChange', this.item.WhitelistCfg.SiteIdList)
+      console.log('onSiteIdOptionsChange', this.item.whitelistCfg.siteIdList)
     },
 
     /**
      * 获取配置数据
      */
     getData() {
-      const $this = this
+      const rankCfg = JSON.parse(JSON.stringify(this.item.rankCfg || []))
+      const whitelistCfg = JSON.parse(JSON.stringify(this.item.whitelistCfg || { appIdList: [], siteIdList: [] }))
+
       getCustomize(this.subKey).then(response => {
         if (response.RetCode === 0) {
           console.log('christmasConfig', response.Data)
 
-          const rankCfg = JSON.parse(JSON.stringify($this.item.RankCfg))
-          const whitelistCfg = JSON.parse(JSON.stringify($this.item.WhitelistCfg))
-          $this.form = response.Data || {}
+          this.form = response.Data || {}
           if (response.Data && response.Data.Data !== '' && response.Data.Data !== '{}') {
-            $this.item = JSON.parse(response.Data.Data)
+            const parsedData = JSON.parse(response.Data.Data)
             const old = JSON.parse(response.Data.Data)
 
-            $this.item.StartTime *= 1000
-            $this.item.EndTime *= 1000
-            $this.item.ShowEndTime *= 1000
+            // 先合并默认值，确保所有必需字段存在
+            this.item = {
+              activityName: '',
+              isOpen: true,
+              startTime: Date.now(),
+              endTime: Date.now() + 30 * 24 * 60 * 60 * 1000,
+              showEndTime: Date.now() + 31 * 24 * 60 * 60 * 1000,
+              sockGainRatio: 10,
+              ruleImgHor: [],
+              ruleImgVer: [],
+              rewardType: 2,
+              rewardUseSceneId: 0,
+              dayPrizeThreshold: 0,
+              prizePoolCfg: [],
+              rankCfg: [],
+              gameIdCfg: [],
+              whitelistCfg: {
+                appIdList: [],
+                siteIdList: []
+              },
+              ...parsedData
+            }
 
-            $this.item.PrizePoolCfg.map(item => {
-              item.RaffleLevel /= 1000
-              item.RewardMax /= 1000
-              item.CoefficientMin /= 10
-              item.CoefficientMax /= 10
+            // 再次确保嵌套对象的完整性
+            if (!this.item.whitelistCfg) {
+              this.item.whitelistCfg = { appIdList: [], siteIdList: [] }
+            } else {
+              if (!Array.isArray(this.item.whitelistCfg.appIdList)) {
+                this.item.whitelistCfg.appIdList = []
+              }
+              if (!Array.isArray(this.item.whitelistCfg.siteIdList)) {
+                this.item.whitelistCfg.siteIdList = []
+              }
+            }
 
-              item.PrizeCfg.map(prizeCfg => {
-                prizeCfg.Reward /= 1000
+            if (!Array.isArray(this.item.prizePoolCfg)) {
+              this.item.prizePoolCfg = []
+            }
+            if (!Array.isArray(this.item.rankCfg)) {
+              this.item.rankCfg = []
+            }
+            if (!Array.isArray(this.item.gameIdCfg)) {
+              this.item.gameIdCfg = []
+            }
+
+            // 时间转换（从秒到毫秒）
+            if (this.item.startTime) this.item.startTime *= 1000
+            if (this.item.endTime) this.item.endTime *= 1000
+            if (this.item.showEndTime) this.item.showEndTime *= 1000
+
+            // 奖池配置处理 - 安全遍历
+            this.item.prizePoolCfg.forEach(poolItem => {
+              if (!poolItem) return
+              if (!Array.isArray(poolItem.prizeCfg)) poolItem.prizeCfg = []
+
+              if (poolItem.raffleLevel) poolItem.raffleLevel /= 1000
+              if (poolItem.coefficientMin) poolItem.coefficientMin /= 10
+              if (poolItem.coefficientMax) poolItem.coefficientMax /= 10
+
+              poolItem.prizeCfg.forEach(prizeCfg => {
+                if (prizeCfg && prizeCfg.reward) prizeCfg.reward /= 1000
               })
             })
 
-            $this.item.RankCfg.map(item => {
-              item.Reward /= 1000
+            // 排行榜配置处理
+            this.item.rankCfg.forEach(rankItem => {
+              if (rankItem && rankItem.reward) rankItem.reward /= 1000
             })
 
-            if ($this.item.RankCfg.length === 0) {
-              $this.item.RankCfg = rankCfg
+            if (this.item.rankCfg.length === 0) {
+              this.item.rankCfg = rankCfg
             }
 
-            if ($this.item.WhitelistCfg == null) {
-              $this.item.WhitelistCfg = whitelistCfg
+            if (this.item.whitelistCfg == null) {
+              this.item.whitelistCfg = whitelistCfg
             }
 
-            if ($this.item.DayPrizeThreshold != null) {
-              $this.item.DayPrizeThreshold /= 1000
+            if (this.item.dayPrizeThreshold != null) {
+              this.item.dayPrizeThreshold /= 1000
             }
 
             this.$refs.compare.SetOldVal(old)
@@ -760,81 +733,96 @@ export default {
         }
       })
     },
+    /**
+     * 编码数据为后端格式
+     */
     encodeData() {
       const cpy = {}
       Object.assign(cpy, this.item)
 
-      cpy.StartTime /= 1000
-      cpy.EndTime /= 1000
-      cpy.ShowEndTime /= 1000
+      // 时间转换为秒
+      cpy.startTime /= 1000
+      cpy.endTime /= 1000
+      cpy.showEndTime /= 1000
 
-      cpy.PrizePoolCfg = []
-
-      for (const o in this.item.PrizePoolCfg) {
-        const obj = {}
-        obj.SockBaseNum = this.item.PrizePoolCfg[o].SockBaseNum
-        obj.RaffleLevel = this.item.PrizePoolCfg[o].RaffleLevel * 1000
-        obj.RewardMax = this.item.PrizePoolCfg[o].RewardMax * 1000
-        obj.CoefficientMin = this.item.PrizePoolCfg[o].CoefficientMin * 10
-        obj.CoefficientMax = this.item.PrizePoolCfg[o].CoefficientMax * 10
-
-        obj.PrizeCfg = []
-        for (const i in this.item.PrizePoolCfg[o].PrizeCfg) {
-          const pCfg = {}
-          pCfg.Reward = this.item.PrizePoolCfg[o].PrizeCfg[i].Reward * 1000
-          pCfg.Weight = this.item.PrizePoolCfg[o].PrizeCfg[i].Weight
-          pCfg.PrizeNum = this.item.PrizePoolCfg[o].PrizeCfg[i].PrizeNum
-          pCfg.PrizeUnlimited = this.item.PrizePoolCfg[o].PrizeCfg[i].PrizeUnlimited
-          obj.PrizeCfg.push(pCfg)
+      // 处理奖池配置
+      cpy.prizePoolCfg = []
+      for (const poolCfg of this.item.prizePoolCfg) {
+        const obj = {
+          sockBaseNum: poolCfg.sockBaseNum,
+          raffleLevel: poolCfg.raffleLevel * 1000,
+          rewardMax: poolCfg.rewardMax * 1000,
+          coefficientMin: poolCfg.coefficientMin * 10,
+          coefficientMax: poolCfg.coefficientMax * 10,
+          prizeCfg: []
         }
 
-        cpy.PrizePoolCfg.push(obj)
+        for (const prizeCfg of poolCfg.prizeCfg) {
+          obj.prizeCfg.push({
+            reward: prizeCfg.reward * 1000,
+            weight: prizeCfg.weight,
+            prizeNum: prizeCfg.prizeNum,
+            prizeUnlimited: prizeCfg.prizeUnlimited
+          })
+        }
+
+        cpy.prizePoolCfg.push(obj)
       }
 
-      cpy.RankCfg = []
-      for (const i in this.item.RankCfg) {
-        const rCfg = {}
-        rCfg.RankStart = this.item.RankCfg[i].RankStart
-        rCfg.RankEnd = this.item.RankCfg[i].RankEnd
-        rCfg.Reward = this.item.RankCfg[i].Reward * 1000
-        cpy.RankCfg.push(rCfg)
+      // 处理排行榜配置
+      cpy.rankCfg = []
+      for (const rankCfg of this.item.rankCfg) {
+        cpy.rankCfg.push({
+          rankStart: rankCfg.rankStart,
+          rankEnd: rankCfg.rankEnd,
+          reward: rankCfg.reward * 1000
+        })
       }
 
-      cpy.GameIdCfg = this.item.GameIdCfg
+      cpy.gameIdCfg = this.item.gameIdCfg
+      cpy.whitelistCfg = this.item.whitelistCfg
 
-      cpy.WhitelistCfg = this.item.WhitelistCfg
-
-      if (this.item.DayPrizeThreshold != null) {
-        cpy.DayPrizeThreshold = this.item.DayPrizeThreshold * 1000
+      if (this.item.dayPrizeThreshold != null) {
+        cpy.dayPrizeThreshold = this.item.dayPrizeThreshold * 1000
       }
 
       return JSON.stringify(cpy)
     },
+    /**
+     * 保存配置数据
+     */
     setData() {
-      if (this.item.RewardType === undefined) {
+      // 验证奖励类型
+      if (this.item.rewardType === undefined) {
         Message.error('请选择奖励类型')
         return
       }
-      if (this.item.RewardUseSceneId === undefined) {
-        this.item.RewardUseSceneId = 0
+
+      // 设置默认使用场景ID
+      if (this.item.rewardUseSceneId === undefined) {
+        this.item.rewardUseSceneId = 0
       }
-      if (this.item.RewardType !== 1 && this.item.RewardUseSceneId === 0) {
-        const typeObj = this.rewardTypes.find(item => item.value === this.item.RewardType)
+
+      // 验证使用场景
+      if (this.item.rewardType !== 1 && this.item.rewardUseSceneId === 0) {
+        const typeObj = this.rewardTypes.find(item => item.value === this.item.rewardType)
         const typeName = typeObj ? typeObj.label : ''
         Message.error(`请选择【${typeName}】对应的使用场景`)
         return
       }
 
+      // 编码数据
       this.form.Data = this.encodeData()
-      const $this = this
-      // 设置修改后数据
+
+      // 对比数据并提交
       this.$refs.compare.SetNewVal(this.form.Data)
-      this.$refs.compare.Compare(function(isEdit) {
+      this.$refs.compare.Compare(isEdit => {
         if (!isEdit) {
           Message.error('没有任何修改，不需要提交')
           return
         }
-        updateCustomize($this.form).then(response => {
+
+        updateCustomize(this.form).then(response => {
           if (response.RetCode === 0) {
             console.log('save', response)
             Message.success('保存成功')
@@ -842,32 +830,23 @@ export default {
         })
       })
     },
-
-    /**
-     * 获取今日发奖总额
-     */
-    getTodayRaffleAmount() {
-      const $this = this
-      request({
-        url: '/dataProxy/info',
-        method: 'get',
-        data: {
-          Path: '/activity/christmas/today/raffle/amount'
-        }
-      }).then(response => {
-        if (response.RetCode === 0) {
-          console.log('getTodayRaffleAmount', response.Data)
-          if (response.Data) {
-            $this.todayRaffleAmount = response.Data / 1000
-            console.log('todayRaffleAmount', $this.todayRaffleAmount)
-          }
-        }
-      })
-    }
   }
 }
 </script>
 
 <style>
+/* 固定弹窗内容宽度和最小高度 */
+.el-dialog__body {
+  min-height: 500px;   /* 你可以根据实际需要调整高度 */
+  width: 1200px;       /* 你可以根据实际需要调整宽度 */
+  box-sizing: border-box;
+  overflow: auto;
+}
+/* 固定 tab 内容区最小高度 */
+.el-dialog__body .el-tabs__content {
+  min-height: 500px; /* 根据实际需求调整 */
+  box-sizing: border-box;
+}
+
 
 </style>
