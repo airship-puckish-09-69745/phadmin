@@ -433,7 +433,12 @@
                       label="奖励类型"
                     >
                       <template slot-scope="scope">
-                        <el-select v-model.number="scope.row.rewardItem.rewardType" placeholder="请选择奖励类型" @change="onRowRewardTypeChange(scope.row.rewardItem)">
+                        <el-select
+                          v-model.number="scope.row.rewardItem.rewardType"
+                          :disabled="isRewardTypesSelectDisabled"
+                          placeholder="请选择奖励类型"
+                          @change="onRowRewardTypeChange(scope.row.rewardItem)"
+                        >
                           <el-option
                             v-for="item in rewardTypes"
                             :key="item.value"
@@ -448,7 +453,7 @@
                       width="105"
                     >
                       <template slot="header" slot-scope="scope">
-                        {{ edit.item.extend.rewardWay === 1 ? '奖励金额' : '奖励百分比%' }}
+                        {{ edit.item.extend.rewardWay === 1 ? '奖励数值' : '奖励百分比%' }}
                       </template>
                       <template slot-scope="scope">
                         <el-input v-model.number="scope.row.rewardItem.rewardNum" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
@@ -529,7 +534,7 @@
               <el-row>
                 <el-col :span="24">
                   <el-form-item label="是否开启：" prop="activity.whitelist.isOpen" :required="true">
-                    <el-switch v-model="edit.item.activity.whitelist.isOpen" :active-value="true" :inactive-value="false" />
+                    <el-switch v-model="edit.item.activity.whitelist.isOpen" disabled :active-value="true" :inactive-value="false" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="24">
@@ -571,6 +576,7 @@ import store from "@/store";
 import {$libDate, $libShow, ClientTableData, DataRule} from "@/utils/common";
 import request from "@/utils/request";
 import {Message} from "element-ui";
+import tree from "echarts/src/data/Tree";
 
 const filterMap = {}
 
@@ -592,6 +598,7 @@ function newItem() {
         appIdList: [],
         siteIdList: [],
         uidList: '',
+        isOpen: tree,
       },
       ruleImgHor: [],
       ruleImgVer: [],
@@ -740,6 +747,7 @@ export default {
         // { 'value': 3, 'label': '返水金' },
         { 'value': 4, 'label': '道具' }
       ],
+      isRewardTypesSelectDisabled: false,
 
       filterText: '',
       filterGameIds: [ 2031, 10002 ],
@@ -802,6 +810,16 @@ export default {
         }
       },
       immediate: true
+    },
+    'edit.item.extend.rewardWay': {
+      handler(newVal, oldVal) {
+        this.isRewardTypesSelectDisabled = newVal === 2 // 是否按比例发放奖励
+        if (newVal === 2) {
+          for (let item of this.edit.item.extend.rewardList) {
+            item.rewardItem.rewardType = 2 // 投注金
+          }
+        }
+      }
     }
   },
   computed: {
@@ -1006,9 +1024,11 @@ export default {
       let maxRankShow = 0
       for (const reward of item.extend.rewardList) {
         if (item.extend.rewardWay === 1) {
-          reward.reward *= 1000
           reward.rewardItem.rewardNum *= 1000
+        } else if (item.extend.rewardWay === 2) {
+          reward.rewardItem.rewardNum *= 10000
         }
+        reward.reward = reward.rewardItem.rewardNum
         maxRankShow = Math.max(maxRankShow, reward.rankEnd)
       }
       item.extend.maxRankShow = maxRankShow
@@ -1067,6 +1087,8 @@ export default {
             }
             if (item.extend.rewardWay === 1) {
               rewardCfg.rewardItem.rewardNum /= 1000
+            } else if (item.extend.rewardWay === 2) {
+              rewardCfg.rewardItem.rewardNum /= 10000
             }
             rewardCfg.reward = rewardCfg.rewardItem.rewardNum
           }
@@ -1154,9 +1176,11 @@ export default {
     },
     onProgressRewardTypeChange() {
       const rewardItem = this.edit.item.extend.progressTaskItems[0].rewardItems[0]
-      if (rewardItem.rewardType === 2) {
+      if ([1, 2, 3].includes(rewardItem.rewardType)) {
         rewardItem.rewardId = 0
         rewardItem.rewardSubType = 0
+        rewardItem.rewardExpireDays = 0
+      } else {
         rewardItem.rewardExpireDays = 1
       }
     },
