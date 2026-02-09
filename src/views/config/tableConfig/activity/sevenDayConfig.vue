@@ -1329,7 +1329,6 @@ export default {
       }
 
       let index = 0
-      console.log('this.item', this.item)
       if (this.edit.isEdit) {
         index = this.item.extend.TaskConfig.findIndex(item => item.TaskID === this.edit.item.TaskID)
         this.$set(this.item.extend.TaskConfig, index, JSON.parse(JSON.stringify(this.edit.item)))
@@ -1375,6 +1374,10 @@ export default {
           }
           if (this.edit.item.TaskItem[i].Reward[j].RewardType === 5 && this.edit.item.TaskItem[i].Reward[j].RichCard === null) {
             Message.error(`任务` + (i + 1) + '存在奖励类型是富裕卡，而没有配置具体道具信息')
+            return false
+          }
+          if (this.edit.item.TaskItem[i].Reward[j].Num === '0') {
+            Message.error(`任务` + (i + 1) + '第' + (j + 1) + '个奖励配置数量为0')
             return false
           }
         }
@@ -1480,6 +1483,14 @@ export default {
       return false
     },
     saveProp() {
+      if (this.edit.currentProp.PropID === null || this.edit.currentProp.PropID === 0) {
+        Message.error('没有配置道具ID')
+        return
+      }
+      if (this.edit.currentProp.Time === null || this.edit.currentProp.Time === 0) {
+        Message.error('没有配置时间')
+        return
+      }
       this.edit.item.TaskItem[this.edit.currentProp.TaskIndex].Reward[this.edit.currentProp.RewardIndex].Prop = {
         PropID: this.edit.currentProp.PropID,
         Time: this.edit.currentProp.Time
@@ -1488,6 +1499,14 @@ export default {
       this.edit.propDialogVisible = false
     },
     saveRichCard() {
+      if (this.edit.currentRichCard.GameId === null || this.edit.currentRichCard.GameId === 0) {
+        Message.error('没有选择游戏')
+        return
+      }
+      if (this.edit.currentRichCard.richCardSelect === null || this.edit.currentRichCard.richCardSelect.length === 0) {
+        Message.error('没有配置富裕卡')
+        return
+      }
       this.edit.item.TaskItem[this.edit.currentRichCard.TaskIndex].Reward[this.edit.currentRichCard.RewardIndex].RichCard = {
         SlotsType: this.edit.currentRichCard.GameId,
         Time: this.edit.currentRichCard.Time
