@@ -137,6 +137,9 @@
                     suffix-icon="‰"
                   />
                 </el-form-item>
+                <el-form-item label="每日发奖上限：" :required="true">
+                  <el-input v-model="item.extend.ActivityExtend.ReceiveBonusMax" placeholder="请输入参数" />
+                </el-form-item>
                 <el-form-item label="星星解锁数量：" :required="true">
                   <el-input v-model.number="item.extend.ActivityExtend.StarUnlockCount" placeholder="请输入参数" />
                 </el-form-item>
@@ -982,6 +985,7 @@ export default {
           item.activity.ShowEndTime *= 1000
           item.extend.ActivityExtend.InitBonusPool /= 1000
           item.extend.ActivityExtend.BonusPoolMax /= 1000
+          item.extend.ActivityExtend.ReceiveBonusMax /= 1000
 
           if (item.activity.Whitelist.AbTest === undefined) {
             this.$set(item.activity.Whitelist, 'AbTest', {
@@ -1177,6 +1181,7 @@ export default {
       tableData.activity.ShowEndTime += (tableData.extend.TaskConfig.length + tableData.extend.ActivityExtend.GrantKeepDay) * 24 * 60 * 60
       tableData.extend.ActivityExtend.InitBonusPool *= 1000
       tableData.extend.ActivityExtend.BonusPoolMax *= 1000
+      tableData.extend.ActivityExtend.ReceiveBonusMax *= 1000
       tableData.activity.GameIdList = []
       for (const key in tableData.extend.GameIcon) {
         tableData.activity.GameIdList.push(tableData.extend.GameIcon[key].Id)
@@ -1354,7 +1359,6 @@ export default {
           }
         }
       }
-      console.log('this.item end')
       this.edit.visible = false
     },
     checkTask() {
