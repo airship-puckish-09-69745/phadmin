@@ -292,14 +292,28 @@ export default {
 
       // 奖池配置转换
       if (Array.isArray(data.prizePoolCfg)) {
-        data.prizePoolCfg.forEach(pool => {
+        data.prizePoolCfg.forEach((pool, poolIdx) => {
           if (!pool) return
           if (!Array.isArray(pool.prizeCfg)) pool.prizeCfg = []
+          // Assign tierId if not present
+          if (pool.tierId === undefined) pool.tierId = poolIdx + 1
           if (pool.raffleLevel) pool.raffleLevel /= 1000
           if (pool.coefficientMin) pool.coefficientMin /= 10
           if (pool.coefficientMax) pool.coefficientMax /= 10
-          pool.prizeCfg.forEach(prize => {
-            if (prize && prize.reward) prize.reward /= 1000
+          pool.prizeCfg.forEach((prize, prizeIdx) => {
+            if (!prize) return
+            // Assign prizeId if not present
+            if (prize.prizeId === undefined) prize.prizeId = prizeIdx + 1
+            // Convert old format to new format
+            if (prize.reward !== undefined) {
+              prize.rewardAmount = prize.reward / 1000
+              prize.rewardMin = prize.reward / 1000
+              prize.rewardMax = prize.reward / 1000
+            } else {
+              if (prize.rewardAmount) prize.rewardAmount /= 1000
+              if (prize.rewardMin) prize.rewardMin /= 1000
+              if (prize.rewardMax) prize.rewardMax /= 1000
+            }
           })
         })
       } else {
@@ -349,20 +363,24 @@ export default {
       // 奖池配置转换
       cpy.prizePoolCfg = (cpy.prizePoolCfg || []).map(pool => {
         const encoded = {
+          tierId: pool.tierId || 0,
           sockBaseNum: pool.sockBaseNum,
           raffleLevel: Math.floor((pool.raffleLevel || 0) * 1000),
           rewardMax: 0,
           coefficientMin: Math.round((pool.coefficientMin || 0) * 10),
           coefficientMax: Math.round((pool.coefficientMax || 0) * 10),
           prizeCfg: (pool.prizeCfg || []).map(prize => ({
-            reward: Math.floor((prize.reward || 0) * 1000),
+            prizeId: prize.prizeId || 0,
+            rewardAmount: Math.floor((prize.rewardAmount || 0) * 1000),
+            rewardMin: Math.floor((prize.rewardMin || 0) * 1000),
+            rewardMax: Math.floor((prize.rewardMax || 0) * 1000),
             weight: prize.weight,
             prizeNum: prize.prizeNum,
             prizeUnlimited: prize.prizeUnlimited
           }))
         }
-        // 计算最大奖励
-        encoded.rewardMax = Math.max(0, ...encoded.prizeCfg.map(p => p.reward))
+        // 计算最大奖励 (use rewardMax from prizes)
+        encoded.rewardMax = Math.max(0, ...encoded.prizeCfg.map(p => p.rewardMax))
         return encoded
       })
 

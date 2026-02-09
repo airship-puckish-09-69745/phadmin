@@ -16,7 +16,7 @@
       style="width: 100%; margin-top: 10px"
       :cell-style="cellStyle"
     >
-      <el-table-column type="index" label="挡位" width="60" align="center" />
+      <el-table-column prop="tierId" label="挡位" width="60" align="center" />
       <el-table-column prop="raffleLevel" label="挡位条件(₱)" align="center" />
       <el-table-column prop="sockBaseNum" label="道具数量" align="center" />
       <el-table-column label="获得道具系数" align="center">
@@ -97,10 +97,19 @@
 
         <div class="prize-table-wrapper" style="margin-top: 8px">
           <el-table :data="editDialog.item.prizeCfg" border :cell-style="cellStyle">
-            <el-table-column type="index" label="奖项" width="60" align="center" />
-            <el-table-column prop="reward" label="获得奖励系数(₱)" align="center">
+            <el-table-column prop="prizeId" label="奖项" width="60" align="center" />
+            <el-table-column label="奖励" width="120" align="center">
               <template slot-scope="scope">
-                <el-input v-model.number="scope.row.reward" size="mini" placeholder="奖励金额" />
+                <el-input v-model.number="scope.row.rewardAmount" size="mini" placeholder="奖励金额" />
+              </template>
+            </el-table-column>
+            <el-table-column label="获得奖励金额区间(₱)" align="center">
+              <template slot-scope="scope">
+                <div style="display: flex; align-items: center; gap: 5px">
+                  <el-input v-model.number="scope.row.rewardMin" size="mini" placeholder="最小值" style="flex: 1" />
+                  <span>-</span>
+                  <el-input v-model.number="scope.row.rewardMax" size="mini" placeholder="最大值" style="flex: 1" />
+                </div>
               </template>
             </el-table-column>
             <el-table-column prop="weight" label="中奖权重" width="100" align="center">
@@ -161,13 +170,14 @@ const REQUIRED_BUBBLE_COUNT = 4
 
 function createNewPool() {
   return {
+    tierId: 0, // Will be assigned when saving
     raffleLevel: 200,
     rewardMax: 0,
     sockBaseNum: 10,
     coefficientMin: 0.8,
     coefficientMax: 1.2,
     prizeCfg: [
-      { reward: 0, weight: 0, prizeNum: 0, prizeUnlimited: true, isBubble: false }
+      { prizeId: 1, rewardAmount: 0, rewardMin: 0, rewardMax: 0, weight: 0, prizeNum: 0, prizeUnlimited: true, isBubble: false }
     ]
   }
 }
@@ -217,9 +227,14 @@ export default {
     handleEdit(index) {
       const data = JSON.parse(JSON.stringify(this.formData.prizePoolCfg[index]))
       // Ensure isBubble field exists on all prizes for Vue reactivity
-      data.prizeCfg = data.prizeCfg.map(p => ({
+      data.prizeCfg = data.prizeCfg.map((p, idx) => ({
         ...p,
-        isBubble: p.isBubble !== undefined ? p.isBubble : false
+        prizeId: p.prizeId !== undefined ? p.prizeId : idx + 1,
+        isBubble: p.isBubble !== undefined ? p.isBubble : false,
+        // Convert old format to new format if needed
+        rewardAmount: p.rewardAmount !== undefined ? p.rewardAmount : (p.reward || 0),
+        rewardMin: p.rewardMin !== undefined ? p.rewardMin : (p.reward || 0),
+        rewardMax: p.rewardMax !== undefined ? p.rewardMax : (p.reward || 0)
       }))
       this.editDialog.item = data
       this.editDialog.isEdit = true
@@ -240,7 +255,17 @@ export default {
         Message.warning(`每个挡位最多${MAX_PRIZE_COUNT}个奖项`)
         return
       }
-      this.editDialog.item.prizeCfg.push({ reward: 0, weight: 0, prizeNum: 0, prizeUnlimited: true, isBubble: false })
+      const maxPrizeId = Math.max(0, ...this.editDialog.item.prizeCfg.map(p => p.prizeId || 0))
+      this.editDialog.item.prizeCfg.push({ 
+        prizeId: maxPrizeId + 1, 
+        rewardAmount: 0, 
+        rewardMin: 0, 
+        rewardMax: 0, 
+        weight: 0, 
+        prizeNum: 0, 
+        prizeUnlimited: true, 
+        isBubble: false 
+      })
     },
     handlePrizeDelete(index) {
       if (this.editDialog.item.prizeCfg.length <= 1) {
@@ -271,23 +296,40 @@ export default {
         return
       }
 
-      // Check duplicate rewards
-      const rewards = item.prizeCfg.map(p => Math.round(p.reward * 100))
-      for (let i = 0; i < rewards.length; i++) {
-        if (rewards[i] === 0) {
-          Message.error('奖励金额不能为0')
+      // Validate prize fields
+      for (let i = 0; i < item.prizeCfg.length; i++) {
+        const prize = item.prizeCfg[i]
+        if (prize.rewardAmount == null || prize.rewardAmount <= 0) {
+          Message.error(`奖项${prize.prizeId}的奖励金额不能为0或空`)
           return
         }
-        for (let j = i + 1; j < rewards.length; j++) {
-          if (rewards[i] === rewards[j]) {
-            Message.error(`奖励金额 ${item.prizeCfg[i].reward} 重复`)
+        if (prize.rewardMin == null || prize.rewardMin <= 0) {
+          Message.error(`奖项${prize.prizeId}的最小金额不能为0或空`)
+          return
+        }
+        if (prize.rewardMax == null || prize.rewardMax <= 0) {
+          Message.error(`奖项${prize.prizeId}的最大金额不能为0或空`)
+          return
+        }
+        if (prize.rewardMin > prize.rewardMax) {
+          Message.error(`奖项${prize.prizeId}的最小金额不能大于最大金额`)
+          return
+        }
+      }
+
+      // Check duplicate rewardAmount
+      const rewardAmounts = item.prizeCfg.map(p => Math.round(p.rewardAmount * 100))
+      for (let i = 0; i < rewardAmounts.length; i++) {
+        for (let j = i + 1; j < rewardAmounts.length; j++) {
+          if (rewardAmounts[i] === rewardAmounts[j]) {
+            Message.error(`奖励金额 ${item.prizeCfg[i].rewardAmount} 重复`)
             return
           }
         }
       }
 
-      // Compute rewardMax
-      item.rewardMax = Math.max(...item.prizeCfg.map(p => p.reward))
+      // Compute rewardMax from prizes
+      item.rewardMax = Math.max(...item.prizeCfg.map(p => p.rewardMax))
 
       const newData = JSON.parse(JSON.stringify(item))
 
@@ -298,6 +340,8 @@ export default {
           Message.error(`挡位条件 ${newData.raffleLevel} 已存在`)
           return
         }
+        // Keep existing tierId
+        newData.tierId = this.formData.prizePoolCfg[this.editDialog.editIndex].tierId
         this.formData.prizePoolCfg.splice(this.editDialog.editIndex, 1, newData)
       } else {
         // Check duplicate raffleLevel
@@ -305,9 +349,14 @@ export default {
           Message.error(`挡位条件 ${newData.raffleLevel} 已存在`)
           return
         }
+        // Assign new tierId
+        const maxTierId = Math.max(0, ...this.formData.prizePoolCfg.map(p => p.tierId || 0))
+        newData.tierId = maxTierId + 1
         this.formData.prizePoolCfg.push(newData)
-        this.formData.prizePoolCfg.sort((a, b) => a.raffleLevel - b.raffleLevel)
       }
+
+      // Re-sort by raffleLevel
+      this.formData.prizePoolCfg.sort((a, b) => a.raffleLevel - b.raffleLevel)
 
       this.editDialog.visible = false
     }
