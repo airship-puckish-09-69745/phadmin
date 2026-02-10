@@ -214,7 +214,6 @@ function createNewItem() {
     broadcastCfg: { threshold: 500, maxCount: 50 },
     gameIdCfg: [],
     whitelistCfg: {
-      appIdList: [],
       siteIdList: []
     }
   }
@@ -337,9 +336,8 @@ export default {
 
       // 白名单
       if (!data.whitelistCfg) {
-        data.whitelistCfg = { appIdList: [], siteIdList: [] }
+        data.whitelistCfg = {siteIdList: [] }
       }
-      if (!Array.isArray(data.whitelistCfg.appIdList)) data.whitelistCfg.appIdList = []
       if (!Array.isArray(data.whitelistCfg.siteIdList)) data.whitelistCfg.siteIdList = []
 
       // 游戏列表
