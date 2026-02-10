@@ -151,12 +151,13 @@
         <el-table-column prop="name" label="游戏名称" min-width="150" />
         <el-table-column prop="orderNo" label="排序编号" width="150" align="center">
           <template slot-scope="scope">
-            <el-input-number
-              v-model="scope.row.orderNo"
+            <el-input
+              v-model.number="scope.row.orderNo"
+              type="number"
               :min="1"
               :max="gamesSorted.length"
               size="small"
-              @change="onOrderNoChange"
+              style="width: 100px"
             />
           </template>
         </el-table-column>
@@ -553,11 +554,11 @@ export default {
         return Message.warning('请先选择参与活动的游戏')
       }
       // 根据当前选中的游戏ID，构建排序列表
-      this.gamesSorted = this.item.gameIdCfg.map(gameId => {
+      this.gamesSorted = this.item.gameIdCfg.map((gameId, index) => {
         return {
           gameId: gameId,
           name: this.getGameNameById(gameId),
-          orderNo: this.getGameOrderNoById(gameId)
+          orderNo: index + 1
         }
       })
 
@@ -568,12 +569,6 @@ export default {
     getGameNameById(gameId) {
       const game = this.allTreeData.flatMap(cty => cty.children).find(g => g.id === gameId)
       return game ? game.label : ''
-    },
-
-    // 根据游戏ID获取游戏排序编号
-    getGameOrderNoById(gameId) {
-      const index = this.item.gameIdCfg.indexOf(gameId)
-      return index >= 0 ? index + 1 : null
     },
 
     // 更新已选游戏的排序列表
@@ -609,18 +604,27 @@ export default {
       this.gamesSorted = gamesSorted
     },
 
-    // 排序编号变化处理
-    onOrderNoChange() {
-      // 更新游戏排序
-      this.gamesSorted.forEach((game, index) => {
-        game.orderNo = index + 1
-      })
-    },
-
     // 保存游戏排序
     saveGamesSort() {
+      // 验证排序编号
+      const orderNos = this.gamesSorted.map(g => g.orderNo)
+      const hasInvalid = orderNos.some(no => {
+        return !Number.isInteger(no) || no < 1 || no > this.gamesSorted.length
+      })
+      if (hasInvalid) {
+        return Message.error(`排序编号必须是1到${this.gamesSorted.length}之间的整数`)
+      }
+
+      // 按用户设置的 orderNo 排序，然后提取 gameId
+      const sortedGames = this.gamesSorted.slice().sort((a, b) => a.orderNo - b.orderNo)
+
+      // 重新赋值 orderNo 为 1, 2, 3, ...
+      sortedGames.forEach((game, index) => {
+        game.orderNo = index + 1
+      })
+
       // 更新活动配置中的游戏顺序
-      this.item.gameIdCfg = this.gamesSorted.sort((a, b) => a.orderNo - b.orderNo).map(game => game.gameId)
+      this.item.gameIdCfg = sortedGames.map(game => game.gameId)
 
       this.gamesSortDialogVisible = false
       Message.success('游戏排序已更新')
