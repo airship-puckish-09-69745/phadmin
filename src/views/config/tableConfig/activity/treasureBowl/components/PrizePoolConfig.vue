@@ -98,7 +98,7 @@
         <div class="prize-table-wrapper" style="margin-top: 8px">
           <el-table :data="editDialog.item.prizeCfg" border :cell-style="cellStyle">
             <el-table-column prop="prizeId" label="ID" width="60" align="center" />
-            <el-table-column label="奖励" width="120" align="center">
+            <el-table-column label="奖励(展示)" width="120" align="center">
               <template slot-scope="scope">
                 <el-input v-model.number="scope.row.rewardAmount" size="mini" placeholder="奖励金额" />
               </template>
@@ -177,7 +177,7 @@ function createNewPool() {
     coefficientMin: 0.8,
     coefficientMax: 1.2,
     prizeCfg: [
-      { prizeId: 1, rewardAmount: 0, rewardMin: 0, rewardMax: 0, weight: 0, prizeNum: 0, prizeUnlimited: true, isBubble: false }
+      { prizeId: 1, rewardAmount: 0, rewardMin: 0, rewardMax: 0, weight: 1, prizeNum: 0, prizeUnlimited: true, isBubble: false }
     ]
   }
 }
@@ -261,7 +261,7 @@ export default {
         rewardAmount: 0,
         rewardMin: 0,
         rewardMax: 0,
-        weight: 0,
+        weight: 1,
         prizeNum: 0,
         prizeUnlimited: true,
         isBubble: false

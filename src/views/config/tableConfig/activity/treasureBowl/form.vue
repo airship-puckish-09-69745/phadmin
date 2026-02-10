@@ -436,7 +436,6 @@ export default {
       if (!this.validate()) return
 
       const postData = this.encodeData()
-      postData.env = this.env
 
       const url = '/activitytreasurebowl/create'
       request({
