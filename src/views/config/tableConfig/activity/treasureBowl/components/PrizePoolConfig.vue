@@ -16,7 +16,7 @@
       style="width: 100%; margin-top: 10px"
       :cell-style="cellStyle"
     >
-      <el-table-column prop="tierId" label="挡位" width="60" align="center" />
+<!--      <el-table-column prop="tierId" label="ID" width="60" align="center" />-->
       <el-table-column prop="raffleLevel" label="挡位条件(₱)" align="center" />
       <el-table-column prop="sockBaseNum" label="道具数量" align="center" />
       <el-table-column label="获得道具系数" align="center">
@@ -97,7 +97,7 @@
 
         <div class="prize-table-wrapper" style="margin-top: 8px">
           <el-table :data="editDialog.item.prizeCfg" border :cell-style="cellStyle">
-            <el-table-column prop="prizeId" label="奖项" width="60" align="center" />
+            <el-table-column prop="prizeId" label="ID" width="60" align="center" />
             <el-table-column label="奖励" width="120" align="center">
               <template slot-scope="scope">
                 <el-input v-model.number="scope.row.rewardAmount" size="mini" placeholder="奖励金额" />
@@ -256,15 +256,15 @@ export default {
         return
       }
       const maxPrizeId = Math.max(0, ...this.editDialog.item.prizeCfg.map(p => p.prizeId || 0))
-      this.editDialog.item.prizeCfg.push({ 
-        prizeId: maxPrizeId + 1, 
-        rewardAmount: 0, 
-        rewardMin: 0, 
-        rewardMax: 0, 
-        weight: 0, 
-        prizeNum: 0, 
-        prizeUnlimited: true, 
-        isBubble: false 
+      this.editDialog.item.prizeCfg.push({
+        prizeId: maxPrizeId + 1,
+        rewardAmount: 0,
+        rewardMin: 0,
+        rewardMax: 0,
+        weight: 0,
+        prizeNum: 0,
+        prizeUnlimited: true,
+        isBubble: false
       })
     },
     handlePrizeDelete(index) {

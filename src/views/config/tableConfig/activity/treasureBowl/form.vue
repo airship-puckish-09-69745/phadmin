@@ -361,7 +361,7 @@ export default {
       cpy.totalPrizeThreshold = Math.floor((cpy.totalPrizeThreshold || 0) * 1000)
 
       // 奖池配置转换
-      cpy.prizePoolCfg = (cpy.prizePoolCfg || []).map(pool => {
+      const prizePoolCfgArray = (cpy.prizePoolCfg || []).map(pool => {
         const encoded = {
           tierId: pool.tierId || 0,
           sockBaseNum: pool.sockBaseNum,
@@ -385,15 +385,23 @@ export default {
       })
 
       // 排行榜配置转换
-      cpy.rankCfg = (cpy.rankCfg || []).map(rank => ({
+      const rankCfgArray = (cpy.rankCfg || []).map(rank => ({
         rankStart: rank.rankStart,
         rankEnd: rank.rankEnd,
         reward: Math.floor((rank.reward || 0) * 1000)
       }))
 
-      cpy.rankCfg = JSON.parse(JSON.stringify(cpy.rankCfg))
-      console.log(cpy.rankCfg)
+      // 播报配置（如果存在）
+      const broadcastCfg = cpy.broadcastCfg || { threshold: 500, maxCount: 50 }
 
+      // 白名单配置（如果存在）
+      const whitelistCfg = cpy.whitelistCfg || { appIdList: [], siteIdList: [] }
+
+      // 转换为 JSON 字符串（因为request拦截器会使用FormData，需要序列化复杂对象）
+      cpy.prizePoolCfg = JSON.stringify(prizePoolCfgArray)
+      cpy.rankCfg = JSON.stringify(rankCfgArray)
+      cpy.broadcastCfg = JSON.stringify(broadcastCfg)
+      cpy.whitelistCfg = JSON.stringify(whitelistCfg)
       return cpy
     },
 
@@ -429,13 +437,11 @@ export default {
       const postData = this.encodeData()
       postData.env = this.env
 
-      const data = JSON.parse(JSON.stringify(this.item))
-
       const url = '/activitytreasurebowl/create'
       request({
         url: url,
         method: 'post',
-        data: data
+        data: postData
       }).then(response => {
         if (response.RetCode === 0) {
           Message.success('保存成功！')
@@ -546,7 +552,6 @@ export default {
       if (!this.item.gameIdCfg || this.item.gameIdCfg.length === 0) {
         return Message.warning('请先选择参与活动的游戏')
       }
-
       // 根据当前选中的游戏ID，构建排序列表
       this.gamesSorted = this.item.gameIdCfg.map(gameId => {
         return {
