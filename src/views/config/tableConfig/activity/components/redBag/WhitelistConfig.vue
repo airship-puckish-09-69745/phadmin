@@ -2,12 +2,12 @@
   <el-form ref="whitelistForm" label-width="220px">
     <el-row>
       <el-col>
-        <el-form-item label="白名单开关:">
+        <el-form-item label="白名单开关">
           <el-switch v-model="formData.isWhite" :active-value="true" :inactive-value="false"/>
         </el-form-item>
       </el-col>
       <el-col :span="11">
-        <el-form-item label="AppId白名单:" prop="appIdList">
+        <el-form-item label="AppId白名单" prop="appIdList">
           <el-select
             v-model="formData.appIdList"
             multiple
@@ -25,7 +25,7 @@
         </el-form-item>
       </el-col>
       <el-col>
-        <el-form-item label="SiteId白名单：" prop="siteIdList">
+        <el-form-item label="SiteId白名单" prop="siteIdList">
           <SiteSelect
             v-model="formData.siteIdList"
             multiple
@@ -37,7 +37,7 @@
     </el-row>
     <el-row>
       <el-col :span="11">
-        <el-form-item label="A/B测试开关：" prop="abTest">
+        <el-form-item label="A/B测试开关" prop="abTest">
           <el-switch
             v-model="formData.abTest.switch"
             :active-value="true"
@@ -50,7 +50,7 @@
     </el-row>
     <el-row>
       <el-col :span="9">
-        <el-form-item label="B分组比例：" prop="bPercent">
+        <el-form-item label="B分组比例" prop="bPercent">
           <el-input
             v-model.number="formData.abTest.bPercent"
             placeholder="请输入B分组比例"
