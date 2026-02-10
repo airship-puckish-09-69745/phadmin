@@ -4,17 +4,17 @@
       <el-col :span="16">
         <el-form ref="item" label-width="220px">
           <el-col>
-            <el-form-item label="活动名称：" :required="true">
+            <el-form-item label="活动名称" :required="true">
               <el-input v-model="formData.activityName" style="width: 200px;" placeholder="请输入活动名称" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="活动开关：">
+            <el-form-item label="活动开关">
               <el-switch v-model="formData.isOpen" :active-value="true" :inactive-value="false" />
             </el-form-item>
           </el-col>
           <el-col>
-            <el-form-item label="活动开始时间：">
+            <el-form-item label="活动开始时间">
               <el-date-picker
                 v-model="formData.startTime"
                 type="datetime"
@@ -25,7 +25,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="活动结束时间：">
+            <el-form-item label="活动结束时间">
               <el-date-picker
                 v-model="formData.endTime"
                 type="datetime"
@@ -36,7 +36,7 @@
             </el-form-item>
           </el-col>
           <el-col>
-            <el-form-item label="每日活动开始时间：">
+            <el-form-item label="每日活动开始时间">
               <el-date-picker
                 v-model="formData.everyDayStartTime"
                 type="datetime"
@@ -47,7 +47,7 @@
             </el-form-item>
           </el-col>
           <el-col>
-            <el-form-item label="每日活动结束时间：">
+            <el-form-item label="每日活动结束时间">
               <el-date-picker
                 v-model="formData.everyDayEndTime"
                 type="datetime"
@@ -58,7 +58,7 @@
             </el-form-item>
           </el-col>
           <el-col>
-            <el-form-item label="单日弹窗次数：">
+            <el-form-item label="单日弹窗次数">
               <el-input v-model.number="formData.showTimes" style="width: 200px;" placeholder="请输入限制数量" />
               <el-tooltip class="item" effect="light" placement="right-start">
                 <template #content>
@@ -69,12 +69,12 @@
             </el-form-item>
           </el-col>
           <el-col>
-            <el-form-item label="活动展示金额：">
+            <el-form-item label="活动展示金额">
               <el-input v-model.number="formData.showGold" style="width: 200px;" placeholder="请输入显示金额数量" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="参与活动用户类型：" :required="true">
+            <el-form-item label="参与活动用户类型" :required="true">
               <el-select v-model="formData.userType" placeholder="请选择" style="width:280px" @change="onUserTypeChange">
                 <el-option
                   v-for="item in userTypes"
@@ -86,7 +86,7 @@
             </el-form-item>
           </el-col>
           <el-col v-if="formData.userType == 5">
-            <el-form-item label="标签子类：">
+            <el-form-item label="标签子类">
               <el-select v-model="formData.userLabel" placeholder="请选择标签子类">
                 <el-option
                   v-for="item in userTagIdOptions"
@@ -98,12 +98,17 @@
             </el-form-item>
           </el-col>
           <el-col>
-            <el-form-item label="限制红包发送金币额度：" :required="true">
+            <el-form-item label="限制红包发送金币额度" :required="true">
               <el-input v-model="formData.limitMaxNum" style="width: 200px;" placeholder="请输入限制数量" />
             </el-form-item>
           </el-col>
+          <el-col v-if="store.getters.env == 'test'">
+            <el-form-item label="时间偏移(秒)" :required="true">
+              <el-input v-model="formData.timeS" style="width: 200px;" placeholder="请输入限制数量" />
+            </el-form-item>
+          </el-col>
           <el-col :span="12">
-            <el-form-item label="消息推送开关：">
+            <el-form-item label="消息推送开关">
               <el-switch v-model="formData.isSend" :active-value="true" :inactive-value="false" />
               <el-tooltip class="item" effect="light" placement="right-start">
                 <template #content>
@@ -114,7 +119,7 @@
             </el-form-item>
           </el-col>
           <el-col>
-            <el-form-item label="奖励类型：">
+            <el-form-item label="奖励类型">
               <el-radio-group v-model="formData.rewardType">
                 <el-radio :label="1">投注金</el-radio>
                 <el-radio :label="2">返水金</el-radio>
@@ -122,7 +127,7 @@
             </el-form-item>
           </el-col>
           <el-col>
-            <el-form-item label="玩法大类型：">
+            <el-form-item label="玩法大类型">
               <el-radio-group v-model="formData.gameType" @change="handleGameTypeChange">
                 <el-radio :label="1">Slot</el-radio>
                 <el-radio :label="2">Poker</el-radio>
@@ -137,7 +142,7 @@
     <el-row :gutter="5">
       <el-form label-width="220px">
         <el-col :span="12">
-          <el-form-item label="勾选支持的游戏：" :required="true">
+          <el-form-item label="勾选支持的游戏" :required="true">
             <el-input
               v-model="filterText"
               placeholder="输入关键字进行过滤"
@@ -153,7 +158,7 @@
               @check-change="handleCheckChange"
             />
           </el-form-item>
-          <el-form-item label="给选中游戏排序：" :required="true">
+          <el-form-item label="给选中游戏排序" :required="true">
             <el-button size="mini" type="primary" @click="showGamesSortDialog">
               排序
             </el-button>
@@ -209,6 +214,7 @@
 
 <script>
 import request from '@/utils/request'
+import store from "@/store";
 
 export default {
   name: 'ActivityBaseConfig',
@@ -246,6 +252,9 @@ export default {
     }
   },
   computed: {
+    store() {
+      return store
+    },
     // 计算属性 formData 用于实现 v-model 的双向绑定
     formData: {
       // formData 作为 v-model 的代理，get 返回父组件传递的 value，
