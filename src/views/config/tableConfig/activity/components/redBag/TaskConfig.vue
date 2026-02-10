@@ -70,7 +70,7 @@
       width="70%"
     >
       <el-form ref="editForm" :model="editItem" label-width="250px" size="small">
-        <el-form-item label="配置ID：" :required="true" prop="id">
+        <el-form-item label="配置ID" :required="true" prop="id">
           <el-col :span="15">
             <el-input v-model.number="editItem.id" :disabled="isEdit" placeholder="请填写配置id描述" />
           </el-col>
@@ -78,7 +78,7 @@
 
         <!-- 任务配置字段 -->
         <el-divider content-position="left">任务配置</el-divider>
-        <el-form-item label="任务类型：" :required="true" prop="taskType">
+        <el-form-item label="任务类型" :required="true" prop="taskType">
           <el-col :span="15">
             <el-select v-model.number="editItem.taskType" placeholder="请选择" style="width: 250px">
               <el-option
@@ -90,7 +90,7 @@
             </el-select>
           </el-col>
         </el-form-item>
-        <el-form-item label="任务条件：" :required="true" prop="matchNum">
+        <el-form-item label="任务条件" :required="true" prop="matchNum">
           <el-col :span="15">
             <el-input v-model.number="editItem.matchNum" placeholder="任务条件" />
           </el-col>
@@ -98,7 +98,7 @@
         <div v-if="editItem.taskType === 1">
           <!-- 红包配置字段 -->
           <el-divider content-position="left">红包配置</el-divider>
-          <el-form-item label="红包名称：" :required="true" prop="redId">
+          <el-form-item label="红包名称" :required="true" prop="redId">
             <el-col :span="15">
               <el-select v-model.number="editItem.redId" placeholder="请选择" style="width: 250px">
                 <el-option label="黄金红包" :value="1" />
@@ -107,7 +107,7 @@
               </el-select>
             </el-col>
           </el-form-item>
-          <el-form-item label="奖励配置：" :required="true">
+          <el-form-item label="奖励配置" :required="true">
             <el-button
               size="small"
               type="primary"
@@ -171,7 +171,7 @@
         <div v-if="editItem.taskType !== 1">
           <!-- 道具配置字段 -->
           <el-divider content-position="left">道具配置</el-divider>
-          <el-form-item label="道具配置：">
+          <el-form-item label="道具配置">
             <el-table
               :data="[editItem.propPools]"
               border
