@@ -303,9 +303,9 @@
                         </el-form-item>
                       </el-col>
                       <el-col :span="24">
-                        <el-form-item label="奖励类型：" prop="extend.progressTaskItems[0].rewardItems[0].rewardType" :required="true">
+                        <el-form-item label="奖励类型：" prop="extend.progressTaskItems[0].rewardItem.rewardType" :required="true">
                           <el-select
-                            v-model="edit.item.extend.progressTaskItems[0].rewardItems[0].rewardType"
+                            v-model="edit.item.extend.progressTaskItems[0].rewardItem.rewardType"
                             placeholder="请选择奖励类型"
                             size="mini"
                             @change="onProgressRewardTypeChange"
@@ -320,14 +320,14 @@
                         </el-form-item>
                       </el-col>
                     </el-row>
-                    <el-row v-if="edit.item.extend.progressTaskItems[0].rewardItems[0].rewardType === 4">
+                    <el-row v-if="edit.item.extend.progressTaskItems[0].rewardItem.rewardType === 4">
                       <el-col>
-                        <el-form-item label="道具类型：" prop="extend.progressTaskItems[0].rewardItems[0].rewardSubType" :required="true">
+                        <el-form-item label="道具类型：" prop="extend.progressTaskItems[0].rewardItem.rewardSubType" :required="true">
                           <el-select
-                            v-model="edit.item.extend.progressTaskItems[0].rewardItems[0].rewardSubType"
+                            v-model="edit.item.extend.progressTaskItems[0].rewardItem.rewardSubType"
                             placeholder="请选择道具类型"
                             size="mini"
-                            @change="updatePropOptions(edit.item.extend.progressTaskItems[0].rewardItems[0].rewardSubType, 0)"
+                            @change="updatePropOptions(edit.item.extend.progressTaskItems[0].rewardItem.rewardSubType, 0)"
                           >
                             <el-option
                               v-for="item in propTypeOptions"
@@ -339,8 +339,8 @@
                         </el-form-item>
                       </el-col>
                       <el-col :span="24">
-                        <el-form-item label="道具名称：" prop="extend.progressTaskItems[0].rewardItems[0].rewardId" :required="true">
-                          <el-select v-model.number="edit.item.extend.progressTaskItems[0].rewardItems[0].rewardId" placeholder="请选择道具">
+                        <el-form-item label="道具名称：" prop="extend.progressTaskItems[0].rewardItem.rewardId" :required="true">
+                          <el-select v-model.number="edit.item.extend.progressTaskItems[0].rewardItem.rewardId" placeholder="请选择道具">
                             <el-option
                               v-for="item in getPropOptions(0)"
                               :key="item.value"
@@ -350,13 +350,13 @@
                           </el-select>
                         </el-form-item>
                       </el-col>
-                      <el-col :span="24" v-if="showPropTimeOptions(edit.item.extend.progressTaskItems[0].rewardItems[0].rewardSubType)">
+                      <el-col :span="24" v-if="showPropTimeOptions(edit.item.extend.progressTaskItems[0].rewardItem.rewardSubType)">
                         <el-form-item
                           label="可用时间："
-                          prop="extend.progressTaskItems[0].rewardItems[0].rewardExpireDays" :required="true"
+                          prop="extend.progressTaskItems[0].rewardItem.rewardExpireDays" :required="true"
                         >
                           <el-select
-                            v-model.number="edit.item.extend.progressTaskItems[0].rewardItems[0].rewardExpireDays"
+                            v-model.number="edit.item.extend.progressTaskItems[0].rewardItem.rewardExpireDays"
                             placeholder="请选择可用时间"
                           >
                             <el-option
@@ -372,9 +372,9 @@
                     <el-row>
                       <el-col :span="12">
                         <el-form-item label="奖励数值：" prop="extend.progressReward" :required="true">
-                          <el-input v-model="edit.item.extend.progressTaskItems[0].rewardItems[0].rewardNum" placeholder="请输入奖励数值" >
+                          <el-input v-model="edit.item.extend.progressTaskItems[0].rewardItem.rewardNum" placeholder="请输入奖励数值" >
                             <template slot="append">
-                              （{{ getRewardUnit(edit.item.extend.progressTaskItems[0].rewardItems[0].rewardType) }}）
+                              （{{ getRewardUnit(edit.item.extend.progressTaskItems[0].rewardItem.rewardType) }}）
                             </template>
                           </el-input>
                         </el-form-item>
@@ -619,13 +619,13 @@ function newItem() {
       progressTaskItems: [
         {
           targetValue: 0,
-          rewardItems: [{
+          rewardItem: {
             rewardId: 0,
             rewardNum: 0,
             rewardType: 2, // 奖励类型 1. 金币 2. 投注金 3. 返水金 4 .道具
             rewardSubType: 0,
             rewardExpireDays: 1
-          }]
+          }
         }
       ],
       userFilterType: 0,
@@ -761,10 +761,10 @@ export default {
       propOptions: [],
       // 道具类型选项列表
       propTypeOptions: [
-        { 'value': 1, 'label': 'Tongits门票', disabled: false },
+        /*{ 'value': 1, 'label': 'Tongits门票', disabled: false },
         { 'value': 2, 'label': '头像框', disabled: false },
         { 'value': 3, 'label': '德州门票', disabled: false },
-        { 'value': 4, 'label': '德州头像框', disabled: false },
+        { 'value': 4, 'label': '德州头像框', disabled: false },*/
         { 'value': 5, 'label': 'SlotFreeSpin', disabled: false }
       ],
       // 道具有效时长选项列表
@@ -1013,7 +1013,7 @@ export default {
       if (item.extend.progressTaskItems && item.extend.progressTaskItems.length > 0) {
         const taskItem = item.extend.progressTaskItems[0]
         taskItem.targetValue = item.extend.minScore
-        const rewardItem = taskItem.rewardItems[0]
+        const rewardItem = taskItem.rewardItem
         if (rewardItem.rewardType === 2) {
           rewardItem.rewardNum *= 1000
         }
@@ -1113,7 +1113,7 @@ export default {
             })
           }
           if (item.extend.progressTaskItems && item.extend.progressTaskItems.length > 0) {
-            const rewardItem = item.extend.progressTaskItems[0].rewardItems[0]
+            const rewardItem = item.extend.progressTaskItems[0].rewardItem
             if (rewardItem.rewardType === 2) { // 金币时需要除以1000
               rewardItem.rewardNum /= 1000
             }
@@ -1175,7 +1175,7 @@ export default {
       this.edit.userTagIdOptions = tagOptions && tagOptions.children || []
     },
     onProgressRewardTypeChange() {
-      const rewardItem = this.edit.item.extend.progressTaskItems[0].rewardItems[0]
+      const rewardItem = this.edit.item.extend.progressTaskItems[0].rewardItem
       if ([1, 2, 3].includes(rewardItem.rewardType)) {
         rewardItem.rewardId = 0
         rewardItem.rewardSubType = 0
