@@ -16,18 +16,18 @@
           <el-row :gutter="20">
             <el-col :span="24">
               <el-form-item label="活动名称：" required>
-                <el-input v-model="item.activityName" placeholder="请输入活动名称" style="max-width: 400px" />
+                <el-input v-model="item.activityName" placeholder="请输入活动名称" style="max-width: 400px"/>
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
               <el-form-item label="活动开关：">
-                <el-switch v-model="item.isOpen" :active-value="true" :inactive-value="false" />
+                <el-switch v-model="item.isOpen" :active-value="true" :inactive-value="false"/>
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
               <el-form-item label="奖励类型：">
                 <el-select v-model="item.rewardType" placeholder="请选择">
-                  <el-option v-for="opt in rewardTypes" :key="opt.value" :label="opt.label" :value="opt.value" />
+                  <el-option v-for="opt in rewardTypes" :key="opt.value" :label="opt.label" :value="opt.value"/>
                 </el-select>
                 <div style="color: #999; font-size: 12px; line-height: 1.4; margin-top: 4px">
                   投注金：只能在GameZone厅内所有游戏使用的投注金
@@ -56,17 +56,20 @@
             </el-col>
             <el-col :xs="24" :sm="12">
               <el-form-item label="开始时间：" required>
-                <el-date-picker v-model="item.startTime" type="datetime" placeholder="选择开始时间" value-format="timestamp" style="width:  200px" />
+                <el-date-picker v-model="item.startTime" type="datetime" placeholder="选择开始时间"
+                                value-format="timestamp" style="width:  200px"/>
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
               <el-form-item label="结束时间：" required>
-                <el-date-picker v-model="item.endTime" type="datetime" placeholder="选择结束时间" value-format="timestamp" style="width: 200px" />
+                <el-date-picker v-model="item.endTime" type="datetime" placeholder="选择结束时间"
+                                value-format="timestamp" style="width: 200px"/>
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
               <el-form-item label="展示结束时间：">
-                <el-date-picker v-model="item.showEndTime" type="datetime" placeholder="选择展示结束时间" value-format="timestamp" style="width: 200px" />
+                <el-date-picker v-model="item.showEndTime" type="datetime" placeholder="选择展示结束时间"
+                                value-format="timestamp" style="width: 200px"/>
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
@@ -82,7 +85,8 @@
           <el-row>
             <el-col :span="24">
               <el-form-item label="参与活动游戏：" required>
-                <el-input v-model="filterText" placeholder="输入关键字搜索游戏" style="max-width: 300px; margin-bottom: 8px" />
+                <el-input v-model="filterText" placeholder="输入关键字搜索游戏"
+                          style="max-width: 300px; margin-bottom: 8px"/>
                 <el-tree
                   ref="tree"
                   :data="treeData"
@@ -110,15 +114,15 @@
 
       <!-- ========== 奖池配置 ========== -->
       <el-tab-pane label="奖池配置" name="prizePool">
-        <PrizePoolConfig v-model="item" />
+        <PrizePoolConfig v-model="item"/>
       </el-tab-pane>
       <!-- ========== 排行榜配置 ========== -->
       <el-tab-pane label="排行榜配置" name="ranking">
-        <RankingConfig v-model="item" />
+        <RankingConfig v-model="item"/>
       </el-tab-pane>
       <!-- ========== 奖励播报配置 ========== -->
       <el-tab-pane label="奖励播报配置" name="broadcast">
-        <BroadcastConfig v-model="item" />
+        <BroadcastConfig v-model="item"/>
       </el-tab-pane>
 
       <!-- ========== 白名单配置 ========== -->
@@ -127,7 +131,8 @@
           <el-row :gutter="20">
             <el-col :xs="24" :sm="12">
               <el-form-item label="站点白名单：">
-                <SiteSelect v-model="item.whitelistCfg.siteIdList" multiple placeholder="请选择" style="width: 100%; max-width: 400px" />
+                <SiteSelect v-model="item.whitelistCfg.siteIdList" multiple placeholder="请选择"
+                            style="width: 100%; max-width: 400px"/>
               </el-form-item>
             </el-col>
           </el-row>
@@ -147,8 +152,8 @@
         提示：排序编号越小，游戏在活动中的展示顺序越靠前
       </div>
       <el-table :data="gamesSorted" border stripe max-height="400">
-        <el-table-column prop="gameId" label="游戏ID" width="100" align="center" />
-        <el-table-column prop="name" label="游戏名称" min-width="150" />
+        <el-table-column prop="gameId" label="游戏ID" width="100" align="center"/>
+        <el-table-column prop="name" label="游戏名称" min-width="150"/>
         <el-table-column prop="orderNo" label="排序编号" width="150" align="center">
           <template slot-scope="scope">
             <el-input
@@ -177,7 +182,7 @@
 </template>
 
 <script>
-import { Message } from 'element-ui'
+import {Message} from 'element-ui'
 import request from '@/utils/request'
 import store from '@/store'
 import SiteSelect from '@/components/SiteSelect/index.vue'
@@ -187,14 +192,14 @@ import BroadcastConfig from './components/BroadcastConfig.vue'
 
 // 默认排行榜配置
 const DEFAULT_RANK_CFG = [
-  { rankStart: 1, rankEnd: 1, reward: 7777 },
-  { rankStart: 2, rankEnd: 2, reward: 2777 },
-  { rankStart: 3, rankEnd: 3, reward: 1777 },
-  { rankStart: 4, rankEnd: 5, reward: 777 },
-  { rankStart: 6, rankEnd: 10, reward: 277 },
-  { rankStart: 11, rankEnd: 20, reward: 177 },
-  { rankStart: 21, rankEnd: 50, reward: 77 },
-  { rankStart: 51, rankEnd: 100, reward: 17 }
+  {rankStart: 1, rankEnd: 1, reward: 7777},
+  {rankStart: 2, rankEnd: 2, reward: 2777},
+  {rankStart: 3, rankEnd: 3, reward: 1777},
+  {rankStart: 4, rankEnd: 5, reward: 777},
+  {rankStart: 6, rankEnd: 10, reward: 277},
+  {rankStart: 11, rankEnd: 20, reward: 177},
+  {rankStart: 21, rankEnd: 50, reward: 77},
+  {rankStart: 51, rankEnd: 100, reward: 17}
 ]
 
 // 创建空白活动数据
@@ -207,11 +212,12 @@ function createNewItem() {
     showEndTime: Date.now() + 31 * 24 * 60 * 60 * 1000,
     sockGainRatio: 10,
     rewardType: 2,
+    status: 6,
     dayPrizeThreshold: 0,
     totalPrizeThreshold: 0,
     prizePoolCfg: [],
     rankCfg: JSON.parse(JSON.stringify(DEFAULT_RANK_CFG)),
-    broadcastCfg: { threshold: 500, maxCount: 50 },
+    broadcastCfg: {threshold: 500, maxCount: 50},
     gameIdCfg: [],
     whitelistCfg: {
       siteIdList: []
@@ -220,11 +226,11 @@ function createNewItem() {
 }
 
 export default {
-  components: { SiteSelect, PrizePoolConfig, RankingConfig, BroadcastConfig },
+  components: {SiteSelect, PrizePoolConfig, RankingConfig, BroadcastConfig},
   props: {
-    visible: { type: Boolean, default: false },
-    isEdit: { type: Boolean, default: false },
-    editData: { type: Object, default: () => ({}) }
+    visible: {type: Boolean, default: false},
+    isEdit: {type: Boolean, default: false},
+    editData: {type: Object, default: () => ({})}
   },
   data() {
     return {
@@ -237,12 +243,12 @@ export default {
       treeData: [],
       allTreeData: [],
       filterText: '',
-      defaultProps: { label: 'label', children: 'children', disabled: 'disabled' },
+      defaultProps: {label: 'label', children: 'children', disabled: 'disabled'},
       filterGameIds: [2031, 10002],
 
       // 奖励类型选项
       rewardTypes: [
-        { value: 2, label: '投注金' }
+        {value: 2, label: '投注金'}
       ],
 
       // 游戏排序弹窗
@@ -260,8 +266,8 @@ export default {
         } else {
           this.item = createNewItem()
         }
-        this.getGameAll()
       }
+      this.getGameAll()
     },
     dialogVisible(val) {
       this.$emit('update:visible', val)
@@ -281,6 +287,51 @@ export default {
     loadEditData() {
       const data = JSON.parse(JSON.stringify(this.editData))
 
+      // 兼容后端返回 whitelistCfg 为字符串的情况
+      if (typeof data.whitelistCfg === 'string') {
+        try {
+          data.whitelistCfg = JSON.parse(data.whitelistCfg)
+        } catch (e) {
+          data.whitelistCfg = {siteIdList: []}
+        }
+      }
+      // 排行榜配置
+      if (typeof data.rankCfg === 'string') {
+        try {
+          data.rankCfg = JSON.parse(data.rankCfg)
+        } catch (e) {
+          data.rankCfg = JSON.parse(JSON.stringify(DEFAULT_RANK_CFG))
+        }
+      }
+      // 奖池
+      if (typeof data.prizePoolCfg === 'string') {
+        try {
+          data.prizePoolCfg = JSON.parse(data.prizePoolCfg)
+        } catch (e) {
+          data.prizePoolCfg = []
+        }
+      }
+      // 白名单配置
+      if (typeof data.whitelistCfg.siteIdList === 'string') {
+        try {
+          data.whitelistCfg.siteIdList = JSON.parse(data.whitelistCfg.siteIdList)
+        } catch (e) {
+          data.whitelistCfg.siteIdList = []
+        }
+      }
+      // 播报配置
+      if (typeof data.broadcastCfg === 'string') {
+        try {
+          data.broadcastCfg = JSON.parse(data.broadcastCfg)
+        } catch (e) {
+          data.broadcastCfg = {threshold: 500, maxCount: 50}
+        }
+      }
+      // 游戏列表
+      if (typeof data.gameIdCfg === 'string') {
+        data.gameIdCfg = data.gameIdCfg.split(',').filter(v => v)
+      }
+
       // 时间：秒 -> 毫秒
       if (data.startTime) data.startTime *= 1000
       if (data.endTime) data.endTime *= 1000
@@ -291,58 +342,36 @@ export default {
       if (data.totalPrizeThreshold != null) data.totalPrizeThreshold /= 1000
 
       // 奖池配置转换
-      if (Array.isArray(data.prizePoolCfg)) {
-        data.prizePoolCfg.forEach((pool, poolIdx) => {
-          if (!pool) return
-          if (!Array.isArray(pool.prizeCfg)) pool.prizeCfg = []
-          // Assign tierId if not present
-          if (pool.tierId === undefined) pool.tierId = poolIdx + 1
-          if (pool.raffleLevel) pool.raffleLevel /= 1000
-          if (pool.coefficientMin) pool.coefficientMin /= 10
-          if (pool.coefficientMax) pool.coefficientMax /= 10
-          pool.prizeCfg.forEach((prize, prizeIdx) => {
-            if (!prize) return
-            // Assign prizeId if not present
-            if (prize.prizeId === undefined) prize.prizeId = prizeIdx + 1
-            // Convert old format to new format
-            if (prize.reward !== undefined) {
-              prize.rewardAmount = prize.reward / 1000
-              prize.rewardMin = prize.reward / 1000
-              prize.rewardMax = prize.reward / 1000
-            } else {
-              if (prize.rewardAmount) prize.rewardAmount /= 1000
-              if (prize.rewardMin) prize.rewardMin /= 1000
-              if (prize.rewardMax) prize.rewardMax /= 1000
-            }
-          })
+      data.prizePoolCfg.forEach((pool, poolIdx) => {
+        if (!pool) return
+        if (!Array.isArray(pool.prizeCfg)) pool.prizeCfg = []
+        // Assign tierId if not present
+        if (pool.tierId === undefined) pool.tierId = poolIdx + 1
+        if (pool.raffleLevel) pool.raffleLevel /= 1000
+        if (pool.coefficientMin) pool.coefficientMin
+        if (pool.coefficientMax) pool.coefficientMax
+        pool.prizeCfg.forEach((prize, id) => {
+          if (!prize) return
+          if (prize.id === undefined) prize.id = id + 1
+          if (prize.reward !== undefined) {
+            prize.rewardAmount = prize.reward / 1000
+            prize.rewardMin = prize.reward / 1000
+            prize.rewardMax = prize.reward / 1000
+          } else {
+            if (prize.rewardAmount) prize.rewardAmount /= 1000
+            if (prize.rewardMin) prize.rewardMin /= 1000
+            if (prize.rewardMax) prize.rewardMax /= 1000
+          }
         })
-      } else {
-        data.prizePoolCfg = []
-      }
-
+      })
       // 排行榜配置转换
-      if (Array.isArray(data.rankCfg)) {
-        data.rankCfg.forEach(rank => {
-          if (rank && rank.reward) rank.reward /= 1000
-        })
-      } else {
-        data.rankCfg = JSON.parse(JSON.stringify(DEFAULT_RANK_CFG))
-      }
-
-      // 播报配置
-      if (!data.broadcastCfg) {
-        data.broadcastCfg = { threshold: 500, maxCount: 50 }
-      }
-
-      // 白名单
-      if (!data.whitelistCfg) {
-        data.whitelistCfg = {siteIdList: [] }
-      }
-      if (!Array.isArray(data.whitelistCfg.siteIdList)) data.whitelistCfg.siteIdList = []
-
-      // 游戏列表
-      if (!Array.isArray(data.gameIdCfg)) data.gameIdCfg = []
-
+      data.rankCfg.forEach(rank => {
+        if (rank && rank.reward) rank.reward /= 1000
+      })
+      console.log(11111)
+      console.log(data.broadcastCfg.threshold)
+      // 奖励播报配置
+      if (data.broadcastCfg.threshold) data.broadcastCfg.threshold /= 1000
       this.item = data
     },
 
@@ -365,21 +394,19 @@ export default {
           tierId: pool.tierId || 0,
           sockBaseNum: pool.sockBaseNum,
           raffleLevel: Math.floor((pool.raffleLevel || 0) * 1000),
-          rewardMax: 0,
-          coefficientMin: Math.round((pool.coefficientMin || 0) * 10),
-          coefficientMax: Math.round((pool.coefficientMax || 0) * 10),
+          coefficientMin: pool.coefficientMin,
+          coefficientMax: pool.coefficientMax,
           prizeCfg: (pool.prizeCfg || []).map(prize => ({
-            prizeId: prize.prizeId || 0,
+            ...prize,
             rewardAmount: Math.floor((prize.rewardAmount || 0) * 1000),
             rewardMin: Math.floor((prize.rewardMin || 0) * 1000),
             rewardMax: Math.floor((prize.rewardMax || 0) * 1000),
-            weight: prize.weight,
-            prizeNum: prize.prizeNum,
-            prizeUnlimited: prize.prizeUnlimited
+            // weight: prize.weight,
+            // prizeNum: prize.prizeNum,
+            // prizeUnlimited: prize.prizeUnlimited,
+            // isBubble: prize.isBubble
           }))
         }
-        // 计算最大奖励 (use rewardMax from prizes)
-        encoded.rewardMax = Math.max(0, ...encoded.prizeCfg.map(p => p.rewardMax))
         return encoded
       })
 
@@ -389,12 +416,14 @@ export default {
         rankEnd: rank.rankEnd,
         reward: Math.floor((rank.reward || 0) * 1000)
       }))
-
-      // 播报配置（如果存在）
-      const broadcastCfg = cpy.broadcastCfg || { threshold: 500, maxCount: 50 }
+      // 播报配置（如果存在）- 显式提取属性以避免Vue响应式对象序列化问题
+      const broadcastCfg = {
+        threshold: this.item.broadcastCfg.threshold * 1000,
+        maxCount: this.item.broadcastCfg.maxCount
+      }
 
       // 白名单配置（如果存在）
-      const whitelistCfg = cpy.whitelistCfg || { appIdList: [], siteIdList: [] }
+      const whitelistCfg = cpy.whitelistCfg || { siteIdList: []}
 
       // 转换为 JSON 字符串（因为request拦截器会使用FormData，需要序列化复杂对象）
       cpy.prizePoolCfg = JSON.stringify(prizePoolCfgArray)
@@ -432,10 +461,31 @@ export default {
     // 保存
     handleSave() {
       if (!this.validate()) return
-
       const postData = this.encodeData()
-
-      const url = '/activitytreasurebowl/create'
+      if (this.isEdit) {
+        this.handleEditData(postData)
+      } else {
+        // 添加默认 6: '下架'
+        postData.status = 6
+        this.handleAddData(postData)
+      }
+    },
+    handleEditData(postData) {
+      const url = '/treasurebowlactivity/update'
+      request({
+        url: url,
+        method: 'post',
+        data: postData
+      }).then(response => {
+        if (response.RetCode === 0) {
+          Message.success('保存成功！')
+          this.dialogVisible = false
+          this.$emit('refresh')
+        }
+      })
+    },
+    handleAddData(postData) {
+      const url = '/treasurebowlactivity/create'
       request({
         url: url,
         method: 'post',
@@ -477,7 +527,7 @@ export default {
         url: '/thirdpartygames/all',
         method: 'get',
         data: {},
-        params: { status: 2 }
+        params: {status: 2}
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
@@ -492,7 +542,7 @@ export default {
             // 只保留 CategoryID=2 (Poker)
             if (obj.CategoryID !== 2) continue
 
-            const game = { Gid: obj.Gid, Name: obj.Name, Description: obj.Description }
+            const game = {Gid: obj.Gid, Name: obj.Name, Description: obj.Description}
             if (Object.prototype.hasOwnProperty.call(data, obj.CategoryID)) {
               data[obj.CategoryID].push(game)
             } else {
@@ -501,15 +551,15 @@ export default {
           }
 
           // 构建游戏树结构，只保留 poker
-          const categories = { 2: 'Poker' }
+          const categories = {2: 'Poker'}
           const builtTree = []
 
           for (const key in data) {
             const games = data[key]
-            const cty = { id: 'p-' + key, label: categories[key], children: [] }
+            const cty = {id: 'p-' + key, label: categories[key], children: []}
             for (let i = 0; i < games.length; i++) {
               const game = games[i]
-              cty.children.push({ id: game.Gid, label: game.Name })
+              cty.children.push({id: game.Gid, label: game.Name})
             }
             builtTree.push(cty)
           }

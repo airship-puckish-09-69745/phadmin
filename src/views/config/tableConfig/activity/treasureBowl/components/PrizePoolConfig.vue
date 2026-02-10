@@ -97,7 +97,7 @@
 
         <div class="prize-table-wrapper" style="margin-top: 8px">
           <el-table :data="editDialog.item.prizeCfg" border :cell-style="cellStyle">
-            <el-table-column prop="prizeId" label="ID" width="60" align="center" />
+            <el-table-column prop="id" label="ID" width="60" align="center" />
             <el-table-column label="奖励(展示)" width="120" align="center">
               <template slot-scope="scope">
                 <el-input v-model.number="scope.row.rewardAmount" size="mini" placeholder="奖励金额" />
@@ -177,7 +177,7 @@ function createNewPool() {
     coefficientMin: 0.8,
     coefficientMax: 1.2,
     prizeCfg: [
-      { prizeId: 1, rewardAmount: 0, rewardMin: 0, rewardMax: 0, weight: 1, prizeNum: 0, prizeUnlimited: true, isBubble: false }
+      { id: 1, rewardAmount: 0, rewardMin: 0, rewardMax: 0, weight: 1, prizeNum: 0, prizeUnlimited: true, isBubble: false }
     ]
   }
 }
@@ -229,9 +229,8 @@ export default {
       // Ensure isBubble field exists on all prizes for Vue reactivity
       data.prizeCfg = data.prizeCfg.map((p, idx) => ({
         ...p,
-        prizeId: p.prizeId !== undefined ? p.prizeId : idx + 1,
+        id: p.id !== undefined ? p.id : idx + 1,
         isBubble: p.isBubble !== undefined ? p.isBubble : false,
-        // Convert old format to new format if needed
         rewardAmount: p.rewardAmount !== undefined ? p.rewardAmount : (p.reward || 0),
         rewardMin: p.rewardMin !== undefined ? p.rewardMin : (p.reward || 0),
         rewardMax: p.rewardMax !== undefined ? p.rewardMax : (p.reward || 0)
@@ -255,9 +254,9 @@ export default {
         Message.warning(`每个挡位最多${MAX_PRIZE_COUNT}个奖项`)
         return
       }
-      const maxPrizeId = Math.max(0, ...this.editDialog.item.prizeCfg.map(p => p.prizeId || 0))
+      const maxid = Math.max(0, ...this.editDialog.item.prizeCfg.map(p => p.id || 0))
       this.editDialog.item.prizeCfg.push({
-        prizeId: maxPrizeId + 1,
+        id: maxid + 1,
         rewardAmount: 0,
         rewardMin: 0,
         rewardMax: 0,
@@ -300,19 +299,19 @@ export default {
       for (let i = 0; i < item.prizeCfg.length; i++) {
         const prize = item.prizeCfg[i]
         if (prize.rewardAmount == null || prize.rewardAmount <= 0) {
-          Message.error(`奖项${prize.prizeId}的奖励金额不能为0或空`)
+          Message.error(`奖项${prize.id}的奖励金额不能为0或空`)
           return
         }
         if (prize.rewardMin == null || prize.rewardMin <= 0) {
-          Message.error(`奖项${prize.prizeId}的最小金额不能为0或空`)
+          Message.error(`奖项${prize.id}的最小金额不能为0或空`)
           return
         }
         if (prize.rewardMax == null || prize.rewardMax <= 0) {
-          Message.error(`奖项${prize.prizeId}的最大金额不能为0或空`)
+          Message.error(`奖项${prize.id}的最大金额不能为0或空`)
           return
         }
         if (prize.rewardMin > prize.rewardMax) {
-          Message.error(`奖项${prize.prizeId}的最小金额不能大于最大金额`)
+          Message.error(`奖项${prize.id}的最小金额不能大于最大金额`)
           return
         }
       }

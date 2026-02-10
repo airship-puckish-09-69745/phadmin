@@ -72,7 +72,7 @@
             <el-tag :type="statusTagType[scope.row.status]" size="mini">{{ statusNames[scope.row.status] }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" column-key="op" width="240" fixed="right">
+        <el-table-column label="操作" column-key="op" width="300" fixed="right">
           <template slot-scope="scope">
             <el-button size="mini" type="primary" icon="el-icon-edit" @click="handleEdit(scope.row)">编辑</el-button>
             <el-button v-if="scope.row.status !== 2" size="mini" type="success" icon="el-icon-upload2" @click="handlePrepare(scope.row)">上架</el-button>
@@ -218,7 +218,7 @@ export default {
     // 获取列表
     getList() {
       request({
-        url: '/activitytreasurebowl/list',
+        url: '/treasurebowlactivity/list',
         method: 'get',
         data: {}
       }).then(response => {
@@ -259,7 +259,7 @@ export default {
         type: 'warning'
       }).then(() => {
         request({
-          url: '/activitytreasurebowl/delete',
+          url: '/treasurebowlactivity/delete',
           method: 'post',
           data: { id: ob.id }
         }).then(response => {
@@ -278,7 +278,7 @@ export default {
         type: 'warning'
       }).then(() => {
         request({
-          url: '/activitytreasurebowl/update/status',
+          url: '/treasurebowlactivity/update/status',
           method: 'post',
           data: { id: id, status: status }
         }).then(response => {
