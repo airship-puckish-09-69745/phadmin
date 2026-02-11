@@ -87,14 +87,6 @@
 
             <el-col :span="12">
               <el-form ref="item" :model="item" label-width="180px"> <!-- 调整 label-width 以适应两列布局 -->
-<!--                <el-form-item>-->
-<!--                  <el-alert-->
-<!--                    title="注：整个活动真正的结束时间是活动结束时间+任务配置天数+发奖持续天数"-->
-<!--                    type="warning"-->
-<!--                    :closable="false"-->
-<!--                    show-icon-->
-<!--                  />-->
-<!--                </el-form-item>-->
                 <el-form-item label="活动开关：" :rules="dataRule(true,{type:'n',range:'0'})">
                   <el-switch v-model="item.activity.IsOpen" :active-value="true" :inactive-value="false" />
                 </el-form-item>
@@ -140,6 +132,16 @@
                 <el-form-item label="每日发奖上限：" :required="true">
                   <el-input v-model="item.extend.ActivityExtend.ReceiveBonusMax" placeholder="请输入参数" />
                 </el-form-item>
+                <el-row gutter="10">
+                  <el-col :span="20">
+                    <el-form-item label="今日已发奖：">
+                      <el-input v-model="edit.bonusReward" disabled placeholder="今日已发奖" />
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="3" style="display: flex; align-items: flex-end;">
+                    <el-button type="primary" size="small" @click="getBonusReward" style="width: 100%;">刷新</el-button>
+                  </el-col>
+                </el-row>
                 <el-form-item label="星星解锁数量：" :required="true">
                   <el-input v-model.number="item.extend.ActivityExtend.StarUnlockCount" placeholder="请输入参数" />
                 </el-form-item>
@@ -169,7 +171,7 @@
               </el-form>
             </el-col>
 
-            <el-col :span="12">
+            <el-col :span="11">
               <fieldset style="margin-top: 0">
                 <legend>游戏入口配置</legend>
                 <el-button type="primary" size="mini" @click="addGameIcon()">添加配置</el-button>
@@ -182,7 +184,7 @@
                       style="width: 100%"
                       :cell-style="libShow.DefaultTableCell"
                     >
-                      <el-table-column prop="Id" label="游戏" width="250"> <!-- 调整列宽 -->
+                      <el-table-column prop="Id" label="游戏" width="220"> <!-- 调整列宽 -->
                         <template slot-scope="scope">
                           <el-cascader
                             v-model="scope.row.Id"
@@ -195,14 +197,14 @@
                           />
                         </template>
                       </el-table-column>
-                      <el-table-column prop="Img" label="图片" width="250"> <!-- 调整列宽 -->
+                      <el-table-column prop="Img" label="图片" width="220"> <!-- 调整列宽 -->
                         <template slot-scope="scope">
                           <div style="text-align: center;">
                             <ImagePicker v-model="scope.row.Img" size="mini" />
                           </div>
                         </template>
                       </el-table-column>
-                      <el-table-column label="操作" column-key="op" width="80"> <!-- 调整列宽 -->
+                      <el-table-column label="操作" column-key="op" width="90"> <!-- 调整列宽 -->
                         <template slot-scope="scope">
                           <el-button size="mini" icon="el-icon-delete" @click="removeGameIcon(scope.$index)" />
                         </template>
@@ -819,7 +821,8 @@ export default {
           TagId: [],
           TagValue: 0,
           TagType: 0
-        }
+        },
+        bonusReward: 0
       },
       appId: parseInt(store.getters.appId) || -1,
       version: store.getters.version || 'V1',
@@ -965,12 +968,31 @@ export default {
         console.log('取消')
       })
     },
+    getBonusReward() {
+      const todayZeroTimestamp = new Date(
+        new Date().setHours(0, 0, 0, 0)
+      ).getTime()
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          app: this.appId,
+          timestamp: Math.floor(todayZeroTimestamp / 1000),
+          Path: '/activity/sevenday/bonus/reward'
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.edit.bonusReward = response.Data.BonusReward / 1000
+        }
+      })
+    },
     getEditTitle() {
       return this.isEdit ? '修改配置' : '新增配置'
     },
     clickData(row, column, event) {
       if (column.columnKey !== 'op') {
         this.initFormData(true, row.id)
+        this.getBonusReward()
         this.visible = true
       }
     },
