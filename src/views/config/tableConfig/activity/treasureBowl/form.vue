@@ -84,29 +84,11 @@
           <!-- 参与活动游戏选择 -->
           <el-row>
             <el-col :span="24">
-              <el-form-item label="参与活动游戏：" required>
-                <el-input v-model="filterText" placeholder="输入关键字搜索游戏"
-                          style="max-width: 300px; margin-bottom: 8px"/>
-                <el-tree
-                  ref="tree"
-                  :data="treeData"
-                  show-checkbox
-                  node-key="id"
-                  highlight-current
-                  :props="defaultProps"
-                  :filter-node-method="filterNode"
-                  :default-expanded-keys="[]"
-                  @check-change="handleCheckChange"
-                />
-                <div style="margin-top: 10px">
-                  <el-button size="small" type="primary" icon="el-icon-sort" @click="showGamesSortDialog">
-                    给选中游戏排序
-                  </el-button>
-                  <span style="margin-left: 10px; color: #999; font-size: 12px">
-                    已选中 {{ (item.gameIdCfg || []).length }} 个游戏
-                  </span>
-                </div>
-              </el-form-item>
+              <GameSelector
+                v-model="item.gameIdCfg"
+                label="参与活动游戏："
+                :category-ids="[2]"
+              />
             </el-col>
           </el-row>
         </el-form>
@@ -140,39 +122,6 @@
       </el-tab-pane>
     </el-tabs>
 
-    <!-- 游戏排序弹窗 -->
-    <el-dialog
-      title="给选中游戏排序"
-      :visible.sync="gamesSortDialogVisible"
-      :close-on-click-modal="false"
-      append-to-body
-      width="600px"
-    >
-      <div style="margin-bottom: 10px; color: #909399; font-size: 13px">
-        提示：排序编号越小，游戏在活动中的展示顺序越靠前
-      </div>
-      <el-table :data="gamesSorted" border stripe max-height="400">
-        <el-table-column prop="gameId" label="游戏ID" width="100" align="center"/>
-        <el-table-column prop="name" label="游戏名称" min-width="150"/>
-        <el-table-column prop="orderNo" label="排序编号" width="150" align="center">
-          <template slot-scope="scope">
-            <el-input
-              v-model.number="scope.row.orderNo"
-              type="number"
-              :min="1"
-              :max="gamesSorted.length"
-              size="small"
-              style="width: 100px"
-            />
-          </template>
-        </el-table-column>
-      </el-table>
-      <div slot="footer">
-        <el-button @click="gamesSortDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="saveGamesSort">保存排序</el-button>
-      </div>
-    </el-dialog>
-
     <!-- 底部按钮 -->
     <div style="margin-top: 20px; text-align: center;">
       <el-button type="primary" @click="handleSave">保存配置</el-button>
@@ -189,6 +138,7 @@ import SiteSelect from '@/components/SiteSelect/index.vue'
 import PrizePoolConfig from './components/PrizePoolConfig.vue'
 import RankingConfig from './components/RankingConfig.vue'
 import BroadcastConfig from './components/BroadcastConfig.vue'
+import GameSelector from '@/components/Game/GameSelector.vue'
 
 // 默认排行榜配置
 const DEFAULT_RANK_CFG = [
@@ -226,7 +176,7 @@ function createNewItem() {
 }
 
 export default {
-  components: {SiteSelect, PrizePoolConfig, RankingConfig, BroadcastConfig},
+  components: { SiteSelect, PrizePoolConfig, RankingConfig, BroadcastConfig, GameSelector },
   props: {
     visible: {type: Boolean, default: false},
     isEdit: {type: Boolean, default: false},
@@ -238,13 +188,6 @@ export default {
       activeTab: 'activity',
       env: store.getters.env || 'test',
       item: createNewItem(),
-
-      // 游戏树
-      treeData: [],
-      allTreeData: [],
-      filterText: '',
-      defaultProps: {label: 'label', children: 'children', disabled: 'disabled'},
-      filterGameIds: [2031, 10002],
 
       // 奖励类型选项
       rewardTypes: [
@@ -267,15 +210,9 @@ export default {
           this.item = createNewItem()
         }
       }
-      this.getGameAll()
     },
     dialogVisible(val) {
       this.$emit('update:visible', val)
-    },
-    filterText(val) {
-      if (this.$refs.tree) {
-        this.$refs.tree.filter(val)
-      }
     }
   },
   methods: {
