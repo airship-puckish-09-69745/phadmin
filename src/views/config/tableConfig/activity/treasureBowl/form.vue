@@ -400,11 +400,7 @@ export default {
             ...prize,
             rewardAmount: Math.floor((prize.rewardAmount || 0) * 1000),
             rewardMin: Math.floor((prize.rewardMin || 0) * 1000),
-            rewardMax: Math.floor((prize.rewardMax || 0) * 1000),
-            // weight: prize.weight,
-            // prizeNum: prize.prizeNum,
-            // prizeUnlimited: prize.prizeUnlimited,
-            // isBubble: prize.isBubble
+            rewardMax: Math.floor((prize.rewardMax || 0) * 1000)
           }))
         }
         return encoded
