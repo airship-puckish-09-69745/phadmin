@@ -18,7 +18,6 @@
     >
 <!--      <el-table-column prop="tierId" label="ID" width="60" align="center" />-->
       <el-table-column prop="raffleLevel" label="挡位条件(₱)" align="center" />
-      <el-table-column prop="sockBaseNum" label="道具数量" align="center" />
       <el-table-column label="获得道具系数" align="center">
         <template slot-scope="scope">
           {{ scope.row.coefficientMin }} - {{ scope.row.coefficientMax }}
@@ -65,19 +64,15 @@
               </el-input>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row :gutter="20">
           <el-col :xs="24" :sm="12">
-            <el-form-item label="道具数量：" required>
-              <el-input v-model.number="editDialog.item.sockBaseNum" placeholder="请输入" />
-            </el-form-item>
-          </el-col>
-          <el-col :xs="24" :sm="12">
-            <el-form-item label="获得道具系数(最小)：" required>
-              <el-input v-model="editDialog.item.coefficientMin" placeholder="如 0.8" />
-            </el-form-item>
-          </el-col>
-          <el-col :xs="24" :sm="12">
-            <el-form-item label="获得道具系数(最大)：" required>
-              <el-input v-model="editDialog.item.coefficientMax" placeholder="如 1.2" />
+            <el-form-item label="获得道具系数：" required>
+              <div style="display: flex; align-items: center; gap: 10px">
+                <el-input v-model.number="editDialog.item.coefficientMin" placeholder="请输入整数" type="number" style="flex: 1" :step="1"/>
+                <span>-</span>
+                <el-input v-model.number="editDialog.item.coefficientMax" placeholder="请输入整数" type="number" style="flex: 1" :step="1"/>
+              </div>
             </el-form-item>
           </el-col>
         </el-row>
@@ -173,9 +168,8 @@ function createNewPool() {
     tierId: 0, // Will be assigned when saving
     raffleLevel: 200,
     rewardMax: 0,
-    sockBaseNum: 10,
-    coefficientMin: 0.8,
-    coefficientMax: 1.2,
+    coefficientMin: 1,
+    coefficientMax: 2,
     prizeCfg: [
       { id: 1, rewardAmount: 0, rewardMin: 0, rewardMax: 0, weight: 1, prizeNum: 0, prizeUnlimited: true, isBubble: false }
     ]
@@ -279,6 +273,24 @@ export default {
       // Validate raffleLevel
       if (!item.raffleLevel || item.raffleLevel <= 0) {
         Message.error('挡位条件必须大于0')
+        return
+      }
+
+      // Validate coefficientMin
+      if (item.coefficientMin == null || !Number.isInteger(item.coefficientMin)) {
+        Message.error('获得道具系数(最小)必须是整数')
+        return
+      }
+
+      // Validate coefficientMax
+      if (item.coefficientMax == null || !Number.isInteger(item.coefficientMax)) {
+        Message.error('获得道具系数(最大)必须是整数')
+        return
+      }
+
+      // Validate coefficient range
+      if (item.coefficientMin > item.coefficientMax) {
+        Message.error('获得道具系数(最小)不能大于获得道具系数(最大)')
         return
       }
 

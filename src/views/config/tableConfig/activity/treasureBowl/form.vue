@@ -282,7 +282,7 @@ export default {
       data.prizePoolCfg.forEach((pool, poolIdx) => {
         if (!pool) return
         if (!Array.isArray(pool.prizeCfg)) pool.prizeCfg = []
-        // Assign tierId if not present
+
         if (pool.tierId === undefined) pool.tierId = poolIdx + 1
         if (pool.raffleLevel) pool.raffleLevel /= 1000
         if (pool.coefficientMin) pool.coefficientMin
@@ -305,8 +305,6 @@ export default {
       data.rankCfg.forEach(rank => {
         if (rank && rank.reward) rank.reward /= 1000
       })
-      console.log(11111)
-      console.log(data.broadcastCfg.threshold)
       // 奖励播报配置
       if (data.broadcastCfg.threshold) data.broadcastCfg.threshold /= 1000
       this.item = data
@@ -329,7 +327,7 @@ export default {
       const prizePoolCfgArray = (cpy.prizePoolCfg || []).map(pool => {
         const encoded = {
           tierId: pool.tierId || 0,
-          sockBaseNum: pool.sockBaseNum,
+
           raffleLevel: Math.floor((pool.raffleLevel || 0) * 1000),
           coefficientMin: pool.coefficientMin,
           coefficientMax: pool.coefficientMax,
@@ -360,13 +358,16 @@ export default {
       }
 
       // 白名单配置（如果存在）
-      const whitelistCfg = cpy.whitelistCfg || { siteIdList: []}
+      const whitelistCfg = cpy.whitelistCfg || { siteIdList: [] }
+      // 全部转为整型
+      const gameIdCfg = cpy.gameIdCfg.map(v => Number(v))
 
       // 转换为 JSON 字符串（因为request拦截器会使用FormData，需要序列化复杂对象）
       cpy.prizePoolCfg = JSON.stringify(prizePoolCfgArray)
       cpy.rankCfg = JSON.stringify(rankCfgArray)
       cpy.broadcastCfg = JSON.stringify(broadcastCfg)
       cpy.whitelistCfg = JSON.stringify(whitelistCfg)
+      cpy.gameIdCfg = JSON.stringify(gameIdCfg)
       return cpy
     },
 
@@ -440,20 +441,6 @@ export default {
     filterNode(value, data) {
       if (!value) return true
       return data.label.indexOf(value) !== -1
-    },
-
-    // 游戏选中变化
-    handleCheckChange(data, checked) {
-      // 跳过类别节点
-      if (typeof data.id === 'string' && data.id.startsWith('p-')) return
-
-      if (!this.item.gameIdCfg) this.item.gameIdCfg = []
-      const index = this.item.gameIdCfg.indexOf(data.id)
-      if (checked && index < 0) {
-        this.item.gameIdCfg.push(data.id)
-      } else if (!checked && index >= 0) {
-        this.item.gameIdCfg.splice(index, 1)
-      }
     },
 
     /**
@@ -586,32 +573,6 @@ export default {
       // 按 orderNo 排序
       gamesSorted.sort((a, b) => a.orderNo - b.orderNo)
       this.gamesSorted = gamesSorted
-    },
-
-    // 保存游戏排序
-    saveGamesSort() {
-      // 验证排序编号
-      const orderNos = this.gamesSorted.map(g => g.orderNo)
-      const hasInvalid = orderNos.some(no => {
-        return !Number.isInteger(no) || no < 1 || no > this.gamesSorted.length
-      })
-      if (hasInvalid) {
-        return Message.error(`排序编号必须是1到${this.gamesSorted.length}之间的整数`)
-      }
-
-      // 按用户设置的 orderNo 排序，然后提取 gameId
-      const sortedGames = this.gamesSorted.slice().sort((a, b) => a.orderNo - b.orderNo)
-
-      // 重新赋值 orderNo 为 1, 2, 3, ...
-      sortedGames.forEach((game, index) => {
-        game.orderNo = index + 1
-      })
-
-      // 更新活动配置中的游戏顺序
-      this.item.gameIdCfg = sortedGames.map(game => game.gameId)
-
-      this.gamesSortDialogVisible = false
-      Message.success('游戏排序已更新')
     }
   }
 }
