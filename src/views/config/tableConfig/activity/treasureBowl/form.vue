@@ -16,18 +16,18 @@
           <el-row :gutter="20">
             <el-col :span="24">
               <el-form-item label="活动名称：" required>
-                <el-input v-model="item.activityName" placeholder="请输入活动名称" style="max-width: 400px"/>
+                <el-input v-model="item.activityName" placeholder="请输入活动名称" style="max-width: 400px" />
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
               <el-form-item label="活动开关：">
-                <el-switch v-model="item.isOpen" :active-value="true" :inactive-value="false"/>
+                <el-switch v-model="item.isOpen" :active-value="true" :inactive-value="false" />
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
               <el-form-item label="奖励类型：">
                 <el-select v-model="item.rewardType" placeholder="请选择">
-                  <el-option v-for="opt in rewardTypes" :key="opt.value" :label="opt.label" :value="opt.value"/>
+                  <el-option v-for="opt in rewardTypes" :key="opt.value" :label="opt.label" :value="opt.value" />
                 </el-select>
                 <div style="color: #999; font-size: 12px; line-height: 1.4; margin-top: 4px">
                   投注金：只能在GameZone厅内所有游戏使用的投注金
@@ -56,20 +56,35 @@
             </el-col>
             <el-col :xs="24" :sm="12">
               <el-form-item label="开始时间：" required>
-                <el-date-picker v-model="item.startTime" type="datetime" placeholder="选择开始时间"
-                                value-format="timestamp" style="width:  200px"/>
+                <el-date-picker
+                  v-model="item.startTime"
+                  type="datetime"
+                  placeholder="选择开始时间"
+                  value-format="timestamp"
+                  style="width:  200px"
+                />
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
               <el-form-item label="结束时间：" required>
-                <el-date-picker v-model="item.endTime" type="datetime" placeholder="选择结束时间"
-                                value-format="timestamp" style="width: 200px"/>
+                <el-date-picker
+                  v-model="item.endTime"
+                  type="datetime"
+                  placeholder="选择结束时间"
+                  value-format="timestamp"
+                  style="width: 200px"
+                />
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
               <el-form-item label="展示结束时间：">
-                <el-date-picker v-model="item.showEndTime" type="datetime" placeholder="选择展示结束时间"
-                                value-format="timestamp" style="width: 200px"/>
+                <el-date-picker
+                  v-model="item.showEndTime"
+                  type="datetime"
+                  placeholder="选择展示结束时间"
+                  value-format="timestamp"
+                  style="width: 200px"
+                />
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
@@ -96,15 +111,15 @@
 
       <!-- ========== 奖池配置 ========== -->
       <el-tab-pane label="奖池配置" name="prizePool">
-        <PrizePoolConfig v-model="item"/>
+        <PrizePoolConfig v-model="item" />
       </el-tab-pane>
       <!-- ========== 排行榜配置 ========== -->
       <el-tab-pane label="排行榜配置" name="ranking">
-        <RankingConfig v-model="item"/>
+        <RankingConfig v-model="item" />
       </el-tab-pane>
       <!-- ========== 奖励播报配置 ========== -->
       <el-tab-pane label="奖励播报配置" name="broadcast">
-        <BroadcastConfig v-model="item"/>
+        <BroadcastConfig v-model="item" />
       </el-tab-pane>
 
       <!-- ========== 白名单配置 ========== -->
@@ -113,8 +128,12 @@
           <el-row :gutter="20">
             <el-col :xs="24" :sm="12">
               <el-form-item label="站点白名单：">
-                <SiteSelect v-model="item.whitelistCfg.siteIdList" multiple placeholder="请选择"
-                            style="width: 100%; max-width: 400px"/>
+                <SiteSelect
+                  v-model="item.whitelistCfg.siteIdList"
+                  multiple
+                  placeholder="请选择"
+                  style="width: 100%; max-width: 400px"
+                />
               </el-form-item>
             </el-col>
           </el-row>
@@ -131,7 +150,7 @@
 </template>
 
 <script>
-import {Message} from 'element-ui'
+import { Message } from 'element-ui'
 import request from '@/utils/request'
 import store from '@/store'
 import SiteSelect from '@/components/SiteSelect/index.vue'
@@ -142,14 +161,14 @@ import GameSelector from '@/components/Game/GameSelector.vue'
 
 // 默认排行榜配置
 const DEFAULT_RANK_CFG = [
-  {rankStart: 1, rankEnd: 1, reward: 7777},
-  {rankStart: 2, rankEnd: 2, reward: 2777},
-  {rankStart: 3, rankEnd: 3, reward: 1777},
-  {rankStart: 4, rankEnd: 5, reward: 777},
-  {rankStart: 6, rankEnd: 10, reward: 277},
-  {rankStart: 11, rankEnd: 20, reward: 177},
-  {rankStart: 21, rankEnd: 50, reward: 77},
-  {rankStart: 51, rankEnd: 100, reward: 17}
+  { rankStart: 1, rankEnd: 1, reward: 7777 },
+  { rankStart: 2, rankEnd: 2, reward: 2777 },
+  { rankStart: 3, rankEnd: 3, reward: 1777 },
+  { rankStart: 4, rankEnd: 5, reward: 777 },
+  { rankStart: 6, rankEnd: 10, reward: 277 },
+  { rankStart: 11, rankEnd: 20, reward: 177 },
+  { rankStart: 21, rankEnd: 50, reward: 77 },
+  { rankStart: 51, rankEnd: 100, reward: 17 }
 ]
 
 // 创建空白活动数据
@@ -167,7 +186,7 @@ function createNewItem() {
     totalPrizeThreshold: 0,
     prizePoolCfg: [],
     rankCfg: JSON.parse(JSON.stringify(DEFAULT_RANK_CFG)),
-    broadcastCfg: {threshold: 500, maxCount: 50},
+    broadcastCfg: { threshold: 500, maxCount: 50 },
     gameIdCfg: [],
     whitelistCfg: {
       siteIdList: []
@@ -178,9 +197,9 @@ function createNewItem() {
 export default {
   components: { SiteSelect, PrizePoolConfig, RankingConfig, BroadcastConfig, GameSelector },
   props: {
-    visible: {type: Boolean, default: false},
-    isEdit: {type: Boolean, default: false},
-    editData: {type: Object, default: () => ({})}
+    visible: { type: Boolean, default: false },
+    isEdit: { type: Boolean, default: false },
+    editData: { type: Object, default: () => ({}) }
   },
   data() {
     return {
@@ -191,7 +210,7 @@ export default {
 
       // 奖励类型选项
       rewardTypes: [
-        {value: 2, label: '投注金'}
+        { value: 2, label: '投注金' }
       ],
 
       // 游戏排序弹窗
@@ -229,7 +248,7 @@ export default {
         try {
           data.whitelistCfg = JSON.parse(data.whitelistCfg)
         } catch (e) {
-          data.whitelistCfg = {siteIdList: []}
+          data.whitelistCfg = { siteIdList: [] }
         }
       }
       // 排行榜配置
@@ -261,7 +280,7 @@ export default {
         try {
           data.broadcastCfg = JSON.parse(data.broadcastCfg)
         } catch (e) {
-          data.broadcastCfg = {threshold: 500, maxCount: 50}
+          data.broadcastCfg = { threshold: 500, maxCount: 50 }
         }
       }
       // 游戏列表
@@ -335,7 +354,7 @@ export default {
             ...prize,
             rewardAmount: Math.floor((prize.rewardAmount || 0) * 1000),
             rewardMin: Math.floor((prize.rewardMin || 0) * 1000),
-            rewardMax: Math.floor((prize.rewardMax || 0) * 1000),
+            rewardMax: Math.floor((prize.rewardMax || 0) * 1000)
             // weight: prize.weight,
             // prizeNum: prize.prizeNum,
             // prizeUnlimited: prize.prizeUnlimited,
@@ -451,7 +470,7 @@ export default {
         url: '/thirdpartygames/all',
         method: 'get',
         data: {},
-        params: {status: 2}
+        params: { status: 2 }
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
@@ -466,7 +485,7 @@ export default {
             // 只保留 CategoryID=2 (Poker)
             if (obj.CategoryID !== 2) continue
 
-            const game = {Gid: obj.Gid, Name: obj.Name, Description: obj.Description}
+            const game = { Gid: obj.Gid, Name: obj.Name, Description: obj.Description }
             if (Object.prototype.hasOwnProperty.call(data, obj.CategoryID)) {
               data[obj.CategoryID].push(game)
             } else {
@@ -475,15 +494,15 @@ export default {
           }
 
           // 构建游戏树结构，只保留 poker
-          const categories = {2: 'Poker'}
+          const categories = { 2: 'Poker' }
           const builtTree = []
 
           for (const key in data) {
             const games = data[key]
-            const cty = {id: 'p-' + key, label: categories[key], children: []}
+            const cty = { id: 'p-' + key, label: categories[key], children: [] }
             for (let i = 0; i < games.length; i++) {
               const game = games[i]
-              cty.children.push({id: game.Gid, label: game.Name})
+              cty.children.push({ id: game.Gid, label: game.Name })
             }
             builtTree.push(cty)
           }
