@@ -347,7 +347,7 @@ export default {
         showTimes: this.item.showTimes, // 展示次数
         showGold: newItem.showGold, // 展示金额（*1000）
         limitMaxNum: newItem.limitMaxNum, // 最大限领（*1000）
-        timeS: newItem.timeS, // 时间偏移
+        timeS: newItem.timeS ?? 0, // 时间偏移
         rewardType: this.item.rewardType, // 奖励类型
         gameType: this.item.gameType, // 玩法大类型
         userType: this.item.userType, // 用户类型
