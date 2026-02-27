@@ -102,7 +102,7 @@
             <el-button v-if="isShowDetails(scope.row.status)" type="primary" size="mini" @click="onShowDetailsDialog(scope.row)">查看详情</el-button>
             <el-button v-if="scope.row.status === 3" type="warning" size="mini" @click="onSubmitReview(scope.row)">发起审批</el-button>
             <el-button v-if ="scope.row.status === 6" type="warning" size="mini" @click="onSubmitDistribution(scope.row)">发起发送</el-button>
-            <el-button v-if ="scope.row.status === 6" type="info" size="mini" @click="onSubmitReview(scope.row)">取消发送</el-button>
+            <el-button v-if ="scope.row.status === 6" type="info" size="mini" @click="onCancelDistribution(scope.row)">取消发送</el-button>
             <el-button  v-if="scope.row.status === 3" size="mini" type="danger" @click="handleDeleteRow(scope.row)">删除</el-button>
           </template>
         </el-table-column>
@@ -140,6 +140,7 @@ import { formatTime } from "@/utils"
 import request from '@/utils/request'
 import { PROP_TYPE_OPTIONS, ITEM_STATUSES, ITEM_TYPE_OPTIONS } from '@/utils/options'
 import { IsNewTicketProp, IsTicketProp, IsAvatarFrameProp } from '@/utils/prop'
+import { Message } from "element-ui";
 
 export default {
   name: 'PropsConfig',
@@ -247,7 +248,61 @@ export default {
     },
     // 提交审批
     onSubmitReview(row) {
+      if (row.status !== ITEM_STATUSES.UNAPPROVED) {
+        Message.error('非【未审批】状态不能发起审批!')
+        return
+      }
 
+      this.$confirm(`您确定要发起审批吗？`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        request({
+          url: '/rewardmailapply/apply',
+          method: 'post',
+          data: {
+            id: row.id,
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            console.log('发起审批: ', response)
+            Message.success('操作成功!')
+            this.getList()
+          }
+        })
+      }).catch(() => {
+        console.log('取消')
+      })
+    },
+    // 取消发送奖励邮件
+    onCancelDistribution(row) {
+      if (row.status !== ITEM_STATUSES.AGREED) {
+        Message.error('非【同意】状态不能取消发送奖励邮件!')
+        return
+      }
+
+      this.$confirm(`您确定要取消发送奖励邮件吗？`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        request({
+          url: '/rewardmailapply/cancel',
+          method: 'post',
+          data: {
+            id: row.id,
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            console.log('取消发送: ', response)
+            Message.success('操作成功!')
+            this.getList()
+          }
+        })
+      }).catch(() => {
+        console.log('取消')
+      })
     },
     // 发送奖励邮件
     onSubmitDistribution(row) {

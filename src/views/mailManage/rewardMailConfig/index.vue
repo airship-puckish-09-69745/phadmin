@@ -8,13 +8,13 @@
       <el-tabs type="border-card">
         <el-tab-pane label="奖励邮件限制">
           <span style="font-size: 13px; color: #ff0000;">该限制是针对邮件发送投注金的限制</span>
-          <el-form :model="item" ref="form" label-width="180px" size="medium" style="margin-top: 10px">
-            <el-form-item label="单人单日领取奖励上限" prop="userRewardNumPerDay" required>
+          <el-form :model="item" ref="form" label-width="200px" size="medium" style="margin-top: 10px">
+            <el-form-item label="单人单日领取奖励金额上限" prop="userRewardNumPerDay" required>
               <el-input v-model="item.userRewardNumPerDay" type="number" style="width: 200px">
                 <template slot="append">（₱）</template>
               </el-input>
             </el-form-item>
-            <el-form-item label="单日总发放奖励上限" prop="totalRewardNumPerDay" required>
+            <el-form-item label="总的单日发放奖励金额上限" prop="totalRewardNumPerDay" required>
               <el-input v-model="item.totalRewardNumPerDay" type="number" style="width: 200px">
                 <template slot="append">（₱）</template>
               </el-input>
@@ -48,12 +48,12 @@ export default {
         Data: {}
       },
       item: {
-        userRewardNumPerDay: 0, // 单人单日领取奖励上限
-        totalRewardNumPerDay: 0 // 单日总发放奖励上限
+        userRewardNumPerDay: 0, // 单人单日领取奖励金额上限
+        totalRewardNumPerDay: 0 // 总的单日发放奖励金额上限
       },
       AttrNames: {
         userRewardNumPerDay: '单人单日领取奖励上限',
-        totalRewardNumPerDay: '单日总发放奖励上限'
+        totalRewardNumPerDay: '总的单日发放奖励上限'
       }
     }
   },
