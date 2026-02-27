@@ -530,6 +530,11 @@ export default {
         Message.error('请选择奖励类型')
         return false
       }
+      if (this.item.broadcastCfg.maxCount > 20) {
+        Message.error('限制播报条数最大 20 ')
+        return false
+      }
+
       return true
     },
 
