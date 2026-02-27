@@ -1325,7 +1325,7 @@ export default {
     },
     getData() {
       const $this = this
-      getCustomize(this.subKey).then(response => {
+      return getCustomize(this.subKey).then(response => {
         if (response.RetCode === 0) {
           $this.form = response.Data || {}
           if (response.Data && response.Data.Data !== '' && response.Data.Data !== '{}') {
