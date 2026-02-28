@@ -150,12 +150,12 @@ export default {
       libShow: $libShow,
       datePickerOptions: $libShow.DefaultDatePickerOptions(),
       statusOptions: {
-        1: '发起成功',
-        2: '发起失败',
+        1: '发送成功',
+        2: '发送失败',
         3: '未审批',
         4: '审批中',
-        6: '同意',
-        7: '拒绝',
+        6: '已审批',
+        7: '已拒批',
         10: '手动取消'
       },
       selectTime: [$libDate.GetDayBegin(new Date().setSeconds(0)), $libDate.GetDayEnd(new Date().setSeconds(0))],
@@ -278,7 +278,7 @@ export default {
     // 取消发送奖励邮件
     onCancelDistribution(row) {
       if (row.status !== ITEM_STATUSES.AGREED) {
-        Message.error('非【同意】状态不能取消发送奖励邮件!')
+        Message.error('非【已审批】状态不能取消发送奖励邮件!')
         return
       }
 
@@ -306,7 +306,30 @@ export default {
     },
     // 发送奖励邮件
     onSubmitDistribution(row) {
+      if (row.status !== ITEM_STATUSES.AGREED) {
+        Message.error('非【已审批】状态不能发送奖励邮件!')
+        return
+      }
 
+      this.$confirm(`您确定要发送奖励邮件吗？`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        request({
+          url: '/rewardmailapply/grant',
+          method: 'post',
+          data: {
+            id: row.id,
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            console.log('发送奖励邮件: ', response)
+            Message.success('操作成功!')
+            this.getList()
+          }
+        })
+      })
     },
     // 删除奖励邮件申请
     handleDeleteRow(row) {
