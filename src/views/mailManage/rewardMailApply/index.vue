@@ -93,15 +93,23 @@
             >
               {{ getStatusText(scope.row.status) }}
             </el-tag>
+            <el-tag
+              v-if="isShowExpiredTag(scope.row)"
+              type="danger"
+              size="mini"
+              style="width: 60px; text-align: center;"
+            >
+              已过期
+            </el-tag>
           </template>
         </el-table-column>
 
         <el-table-column fixed="right" width="320px" label="操作">
           <template slot-scope="scope">
             <el-button v-if="scope.row.status === 3" type="primary" size="mini" icon="el-icon-edit" @click="onShowFormDialog(scope.row)">编辑</el-button>
-            <el-button v-if="isShowDetails(scope.row.status)" type="primary" size="mini" @click="onShowDetailsDialog(scope.row)">查看详情</el-button>
-            <el-button v-if="scope.row.status === 3" type="warning" size="mini" @click="onSubmitReview(scope.row)">发起审批</el-button>
-            <el-button v-if ="scope.row.status === 6" type="warning" size="mini" @click="onSubmitDistribution(scope.row)">发起发送</el-button>
+            <el-button v-if="isShowDetailsButton(scope.row.status)" type="primary" size="mini" @click="onShowDetailsDialog(scope.row)">查看详情</el-button>
+            <el-button v-if="isShowSubmitReviewButton(scope.row)" type="warning" size="mini" @click="onSubmitReview(scope.row)">发起审批</el-button>
+            <el-button v-if ="isShowDistributionButton(scope.row)" type="warning" size="mini" @click="onSubmitDistribution(scope.row)">发起发送</el-button>
             <el-button v-if ="scope.row.status === 6" type="info" size="mini" @click="onCancelDistribution(scope.row)">取消发送</el-button>
             <el-button  v-if="scope.row.status === 3" size="mini" type="danger" @click="handleDeleteRow(scope.row)">删除</el-button>
           </template>
@@ -138,7 +146,7 @@ import FormDialog from '@/views/mailManage/rewardMailApply/components/formDialog
 import { $libDate, $libShow } from '@/utils/common'
 import { formatTime } from "@/utils"
 import request from '@/utils/request'
-import { PROP_TYPE_OPTIONS, ITEM_STATUSES, ITEM_TYPE_OPTIONS } from '@/utils/options'
+import {PROP_TYPE_OPTIONS, ITEM_STATUSES, ITEM_TYPE_OPTIONS, ITEM_STATUS_OPTIONS} from '@/utils/options'
 import { IsNewTicketProp, IsTicketProp, IsAvatarFrameProp } from '@/utils/prop'
 import { Message } from "element-ui";
 
@@ -156,7 +164,8 @@ export default {
         4: '审批中',
         6: '已审批',
         7: '已拒批',
-        10: '手动取消'
+        10: '手动取消',
+        11: '发送中'
       },
       selectTime: [$libDate.GetDayBegin(new Date().setSeconds(0)), $libDate.GetDayEnd(new Date().setSeconds(0))],
       tableData: [],
@@ -186,7 +195,7 @@ export default {
           expireTime: '', // 过期时间
           deadline: '', // 截止时间
           rewardItems: '', // 奖励物品，json字符串
-          status: '', // 1:发起成功,2:发起失败,3:未审批,4:审批中,5:废弃,6:同意,7:拒绝,8:小额自动同意,9:自动取消,10:手动取消
+          status: '', // 1:发起成功,2:发起失败,3:未审批,4:审批中,5:废弃,6:同意,7:拒绝,8:小额自动同意,9:自动取消,10:手动取消,11:发送中
         },
         itemEndDate: $libDate.GetDayBegin(new Date().setSeconds(0))
       },
@@ -199,6 +208,9 @@ export default {
     this.getList()
   },
   methods: {
+    ITEM_STATUS_OPTIONS() {
+      return ITEM_STATUS_OPTIONS
+    },
     // 获取奖励邮件申请列表
     getList() {
       console.log('this.tableFilter', this.tableFilter)
@@ -364,10 +376,35 @@ export default {
       this.editForm.visible = false
       this.editForm.data = null
     },
+    isExpired(row) {
+      if (row.expireTime && row.expireTime < Date.now() / 1000) {
+        return true
+      }
+      return !!(row.deadline && row.deadline < Date.now() / 1000)
+    },
+    /**
+     * 是否显示过期标签
+     * @param row
+     * @returns {boolean}
+     */
+    isShowExpiredTag(row) {
+      return [ITEM_STATUSES.UNAPPROVED, ITEM_STATUSES.AGREED].includes(row.status) && this.isExpired(row)
+    },
+    /**
+     * 是否显示发起审批按钮
+     * @param row
+     * @returns {boolean}
+     */
+    isShowSubmitReviewButton(row) {
+      if (this.isExpired(row)) {
+        return false
+      }
+      return row.status === ITEM_STATUSES.UNAPPROVED
+    },
     /**
      * status，只有 发起成功，发起失败，审批中，拒绝，同意，手动取消 才显示详情
      */
-    isShowDetails(status) {
+    isShowDetailsButton(status) {
       return [
         ITEM_STATUSES.SUCCESS,
         ITEM_STATUSES.FAIL,
@@ -377,8 +414,22 @@ export default {
         ITEM_STATUSES.MANUAL_CANCEL_STATUS
       ].includes(status)
     },
+    /**
+     * 是否显示发送奖励邮件按钮
+     * @param row
+     * @returns {boolean}
+     */
+    isShowDistributionButton(row) {
+      if (this.isExpired(row)) {
+        return false
+      }
+      return [
+        ITEM_STATUSES.AGREED,
+      ].includes(row.status)
+    },
     // 获取状态文本
     getStatusText(status) {
+      if (this.isExpired(status)) {}
       return this.statusOptions[status] || '未知'
     },
     // 获取账号类型文本

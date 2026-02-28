@@ -68,6 +68,8 @@ export const ITEM_STATUSES = {
   AUTO_CANCEL_STATUS: 9,
   // 手动取消
   MANUAL_CANCEL_STATUS: 10,
+  // 执行中
+  EXECUTING_STATUS: 11,
 }
 
 // 道具发放审批状态
