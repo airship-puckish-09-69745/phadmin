@@ -14,8 +14,11 @@
         highlight-current
         :props="defaultProps"
         :filter-node-method="filterNode"
-        :default-expanded-keys="[]"
+        :default-expanded-keys="expandedKeys"
+        :auto-expand-parent="false"
         @check="handleCheck"
+        @node-expand="handleNodeExpand"
+        @node-collapse="handleNodeCollapse"
       />
       <div style="margin-top: 10px">
         <el-button size="small" type="primary" icon="el-icon-sort" @click="showGamesSortDialog">
@@ -92,6 +95,7 @@ export default {
       allTreeData: [],
       defaultProps: { label: 'label', children: 'children', disabled: 'disabled' },
       filterGameIds: [2031, 10002], // 过滤掉的游戏ID
+      expandedKeys: [], // 手动管理展开的节点key
 
       // 游戏排序弹窗
       gamesSortDialogVisible: false,
@@ -116,6 +120,9 @@ export default {
         this.$nextTick(() => {
           if (this.$refs.tree) {
             this.$refs.tree.setCheckedKeys(val || [])
+            this.$nextTick(() => {
+              this.restoreExpandedState()
+            })
           }
         })
       }
@@ -129,6 +136,12 @@ export default {
     filterText(val) {
       if (this.$refs.tree) {
         this.$refs.tree.filter(val)
+        if (!val) {
+          // 搜索清空时，恢复用户手动展开的状态
+          this.$nextTick(() => {
+            this.restoreExpandedState()
+          })
+        }
       }
     }
   },
@@ -148,6 +161,44 @@ export default {
       })
 
       this.internalValue = gameIds
+    },
+
+    // 记录节点展开
+    handleNodeExpand(data) {
+      if (!this.expandedKeys.includes(data.id)) {
+        this.expandedKeys.push(data.id)
+      }
+    },
+
+    // 记录节点收起
+    handleNodeCollapse(data) {
+      const index = this.expandedKeys.indexOf(data.id)
+      if (index > -1) {
+        this.expandedKeys.splice(index, 1)
+      }
+    },
+
+    // 恢复展开状态（在setCheckedKeys等操作后调用）
+    restoreExpandedState() {
+      if (!this.$refs.tree) return
+      const tree = this.$refs.tree
+      const store = tree.store
+      // 遍历所有节点，只展开在expandedKeys中记录的节点
+      const traverse = (nodes) => {
+        nodes.forEach(node => {
+          if (this.expandedKeys.includes(node.data.id)) {
+            node.expanded = true
+          } else {
+            node.expanded = false
+          }
+          if (node.childNodes && node.childNodes.length) {
+            traverse(node.childNodes)
+          }
+        })
+      }
+      if (store && store.root && store.root.childNodes) {
+        traverse(store.root.childNodes)
+      }
     },
 
     /**
@@ -203,6 +254,9 @@ export default {
           this.$nextTick(() => {
             if (this.$refs.tree && this.internalValue) {
               this.$refs.tree.setCheckedKeys(this.internalValue)
+              this.$nextTick(() => {
+                this.restoreExpandedState()
+              })
             }
           })
         }
