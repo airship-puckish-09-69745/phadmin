@@ -143,67 +143,67 @@
       <!-- ========== 头像框奖励配置 ========== -->
       <el-tab-pane label="头像框奖励配置" name="propConfig">
         <el-form label-width="180px" size="small">
-          <div>
-            <el-table
-              :data="Array.isArray(item.propPools) ? item.propPools : (item.propPools ? [item.propPools] : [])"
-              border
-              size="small"
-              style="width: 100%"
-            >
-              <el-table-column label="道具类型" min-width="140">
-                <template slot-scope="scope">
-                  <el-select
-                    v-model="scope.row.propType"
-                    placeholder="请选择"
-                    size="mini"
-                    style="width: 100%"
-                    @change="handlePropTypeChange(scope.row)"
-                  >
-                    <el-option
-                      v-for="item in propTypeOptions"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
-                </template>
-              </el-table-column>
-              <el-table-column label="道具名称" min-width="140">
-                <template slot-scope="scope">
-                  <el-select v-model="scope.row.propId" placeholder="请选择" size="mini" style="width: 100%" @change="handlePropNameChange(scope.row)">
-                    <el-option
-                      v-for="item in getPropOptionsByType(scope.row.propType)"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
-                </template>
-              </el-table-column>
-              <el-table-column label="可用时间" min-width="120">
-                <template slot-scope="scope">
-                  <el-select
-                    v-model="scope.row.propTime"
-                    placeholder="请选择"
-                    size="mini"
-                    style="width: 100%"
-                  >
-                    <el-option
-                      v-for="item in propDayTypeOptions"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
-                </template>
-              </el-table-column>
-              <el-table-column label="道具数量" min-width="100">
-                <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.propNum" placeholder="数量" size="mini"/>
-                </template>
-              </el-table-column>
-            </el-table>
-          </div>
+
+          <el-table
+            :data="Array.isArray(item.propPools) ? item.propPools : (item.propPools ? [item.propPools] : [])"
+            border
+            size="small"
+            style="width: 100%"
+          >
+            <el-table-column label="道具类型" min-width="140">
+              <template slot-scope="scope">
+                <el-select
+                  v-model="scope.row.propType"
+                  placeholder="请选择"
+                  size="mini"
+                  style="width: 100%"
+                  @change="handlePropTypeChange(scope.row)"
+                >
+                  <el-option
+                    v-for="item in propTypeOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </template>
+            </el-table-column>
+            <el-table-column label="道具名称" min-width="140">
+              <template slot-scope="scope">
+                <el-select v-model="scope.row.propId" placeholder="请选择" size="mini" style="width: 100%"
+                           @change="handlePropNameChange(scope.row)">
+                  <el-option
+                    v-for="item in getPropOptionsByType(scope.row.propType)"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </template>
+            </el-table-column>
+            <el-table-column label="可用时间" min-width="120">
+              <template slot-scope="scope">
+                <el-select
+                  v-model="scope.row.propTime"
+                  placeholder="请选择"
+                  size="mini"
+                  style="width: 100%"
+                >
+                  <el-option
+                    v-for="item in propDayTypeOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </template>
+            </el-table-column>
+            <el-table-column label="道具数量" min-width="100">
+              <template slot-scope="scope">
+                <el-input v-model.number="scope.row.propNum" placeholder="数量" size="mini"/>
+              </template>
+            </el-table-column>
+          </el-table>
         </el-form>
       </el-tab-pane>
     </el-tabs>
@@ -288,12 +288,12 @@ export default {
         // { 'value': 5, 'label': 'SlotFreeSpin', disabled: false }
       ],
       propDayTypeOptions: [
-        { 'value': 1, 'label': '1天', disabled: false },
-        { 'value': 3, 'label': '3天', disabled: false },
-        { 'value': 7, 'label': '7天', disabled: false },
-        { 'value': 30, 'label': '30天', disabled: false },
-        { 'value': 365, 'label': '365天', disabled: false },
-        { 'value': 0, 'label': '永久', disabled: false }
+        {'value': 1, 'label': '1天', disabled: false},
+        {'value': 3, 'label': '3天', disabled: false},
+        {'value': 7, 'label': '7天', disabled: false},
+        {'value': 30, 'label': '30天', disabled: false},
+        {'value': 365, 'label': '365天', disabled: false},
+        {'value': 0, 'label': '永久', disabled: false}
       ],
       // 奖励类型选项
       rewardTypes: [
@@ -492,7 +492,7 @@ export default {
       }
 
       // 白名单配置（如果存在）
-      const whitelistCfg = cpy.whitelistCfg || { siteIdList: [] }
+      const whitelistCfg = cpy.whitelistCfg || {siteIdList: []}
       // 全部转为整型
       const gameIdCfg = cpy.gameIdCfg.map(v => Number(v))
       // 道具
