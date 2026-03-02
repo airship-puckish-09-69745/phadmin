@@ -47,6 +47,31 @@ export const ITEM_DAY_TYPE_OPTIONS = [
   { 'value': -1, 'label': 'freeSpin-5分钟测试', disabled: true }
 ]
 
+export const ITEM_STATUSES = {
+  // 发起成功
+  SUCCESS: 1,
+  // 发起失败
+  FAIL: 2,
+  // 未审批
+  UNAPPROVED: 3,
+  // 审批中
+  APPROVING: 4,
+  // 废弃
+  ABANDONED: 5,
+  // 同意
+  AGREED: 6,
+  // 拒绝
+  REJECTED: 7,
+  // 小额自动同意
+  SMALL_AMOUNT_AGREE_STATUS: 8,
+  // 自动取消
+  AUTO_CANCEL_STATUS: 9,
+  // 手动取消
+  MANUAL_CANCEL_STATUS: 10,
+  // 执行中
+  EXECUTING_STATUS: 11,
+}
+
 // 道具发放审批状态
 // 1: '发起成功',
 // 2: '发起失败',
@@ -59,16 +84,16 @@ export const ITEM_DAY_TYPE_OPTIONS = [
 // 9: '自动取消',
 // 10: '手动取消'
 export const ITEM_STATUS_OPTIONS = [
-  { 'value': 1, 'label': '发起成功', disabled: false },
-  { 'value': 2, 'label': '发起失败', disabled: false },
-  { 'value': 3, 'label': '未审批', disabled: false },
-  { 'value': 4, 'label': '审批中', disabled: false },
-  { 'value': 5, 'label': '废弃', disabled: false },
-  { 'value': 6, 'label': '同意', disabled: false },
-  { 'value': 7, 'label': '拒绝', disabled: false },
-  { 'value': 8, 'label': '小额自动同意', disabled: false },
-  { 'value': 9, 'label': '自动取消', disabled: false },
-  { 'value': 10, 'label': '手动取消', disabled: false }
+  { 'value': ITEM_STATUSES.SUCCESS, 'label': '发起成功', disabled: false },
+  { 'value': ITEM_STATUSES.FAIL, 'label': '发起失败', disabled: false },
+  { 'value': ITEM_STATUSES.UNAPPROVED, 'label': '未审批', disabled: false },
+  { 'value': ITEM_STATUSES.APPROVING, 'label': '审批中', disabled: false },
+  { 'value': ITEM_STATUSES.ABANDONED, 'label': '废弃', disabled: false },
+  { 'value': ITEM_STATUSES.AGREED, 'label': '同意', disabled: false },
+  { 'value': ITEM_STATUSES.REJECTED, 'label': '拒绝', disabled: false },
+  { 'value': ITEM_STATUSES.SMALL_AMOUNT_AGREE_STATUS, 'label': '小额自动同意', disabled: false },
+  { 'value': ITEM_STATUSES.AUTO_CANCEL_STATUS, 'label': '自动取消', disabled: false },
+  { 'value': ITEM_STATUSES.MANUAL_CANCEL_STATUS, 'label': '手动取消', disabled: false }
 ]
 
 //头像框常量枚举定义
