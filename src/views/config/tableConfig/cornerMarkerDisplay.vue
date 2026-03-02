@@ -389,6 +389,20 @@ export default {
             }).then(response => {
                 if (response.RetCode === 0) {
                     const objs = response.Data || []
+                    // 统一处理游戏ID格式为数组
+                    objs.forEach(item => {
+                        if (item.GameIdList) {
+                            if (typeof item.GameIdList === 'string') {
+                                item.GameIdList = item.GameIdList.split(',').filter(k => k).map(k => Number(k))
+                            } else if (Array.isArray(item.GameIdList)) {
+                                item.GameIdList = item.GameIdList.map(k => Number(k))
+                            } else {
+                                item.GameIdList = []
+                            }
+                        } else {
+                            item.GameIdList = []
+                        }
+                    })
                     this.clientDB = new ClientTableData(objs, 150, filterMap, 'ID', -1)
                     this.handleCurrentChange(1)
                 }
@@ -429,10 +443,8 @@ export default {
                 this.edit.item = { ...row }
                 // 使用当前appId覆盖row中的AppId
                 this.edit.item.AppId = this.currentAppId
-                // 处理 GameIdList：如果是字符串，转换为数字数组
-                if (row.GameIdList && typeof row.GameIdList === 'string') {
-                    this.edit.item.GameIdList = row.GameIdList.split(',').filter(k => k).map(k => Number(k))
-                } else if (Array.isArray(row.GameIdList)) {
+                // 处理 GameIdList：确保为数字数组
+                if (Array.isArray(row.GameIdList)) {
                     this.edit.item.GameIdList = row.GameIdList.map(k => Number(k))
                 } else {
                     this.edit.item.GameIdList = []
@@ -573,8 +585,8 @@ export default {
             // 格式化数据
             const postData = {
                 ID: this.edit.item.ID,
-                GameIdList: Array.isArray(this.edit.item.GameIdList) ? this.edit.item.GameIdList.join(',') : this.edit.item.GameIdList,
-                SiteList: Array.isArray(this.edit.item.SiteList) ? this.edit.item.SiteList.join(',') : this.edit.item.SiteList,
+                GameIdList: Array.isArray(this.edit.item.GameIdList) ? this.edit.item.GameIdList.map(id => Number(id)) : (typeof this.edit.item.GameIdList === 'string' ? this.edit.item.GameIdList.split(',').filter(k => k).map(k => Number(k)) : []),
+                SiteList: Array.isArray(this.edit.item.SiteList) ? this.edit.item.SiteList : (typeof this.edit.item.SiteList === 'string' ? this.edit.item.SiteList.split(',').filter(k => k) : []),
                 StartTime: this.edit.item.StartTime < 10000000000 ? this.edit.item.StartTime : Math.floor(this.edit.item.StartTime / 1000),
                 EndTime: this.edit.item.EndTime < 10000000000 ? this.edit.item.EndTime : Math.floor(this.edit.item.EndTime / 1000),
                 ImgUrl: this.edit.item.ImgUrl
