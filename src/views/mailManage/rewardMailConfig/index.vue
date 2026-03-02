@@ -87,8 +87,8 @@ export default {
           if (response.Data && response.Data.Data !== '' && response.Data.Data !== '{}') {
             const old = JSON.parse(response.Data.Data)
             $this.item = JSON.parse(response.Data.Data)
-            $this.item.userRewardNumPerDay /= 1000
-            $this.item.totalRewardNumPerDay /= 1000
+            $this.item.userRewardPerDay /= 1000
+            $this.item.totalRewardPerDay /= 1000
             $this.$refs.compare.SetOldVal(old)
           }
         }
@@ -96,8 +96,8 @@ export default {
     },
     saveData() {
       const item = JSON.parse(JSON.stringify(this.item))
-      item.userRewardNumPerDay *= 1000
-      item.totalRewardNumPerDay *= 1000
+      item.userRewardPerDay *= 1000
+      item.totalRewardPerDay *= 1000
 
       this.$refs.compare.SetNewVal(item)
       this.$refs.compare.Compare((isEdit) => {
