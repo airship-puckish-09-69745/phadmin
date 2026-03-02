@@ -33,7 +33,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="平台">
-            <SiteSelect v-model="item.site" placeholder="请选择" size="mini" />
+            <SiteSelect v-model="item.site" :showAll="true" placeholder="请选择" size="mini" />
           </el-form-item>
           <el-form-item label="App">
             <el-select v-model="item.appId" size="mini">
