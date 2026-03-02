@@ -176,6 +176,11 @@ export default {
         this.form.deadline *= 1000
         this.form.expireTime *= 1000
         this.form.rewardItems = JSON.parse(this.form.rewardItems)
+        for (const item of this.form.rewardItems) {
+          if (item.itemType === this.rewardItemType.betCoin) {
+            item.itemNum /= 1000
+          }
+        }
 
         this.onItemSubTypeChange(this.form.rewardItems[0].itemSubType, false)
       } else {
@@ -336,8 +341,9 @@ export default {
       if (params.rewardItems[0].itemType === this.rewardItemType.betCoin) {
         params.rewardItems[0].itemNum *= 1000
       }
-      params.expireTime = Number(params.expireTime/1000)
-      params.deadline = Number(params.deadline/1000)
+      params.rewardItems[0].itemNum = parseInt(params.rewardItems[0].itemNum)
+      params.expireTime = parseInt(params.expireTime/1000)
+      params.deadline = parseInt(params.deadline/1000)
       params.mailAccounts = JSON.stringify(params.mailAccounts)
       params.rewardItems = JSON.stringify(params.rewardItems)
 
