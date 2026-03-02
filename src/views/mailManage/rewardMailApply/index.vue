@@ -449,7 +449,7 @@ export default {
       let content = ''
       items.forEach(item => {
         if ([1,2,3].includes(item.itemType)) { // 金币
-          content += `${item.itemNum}（₱）|`
+          content += `${item.itemNum/1000}（₱）|`
           return
         }
         const propType = item.itemSubType
