@@ -400,7 +400,12 @@ export default {
       }
       // 游戏列表
       if (typeof data.gameIdCfg === 'string') {
-        data.gameIdCfg = data.gameIdCfg.split(',').filter(v => v)
+        try {
+          data.gameIdCfg = JSON.parse(data.gameIdCfg).map(v => Number(v))
+        } catch (e) {
+          // 兼容旧格式：逗号分隔的字符串 "23,22,15"
+          data.gameIdCfg = data.gameIdCfg.split(',').filter(v => v).map(v => Number(v))
+        }
       }
 
       // 时间：秒 -> 毫秒
