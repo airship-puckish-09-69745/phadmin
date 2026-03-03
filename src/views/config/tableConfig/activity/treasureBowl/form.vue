@@ -357,7 +357,6 @@ export default {
     // 加载编辑数据（后端数据 -> 前端展示格式）
     loadEditData() {
       const data = JSON.parse(JSON.stringify(this.editData))
-
       // 兼容后端返回 whitelistCfg 为字符串的情况
       if (typeof data.whitelistCfg === 'string') {
         try {
@@ -447,9 +446,26 @@ export default {
       // 奖励播报配置
       if (data.broadcastCfg.threshold) data.broadcastCfg.threshold /= 1000
       // 道具配置兼容
-      if (!data.propPools || typeof data.propPools !== 'object') {
+      if (!data.propPools) {
         data.propPools = DEFAULT_PROP_POOLS
+      } else {
+        // 兼容 propPools 为 JSON 字符串的情况
+        if (typeof data.propPools === 'string') {
+          try {
+            data.propPools = JSON.parse(data.propPools)
+          } catch (e) {
+            data.propPools = DEFAULT_PROP_POOLS
+          }
+        }
+        // 兼容 propPools 为对象（非数组）的情况
+        if (!Array.isArray(data.propPools)) {
+          data.propPools = [data.propPools]
+        }
+        data.propPools.forEach(pool => {
+          pool.propId = Number(pool.propId)
+        })
       }
+
       this.item = data
     },
 
