@@ -110,7 +110,7 @@
               </el-col>
               <el-col :span="12">
                 <el-form-item label="发放奖励类型：" :required="true">
-                  <el-select v-model="edit.item.rewardConfig.rewardType" placeholder="请选择" style="width:90px">
+                  <el-select v-model="edit.item.rewardConfig.rewardType" placeholder="请选择" style="width:90px" disabled>
                     <el-option
                       v-for="item in rewardTypes"
                       :key="item.value"
@@ -118,7 +118,7 @@
                       :value="item.value"
                     />
                   </el-select>
-                  <el-select v-if="edit.item.rewardConfig.rewardType === 2" v-model="edit.item.rewardConfig.useSceneId" placeholder="请选择投注金" style="width:200px">
+                  <el-select v-if="edit.item.rewardConfig.rewardType === 2" v-model="edit.item.rewardConfig.useSceneId" placeholder="请选择投注金" style="width:200px" disabled>
                     <el-option
                       v-for="scene in betScenes"
                       :key="scene.value"
@@ -126,7 +126,7 @@
                       :value="scene.value"
                     />
                   </el-select>
-                  <el-select v-if="edit.item.rewardConfig.rewardType === 3" v-model="edit.item.rewardConfig.useSceneId" placeholder="请选择返水金" style="width:150px">
+                  <el-select v-if="edit.item.rewardConfig.rewardType === 3" v-model="edit.item.rewardConfig.useSceneId" placeholder="请选择返水金" style="width:150px" disabled>
                     <el-option
                       v-for="scene in rebateScenes"
                       :key="scene.value"
@@ -299,7 +299,7 @@
                   <el-radio-group v-model="edit.item.gameType" @change="onGameTypeChange">
                     <el-radio :label="1">Slot</el-radio>
                     <el-radio :label="2">Poker</el-radio>
-<!--                    <el-radio :label="3">Casino</el-radio>-->
+                    <!--                    <el-radio :label="3">Casino</el-radio>-->
                   </el-radio-group>
                 </el-form-item>
               </el-col>
@@ -321,11 +321,11 @@
                   >
                   </el-tree>
                 </el-form-item>
-<!--                <el-form-item label="给选中游戏排序：" :required="true">
-                  <el-button size="mini" type="primary" @click="showGamesSortDialog()">
-                    排序
-                  </el-button>
-                </el-form-item>-->
+                <!--                <el-form-item label="给选中游戏排序：" :required="true">
+                                  <el-button size="mini" type="primary" @click="showGamesSortDialog()">
+                                    排序
+                                  </el-button>
+                                </el-form-item>-->
                 <el-form-item label="选中游戏：" disabled="disabled">
                   <el-input
                     type="textarea"
@@ -888,10 +888,10 @@ export default {
       userTagOptions: [
         { value: 2, label: '游戏强度', children: [{ value: 20000, label: '游戏强度' }] },
         { value: 5, label: 'Slots用户类型', children: [
-          { value: 50001, label: 'Slots新增用户' },
-          { value: 50002, label: 'Slots登录天数' },
-          { value: 50008, label: 'Slots回归用户' }
-        ]
+            { value: 50001, label: 'Slots新增用户' },
+            { value: 50002, label: 'Slots登录天数' },
+            { value: 50008, label: 'Slots回归用户' }
+          ]
         }
       ],
       // 游戏强度标签值
@@ -1179,6 +1179,12 @@ export default {
     },
     onGameTypeChange(val) {
       console.log('onGameTypeChange', val, 'prev:', this.edit.prevGameType)
+
+      // 根据玩法大类型联动发放奖励类型：Slot=32，Poker=13
+      const gameTypeSceneMap = { 1: 32, 2: 13 }
+      if (gameTypeSceneMap[val]) {
+        this.edit.item.rewardConfig.useSceneId = gameTypeSceneMap[val]
+      }
 
       // 将上一次 gameType 对应的游戏缓存起来
       this.cacheGameIdsByType(this.edit.prevGameType)
@@ -1937,7 +1943,6 @@ export default {
         return a.OrderNo - b.OrderNo
       })
     },
-    //************************ 游戏列表相关 ************************
     //************************ 白名单相关 ************************
     onAppIdOptionsChange() {
       console.log('onAppIdOptionsChange', this.edit.item.whitelistCfg.appIdList)
