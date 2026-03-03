@@ -1026,7 +1026,7 @@ export default {
         if (item.extend.rewardWay === 1) {
           reward.rewardItem.rewardNum *= 1000
         } else if (item.extend.rewardWay === 2) {
-          reward.rewardItem.rewardNum *= 10000
+          reward.rewardItem.rewardNum *= 100
         }
         reward.reward = reward.rewardItem.rewardNum
         maxRankShow = Math.max(maxRankShow, reward.rankEnd)
@@ -1088,7 +1088,7 @@ export default {
             if (item.extend.rewardWay === 1) {
               rewardCfg.rewardItem.rewardNum /= 1000
             } else if (item.extend.rewardWay === 2) {
-              rewardCfg.rewardItem.rewardNum /= 10000
+              rewardCfg.rewardItem.rewardNum /= 100
             }
             rewardCfg.reward = rewardCfg.rewardItem.rewardNum
           }
