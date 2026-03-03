@@ -143,67 +143,67 @@
       <!-- ========== 头像框奖励配置 ========== -->
       <el-tab-pane label="头像框奖励配置" name="propConfig">
         <el-form label-width="180px" size="small">
-
-          <el-table
-            :data="Array.isArray(item.propPools) ? item.propPools : (item.propPools ? [item.propPools] : [])"
-            border
-            size="small"
-            style="width: 100%"
-          >
-            <el-table-column label="道具类型" min-width="140">
-              <template slot-scope="scope">
-                <el-select
-                  v-model="scope.row.propType"
-                  placeholder="请选择"
-                  size="mini"
-                  style="width: 100%"
-                  @change="handlePropTypeChange(scope.row)"
-                >
-                  <el-option
-                    v-for="item in propTypeOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  />
-                </el-select>
-              </template>
-            </el-table-column>
-            <el-table-column label="道具名称" min-width="140">
-              <template slot-scope="scope">
-                <el-select v-model="scope.row.propId" placeholder="请选择" size="mini" style="width: 100%"
-                           @change="handlePropNameChange(scope.row)">
-                  <el-option
-                    v-for="item in getPropOptionsByType(scope.row.propType)"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  />
-                </el-select>
-              </template>
-            </el-table-column>
-            <el-table-column label="可用时间" min-width="120">
-              <template slot-scope="scope">
-                <el-select
-                  v-model="scope.row.propTime"
-                  placeholder="请选择"
-                  size="mini"
-                  style="width: 100%"
-                >
-                  <el-option
-                    v-for="item in propDayTypeOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  />
-                </el-select>
-              </template>
-            </el-table-column>
-            <el-table-column label="道具数量" min-width="100">
-              <template slot-scope="scope">
-                <el-input v-model.number="scope.row.propNum" placeholder="数量" size="mini"/>
-              </template>
-            </el-table-column>
-          </el-table>
+          <div>
+            <el-table
+              :data="item.propPools ? [item.propPools] : []"
+              border
+              size="small"
+              style="width: 100%"
+            >
+              <el-table-column label="道具类型" min-width="140">
+                <template slot-scope="scope">
+                  <el-select
+                    v-model="scope.row.propType"
+                    placeholder="请选择"
+                    size="mini"
+                    style="width: 100%"
+                    @change="handlePropTypeChange(scope.row)"
+                  >
+                    <el-option
+                      v-for="item in propTypeOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </template>
+              </el-table-column>
+              <el-table-column label="道具名称" min-width="140">
+                <template slot-scope="scope">
+                  <el-select v-model="scope.row.propId" placeholder="请选择" size="mini" style="width: 100%" @change="handlePropNameChange(scope.row)">
+                    <el-option
+                      v-for="item in getPropOptionsByType(scope.row.propType)"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </template>
+              </el-table-column>
+              <el-table-column label="可用时间" min-width="120">
+                <template slot-scope="scope">
+                  <el-select
+                    v-model="scope.row.propTime"
+                    placeholder="请选择"
+                    size="mini"
+                    style="width: 100%"
+                  >
+                    <el-option
+                      v-for="item in propDayTypeOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </template>
+              </el-table-column>
+              <el-table-column label="道具数量" min-width="100">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.propNum" placeholder="数量" size="mini"/>
+                </template>
+              </el-table-column>
+            </el-table>
+          </div>
         </el-form>
       </el-tab-pane>
     </el-tabs>
@@ -447,23 +447,21 @@ export default {
       if (data.broadcastCfg.threshold) data.broadcastCfg.threshold /= 1000
       // 道具配置兼容
       if (!data.propPools) {
-        data.propPools = DEFAULT_PROP_POOLS
+        data.propPools = { ...DEFAULT_PROP_POOLS }
       } else {
         // 兼容 propPools 为 JSON 字符串的情况
         if (typeof data.propPools === 'string') {
           try {
             data.propPools = JSON.parse(data.propPools)
           } catch (e) {
-            data.propPools = DEFAULT_PROP_POOLS
+            data.propPools = { ...DEFAULT_PROP_POOLS }
           }
         }
-        // 兼容 propPools 为对象（非数组）的情况
-        if (!Array.isArray(data.propPools)) {
-          data.propPools = [data.propPools]
+        // 兼容 propPools 为数组的情况，取第一项
+        if (Array.isArray(data.propPools)) {
+          data.propPools = data.propPools[0] || { ...DEFAULT_PROP_POOLS }
         }
-        data.propPools.forEach(pool => {
-          pool.propId = Number(pool.propId)
-        })
+        data.propPools.propId = Number(data.propPools.propId)
       }
 
       this.item = data
