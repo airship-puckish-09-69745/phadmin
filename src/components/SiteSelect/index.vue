@@ -1,6 +1,6 @@
 <template>
   <el-select v-model="selectedValue" v-bind="$attrs" @change="handleChange" >
-    <el-option v-if="showAll" value="" label="全部"></el-option>
+    <el-option v-if="showAll" value="" label="所有"></el-option>
     <el-option
       v-for="option in displayOptions"
       :key="option.value"
@@ -36,7 +36,6 @@ export default {
   data() {
     return {
       options: [
-        { value: '', label: '所有', numericValue: 0 },
         { value: 'BP', label: 'BP', numericValue: 1 },
         // { value: 'AP', label: 'AP', numericValue: 2 }, 2026-02-10去除
         { value: 'GP', label: 'GP', numericValue: 3 },
