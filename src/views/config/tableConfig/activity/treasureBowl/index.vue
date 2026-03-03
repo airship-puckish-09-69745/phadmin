@@ -140,6 +140,7 @@ export default {
         rankCfg: '排行榜配置',
         broadcastCfg: '奖励播报配置',
         whitelistCfg: '白名单配置',
+        propPools: '头像框奖励配置',
         modifyUser: '最后修改人',
         status: '配置状态'
       },
