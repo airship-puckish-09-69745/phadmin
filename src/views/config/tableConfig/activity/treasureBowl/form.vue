@@ -145,7 +145,7 @@
         <el-form label-width="180px" size="small">
           <div>
             <el-table
-              :data="Array.isArray(item.propPools) ? item.propPools : (item.propPools ? [item.propPools] : [])"
+              :data="item.propPools ? [item.propPools] : []"
               border
               size="small"
               style="width: 100%"
@@ -447,23 +447,21 @@ export default {
       if (data.broadcastCfg.threshold) data.broadcastCfg.threshold /= 1000
       // 道具配置兼容
       if (!data.propPools) {
-        data.propPools = DEFAULT_PROP_POOLS
+        data.propPools = { ...DEFAULT_PROP_POOLS }
       } else {
         // 兼容 propPools 为 JSON 字符串的情况
         if (typeof data.propPools === 'string') {
           try {
             data.propPools = JSON.parse(data.propPools)
           } catch (e) {
-            data.propPools = DEFAULT_PROP_POOLS
+            data.propPools = { ...DEFAULT_PROP_POOLS }
           }
         }
-        // 兼容 propPools 为对象（非数组）的情况
-        if (!Array.isArray(data.propPools)) {
-          data.propPools = [data.propPools]
+        // 兼容 propPools 为数组的情况，取第一项
+        if (Array.isArray(data.propPools)) {
+          data.propPools = data.propPools[0] || { ...DEFAULT_PROP_POOLS }
         }
-        data.propPools.forEach(pool => {
-          pool.propId = Number(pool.propId)
-        })
+        data.propPools.propId = Number(data.propPools.propId)
       }
 
       this.item = data
