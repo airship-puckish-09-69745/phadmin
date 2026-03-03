@@ -1393,9 +1393,15 @@ export default {
       }
 
       for (let i = 0; i < this.edit.item.TaskItem.length; i++) {
-        if (this.edit.item.TaskItem[i].ConditionType === 2 && Number(this.edit.item.TaskItem[i].ConditionTarget) === 0) {
-          Message.error(`任务` + (i + 1) + '条件目标为0')
-          return false
+        if (this.edit.item.TaskItem[i].ConditionType === 2) {
+          if (Number(this.edit.item.TaskItem[i].ConditionTarget) === 0) {
+            Message.error(`任务` + (i + 1) + '条件目标为0')
+            return false
+          }
+          if (Number.isNaN(Number(this.edit.item.TaskItem[i].ConditionTarget))) {
+            Message.error(`任务` + (i + 1) + '条件目标不是数字')
+            return false
+          }
         }
         for (let j = 0; j < this.edit.item.TaskItem[i].Reward.length; j++) {
           if (this.edit.item.TaskItem[i].Reward[j].RewardType === 3 && this.edit.item.TaskItem[i].Reward[j].Prop === null) {
