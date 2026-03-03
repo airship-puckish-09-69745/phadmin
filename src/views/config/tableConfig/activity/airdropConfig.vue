@@ -299,7 +299,7 @@
                   <el-radio-group v-model="edit.item.gameType" @change="onGameTypeChange">
                     <el-radio :label="1">Slot</el-radio>
                     <el-radio :label="2">Poker</el-radio>
-                    <el-radio :label="3">Casino</el-radio>
+<!--                    <el-radio :label="3">Casino</el-radio>-->
                   </el-radio-group>
                 </el-form-item>
               </el-col>
@@ -839,7 +839,8 @@ export default {
 
       // 投注金
       betScenes: [
-        { 'value': 13, 'label': '【空投活动】任意游戏投注' }
+        { 'value': 13, 'label': '【空投活动poker】任意游戏投注' },
+        { 'value': 32, 'label': '【空投活动solt】任意游戏投注' }
       ],
       // 返水金
       rebateScenes: [
