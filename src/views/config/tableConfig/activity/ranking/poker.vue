@@ -342,7 +342,7 @@
                       v-if="edit.item.extend.rewardWay === 1"
                     >
                       <template slot-scope="scope">
-                        <el-input v-model.number="scope.row.reward" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
+                        <el-input v-model.number="scope.row.rewardItem.rewardNum" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
                       </template>
                     </el-table-column>
                     <el-table-column label="操作" column-key="op">
@@ -561,9 +561,20 @@ function newItem() {
 
 function newRewardItem() {
   return {
+    rewardId: 0,
+    rewardNum: 0,
+    rewardType: 2, // 奖励类型 1. 金币 2. 投注金 3. 返水金 4 .道具
+    rewardSubType: 0,
+    rewardExpireDays: 1
+  }
+}
+
+function newRankRewardItem() {
+  return {
     rankStart: 0,
     rankEnd: 0,
     reward: 0,
+    rewardItem: newRewardItem()
   }
 }
 
@@ -731,7 +742,7 @@ export default {
       this.changeStatus(ob.id, 3, '您确定要将记录状态修改为废弃吗？')
     },
     handleAddRankReward() {
-      this.edit.item.extend.rewardList.push(newRewardItem())
+      this.edit.item.extend.rewardList.push(newRankRewardItem())
     },
     handleDelRankReward(index) {
       this.edit.item.extend.rewardList.splice(index, 1)
@@ -807,6 +818,7 @@ export default {
 
       for (const reward of item.extend.rewardList) {
         reward.reward *= 1000
+        reward.rewardItem.rewardNum *= 1000
       }
 
       if (item.activity.whitelist.appIdList.length === 0 && this.version === 'V2') {
@@ -926,6 +938,17 @@ export default {
 
           for (const reward of item.extend.rewardList) {
             reward.reward /= 1000
+            if (reward.rewardItem) {
+              reward.rewardItem.rewardNum /= 1000
+            } else {
+              reward.rewardItem = {
+                rewardId: 0,
+                rewardNum: reward.reward,
+                rewardType: 2, // 奖励类型 1. 金币 2. 投注金 3. 返水金 4 .道具
+                rewardSubType: 0,
+                rewardExpireDays: 0
+              }
+            }
           }
 
           if (item.activity.whitelist.uidList.length > 0) {
