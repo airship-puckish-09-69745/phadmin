@@ -1025,6 +1025,7 @@ export default {
         { label: '万圣节活动-[18]', value: 18 },
         { label: '竖版游戏排行榜活动-[19]', value: 19 },
         { label: 'Poker类排行榜活动-[20]', value: 20 },
+        { label: '聚宝盆活动活动-[22]', value: 22 },
       ],
       gameSelect: [],
       activitySelect: [
