@@ -1402,13 +1402,7 @@ export default {
     getData() {
       const $this = this
       // 加载基础数值配置
-      request({
-        url: '/customizeconfig/one',
-        method: 'get',
-        data: {
-          SubKey: this.subKey
-        }
-      }).then(response => {
+      getCustomize(this.subKey).then(response => {
         if (response.RetCode === 0) {
           $this.form = response.Data || []
           $this.postData = response.Data || []
