@@ -197,6 +197,7 @@ export default {
         }
 
       } else {
+        // this.accounts = ''
         this.form = {
           appId: parseInt(this.$store.getters.appId), // appid
           mailAccounts: [], // 账号列表，json字符串 [{"account":"lfb","status":0},{"account":"lfb11","status":0}] status状态，0:未发送 1:成功 2:失败
