@@ -2,7 +2,9 @@
     <div class="app-container">
         <!-- 发布组件 -->
         <el-row>
-            <publish primary-key="ID" key-id="CornerMarkerConfig" :env-empty="false" :attr-names="AttrNames" :head-attrs="['ID','GameIdList']" />
+            <publish primary-key="ID" key-id="CornerMarkerConfig" compare-type="Object" :on-compare="onCompare"
+                :env-empty="false" :attr-names="AttrNames"
+                :head-attrs="['ID', 'GameIdList', 'SiteList', 'StartTime', 'EndTime', 'ImgUrl']" />
         </el-row>
         <!-- 顶部操作栏 -->
         <el-row :gutter="10" style="margin-top: 30px">
@@ -52,8 +54,7 @@
                 </el-table-column>
                 <el-table-column label="操作" column-key="op" width="250">
                     <template slot-scope="scope">
-                        <el-button type="danger" size="mini" icon="el-icon-delete"
-                            @click="handleDelete(scope.row)">删除
+                        <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.row)">删除
                         </el-button>
                     </template>
                 </el-table-column>
@@ -77,7 +78,8 @@
                 <el-tabs type="card">
                     <el-tab-pane label="基础信息">
                         <!-- 游戏选择 -->
-                        <el-alert style="margin-bottom: 15px" title="当前APPID：" :description="String(currentAppId)" type="info" show-icon></el-alert>
+                        <el-alert style="margin-bottom: 15px" title="当前APPID：" :description="String(currentAppId)"
+                            type="info" show-icon></el-alert>
                         <el-form-item label="勾选支持的游戏：" :required="true">
                             <el-input v-model="filterText" placeholder="输入关键字进行过滤" style="width: 300px" />
                             <el-tree ref="tree" :data="treeData" show-checkbox node-key="id" highlight-current
@@ -87,7 +89,8 @@
 
                         <!-- 生效站点多选 -->
                         <el-form-item label="生效站点：">
-                            <SiteSelect v-model="edit.item.SiteList" multiple placeholder="请选择站点" style="width: 300px" />
+                            <SiteSelect v-model="edit.item.SiteList" multiple placeholder="请选择站点"
+                                style="width: 300px" />
                         </el-form-item>
 
                         <!-- 生效时间范围选择 -->
@@ -121,19 +124,17 @@
         </el-dialog>
 
         <!-- 删除确认对话框 -->
-        <el-dialog
-            title="确认删除"
-            :visible.sync="deleteDialog.visible"
-            width="400px"
-            :close-on-click-modal="false"
+        <el-dialog title="确认删除" :visible.sync="deleteDialog.visible" width="400px" :close-on-click-modal="false"
             :close-on-press-escape="false">
             <div style="text-align: center; padding: 20px 0;">
                 <i class="el-icon-warning" style="color: #e6a23c; font-size: 24px; margin-right: 10px;"></i>
                 <span style="font-size: 16px;">确定要删除这条记录吗？</span>
-                <div v-if="deleteDialog.item" style="margin-top: 15px; padding: 10px; background-color: #f5f5f5; border-radius: 4px;">
+                <div v-if="deleteDialog.item"
+                    style="margin-top: 15px; padding: 10px; background-color: #f5f5f5; border-radius: 4px;">
                     <p><strong>记录状态：</strong>{{ getStatus(deleteDialog.item.StartTime, deleteDialog.item.EndTime) }}</p>
                     <p><strong>游戏名称：</strong>{{ formatGameNames(deleteDialog.item.GameIdList) }}</p>
-                    <p><strong>生效时间：</strong>{{ formatTime(deleteDialog.item.StartTime) }} 至 {{ formatTime(deleteDialog.item.EndTime) }}</p>
+                    <p><strong>生效时间：</strong>{{ formatTime(deleteDialog.item.StartTime) }} 至 {{
+                        formatTime(deleteDialog.item.EndTime) }}</p>
                 </div>
             </div>
             <div slot="footer" class="dialog-footer">
@@ -143,7 +144,7 @@
         </el-dialog>
 
         <!--对比组件-->
-        <compare ref="compare" :attr-names="AttrNames" />
+        <compare ref="compare" />
 
     </div>
 </template>
@@ -203,8 +204,8 @@ export default {
             },
 
             AttrNames: {
-                GameIdList: '游戏Key',
-                GameName: '游戏名称',
+                ID: '角标配置ID',
+                GameIdList: '游戏ID集合',
                 SiteList: '生效站点',
                 StartTime: '生效开始时间',
                 EndTime: '生效结束时间',
@@ -226,6 +227,125 @@ export default {
         this.getAllGames()
     },
     methods: {
+        onCompare(pre, pro) {
+            console.log(pre, pro)
+            // 处理直接数组数据，不需要JSON.parse
+            const preData = Array.isArray(pre) ? pre : (pre.Data || [])
+            const proData = Array.isArray(pro) ? pro : (pro.Data || [])
+            
+            // 按ID分组数据
+            const groupById = (data) => {
+                const groups = {}
+                data.forEach(item => {
+                    if (!groups[item.ID]) {
+                        groups[item.ID] = {
+                            ID: item.ID,
+                            app_id: item.app_id,
+                            channels: [],
+                            CornerMarker: item.CornerMarker
+                        }
+                    }
+                    groups[item.ID].channels.push(item.channel)
+                })
+                return groups
+            }
+            
+            const newGroups = groupById(preData)
+            const oldGroups = groupById(proData)
+            
+            let str = ""
+            // 处理switchData - 可能是数组或字符串
+            let has = false
+            
+            // 处理修改的配置
+            for (const id in newGroups) {
+                if (oldGroups[id]) {
+                    const newItem = newGroups[id]
+                    const oldItem = oldGroups[id]
+                    
+                    // 检查是否有变化（除了channel之外的其他字段）
+                    const newCorner = JSON.parse(JSON.stringify(newItem.CornerMarker))
+                    const oldCorner = JSON.parse(JSON.stringify(oldItem.CornerMarker))
+                    
+                    // 检查各个字段的变化
+                    const changes = []
+                    
+                    if (oldItem.app_id !== newItem.app_id) {
+                        changes.push(`应用ID：${oldItem.app_id} → ${newItem.app_id}`)
+                    }
+                    
+                    // 检查站点变化
+                    const oldChannels = oldItem.channels.sort().join('，')
+                    const newChannels = newItem.channels.sort().join('，')
+                    if (oldChannels !== newChannels) {
+                        changes.push(`站点：${oldChannels} → ${newChannels}`)
+                    }
+                    
+                    if (JSON.stringify(oldCorner.StartTime) !== JSON.stringify(newCorner.StartTime)) {
+                        const oldStart = new Date(oldItem.CornerMarker.StartTime * 1000).toLocaleString()
+                        const newStart = new Date(newItem.CornerMarker.StartTime * 1000).toLocaleString()
+                        changes.push(`开始时间：${oldStart} → ${newStart}`)
+                    }
+                    
+                    if (JSON.stringify(oldCorner.EndTime) !== JSON.stringify(newCorner.EndTime)) {
+                        const oldEnd = new Date(oldItem.CornerMarker.EndTime * 1000).toLocaleString()
+                        const newEnd = new Date(newItem.CornerMarker.EndTime * 1000).toLocaleString()
+                        changes.push(`结束时间：${oldEnd} → ${newEnd}`)
+                    }
+                    
+                    if (JSON.stringify(oldCorner.GameIdList) !== JSON.stringify(newCorner.GameIdList)) {
+                        const oldGames = this.formatGameNames(oldItem.CornerMarker.GameIdList)
+                        const newGames = this.formatGameNames(newItem.CornerMarker.GameIdList)
+                        changes.push(`游戏列表：${oldGames} → ${newGames}`)
+                    }
+                    
+                    if (oldCorner.ImgUrl !== newCorner.ImgUrl) {
+                        changes.push(`图片：${oldItem.CornerMarker.ImgUrl} → ${newItem.CornerMarker.ImgUrl}`)
+                    }
+                    
+                    if (changes.length > 0) {
+                        has && (str += "\r\n---"); has = true
+                        str += `\r\n修改：【${newItem.app_id}】，配置ID：${id}`
+                        changes.forEach(change => {
+                            str += `\r\n${change}`
+                        })
+                    }
+                }
+            }
+            
+            // 处理新增的配置
+            for (const id in newGroups) {
+                if (!oldGroups[id]) {
+                    const newItem = newGroups[id]
+                    has && (str += "\r\n---"); has = true
+                    str += `\r\n新增配置`
+                    str += `\r\n配置ID：${id}`
+                    str += `\r\n站点：${newItem.channels.join('，')}`
+                    str += `\r\n游戏列表：${this.formatGameNames(newItem.CornerMarker.GameIdList)}`
+                    str += `\r\n开始时间：${new Date(newItem.CornerMarker.StartTime * 1000).toLocaleString()}`
+                    str += `\r\n结束时间：${new Date(newItem.CornerMarker.EndTime * 1000).toLocaleString()}`
+                    str += `\r\n图片：${newItem.CornerMarker.ImgUrl}`
+                }
+            }
+            
+            // 处理删除的配置
+            for (const id in oldGroups) {
+                if (!newGroups[id]) {
+                    const oldItem = oldGroups[id]
+                    has && (str += "\r\n---"); has = true
+                    str += `\r\n删除配置`
+                    str += `\r\n配置ID：${id}`
+                    str += `\r\n站点：${oldItem.channels.join('，')}`
+                    str += `\r\n游戏列表：${this.formatGameNames(oldItem.CornerMarker.GameIdList)}`
+                    str += `\r\n开始时间：${new Date(oldItem.CornerMarker.StartTime * 1000).toLocaleString()}`
+                    str += `\r\n结束时间：${new Date(oldItem.CornerMarker.EndTime * 1000).toLocaleString()}`
+                    str += `\r\n图片：${oldItem.CornerMarker.ImgUrl}`
+                }
+            }
+            console.log('最终str结果:', str)
+            return str
+        },
+        
         // 获取所有游戏信息（用于游戏树）
         async getAllGames() {
             try {
@@ -235,7 +355,7 @@ export default {
                     data: {},
                     params: { status: 2 }
                 })
-                
+
                 if (response.RetCode === 0) {
                     const objs = response.Data || []
                     const data = {}
@@ -271,7 +391,7 @@ export default {
                     this.allTreeData = builtTree
                     this.treeData = builtTree
                 }
-                
+
                 return response
             } catch (error) {
                 console.error('getAllGames error:', error)
@@ -445,7 +565,7 @@ export default {
                 } else {
                     this.edit.item.SiteList = []
                 }
-                
+
                 // 处理时间戳：确保是毫秒级时间戳（Element UI日期选择器需要）
                 if (row.StartTime) {
                     // 如果StartTime是秒级时间戳，转换为毫秒级
@@ -472,7 +592,7 @@ export default {
                 // 如果游戏数据还未加载，重新获取
                 await this.getAllGames()
             }
-            
+
             // 等待DOM更新并设置游戏树选中状态
             this.$nextTick(() => {
                 if (this.$refs.tree && this.edit.item.GameIdList) {
@@ -501,7 +621,7 @@ export default {
                 // 如果游戏数据还未加载，重新获取
                 await this.getAllGames()
             }
-            
+
             // 等待DOM更新并清空游戏树选中状态
             this.$nextTick(() => {
                 if (this.$refs.tree) {

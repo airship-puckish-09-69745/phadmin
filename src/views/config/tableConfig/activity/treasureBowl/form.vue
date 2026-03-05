@@ -123,7 +123,7 @@
       </el-tab-pane>
 
       <!-- ========== 白名单配置 ========== -->
-      <el-tab-pane label="白名单配置" name="whitelist">
+      <el-tab-pane label="白名单配置123" name="whitelist">
         <el-form label-width="180px" size="small">
           <el-row :gutter="20">
             <el-col :xs="24" :sm="12">
