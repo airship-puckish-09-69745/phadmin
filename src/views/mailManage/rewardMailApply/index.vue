@@ -104,7 +104,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column fixed="right" width="300px" label="操作">
+        <el-table-column fixed="right" width="310px" label="操作">
           <template slot-scope="scope">
             <el-button v-if="scope.row.status === 3" type="primary" size="mini" icon="el-icon-edit" @click="onShowFormDialog(scope.row)">编辑</el-button>
             <el-button v-if="isShowDetailsButton(scope.row.status)" type="primary" size="mini" @click="onShowDetailsDialog(scope.row)">查看详情</el-button>
