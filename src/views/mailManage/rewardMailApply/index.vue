@@ -50,8 +50,8 @@
             {{ getAccountTypeText(scope.row.accountType) }}
           </template>
         </el-table-column>
-        <el-table-column prop="content" label="邮件内容" show-overflow-tooltip width="230" />
-        <el-table-column prop="send_users" label="奖励内容" width="200">
+        <el-table-column prop="content" label="邮件内容" show-overflow-tooltip min-width="230" />
+        <el-table-column prop="send_users" label="奖励内容" min-width="200">
           <template slot-scope="scope">
             {{ getRewardContentText(scope.row.rewardItems) }}
           </template>
