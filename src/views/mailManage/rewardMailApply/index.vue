@@ -106,12 +106,12 @@
 
         <el-table-column fixed="right" width="310px" label="操作">
           <template slot-scope="scope">
-            <el-button v-if="scope.row.status === 3" type="primary" size="mini" icon="el-icon-edit" @click="onShowFormDialog(scope.row)">编辑</el-button>
+            <el-button v-if="scope.row.status === ITEM_STATUSES.UNAPPROVED" type="primary" size="mini" icon="el-icon-edit" @click="onShowFormDialog(scope.row)">编辑</el-button>
             <el-button v-if="isShowDetailsButton(scope.row.status)" type="primary" size="mini" @click="onShowDetailsDialog(scope.row)">查看详情</el-button>
             <el-button v-if="isShowSubmitReviewButton(scope.row)" type="warning" size="mini" @click="onSubmitReview(scope.row)">发起审批</el-button>
             <el-button v-if ="isShowDistributionButton(scope.row)" type="warning" size="mini" @click="onSubmitDistribution(scope.row)">发起发送</el-button>
-            <el-button v-if ="scope.row.status === 6" type="info" size="mini" @click="onCancelDistribution(scope.row)">取消发送</el-button>
-            <el-button  v-if="scope.row.status === 3" size="mini" type="danger" @click="handleDeleteRow(scope.row)">删除</el-button>
+            <el-button v-if ="scope.row.status === ITEM_STATUSES.AGREED" type="info" size="mini" @click="onCancelDistribution(scope.row)">取消发送</el-button>
+            <el-button  v-if="scope.row.status === ITEM_STATUSES.UNAPPROVED" size="mini" type="danger" @click="handleDeleteRow(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -122,7 +122,7 @@
           :current-page="tablePagination.currentPage"
           :page-sizes="[10, 20, 30, 40]"
           :page-size="tablePagination.pageSize"
-          layout="slot, total, sizes, prev, next"
+          layout="slot, total, sizes, prev, pager, next, jumper"
           prev-text="上一页"
           next-text="下一页"
           :total="tablePagination.total"
@@ -158,6 +158,7 @@ export default {
     return {
       libShow: $libShow,
       datePickerOptions: $libShow.DefaultDatePickerOptions(),
+      ITEM_STATUSES,
       statusOptions: {
         1: '发送成功',
         2: '发送失败',

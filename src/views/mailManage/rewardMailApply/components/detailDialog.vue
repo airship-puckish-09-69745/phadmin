@@ -12,7 +12,32 @@
       <el-descriptions-item label="未发送人数">{{ form.unsendCount }}</el-descriptions-item>
       <el-descriptions-item label="已领取人数">{{ form.claimUserCount }}</el-descriptions-item>
       <el-descriptions-item label="未领取人数">{{ form.unclaimUserCount }}</el-descriptions-item>
-      <el-descriptions-item label="奖励内容" :span="6">{{ form.rewardItemsText }}</el-descriptions-item>
+      <el-descriptions-item label="奖励内容" :span="6">
+      <el-table
+        :data="form.rewardItems"
+      >
+        <el-table-column label="物品类型" prop="itemSubType">
+          <template slot-scope="scope">
+            {{ getPropTypeText(scope.row.itemType, scope.row.itemSubType) }}
+          </template>
+        </el-table-column>
+        <el-table-column label="物品数量" prop="itemNum" >
+          <template slot-scope="scope">
+            {{ getPropNumText(scope.row.itemType, scope.row.itemNum) }}
+          </template>
+        </el-table-column>
+        <el-table-column label="物品名称" prop="itemId">
+          <template slot-scope="scope">
+            {{ getPropNameText(scope.row.itemId) }}
+          </template>
+        </el-table-column>
+        <el-table-column label="物品图标" prop="itemId" align="left">
+          <template slot-scope="scope">
+            <img v-if="scope.row.itemId !== 0" :src="getPropIcon(scope.row.itemId)" alt="物品图标" style="width: 50px; height: 50px;">
+          </template>
+        </el-table-column>
+      </el-table>
+      </el-descriptions-item>
       <el-descriptions-item label="目标用户" :span="6">
         <el-table :data="form.mailAccounts" style="width: 40%">
           <el-table-column label="UID" prop="account" />
@@ -62,7 +87,7 @@ export default {
         claimUserCount: 0,
         unclaimUserCount: 0,
         mailAccounts: [],
-        rewardItemsText: '',
+        rewardItems: [],
       },
       sendStatuses: {
         0: '未发送',
@@ -83,7 +108,7 @@ export default {
       // 格式化邮件账号文本
       this.form.mailAccounts = JSON.parse(this.detailForm.mailAccounts)
       // 格式化奖励内容文本
-      this.form.rewardItemsText = this.getRewardContentText(this.detailForm.rewardItems)
+      this.form.rewardItems = JSON.parse(this.detailForm.rewardItems)
       // 格式化发送时间
       this.form.sendTime = this.formatTime(this.detailForm.sendTime)
       // 计算发送人数
@@ -147,19 +172,38 @@ export default {
         const propType = item.itemSubType
         const propTypeName = this.getPropTypeText(propType)
         const propName = this.getPropNameText(propId)
-        content += `${propTypeName}：${propName} x ${item.itemNum}|`
+        content += `<div><span>${propTypeName}</span>：${propName} x ${item.itemNum}</div>`
       })
       content = content.slice(0, -1)
       return content
     },
+    // 获取物品数量文本
+    getPropNumText(itemType, itemNum) {
+      if ([1,2,3].includes(itemType)) { // 金币
+        return `${itemNum / 1000}（₱）`
+      }
+      return itemNum
+    },
     // 获取道具类型文本
-    getPropTypeText(propType) {
+    getPropTypeText(itemType, propType) {
+      if ([1,2,3].includes(itemType)) {
+        return '投注金'
+      }
       const prop = ITEM_TYPE_OPTIONS.find(item => item.value === propType)
       return prop ? prop.label : '未知道具类型:' + propType
     },
+    // 获取道具名称文本
     getPropNameText(propId) {
+      if (propId === 0) {
+        return ''
+      }
       const prop = this.propList.find(item => item.id === propId)
       return prop ? prop.item_name : '未知ID:' + propId
+    },
+    // 获取道具图标
+    getPropIcon(propId) {
+      const prop = this.propList.find(item => item.id === propId)
+      return prop ? prop.image : ''
     }
   }
 }
