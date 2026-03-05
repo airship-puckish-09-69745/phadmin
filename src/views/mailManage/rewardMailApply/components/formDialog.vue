@@ -54,7 +54,6 @@
         <el-col :span="5">
           <el-form-item label="奖励类型" required>
             <el-select v-model="item.itemType" placeholder="请选择奖励类型" @change="onItemTypeChange">
-              <el-option label="无" :value="0" />
               <el-option label="投注金" :value="2" />
               <el-option label="道具" :value="4" />
             </el-select>
