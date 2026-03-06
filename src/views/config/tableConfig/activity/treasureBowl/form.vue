@@ -40,7 +40,7 @@
                   <template slot="append">₱</template>
                 </el-input>
                 <div style="color: #E6A23C; font-size: 12px; line-height: 1.4; margin-top: 4px">
-                  达到上限时只发铜钱不发投注金，且当日榜单奖励不可领取
+                  达到上限时只发铜钱不发投注金，当日没有榜单奖励，且在Lark同步报警
                 </div>
               </el-form-item>
             </el-col>
