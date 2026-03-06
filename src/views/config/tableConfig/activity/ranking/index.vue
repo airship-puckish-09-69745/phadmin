@@ -133,6 +133,24 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
+                  <el-form-item label="每日发奖上限：" :required="true">
+                    <el-input v-model.number="edit.item.extend.totalRewardLimitPerDay" placeholder="请输入每日发奖上限" >
+                      <template slot="append">
+                        （₱）
+                      </template>
+                    </el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="今日已发奖励：">
+                    <el-input v-model.number="edit.todayTotalReward" disabled >
+                      <template slot="append">
+                        （₱）
+                      </template>
+                    </el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
                   <el-form-item label="调试时间偏移量（仅测试用）：" :required="true">
                     <el-input v-model.number="edit.item.activity.debugTimeOffset">
                       <template slot="append">秒</template>
@@ -632,7 +650,8 @@ function newItem() {
       userFilterCondition: {
         userTagTypes: [],
         userTagItems: []
-      }
+      },
+      totalRewardLimitPerDay: 0 //每日奖励总额上限
     }
   }
 }
@@ -716,7 +735,8 @@ export default {
         gamesSortDialogVisible: false,
         userTagType: 0,
         userTagIds: [],
-        userTagTypeOptions: []
+        userTagTypeOptions: [],
+        todayTotalReward: 0
       },
 
       treeData: [{
@@ -1004,6 +1024,7 @@ export default {
       item.extend.minBet *= 1000
       item.extend.minScore *= 1000
       item.extend.maxReward *= 1000
+      item.extend.totalRewardLimitPerDay *= 1000
 
       if (item.extend.rewardList.length === 0) {
         Message.error('请添加排名奖励配置')
@@ -1077,6 +1098,7 @@ export default {
           item.extend.minBet /= 1000
           item.extend.minScore /= 1000
           item.extend.maxReward /= 1000
+          item.extend.totalRewardLimitPerDay /= 1000
 
           for (const rewardCfg of item.extend.rewardList) {
             if (rewardCfg.rewardItem === undefined) {
