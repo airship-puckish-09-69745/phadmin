@@ -6,37 +6,39 @@
     :before-close="onClose"
   >
     <el-descriptions title="邮件发送情况" direction="vertical" :column="6" border>
-      <el-descriptions-item label="发送时间">{{ form.sendTime }}</el-descriptions-item>
+      <el-descriptions-item label="发送时间" :span="2">{{ form.sendTime }}</el-descriptions-item>
+      <el-descriptions-item label="过期时间" :span="2">{{ form.expireTime }}</el-descriptions-item>
+      <el-descriptions-item label="截止时间" :span="2">{{ form.deadlineTime }}</el-descriptions-item>
       <el-descriptions-item label="总发送人数">{{ form.sendUserTotal }}</el-descriptions-item>
       <el-descriptions-item label="已发送人数">{{ form.sendUserCount }}</el-descriptions-item>
       <el-descriptions-item label="未发送人数">{{ form.unsendCount }}</el-descriptions-item>
       <el-descriptions-item label="已领取人数">{{ form.claimUserCount }}</el-descriptions-item>
-      <el-descriptions-item label="未领取人数">{{ form.unclaimUserCount }}</el-descriptions-item>
+      <el-descriptions-item label="未领取人数" :span="2">{{ form.unclaimUserCount }}</el-descriptions-item>
       <el-descriptions-item label="奖励内容" :span="6">
-      <el-table
-        :data="form.rewardItems"
-      >
-        <el-table-column label="物品类型" prop="itemSubType">
-          <template slot-scope="scope">
-            {{ getPropTypeText(scope.row.itemType, scope.row.itemSubType) }}
-          </template>
-        </el-table-column>
-        <el-table-column label="物品数量" prop="itemNum" >
-          <template slot-scope="scope">
-            {{ getPropNumText(scope.row.itemType, scope.row.itemNum) }}
-          </template>
-        </el-table-column>
-        <el-table-column label="物品名称" prop="itemId">
-          <template slot-scope="scope">
-            {{ getPropNameText(scope.row.itemId) }}
-          </template>
-        </el-table-column>
-        <el-table-column label="物品图标" prop="itemId" align="left">
-          <template slot-scope="scope">
-            <img v-if="scope.row.itemId !== 0" :src="getPropIcon(scope.row.itemId)" alt="物品图标" style="width: 50px; height: 50px;">
-          </template>
-        </el-table-column>
-      </el-table>
+        <el-table
+          :data="form.rewardItems"
+        >
+          <el-table-column label="物品类型" prop="itemSubType">
+            <template slot-scope="scope">
+              {{ getPropTypeText(scope.row.itemType, scope.row.itemSubType) }}
+            </template>
+          </el-table-column>
+          <el-table-column label="物品数量" prop="itemNum" >
+            <template slot-scope="scope">
+              {{ getPropNumText(scope.row.itemType, scope.row.itemNum) }}
+            </template>
+          </el-table-column>
+          <el-table-column label="物品名称" prop="itemId">
+            <template slot-scope="scope">
+              {{ getPropNameText(scope.row.itemId) }}
+            </template>
+          </el-table-column>
+          <el-table-column label="物品图标" prop="itemId" align="left">
+            <template slot-scope="scope">
+              <img v-if="scope.row.itemId !== 0" :src="getPropIcon(scope.row.itemId)" alt="物品图标" style="width: 50px; height: 50px;">
+            </template>
+          </el-table-column>
+        </el-table>
       </el-descriptions-item>
       <el-descriptions-item label="目标用户" :span="6">
         <el-table :data="form.mailAccounts" style="width: 40%">
@@ -88,6 +90,8 @@ export default {
         unclaimUserCount: 0,
         mailAccounts: [],
         rewardItems: [],
+        expireTime: '',
+        deadlineTime: '',
       },
       sendStatuses: {
         0: '未发送',
@@ -111,6 +115,10 @@ export default {
       this.form.rewardItems = JSON.parse(this.detailForm.rewardItems)
       // 格式化发送时间
       this.form.sendTime = this.formatTime(this.detailForm.sendTime)
+      // 格式化过期时间
+      this.form.expireTime = this.formatTime(this.detailForm.expireTime)
+      // 格式化截止时间
+      this.form.deadlineTime = this.formatTime(this.detailForm.deadline)
       // 计算发送人数
       this.calcSendUserCount()
       // 查询领取人数
@@ -158,24 +166,6 @@ export default {
     },
     getSendStatusText(status) {
       return this.sendStatuses[status]
-    },
-    // 获取奖励内容文本
-    getRewardContentText(rewardItems) {
-      const items = JSON.parse(rewardItems)
-      let content = ''
-      items.forEach(item => {
-        if ([1, 2, 3].includes(item.itemType)) { // 金币
-          content += `${item.itemNum / 1000}（₱）|`
-          return
-        }
-        const propId = item.itemId
-        const propType = item.itemSubType
-        const propTypeName = this.getPropTypeText(propType)
-        const propName = this.getPropNameText(propId)
-        content += `<div><span>${propTypeName}</span>：${propName} x ${item.itemNum}</div>`
-      })
-      content = content.slice(0, -1)
-      return content
     },
     // 获取物品数量文本
     getPropNumText(itemType, itemNum) {
