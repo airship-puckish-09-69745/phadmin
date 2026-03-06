@@ -736,7 +736,8 @@ export default {
         userTagType: 0,
         userTagIds: [],
         userTagTypeOptions: [],
-        todayTotalReward: 0
+        todayTotalReward: 0,
+        isTodayTotalRewardOverLimit: false
       },
 
       treeData: [{
@@ -1008,10 +1009,29 @@ export default {
         this.edit.visible = true
       }
     },
+    // 查询今日已发奖励
+    getTodayTotalReward() {
+      request({
+        url: '/dataProxy/info',
+        method: 'post',
+        data: {
+          Path: '/activity/ranking/today/total/reward',
+          ActCfgId: this.edit.item.id,
+          ActivityId: this.edit.item.activityId,
+          TotalRewardLimitPerDay: this.edit.item.extend.totalRewardLimitPerDay
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.edit.todayTotalReward = response.Data.TodayTotalAmount / 1000
+          this.edit.isTodayTotalRewardOverLimit = response.Data.IsOverLimit
+        }
+      })
+    },
     handleEditDialogOpened() {
       console.log('handleEditDialogOpened edit:' + this.edit.isEdit)
       if (this.edit.isEdit) {
         this.$refs.tree.setCheckedKeys(this.edit.item.activity.gameIdList)
+        this.getTodayTotalReward()
       } else {
         this.$refs.tree.setCheckedKeys([])
       }
