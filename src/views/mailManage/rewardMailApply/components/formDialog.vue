@@ -364,6 +364,26 @@ export default {
       }
       return emptyArr
     },
+    /*
+     * 获取门票道具的场景ID
+     */
+    getTicketPropSceneID(propId, propType) {
+      if (IsNewTicketProp(propType)) {
+        //根据当前道具类型获取对应的门票配置
+        const ticketsConfig = IsProd() ? MATCH_TICKET_RIGHTS_ID_CFG_PROD : MATCH_TICKET_RIGHTS_ID_CFG_DEV
+        if(ticketsConfig && typeof ticketsConfig === 'object'){
+          for(const appId in ticketsConfig){
+            if(ticketsConfig[appId] && Array.isArray(ticketsConfig[appId]) && ticketsConfig[appId].some(ticket => ticket.ticketId === propId)){
+              const sceneIdCfg = ticketsConfig[appId].find(ticket => ticket.ticketId === propId)
+              if(sceneIdCfg){
+                return sceneIdCfg.sceneId
+              }
+            }
+          }
+        }
+      }
+      return -1
+    },
     /**
      * 将form参数转换为后端接口需要的参数
      */
@@ -374,6 +394,13 @@ export default {
         const item = params.rewardItems[i]
         if (item.itemType === this.rewardItemType.betCoin) {
           item.itemNum *= 1000
+        } else {
+          const itemSceneId = this.getTicketPropSceneID(item.itemId, item.itemSubType)
+          if (itemSceneId < 0) {
+            this.$message.error('道具' + item.itemId + '没有配置场景ID')
+            return false
+          }
+          item.itemSceneId = itemSceneId
         }
         item.itemNum = parseInt(item.itemNum)
       }
