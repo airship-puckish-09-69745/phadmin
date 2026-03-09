@@ -474,7 +474,7 @@
                         {{ edit.item.extend.rewardWay === 1 ? '奖励数值' : '奖励百分比%' }}
                       </template>
                       <template slot-scope="scope">
-                        <el-input v-model.number="scope.row.rewardItem.rewardNum" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
+                        <el-input v-model="scope.row.rewardItem.rewardNum" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
                       </template>
                     </el-table-column>
                     <el-table-column
@@ -594,7 +594,6 @@ import store from "@/store";
 import {$libDate, $libShow, ClientTableData, DataRule} from "@/utils/common";
 import request from "@/utils/request";
 import {Message} from "element-ui";
-import tree from "echarts/src/data/Tree";
 
 const filterMap = {}
 
@@ -616,7 +615,7 @@ function newItem() {
         appIdList: [],
         siteIdList: [],
         uidList: '',
-        isOpen: tree,
+        isOpen: true,
       },
       ruleImgHor: [],
       ruleImgVer: [],
