@@ -15,41 +15,41 @@
           <el-row :gutter="20">
             <el-col :xs="24" :sm="12">
               <el-form-item label="活动开关：">
-                <el-switch v-model="item.isOpen" :active-value="true" :inactive-value="false" />
+                <el-switch v-model="item.activity.isOpen" :active-value="true" :inactive-value="false" />
               </el-form-item>
             </el-col>
             <el-col :span="24">
               <el-form-item label="活动名称：" required>
-                <el-input v-model="item.activityName" placeholder="请输入活动名称" style="max-width: 300px" />
+                <el-input v-model="item.activity.name" placeholder="请输入活动名称" style="max-width: 300px" />
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
               <el-form-item label="开始时间：" required>
-                <el-date-picker v-model="item.startTime" type="datetime" placeholder="选择开始时间" value-format="timestamp" style="width:  200px" />
+                <el-date-picker v-model="item.activity.startTime" type="datetime" placeholder="选择开始时间" value-format="timestamp" style="width:  200px" />
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
               <el-form-item label="结束时间：" required>
-                <el-date-picker v-model="item.endTime" type="datetime" placeholder="选择结束时间" value-format="timestamp" style="width: 200px" />
+                <el-date-picker v-model="item.activity.endTime" type="datetime" placeholder="选择结束时间" value-format="timestamp" style="width: 200px" />
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
               <el-form-item label="返水奖励比例：" required>
-                <el-input v-model="item.rewardRatio" placeholder="返水奖励比例" style="max-width: 200px">
+                <el-input v-model="item.extend.rewardRatio" placeholder="返水奖励比例" style="max-width: 200px">
                   <template slot="append">%</template>
                 </el-input>
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
               <el-form-item label="玩家个人奖励上限：" required>
-                <el-input v-model.number="item.maxRewardAmount" placeholder="玩家个人奖励上限金额" style="max-width: 200px">
+                <el-input v-model.number="item.extend.maxRewardAmount" placeholder="玩家个人奖励上限金额" style="max-width: 200px">
                   <template slot="append">₱</template>
                 </el-input>
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
               <el-form-item label="玩家最小总投注金额：" required>
-                <el-input v-model.number="item.minTotalBetAmount" placeholder="玩家最总小投注金额" style="max-width: 200px">
+                <el-input v-model.number="item.extend.minTotalBetAmount" placeholder="玩家最总小投注金额" style="max-width: 200px">
                   <template slot="append">₱</template>
                 </el-input>
               </el-form-item>
@@ -76,7 +76,7 @@
                     给选中游戏排序
                   </el-button>
                   <span style="margin-left: 10px; color: #999; font-size: 12px">
-                    已选中 {{ (item.gameIdCfg || []).length }} 个游戏
+                    已选中 {{ (item.activity.gameIdList || []).length }} 个游戏
                   </span>
                 </div>
               </el-form-item>
@@ -89,12 +89,12 @@
           <el-row>
             <el-col :span="24">
               <el-form-item label="站点白名单：">
-                <SiteSelect v-model="item.whitelistCfg.siteIdList" multiple placeholder="请选择" style="width: 100%; max-width: 300px" />
+                <SiteSelect v-model="item.activity.whitelistCfg.siteIdList" multiple placeholder="请选择" style="width: 100%; max-width: 300px" />
               </el-form-item>
             </el-col>
             <el-col :span="24">
               <el-form-item label="Uid白名单：">
-                <el-input v-model="item.whitelistCfg.uidList" placeholder="输入Uid白名单，多个Uid用逗号分隔" style="width: 100%; max-width: 600px" />
+                <el-input v-model="item.activity.whitelistCfg.uidList" placeholder="输入Uid白名单，多个Uid用逗号分隔" style="width: 100%; max-width: 600px" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -150,17 +150,21 @@ import SiteSelect from '@/components/SiteSelect/index.vue'
 
 function newItem() {
   return {
-    activityName: '',
-    isOpen: true,
-    startTime: Date.now(),
-    endTime: Date.now() + 30 * 24 * 60 * 60 * 1000,
-    rewardRatio: 0,
-    maxRewardAmount: 10,
-    minTotalBetAmount: 0,
-    gameIdList: [],
-    whitelistCfg: {
-      siteIdList: [],
-      uidList: ''
+    activity: {
+      name: '',
+      isOpen: true,
+      startTime: Date.now(),
+      endTime: Date.now() + 30 * 24 * 60 * 60 * 1000,
+      gameIdList: [],
+      whitelistCfg: {
+        siteIdList: [],
+        uidList: ''
+      }
+    },
+    extend: {
+      rewardRatio: 0,
+      maxRewardAmount: 10,
+      minTotalBetAmount: 0,
     }
   }
 }
@@ -222,64 +226,66 @@ export default {
     // 加载编辑数据（后端数据 -> 前端展示格式）
     loadEditData() {
       const data = JSON.parse(JSON.stringify(this.item))
+      data.activity = JSON.parse(data.activity)
+      data.extend = JSON.parse(data.extend)
 
       // 时间：秒 -> 毫秒
-      data.startTime = data.startTime * 1000
-      data.endTime = data.endTime * 1000
+      data.activity.startTime = data.startTime * 1000
+      data.activity.endTime = data.endTime * 1000
 
       // 奖励比例缩小1000倍
-      data.rewardRatio = data.rewardRatio / 1000
+      data.extend.rewardRatio = data.extend.rewardRatio / 1000
       // 金额缩小1000倍
-      data.maxRewardAmount = data.maxRewardAmount / 1000
+      data.extend.maxRewardAmount = data.extend.maxRewardAmount / 1000
       // 玩家最小总投注金额缩小1000倍
-      data.minTotalBetAmount = data.minTotalBetAmount / 1000
+      data.extend.minTotalBetAmount = data.extend.minTotalBetAmount / 1000
 
       // 游戏列表
-      if (!Array.isArray(data.gameIdList)) data.gameIdList = []
+      if (!Array.isArray(data.activity.gameIdList)) data.activity.gameIdList = []
 
       // 白名单
-      data.whitelistCfg = JSON.parse(data.whitelistCfg)
-      if (!data.whitelistCfg) {
-        data.whitelistCfg = {
+      data.activity.whitelistCfg = JSON.parse(data.activity.whitelistCfg)
+      if (!data.activity.whitelistCfg) {
+        data.activity.whitelistCfg = {
           siteIdList: [],
           uidList: [],
         }
       }
-      if (!Array.isArray(data.whitelistCfg.siteIdList)) data.whitelistCfg.siteIdList = []
+      if (!Array.isArray(data.activity.whitelistCfg.siteIdList)) data.activity.whitelistCfg.siteIdList = []
 
       this.item = data
     },
     // 校验数据
     validateData() {
-      if (!this.item.activityName) {
+      if (!this.item.activity.name) {
         Message.error('请输入活动名称')
         return false
       }
-      if (!this.item.startTime) {
+      if (!this.item.activity.startTime) {
         Message.error('请选择开始时间')
         return false
       }
-      if (!this.item.endTime) {
+      if (!this.item.activity.endTime) {
         Message.error('请选择结束时间')
         return false
       }
-      if (!this.item.rewardRatio || this.item.rewardRatio <= 0) {
+      if (!this.item.extend.rewardRatio || this.item.extend.rewardRatio <= 0) {
         Message.error('请输入奖励比例（大于0）')
         return false
       }
-      if (!this.item.maxRewardAmount || this.item.maxRewardAmount <= 0) {
+      if (!this.item.extend.maxRewardAmount || this.item.extend.maxRewardAmount <= 0) {
         Message.error('请输入玩家个人奖励上限金额（大于0）')
         return false
       }
-      if (!this.item.minTotalBetAmount || this.item.minTotalBetAmount <= 0) {
+      if (!this.item.extend.minTotalBetAmount || this.item.extend.minTotalBetAmount <= 0) {
         Message.error('请输入玩家最小总投注金额（大于0）')
         return false
       }
-      if (!this.item.gameIdList || this.item.gameIdList.length <= 0) {
+      if (!this.item.activity.gameIdList || this.item.activity.gameIdList.length <= 0) {
         Message.error('请选择参与活动的游戏')
         return false
       }
-      if (!this.item.whitelistCfg.siteIdList.length) {
+      if (!this.item.activity.whitelistCfg.siteIdList.length) {
         Message.error('请选择站点白名单')
         return false
       }
@@ -290,20 +296,22 @@ export default {
       const data = JSON.parse(JSON.stringify(this.item))
 
       // 时间：毫秒 -> 秒
-      data.startTime = Math.floor(data.startTime / 1000)
-      data.endTime = Math.floor(data.endTime / 1000)
+      data.activity.startTime = Math.floor(data.activity.startTime / 1000)
+      data.activity.endTime = Math.floor(data.activity.endTime / 1000)
 
       // 奖励比例放大1000倍
-      data.rewardRatio = Math.floor(data.rewardRatio * 1000)
+      data.extend.rewardRatio = Math.floor(data.extend.rewardRatio * 1000)
       // 金额放大1000倍
-      data.maxRewardAmount = Math.floor(data.maxRewardAmount * 1000)
+      data.extend.maxRewardAmount = Math.floor(data.extend.maxRewardAmount * 1000)
       // 玩家最小总投注金额放大1000倍
-      data.minTotalBetAmount = Math.floor(data.minTotalBetAmount * 1000)
+      data.extend.minTotalBetAmount = Math.floor(data.extend.minTotalBetAmount * 1000)
 
-      // 白名单
-      data.whitelistCfg = JSON.stringify(data.whitelistCfg)
+      // 返回数据
+      const ret = {...data}
+      ret.activity = JSON.stringify(data.activity)
+      ret.extend = JSON.stringify(data.extend)
 
-      return data
+      return ret
     },
     handleSave() {
       if (!this.validateData()) return
@@ -333,12 +341,12 @@ export default {
       // 跳过类别节点
       if (typeof data.id === 'string' && data.id.startsWith('p-')) return
 
-      if (!this.item.gameIdList) this.item.gameIdList = []
-      const index = this.item.gameIdList.indexOf(data.id)
+      if (!this.item.activity.gameIdList) this.item.activity.gameIdList = []
+      const index = this.item.activity.gameIdList.indexOf(data.id)
       if (checked && index < 0) {
-        this.item.gameIdList.push(data.id)
+        this.item.activity.gameIdList.push(data.id)
       } else if (!checked && index >= 0) {
-        this.item.gameIdList.splice(index, 1)
+        this.item.activity.gameIdList.splice(index, 1)
       }
     },
     /**
