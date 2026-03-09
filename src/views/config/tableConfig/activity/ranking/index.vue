@@ -474,7 +474,7 @@
                         {{ edit.item.extend.rewardWay === 1 ? '奖励数值' : '奖励百分比%' }}
                       </template>
                       <template slot-scope="scope">
-                        <el-input v-model.number="scope.row.rewardItem.rewardNum" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
+                        <el-input v-model="scope.row.rewardItem.rewardNum" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
                       </template>
                     </el-table-column>
                     <el-table-column
