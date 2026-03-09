@@ -1017,7 +1017,7 @@ export default {
           Path: '/activity/ranking/today/total/reward',
           ActCfgId: this.edit.item.id,
           ActivityId: this.edit.item.activityId,
-          TotalRewardLimitPerDay: this.edit.item.extend.totalRewardLimitPerDay
+          TotalRewardLimitPerDay: this.edit.item.extend.totalRewardLimitPerDay * 1000
         }
       }).then(response => {
         if (response.RetCode === 0) {
