@@ -47,6 +47,13 @@
                 </el-input>
               </el-form-item>
             </el-col>
+            <el-col :xs="24" :sm="12">
+              <el-form-item label="玩家最小总投注金额：" required>
+                <el-input v-model.number="item.minTotalBetAmount" placeholder="玩家最总小投注金额" style="max-width: 200px">
+                  <template slot="append">₱</template>
+                </el-input>
+              </el-form-item>
+            </el-col>
           </el-row>
           <!-- 参与活动游戏选择 -->
           <el-row>
@@ -149,6 +156,7 @@ function newItem() {
     endTime: Date.now() + 30 * 24 * 60 * 60 * 1000,
     rewardRatio: 0,
     maxRewardAmount: 10,
+    minTotalBetAmount: 0,
     gameIdList: [],
     whitelistCfg: {
       siteIdList: [],
@@ -223,6 +231,8 @@ export default {
       data.rewardRatio = data.rewardRatio / 1000
       // 金额缩小1000倍
       data.maxRewardAmount = data.maxRewardAmount / 1000
+      // 玩家最小总投注金额缩小1000倍
+      data.minTotalBetAmount = data.minTotalBetAmount / 1000
 
       // 游戏列表
       if (!Array.isArray(data.gameIdList)) data.gameIdList = []
@@ -261,6 +271,10 @@ export default {
         Message.error('请输入玩家个人奖励上限金额（大于0）')
         return false
       }
+      if (!this.item.minTotalBetAmount || this.item.minTotalBetAmount <= 0) {
+        Message.error('请输入玩家最小总投注金额（大于0）')
+        return false
+      }
       if (!this.item.gameIdList || this.item.gameIdList.length <= 0) {
         Message.error('请选择参与活动的游戏')
         return false
@@ -283,6 +297,8 @@ export default {
       data.rewardRatio = Math.floor(data.rewardRatio * 1000)
       // 金额放大1000倍
       data.maxRewardAmount = Math.floor(data.maxRewardAmount * 1000)
+      // 玩家最小总投注金额放大1000倍
+      data.minTotalBetAmount = Math.floor(data.minTotalBetAmount * 1000)
 
       // 白名单
       data.whitelistCfg = JSON.stringify(data.whitelistCfg)
