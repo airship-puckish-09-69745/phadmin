@@ -72,7 +72,7 @@
       </el-row>
     </el-row>
 
-    <update-form ref="updateForm" :visible.sync="updateForm.visible" :data.sync="updateForm.data" />
+    <update-form ref="updateForm" :visible.sync="updateForm.visible" :is-edit="updateForm.isEdit" :data.sync="updateForm.data" @changeData="getList" />
   </div>
 </template>
 
@@ -100,6 +100,7 @@ export default {
       clientDB: new ClientTableData([], 10, filterMap),
       updateForm: {
         visible: false,
+        isEdit: false,
         data: null
       },
       tableData: [],
@@ -112,10 +113,12 @@ export default {
   methods: {
     handleAdd() {
       this.updateForm.visible = true
+      this.updateForm.isEdit = false
       this.updateForm.data = {}
     },
     handleClickRow(ob) {
       this.updateForm.visible = true
+      this.updateForm.isEdit = true
       this.updateForm.data = ob
     },
     formatNumber(n) {
