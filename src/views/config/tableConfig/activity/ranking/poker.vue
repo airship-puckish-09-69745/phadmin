@@ -160,6 +160,24 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
+                  <el-form-item label="每日发奖上限：" :required="true">
+                    <el-input v-model.number="edit.item.extend.totalRewardLimitPerDay" placeholder="请输入每日发奖上限" >
+                      <template slot="append">
+                        （₱）
+                      </template>
+                    </el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="今日已发奖励：">
+                    <el-input v-model.number="edit.todayTotalReward" disabled >
+                      <template slot="append">
+                        （₱）
+                      </template>
+                    </el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
                   <el-form-item label="调试时间偏移量（仅测试用）：" :required="true">
                     <el-input v-model.number="edit.item.activity.debugTimeOffset">
                       <template slot="append">秒</template>
@@ -342,7 +360,7 @@
                       v-if="edit.item.extend.rewardWay === 1"
                     >
                       <template slot-scope="scope">
-                        <el-input v-model.number="scope.row.reward" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
+                        <el-input v-model.number="scope.row.rewardItem.rewardNum" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
                       </template>
                     </el-table-column>
                     <el-table-column label="操作" column-key="op">
@@ -527,6 +545,7 @@ function newItem() {
       progressReward: 0,
       rewardShow: 0,
       maxRankShow: 0,
+      totalRewardLimitPerDay: 0, //每日奖励总额上限
       pokerExtend: {
         tongitsScoreItems: [
           {
@@ -561,9 +580,20 @@ function newItem() {
 
 function newRewardItem() {
   return {
+    rewardId: 0,
+    rewardNum: 0,
+    rewardType: 2, // 奖励类型 1. 金币 2. 投注金 3. 返水金 4 .道具
+    rewardSubType: 0,
+    rewardExpireDays: 1
+  }
+}
+
+function newRankRewardItem() {
+  return {
     rankStart: 0,
     rankEnd: 0,
     reward: 0,
+    rewardItem: newRewardItem()
   }
 }
 
@@ -628,7 +658,9 @@ export default {
         title: "新增",
         gamesSortDialogVisible: false,
         tongitsScoreItems: [],
-        scoreWays: ['1', '100', '2', '101']
+        scoreWays: ['1', '100', '2', '101'],
+        todayTotalReward: 0,
+        isTodayTotalRewardOverLimit: false
       },
 
       scoreItems: {
@@ -731,7 +763,7 @@ export default {
       this.changeStatus(ob.id, 3, '您确定要将记录状态修改为废弃吗？')
     },
     handleAddRankReward() {
-      this.edit.item.extend.rewardList.push(newRewardItem())
+      this.edit.item.extend.rewardList.push(newRankRewardItem())
     },
     handleDelRankReward(index) {
       this.edit.item.extend.rewardList.splice(index, 1)
@@ -793,6 +825,7 @@ export default {
       item.extend.minScore *= 1000
       item.extend.maxReward *= 1000
       item.extend.progressReward *= 1000
+      item.extend.totalRewardLimitPerDay *= 1000
 
       if (item.extend.rewardList.length === 0) {
         Message.error('请添加排名奖励配置')
@@ -807,6 +840,7 @@ export default {
 
       for (const reward of item.extend.rewardList) {
         reward.reward *= 1000
+        reward.rewardItem.rewardNum *= 1000
       }
 
       if (item.activity.whitelist.appIdList.length === 0 && this.version === 'V2') {
@@ -895,10 +929,29 @@ export default {
         this.edit.visible = true
       }
     },
+    // 查询今日已发奖励
+    getTodayTotalReward() {
+      request({
+        url: '/dataProxy/info',
+        method: 'post',
+        data: {
+          Path: '/activity/ranking/today/total/reward',
+          ActCfgId: this.edit.item.id,
+          ActivityId: this.edit.item.activityId,
+          TotalRewardLimitPerDay: this.edit.item.extend.totalRewardLimitPerDay
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.edit.todayTotalReward = response.Data.TodayTotalAmount / 1000
+          this.edit.isTodayTotalRewardOverLimit = response.Data.IsOverLimit
+        }
+      })
+    },
     handleEditDialogOpened() {
       console.log('handleEditDialogOpened edit:' + this.edit.isEdit)
       if (this.edit.isEdit) {
         this.$refs.tree.setCheckedKeys(this.edit.item.activity.gameIdList)
+        this.getTodayTotalReward()
       } else {
         this.$refs.tree.setCheckedKeys([])
       }
@@ -917,6 +970,7 @@ export default {
           item.extend.minScore /= 1000
           item.extend.maxReward /= 1000
           item.extend.progressReward /= 1000
+          item.extend.totalRewardLimitPerDay /= 1000
 
           for (const hotTime of item.activity.hotTimeList) {
             hotTime.startTime = new Date().setTime(hotTime.startTime * 1000)
@@ -926,6 +980,17 @@ export default {
 
           for (const reward of item.extend.rewardList) {
             reward.reward /= 1000
+            if (reward.rewardItem) {
+              reward.rewardItem.rewardNum /= 1000
+            } else {
+              reward.rewardItem = {
+                rewardId: 0,
+                rewardNum: reward.reward,
+                rewardType: 2, // 奖励类型 1. 金币 2. 投注金 3. 返水金 4 .道具
+                rewardSubType: 0,
+                rewardExpireDays: 0
+              }
+            }
           }
 
           if (item.activity.whitelist.uidList.length > 0) {
