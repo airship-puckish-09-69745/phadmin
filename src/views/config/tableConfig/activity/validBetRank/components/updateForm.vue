@@ -89,12 +89,12 @@
           <el-row>
             <el-col :span="24">
               <el-form-item label="站点白名单：">
-                <SiteSelect v-model="item.activity.whitelistCfg.siteIdList" multiple placeholder="请选择" style="width: 100%; max-width: 300px" />
+                <SiteSelect v-model="item.activity.whitelist.siteIdList" multiple placeholder="请选择" style="width: 100%; max-width: 300px" />
               </el-form-item>
             </el-col>
             <el-col :span="24">
               <el-form-item label="Uid白名单：">
-                <el-input v-model="item.activity.whitelistCfg.uidList" placeholder="输入Uid白名单，多个Uid用逗号分隔" style="width: 100%; max-width: 600px" />
+                <el-input v-model="item.activity.whitelist.uidList" placeholder="输入Uid白名单，多个Uid用逗号分隔" style="width: 100%; max-width: 600px" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -148,15 +148,20 @@ import { Message } from 'element-ui'
 import request from '@/utils/request'
 import SiteSelect from '@/components/SiteSelect/index.vue'
 
+const ACTIVITY_ID = 23
+
 function newItem() {
   return {
+    id: 0,
+    activityId: ACTIVITY_ID,
     activity: {
       name: '',
+      activityId: ACTIVITY_ID,
       isOpen: true,
       startTime: Date.now(),
       endTime: Date.now() + 30 * 24 * 60 * 60 * 1000,
       gameIdList: [],
-      whitelistCfg: {
+      whitelist: {
         siteIdList: [],
         uidList: ''
       }
@@ -199,6 +204,7 @@ export default {
       allTreeData: [],
       filterText: '',
       filterGameIds: [2031, 10002],
+      activityId: ACTIVITY_ID,
     }
   },
   watch: {
@@ -208,12 +214,16 @@ export default {
         return
       }
 
-      if (this.isEdit && Object.keys(this.editData).length > 0) {
+      if (this.isEdit && Object.keys(this.data).length > 0) {
         this.loadEditData()
       } else {
         this.item = newItem()
       }
-      this.getGameAll()
+      // 获取所有游戏列表并构建树结构
+      this.getGameAll().then(() => {
+        // 勾选当前活动配置的游戏
+        this.selectGamesForTree()
+      })
     },
     dialogVisible(val) {
       this.$emit('update:visible', val)
@@ -225,13 +235,11 @@ export default {
     },
     // 加载编辑数据（后端数据 -> 前端展示格式）
     loadEditData() {
-      const data = JSON.parse(JSON.stringify(this.item))
-      data.activity = JSON.parse(data.activity)
-      data.extend = JSON.parse(data.extend)
+      const data = JSON.parse(JSON.stringify(this.data))
 
       // 时间：秒 -> 毫秒
-      data.activity.startTime = data.startTime * 1000
-      data.activity.endTime = data.endTime * 1000
+      data.activity.startTime *=  1000
+      data.activity.endTime *=  1000
 
       // 奖励比例缩小1000倍
       data.extend.rewardRatio = data.extend.rewardRatio / 1000
@@ -244,14 +252,15 @@ export default {
       if (!Array.isArray(data.activity.gameIdList)) data.activity.gameIdList = []
 
       // 白名单
-      data.activity.whitelistCfg = JSON.parse(data.activity.whitelistCfg)
-      if (!data.activity.whitelistCfg) {
-        data.activity.whitelistCfg = {
+      if (!data.activity.whitelist) {
+        data.activity.whitelist = {
           siteIdList: [],
-          uidList: [],
+          uidList: '',
         }
+      } else {
+        data.activity.whitelist.uidList = data.activity.whitelist.uidList.join(',')
       }
-      if (!Array.isArray(data.activity.whitelistCfg.siteIdList)) data.activity.whitelistCfg.siteIdList = []
+      if (!Array.isArray(data.activity.whitelist.siteIdList)) data.activity.whitelist.siteIdList = []
 
       this.item = data
     },
@@ -285,7 +294,7 @@ export default {
         Message.error('请选择参与活动的游戏')
         return false
       }
-      if (!this.item.activity.whitelistCfg.siteIdList.length) {
+      if (!this.item.activity.whitelist.siteIdList.length) {
         Message.error('请选择站点白名单')
         return false
       }
@@ -306,6 +315,13 @@ export default {
       // 玩家最小总投注金额放大1000倍
       data.extend.minTotalBetAmount = Math.floor(data.extend.minTotalBetAmount * 1000)
 
+      // 白名单
+      if (!data.activity.whitelist.uidList) {
+        data.activity.whitelist.uidList = []
+      } else {
+        data.activity.whitelist.uidList = data.activity.whitelist.uidList.split(',').map(uid => parseInt(uid))
+      }
+
       // 返回数据
       const ret = {...data}
       ret.activity = JSON.stringify(data.activity)
@@ -318,7 +334,28 @@ export default {
 
       const postData = this.getPostData()
 
-      const url = '/validbetrankconfig/create'
+      if (postData.id > 0) {
+        this.handleUpdate(postData)
+      } else {
+        this.handleCreate(postData)
+      }
+    },
+    handleCreate(postData) {
+      const url = '/activityconfig/create'
+      request({
+        url: url,
+        method: 'post',
+        data: postData
+      }).then(response => {
+        if (response.RetCode === 0) {
+          Message.success('保存成功！')
+          this.dialogVisible = false
+          this.$emit('changeData')
+        }
+      })
+    },
+    handleUpdate(postData) {
+      const url = '/activityconfig/update'
       request({
         url: url,
         method: 'post',
@@ -349,11 +386,20 @@ export default {
         this.item.activity.gameIdList.splice(index, 1)
       }
     },
+    // 勾选当前活动配置的游戏
+    selectGamesForTree() {
+      this.$nextTick(() => {
+        if (this.$refs.tree && this.item.activity.gameIdList) {
+          this.$refs.tree.setCheckedKeys(this.item.activity.gameIdList)
+          this.updateGamesSorted()
+        }
+      })
+    },
     /**
      * 获取所有游戏列表并构建树结构
      */
-    getGameAll() {
-      request({
+    async getGameAll() {
+      return request({
         url: '/thirdpartygames/all',
         method: 'get',
         data: {},
@@ -395,14 +441,6 @@ export default {
           this.allTreeData = builtTree
           // 默认只显示 Slots 和 Casino 游戏（CategoryID = [1, 3]），且不展开
           this.applyGameTypeFilter([1, 3])
-
-          // 设置已选中的游戏
-          this.$nextTick(() => {
-            if (this.$refs.tree && this.item.gameIdList) {
-              this.$refs.tree.setCheckedKeys(this.item.gameIdList)
-              this.updateGamesSorted()
-            }
-          })
         }
       })
     },

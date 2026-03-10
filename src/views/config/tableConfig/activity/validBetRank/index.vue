@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="page-container" style="padding: 10px">
     <el-row>
-      <publish primary-key="cfgId" key-id="RankingConfig" :env-empty="false" compare-type="Array" :attr-names="AttrNames" :head-attrs="['cfgId', 'name']" />
+      <publish primary-key="cfgId" key-id="ValidBetRankConfig" :env-empty="false" compare-type="Array" :attr-names="AttrNames" :head-attrs="['cfgId', 'name']" />
     </el-row>
     <el-row style="padding-top: 10px">
       <el-col :span="20">
@@ -35,11 +35,6 @@
           <el-table-column prop="endTime" label="结束时间" sortable="custom">
             <template slot-scope="scope">
               {{ formatTime(scope.row.activity.endTime) }}
-            </template>
-          </el-table-column>
-          <el-table-column prop="endTime" label="展示结束时间" sortable="custom">
-            <template slot-scope="scope">
-              {{ formatTime(scope.row.activity.showEndTime) }}
             </template>
           </el-table-column>
           <el-table-column prop="modifyUser" label="最后修改人" />
@@ -105,6 +100,7 @@ export default {
       },
       tableData: [],
       AttrNames: {},
+      activityId: 23,
     }
   },
   mounted() {
@@ -116,7 +112,12 @@ export default {
       this.updateForm.isEdit = false
       this.updateForm.data = {}
     },
-    handleClickRow(ob) {
+    handleClickRow(ob, column, event) {
+      if (column.columnKey === "op") {
+        return
+      }
+      console.log('handleClickRow obj', ob)
+      console.log('handleClickRow obj', column, event)
       this.updateForm.visible = true
       this.updateForm.isEdit = true
       this.updateForm.data = ob
@@ -170,7 +171,7 @@ export default {
         type: 'warning'
       }).then(() => {
         request({
-          url: '/validbetrankconfig/update/status',
+          url: '/activityconfig/update/status',
           method: 'post',
           data: {
             id: id,
@@ -188,9 +189,11 @@ export default {
     },
     getList() {
       request({
-        url: '/validbetrankconfig/all',
+        url: '/activityconfig/all',
         method: 'get',
-        data: {}
+        data: {
+          activityId: this.activityId,
+        }
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
