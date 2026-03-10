@@ -16,18 +16,18 @@
           <el-row :gutter="20">
             <el-col :span="24">
               <el-form-item label="活动名称：" required>
-                <el-input v-model="item.activityName" placeholder="请输入活动名称" style="max-width: 400px" />
+                <el-input v-model="item.activityName" placeholder="请输入活动名称" style="max-width: 400px"/>
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
               <el-form-item label="活动开关：">
-                <el-switch v-model="item.isOpen" :active-value="true" :inactive-value="false" />
+                <el-switch v-model="item.isOpen" :active-value="true" :inactive-value="false"/>
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
               <el-form-item label="奖励类型：">
                 <el-select v-model="item.rewardType" placeholder="请选择">
-                  <el-option v-for="opt in rewardTypes" :key="opt.value" :label="opt.label" :value="opt.value" />
+                  <el-option v-for="opt in rewardTypes" :key="opt.value" :label="opt.label" :value="opt.value"/>
                 </el-select>
                 <div style="color: #999; font-size: 12px; line-height: 1.4; margin-top: 4px">
                   投注金：只能在GameZone厅内所有游戏使用的投注金
@@ -56,17 +56,35 @@
             </el-col>
             <el-col :xs="24" :sm="12">
               <el-form-item label="开始时间：" required>
-                <el-date-picker v-model="item.startTime" type="datetime" placeholder="选择开始时间" value-format="timestamp" style="width:  200px" />
+                <el-date-picker
+                  v-model="item.startTime"
+                  type="datetime"
+                  placeholder="选择开始时间"
+                  value-format="timestamp"
+                  style="width:  200px"
+                />
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
               <el-form-item label="结束时间：" required>
-                <el-date-picker v-model="item.endTime" type="datetime" placeholder="选择结束时间" value-format="timestamp" style="width: 200px" />
+                <el-date-picker
+                  v-model="item.endTime"
+                  type="datetime"
+                  placeholder="选择结束时间"
+                  value-format="timestamp"
+                  style="width: 200px"
+                />
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
               <el-form-item label="展示结束时间：">
-                <el-date-picker v-model="item.showEndTime" type="datetime" placeholder="选择展示结束时间" value-format="timestamp" style="width: 200px" />
+                <el-date-picker
+                  v-model="item.showEndTime"
+                  type="datetime"
+                  placeholder="选择展示结束时间"
+                  value-format="timestamp"
+                  style="width: 200px"
+                />
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
@@ -81,28 +99,11 @@
           <!-- 参与活动游戏选择 -->
           <el-row>
             <el-col :span="24">
-              <el-form-item label="参与活动游戏：" required>
-                <el-input v-model="filterText" placeholder="输入关键字搜索游戏" style="max-width: 300px; margin-bottom: 8px" />
-                <el-tree
-                  ref="tree"
-                  :data="treeData"
-                  show-checkbox
-                  node-key="id"
-                  highlight-current
-                  :props="defaultProps"
-                  :filter-node-method="filterNode"
-                  :default-expanded-keys="[]"
-                  @check-change="handleCheckChange"
-                />
-                <div style="margin-top: 10px">
-                  <el-button size="small" type="primary" icon="el-icon-sort" @click="showGamesSortDialog">
-                    给选中游戏排序
-                  </el-button>
-                  <span style="margin-left: 10px; color: #999; font-size: 12px">
-                    已选中 {{ (item.gameIdCfg || []).length }} 个游戏
-                  </span>
-                </div>
-              </el-form-item>
+              <GameSelector
+                v-model="item.gameIdCfg"
+                label="参与活动游戏："
+                :category-ids="[2]"
+              />
             </el-col>
           </el-row>
         </el-form>
@@ -110,15 +111,15 @@
 
       <!-- ========== 奖池配置 ========== -->
       <el-tab-pane label="奖池配置" name="prizePool">
-        <PrizePoolConfig v-model="item" />
+        <PrizePoolConfig v-model="item"/>
       </el-tab-pane>
       <!-- ========== 排行榜配置 ========== -->
       <el-tab-pane label="排行榜配置" name="ranking">
-        <RankingConfig v-model="item" />
+        <RankingConfig v-model="item"/>
       </el-tab-pane>
       <!-- ========== 奖励播报配置 ========== -->
       <el-tab-pane label="奖励播报配置" name="broadcast">
-        <BroadcastConfig v-model="item" />
+        <BroadcastConfig v-model="item"/>
       </el-tab-pane>
 
       <!-- ========== 白名单配置 ========== -->
@@ -127,46 +128,85 @@
           <el-row :gutter="20">
             <el-col :xs="24" :sm="12">
               <el-form-item label="站点白名单：">
-                <SiteSelect v-model="item.whitelistCfg.siteIdList" multiple placeholder="请选择" style="width: 100%; max-width: 400px" />
+                <SiteSelect
+                  v-model="item.whitelistCfg.siteIdList"
+                  multiple
+                  placeholder="请选择"
+                  style="width: 100%; max-width: 400px"
+                />
               </el-form-item>
             </el-col>
           </el-row>
         </el-form>
       </el-tab-pane>
-    </el-tabs>
 
-    <!-- 游戏排序弹窗 -->
-    <el-dialog
-      title="给选中游戏排序"
-      :visible.sync="gamesSortDialogVisible"
-      :close-on-click-modal="false"
-      append-to-body
-      width="600px"
-    >
-      <div style="margin-bottom: 10px; color: #909399; font-size: 13px">
-        提示：排序编号越小，游戏在活动中的展示顺序越靠前
-      </div>
-      <el-table :data="gamesSorted" border stripe max-height="400">
-        <el-table-column prop="gameId" label="游戏ID" width="100" align="center" />
-        <el-table-column prop="name" label="游戏名称" min-width="150" />
-        <el-table-column prop="orderNo" label="排序编号" width="150" align="center">
-          <template slot-scope="scope">
-            <el-input
-              v-model.number="scope.row.orderNo"
-              type="number"
-              :min="1"
-              :max="gamesSorted.length"
-              size="small"
-              style="width: 100px"
-            />
-          </template>
-        </el-table-column>
-      </el-table>
-      <div slot="footer">
-        <el-button @click="gamesSortDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="saveGamesSort">保存排序</el-button>
-      </div>
-    </el-dialog>
+      <!-- ========== 头像框奖励配置 ========== -->
+      <el-tab-pane label="头像框奖励配置" name="propConfig">
+        <el-form label-width="180px" size="small">
+
+          <el-table
+            :data="Array.isArray(item.propPools) ? item.propPools : (item.propPools ? [item.propPools] : [])"
+            border
+            size="small"
+            style="width: 100%"
+          >
+            <el-table-column label="道具类型" min-width="140">
+              <template slot-scope="scope">
+                <el-select
+                  v-model="scope.row.propType"
+                  placeholder="请选择"
+                  size="mini"
+                  style="width: 100%"
+                  @change="handlePropTypeChange(scope.row)"
+                >
+                  <el-option
+                    v-for="item in propTypeOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </template>
+            </el-table-column>
+            <el-table-column label="道具名称" min-width="140">
+              <template slot-scope="scope">
+                <el-select v-model="scope.row.propId" placeholder="请选择" size="mini" style="width: 100%"
+                           @change="handlePropNameChange(scope.row)">
+                  <el-option
+                    v-for="item in getPropOptionsByType(scope.row.propType)"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </template>
+            </el-table-column>
+            <el-table-column label="可用时间" min-width="120">
+              <template slot-scope="scope">
+                <el-select
+                  v-model="scope.row.propTime"
+                  placeholder="请选择"
+                  size="mini"
+                  style="width: 100%"
+                >
+                  <el-option
+                    v-for="item in propDayTypeOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </template>
+            </el-table-column>
+            <el-table-column label="道具数量" min-width="100">
+              <template slot-scope="scope">
+                <el-input v-model.number="scope.row.propNum" placeholder="数量" size="mini"/>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-form>
+      </el-tab-pane>
+    </el-tabs>
 
     <!-- 底部按钮 -->
     <div style="margin-top: 20px; text-align: center;">
@@ -177,25 +217,28 @@
 </template>
 
 <script>
-import { Message } from 'element-ui'
+import {Message} from 'element-ui'
 import request from '@/utils/request'
 import store from '@/store'
 import SiteSelect from '@/components/SiteSelect/index.vue'
 import PrizePoolConfig from './components/PrizePoolConfig.vue'
 import RankingConfig from './components/RankingConfig.vue'
 import BroadcastConfig from './components/BroadcastConfig.vue'
+import GameSelector from '@/components/Game/GameSelector.vue'
 
 // 默认排行榜配置
 const DEFAULT_RANK_CFG = [
-  { rankStart: 1, rankEnd: 1, reward: 7777 },
-  { rankStart: 2, rankEnd: 2, reward: 2777 },
-  { rankStart: 3, rankEnd: 3, reward: 1777 },
-  { rankStart: 4, rankEnd: 5, reward: 777 },
-  { rankStart: 6, rankEnd: 10, reward: 277 },
-  { rankStart: 11, rankEnd: 20, reward: 177 },
-  { rankStart: 21, rankEnd: 50, reward: 77 },
-  { rankStart: 51, rankEnd: 100, reward: 17 }
+  {rankStart: 1, rankEnd: 1, reward: 7777},
+  {rankStart: 2, rankEnd: 2, reward: 2777},
+  {rankStart: 3, rankEnd: 3, reward: 1777},
+  {rankStart: 4, rankEnd: 5, reward: 777},
+  {rankStart: 6, rankEnd: 10, reward: 277},
+  {rankStart: 11, rankEnd: 20, reward: 177},
+  {rankStart: 21, rankEnd: 50, reward: 77},
+  {rankStart: 51, rankEnd: 100, reward: 17}
 ]
+
+const DEFAULT_PROP_POOLS = {propType: 2, propId: 0, propName: '', propTime: 7, propNum: 1}
 
 // 创建空白活动数据
 function createNewItem() {
@@ -207,24 +250,27 @@ function createNewItem() {
     showEndTime: Date.now() + 31 * 24 * 60 * 60 * 1000,
     sockGainRatio: 10,
     rewardType: 2,
+    status: 6,
     dayPrizeThreshold: 0,
     totalPrizeThreshold: 0,
     prizePoolCfg: [],
     rankCfg: JSON.parse(JSON.stringify(DEFAULT_RANK_CFG)),
-    broadcastCfg: { threshold: 500, maxCount: 50 },
+    broadcastCfg: {threshold: 500, maxCount: 50},
     gameIdCfg: [],
     whitelistCfg: {
       siteIdList: []
-    }
+    },
+    // 道具配置字段
+    propPools: DEFAULT_PROP_POOLS
   }
 }
 
 export default {
-  components: { SiteSelect, PrizePoolConfig, RankingConfig, BroadcastConfig },
+  components: {SiteSelect, PrizePoolConfig, RankingConfig, BroadcastConfig, GameSelector},
   props: {
-    visible: { type: Boolean, default: false },
-    isEdit: { type: Boolean, default: false },
-    editData: { type: Object, default: () => ({}) }
+    visible: {type: Boolean, default: false},
+    isEdit: {type: Boolean, default: false},
+    editData: {type: Object, default: () => ({})}
   },
   data() {
     return {
@@ -233,17 +279,29 @@ export default {
       env: store.getters.env || 'test',
       item: createNewItem(),
 
-      // 游戏树
-      treeData: [],
-      allTreeData: [],
-      filterText: '',
-      defaultProps: { label: 'label', children: 'children', disabled: 'disabled' },
-      filterGameIds: [2031, 10002],
-
+      // 道具选择项
+      propTypeOptions: [
+        {'value': 2, 'label': '头像框', disabled: false},
+        // { 'value': 7, 'label': 'Tongits门票', disabled: false },
+        // { 'value': 8, 'label': '德州门票', disabled: false },
+        // { 'value': 4, 'label': '德州头像框', disabled: false },
+        // { 'value': 5, 'label': 'SlotFreeSpin', disabled: false }
+      ],
+      propDayTypeOptions: [
+        {'value': 1, 'label': '1天', disabled: false},
+        {'value': 3, 'label': '3天', disabled: false},
+        {'value': 7, 'label': '7天', disabled: false},
+        {'value': 30, 'label': '30天', disabled: false},
+        {'value': 365, 'label': '365天', disabled: false},
+        {'value': 0, 'label': '永久', disabled: false}
+      ],
       // 奖励类型选项
       rewardTypes: [
-        { value: 2, label: '投注金' }
+        {value: 2, label: '投注金'}
       ],
+
+      // 道具列表
+      propList: [],
 
       // 游戏排序弹窗
       gamesSortDialogVisible: false,
@@ -260,16 +318,12 @@ export default {
         } else {
           this.item = createNewItem()
         }
-        this.getGameAll()
       }
+      // 获取道具列表
+      this.getPropList()
     },
     dialogVisible(val) {
       this.$emit('update:visible', val)
-    },
-    filterText(val) {
-      if (this.$refs.tree) {
-        this.$refs.tree.filter(val)
-      }
     }
   },
   methods: {
@@ -277,9 +331,81 @@ export default {
       this.item = createNewItem()
     },
 
+    // 加载道具列表
+    getPropList() {
+      request({
+        url: '/propsconfig/props/config/list',
+        method: 'get',
+        data: {
+          Env: this.env,
+          PageNum: 1,
+          PageSize: 1000
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objs = response.Data || {}
+          if (objs.total > 0) {
+            this.propList = []
+            this.propList = objs.list
+          }
+        } else {
+          this.propList = []
+        }
+      })
+    },
+
     // 加载编辑数据（后端数据 -> 前端展示格式）
     loadEditData() {
       const data = JSON.parse(JSON.stringify(this.editData))
+      // 兼容后端返回 whitelistCfg 为字符串的情况
+      if (typeof data.whitelistCfg === 'string') {
+        try {
+          data.whitelistCfg = JSON.parse(data.whitelistCfg)
+        } catch (e) {
+          data.whitelistCfg = {siteIdList: []}
+        }
+      }
+      // 排行榜配置
+      if (typeof data.rankCfg === 'string') {
+        try {
+          data.rankCfg = JSON.parse(data.rankCfg)
+        } catch (e) {
+          data.rankCfg = JSON.parse(JSON.stringify(DEFAULT_RANK_CFG))
+        }
+      }
+      // 奖池
+      if (typeof data.prizePoolCfg === 'string') {
+        try {
+          data.prizePoolCfg = JSON.parse(data.prizePoolCfg)
+        } catch (e) {
+          data.prizePoolCfg = []
+        }
+      }
+      // 白名单配置
+      if (typeof data.whitelistCfg.siteIdList === 'string') {
+        try {
+          data.whitelistCfg.siteIdList = JSON.parse(data.whitelistCfg.siteIdList)
+        } catch (e) {
+          data.whitelistCfg.siteIdList = []
+        }
+      }
+      // 播报配置
+      if (typeof data.broadcastCfg === 'string') {
+        try {
+          data.broadcastCfg = JSON.parse(data.broadcastCfg)
+        } catch (e) {
+          data.broadcastCfg = {threshold: 500, maxCount: 50}
+        }
+      }
+      // 游戏列表
+      if (typeof data.gameIdCfg === 'string') {
+        try {
+          data.gameIdCfg = JSON.parse(data.gameIdCfg).map(v => Number(v))
+        } catch (e) {
+          // 兼容旧格式：逗号分隔的字符串 "23,22,15"
+          data.gameIdCfg = data.gameIdCfg.split(',').filter(v => v).map(v => Number(v))
+        }
+      }
 
       // 时间：秒 -> 毫秒
       if (data.startTime) data.startTime *= 1000
@@ -291,57 +417,54 @@ export default {
       if (data.totalPrizeThreshold != null) data.totalPrizeThreshold /= 1000
 
       // 奖池配置转换
-      if (Array.isArray(data.prizePoolCfg)) {
-        data.prizePoolCfg.forEach((pool, poolIdx) => {
-          if (!pool) return
-          if (!Array.isArray(pool.prizeCfg)) pool.prizeCfg = []
-          // Assign tierId if not present
-          if (pool.tierId === undefined) pool.tierId = poolIdx + 1
-          if (pool.raffleLevel) pool.raffleLevel /= 1000
-          if (pool.coefficientMin) pool.coefficientMin /= 10
-          if (pool.coefficientMax) pool.coefficientMax /= 10
-          pool.prizeCfg.forEach((prize, prizeIdx) => {
-            if (!prize) return
-            // Assign prizeId if not present
-            if (prize.prizeId === undefined) prize.prizeId = prizeIdx + 1
-            // Convert old format to new format
-            if (prize.reward !== undefined) {
-              prize.rewardAmount = prize.reward / 1000
-              prize.rewardMin = prize.reward / 1000
-              prize.rewardMax = prize.reward / 1000
-            } else {
-              if (prize.rewardAmount) prize.rewardAmount /= 1000
-              if (prize.rewardMin) prize.rewardMin /= 1000
-              if (prize.rewardMax) prize.rewardMax /= 1000
-            }
-          })
-        })
-      } else {
-        data.prizePoolCfg = []
-      }
+      data.prizePoolCfg.forEach((pool, poolIdx) => {
+        if (!pool) return
+        if (!Array.isArray(pool.prizeCfg)) pool.prizeCfg = []
 
+        if (pool.tierId === undefined) pool.tierId = poolIdx + 1
+        if (pool.raffleLevel) pool.raffleLevel /= 1000
+        if (pool.coefficientMin) pool.coefficientMin
+        if (pool.coefficientMax) pool.coefficientMax
+        pool.prizeCfg.forEach((prize, id) => {
+          if (!prize) return
+          if (prize.id === undefined) prize.id = id + 1
+          if (prize.reward !== undefined) {
+            prize.rewardAmount = prize.reward / 1000
+            prize.rewardMin = prize.reward / 1000
+            prize.rewardMax = prize.reward / 1000
+          } else {
+            if (prize.rewardAmount) prize.rewardAmount /= 1000
+            if (prize.rewardMin) prize.rewardMin /= 1000
+            if (prize.rewardMax) prize.rewardMax /= 1000
+          }
+        })
+      })
       // 排行榜配置转换
-      if (Array.isArray(data.rankCfg)) {
-        data.rankCfg.forEach(rank => {
-          if (rank && rank.reward) rank.reward /= 1000
-        })
+      data.rankCfg.forEach(rank => {
+        if (rank && rank.reward) rank.reward /= 1000
+      })
+      // 奖励播报配置
+      if (data.broadcastCfg.threshold) data.broadcastCfg.threshold /= 1000
+      // 道具配置兼容
+      if (!data.propPools) {
+        data.propPools = DEFAULT_PROP_POOLS
       } else {
-        data.rankCfg = JSON.parse(JSON.stringify(DEFAULT_RANK_CFG))
+        // 兼容 propPools 为 JSON 字符串的情况
+        if (typeof data.propPools === 'string') {
+          try {
+            data.propPools = JSON.parse(data.propPools)
+          } catch (e) {
+            data.propPools = DEFAULT_PROP_POOLS
+          }
+        }
+        // 兼容 propPools 为对象（非数组）的情况
+        if (!Array.isArray(data.propPools)) {
+          data.propPools = [data.propPools]
+        }
+        data.propPools.forEach(pool => {
+          pool.propId = Number(pool.propId)
+        })
       }
-
-      // 播报配置
-      if (!data.broadcastCfg) {
-        data.broadcastCfg = { threshold: 500, maxCount: 50 }
-      }
-
-      // 白名单
-      if (!data.whitelistCfg) {
-        data.whitelistCfg = {siteIdList: [] }
-      }
-      if (!Array.isArray(data.whitelistCfg.siteIdList)) data.whitelistCfg.siteIdList = []
-
-      // 游戏列表
-      if (!Array.isArray(data.gameIdCfg)) data.gameIdCfg = []
 
       this.item = data
     },
@@ -363,23 +486,17 @@ export default {
       const prizePoolCfgArray = (cpy.prizePoolCfg || []).map(pool => {
         const encoded = {
           tierId: pool.tierId || 0,
-          sockBaseNum: pool.sockBaseNum,
+
           raffleLevel: Math.floor((pool.raffleLevel || 0) * 1000),
-          rewardMax: 0,
-          coefficientMin: Math.round((pool.coefficientMin || 0) * 10),
-          coefficientMax: Math.round((pool.coefficientMax || 0) * 10),
+          coefficientMin: pool.coefficientMin,
+          coefficientMax: pool.coefficientMax,
           prizeCfg: (pool.prizeCfg || []).map(prize => ({
-            prizeId: prize.prizeId || 0,
+            ...prize,
             rewardAmount: Math.floor((prize.rewardAmount || 0) * 1000),
             rewardMin: Math.floor((prize.rewardMin || 0) * 1000),
-            rewardMax: Math.floor((prize.rewardMax || 0) * 1000),
-            weight: prize.weight,
-            prizeNum: prize.prizeNum,
-            prizeUnlimited: prize.prizeUnlimited
+            rewardMax: Math.floor((prize.rewardMax || 0) * 1000)
           }))
         }
-        // 计算最大奖励 (use rewardMax from prizes)
-        encoded.rewardMax = Math.max(0, ...encoded.prizeCfg.map(p => p.rewardMax))
         return encoded
       })
 
@@ -389,18 +506,26 @@ export default {
         rankEnd: rank.rankEnd,
         reward: Math.floor((rank.reward || 0) * 1000)
       }))
-
-      // 播报配置（如果存在）
-      const broadcastCfg = cpy.broadcastCfg || { threshold: 500, maxCount: 50 }
+      // 播报配置（如果存在）- 显式提取属性以避免Vue响应式对象序列化问题
+      const broadcastCfg = {
+        threshold: this.item.broadcastCfg.threshold * 1000,
+        maxCount: this.item.broadcastCfg.maxCount
+      }
 
       // 白名单配置（如果存在）
-      const whitelistCfg = cpy.whitelistCfg || { appIdList: [], siteIdList: [] }
+      const whitelistCfg = cpy.whitelistCfg || {siteIdList: []}
+      // 全部转为整型
+      const gameIdCfg = cpy.gameIdCfg.map(v => Number(v))
+      // 道具
+      const propPools = cpy.propPools
 
       // 转换为 JSON 字符串（因为request拦截器会使用FormData，需要序列化复杂对象）
       cpy.prizePoolCfg = JSON.stringify(prizePoolCfgArray)
       cpy.rankCfg = JSON.stringify(rankCfgArray)
       cpy.broadcastCfg = JSON.stringify(broadcastCfg)
       cpy.whitelistCfg = JSON.stringify(whitelistCfg)
+      cpy.gameIdCfg = JSON.stringify(gameIdCfg)
+      cpy.propPools = JSON.stringify(propPools)
       return cpy
     },
 
@@ -426,16 +551,42 @@ export default {
         Message.error('请选择奖励类型')
         return false
       }
+      if (this.item.broadcastCfg.maxCount > 20) {
+        Message.error('限制播报条数最大 20 ')
+        return false
+      }
+
       return true
     },
 
     // 保存
     handleSave() {
       if (!this.validate()) return
-
       const postData = this.encodeData()
-
-      const url = '/activitytreasurebowl/create'
+      if (this.isEdit) {
+        this.handleEditData(postData)
+      } else {
+        // 添加默认 6: '下架'
+        postData.status = 6
+        this.handleAddData(postData)
+      }
+    },
+    handleEditData(postData) {
+      const url = '/treasurebowlactivity/update'
+      request({
+        url: url,
+        method: 'post',
+        data: postData
+      }).then(response => {
+        if (response.RetCode === 0) {
+          Message.success('保存成功！')
+          this.dialogVisible = false
+          this.$emit('refresh')
+        }
+      })
+    },
+    handleAddData(postData) {
+      const url = '/treasurebowlactivity/create'
       request({
         url: url,
         method: 'post',
@@ -455,18 +606,11 @@ export default {
       return data.label.indexOf(value) !== -1
     },
 
-    // 游戏选中变化
-    handleCheckChange(data, checked) {
-      // 跳过类别节点
-      if (typeof data.id === 'string' && data.id.startsWith('p-')) return
-
-      if (!this.item.gameIdCfg) this.item.gameIdCfg = []
-      const index = this.item.gameIdCfg.indexOf(data.id)
-      if (checked && index < 0) {
-        this.item.gameIdCfg.push(data.id)
-      } else if (!checked && index >= 0) {
-        this.item.gameIdCfg.splice(index, 1)
-      }
+    // 处理道具类型变化
+    handlePropTypeChange(row) {
+      // 清空之前选择的道具ID和名称
+      row.propId = 0
+      row.propName = ''
     },
 
     /**
@@ -477,7 +621,7 @@ export default {
         url: '/thirdpartygames/all',
         method: 'get',
         data: {},
-        params: { status: 2 }
+        params: {status: 2}
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
@@ -492,7 +636,7 @@ export default {
             // 只保留 CategoryID=2 (Poker)
             if (obj.CategoryID !== 2) continue
 
-            const game = { Gid: obj.Gid, Name: obj.Name, Description: obj.Description }
+            const game = {Gid: obj.Gid, Name: obj.Name, Description: obj.Description}
             if (Object.prototype.hasOwnProperty.call(data, obj.CategoryID)) {
               data[obj.CategoryID].push(game)
             } else {
@@ -501,15 +645,15 @@ export default {
           }
 
           // 构建游戏树结构，只保留 poker
-          const categories = { 2: 'Poker' }
+          const categories = {2: 'Poker'}
           const builtTree = []
 
           for (const key in data) {
             const games = data[key]
-            const cty = { id: 'p-' + key, label: categories[key], children: [] }
+            const cty = {id: 'p-' + key, label: categories[key], children: []}
             for (let i = 0; i < games.length; i++) {
               const game = games[i]
-              cty.children.push({ id: game.Gid, label: game.Name })
+              cty.children.push({id: game.Gid, label: game.Name})
             }
             builtTree.push(cty)
           }
@@ -600,31 +744,41 @@ export default {
       gamesSorted.sort((a, b) => a.orderNo - b.orderNo)
       this.gamesSorted = gamesSorted
     },
-
-    // 保存游戏排序
-    saveGamesSort() {
-      // 验证排序编号
-      const orderNos = this.gamesSorted.map(g => g.orderNo)
-      const hasInvalid = orderNos.some(no => {
-        return !Number.isInteger(no) || no < 1 || no > this.gamesSorted.length
-      })
-      if (hasInvalid) {
-        return Message.error(`排序编号必须是1到${this.gamesSorted.length}之间的整数`)
+    // 根据道具类型获取道具选项
+    getPropOptionsByType(propType) {
+      const propOptions = []
+      const currTime = new Date().getTime()
+      for (let i = 0; i < this.propList.length; i++) {
+        const prop = this.propList[i]
+        if (prop.item_type === propType && prop.status === 1) {
+          // 对于非头像框类型，检查是否过期
+          if (prop.item_type !== 2) {
+            const expTime = prop.expire_time * 1000
+            if (currTime < expTime) {
+              propOptions.push({
+                value: prop.id,
+                label: prop.item_name,
+                disabled: false
+              })
+            }
+          } else {
+            propOptions.push({
+              value: prop.id,
+              label: prop.item_name,
+              disabled: false
+            })
+          }
+        }
       }
-
-      // 按用户设置的 orderNo 排序，然后提取 gameId
-      const sortedGames = this.gamesSorted.slice().sort((a, b) => a.orderNo - b.orderNo)
-
-      // 重新赋值 orderNo 为 1, 2, 3, ...
-      sortedGames.forEach((game, index) => {
-        game.orderNo = index + 1
-      })
-
-      // 更新活动配置中的游戏顺序
-      this.item.gameIdCfg = sortedGames.map(game => game.gameId)
-
-      this.gamesSortDialogVisible = false
-      Message.success('游戏排序已更新')
+      return propOptions
+    },
+    // 处理道具名称变化
+    handlePropNameChange(row) {
+      const options = this.getPropOptionsByType(row.propType)
+      const selected = options.find(opt => opt.value === row.propId)
+      if (selected) {
+        row.propName = selected.label
+      }
     }
   }
 }

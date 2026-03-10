@@ -37,7 +37,7 @@ export default {
     return {
       options: [
         { value: 'BP', label: 'BP', numericValue: 1 },
-        { value: 'AP', label: 'AP', numericValue: 2 },
+        // { value: 'AP', label: 'AP', numericValue: 2 }, 2026-02-10去除
         { value: 'GP', label: 'GP', numericValue: 3 },
         // { value: 'PG', label: 'PG', numericValue: 4 }, 2025-12-22去除PG
         { value: 'Dev', label: 'Dev', numericValue: 5 },

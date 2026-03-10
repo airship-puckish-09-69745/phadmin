@@ -101,7 +101,65 @@ export const GetMatchTicketRightsIdList = (appId) => {
     return MATCH_TICKET_RIGHTS_ID_CFG_DEV[appId] || []
   }
 }
+
 //是否是新版本门票
 export const IsNewTicketProp = (itemType) => {
-  return [PROP_TYPE_OPTIONS.PROP_TYPE_TICKET_NEW,PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW,PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW].includes(itemType)
+  return [
+    PROP_TYPE_OPTIONS.PROP_TYPE_TICKET_NEW,
+    PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW,
+    PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW
+  ].includes(itemType)
+}
+
+// 是否是门票类型道具
+export const IsTicketProp = (itemType) => {
+  return [
+    PROP_TYPE_OPTIONS.PROP_TYPE_TICKET,
+    PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET,
+    PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET
+  ].includes(itemType)
+}
+
+// 是否是头像框道具
+export const IsAvatarFrameProp = (itemType) => {
+  return [
+    PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME,
+    PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR
+  ].includes(itemType)
+}
+
+// 检查是否需要过期天数
+export const CheckPropNeedExpireDays = (itemType) => {
+  return [
+    PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME,
+    PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN,
+    PROP_TYPE_OPTIONS.PROP_TYPE_TICKET_NEW,
+    PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW,
+    PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW
+  ].includes(itemType)
+}
+
+// 道具过期时间是否合法
+export const CheckPropExpireDays = (propType, expireDays) => {
+  switch (propType) {
+    case PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME:
+    case PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR:
+      // 头像框：过期天数不能为负数
+      if (expireDays < 0) {
+        return false
+      }
+      break;
+    case PROP_TYPE_OPTIONS.PROP_TYPE_TICKET_NEW:
+    case PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW:
+    case PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW:
+      // 新版票券：不能为0、365或负数
+      if (expireDays === 0 || expireDays === 365 || expireDays < 0) {
+        return false
+      }
+      break;
+    default:
+      // 其他道具类型：默认有效
+      break;
+  }
+  return true
 }
