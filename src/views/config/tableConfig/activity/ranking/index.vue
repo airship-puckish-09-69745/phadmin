@@ -1063,10 +1063,12 @@ export default {
 
       let maxRankShow = 0
       for (const reward of item.extend.rewardList) {
-        if (item.extend.rewardWay === 1) {
+        if (item.extend.rewardWay === 1 && reward.rewardItem.rewardType === 2) {
           reward.rewardItem.rewardNum *= 1000
         } else if (item.extend.rewardWay === 2) {
           reward.rewardItem.rewardNum *= 100
+        } else {
+          reward.rewardItem.rewardNum = parseInt(reward.rewardItem.rewardNum)
         }
         reward.reward = reward.rewardItem.rewardNum
         maxRankShow = Math.max(maxRankShow, reward.rankEnd)
@@ -1126,7 +1128,7 @@ export default {
               rewardCfg.rewardItem.rewardNum = rewardCfg.reward
               rewardCfg.rewardItem.rewardType = 2
             }
-            if (item.extend.rewardWay === 1) {
+            if (item.extend.rewardWay === 1 && rewardCfg.rewardItem.rewardType === 2) {
               rewardCfg.rewardItem.rewardNum /= 1000
             } else if (item.extend.rewardWay === 2) {
               rewardCfg.rewardItem.rewardNum /= 100
@@ -1434,7 +1436,7 @@ export default {
       }
     },
     showPropTimeOptions(propType) {
-      return [2, 5].includes(propType)
+      return this.edit.item.extend.rewardWay === 1 && [2, 5].includes(propType)
     },
     showRowPropSelect(rewardItem) {
       return rewardItem.rewardType === 4
