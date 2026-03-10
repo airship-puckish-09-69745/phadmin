@@ -175,7 +175,8 @@ export default {
           method: 'post',
           data: {
             id: id,
-            status: status
+            status: status,
+            activityId: this.activityId
           }
         }).then(response => {
           if (response.RetCode === 0) {
@@ -192,7 +193,7 @@ export default {
         url: '/activityconfig/all',
         method: 'get',
         data: {
-          activityId: this.activityId,
+          activityId: this.activityId
         }
       }).then(response => {
         if (response.RetCode === 0) {
