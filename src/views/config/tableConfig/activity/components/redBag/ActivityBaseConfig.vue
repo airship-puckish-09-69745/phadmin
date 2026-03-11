@@ -271,6 +271,15 @@ export default {
     filterText(val) {
       this.$refs.tree && this.$refs.tree.filter(val)
     },
+    // 监听整个 value 对象的替换（如从编辑切换到新增时），重置缓存并重新过滤
+    value(newVal, oldVal) {
+      if (newVal !== oldVal) {
+        this.gamesSorted = []
+        this.$nextTick(() => {
+          this.applyGameTypeFilter()
+        })
+      }
+    },
     'formData.gameIdCfg': {
       handler() {
         if (this.isEdit && this.$refs.tree) {
@@ -299,20 +308,14 @@ export default {
       return data.label.indexOf(value) !== -1
     },
     handleGameTypeChange() {
+      // 切换玩法大类型时，清除已选游戏和排序缓存
+      this.formData.gameIdCfg = []
+      this.gamesSorted = []
       this.applyGameTypeFilter()
     },
     applyGameTypeFilter() {
       const selectedKey = 'p-' + this.formData.gameType
       this.treeData = this.allTreeData.filter(cty => cty.id === selectedKey)
-
-      const allowedIds = new Set()
-      this.treeData.forEach(cty => {
-        (cty.children || []).forEach(game => allowedIds.add(game.id))
-      })
-      const filteredIds = (this.formData.gameIdCfg || []).filter(id => allowedIds.has(id))
-      if (filteredIds.length !== (this.formData.gameIdCfg || []).length) {
-        this.formData.gameIdCfg = filteredIds
-      }
 
       this.$nextTick(() => {
         if (this.$refs.tree) {
