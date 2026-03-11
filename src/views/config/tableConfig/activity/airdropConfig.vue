@@ -890,7 +890,10 @@ export default {
         { value: 5, label: 'Slots用户类型', children: [
             { value: 50001, label: 'Slots新增用户' },
             { value: 50002, label: 'Slots登录天数' },
-            { value: 50008, label: 'Slots回归用户' }
+            { value: 50008, label: 'Slots回归用户' },
+            { value: 50005, label: '下注额度' },
+            { value: 50006, label: '日均下注额度' },
+            { value: 50003, label: '携带金额' }
           ]
         }
       ],
