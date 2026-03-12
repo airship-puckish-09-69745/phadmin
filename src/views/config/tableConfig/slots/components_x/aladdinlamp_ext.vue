@@ -150,6 +150,13 @@ export default {
   data() {
     return {
       cfg: {
+      },
+      activeTab: 'script',
+      buyFreeOddsConf: {
+        dialogVisible: false,
+        currentBet: '0',
+        dialogTitle: '添加配置',
+        currentConf: []
       }
     }
   },
