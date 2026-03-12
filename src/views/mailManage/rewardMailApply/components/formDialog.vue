@@ -264,7 +264,7 @@ export default {
         }
       })
 
-      if (this.updateForm) {
+      if (this.updateForm && this.updateForm.id > 0) {
         this.updateData()
       } else {
         this.createData()
