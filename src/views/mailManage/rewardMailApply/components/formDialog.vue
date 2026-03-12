@@ -394,7 +394,7 @@ export default {
         const item = params.rewardItems[i]
         if (item.itemType === this.rewardItemType.betCoin) {
           item.itemNum *= 1000
-        } else {
+        } else if (IsNewTicketProp(item.itemSubType)) {
           const itemSceneId = this.getTicketPropSceneID(item.itemId, item.itemSubType)
           if (itemSceneId < 0) {
             this.$message.error('道具' + item.itemId + '没有配置场景ID')
@@ -422,6 +422,9 @@ export default {
     createData() {
       const params = this.getRequestParams()
       console.log('提交参数', params)
+      if (!params) {
+        return
+      }
       request({
         url: '/rewardmailapply/create',
         method: 'POST',
@@ -441,6 +444,9 @@ export default {
     updateData() {
       const params = this.getRequestParams()
       console.log('提交参数', params)
+      if (!params) {
+        return
+      }
       request({
         url: '/rewardmailapply/update',
         method: 'POST',
