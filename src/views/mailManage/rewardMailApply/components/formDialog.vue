@@ -96,6 +96,7 @@
               v-model="item.itemNum"
               type="number"
               placeholder="请输入奖励数量"
+              :disabled="isDisableItemNum(item.itemSubType)"
             />
           </el-form-item>
         </el-col>
@@ -223,6 +224,9 @@ export default {
     },
     rewardNumLabel(itemType) {
       return itemType === this.rewardItemType.betCoin ? '奖励金额' : '奖励数量'
+    },
+    isDisableItemNum(itemSubType) {
+      return IsNewTicketProp(itemSubType)
     },
     onReset() {
       this.$refs.formRef.resetFields()
@@ -486,6 +490,9 @@ export default {
         rewardItem.expireDays = 0
         if (CheckPropNeedExpireDays(itemSubType)){
           rewardItem.expireDays = 1
+        }
+        if (IsNewTicketProp(itemSubType)) {
+          rewardItem.itemNum = 1
         }
       }
 
