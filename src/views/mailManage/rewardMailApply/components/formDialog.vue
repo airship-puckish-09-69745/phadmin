@@ -30,6 +30,9 @@
               placeholder="选择过期时间"
               default-time="23:59:59">
             </el-date-picker>
+            <el-tooltip content="过期时间不能小于当前时间且不能大于投注金过期时间" placement="right" effect="light">
+              <i class="el-icon-question"></i>
+            </el-tooltip>
           </el-form-item>
         </el-col>
         <el-col>
@@ -41,6 +44,9 @@
               placeholder="选择截止时间"
               default-time="23:59:59">
             </el-date-picker>
+            <el-tooltip content="截止时间不能小于当前时间，过期后将无法发送" placement="right" effect="light">
+              <i class="el-icon-question"></i>
+            </el-tooltip>
           </el-form-item>
         </el-col>
       </el-row>
