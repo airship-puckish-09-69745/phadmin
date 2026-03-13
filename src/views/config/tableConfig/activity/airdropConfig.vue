@@ -732,7 +732,7 @@ function newItem() {
       },
       userTagConfig: {
         tagId: 0,
-        tagValue: 0,
+        tagValue: 1,
         tagType: 0
       }
     }
@@ -1651,6 +1651,12 @@ export default {
             item.userFilterCondition = JSON.parse(item.userFilterCondition)
             console.log('item.userFilterCondition2:', item.userFilterCondition)
             this.edit.registerDateRange = [item.userFilterCondition.registerTimeRange.min * 1000, item.userFilterCondition.registerTimeRange.max * 1000]
+            // 回显用户标签配置，缺少时补默认值
+            if (!item.userFilterCondition.userTagConfig) {
+              item.userFilterCondition.userTagConfig = { tagId: 0, tagValue: 1, tagType: 0 }
+            } else if (item.userFilterCondition.userTagConfig.tagValue === undefined || item.userFilterCondition.userTagConfig.tagValue === null) {
+              item.userFilterCondition.userTagConfig.tagValue = 1
+            }
           } else {
             item.userFilterCondition = {
               registerTimeRange: {
@@ -1663,7 +1669,7 @@ export default {
               },
               userTagConfig: {
                 tagId: 0,
-                tagValue: 0,
+                tagValue: 1,
                 tagType: 0
               }
             }
@@ -1710,7 +1716,10 @@ export default {
 
           this.edit.userType = item.userTypes[0]
 
+          // 保存 tagValue，防止 onTagTypeChange 内部将其重置为 0
+          const savedTagValue = item.userFilterCondition.userTagConfig.tagValue
           this.onTagTypeChange(item.userFilterCondition.userTagConfig.tagType)
+          this.edit.item.userFilterCondition.userTagConfig.tagValue = savedTagValue
 
           console.log(this.edit.item.gameIdCfg)
         }
