@@ -45,17 +45,23 @@
         </el-col>
       </el-row>
       <el-row>
+        <el-form-item label="奖励物品">
+          <el-button type="primary" @click="addRewardItem">添加</el-button>
+          <el-button type="primary" @click="delRewardItem">移除</el-button>
+        </el-form-item>
+      </el-row>
+      <el-row v-for="(item, index) in form.rewardItems" :key="index">
         <el-col :span="5">
           <el-form-item label="奖励类型" required>
-            <el-select v-model="form.rewardItems[0].itemType" placeholder="请选择奖励类型" @change="onItemTypeChange">
+            <el-select v-model="item.itemType" placeholder="请选择奖励类型" @change="onItemTypeChange">
               <el-option label="投注金" :value="2" />
               <el-option label="道具" :value="4" />
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="道具类型" required v-if="isShowPropEl">
-            <el-select v-model="form.rewardItems[0].itemSubType" placeholder="请选择道具类型" @change="onItemSubTypeChange">
+          <el-form-item label="道具类型" required v-if="isShowPropEl(item.itemType)">
+            <el-select v-model="item.itemSubType" placeholder="请选择道具类型" @change="onItemSubTypeChange">
               <el-option
                 v-for="item in ITEM_TYPE_OPTIONS"
                 :key="item.value"
@@ -66,15 +72,15 @@
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="奖励道具" required v-if="isShowPropEl">
-            <el-select v-model="form.rewardItems[0].itemId" placeholder="请选择奖励道具ID">
+          <el-form-item label="奖励道具" required v-if="isShowPropEl(item.itemType)">
+            <el-select v-model="item.itemId" placeholder="请选择奖励道具ID">
               <el-option v-for="item in itemOptions" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="5">
-          <el-form-item label="过期天数" required v-if="CheckPropNeedExpireDays(form.rewardItems[0].itemSubType)">
-            <el-select v-model="form.rewardItems[0].expireDays" placeholder="请选择过期时间">
+          <el-form-item label="过期天数" required v-if="CheckPropNeedExpireDays(item.itemSubType)">
+            <el-select v-model="item.expireDays" placeholder="请选择过期时间">
               <el-option
                 v-for="item in ITEM_DAY_TYPE_OPTIONS"
                 :key="item.value"
@@ -85,9 +91,9 @@
           </el-form-item>
         </el-col>
         <el-col :span="5">
-          <el-form-item :label="rewardNumLabel" required>
+          <el-form-item :label="rewardNumLabel(item.itemType)" required>
             <el-input
-              v-model="form.rewardItems[0].itemNum"
+              v-model="item.itemNum"
               type="number"
               placeholder="请输入奖励数量"
             />
@@ -112,6 +118,16 @@ import {
   MATCH_TICKET_RIGHTS_ID_CFG_DEV,
   MATCH_TICKET_RIGHTS_ID_CFG_PROD
 } from '@/utils/prop'
+
+function newRewardItem() {
+  return {
+    itemId: 0, // 物品id
+    itemNum: 0, // 物品数量
+    itemType: '', // 奖励类型，1:金币 2:投注金 3:返水金 4:道具
+    itemSubType: '', // 物品子类型
+    expireDays: 1, // 过期天数
+  }
+}
 
 export default {
   components: {},
@@ -150,16 +166,9 @@ export default {
         content: '', // 内容
         expireTime: '', // 过期时间
         deadline: '', // 截止时间
-        rewardItems: [
-          {
-            itemId: 0, // 物品id
-            itemNum: 0, // 物品数量
-            itemType: '', // 奖励类型，1:金币 2:投注金 3:返水金 4:道具
-            itemSubType: '', // 物品子类型
-            expireDays: 1, // 过期天数
-          }
-        ], // 奖励物品，json字符串
+        rewardItems: [], // 奖励物品，json字符串
       },
+      itemType: 0,
       accounts: '',
       itemOptions: [], // 道具下拉框选项, 根据道具类型从道具列表中筛选得到
     }
@@ -182,8 +191,12 @@ export default {
           }
         }
 
-        this.onItemSubTypeChange(this.form.rewardItems[0].itemSubType, false)
+        if (this.form.rewardItems.length > 0) {
+          this.onItemSubTypeChange(this.form.rewardItems[0].itemSubType, false)
+        }
+
       } else {
+        // this.accounts = ''
         this.form = {
           appId: parseInt(this.$store.getters.appId), // appid
           mailAccounts: [], // 账号列表，json字符串 [{"account":"lfb","status":0},{"account":"lfb11","status":0}] status状态，0:未发送 1:成功 2:失败
@@ -192,15 +205,7 @@ export default {
           content: '', // 内容
           expireTime: '', // 过期时间
           deadline: '', // 截止时间
-          rewardItems: [
-            {
-              itemId: 0, // 物品id
-              itemNum: 0, // 物品数量
-              itemType: '', // 奖励类型，1:金币 2:投注金 3:返水金 4:道具
-              itemSubType: '', // 物品子类型
-              expireDays: 1, // 过期天数
-            }
-          ], // 奖励物品，json字符串
+          rewardItems: [], // 奖励物品，json字符串
         }
       }
     }
@@ -209,15 +214,16 @@ export default {
 
   },
   computed: {
-    isShowPropEl() {
-      return this.form.rewardItems[0].itemType === this.rewardItemType.prop
-    },
-    rewardNumLabel() {
-      return this.form.rewardItems[0].itemType === this.rewardItemType.betCoin ? '奖励金额' : '奖励数量'
-    }
+
   },
   methods: {
     CheckPropNeedExpireDays,
+    isShowPropEl(itemType) {
+      return itemType === this.rewardItemType.prop
+    },
+    rewardNumLabel(itemType) {
+      return itemType === this.rewardItemType.betCoin ? '奖励金额' : '奖励数量'
+    },
     onReset() {
       this.$refs.formRef.resetFields()
     },
@@ -228,6 +234,22 @@ export default {
       this.onReset()
       this.$emit('close')
       this.$emit('reload')
+    },
+    /**
+     * 添加奖励项
+     */
+    addRewardItem() {
+      if (this.form.rewardItems.length > 0) {
+        return
+      }
+      const rewardItem = newRewardItem()
+      this.form.rewardItems.push(rewardItem)
+    },
+    /**
+     * 删除奖励项
+     */
+    delRewardItem(index) {
+      this.form.rewardItems.splice(index, 1)
     },
     onSubmit() {
       if (!this.checkoutForm()) {
@@ -275,30 +297,40 @@ export default {
         this.$message.error('请输入截止时间')
         return false
       }
-      if (this.form.rewardItems[0].itemType === this.rewardItemType.betCoin) {
-        if (!this.form.rewardItems[0].itemNum) {
-          this.$message.error('请输入奖励金额')
+
+      if (this.form.rewardItems.length > 0) {
+        const rewardItem = this.form.rewardItems[0]
+
+        if (!rewardItem.itemType) {
+          this.$message.error('请选择奖励类型')
           return false
+        }
+        if (rewardItem.itemType === this.rewardItemType.betCoin) {
+          if (!rewardItem.itemNum) {
+            this.$message.error('请输入奖励金额')
+            return false
+          }
+        }
+        if (rewardItem.itemType === this.rewardItemType.prop) {
+          if (!rewardItem.itemSubType) {
+            this.$message.error('请选择道具类型')
+            return false
+          }
+          if (!rewardItem.itemId) {
+            this.$message.error('请选择道具')
+            return false
+          }
+          if (!rewardItem.itemNum) {
+            this.$message.error('请输入道具数量')
+            return false
+          }
+          if (CheckPropNeedExpireDays(rewardItem.itemSubType) && !rewardItem.expireDays) {
+            this.$message.error('请选择过期天数')
+            return false
+          }
         }
       }
-      if (this.form.rewardItems[0].itemType === this.rewardItemType.prop) {
-        if (!this.form.rewardItems[0].itemSubType) {
-          this.$message.error('请选择道具类型')
-          return false
-        }
-        if (!this.form.rewardItems[0].itemId) {
-          this.$message.error('请选择道具')
-          return false
-        }
-        if (!this.form.rewardItems[0].itemNum) {
-          this.$message.error('请输入道具数量')
-          return false
-        }
-        if (CheckPropNeedExpireDays(this.form.rewardItems[0].itemSubType) && !this.form.rewardItems[0].expireDays) {
-          this.$message.error('请选择过期天数')
-          return false
-        }
-      }
+
       return true
     },
     /**
@@ -332,16 +364,47 @@ export default {
       }
       return emptyArr
     },
+    /*
+     * 获取门票道具的场景ID
+     */
+    getTicketPropSceneID(propId, propType) {
+      if (IsNewTicketProp(propType)) {
+        //根据当前道具类型获取对应的门票配置
+        const ticketsConfig = IsProd() ? MATCH_TICKET_RIGHTS_ID_CFG_PROD : MATCH_TICKET_RIGHTS_ID_CFG_DEV
+        if(ticketsConfig && typeof ticketsConfig === 'object'){
+          for(const appId in ticketsConfig){
+            if(ticketsConfig[appId] && Array.isArray(ticketsConfig[appId]) && ticketsConfig[appId].some(ticket => ticket.ticketId === propId)){
+              const sceneIdCfg = ticketsConfig[appId].find(ticket => ticket.ticketId === propId)
+              if(sceneIdCfg){
+                return sceneIdCfg.sceneId
+              }
+            }
+          }
+        }
+      }
+      return -1
+    },
     /**
      * 将form参数转换为后端接口需要的参数
      */
     getRequestParams() {
       const params = JSON.parse(JSON.stringify(this.form))
 
-      if (params.rewardItems[0].itemType === this.rewardItemType.betCoin) {
-        params.rewardItems[0].itemNum *= 1000
+      for (const i in params.rewardItems) {
+        const item = params.rewardItems[i]
+        if (item.itemType === this.rewardItemType.betCoin) {
+          item.itemNum *= 1000
+        } else {
+          const itemSceneId = this.getTicketPropSceneID(item.itemId, item.itemSubType)
+          if (itemSceneId < 0) {
+            this.$message.error('道具' + item.itemId + '没有配置场景ID')
+            return false
+          }
+          item.itemSceneId = itemSceneId
+        }
+        item.itemNum = parseInt(item.itemNum)
       }
-      params.rewardItems[0].itemNum = parseInt(params.rewardItems[0].itemNum)
+
       params.expireTime = parseInt(params.expireTime/1000)
       params.deadline = parseInt(params.deadline/1000)
       params.mailAccounts = JSON.stringify(params.mailAccounts)
@@ -392,7 +455,7 @@ export default {
       })
     },
     onItemTypeChange(itemType) {
-      const rewardItem = this.form.rewardItems[0]
+      const rewardItem =  this.form.rewardItems[0]
       if (itemType === this.rewardItemType.betCoin) {
         rewardItem.itemSubType = 0
         rewardItem.itemId = 0
