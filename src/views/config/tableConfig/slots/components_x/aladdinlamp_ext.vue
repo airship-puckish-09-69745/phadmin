@@ -143,9 +143,9 @@ export default {
       type: Object,
       default: function() {
         return {}
-      },
-      baseBet: Number
-    }
+      }
+    },
+    baseBet: Number
   },
   data() {
     return {
