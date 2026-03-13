@@ -257,9 +257,21 @@
               </el-col>
               <el-col v-if="showUserTagCondition">
                 <el-form-item label="标签子类：">
-                  <el-select v-model="edit.item.userFilterCondition.userTagConfig.tagId" placeholder="请选择标签子类">
+                  <el-select v-model="edit.item.userFilterCondition.userTagConfig.tagId" placeholder="请选择标签子类" @change="onTagIdChange">
                     <el-option
                       v-for="item in edit.userTagIdOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="24" v-if="showUserLevelCondition">
+                <el-form-item label="用户等级：" :required="false">
+                  <el-select v-model="edit.item.userFilterCondition.userTagConfig.tagValue" placeholder="请选择用户等级">
+                    <el-option
+                      v-for="item in userLevelOptions"
                       :key="item.value"
                       :label="item.label"
                       :value="item.value"
@@ -890,7 +902,10 @@ export default {
         { value: 5, label: 'Slots用户类型', children: [
             { value: 50001, label: 'Slots新增用户' },
             { value: 50002, label: 'Slots登录天数' },
-            { value: 50008, label: 'Slots回归用户' }
+            { value: 50008, label: 'Slots回归用户' },
+            { value: 50005, label: '下注额度' },
+            { value: 50006, label: '日均下注额度' },
+            { value: 50003, label: '携带金额' }
           ]
         }
       ],
@@ -901,6 +916,12 @@ export default {
         { value: 2, label: '尝试' },
         { value: 3, label: '常玩' },
         { value: 4, label: '核心' }
+      ],
+      // 用户等级（下注额度/日均下注额度/携带金额）
+      userLevelOptions: [
+        { value: 1, label: '轻度用户' },
+        { value: 2, label: '中度用户' },
+        { value: 3, label: '重度用户' }
       ],
 
       defaultProps: {
@@ -993,6 +1014,11 @@ export default {
       return this.edit.item.userTypes.includes(5) &&
         this.edit.item.userFilterCondition.userTagConfig.tagType === 2 && // 2=游戏强度
         this.edit.item.userFilterCondition.userTagConfig.tagId === 20000 // 20000=游戏强度
+    },
+    showUserLevelCondition() {
+      const levelTagIds = [50005, 50006, 50003]
+      return this.edit.item.userTypes.includes(5) &&
+        levelTagIds.includes(this.edit.item.userFilterCondition.userTagConfig.tagId)
     },
     showRewardRangesConfig() {
       return this.edit.item.gameType !== 1 // 1=Slot 时不显示大奖系数配置
@@ -1169,6 +1195,11 @@ export default {
       if (tagType !== 2) { // 游戏强度标签
         this.edit.item.userFilterCondition.userTagConfig.tagValue = 0
       }
+    },
+    onTagIdChange(tagId) {
+      // 切换标签子类时重置 tagValue
+      this.edit.item.userFilterCondition.userTagConfig.tagValue = 0
+      console.log('onTagIdChange tagId:', tagId)
     },
     onChangeEndTime(val) {
       if (val < this.edit.item.startTime) {
