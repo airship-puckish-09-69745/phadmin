@@ -50,8 +50,8 @@
             {{ getAccountTypeText(scope.row.accountType) }}
           </template>
         </el-table-column>
-        <el-table-column prop="content" label="邮件内容" show-overflow-tooltip width="240" />
-        <el-table-column prop="send_users" label="奖励内容" >
+        <el-table-column prop="content" label="邮件内容" show-overflow-tooltip min-width="230" />
+        <el-table-column prop="send_users" label="奖励内容" min-width="200">
           <template slot-scope="scope">
             {{ getRewardContentText(scope.row.rewardItems) }}
           </template>
@@ -104,14 +104,14 @@
           </template>
         </el-table-column>
 
-        <el-table-column fixed="right" width="320px" label="操作">
+        <el-table-column width="310px" label="操作">
           <template slot-scope="scope">
-            <el-button v-if="scope.row.status === 3" type="primary" size="mini" icon="el-icon-edit" @click="onShowFormDialog(scope.row)">编辑</el-button>
+            <el-button v-if="scope.row.status === ITEM_STATUSES.UNAPPROVED" type="primary" size="mini" icon="el-icon-edit" @click="onShowFormDialog(scope.row)">编辑</el-button>
             <el-button v-if="isShowDetailsButton(scope.row.status)" type="primary" size="mini" @click="onShowDetailsDialog(scope.row)">查看详情</el-button>
             <el-button v-if="isShowSubmitReviewButton(scope.row)" type="warning" size="mini" @click="onSubmitReview(scope.row)">发起审批</el-button>
             <el-button v-if ="isShowDistributionButton(scope.row)" type="warning" size="mini" @click="onSubmitDistribution(scope.row)">发起发送</el-button>
-            <el-button v-if ="scope.row.status === 6" type="info" size="mini" @click="onCancelDistribution(scope.row)">取消发送</el-button>
-            <el-button  v-if="scope.row.status === 3" size="mini" type="danger" @click="handleDeleteRow(scope.row)">删除</el-button>
+            <el-button v-if ="scope.row.status === ITEM_STATUSES.AGREED" type="info" size="mini" @click="onCancelDistribution(scope.row)">取消发送</el-button>
+            <el-button  v-if="scope.row.status === ITEM_STATUSES.UNAPPROVED" size="mini" type="danger" @click="handleDeleteRow(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -122,7 +122,7 @@
           :current-page="tablePagination.currentPage"
           :page-sizes="[10, 20, 30, 40]"
           :page-size="tablePagination.pageSize"
-          layout="slot, total, sizes, prev, next"
+          layout="slot, total, sizes, prev, pager, next, jumper"
           prev-text="上一页"
           next-text="下一页"
           :total="tablePagination.total"
@@ -137,26 +137,28 @@
     </el-row>
 
     <FormDialog :visible="editForm.visible" :update-form="editForm.data" :prop-list="propList" @close="onCloseFormDialog" @reload="getList" />
+    <DetailDialog :visible="detailsForm.visible" :detail-form="detailsForm.data" :prop-list="propList" @close="onCloseDetailsDialog" />
   </div>
 </template>
 
 <script>
 import FormDialog from '@/views/mailManage/rewardMailApply/components/formDialog.vue'
-//import DetailsDialog from '@/views/mailManage/rewardMailApply/components/detailsDialog.vue'
+import DetailDialog from "@/views/mailManage/rewardMailApply/components/detailDialog.vue";
 import { $libDate, $libShow } from '@/utils/common'
 import { formatTime } from "@/utils"
 import request from '@/utils/request'
-import {PROP_TYPE_OPTIONS, ITEM_STATUSES, ITEM_TYPE_OPTIONS, ITEM_STATUS_OPTIONS} from '@/utils/options'
+import { PROP_TYPE_OPTIONS, ITEM_STATUSES, ITEM_TYPE_OPTIONS, ITEM_STATUS_OPTIONS } from '@/utils/options'
 import { IsNewTicketProp, IsTicketProp, IsAvatarFrameProp } from '@/utils/prop'
 import { Message } from "element-ui";
 
 export default {
   name: 'PropsConfig',
-  components: { FormDialog, formatTime },
+  components: {DetailDialog, FormDialog, formatTime },
   data() {
     return {
       libShow: $libShow,
       datePickerOptions: $libShow.DefaultDatePickerOptions(),
+      ITEM_STATUSES,
       statusOptions: {
         1: '发送成功',
         2: '发送失败',
@@ -256,7 +258,12 @@ export default {
     },
     // 显示奖励邮件申请详情
     onShowDetailsDialog(row) {
-
+      this.detailsForm.visible = true
+      this.detailsForm.data = row
+    },
+    onCloseDetailsDialog() {
+      this.detailsForm.visible = false
+      this.detailsForm.data = null
     },
     // 提交审批
     onSubmitReview(row) {
@@ -448,21 +455,27 @@ export default {
       const items = JSON.parse(rewardItems)
       let content = ''
       items.forEach(item => {
-        if ([1,2,3].includes(item.itemType)) { // 金币
-          content += `${item.itemNum/1000}（₱）|`
+        if ([1, 2, 3].includes(item.itemType)) { // 金币
+          content += `${item.itemNum / 1000}（₱）|`
           return
         }
+        const propId = item.itemId
         const propType = item.itemSubType
-        const propName = this.getPropText(propType)
-        content += `${propName} x ${item.itemNum}|`
+        const propTypeName = this.getPropTypeText(propType)
+        const propName = this.getPropNameText(propId)
+        content += `${propTypeName}：${propName} x ${item.itemNum}|`
       })
       content = content.slice(0, -1)
       return content
     },
-    // 获取道具文本
-    getPropText(propType) {
+    // 获取道具类型文本
+    getPropTypeText(propType) {
       const prop = ITEM_TYPE_OPTIONS.find(item => item.value === propType)
-      return prop ? prop.label : '未知'
+      return prop ? prop.label : '未知道具类型:' + propType
+    },
+    getPropNameText(propId) {
+      const prop = this.propList.find(item => item.id === propId)
+      return prop ? prop.item_name : '未知ID:' + propId
     },
     /**
      * 获取道具列表

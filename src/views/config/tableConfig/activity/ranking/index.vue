@@ -133,6 +133,24 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
+                  <el-form-item label="每日发奖上限：" :required="true">
+                    <el-input v-model.number="edit.item.extend.totalRewardLimitPerDay" placeholder="请输入每日发奖上限" >
+                      <template slot="append">
+                        （₱）
+                      </template>
+                    </el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="今日已发奖励：">
+                    <el-input v-model.number="edit.todayTotalReward" disabled >
+                      <template slot="append">
+                        （₱）
+                      </template>
+                    </el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
                   <el-form-item label="调试时间偏移量（仅测试用）：" :required="true">
                     <el-input v-model.number="edit.item.activity.debugTimeOffset">
                       <template slot="append">秒</template>
@@ -456,7 +474,7 @@
                         {{ edit.item.extend.rewardWay === 1 ? '奖励数值' : '奖励百分比%' }}
                       </template>
                       <template slot-scope="scope">
-                        <el-input v-model.number="scope.row.rewardItem.rewardNum" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
+                        <el-input v-model="scope.row.rewardItem.rewardNum" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
                       </template>
                     </el-table-column>
                     <el-table-column
@@ -576,7 +594,6 @@ import store from "@/store";
 import {$libDate, $libShow, ClientTableData, DataRule} from "@/utils/common";
 import request from "@/utils/request";
 import {Message} from "element-ui";
-import tree from "echarts/src/data/Tree";
 
 const filterMap = {}
 
@@ -598,7 +615,7 @@ function newItem() {
         appIdList: [],
         siteIdList: [],
         uidList: '',
-        isOpen: tree,
+        isOpen: true,
       },
       ruleImgHor: [],
       ruleImgVer: [],
@@ -632,7 +649,8 @@ function newItem() {
       userFilterCondition: {
         userTagTypes: [],
         userTagItems: []
-      }
+      },
+      totalRewardLimitPerDay: 0 //每日奖励总额上限
     }
   }
 }
@@ -716,7 +734,9 @@ export default {
         gamesSortDialogVisible: false,
         userTagType: 0,
         userTagIds: [],
-        userTagTypeOptions: []
+        userTagTypeOptions: [],
+        todayTotalReward: 0,
+        isTodayTotalRewardOverLimit: false
       },
 
       treeData: [{
@@ -988,10 +1008,29 @@ export default {
         this.edit.visible = true
       }
     },
+    // 查询今日已发奖励
+    getTodayTotalReward() {
+      request({
+        url: '/dataProxy/info',
+        method: 'post',
+        data: {
+          Path: '/activity/ranking/today/total/reward',
+          ActCfgId: this.edit.item.id,
+          ActivityId: this.edit.item.activityId,
+          TotalRewardLimitPerDay: this.edit.item.extend.totalRewardLimitPerDay * 1000
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.edit.todayTotalReward = response.Data.TodayTotalAmount / 1000
+          this.edit.isTodayTotalRewardOverLimit = response.Data.IsOverLimit
+        }
+      })
+    },
     handleEditDialogOpened() {
       console.log('handleEditDialogOpened edit:' + this.edit.isEdit)
       if (this.edit.isEdit) {
         this.$refs.tree.setCheckedKeys(this.edit.item.activity.gameIdList)
+        this.getTodayTotalReward()
       } else {
         this.$refs.tree.setCheckedKeys([])
       }
@@ -1004,6 +1043,7 @@ export default {
       item.extend.minBet *= 1000
       item.extend.minScore *= 1000
       item.extend.maxReward *= 1000
+      item.extend.totalRewardLimitPerDay *= 1000
 
       if (item.extend.rewardList.length === 0) {
         Message.error('请添加排名奖励配置')
@@ -1023,10 +1063,12 @@ export default {
 
       let maxRankShow = 0
       for (const reward of item.extend.rewardList) {
-        if (item.extend.rewardWay === 1) {
+        if (item.extend.rewardWay === 1 && reward.rewardItem.rewardType === 2) {
           reward.rewardItem.rewardNum *= 1000
         } else if (item.extend.rewardWay === 2) {
-          reward.rewardItem.rewardNum *= 10000
+          reward.rewardItem.rewardNum *= 100
+        } else {
+          reward.rewardItem.rewardNum = parseInt(reward.rewardItem.rewardNum)
         }
         reward.reward = reward.rewardItem.rewardNum
         maxRankShow = Math.max(maxRankShow, reward.rankEnd)
@@ -1077,6 +1119,7 @@ export default {
           item.extend.minBet /= 1000
           item.extend.minScore /= 1000
           item.extend.maxReward /= 1000
+          item.extend.totalRewardLimitPerDay /= 1000
 
           for (const rewardCfg of item.extend.rewardList) {
             if (rewardCfg.rewardItem === undefined) {
@@ -1085,10 +1128,10 @@ export default {
               rewardCfg.rewardItem.rewardNum = rewardCfg.reward
               rewardCfg.rewardItem.rewardType = 2
             }
-            if (item.extend.rewardWay === 1) {
+            if (item.extend.rewardWay === 1 && rewardCfg.rewardItem.rewardType === 2) {
               rewardCfg.rewardItem.rewardNum /= 1000
             } else if (item.extend.rewardWay === 2) {
-              rewardCfg.rewardItem.rewardNum /= 10000
+              rewardCfg.rewardItem.rewardNum /= 100
             }
             rewardCfg.reward = rewardCfg.rewardItem.rewardNum
           }
@@ -1393,7 +1436,7 @@ export default {
       }
     },
     showPropTimeOptions(propType) {
-      return [2, 5].includes(propType)
+      return this.edit.item.extend.rewardWay === 1 && [2, 5].includes(propType)
     },
     showRowPropSelect(rewardItem) {
       return rewardItem.rewardType === 4
