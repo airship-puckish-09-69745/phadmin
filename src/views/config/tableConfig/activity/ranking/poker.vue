@@ -839,8 +839,8 @@ export default {
       }
 
       for (const reward of item.extend.rewardList) {
-        reward.reward *= 1000
         reward.rewardItem.rewardNum *= 1000
+        reward.reward = reward.rewardItem.rewardNum
       }
 
       if (item.activity.whitelist.appIdList.length === 0 && this.version === 'V2') {

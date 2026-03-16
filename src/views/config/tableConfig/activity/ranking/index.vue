@@ -765,7 +765,7 @@ export default {
         // { 'value': 1, 'label': '金币' },
         { 'value': 2, 'label': '投注金' },
         // { 'value': 3, 'label': '返水金' },
-        { 'value': 4, 'label': '道具' }
+        // { 'value': 4, 'label': '道具' }
       ],
       isRewardTypesSelectDisabled: false,
 
