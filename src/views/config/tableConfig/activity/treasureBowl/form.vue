@@ -88,6 +88,11 @@
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
+              <el-form-item label="时间偏移：">
+                <el-input v-model.number="item.debugTimeOffset" placeholder="请输入" style="max-width: 200px"/>
+              </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="12">
               <el-form-item label="有效下注获得道具比例：">
                 <el-input v-model.number="item.sockGainRatio" placeholder="请输入" style="max-width: 200px">
                   <template slot="append">%</template>
@@ -170,7 +175,8 @@
               </el-table-column>
               <el-table-column label="道具名称" min-width="140">
                 <template slot-scope="scope">
-                  <el-select v-model="scope.row.propId" placeholder="请选择" size="mini" style="width: 100%" @change="handlePropNameChange(scope.row)">
+                  <el-select v-model="scope.row.propId" placeholder="请选择" size="mini" style="width: 100%"
+                             @change="handlePropNameChange(scope.row)">
                     <el-option
                       v-for="item in getPropOptionsByType(scope.row.propType)"
                       :key="item.value"
@@ -252,6 +258,7 @@ function createNewItem() {
     rewardType: 2,
     status: 6,
     dayPrizeThreshold: 0,
+    debugTimeOffset: 0,
     totalPrizeThreshold: 0,
     prizePoolCfg: [],
     rankCfg: JSON.parse(JSON.stringify(DEFAULT_RANK_CFG)),
@@ -288,12 +295,12 @@ export default {
         // { 'value': 5, 'label': 'SlotFreeSpin', disabled: false }
       ],
       propDayTypeOptions: [
-        { 'value': 1, 'label': '1天', disabled: false },
-        { 'value': 3, 'label': '3天', disabled: false },
-        { 'value': 7, 'label': '7天', disabled: false },
-        { 'value': 30, 'label': '30天', disabled: false },
-        { 'value': 365, 'label': '365天', disabled: false },
-        { 'value': 0, 'label': '永久', disabled: false }
+        {'value': 1, 'label': '1天', disabled: false},
+        {'value': 3, 'label': '3天', disabled: false},
+        {'value': 7, 'label': '7天', disabled: false},
+        {'value': 30, 'label': '30天', disabled: false},
+        {'value': 365, 'label': '365天', disabled: false},
+        {'value': 0, 'label': '永久', disabled: false}
       ],
       // 奖励类型选项
       rewardTypes: [
@@ -447,19 +454,19 @@ export default {
       if (data.broadcastCfg.threshold) data.broadcastCfg.threshold /= 1000
       // 道具配置兼容
       if (!data.propPools) {
-        data.propPools = { ...DEFAULT_PROP_POOLS }
+        data.propPools = {...DEFAULT_PROP_POOLS}
       } else {
         // 兼容 propPools 为 JSON 字符串的情况
         if (typeof data.propPools === 'string') {
           try {
             data.propPools = JSON.parse(data.propPools)
           } catch (e) {
-            data.propPools = { ...DEFAULT_PROP_POOLS }
+            data.propPools = {...DEFAULT_PROP_POOLS}
           }
         }
         // 兼容 propPools 为数组的情况，取第一项
         if (Array.isArray(data.propPools)) {
-          data.propPools = data.propPools[0] || { ...DEFAULT_PROP_POOLS }
+          data.propPools = data.propPools[0] || {...DEFAULT_PROP_POOLS}
         }
         data.propPools.propId = Number(data.propPools.propId)
       }
@@ -511,7 +518,7 @@ export default {
       }
 
       // 白名单配置（如果存在）
-      const whitelistCfg = cpy.whitelistCfg || { siteIdList: [] }
+      const whitelistCfg = cpy.whitelistCfg || {siteIdList: []}
       // 全部转为整型
       const gameIdCfg = cpy.gameIdCfg.map(v => Number(v))
       // 道具
