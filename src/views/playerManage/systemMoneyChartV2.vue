@@ -123,7 +123,7 @@
                   奖池： {{ formatNumber(blackJackSum / 1000) }}
                 </div>
                 <div v-else>
-                  奖池：{{ summary[o] ? formatNumber(summary[o].PrizePool / 1000) : 0 }}
+                  奖池：{{ summary[o] ? formatNumber(summary[o].PrizePool / 1000) : 0 }} {{ summary[o] && summary[o].FreezePool != undefined ? '未提现冻结 ：'+formatNumber(summary[o].FreezePool / 1000) : '' }}
                 </div>
               </div>
             </el-tooltip>

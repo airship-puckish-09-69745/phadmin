@@ -39,6 +39,15 @@
               </template>
             </el-table-column>
             <el-table-column
+              prop="FreezePool"
+              label="未提现冻结"
+              width="200"
+            >
+              <template slot-scope="scope">
+                <span v-if="scope.row.FreezePool !== undefined" :style="scope.row.FreezePool/1000>1000000?'color:red':''">{{ Math.floor(scope.row.FreezePool/1000).toLocaleString() }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
               prop="RecountRate"
               label="操作"
             >
