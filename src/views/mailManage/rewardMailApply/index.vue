@@ -108,10 +108,10 @@
           <template slot-scope="scope">
             <el-button type="primary" size="mini" @click="onCopyRow(scope.row)">复制</el-button>
             <el-button v-if="scope.row.status === ITEM_STATUSES.UNAPPROVED" type="primary" size="mini" @click="onShowFormDialog(scope.row)">编辑</el-button>
-            <el-button v-if="isShowDetailsButton(scope.row.status)" type="primary" size="mini" @click="onShowDetailsDialog(scope.row)">查看详情</el-button>
+            <el-button v-if="isShowDetailsButton(scope.row.status)" type="primary" size="mini" @click="onShowDetailsDialog(scope.row)">详情</el-button>
             <el-button v-if="isShowSubmitReviewButton(scope.row)" type="warning" size="mini" @click="onSubmitReview(scope.row)">发起审批</el-button>
-            <el-button v-if ="isShowDistributionButton(scope.row)" type="warning" size="mini" @click="onSubmitDistribution(scope.row)">发起发送</el-button>
-            <el-button v-if ="scope.row.status === ITEM_STATUSES.AGREED" type="info" size="mini" @click="onCancelDistribution(scope.row)">取消发送</el-button>
+            <el-button v-if ="isShowDistributionButton(scope.row)" type="warning" size="mini" @click="onSubmitDistribution(scope.row)">发送</el-button>
+            <el-button v-if ="scope.row.status === ITEM_STATUSES.AGREED" type="info" size="mini" @click="onCancelDistribution(scope.row)">取消</el-button>
             <el-button  v-if="scope.row.status === ITEM_STATUSES.UNAPPROVED" size="mini" type="danger" @click="onDeleteRow(scope.row)">删除</el-button>
           </template>
         </el-table-column>
