@@ -30,6 +30,9 @@
               placeholder="选择过期时间"
               default-time="23:59:59">
             </el-date-picker>
+            <el-tooltip content="过期时间不能小于当前时间且不能大于投注金过期时间" placement="right" effect="light">
+              <i class="el-icon-question"></i>
+            </el-tooltip>
           </el-form-item>
         </el-col>
         <el-col>
@@ -41,6 +44,9 @@
               placeholder="选择截止时间"
               default-time="23:59:59">
             </el-date-picker>
+            <el-tooltip content="截止时间不能小于当前时间，过期后将无法发送" placement="right" effect="light">
+              <i class="el-icon-question"></i>
+            </el-tooltip>
           </el-form-item>
         </el-col>
       </el-row>
@@ -96,6 +102,7 @@
               v-model="item.itemNum"
               type="number"
               placeholder="请输入奖励数量"
+              :disabled="isDisableItemNum(item.itemSubType)"
             />
           </el-form-item>
         </el-col>
@@ -224,6 +231,9 @@ export default {
     rewardNumLabel(itemType) {
       return itemType === this.rewardItemType.betCoin ? '奖励金额' : '奖励数量'
     },
+    isDisableItemNum(itemSubType) {
+      return IsNewTicketProp(itemSubType)
+    },
     onReset() {
       this.$refs.formRef.resetFields()
     },
@@ -264,7 +274,7 @@ export default {
         }
       })
 
-      if (this.updateForm) {
+      if (this.updateForm && this.updateForm.id > 0) {
         this.updateData()
       } else {
         this.createData()
@@ -394,7 +404,7 @@ export default {
         const item = params.rewardItems[i]
         if (item.itemType === this.rewardItemType.betCoin) {
           item.itemNum *= 1000
-        } else {
+        } else if (IsNewTicketProp(item.itemSubType)) {
           const itemSceneId = this.getTicketPropSceneID(item.itemId, item.itemSubType)
           if (itemSceneId < 0) {
             this.$message.error('道具' + item.itemId + '没有配置场景ID')
@@ -422,6 +432,9 @@ export default {
     createData() {
       const params = this.getRequestParams()
       console.log('提交参数', params)
+      if (!params) {
+        return
+      }
       request({
         url: '/rewardmailapply/create',
         method: 'POST',
@@ -441,6 +454,9 @@ export default {
     updateData() {
       const params = this.getRequestParams()
       console.log('提交参数', params)
+      if (!params) {
+        return
+      }
       request({
         url: '/rewardmailapply/update',
         method: 'POST',
@@ -480,6 +496,9 @@ export default {
         rewardItem.expireDays = 0
         if (CheckPropNeedExpireDays(itemSubType)){
           rewardItem.expireDays = 1
+        }
+        if (IsNewTicketProp(itemSubType)) {
+          rewardItem.itemNum = 1
         }
       }
 

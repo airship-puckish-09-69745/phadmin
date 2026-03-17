@@ -104,14 +104,15 @@
           </template>
         </el-table-column>
 
-        <el-table-column width="310px" label="操作">
+        <el-table-column min-width="320px" label="操作">
           <template slot-scope="scope">
-            <el-button v-if="scope.row.status === ITEM_STATUSES.UNAPPROVED" type="primary" size="mini" icon="el-icon-edit" @click="onShowFormDialog(scope.row)">编辑</el-button>
-            <el-button v-if="isShowDetailsButton(scope.row.status)" type="primary" size="mini" @click="onShowDetailsDialog(scope.row)">查看详情</el-button>
+            <el-button type="primary" size="mini" @click="onCopyRow(scope.row)">复制</el-button>
+            <el-button v-if="scope.row.status === ITEM_STATUSES.UNAPPROVED" type="primary" size="mini" @click="onShowFormDialog(scope.row)">编辑</el-button>
+            <el-button v-if="isShowDetailsButton(scope.row.status)" type="primary" size="mini" @click="onShowDetailsDialog(scope.row)">详情</el-button>
             <el-button v-if="isShowSubmitReviewButton(scope.row)" type="warning" size="mini" @click="onSubmitReview(scope.row)">发起审批</el-button>
-            <el-button v-if ="isShowDistributionButton(scope.row)" type="warning" size="mini" @click="onSubmitDistribution(scope.row)">发起发送</el-button>
-            <el-button v-if ="scope.row.status === ITEM_STATUSES.AGREED" type="info" size="mini" @click="onCancelDistribution(scope.row)">取消发送</el-button>
-            <el-button  v-if="scope.row.status === ITEM_STATUSES.UNAPPROVED" size="mini" type="danger" @click="handleDeleteRow(scope.row)">删除</el-button>
+            <el-button v-if ="isShowDistributionButton(scope.row)" type="warning" size="mini" @click="onSubmitDistribution(scope.row)">发送</el-button>
+            <el-button v-if ="scope.row.status === ITEM_STATUSES.AGREED" type="info" size="mini" @click="onCancelDistribution(scope.row)">取消</el-button>
+            <el-button  v-if="scope.row.status === ITEM_STATUSES.UNAPPROVED" size="mini" type="danger" @click="onDeleteRow(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -351,7 +352,7 @@ export default {
       })
     },
     // 删除奖励邮件申请
-    handleDeleteRow(row) {
+    onDeleteRow(row) {
       this.$confirm(`您确定要删除奖励邮件吗？`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -362,7 +363,7 @@ export default {
           method: 'post',
           data: {
             Env: this.env,
-            Id: row.id
+            id: row.id
           }
         }).then(response => {
           if (response.RetCode === 0) {
@@ -374,6 +375,11 @@ export default {
           }
         })
       })
+    },
+    onCopyRow(row) {
+      row.id = 0
+      this.editForm.data = row
+      this.editForm.visible = true
     },
     onShowFormDialog(data = null) {
       this.editForm.data = data
