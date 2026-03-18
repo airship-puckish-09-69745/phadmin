@@ -4,11 +4,9 @@
       <el-col :span="18">
         <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" />
       </el-col>
-      <!--
-      <el-col :span="2">
+      <el-col v-if="this.$store.getters.env === 'test'" :span="2">
         <el-button type="primary" @click="dialogFormVisible= true" size="mini" > 测试配置</el-button>
       </el-col>
-      -->
     </el-row>
     <el-row>
       <el-col :span="24">
