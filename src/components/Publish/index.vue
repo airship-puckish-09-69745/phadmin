@@ -1,19 +1,26 @@
 <template>
   <div class="publish-container" style="padding-bottom: 10px">
-    <el-col v-if="!diffView" :offset="1" :span="15">
-      <el-button v-if="showTestBtn" type="success" size="mini" round @click="toTest">测试</el-button>
-      <el-button v-if="showProBtn" type="primary" size="mini" round @click="publishBtn">发布</el-button>
-      <span v-if="showProBtn">{{ processInfo }}</span>
-    </el-col>
-    <el-col :offset="6" :span="1">
-      <el-checkbox v-model="lark" :disabled="this.env=='pro'" @change="setLarkPage">lark</el-checkbox>
-    </el-col>
-    <el-col :span="24">
-      <el-alert v-if="this.$store.getters.version==='V2'" type="warning" :closable="false" show-icon>
-        新版后台配置-App-{{ this.$store.getters.appId }}
-      </el-alert>
-    </el-col>
-    <el-col v-if="isPublish" :span="24">
+    <el-row>
+      <el-col :span="24">
+        <div style="background-color: #fff8e6; font-size: 18px">
+          <div class="el-alert el-alert--warning is-light">
+            <i v-if="this.$store.getters.version==='V2'" class="el-alert__icon el-icon-warning is-big" style="color: #ffba00" />
+            <div  v-if="this.$store.getters.version==='V2'" class="el-alert__content">
+              <p class="el-alert__description">新版后台配置-App-{{ this.$store.getters.appId }}</p>
+            </div>
+            <el-checkbox v-model="lark" :disabled="this.env==='pro'" @change="setLarkPage" style="margin-left: 15px">
+              <span style="color: #4468fb">Lark群通知</span>
+            </el-checkbox>
+            <el-col v-if="!diffView" :span="6" style="margin-left: 20px">
+              <el-button v-if="showTestBtn" type="success" size="mini" round @click="toTest">测试</el-button>
+              <el-button v-if="showProBtn" type="primary" size="mini" round @click="publishBtn">发布</el-button>
+              <span v-if="processInfo !== ''" style="font-size: 14px; color: #4468fb; margin-left: 10px">{{ processInfo }}</span>
+            </el-col>
+          </div>
+        </div>
+      </el-col>
+    </el-row>
+    <el-col v-if="isPublish" :span="24" style="margin-top: 8px">
       <el-col :span="12" :offset="4">
         <el-steps v-if="!needReview" :space="200" :active="stepActive" finish-status="success">
           <el-step title="测试环境" />
@@ -24,13 +31,14 @@
           <el-step title="测试环境" />
           <el-step title="同步预发布" />
           <el-step title="提交审核" />
-          <el-step title="审核待发布" />
+          <el-step title="已审核待发布" />
           <el-step title="同步正式" />
         </el-steps>
       </el-col>
       <el-col :span="8">
         <el-button v-if="showBtn" type="primary" size="mini" round @click="submitBtn">提交</el-button>
         <el-button v-if="showRollbackBtn" type="warning" size="mini" round @click="rollbackBtn">回滚</el-button>
+        <el-button v-if="showCancelBtn" type="danger" size="mini" round @click="cancelBtn">取消</el-button>
         <span v-if="!isMy">锁定人：{{ currentUser }}；<br>锁定时间：{{ preTime }}</span>
       </el-col>
     </el-col>
@@ -333,7 +341,8 @@ export default {
       processInfo: '',
       ObjectData: { Result: [] },
       compareRets: [],
-      env: 'test'
+      env: 'test',
+      stepNames: ['同步预发布', '已提交审核', '已审核待发布']
     }
   },
   computed: {
@@ -372,6 +381,9 @@ export default {
       } else {
         return false
       }
+    },
+    showCancelBtn() {
+      return this.isPublish || this.isTestBtn
     }
   },
   mounted() {
@@ -565,13 +577,10 @@ export default {
         return
       }
       console.log('publishBtn')
-      getView(this.keyId, this.envEmpty).then(response => {
-        try {
-          console.log('getView: ', this.keyId, this.envEmpty)
-          console.log('response1：', response)
-        } catch (e) {
-          console.log('getView error:', e)
-          console.log('response2：', response)
+      getView(this.keyId, this.envEmpty, this.appId).then(response => {
+        if (response.RetCode !== 0) {
+          console.log('publishBtn', response)
+          return
         }
         this.needReview = response.Data.NeedView
         this.isMy = response.Data.IsMy
@@ -599,7 +608,6 @@ export default {
       }).catch(error => {
         console.log('getView error:', error)
       })
-      console.log('this.selfGetView()')
     },
     reviewDiffShow() {
       this.envEmpty = false
@@ -712,6 +720,10 @@ export default {
         this.stepActive--
       })
     },
+    cancelBtn() {
+      this.isPublish = false
+      this.isProBtn = true
+    },
     getView() {
       getView(this.keyId, this.envEmpty, this.appId).then(response => {
         this.needReview = response.Data.NeedView
@@ -733,12 +745,14 @@ export default {
         return
       }
       getView(this.keyId, this.envEmpty, this.appId).then(response => {
-        console.log('checkProcessing: ', this.keyId, this.envEmpty, response)
+        console.log('checkProcessing: ', this.keyId, this.envEmpty, this.appId, response)
+        if (response.RetCode !== 0) {
+          return
+        }
         this.currentUser = response.Data.CurUser
         this.opType = response.Data.Step
-        const stepNames = ['同步预发布', '已提交审核', '已审核待发布']
         if (this.opType > 2 && this.opType < 6) {
-          this.processInfo = '(' + stepNames[this.opType - 3] + ',当前处理人：' + this.currentUser + ')'
+          this.processInfo = '(' + this.stepNames[this.opType - 3] + ',当前处理人：' + this.currentUser + ')'
         } else {
           this.processInfo = ''
         }
@@ -748,6 +762,9 @@ export default {
       const $this = this
       this.init()
       getDiff(this.opType, this.keyId, this.envEmpty, this.appId).then(response => {
+        if (response.RetCode !== 0) {
+          return
+        }
         if ($this.diffView && response.Data.AttrInfo !== '' && response.Data.AttrInfo !== 'undefined') {
           $this.attrNames = JSON.parse(response.Data.AttrInfo)
         }
