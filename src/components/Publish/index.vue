@@ -38,7 +38,7 @@
       <el-col :span="8">
         <el-button v-if="showBtn" type="primary" size="mini" round @click="submitBtn">提交</el-button>
         <el-button v-if="showRollbackBtn" type="warning" size="mini" round @click="rollbackBtn">回滚</el-button>
-        <el-button v-if="showCancelBtn" type="danger" size="mini" round @click="cancelBtn">取消</el-button>
+        <el-button v-if="showCloseBtn" type="danger" size="mini" round @click="closeBtn">关闭</el-button>
         <span v-if="!isMy">锁定人：{{ currentUser }}；<br>锁定时间：{{ preTime }}</span>
       </el-col>
     </el-col>
@@ -234,7 +234,7 @@
         </el-card>
 
         <span v-if="!diffView" slot="footer" class="dialog-footer">
-          <el-button size="mini" @click="dialogClose">取 消</el-button>
+          <el-button size="mini" @click="dialogClose()">取 消</el-button>
           <el-button type="primary" size="mini" @click="next">确 定</el-button>
         </span>
 
@@ -244,7 +244,7 @@
 </template>
 
 <script>
-import { getDiff, getView, rollback, submitPublish } from '@/api/publish'
+import { PUBLISH_STEPS, getDiff, getView, rollback, submitPublish } from '@/api/publish'
 import { getInfo } from '@/api/user'
 import { sendLark } from '@/api/lark'
 import Diff from '@/utils/diff'
@@ -338,7 +338,6 @@ export default {
       preTime: '',
       isMy: false,
       currentUser: '',
-      processInfo: '',
       ObjectData: { Result: [] },
       compareRets: [],
       env: 'test',
@@ -347,13 +346,14 @@ export default {
   },
   computed: {
     showBtn() {
-      if (this.stepActive === 5 || this.stepActive === 3) {
+      console.log('showBtn opType', this.opType)
+      if ([PUBLISH_STEPS.PUBLISH_STEP_REVIEWING, PUBLISH_STEPS.PUBLISH_STEP_PRO].includes(this.opType)) {
         return false
       }
       return this.isMy
     },
     showRollbackBtn() {
-      if (this.stepActive === 1) {
+      if (!this.canRollback) {
         return false
       }
       return this.isMy
@@ -382,8 +382,18 @@ export default {
         return false
       }
     },
-    showCancelBtn() {
+    showCloseBtn() {
       return this.isPublish || this.isTestBtn
+    },
+    canRollback() {
+      return this.opType > PUBLISH_STEPS.PUBLISH_STEP_TEST
+    },
+    processInfo() {
+      if (this.opType > PUBLISH_STEPS.PUBLISH_STEP_TEST && this.opType < PUBLISH_STEPS.PUBLISH_STEP_PRO) {
+        return '(' + this.stepNames[this.opType - 3] + ',当前处理人：' + this.currentUser + ')'
+      } else {
+        return ''
+      }
     }
   },
   mounted() {
@@ -425,8 +435,9 @@ export default {
       }
     },
     next() {
+      console.log('next this.opType:', this.opType)
       const $this = this
-      if (this.opType === 6) {
+      if (this.opType === PUBLISH_STEPS.PUBLISH_STEP_PRO) {
         this.$confirm('即将发布外网，请确认：<br/><span style="color:red">1、配置中是否有新的字段添加；' +
           '<br/>2、发布内容是有关联服务的修改；<br/>3、发布内容是否可能影响到付费；</span><br/>若是，请拉群确认发布步骤后再行发布。<br/><br/>' +
           '确认是否继续?', '提示', {
@@ -447,7 +458,7 @@ export default {
         })
       } else {
         let attrInfo = ''
-        if (this.opType === 4 && this.attrNames) {
+        if (this.opType === PUBLISH_STEPS.PUBLISH_STEP_REVIEWING && this.attrNames) {
           attrInfo = JSON.stringify(this.attrNames)
         }
         submitPublish(this.opType, this.keyId, this.getSummaryInfo(), this.envEmpty, attrInfo, this.appId).then(function(response) {
@@ -456,12 +467,13 @@ export default {
             $this.$message.success('发布成功')
             $this.onStepChange($this.stepActive, $this.keyId, $this.addData, $this.delData, $this.editData)
             $this.sendLark()
+            $this.checkProcessing()
           }
         })
       }
 
       // 下一步
-      this.dialogClose()
+      this.dialogClose(false)
     },
     sendLark() {
       if (!this.lark) {
@@ -476,7 +488,7 @@ export default {
         return
       }
       // 同步到正式
-      if (this.env === 'pro' && this.opType != 4 && this.opType != 6) {
+      if (this.env === 'pro' && ![PUBLISH_STEPS.PUBLISH_STEP_REVIEWED, PUBLISH_STEPS.PUBLISH_STEP_PRO].includes(this.opType)) {
         console.log('生产环境只在审核和同步正式发送通知')
         return
       }
@@ -485,8 +497,8 @@ export default {
         if (response.RetCode === 0) {
           let step = ''
           if ($this.env === 'pro') {
-            if ($this.opType === 4) { step = '【待审核】' }
-            if ($this.opType === 6) { step = '【已发布】' }
+            if ($this.opType === PUBLISH_STEPS.PUBLISH_STEP_REVIEWED) { step = '【待审核】' }
+            if ($this.opType === PUBLISH_STEPS.PUBLISH_STEP_PRO) { step = '【已发布】' }
           }
           const nick = response.Data.nick
           const routes = $this.getRoutesName()
@@ -592,9 +604,15 @@ export default {
         }
 
         this.opType = response.Data.Step
-        const validType = [2, 3, 4, 5, 6]
+        const validType = [
+          PUBLISH_STEPS.PUBLISH_STEP_TEST,
+          PUBLISH_STEPS.PUBLISH_STEP_PRE,
+          PUBLISH_STEPS.PUBLISH_STEP_REVIEWING,
+          PUBLISH_STEPS.PUBLISH_STEP_REVIEWED,
+          PUBLISH_STEPS.PUBLISH_STEP_PRO
+        ]
         if (validType.indexOf(this.opType) === -1) {
-          this.opType = 2
+          this.opType = PUBLISH_STEPS.PUBLISH_STEP_TEST
         }
 
         this.stepActive = this.opType - 1
@@ -611,7 +629,7 @@ export default {
     },
     reviewDiffShow() {
       this.envEmpty = false
-      this.opType = 4
+      this.opType = PUBLISH_STEPS.PUBLISH_STEP_REVIEWING
 
       this.getDiff()
     },
@@ -622,10 +640,13 @@ export default {
         return
       }
       this.isToTest = true
-      this.opType = 2 // 应该执行发布到测试的操作
+      this.opType = PUBLISH_STEPS.PUBLISH_STEP_TEST // 应该执行发布到测试的操作
       this.getDiff()
     },
-    dialogClose() {
+    dialogClose(isCancel=true) {
+      if (isCancel) {
+        this.opType -= 1 // 取消发布，opType回退1步
+      }
       this.dialogVisible = false
     },
     dialogShow() {
@@ -673,29 +694,34 @@ export default {
       this.delData = []
     },
     submitBtn() {
-      if (this.opType === 6) {
+      if (this.opType === PUBLISH_STEPS.PUBLISH_STEP_PRO) {
         console.log('已经是最后1步')
         return
       }
 
       if (!this.isToTest) {
-        if (this.opType < 3) { // 如果非同步测试状态，则至少从3开始
-          this.opType = 3
+        if (this.opType < PUBLISH_STEPS.PUBLISH_STEP_PRE) { // 如果非同步测试状态，则至少从3开始
+          this.opType = PUBLISH_STEPS.PUBLISH_STEP_PRE
         } else {
-          if (!this.needReview && this.opType === 3) { // 如果不需要审核，则直接到发布操作
-            this.opType = 6
+          if (!this.needReview && this.opType === PUBLISH_STEPS.PUBLISH_STEP_PRE) { // 如果不需要审核，则直接到发布操作
+            this.opType = PUBLISH_STEPS.PUBLISH_STEP_PRO
           } else {
-            this.opType = this.stepActive + 2
+            this.opType += 1
             console.log('submitBtn this.opType', this.opType)
           }
         }
       }
 
-      this.getDiff()
+      this.getDiff(true)
     },
     rollbackBtn() {
       // 回滚
-      const canOpType = [3, 4, 5, 6]
+      const canOpType = [
+        PUBLISH_STEPS.PUBLISH_STEP_PRE,
+        PUBLISH_STEPS.PUBLISH_STEP_REVIEWING,
+        PUBLISH_STEPS.PUBLISH_STEP_REVIEWED,
+        PUBLISH_STEPS.PUBLISH_STEP_PRO
+      ]
       if (canOpType.indexOf(this.opType) === -1) {
         this.$message.error('不可回滚状态')
         return
@@ -709,36 +735,24 @@ export default {
         }
         this.$message.success('回滚成功')
         // 2.修改opType
-        if (this.opType === 4 || this.opType === 5 || this.opType === 6) {
+        if ([PUBLISH_STEPS.PUBLISH_STEP_REVIEWING,
+          PUBLISH_STEPS.PUBLISH_STEP_REVIEWED,
+          PUBLISH_STEPS.PUBLISH_STEP_PRO].includes(this.opType)) {
           // 回滚到预发布
-          this.opType = 3
-        } else if (this.opType === 3) {
+          this.opType = PUBLISH_STEPS.PUBLISH_STEP_PRE
+        } else if (this.opType === PUBLISH_STEPS.PUBLISH_STEP_PRE) {
           // 回滚到测试服
-          this.opType = 2
+          this.opType = PUBLISH_STEPS.PUBLISH_STEP_TEST
         }
         // 3.修改step
-        this.stepActive--
+        this.stepActive = this.opType - 1
+        // 4.检查版本是否在处理中
+        this.checkProcessing()
       })
     },
-    cancelBtn() {
+    closeBtn() {
       this.isPublish = false
       this.isProBtn = true
-    },
-    getView() {
-      getView(this.keyId, this.envEmpty, this.appId).then(response => {
-        this.needReview = response.Data.NeedView
-        this.isMy = response.Data.IsMy
-        this.currentUser = response.Data.CurUser
-        this.preTime = $libDate.FormateSecondStr(response.Data.PreTime, 2)
-
-        this.opType = response.Data.Step
-        const validType = [2, 3, 4, 5, 6]
-        if (validType.indexOf(this.opType) === -1) {
-          this.opType = 2
-        }
-
-        this.stepActive = this.opType - 1
-      })
     },
     checkProcessing() { // 检测版本是否在处理中
       if (this.keyId === '') {
@@ -751,18 +765,16 @@ export default {
         }
         this.currentUser = response.Data.CurUser
         this.opType = response.Data.Step
-        if (this.opType > 2 && this.opType < 6) {
-          this.processInfo = '(' + this.stepNames[this.opType - 3] + ',当前处理人：' + this.currentUser + ')'
-        } else {
-          this.processInfo = ''
-        }
       })
     },
-    getDiff() {
+    getDiff(isPublishing = false) {
       const $this = this
       this.init()
       getDiff(this.opType, this.keyId, this.envEmpty, this.appId).then(response => {
         if (response.RetCode !== 0) {
+          if (isPublishing) {
+            this.opType -= 1
+          }
           return
         }
         if ($this.diffView && response.Data.AttrInfo !== '' && response.Data.AttrInfo !== 'undefined') {
