@@ -35,7 +35,7 @@
         :cell-style="libShow.TableCell(10)"
         style="width: 100%"
       >
-        <el-table-column label="ID" sortable width="100">
+        <el-table-column label="ID" sortable width="80">
           <template slot-scope="scope">
             <span>{{ scope.row.id }}</span>
           </template>
@@ -67,7 +67,7 @@
             {{ formatTime(scope.row.sendTime) }}
           </template>
         </el-table-column>
-        <el-table-column prop="status" label="状态" width="120">
+        <el-table-column prop="status" label="状态" width="102">
           <template slot-scope="scope">
             <el-tag
               v-if="scope.row.status === 1"
@@ -104,7 +104,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column min-width="320px" label="操作">
+        <el-table-column width="320px" label="操作">
           <template slot-scope="scope">
             <el-button type="primary" size="mini" @click="onCopyRow(scope.row)">复制</el-button>
             <el-button v-if="scope.row.status === ITEM_STATUSES.UNAPPROVED" type="primary" size="mini" @click="onShowFormDialog(scope.row)">编辑</el-button>
