@@ -8,13 +8,15 @@
             <div  v-if="this.$store.getters.version==='V2'" class="el-alert__content">
               <p class="el-alert__description">新版后台配置-App-{{ this.$store.getters.appId }}</p>
             </div>
-            <el-checkbox v-model="lark" :disabled="this.env==='pro'" @change="setLarkPage" style="margin-left: 15px">
-              <span style="color: #4468fb">Lark群通知</span>
-            </el-checkbox>
             <el-col v-if="!diffView" :span="6" style="margin-left: 20px">
               <el-button v-if="showTestBtn" type="success" size="mini" round @click="toTest">测试</el-button>
               <el-button v-if="showProBtn" type="primary" size="mini" round @click="publishBtn">发布</el-button>
               <span v-if="processInfo !== ''" style="font-size: 14px; color: #4468fb; margin-left: 10px">{{ processInfo }}</span>
+            </el-col>
+            <el-col :offset="13" :span="1">
+              <el-checkbox v-model="lark" :disabled="this.env==='pro'" @change="setLarkPage" style="margin-left: 15px">
+                <span style="color: #4468fb">Lark群通知</span>
+              </el-checkbox>
             </el-col>
           </div>
         </div>
