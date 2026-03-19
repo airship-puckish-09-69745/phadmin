@@ -123,7 +123,7 @@
                   奖池： {{ formatNumber(blackJackSum / 1000) }}
                 </div>
                 <div v-else>
-                  奖池：{{ summary[o] ? formatNumber(summary[o].PrizePool / 1000) : 0 }} {{ summary[o] && summary[o].FreezePool != undefined ? '未提现冻结 ：'+formatNumber(summary[o].FreezePool / 1000) : '' }}
+                  奖池：{{ getPrizePool(o) }} {{ summary[o] && summary[o].FreezePool != undefined ? '未提现冻结 ：'+formatNumber(summary[o].FreezePool / 1000) : '' }}
                 </div>
               </div>
             </el-tooltip>
@@ -480,6 +480,16 @@ export default {
       if (this.showZoogame) {
         this.defaultOrder.push(124, 125, 130, 131)
       }
+    },
+	  getPrizePool(o) {
+      let pool = 0
+      if (this.summary[o]) {
+        pool = this.summary[o].PrizePool
+      }
+      if (this.summary[o] && this.summary[o].FreezePool != undefined) {
+        pool -= this.summary[o].FreezePool
+      }
+      return this.formatNumber(pool / 1000)
     },
     getGameName(o) {
       const name = this.gameNames[o]
@@ -866,19 +876,45 @@ export default {
 <style lang="scss" scoped>
 .panel-group {
   margin-top: 10px;
+  position: relative;
+  z-index: 1;
 
   .card-panel-col {
     margin-bottom: 10px;
+    position: relative;
 
     &:hover {
+      z-index: 100;
       .card-panel {
+        position: absolute;
+        left: 0;
+        right: 0;
+        width: 100%;
         background: #90EE90;
+        overflow: visible;
+        height: auto;
+        min-height: 108px;
+        transform: scale(1.02);
+        transform-origin: center;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        border: 2px solid #409167;
+        transition: all 0.2s ease;
       }
     }
   }
 
-  .card-panel_selected {
+  // 使用组合选择器提高优先级
+  .card-panel.card-panel_selected {
+    z-index: 90;
+    position: absolute;
+    width: 100%;
+    left: 0;
+    right: 0;
     background: #90EE90;
+    overflow: visible;
+    height: auto;
+    min-height: 108px;
+    max-height: 128px;
   }
 
   .card-panel_selected_not {

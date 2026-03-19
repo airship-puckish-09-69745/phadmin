@@ -41,10 +41,10 @@
             <el-table-column
               prop="FreezePool"
               label="未提现冻结"
-              width="200"
+              width="300"
             >
               <template slot-scope="scope">
-                <span v-if="scope.row.FreezePool !== undefined" :style="scope.row.FreezePool/1000>1000000?'color:red':''">{{ Math.floor(scope.row.FreezePool/1000).toLocaleString() }}</span>
+                <span>{{ getFreezePool(scope.row) }}</span>
               </template>
             </el-table-column>
             <el-table-column
@@ -608,7 +608,16 @@ export default {
     onSelectionChange(val) {
       console.log('onSelectionChange', val)
       this.copyForm.casioDataGameIds = val.map(item => item.Gid)
-    }
+    },
+    getFreezePool(row) {
+      let prizePool = row.PrizePool
+      let freezePool = row.FreezePool
+      if (row.FreezePool == undefined) {
+        return ''
+      }
+      prizePool -= row.FreezePool
+      return `奖池：${Math.floor(prizePool/1000).toLocaleString()} 未提现冻结：${Math.floor(freezePool/1000).toLocaleString()}`
+    },
   }
 }
 </script>
