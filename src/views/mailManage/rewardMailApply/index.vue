@@ -104,7 +104,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column min-width="320px" label="操作">
+        <el-table-column min-width="315px" label="操作">
           <template slot-scope="scope">
             <el-button type="primary" size="mini" @click="onCopyRow(scope.row)">复制</el-button>
             <el-button v-if="scope.row.status === ITEM_STATUSES.UNAPPROVED" type="primary" size="mini" @click="onShowFormDialog(scope.row)">编辑</el-button>
