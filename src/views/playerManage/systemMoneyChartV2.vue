@@ -123,7 +123,7 @@
                   奖池： {{ formatNumber(blackJackSum / 1000) }}
                 </div>
                 <div v-else>
-                  奖池：{{ summary[o] ? formatNumber(summary[o].PrizePool / 1000) : 0 }}
+                  奖池：{{ getPrizePool(o) }} {{ summary[o] && summary[o].FreezePool != undefined ? '未提现冻结 ：'+formatNumber(summary[o].FreezePool / 1000) : '' }}
                 </div>
               </div>
             </el-tooltip>
@@ -480,6 +480,16 @@ export default {
       if (this.showZoogame) {
         this.defaultOrder.push(124, 125, 130, 131)
       }
+    },
+	  getPrizePool(o) {
+      let pool = 0
+      if (this.summary[o]) {
+        pool = this.summary[o].PrizePool
+      }
+      if (this.summary[o] && this.summary[o].FreezePool != undefined) {
+        pool -= this.summary[o].FreezePool
+      }
+      return this.formatNumber(pool / 1000)
     },
     getGameName(o) {
       const name = this.gameNames[o]
