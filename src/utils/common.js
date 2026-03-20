@@ -383,7 +383,6 @@ export function Pagination(_totalCount, _pageNum) {
 // sortOrder 1 ASC 2 DESC
 export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOrder, idKey) {
   this.TotalData = _totalData
-  this.ShowData = this.TotalData.length > 0 ? this.TotalData.slice(0) : [] // 数组深拷贝
   this.FilterMap = filterMap
   this.FilterValueMap = {}
   var $this = this
@@ -510,18 +509,39 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
       }
     }
   }
+  // 获取总记录数
+  this.GetTotalCount = function() {
+    return $this.Page.GetTotalCount()
+  }
+  // 获取当前页
+  this.GetCurrentPage = function() {
+    return $this.Page.GetCurrentPage()
+  }
+  // 获取每页数量
+  this.GetPageNum = function() {
+    return $this.Page.GetPageNum()
+  }
   // 返回当前页的内容
   this.GetCurrentPageData = function() {
-    var res = []
-    if ($this.ShowData == null || $this.ShowData.length === 0) {
-      return res
-    } else {
-      var pageIndex = $this.Page.GetPageIndex($this.Page.GetCurrentPage())
-      for (var i = pageIndex.Begin; i < pageIndex.End; i++) {
-        res.push($this.ShowData[i])
-      }
-      return res
+    return $this.GetPageData($this.Page.GetCurrentPage())
+  }
+  // 获取某一页数据
+  this.GetPageData = function(pageNo) {
+    if ($this.TotalData == null || $this.TotalData.length === 0) {
+      return []
     }
+    const pageIndex = $this.Page.GetPageIndex(pageNo)
+    return $this.TotalData.slice(pageIndex.Begin, pageIndex.End)
+  }
+  // 分页处理-当前页改变
+  this.OnPageNoChange = function(pageNo) {
+    $this.Page.SetPageNo(pageNo)
+    $this.ShowData = $this.GetPageData(pageNo)
+  }
+  // 分页处理-每页数量改变
+  this.OnPageSizeChange = function(pageNum) {
+    $this.Page.SetPageNum(pageNum)
+    $this.ShowData = $this.GetPageData($this.Page.GetCurrentPage())
   }
   // 更新数组中字段内容
   this.UpdateData = function(ob) {
