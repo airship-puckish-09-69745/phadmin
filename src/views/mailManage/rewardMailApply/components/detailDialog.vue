@@ -150,7 +150,6 @@ export default {
     // 初始化表格数据
     initTableData() {
       this.clientDB = new ClientTableData(this.form.mailAccounts, 10, {}, 'uid', -1, 'uid')
-      this.clientDB.OnPageNoChange(1)
     },
     // 格式化时间
     formatTime(ts) {

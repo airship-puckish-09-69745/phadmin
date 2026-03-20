@@ -385,13 +385,15 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
   this.TotalData = _totalData
   this.FilterMap = filterMap
   this.FilterValueMap = {}
-  var $this = this
+  const $this = this
   this.Page = new Pagination(this.TotalData.length, pageNum)
   this.SortName = sortName
   this.SortOrder = sortOrder || -1
   this.IDKey = idKey || 'ID'
+  this.ShowData = []
 
   this.GetShowValue = function(typeName, key) {
+    console.log('GetShowValue', key)
     return $this.FilterMap[typeName][key]
   }
 
@@ -400,6 +402,7 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
   // value为搜索的内容
   // params为搜索哪些字段
   this.Search = function(value, params) {
+    console.log('Search', value, params)
     $this.ShowData = $this.TotalData.filter(
       function(data) {
         for (var o in params) {
@@ -415,8 +418,9 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
 
   // 处理筛选相关的逻辑
   this.ClearFilterMap = function() {
+    console.log('ClearFilterMap')
     if ($this.TotalData.length > 0) {
-      for (var o in $this.FilterMap) {
+      for (const o in $this.FilterMap) {
         $this.FilterValueMap[o] = 0
         if ($this.FilterMap[o] === 'all') {
           $this.FilterMap[o] = getDefaultFilterValues(o)
@@ -427,25 +431,28 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
   }
 
   // 处理没有映射关系，直接使用值作筛选的情况
-  var getDefaultFilterValues = function(key) {
-    var s = new Set()
-    for (var i = 0; i < $this.TotalData.length; i++) {
+  const getDefaultFilterValues = function(key) {
+    console.log('getDefaultFilterValues', key)
+    const s = new Set()
+    for (let i = 0; i < $this.TotalData.length; i++) {
       s.add($this.TotalData[i][key])
     }
-    var res = {}
-    for (var x of s) {
+    const res = {}
+    for (const x of s) {
       res[x] = x
     }
     return res
   }
 
   // 处理筛选相关的逻辑
-  // existVal0 是否存在值为0的项，默认不包含
-  this.FilterData = function(existVal0=false) {
+  // includeVal0 是否包含值为0的项，默认不包含
+  this.FilterData = function(includeVal0=false) {
+    console.log('FilterData', includeVal0)
     $this.ShowData = $this.TotalData.filter(
       function(data) {
         for (const f in $this.FilterValueMap) {
-          if (!existVal0 && $this.FilterValueMap[f] != 0 && $this.FilterValueMap[f] != data[f] || existVal0 && $this.FilterValueMap[f] != data[f]) {
+          if (!includeVal0 && $this.FilterValueMap[f] !== 0 && $this.FilterValueMap[f] !== data[f] || // FilterValueMap[f] 值不为0
+            includeVal0 && $this.FilterValueMap[f] !== data[f]) { // FilterValueMap[f] 值可为0
             return false
           }
         }
@@ -453,10 +460,12 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
       }
     )
     $this.Page.SetTotalCount($this.ShowData.length)
+    $this.ShowData = $this.GetCurrentPageData()
     $this._sortByProp()
   }
   // 传对应的字段和值然后返回所有
   this.FilterDataCustomize = function(obj) {
+    console.log('FilterDataCustomize', obj)
     $this.ShowData = $this.TotalData.filter(
       function(data) {
         for (const f in $this.FilterValueMap) {
@@ -480,8 +489,8 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
   }
   // 排序函数
   this.compare = function(a, b) {
-    var val1 = a[$this.SortName]
-    var val2 = b[$this.SortName]
+    const val1 = a[$this.SortName];
+    const val2 = b[$this.SortName];
     if (val1 < val2) {
       return -1 * $this.SortOrder
     } else if (val1 > val2) {
@@ -499,6 +508,7 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
     this._sortByProp(compareMethod)
   }
   this._sortByProp = function(compareMethod) {
+    console.log('_sortByProp', compareMethod)
     if ($this.SortName == null) {
       $this.ShowData = $this.ShowData.slice(0)
     } else {
@@ -527,6 +537,7 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
   }
   // 获取某一页数据
   this.GetPageData = function(pageNo) {
+    console.log('GetPageData', pageNo)
     if ($this.TotalData == null || $this.TotalData.length === 0) {
       return []
     }
@@ -535,11 +546,13 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
   }
   // 分页处理-当前页改变
   this.OnPageNoChange = function(pageNo) {
+    console.log('onPageNoChange', pageNo)
     $this.Page.SetPageNo(pageNo)
     $this.ShowData = $this.GetPageData(pageNo)
   }
   // 分页处理-每页数量改变
   this.OnPageSizeChange = function(pageNum) {
+    console.log('onPageSizeChange', pageNum)
     $this.Page.SetPageNum(pageNum)
     $this.ShowData = $this.GetPageData($this.Page.GetCurrentPage())
   }
