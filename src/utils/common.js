@@ -393,6 +393,7 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
   this.SortName = sortName
   this.SortOrder = sortOrder || -1
   this.IDKey = idKey || 'ID'
+  this.ShowData = _totalData.slice(0)  // ← 在这里初始化 ShowData
 
   this.GetShowValue = function(typeName, key) {
     return $this.FilterMap[typeName][key]
