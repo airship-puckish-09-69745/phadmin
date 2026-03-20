@@ -41,7 +41,7 @@
         </el-table>
       </el-descriptions-item>
       <el-descriptions-item label="目标用户" :span="6">
-        <el-table :data="form.mailAccounts" style="width: 40%">
+        <el-table :data="clientDB.ShowData" style="width: 40%">
           <el-table-column label="UID" prop="account" />
           <el-table-column label="发送状态" prop="status">
             <template slot-scope="scope">
@@ -49,6 +49,18 @@
             </template>
           </el-table-column>
         </el-table>
+        <el-col :span="8">
+          <div class="block">
+            <el-pagination
+              :current-page="clientDB.GetCurrentPage()"
+              :page-sizes="[10, 20, 30, 40]"
+              :page-size="clientDB.GetPageNum()"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="clientDB.GetTotalCount()"
+              @size-change="clientDB.OnPageSizeChange"
+              @current-change="clientDB.OnPageNoChange" />
+          </div>
+        </el-col>
       </el-descriptions-item>
     </el-descriptions>
   </el-dialog>
@@ -56,7 +68,7 @@
 
 <script>
 import request from '@/utils/request'
-import { $libDate } from '@/utils/common'
+import {$libDate, ClientTableData} from '@/utils/common'
 import { PROP_TYPE_OPTIONS, ITEM_STATUSES, ITEM_TYPE_OPTIONS, ITEM_STATUS_OPTIONS } from '@/utils/options'
 
 export default {
@@ -97,7 +109,9 @@ export default {
         0: '未发送',
         1: '已发送',
         2: '发送失败'
-      }
+      },
+      tableData: [],
+      clientDB: new ClientTableData([], 10, {}),
     }
   },
   watch: {
@@ -119,6 +133,9 @@ export default {
       this.form.expireTime = this.formatTime(this.detailForm.expireTime)
       // 格式化截止时间
       this.form.deadlineTime = this.formatTime(this.detailForm.deadline)
+
+      // 初始化表格数据
+      this.initTableData()
       // 计算发送人数
       this.calcSendUserCount()
       // 查询领取人数
@@ -130,6 +147,11 @@ export default {
   },
   computed: {},
   methods: {
+    // 初始化表格数据
+    initTableData() {
+      this.clientDB = new ClientTableData(this.form.mailAccounts, 10, {}, 'uid', -1, 'uid')
+      this.clientDB.OnPageNoChange(1)
+    },
     // 格式化时间
     formatTime(ts) {
       if (ts === 0) {
@@ -140,6 +162,7 @@ export default {
     onClose() {
       this.$emit('close')
     },
+    // 计算发送人数
     calcSendUserCount() {
       const mailAccounts = JSON.parse(this.detailForm.mailAccounts)
       this.form.sendUserTotal = mailAccounts.length
@@ -148,6 +171,7 @@ export default {
       // 计算已发人数
       this.form.sendUserCount = this.form.sendUserTotal - this.form.unsendCount
     },
+    // 查询领取人数
     getAttachmentClaimUserCount() {
       request({
         url: '/dataProxy/info',
@@ -164,6 +188,7 @@ export default {
         }
       })
     },
+    // 获取发送状态文本
     getSendStatusText(status) {
       return this.sendStatuses[status]
     },

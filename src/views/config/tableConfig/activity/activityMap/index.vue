@@ -70,6 +70,7 @@ export default {
         { name: '万圣节活动',id: 18 },
         { name: '竖版排行榜活动', id: 19 },
         { name: 'Poker排行榜活动', id: 20 },
+        { name: '聚宝盆活动', id:22 }
       ],
       showPageOptions: [
         { label: 'all', value: 'all' },
