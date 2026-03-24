@@ -40,7 +40,7 @@
                   <template slot="append">₱</template>
                 </el-input>
                 <div style="color: #E6A23C; font-size: 12px; line-height: 1.4; margin-top: 4px">
-                  达到上限时只发铜钱不发投注金，且当日榜单奖励不可领取
+                  达到上限时只发铜钱不发投注金，当日没有榜单奖励，且在Lark同步报警
                 </div>
               </el-form-item>
             </el-col>
@@ -85,6 +85,11 @@
                   value-format="timestamp"
                   style="width: 200px"
                 />
+              </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="12">
+              <el-form-item label="时间偏移：">
+                <el-input v-model.number="item.debugTimeOffset" placeholder="请输入" style="max-width: 200px"/>
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
@@ -170,7 +175,8 @@
               </el-table-column>
               <el-table-column label="道具名称" min-width="140">
                 <template slot-scope="scope">
-                  <el-select v-model="scope.row.propId" placeholder="请选择" size="mini" style="width: 100%" @change="handlePropNameChange(scope.row)">
+                  <el-select v-model="scope.row.propId" placeholder="请选择" size="mini" style="width: 100%"
+                             @change="handlePropNameChange(scope.row)">
                     <el-option
                       v-for="item in getPropOptionsByType(scope.row.propType)"
                       :key="item.value"
@@ -252,6 +258,7 @@ function createNewItem() {
     rewardType: 2,
     status: 6,
     dayPrizeThreshold: 0,
+    debugTimeOffset: 0,
     totalPrizeThreshold: 0,
     prizePoolCfg: [],
     rankCfg: JSON.parse(JSON.stringify(DEFAULT_RANK_CFG)),
@@ -447,19 +454,19 @@ export default {
       if (data.broadcastCfg.threshold) data.broadcastCfg.threshold /= 1000
       // 道具配置兼容
       if (!data.propPools) {
-        data.propPools = { ...DEFAULT_PROP_POOLS }
+        data.propPools = {...DEFAULT_PROP_POOLS}
       } else {
         // 兼容 propPools 为 JSON 字符串的情况
         if (typeof data.propPools === 'string') {
           try {
             data.propPools = JSON.parse(data.propPools)
           } catch (e) {
-            data.propPools = { ...DEFAULT_PROP_POOLS }
+            data.propPools = {...DEFAULT_PROP_POOLS}
           }
         }
         // 兼容 propPools 为数组的情况，取第一项
         if (Array.isArray(data.propPools)) {
-          data.propPools = data.propPools[0] || { ...DEFAULT_PROP_POOLS }
+          data.propPools = data.propPools[0] || {...DEFAULT_PROP_POOLS}
         }
         data.propPools.propId = Number(data.propPools.propId)
       }

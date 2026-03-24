@@ -260,9 +260,9 @@ export default {
         type: 'warning'
       }).then(() => {
         request({
-          url: '/treasurebowlactivity/delete',
+          url: '/treasurebowlactivity/update/status',
           method: 'post',
-          data: { id: ob.id }
+          data: { id: ob.id, status: 3 }
         }).then(response => {
           if (response.RetCode === 0) {
             Message.success('删除成功！')
