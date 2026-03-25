@@ -73,19 +73,15 @@
 
 <script>
 import Publish from '@/components/Publish/index.vue'
-import GameTreeSelector from '@/components/GamesTreeSelector/index.vue'
-import SiteSelect from '@/components/SiteSelect/index.vue'
 import { $libDate, ClientTableData, $libShow } from '@/utils/common'
-import request from "@/utils/request";
-import { Message } from "element-ui";
+import request from '@/utils/request'
+import { Message } from 'element-ui'
 import UpdateForm from './components/updateForm.vue'
 
 const filterMap = {}
 
 export default {
   components: {
-    GameTreeSelector,
-    SiteSelect,
     Publish,
     UpdateForm
   },
@@ -100,7 +96,7 @@ export default {
       },
       tableData: [],
       AttrNames: {},
-      activityId: 23,
+      activityId: 23
     }
   },
   mounted() {
@@ -113,7 +109,7 @@ export default {
       this.updateForm.data = {}
     },
     handleClickRow(ob, column, event) {
-      if (column.columnKey === "op") {
+      if (column.columnKey === 'op') {
         return
       }
       console.log('handleClickRow obj', ob)
@@ -203,7 +199,7 @@ export default {
             rows.push({
               ...obj,
               activity: JSON.parse(obj.activity),
-              extend: JSON.parse(obj.extend),
+              extend: JSON.parse(obj.extend)
             })
           }
           this.clientDB = new ClientTableData(rows, 10, filterMap, 'id', -1, 'id')
@@ -212,7 +208,7 @@ export default {
       }).catch(err => {
         console.log(err)
       })
-    },
+    }
   }
 }
 </script>
