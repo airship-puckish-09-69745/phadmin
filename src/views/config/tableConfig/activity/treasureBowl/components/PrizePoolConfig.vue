@@ -59,7 +59,7 @@
         <el-row :gutter="20">
           <el-col :xs="24" :sm="12">
             <el-form-item label="挡位条件：" required>
-              <el-input v-model.number="editDialog.item.raffleLevel" placeholder="请输入">
+              <el-input v-model="editDialog.item.raffleLevel" placeholder="请输入"  type="number" step="0.01">
                 <template slot="append">₱</template>
               </el-input>
             </el-form-item>
@@ -95,15 +95,15 @@
             <el-table-column prop="id" label="ID" width="60" align="center" />
             <el-table-column label="奖励(展示)" width="120" align="center">
               <template slot-scope="scope">
-                <el-input v-model.number="scope.row.rewardAmount" size="mini" placeholder="奖励金额" />
+                <el-input v-model="scope.row.rewardAmount" size="mini" placeholder="奖励金额" type="number" step="0.01"/>
               </template>
             </el-table-column>
             <el-table-column label="获得奖励金额区间(₱)" align="center">
               <template slot-scope="scope">
                 <div style="display: flex; align-items: center; gap: 5px">
-                  <el-input v-model.number="scope.row.rewardMin" size="mini" placeholder="最小值" style="flex: 1" />
+                  <el-input v-model="scope.row.rewardMin" size="mini" placeholder="最小值" style="flex: 1" type="number" step="0.01"/>
                   <span>-</span>
-                  <el-input v-model.number="scope.row.rewardMax" size="mini" placeholder="最大值" style="flex: 1" />
+                  <el-input v-model="scope.row.rewardMax" size="mini" placeholder="最大值" style="flex: 1" type="number" step="0.01"/>
                 </div>
               </template>
             </el-table-column>
