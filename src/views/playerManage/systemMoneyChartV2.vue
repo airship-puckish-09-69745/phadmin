@@ -875,46 +875,20 @@ export default {
 </style>
 <style lang="scss" scoped>
 .panel-group {
-  margin-top: 10px;
-  position: relative;
-  z-index: 1;
+    margin-top: 10px;
 
   .card-panel-col {
     margin-bottom: 10px;
-    position: relative;
 
     &:hover {
-      z-index: 100;
       .card-panel {
-        position: absolute;
-        left: 0;
-        right: 0;
-        width: 100%;
         background: #90EE90;
-        overflow: visible;
-        height: auto;
-        min-height: 108px;
-        transform: scale(1.02);
-        transform-origin: center;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-        border: 2px solid #409167;
-        transition: all 0.2s ease;
       }
     }
   }
 
-  // 使用组合选择器提高优先级
-  .card-panel.card-panel_selected {
-    z-index: 90;
-    position: absolute;
-    width: 100%;
-    left: 0;
-    right: 0;
+  .card-panel_selected {
     background: #90EE90;
-    overflow: visible;
-    height: auto;
-    min-height: 108px;
-    max-height: 128px;
   }
 
   .card-panel_selected_not {
