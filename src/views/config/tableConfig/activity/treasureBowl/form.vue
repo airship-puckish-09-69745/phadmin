@@ -298,9 +298,7 @@ export default {
         {'value': 1, 'label': '1天', disabled: false},
         {'value': 3, 'label': '3天', disabled: false},
         {'value': 7, 'label': '7天', disabled: false},
-        {'value': 30, 'label': '30天', disabled: false},
-        {'value': 365, 'label': '365天', disabled: false},
-        {'value': 0, 'label': '永久', disabled: false}
+        {'value': 30, 'label': '30天', disabled: false}
       ],
       // 奖励类型选项
       rewardTypes: [
