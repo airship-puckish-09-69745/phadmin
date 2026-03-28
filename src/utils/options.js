@@ -234,3 +234,40 @@ export const MATCH_IUPSTREAM_TYPE_OPTIONS = {
   MATCH_UPSTREAM_TYPE_PUSOY: 2033,          //pusoy
 }
 
+//数据记录状态
+export const RECORD_STATUS_OPTIONS = {
+  //上架
+  ONLINE: 2,
+  //删除
+  DELETE: 3,
+  //下架
+  OFFLINE: 4,
+  //预上架
+  PRE_ONLINE: 5,
+  //预下架
+  PRE_OFFLINE: 6,
+}
+
+//活动奖励类型
+export const ACTIVITY_REWARD_TYPES = {
+  //金币
+  GOLD: 1,
+  //投注金
+  BET_GOLD: 2,
+  //返水金
+  REBATE_GOLD: 3,
+  //道具
+  PROP: 4,
+  //活动物品
+  ACTIVITY_ITEM: 5,
+}
+
+//活动奖励类型选项
+export const ACTIVITY_REWARD_TYPE_OPTIONS = [
+  { 'value': ACTIVITY_REWARD_TYPES.GOLD, 'label': '金币' },
+  { 'value': ACTIVITY_REWARD_TYPES.BET_GOLD, 'label': '投注金' },
+  { 'value': ACTIVITY_REWARD_TYPES.REBATE_GOLD, 'label': '返水金' },
+  { 'value': ACTIVITY_REWARD_TYPES.PROP, 'label': '道具' },
+  { 'value': ACTIVITY_REWARD_TYPES.ACTIVITY_ITEM, 'label': '活动物品' },
+]
+
