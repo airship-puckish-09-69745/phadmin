@@ -241,11 +241,11 @@ export const RECORD_STATUS_OPTIONS = {
   //删除
   DELETE: 3,
   //下架
-  OFFLINE: 4,
+  OFFLINE: 6,
   //预上架
-  PRE_ONLINE: 5,
+  PRE_ONLINE: 7,
   //预下架
-  PRE_OFFLINE: 6,
+  PRE_OFFLINE: 8,
 }
 
 //活动奖励类型
