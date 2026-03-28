@@ -87,6 +87,9 @@ function Lang() {
 export const $libLang = new Lang()
 
 export function LibShow() {
+  this.DataStatuses = {
+    2: '上架', 6: '下架', 7: '预上架', 8: '预下架'
+  }
   this.ColorMap = {
     1: '♦',
     2: '♣',
