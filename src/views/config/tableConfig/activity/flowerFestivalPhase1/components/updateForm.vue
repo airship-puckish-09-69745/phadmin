@@ -762,7 +762,7 @@ export default {
       // 榜单最大名次
       let makRank = 0
       data.extend.rankRewardItems.forEach(rankRewardItem => {
-        makRank = Math.max(makRank, rankRewardItem.range.max)
+        makRank = Math.max(makRank, rankRewardItem.rankRange.max)
       })
       data.extend.maxRankValid = makRank
 
