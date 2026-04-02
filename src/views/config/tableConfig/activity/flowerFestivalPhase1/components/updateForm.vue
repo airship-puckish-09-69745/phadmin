@@ -216,9 +216,9 @@
         <el-row :gutter="5">
           <el-col>
             <fieldset style="margin-top: 10px">
-              <legend>榜单最大显示名次</legend>
+              <legend>榜单最大有效名次</legend>
               <el-col :span="4">
-                <el-input v-model.number="item.extend.maxRankShow" placeholder="请输入榜单显示人数" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
+                <el-input v-model.number="item.extend.maxRankValid" placeholder="请输入榜单最大有效名次" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
               </el-col>
             </fieldset>
             <fieldset style="margin-top: 10px">
@@ -403,6 +403,7 @@ function newItem() {
     extend: {
       totalReward: 0,
       maxRankShow: 20,
+      maxRankValid: 10000,
       phase2Time: Date.now() + 14 * 24 * 60 * 60 * 1000,
       tasks: [],
       rankRewardItems: [],
@@ -759,12 +760,12 @@ export default {
           rewardItem.rewardNum = Math.floor(rewardItem.rewardNum * 1000)
         })
       })
-      // 榜单最大名次
-      let makRank = 0
+      // 榜单最大展示名次
+      let maxRankShow = 0
       data.extend.rankRewardItems.forEach(rankRewardItem => {
-        makRank = Math.max(makRank, rankRewardItem.rankRange.max)
+        maxRankShow = Math.max(maxRankShow, rankRewardItem.rankRange.max)
       })
-      data.extend.maxRankValid = makRank
+      data.extend.maxRankShow = maxRankShow
 
       // 返回数据
       const ret = { ...data }
