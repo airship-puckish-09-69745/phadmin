@@ -759,6 +759,12 @@ export default {
           rewardItem.rewardNum = Math.floor(rewardItem.rewardNum * 1000)
         })
       })
+      // 榜单最大名次
+      let makRank = 0
+      data.extend.rankRewardItems.forEach(rankRewardItem => {
+        makRank = Math.max(makRank, rankRewardItem.range.max)
+      })
+      data.extend.maxRankValid = makRank
 
       // 返回数据
       const ret = { ...data }
