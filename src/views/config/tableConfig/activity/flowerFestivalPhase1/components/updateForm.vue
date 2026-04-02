@@ -440,7 +440,9 @@ function newChallengeTask(taskId) {
     rewardItem: {
       rewardId: 0,
       rewardNum: 1,
-      rewardType: 5,
+      rewardType: ACTIVITY_REWARD_TYPES.PROP,
+      rewardSubType: PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME,
+      rewardExpireDays: 1
     }
   }
 }
