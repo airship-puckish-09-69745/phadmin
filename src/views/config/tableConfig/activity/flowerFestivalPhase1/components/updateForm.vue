@@ -410,7 +410,7 @@ function newItem() {
         rewardId: 0,
         rewardNum: 1,
         rewardType: ACTIVITY_REWARD_TYPES.PROP,
-        rewardSubType: 0,
+        rewardSubType: PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME,
         rewardExpireDays: 1
       }
     }
