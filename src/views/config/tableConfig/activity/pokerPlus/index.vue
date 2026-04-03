@@ -5,7 +5,7 @@
     </el-row>
     <el-row style="padding-top: 5px">
       <el-col :span="20">
-        <el-button size="mini" type="primary" icon="el-icon-plus" @click="handleAdd">新增聚宝盆配置</el-button>
+        <el-button size="mini" type="primary" icon="el-icon-plus" @click="handleAdd">新增配置</el-button>
       </el-col>
       <el-col :span="2">
         <el-button type="success" size="mini" icon="el-icon-refresh" @click="getList">刷新</el-button>
@@ -39,11 +39,6 @@
         <el-table-column prop="endTime" label="结束时间" sortable="custom" min-width="150">
           <template slot-scope="scope">
             {{ formatTime(scope.row.endTime) }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="showEndTime" label="展示结束时间" min-width="150">
-          <template slot-scope="scope">
-            {{ formatTime(scope.row.showEndTime) }}
           </template>
         </el-table-column>
         <el-table-column prop="sockGainRatio" label="道具比例" width="90" align="center">
@@ -130,7 +125,6 @@ export default {
         isOpen: '活动开关',
         startTime: '开始时间',
         endTime: '结束时间',
-        showEndTime: '展示结束时间',
         sockGainRatio: '有效下注获得道具比例',
         rewardType: '奖励类型',
         dayPrizeThreshold: '每日发奖上限监控',

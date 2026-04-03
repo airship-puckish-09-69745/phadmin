@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    :title="isEdit ? '编辑聚宝盆活动' : '新增聚宝盆活动'"
+    :title="isEdit ? '编辑活动' : '新增活动'"
     :visible.sync="dialogVisible"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
@@ -25,13 +25,10 @@
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
-              <el-form-item label="奖励类型：">
-                <el-select v-model="item.rewardType" placeholder="请选择">
-                  <el-option v-for="opt in rewardTypes" :key="opt.value" :label="opt.label" :value="opt.value"/>
-                </el-select>
-                <div style="color: #999; font-size: 12px; line-height: 1.4; margin-top: 4px">
-                  投注金：只能在GameZone厅内所有游戏使用的投注金
-                </div>
+              <el-form-item label="反水比例：">
+                <el-input v-model.number="item.sockGainRatio" placeholder="请输入" style="max-width: 200px">
+                  <template slot="append">%</template>
+                </el-input>
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
@@ -92,45 +89,7 @@
                 <el-input v-model.number="item.debugTimeOffset" placeholder="请输入" style="max-width: 200px"/>
               </el-form-item>
             </el-col>
-            <el-col :xs="24" :sm="12">
-              <el-form-item label="有效下注获得道具比例：">
-                <el-input v-model.number="item.sockGainRatio" placeholder="请输入" style="max-width: 200px">
-                  <template slot="append">%</template>
-                </el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
 
-          <!-- 参与活动游戏选择 -->
-          <el-row>
-            <el-col :span="24">
-              <GameSelector
-                v-model="item.gameIdCfg"
-                label="参与活动游戏："
-                :category-ids="[2]"
-              />
-            </el-col>
-          </el-row>
-        </el-form>
-      </el-tab-pane>
-
-      <!-- ========== 奖池配置 ========== -->
-      <el-tab-pane label="奖池配置" name="prizePool">
-        <PrizePoolConfig v-model="item"/>
-      </el-tab-pane>
-      <!-- ========== 排行榜配置 ========== -->
-      <el-tab-pane label="排行榜配置" name="ranking">
-        <RankingConfig v-model="item"/>
-      </el-tab-pane>
-      <!-- ========== 奖励播报配置 ========== -->
-      <el-tab-pane label="奖励播报配置" name="broadcast">
-        <BroadcastConfig v-model="item"/>
-      </el-tab-pane>
-
-      <!-- ========== 白名单配置 ========== -->
-      <el-tab-pane label="白名单配置" name="whitelist">
-        <el-form label-width="180px" size="small">
-          <el-row :gutter="20">
             <el-col :xs="24" :sm="12">
               <el-form-item label="站点白名单：">
                 <SiteSelect
@@ -142,74 +101,6 @@
               </el-form-item>
             </el-col>
           </el-row>
-        </el-form>
-      </el-tab-pane>
-
-      <!-- ========== 头像框奖励配置 ========== -->
-      <el-tab-pane label="头像框奖励配置" name="propConfig">
-        <el-form label-width="180px" size="small">
-          <div>
-            <el-table
-              :data="item.propPools ? [item.propPools] : []"
-              border
-              size="small"
-              style="width: 100%"
-            >
-              <el-table-column label="道具类型" min-width="140">
-                <template slot-scope="scope">
-                  <el-select
-                    v-model="scope.row.propType"
-                    placeholder="请选择"
-                    size="mini"
-                    style="width: 100%"
-                    @change="handlePropTypeChange(scope.row)"
-                  >
-                    <el-option
-                      v-for="item in propTypeOptions"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
-                </template>
-              </el-table-column>
-              <el-table-column label="道具名称" min-width="140">
-                <template slot-scope="scope">
-                  <el-select v-model="scope.row.propId" placeholder="请选择" size="mini" style="width: 100%"
-                             @change="handlePropNameChange(scope.row)">
-                    <el-option
-                      v-for="item in getPropOptionsByType(scope.row.propType)"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
-                </template>
-              </el-table-column>
-              <el-table-column label="可用时间" min-width="120">
-                <template slot-scope="scope">
-                  <el-select
-                    v-model="scope.row.propTime"
-                    placeholder="请选择"
-                    size="mini"
-                    style="width: 100%"
-                  >
-                    <el-option
-                      v-for="item in propDayTypeOptions"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
-                </template>
-              </el-table-column>
-              <el-table-column label="道具数量" min-width="100">
-                <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.propNum" placeholder="数量" size="mini"/>
-                </template>
-              </el-table-column>
-            </el-table>
-          </div>
         </el-form>
       </el-tab-pane>
     </el-tabs>
@@ -227,9 +118,6 @@ import {Message} from 'element-ui'
 import request from '@/utils/request'
 import store from '@/store'
 import SiteSelect from '@/components/SiteSelect/index.vue'
-import PrizePoolConfig from './components/PrizePoolConfig.vue'
-import RankingConfig from './components/RankingConfig.vue'
-import BroadcastConfig from './components/BroadcastConfig.vue'
 import GameSelector from '@/components/Game/GameSelector.vue'
 
 // 默认排行榜配置
@@ -273,7 +161,7 @@ function createNewItem() {
 }
 
 export default {
-  components: {SiteSelect, PrizePoolConfig, RankingConfig, BroadcastConfig, GameSelector},
+  components: {SiteSelect, GameSelector},
   props: {
     visible: {type: Boolean, default: false},
     isEdit: {type: Boolean, default: false},
