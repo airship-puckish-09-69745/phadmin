@@ -1,6 +1,24 @@
 import request from '@/utils/request'
 import store from '@/store'
 
+/**
+ * 发布步骤
+ */
+export const PUBLISH_STEPS = {
+  // 默认发布步骤
+  PUBLISH_STEP_DEFAULT: 1,
+  // 测试发布步骤
+  PUBLISH_STEP_TEST: 2,
+  // 预发布发布步骤
+  PUBLISH_STEP_PRE: 3,
+  // 待审核步骤
+  PUBLISH_STEP_REVIEWING: 4,
+  // 已审核待发布步骤
+  PUBLISH_STEP_REVIEWED: 5,
+  // 已发布到线上步骤
+  PUBLISH_STEP_PRO: 6,
+}
+
 function getVer() {
   return store.getters.version === 'V2' ? 'V2' : ''
 }

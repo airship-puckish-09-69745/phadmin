@@ -98,6 +98,7 @@ export function LibShow() {
     501: 'BalloonTap',
     214: 'PumpkinCash',
     202: 'FortunateEbisu', // 独占一行
+    144: 'MiniMines', // 独占一行
     206: 'LuckyWineglass', // 独占一行
     212: 'PirateShip', // 独占一行
     218: 'WrathOfZeus2', // 独占一行
@@ -112,7 +113,7 @@ export function LibShow() {
     76: 'Candy Rush', 78: 'SuperGems', 80: 'Candy Craze', 82: 'Millionaire', 84: 'FortuneAce', 86: 'SuperGemsII', 88: 'Lucky777', 90: 'FortuneComing', 92: 'UltraAce', 94: 'Wild Buffalo', 96: 'RomanArena', 98: 'SuperTongit', // slots
     100: 'Tower', 101: 'Sicbo', 102: 'Hilo', 103: 'Windrop', 119: 'Windropc积分', 104: 'Dragon Tiger', 105: 'Andar Bahar', 106: 'PIGGY TAP', 107: 'Mini Baccarat', 108: 'Dropball', 110: 'Video Poker',
     112: 'Wingo Lottery', 115: 'MultiPlayer NiuNiu', 118: 'Car Racing', 124: 'Jackpot Wheel', 125: 'Free Spin', 127: 'SaBong', 128: 'Tongits JP', 129: 'Live Color', 132: '新版扫雷', 134: 'Pusoy JP', 135: 'SUPER COLOR', 136: 'Limbo', 137: 'BlackJackMH',
-    138: 'Chicken Go', 139: 'manny Punch', 140: 'HiloPlus', 141: 'Pirate Scratch', 142: 'Pirate Tap',
+    138: 'Chicken Go', 139: 'manny Punch', 140: 'HiloPlus', 141: 'Pirate Scratch', 142: 'Pirate Tap', 143: 'Triple Wheels Spin',
     150: 'SuperGemsIII', 152: 'Aladdin\'s Lamp', 154: 'GrandAce', 156: 'CrazyAce', 172: 'WrathOfZeus', 158: 'SharkKingdom', 160: 'GigaAce', 162: 'MajorAce', 164: 'MahjongFortune', 166: 'FireLink',
     170: 'EpicAce', 176: 'PuppyHome', 182: 'GodOfFortune', 186: 'MahjongJackpot', 174: 'TreasureBowl', 178: 'MayanTotem', 194: 'GoldTrain', 168: 'Pharaoh\'sTreasure', 196: 'GoldMiner', 184: 'Dance of the Lion',
     190: 'ArcaneEgypt', 198: 'FortuneBlessing', 200: 'AtlantisTreasure', 204: 'SpaceTreasure', 208: 'CandyBurst', 210: 'LuckySpirits', 216: 'Phoenix', 220: 'GoldenDragon', 222: 'LionFortune', 226: 'Fortune Wheel', 232: 'MafiaWars', // slots
@@ -382,16 +383,17 @@ export function Pagination(_totalCount, _pageNum) {
 // sortOrder 1 ASC 2 DESC
 export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOrder, idKey) {
   this.TotalData = _totalData
-  this.ShowData = this.TotalData.length > 0 ? this.TotalData.slice(0) : [] // 数组深拷贝
   this.FilterMap = filterMap
   this.FilterValueMap = {}
-  var $this = this
+  const $this = this
   this.Page = new Pagination(this.TotalData.length, pageNum)
   this.SortName = sortName
   this.SortOrder = sortOrder || -1
   this.IDKey = idKey || 'ID'
+  this.ShowData = []
 
   this.GetShowValue = function(typeName, key) {
+    console.log('GetShowValue', key)
     return $this.FilterMap[typeName][key]
   }
 
@@ -400,6 +402,7 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
   // value为搜索的内容
   // params为搜索哪些字段
   this.Search = function(value, params) {
+    console.log('Search', value, params)
     $this.ShowData = $this.TotalData.filter(
       function(data) {
         for (var o in params) {
@@ -415,8 +418,9 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
 
   // 处理筛选相关的逻辑
   this.ClearFilterMap = function() {
+    console.log('ClearFilterMap')
     if ($this.TotalData.length > 0) {
-      for (var o in $this.FilterMap) {
+      for (const o in $this.FilterMap) {
         $this.FilterValueMap[o] = 0
         if ($this.FilterMap[o] === 'all') {
           $this.FilterMap[o] = getDefaultFilterValues(o)
@@ -427,25 +431,28 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
   }
 
   // 处理没有映射关系，直接使用值作筛选的情况
-  var getDefaultFilterValues = function(key) {
-    var s = new Set()
-    for (var i = 0; i < $this.TotalData.length; i++) {
+  const getDefaultFilterValues = function(key) {
+    console.log('getDefaultFilterValues', key)
+    const s = new Set()
+    for (let i = 0; i < $this.TotalData.length; i++) {
       s.add($this.TotalData[i][key])
     }
-    var res = {}
-    for (var x of s) {
+    const res = {}
+    for (const x of s) {
       res[x] = x
     }
     return res
   }
 
   // 处理筛选相关的逻辑
-  // existVal0 是否存在值为0的项，默认不包含
-  this.FilterData = function(existVal0=false) {
+  // includeVal0 是否包含值为0的项，默认不包含
+  this.FilterData = function(includeVal0=false) {
+    console.log('FilterData', includeVal0)
     $this.ShowData = $this.TotalData.filter(
       function(data) {
         for (const f in $this.FilterValueMap) {
-          if (!existVal0 && $this.FilterValueMap[f] != 0 && $this.FilterValueMap[f] != data[f] || existVal0 && $this.FilterValueMap[f] != data[f]) {
+          if (!includeVal0 && $this.FilterValueMap[f] !== 0 && $this.FilterValueMap[f] !== data[f] || // FilterValueMap[f] 值不为0
+            includeVal0 && $this.FilterValueMap[f] !== data[f]) { // FilterValueMap[f] 值可为0
             return false
           }
         }
@@ -453,10 +460,12 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
       }
     )
     $this.Page.SetTotalCount($this.ShowData.length)
+    $this.ShowData = $this.GetCurrentPageData()
     $this._sortByProp()
   }
   // 传对应的字段和值然后返回所有
   this.FilterDataCustomize = function(obj) {
+    console.log('FilterDataCustomize', obj)
     $this.ShowData = $this.TotalData.filter(
       function(data) {
         for (const f in $this.FilterValueMap) {
@@ -480,8 +489,8 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
   }
   // 排序函数
   this.compare = function(a, b) {
-    var val1 = a[$this.SortName]
-    var val2 = b[$this.SortName]
+    const val1 = a[$this.SortName];
+    const val2 = b[$this.SortName];
     if (val1 < val2) {
       return -1 * $this.SortOrder
     } else if (val1 > val2) {
@@ -499,6 +508,7 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
     this._sortByProp(compareMethod)
   }
   this._sortByProp = function(compareMethod) {
+    console.log('_sortByProp', compareMethod)
     if ($this.SortName == null) {
       $this.ShowData = $this.ShowData.slice(0)
     } else {
@@ -509,18 +519,42 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
       }
     }
   }
+  // 获取总记录数
+  this.GetTotalCount = function() {
+    return $this.Page.GetTotalCount()
+  }
+  // 获取当前页
+  this.GetCurrentPage = function() {
+    return $this.Page.GetCurrentPage()
+  }
+  // 获取每页数量
+  this.GetPageNum = function() {
+    return $this.Page.GetPageNum()
+  }
   // 返回当前页的内容
   this.GetCurrentPageData = function() {
-    var res = []
-    if ($this.ShowData == null || $this.ShowData.length === 0) {
-      return res
-    } else {
-      var pageIndex = $this.Page.GetPageIndex($this.Page.GetCurrentPage())
-      for (var i = pageIndex.Begin; i < pageIndex.End; i++) {
-        res.push($this.ShowData[i])
-      }
-      return res
+    return $this.GetPageData($this.Page.GetCurrentPage())
+  }
+  // 获取某一页数据
+  this.GetPageData = function(pageNo) {
+    console.log('GetPageData', pageNo)
+    if ($this.TotalData == null || $this.TotalData.length === 0) {
+      return []
     }
+    const pageIndex = $this.Page.GetPageIndex(pageNo)
+    return $this.TotalData.slice(pageIndex.Begin, pageIndex.End)
+  }
+  // 分页处理-当前页改变
+  this.OnPageNoChange = function(pageNo) {
+    console.log('onPageNoChange', pageNo)
+    $this.Page.SetPageNo(pageNo)
+    $this.ShowData = $this.GetPageData(pageNo)
+  }
+  // 分页处理-每页数量改变
+  this.OnPageSizeChange = function(pageNum) {
+    console.log('onPageSizeChange', pageNum)
+    $this.Page.SetPageNum(pageNum)
+    $this.ShowData = $this.GetPageData($this.Page.GetCurrentPage())
   }
   // 更新数组中字段内容
   this.UpdateData = function(ob) {

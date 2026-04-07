@@ -103,7 +103,7 @@ service.interceptors.response.use(
           })
         })
       } else if (res.RetCode < 0) {
-        Message.error('操作失败！参数错误：' + ($libType.IsString(res.Data) ? res.Data : res.Data.Msg))
+        Message.error('操作失败！错误：' + ($libType.IsString(res.Data) ? res.Data : res.Data.Msg))
         console.log(res)
         return res
       }

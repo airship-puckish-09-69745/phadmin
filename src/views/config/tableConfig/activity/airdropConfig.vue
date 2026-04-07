@@ -27,6 +27,11 @@
       >
         <el-table-column prop="id" label="id" sortable="custom" width="80" />
         <el-table-column prop="name" label="活动名称" />
+        <el-table-column prop="gameType" label="玩法大类型" width="120">
+          <template slot-scope="scope">
+            {{ gameTypeNames[scope.row.gameType] || '未设置' }}
+          </template>
+        </el-table-column>
         <el-table-column prop="startTime" label="开始时间">
           <template slot-scope="scope">
             {{ formatTime(scope.row.startTime) }}
@@ -105,7 +110,7 @@
               </el-col>
               <el-col :span="12">
                 <el-form-item label="发放奖励类型：" :required="true">
-                  <el-select v-model="edit.item.rewardConfig.rewardType" placeholder="请选择" style="width:90px">
+                  <el-select v-model="edit.item.rewardConfig.rewardType" placeholder="请选择" style="width:90px" disabled>
                     <el-option
                       v-for="item in rewardTypes"
                       :key="item.value"
@@ -113,7 +118,7 @@
                       :value="item.value"
                     />
                   </el-select>
-                  <el-select v-if="edit.item.rewardConfig.rewardType === 2" v-model="edit.item.rewardConfig.useSceneId" placeholder="请选择投注金" style="width:200px">
+                  <el-select v-if="edit.item.rewardConfig.rewardType === 2" v-model="edit.item.rewardConfig.useSceneId" placeholder="请选择投注金" style="width:200px" disabled>
                     <el-option
                       v-for="scene in betScenes"
                       :key="scene.value"
@@ -121,7 +126,7 @@
                       :value="scene.value"
                     />
                   </el-select>
-                  <el-select v-if="edit.item.rewardConfig.rewardType === 3" v-model="edit.item.rewardConfig.useSceneId" placeholder="请选择返水金" style="width:150px">
+                  <el-select v-if="edit.item.rewardConfig.rewardType === 3" v-model="edit.item.rewardConfig.useSceneId" placeholder="请选择返水金" style="width:150px" disabled>
                     <el-option
                       v-for="scene in rebateScenes"
                       :key="scene.value"
@@ -252,9 +257,21 @@
               </el-col>
               <el-col v-if="showUserTagCondition">
                 <el-form-item label="标签子类：">
-                  <el-select v-model="edit.item.userFilterCondition.userTagConfig.tagId" placeholder="请选择标签子类">
+                  <el-select v-model="edit.item.userFilterCondition.userTagConfig.tagId" placeholder="请选择标签子类" @change="onTagIdChange">
                     <el-option
                       v-for="item in edit.userTagIdOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="24" v-if="showUserLevelCondition">
+                <el-form-item label="用户等级：" :required="false">
+                  <el-select v-model="edit.item.userFilterCondition.userTagConfig.tagValue" placeholder="请选择用户等级">
+                    <el-option
+                      v-for="item in userLevelOptions"
                       :key="item.value"
                       :label="item.label"
                       :value="item.value"
@@ -288,6 +305,16 @@
         <el-tab-pane label="任务配置">
           <el-row :gutter="5">
             <el-form label-width="220px">
+
+              <el-col :span="20">
+                <el-form-item label="玩法大类型">
+                  <el-radio-group v-model="edit.item.gameType" @change="onGameTypeChange">
+                    <el-radio :label="1">Slot</el-radio>
+                    <el-radio :label="2">Poker</el-radio>
+                    <!--                    <el-radio :label="3">Casino</el-radio>-->
+                  </el-radio-group>
+                </el-form-item>
+              </el-col>
               <el-col :span="20">
                 <el-form-item label="勾选支持的游戏：" :required="true">
                   <el-input
@@ -295,7 +322,7 @@
                     v-model="filterText">
                   </el-input>
                   <el-tree
-                    :data="treeData"
+                    :data="filteredTreeData"
                     show-checkbox
                     node-key="id"
                     ref="tree"
@@ -306,11 +333,11 @@
                   >
                   </el-tree>
                 </el-form-item>
-<!--                <el-form-item label="给选中游戏排序：" :required="true">
-                  <el-button size="mini" type="primary" @click="showGamesSortDialog()">
-                    排序
-                  </el-button>
-                </el-form-item>-->
+                <!--                <el-form-item label="给选中游戏排序：" :required="true">
+                                  <el-button size="mini" type="primary" @click="showGamesSortDialog()">
+                                    排序
+                                  </el-button>
+                                </el-form-item>-->
                 <el-form-item label="选中游戏：" disabled="disabled">
                   <el-input
                     type="textarea"
@@ -668,8 +695,11 @@ function newItem() {
     taskConfig: {
       taskType: 0,
       taskText: '',
+      gameType: 1,
       taskValueRequired: 20
     },
+    gameType: 2,
+
     rewardConfig: {
       rewardType: 2,
       useSceneId: 13,
@@ -702,7 +732,7 @@ function newItem() {
       },
       userTagConfig: {
         tagId: 0,
-        tagValue: 0,
+        tagValue: 1,
         tagType: 0
       }
     }
@@ -749,7 +779,8 @@ export default {
         rewardConfig: '奖励配置',
         progressPrizes: '进度奖励配置',
         userTypes: '用户类型',
-        userFilterCondition: '筛选用户条件'
+        userFilterCondition: '筛选用户条件',
+        gameType: '玩法大类型'
       },
       edit: {
         CfgId: 0,
@@ -767,12 +798,15 @@ export default {
         registerDateRange: [],
         clientDB: new ClientTableData([], 10, filterMap),
         userTagIdOptions: [],
-        gameCategoriesSelected: []
+        gameCategoriesSelected: [],
+        gameIdCfgCache: { 1: [], 2: [], 3: [] },
+        prevGameType: 2
       },
       env: 'test',
       appId: parseInt(store.getters.appId) || -1,
       version: store.getters.version || 'V1',
       statusNames: { 2: '上架', 6: '下架', 7: '预上架', 8: '预下架' },
+      gameTypeNames: { 1: 'Slot', 2: 'Poker', 3: 'Casino' },
       tableData: [],
       clientDB: new ClientTableData([], 10, filterMap),
       libDate: $libDate,
@@ -817,7 +851,8 @@ export default {
 
       // 投注金
       betScenes: [
-        { 'value': 13, 'label': '【空投活动】任意游戏投注' }
+        { 'value': 13, 'label': '【空投活动poker】任意游戏投注' },
+        { 'value': 32, 'label': '【空投活动solt】任意游戏投注' }
       ],
       // 返水金
       rebateScenes: [
@@ -865,10 +900,13 @@ export default {
       userTagOptions: [
         { value: 2, label: '游戏强度', children: [{ value: 20000, label: '游戏强度' }] },
         { value: 5, label: 'Slots用户类型', children: [
-          { value: 50001, label: 'Slots新增用户' },
-          { value: 50002, label: 'Slots登录天数' },
-          { value: 50008, label: 'Slots回归用户' }
-        ]
+            { value: 50001, label: 'Slots新增用户' },
+            { value: 50002, label: 'Slots登录天数' },
+            { value: 50008, label: 'Slots回归用户' },
+            { value: 50005, label: '下注额度' },
+            { value: 50006, label: '日均下注额度' },
+            { value: 50003, label: '携带金额' }
+          ]
         }
       ],
       // 游戏强度标签值
@@ -878,6 +916,12 @@ export default {
         { value: 2, label: '尝试' },
         { value: 3, label: '常玩' },
         { value: 4, label: '核心' }
+      ],
+      // 用户等级（下注额度/日均下注额度/携带金额）
+      userLevelOptions: [
+        { value: 1, label: '轻度用户' },
+        { value: 2, label: '中度用户' },
+        { value: 3, label: '重度用户' }
       ],
 
       defaultProps: {
@@ -915,8 +959,6 @@ export default {
         { 'value': 3, 'label': '3天', disabled: false },
         { 'value': 7, 'label': '7天', disabled: false },
         { 'value': 30, 'label': '30天', disabled: false },
-        { 'value': 365, 'label': '365天', disabled: false },
-        { 'value': 0, 'label': '永久', disabled: false }
       ],
 
       pickerOptions: {
@@ -971,9 +1013,22 @@ export default {
         this.edit.item.userFilterCondition.userTagConfig.tagType === 2 && // 2=游戏强度
         this.edit.item.userFilterCondition.userTagConfig.tagId === 20000 // 20000=游戏强度
     },
-    showRewardRangesConfig() {
-      return !this.edit.gameCategoriesSelected.includes('Slot')
+    showUserLevelCondition() {
+      const levelTagIds = [50005, 50006, 50003]
+      return this.edit.item.userTypes.includes(5) &&
+        levelTagIds.includes(this.edit.item.userFilterCondition.userTagConfig.tagId)
     },
+    showRewardRangesConfig() {
+      return this.edit.item.gameType !== 1 // 1=Slot 时不显示大奖系数配置
+    },
+    filteredTreeData() {
+      const gameTypeMap = { 1: 'Slot', 2: 'Poker', 3: 'Casino' }
+      const selectedCategory = gameTypeMap[this.edit.item.gameType]
+      if (!selectedCategory) {
+        return this.treeData
+      }
+      return this.treeData.filter(cty => cty.label === selectedCategory)
+    }
   },
   mounted() {
     this.getList()
@@ -1139,12 +1194,81 @@ export default {
         this.edit.item.userFilterCondition.userTagConfig.tagValue = 0
       }
     },
+    onTagIdChange(tagId) {
+      // 切换标签子类时重置 tagValue
+      this.edit.item.userFilterCondition.userTagConfig.tagValue = 0
+      console.log('onTagIdChange tagId:', tagId)
+    },
     onChangeEndTime(val) {
       if (val < this.edit.item.startTime) {
         Message.error('活动结束时间不能早于活动开始时间')
         this.edit.item.endTime = this.edit.item.startTime
       }
       this.edit.item.showEndTime = this.edit.item.endTime + 1000 * 60 * 60 * 24
+    },
+    onGameTypeChange(val) {
+      console.log('onGameTypeChange', val, 'prev:', this.edit.prevGameType)
+
+      // 根据玩法大类型联动发放奖励类型：Slot=32，Poker=13
+      const gameTypeSceneMap = { 1: 32, 2: 13 }
+      if (gameTypeSceneMap[val]) {
+        this.edit.item.rewardConfig.useSceneId = gameTypeSceneMap[val]
+      }
+
+      // 将上一次 gameType 对应的游戏缓存起来
+      this.cacheGameIdsByType(this.edit.prevGameType)
+
+      // 更新 prevGameType
+      this.edit.prevGameType = val
+
+      // 从缓存中恢复目标类别的游戏选中状态
+      const cachedIds = this.edit.gameIdCfgCache[val] || []
+      this.edit.item.gameIdCfg = cachedIds.slice()
+
+      // 等 filteredTreeData 更新后再设置树的选中状态
+      this.$nextTick(() => {
+        if (this.$refs.tree) {
+          this.$refs.tree.setCheckedKeys(this.edit.item.gameIdCfg)
+        }
+        // 更新选中游戏的排序文本
+        this.updateGamesSorted()
+        // 更新游戏任务类型
+        this.updateGameTaskTypes(this.edit.item.gameIdCfg)
+        // 更新分类选中状态
+        this.updateGameCategoriesSelected()
+      })
+    },
+    cacheGameIdsByType(gameType) {
+      // 缓存指定 gameType 对应类别的游戏ID
+      const gameTypeMap = { 1: 'Slot', 2: 'Poker', 3: 'Casino' }
+      const category = gameTypeMap[gameType]
+      if (!category) return
+
+      const ids = []
+      this.treeData.forEach(cty => {
+        if (cty.label === category) {
+          cty.children.forEach(game => {
+            if (this.edit.item.gameIdCfg.includes(game.id)) {
+              ids.push(game.id)
+            }
+          })
+        }
+      })
+      this.edit.gameIdCfgCache[gameType] = ids
+    },
+    cacheCurrentGameIds() {
+      this.cacheGameIdsByType(this.edit.item.gameType)
+    },
+    updateGameCategoriesSelected() {
+      this.edit.gameCategoriesSelected = []
+      const $this = this
+      this.treeData.forEach(cty => {
+        if (cty.children.some(game => $this.edit.item.gameIdCfg.includes(game.id))) {
+          if (!$this.edit.gameCategoriesSelected.includes(cty.label)) {
+            $this.edit.gameCategoriesSelected.push(cty.label)
+          }
+        }
+      })
     },
     changeStatus(id, status, msg) {
       // const $this = this
@@ -1174,6 +1298,10 @@ export default {
     getPostData() {
       if (this.edit.item.name === '') {
         Message.error('请填写活动名称')
+        return
+      }
+      if (!this.edit.item.gameType) {
+        Message.error('请选择玩法大类型')
         return
       }
       for (let i = 0; i < this.edit.item.progressPrizes.length; i++) {
@@ -1215,11 +1343,11 @@ export default {
           return
         }
       }
-      if (this.edit.gameCategoriesSelected.length === 0) {
+      if (this.edit.item.gameIdCfg.length === 0) {
         Message.error('请选择参与活动的游戏')
         return
       }
-      if (this.edit.gameCategoriesSelected.some(item => item === 'Poker' || item === 'Casino') && this.edit.item.rewardConfig.rewardRanges.length === 0) {
+      if (this.edit.item.gameType !== 1 && this.edit.item.rewardConfig.rewardRanges.length === 0) {
         Message.error('请配置大奖系数配置')
         return
       }
@@ -1278,6 +1406,7 @@ export default {
       data.progressPrizes = JSON.stringify(copyItem.progressPrizes)
       data.userTypes = JSON.stringify(copyItem.userTypes)
       data.importedFilename = copyItem.importedFilename
+      data.gameType = copyItem.gameType
       data.userFilterCondition = JSON.stringify(copyItem.userFilterCondition)
       return data
     },
@@ -1461,15 +1590,30 @@ export default {
       if (this.edit.isEdit) {
         this.getSentRewardAmount()
         this.getImportedUidCacheCount()
-        this.$refs.tree.setCheckedKeys(this.edit.item.gameIdCfg)
+
+        // 初始化缓存：将已有的 gameIdCfg 按当前 gameType 缓存
+        this.edit.gameIdCfgCache = { 1: [], 2: [], 3: [] }
+        this.edit.prevGameType = this.edit.item.gameType
+        this.cacheCurrentGameIds()
+
+        this.$nextTick(() => {
+          if (this.$refs.tree) {
+            this.$refs.tree.setCheckedKeys(this.edit.item.gameIdCfg)
+          }
+        })
         this.updateGameTaskTypes(this.edit.item.gameIdCfg)
         // 查询已导入的用户id列表
         this.getImportedUidList()
       } else {
         this.sentRewardAmount = 0
-        this.$refs.tree.setCheckedKeys([])
+        this.edit.gameIdCfgCache = { 1: [], 2: [], 3: [] }
+        this.$nextTick(() => {
+          if (this.$refs.tree) {
+            this.$refs.tree.setCheckedKeys([])
+          }
+        })
       }
-      // 更新树状图的 disabled 状态
+      // 更新树状图的分类选中状态
       this.updateTreeDisabled()
     },
     initFormData(bEdit, ID) {
@@ -1488,6 +1632,7 @@ export default {
           item.ruleImgHor = JSON.parse(item.ruleImgHor)
           item.ruleImgVer = JSON.parse(item.ruleImgVer)
           item.debugTimeOffset = item.debugTimeOffset || 0
+          item.gameType = parseInt(item.gameType) || 1
           item.taskConfig = JSON.parse(item.taskConfig)
           item.rewardConfig = JSON.parse(item.rewardConfig)
           item.rewardConfig.totalReward = item.rewardConfig.totalReward / 1000
@@ -1504,6 +1649,12 @@ export default {
             item.userFilterCondition = JSON.parse(item.userFilterCondition)
             console.log('item.userFilterCondition2:', item.userFilterCondition)
             this.edit.registerDateRange = [item.userFilterCondition.registerTimeRange.min * 1000, item.userFilterCondition.registerTimeRange.max * 1000]
+            // 回显用户标签配置，缺少时补默认值
+            if (!item.userFilterCondition.userTagConfig) {
+              item.userFilterCondition.userTagConfig = { tagId: 0, tagValue: 1, tagType: 0 }
+            } else if (item.userFilterCondition.userTagConfig.tagValue === undefined || item.userFilterCondition.userTagConfig.tagValue === null) {
+              item.userFilterCondition.userTagConfig.tagValue = 1
+            }
           } else {
             item.userFilterCondition = {
               registerTimeRange: {
@@ -1514,6 +1665,11 @@ export default {
                 min: 0,
                 max: 0
               },
+              userTagConfig: {
+                tagId: 0,
+                tagValue: 1,
+                tagType: 0
+              }
             }
           }
 
@@ -1558,7 +1714,10 @@ export default {
 
           this.edit.userType = item.userTypes[0]
 
+          // 保存 tagValue，防止 onTagTypeChange 内部将其重置为 0
+          const savedTagValue = item.userFilterCondition.userTagConfig.tagValue
           this.onTagTypeChange(item.userFilterCondition.userTagConfig.tagType)
+          this.edit.item.userFilterCondition.userTagConfig.tagValue = savedTagValue
 
           console.log(this.edit.item.gameIdCfg)
         }
@@ -1573,6 +1732,9 @@ export default {
       this.edit.visible = true
       this.edit.userType = this.edit.item.userTypes[0]
       this.edit.registerDateRange = []
+      this.edit.gameCategoriesSelected = []
+      this.edit.gameIdCfgCache = { 1: [], 2: [], 3: [] }
+      this.edit.prevGameType = this.edit.item.gameType
       console.log(this.edit.item)
     },
     // ************************ 修改/添加弹框相关 ************************
@@ -1743,59 +1905,7 @@ export default {
       this.gameTaskTypes = gameTaskTypes
     },
     updateTreeDisabled() {
-      this.edit.gameCategoriesSelected = []
-
-      const $this = this
-      // 选中的游戏所属的类别
-      this.treeData.forEach(cty => {
-        if (cty.children.some(game => $this.edit.item.gameIdCfg.includes(game.id))) {
-          if (!this.edit.gameCategoriesSelected.includes(cty.label)) {
-            this.edit.gameCategoriesSelected.push(cty.label)
-          }
-        }
-      })
-
-      console.log('updateTreeDisabled:', this.edit.gameCategoriesSelected)
-
-      // Slot 与 Poker/Casino 类别的选项做互斥处理
-      this.treeData.forEach(cty => {
-        console.log('cty', cty)
-        if (this.edit.gameCategoriesSelected.length === 0) {
-          cty.disabled = false
-          cty.children.forEach(game => {
-            game.disabled = false
-          })
-          return
-        }
-
-        if (this.edit.gameCategoriesSelected.includes('Slot')) {
-          if (cty.label === 'Slot') {
-            cty.disabled = false
-            cty.children.forEach(game => {
-              game.disabled = false
-            })
-          } else {
-            cty.disabled = true
-            cty.children.forEach(game => {
-              game.disabled = true
-            })
-          }
-        }
-
-        if (this.edit.gameCategoriesSelected.includes('Poker') || this.edit.gameCategoriesSelected.includes('Casino')) {
-          if (cty.label === 'Slot') {
-            cty.disabled = true
-            cty.children.forEach(game => {
-              game.disabled = true
-            })
-          } else {
-            cty.disabled = false
-            cty.children.forEach(game => {
-              game.disabled = false
-            })
-          }
-        }
-      })
+      this.updateGameCategoriesSelected()
     },
     updateGameIdsSelected(gameId, checked) {
       const idIndex = this.edit.item.gameIdCfg.indexOf(gameId)
@@ -1823,15 +1933,24 @@ export default {
             })
           }
         })
-        // 更新树状图的 disabled 状态
+        // 同步缓存
+        this.cacheCurrentGameIds()
+        // 更新分类选中状态
         this.updateTreeDisabled()
+        // 更新选中游戏的排序
+        this.updateGamesSorted()
+        // 更新游戏任务类型
+        this.updateGameTaskTypes(this.edit.item.gameIdCfg)
         return
       }
 
       // 更新选中的游戏id
       this.updateGameIdsSelected(data.id, checked)
 
-      // 更新树状图的 disabled 状态
+      // 同步缓存
+      this.cacheCurrentGameIds()
+
+      // 更新分类选中状态
       this.updateTreeDisabled()
 
       // 更新选中游戏的排序
@@ -1862,7 +1981,6 @@ export default {
         return a.OrderNo - b.OrderNo
       })
     },
-    //************************ 游戏列表相关 ************************
     //************************ 白名单相关 ************************
     onAppIdOptionsChange() {
       console.log('onAppIdOptionsChange', this.edit.item.whitelistCfg.appIdList)

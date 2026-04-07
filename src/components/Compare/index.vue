@@ -126,6 +126,12 @@ export default {
       }
     },
     AddResult(key, oldVal, newVal) {
+      const item = this.result.find(item => item.key === key)
+      if (item) {
+        item.oldVal = oldVal
+        item.newVal = newVal
+        return
+      }
       this.result.push({
         key: key,
         oldVal: oldVal,
