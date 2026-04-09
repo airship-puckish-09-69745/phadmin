@@ -169,13 +169,13 @@ function newItem() {
     extend: {
       rewardRatio: 0,
       maxRewardAmount: 10,
-      minTotalBetAmount: 0,
+      minTotalBetAmount: 0
     }
   }
 }
 
 export default {
-  name: "UpdateForm",
+  name: 'UpdateForm',
   components: { SiteSelect },
   props: {
     visible: {
@@ -204,7 +204,7 @@ export default {
       allTreeData: [],
       filterText: '',
       filterGameIds: [2031, 10002],
-      activityId: ACTIVITY_ID,
+      activityId: ACTIVITY_ID
     }
   },
   watch: {
@@ -227,7 +227,7 @@ export default {
     },
     dialogVisible(val) {
       this.$emit('update:visible', val)
-    },
+    }
   },
   methods: {
     handleDialogClose() {
@@ -238,8 +238,8 @@ export default {
       const data = JSON.parse(JSON.stringify(this.data))
 
       // 时间：秒 -> 毫秒
-      data.activity.startTime *=  1000
-      data.activity.endTime *=  1000
+      data.activity.startTime *= 1000
+      data.activity.endTime *= 1000
 
       // 奖励比例缩小1000倍
       data.extend.rewardRatio = data.extend.rewardRatio / 1000
@@ -255,7 +255,7 @@ export default {
       if (!data.activity.whitelist) {
         data.activity.whitelist = {
           siteIdList: [],
-          uidList: '',
+          uidList: ''
         }
       } else {
         data.activity.whitelist.uidList = data.activity.whitelist.uidList.join(',')
@@ -323,7 +323,7 @@ export default {
       }
 
       // 返回数据
-      const ret = {...data}
+      const ret = { ...data }
       ret.activity = JSON.stringify(data.activity)
       ret.extend = JSON.stringify(data.extend)
 
