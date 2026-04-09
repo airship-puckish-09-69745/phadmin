@@ -24,7 +24,8 @@
           :cell-style="libShow.DefaultTableCell"
           style="width: 100%"
           @row-click="clickData"
-          @sort-change="sortChange">
+          @sort-change="sortChange"
+        >
           <el-table-column prop="id" label="id" sortable="custom" width="80" />
           <el-table-column prop="activity.name" label="活动名称" />
           <el-table-column prop="activity.startTime" label="开始时间">
@@ -65,7 +66,8 @@
               layout="total, sizes, prev, pager, next, jumper"
               :total="clientDB.GetPage().GetTotalCount()"
               @size-change="handleSizeChange"
-              @current-change="handleCurrentChange" />
+              @current-change="handleCurrentChange"
+            />
           </div>
         </el-col>
       </el-row>
@@ -75,8 +77,8 @@
         :visible.sync="edit.visible"
         :close-on-click-modal="false"
         :close-on-press-escape="false"
-        @opened="handleEditDialogOpened"
         width="1100px"
+        @opened="handleEditDialogOpened"
       >
         <el-tabs type="border-card">
           <el-tab-pane label="基础配置">
@@ -93,13 +95,13 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
-                  <el-form-item label="活动开始时间：" prop="activity.startTime" :required="true" >
+                  <el-form-item label="活动开始时间：" prop="activity.startTime" :required="true">
                     <el-date-picker v-model="edit.item.activity.startTime" type="datetime" placeholder="选择开始时间" value-format="timestamp" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
                   <el-form-item label="活动结束时间：" prop="activity.endTime" :required="true">
-                    <el-date-picker v-model="edit.item.activity.endTime" type="datetime"  placeholder="选择结束时间" value-format="timestamp" @change="onChangeEndTime" />
+                    <el-date-picker v-model="edit.item.activity.endTime" type="datetime" placeholder="选择结束时间" value-format="timestamp" @change="onChangeEndTime" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="24">
@@ -109,7 +111,7 @@
                 </el-col>
                 <el-col :span="12">
                   <el-form-item label="进入排行榜的有效下注：" prop="extend.minScore" :required="true" style="display: none">
-                    <el-input v-model.number="edit.item.extend.minScore" placeholder="请输入有效下注" >
+                    <el-input v-model.number="edit.item.extend.minScore" placeholder="请输入有效下注">
                       <template slot="append">
                         （₱）
                       </template>
@@ -118,7 +120,7 @@
                 </el-col>
                 <el-col :span="12">
                   <el-form-item label="计入排行榜的有效单次下注：" prop="extend.minBet" :required="true" style="display: none">
-                    <el-input v-model="edit.item.extend.minBet" placeholder="请输入计入排行榜的有效单次下注" >
+                    <el-input v-model="edit.item.extend.minBet" placeholder="请输入计入排行榜的有效单次下注">
                       <template slot="append">
                         （₱）
                       </template>
@@ -127,7 +129,7 @@
                 </el-col>
                 <el-col :span="12">
                   <el-form-item label="达到进入排行榜要求的奖励：" prop="extend.progressReward" :required="true" style="display: none">
-                    <el-input v-model="edit.item.extend.progressReward" placeholder="请输入玩家奖励上限" >
+                    <el-input v-model="edit.item.extend.progressReward" placeholder="请输入玩家奖励上限">
                       <template slot="append">
                         （₱）
                       </template>
@@ -136,7 +138,7 @@
                 </el-col>
                 <el-col :span="12">
                   <el-form-item label="玩家奖励上限：" prop="extend.maxReward" :required="true" style="display: none">
-                    <el-input v-model.number="edit.item.extend.maxReward" placeholder="请输入玩家奖励上限" >
+                    <el-input v-model.number="edit.item.extend.maxReward" placeholder="请输入玩家奖励上限">
                       <template slot="append">
                         （₱）
                       </template>
@@ -145,7 +147,7 @@
                 </el-col>
                 <el-col :span="12">
                   <el-form-item label="活动展示金额：" prop="extend.rewardShow" :required="true" style="display: none">
-                    <el-input v-model.number="edit.item.extend.rewardShow" placeholder="请输入活动展示金额" >
+                    <el-input v-model.number="edit.item.extend.rewardShow" placeholder="请输入活动展示金额">
                       <template slot="append">
                         （₱）
                       </template>
@@ -172,7 +174,7 @@
               <el-form label-width="220px">
                 <el-col :span="24">
                   <el-form-item label="规则图片横板：" :required="true">
-                    <el-col :span="4" v-for="(v,k) in edit.item.activity.ruleImgHor">
+                    <el-col v-for="(v,k) in edit.item.activity.ruleImgHor" :span="4">
                       <span style="display: inline-block; position: relative;">
                         <span style="position: absolute; top: -20px; right: 1px; cursor: pointer; z-index: 99" @click="removeRuleImage(k, 'Hor')">移除</span>
                         <ImagePicker v-model="edit.item.activity.ruleImgHor[k]" />
@@ -185,9 +187,9 @@
                 </el-col>
                 <el-col :span="24">
                   <el-form-item label="规则图片竖版：" :required="true">
-                    <el-col :span="4" v-for="(v,k) in edit.item.activity.ruleImgVer">
+                    <el-col v-for="(v,k) in edit.item.activity.ruleImgVer" :span="4">
                       <span style="display: inline-block; position: relative;">
-                      <span style="position: absolute; top: -20px; right: 1px; cursor: pointer; z-index: 99" @click="removeRuleImage(k, 'Vor')">移除</span>
+                        <span style="position: absolute; top: -20px; right: 1px; cursor: pointer; z-index: 99" @click="removeRuleImage(k, 'Vor')">移除</span>
                         <ImagePicker v-model="edit.item.activity.ruleImgVer[k]" />
                       </span>
                     </el-col>
@@ -203,20 +205,19 @@
                 <el-col :span="12">
                   <el-form-item label="勾选支持的游戏：" :required="true">
                     <el-input
+                      v-model="filterText"
                       placeholder="输入关键字进行过滤"
-                      v-model="filterText">
-                    </el-input>
+                    />
                     <el-tree
+                      ref="tree"
                       :data="treeData"
                       show-checkbox
                       node-key="id"
-                      ref="tree"
                       highlight-current
                       :props="defaultProps"
                       :filter-node-method="filterNode"
                       @check-change="handleGameCheckChange"
-                    >
-                    </el-tree>
+                    />
                   </el-form-item>
                   <el-form-item label="给选中游戏排序：" :required="true">
                     <el-button size="mini" type="primary" @click="showGamesSortDialog()">
@@ -258,7 +259,7 @@
                       size="mini"
                       oninput=" if(value < 0 || value === '' || value == null){value = 0;} "
                       @change="onOrderNoChange"
-                    ></el-input>
+                    />
                   </template>
                 </el-table-column>
               </el-table>
@@ -294,7 +295,8 @@
                       v-if="edit.item.extend.rewardWay === 2"
                       v-model.number="edit.item.extend.rewardPercent"
                       placeholder="请输入有效下注百分比"
-                      size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "
+                      size="mini"
+                      oninput=" if(value < 0 || value === '' || value == null){value = 0;} "
                     >
                       <template slot="append">
                         %
@@ -305,7 +307,7 @@
                 <fieldset style="margin-top: 10px">
                   <legend>榜单显示人数</legend>
                   <el-col :span="4">
-                    <el-input v-model.number="edit.item.extend.maxRankShow" placeholder="请输入榜单显示人数" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
+                    <el-input v-model.number="edit.item.extend.maxRankShow" placeholder="请输入榜单显示人数" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} " />
                   </el-col>
                 </fieldset>
                 <fieldset style="margin-top: 10px">
@@ -323,7 +325,7 @@
                       width="100"
                     >
                       <template slot-scope="scope">
-                        <el-input v-model.number="scope.row.rankStart" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
+                        <el-input v-model.number="scope.row.rankStart" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} " />
                       </template>
                     </el-table-column>
                     <el-table-column
@@ -332,17 +334,17 @@
                       width="100"
                     >
                       <template slot-scope="scope">
-                        <el-input v-model.number="scope.row.rankEnd" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
+                        <el-input v-model.number="scope.row.rankEnd" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} " />
                       </template>
                     </el-table-column>
                     <el-table-column
+                      v-if="edit.item.extend.rewardWay === 1"
                       prop="reward"
                       label="奖励金额"
                       width="200"
-                      v-if="edit.item.extend.rewardWay === 1"
                     >
                       <template slot-scope="scope">
-                        <el-input v-model.number="scope.row.reward" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
+                        <el-input v-model.number="scope.row.reward" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} " />
                       </template>
                     </el-table-column>
                     <el-table-column label="操作" column-key="op">
@@ -362,7 +364,7 @@
                 <fieldset style="margin-top: 10px">
                   <legend>热门时段</legend>
                   <el-button size="mini" type="primary" @click="handleAddHotTime()">添加</el-button>
-                  <el-form :inline="true" v-for="(item, index) in edit.item.activity.hotTimeList">
+                  <el-form v-for="(item, index) in edit.item.activity.hotTimeList" :key="index" :inline="true">
                     <el-form-item :label="`热门时段${index + 1}:`">
                       <el-time-picker
                         v-model="item.startTime"
@@ -377,7 +379,7 @@
                       />
                     </el-form-item>
                     <el-form-item label="积分倍数:">
-                      <el-input v-model="item.scoreRatio" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
+                      <el-input v-model="item.scoreRatio" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} " />
                     </el-form-item>
                     <el-form-item>
                       <el-button size="mini" type="primary" @click="handleDelHotTime(index)">删除</el-button>
@@ -405,7 +407,7 @@
                       width="130"
                     >
                       <template slot-scope="scope">
-                        <el-input v-model.number="scope.row[scoreWay]" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
+                        <el-input v-model.number="scope.row[scoreWay]" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} " />
                       </template>
                     </el-table-column>
                   </el-table>
@@ -468,15 +470,14 @@
 
 <script>
 
-import Publish from "@/components/Publish/index.vue";
-import SiteSelect from "@/components/SiteSelect/index.vue";
-import Compare from "@/components/Compare/index.vue";
-import GameTreeSelector from "@/components/GamesTreeSelector/index.vue";
-import ImagePicker from "@/components/ImagePicker/ImagePicker.vue"
-import store from "@/store";
-import {$libDate, $libShow, ClientTableData, DataRule} from "@/utils/common";
-import request from "@/utils/request";
-import {Message} from "element-ui";
+import Publish from '@/components/Publish/index.vue'
+import SiteSelect from '@/components/SiteSelect/index.vue'
+import Compare from '@/components/Compare/index.vue'
+import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
+import store from '@/store'
+import { $libDate, $libShow, ClientTableData, DataRule } from '@/utils/common'
+import request from '@/utils/request'
+import { Message } from 'element-ui'
 
 const filterMap = {}
 
@@ -500,7 +501,7 @@ function newItem() {
         uidList: '',
         abTest: {
           switch: false,
-          bPercent: 0,
+          bPercent: 0
         }
       },
       ruleImgHor: [],
@@ -508,12 +509,12 @@ function newItem() {
       isOpen: false,
       debugTimeOffset: 0,
       hotTimeList: [
-        /*{
+        /* {
           startTime: new Date(new Date().toDateString()), // 当天0点
           endTime: new Date(new Date().toDateString() + ' 23:59:59'), // 当天23:59:59
           scoreRatio: 1.5,
         },*/
-      ],
+      ]
     },
     extend: {
       minBet: 0,
@@ -530,30 +531,30 @@ function newItem() {
       pokerExtend: {
         tongitsScoreItems: [
           {
-            antes: 1,
+            antes: 1
           },
           {
-            antes: 5,
+            antes: 5
           },
           {
-            antes: 10,
+            antes: 10
           },
           {
-            antes: 20,
+            antes: 20
           },
           {
-            antes: 50,
+            antes: 50
           },
           {
-            antes: 200,
+            antes: 200
           },
           {
-            antes: 500,
+            antes: 500
           },
           {
-            antes: 1000,
+            antes: 1000
           }
-        ],
+        ]
       }
     }
   }
@@ -563,14 +564,13 @@ function newRewardItem() {
   return {
     rankStart: 0,
     rankEnd: 0,
-    reward: 0,
+    reward: 0
   }
 }
 
 export default {
   components: {
     Compare,
-    GameTreeSelector,
     SiteSelect,
     Publish,
     ImagePicker
@@ -608,7 +608,7 @@ export default {
         'extend.maxRankShow': '最大展示排名',
         'extend.pokerExtend.tongitsScoreItems': 'Tongits积分奖励配置',
         modifyUser: '最后修改人',
-        updateTime: '更新时间',
+        updateTime: '更新时间'
       },
 
       statusNames: { 2: '上架', 6: '下架', 7: '预上架', 8: '预下架' },
@@ -625,7 +625,7 @@ export default {
         isEdit: false,
         visible: false,
         item: newItem(),
-        title: "新增",
+        title: '新增',
         gamesSortDialogVisible: false,
         tongitsScoreItems: [],
         scoreWays: ['1', '100', '2', '101']
@@ -657,7 +657,7 @@ export default {
       defaultProps: {
         label: 'label',
         children: 'children',
-        disabled: 'disabled',
+        disabled: 'disabled'
       },
 
       // 奖励类型
@@ -668,12 +668,12 @@ export default {
       ],
 
       filterText: '',
-      filterGameIds: [ 2031, 10002 ],
+      filterGameIds: [2031, 10002],
       GamesSorted: [
         {
           GameId: 1, Name: '测试游戏1', OrderNo: 1
         }
-      ],
+      ]
     }
   },
   created() {
@@ -741,7 +741,7 @@ export default {
         url: '/rankingconfig/all',
         method: 'get',
         data: {
-          'activity_id': activityId,
+          'activity_id': activityId
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -751,7 +751,7 @@ export default {
             rows.push({
               ...obj,
               activity: JSON.parse(obj.activity),
-              extend: JSON.parse(obj.extend),
+              extend: JSON.parse(obj.extend)
             })
           }
           this.clientDB = new ClientTableData(rows, 10, filterMap, 'EndTime', -1, 'id')
@@ -839,7 +839,7 @@ export default {
     },
     handleSave() {
       const item = this.getPostItem()
-      const data = {...item}
+      const data = { ...item }
       data.activity = JSON.stringify(item.activity)
       data.extend = JSON.stringify(item.extend)
 
@@ -884,7 +884,7 @@ export default {
         }
       })
     },
-    //************************ 修改/添加弹框相关 ************************
+    //* *********************** 修改/添加弹框相关 ************************
     getEditTitle() {
       return this.edit.isEdit ? '修改配置' : '新增配置'
     },
@@ -937,7 +937,7 @@ export default {
           if (item.activity.whitelist.abTest === undefined) {
             item.activity.whitelist.abTest = {
               switch: false,
-              bPercent: 0,
+              bPercent: 0
             }
           }
 
@@ -988,8 +988,8 @@ export default {
       }
       this.edit.item.activity.showEndTime = this.edit.item.activity.endTime + 1000 * 60 * 60 * 24
     },
-    //************************ 修改/添加弹框相关 ************************
-    //************************ 规则图片相关 ************************
+    //* *********************** 修改/添加弹框相关 ************************
+    //* *********************** 规则图片相关 ************************
     addRuleImage(type) {
       console.log('addRuleImage type:', type)
       if (type === 'Hor') {
@@ -1006,18 +1006,18 @@ export default {
         this.edit.item.activity.ruleImgVer.splice(index, 1)
       }
     },
-    //************************ 规则图片相关 ************************
-    //************************ 游戏列表相关 ************************
+    //* *********************** 规则图片相关 ************************
+    //* *********************** 游戏列表相关 ************************
     filterNode(value, data) {
-      if (!value) return true;
-      return data.label.indexOf(value) !== -1;
+      if (!value) return true
+      return data.label.indexOf(value) !== -1
     },
     getGameAll() {
       request({
         url: '/thirdpartygames/all',
         method: 'get',
         data: {},
-        params: {status : 2}
+        params: { status: 2 }
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
@@ -1034,7 +1034,7 @@ export default {
               continue
             }
 
-            const game = {Gid: obj.Gid, Name: obj.Name, Description: obj.Description}
+            const game = { Gid: obj.Gid, Name: obj.Name, Description: obj.Description }
             if (data.hasOwnProperty(obj.CategoryID)) {
               data[obj.CategoryID].push(game)
             } else {
@@ -1043,15 +1043,15 @@ export default {
           }
 
           this.treeData = []
-          const categories = {1: 'Slot', 2: 'Poker', 3: 'Casino'}
+          const categories = { 1: 'Slot', 2: 'Poker', 3: 'Casino' }
 
           for (const key in data) {
             const games = data[key]
-            const cty = {id: 'p-' + key, label: categories[key], children: []}
+            const cty = { id: 'p-' + key, label: categories[key], children: [] }
 
             for (let i = 0; i < games.length; i++) {
               const game = games[i]
-              cty.children.push({id: game.Gid, label: game.Name})
+              cty.children.push({ id: game.Gid, label: game.Name })
             }
             this.treeData.push(cty)
           }
@@ -1078,7 +1078,7 @@ export default {
             }
           }
         }
-        this.GamesSorted.push({GameId: gameId, Name: name, OrderNo: i+1})
+        this.GamesSorted.push({ GameId: gameId, Name: name, OrderNo: i + 1 })
       }
     },
     handleGameCheckChange(data, checked, indeterminate) {
@@ -1123,24 +1123,24 @@ export default {
         return a.OrderNo - b.OrderNo
       })
     },
-    //************************ 游戏列表相关 ************************
-    //************************ 游戏场次底注列表相关 ************************
+    //* *********************** 游戏列表相关 ************************
+    //* *********************** 游戏场次底注列表相关 ************************
     async getGameAnteTables() {
       const gameIds = this.edit.item.gameIdList || []
       for (const gameId of gameIds) {
         let list = []
         switch (gameId) {
           case 22:
-            list =  await this.getTongitsAnteList(1)
+            list = await this.getTongitsAnteList(1)
             break
           case 28:
-            list =  await this.getTongitsAnteList(2)
+            list = await this.getTongitsAnteList(2)
             break
           case 29:
-            list =  await this.getTongitsAnteList(3)
+            list = await this.getTongitsAnteList(3)
             break
           default:
-            console.log('getGameAnteTables gameId: ', gameId, ' not supported',)
+            console.log('getGameAnteTables gameId: ', gameId, ' not supported')
         }
         this.edit.gameAntesMap[gameId] = list
       }
@@ -1170,7 +1170,7 @@ export default {
       console.log('getTongitsAnteList anteTables: ', anteTables)
       return anteTables
     },
-    //************************ 热门时段相关 ************************
+    //* *********************** 热门时段相关 ************************
     handleAddHotTime() {
       this.edit.item.activity.hotTimeList.push({
         startTime: '',
@@ -1180,7 +1180,7 @@ export default {
     },
     handleDelHotTime(index) {
       this.edit.item.activity.hotTimeList.splice(index, 1)
-    },
+    }
   }
 }
 </script>
