@@ -10,8 +10,12 @@
           <el-option v-for="(o, k) in gameOptions" :key="o.key" :label="o.label" :value="parseInt(o.key)" />
         </el-select>
         <el-button type="primary" size="mini" @click="saveCfgByGid">保存配置</el-button>
+        <el-button type="primary" size="mini" @click="onMultiAppSaveClick">
+          多APP保存配置
+        </el-button>
       </el-col>
-      <el-col span="10">
+
+      <el-col :span="10">
         <el-select v-model="appId" placeholder="请选择应用" size="mini" @change="onAppIdChange">
           <el-option v-for="(o, idx) in appOptions" :key="idx" :label="o.label" :value="o.value" />
         </el-select>
@@ -734,6 +738,28 @@
           </span>
         </template>
       </el-dialog>
+
+      <!-- 多应用选择弹窗 -->
+      <el-dialog
+        title="选择应用"
+        :visible.sync="multiAppDialogVisible"
+        width="400px"
+      >
+        <el-tree
+          ref="appTree"
+          :data="appTreeData"
+          show-checkbox
+          node-key="value"
+          default-expand-all
+          v-model:checked-keys="checkedAppKeys"
+          @check-change="onCheckChange"
+        />
+
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="multiAppDialogVisible = false">取消</el-button>
+          <el-button type="primary" @click="confirmMultiAppSave">确认保存</el-button>
+        </span>
+      </el-dialog>
     </span>
     <!--    </fieldset>-->
     <!--对比组件-->
@@ -910,7 +936,12 @@ export default {
         { value: 0, label: '旧版' }
       ],
       appId: store.getters.appId || 0,
-      bCreateCfg: false
+      bCreateCfg: false,
+      multiAppDialogVisible: false,
+      appTreeData: [],
+      checkedAppKeys: [],
+      selectAllNodeKey: 'all',
+      diffData: {}
     }
   },
   created() {
@@ -964,7 +995,6 @@ export default {
           this.proceedData(this.showItem.Plans)
           // 强制刷新 UI
           this.$forceUpdate()
-          console.log('🎯 成功加载自定义配置:', this.getSlotsCustomScriptKey(), this.showItem.Plans)
 
           this.queryBase(this.queryGid)
           this.queryScriptVolatility(this.queryGid)
@@ -974,7 +1004,6 @@ export default {
           this.showItem.Plans = this.newPlansCfg()
           if (store.getters.appId === this.appId) {
             this.bCreateCfg = true
-            console.log('this.bCreateCfg', this.bCreateCfg)
           }
         }
       }).catch(err => {
@@ -1009,7 +1038,6 @@ export default {
       })
     },
     querySlotBase(planID) {
-      console.log('querySlotBase', this.queryGid, '111::', planID)
       request({
         url: '/dataProxy/info',
         method: 'get',
@@ -1023,7 +1051,6 @@ export default {
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          console.log('querySlotBase', response.Data)
           this.showBetPlanverList = []
           this.showBetPlanverList = Object.entries(response.Data)
             .map(([key, value]) => ({
@@ -1032,7 +1059,6 @@ export default {
             }))
             .sort((a, b) => a.betAmount - b.betAmount)
         }
-        console.log('this.showBetPlanverMap', this.showBetPlanverList)
         this.getBetPlanver = true
       }).catch(e => {
         console.log(e)
@@ -1532,7 +1558,6 @@ export default {
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          console.log('getTodayRaffleAmount', response.Data)
           if (response.Data) {
             console.log('todayRaffleAmount', $this.todayRaffleAmount)
           }
@@ -1540,7 +1565,6 @@ export default {
       })
     },
     getVersion(row, planRow) {
-      console.log(row, planRow.PlanId)
       const $this = this
       request({
         url: '/dataProxy/info',
@@ -1612,7 +1636,6 @@ export default {
           json.forEach((row, index) => {
             if (index > 0) {
               const idx = index - 1
-              console.log(index, idx, row)
 
               this.editSlotsScriptOddsCfgFormData.push({
                 OddsMin: row[0],
@@ -1632,7 +1655,6 @@ export default {
       }
     },
     handleFileUpload2(event, datIdx) {
-      console.log(datIdx, event)
       const file = event.target.files[0]
       if (file) {
         const reader = new FileReader()
@@ -1642,12 +1664,10 @@ export default {
           const firstSheetName = workbook.SheetNames[0]
           const worksheet = workbook.Sheets[firstSheetName]
           const json = XLSX.utils.sheet_to_json(worksheet, { header: 1 })
-          console.log(this.editBetOddsPlansFormData[datIdx].OddsCfg)
           this.editBetOddsPlansFormData[datIdx].OddsCfg = []
           json.forEach((row, index) => {
             if (index > 0) {
               const idx = index - 1
-              console.log(index, idx, row, datIdx)
 
               this.editBetOddsPlansFormData[datIdx].OddsCfg.push({
                 OddsMin: row[0],
@@ -1669,7 +1689,6 @@ export default {
         cnt += obj.ScriptOddsSum
       }
       var scriptSteps = this.showItem.Plans[this.currentPlanIndex].Versions[this.currentVersionIndex].ScriptCfg.ScriptSteps
-      console.log(scriptSteps)
 
       Message.success('当前百分比：' + (cnt / (scriptSteps * Number(this.slotCfg[this.queryGid].Bet)) * 100).toFixed(3) + '%')
     },
@@ -1694,7 +1713,6 @@ export default {
       }
       for (const i in this.editSlotsScriptOddsCfgFormData) {
         const obj = this.editSlotsScriptOddsCfgFormData[i]
-        console.log(obj, obj.OddsMin * obj.ScriptSteps)
         if (obj.OddsMin * obj.ScriptSteps <= obj.ScriptOddsSum && obj.ScriptOddsSum <= obj.OddsMax * obj.ScriptSteps) {
         } else {
           const a = Number(i) + 1
@@ -1744,20 +1762,14 @@ export default {
       if (gid > 100000) {
         gid = gid - 100000
       }
-      console.log(gid, this.slotCfg[gid].AbnormalSteps)
-      //
-      // console.log('this.editVersionFormData.ScriptCfg.OddsCfg.length',this.editVersionFormData.ScriptCfg.OddsCfg.length)
-      // console.log('this.queryGid', this.queryGid)
       if (!this.slotCfg[gid].AbnormalSteps) {
         Message.error('请设置异常步数！')
         return
       }
       var strings = this.slotCfg[gid].AbnormalSteps.split(',')
-      // console.log('this.editVersionFormData.ScriptCfg.OddsCfg:',this.editVersionFormData.ScriptCfg.OddsCfg)
       for (const i in this.editVersionFormData.ScriptCfg.OddsCfg) {
         const o = this.editVersionFormData.ScriptCfg.OddsCfg[i]
         for (const strNum of strings) {
-          // console.log('strNum:',strNum);
           if (o.OddsMax > parseInt(strNum) && o.OddsMin < parseInt(strNum)) {
             const ss = (parseInt(i) + 1)
             Message.error('第' + (ss) + '行异常步数【' + strings + '】包含在配置内,min:' + o.OddsMin + ' max:' + o.OddsMax)
@@ -2025,6 +2037,142 @@ export default {
         this.saveCfgByGid()
       }
       this.bCreateCfg = false
+    },
+    // 计算当前应用原数据与修改后的数据之间的差异
+    getDifferenceBetweenConfigs(originalData, modifiedData) {
+      const diff = {}
+      for (const key in modifiedData) {
+        if (!modifiedData.hasOwnProperty(key)) continue
+        if (typeof modifiedData[key] === 'object' && modifiedData[key] !== null) {
+          if (typeof originalData[key] !== 'object' || originalData[key] === null) {
+            diff[key] = modifiedData[key]
+          } else {
+            const nestedDiff = this.getDifferenceBetweenConfigs(originalData[key], modifiedData[key])
+            if (Object.keys(nestedDiff).length > 0) {
+              diff[key] = nestedDiff
+            }
+          }
+        } else {
+          if (modifiedData[key] !== originalData[key]) {
+            diff[key] = modifiedData[key]
+          }
+        }
+      }
+
+      return diff
+    },
+    async saveDifferenceToOtherApps(appIds, diffData) {
+      for (const appId of appIds) {
+        // 获取当前应用的配置
+        const response = await getCustomize(this.getSlotsCustomScriptKey(), appId)
+
+        if (response.RetCode === 0) {
+          const currentConfig = response.Data || '{}'
+
+          // 计算当前应用配置与修改数据的差异
+          const planForm = JSON.parse(currentConfig.Data)
+          const updatedConfig = this.applyDifferenceToConfig(JSON.parse(JSON.stringify(planForm.Plans)), diffData)
+          const data = {
+            SlotsType: planForm.SlotsType,
+            Plans: updatedConfig
+          }
+
+          // 将差异应用到该应用的配置
+          currentConfig.Data = JSON.stringify(data)
+
+          await updateCustomize(currentConfig).then(response => {
+            if (response.RetCode === 0) {
+              Message.success(`应用 ${appId} 配置已成功更新！`)
+            }
+          })
+        } else {
+          console.warn(`⚠️ 无法获取应用 ${appId} 的配置.`)
+        }
+      }
+    },
+    applyDifferenceToConfig(currentConfig, diffData) {
+      for (const key in diffData) {
+        // eslint-disable-next-line no-prototype-builtins
+        if (diffData.hasOwnProperty(key)) {
+          // 如果差异存在于当前配置中，则进行覆盖
+          if (typeof diffData[key] === 'object' && diffData[key] !== null) {
+            // 如果是对象，则递归处理
+            currentConfig[key] = this.applyDifferenceToConfig(currentConfig[key] || {}, diffData[key])
+          } else {
+            currentConfig[key] = diffData[key]
+          }
+        }
+      }
+
+      return currentConfig
+    },
+    onMultiAppSaveClick() {
+      const val = JSON.parse(JSON.stringify(this.showItem.Plans))
+      const items = this.proceedUpdateData(val)
+      const oldData = JSON.parse(JSON.stringify(this.$refs.compare.oldVal))
+      this.$refs.compare.SetNewVal(items)
+
+      const $this = this
+
+      // 先执行对比
+      this.$refs.compare.Compare(function(isEdit) {
+        if (!isEdit) {
+          Message.error('没有任何修改，不需要提交')
+          return
+        }
+        if (!$this.checkData()) return
+
+        // 差异计算
+        $this.diffData = $this.getDifferenceBetweenConfigs(oldData, items)
+
+        // 弹出多应用选择弹窗
+        $this.prepareAppTree()
+        $this.multiAppDialogVisible = true
+      })
+    },
+    prepareAppTree() {
+      this.appTreeData = [
+        {
+          label: '全选',
+          value: this.selectAllNodeKey,
+          children: this.appOptions.slice(1).map(app => ({
+            label: app.label,
+            value: app.value
+          }))
+        }
+      ]
+      this.$set(this, 'checkedAppKeys', [])
+    },
+    async confirmMultiAppSave() {
+      // 选中的 App ID（排除全选节点 key）
+      const appIds = this.checkedAppKeys.filter(key => key !== this.selectAllNodeKey)
+      if (appIds.length === 0) {
+        Message.warning('请至少选择一个应用')
+        return
+      }
+
+      await this.saveDifferenceToOtherApps(appIds, this.diffData)
+      this.multiAppDialogVisible = false
+    },
+    // 处理全选或取消全选
+    onCheckChange(node, checked) {
+      if (node.value === this.selectAllNodeKey) {
+        // 点击全选节点时
+        if (checked) {
+          // 勾选全选时，选中所有子节点
+          this.checkedAppKeys = this.appOptions.slice(1).map(app => app.value)
+        } else {
+          // 取消全选时，清空所有子节点的选中状态
+          this.checkedAppKeys = []
+        }
+      } else {
+        // 如果是其他节点，直接更新 checkedAppKeys
+        if (checked) {
+          this.checkedAppKeys.push(node.value)
+        } else {
+          this.checkedAppKeys = this.checkedAppKeys.filter(item => item !== node.value)
+        }
+      }
     }
   }
 }

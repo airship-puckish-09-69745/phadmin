@@ -45,7 +45,8 @@
     <el-row style="margin-top: 30px">
       <el-col>
         <el-button type="primary" :disabled="editDisabled" @click="addRow">添加</el-button>
-        <el-button type="success" :disabled="editDisabled" @click="submitFrm">保存</el-button>
+        <el-button type="success" :disabled="editDisabled" @click="submitFrm(false)">保存</el-button>
+        <el-button v-if="version === 'V2'" type="success" :disabled="editDisabled" @click="submitFrm(true)">多APP保存</el-button>
       </el-col>
     </el-row>
 
@@ -56,6 +57,7 @@
 
 <script>
 import Compare from '@/components/Compare'
+import store from "@/store";
 
 export default {
   name: 'SlotsSymbolValue',
@@ -75,7 +77,9 @@ export default {
   data() {
     return {
       editDisabled: true,
-      lock: false
+      lock: false,
+      version: store.getters.version || 'V1',
+      oldData: JSON.parse(JSON.stringify(this.slotsData))
     }
   },
   updated() {
@@ -100,7 +104,7 @@ export default {
     getDiffData() {
       return JSON.parse(JSON.stringify(this.slotsData))
     },
-    submitFrm() {
+    submitFrm(isMultiApp) {
       const $this = this
       this.$refs.compare.SetNewVal(this.getDiffData())
       this.$refs.compare.Compare(function(isEdit) {
@@ -109,7 +113,11 @@ export default {
           return
         }
 
-        $this.$emit('saveData')
+        if (!isMultiApp) {
+          $this.$emit('saveData')
+        } else {
+          $this.$emit('multiAppSave', $this.oldData, $this.slotsData)
+        }
         $this.lock = false
       })
     }

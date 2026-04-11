@@ -132,7 +132,8 @@
 
     <el-row style="margin-top: 30px">
       <el-col :offset="3">
-        <el-button type="success" @click="submitFrm">保存</el-button>
+        <el-button type="success" @click="submitFrm(false)">保存</el-button>
+        <el-button v-if="version === 'V2'" type="success" @click="submitFrm(true)">多APP保存</el-button>
       </el-col>
     </el-row>
     <!--对比组件-->
@@ -144,6 +145,7 @@
 import {Message} from 'element-ui';
 import Compare from '@/components/Compare/index.vue';
 import XLSX from 'xlsx'
+import store from "@/store";
 
 export default {
   name: 'SlotsFreeTriggerPlans',
@@ -181,7 +183,9 @@ export default {
       },
       edit: {
         fileList: []
-      }
+      },
+      version: store.getters.version || 'V1',
+      oldData: {}
     }
   },
   created() {
@@ -253,7 +257,7 @@ export default {
       this.ScatterTriggerPlans.editIndex = this.cfg.ScatterTriggerPlans.findIndex(item => item.PlayTimesMin === row.PlayTimesMin && item.PlayTimesMax === item.PlayTimesMax)
       this.ScatterTriggerPlans.dialogVisible = true
     },
-    submitFrm() {
+    submitFrm(isMultiApp) {
       const $this = this
       this.$refs.compare.SetNewVal(this.getDiffData())
       this.$refs.compare.Compare(function (isEdit) {
@@ -262,7 +266,11 @@ export default {
           return
         }
 
-        $this.$emit('saveData')
+        if (!isMultiApp) {
+          $this.$emit('saveData')
+        } else {
+          $this.$emit('multiAppSave', $this.oldData, $this.slotsData)
+        }
         $this.lock = false
       })
     },
@@ -363,6 +371,7 @@ export default {
       // this.initSymbolMap()
       if (this.slotsData) {
         this.cfg = this.slotsData
+        this.oldData = this.getDiffData()
         this.$refs.compare.SetOldVal(this.getDiffData())
         this.lock = true
       }
