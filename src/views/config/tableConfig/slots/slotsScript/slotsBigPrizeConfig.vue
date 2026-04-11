@@ -4,14 +4,14 @@
 
     <el-row :gutter="10" style="margin-top: 30px">
       <el-row>
-        <el-col span="8">
+        <el-col :span="8">
           <span> 选择游戏 :</span>
           <el-select v-model="queryGid" size="mini" filterable default-first-option @change="queryKeyInput">
             <!--              <el-option label="所有" :value="0"/>-->
             <el-option v-for="(o,k) in gameOptions" :key="o.key" :label="o.label" :value="parseInt(o.key)" />
           </el-select>
         </el-col>
-        <el-col span="10">
+        <el-col :span="10">
           <el-select v-model="appId" placeholder="请选择应用" size="mini" @change="onAppIdChange">
             <el-option v-for="(o, idx) in appOptions" :key="idx" :label="o.label" :value="o.value" />
           </el-select>
@@ -207,6 +207,7 @@
           <el-col :span="12">
             <el-form-item>
               <el-button type="primary" @click="setData">保存</el-button>
+              <el-button type="primary" @click="onMultiAppSaveClick">多APP保存</el-button>
             </el-form-item>
           </el-col>
         </el-form>
@@ -347,6 +348,28 @@
       </el-row>
     </el-dialog>
     <!-- 用户群组条件弹窗 结束 -->
+
+    <!-- 多应用选择弹窗 -->
+    <el-dialog
+      title="选择应用"
+      :visible.sync="multiAppDialogVisible"
+      width="400px"
+    >
+      <el-tree
+        ref="appTree"
+        v-model:checked-keys="checkedAppKeys"
+        :data="appTreeData"
+        show-checkbox
+        node-key="value"
+        default-expand-all
+        @check-change="onCheckChange"
+      />
+
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="multiAppDialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="confirmMultiAppSave">确认保存</el-button>
+      </span>
+    </el-dialog>
 
     <!--对比组件-->
     <compare ref="compare" :attr-names="AttrNames" />
@@ -517,7 +540,12 @@ export default {
         { value: 0, label: '旧版' }
       ],
       appId: store.getters.appId || 0,
-      bCreateCfg: false
+      bCreateCfg: false,
+      multiAppDialogVisible: false,
+      appTreeData: [],
+      checkedAppKeys: [],
+      selectAllNodeKey: 'all',
+      diffData: {}
     }
   },
 
@@ -637,18 +665,6 @@ export default {
 
     setData() {
       if (!ValidateVueItem(this.$refs['item'])) return false
-      if (this.item.BigPrizeCfg.TaxPerThousand < 0 || this.item.BigPrizeCfg.TaxPerThousand > 1000) {
-        Message.error('下注总金额抽水值必须在 0~1000 之间!')
-        return false
-      }
-      if (this.item.BigPrizeCfg.HitPerMillion < 0 || this.item.BigPrizeCfg.HitPerMillion > 1000000) {
-        Message.error('中奖概率值必须在 0~1000000 之间!')
-        return false
-      }
-      if (this.item.BigPrizeCfg.HitSteps < 0 || this.item.BigPrizeCfg.HitSteps > 100000000) {
-        Message.error('中奖最大间隔值必须在 0~100000000 之间!')
-        return false
-      }
       if (!this.checkBigPrizeGroup()) {
         return false
       }
@@ -861,6 +877,19 @@ export default {
 
     // 验证用户群配置
     checkBigPrizeGroup() {
+      if (this.item.BigPrizeCfg.TaxPerThousand < 0 || this.item.BigPrizeCfg.TaxPerThousand > 1000) {
+        Message.error('下注总金额抽水值必须在 0~1000 之间!')
+        return false
+      }
+      if (this.item.BigPrizeCfg.HitPerMillion < 0 || this.item.BigPrizeCfg.HitPerMillion > 1000000) {
+        Message.error('中奖概率值必须在 0~1000000 之间!')
+        return false
+      }
+      if (this.item.BigPrizeCfg.HitSteps < 0 || this.item.BigPrizeCfg.HitSteps > 100000000) {
+        Message.error('中奖最大间隔值必须在 0~100000000 之间!')
+        return false
+      }
+
       // 先按分组ID排序
       this.item.BigPrizeGroups.sort(function(a, b) {
         return a.GroupId < b.GroupId
@@ -1005,7 +1034,7 @@ export default {
         }).then(response => {
           if (response.RetCode === 0) {
             this.form = response.Data || {}
-            console.log('this.form',this.form)
+            console.log('this.form', this.form)
             if (response.Data && response.Data.Data !== '') {
               const item = JSON.parse(response.Data.Data)
               if (typeof item['BigPrizeGroups'] === 'undefined') {
@@ -1039,6 +1068,144 @@ export default {
     onCopyAllCfg() {
       this.setData()
       this.bCreateCfg = false
+    },
+    // 计算当前应用原数据与修改后的数据之间的差异
+    getDifferenceBetweenConfigs(originalData, modifiedData) {
+      const diff = {}
+      for (const key in modifiedData) {
+        if (!modifiedData.hasOwnProperty(key)) continue
+        if (typeof modifiedData[key] === 'object' && modifiedData[key] !== null) {
+          if (typeof originalData[key] !== 'object' || originalData[key] === null) {
+            diff[key] = modifiedData[key]
+          } else {
+            const nestedDiff = this.getDifferenceBetweenConfigs(originalData[key], modifiedData[key])
+            if (Object.keys(nestedDiff).length > 0) {
+              diff[key] = nestedDiff
+            }
+          }
+        } else {
+          if (modifiedData[key] !== originalData[key]) {
+            diff[key] = modifiedData[key]
+          }
+        }
+      }
+
+      return diff
+    },
+    async saveDifferenceToOtherApps(appIds, diffData) {
+      for (const appId of appIds) {
+        // 获取当前应用的配置
+        const response = await getCustomize(this.getSlotsBigPrizeConfigKey(), appId)
+
+        if (response.RetCode === 0) {
+          const currentConfig = response.Data || '{}'
+          // 计算当前应用配置与修改数据的差异
+          const data = JSON.parse(currentConfig.Data)
+          const updatedConfig = this.applyDifferenceToConfig(data, diffData)
+
+          // 将差异应用到该应用的配置
+          currentConfig.Data = JSON.stringify(updatedConfig)
+
+          await updateCustomize(currentConfig).then(response => {
+            if (response.RetCode === 0) {
+              Message.success(`应用 ${appId} 配置已成功更新！`)
+            }
+          })
+        } else {
+          console.warn(`⚠️ 无法获取应用 ${appId} 的配置.`)
+        }
+      }
+    },
+    applyDifferenceToConfig(currentConfig, diffData) {
+      for (const key in diffData) {
+        // eslint-disable-next-line no-prototype-builtins
+        if (diffData.hasOwnProperty(key)) {
+          // 如果差异存在于当前配置中，则进行覆盖
+          if (typeof diffData[key] === 'object' && diffData[key] !== null) {
+            // 如果是对象，则递归处理
+            currentConfig[key] = this.applyDifferenceToConfig(currentConfig[key] || {}, diffData[key])
+          } else {
+            currentConfig[key] = diffData[key]
+          }
+        }
+      }
+
+      return currentConfig
+    },
+    onMultiAppSaveClick() {
+      if (!ValidateVueItem(this.$refs['item'])) return false
+      if (!this.checkBigPrizeGroup()) {
+        return false
+      }
+      if (!this.checkWarmUpCfg()) {
+        return false
+      }
+      this.form.Data = JSON.stringify(this.getPostData())
+      const newData = this.getPostData()
+      const oldData = JSON.parse(this.$refs.compare.oldVal.Data)
+      this.form.Data = JSON.stringify(newData)
+      this.$refs.compare.SetNewVal(this.form)
+
+      const $this = this
+
+      // 先执行对比
+      this.$refs.compare.Compare(function(isEdit) {
+        if (!isEdit) {
+          Message.error('没有任何修改，不需要提交')
+          return
+        }
+
+        // 差异计算
+        $this.diffData = $this.getDifferenceBetweenConfigs(oldData, newData)
+
+        // 弹出多应用选择弹窗
+        $this.prepareAppTree()
+        $this.multiAppDialogVisible = true
+      })
+    },
+    prepareAppTree() {
+      this.appTreeData = [
+        {
+          label: '全选',
+          value: this.selectAllNodeKey,
+          children: this.appOptions.slice(1).map(app => ({
+            label: app.label,
+            value: app.value
+          }))
+        }
+      ]
+      this.$set(this, 'checkedAppKeys', [])
+    },
+    async confirmMultiAppSave() {
+      // 选中的 App ID（排除全选节点 key）
+      const appIds = this.checkedAppKeys.filter(key => key !== this.selectAllNodeKey)
+      if (appIds.length === 0) {
+        Message.warning('请至少选择一个应用')
+        return
+      }
+
+      await this.saveDifferenceToOtherApps(appIds, this.diffData)
+      this.multiAppDialogVisible = false
+    },
+    // 处理全选或取消全选
+    onCheckChange(node, checked) {
+      if (node.value === this.selectAllNodeKey) {
+        // 点击全选节点时
+        if (checked) {
+          // 勾选全选时，选中所有子节点
+          this.checkedAppKeys = this.appOptions.slice(1).map(app => app.value)
+        } else {
+          // 取消全选时，清空所有子节点的选中状态
+          this.checkedAppKeys = []
+        }
+      } else {
+        // 如果是其他节点，直接更新 checkedAppKeys
+        if (checked) {
+          this.checkedAppKeys.push(node.value)
+        } else {
+          this.checkedAppKeys = this.checkedAppKeys.filter(item => item !== node.value)
+        }
+      }
     }
   }
 }

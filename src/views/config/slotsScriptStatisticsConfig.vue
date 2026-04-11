@@ -106,6 +106,7 @@
               <br>
               <el-form-item>
                 <el-button type="primary" @click="setData">保存</el-button>
+                <el-button v-if="version === 'V2'" type="primary" @click="onMultiAppSaveClick">多APP保存</el-button>
               </el-form-item>
             </el-form>
           </el-col>
@@ -192,6 +193,28 @@
         </el-col>
       </el-row>
     </el-dialog>
+
+    <!-- 多应用选择弹窗 -->
+    <el-dialog
+      title="选择应用"
+      :visible.sync="multiAppDialogVisible"
+      width="400px"
+    >
+      <el-tree
+        ref="appTree"
+        v-model:checked-keys="checkedAppKeys"
+        :data="appTreeData"
+        show-checkbox
+        node-key="value"
+        default-expand-all
+        @check-change="onCheckChange"
+      />
+
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="multiAppDialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="confirmMultiAppSave">确认保存</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -247,7 +270,12 @@ export default {
       ],
       appId: store.getters.appId || 0,
       version: store.getters.version || 'V1',
-      bCreateCfg: false
+      bCreateCfg: false,
+      multiAppDialogVisible: false,
+      appTreeData: [],
+      checkedAppKeys: [],
+      selectAllNodeKey: 'all',
+      diffData: {}
     }
   },
   created() {
@@ -508,6 +536,138 @@ export default {
     onCopyAllCfg() {
       this.setData()
       this.bCreateCfg = false
+    },
+    // 计算当前应用原数据与修改后的数据之间的差异
+    getDifferenceBetweenConfigs(originalData, modifiedData) {
+      const diff = {}
+      for (const key in modifiedData) {
+        if (!modifiedData.hasOwnProperty(key)) continue
+        if (typeof modifiedData[key] === 'object' && modifiedData[key] !== null) {
+          if (typeof originalData[key] !== 'object' || originalData[key] === null) {
+            diff[key] = modifiedData[key]
+          } else {
+            const nestedDiff = this.getDifferenceBetweenConfigs(originalData[key], modifiedData[key])
+            if (Object.keys(nestedDiff).length > 0) {
+              diff[key] = nestedDiff
+            }
+          }
+        } else {
+          if (modifiedData[key] !== originalData[key]) {
+            console.log('不同', key, modifiedData[key])
+            diff[key] = modifiedData[key]
+          }
+        }
+      }
+
+      return diff
+    },
+    async saveDifferenceToOtherApps(appIds, diffData) {
+      for (const appId of appIds) {
+        // 获取当前应用的配置
+        const response = await getCustomize(this.subKey, appId)
+
+        if (response.RetCode === 0) {
+          const currentConfig = response.Data || '{}'
+          // 计算当前应用配置与修改数据的差异
+          const data = JSON.parse(currentConfig.Data)
+          const updatedConfig = this.applyDifferenceToConfig(data, diffData)
+
+          // 将差异应用到该应用的配置
+          currentConfig.Data = JSON.stringify(updatedConfig)
+
+          await updateCustomize(currentConfig).then(response => {
+            if (response.RetCode === 0) {
+              Message.success(`应用 ${appId} 配置已成功更新！`)
+            }
+          })
+        } else {
+          console.warn(`⚠️ 无法获取应用 ${appId} 的配置.`)
+        }
+      }
+    },
+    applyDifferenceToConfig(currentConfig, diffData) {
+      for (const key in diffData) {
+        // eslint-disable-next-line no-prototype-builtins
+        if (diffData.hasOwnProperty(key)) {
+          // 如果差异存在于当前配置中，则进行覆盖
+          if (typeof diffData[key] === 'object' && diffData[key] !== null) {
+            // 如果是对象，则递归处理
+            currentConfig[key] = this.applyDifferenceToConfig(currentConfig[key] || {}, diffData[key])
+          } else {
+            console.log('修改', key, diffData[key])
+            currentConfig[key] = diffData[key]
+          }
+        }
+      }
+
+      return currentConfig
+    },
+    onMultiAppSaveClick() {
+      const newData = this.getCfg()
+      const oldData = JSON.parse(this.$refs.compare.oldVal.Data)
+      this.postData.Data = JSON.stringify(newData)
+      this.$refs.compare.SetNewVal(this.postData)
+
+      const $this = this
+
+      // 先执行对比
+      this.$refs.compare.Compare(function(isEdit) {
+        if (!isEdit) {
+          Message.error('没有任何修改，不需要提交')
+          return
+        }
+
+        // 差异计算
+        $this.diffData = $this.getDifferenceBetweenConfigs(oldData, newData)
+
+        // 弹出多应用选择弹窗
+        $this.prepareAppTree()
+        $this.multiAppDialogVisible = true
+      })
+    },
+    prepareAppTree() {
+      this.appTreeData = [
+        {
+          label: '全选',
+          value: this.selectAllNodeKey,
+          children: this.appOptions.slice(1).map(app => ({
+            label: app.label,
+            value: app.value
+          }))
+        }
+      ]
+      this.$set(this, 'checkedAppKeys', [])
+    },
+    async confirmMultiAppSave() {
+      // 选中的 App ID（排除全选节点 key）
+      const appIds = this.checkedAppKeys.filter(key => key !== this.selectAllNodeKey)
+      if (appIds.length === 0) {
+        Message.warning('请至少选择一个应用')
+        return
+      }
+
+      await this.saveDifferenceToOtherApps(appIds, this.diffData)
+      this.multiAppDialogVisible = false
+    },
+    // 处理全选或取消全选
+    onCheckChange(node, checked) {
+      if (node.value === this.selectAllNodeKey) {
+        // 点击全选节点时
+        if (checked) {
+          // 勾选全选时，选中所有子节点
+          this.checkedAppKeys = this.appOptions.slice(1).map(app => app.value)
+        } else {
+          // 取消全选时，清空所有子节点的选中状态
+          this.checkedAppKeys = []
+        }
+      } else {
+        // 如果是其他节点，直接更新 checkedAppKeys
+        if (checked) {
+          this.checkedAppKeys.push(node.value)
+        } else {
+          this.checkedAppKeys = this.checkedAppKeys.filter(item => item !== node.value)
+        }
+      }
     }
   }
 }

@@ -130,7 +130,8 @@
           </el-table>
 
           <el-form-item style="margin-top: 20px">
-            <el-button type="success" @click="submitFrm">保存</el-button>
+            <el-button type="success" @click="submitFrm(false)">保存</el-button>
+            <el-button v-if="version === 'V2'" type="success" @click="submitFrm(true)">多APP保存</el-button>
           </el-form-item>
         </el-form>
       </el-col>
@@ -212,6 +213,7 @@ import Compare from '@/components/Compare'
 import RatioInput from '@/components/RatioInput'
 import MoneyInput from '@/components/MoneyInput'
 import request from '@/utils/request'
+import store from "@/store";
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
@@ -260,7 +262,9 @@ export default {
         Factor10: 40
       },
       ExtraBetActId2Enable: false,
-      ExtraBetActId2GameIds: [180, 186]
+      ExtraBetActId2GameIds: [180, 186],
+      version: store.getters.version || 'V1',
+      oldData: JSON.parse(JSON.stringify(this.slotsData))
     }
   },
   watch: {
@@ -368,7 +372,7 @@ export default {
         }
       }
     },
-    submitFrm() {
+    submitFrm(isMultiApp) {
       const $this = this
       console.log('new data:', this.getDiffData())
       this.$refs.compare.SetNewVal(this.getDiffData())
@@ -378,7 +382,11 @@ export default {
           return
         }
 
-        $this.$emit('saveData')
+        if (!isMultiApp) {
+          $this.$emit('saveData')
+        } else {
+          $this.$emit('multiAppSave', $this.oldData, $this.slotsData)
+        }
       })
     },
     // 自动生成水池配置
