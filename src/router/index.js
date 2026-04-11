@@ -26,14 +26,14 @@ import path from 'path'
  * redirect: noRedirect           if set noRedirect will no redirect in the breadcrumb
  * name:'router-name'             the name is used by <keep-alive> (must set!!!)
  * meta : {
-    roles: ['admin','editor']    control the page roles (you can set multiple roles)
-    title: 'title'               the name show in sidebar and breadcrumb (recommend set)
-    icon: 'svg-name'/'el-icon-x' the icon show in the sidebar
-    noCache: true                if set true, the page will no be cached(default is false)
-    affix: true                  if set true, the tag will affix in the tags-view
-    breadcrumb: false            if set false, the item will hidden in breadcrumb(default is true)
-    activeMenu: '/example/list'  if set path, the sidebar will highlight the path you set
-  }
+ roles: ['admin','editor']    control the page roles (you can set multiple roles)
+ title: 'title'               the name show in sidebar and breadcrumb (recommend set)
+ icon: 'svg-name'/'el-icon-x' the icon show in the sidebar
+ noCache: true                if set true, the page will no be cached(default is false)
+ affix: true                  if set true, the tag will affix in the tags-view
+ breadcrumb: false            if set false, the item will hidden in breadcrumb(default is true)
+ activeMenu: '/example/list'  if set path, the sidebar will highlight the path you set
+ }
  */
 
 /**
@@ -225,7 +225,7 @@ export const asyncRoutes = [
         name: 'EGame控制监控',
         meta: { title: 'EGame控制监控' }
       },
-       {
+      {
         path: 'pokerWaitPlayTimes',
         component: () => import('@/views/online/pokerPvpWaitPlayTimesStats'),
         name: 'Poker玩法匹配时长',
@@ -846,7 +846,7 @@ export const asyncRoutes = [
                     name: 'zjhTable',
                     meta: { title: 'TeenPatti' }
                     // eslint-disable-next-line no-mixed-spaces-and-tabs
-				          }
+                  }
                 ]
               }
             ]
@@ -869,7 +869,7 @@ export const asyncRoutes = [
                     name: 'rummyTable',
                     meta: { title: 'Rummy' }
                     // eslint-disable-next-line no-mixed-spaces-and-tabs
-				          }
+                  }
                 ]
               }
             ]
@@ -892,7 +892,7 @@ export const asyncRoutes = [
                 name: 'tongitsJackpotTable',
                 meta: { title: 'TongitsJP配桌 ◐' }
                 // eslint-disable-next-line no-mixed-spaces-and-tabs
-				          },
+              },
               {
                 path: 'tongitsJackpotAIConfig',
                 component: () => import('@/views/config/tableConfig/tongitsJackpotAIConfig'),
@@ -2348,6 +2348,12 @@ export const asyncRoutes = [
         component: () => import('@/views/config/tableConfig/activity/halloween/halloweenConfig.vue'),
         name: 'halloweenConfig',
         meta: { title: '万圣节活动配置', noCache: true }
+      },
+      {
+        path: 'pokerPlus',
+        component: () => import('@/views/config/tableConfig/activity/pokerPlus/index.vue'),
+        name: 'pokerPlus',
+        meta: { title: 'PokerPlus活动配置', noCache: true }
       }
     ]
   },
