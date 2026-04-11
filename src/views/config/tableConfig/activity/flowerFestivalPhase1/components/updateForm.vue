@@ -131,7 +131,7 @@
                 :data="challengeTasks"
                 border
                 style="margin-top: 5px"
-                >
+              >
                 <el-table-column
                   prop="taskType"
                   label="任务类型"
@@ -218,7 +218,7 @@
             <fieldset style="margin-top: 10px">
               <legend>榜单最大有效名次</legend>
               <el-col :span="4">
-                <el-input v-model.number="item.extend.maxRankValid" placeholder="请输入榜单最大有效名次" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
+                <el-input v-model.number="item.extend.maxRankValid" placeholder="请输入榜单最大有效名次" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} " />
               </el-col>
             </fieldset>
             <fieldset style="margin-top: 10px">
@@ -235,7 +235,7 @@
                   label="排名开始"
                 >
                   <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.rankRange.min" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
+                    <el-input v-model.number="scope.row.rankRange.min" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} " />
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -243,7 +243,7 @@
                   label="排名结束"
                 >
                   <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.rankRange.max" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
+                    <el-input v-model.number="scope.row.rankRange.max" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} " />
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -251,7 +251,7 @@
                   label="奖励金额"
                 >
                   <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.rewardItems[0].rewardNum" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
+                    <el-input v-model.number="scope.row.rewardItems[0].rewardNum" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} " />
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -334,7 +334,9 @@
       title="头像框选择"
       :visible.sync="avatarFrameSelectForm.propListDialogVisible"
       :close-on-click-modal="false"
-      append-to-body width="300px">
+      append-to-body
+      width="300px"
+    >
       <el-select v-model="avatarFrameSelectForm.selectedPropId" placeholder="请选择头像框" style="width: 100%">
         <el-option label="请选择" :value="0" />
         <el-option v-for="prop in propList" :key="prop.id" :label="prop.item_name" :value="prop.id" />
@@ -375,7 +377,7 @@ const TASK_TYPE_NAMES = {
   1: '每日登录',
   2: '每日分享',
   3: '玩一局游戏',
-  4: '挑战任务',
+  4: '挑战任务'
 }
 
 // 数据源类型
@@ -427,7 +429,7 @@ function newNormalTask(taskId, taskType) {
     rewardItem: {
       rewardId: 0,
       rewardNum: 1,
-      rewardType: ACTIVITY_REWARD_TYPES.ACTIVITY_ITEM,
+      rewardType: ACTIVITY_REWARD_TYPES.ACTIVITY_ITEM
     }
   }
 }
@@ -452,7 +454,7 @@ function newRankRewardItem() {
   return {
     rankRange: {
       min: 0,
-      max: 0,
+      max: 0
     },
     rewardItems: [
       {
@@ -526,9 +528,9 @@ export default {
         selectedPropId: 0,
         propListDialogVisible: false,
         rowIndexEditing: -1,
-        dataSourceType: 0,
+        dataSourceType: 0
       },
-      DATA_SOURCE_TYPES,
+      DATA_SOURCE_TYPES
     }
   },
   watch: {
@@ -592,7 +594,7 @@ export default {
         return
       }
       if (this.avatarFrameSelectForm.dataSourceType === 0) {
-        Message .error('请选择数据来源')
+        Message.error('请选择数据来源')
         return
       }
 
@@ -677,6 +679,9 @@ export default {
       // 榜单奖励金额缩小1000倍
       data.extend.rankRewardItems.forEach(rankRewardItem => {
         rankRewardItem.rewardItems.forEach(rewardItem => {
+          if (rewardItem.rewardType === ACTIVITY_REWARD_TYPES.PROP) {
+            return
+          }
           rewardItem.rewardNum = Math.floor(rewardItem.rewardNum / 1000)
         })
       })
@@ -757,6 +762,9 @@ export default {
       // 榜单奖励金额放大1000倍
       data.extend.rankRewardItems.forEach(rankRewardItem => {
         rankRewardItem.rewardItems.forEach(rewardItem => {
+          if (rewardItem.rewardType === ACTIVITY_REWARD_TYPES.PROP) {
+            return
+          }
           rewardItem.rewardNum = Math.floor(rewardItem.rewardNum * 1000)
         })
       })
