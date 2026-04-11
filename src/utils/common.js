@@ -406,10 +406,27 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
   // params为搜索哪些字段
   this.Search = function(value, params) {
     console.log('Search', value, params)
+    const v = value.toString()
     $this.ShowData = $this.TotalData.filter(
       function(data) {
         for (var o in params) {
-          if (data[params[o]].toString().includes(value.toString())) {
+          const key = params[o]
+          console.log('Search key', key, ' data', data)
+          if (key.includes('.')) {
+            const keys = key.split('.')
+            for (let i = 0; i < keys.length; i++) {
+              const k = keys[i]
+              if (i === keys.length - 1) {
+                if (data[k].toString().includes(v)) {
+                  return true
+                }
+              } else if (data[k]) {
+                data = data[k]
+              }
+            }
+            continue
+          }
+          if (data[key].toString().includes(v)) {
             return true
           }
         }
@@ -449,7 +466,7 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
 
   // 处理筛选相关的逻辑
   // includeVal0 是否包含值为0的项，默认不包含
-  this.FilterData = function(includeVal0=false) {
+  this.FilterData = function(includeVal0 = false) {
     console.log('FilterData', includeVal0)
     $this.ShowData = $this.TotalData.filter(
       function(data) {
@@ -492,8 +509,8 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
   }
   // 排序函数
   this.compare = function(a, b) {
-    const val1 = a[$this.SortName];
-    const val2 = b[$this.SortName];
+    const val1 = a[$this.SortName]
+    const val2 = b[$this.SortName]
     if (val1 < val2) {
       return -1 * $this.SortOrder
     } else if (val1 > val2) {
@@ -558,6 +575,7 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
     console.log('onPageSizeChange', pageNum)
     $this.Page.SetPageNum(pageNum)
     $this.ShowData = $this.GetPageData($this.Page.GetCurrentPage())
+    console.log('OnPageSizeChange ShowData.length', $this.ShowData.length)
   }
   // 更新数组中字段内容
   this.UpdateData = function(ob) {
@@ -598,21 +616,21 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
   }
 
   this.GetTreeDataById = function(ID) {
-    const stack = [...$this.TotalData];
+    const stack = [...$this.TotalData]
 
     while (stack.length > 0) {
-        const current = stack.pop();
+      const current = stack.pop()
 
-        if (current[this.IDKey] === ID) {
-            return current;
-        }
+      if (current[this.IDKey] === ID) {
+        return current
+      }
 
-        if (current.children && current.children.length > 0) {
-            stack.push(...[...current.children].reverse());
-        }
+      if (current.children && current.children.length > 0) {
+        stack.push(...[...current.children].reverse())
+      }
     }
 
-    return null; // 未找到
+    return null // 未找到
   }
 
   this.DelData = function(id) {
