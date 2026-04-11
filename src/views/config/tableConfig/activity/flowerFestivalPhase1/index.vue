@@ -24,7 +24,8 @@
           :cell-style="libShow.DefaultTableCell"
           style="width: 100%"
           @row-click="handleClickRow"
-          @sort-change="sortChange">
+          @sort-change="sortChange"
+        >
           <el-table-column prop="id" label="id" sortable="custom" width="80" />
           <el-table-column prop="activity.name" label="活动名称" />
           <el-table-column prop="activity.isOpen" label="是否开启" align="center" width="100">
@@ -225,20 +226,21 @@ export default {
         if (response.RetCode === 0) {
           const objs = response.Data || {}
           if (objs.total > 0) {
-            const timestamp = Date.parse(new Date()) / 1000;
+            // const timestamp = Date.parse(new Date()) / 1000;
             this.total = objs.total
             this.propList = []
             for (let i = 0; i < objs.total; i++) {
               const obj = objs.list[i]
-              /*if (obj.status === 1 && IsTicketProp(obj.item_type) && obj.expire_time > timestamp) {
+              /* if (obj.status === 1 && IsTicketProp(obj.item_type) && obj.expire_time > timestamp) {
                 this.propList.push(obj)
-              }*/
+              }
+              */
               // 头像框
               if (obj.status === 1 && obj.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME) {
                 this.propList.push(obj)
               }
               // 新版道具
-              /*if(obj.status === 1 && IsNewTicketProp(obj.item_type)){
+              /* if(obj.status === 1 && IsNewTicketProp(obj.item_type)){
                 this.propList.push(obj)
               }*/
             }
