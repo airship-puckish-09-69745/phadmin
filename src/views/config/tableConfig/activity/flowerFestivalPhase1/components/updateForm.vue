@@ -84,7 +84,7 @@
         <el-row :gutter="5">
           <el-col>
             <fieldset style="margin-top: 10px">
-              <legend>普通任务列表</legend>
+              <legend>每日任务列表</legend>
               <el-table
                 :data="normalTasks"
                 border
@@ -703,7 +703,7 @@ export default {
         return false
       }
       if (!this.item.extend.totalReward || this.item.extend.totalReward <= 0) {
-        Message.error('请输入奖励比例（大于0）')
+        Message.error('请输入总奖励金额（大于0）')
         return false
       }
       if (!this.item.activity.gameIdList || this.item.activity.gameIdList.length <= 0) {
@@ -714,12 +714,16 @@ export default {
         Message.error('请选择站点白名单')
         return false
       }
-      if (!this.item.extend.tasks.length) {
-        Message.error('请配置活动任务')
+      if (!this.normalTasks.length) {
+        Message.error('请配置每日任务')
         return false
       }
-      for (const task of this.item.extend.tasks) {
-        if (task.taskType === TASK_TYPES.CHALLENGE && !task.rewardItem.rewardId) {
+      if (!this.challengeTasks.length) {
+        Message.error('请配置挑战任务')
+        return false
+      }
+      for (const task of this.challengeTasks) {
+        if (!task.rewardItem.rewardId) {
           Message.error('请配置挑战任务奖励头像框')
           return false
         }
@@ -843,6 +847,7 @@ export default {
     selectGamesForTree() {
       this.$nextTick(() => {
         if (this.$refs.tree && this.item.activity.gameIdList) {
+          console.log('selectGamesForTree gameIdList', this.item.activity.gameIdList)
           this.$refs.tree.setCheckedKeys(this.item.activity.gameIdList)
           this.updateGamesSorted()
         }

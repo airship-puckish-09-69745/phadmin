@@ -308,9 +308,7 @@ export default {
       this.clientDB.Search(this.searchKeyword, params)
     },
     sortChange({ prop, order }) {
-      this.sortProp = prop
-      this.sortOrder = order === 'ascending' ? 'asc' : 'desc'
-      this.getList()
+      this.clientDB.SortByProp(prop, order)
     },
     async handleBlock(row) {
       try {

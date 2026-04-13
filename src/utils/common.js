@@ -383,7 +383,7 @@ export function Pagination(_totalCount, _pageNum) {
   }
 }
 
-// sortOrder 1 ASC 2 DESC
+// sortOrder 1 ASC -1 DESC
 export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOrder, idKey) {
   this.TotalData = _totalData
   this.FilterMap = filterMap
@@ -509,8 +509,21 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
   }
   // 排序函数
   this.compare = function(a, b) {
-    const val1 = a[$this.SortName]
-    const val2 = b[$this.SortName]
+    let val1 = null
+    let val2 = null
+    if ($this.SortName.includes('.')) {
+      const arr = $this.SortName.split('.')
+      const key = arr[arr.length - 1]
+      console.log('compare key', key, ' a', a, ' b', b)
+      val1 = a[key]
+      val2 = b[key]
+    } else {
+      val1 = a[$this.SortName]
+      val2 = b[$this.SortName]
+    }
+
+    console.log('compare val1', val1, ' val2', val2)
+
     if (val1 < val2) {
       return -1 * $this.SortOrder
     } else if (val1 > val2) {
@@ -521,6 +534,7 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
   }
   // 传入排序字段及排序方向
   this.SortByProp = function(prop, order, compareMethod) {
+    console.log('SortByProp sortName', $this.SortName, ' sortOrder', $this.SortOrder, ' compareMethod', compareMethod)
     $this.SortName = prop
     if (prop != null) {
       $this.SortOrder = order === 'ascending' ? 1 : -1
@@ -528,7 +542,6 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
     this._sortByProp(compareMethod)
   }
   this._sortByProp = function(compareMethod) {
-    console.log('_sortByProp', compareMethod)
     if ($this.SortName == null) {
       $this.ShowData = $this.ShowData.slice(0)
     } else {
