@@ -239,65 +239,9 @@ export default {
       } catch (error) {
         console.error('获取用户列表失败:', error)
         Message.error('获取数据失败')
-        this.tableData = this.getMockData()
-        this.total = this.tableData.length
       } finally {
         this.loading = false
       }
-    },
-    getMockData() {
-      return [
-        {
-          userInfo: {
-            nick: '玩家001',
-            uid: '100001',
-            avatar: 'https://via.placeholder.com/50',
-            votesGot: 1250
-          },
-          rank: 1,
-          status: 0
-        },
-        {
-          userInfo: {
-            nick: '玩家002',
-            uid: '100002',
-            avatar: 'https://via.placeholder.com/50',
-            votesGot: 980
-          },
-          rank: 2,
-          status: 0
-        },
-        {
-          userInfo: {
-            nick: '玩家003',
-            uid: '100003',
-            avatar: 'https://via.placeholder.com/50',
-            votesGot: 856
-          },
-          rank: 3,
-          status: 1
-        },
-        {
-          userInfo: {
-            nick: '玩家004',
-            uid: '100004',
-            avatar: 'https://via.placeholder.com/50',
-            votesGot: 723
-          },
-          rank: 4,
-          status: 0
-        },
-        {
-          userInfo: {
-            nick: '玩家005',
-            uid: '100005',
-            avatar: 'https://via.placeholder.com/50',
-            votesGot: 654
-          },
-          rank: 5,
-          status: 0
-        }
-      ]
     },
     handleSearch() {
       if (!this.searchKeyword) {

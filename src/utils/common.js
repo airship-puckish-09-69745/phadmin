@@ -513,16 +513,26 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
     let val2 = null
     if ($this.SortName.includes('.')) {
       const arr = $this.SortName.split('.')
-      const key = arr[arr.length - 1]
-      console.log('compare key', key, ' a', a, ' b', b)
-      val1 = a[key]
-      val2 = b[key]
+      for (let i = 0; i < arr.length; i++) {
+        const key = arr[i]
+        console.log('compare key', key, ' a', a, ' b', b)
+        if (i === arr.length - 1) {
+          val1 = a[key]
+          val2 = b[key]
+        } else {
+          a = a[key]
+          b = b[key]
+        }
+        if (a === nul || b === null) {
+          val1 = a
+          val2 = b
+          break
+        }
+      }
     } else {
       val1 = a[$this.SortName]
       val2 = b[$this.SortName]
     }
-
-    console.log('compare val1', val1, ' val2', val2)
 
     if (val1 < val2) {
       return -1 * $this.SortOrder
