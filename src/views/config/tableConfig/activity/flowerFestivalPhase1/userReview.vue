@@ -1,7 +1,20 @@
 <template>
   <div id="app" class="page-container" style="padding: 10px">
     <el-row style="padding-top: 5px">
-      <el-col :span="6">
+      <el-col :span="4">
+        <span style="font-size: 14px">活动配置：</span>
+        <el-select v-model="actCfgId" size="mini" placeholder="筛选活动配置" clearable @change="getList">
+          <el-option v-for="item in actConfigList" :key="item.id" :label="item.name" :value="item.id" />
+        </el-select>
+      </el-col>
+      <el-col :span="4">
+        <span style="font-size: 14px">玩家状态：</span>
+        <el-select v-model="filterStatus" size="mini" placeholder="筛选状态" clearable @change="getList">
+          <el-option label="正常" :value="0" />
+          <el-option label="已屏蔽" :value="1" />
+        </el-select>
+      </el-col>
+      <el-col :span="4">
         <el-input
           v-model="searchKeyword"
           size="mini"
@@ -10,17 +23,9 @@
           @clear="handleSearch"
         />
       </el-col>
-      <el-col :span="2">
-        <el-button size="mini" type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
-      </el-col>
-      <el-col :span="6">
-        <el-select v-model="filterStatus" size="mini" placeholder="筛选状态" clearable @change="getList">
-          <el-option label="正常" :value="0" />
-          <el-option label="已屏蔽" :value="1" />
-        </el-select>
-      </el-col>
-      <el-col :span="10">
-        <el-button type="success" size="mini" style="float: right" icon="el-icon-refresh" @click="getList">刷新</el-button>
+      <el-col :span="4">
+        <el-button size="mini" type="primary" style="margin-left: 10px" icon="el-icon-search" @click="handleSearch">搜索</el-button>
+        <el-button type="success" size="mini" icon="el-icon-refresh" @click="getList">刷新</el-button>
       </el-col>
     </el-row>
 
@@ -156,8 +161,10 @@ export default {
       loading: false,
       sortProp: '',
       sortOrder: '',
-      actCfgId: 3,
-      env: 'test'
+      actCfgId: null,
+      env: 'test',
+      activityId: 24,
+      actConfigList: []
     }
   },
   computed: {
@@ -166,10 +173,14 @@ export default {
     }
   },
   created() {
+    this.getActivityConfigList()
     this.getList()
     this.env = store.getters.env || this.env
   },
   methods: {
+    /*
+     * 获取数据列表
+     */
     getList() {
       if (this.filterStatus === 0) {
         this.getRanking()
@@ -177,7 +188,13 @@ export default {
         this.getBlacklist()
       }
     },
+    /*
+     * 获取用户排名列表
+     */
     async getRanking() {
+      if (!this.actCfgId) {
+        return
+      }
       this.loading = true
       try {
         const params = {
@@ -211,7 +228,13 @@ export default {
         this.loading = false
       }
     },
+    /*
+     * 获取用户屏蔽列表
+     */
     async getBlacklist() {
+      if (!this.actCfgId) {
+        return
+      }
       this.loading = true
       try {
         const params = {
@@ -243,6 +266,36 @@ export default {
         this.loading = false
       }
     },
+    /*
+     * 获取活动配置列表
+     */
+    getActivityConfigList() {
+      request({
+        url: '/activityconfig/all',
+        method: 'get',
+        data: {
+          activityId: this.activityId
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objs = response.Data || []
+          const rows = []
+          for (const obj of objs) {
+            const activity = JSON.parse(obj.activity)
+            rows.push({
+              id: obj.id,
+              name: obj.id + '-' + activity.name
+            })
+          }
+          this.actConfigList = rows
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    /*
+     * 搜索玩家
+     */
     handleSearch() {
       if (!this.searchKeyword) {
         this.clientDB.ClearFilterMap()
@@ -254,6 +307,10 @@ export default {
     sortChange({ prop, order }) {
       this.clientDB.SortByProp(prop, order)
     },
+    /*
+     * 屏蔽玩家
+     * @param {*} row 玩家数据
+     */
     async handleBlock(row) {
       try {
         await this.$confirm(`确认屏蔽玩家 ${row.userInfo.uid} 吗？`, '提示', {
@@ -288,6 +345,10 @@ export default {
         }
       }
     },
+    /*
+     * 解除屏蔽玩家
+     * @param {*} row 玩家数据
+     */
     async handleUnblock(row) {
       try {
         await this.$confirm(`确认解除屏蔽玩家 ${row.userInfo.uid} 吗？`, '提示', {
@@ -322,6 +383,10 @@ export default {
         }
       }
     },
+    /*
+     * 根式化玩家等级
+     * @param rank 玩家等级
+     */
     getRankType(rank) {
       if (rank === 1) return 'danger'
       if (rank === 2) return 'warning'
