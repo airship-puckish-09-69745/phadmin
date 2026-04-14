@@ -68,7 +68,7 @@
               width="150"
             >
               <template slot-scope="scope">
-                  {{ getSlotsName(scope.row.Gid) }}
+                {{ getSlotsName(scope.row.Gid) }}
               </template>
             </el-table-column>
             <el-table-column
@@ -131,8 +131,8 @@
     <el-dialog
       title="从其他APP奖池同步"
       :visible.sync="copyForm.copyDialogVisible"
-      @opened="onCopyDialogOpened"
       width="300"
+      @opened="onCopyDialogOpened"
     >
       <el-form ref="copyForm" :model="copyForm">
         <el-form-item label="请选择要同步的APP奖池：" prop="copyFromAppId">
@@ -155,20 +155,20 @@
         >
           <el-table-column
             type="selection"
-            width="55">
-          </el-table-column>
+            width="55"
+          />
           <el-table-column
             prop="Gid"
             label="子游戏"
             width="150"
           >
             <template slot-scope="scope">
-                <span v-if="scope.row.Gid===37">
-                  {{ getGameName(scope.row.Gid)+' '+scope.row.Ante/1000+'场' }}
-                </span>
+              <span v-if="scope.row.Gid===37">
+                {{ getGameName(scope.row.Gid)+' '+scope.row.Ante/1000+'场' }}
+              </span>
               <span v-else>
-                  {{ getGameName(scope.row.Gid) }}
-                </span>
+                {{ getGameName(scope.row.Gid) }}
+              </span>
             </template>
           </el-table-column>
           <el-table-column
@@ -269,9 +269,9 @@ export default {
         casioData: [],
         rowsSpanGameIdMap: {},
         casioDataGameIds: [],
-        slotsDataGameIds: [],
+        slotsDataGameIds: []
       },
-      appList: [],
+      appList: []
     }
   },
   created() {
@@ -346,8 +346,8 @@ export default {
       }).then(response => {
         console.log('list response', response)
         const ignore = [2, 3, 4, 5, 7, 8, 9, 13, 14, 16, 17, 18, 19]
-         $this.slotsData = []
-         $this.casioData = []
+        $this.slotsData = []
+        $this.casioData = []
         if (response.RetCode === 0) {
           $this.rowsSpanGameIdMap = {}
           for (let i = 0; i < response.Data.length; i++) {
@@ -388,10 +388,10 @@ export default {
       }
       return $libShow.GameNames[id]
     },
-    getSlotsName(gid){
+    getSlotsName(gid) {
       return $libShow.GameNames[parseInt(gid / 100)]
     },
-    getSlotsfSuffix(gid){
+    getSlotsfSuffix(gid) {
       return this.gameNamesSuffix[parseInt(gid % 100)]
     },
     writeLog() {
@@ -428,7 +428,7 @@ export default {
         'FeeRate': this.form.FeeRate,
         'RecountRate': this.form.RecountRate,
         'Ante': this.form.Ante,
-        'AppId': this.appId,
+        'AppId': this.appId
       }
 
       // 设置修改后数据
@@ -465,7 +465,7 @@ export default {
     copyFromApp() {
       const $this = this
 
-      let appLabel = this.copyForm.copyFromAppId === 0 ? '未区分APP' : this.appList.find(item => item.key === this.copyForm.copyFromAppId).label + '-' +this.copyForm.copyFromAppId
+      const appLabel = this.copyForm.copyFromAppId === 0 ? '未区分APP' : this.appList.find(item => item.key === this.copyForm.copyFromAppId).label + '-' + this.copyForm.copyFromAppId
       // 合并casioDataGameIds和slotsDataGameIds
       const gameIds = [...this.copyForm.casioDataGameIds, ...this.copyForm.slotsDataGameIds]
 
@@ -476,14 +476,14 @@ export default {
 
       const h = this.$createElement
 
-      let gameNames = []
+      const gameNames = []
       gameIds.forEach(gid => {
-        gameNames.push(h('div', { style: { 'margin-top': '10px', 'padding-left': '10px' } }, $this.getGameName(gid)))
+        gameNames.push(h('div', { style: { 'margin-top': '10px', 'padding-left': '10px' }}, $this.getGameName(gid)))
       })
 
       const message = h('div', {}, [
         h('div', {}, '确认同步来源【' + appLabel + '】的奖池配置吗？'),
-        h('div', { style: { 'margin-top': '10px' } }, '包括以下子游戏：'),
+        h('div', { style: { 'margin-top': '10px' }}, '包括以下子游戏：'),
         ...gameNames
       ])
 
@@ -593,7 +593,7 @@ export default {
               }
             }
           }
-          $this.copyForm.slotsData.sort(function (a, b) {
+          $this.copyForm.slotsData.sort(function(a, b) {
             return $this.getSlotsName(a.Gid).localeCompare($this.getSlotsName(b.Gid))
           })
 
@@ -611,13 +611,13 @@ export default {
     },
     getFreezePool(row) {
       let prizePool = row.PrizePool
-      let freezePool = row.FreezePool
+      const freezePool = row.FreezePool
       if (row.FreezePool == undefined) {
         return ''
       }
       prizePool -= row.FreezePool
-      return `奖池：${Math.floor(prizePool/1000).toLocaleString()} 未提现冻结：${Math.floor(freezePool/1000).toLocaleString()}`
-    },
+      return `奖池：${Math.floor(prizePool / 1000).toLocaleString()} 未提现冻结：${Math.floor(freezePool / 1000).toLocaleString()}`
+    }
   }
 }
 </script>
