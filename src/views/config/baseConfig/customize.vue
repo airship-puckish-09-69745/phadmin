@@ -35,7 +35,7 @@
     <div style="padding-top: 10px">
       <el-table
         ref="filterTable"
-        :data="tableData"
+        :data="clientDB.ShowData"
         stripe
         border
         :header-cell-style="libShow.DefaultTableHeadClass"
@@ -119,8 +119,8 @@
             :page-size="clientDB.GetPage().GetPageNum()"
             layout="total, sizes, prev, pager, next, jumper"
             :total="clientDB.GetPage().GetTotalCount()"
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
+            @size-change="clientDB.OnPageSizeChange"
+            @current-change="clientDB.OnPageNoChange"
           />
         </div>
       </el-col>
@@ -514,26 +514,9 @@ export default {
     // 筛选相关逻辑
     searchChange() {
       this.clientDB.Search(this.search, ['Name', 'ID', 'RedisSubkey'])
-      this.refreshShow()
-    },
-    clearFilter() {
-      this.clientDB.ClearFilterMap()
-      this.refreshShow()
     },
     handleFilter() {
       this.clientDB.FilterData()
-      this.refreshShow()
-    },
-    // 分页处理
-    refreshShow() {
-      this.tableData = this.clientDB.GetCurrentPageData()
-    },
-    handleSizeChange(val) {
-      this.clientDB.GetPage().SetPageNum(val)
-      this.refreshShow()
-    },
-    handleCurrentChange(val) {
-      this.clientDB.GetPage().SetPageNo(val)
       this.refreshShow()
     },
     // 显示类处理函数
@@ -542,7 +525,6 @@ export default {
     },
     sortChange(ob) {
       this.clientDB.SortByProp(ob.prop, ob.order)
-      this.refreshShow()
     },
     // 操作类函数
     clickData(row, column, event) {
@@ -632,7 +614,6 @@ export default {
         this.getTargetList()
 
         this.clientDB = new ClientTableData(objs, 10, filterMap, 'ID', -1)
-        this.handleCurrentChange(1)
       })
     },
     //* * ********************** 修改/添加弹框相关 *****************
