@@ -87,6 +87,9 @@ function Lang() {
 export const $libLang = new Lang()
 
 export function LibShow() {
+  this.DataStatuses = {
+    2: '上架', 6: '下架', 7: '预上架', 8: '预下架'
+  }
   this.ColorMap = {
     1: '♦',
     2: '♣',
@@ -147,9 +150,9 @@ export function LibShow() {
     0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1a, 0x1b, 0x1c, 0x1d // 方块
   ]
   this.CardShow = function(card) {
-    if (card == 94) {
+    if (card === 94) {
       return '<span style="color:black">小王</span>'
-    } else if (card == 95) {
+    } else if (card === 95) {
       return '<span style="color:red">大王</span>'
     } else {
       const color = card >> 4
@@ -164,7 +167,7 @@ export function LibShow() {
     }
     // 兼容一下第三方图片
     let needCdnDomain = true
-    if (url.indexOf('http://') == 0 || url.indexOf('https://') == 0) {
+    if (url.indexOf('http://') === 0 || url.indexOf('https://') === 0) {
       needCdnDomain = false
     }
     if (needCdnDomain) {
@@ -238,7 +241,7 @@ export const $libUrl = new LibURL()
 export const $libShow = new LibShow()
 
 Date.prototype.Format = function(fmt) { // author: meizz
-  var o = {
+  const o = {
     'M+': this.getMonth() + 1, // 月份
     'd+': this.getDate(), // 日
     'H+': this.getHours(), // 小时
@@ -289,7 +292,7 @@ export function LibDate() {
       case 7:
         return dt.Format('MM-dd HH:mm:ss')
     }
-  },
+  }
   this.SelectTimeToIndiaByZone = function(t) { // 根据选择的时区决定是否要将选定的时间要转化成印度时间(毫秒）
     const zone = Cookies('zone')
     if (zone === 'in') {
@@ -299,19 +302,19 @@ export function LibDate() {
     } else {
       return t
     }
-  },
+  }
   this.SelectTimeToIndia = function(t) { // 选定的时间要转化成印度时间(毫秒）
     return t + 9000000
-  },
+  }
   this.TimeShowToIndia = function(t) { // 用于展示的时间要转化成印度时间(毫秒）
     return t - 9000000
-  },
+  }
   this.SelectTimeToBR = function(t) { // 选定的时间要转化成印度时间(毫秒）
     return t + 39600000
-  },
+  }
   this.TimeShowToBR = function(t) { // 用于展示的时间要转化成印度时间(毫秒）
     return t - 39600000
-  },
+  }
   this.FormateSecondStr = function(second, iType) {
     return this.FormateMilisecondStr(second * 1000, iType)
   }
@@ -324,13 +327,13 @@ export function LibDate() {
   // 获取一天的结束的毫秒数
   // 输入参数为某个时间戳（毫秒)
   this.GetDayEnd = function(t) {
-    var begin = this.GetDayBegin(t)
+    const begin = this.GetDayBegin(t)
     return new Date().setTime((begin / 1000 + 24 * 60 * 60 - 1) * 1000)
   }
 
   // 测试要求用户输入的 08：30 这样的时间字符串格式是否正确
   this.TestHourFormat = function(str) {
-    var pattern = /^([01]?\d|2[0-3]):[0-5]?\d$/
+    const pattern = /^([01]?\d|2[0-3]):[0-5]?\d$/
     return pattern.test(str)
   }
 }
@@ -339,7 +342,7 @@ export function Pagination(_totalCount, _pageNum) {
   this.totalCount = _totalCount
   this.pageNum = _pageNum
   this.pageNo = 1
-  var $this = this
+  const $this = this
 
   this.GetCurrentPage = function() {
     return $this.pageNo
@@ -380,7 +383,7 @@ export function Pagination(_totalCount, _pageNum) {
   }
 }
 
-// sortOrder 1 ASC 2 DESC
+// sortOrder 1 ASC -1 DESC
 export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOrder, idKey) {
   this.TotalData = _totalData
   this.FilterMap = filterMap
@@ -391,6 +394,7 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
   this.SortOrder = sortOrder || -1
   this.IDKey = idKey || 'ID'
   this.ShowData = []
+  this.tmpData = []
 
   this.GetShowValue = function(typeName, key) {
     console.log('GetShowValue', key)
@@ -403,17 +407,37 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
   // params为搜索哪些字段
   this.Search = function(value, params) {
     console.log('Search', value, params)
-    $this.ShowData = $this.TotalData.filter(
+    const v = value.toString()
+    $this.tmpData = $this.TotalData.filter(
       function(data) {
-        for (var o in params) {
-          if (data[params[o]].toString().includes(value.toString())) {
+        for (const o in params) {
+          const key = params[o]
+          console.log('Search key', key, ' data', data)
+          if (key.includes('.')) {
+            const keys = key.split('.')
+            for (let i = 0; i < keys.length; i++) {
+              const k = keys[i]
+              if (i === keys.length - 1) {
+                if (data[k].toString().includes(v)) {
+                  return true
+                }
+              } else if (data[k]) {
+                data = data[k]
+              }
+            }
+            continue
+          }
+          if (data[key].toString().includes(v)) {
+            console.log('Search key', key, ' data[key]', data[key])
             return true
           }
         }
         return false
       }
     )
-    $this.Page.SetTotalCount($this.ShowData.length)
+    $this.Page.SetTotalCount($this.tmpData.length)
+    $this._sortByProp()
+    $this.ShowData = $this.GetCurrentPageData()
   }
 
   // 处理筛选相关的逻辑
@@ -446,9 +470,9 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
 
   // 处理筛选相关的逻辑
   // includeVal0 是否包含值为0的项，默认不包含
-  this.FilterData = function(includeVal0=false) {
+  this.FilterData = function(includeVal0 = false) {
     console.log('FilterData', includeVal0)
-    $this.ShowData = $this.TotalData.filter(
+    $this.tmpData = $this.TotalData.filter(
       function(data) {
         for (const f in $this.FilterValueMap) {
           if (!includeVal0 && $this.FilterValueMap[f] !== 0 && $this.FilterValueMap[f] !== data[f] || // FilterValueMap[f] 值不为0
@@ -459,29 +483,30 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
         return true
       }
     )
-    $this.Page.SetTotalCount($this.ShowData.length)
-    $this.ShowData = $this.GetCurrentPageData()
+    $this.Page.SetTotalCount($this.tmpData.length)
     $this._sortByProp()
+    $this.ShowData = $this.GetCurrentPageData()
   }
   // 传对应的字段和值然后返回所有
   this.FilterDataCustomize = function(obj) {
     console.log('FilterDataCustomize', obj)
-    $this.ShowData = $this.TotalData.filter(
+    $this.tmpData = $this.TotalData.filter(
       function(data) {
         for (const f in $this.FilterValueMap) {
           let defaultValue = 0
           if (obj.hasOwnProperty(f)) {
             defaultValue = parseInt(obj[f])
           }
-          if ($this.FilterValueMap[f] != defaultValue && $this.FilterValueMap[f] != data[f]) {
+          if ($this.FilterValueMap[f] !== defaultValue && $this.FilterValueMap[f] !== data[f]) {
             return false
           }
         }
         return true
       }
     )
-    $this.Page.SetTotalCount($this.ShowData.length)
+    $this.Page.SetTotalCount($this.tmpData.length)
     $this._sortByProp()
+    $this.ShowData = $this.GetCurrentPageData()
   }
 
   this.GetPage = function() {
@@ -489,8 +514,31 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
   }
   // 排序函数
   this.compare = function(a, b) {
-    const val1 = a[$this.SortName];
-    const val2 = b[$this.SortName];
+    let val1 = null
+    let val2 = null
+    if ($this.SortName.includes('.')) {
+      const arr = $this.SortName.split('.')
+      for (let i = 0; i < arr.length; i++) {
+        const key = arr[i]
+        console.log('compare key', key, ' a', a, ' b', b)
+        if (i === arr.length - 1) {
+          val1 = a[key]
+          val2 = b[key]
+        } else {
+          a = a[key]
+          b = b[key]
+        }
+        if (a === null || b === null) {
+          val1 = a
+          val2 = b
+          break
+        }
+      }
+    } else {
+      val1 = a[$this.SortName]
+      val2 = b[$this.SortName]
+    }
+
     if (val1 < val2) {
       return -1 * $this.SortOrder
     } else if (val1 > val2) {
@@ -501,6 +549,7 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
   }
   // 传入排序字段及排序方向
   this.SortByProp = function(prop, order, compareMethod) {
+    console.log('SortByProp sortName', $this.SortName, ' sortOrder', $this.SortOrder, ' compareMethod', compareMethod)
     $this.SortName = prop
     if (prop != null) {
       $this.SortOrder = order === 'ascending' ? 1 : -1
@@ -508,14 +557,13 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
     this._sortByProp(compareMethod)
   }
   this._sortByProp = function(compareMethod) {
-    console.log('_sortByProp', compareMethod)
     if ($this.SortName == null) {
-      $this.ShowData = $this.ShowData.slice(0)
+      $this.tmpData = $this.tmpData.slice(0)
     } else {
       if (compareMethod != null) {
-        $this.ShowData = $this.ShowData.sort(compareMethod)
+        $this.tmpData = $this.tmpData.sort(compareMethod)
       } else {
-        $this.ShowData = $this.ShowData.sort(this.compare)
+        $this.tmpData = $this.tmpData.sort(this.compare)
       }
     }
   }
@@ -538,11 +586,11 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
   // 获取某一页数据
   this.GetPageData = function(pageNo) {
     console.log('GetPageData', pageNo)
-    if ($this.TotalData == null || $this.TotalData.length === 0) {
+    if ($this.tmpData == null || $this.tmpData.length === 0) {
       return []
     }
     const pageIndex = $this.Page.GetPageIndex(pageNo)
-    return $this.TotalData.slice(pageIndex.Begin, pageIndex.End)
+    return $this.tmpData.slice(pageIndex.Begin, pageIndex.End)
   }
   // 分页处理-当前页改变
   this.OnPageNoChange = function(pageNo) {
@@ -555,6 +603,7 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
     console.log('onPageSizeChange', pageNum)
     $this.Page.SetPageNum(pageNum)
     $this.ShowData = $this.GetPageData($this.Page.GetCurrentPage())
+    console.log('OnPageSizeChange ShowData.length', $this.ShowData.length)
   }
   // 更新数组中字段内容
   this.UpdateData = function(ob) {
@@ -565,9 +614,10 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
         break
       }
     }
-    $this.ShowData = $this.TotalData.slice(0)
+    $this.tmpData = $this.TotalData.slice(0)
     this._sortByProp()
     this.FilterData()
+    $this.ShowData = $this.GetCurrentPageData()
   }
 
   // 更新数组中字段内容
@@ -579,9 +629,10 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
         break
       }
     }
-    $this.ShowData = $this.TotalData.slice(0)
+    $this.tmpData = $this.TotalData.slice(0)
     this._sortByProp()
     this.FilterData()
+    $this.ShowData = $this.GetCurrentPageData()
   }
 
   this.GetDataByID = function(ID) {
@@ -595,21 +646,21 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
   }
 
   this.GetTreeDataById = function(ID) {
-    const stack = [...$this.TotalData];
+    const stack = [...$this.TotalData]
 
     while (stack.length > 0) {
-        const current = stack.pop();
+      const current = stack.pop()
 
-        if (current[this.IDKey] === ID) {
-            return current;
-        }
+      if (current[this.IDKey] === ID) {
+        return current
+      }
 
-        if (current.children && current.children.length > 0) {
-            stack.push(...[...current.children].reverse());
-        }
+      if (current.children && current.children.length > 0) {
+        stack.push(...[...current.children].reverse())
+      }
     }
 
-    return null; // 未找到
+    return null // 未找到
   }
 
   this.DelData = function(id) {
@@ -619,13 +670,14 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
         break
       }
     }
-    $this.ShowData = $this.TotalData.slice(0)
+    $this.tmpData = $this.TotalData.slice(0)
     $this.Page.SetTotalCount($this.TotalData.length)
     this._sortByProp()
     this.FilterData()
+    $this.ShowData = $this.GetCurrentPageData()
   }
   this.DelData2 = function(keyName, id) {
-    for (var i = 0; i < $this.TotalData.length; i++) {
+    for (let i = 0; i < $this.TotalData.length; i++) {
       const item = $this.TotalData[i]
       if (item[keyName] === id) {
         console.log(item, keyName, id)
@@ -633,31 +685,33 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
         break
       }
     }
-    $this.ShowData = $this.TotalData.slice(0)
+    $this.tmpData = $this.TotalData.slice(0)
     $this.Page.SetTotalCount($this.TotalData.length)
     this._sortByProp()
     this.FilterData()
+    $this.ShowData = $this.GetCurrentPageData()
   }
 
   // 添加数组中的字段内容
   this.AddData = function(ob) {
     $this.TotalData.push(ob)
-    $this.ShowData = $this.TotalData.slice(0)
+    $this.tmpData = $this.TotalData.slice(0)
     $this.Page.SetTotalCount($this.TotalData.length)
     this._sortByProp()
     this.FilterData()
+    $this.ShowData = $this.GetCurrentPageData()
   }
   this.ClearFilterMap()
   this._sortByProp()
 }
 
-var Type = (function() {
-  var type = {}
-  var typeArr = ['String', 'Object', 'Number', 'Array', 'Undefined', 'Function', 'Null', 'Symbol']
-  for (var i = 0; i < typeArr.length; i++) {
+const Type = (function() {
+  const type = {}
+  const typeArr = ['String', 'Object', 'Number', 'Array', 'Undefined', 'Function', 'Null', 'Symbol']
+  for (let i = 0; i < typeArr.length; i++) {
     (function(name) {
       type['Is' + name] = function(obj) {
-        return Object.prototype.toString.call(obj) == '[object ' + name + ']'
+        return Object.prototype.toString.call(obj) === '[object ' + name + ']'
       }
     })(typeArr[i])
   }
@@ -690,8 +744,8 @@ function TypeHelper() {
     return Type.IsSymbol(obj)
   }
 
-  var intPattern = /^(\d+)$/
-  var floatPattern = /^\d*.\d*$/
+  const intPattern = /^(\d+)$/
+  const floatPattern = /^\d*.\d*$/
 
   this.IsInt = function(ob) {
     return intPattern.test(ob)
