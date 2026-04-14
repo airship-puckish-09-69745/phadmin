@@ -161,7 +161,7 @@
                   奖池： {{ formatNumber(blackJackSum / 1000) }}
                 </div>
                 <div v-else>
-                  奖池：{{ getPrizePool(o) }} {{ summary[o] && summary[o].FreezePool != undefined ? '未提现冻结 ：'+formatNumber(summary[o].FreezePool / 1000) : '' }}
+                  奖池：{{ getPrizePool(o) }} <span v-if="libShow.IsShowFreeFreezePool(o)" style="color: green">{{ getFreezePoolText(o) }}</span>
                 </div>
               </div>
             </el-tooltip>
@@ -553,6 +553,9 @@ export default {
         pool -= this.summary[o].FreezePool
       }
       return this.formatNumber(pool / 1000)
+    },
+    getFreezePoolText(o) {
+      return this.summary[o] && this.summary[o].FreezePool !== undefined ? '未提现冻结 ：' + this.formatNumber(this.summary[o].FreezePool / 1000) : ''
     },
     getGameName(o) {
       const name = this.gameNames[o]

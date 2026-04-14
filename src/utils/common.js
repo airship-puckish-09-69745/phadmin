@@ -123,6 +123,18 @@ export function LibShow() {
     230: 'PahiyasWins', 236: 'PacquiaoFortune', 234: 'Fortune Tree', 238: 'MasskaraFortune',
     1139: 'Manny Punch 试玩', 1236: 'PacquiaoFortune试玩'
   }
+  // 是否显示冻结池
+  this.IsShowFreeFreezePool = function(gameId) {
+    return [
+      20, // 扫雷
+      100, // Tower
+      102, // Hilo
+      132, // 新版扫雷
+      138, // Chicken Go
+      139, // Manny Punch
+      140 // HiloPlus
+    ].indexOf(gameId) !== -1
+  }
 
   this.NumMap = {
     1: 'A',
