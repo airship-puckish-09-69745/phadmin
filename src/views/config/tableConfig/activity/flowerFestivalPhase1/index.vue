@@ -27,10 +27,15 @@
           @sort-change="sortChange"
         >
           <el-table-column prop="id" label="id" sortable="custom" width="80" />
-          <el-table-column prop="activity.name" label="活动名称" />
           <el-table-column prop="activity.isOpen" label="是否开启" align="center" width="100">
             <template slot-scope="scope">
               <el-tag :type="scope.row.activity.isOpen ? 'success' : 'info'" size="mini">{{ scope.row.activity.isOpen ? '开' : '关' }}</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column prop="activity.name" label="活动名称" />
+          <el-table-column prop="activity.whitelist" label="站点">
+            <template slot-scope="scope">
+              {{ scope.row.activity.whitelist.siteIdList.join(',') }}
             </template>
           </el-table-column>
           <el-table-column prop="activity.startTime" label="开始时间" align="center">
