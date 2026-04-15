@@ -23,6 +23,11 @@
             <publish primary-key="ID" :key-id="getFullKey('pahiyaswins_slots_base')" :env-empty="false" compare-type="Object" />
             <slots-pay-table v-if="baseCfgBool" v-model="baseCfg" :symbol-list="ruleCfg.SymbolList" :start-col="3" @saveData="saveBaseCfg" />
           </el-tab-pane>
+          <el-tab-pane label="进入免费方案配置" name="scatter_trigger_plans">
+            <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布】</h3>
+            <publish primary-key="ID" :key-id="getFullKey('pahiyaswins_slots_base')" :env-empty="false" compare-type="Object" />
+            <slots-free-trigger-plans v-if="baseCfgBool" v-model="baseCfg" :odds-str="false" :scatter-trigger-plans="baseCfg.scatterTriggerPlans" @saveData="saveBaseCfg" />
+          </el-tab-pane>
           <el-tab-pane label="2套轴图标" name="reels_double">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布】</h3>
             <publish primary-key="ID" :key-id="getFullKey('pahiyaswins_slots_base')" :env-empty="false" compare-type="Object" />
@@ -61,10 +66,11 @@ import slotsSuperaceExt from './components_x/superace_ext'
 import slotsReelsDouble from './components_x/reels_double'
 import slotsScript from './components_x/slots_script'
 import SlotsPahiyasWinsExt from '@/views/config/tableConfig/slots/components_x/pahiyaswins_ext.vue'
+import SlotsFreeTriggerPlans from "@/views/config/tableConfig/slots/components_x/slotsFreeTriggerPlans.vue"
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: { SlotsPahiyasWinsExt, Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotsSuperaceExt, slotsReelsDouble, slotsScript },
+  components: {SlotsFreeTriggerPlans, SlotsPahiyasWinsExt, Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotsSuperaceExt, slotsReelsDouble, slotsScript },
   data() {
     return {
       activeTab: 'base',
