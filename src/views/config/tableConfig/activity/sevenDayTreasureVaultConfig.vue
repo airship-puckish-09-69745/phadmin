@@ -1153,7 +1153,7 @@ export default {
     },
     checkTask() {
       if (!this.edit.isEdit) {
-        const foundItem = this.item.TaskConfig.find(item => item.TaskID === this.edit.item.TaskID)
+        const foundItem = this.item.extend.TaskConfig.find(item => item.TaskID === this.edit.item.TaskID)
         if (foundItem) {
           Message.error(`已经存在相同的ID值`)
           return false
@@ -1161,6 +1161,16 @@ export default {
       }
 
       for (let i = 0; i < this.edit.item.TaskItem.length; i++) {
+        if (this.edit.item.TaskItem[i].ConditionType === 2) {
+          if (Number(this.edit.item.TaskItem[i].ConditionTarget) === 0) {
+            Message.error(`任务` + (i + 1) + '条件目标为0')
+            return false
+          }
+          if (Number.isNaN(Number(this.edit.item.TaskItem[i].ConditionTarget))) {
+            Message.error(`任务` + (i + 1) + '条件目标不是数字')
+            return false
+          }
+        }
         for (let j = 0; j < this.edit.item.TaskItem[i].Reward.length; j++) {
           if (this.edit.item.TaskItem[i].Reward[j].RewardType === 3 && this.edit.item.TaskItem[i].Reward[j].Prop === null) {
             Message.error(`任务` + (i + 1) + '存在奖励类型是道具，而没有配置具体道具信息')
@@ -1168,6 +1178,10 @@ export default {
           }
           if (this.edit.item.TaskItem[i].Reward[j].RewardType === 5 && this.edit.item.TaskItem[i].Reward[j].RichCard === null) {
             Message.error(`任务` + (i + 1) + '存在奖励类型是富裕卡，而没有配置具体道具信息')
+            return false
+          }
+          if (this.edit.item.TaskItem[i].Reward[j].Num === '0') {
+            Message.error(`任务` + (i + 1) + '第' + (j + 1) + '个奖励配置数量为0')
             return false
           }
         }
