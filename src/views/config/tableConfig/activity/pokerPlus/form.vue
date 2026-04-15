@@ -200,10 +200,10 @@ import SiteSelect from '@/components/SiteSelect/index.vue'
 
 // 参与活动场次枚举（扑克盲注级别）
 const ACTIVITY_SESSION_ENUM = [
-  {value: '1', label: '2.5/5'},
-  {value: '2', label: '5/10'},
-  {value: '3', label: '10/20'},
-  {value: '4', label: '25/50'}
+  {value: '2.5/5', label: '2.5/5'},
+  {value: '5/10', label: '5/10'},
+  {value: '10/20', label: '10/20'},
+  {value: '25/50', label: '25/50'}
 ]
 
 // 创建空白活动数据
