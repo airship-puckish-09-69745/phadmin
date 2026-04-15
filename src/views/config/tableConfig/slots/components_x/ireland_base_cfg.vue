@@ -210,6 +210,17 @@
             </el-col>
           </el-row>
 
+          <el-row>
+            <el-col :span="12">
+              <el-form-item v-if="version === 'V2'" label="是否启用公共下注值">
+                <el-select v-model="slotsData.IsBetListByAppCfg">
+                  <el-option label="启用" :value="true" />
+                  <el-option label="禁用" :value="false" />
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+
           <el-form-item>
             <el-button type="success" @click="submitFrm(false)">保存</el-button>
             <el-button v-if="version === 'V2'" type="success" @click="submitFrm(true)">多APP保存</el-button>
@@ -332,7 +343,8 @@ export default {
         'TopWinsLimit': this.slotsData.TopWinsLimit,
         'TopWinsStartTime': this.slotsData.TopWinsStartTime,
         'EnableScriptV3': this.slotsData.EnableScriptV3,
-        'IsCloseBuyFree': this.slotsData.IsCloseBuyFree
+        'IsCloseBuyFree': this.slotsData.IsCloseBuyFree,
+        'IsBetListByAppCfg': this.slotsData.IsBetListByAppCfg
       }
     },
     submitFrm(isMultiApp) {
