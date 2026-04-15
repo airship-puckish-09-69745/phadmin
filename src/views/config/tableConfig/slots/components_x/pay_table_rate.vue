@@ -35,7 +35,8 @@
 
     <el-row style="margin: 30px 0">
       <el-col :offset="3">
-        <el-button type="success" @click="submitFrm">保存</el-button>
+        <el-button type="success" @click="submitFrm(false)">保存</el-button>
+        <el-button v-if="version === 'V2'" type="success" @click="submitFrm(true)">多APP保存</el-button>
       </el-col>
     </el-row>
 
@@ -46,6 +47,7 @@
 
 <script>
 import Compare from '@/components/Compare'
+import store from "@/store";
 
 export default {
   name: 'SlotsPayTable',
@@ -84,7 +86,9 @@ export default {
       tableData: [
       ],
       symbolMap: {},
-      lock: false
+      lock: false,
+      version: store.getters.version || 'V1',
+      oldData: {}
     }
   },
   watch: {
@@ -109,7 +113,7 @@ export default {
     getDiffData() {
       return JSON.parse(JSON.stringify(this.slotsData))
     },
-    submitFrm() {
+    submitFrm(isMultiApp) {
       this.setData()
 
       const $this = this
@@ -120,7 +124,11 @@ export default {
           return
         }
 
-        $this.$emit('saveData')
+        if (!isMultiApp) {
+          $this.$emit('saveData')
+        } else {
+          $this.$emit('multiAppSave', $this.oldData, $this.slotsData)
+        }
         $this.lock = false
       })
     },
@@ -154,7 +162,7 @@ export default {
       this.slotsData.PayTable.sort(function(a, b) {
         return a.SymbolValue - b.SymbolValue
       })
-
+      this.oldData = JSON.parse(JSON.stringify(this.slotsData))
       this.tableData = []
       for (const i in this.slotsData.PayTable) {
         const value = this.slotsData.PayTable[i]['SymbolValue']

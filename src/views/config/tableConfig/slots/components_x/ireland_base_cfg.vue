@@ -210,8 +210,20 @@
             </el-col>
           </el-row>
 
+          <el-row>
+            <el-col :span="12">
+              <el-form-item v-if="version === 'V2'" label="是否启用公共下注值">
+                <el-select v-model="slotsData.IsBetListByAppCfg">
+                  <el-option label="启用" :value="true" />
+                  <el-option label="禁用" :value="false" />
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+
           <el-form-item>
-            <el-button type="success" @click="submitFrm">保存</el-button>
+            <el-button type="success" @click="submitFrm(false)">保存</el-button>
+            <el-button v-if="version === 'V2'" type="success" @click="submitFrm(true)">多APP保存</el-button>
           </el-form-item>
         </el-form>
       </el-col>
@@ -226,6 +238,7 @@
 <script>
 import Compare from '@/components/Compare'
 import RatioInput from '@/components/RatioInput'
+import store from "@/store";
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
@@ -256,7 +269,9 @@ export default {
       initialBets: this.slotsData.Bets,
       initialAutoSpinNum: [],
       topWinsLimit: this.slotsData.TopWinsLimit ? this.slotsData.TopWinsLimit / 1000 : 0,
-      topWinsStartTime: this.slotsData.TopWinsStartTime ? new Date(this.slotsData.TopWinsStartTime * 1000) : new Date().getTime()
+      topWinsStartTime: this.slotsData.TopWinsStartTime ? new Date(this.slotsData.TopWinsStartTime * 1000) : new Date().getTime(),
+      version: store.getters.version || 'V1',
+      oldData: JSON.parse(JSON.stringify(this.slotsData))
     }
     for (const k in this.slotsData.WinTypeMinOdds) {
       data.initialWinTypeMinOdds.push(this.slotsData.WinTypeMinOdds[k])
@@ -327,10 +342,12 @@ export default {
         'BetOddsList': this.slotsData.BetOddsList,
         'TopWinsLimit': this.slotsData.TopWinsLimit,
         'TopWinsStartTime': this.slotsData.TopWinsStartTime,
-        'IsCloseBuyFree': this.slotsData.IsCloseBuyFree
+        'EnableScriptV3': this.slotsData.EnableScriptV3,
+        'IsCloseBuyFree': this.slotsData.IsCloseBuyFree,
+        'IsBetListByAppCfg': this.slotsData.IsBetListByAppCfg
       }
     },
-    submitFrm() {
+    submitFrm(isMultiApp) {
       const $this = this
       if (this.recommendBetCheck() === false) {
         $this.$message.error('推荐下注值必须是下注大小中存在的值')
@@ -359,7 +376,11 @@ export default {
           $this.$message.error('没有任何修改，不需要提交 ')
           return
         }
-        $this.$emit('saveData')
+        if (!isMultiApp) {
+          $this.$emit('saveData')
+        } else {
+          $this.$emit('multiAppSave', $this.oldData, $this.slotsData)
+        }
         $this.lock = false
       })
       this.initialWinTypeMinOdds = []
