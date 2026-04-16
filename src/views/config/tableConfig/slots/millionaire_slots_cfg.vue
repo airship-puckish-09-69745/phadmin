@@ -392,8 +392,6 @@ export default {
       this.createCfg = false
     },
     onMultiAppBaseSave(oldData, newData) {
-      console.log('oldData', oldData)
-      console.log('newData', newData)
       // 差异计算
       this.diffData = this.getDifferenceBetweenConfigs(oldData, newData)
 
@@ -403,8 +401,6 @@ export default {
       this.multiAppDialogVisible = true
     },
     onMultiAppRuleSave(oldData, newData) {
-      console.log('oldData', oldData)
-      console.log('newData', newData)
       // 差异计算
       this.diffData = this.getDifferenceBetweenConfigs(oldData, newData)
 
@@ -414,8 +410,6 @@ export default {
       this.multiAppDialogVisible = true
     },
     onMultiAppExtSave(oldData, newData) {
-      console.log('oldData', oldData)
-      console.log('newData', newData)
       // 差异计算
       this.diffData = this.getDifferenceBetweenConfigs(oldData, newData)
 
