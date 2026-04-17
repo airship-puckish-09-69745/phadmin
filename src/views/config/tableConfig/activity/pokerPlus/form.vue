@@ -225,7 +225,9 @@ function createNewItem() {
     treasureCfg: [{id: 1, claimAmount: 0}], // 宝箱配置表格
     whitelistCfg: {
       siteIdList: [] // 站点白名单
-    }
+    },
+    dailyIssuedAmount: 0,
+    totalIssuedAmount: 0
   }
 }
 
@@ -260,8 +262,7 @@ export default {
       if (val) {
         this.activeTab = 'activity'
         if (this.isEdit && Object.keys(this.editData).length > 0) {
-          this.loadEditData()
-          this.getAmoutIssue()
+          this.loadEditDataAndAmount()
         } else {
           this.item = createNewItem()
         }
@@ -272,6 +273,16 @@ export default {
     }
   },
   methods: {
+    // 编辑时，先赋值再查发奖金额
+    loadEditDataAndAmount() {
+      this.loadEditData();
+      // 等 this.item 赋值后再查金额
+      this.$nextTick(() => {
+        if (this.item && this.item.id) {
+          this.getAmoutIssue(this.item.id);
+        }
+      });
+    },
     handleDialogClose() {
       this.item = createNewItem()
     },
@@ -279,8 +290,6 @@ export default {
     // 加载编辑数据（后端数据 -> 前端展示格式）
     loadEditData() {
       const data = JSON.parse(JSON.stringify(this.editData))
-      console.log(111)
-      console.log(data.treasureCfg)
       // 白名单配置
       if (typeof data.whitelistCfg === 'string') {
         try {
@@ -331,21 +340,23 @@ export default {
       if (data.totalPrizeThreshold != null) data.totalPrizeThreshold /= 1000
       if (data.minReward != null) data.minReward /= 1000
 
+      data.dailyIssuedAmount = data.dailyIssuedAmount || 0
+      data.totalIssuedAmount = data.totalIssuedAmount || 0
       this.item = data
     },
-    getAmoutIssue() {
+    getAmoutIssue(activityId) {
+      if (!activityId) return;
       request({
         url: '/dataProxy/info',
         method: 'post',
         data: {
           Path: '/activity/pokerplus/prize/issued',
-          activityId: this.item.id,
+          activityId: activityId,
           dateStr: getCurrentDateStr()
         }
       }).then(response => {
-        console.log(11)
-        console.log(response)
-        if (response.RetCode === 0) {
+        if (response.RetCode === 0 && response.Data) {
+          console.log(response.Data)
           this.item.dailyIssuedAmount = response.Data.DailyIssuedAmount / 1000
           this.item.totalIssuedAmount = response.Data.TotalIssuedAmount / 1000
         }
