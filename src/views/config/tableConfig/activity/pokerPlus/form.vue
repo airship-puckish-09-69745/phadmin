@@ -37,7 +37,7 @@
                   <template slot="append">₱</template>
                 </el-input>
                 <div style="color: #E6A23C; font-size: 12px; line-height: 1.4; margin-top: 4px">
-                  当前发放金额({{ issuedAmount.dailyIssuedAmount }})
+                  当前发放金额({{ item.dailyIssuedAmount }})
                 </div>
               </el-form-item>
             </el-col>
@@ -47,7 +47,7 @@
                   <template slot="append">₱</template>
                 </el-input>
                 <div style="color: #E6A23C; font-size: 12px; line-height: 1.4; margin-top: 4px">
-                  当前发放金额({{ issuedAmount.totalIssuedAmount }})
+                  当前发放金额({{ item.totalIssuedAmount }})
                 </div>
               </el-form-item>
             </el-col>
@@ -346,7 +346,8 @@ export default {
         console.log(11)
         console.log(response)
         if (response.RetCode === 0) {
-          // this.edit.todayTotalReward = response.Data.TodayTotalAmount / 1000
+          this.item.dailyIssuedAmount = response.Data.DailyIssuedAmount / 1000
+          this.item.totalIssuedAmount = response.Data.TotalIssuedAmount / 1000
         }
       })
     },
