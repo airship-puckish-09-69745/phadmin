@@ -19,7 +19,7 @@
           <el-tab-pane label="符号表配置" name="symbol">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，重启生效】</h3>
             <publish primary-key="ID" :key-id="getFullKey('supergemiii_slots_rule')" :env-empty="false" compare-type="Object" />
-            <slots-symbol-value v-if="ruleCfgBool" v-model="ruleCfg" @saveData="saveRuleCfg" @multiAppSave="onMultiAppExtSave" />
+            <slots-symbol-value v-if="ruleCfgBool" v-model="ruleCfg" @saveData="saveRuleCfg" @multiAppSave="onMultiAppRuleSave" />
           </el-tab-pane>
           <el-tab-pane label="支付线配置" name="pay_line">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，重启生效】</h3>

@@ -207,7 +207,9 @@ export default {
         currentBet: '0',
         dialogTitle: '添加配置',
         currentConf: []
-      }
+      },
+      version: store.getters.version || 'V1',
+      oldData: JSON.parse(JSON.stringify(this.slotsData))
     }
   },
   created() {
