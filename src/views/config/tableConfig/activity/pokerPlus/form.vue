@@ -37,7 +37,7 @@
                   <template slot="append">₱</template>
                 </el-input>
                 <div style="color: #E6A23C; font-size: 12px; line-height: 1.4; margin-top: 4px">
-                  当前发放金额({{item.dailyIssuedAmount}})
+                  当前发放金额({{ issuedAmount.dailyIssuedAmount }})
                 </div>
               </el-form-item>
             </el-col>
@@ -47,7 +47,7 @@
                   <template slot="append">₱</template>
                 </el-input>
                 <div style="color: #E6A23C; font-size: 12px; line-height: 1.4; margin-top: 4px">
-                 当前发放金额({{item.totalIssuedAmount}})
+                  当前发放金额({{ issuedAmount.totalIssuedAmount }})
                 </div>
               </el-form-item>
             </el-col>
@@ -126,18 +126,20 @@
                     icon="el-icon-plus"
                     @click="addTreasureRow"
                     :style="isLoop ? 'background: #f5f7fa; color: #c0c4cc; border-color: #ebeef5;' : ''"
-                  >添加档位({{ item.treasureCfg.length }}/20)</el-button>
+                  >添加档位({{ item.treasureCfg.length }}/20)
+                  </el-button>
                   <div style="display: flex; align-items: center; gap: 4px;">
-                    <el-switch v-model="isLoop" active-text="循环模式" inactive-text="普通模式" @change="onLoopSwitch" />
-                    <span v-if="isLoop" style="color: #909399; font-size: 12px; margin-left: 8px;">循环模式下仅允许一条档位</span>
+                    <el-switch v-model="isLoop" active-text="循环模式" inactive-text="普通模式" @change="onLoopSwitch"/>
+                    <span v-if="isLoop"
+                          style="color: #909399; font-size: 12px; margin-left: 8px;">循环模式下仅允许一条档位</span>
                   </div>
                 </div>
-                  <el-table
-                    :data="isLoop ? item.treasureCfg.slice(0, 1) : item.treasureCfg"
-                    border
-                    size="mini"
-                    style="max-width: 500px"
-                  >
+                <el-table
+                  :data="isLoop ? item.treasureCfg.slice(0, 1) : item.treasureCfg"
+                  border
+                  size="mini"
+                  style="max-width: 500px"
+                >
                   <el-table-column label="宝箱序号" align="center">
                     <template slot-scope="scope">
                       <el-input
@@ -227,6 +229,14 @@ function createNewItem() {
   }
 }
 
+function getCurrentDateStr() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  return `${year}${month}${day}`;
+}
+
 export default {
   components: {SiteSelect},
   props: {
@@ -251,6 +261,7 @@ export default {
         this.activeTab = 'activity'
         if (this.isEdit && Object.keys(this.editData).length > 0) {
           this.loadEditData()
+          this.getAmoutIssue()
         } else {
           this.item = createNewItem()
         }
@@ -321,6 +332,23 @@ export default {
       if (data.minReward != null) data.minReward /= 1000
 
       this.item = data
+    },
+    getAmoutIssue() {
+      request({
+        url: '/dataProxy/info',
+        method: 'post',
+        data: {
+          Path: '/activity/pokerplus/prize/issued',
+          activityId: this.item.id,
+          dateStr: getCurrentDateStr()
+        }
+      }).then(response => {
+        console.log(11)
+        console.log(response)
+        if (response.RetCode === 0) {
+          // this.edit.todayTotalReward = response.Data.TodayTotalAmount / 1000
+        }
+      })
     },
 
     // 编码前端数据 -> 后端格式
