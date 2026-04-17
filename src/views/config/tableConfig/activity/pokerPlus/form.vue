@@ -37,7 +37,7 @@
                   <template slot="append">₱</template>
                 </el-input>
                 <div style="color: #E6A23C; font-size: 12px; line-height: 1.4; margin-top: 4px">
-                  当前发放金额({{item.dayPrizeThreshold}})
+                  当前发放金额({{item.dailyIssuedAmount}})
                 </div>
               </el-form-item>
             </el-col>
@@ -47,7 +47,7 @@
                   <template slot="append">₱</template>
                 </el-input>
                 <div style="color: #E6A23C; font-size: 12px; line-height: 1.4; margin-top: 4px">
-                 当前发放金额({{item.totalPrizeThreshold}})
+                 当前发放金额({{item.totalIssuedAmount}})
                 </div>
               </el-form-item>
             </el-col>
