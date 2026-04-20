@@ -142,14 +142,13 @@
                 >
                   <el-table-column label="宝箱序号" align="center">
                     <template slot-scope="scope">
-                      <el-input
-                        v-model.number="scope.row.id"
-                        :required="true"
-                        prop="id"
+                      <el-input-number
+                        v-model="scope.row.id"
                         :min="1"
                         :precision="0"
                         size="mini"
-                        style="text-align: center"
+                        style="width: 100%; text-align: center"
+                        disabled
                       />
                     </template>
                   </el-table-column>
@@ -323,10 +322,11 @@ export default {
         // 如果是字符串，先转成数组
         data.treasureCfg = JSON.parse(data.treasureCfg)
       }
-      // 如果是数组，就处理金额（厘 → 元）
+      // 如果是数组，就处理金额（厘 → 元）并重新排序序号
       if (Array.isArray(data.treasureCfg)) {
-        data.treasureCfg = data.treasureCfg.map(value => ({
+        data.treasureCfg = data.treasureCfg.map((value, i) => ({
           ...value,
+          id: i + 1,
           claimAmount: Math.floor((value.claimAmount || 0) / 1000)
         }))
       }
@@ -453,9 +453,15 @@ export default {
     },
 
     // ---- 宝箱配置表格操作 ----
+    reindexTreasure() {
+      this.item.treasureCfg.forEach((row, i) => {
+        row.id = i + 1
+      })
+    },
     addTreasureRow() {
       if (this.isLoop) return
-      this.item.treasureCfg.push({id: '', claimAmount: ''})
+      this.item.treasureCfg.push({id: this.item.treasureCfg.length + 1, claimAmount: ''})
+      this.reindexTreasure()
     },
     deleteTreasureRow(index) {
       if (this.isLoop) return
@@ -464,6 +470,7 @@ export default {
         return
       }
       this.item.treasureCfg.splice(index, 1)
+      this.reindexTreasure()
     },
     onLoopSwitch(val) {
       this.isLoop = val
