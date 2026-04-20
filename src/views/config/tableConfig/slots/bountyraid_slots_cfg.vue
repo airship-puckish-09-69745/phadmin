@@ -21,11 +21,6 @@
             <publish primary-key="ID" :key-id="getFullKey('bountyraid_slots_rule')" :env-empty="false" compare-type="Object" />
             <slots-symbol-value v-if="ruleCfgBool" v-model="ruleCfg" @saveData="saveRuleCfg" @multiAppSave="onMultiAppRuleSave" />
           </el-tab-pane>
-          <el-tab-pane v-if="baseCfg.PayLine.Type===0" label="支付线配置" name="pay_line">
-            <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，重启生效】</h3>
-            <publish primary-key="ID" :key-id="getFullKey('bountyraid_slots_rule')" :env-empty="false" compare-type="Object" />
-            <slots-pay-line v-if="ruleCfgBool" v-model="ruleCfg" :rows="baseCfg.Rows" :cols="baseCfg.Clos" @saveData="saveRuleCfg" @multiAppSave="onMultiAppRuleSave" />
-          </el-tab-pane>
           <el-tab-pane label="赔付线配置" name="pay_table">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，重启生效】</h3>
             <publish primary-key="ID" :key-id="getFullKey('bountyraid_slots_base')" :env-empty="false" compare-type="Object" />
@@ -82,7 +77,6 @@ import slotsBaseCfg from './components_x/ireland_base_cfg'
 import slotsSymbolValue from './components_x/symbol_value'
 import slotsPayLine from './components_x/pay_line'
 import slotsPayTable from './components_x/pay_table_rate'
-import slotsReelsIcon from './components_x/aladdin_reels_icon'
 import slotsBountyraidExt from './components_x/bountyraid_ext'
 import slotsReelsDouble from './components_x/reels_double'
 import slotsScript from './components_x/slots_script'
@@ -101,7 +95,6 @@ export default {
     slotsSymbolValue,
     slotsPayLine,
     slotsPayTable,
-    slotsReelsIcon,
     slotsBountyraidExt,
     slotsReelsDouble,
     slotsScript
@@ -222,7 +215,7 @@ export default {
       }
     },
     getAppInfos() {
-      request({ url: '/thirdparties/all', method: 'get', data: {} }).then(response => {
+      request({ url: '/thirdparties/all', method: 'get', data: {}}).then(response => {
         if (response.RetCode === 0) {
           for (let i = 0; i < response.Data.length; i++) {
             if (response.Data[i].Status !== 2) continue
@@ -233,7 +226,7 @@ export default {
     },
     onAppIdChange() {
       if (this.appId === 0) {
-        request({ url: '/customizeconfig/one', method: 'get', data: { SubKey: this.subKey } }).then(response => {
+        request({ url: '/customizeconfig/one', method: 'get', data: { SubKey: this.subKey }}).then(response => {
           if (response.RetCode === 0) {
             this.baseForm = response.Data || {}
             if (response.Data && response.Data.Data !== '') {
@@ -243,14 +236,14 @@ export default {
             }
           }
         })
-        request({ url: '/customizeconfig/one', method: 'get', data: { SubKey: 'bountyraid_slots_rule' } }).then(response => {
+        request({ url: '/customizeconfig/one', method: 'get', data: { SubKey: 'bountyraid_slots_rule' }}).then(response => {
           if (response.RetCode === 0) {
             this.ruleForm = response.Data || {}
             if (response.Data && response.Data.Data !== '') this.ruleCfg = JSON.parse(response.Data.Data)
             this.ruleCfgBool = true
           }
         })
-        request({ url: '/customizeconfig/one', method: 'get', data: { SubKey: 'bountyraid_slots_ext' } }).then(response => {
+        request({ url: '/customizeconfig/one', method: 'get', data: { SubKey: 'bountyraid_slots_ext' }}).then(response => {
           if (response.RetCode === 0) {
             this.extForm = response.Data || {}
             if (response.Data && response.Data.Data !== '') this.extCfg = JSON.parse(response.Data.Data)
