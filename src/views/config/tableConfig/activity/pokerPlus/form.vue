@@ -74,11 +74,6 @@
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
-              <el-form-item label="最低奖励阀值：">
-                <el-input v-model.number="item.minReward" placeholder="请输入" style="max-width: 200px"/>
-              </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12">
               <el-form-item label="时间偏移：">
                 <el-input v-model.number="item.debugTimeOffset" placeholder="请输入" style="max-width: 200px"/>
               </el-form-item>
