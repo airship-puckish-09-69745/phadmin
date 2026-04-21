@@ -409,6 +409,10 @@ export default {
         Message.error('结束时间必须大于开始时间')
         return false
       }
+      if (this.item.betrayRatio > 100 || this.item.betrayRatio < 0) {
+        Message.error('反水比例范围 0-100 之间')
+        return false
+      }
       if (!this.item.treasureCfg || this.item.treasureCfg.length === 0) {
         Message.error('宝箱配置至少需要一行数据')
         return false
