@@ -899,7 +899,7 @@ export default {
   }
 
   .card-panel {
-    height: 108px;
+    height: 120px;
     cursor: pointer;
     font-size: 12px;
     position: relative;
