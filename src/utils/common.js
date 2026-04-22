@@ -132,7 +132,8 @@ export function LibShow() {
       132, // 新版扫雷
       138, // Chicken Go
       139, // Manny Punch
-      140 // HiloPlus
+      140, // HiloPlus
+      143 // Triple Wheels Spin
     ].indexOf(gameId) !== -1
   }
 
