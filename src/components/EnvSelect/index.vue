@@ -11,7 +11,7 @@
       </el-dropdown-menu>
     </el-dropdown>
     <el-select
-      v-if="isNewVersion"
+      v-if="isNewVersion()"
       v-model="selectedAppId"
       filterable
       placeholder="选择AppId"
@@ -23,7 +23,7 @@
         :key="item.value"
         :label="item.label"
         :value="item.value"
-        :disabled="appId===item.value"
+        :disabled="selectedAppId===item.value"
       />
     </el-select>
   </div>
@@ -31,7 +31,7 @@
 
 <script>
 import request from '@/utils/request'
-import { isNewVersion, switchNewAppEnv, switchOldAppEnv, switchAppId } from '@/utils/app'
+import { isNewVersion, switchNewAppEnv, switchOldAppEnv, switchAppId, getAppId } from '@/utils/app'
 
 export default {
   data() {
@@ -43,13 +43,12 @@ export default {
         { label: '新版线上', value: 'new-pro' }
       ],
       oldEnv: '',
-      oldAppId: '',
       appOptions: [
         // { label: '1000002-内部平台', value: '1000002' },
         // { label: '1000003-testaccount', value: '1000003' },
         // { label: '1000005-BingoPlusTongits', value: '1000005' }
       ],
-      selectedAppId: parseInt(this.$store.getters.appId)
+      selectedAppId: isNewVersion() ? parseInt(getAppId()) : ''
     }
   },
   computed: {
@@ -58,14 +57,10 @@ export default {
         return 'new-' + this.$store.getters.env
       }
       return this.$store.getters.env
-    },
-    appId() {
-      return parseInt(this.$store.getters.appId)
     }
   },
   mounted() {
     this.oldEnv = this.env
-    this.oldAppId = this.appId
     this.getAppIdOptions()
   },
   methods: {
