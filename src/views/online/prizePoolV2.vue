@@ -6,7 +6,7 @@
       </el-col>
       <el-col :span="22" :offset="1">
         <el-button type="success" size="mini" @click="getData">刷新</el-button>
-        <el-button type="primary" size="mini" @click="copyForm.copyDialogVisible=true">从其他APP拷贝</el-button>
+        <el-button type="primary" size="mini" @click="copyForm.copyDialogVisible=true">奖池复制</el-button>
       </el-col>
       <el-col :span="22" :offset="1">
         <el-tabs active-name="first">
@@ -118,7 +118,7 @@
         <el-form-item label="增减奖池：" prop="PrizePool">
           <el-input v-model.number="form.PrizePool" size="medium" :required="true" :placeholder="form.LotteryPool" />
         </el-form-item>
-        <el-form-item v-if="form.Gid==37" label="低注：" prop="PrizePool">
+        <el-form-item v-if="form.Gid===37" label="低注：" prop="PrizePool">
           <el-input v-model.number="form.Ante" size="medium" :required="true" :placeholder="form.Ante" />
         </el-form-item>
       </el-form>
@@ -129,92 +129,197 @@
     </el-dialog>
 
     <el-dialog
-      title="从其他APP奖池同步"
+      title="奖池复制"
       :visible.sync="copyForm.copyDialogVisible"
-      width="300"
+      width="800px"
       @opened="onCopyDialogOpened"
     >
       <el-form ref="copyForm" :model="copyForm">
-        <el-form-item label="请选择要同步的APP奖池：" prop="copyFromAppId">
-          <el-select v-model.number="copyForm.copyFromAppId" size="medium" :required="true" placeholder="请选择" @change="onCopyAppChange">
-            <el-option label="未区分APP的奖池" :value="0" />
-            <el-option
-              v-for="item in appList"
-              :key="item.key"
-              :label="appLabel(item.key, item.label)"
-              :value="item.key"
-            />
-          </el-select>
-        </el-form-item>
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="来源APP：" prop="copyFromAppId">
+              <el-select v-model.number="copyForm.copyFromAppId" size="medium" :required="true" placeholder="请选择" @change="onCopyAppChange">
+                <el-option label="未区分APP的奖池" :value="0" />
+                <el-option
+                  v-for="item in appList"
+                  :key="item.key"
+                  :label="appLabel(item.key, item.label)"
+                  :value="item.key"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="目标APP：" prop="copyToAppId">
+              <el-select v-model.number="copyForm.copyToAppId" size="medium" :required="true" placeholder="请选择" @change="onCopyToAppChange">
+                <el-option
+                  v-for="item in appList"
+                  :key="item.key"
+                  :label="appLabel(item.key, item.label)"
+                  :value="item.key"
+                />
+                <el-option :label="appLabel(appId, '当前APP')" :value="appId" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
       </el-form>
-      <el-tabs active-name="first">
-        <el-tab-pane label="下注类" name="first"><el-table
-          :data="copyForm.casioData"
-          border
-          @selection-change="onSelectionChange"
-        >
-          <el-table-column
-            type="selection"
-            width="55"
-          />
-          <el-table-column
-            prop="Gid"
-            label="子游戏"
-            width="150"
-          >
-            <template slot-scope="scope">
-              <span v-if="scope.row.Gid===37">
-                {{ getGameName(scope.row.Gid)+' '+scope.row.Ante/1000+'场' }}
-              </span>
-              <span v-else>
-                {{ getGameName(scope.row.Gid) }}
-              </span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="PrizePool"
-            label="奖池"
-            width="200"
-          >
-            <template slot-scope="scope">
-              <span :style="scope.row.PrizePool/1000>1000000?'color:red':''">{{ Math.floor(scope.row.PrizePool/1000).toLocaleString() }}</span>
-            </template>
-          </el-table-column>
-        </el-table></el-tab-pane>
-        <el-tab-pane label="Slots" name="second"><el-table
-          :data="copyForm.slotsData"
-          :span-method="copyFormObjectSpanMethod"
-          border
-        >
-          <el-table-column
-            prop="Gid"
-            label="子游戏"
-            width="150"
-          >
-            <template slot-scope="scope">
-              {{ getSlotsName(scope.row.Gid) }}
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="Gid"
-            label="类型"
-            width="150"
-          >
-            <template slot-scope="scope">
-              {{ getSlotsfSuffix(scope.row.Gid) }}
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="PrizePool"
-            label="奖池"
-            width="200"
-          >
-            <template slot-scope="scope">
-              <span :style="scope.row.PrizePool/1000>1000000?'color:red':''">{{ Math.floor(scope.row.PrizePool/1000).toLocaleString() }}</span>
-            </template>
-          </el-table-column>
-        </el-table></el-tab-pane>
-      </el-tabs>
+
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-tabs active-name="first">
+            <el-tab-pane label="下注类" name="first">
+              <el-table
+                :data="copyForm.casioData"
+                border
+                style="width: 100%;"
+                @selection-change="onSelectionChange"
+              >
+                <el-table-column
+                  type="selection"
+                  width="55"
+                />
+                <el-table-column
+                  prop="Gid"
+                  label="子游戏"
+                  min-width="150"
+                >
+                  <template slot-scope="scope">
+                    <span v-if="scope.row.Gid===37">
+                      {{ getGameName(scope.row.Gid)+' '+scope.row.Ante/1000+'场' }}
+                    </span>
+                    <span v-else>
+                      {{ getGameName(scope.row.Gid) }}
+                    </span>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="PrizePool"
+                  label="奖池"
+                  width="120"
+                >
+                  <template slot-scope="scope">
+                    <span :style="scope.row.PrizePool/1000>1000000?'color:red':''">{{ Math.floor(scope.row.PrizePool/1000).toLocaleString() }}</span>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-tab-pane>
+            <el-tab-pane label="Slots" name="second">
+              <el-table
+                :data="copyForm.slotsData"
+                :span-method="copyFormObjectSpanMethod"
+                border
+                style="width: 100%;"
+                @selection-change="onSlotsSelectionChange"
+              >
+                <el-table-column
+                  type="selection"
+                  width="55"
+                />
+                <el-table-column
+                  prop="Gid"
+                  label="子游戏"
+                  min-width="120"
+                >
+                  <template slot-scope="scope">
+                    {{ getSlotsName(scope.row.Gid) }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="Gid"
+                  label="类型"
+                  width="80"
+                >
+                  <template slot-scope="scope">
+                    {{ getSlotsfSuffix(scope.row.Gid) }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="PrizePool"
+                  label="奖池"
+                  width="120"
+                >
+                  <template slot-scope="scope">
+                    <span :style="scope.row.PrizePool/1000>1000000?'color:red':''">{{ Math.floor(scope.row.PrizePool/1000).toLocaleString() }}</span>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-tab-pane>
+          </el-tabs>
+        </el-col>
+        <el-col :span="12">
+          <el-tabs active-name="targetFirst">
+            <el-tab-pane label="下注类" name="targetFirst">
+              <el-table
+                :data="targetCasioData"
+                border
+                style="width: 100%;"
+              >
+                <el-table-column
+                  prop="Gid"
+                  label="子游戏"
+                  min-width="150"
+                >
+                  <template slot-scope="scope">
+                    <span v-if="scope.row.Gid===37">
+                      {{ getGameName(scope.row.Gid)+' '+scope.row.Ante/1000+'场' }}
+                    </span>
+                    <span v-else>
+                      {{ getGameName(scope.row.Gid) }}
+                    </span>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="PrizePool"
+                  label="奖池"
+                  width="120"
+                >
+                  <template slot-scope="scope">
+                    <span :style="scope.row.PrizePool/1000>1000000?'color:red':''">{{ Math.floor(scope.row.PrizePool/1000).toLocaleString() }}</span>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-tab-pane>
+            <el-tab-pane label="Slots" name="targetSecond">
+              <el-table
+                :data="targetSlotsData"
+                :span-method="targetObjectSpanMethod"
+                border
+                style="width: 100%;"
+              >
+                <el-table-column
+                  prop="Gid"
+                  label="子游戏"
+                  min-width="120"
+                >
+                  <template slot-scope="scope">
+                    {{ getSlotsName(scope.row.Gid) }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="Gid"
+                  label="类型"
+                  width="80"
+                >
+                  <template slot-scope="scope">
+                    {{ getSlotsfSuffix(scope.row.Gid) }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="PrizePool"
+                  label="奖池"
+                  width="120"
+                >
+                  <template slot-scope="scope">
+                    <span :style="scope.row.PrizePool/1000>1000000?'color:red':''">{{ Math.floor(scope.row.PrizePool/1000).toLocaleString() }}</span>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-tab-pane>
+          </el-tabs>
+        </el-col>
+      </el-row>
+
       <span slot="footer" class="dialog-footer">
         <el-button @click="copyForm.copyDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="copyFromApp">确 定</el-button>
@@ -264,6 +369,7 @@ export default {
 
       copyForm: {
         copyFromAppId: 0,
+        copyToAppId: 0,
         copyDialogVisible: false,
         slotsData: [],
         casioData: [],
@@ -271,6 +377,9 @@ export default {
         casioDataGameIds: [],
         slotsDataGameIds: []
       },
+      targetCasioData: [],
+      targetSlotsData: [],
+      targetRowsSpanGameIdMap: {},
       appList: []
     }
   },
@@ -465,7 +574,13 @@ export default {
     copyFromApp() {
       const $this = this
 
+      if (!this.copyForm.copyToAppId) {
+        this.$message.error('请选择目标APP')
+        return
+      }
+
       const appLabel = this.copyForm.copyFromAppId === 0 ? '未区分APP' : this.appList.find(item => item.key === this.copyForm.copyFromAppId).label + '-' + this.copyForm.copyFromAppId
+      const targetAppLabel = this.copyForm.copyToAppId === this.appId ? '当前APP' : this.appList.find(item => item.key === this.copyForm.copyToAppId).label + '-' + this.copyForm.copyToAppId
       // 合并casioDataGameIds和slotsDataGameIds
       const gameIds = [...this.copyForm.casioDataGameIds, ...this.copyForm.slotsDataGameIds]
 
@@ -482,7 +597,7 @@ export default {
       })
 
       const message = h('div', {}, [
-        h('div', {}, '确认同步来源【' + appLabel + '】的奖池配置吗？'),
+        h('div', {}, '确认将来源【' + appLabel + '】的奖池配置复制到目标【' + targetAppLabel + '】吗？'),
         h('div', { style: { 'margin-top': '10px' }}, '包括以下子游戏：'),
         ...gameNames
       ])
@@ -500,15 +615,19 @@ export default {
             Path: '/lotteryschema/copy/from/app',
             Env: store.getters.env,
             FromAppId: this.copyForm.copyFromAppId,
-            ToAppId: this.appId,
+            ToAppId: this.copyForm.copyToAppId,
             GameIds: gameIds.join(',')
           }
         }).then(response => {
           console.log('list response', response)
           if (response.RetCode === 0) {
             $this.copyForm.copyDialogVisible = false
-            $this.$message.success('同步成功')
+            $this.$message.success('复制成功')
             $this.getData()
+            // 如果目标APP是当前APP，刷新数据
+            if (this.copyForm.copyToAppId === this.appId) {
+              $this.getData()
+            }
           } else {
             $this.$message.error(response.Data)
           }
@@ -539,9 +658,91 @@ export default {
     appLabel(key, label) {
       return label + '-' + key
     },
+    getAppName(appId) {
+      if (appId === 0) {
+        return '未区分APP'
+      }
+      const app = this.appList.find(item => item.key === appId)
+      return app ? app.label : '未知'
+    },
     onCopyDialogOpened() {
       this.copyForm.copyFromAppId = 0
+      this.copyForm.copyToAppId = this.appId
       this.onCopyAppChange()
+      this.getTargetAppData()
+    },
+    onCopyToAppChange() {
+      this.getTargetAppData()
+    },
+    getTargetAppData() {
+      if (!this.copyForm.copyToAppId) return
+
+      const $this = this
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Path: '/lotteryschema/prize/pool/list',
+          Env: store.getters.env,
+          AppId: this.copyForm.copyToAppId
+        }
+      }).then(response => {
+        console.log('target app response', response)
+        const ignore = [2, 3, 4, 5, 7, 8, 9, 13, 14, 16, 17, 18, 19]
+
+        $this.targetSlotsData = []
+        $this.targetCasioData = []
+        if (response.RetCode === 0) {
+          $this.targetRowsSpanGameIdMap = {}
+          for (let i = 0; i < response.Data.length; i++) {
+            const item = response.Data[i]
+            if (ignore.includes(item.Gid)) {
+              continue
+            }
+
+            if (item.Gid > 5000) {
+              const gid = parseInt(item.Gid / 100)
+              if (gid in $this.targetRowsSpanGameIdMap) {
+                $this.targetRowsSpanGameIdMap[gid] += 1
+              } else {
+                $this.targetRowsSpanGameIdMap[gid] = 1
+              }
+              $this.targetSlotsData.push(item)
+            } else {
+              $this.targetCasioData.push(item)
+            }
+          }
+          $this.targetSlotsData.sort(function(a, b) {
+            return $this.getSlotsName(a.Gid).localeCompare($this.getSlotsName(b.Gid))
+          })
+
+          $this.targetCasioData.sort(function(a, b) {
+            return a.Gid - b.Gid
+          })
+        } else {
+          $this.$message.error(response.Data)
+        }
+      })
+    },
+    targetObjectSpanMethod({ row, column, rowIndex, columnIndex }) {
+      if (columnIndex === 0) {
+        const gid = parseInt(row.Gid / 100)
+        if (gid in this.targetRowsSpanGameIdMap && row.Gid % 100 === 1) {
+          return {
+            rowspan: this.targetRowsSpanGameIdMap[gid],
+            colspan: 1
+          }
+        } else {
+          return {
+            rowspan: 0,
+            colspan: 0
+          }
+        }
+      }
+    },
+    onSlotsSelectionChange(val) {
+      console.log('onSlotsSelectionChange', val)
+      this.copyForm.slotsDataGameIds = val.map(item => item.Gid)
     },
     onCopyAppChange() {
       console.log('onCopyAppChange copyFromAppId', this.copyForm.copyFromAppId)
@@ -581,16 +782,9 @@ export default {
                 $this.copyForm.rowsSpanGameIdMap[gid] = 1
               }
 
-              const slotsItem = $this.slotsData.find(sitem => sitem.Gid === item.Gid)
-              if (slotsItem.PrizePool === 0) {
-                $this.copyForm.slotsData.push(item)
-              }
+              $this.copyForm.slotsData.push(item)
             } else {
-              const casioItem = $this.casioData.find(citem => citem.Gid === item.Gid)
-              console.log('casioItem:', casioItem)
-              if (casioItem.PrizePool === 0) {
-                $this.copyForm.casioData.push(item)
-              }
+              $this.copyForm.casioData.push(item)
             }
           }
           $this.copyForm.slotsData.sort(function(a, b) {
@@ -612,7 +806,7 @@ export default {
     getFreezePool(row) {
       let prizePool = row.PrizePool
       const freezePool = row.FreezePool
-      if (row.FreezePool == undefined) {
+      if (row.FreezePool === undefined) {
         return ''
       }
       prizePool -= row.FreezePool
