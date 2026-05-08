@@ -322,7 +322,10 @@ export default {
           Message.error(`奖项${prize.id}的最大金额不能为0或空`)
           return
         }
-        if (prize.rewardMin > prize.rewardMax) {
+        // 转换整形，防止字符串比较bug
+        const min = Number(prize.rewardMin)
+        const max = Number(prize.rewardMax)
+        if (min > max) {
           Message.error(`奖项${prize.id}的最小金额不能大于最大金额`)
           return
         }
