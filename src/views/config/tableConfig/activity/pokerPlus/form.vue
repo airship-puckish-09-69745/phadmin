@@ -125,8 +125,7 @@
                   </el-button>
                   <div style="display: flex; align-items: center; gap: 4px;">
                     <el-switch v-model="isLoop" active-text="循环模式" inactive-text="普通模式" @change="onLoopSwitch"/>
-                    <span v-if="isLoop"
-                          style="color: #909399; font-size: 12px; margin-left: 8px;">循环模式下仅允许一条档位</span>
+                    <span v-if="isLoop" style="color: #909399; font-size: 12px; margin-left: 8px;">循环模式下仅允许一条档位</span>
                   </div>
                 </div>
                 <el-table
@@ -207,6 +206,7 @@ function createNewItem() {
   return {
     activityName: '', // 活动名称
     isOpen: true, // 活动开关
+    isLoop: false, // 是否循环
     startTime: Date.now(), // 开始时间（毫秒）
     endTime: Date.now() + 30 * 24 * 60 * 60 * 1000, // 结束时间（毫秒），默认30天后
     betrayRatio: 1, // 反水比例（百分比）
@@ -338,6 +338,8 @@ export default {
       data.dailyIssuedAmount = data.dailyIssuedAmount || 0
       data.totalIssuedAmount = data.totalIssuedAmount || 0
       this.item = data
+      // 转换始终是布尔值，适合用于 el-switch
+      this.isLoop = !!data.isLoop
     },
     getAmoutIssue(activityId) {
       if (!activityId) return;
