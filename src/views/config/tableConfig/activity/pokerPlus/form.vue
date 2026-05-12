@@ -26,7 +26,7 @@
             </el-col>
             <el-col :xs="24" :sm="12">
               <el-form-item label="反水比例：">
-                <el-input v-model.number="item.sockGainRatio" placeholder="请输入" style="max-width: 200px">
+                <el-input v-model.number="item.betrayRatio" placeholder="请输入" style="max-width: 200px">
                   <template slot="append">%</template>
                 </el-input>
               </el-form-item>
@@ -37,7 +37,7 @@
                   <template slot="append">₱</template>
                 </el-input>
                 <div style="color: #E6A23C; font-size: 12px; line-height: 1.4; margin-top: 4px">
-                  达到上限时只发铜钱不发投注金，当日没有榜单奖励，且在Lark同步报警
+                  当前发放金额({{ item.dailyIssuedAmount }})
                 </div>
               </el-form-item>
             </el-col>
@@ -47,7 +47,7 @@
                   <template slot="append">₱</template>
                 </el-input>
                 <div style="color: #E6A23C; font-size: 12px; line-height: 1.4; margin-top: 4px">
-                  达到上限时会在Lark同步报警
+                  当前发放金额({{ item.totalIssuedAmount }})
                 </div>
               </el-form-item>
             </el-col>
@@ -58,7 +58,7 @@
                   type="datetime"
                   placeholder="选择开始时间"
                   value-format="timestamp"
-                  style="width:  200px"
+                  style="width: 200px"
                 />
               </el-form-item>
             </el-col>
@@ -74,22 +74,31 @@
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
-              <el-form-item label="展示结束时间：">
-                <el-date-picker
-                  v-model="item.showEndTime"
-                  type="datetime"
-                  placeholder="选择展示结束时间"
-                  value-format="timestamp"
-                  style="width: 200px"
-                />
-              </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12">
               <el-form-item label="时间偏移：">
                 <el-input v-model.number="item.debugTimeOffset" placeholder="请输入" style="max-width: 200px"/>
               </el-form-item>
             </el-col>
 
+            <!-- 参与活动场次：多选枚举 -->
+            <el-col :xs="24" :sm="12">
+              <el-form-item label="参与活动场次：">
+                <el-select
+                  v-model="item.winGameCount"
+                  multiple
+                  placeholder="请选择参与场次"
+                  style="max-width: 400px"
+                >
+                  <el-option
+                    v-for="opt in activitySessionEnum"
+                    :key="opt.value"
+                    :label="opt.label"
+                    :value="opt.value"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+
+            <!-- 站点白名单 -->
             <el-col :xs="24" :sm="12">
               <el-form-item label="站点白名单：">
                 <SiteSelect
@@ -98,6 +107,71 @@
                   placeholder="请选择"
                   style="width: 100%; max-width: 400px"
                 />
+              </el-form-item>
+            </el-col>
+
+            <!-- 宝箱配置表格 -->
+            <el-col :span="24">
+              <el-form-item label="宝箱配置：">
+                <div style="margin-bottom: 8px; display: flex; align-items: center; gap: 16px;">
+                  <el-button
+                    :disabled="isLoop || item.treasureCfg.length >= 20"
+                    size="mini"
+                    type="primary"
+                    icon="el-icon-plus"
+                    @click="addTreasureRow"
+                    :style="isLoop ? 'background: #f5f7fa; color: #c0c4cc; border-color: #ebeef5;' : ''"
+                  >添加档位({{ item.treasureCfg.length }}/20)
+                  </el-button>
+                  <div style="display: flex; align-items: center; gap: 4px;">
+                    <el-switch v-model="isLoop" active-text="循环模式" inactive-text="普通模式" @change="onLoopSwitch"/>
+                    <span v-if="isLoop" style="color: #909399; font-size: 12px; margin-left: 8px;">循环模式下仅允许一条档位</span>
+                  </div>
+                </div>
+                <el-table
+                  :data="isLoop ? item.treasureCfg.slice(0, 1) : item.treasureCfg"
+                  border
+                  size="mini"
+                  style="max-width: 500px"
+                >
+                  <el-table-column label="宝箱序号" align="center">
+                    <template slot-scope="scope">
+                      <el-input-number
+                        v-model="scope.row.id"
+                        :min="1"
+                        :precision="0"
+                        size="mini"
+                        style="width: 100%; text-align: center"
+                        disabled
+                      />
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="领取金额" align="center">
+                    <template slot-scope="scope">
+                      <el-input
+                        v-model.number="scope.row.claimAmount"
+                        :required="true"
+                        prop="claimAmount"
+                        :min="1"
+                        :precision="0"
+                        size="mini"
+                        style="text-align: center"
+                      />
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="操作" align="center" width="50">
+                    <template slot-scope="scope">
+                      <el-button
+                        v-if="!isLoop && scope.$index > 0"
+                        circle
+                        size="mini"
+                        type="danger"
+                        icon="el-icon-delete"
+                        @click="deleteTreasureRow(scope.$index)"
+                      />
+                    </template>
+                  </el-table-column>
+                </el-table>
               </el-form-item>
             </el-col>
           </el-row>
@@ -118,50 +192,49 @@ import {Message} from 'element-ui'
 import request from '@/utils/request'
 import store from '@/store'
 import SiteSelect from '@/components/SiteSelect/index.vue'
-import GameSelector from '@/components/Game/GameSelector.vue'
 
-// 默认排行榜配置
-const DEFAULT_RANK_CFG = [
-  {rankStart: 1, rankEnd: 1, reward: 7777},
-  {rankStart: 2, rankEnd: 2, reward: 2777},
-  {rankStart: 3, rankEnd: 3, reward: 1777},
-  {rankStart: 4, rankEnd: 5, reward: 777},
-  {rankStart: 6, rankEnd: 10, reward: 277},
-  {rankStart: 11, rankEnd: 20, reward: 177},
-  {rankStart: 21, rankEnd: 50, reward: 77},
-  {rankStart: 51, rankEnd: 100, reward: 17}
+// 参与活动场次枚举（扑克盲注级别）
+const ACTIVITY_SESSION_ENUM = [
+  {value: '2.5/5', label: '2.5/5'},
+  {value: '5/10', label: '5/10'},
+  {value: '10/20', label: '10/20'},
+  {value: '25/50', label: '25/50'}
 ]
-
-const DEFAULT_PROP_POOLS = {propType: 2, propId: 0, propName: '', propTime: 7, propNum: 1}
 
 // 创建空白活动数据
 function createNewItem() {
   return {
-    activityName: '',
-    isOpen: true,
-    startTime: Date.now(),
-    endTime: Date.now() + 30 * 24 * 60 * 60 * 1000,
-    showEndTime: Date.now() + 31 * 24 * 60 * 60 * 1000,
-    sockGainRatio: 10,
-    rewardType: 2,
-    status: 6,
-    dayPrizeThreshold: 0,
-    debugTimeOffset: 0,
-    totalPrizeThreshold: 0,
-    prizePoolCfg: [],
-    rankCfg: JSON.parse(JSON.stringify(DEFAULT_RANK_CFG)),
-    broadcastCfg: {threshold: 500, maxCount: 50},
-    gameIdCfg: [],
+    activityName: '', // 活动名称
+    isOpen: true, // 活动开关
+    isLoop: false, // 是否循环
+    startTime: Date.now(), // 开始时间（毫秒）
+    endTime: Date.now() + 30 * 24 * 60 * 60 * 1000, // 结束时间（毫秒），默认30天后
+    betrayRatio: 1, // 反水比例（百分比）
+    status: 6, // 活动状态，6为默认状态
+    dayPrizeThreshold: 0, // 每日发奖上限（元）
+    totalPrizeThreshold: 0, // 总发奖上限（元）
+    debugTimeOffset: 0, // 时间偏移（调试用）
+    minReward: 0, // 最低奖励阀值（元）
+    winGameCount: [], // 参与活动场次（盲注级别）
+    treasureCfg: [{id: 1, claimAmount: 0}], // 宝箱配置表格
     whitelistCfg: {
-      siteIdList: []
+      siteIdList: [] // 站点白名单
     },
-    // 道具配置字段
-    propPools: DEFAULT_PROP_POOLS
+    dailyIssuedAmount: 0,
+    totalIssuedAmount: 0
   }
 }
 
+function getCurrentDateStr() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  return `${year}${month}${day}`;
+}
+
 export default {
-  components: {SiteSelect, GameSelector},
+  components: {SiteSelect},
   props: {
     visible: {type: Boolean, default: false},
     isEdit: {type: Boolean, default: false},
@@ -173,32 +246,8 @@ export default {
       activeTab: 'activity',
       env: store.getters.env || 'test',
       item: createNewItem(),
-
-      // 道具选择项
-      propTypeOptions: [
-        {'value': 2, 'label': '头像框', disabled: false},
-        // { 'value': 7, 'label': 'Tongits门票', disabled: false },
-        // { 'value': 8, 'label': '德州门票', disabled: false },
-        // { 'value': 4, 'label': '德州头像框', disabled: false },
-        // { 'value': 5, 'label': 'SlotFreeSpin', disabled: false }
-      ],
-      propDayTypeOptions: [
-        {'value': 1, 'label': '1天', disabled: false},
-        {'value': 3, 'label': '3天', disabled: false},
-        {'value': 7, 'label': '7天', disabled: false},
-        {'value': 30, 'label': '30天', disabled: false}
-      ],
-      // 奖励类型选项
-      rewardTypes: [
-        {value: 2, label: '投注金'}
-      ],
-
-      // 道具列表
-      propList: [],
-
-      // 游戏排序弹窗
-      gamesSortDialogVisible: false,
-      gamesSorted: []
+      activitySessionEnum: ACTIVITY_SESSION_ENUM,
+      isLoop: false // 是否循环
     }
   },
   watch: {
@@ -207,50 +256,35 @@ export default {
       if (val) {
         this.activeTab = 'activity'
         if (this.isEdit && Object.keys(this.editData).length > 0) {
-          this.loadEditData()
+          this.loadEditDataAndAmount()
         } else {
           this.item = createNewItem()
         }
       }
-      // 获取道具列表
-      this.getPropList()
     },
     dialogVisible(val) {
       this.$emit('update:visible', val)
     }
   },
   methods: {
+    // 编辑时，先赋值再查发奖金额
+    loadEditDataAndAmount() {
+      this.loadEditData();
+      // 等 this.item 赋值后再查金额
+      this.$nextTick(() => {
+        if (this.item && this.item.id) {
+          this.getAmoutIssue(this.item.id);
+        }
+      });
+    },
     handleDialogClose() {
       this.item = createNewItem()
-    },
-
-    // 加载道具列表
-    getPropList() {
-      request({
-        url: '/propsconfig/props/config/list',
-        method: 'get',
-        data: {
-          Env: this.env,
-          PageNum: 1,
-          PageSize: 1000
-        }
-      }).then(response => {
-        if (response.RetCode === 0) {
-          const objs = response.Data || {}
-          if (objs.total > 0) {
-            this.propList = []
-            this.propList = objs.list
-          }
-        } else {
-          this.propList = []
-        }
-      })
     },
 
     // 加载编辑数据（后端数据 -> 前端展示格式）
     loadEditData() {
       const data = JSON.parse(JSON.stringify(this.editData))
-      // 兼容后端返回 whitelistCfg 为字符串的情况
+      // 白名单配置
       if (typeof data.whitelistCfg === 'string') {
         try {
           data.whitelistCfg = JSON.parse(data.whitelistCfg)
@@ -258,23 +292,7 @@ export default {
           data.whitelistCfg = {siteIdList: []}
         }
       }
-      // 排行榜配置
-      if (typeof data.rankCfg === 'string') {
-        try {
-          data.rankCfg = JSON.parse(data.rankCfg)
-        } catch (e) {
-          data.rankCfg = JSON.parse(JSON.stringify(DEFAULT_RANK_CFG))
-        }
-      }
-      // 奖池
-      if (typeof data.prizePoolCfg === 'string') {
-        try {
-          data.prizePoolCfg = JSON.parse(data.prizePoolCfg)
-        } catch (e) {
-          data.prizePoolCfg = []
-        }
-      }
-      // 白名单配置
+      if (!data.whitelistCfg) data.whitelistCfg = {siteIdList: []}
       if (typeof data.whitelistCfg.siteIdList === 'string') {
         try {
           data.whitelistCfg.siteIdList = JSON.parse(data.whitelistCfg.siteIdList)
@@ -282,82 +300,64 @@ export default {
           data.whitelistCfg.siteIdList = []
         }
       }
-      // 播报配置
-      if (typeof data.broadcastCfg === 'string') {
+
+      // 参与活动场次 - JSON字符串 -> 数组
+      if (typeof data.winGameCount === 'string') {
         try {
-          data.broadcastCfg = JSON.parse(data.broadcastCfg)
+          const parsed = JSON.parse(data.winGameCount)
+          data.winGameCount = Array.isArray(parsed) ? parsed : []
         } catch (e) {
-          data.broadcastCfg = {threshold: 500, maxCount: 50}
+          data.winGameCount = []
         }
       }
-      // 游戏列表
-      if (typeof data.gameIdCfg === 'string') {
-        try {
-          data.gameIdCfg = JSON.parse(data.gameIdCfg).map(v => Number(v))
-        } catch (e) {
-          // 兼容旧格式：逗号分隔的字符串 "23,22,15"
-          data.gameIdCfg = data.gameIdCfg.split(',').filter(v => v).map(v => Number(v))
-        }
+      if (!Array.isArray(data.winGameCount)) data.winGameCount = []
+
+      // 宝箱配置 - JSON字符串 -> 数组
+      if (typeof data.treasureCfg === 'string') {
+        // 如果是字符串，先转成数组
+        data.treasureCfg = JSON.parse(data.treasureCfg)
+      }
+      // 如果是数组，就处理金额（厘 → 元）并重新排序序号
+      if (Array.isArray(data.treasureCfg)) {
+        data.treasureCfg = data.treasureCfg.map((value, i) => ({
+          ...value,
+          id: i + 1,
+          claimAmount: Math.floor((value.claimAmount || 0) / 1000)
+        }))
       }
 
       // 时间：秒 -> 毫秒
       if (data.startTime) data.startTime *= 1000
       if (data.endTime) data.endTime *= 1000
-      if (data.showEndTime) data.showEndTime *= 1000
 
       // 金额：分 -> 元（/1000）
       if (data.dayPrizeThreshold != null) data.dayPrizeThreshold /= 1000
       if (data.totalPrizeThreshold != null) data.totalPrizeThreshold /= 1000
+      if (data.minReward != null) data.minReward /= 1000
 
-      // 奖池配置转换
-      data.prizePoolCfg.forEach((pool, poolIdx) => {
-        if (!pool) return
-        if (!Array.isArray(pool.prizeCfg)) pool.prizeCfg = []
-
-        if (pool.tierId === undefined) pool.tierId = poolIdx + 1
-        if (pool.raffleLevel) pool.raffleLevel /= 1000
-        if (pool.coefficientMin) pool.coefficientMin
-        if (pool.coefficientMax) pool.coefficientMax
-        pool.prizeCfg.forEach((prize, id) => {
-          if (!prize) return
-          if (prize.id === undefined) prize.id = id + 1
-          if (prize.reward !== undefined) {
-            prize.rewardAmount = prize.reward / 1000
-            prize.rewardMin = prize.reward / 1000
-            prize.rewardMax = prize.reward / 1000
-          } else {
-            if (prize.rewardAmount) prize.rewardAmount /= 1000
-            if (prize.rewardMin) prize.rewardMin /= 1000
-            if (prize.rewardMax) prize.rewardMax /= 1000
-          }
-        })
-      })
-      // 排行榜配置转换
-      data.rankCfg.forEach(rank => {
-        if (rank && rank.reward) rank.reward /= 1000
-      })
-      // 奖励播报配置
-      if (data.broadcastCfg.threshold) data.broadcastCfg.threshold /= 1000
-      // 道具配置兼容
-      if (!data.propPools) {
-        data.propPools = {...DEFAULT_PROP_POOLS}
-      } else {
-        // 兼容 propPools 为 JSON 字符串的情况
-        if (typeof data.propPools === 'string') {
-          try {
-            data.propPools = JSON.parse(data.propPools)
-          } catch (e) {
-            data.propPools = {...DEFAULT_PROP_POOLS}
-          }
-        }
-        // 兼容 propPools 为数组的情况，取第一项
-        if (Array.isArray(data.propPools)) {
-          data.propPools = data.propPools[0] || {...DEFAULT_PROP_POOLS}
-        }
-        data.propPools.propId = Number(data.propPools.propId)
-      }
-
+      data.dailyIssuedAmount = data.dailyIssuedAmount || 0
+      data.totalIssuedAmount = data.totalIssuedAmount || 0
       this.item = data
+      // 转换始终是布尔值，适合用于 el-switch
+      this.isLoop = !!data.isLoop
+    },
+    getAmoutIssue(activityId) {
+      if (!activityId) return;
+      request({
+        url: '/dataProxy/info',
+        method: 'post',
+        data: {
+          Path: '/activity/pokerplus/prize/issued',
+          activityId: activityId,
+          dateStr: getCurrentDateStr()
+        }
+      }).then(response => {
+        if (response.RetCode === 0 && response.Data) {
+          console.log(response.Data)
+          this.item.dailyIssuedAmount = response.Data.DailyIssuedAmount / 1000
+          this.item.totalIssuedAmount = response.Data.TotalIssuedAmount / 1000
+        }
+      })
     },
 
     // 编码前端数据 -> 后端格式
@@ -367,56 +367,29 @@ export default {
       // 时间：毫秒 -> 秒
       cpy.startTime = Math.floor(cpy.startTime / 1000)
       cpy.endTime = Math.floor(cpy.endTime / 1000)
-      cpy.showEndTime = Math.floor(cpy.showEndTime / 1000)
 
       // 金额：元 -> 分（*1000）
       cpy.dayPrizeThreshold = Math.floor((cpy.dayPrizeThreshold || 0) * 1000)
       cpy.totalPrizeThreshold = Math.floor((cpy.totalPrizeThreshold || 0) * 1000)
+      cpy.minReward = Math.floor((cpy.minReward || 0) * 1000)
 
-      // 奖池配置转换
-      const prizePoolCfgArray = (cpy.prizePoolCfg || []).map(pool => {
-        const encoded = {
-          tierId: pool.tierId || 0,
-
-          raffleLevel: Math.floor((pool.raffleLevel || 0) * 1000),
-          coefficientMin: pool.coefficientMin,
-          coefficientMax: pool.coefficientMax,
-          prizeCfg: (pool.prizeCfg || []).map(prize => ({
-            ...prize,
-            rewardAmount: Math.floor((prize.rewardAmount || 0) * 1000),
-            rewardMin: Math.floor((prize.rewardMin || 0) * 1000),
-            rewardMax: Math.floor((prize.rewardMax || 0) * 1000)
-          }))
-        }
-        return encoded
-      })
-
-      // 排行榜配置转换
-      const rankCfgArray = (cpy.rankCfg || []).map(rank => ({
-        rankStart: rank.rankStart,
-        rankEnd: rank.rankEnd,
-        reward: Math.floor((rank.reward || 0) * 1000)
-      }))
-      // 播报配置（如果存在）- 显式提取属性以避免Vue响应式对象序列化问题
-      const broadcastCfg = {
-        threshold: this.item.broadcastCfg.threshold * 1000,
-        maxCount: this.item.broadcastCfg.maxCount
+      // 宝箱配置领取金额 claimAmount 元转分
+      if (Array.isArray(cpy.treasureCfg)) {
+        cpy.treasureCfg.forEach(row => {
+          row.claimAmount = Math.floor((row.claimAmount || 0) * 1000)
+        })
       }
 
-      // 白名单配置（如果存在）
-      const whitelistCfg = cpy.whitelistCfg || {siteIdList: []}
-      // 全部转为整型
-      const gameIdCfg = cpy.gameIdCfg.map(v => Number(v))
-      // 道具
-      const propPools = cpy.propPools
+      // 参与活动场次 -> JSON字符串
+      cpy.winGameCount = JSON.stringify(cpy.winGameCount || [])
+      cpy.treasureCfg = JSON.stringify(cpy.treasureCfg || [])
 
-      // 转换为 JSON 字符串（因为request拦截器会使用FormData，需要序列化复杂对象）
-      cpy.prizePoolCfg = JSON.stringify(prizePoolCfgArray)
-      cpy.rankCfg = JSON.stringify(rankCfgArray)
-      cpy.broadcastCfg = JSON.stringify(broadcastCfg)
-      cpy.whitelistCfg = JSON.stringify(whitelistCfg)
-      cpy.gameIdCfg = JSON.stringify(gameIdCfg)
-      cpy.propPools = JSON.stringify(propPools)
+      // 白名单配置 -> JSON字符串
+      cpy.whitelistCfg = JSON.stringify(cpy.whitelistCfg || {siteIdList: []})
+
+      // 是否循环
+      cpy.isLoop = this.isLoop
+
       return cpy
     },
 
@@ -438,15 +411,14 @@ export default {
         Message.error('结束时间必须大于开始时间')
         return false
       }
-      if (this.item.rewardType === undefined || this.item.rewardType === null) {
-        Message.error('请选择奖励类型')
+      if (this.item.betrayRatio > 100 || this.item.betrayRatio < 0) {
+        Message.error('反水比例范围 0-100 之间')
         return false
       }
-      if (this.item.broadcastCfg.maxCount > 20) {
-        Message.error('限制播报条数最大 20 ')
+      if (!this.item.treasureCfg || this.item.treasureCfg.length === 0) {
+        Message.error('宝箱配置至少需要一行数据')
         return false
       }
-
       return true
     },
 
@@ -454,21 +426,16 @@ export default {
     handleSave() {
       if (!this.validate()) return
       const postData = this.encodeData()
+
       if (this.isEdit) {
         this.handleEditData(postData)
       } else {
-        // 添加默认 6: '下架'
         postData.status = 6
         this.handleAddData(postData)
       }
     },
     handleEditData(postData) {
-      const url = '/treasurebowlactivity/update'
-      request({
-        url: url,
-        method: 'post',
-        data: postData
-      }).then(response => {
+      request({url: '/pokerpulsactivity/update', method: 'post', data: postData}).then(response => {
         if (response.RetCode === 0) {
           Message.success('保存成功！')
           this.dialogVisible = false
@@ -477,12 +444,7 @@ export default {
       })
     },
     handleAddData(postData) {
-      const url = '/treasurebowlactivity/create'
-      request({
-        url: url,
-        method: 'post',
-        data: postData
-      }).then(response => {
+      request({url: '/pokerpulsactivity/create', method: 'post', data: postData}).then(response => {
         if (response.RetCode === 0) {
           Message.success('保存成功！')
           this.dialogVisible = false
@@ -491,193 +453,35 @@ export default {
       })
     },
 
-    // 游戏树节点过滤
-    filterNode(value, data) {
-      if (!value) return true
-      return data.label.indexOf(value) !== -1
-    },
-
-    // 处理道具类型变化
-    handlePropTypeChange(row) {
-      // 清空之前选择的道具ID和名称
-      row.propId = 0
-      row.propName = ''
-    },
-
-    /**
-     * 获取所有游戏列表并构建树结构
-     */
-    getGameAll() {
-      request({
-        url: '/thirdpartygames/all',
-        method: 'get',
-        data: {},
-        params: {status: 2}
-      }).then(response => {
-        if (response.RetCode === 0) {
-          const objs = response.Data || []
-          const data = {}
-
-          // 按游戏类别分组，只保留 poker
-          for (let i = 0; i < objs.length; i++) {
-            const obj = objs[i]
-            if (obj.ShowDatacenter !== 1 || this.filterGameIds.indexOf(obj.Gid) >= 0) {
-              continue
-            }
-            // 只保留 CategoryID=2 (Poker)
-            if (obj.CategoryID !== 2) continue
-
-            const game = {Gid: obj.Gid, Name: obj.Name, Description: obj.Description}
-            if (Object.prototype.hasOwnProperty.call(data, obj.CategoryID)) {
-              data[obj.CategoryID].push(game)
-            } else {
-              data[obj.CategoryID] = [game]
-            }
-          }
-
-          // 构建游戏树结构，只保留 poker
-          const categories = {2: 'Poker'}
-          const builtTree = []
-
-          for (const key in data) {
-            const games = data[key]
-            const cty = {id: 'p-' + key, label: categories[key], children: []}
-            for (let i = 0; i < games.length; i++) {
-              const game = games[i]
-              cty.children.push({id: game.Gid, label: game.Name})
-            }
-            builtTree.push(cty)
-          }
-
-          this.allTreeData = builtTree
-          // 默认只显示 Poker 游戏（CategoryID = 2），且不展开
-          this.applyGameTypeFilter(2)
-
-          // 设置已选中的游戏
-          this.$nextTick(() => {
-            if (this.$refs.tree && this.item.gameIdCfg) {
-              this.$refs.tree.setCheckedKeys(this.item.gameIdCfg)
-              this.updateGamesSorted()
-            }
-          })
-        }
+    // ---- 宝箱配置表格操作 ----
+    reindexTreasure() {
+      this.item.treasureCfg.forEach((row, i) => {
+        row.id = i + 1
       })
     },
-
-    /**
-     * 根据游戏类型过滤显示的游戏树
-     * @param {number} gameType - 游戏类型 (2: Poker)
-     */
-    applyGameTypeFilter(gameType) {
-      const selectedKey = 'p-' + gameType
-      this.treeData = this.allTreeData.filter(cty => cty.id === selectedKey)
-      // 不展开任何节点
-      this.$nextTick(() => {
-        if (this.$refs.tree) {
-          this.$refs.tree.setCheckedKeys(this.item.gameIdCfg || [])
-        }
-        this.updateGamesSorted()
-      })
+    addTreasureRow() {
+      if (this.isLoop) return
+      this.item.treasureCfg.push({id: this.item.treasureCfg.length + 1, claimAmount: ''})
+      this.reindexTreasure()
     },
-
-    // 打开游戏排序弹窗
-    showGamesSortDialog() {
-      if (!this.item.gameIdCfg || this.item.gameIdCfg.length === 0) {
-        return Message.warning('请先选择参与活动的游戏')
-      }
-      // 根据当前选中的游戏ID，构建排序列表
-      this.gamesSorted = this.item.gameIdCfg.map((gameId, index) => {
-        return {
-          gameId: gameId,
-          name: this.getGameNameById(gameId),
-          orderNo: index + 1
-        }
-      })
-
-      this.gamesSortDialogVisible = true
-    },
-
-    // 根据游戏ID获取游戏名称
-    getGameNameById(gameId) {
-      const game = this.allTreeData.flatMap(cty => cty.children).find(g => g.id === gameId)
-      return game ? game.label : ''
-    },
-
-    // 更新已选游戏的排序列表
-    updateGamesSorted() {
-      if (!this.item.gameIdCfg || this.item.gameIdCfg.length === 0) {
-        this.gamesSorted = []
+    deleteTreasureRow(index) {
+      if (this.isLoop) return
+      if (this.item.treasureCfg.length <= 1) {
+        Message.warning('至少需要保留一行数据')
         return
       }
-
-      const gamesSorted = []
-      const gameIdCfg = this.item.gameIdCfg || []
-
-      // 遍历所有游戏树，找到选中的游戏
-      this.treeData.forEach(category => {
-        if (category.children) {
-          category.children.forEach(game => {
-            if (gameIdCfg.includes(game.id)) {
-              const existIndex = gamesSorted.findIndex(g => g.gameId === game.id)
-              if (existIndex < 0) {
-                gamesSorted.push({
-                  gameId: game.id,
-                  name: game.label,
-                  orderNo: gameIdCfg.indexOf(game.id) + 1
-                })
-              }
-            }
-          })
-        }
-      })
-
-      // 按 orderNo 排序
-      gamesSorted.sort((a, b) => a.orderNo - b.orderNo)
-      this.gamesSorted = gamesSorted
+      this.item.treasureCfg.splice(index, 1)
+      this.reindexTreasure()
     },
-    // 根据道具类型获取道具选项
-    getPropOptionsByType(propType) {
-      const propOptions = []
-      const currTime = new Date().getTime()
-      for (let i = 0; i < this.propList.length; i++) {
-        const prop = this.propList[i]
-        if (prop.item_type === propType && prop.status === 1) {
-          // 对于非头像框类型，检查是否过期
-          if (prop.item_type !== 2) {
-            const expTime = prop.expire_time * 1000
-            if (currTime < expTime) {
-              propOptions.push({
-                value: prop.id,
-                label: prop.item_name,
-                disabled: false
-              })
-            }
-          } else {
-            propOptions.push({
-              value: prop.id,
-              label: prop.item_name,
-              disabled: false
-            })
-          }
+    onLoopSwitch(val) {
+      this.isLoop = val
+      if (this.isLoop) {
+        // 只保留第一条
+        if (Array.isArray(this.item.treasureCfg) && this.item.treasureCfg.length > 1) {
+          this.item.treasureCfg = [this.item.treasureCfg[0]]
         }
-      }
-      return propOptions
-    },
-    // 处理道具名称变化
-    handlePropNameChange(row) {
-      const options = this.getPropOptionsByType(row.propType)
-      const selected = options.find(opt => opt.value === row.propId)
-      if (selected) {
-        row.propName = selected.label
       }
     }
   }
 }
 </script>
-
-<style scoped>
-.el-tabs__content {
-  min-height: 400px;
-  box-sizing: border-box;
-}
-</style>
