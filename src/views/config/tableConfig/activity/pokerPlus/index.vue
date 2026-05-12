@@ -1,7 +1,7 @@
 <template>
   <div class="page-container" style="padding: 10px">
     <el-row>
-      <publish primary-key="id" key-id="TreasureBowlActivity" :env-empty="false" :check="configCheck" compare-type="Array" :make-content="makeContent" :attr-names="AttrNames" :head-attrs="['id', 'activityName']" />
+      <publish primary-key="id" key-id="PokerPlusActivity" :env-empty="false" :check="configCheck" compare-type="Array" :make-content="makeContent" :attr-names="AttrNames" :head-attrs="['id', 'activityName']" />
     </el-row>
     <el-row style="padding-top: 5px">
       <el-col :span="20">
@@ -24,41 +24,26 @@
         style="width: 100%"
         @sort-change="sortChange"
       >
-        <el-table-column prop="id" label="ID" sortable="custom" width="80" />
-        <el-table-column prop="activityName" label="活动名称" min-width="120" show-overflow-tooltip />
+        <el-table-column prop="id" label="ID" sortable="custom" align="center" width="80" />
+        <el-table-column prop="activityName" label="活动名称" min-width="120" align="center" show-overflow-tooltip />
         <el-table-column prop="isOpen" label="活动开关" width="80" align="center">
           <template slot-scope="scope">
             <el-tag :type="scope.row.isOpen ? 'success' : 'info'" size="mini">{{ scope.row.isOpen ? '开' : '关' }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="startTime" label="开始时间" sortable="custom" min-width="150">
+        <el-table-column prop="startTime" label="开始时间" sortable="custom" align="center" min-width="150">
           <template slot-scope="scope">
             {{ formatTime(scope.row.startTime) }}
           </template>
         </el-table-column>
-        <el-table-column prop="endTime" label="结束时间" sortable="custom" min-width="150">
+        <el-table-column prop="endTime" label="结束时间" sortable="custom" align="center" min-width="150">
           <template slot-scope="scope">
             {{ formatTime(scope.row.endTime) }}
           </template>
         </el-table-column>
-        <el-table-column prop="sockGainRatio" label="道具比例" width="90" align="center">
+        <el-table-column prop="betrayRatio" label="反水比例" width="90" align="center">
           <template slot-scope="scope">
-            {{ scope.row.sockGainRatio }}%
-          </template>
-        </el-table-column>
-        <el-table-column prop="rewardType" label="奖励类型" width="90" align="center">
-          <template slot-scope="scope">
-            {{ rewardTypeNames[scope.row.rewardType] || '-' }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="dayPrizeThreshold" label="每日发奖上限" width="110" align="center">
-          <template slot-scope="scope">
-            {{ scope.row.dayPrizeThreshold != null ? scope.row.dayPrizeThreshold / 1000 : '-' }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="totalPrizeThreshold" label="总上限" width="100" align="center">
-          <template slot-scope="scope">
-            {{ scope.row.totalPrizeThreshold != null ? scope.row.totalPrizeThreshold / 1000 : '-' }}
+            {{ scope.row.betrayRatio }}%
           </template>
         </el-table-column>
         <el-table-column prop="modifyUser" label="最后修改人" width="110" show-overflow-tooltip />
@@ -125,14 +110,12 @@ export default {
         isOpen: '活动开关',
         startTime: '开始时间',
         endTime: '结束时间',
-        sockGainRatio: '有效下注获得道具比例',
+        betrayRatio: '反水比例',
         rewardType: '奖励类型',
         dayPrizeThreshold: '每日发奖上限监控',
         totalPrizeThreshold: '最大发奖总上限监控',
         gameIdCfg: '参与活动游戏',
-        prizePoolCfg: '奖池配置',
         rankCfg: '排行榜配置',
-        broadcastCfg: '奖励播报配置',
         whitelistCfg: '白名单配置',
         propPools: '头像框奖励配置',
         modifyUser: '最后修改人',
@@ -142,7 +125,6 @@ export default {
       version: store.getters.version || 'V1',
       statusNames: { 2: '上架', 6: '下架', 7: '预上架', 8: '预下架' },
       statusTagType: { 2: 'success', 6: 'danger', 7: 'warning', 8: 'warning' },
-      rewardTypeNames: { 2: '投注金' },
       tableData: [],
       clientDB: new ClientTableData([], 10, filterMap),
       libShow: $libShow,
@@ -213,7 +195,7 @@ export default {
     // 获取列表
     getList() {
       request({
-        url: '/treasurebowlactivity/list',
+        url: '/pokerpulsactivity/list',
         method: 'get',
         data: {}
       }).then(response => {
@@ -254,7 +236,7 @@ export default {
         type: 'warning'
       }).then(() => {
         request({
-          url: '/treasurebowlactivity/update/status',
+          url: '/pokerpulsactivity/update/status',
           method: 'post',
           data: { id: ob.id, status: 3 }
         }).then(response => {
@@ -273,7 +255,7 @@ export default {
         type: 'warning'
       }).then(() => {
         request({
-          url: '/treasurebowlactivity/update/status',
+          url: '/pokerpulsactivity/update/status',
           method: 'post',
           data: { id: id, status: status }
         }).then(response => {
