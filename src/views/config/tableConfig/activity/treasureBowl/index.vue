@@ -72,7 +72,7 @@
             <el-tag :type="statusTagType[scope.row.status]" size="mini">{{ statusNames[scope.row.status] }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" column-key="op" width="300" fixed="right">
+        <el-table-column label="操作" column-key="op" fixed="right">
           <template slot-scope="scope">
             <el-button size="mini" type="primary" icon="el-icon-edit" @click="handleEdit(scope.row)">编辑</el-button>
             <el-button v-if="scope.row.status !== 2" size="mini" type="success" icon="el-icon-upload2" @click="handlePrepare(scope.row)">上架</el-button>
