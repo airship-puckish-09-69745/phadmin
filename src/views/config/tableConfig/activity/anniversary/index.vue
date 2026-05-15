@@ -189,7 +189,7 @@ export default {
     // 获取列表
     getList() {
       request({
-        url: '/pokerpulsactivity/list',
+        url: '/anniversaryactivity/list',
         method: 'get',
         data: {}
       }).then(response => {
@@ -230,7 +230,7 @@ export default {
         type: 'warning'
       }).then(() => {
         request({
-          url: '/pokerpulsactivity/update/status',
+          url: '/anniversaryactivity/update/status',
           method: 'post',
           data: { id: ob.id, status: 3 }
         }).then(response => {
@@ -249,7 +249,7 @@ export default {
         type: 'warning'
       }).then(() => {
         request({
-          url: '/pokerpulsactivity/update/status',
+          url: '/anniversaryactivity/update/status',
           method: 'post',
           data: { id: id, status: status }
         }).then(response => {
