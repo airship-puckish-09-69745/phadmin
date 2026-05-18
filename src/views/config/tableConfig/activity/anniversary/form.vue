@@ -158,11 +158,6 @@ function createNewItem() {
     startTime: Date.now(),
     endTime: Date.now() + 30 * 24 * 60 * 60 * 1000,
     debugTimeOffset: 0,
-    rewardType: 1,
-    dayPrizeThreshold: 0,
-    totalPrizeThreshold: 0,
-    gameIdCfg: [],
-    rankCfg: [],
     whitelistCfg: {
       siteIdList: []
     },
@@ -252,8 +247,6 @@ export default {
         data.whitelistCfg = { siteIdList: [] }
       }
       data.whitelistCfg.siteIdList = this.safeJsonParse(data.whitelistCfg.siteIdList, [])
-      data.gameIdCfg = this.safeJsonParse(data.gameIdCfg, [])
-      data.rankCfg = this.safeJsonParse(data.rankCfg, [])
       const parsedPropPools = this.safeJsonParse(data.propPools, {})
       data.propPools = parsedPropPools && typeof parsedPropPools === 'object'
         ? parsedPropPools
@@ -261,8 +254,6 @@ export default {
 
       if (data.startTime) data.startTime *= 1000
       if (data.endTime) data.endTime *= 1000
-      if (data.dayPrizeThreshold != null) data.dayPrizeThreshold /= 1000
-      if (data.totalPrizeThreshold != null) data.totalPrizeThreshold /= 1000
       if (!data.propPools.propType) data.propPools.propType = 2
       if (!data.propPools.propTime) data.propPools.propTime = 1
       if (!data.propPools.propNum) data.propPools.propNum = 0
@@ -305,11 +296,7 @@ export default {
       const cpy = JSON.parse(JSON.stringify(this.item))
       cpy.startTime = Math.floor(cpy.startTime / 1000)
       cpy.endTime = Math.floor(cpy.endTime / 1000)
-      cpy.dayPrizeThreshold = Math.floor((cpy.dayPrizeThreshold || 0) * 1000)
-      cpy.totalPrizeThreshold = Math.floor((cpy.totalPrizeThreshold || 0) * 1000)
       cpy.whitelistCfg = JSON.stringify(cpy.whitelistCfg || { siteIdList: [] })
-      cpy.gameIdCfg = JSON.stringify(cpy.gameIdCfg || [])
-      cpy.rankCfg = JSON.stringify(cpy.rankCfg || [])
       cpy.propPools = JSON.stringify(cpy.propPools || {})
       cpy.debugTimeOffset = Number(cpy.debugTimeOffset || 0)
       return cpy
