@@ -21,7 +21,7 @@
           </el-tab-pane>
           <el-tab-pane label="符号表配置" name="symbol">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，重启生效】</h3>
-            <publish primary-key="ID" :key-id="getFullKey('millionaire_slots_rule')" :env-empty="false" compare-type="Object" />
+            <publish primary-key="ID" :key-id="getFullKey(getRuleSubKey())" :env-empty="false" compare-type="Object" />
             <slots-symbol-value v-if="ruleCfgBool" v-model="ruleCfg" @saveData="saveRuleCfg" @multiAppSave="onMultiAppRuleSave" />
           </el-tab-pane>
           <el-tab-pane label="赔付线配置" name="pay_table">
@@ -41,12 +41,12 @@
           </el-tab-pane>
           <el-tab-pane label="拓展配置" name="scatter">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，发布即生效】</h3>
-            <publish primary-key="ID" :key-id="getFullKey('millionaire_slots_ext')" :env-empty="false" compare-type="Object" />
+            <publish primary-key="ID" :key-id="getFullKey(getExtSubKey())" :env-empty="false" compare-type="Object" />
             <slots-millionaire-ext v-if="extCfgBool" v-model="extCfg" :base-bet="baseCfg.BaseBet" @saveData="saveExtCfg" @multiAppSave="onMultiAppExtSave" />
           </el-tab-pane>
           <el-tab-pane label="剧本" name="script">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，发布即生效】</h3>
-            <publish primary-key="ID" :key-id="getFullKey('millionaire_slots_rule')" :env-empty="false" compare-type="Object" />
+            <publish primary-key="ID" :key-id="getFullKey(getRuleSubKey())" :env-empty="false" compare-type="Object" />
             <slots-script v-if="ruleCfgBool" v-model="ruleCfg" :bets="baseCfg.BetListAct" @saveData="saveRuleCfg" @multiAppSave="onMultiAppRuleSave" />
           </el-tab-pane>
         </el-tabs>
@@ -84,13 +84,14 @@ import slotsReelsDouble from './components_x/reels_double'
 import slotsScript from './components_x/slots_script'
 import SlotsFreeTriggerPlans from '@/views/config/tableConfig/slots/components_x/slotsFreeTriggerPlans.vue'
 import { createCustomize, getCustomize, updateCustomize } from '@/api/custome_configV2'
-import request from '@/utils/request'
 import store from '@/store'
-import { Message } from 'element-ui'
 
 import { handleScriptV3BetListCreate } from './utils/scriptV3BetListCreate'
+import multiAppSlotsConfig from './utils/multiAppSlotsConfig'
+import appSlotsConfig from './utils/appSlotsConfig'
 
 export default {
+  mixins: [appSlotsConfig, multiAppSlotsConfig],
   // eslint-disable-next-line vue/no-unused-components
   components: { MultiAppSelectDialog, SlotsFreeTriggerPlans, Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotsMillionaireExt, slotsBigWinnerCfg, slotsVup, slotsReelsDouble, slotsScript },
   data() {
@@ -105,23 +106,8 @@ export default {
       baseForm: {},
       ruleForm: {},
       extForm: {},
-      txt: '',
       subKey: 'millionaire_slots_base',
-      inc: 0,
-      appOptions: [
-        { value: 0, label: '旧版' }
-      ],
-      appId: store.getters.appId || 0,
-      version: store.getters.version || 'V1',
-      createCfg: false,
-      multiAppDialogVisible: false,
-      appTreeData: [],
-      checkedAppKeys: [],
-      selectAllNodeKey: 'all',
-      diffData: {},
-      multiAppSubKey: '',
-      multiAppAction: 'save',
-      copyTargetAppId: null
+      createCfg: false
     }
   },
   created() {
@@ -170,7 +156,7 @@ export default {
       })
 
       // 加载规则配置
-      getCustomize('millionaire_slots_rule', this.appId).then(response => {
+      getCustomize(this.getRuleSubKey(), this.appId).then(response => {
         if (response.RetCode === 0) {
           this.ruleForm = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
@@ -183,7 +169,7 @@ export default {
       })
 
       // 加载扩展配置
-      getCustomize('millionaire_slots_ext', this.appId).then(response => {
+      getCustomize(this.getExtSubKey(), this.appId).then(response => {
         if (response.RetCode === 0) {
           this.extForm = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
@@ -270,319 +256,27 @@ export default {
         this.$refs.compare.SetOldVal(this.extForm.Data)
       }
     },
-    getAppInfos() {
-      request({
-        url: '/thirdparties/all',
-        method: 'get',
-        data: {}
-      }).then(response => {
-        if (response.RetCode === 0) {
-          for (let i = 0; i < response.Data.length; i++) {
-            if (response.Data[i].Status !== 2) {
-              continue
-            }
-            this.appOptions.push({
-              value: response.Data[i].ID,
-              label: response.Data[i].ID + '-' + response.Data[i].Account
-            })
-          }
-        }
-      })
-    },
-    onAppIdChange() {
-      if (this.appId === 0) {
-        request({
-          url: '/customizeconfig/one',
-          method: 'get',
-          data: {
-            SubKey: this.subKey
-          }
-        }).then(response => {
-          if (response.RetCode === 0) {
-            this.baseForm = response.Data || {}
-            if (response.Data && response.Data.Data !== '') {
-              const cfg = JSON.parse(response.Data.Data)
-              const BetList = []
-              for (const k in cfg.BetList) {
-                BetList[k] = cfg.BetList[k] / 1000
-              }
-              cfg.Bets = BetList.join(',')
-
-              const OddsList = []
-              for (const k in cfg.OddsList) {
-                OddsList[k] = cfg.OddsList[k]
-              }
-              cfg.OddsStr = OddsList.join(',')
-
-              const BetListAct = []
-              for (const k in cfg.BetList) {
-                for (const t in cfg.OddsList) {
-                  BetListAct.push(cfg.BetList[k] * cfg.OddsList[t])
-                }
-              }
-              cfg.BetListAct = BetListAct
-
-              this.baseCfg = cfg
-
-              if (this.version === 'V2' && this.baseCfgBool === false) {
-                this.createCfg = true
-                console.log('this.createCfg', this.createCfg)
-              }
-              this.baseCfgBool = true
-            }
-          }
-        })
-
-        // 加载规则配置
-        request({
-          url: '/customizeconfig/one',
-          method: 'get',
-          data: {
-            SubKey: 'millionaire_slots_rule'
-          }
-        }).then(response => {
-          if (response.RetCode === 0) {
-            this.ruleForm = response.Data || {}
-            if (response.Data && response.Data.Data !== '') {
-              this.ruleCfg = JSON.parse(response.Data.Data)
-              // 设置修改之前数据
-              // this.$refs.compare.SetOldVal(response.Data.Data)
-            }
-
-            this.ruleCfgBool = true
-          }
-        })
-
-        // 加载扩展配置
-        request({
-          url: '/customizeconfig/one',
-          method: 'get',
-          data: {
-            SubKey: 'millionaire_slots_ext'
-          }
-        }).then(response => {
-          if (response.RetCode === 0) {
-            this.extForm = response.Data || {}
-            if (response.Data && response.Data.Data !== '') {
-              this.extCfg = JSON.parse(response.Data.Data)
-              console.log('ext-data:', this.extCfg)
-              // 设置修改之前数据
-              // this.$refs.compare.SetOldVal(response.Data.Data)
-            }
-          }
-
-          this.extCfgBool = true
-        })
-      } else {
-        this.getData()
+    normalizeLegacyBaseCfg(cfg) {
+      const BetList = []
+      for (const k in cfg.BetList) {
+        BetList[k] = cfg.BetList[k] / 1000
       }
-    },
-    onCopyAllCfg() {
-      this.saveBaseCfg()
-      this.saveRuleCfg()
-      this.saveExtCfg()
-      if (this.createCfg === true) {
-        this.$message.success('所有配置已复制并保存成功！')
+      cfg.Bets = BetList.join(',')
+
+      const OddsList = []
+      for (const k in cfg.OddsList) {
+        OddsList[k] = cfg.OddsList[k]
       }
-      this.createCfg = false
-    },
-    onCopyMultiAppCfg() {
-      this.prepareAppTree()
-      this.multiAppAction = 'copy'
-      this.multiAppDialogVisible = true
-    },
-    onMultiAppBaseSave(oldData, newData) {
-      if (newData.Bets) {
-        const bets = newData.Bets.split(',')
-        newData.BetList = []
-        for (const i in bets) {
-          newData.BetList.push(parseFloat(bets[i]) * 1000)
+      cfg.OddsStr = OddsList.join(',')
+
+      const BetListAct = []
+      for (const k in cfg.BetList) {
+        for (const t in cfg.OddsList) {
+          BetListAct.push(cfg.BetList[k] * cfg.OddsList[t])
         }
       }
-      // 差异计算
-      this.diffData = this.getDifferenceBetweenConfigs(oldData, newData)
-      this.pendingScriptV3BetListBaseCfg = { oldBaseCfg: JSON.parse(JSON.stringify(oldData)), newBaseCfg: JSON.parse(JSON.stringify(newData)) }
-
-      // 弹出多应用选择弹窗
-      this.prepareAppTree()
-      this.multiAppAction = 'save'
-      this.multiAppSubKey = this.subKey
-      this.multiAppDialogVisible = true
-    },
-    onMultiAppRuleSave(oldData, newData) {
-      // 差异计算
-      this.diffData = this.getDifferenceBetweenConfigs(oldData, newData)
-
-      // 弹出多应用选择弹窗
-      this.prepareAppTree()
-      this.multiAppAction = 'save'
-      this.multiAppSubKey = 'millionaire_slots_rule'
-      this.multiAppDialogVisible = true
-    },
-    onMultiAppExtSave(oldData, newData) {
-      // 差异计算
-      this.diffData = this.getDifferenceBetweenConfigs(oldData, newData)
-
-      // 弹出多应用选择弹窗
-      this.prepareAppTree()
-      this.multiAppAction = 'save'
-      this.multiAppSubKey = 'millionaire_slots_ext'
-      this.multiAppDialogVisible = true
-    },
-    // 计算当前应用原数据与修改后的数据之间的差异
-    getDifferenceBetweenConfigs(originalData, modifiedData) {
-      if (Array.isArray(modifiedData)) {
-        if (JSON.stringify(originalData) !== JSON.stringify(modifiedData)) {
-          return JSON.parse(JSON.stringify(modifiedData))
-        }
-        return []
-      }
-      const diff = {}
-      for (const key in modifiedData) {
-        if (!modifiedData.hasOwnProperty(key)) continue
-        if (Array.isArray(modifiedData[key])) {
-          if (JSON.stringify(originalData[key]) !== JSON.stringify(modifiedData[key])) {
-            console.log('不同', key, modifiedData[key])
-            diff[key] = JSON.parse(JSON.stringify(modifiedData[key]))
-          }
-        } else if (typeof modifiedData[key] === 'object' && modifiedData[key] !== null) {
-          if (typeof originalData[key] !== 'object' || originalData[key] === null) {
-            console.log('不同', key, modifiedData[key])
-            diff[key] = modifiedData[key]
-          } else {
-            const nestedDiff = this.getDifferenceBetweenConfigs(originalData[key], modifiedData[key])
-            if (Object.keys(nestedDiff).length > 0) {
-              console.log('不同', key, nestedDiff)
-              diff[key] = nestedDiff
-            }
-          }
-        } else {
-          if (modifiedData[key] !== originalData[key]) {
-            console.log('不同', key, modifiedData[key])
-            diff[key] = modifiedData[key]
-          }
-        }
-      }
-
-      return diff
-    },
-    async saveDifferenceToOtherApps(appIds, diffData) {
-      for (const appId of appIds) {
-        // 获取当前应用的配置
-        const response = await getCustomize(this.multiAppSubKey, appId)
-
-        if (response.RetCode === 0) {
-          const currentConfig = response.Data || '{}'
-          // 计算当前应用配置与修改数据的差异
-          const data = JSON.parse(currentConfig.Data)
-          const updatedConfig = this.applyDifferenceToConfig(data, diffData)
-
-          // 将差异应用到该应用的配置
-          currentConfig.Data = JSON.stringify(updatedConfig)
-
-          await updateCustomize(currentConfig).then(response => {
-            if (response.RetCode === 0) {
-              Message.success(`应用 ${appId} 配置已成功更新！`)
-            }
-          })
-        } else {
-          console.warn(`⚠️ 无法获取应用 ${appId} 的配置.`)
-        }
-      }
-    },
-    applyDifferenceToConfig(currentConfig, diffData) {
-      if (Array.isArray(diffData)) {
-        return JSON.parse(JSON.stringify(diffData))
-      }
-      for (const key in diffData) {
-        // eslint-disable-next-line no-prototype-builtins
-        if (diffData.hasOwnProperty(key)) {
-          // 如果差异存在于当前配置中，则进行覆盖
-          if (Array.isArray(diffData[key])) {
-            console.log('修改', key, diffData[key])
-            currentConfig[key] = JSON.parse(JSON.stringify(diffData[key]))
-          } else if (typeof diffData[key] === 'object' && diffData[key] !== null) {
-            // 如果是对象，则递归处理
-            currentConfig[key] = this.applyDifferenceToConfig(currentConfig[key] || {}, diffData[key])
-          } else {
-            console.log('修改', key, diffData[key])
-            currentConfig[key] = diffData[key]
-          }
-        }
-      }
-
-      return currentConfig
-    },
-    prepareAppTree() {
-      this.appTreeData = [
-        {
-          label: '全选',
-          value: this.selectAllNodeKey,
-          children: this.appOptions.slice(1).map(app => ({
-            label: app.label,
-            value: app.value
-          }))
-        }
-      ]
-      this.$set(this, 'checkedAppKeys', [])
-    },
-    async confirmMultiAppCopy(appIds) {
-      const originalCreateCfg = this.createCfg
-      const originalBaseAppId = this.baseForm.AppId
-      const originalRuleAppId = this.ruleForm.AppId
-      const originalExtAppId = this.extForm.AppId
-      this.createCfg = true
-      for (const appId of appIds) {
-        this.copyTargetAppId = appId
-        await this.saveBaseCfg()
-        await this.saveRuleCfg()
-        await this.saveExtCfg()
-        Message.success(`应用 ${appId} 配置复制成功！`)
-      }
-      this.copyTargetAppId = null
-      this.baseForm.AppId = originalBaseAppId
-      this.ruleForm.AppId = originalRuleAppId
-      this.extForm.AppId = originalExtAppId
-      this.createCfg = originalCreateCfg
-    },
-    async confirmMultiAppSave() {
-      // 选中的 App ID（排除全选节点 key）
-      const appIds = this.checkedAppKeys.filter(key => key !== this.selectAllNodeKey)
-      if (appIds.length === 0) {
-        Message.warning('请至少选择一个应用')
-        return
-      }
-
-      if (this.multiAppAction === 'copy') {
-        await this.confirmMultiAppCopy(appIds)
-      } else {
-        await this.saveDifferenceToOtherApps(appIds, this.diffData)
-        if (this.multiAppSubKey === this.subKey && this.pendingScriptV3BetListBaseCfg) {
-          await handleScriptV3BetListCreate(this, { ...this.pendingScriptV3BetListBaseCfg, subKey: this.subKey, appIds })
-        }
-      }
-      this.multiAppDialogVisible = false
-      this.multiAppAction = 'save'
-    },
-    // 处理全选或取消全选
-    onCheckChange(node, checked) {
-      if (node.value === this.selectAllNodeKey) {
-        // 点击全选节点时
-        if (checked) {
-          // 勾选全选时，选中所有子节点
-          this.checkedAppKeys = this.appOptions.slice(1).map(app => app.value)
-        } else {
-          // 取消全选时，清空所有子节点的选中状态
-          this.checkedAppKeys = []
-        }
-      } else {
-        // 如果是其他节点，直接更新 checkedAppKeys
-        if (checked) {
-          this.checkedAppKeys.push(node.value)
-        } else {
-          this.checkedAppKeys = this.checkedAppKeys.filter(item => item !== node.value)
-        }
-      }
+      cfg.BetListAct = BetListAct
+      return cfg
     }
   }
 }
@@ -597,3 +291,4 @@ export default {
   border: 3px solid red;
 }
 </style>
+
