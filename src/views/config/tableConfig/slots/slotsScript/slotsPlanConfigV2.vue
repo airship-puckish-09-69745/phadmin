@@ -22,10 +22,12 @@
         <el-button type="primary" icon="el-icon-document-copy" size="mini" @click="onCopyAllCfg">
           复制配置
         </el-button>
+        <el-button type="primary" icon="el-icon-document-copy" size="mini" @click="onCopyMultiAppCfg">
+          多App复制
+        </el-button>
       </el-col>
     </el-row>
     <!--    <fieldset style="width: 100px">-->
-    <span>
       <el-button type="success" size="mini" @click="openAddDialog">添加方案</el-button>
       <el-table
         :data="showItem.Plans"
@@ -83,7 +85,7 @@
                     type="primary"
                     style="background: #cf91ee"
                     size="mini"
-                    @click="getVersion(versionScope.row,scope.row)"
+                    @click="openViewScriptSelector(versionScope.row,scope.row)"
                   >查看剧本</el-button>
                   <el-button
                     type="primary"
@@ -127,7 +129,7 @@
         <el-table-column label="操作" width="250px">
           <template slot-scope="scope">
             <el-button type="primary" size="mini" @click="openEditDialog(scope.row,scope.$index)">编辑</el-button>
-            <el-button type="success" size="mini" @click="showTips(4,scope.row,0)">复制</el-button>
+            <el-button type="success" size="mini" @click="openCopyPlanSelector(scope.row)">复制</el-button>
             <el-button type="danger" size="mini" @click="showTips(3,scope.$index,0)">删除</el-button>
           </template>
         </el-table-column>
@@ -155,17 +157,17 @@
             </el-radio-group>
           </el-form-item>
 
-          <el-form-item label="平台">
-            <el-checkbox-group v-model="addFormData.ScriptRuleDescription.PlatformList" @change="checkedBoxChange">
-              <el-checkbox label="BP" value="BP" />
-              <el-checkbox label="AP" value="AP" />
-              <el-checkbox label="GP" value="GP" />
-              <!-- <el-checkbox label="PG" value="PG"></el-checkbox> -->
-              <el-checkbox label="TP" value="TP" />
-              <el-checkbox label="SP" value="SP" />
-              <el-checkbox label="CP" value="CP" />
-            </el-checkbox-group>
-          </el-form-item>
+<!--          <el-form-item label="平台">-->
+<!--            <el-checkbox-group v-model="addFormData.ScriptRuleDescription.PlatformList" @change="checkedBoxChange">-->
+<!--              <el-checkbox label="BP" value="BP" />-->
+<!--              <el-checkbox label="AP" value="AP" />-->
+<!--              <el-checkbox label="GP" value="GP" />-->
+<!--              <el-checkbox label="PG" value="PG" />-->
+<!--              <el-checkbox label="TP" value="TP" />-->
+<!--              <el-checkbox label="SP" value="SP" />-->
+<!--              <el-checkbox label="CP" value="CP" />-->
+<!--            </el-checkbox-group>-->
+<!--          </el-form-item>-->
           <el-form-item label="用户标签">
             <div class="user-tags-container">
               <div
@@ -243,7 +245,7 @@
               <el-checkbox label="BP" value="BP" />
               <el-checkbox label="AP" value="AP" />
               <el-checkbox label="GP" value="GP" />
-              <!-- <el-checkbox label="PG" value="PG"></el-checkbox> -->
+              <el-checkbox label="PG" value="PG" />
               <el-checkbox label="TP" value="TP" />
               <el-checkbox label="SP" value="SP" />
             </el-checkbox-group>
@@ -406,7 +408,7 @@
           </el-button>
         </el-tooltip>
         <el-tooltip content="xlsx/xls文件,格式保持一致,需要首行标题" effect="dark" placement="top">
-          <input type="file" accept=".xlsx, .xls" size="mini" @change="handleFileUpload"></input>
+          <input type="file" accept=".xlsx, .xls" size="mini" @change="handleFileUpload">
         </el-tooltip>
         <el-table
           :data="editSlotsScriptOddsCfgFormData"
@@ -532,7 +534,7 @@
           <el-table-column prop="OddsCfg" label="倍数配置">
             <template slot-scope="scope">
               <el-tooltip content="xlsx/xls文件,格式保持一致,需要首行标题" effect="dark" placement="top">
-                <input type="file" accept=".xlsx, .xls" size="mini" @change="(event) => handleFileUpload2(event, scope.$index)"></input>
+                <input type="file" accept=".xlsx, .xls" size="mini" @change="(event) => handleFileUpload2(event, scope.$index)">
               </el-tooltip>
               <el-col :offset="1" :span="12">
                 <el-tooltip content="检查是否命中不存在倍数" effect="dark" placement="top">
@@ -713,54 +715,55 @@
       <el-dialog
         title="确认操作"
         :visible.sync="showCompletionScript"
-        width="30%"
+        width="60%"
+        :before-close="closeScriptViewDialog"
       >
-        <template>
-          <table border="1">
-            <thead>
-              <tr>
-                <th>键</th>
-                <th>值</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- 使用 v-for 循环遍历 showCompletionScriptMap 对象 -->
-              <tr v-for="(v, k) in showCompletionScriptMap" :key="k">
-                <td>{{ k }}</td>
-                <td>{{ v }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </template>
+        <el-row :gutter="16">
+          <el-col v-if="scriptViewAppIds.length > 0" :span="5">
+            <div class="multi-app-script-title">AppId</div>
+            <el-menu
+              :default-active="String(scriptViewActiveAppId)"
+              class="multi-app-script-menu"
+              @select="onScriptViewAppSelect"
+            >
+              <el-menu-item v-for="appId in scriptViewAppIds" :key="appId" :index="String(appId)">
+                {{ getAppLabel(appId) }}
+              </el-menu-item>
+            </el-menu>
+          </el-col>
+          <el-col :span="scriptViewAppIds.length > 0 ? 19 : 24">
+            <table border="1">
+              <thead>
+                <tr>
+                  <th>键</th>
+                  <th>值</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="item in currentScriptViewEntries" :key="item.key">
+                  <td>{{ item.key }}</td>
+                  <td>{{ item.value }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </el-col>
+        </el-row>
         <template #footer>
           <span>
-            <el-button type="success" @click="showCompletionScript = false">确定</el-button>
+            <el-button v-if="hasMissingCurrentBaseBet" type="primary" @click="addScriptFromView()">增加剧本</el-button>
+            <el-button type="success" @click="closeScriptViewDialog()">确定</el-button>
           </span>
         </template>
       </el-dialog>
 
       <!-- 多应用选择弹窗 -->
-      <el-dialog
-        title="选择应用"
-        :visible.sync="multiAppDialogVisible"
-        width="400px"
-      >
-        <el-tree
-          ref="appTree"
-          :data="appTreeData"
-          show-checkbox
-          node-key="value"
-          default-expand-all
-          v-model:checked-keys="checkedAppKeys"
-          @check-change="onCheckChange"
-        />
-
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="multiAppDialogVisible = false">取消</el-button>
-          <el-button type="primary" @click="confirmMultiAppSave">确认保存</el-button>
-        </span>
-      </el-dialog>
-    </span>
+      <multi-app-select-dialog
+      :visible.sync="multiAppDialogVisible"
+      :app-options="appOptions"
+      :checked-keys.sync="checkedAppKeys"
+      :confirm-text="getMultiAppConfirmText()"
+      @confirm="confirmMultiAppSave"
+    />
     <!--    </fieldset>-->
     <!--对比组件-->
     <compare ref="compare" :attr-names="AttrNames" />
@@ -772,6 +775,7 @@
 import { Message } from 'element-ui'
 import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
+import MultiAppSelectDialog from '@/components/Publish/MultiAppSelectDialog'
 import request from '@/utils/request'
 import { $libShow, ValidateVueItem } from '@/utils/common'
 import BetAmount from '@/components/BetAmount'
@@ -782,10 +786,11 @@ import { number } from 'echarts/lib/export'
 import XLSX from 'xlsx'
 import store from '@/store'
 import { createCustomize, getCustomize, updateCustomize } from '@/api/custome_configV2'
+import { handleScriptV3BetListCreate } from '../utils/scriptV3BetListCreate'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: { ShowTip, Compare, Publish, BetAmount, MoneyInput },
+  components: { MultiAppSelectDialog, ShowTip, Compare, Publish, BetAmount, MoneyInput },
   data() {
     return {
       showItem: {
@@ -895,6 +900,13 @@ export default {
       getBetPlanver: false,
       showBetPlanverList: [],
       showCompletionScriptMap: {},
+      scriptViewAppIds: [],
+      scriptViewActiveAppId: '',
+      scriptViewResults: {},
+      displayScriptViewMap: {},
+      scriptViewMissingBetResults: {},
+      pendingScriptVersionRow: null,
+      pendingScriptPlanRow: null,
 
       AdditionalArray: [
         { key: 100180, label: 'Fishing Master(额外加注)' },
@@ -941,7 +953,22 @@ export default {
       appTreeData: [],
       checkedAppKeys: [],
       selectAllNodeKey: 'all',
-      diffData: {}
+      diffData: {},
+      multiAppAction: 'save',
+      copyTargetAppId: null,
+      pendingCopyPlanRow: null
+    }
+  },
+  computed: {
+    currentScriptViewEntries() {
+      return Object.entries(this.displayScriptViewMap || {}).map(([key, value]) => ({
+        key,
+        value
+      }))
+    },
+    hasMissingCurrentBaseBet() {
+      const missingBets = this.scriptViewMissingBetResults[String(this.scriptViewActiveAppId)] || []
+      return missingBets.length > 0
     }
   },
   created() {
@@ -977,6 +1004,23 @@ export default {
     getFullKey(k) {
       return 'CustomizeCfg_' + k
     },
+    getAppLabel(appId) {
+      const targetAppId = parseInt(appId)
+      const target = this.appOptions.find(item => item.value === targetAppId)
+      return target ? target.label : String(appId)
+    },
+    getMultiAppConfirmText() {
+      if (this.multiAppAction === 'copy' || this.multiAppAction === 'copyPlan') {
+        return '确认复制'
+      }
+      if (this.multiAppAction === 'createScript') {
+        return '确认创建'
+      }
+      if (this.multiAppAction === 'viewScript') {
+        return '确认查看'
+      }
+      return '确认保存'
+    },
     getSlotsCustomScriptKey() {
       return 'SlotsCustomScriptConfig_' + this.queryGid
     },
@@ -995,6 +1039,7 @@ export default {
           this.proceedData(this.showItem.Plans)
           // 强制刷新 UI
           this.$forceUpdate()
+          console.log('🎯 成功加载自定义配置:', this.getSlotsCustomScriptKey(), this.showItem.Plans)
 
           this.queryBase(this.queryGid)
           this.queryScriptVolatility(this.queryGid)
@@ -1004,6 +1049,7 @@ export default {
           this.showItem.Plans = this.newPlansCfg()
           if (store.getters.appId === this.appId) {
             this.bCreateCfg = true
+            console.log('this.bCreateCfg', this.bCreateCfg)
           }
         }
       }).catch(err => {
@@ -1038,6 +1084,7 @@ export default {
       })
     },
     querySlotBase(planID) {
+      console.log('querySlotBase', this.queryGid, '111::', planID)
       request({
         url: '/dataProxy/info',
         method: 'get',
@@ -1051,6 +1098,7 @@ export default {
         }
       }).then(response => {
         if (response.RetCode === 0) {
+          console.log('querySlotBase', response.Data)
           this.showBetPlanverList = []
           this.showBetPlanverList = Object.entries(response.Data)
             .map(([key, value]) => ({
@@ -1059,6 +1107,7 @@ export default {
             }))
             .sort((a, b) => a.betAmount - b.betAmount)
         }
+        console.log('this.showBetPlanverMap', this.showBetPlanverList)
         this.getBetPlanver = true
       }).catch(e => {
         console.log(e)
@@ -1138,14 +1187,7 @@ export default {
         if (oz.ScriptRule.Platform !== '') {
           oz.ScriptRule['PlatformList'] = oz.ScriptRule.Platform.split(',')
         } else {
-          oz.ScriptRule['PlatformList'] = [
-            'BP',
-            'AP',
-            'GP',
-            'PG',
-            'TP',
-            'SP'
-          ]
+          oz.ScriptRule['PlatformList'] = []
         }
       }
     },
@@ -1536,17 +1578,16 @@ export default {
           return
         }
         $this.planForm.Data = JSON.stringify(data)
-        updateCustomize($this.planForm).then(response => {
+        return updateCustomize($this.planForm).then(response => {
           if (response.RetCode === 0) {
             Message.success('保存成功！')
           }
         })
       })
-      // await this.createCfg()
     },
-    createVersion(row, planRow) {
+    createVersion(row, planRow, appId = store.getters.appId, bet = undefined) {
       const $this = this
-      request({
+      return request({
         url: '/dataProxy/info',
         method: 'post',
         data: {
@@ -1554,19 +1595,22 @@ export default {
           planID: planRow.PlanId,
           gameID: $this.queryGid,
           planVer: row.Version,
-          appID: store.getters.appId
+          appID: appId,
+          bet: bet
         }
       }).then(response => {
         if (response.RetCode === 0) {
+          console.log('getTodayRaffleAmount', response.Data)
           if (response.Data) {
             console.log('todayRaffleAmount', $this.todayRaffleAmount)
           }
         }
+        return response
       })
     },
-    getVersion(row, planRow) {
+    requestVersion(row, planRow, appId = store.getters.appId, bet = undefined) {
       const $this = this
-      request({
+      return request({
         url: '/dataProxy/info',
         method: 'get',
         data: {
@@ -1574,16 +1618,141 @@ export default {
           planID: planRow.PlanId,
           gameID: $this.queryGid,
           planVer: row.Version,
-          appID: store.getters.appId
-        }
-      }).then(response => {
-        if (response.RetCode === 0) {
-          if (response.Data) {
-            this.showCompletionScriptMap = response.Data
-          }
-          this.showCompletionScript = true
+          appID: appId,
+          bet: bet
         }
       })
+    },
+    async getVersion(row, planRow, appId = store.getters.appId) {
+      console.log(row, planRow.PlanId)
+      const response = await this.requestVersion(row, planRow, appId)
+      if (response.RetCode === 0) {
+        let data = response.Data || {}
+        const currentScriptBets = new Set(Object.keys(data).map(item => String(item)))
+        const currentBaseBetSet = new Set(this.currentBaseBet.map(item => String(item)))
+        const missingBaseBets = this.currentBaseBet.filter(bet => !currentScriptBets.has(String(bet)))
+        const extraScriptBets = Object.keys(data).filter(bet => !currentBaseBetSet.has(String(bet)))
+        const retryBets = Array.from(new Set(missingBaseBets.concat(extraScriptBets)))
+        for (const bet of retryBets) {
+          const betResponse = await this.requestVersion(row, planRow, appId, bet)
+          if (betResponse.RetCode === 0 && betResponse.Data) {
+            data = Object.assign({}, data, betResponse.Data)
+          }
+        }
+        response.MissingCurrentBaseBets = this.currentBaseBet.filter(bet => data[String(bet)] === undefined)
+        for (const bet of response.MissingCurrentBaseBets) this.$set(data, String(bet), 0)
+        response.Data = data
+        if (response.Data) {
+          this.showCompletionScriptMap = response.Data
+        }
+      }
+      return response
+    },
+    openViewScriptSelector(row, planRow) {
+      this.closeScriptViewDialog()
+      this.pendingScriptVersionRow = row
+      this.pendingScriptPlanRow = planRow
+      this.prepareAppTree([this.appId])
+      this.multiAppAction = 'viewScript'
+      this.multiAppDialogVisible = true
+    },
+    openCreateScriptSelector(row, planRow) {
+      this.pendingScriptVersionRow = row
+      this.pendingScriptPlanRow = planRow
+      this.prepareAppTree([this.appId])
+      this.multiAppAction = 'createScript'
+      this.multiAppDialogVisible = true
+    },
+    async validateScriptCreateReady(appId, row, planRow) {
+      if (appId === this.appId) {
+        if (row.IsReady) {
+          Message.warning(`应用 ${appId} 当前版本已就绪，无法创建剧本`)
+          return false
+        }
+        return true
+      }
+      const response = await getCustomize(this.getSlotsCustomScriptKey(), appId)
+      if (response.RetCode !== 0 || !response.Data || !response.Data.Data) {
+        Message.warning(`应用 ${appId} 未找到对应配置`)
+        return false
+      }
+      const data = JSON.parse(response.Data.Data || '{}')
+      const plans = data.Plans || []
+      const targetPlan = plans.find(item => item.PlanId === planRow.PlanId)
+      if (!targetPlan) {
+        Message.warning(`应用 ${appId} 未找到方案 ${planRow.PlanId}`)
+        return false
+      }
+      const targetVersion = (targetPlan.Versions || []).find(item => item.Version === row.Version)
+      if (!targetVersion) {
+        Message.warning(`应用 ${appId} 未找到版本 ${row.Version}`)
+        return false
+      }
+      if (targetVersion.IsReady) {
+        Message.warning(`应用 ${appId} 当前版本已就绪，无法创建剧本`)
+        return false
+      }
+      return true
+    },
+    async createVersionForApps(appIds) {
+      for (const appId of appIds) {
+        const canCreate = await this.validateScriptCreateReady(appId, this.pendingScriptVersionRow, this.pendingScriptPlanRow)
+        if (!canCreate) {
+          continue
+        }
+        const response = await this.createVersion(this.pendingScriptVersionRow, this.pendingScriptPlanRow, appId)
+        if (response && response.RetCode === 0) {
+          Message.success(`应用 ${appId} 创建剧本成功`)
+        }
+      }
+    },
+    async viewVersionForApps(appIds) {
+      const results = {}
+      const missingBetResults = {}
+      for (const appId of appIds) {
+        const response = await this.getVersion(this.pendingScriptVersionRow, this.pendingScriptPlanRow, appId)
+        if (response && response.RetCode === 0) {
+          results[String(appId)] = response.Data || {}
+          missingBetResults[String(appId)] = response.MissingCurrentBaseBets || []
+        } else {
+          results[String(appId)] = {}
+          missingBetResults[String(appId)] = []
+        }
+      }
+      this.scriptViewResults = results
+      this.scriptViewMissingBetResults = missingBetResults
+      this.scriptViewAppIds = appIds.map(appId => String(appId))
+      this.scriptViewActiveAppId = String(appIds[0])
+      this.displayScriptViewMap = results[this.scriptViewActiveAppId] || {}
+      this.showCompletionScript = true
+    },
+    onScriptViewAppSelect(appId) {
+      this.scriptViewActiveAppId = String(appId)
+      this.displayScriptViewMap = this.scriptViewResults[this.scriptViewActiveAppId] || {}
+    },
+    async addScriptFromView() {
+      const appIds = this.scriptViewAppIds.map(appId => Number(appId)).filter(appId => !Number.isNaN(appId))
+      await handleScriptV3BetListCreate(this, {
+        newBaseCfg: {
+          BetList: this.currentBaseBet,
+          IsBetListByAppCfg: false,
+          EnableScriptV3: true
+        },
+        gameId: this.queryGid,
+        appIds: appIds,
+        planId: this.pendingScriptPlanRow && this.pendingScriptPlanRow.PlanId,
+        version: this.pendingScriptVersionRow && this.pendingScriptVersionRow.Version
+      })
+      await this.viewVersionForApps(appIds)
+    },
+    closeScriptViewDialog() {
+      this.showCompletionScript = false
+      this.showCompletionScriptMap = {}
+      this.scriptViewAppIds = []
+      this.scriptViewActiveAppId = ''
+      this.scriptViewResults = {}
+      this.displayScriptViewMap = {}
+      this.scriptViewMissingBetResults = {}
     },
     createCfg() {
       const val = JSON.parse(JSON.stringify(this.showItem.Plans))
@@ -1592,14 +1761,14 @@ export default {
         SlotsType: this.showItem.SlotsType,
         Plans: items
       }
-      this.planForm.AppId = store.getters.appId
+      this.planForm.AppId = this.copyTargetAppId || store.getters.appId
       this.planForm.RedisSubkey = this.getSlotsCustomScriptKey()
       this.planForm.Data = JSON.stringify(data)
       const name = this.getGameName(this.queryGid) + '方案配置'
       this.planForm.Name = name
       this.planForm.Description = name
       this.planForm.Type = 1
-      createCustomize(this.planForm).then(response => {
+      return createCustomize(this.planForm).then(response => {
         if (response.RetCode === 0) {
           Message.success('保存成功！')
         }
@@ -1636,6 +1805,7 @@ export default {
           json.forEach((row, index) => {
             if (index > 0) {
               const idx = index - 1
+              console.log(index, idx, row)
 
               this.editSlotsScriptOddsCfgFormData.push({
                 OddsMin: row[0],
@@ -1655,6 +1825,7 @@ export default {
       }
     },
     handleFileUpload2(event, datIdx) {
+      console.log(datIdx, event)
       const file = event.target.files[0]
       if (file) {
         const reader = new FileReader()
@@ -1664,10 +1835,12 @@ export default {
           const firstSheetName = workbook.SheetNames[0]
           const worksheet = workbook.Sheets[firstSheetName]
           const json = XLSX.utils.sheet_to_json(worksheet, { header: 1 })
+          console.log(this.editBetOddsPlansFormData[datIdx].OddsCfg)
           this.editBetOddsPlansFormData[datIdx].OddsCfg = []
           json.forEach((row, index) => {
             if (index > 0) {
               const idx = index - 1
+              console.log(index, idx, row, datIdx)
 
               this.editBetOddsPlansFormData[datIdx].OddsCfg.push({
                 OddsMin: row[0],
@@ -1689,6 +1862,7 @@ export default {
         cnt += obj.ScriptOddsSum
       }
       var scriptSteps = this.showItem.Plans[this.currentPlanIndex].Versions[this.currentVersionIndex].ScriptCfg.ScriptSteps
+      console.log(scriptSteps)
 
       Message.success('当前百分比：' + (cnt / (scriptSteps * Number(this.slotCfg[this.queryGid].Bet)) * 100).toFixed(3) + '%')
     },
@@ -1713,6 +1887,7 @@ export default {
       }
       for (const i in this.editSlotsScriptOddsCfgFormData) {
         const obj = this.editSlotsScriptOddsCfgFormData[i]
+        console.log(obj, obj.OddsMin * obj.ScriptSteps)
         if (obj.OddsMin * obj.ScriptSteps <= obj.ScriptOddsSum && obj.ScriptOddsSum <= obj.OddsMax * obj.ScriptSteps) {
         } else {
           const a = Number(i) + 1
@@ -1762,14 +1937,20 @@ export default {
       if (gid > 100000) {
         gid = gid - 100000
       }
+      console.log(gid, this.slotCfg[gid].AbnormalSteps)
+      //
+      // console.log('this.editVersionFormData.ScriptCfg.OddsCfg.length',this.editVersionFormData.ScriptCfg.OddsCfg.length)
+      // console.log('this.queryGid', this.queryGid)
       if (!this.slotCfg[gid].AbnormalSteps) {
         Message.error('请设置异常步数！')
         return
       }
       var strings = this.slotCfg[gid].AbnormalSteps.split(',')
+      // console.log('this.editVersionFormData.ScriptCfg.OddsCfg:',this.editVersionFormData.ScriptCfg.OddsCfg)
       for (const i in this.editVersionFormData.ScriptCfg.OddsCfg) {
         const o = this.editVersionFormData.ScriptCfg.OddsCfg[i]
         for (const strNum of strings) {
+          // console.log('strNum:',strNum);
           if (o.OddsMax > parseInt(strNum) && o.OddsMin < parseInt(strNum)) {
             const ss = (parseInt(i) + 1)
             Message.error('第' + (ss) + '行异常步数【' + strings + '】包含在配置内,min:' + o.OddsMin + ' max:' + o.OddsMax)
@@ -1839,7 +2020,7 @@ export default {
     handleDelete(val) {
       // 这里可以添加实际的删除逻辑，例如调用接口删除数据
       if (this.showTipsVal === 1) {
-        this.createVersion(this.data1, this.data2)
+        this.openCreateScriptSelector(this.data1, this.data2)
       }
       if (this.showTipsVal === 2) {
         console.log(this.idx1, this.idx2)
@@ -1853,15 +2034,25 @@ export default {
       }
       this.showDeleteDialog = false // 关闭弹窗
     },
-    copyPlan() {
-      const val = JSON.parse(JSON.stringify(this.data1))
+    getNextPlanId(plans) {
+      if (!Array.isArray(plans) || plans.length === 0) {
+        return 1
+      }
+      return Math.max(...plans.map(item => Number(item.PlanId) || 0)) + 1
+    },
+    buildCopiedPlan(plan, planId) {
+      const val = JSON.parse(JSON.stringify(plan))
       val.IsDefault = 0
       val.IsDisabled = 1
-      val.PlanId = this.showItem.Plans.length + 1
+      val.PlanId = planId
       // versionScope.row.IsReady
       for (const o of val.Versions) {
         o.IsReady = false
       }
+      return val
+    },
+    copyPlan() {
+      const val = this.buildCopiedPlan(this.data1, this.getNextPlanId(this.showItem.Plans))
       console.log(this.data1)
 
       this.showItem.Plans.push(val)
@@ -2038,12 +2229,84 @@ export default {
       }
       this.bCreateCfg = false
     },
+    onCopyMultiAppCfg() {
+      this.prepareAppTree()
+      this.multiAppAction = 'copy'
+      this.multiAppDialogVisible = true
+    },
+    openCopyPlanSelector(row) {
+      this.pendingCopyPlanRow = row
+      this.prepareAppTree([this.appId])
+      this.multiAppAction = 'copyPlan'
+      this.multiAppDialogVisible = true
+    },
+    async saveCopiedPlanToApp(appId) {
+      const response = await getCustomize(this.getSlotsCustomScriptKey(), appId)
+      const currentConfig = response.RetCode === 0 ? response.Data : null
+      const configData = currentConfig && currentConfig.Data ? JSON.parse(currentConfig.Data || '{}') : {}
+      const plans = Array.isArray(configData.Plans) ? configData.Plans : []
+      const copiedPlan = this.buildCopiedPlan(this.pendingCopyPlanRow, this.getNextPlanId(plans))
+      const storageCopiedPlan = this.proceedUpdateData([copiedPlan])[0]
+      plans.push(storageCopiedPlan)
+
+      const data = {
+        SlotsType: configData.SlotsType || this.queryGid,
+        Plans: plans
+      }
+
+      if (currentConfig) {
+        currentConfig.Data = JSON.stringify(data)
+        return updateCustomize(currentConfig)
+      }
+
+      const name = this.getGameName(this.queryGid) + '方案配置'
+      return createCustomize({
+        AppId: appId,
+        RedisSubkey: this.getSlotsCustomScriptKey(),
+        Data: JSON.stringify(data),
+        Name: name,
+        Description: name,
+        Type: 1
+      })
+    },
+    async confirmMultiAppPlanCopy(appIds) {
+      if (!this.pendingCopyPlanRow) {
+        Message.warning('请选择需要复制的方案')
+        return
+      }
+
+      for (const appId of appIds) {
+        const targetAppId = parseInt(appId)
+        if (targetAppId === parseInt(this.appId)) {
+          this.data1 = this.pendingCopyPlanRow
+          this.copyPlan()
+          Message.success(`应用 ${targetAppId} 方案复制成功！`)
+          continue
+        }
+
+        const response = await this.saveCopiedPlanToApp(targetAppId)
+        if (response && response.RetCode === 0) {
+          Message.success(`应用 ${targetAppId} 方案复制成功！`)
+        }
+      }
+      this.pendingCopyPlanRow = null
+    },
     // 计算当前应用原数据与修改后的数据之间的差异
     getDifferenceBetweenConfigs(originalData, modifiedData) {
+      if (Array.isArray(modifiedData)) {
+        if (JSON.stringify(originalData) !== JSON.stringify(modifiedData)) {
+          return JSON.parse(JSON.stringify(modifiedData))
+        }
+        return []
+      }
       const diff = {}
       for (const key in modifiedData) {
         if (!modifiedData.hasOwnProperty(key)) continue
-        if (typeof modifiedData[key] === 'object' && modifiedData[key] !== null) {
+        if (Array.isArray(modifiedData[key])) {
+          if (JSON.stringify(originalData[key]) !== JSON.stringify(modifiedData[key])) {
+            diff[key] = JSON.parse(JSON.stringify(modifiedData[key]))
+          }
+        } else if (typeof modifiedData[key] === 'object' && modifiedData[key] !== null) {
           if (typeof originalData[key] !== 'object' || originalData[key] === null) {
             diff[key] = modifiedData[key]
           } else {
@@ -2091,11 +2354,16 @@ export default {
       }
     },
     applyDifferenceToConfig(currentConfig, diffData) {
+      if (Array.isArray(diffData)) {
+        return JSON.parse(JSON.stringify(diffData))
+      }
       for (const key in diffData) {
         // eslint-disable-next-line no-prototype-builtins
         if (diffData.hasOwnProperty(key)) {
           // 如果差异存在于当前配置中，则进行覆盖
-          if (typeof diffData[key] === 'object' && diffData[key] !== null) {
+          if (Array.isArray(diffData[key])) {
+            currentConfig[key] = JSON.parse(JSON.stringify(diffData[key]))
+          } else if (typeof diffData[key] === 'object' && diffData[key] !== null) {
             // 如果是对象，则递归处理
             currentConfig[key] = this.applyDifferenceToConfig(currentConfig[key] || {}, diffData[key])
           } else {
@@ -2127,10 +2395,11 @@ export default {
 
         // 弹出多应用选择弹窗
         $this.prepareAppTree()
+        $this.multiAppAction = 'save'
         $this.multiAppDialogVisible = true
       })
     },
-    prepareAppTree() {
+    prepareAppTree(defaultCheckedKeys = []) {
       this.appTreeData = [
         {
           label: '全选',
@@ -2141,7 +2410,26 @@ export default {
           }))
         }
       ]
-      this.$set(this, 'checkedAppKeys', [])
+      const checkedKeys = defaultCheckedKeys.filter(key => key !== 0)
+      this.$set(this, 'checkedAppKeys', checkedKeys)
+      this.$nextTick(() => {
+        if (this.$refs.appTree) {
+          this.$refs.appTree.setCheckedKeys(checkedKeys)
+        }
+      })
+    },
+    async confirmMultiAppCopy(appIds) {
+      const originalCreateCfg = this.bCreateCfg
+      const originalAppId = this.planForm.AppId
+      this.bCreateCfg = true
+      for (const appId of appIds) {
+        this.copyTargetAppId = appId
+        await this.createCfg()
+        Message.success(`应用 ${appId} 配置复制成功！`)
+      }
+      this.copyTargetAppId = null
+      this.planForm.AppId = originalAppId
+      this.bCreateCfg = originalCreateCfg
     },
     async confirmMultiAppSave() {
       // 选中的 App ID（排除全选节点 key）
@@ -2151,8 +2439,20 @@ export default {
         return
       }
 
-      await this.saveDifferenceToOtherApps(appIds, this.diffData)
+      if (this.multiAppAction === 'copy') {
+        await this.confirmMultiAppCopy(appIds)
+      } else if (this.multiAppAction === 'copyPlan') {
+        await this.confirmMultiAppPlanCopy(appIds)
+      } else if (this.multiAppAction === 'createScript') {
+        await this.createVersionForApps(appIds)
+      } else if (this.multiAppAction === 'viewScript') {
+        await this.viewVersionForApps(appIds)
+      } else {
+        await this.saveDifferenceToOtherApps(appIds, this.diffData)
+      }
       this.multiAppDialogVisible = false
+      this.multiAppAction = 'save'
+      this.pendingCopyPlanRow = null
     },
     // 处理全选或取消全选
     onCheckChange(node, checked) {
@@ -2168,7 +2468,9 @@ export default {
       } else {
         // 如果是其他节点，直接更新 checkedAppKeys
         if (checked) {
-          this.checkedAppKeys.push(node.value)
+          if (this.checkedAppKeys.indexOf(node.value) === -1) {
+            this.checkedAppKeys.push(node.value)
+          }
         } else {
           this.checkedAppKeys = this.checkedAppKeys.filter(item => item !== node.value)
         }
@@ -2232,4 +2534,17 @@ tr:hover {
   margin-right: 15px;
   white-space: nowrap;
 }
+
+.multi-app-script-title {
+  margin-bottom: 12px;
+  color: #606266;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.multi-app-script-menu {
+  border-right: 1px solid #ebeef5;
+  min-height: 320px;
+}
 </style>
+

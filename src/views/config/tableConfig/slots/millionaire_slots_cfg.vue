@@ -8,6 +8,9 @@
         <el-button type="primary" icon="el-icon-document-copy" @click="onCopyAllCfg">
           复制配置
         </el-button>
+        <el-button type="primary" icon="el-icon-document-copy" @click="onCopyMultiAppCfg">
+          多App复制
+        </el-button>
       </el-col>
       <el-col :span="24">
         <el-tabs type="border-card" value="base" @tab-click="onShowTab">
@@ -51,26 +54,13 @@
     </el-row>
 
     <!-- 多应用选择弹窗 -->
-    <el-dialog
-      title="选择应用"
+    <multi-app-select-dialog
       :visible.sync="multiAppDialogVisible"
-      width="400px"
-    >
-      <el-tree
-        ref="appTree"
-        v-model:checked-keys="checkedAppKeys"
-        :data="appTreeData"
-        show-checkbox
-        node-key="value"
-        default-expand-all
-        @check-change="onCheckChange"
-      />
-
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="multiAppDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="confirmMultiAppSave">确认保存</el-button>
-      </span>
-    </el-dialog>
+      :app-options="appOptions"
+      :checked-keys.sync="checkedAppKeys"
+      :confirm-text="multiAppAction === 'copy' ? '确认复制' : '确认保存'"
+      @confirm="confirmMultiAppSave"
+    />
 
     <!--对比组件-->
     <compare ref="compare" />
@@ -81,6 +71,7 @@
 <script>
 import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
+import MultiAppSelectDialog from '@/components/Publish/MultiAppSelectDialog'
 import slotsBaseCfg from './components_x/ireland_base_cfg'
 import slotsSymbolValue from './components_x/symbol_value'
 import slotsPayLine from './components_x/pay_line'
@@ -92,14 +83,16 @@ import slotsVup from './components_x/slots_vup'
 import slotsReelsDouble from './components_x/reels_double'
 import slotsScript from './components_x/slots_script'
 import SlotsFreeTriggerPlans from '@/views/config/tableConfig/slots/components_x/slotsFreeTriggerPlans.vue'
-import {createCustomize, getCustomize, updateCustomize} from '@/api/custome_configV2'
+import { createCustomize, getCustomize, updateCustomize } from '@/api/custome_configV2'
 import request from '@/utils/request'
-import store from "@/store";
-import {Message} from "element-ui";
+import store from '@/store'
+import { Message } from 'element-ui'
+
+import { handleScriptV3BetListCreate } from './utils/scriptV3BetListCreate'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: { SlotsFreeTriggerPlans, Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotsMillionaireExt, slotsBigWinnerCfg, slotsVup, slotsReelsDouble, slotsScript },
+  components: { MultiAppSelectDialog, SlotsFreeTriggerPlans, Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotsMillionaireExt, slotsBigWinnerCfg, slotsVup, slotsReelsDouble, slotsScript },
   data() {
     return {
       activeTab: 'base',
@@ -126,7 +119,9 @@ export default {
       checkedAppKeys: [],
       selectAllNodeKey: 'all',
       diffData: {},
-      multiAppSubKey: ''
+      multiAppSubKey: '',
+      multiAppAction: 'save',
+      copyTargetAppId: null
     }
   },
   created() {
@@ -210,16 +205,17 @@ export default {
           this.baseCfg.BetList.push(parseFloat(bets[i]) * 1000)
         }
       }
+      const oldBaseCfg = this.baseForm.Data ? JSON.parse(this.baseForm.Data) : {}
       this.baseForm.Data = JSON.stringify(this.baseCfg)
       if (!this.createCfg) {
-        updateCustomize(this.baseForm).then(response => {
+        return updateCustomize(this.baseForm).then(async response => {
           if (response.RetCode === 0) {
-            this.$message.success('保存成功')
+            this.$message.success('保存成功'); await handleScriptV3BetListCreate(this, { oldBaseCfg, newBaseCfg: this.baseCfg, subKey: this.subKey, appIds: [this.appId] })
           }
         })
       } else {
-        this.baseForm.AppId = store.getters.appId
-        createCustomize(this.baseForm).then(response => {
+        this.baseForm.AppId = this.copyTargetAppId || store.getters.appId
+        return createCustomize(this.baseForm).then(response => {
           if (response.RetCode === 0) {
             console.log('保存成功')
           }
@@ -230,14 +226,14 @@ export default {
     saveRuleCfg() {
       this.ruleForm.Data = JSON.stringify(this.ruleCfg)
       if (!this.createCfg) {
-        updateCustomize(this.ruleForm).then(response => {
+        return updateCustomize(this.ruleForm).then(response => {
           if (response.RetCode === 0) {
             this.$message.success('保存成功')
           }
         })
       } else {
-        this.ruleForm.AppId = store.getters.appId
-        createCustomize(this.ruleForm).then(response => {
+        this.ruleForm.AppId = this.copyTargetAppId || store.getters.appId
+        return createCustomize(this.ruleForm).then(response => {
           if (response.RetCode === 0) {
             console.log('保存成功')
           }
@@ -248,14 +244,14 @@ export default {
     saveExtCfg() {
       this.extForm.Data = JSON.stringify(this.extCfg)
       if (!this.createCfg) {
-        updateCustomize(this.extForm).then(response => {
+        return updateCustomize(this.extForm).then(response => {
           if (response.RetCode === 0) {
             this.$message.success('保存成功')
           }
         })
       } else {
-        this.extForm.AppId = store.getters.appId
-        createCustomize(this.extForm).then(response => {
+        this.extForm.AppId = this.copyTargetAppId || store.getters.appId
+        return createCustomize(this.extForm).then(response => {
           if (response.RetCode === 0) {
             console.log('保存成功')
           }
@@ -390,12 +386,26 @@ export default {
       }
       this.createCfg = false
     },
+    onCopyMultiAppCfg() {
+      this.prepareAppTree()
+      this.multiAppAction = 'copy'
+      this.multiAppDialogVisible = true
+    },
     onMultiAppBaseSave(oldData, newData) {
+      if (newData.Bets) {
+        const bets = newData.Bets.split(',')
+        newData.BetList = []
+        for (const i in bets) {
+          newData.BetList.push(parseFloat(bets[i]) * 1000)
+        }
+      }
       // 差异计算
       this.diffData = this.getDifferenceBetweenConfigs(oldData, newData)
+      this.pendingScriptV3BetListBaseCfg = { oldBaseCfg: JSON.parse(JSON.stringify(oldData)), newBaseCfg: JSON.parse(JSON.stringify(newData)) }
 
       // 弹出多应用选择弹窗
       this.prepareAppTree()
+      this.multiAppAction = 'save'
       this.multiAppSubKey = this.subKey
       this.multiAppDialogVisible = true
     },
@@ -405,6 +415,7 @@ export default {
 
       // 弹出多应用选择弹窗
       this.prepareAppTree()
+      this.multiAppAction = 'save'
       this.multiAppSubKey = 'millionaire_slots_rule'
       this.multiAppDialogVisible = true
     },
@@ -414,15 +425,27 @@ export default {
 
       // 弹出多应用选择弹窗
       this.prepareAppTree()
+      this.multiAppAction = 'save'
       this.multiAppSubKey = 'millionaire_slots_ext'
       this.multiAppDialogVisible = true
     },
     // 计算当前应用原数据与修改后的数据之间的差异
     getDifferenceBetweenConfigs(originalData, modifiedData) {
+      if (Array.isArray(modifiedData)) {
+        if (JSON.stringify(originalData) !== JSON.stringify(modifiedData)) {
+          return JSON.parse(JSON.stringify(modifiedData))
+        }
+        return []
+      }
       const diff = {}
       for (const key in modifiedData) {
         if (!modifiedData.hasOwnProperty(key)) continue
-        if (typeof modifiedData[key] === 'object' && modifiedData[key] !== null) {
+        if (Array.isArray(modifiedData[key])) {
+          if (JSON.stringify(originalData[key]) !== JSON.stringify(modifiedData[key])) {
+            console.log('不同', key, modifiedData[key])
+            diff[key] = JSON.parse(JSON.stringify(modifiedData[key]))
+          }
+        } else if (typeof modifiedData[key] === 'object' && modifiedData[key] !== null) {
           if (typeof originalData[key] !== 'object' || originalData[key] === null) {
             console.log('不同', key, modifiedData[key])
             diff[key] = modifiedData[key]
@@ -468,11 +491,17 @@ export default {
       }
     },
     applyDifferenceToConfig(currentConfig, diffData) {
+      if (Array.isArray(diffData)) {
+        return JSON.parse(JSON.stringify(diffData))
+      }
       for (const key in diffData) {
         // eslint-disable-next-line no-prototype-builtins
         if (diffData.hasOwnProperty(key)) {
           // 如果差异存在于当前配置中，则进行覆盖
-          if (typeof diffData[key] === 'object' && diffData[key] !== null) {
+          if (Array.isArray(diffData[key])) {
+            console.log('修改', key, diffData[key])
+            currentConfig[key] = JSON.parse(JSON.stringify(diffData[key]))
+          } else if (typeof diffData[key] === 'object' && diffData[key] !== null) {
             // 如果是对象，则递归处理
             currentConfig[key] = this.applyDifferenceToConfig(currentConfig[key] || {}, diffData[key])
           } else {
@@ -497,6 +526,25 @@ export default {
       ]
       this.$set(this, 'checkedAppKeys', [])
     },
+    async confirmMultiAppCopy(appIds) {
+      const originalCreateCfg = this.createCfg
+      const originalBaseAppId = this.baseForm.AppId
+      const originalRuleAppId = this.ruleForm.AppId
+      const originalExtAppId = this.extForm.AppId
+      this.createCfg = true
+      for (const appId of appIds) {
+        this.copyTargetAppId = appId
+        await this.saveBaseCfg()
+        await this.saveRuleCfg()
+        await this.saveExtCfg()
+        Message.success(`应用 ${appId} 配置复制成功！`)
+      }
+      this.copyTargetAppId = null
+      this.baseForm.AppId = originalBaseAppId
+      this.ruleForm.AppId = originalRuleAppId
+      this.extForm.AppId = originalExtAppId
+      this.createCfg = originalCreateCfg
+    },
     async confirmMultiAppSave() {
       // 选中的 App ID（排除全选节点 key）
       const appIds = this.checkedAppKeys.filter(key => key !== this.selectAllNodeKey)
@@ -505,8 +553,16 @@ export default {
         return
       }
 
-      await this.saveDifferenceToOtherApps(appIds, this.diffData)
+      if (this.multiAppAction === 'copy') {
+        await this.confirmMultiAppCopy(appIds)
+      } else {
+        await this.saveDifferenceToOtherApps(appIds, this.diffData)
+        if (this.multiAppSubKey === this.subKey && this.pendingScriptV3BetListBaseCfg) {
+          await handleScriptV3BetListCreate(this, { ...this.pendingScriptV3BetListBaseCfg, subKey: this.subKey, appIds })
+        }
+      }
       this.multiAppDialogVisible = false
+      this.multiAppAction = 'save'
     },
     // 处理全选或取消全选
     onCheckChange(node, checked) {

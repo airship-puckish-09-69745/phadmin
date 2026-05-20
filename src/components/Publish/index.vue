@@ -10,7 +10,9 @@
             </div>
             <el-col v-if="!diffView" :span="6" style="margin-left: 20px">
               <el-button v-if="showTestBtn" type="success" size="mini" round @click="toTest">测试</el-button>
+              <el-button v-if="showMultiTestBtn" type="success" size="mini" round @click="openMultiAppDialog('test')">多App测试</el-button>
               <el-button v-if="showProBtn" type="primary" size="mini" round @click="publishBtn">发布</el-button>
+              <el-button v-if="showMultiProBtn" type="primary" size="mini" round @click="openMultiAppDialog('publish')">多App发布</el-button>
               <span v-if="processInfo !== ''" style="font-size: 14px; color: #4468fb; margin-left: 10px">{{ processInfo }}</span>
             </el-col>
             <el-col :offset="13" :span="1">
@@ -46,6 +48,13 @@
     </el-col>
 
     <div class="compare-container">
+            <multi-app-select-dialog
+        :visible.sync="multiAppDialogVisible"
+        :app-options="appOptions"
+        :checked-keys.sync="checkedAppKeys"
+        @confirm="confirmMultiAppAction"
+      />
+
       <el-dialog
         title="对比结果"
         :visible.sync="dialogVisible"
@@ -54,87 +63,191 @@
         :before-close="dialogClose"
         style="overflow: auto"
       >
-        <template v-if="compareType=='Array'">
-          <el-row :gutter="10">
-            <el-col :span="24" align="center" class="publish-title">
-              <span>新增{{ addData.length }}</span>
-              <span>删除{{ delData.length }}</span>
-              <span>修改{{ editData.length }}</span>
-            </el-col>
-          </el-row>
+        <el-row :gutter="16">
+          <el-col v-if="isMultiAppCompare" :span="5">
+            <div class="multi-app-compare-title">AppId</div>
+            <el-menu
+              ref="multiAppCompareMenu"
+              :default-active="String(multiAppActiveAppId)"
+              class="multi-app-compare-menu"
+              @select="onMultiAppCompareSelect"
+            >
+              <el-menu-item v-for="appId in multiAppFlowAppIds" :key="appId" :index="String(appId)">
+                {{ getAppOptionLabel(appId) }}
+              </el-menu-item>
+            </el-menu>
+          </el-col>
 
-          <template v-if="addData.length > 0">
-            <el-row :gutter="10" class="publish-name">
-              <div>新增数量：{{ addData.length }}</div>
-            </el-row>
-            <el-card v-for="(item,idx) in addData" :key="idx" class="box-card">
-              <el-table
-                :data="item"
-              >
-                <el-table-column
-                  prop="key"
-                  label="名称"
-                  width="180"
-                >
-                  <template slot-scope="scope">
-                    {{ getAttrName(scope.row.key) }}
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  prop="oldVal"
-                  label="原始值"
-                >
-                  <template slot-scope="scope">
-                    <span v-html="scope.row.oldVal" />
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  prop="newVal"
-                  label="修改值"
-                >
-                  <template slot-scope="scope">
-                    <span v-html="scope.row.newVal" />
-                  </template>
-                </el-table-column>
-              </el-table>
-            </el-card>
-          </template>
+          <el-col :span="isMultiAppCompare ? 19 : 24">
+            <template v-if="currentCompareType=='Array'">
+              <el-row :gutter="10">
+                <el-col :span="24" align="center" class="publish-title">
+                  <span>新增{{ currentAddData.length }}</span>
+                  <span>删除{{ currentDelData.length }}</span>
+                  <span>修改{{ currentEditData.length }}</span>
+                </el-col>
+              </el-row>
 
-          <template v-if="editData.length > 0">
-            <el-row :gutter="10" class="publish-name">
-              <div>修改数量：{{ editData.length }}</div>
-            </el-row>
-            <el-card v-for="(edit,idx) in editData" :key="idx+'editData'" class="box-card">
+              <template v-if="currentAddData.length > 0">
+                <el-row :gutter="10" class="publish-name">
+                  <div>新增数量：{{ currentAddData.length }}</div>
+                </el-row>
+                <el-card v-for="(item,idx) in currentAddData" :key="idx" class="box-card">
+                  <el-table
+                    :data="item"
+                  >
+                    <el-table-column
+                      prop="key"
+                      label="名称"
+                      width="180"
+                    >
+                      <template slot-scope="scope">
+                        {{ getAttrName(scope.row.key) }}
+                      </template>
+                    </el-table-column>
+                    <el-table-column
+                      prop="oldVal"
+                      label="原始值"
+                    >
+                      <template slot-scope="scope">
+                        <span v-html="scope.row.oldVal" />
+                      </template>
+                    </el-table-column>
+                    <el-table-column
+                      prop="newVal"
+                      label="修改值"
+                    >
+                      <template slot-scope="scope">
+                        <span v-html="scope.row.newVal" />
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                </el-card>
+              </template>
+
+              <template v-if="currentEditData.length > 0">
+                <el-row :gutter="10" class="publish-name">
+                  <div>修改数量：{{ currentEditData.length }}</div>
+                </el-row>
+                <el-card v-for="(edit,idx) in currentEditData" :key="idx+'editData'" class="box-card">
+                  <div slot="header" class="clearfix">
+                    修改对象，
+                    <template v-for="(o,k) in edit.Head">
+                      {{ k }}：<span :key="k" style="color: blue">{{ o }}</span>
+                    </template>
+                  </div>
+                  <div class="text item">
+                    <el-table
+                      :data="edit.Rows"
+                    >
+                      <el-table-column
+                        prop="key"
+                        label="名称"
+                        width="180"
+                      >
+                        <template slot-scope="scope">
+                          {{ getAttrName(scope.row.key) }}
+                        </template>
+                      </el-table-column>
+                      <el-table-column
+                        prop="oldVal"
+                        label="原始值"
+                      >
+                        <template slot-scope="scope">
+                          <div v-html="scope.row.oldVal" />
+                        </template>
+                      </el-table-column>
+                      <el-table-column
+                        prop="newVal"
+                        label="修改值"
+                      >
+                        <template slot-scope="scope">
+                          <div v-html="scope.row.newVal" />
+                        </template>
+                      </el-table-column>
+                    </el-table>
+                  </div>
+                </el-card>
+              </template>
+
+              <template v-if="currentDelData.length > 0">
+                <el-row :gutter="10">
+                  <span :span="10">删除数量：{{ currentDelData.length }}</span>
+                </el-row>
+                <el-card v-for="(del,idx) in currentDelData" :key="'del' + idx" class="box-card">
+                  <el-table
+                    :data="del"
+                    style="width: 100%; max-height: 600px; overflow: auto"
+                  >
+                    <el-table-column
+                      prop="key"
+                      label="名称"
+                      width="180"
+                    >
+                      <template slot-scope="scope">
+                        {{ getAttrName(scope.row.key) }}
+                      </template>
+                    </el-table-column>
+                    <el-table-column
+                      prop="oldVal"
+                      label="原始值"
+                    >
+                      <template slot-scope="scope">
+                        <span v-html="scope.row.oldVal" />
+                      </template>
+                    </el-table-column>
+                    <el-table-column
+                      prop="newVal"
+                      label="修改值"
+                    >
+                      <template slot-scope="scope">
+                        <span v-html="scope.row.newVal" />
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                </el-card>
+              </template>
+            </template>
+
+            <el-card v-if="currentCompareType=='Object' || currentCompareType=='CustomizeConfig'" class="box-card">
               <div slot="header" class="clearfix">
-                修改对象，
-                <template v-for="(o,k) in edit.Head">
-                  {{ k }}：<span :key="k" style="color: blue">{{ o }}</span>
-                </template>
+                本次修改内容对比如下：
               </div>
-              <div class="text item">
+              <div v-if="currentObjectData.Result.length>0" class="text item">
                 <el-table
-                  :data="edit.Rows"
+                  :data="currentObjectData.Result"
+                  stripe
+                  border
+                  :row-style="{height:'10px'}"
+                  style="width: 100%"
                 >
                   <el-table-column
-                    prop="key"
+                    prop="Name"
                     label="名称"
-                    width="180"
+                    width="150"
                   >
                     <template slot-scope="scope">
                       {{ getAttrName(scope.row.key) }}
                     </template>
                   </el-table-column>
                   <el-table-column
-                    prop="oldVal"
-                    label="原始值"
+                    prop="Value"
+                    label="原值"
+                    min-width="200"
                   >
                     <template slot-scope="scope">
                       <div v-html="scope.row.oldVal" />
                     </template>
                   </el-table-column>
                   <el-table-column
-                    prop="newVal"
+                    width="70"
+                  >
+                    -->
+                  </el-table-column>
+                  <el-table-column
+                    prop="NewValue"
                     label="修改值"
+                    min-width="200"
                   >
                     <template slot-scope="scope">
                       <div v-html="scope.row.newVal" />
@@ -142,102 +255,16 @@
                   </el-table-column>
                 </el-table>
               </div>
+              <div v-else style="color: red;font-size: 14px;text-align: center">
+                本次发布与线上内容无任何差异！
+              </div>
             </el-card>
-          </template>
-
-          <template v-if="delData.length > 0">
-            <el-row :gutter="10">
-              <span :span="10">删除数量：{{ delData.length }}</span>
-            </el-row>
-            <el-card v-for="(del,idx) in delData" :key="'del' + idx" class="box-card">
-              <el-table
-                :data="del"
-                style="width: 100%; max-height: 600px; overflow: auto"
-              >
-                <el-table-column
-                  prop="key"
-                  label="名称"
-                  width="180"
-                >
-                  <template slot-scope="scope">
-                    {{ getAttrName(scope.row.key) }}
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  prop="oldVal"
-                  label="原始值"
-                >
-                  <template slot-scope="scope">
-                    <span v-html="scope.row.oldVal" />
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  prop="newVal"
-                  label="修改值"
-                >
-                  <template slot-scope="scope">
-                    <span v-html="scope.row.newVal" />
-                  </template>
-                </el-table-column>
-              </el-table>
-            </el-card>
-          </template>
-        </template>
-
-        <el-card v-if="compareType=='Object' || compareType=='CustomizeConfig'" class="box-card">
-          <div slot="header" class="clearfix">
-            本次修改内容对比如下：
-          </div>
-          <div v-if="ObjectData.Result.length>0" class="text item">
-            <el-table
-              :data="ObjectData.Result"
-              stripe
-              border
-              :row-style="{height:'10px'}"
-              style="width: 100%"
-            >
-              <el-table-column
-                prop="Name"
-                label="名称"
-                width="150"
-              >
-                <template slot-scope="scope">
-                  {{ getAttrName(scope.row.key) }}
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="Value"
-                label="原值"
-                min-width="200"
-              >
-                <template slot-scope="scope">
-                  <div v-html="scope.row.oldVal" />
-                </template>
-              </el-table-column>
-              <el-table-column
-                width="70"
-              >
-                -->
-              </el-table-column>
-              <el-table-column
-                prop="NewValue"
-                label="修改值"
-                min-width="200"
-              >
-                <template slot-scope="scope">
-                  <div v-html="scope.row.newVal" />
-                </template>
-              </el-table-column>
-            </el-table>
-          </div>
-          <div v-else style="color: red;font-size: 14px;text-align: center">
-            本次发布与线上内容无任何差异！
-          </div>
-        </el-card>
+          </el-col>
+        </el-row>
 
         <span v-if="!diffView" slot="footer" class="dialog-footer">
-          <el-button size="mini" @click="dialogClose()">取 消</el-button>
-          <el-button type="primary" size="mini" @click="next">确 定</el-button>
+          <el-button size="mini" :disabled="multiAppPublishing" @click="dialogClose()">取 消</el-button>
+          <el-button type="primary" size="mini" :disabled="multiAppPublishing" :loading="multiAppPublishing" @click="next">确 定</el-button>
         </span>
 
       </el-dialog>
@@ -255,11 +282,13 @@ import store from '@/store'
 import request from '@/utils/request'
 import { IsMars } from '@/utils/env'
 import { getCustomize, updateCustomize } from "@/api/custome_configV2";
+import MultiAppSelectDialog from "@/components/Publish/MultiAppSelectDialog";
 
 const jsonDiff = require('diff')
 
 export default {
   name: 'Publish',
+  components: { MultiAppSelectDialog },
   props: {
     primaryKey: { // 如果是数组，用于标识记录的主键
       type: String,
@@ -343,7 +372,17 @@ export default {
       ObjectData: { Result: [] },
       compareRets: [],
       env: 'test',
-      stepNames: ['同步预发布', '已提交审核', '已审核待发布']
+      stepNames: ['同步预发布', '已提交审核', '已审核待发布'],
+      appOptions: [],
+      multiAppDialogVisible: false,
+      appTreeData: [],
+      checkedAppKeys: [],
+      selectAllNodeKey: 'all',
+      multiAppAction: '',
+      multiAppFlowAppIds: [],
+      multiAppDiffResults: {},
+      multiAppActiveAppId: null,
+      multiAppPublishing: false
     }
   },
   computed: {
@@ -384,6 +423,12 @@ export default {
         return false
       }
     },
+    showMultiTestBtn() {
+      return this.$store.getters.version === 'V2' && this.showTestBtn
+    },
+    showMultiProBtn() {
+      return this.$store.getters.version === 'V2' && this.showProBtn
+    },
     showCloseBtn() {
       return this.isPublish || this.isTestBtn
     },
@@ -396,12 +441,39 @@ export default {
       } else {
         return ''
       }
+    },
+    isMultiAppCompare() {
+      return this.multiAppFlowAppIds.length > 0
+    },
+    currentMultiAppResult() {
+      if (!this.isMultiAppCompare || !this.multiAppActiveAppId) {
+        return null
+      }
+      return this.multiAppDiffResults[this.multiAppActiveAppId] || null
+    },
+    currentCompareType() {
+      return this.currentMultiAppResult ? this.currentMultiAppResult.compareType : this.compareType
+    },
+    currentAddData() {
+      return this.currentMultiAppResult ? (this.currentMultiAppResult.addData || []) : this.addData
+    },
+    currentDelData() {
+      return this.currentMultiAppResult ? (this.currentMultiAppResult.delData || []) : this.delData
+    },
+    currentEditData() {
+      return this.currentMultiAppResult ? (this.currentMultiAppResult.editData || []) : this.editData
+    },
+    currentObjectData() {
+      return this.currentMultiAppResult ? (this.currentMultiAppResult.objectData || { Result: [] }) : this.ObjectData
     }
   },
   mounted() {
     this.env = store.getters.env || this.env
     this.resetData()
     this.checkProcessing()
+    if (this.$store.getters.version === 'V2') {
+      this.getAppInfos()
+    }
     if (!IsMars()) {
       console.log('==', IsMars)
       this.getLarkPage()
@@ -437,6 +509,13 @@ export default {
       }
     },
     next() {
+      if (this.multiAppPublishing) {
+        return
+      }
+      if (this.isMultiAppCompare) {
+        this.nextMultiApp()
+        return
+      }
       console.log('next this.opType:', this.opType)
       const $this = this
       if (this.opType === PUBLISH_STEPS.PUBLISH_STEP_PRO) {
@@ -455,6 +534,12 @@ export default {
               $this.$message.success('发布成功')
               $this.onStepChange($this.stepActive, $this.keyId, $this.addData, $this.delData, $this.editData)
               $this.sendLark()
+            } else {
+              $this.$message.error('发布失败')
+              $this.sendLark({
+                failed: true,
+                failedMessage: response.RetMsg || response.Message || '发布失败'
+              })
             }
           })
         })
@@ -470,6 +555,12 @@ export default {
             $this.onStepChange($this.stepActive, $this.keyId, $this.addData, $this.delData, $this.editData)
             $this.sendLark()
             $this.checkProcessing()
+          } else {
+            $this.$message.error('发布失败')
+            $this.sendLark({
+              failed: true,
+              failedMessage: response.RetMsg || response.Message || '发布失败'
+            })
           }
         })
       }
@@ -477,42 +568,120 @@ export default {
       // 下一步
       this.dialogClose(false)
     },
-    sendLark() {
-      if (!this.lark) {
+    async nextMultiApp() {
+      if (this.multiAppPublishing) {
         return
+      }
+      if (this.opType === PUBLISH_STEPS.PUBLISH_STEP_PRO) {
+        this.$confirm('即将发布外网，请确认：<br/><span style="color:red">1、配置中是否有新的字段添加；' +
+          '<br/>2、发布内容是有关联服务的修改；<br/>3、发布内容是否可能影响到付费；</span><br/>若是，请拉群确认发布步骤后再行发布。<br/><br/>' +
+          '确认是否继续?', '提示', {
+          dangerouslyUseHTMLString: true,
+          closeOnClickModal: false,
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(async() => {
+          await this.submitMultiAppPublish()
+        })
+      } else {
+        await this.submitMultiAppPublish()
+      }
+    },
+    async submitMultiAppPublish() {
+      this.multiAppPublishing = true
+      let attrInfo = ''
+      if (this.opType === PUBLISH_STEPS.PUBLISH_STEP_REVIEWING && this.attrNames) {
+        attrInfo = JSON.stringify(this.attrNames)
+      }
+
+      try {
+        const successAppIds = []
+        for (const appId of this.multiAppFlowAppIds) {
+          const compareResult = this.multiAppDiffResults[appId]
+          const summary = compareResult ? this.getSummaryInfoFromResult(compareResult) : this.getSummaryInfo()
+          const response = await submitPublish(this.opType, this.keyId, summary, this.envEmpty, attrInfo, appId)
+          if (response.RetCode !== 0) {
+            this.$message.error(`App-${appId} 发布失败`)
+            await this.sendLark({
+              appId: appId,
+              compareResult: compareResult,
+              failed: true,
+              failedMessage: response.RetMsg || response.Message || '发布失败'
+            })
+            continue
+          }
+          successAppIds.push(appId)
+        }
+
+        if (successAppIds.length > 0) {
+          this.stepActive++
+          this.$message.success('发布成功')
+          this.onStepChange(this.stepActive, this.keyId, this.addData, this.delData, this.editData)
+          await this.sendLark({
+            appIds: successAppIds,
+            compareResult: this.multiAppDiffResults[successAppIds[0]]
+          })
+          this.checkProcessing()
+          this.dialogClose(false)
+
+          if (this.isToTest) {
+            this.clearMultiAppFlow()
+          }
+        }
+      } finally {
+        this.multiAppPublishing = false
+      }
+    },
+    sendLark(options = {}) {
+      if (!this.lark) {
+        return Promise.resolve()
       }
       let warn = ''
       // 同步到测试
       if (this.env === 'test') {
-        warn = 'WarningJustForTest'
-        //warn = 'WarningDev'
+        warn = 'WarningDev'
         console.log('开发阶段只通知开发服')
-        return
+        return Promise.resolve()
       }
       // 同步到正式
       if (this.env === 'pro' && ![PUBLISH_STEPS.PUBLISH_STEP_REVIEWED, PUBLISH_STEPS.PUBLISH_STEP_PRO].includes(this.opType)) {
         console.log('生产环境只在审核和同步正式发送通知')
-        return
+        return Promise.resolve()
       }
       const $this = this
-      getInfo(this.$store.getters.token).then(function(response) {
+      return getInfo(this.$store.getters.token).then(function(response) {
         if (response.RetCode === 0) {
           let step = ''
+          if (options.failed) {
+            step = '【发布失败】'
+          }
           if ($this.env === 'pro') {
-            if ($this.opType === PUBLISH_STEPS.PUBLISH_STEP_REVIEWED) { step = '【待审核】' }
-            if ($this.opType === PUBLISH_STEPS.PUBLISH_STEP_PRO) { step = '【已发布】' }
+            if (!options.failed && $this.opType === PUBLISH_STEPS.PUBLISH_STEP_REVIEWED) { step = '【待审核】' }
+            if (!options.failed && $this.opType === PUBLISH_STEPS.PUBLISH_STEP_PRO) { step = '【已发布】' }
           }
           const nick = response.Data.nick
           const routes = $this.getRoutesName()
-          const content = $this.larkContent.length > 0 ? $this.larkContent : $this.makeContent($this.keyId, $this.addData, $this.delData, $this.editData)
+          const compareResult = options.compareResult || {}
+          const hasCompareResult = !!options.compareResult
+          const content = hasCompareResult
+            ? (compareResult.larkContent && compareResult.larkContent.length > 0
+              ? compareResult.larkContent
+              : $this.makeContent($this.keyId, compareResult.addData || [], compareResult.delData || [], compareResult.editData || []))
+            : ($this.larkContent.length > 0
+              ? $this.larkContent
+              : $this.makeContent($this.keyId, $this.addData, $this.delData, $this.editData))
           let at = ''
           if ($this.env === 'pro') {
             // at += '<at user_id="ou_dacc382512738a049ab4f32d6db9f82e">xiong</at>'
             at = '<at user_id="ou_2b283f529fc901b97b443b946f692efd">SamYe</at>\r\n'
             // at += '<at user_id="ou_932b1ed1e7064b512199b77ce83236c1">高勋</at>'
           }
-          const text = `${step}【${nick}】发布配置：${routes} 🚩\r\n${at}` + content
-          sendLark(text, warn, $this.env).then(response => {
+          const appIds = options.appIds || (options.appId ? [options.appId] : [$this.appId])
+          const appIdInfo = appIds.length > 0 ? `【App:${appIds.join(',')}】 ` : ''
+          const failedMessage = options.failed ? `失败原因：${options.failedMessage || '发布失败'}\r\n` : ''
+          const text = `${step}【${nick}】发布配置：${routes} ${appIdInfo}🚩\r\n${at}${failedMessage}` + content
+          return sendLark(text, warn, $this.env).then(response => {
             if (response.RetCode === 0) {
               console.log('wanring success')
             }
@@ -586,6 +755,7 @@ export default {
       })
     },
     publishBtn() {
+      this.clearMultiAppFlow()
       if (!this.check()) {
         this.$message.error('检测不通过')
         return
@@ -636,6 +806,7 @@ export default {
       this.getDiff()
     },
     toTest() { // 发布到测试
+      this.clearMultiAppFlow()
       console.log('test')
       if (!this.check()) {
         this.$message.error('检测不通过')
@@ -729,8 +900,13 @@ export default {
         return
       }
 
+      if (this.isMultiAppCompare) {
+        this.rollbackMultiApps()
+        return
+      }
+
       // 1.提交
-      rollback(this.keyId, this.envEmpty).then(response => {
+      rollback(this.keyId, this.envEmpty, this.appId).then(response => {
         if (response.RetCode !== 0) {
           this.$message.error('回滚失败：' + response.Data)
           return
@@ -752,15 +928,36 @@ export default {
         this.checkProcessing()
       })
     },
+    async rollbackMultiApps() {
+      for (const appId of this.multiAppFlowAppIds) {
+        const response = await rollback(this.keyId, this.envEmpty, appId)
+        if (response.RetCode !== 0) {
+          this.$message.error('回滚失败：' + response.Data)
+          return
+        }
+      }
+      this.$message.success('回滚成功')
+      if ([PUBLISH_STEPS.PUBLISH_STEP_REVIEWING,
+        PUBLISH_STEPS.PUBLISH_STEP_REVIEWED,
+        PUBLISH_STEPS.PUBLISH_STEP_PRO].includes(this.opType)) {
+        this.opType = PUBLISH_STEPS.PUBLISH_STEP_PRE
+      } else if (this.opType === PUBLISH_STEPS.PUBLISH_STEP_PRE) {
+        this.opType = PUBLISH_STEPS.PUBLISH_STEP_TEST
+      }
+      this.stepActive = this.opType - 1
+      this.checkProcessing()
+    },
     closeBtn() {
       this.isPublish = false
       this.isProBtn = true
+      this.clearMultiAppFlow()
     },
     checkProcessing() { // 检测版本是否在处理中
       if (this.keyId === '') {
         return
       }
-      getView(this.keyId, this.envEmpty, this.appId).then(response => {
+      const appId = this.isMultiAppCompare ? this.multiAppFlowAppIds[0] : this.appId
+      getView(this.keyId, this.envEmpty, appId).then(response => {
         console.log('checkProcessing: ', this.keyId, this.envEmpty, this.appId, response)
         if (response.RetCode !== 0) {
           return
@@ -770,6 +967,10 @@ export default {
       })
     },
     getDiff(isPublishing = false) {
+      if (this.isMultiAppCompare) {
+        this.getMultiAppDiff(isPublishing)
+        return
+      }
       const $this = this
       this.init()
       getDiff(this.opType, this.keyId, this.envEmpty, this.appId).then(response => {
@@ -848,6 +1049,288 @@ export default {
           console.log('onCompare err:', e)
         }
       })
+    },
+    async getMultiAppDiff(isPublishing = false) {
+      const results = {}
+      for (const appId of this.multiAppFlowAppIds) {
+        const response = await getDiff(this.opType, this.keyId, this.envEmpty, appId)
+        if (response.RetCode !== 0) {
+          if (isPublishing) {
+            this.opType -= 1
+          }
+          this.$message.error(`App-${appId} 对比失败`)
+          return
+        }
+        results[appId] = this.buildCompareResult(response)
+      }
+
+      this.multiAppDiffResults = results
+      this.multiAppActiveAppId = this.multiAppFlowAppIds[0]
+      this.applyCompareResult(results[this.multiAppActiveAppId])
+      this.dialogShow()
+    },
+    buildCompareResult(response) {
+      this.init()
+      this.ObjectData = { Result: [] }
+
+      if (this.diffView && response.Data.AttrInfo !== '' && response.Data.AttrInfo !== 'undefined') {
+        this.attrNames = JSON.parse(response.Data.AttrInfo)
+      }
+
+      let preVal = null
+      let proVal = null
+      if (response.Data.Pre) {
+        try {
+          preVal = JSON.parse(response.Data.Pre)
+        } catch (e) {
+          console.log('getDiff preVal parse error:', e, ' preVal:', preVal)
+        }
+      }
+      if (response.Data.Publish) {
+        try {
+          proVal = JSON.parse(response.Data.Publish)
+        } catch (e) {
+          console.log('getDiff proVal parse error:', e, ' proVal:', proVal)
+        }
+      }
+
+      let compareType = this.compareType
+      if (!compareType || compareType === '') {
+        if ($libType.IsArray(preVal)) {
+          compareType = 'Array'
+        } else if ($libType.IsObject(preVal)) {
+          compareType = 'Object'
+        }
+      }
+
+      switch (compareType) {
+        case 'Object':
+          preVal = preVal || {}
+          proVal = proVal || {}
+          this.compareRets = []
+          this.compareObject(proVal, preVal)
+          this.ObjectData.Result = this.compareRets
+          break
+        case 'CustomizeConfig':
+          if (preVal && preVal.Data) {
+            preVal = JSON.parse(preVal.Data)
+          } else {
+            preVal = {}
+          }
+          if (proVal && proVal.Data) {
+            proVal = JSON.parse(proVal.Data)
+          } else {
+            proVal = {}
+          }
+          this.compareRets = []
+          this.compareObject(proVal, preVal)
+          this.ObjectData.Result = this.compareRets
+          break
+        default:
+          preVal = preVal || []
+          proVal = proVal || []
+          this.compare(preVal, proVal, false)
+      }
+
+      let larkContent = ''
+      try {
+        larkContent = this.onCompare(preVal, proVal)
+      } catch (e) {
+        console.log('onCompare err:', e)
+      }
+
+      return {
+        compareType: compareType,
+        addData: JSON.parse(JSON.stringify(this.addData)),
+        delData: JSON.parse(JSON.stringify(this.delData)),
+        editData: JSON.parse(JSON.stringify(this.editData)),
+        objectData: JSON.parse(JSON.stringify(this.ObjectData)),
+        larkContent: larkContent
+      }
+    },
+    applyCompareResult(result) {
+      if (!result) {
+        return
+      }
+      this.compareType = result.compareType || this.compareType
+      this.addData = result.addData || []
+      this.delData = result.delData || []
+      this.editData = result.editData || []
+      this.ObjectData = result.objectData || { Result: [] }
+      this.larkContent = result.larkContent || ''
+    },
+    getSummaryInfoFromResult(result) {
+      let summaryInfo = ''
+      if (result.addData && result.addData.length !== 0) {
+        summaryInfo += '新增' + result.addData.length + '个配置 \n'
+      }
+      if (result.editData && result.editData.length !== 0) {
+        for (let i = 0; i < result.editData.length; i++) {
+          summaryInfo += '修改配置项：'
+          if (result.editData[i].Head) {
+            for (const o in result.editData[i].Head) {
+              summaryInfo += o + ':' + result.editData[i].Head[o]
+            }
+          }
+          summaryInfo += '\n'
+        }
+      }
+      if (result.delData && result.delData.length !== 0) {
+        summaryInfo += '删除' + result.delData.length + '个配置 \n'
+      }
+      if (result.objectData && result.objectData.Result && result.objectData.Result.length > 0) {
+        summaryInfo += '修改配置项：'
+        for (let i = 0; i < result.objectData.Result.length; i++) {
+          summaryInfo += this.getAttrName(result.objectData.Result[i].key) + '|'
+        }
+        summaryInfo += '\n'
+      }
+      if (summaryInfo === '') {
+        summaryInfo = '发布内容与线上无差异'
+      }
+      return summaryInfo
+    },
+    getAppInfos() {
+      request({
+        url: '/thirdparties/all',
+        method: 'get',
+        data: {}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.appOptions = response.Data.filter(item => item.Status === 2).map(item => ({
+            value: item.ID,
+            label: item.ID + '-' + item.Account
+          }))
+        }
+      })
+    },
+    prepareAppTree() {
+      this.appTreeData = [
+        {
+          label: '全选',
+          value: this.selectAllNodeKey,
+          children: this.appOptions.map(app => ({
+            label: app.label,
+            value: app.value
+          }))
+        }
+      ]
+      this.$set(this, 'checkedAppKeys', [])
+    },
+    openMultiAppDialog(action) {
+      if (!this.check()) {
+        this.$message.error('检测不通过')
+        return
+      }
+      this.multiAppAction = action
+      this.prepareAppTree()
+      this.multiAppDialogVisible = true
+    },
+    onCheckChange(node, checked) {
+      if (node.value === this.selectAllNodeKey) {
+        if (checked) {
+          this.checkedAppKeys = this.appOptions.map(app => app.value)
+        } else {
+          this.checkedAppKeys = []
+        }
+      } else {
+        if (checked) {
+          if (this.checkedAppKeys.indexOf(node.value) === -1) {
+            this.checkedAppKeys.push(node.value)
+          }
+        } else {
+          this.checkedAppKeys = this.checkedAppKeys.filter(item => item !== node.value)
+        }
+      }
+    },
+    async confirmMultiAppAction() {
+      const appIds = this.checkedAppKeys.filter(key => key !== this.selectAllNodeKey)
+      if (appIds.length === 0) {
+        this.$message.warning('请至少选择一个应用')
+        return
+      }
+
+      this.multiAppFlowAppIds = appIds
+      this.multiAppDialogVisible = false
+
+      if (this.multiAppAction === 'test') {
+        this.isToTest = true
+        this.opType = PUBLISH_STEPS.PUBLISH_STEP_TEST
+        this.getDiff()
+        return
+      }
+
+      await this.enterMultiAppPublishFlow()
+    },
+    async enterMultiAppPublishFlow() {
+      const viewResults = []
+      for (const appId of this.multiAppFlowAppIds) {
+        const response = await getView(this.keyId, this.envEmpty, appId)
+        if (response.RetCode !== 0) {
+          this.$message.error(`App-${appId} 状态获取失败`)
+          this.clearMultiAppFlow()
+          return
+        }
+        viewResults.push({
+          appId: appId,
+          data: response.Data
+        })
+      }
+
+      const first = viewResults[0].data
+      const isSameStep = viewResults.every(item => item.data.Step === first.Step)
+      const isSameNeedView = viewResults.every(item => item.data.NeedView === first.NeedView)
+      const isSameOwner = viewResults.every(item => item.data.IsMy === first.IsMy && item.data.CurUser === first.CurUser)
+      if (!isSameStep || !isSameNeedView || !isSameOwner) {
+        this.$message.error('所选App发布流程状态不一致，请分别处理')
+        this.clearMultiAppFlow()
+        return
+      }
+
+      this.needReview = first.NeedView
+      this.isMy = first.IsMy
+      this.currentUser = first.CurUser
+      if (first.PreTime > 0) {
+        this.preTime = $libDate.FormateSecondStr(first.PreTime, 2)
+      } else {
+        this.preTime = '-'
+      }
+
+      this.opType = first.Step
+      const validType = [
+        PUBLISH_STEPS.PUBLISH_STEP_TEST,
+        PUBLISH_STEPS.PUBLISH_STEP_PRE,
+        PUBLISH_STEPS.PUBLISH_STEP_REVIEWING,
+        PUBLISH_STEPS.PUBLISH_STEP_REVIEWED,
+        PUBLISH_STEPS.PUBLISH_STEP_PRO
+      ]
+      if (validType.indexOf(this.opType) === -1) {
+        this.opType = PUBLISH_STEPS.PUBLISH_STEP_TEST
+      }
+
+      this.stepActive = this.opType - 1
+      this.isPublish = true
+      this.isTestBtn = false
+      this.isToTest = false
+      this.isProBtn = false
+    },
+    onMultiAppCompareSelect(appId) {
+      this.multiAppActiveAppId = parseInt(appId)
+      this.applyCompareResult(this.multiAppDiffResults[this.multiAppActiveAppId])
+    },
+    getAppOptionLabel(appId) {
+      const targetAppId = parseInt(appId)
+      const target = this.appOptions.find(item => item.value === targetAppId)
+      return target ? target.label : String(appId)
+    },
+    clearMultiAppFlow() {
+      this.multiAppAction = ''
+      this.multiAppFlowAppIds = []
+      this.multiAppDiffResults = {}
+      this.multiAppActiveAppId = null
+      this.multiAppPublishing = false
+      this.multiAppDialogVisible = false
+      this.checkedAppKeys = []
     },
     compareOBJValue(oldVal, newVal, sKey) {
       let oldObject, newObject
@@ -1027,9 +1510,11 @@ export default {
     // preVal 准备发布数据
     // proVal 线上现有的数据
     // 返回false，没有任何变化，但是还是可以继续发布
-    compare(preVal, proVal) {
+    compare(preVal, proVal, showDialog = true) {
       if (!preVal && !proVal) {
-        this.dialogShow()
+        if (showDialog) {
+          this.dialogShow()
+        }
         return false
       }
       if (preVal instanceof Array && proVal instanceof Array) {
@@ -1093,7 +1578,9 @@ export default {
         if (proVal.length === 0) {
           // 处理完成之后
           // todo...
-          this.dialogShow()
+          if (showDialog) {
+            this.dialogShow()
+          }
           return
         }
         // 判断线上还有没有剩余数据没有处理
@@ -1113,7 +1600,9 @@ export default {
 
         // 处理完成
         // todo....
-        this.dialogShow()
+        if (showDialog) {
+          this.dialogShow()
+        }
       } else {
         const oldVal = this.tranString(proVal)
         const newVal = this.tranString(preVal)
@@ -1148,7 +1637,9 @@ export default {
 
         this.addRecord('edit', row)
 
-        this.dialogShow()
+        if (showDialog) {
+          this.dialogShow()
+        }
       }
     }
   }
@@ -1167,4 +1658,17 @@ export default {
 .publish-name {
   font-size: 14px;
 }
+
+.multi-app-compare-title {
+  margin-bottom: 12px;
+  color: #606266;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.multi-app-compare-menu {
+  border-right: 1px solid #ebeef5;
+  min-height: 320px;
+}
 </style>
+
