@@ -2418,18 +2418,36 @@ export default {
         }
       })
     },
-    async confirmMultiAppCopy(appIds) {
-      const originalCreateCfg = this.bCreateCfg
-      const originalAppId = this.planForm.AppId
-      this.bCreateCfg = true
-      for (const appId of appIds) {
-        this.copyTargetAppId = appId
-        await this.createCfg()
-        Message.success(`应用 ${appId} 配置复制成功！`)
+    buildCopyPayload(appId) {
+      const val = JSON.parse(JSON.stringify(this.showItem.Plans))
+      const items = this.proceedUpdateData(val)
+      const data = {
+        SlotsType: this.showItem.SlotsType,
+        Plans: items
       }
-      this.copyTargetAppId = null
-      this.planForm.AppId = originalAppId
-      this.bCreateCfg = originalCreateCfg
+      const name = this.getGameName(this.queryGid) + '方案配置'
+      const payload = JSON.parse(JSON.stringify(this.planForm || {}))
+      payload.AppId = appId
+      payload.RedisSubkey = payload.RedisSubkey || this.getSlotsCustomScriptKey()
+      payload.Data = JSON.stringify(data)
+      payload.Name = payload.Name || name
+      payload.Description = payload.Description || name
+      payload.Type = 1
+      return payload
+    },
+    async confirmMultiAppCopy(appIds) {
+      try {
+        for (const appId of appIds) {
+          const response = await createCustomize(this.buildCopyPayload(appId))
+          if (response.RetCode !== 0) {
+            Message.error(`应用 ${appId} 配置复制失败！`)
+            return
+          }
+          Message.success(`应用 ${appId} 配置复制成功！`)
+        }
+      } finally {
+        this.copyTargetAppId = null
+      }
     },
     async confirmMultiAppSave() {
       // 选中的 App ID（排除全选节点 key）
@@ -2439,20 +2457,23 @@ export default {
         return
       }
 
-      if (this.multiAppAction === 'copy') {
-        await this.confirmMultiAppCopy(appIds)
-      } else if (this.multiAppAction === 'copyPlan') {
-        await this.confirmMultiAppPlanCopy(appIds)
-      } else if (this.multiAppAction === 'createScript') {
-        await this.createVersionForApps(appIds)
-      } else if (this.multiAppAction === 'viewScript') {
-        await this.viewVersionForApps(appIds)
-      } else {
-        await this.saveDifferenceToOtherApps(appIds, this.diffData)
+      try {
+        if (this.multiAppAction === 'copy') {
+          await this.confirmMultiAppCopy(appIds)
+        } else if (this.multiAppAction === 'copyPlan') {
+          await this.confirmMultiAppPlanCopy(appIds)
+        } else if (this.multiAppAction === 'createScript') {
+          await this.createVersionForApps(appIds)
+        } else if (this.multiAppAction === 'viewScript') {
+          await this.viewVersionForApps(appIds)
+        } else {
+          await this.saveDifferenceToOtherApps(appIds, this.diffData)
+        }
+      } finally {
+        this.multiAppDialogVisible = false
+        this.multiAppAction = 'save'
+        this.pendingCopyPlanRow = null
       }
-      this.multiAppDialogVisible = false
-      this.multiAppAction = 'save'
-      this.pendingCopyPlanRow = null
     },
     // 处理全选或取消全选
     onCheckChange(node, checked) {

@@ -1202,18 +1202,30 @@ export default {
       ]
       this.$set(this, 'checkedAppKeys', [])
     },
+    buildCopyPayload(appId) {
+      const payload = JSON.parse(JSON.stringify(this.form || {}))
+      const name = this.getGameName(this.queryGid) + '大奖配置'
+      payload.AppId = appId
+      payload.RedisSubkey = payload.RedisSubkey || this.getSlotsBigPrizeConfigKey()
+      payload.Data = JSON.stringify(this.getPostData())
+      payload.Name = payload.Name || name
+      payload.Description = payload.Description || name
+      payload.Type = 1
+      return payload
+    },
     async confirmMultiAppCopy(appIds) {
-      const originalCreateCfg = this.bCreateCfg
-      const originalAppId = this.form.AppId
-      this.bCreateCfg = true
-      for (const appId of appIds) {
-        this.copyTargetAppId = appId
-        await this.setData()
-        Message.success(`应用 ${appId} 配置复制成功！`)
+      try {
+        for (const appId of appIds) {
+          const response = await createCustomize(this.buildCopyPayload(appId))
+          if (response.RetCode !== 0) {
+            Message.error(`应用 ${appId} 配置复制失败！`)
+            return
+          }
+          Message.success(`应用 ${appId} 配置复制成功！`)
+        }
+      } finally {
+        this.copyTargetAppId = null
       }
-      this.copyTargetAppId = null
-      this.form.AppId = originalAppId
-      this.bCreateCfg = originalCreateCfg
     },
     async confirmMultiAppSave() {
       // 选中的 App ID（排除全选节点 key）
@@ -1223,13 +1235,16 @@ export default {
         return
       }
 
-      if (this.multiAppAction === 'copy') {
-        await this.confirmMultiAppCopy(appIds)
-      } else {
-        await this.saveDifferenceToOtherApps(appIds, this.diffData)
+      try {
+        if (this.multiAppAction === 'copy') {
+          await this.confirmMultiAppCopy(appIds)
+        } else {
+          await this.saveDifferenceToOtherApps(appIds, this.diffData)
+        }
+      } finally {
+        this.multiAppDialogVisible = false
+        this.multiAppAction = 'save'
       }
-      this.multiAppDialogVisible = false
-      this.multiAppAction = 'save'
     },
     // 处理全选或取消全选
     onCheckChange(node, checked) {

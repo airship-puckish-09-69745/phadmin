@@ -1,5 +1,5 @@
 import { Message } from 'element-ui'
-import { getCustomize, updateCustomize } from '@/api/custome_configV2'
+import { createCustomize, getCustomize, updateCustomize } from '@/api/custome_configV2'
 import { handleScriptV3BetListCreate } from './scriptV3BetListCreate'
 
 function cloneData(data) {
@@ -7,6 +7,14 @@ function cloneData(data) {
     return data
   }
   return JSON.parse(JSON.stringify(data))
+}
+
+function buildCustomizePayload(form, data, appId) {
+  const payload = cloneData(form || {}) || {}
+  payload.AppId = appId
+  payload.Data = JSON.stringify(data)
+  payload.Type = payload.Type || 1
+  return payload
 }
 
 export default {
@@ -83,7 +91,7 @@ export default {
       const original = originalData || {}
       const diff = {}
       for (const key in modifiedData) {
-        if (!modifiedData.hasOwnProperty(key)) continue
+        if (!Object.prototype.hasOwnProperty.call(modifiedData, key)) continue
         if (Array.isArray(modifiedData[key])) {
           if (JSON.stringify(original[key]) !== JSON.stringify(modifiedData[key])) {
             diff[key] = cloneData(modifiedData[key])
@@ -125,7 +133,7 @@ export default {
         return cloneData(diffData)
       }
       for (const key in diffData) {
-        if (diffData.hasOwnProperty(key)) {
+        if (Object.prototype.hasOwnProperty.call(diffData, key)) {
           if (Array.isArray(diffData[key])) {
             currentConfig[key] = cloneData(diffData[key])
           } else if (typeof diffData[key] === 'object' && diffData[key] !== null) {
@@ -150,24 +158,36 @@ export default {
       ]
       this.$set(this, 'checkedAppKeys', [])
     },
-    async confirmMultiAppCopy(appIds) {
-      const originalCreateCfg = this.createCfg
-      const originalBaseAppId = this.baseForm.AppId
-      const originalRuleAppId = this.ruleForm.AppId
-      const originalExtAppId = this.extForm.AppId
-      this.createCfg = true
-      for (const appId of appIds) {
-        this.copyTargetAppId = appId
-        await this.saveBaseCfg()
-        await this.saveRuleCfg()
-        await this.saveExtCfg()
-        Message.success(`应用 ${appId} 配置复制成功！`)
+    buildMultiAppCopyPayloads(appId) {
+      if (this.baseCfg.Bets) {
+        const bets = this.baseCfg.Bets.split(',')
+        this.baseCfg.BetList = []
+        for (const i in bets) {
+          this.baseCfg.BetList.push(parseFloat(bets[i]) * 1000)
+        }
       }
-      this.copyTargetAppId = null
-      this.baseForm.AppId = originalBaseAppId
-      this.ruleForm.AppId = originalRuleAppId
-      this.extForm.AppId = originalExtAppId
-      this.createCfg = originalCreateCfg
+      return [
+        buildCustomizePayload(this.baseForm, this.baseCfg, appId),
+        buildCustomizePayload(this.ruleForm, this.ruleCfg, appId),
+        buildCustomizePayload(this.extForm, this.extCfg, appId)
+      ]
+    },
+    async confirmMultiAppCopy(appIds) {
+      try {
+        for (const appId of appIds) {
+          const payloads = this.buildMultiAppCopyPayloads(appId)
+          for (const payload of payloads) {
+            const response = await createCustomize(payload)
+            if (response.RetCode !== 0) {
+              Message.error(`应用 ${appId} 配置复制失败！`)
+              return
+            }
+          }
+          Message.success(`应用 ${appId} 配置复制成功！`)
+        }
+      } finally {
+        this.copyTargetAppId = null
+      }
     },
     async confirmMultiAppSave(appIds = this.checkedAppKeys) {
       const checkedAppIds = appIds.filter(key => key !== this.selectAllNodeKey)
@@ -175,16 +195,19 @@ export default {
         Message.warning('请至少选择一个应用！')
         return
       }
-      if (this.multiAppAction === 'copy') {
-        await this.confirmMultiAppCopy(checkedAppIds)
-      } else {
-        await this.saveDifferenceToOtherApps(checkedAppIds, this.diffData)
-        if (this.multiAppSubKey === this.subKey && this.pendingScriptV3BetListBaseCfg) {
-          await handleScriptV3BetListCreate(this, { ...this.pendingScriptV3BetListBaseCfg, subKey: this.subKey, appIds: checkedAppIds })
+      try {
+        if (this.multiAppAction === 'copy') {
+          await this.confirmMultiAppCopy(checkedAppIds)
+        } else {
+          await this.saveDifferenceToOtherApps(checkedAppIds, this.diffData)
+          if (this.multiAppSubKey === this.subKey && this.pendingScriptV3BetListBaseCfg) {
+            await handleScriptV3BetListCreate(this, { ...this.pendingScriptV3BetListBaseCfg, subKey: this.subKey, appIds: checkedAppIds })
+          }
         }
+      } finally {
+        this.multiAppDialogVisible = false
+        this.multiAppAction = 'save'
       }
-      this.multiAppDialogVisible = false
-      this.multiAppAction = 'save'
     },
     onCheckChange(node, checked) {
       if (node.value === this.selectAllNodeKey) {
