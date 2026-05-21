@@ -1,7 +1,7 @@
 <template>
   <div class="page-container" style="padding: 10px">
     <el-row>
-      <publish primary-key="id" key-id="PokerPlusActivity" :env-empty="false" :check="configCheck" compare-type="Array" :make-content="makeContent" :attr-names="AttrNames" :head-attrs="['id', 'activityName']" />
+      <publish primary-key="id" key-id="AnniversaryActivity" :env-empty="false" :check="configCheck" compare-type="Array" :make-content="makeContent" :attr-names="AttrNames" :head-attrs="['id', 'activityName']" />
     </el-row>
     <el-row style="padding-top: 5px">
       <el-col :span="20">
