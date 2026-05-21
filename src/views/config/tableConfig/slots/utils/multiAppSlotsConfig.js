@@ -20,15 +20,6 @@ function buildCustomizePayload(form, data, appId) {
 export default {
   data() {
     return {
-      multiAppDialogVisible: false,
-      appTreeData: [],
-      checkedAppKeys: [],
-      selectAllNodeKey: 'all',
-      diffData: {},
-      multiAppSubKey: '',
-      multiAppAction: 'save',
-      pendingScriptV3BetListBaseCfg: null,
-      copyTargetAppId: null
     }
   },
   methods: {
