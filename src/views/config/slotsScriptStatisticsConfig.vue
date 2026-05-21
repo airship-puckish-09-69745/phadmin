@@ -34,6 +34,9 @@
               <el-button type="primary" size="mini" icon="el-icon-document-copy" @click="onCopyAllCfg">
                 复制配置
               </el-button>
+              <el-button type="primary" size="mini" icon="el-icon-document-copy" @click="onCopyMultiAppCfg">
+                多App复制
+              </el-button>
             </el-col>
           </el-row>
 
@@ -89,7 +92,7 @@
                   width="1100"
                 >
                   <template slot-scope="scope">
-                <span v-for="(data,idx) in scope.row.OddsList">
+                <span v-for="(data,idx) in scope.row.OddsList" :key="idx">
                    <el-tag>{{ data.MinOdds + "," + data.MaxOdds }}</el-tag>
                 </span>
                   </template>
@@ -163,26 +166,25 @@
           <el-button type="primary" @click="addOddsList" size="mini">添加区间</el-button>
         </el-form-item>
       </el-form>
-      <el-row>
+      <el-row v-if="item.OddsList.length > 0">
         <el-form label-width="150px">
-        <span v-if="item.OddsList.length>0" v-for="(row,idx) in item.OddsList">
-          <el-col :span="10">
-           <el-form-item label="区间最小值>">
-            <el-input-number v-model.number="row.MinOdds" size="mini"/>
-        </el-form-item>
-        </el-col>
-        <el-col :span="10">
-         <el-form-item label="≤区间最大值">
-            <el-input-number v-model.number="row.MaxOdds" size="mini"/>
-        </el-form-item>
-         </el-col>
-           <el-col :span="1" style="margin-left: -100px">
-            <el-form-item>
-            <el-button type="danger" @click="delOddsList(idx)" size="mini">删除</el-button>
+          <span v-for="(row,idx) in item.OddsList" :key="idx">
+            <el-col :span="10">
+             <el-form-item label="区间最小值>">
+              <el-input-number v-model.number="row.MinOdds" size="mini"/>
           </el-form-item>
           </el-col>
-       </span>
-
+          <el-col :span="10">
+           <el-form-item label="≤区间最大值">
+              <el-input-number v-model.number="row.MaxOdds" size="mini"/>
+          </el-form-item>
+           </el-col>
+             <el-col :span="1" style="margin-left: -100px">
+              <el-form-item>
+              <el-button type="danger" @click="delOddsList(idx)" size="mini">删除</el-button>
+            </el-form-item>
+            </el-col>
+         </span>
 
         </el-form>
       </el-row>
@@ -194,45 +196,44 @@
       </el-row>
     </el-dialog>
 
-    <!-- 多应用选择弹窗 -->
-    <el-dialog
-      title="选择应用"
+    <multi-app-select-dialog
       :visible.sync="multiAppDialogVisible"
-      width="400px"
-    >
-      <el-tree
-        ref="appTree"
-        v-model:checked-keys="checkedAppKeys"
-        :data="appTreeData"
-        show-checkbox
-        node-key="value"
-        default-expand-all
-        @check-change="onCheckChange"
-      />
-
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="multiAppDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="confirmMultiAppSave">确认保存</el-button>
-      </span>
-    </el-dialog>
+      :app-options="appOptions"
+      :checked-keys.sync="checkedAppKeys"
+      :cache-namespace="getMultiAppCacheNamespace()"
+      :confirm-text="multiAppAction === 'copy' ? '确认复制' : '确认保存'"
+      @confirm="confirmMultiAppSave"
+    />
   </div>
 </template>
 
 <script>
-import {Message} from 'element-ui'
+import { Message } from 'element-ui'
 import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
+import MultiAppSelectDialog from '@/components/Publish/MultiAppSelectDialog'
 import request from '@/utils/request'
 import MoneyInput from '@/components/MoneyInput'
-import {$libShow, ClientTableData} from '@/utils/common'
-import {createCustomize, getCustomize, updateCustomize} from "@/api/custome_configV2";
-import store from "@/store";
+import { $libShow, ClientTableData } from '@/utils/common'
+import { createCustomize, getCustomize, updateCustomize } from '@/api/custome_configV2'
+import store from '@/store'
 
 const filterMap = {}
 
+function createDefaultItem() {
+  return {
+    Gid: 0,
+    OddsList: [{ MinOdds: 0, MaxOdds: 0 }],
+    Bet: 0,
+    StepCfg: 0,
+    JackpotShowBet: 0,
+    AbnormalSteps: ''
+  }
+}
+
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: {Compare, Publish, MoneyInput},
+  components: { MultiAppSelectDialog, Compare, Publish, MoneyInput },
 
   data() {
     return {
@@ -248,14 +249,9 @@ export default {
       clientDB: new ClientTableData([], 1, filterMap),
       showBtn: 0,
       libShow: $libShow,
-      item: {
-        Gid: 0,
-        OddsList: [{MinOdds: 0, MaxOdds: 0}],
-        Bet: 0,
-        StepCfg:0,
-        JackpotShowBet:0,
-        AbnormalSteps:'',
-      },
+      item: createDefaultItem(),
+      idx: -1,
+      editingGid: 0,
       selectGameVisible: false,
       gameOptions: [],
       dialogGameOptions: [],
@@ -275,7 +271,9 @@ export default {
       appTreeData: [],
       checkedAppKeys: [],
       selectAllNodeKey: 'all',
-      diffData: {}
+      diffData: {},
+      multiAppAction: 'save',
+      copyTargetAppId: null
     }
   },
   created() {
@@ -284,24 +282,22 @@ export default {
     this.getAppInfos()
   },
   methods: {
-
     refresh() {
       this.tableData = this.clientDB.GetCurrentPageData()
     },
     handleClick(tab, event) {
-      if (parseInt(tab.index) == 0) {
+      if (parseInt(tab.index) === 0) {
         this.getSlotsScriptStatistics()
       }
-
     },
     newItem() {
-      return this.item
+      return createDefaultItem()
     },
     addOne() {
-      this.item = {
-        Gid: 0,
-      },
-        this.showBtn = 0
+      this.idx = -1
+      this.editingGid = 0
+      this.item = this.newItem()
+      this.showBtn = 0
       this.selectGameVisible = true
     },
 
@@ -315,59 +311,74 @@ export default {
         return
       }
 
-      this.clientDB.AddData(this.item)
+      this.clientDB.AddData(this.normalizeItem(this.item))
       this.selectGameVisible = false
       this.refresh()
     },
     delOddsList(idx) {
+      if (!this.item.OddsList) {
+        return
+      }
       this.item.OddsList.splice(idx, 1)
     },
     editRow(idx, row) {
       this.idx = idx
-      this.item.Gid = row.Gid
-      this.item.Bet = row.Bet
-      this.item.JackpotShowBet = row.JackpotShowBet
-      this.item.OddsList = row.OddsList
-      this.item.StepCfg= row.StepCfg
-      this.item.AbnormalSteps= row.AbnormalSteps
+      this.editingGid = row.Gid
+      this.item = this.normalizeItem(row)
       this.showBtn = 1
       this.selectGameVisible = true
     },
     delRow(idx, row) {
       // this.tableData.splice(idx, 1)
-      this.clientDB.DelData2("Gid",this.tableData[idx].Gid)
+      this.clientDB.DelData2('Gid', this.tableData[idx].Gid)
       this.refresh()
     },
     addOddsList() {
-      if (!this.item.OddsList) {
-        this.item['OddsList'] = []
-      }
-      let parse = JSON.parse(JSON.stringify(this.item));
-      parse.OddsList.push({
+      const item = this.normalizeItem(this.item)
+      item.OddsList.push({
         MinOdds: 0,
         MaxOdds: 0
       })
-
-      var parr = this.item;
-      this.item['OddsList'] = !parse['OddsList'];
-      this.item = parse;
-
-
+      this.item = item
     },
     saveEdit() {
-      if (!this.checkDuplicate(this.item, this.idx)) {
+      if (!this.checkDuplicate(this.item, this.editingGid)) {
         Message.error('已存在相同游戏！')
         return
       }
-      var parse = JSON.parse(JSON.stringify(this.item))
-      this.tableData[this.idx] = parse
+      const parse = this.normalizeItem(this.item)
       this.selectGameVisible = false
-      this.clientDB.UpdateData2("Gid", parse)
-      console.log(parse)
+      if (this.editingGid !== parse.Gid) {
+        this.clientDB.DelData2('Gid', this.editingGid)
+        this.clientDB.AddData(parse)
+      } else {
+        this.clientDB.UpdateData2('Gid', parse)
+      }
       this.refresh()
+    },
+    normalizeItem(data) {
+      const item = Object.assign(createDefaultItem(), JSON.parse(JSON.stringify(data || {})))
+      if (!Array.isArray(item.OddsList)) {
+        item.OddsList = []
+      }
+      return item
     },
     getFullKey(k) {
       return 'CustomizeCfg_' + k
+    },
+    getMultiAppCacheNamespace() {
+      return `${this.subKey}:${this.multiAppAction}`
+    },
+    buildCopyPayload(appId) {
+      const sourceData = !Array.isArray(this.postData) && this.postData && Object.keys(this.postData).length > 0
+        ? this.postData
+        : this.form
+      const payload = JSON.parse(JSON.stringify(sourceData || {}))
+      payload.AppId = appId
+      payload.RedisSubkey = payload.RedisSubkey || this.subKey
+      payload.Data = JSON.stringify(this.getCfg())
+      payload.Type = 1
+      return payload
     },
     getData() {
       const $this = this
@@ -378,9 +389,9 @@ export default {
           $this.postData = response.Data || []
           if (response.Data && response.Data.Data !== '') {
             const cfg = JSON.parse(response.Data.Data)
-            for (let o of cfg) {
+            for (const o of cfg) {
               console.log(o.OddsList)
-              let bet = o.Bet
+              const bet = o.Bet
               for (let i = 0; i < o.OddsList.length; i++) {
                 o.OddsList[i].MaxOdds += parseInt(bet)
                 o.OddsList[i].MinOdds += parseInt(bet)
@@ -412,15 +423,16 @@ export default {
       this.postData.Data = JSON.stringify(cfg)
       const $this = this
       if (this.bCreateCfg) {
-        this.form.AppId = store.getters.appId
+        this.form.AppId = this.copyTargetAppId || store.getters.appId
+        this.postData.AppId = this.copyTargetAppId || store.getters.appId
         this.form.Type = 1
-        createCustomize(this.postData).then(response => {
+        this.postData.Type = 1
+        return createCustomize(this.postData).then(response => {
           if (response.RetCode === 0) {
             Message.success('保存成功！')
           }
         })
       } else {
-        // 设置修改后数据
         this.$refs.compare.SetNewVal(this.postData)
         this.$refs.compare.Compare(function(isEdit) {
           if (!isEdit) {
@@ -428,7 +440,7 @@ export default {
             return
           }
 
-          updateCustomize($this.postData).then(response => {
+          return updateCustomize($this.postData).then(response => {
             if (response.RetCode === 0) {
               Message.success('保存成功')
             }
@@ -438,27 +450,31 @@ export default {
     },
     getCfg() {
       const cfg = []
-      let data =this.clientDB.ShowData
+      const data = Array.isArray(this.clientDB.TotalData) ? this.clientDB.TotalData : []
       for (const i in data) {
         const item = JSON.parse(JSON.stringify(data[i]))
         cfg.push(item)
       }
-      for (let o of cfg) {
-        let bet =  o.Bet
+      for (const o of cfg) {
+        const bet = parseInt(o.Bet) || 0
+        if (!Array.isArray(o.OddsList)) {
+          o.OddsList = []
+        }
 
         for (let i = 0; i < o.OddsList.length; i++) {
-          o.OddsList[i].MaxOdds -= parseInt(bet)
-          o.OddsList[i].MinOdds -= parseInt(bet)
+          o.OddsList[i].MaxOdds -= bet
+          o.OddsList[i].MinOdds -= bet
         }
       }
       return cfg
     },
-    checkDuplicate(data) {
-      for (let i = 0; i < this.tableData.length; i++) {
-        if (i === this.idx && this.tableData[i].Gid === data.Gid) {
+    checkDuplicate(data, originalGid = 0) {
+      const allData = Array.isArray(this.clientDB.TotalData) ? this.clientDB.TotalData : []
+      for (let i = 0; i < allData.length; i++) {
+        if (originalGid && allData[i].Gid === originalGid) {
           continue
         }
-        if (this.tableData[i].Gid === data.Gid) {
+        if (allData[i].Gid === data.Gid) {
           return false
         }
       }
@@ -516,9 +532,9 @@ export default {
           $this.postData = response.Data || []
           if (response.Data && response.Data.Data !== '') {
             const cfg = JSON.parse(response.Data.Data)
-            for (let o of cfg) {
+            for (const o of cfg) {
               console.log(o.OddsList)
-              let bet = o.Bet
+              const bet = o.Bet
               for (let i = 0; i < o.OddsList.length; i++) {
                 o.OddsList[i].MaxOdds += parseInt(bet)
                 o.OddsList[i].MinOdds += parseInt(bet)
@@ -537,12 +553,27 @@ export default {
       this.setData()
       this.bCreateCfg = false
     },
+    onCopyMultiAppCfg() {
+      this.prepareAppTree()
+      this.multiAppAction = 'copy'
+      this.multiAppDialogVisible = true
+    },
     // 计算当前应用原数据与修改后的数据之间的差异
     getDifferenceBetweenConfigs(originalData, modifiedData) {
+      if (Array.isArray(modifiedData)) {
+        if (JSON.stringify(originalData) !== JSON.stringify(modifiedData)) {
+          return JSON.parse(JSON.stringify(modifiedData))
+        }
+        return []
+      }
       const diff = {}
       for (const key in modifiedData) {
-        if (!modifiedData.hasOwnProperty(key)) continue
-        if (typeof modifiedData[key] === 'object' && modifiedData[key] !== null) {
+        if (!Object.prototype.hasOwnProperty.call(modifiedData, key)) continue
+        if (Array.isArray(modifiedData[key])) {
+          if (JSON.stringify(originalData[key]) !== JSON.stringify(modifiedData[key])) {
+            diff[key] = JSON.parse(JSON.stringify(modifiedData[key]))
+          }
+        } else if (typeof modifiedData[key] === 'object' && modifiedData[key] !== null) {
           if (typeof originalData[key] !== 'object' || originalData[key] === null) {
             diff[key] = modifiedData[key]
           } else {
@@ -586,11 +617,16 @@ export default {
       }
     },
     applyDifferenceToConfig(currentConfig, diffData) {
+      if (Array.isArray(diffData)) {
+        return JSON.parse(JSON.stringify(diffData))
+      }
       for (const key in diffData) {
         // eslint-disable-next-line no-prototype-builtins
         if (diffData.hasOwnProperty(key)) {
           // 如果差异存在于当前配置中，则进行覆盖
-          if (typeof diffData[key] === 'object' && diffData[key] !== null) {
+          if (Array.isArray(diffData[key])) {
+            currentConfig[key] = JSON.parse(JSON.stringify(diffData[key]))
+          } else if (typeof diffData[key] === 'object' && diffData[key] !== null) {
             // 如果是对象，则递归处理
             currentConfig[key] = this.applyDifferenceToConfig(currentConfig[key] || {}, diffData[key])
           } else {
@@ -622,6 +658,7 @@ export default {
 
         // 弹出多应用选择弹窗
         $this.prepareAppTree()
+        $this.multiAppAction = 'save'
         $this.multiAppDialogVisible = true
       })
     },
@@ -638,6 +675,21 @@ export default {
       ]
       this.$set(this, 'checkedAppKeys', [])
     },
+    async confirmMultiAppCopy(appIds) {
+      try {
+        for (const appId of appIds) {
+          const payload = this.buildCopyPayload(appId)
+          const response = await createCustomize(payload)
+          if (response.RetCode !== 0) {
+            Message.error(`应用 ${appId} 配置复制失败！`)
+            return
+          }
+          Message.success(`应用 ${appId} 配置复制成功！`)
+        }
+      } finally {
+        this.copyTargetAppId = null
+      }
+    },
     async confirmMultiAppSave() {
       // 选中的 App ID（排除全选节点 key）
       const appIds = this.checkedAppKeys.filter(key => key !== this.selectAllNodeKey)
@@ -646,8 +698,16 @@ export default {
         return
       }
 
-      await this.saveDifferenceToOtherApps(appIds, this.diffData)
-      this.multiAppDialogVisible = false
+      try {
+        if (this.multiAppAction === 'copy') {
+          await this.confirmMultiAppCopy(appIds)
+        } else {
+          await this.saveDifferenceToOtherApps(appIds, this.diffData)
+        }
+      } finally {
+        this.multiAppDialogVisible = false
+        this.multiAppAction = 'save'
+      }
     },
     // 处理全选或取消全选
     onCheckChange(node, checked) {
@@ -672,3 +732,4 @@ export default {
   }
 }
 </script>
+

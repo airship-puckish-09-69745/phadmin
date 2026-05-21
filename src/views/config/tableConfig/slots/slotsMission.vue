@@ -11,6 +11,9 @@
       <el-button type="primary" icon="el-icon-document-copy" @click="onCopyAllCfg">
         复制配置
       </el-button>
+      <el-button type="primary" icon="el-icon-document-copy" @click="onCopyMultiAppCfg">
+        多App复制
+      </el-button>
     </el-col>
     <el-col :span="21" :offset="1">
       <el-row>
@@ -167,26 +170,13 @@
     </el-col>
 
     <!-- 多应用选择弹窗 -->
-    <el-dialog
-      title="选择应用"
+    <multi-app-select-dialog
       :visible.sync="multiAppDialogVisible"
-      width="400px"
-    >
-      <el-tree
-        ref="appTree"
-        v-model:checked-keys="checkedAppKeys"
-        :data="appTreeData"
-        show-checkbox
-        node-key="value"
-        default-expand-all
-        @check-change="onCheckChange"
-      />
-
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="multiAppDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="confirmMultiAppSave">确认保存</el-button>
-      </span>
-    </el-dialog>
+      :app-options="appOptions"
+      :checked-keys.sync="checkedAppKeys"
+      :confirm-text="multiAppAction === 'copy' ? '确认复制' : '确认保存'"
+      @confirm="confirmMultiAppSave"
+    />
 
     <el-col :offset="1" :span="8" style="margin-top: 10px;">
       <el-button type="primary" @click="setData">保存</el-button>
@@ -202,6 +192,7 @@
 import { Message } from 'element-ui'
 import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
+import MultiAppSelectDialog from '@/components/Publish/MultiAppSelectDialog'
 import request from '@/utils/request'
 import {$libShow, $libType, ValidateVueItem} from '@/utils/common'
 import {createCustomize, getCustomize, updateCustomize} from "@/api/custome_configV2";
@@ -209,7 +200,7 @@ import store from "@/store";
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: { Compare, Publish },
+  components: { MultiAppSelectDialog, Compare, Publish },
   data() {
     return {
       games: [],
@@ -252,7 +243,9 @@ export default {
       appTreeData: [],
       checkedAppKeys: [],
       selectAllNodeKey: 'all',
-      diffData: {}
+      diffData: {},
+      multiAppAction: 'save',
+      copyTargetAppId: null
     }
   },
   created() {
@@ -322,19 +315,19 @@ export default {
     },
     setData() {
       if (!this.checkData()) {
-        return
+        return Promise.resolve()
       }
 
       const postData = this.getPostData()
 
       this.form.Data = JSON.stringify(postData)
       if (this.bCreateCfg) {
-        this.form.AppId = store.getters.appId
+        this.form.AppId = this.copyTargetAppId || store.getters.appId
         this.form.RedisSubkey = this.subKey
         this.form.Name = 'Slots任务配置'
         this.form.Description = 'Slots任务配置'
         this.form.Type = 1
-        createCustomize(this.form).then(response => {
+        return createCustomize(this.form).then(response => {
           if (response.RetCode === 0) {
             Message.success('保存成功！')
           }
@@ -343,12 +336,12 @@ export default {
         const $this = this
         // 设置修改后数据
         this.$refs.compare.SetNewVal(this.form)
-        this.$refs.compare.Compare(function(isEdit) {
+        return this.$refs.compare.Compare(function(isEdit) {
           if (!isEdit) {
             Message.error('没有任何修改，不需要提交')
             return
           }
-          updateCustomize($this.form).then(response => {
+          return updateCustomize($this.form).then(response => {
             if (response.RetCode === 0) {
               Message.success('保存成功')
             }
@@ -473,12 +466,27 @@ export default {
       this.setData()
       this.bCreateCfg = false
     },
+    onCopyMultiAppCfg() {
+      this.prepareAppTree()
+      this.multiAppAction = 'copy'
+      this.multiAppDialogVisible = true
+    },
     // 计算当前应用原数据与修改后的数据之间的差异
     getDifferenceBetweenConfigs(originalData, modifiedData) {
+      if (Array.isArray(modifiedData)) {
+        if (JSON.stringify(originalData) !== JSON.stringify(modifiedData)) {
+          return JSON.parse(JSON.stringify(modifiedData))
+        }
+        return []
+      }
       const diff = {}
       for (const key in modifiedData) {
         if (!modifiedData.hasOwnProperty(key)) continue
-        if (typeof modifiedData[key] === 'object' && modifiedData[key] !== null) {
+        if (Array.isArray(modifiedData[key])) {
+          if (JSON.stringify(originalData[key]) !== JSON.stringify(modifiedData[key])) {
+            diff[key] = JSON.parse(JSON.stringify(modifiedData[key]))
+          }
+        } else if (typeof modifiedData[key] === 'object' && modifiedData[key] !== null) {
           if (typeof originalData[key] !== 'object' || originalData[key] === null) {
             diff[key] = modifiedData[key]
           } else {
@@ -522,11 +530,16 @@ export default {
       }
     },
     applyDifferenceToConfig(currentConfig, diffData) {
+      if (Array.isArray(diffData)) {
+        return JSON.parse(JSON.stringify(diffData))
+      }
       for (const key in diffData) {
         // eslint-disable-next-line no-prototype-builtins
         if (diffData.hasOwnProperty(key)) {
           // 如果差异存在于当前配置中，则进行覆盖
-          if (typeof diffData[key] === 'object' && diffData[key] !== null) {
+          if (Array.isArray(diffData[key])) {
+            currentConfig[key] = JSON.parse(JSON.stringify(diffData[key]))
+          } else if (typeof diffData[key] === 'object' && diffData[key] !== null) {
             // 如果是对象，则递归处理
             currentConfig[key] = this.applyDifferenceToConfig(currentConfig[key] || {}, diffData[key])
           } else {
@@ -562,10 +575,11 @@ export default {
 
         // 弹出多应用选择弹窗
         $this.prepareAppTree()
+        $this.multiAppAction = 'save'
         $this.multiAppDialogVisible = true
       })
     },
-    prepareAppTree() {
+    prepareAppTree(defaultCheckedKeys = []) {
       this.appTreeData = [
         {
           label: '全选',
@@ -576,7 +590,37 @@ export default {
           }))
         }
       ]
-      this.$set(this, 'checkedAppKeys', [])
+      const checkedKeys = defaultCheckedKeys.filter(key => key !== this.selectAllNodeKey)
+      this.$set(this, 'checkedAppKeys', checkedKeys)
+      this.$nextTick(() => {
+        if (this.$refs.appTree) {
+          this.$refs.appTree.setCheckedKeys(checkedKeys)
+        }
+      })
+    },
+    buildCopyPayload(appId) {
+      const payload = JSON.parse(JSON.stringify(this.form || {}))
+      payload.AppId = appId
+      payload.RedisSubkey = payload.RedisSubkey || this.subKey
+      payload.Data = JSON.stringify(this.getPostData())
+      payload.Name = payload.Name || 'Slots任务配置'
+      payload.Description = payload.Description || 'Slots任务配置'
+      payload.Type = 1
+      return payload
+    },
+    async confirmMultiAppCopy(appIds) {
+      try {
+        for (const appId of appIds) {
+          const response = await createCustomize(this.buildCopyPayload(appId))
+          if (response.RetCode !== 0) {
+            Message.error(`应用 ${appId} 配置复制失败！`)
+            return
+          }
+          Message.success(`应用 ${appId} 配置复制成功！`)
+        }
+      } finally {
+        this.copyTargetAppId = null
+      }
     },
     async confirmMultiAppSave() {
       // 选中的 App ID（排除全选节点 key）
@@ -586,8 +630,16 @@ export default {
         return
       }
 
-      await this.saveDifferenceToOtherApps(appIds, this.diffData)
-      this.multiAppDialogVisible = false
+      try {
+        if (this.multiAppAction === 'copy') {
+          await this.confirmMultiAppCopy(appIds)
+        } else {
+          await this.saveDifferenceToOtherApps(appIds, this.diffData)
+        }
+      } finally {
+        this.multiAppDialogVisible = false
+        this.multiAppAction = 'save'
+      }
     },
     // 处理全选或取消全选
     onCheckChange(node, checked) {
@@ -603,7 +655,7 @@ export default {
       } else {
         // 如果是其他节点，直接更新 checkedAppKeys
         if (checked) {
-          this.checkedAppKeys.push(node.value)
+          this.checkedAppKeys = Array.from(new Set([...this.checkedAppKeys, node.value]))
         } else {
           this.checkedAppKeys = this.checkedAppKeys.filter(item => item !== node.value)
         }
@@ -612,3 +664,4 @@ export default {
   }
 }
 </script>
+

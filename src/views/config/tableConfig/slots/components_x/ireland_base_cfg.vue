@@ -262,7 +262,6 @@ export default {
   },
   data() {
     var data = {
-      itemEnv: process.env.NODE_ENV,
       lock: false,
       recommendBet: this.slotsData.RecommendBet ? this.slotsData.RecommendBet * this.slotsData.BaseBet / 1000 : 0,
       initialWinTypeMinOdds: [],
@@ -348,6 +347,7 @@ export default {
       }
     },
     submitFrm(isMultiApp) {
+      const multiAppMode = isMultiApp === true
       const $this = this
       if (this.recommendBetCheck() === false) {
         $this.$message.error('推荐下注值必须是下注大小中存在的值')
@@ -376,7 +376,7 @@ export default {
           $this.$message.error('没有任何修改，不需要提交 ')
           return
         }
-        if (!isMultiApp) {
+        if (!multiAppMode) {
           $this.$emit('saveData')
         } else {
           $this.$emit('multiAppSave', $this.oldData, $this.slotsData)

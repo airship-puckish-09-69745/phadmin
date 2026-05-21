@@ -965,7 +965,7 @@ export default {
         { 'value': 50016, 'label': '用户第7日玩牌次数' },
         { 'value': 50017, 'label': '用户第8日玩牌次数' },
         { 'value': 50018, 'label': '用户第9日玩牌次数' },
-        { 'value': 50029, 'label': '用户第10日玩牌次数' },
+        { 'value': 50019, 'label': '用户第10日玩牌次数' },
         { 'value': 50020, 'label': '用户第11日玩牌次数' },
         { 'value': 50021, 'label': '用户第12日玩牌次数' },
         { 'value': 50022, 'label': '用户第13日玩牌次数' },
@@ -1289,7 +1289,10 @@ export default {
       this.addDialogVisible = false
     },
     openEditDialog(row, idx) {
-      this.editDialogVisible = true
+      this.editIndex = idx
+      if (typeof row.ScriptRule.PlanFixedSpin === 'undefined') {
+        this.editFormData.ScriptRuleDescription.PlanFixedSpin = 0
+      }
       this.editFormData = {
         PlanId: row.PlanId,
         PlanName: row.PlanName,
@@ -1298,13 +1301,10 @@ export default {
         ScriptRuleDescription: row.ScriptRule,
         SwitchRule: row.SwitchRule || { StatDays: 0, SpinMin: 0, BetMin: 0, TargetPlanId: 0 }
       }
-      if (typeof row.ScriptRule.PlanFixedSpin === 'undefined') {
-        this.editFormData.ScriptRuleDescription.PlanFixedSpin = 0
-      }
-      this.editIndex = idx
 
       // 初始化用户标签数据
       this.initUserTagsData()
+      this.editDialogVisible = true
     },
     saveEdit() {
       if (isNaN(parseInt(this.editFormData.SwitchRule.StatDays))) {

@@ -266,7 +266,7 @@ export default {
           return
         }
 
-        if (!isMultiApp) {
+        if (!multiAppMode) {
           $this.$emit('saveData')
         } else {
           $this.$emit('multiAppSave', $this.oldData, $this.slotsData)
