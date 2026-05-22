@@ -31,6 +31,7 @@ export const ITEM_TYPE_OPTIONS = [
   { 'value': 7, 'label': '新版Tongits门票', disabled: false },
   { 'value': 8, 'label': '新版德州参赛券', disabled: false },
   { 'value': 9, 'label': '新版Pusoy门票', disabled: false },
+  { 'value': 10, 'label': '互动道具', disabled: false },
 ]
 
 // 道具过期时间下拉框
