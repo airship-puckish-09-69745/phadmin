@@ -187,6 +187,7 @@ export default {
       propList: [],
       propTypeOptions: [
         { value: 2, label: '头像框', disabled: false },
+        { value: 10, label: '互动道具', disabled: false },
       ],
       propDayTypeOptions: [
         { value: 1, label: '1天', disabled: false },
