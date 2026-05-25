@@ -134,6 +134,7 @@ export default {
       return JSON.parse(JSON.stringify(this.slotsData))
     },
     submitFrm(isMultiApp) {
+      const multiAppMode = isMultiApp === true
       this.setData()
 
       const $this = this
@@ -169,7 +170,7 @@ export default {
           return
         }
 
-        if (!isMultiApp) {
+        if (!multiAppMode) {
           $this.$emit('saveData')
         } else {
           $this.$emit('multiAppSave', $this.oldData, $this.slotsData)

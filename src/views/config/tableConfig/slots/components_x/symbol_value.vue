@@ -105,6 +105,7 @@ export default {
       return JSON.parse(JSON.stringify(this.slotsData))
     },
     submitFrm(isMultiApp) {
+      const multiAppMode = isMultiApp === true
       const $this = this
       this.$refs.compare.SetNewVal(this.getDiffData())
       this.$refs.compare.Compare(function(isEdit) {
@@ -113,7 +114,7 @@ export default {
           return
         }
 
-        if (!isMultiApp) {
+        if (!multiAppMode) {
           $this.$emit('saveData')
         } else {
           $this.$emit('multiAppSave', $this.oldData, $this.slotsData)

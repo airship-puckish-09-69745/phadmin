@@ -373,6 +373,7 @@ export default {
       }
     },
     submitFrm(isMultiApp) {
+      const multiAppMode = isMultiApp === true
       const $this = this
       console.log('new data:', this.getDiffData())
       this.$refs.compare.SetNewVal(this.getDiffData())
@@ -382,7 +383,7 @@ export default {
           return
         }
 
-        if (!isMultiApp) {
+        if (!multiAppMode) {
           $this.$emit('saveData')
         } else {
           $this.$emit('multiAppSave', $this.oldData, $this.slotsData)
