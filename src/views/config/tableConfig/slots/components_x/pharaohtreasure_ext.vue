@@ -183,7 +183,8 @@ export default {
     getDiffData() {
       return JSON.parse(JSON.stringify(this.slotsData))
     },
-    submitFrm(isMultiApp) {
+    submitFrm(isMultiApp = false) {
+      const multiAppMode = isMultiApp === true
       const $this = this
       if (this.getStrLength(this.cfg.MultiOddsValInNormal) !== this.getStrLength(this.cfg.MultiOddsWeightInNormal)) {
         $this.$message.error('普通游戏多倍符号值与普通游戏多倍符号值权重长度不一致')
@@ -200,7 +201,7 @@ export default {
           return
         }
 
-        if (!isMultiApp) {
+        if (!multiAppMode) {
           $this.$emit('saveData')
         } else {
           $this.$emit('multiAppSave', $this.oldData, $this.slotsData)

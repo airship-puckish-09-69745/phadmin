@@ -113,7 +113,7 @@ export default {
     getDiffData() {
       return JSON.parse(JSON.stringify(this.slotsData))
     },
-    submitFrm(isMultiApp) {
+    submitFrm(isMultiApp = false) {
       const multiAppMode = isMultiApp === true
       this.setData()
 
