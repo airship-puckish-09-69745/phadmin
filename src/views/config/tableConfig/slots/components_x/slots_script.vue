@@ -372,7 +372,7 @@ export default {
         }
       }
     },
-    submitFrm(isMultiApp) {
+    submitFrm(isMultiApp = false) {
       const multiAppMode = isMultiApp === true
       const $this = this
       console.log('new data:', this.getDiffData())

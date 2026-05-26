@@ -257,7 +257,8 @@ export default {
       this.ScatterTriggerPlans.editIndex = this.cfg.ScatterTriggerPlans.findIndex(item => item.PlayTimesMin === row.PlayTimesMin && item.PlayTimesMax === item.PlayTimesMax)
       this.ScatterTriggerPlans.dialogVisible = true
     },
-    submitFrm(isMultiApp) {
+    submitFrm(isMultiApp = false) {
+      const multiAppMode = isMultiApp === true
       const $this = this
       this.$refs.compare.SetNewVal(this.getDiffData())
       this.$refs.compare.Compare(function (isEdit) {
