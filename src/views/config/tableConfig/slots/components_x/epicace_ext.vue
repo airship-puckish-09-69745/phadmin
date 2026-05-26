@@ -206,7 +206,8 @@ export default {
     getDiffData() {
       return JSON.parse(JSON.stringify(this.slotsData))
     },
-    submitFrm(isMultiApp) {
+    submitFrm(isMultiApp = false) {
+      const multiAppMode = isMultiApp === true
       if (!ValidateVueItem(this.$refs['frm2'])) return false
       const $this = this
       this.$refs.compare.SetNewVal(this.getDiffData())
@@ -216,7 +217,7 @@ export default {
           return
         }
 
-        if (!isMultiApp) {
+        if (!multiAppMode) {
           $this.$emit('saveData')
         } else {
           $this.$emit('multiAppSave', $this.oldData, $this.slotsData)

@@ -346,7 +346,7 @@ export default {
         'IsBetListByAppCfg': this.slotsData.IsBetListByAppCfg
       }
     },
-    submitFrm(isMultiApp) {
+    submitFrm(isMultiApp = false) {
       const multiAppMode = isMultiApp === true
       const $this = this
       if (this.recommendBetCheck() === false) {
