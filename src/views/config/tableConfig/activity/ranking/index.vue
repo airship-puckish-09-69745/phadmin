@@ -50,9 +50,9 @@
           </el-table-column>
           <el-table-column label="操作" column-key="op">
             <template slot-scope="scope">
-              <el-button v-if="scope.row.status!=2" size="mini" type="success" icon="el-icon-upload2" @click="handlePrepare(scope.row)">上架 </el-button>
-              <el-button v-if="scope.row.status!=2" size="mini" icon="el-icon-delete" @click="handleDelete(scope.row)" />
-              <el-button v-if="scope.row.status==2" size="mini" type="danger" icon="el-icon-download" @click="handleOffline(scope.row)">下架 </el-button>
+              <el-button v-if="scope.row.status !== 2" size="mini" type="success" icon="el-icon-upload2" @click="handlePrepare(scope.row)">上架 </el-button>
+              <el-button v-if="scope.row.status !== 2" size="mini" icon="el-icon-delete" @click="handleDelete(scope.row)" />
+              <el-button v-if="scope.row.status === 2" size="mini" type="danger" icon="el-icon-download" @click="handleOffline(scope.row)">下架 </el-button>
             </template>
           </el-table-column>
         </el-table>
