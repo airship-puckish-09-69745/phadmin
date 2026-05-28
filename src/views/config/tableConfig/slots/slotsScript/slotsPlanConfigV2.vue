@@ -2222,11 +2222,15 @@ export default {
       }
     },
     onCopyAllCfg() {
-      if (this.bCreateCfg) {
-        this.createCfg()
-      } else {
-        this.saveCfgByGid()
-      }
+      if (!this.checkData()) return false
+      createCustomize(this.buildCopyPayload(store.getters.appId)).then(response => {
+        if (response.RetCode === 0) {
+          Message.success('配置复制成功！')
+        } else {
+          const errMsg = response.Data ? (typeof response.Data === 'string' ? response.Data : JSON.stringify(response.Data)) : ''
+          Message.error(`配置复制失败！${errMsg ? '：' + errMsg : ''}`)
+        }
+      })
       this.bCreateCfg = false
     },
     onCopyMultiAppCfg() {
@@ -2427,8 +2431,9 @@ export default {
       }
       const name = this.getGameName(this.queryGid) + '方案配置'
       const payload = JSON.parse(JSON.stringify(this.planForm || {}))
+      delete payload.ID
       payload.AppId = appId
-      payload.RedisSubkey = payload.RedisSubkey || this.getSlotsCustomScriptKey()
+      payload.RedisSubkey = this.getSlotsCustomScriptKey()
       payload.Data = JSON.stringify(data)
       payload.Name = payload.Name || name
       payload.Description = payload.Description || name
@@ -2436,14 +2441,24 @@ export default {
       return payload
     },
     async confirmMultiAppCopy(appIds) {
+      const successAppIds = []
+      const failedApps = []
       try {
         for (const appId of appIds) {
           const response = await createCustomize(this.buildCopyPayload(appId))
           if (response.RetCode !== 0) {
-            Message.error(`应用 ${appId} 配置复制失败！`)
-            return
+            const errMsg = response.Data ? (typeof response.Data === 'string' ? response.Data : JSON.stringify(response.Data)) : ''
+            failedApps.push({ appId, errMsg })
+            continue
           }
-          Message.success(`应用 ${appId} 配置复制成功！`)
+          successAppIds.push(appId)
+        }
+        if (successAppIds.length > 0) {
+          Message.success(`配置复制完成，成功 ${successAppIds.length} 个App：${successAppIds.join(', ')}`)
+        }
+        if (failedApps.length > 0) {
+          const errText = failedApps.map(item => `${item.appId}${item.errMsg ? '：' + item.errMsg : ''}`).join('；')
+          Message.error(`配置复制失败 ${failedApps.length} 个App：${errText}`)
         }
       } finally {
         this.copyTargetAppId = null
