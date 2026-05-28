@@ -463,7 +463,17 @@ export default {
       }
     },
     onCopyAllCfg() {
-      this.setData()
+      if (!this.checkData()) {
+        return false
+      }
+      createCustomize(this.buildCopyPayload(store.getters.appId)).then(response => {
+        if (response.RetCode === 0) {
+          Message.success('配置复制成功！')
+        } else {
+          const errMsg = response.Data ? (typeof response.Data === 'string' ? response.Data : JSON.stringify(response.Data)) : ''
+          Message.error(`配置复制失败！${errMsg ? '：' + errMsg : ''}`)
+        }
+      })
       this.bCreateCfg = false
     },
     onCopyMultiAppCfg() {
@@ -600,8 +610,9 @@ export default {
     },
     buildCopyPayload(appId) {
       const payload = JSON.parse(JSON.stringify(this.form || {}))
+      delete payload.ID
       payload.AppId = appId
-      payload.RedisSubkey = payload.RedisSubkey || this.subKey
+      payload.RedisSubkey = this.subKey
       payload.Data = JSON.stringify(this.getPostData())
       payload.Name = payload.Name || 'Slots任务配置'
       payload.Description = payload.Description || 'Slots任务配置'
@@ -609,14 +620,24 @@ export default {
       return payload
     },
     async confirmMultiAppCopy(appIds) {
+      const successAppIds = []
+      const failedApps = []
       try {
         for (const appId of appIds) {
           const response = await createCustomize(this.buildCopyPayload(appId))
           if (response.RetCode !== 0) {
-            Message.error(`应用 ${appId} 配置复制失败！`)
-            return
+            const errMsg = response.Data ? (typeof response.Data === 'string' ? response.Data : JSON.stringify(response.Data)) : ''
+            failedApps.push({ appId, errMsg })
+            continue
           }
-          Message.success(`应用 ${appId} 配置复制成功！`)
+          successAppIds.push(appId)
+        }
+        if (successAppIds.length > 0) {
+          Message.success(`配置复制完成，成功 ${successAppIds.length} 个App：${successAppIds.join(', ')}`)
+        }
+        if (failedApps.length > 0) {
+          const errText = failedApps.map(item => `${item.appId}${item.errMsg ? '：' + item.errMsg : ''}`).join('；')
+          Message.error(`配置复制失败 ${failedApps.length} 个App：${errText}`)
         }
       } finally {
         this.copyTargetAppId = null
