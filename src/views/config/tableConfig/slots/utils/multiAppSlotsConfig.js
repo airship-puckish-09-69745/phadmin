@@ -1,6 +1,7 @@
 import { Message } from 'element-ui'
 import { createCustomize, getCustomize, updateCustomize } from '@/api/custome_configV2'
 import { handleScriptV3BetListCreate } from './scriptV3BetListCreate'
+import store from '@/store'
 
 function cloneData(data) {
   if (data === undefined || data === null) {
@@ -9,9 +10,18 @@ function cloneData(data) {
   return JSON.parse(JSON.stringify(data))
 }
 
-function buildCustomizePayload(form, data, appId) {
+function getResponseError(response) {
+  if (!response || response.Data === undefined || response.Data === null) {
+    return ''
+  }
+  return typeof response.Data === 'string' ? response.Data : JSON.stringify(response.Data)
+}
+
+function buildCustomizePayload(form, data, appId, subKey) {
   const payload = cloneData(form || {}) || {}
+  delete payload.ID
   payload.AppId = appId
+  payload.RedisSubkey = subKey
   payload.Data = JSON.stringify(data)
   payload.Type = payload.Type || 1
   return payload
@@ -34,13 +44,8 @@ export default {
       this.multiAppAction = 'copy'
       this.multiAppDialogVisible = true
     },
-    onCopyAllCfg() {
-      this.saveBaseCfg()
-      this.saveRuleCfg()
-      this.saveExtCfg()
-      if (this.createCfg === true) {
-        this.$message.success('所有配置已复制并保存成功！')
-      }
+    async onCopyAllCfg() {
+      await this.confirmMultiAppCopy([store.getters.appId])
       this.createCfg = false
     },
     onMultiAppBaseSave(oldData, newData) {
@@ -158,23 +163,39 @@ export default {
         }
       }
       return [
-        buildCustomizePayload(this.baseForm, this.baseCfg, appId),
-        buildCustomizePayload(this.ruleForm, this.ruleCfg, appId),
-        buildCustomizePayload(this.extForm, this.extCfg, appId)
+        buildCustomizePayload(this.baseForm, this.baseCfg, appId, this.subKey),
+        buildCustomizePayload(this.ruleForm, this.ruleCfg, appId, this.getRuleSubKey()),
+        buildCustomizePayload(this.extForm, this.extCfg, appId, this.getExtSubKey())
       ]
     },
     async confirmMultiAppCopy(appIds) {
+      const successAppIds = []
+      const failedApps = []
       try {
         for (const appId of appIds) {
           const payloads = this.buildMultiAppCopyPayloads(appId)
+          let hasFailed = false
           for (const payload of payloads) {
             const response = await createCustomize(payload)
             if (response.RetCode !== 0) {
-              Message.error(`应用 ${appId} 配置复制失败！`)
-              return
+              failedApps.push({
+                appId,
+                errMsg: getResponseError(response)
+              })
+              hasFailed = true
+              break
             }
           }
-          Message.success(`应用 ${appId} 配置复制成功！`)
+          if (!hasFailed) {
+            successAppIds.push(appId)
+          }
+        }
+        if (successAppIds.length > 0) {
+          Message.success(`配置复制完成，成功 ${successAppIds.length} 个App：${successAppIds.join(', ')}`)
+        }
+        if (failedApps.length > 0) {
+          const errText = failedApps.map(item => `${item.appId}${item.errMsg ? '：' + item.errMsg : ''}`).join('；')
+          Message.error(`配置复制失败 ${failedApps.length} 个App：${errText}`)
         }
       } finally {
         this.copyTargetAppId = null

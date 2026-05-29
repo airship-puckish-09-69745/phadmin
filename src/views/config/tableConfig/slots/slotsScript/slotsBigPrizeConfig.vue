@@ -657,7 +657,7 @@ export default {
       })
     },
 
-    setData() {
+    checkSaveData() {
       if (!ValidateVueItem(this.$refs['item'])) return false
       if (this.item.BigPrizeCfg.TaxPerThousand < 0 || this.item.BigPrizeCfg.TaxPerThousand > 1000) {
         Message.error('下注总金额抽水值必须在 0~1000 之间!')
@@ -677,6 +677,11 @@ export default {
       if (!this.checkWarmUpCfg()) {
         return false
       }
+      return true
+    },
+
+    setData() {
+      if (!this.checkSaveData()) return false
       this.form.Data = JSON.stringify(this.getPostData())
 
       if (!this.bCreateCfg) {
@@ -1071,7 +1076,15 @@ export default {
       }
     },
     onCopyAllCfg() {
-      this.setData()
+      if (!this.checkSaveData()) return false
+      createCustomize(this.buildCopyPayload(store.getters.appId)).then(response => {
+        if (response.RetCode === 0) {
+          Message.success('配置复制成功！')
+        } else {
+          const errMsg = response.Data ? (typeof response.Data === 'string' ? response.Data : JSON.stringify(response.Data)) : ''
+          Message.error(`配置复制失败！${errMsg ? '：' + errMsg : ''}`)
+        }
+      })
       this.bCreateCfg = false
     },
     onCopyMultiAppCfg() {
@@ -1205,8 +1218,9 @@ export default {
     buildCopyPayload(appId) {
       const payload = JSON.parse(JSON.stringify(this.form || {}))
       const name = this.getGameName(this.queryGid) + '大奖配置'
+      delete payload.ID
       payload.AppId = appId
-      payload.RedisSubkey = payload.RedisSubkey || this.getSlotsBigPrizeConfigKey()
+      payload.RedisSubkey = this.getSlotsBigPrizeConfigKey()
       payload.Data = JSON.stringify(this.getPostData())
       payload.Name = payload.Name || name
       payload.Description = payload.Description || name
@@ -1214,14 +1228,24 @@ export default {
       return payload
     },
     async confirmMultiAppCopy(appIds) {
+      const successAppIds = []
+      const failedApps = []
       try {
         for (const appId of appIds) {
           const response = await createCustomize(this.buildCopyPayload(appId))
           if (response.RetCode !== 0) {
-            Message.error(`应用 ${appId} 配置复制失败！`)
-            return
+            const errMsg = response.Data ? (typeof response.Data === 'string' ? response.Data : JSON.stringify(response.Data)) : ''
+            failedApps.push({ appId, errMsg })
+            continue
           }
-          Message.success(`应用 ${appId} 配置复制成功！`)
+          successAppIds.push(appId)
+        }
+        if (successAppIds.length > 0) {
+          Message.success(`配置复制完成，成功 ${successAppIds.length} 个App：${successAppIds.join(', ')}`)
+        }
+        if (failedApps.length > 0) {
+          const errText = failedApps.map(item => `${item.appId}${item.errMsg ? '：' + item.errMsg : ''}`).join('；')
+          Message.error(`配置复制失败 ${failedApps.length} 个App：${errText}`)
         }
       } finally {
         this.copyTargetAppId = null
