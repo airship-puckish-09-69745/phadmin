@@ -198,7 +198,9 @@ const ACTIVITY_SESSION_ENUM = [
   {value: '2500', label: '2.5/5'},
   {value: '5000', label: '5/10'},
   {value: '10000', label: '10/20'},
-  {value: '25000', label: '25/50'}
+  {value: '25000', label: '25/50'},
+  {value: '50000', label: '50/100'},
+  {value: '100000', label: '100/200'}
 ]
 
 // 创建空白活动数据
