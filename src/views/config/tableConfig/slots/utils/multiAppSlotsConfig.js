@@ -36,7 +36,6 @@ export default {
       diffData: {},
       multiAppAction: 'save',
       multiAppSubKey: '',
-      copyTargetAppId: null,
       pendingScriptV3BetListBaseCfg: null,
       appTreeData: []
     }
@@ -55,7 +54,6 @@ export default {
     },
     async onCopyAllCfg() {
       await this.confirmMultiAppCopy([store.getters.appId])
-      this.createCfg = false
     },
     onMultiAppBaseSave(oldData, newData) {
       if (newData.Bets) {
@@ -180,34 +178,30 @@ export default {
     async confirmMultiAppCopy(appIds) {
       const successAppIds = []
       const failedApps = []
-      try {
-        for (const appId of appIds) {
-          const payloads = this.buildMultiAppCopyPayloads(appId)
-          let hasFailed = false
-          for (const payload of payloads) {
-            const response = await createCustomize(payload)
-            if (response.RetCode !== 0) {
-              failedApps.push({
-                appId,
-                errMsg: getResponseError(response)
-              })
-              hasFailed = true
-              break
-            }
-          }
-          if (!hasFailed) {
-            successAppIds.push(appId)
+      for (const appId of appIds) {
+        const payloads = this.buildMultiAppCopyPayloads(appId)
+        let hasFailed = false
+        for (const payload of payloads) {
+          const response = await createCustomize(payload)
+          if (response.RetCode !== 0) {
+            failedApps.push({
+              appId,
+              errMsg: getResponseError(response)
+            })
+            hasFailed = true
+            break
           }
         }
-        if (successAppIds.length > 0) {
-          Message.success(`配置复制完成，成功 ${successAppIds.length} 个App：${successAppIds.join(', ')}`)
+        if (!hasFailed) {
+          successAppIds.push(appId)
         }
-        if (failedApps.length > 0) {
-          const errText = failedApps.map(item => `${item.appId}${item.errMsg ? '：' + item.errMsg : ''}`).join('；')
-          Message.error(`配置复制失败 ${failedApps.length} 个App：${errText}`)
-        }
-      } finally {
-        this.copyTargetAppId = null
+      }
+      if (successAppIds.length > 0) {
+        Message.success(`配置复制完成，成功 ${successAppIds.length} 个App：${successAppIds.join(', ')}`)
+      }
+      if (failedApps.length > 0) {
+        const errText = failedApps.map(item => `${item.appId}${item.errMsg ? '：' + item.errMsg : ''}`).join('；')
+        Message.error(`配置复制失败 ${failedApps.length} 个App：${errText}`)
       }
     },
     async confirmMultiAppSave(appIds = this.checkedAppKeys) {
