@@ -948,14 +948,12 @@ export default {
         { value: 0, label: '旧版' }
       ],
       appId: store.getters.appId || 0,
-      bCreateCfg: false,
       multiAppDialogVisible: false,
       appTreeData: [],
       checkedAppKeys: [],
       selectAllNodeKey: 'all',
       diffData: {},
       multiAppAction: 'save',
-      copyTargetAppId: null,
       pendingCopyPlanRow: null
     }
   },
@@ -1045,11 +1043,11 @@ export default {
           this.queryScriptVolatility(this.queryGid)
         } else {
           console.warn('⚠️ 未找到配置, 初始化为空配置:', this.getSlotsCustomScriptKey())
+          this.planForm = {}
           this.showItem.SlotsType = this.queryGid
           this.showItem.Plans = this.newPlansCfg()
-          if (store.getters.appId === this.appId) {
-            this.bCreateCfg = true
-            console.log('this.bCreateCfg', this.bCreateCfg)
+          if (bSetOldVal) {
+            this.$refs.compare.SetOldVal(JSON.parse(JSON.stringify(this.showItem.Plans)))
           }
         }
       }).catch(err => {
@@ -1560,15 +1558,26 @@ export default {
         }
       ]
     },
+    buildSavePayload(items) {
+      const data = {
+        SlotsType: this.showItem.SlotsType,
+        Plans: items
+      }
+      const name = this.getGameName(this.queryGid) + '方案配置'
+      const payload = JSON.parse(JSON.stringify(this.planForm || {}))
+      payload.AppId = this.appId || store.getters.appId
+      payload.RedisSubkey = this.getSlotsCustomScriptKey()
+      payload.Data = JSON.stringify(data)
+      payload.Name = payload.Name || name
+      payload.Description = payload.Description || name
+      payload.Type = payload.Type || 1
+      return payload
+    },
     async saveCfgByGid() {
       const val = JSON.parse(JSON.stringify(this.showItem.Plans))
       const items = this.proceedUpdateData(val)
       this.$refs.compare.SetNewVal(items)
       const $this = this
-      const data = {
-        SlotsType: $this.showItem.SlotsType,
-        Plans: items
-      }
       this.$refs.compare.Compare(function(isEdit) {
         if (!isEdit) {
           Message.error('没有任何修改，不需要提交')
@@ -1577,10 +1586,13 @@ export default {
         if (!$this.checkData()) {
           return
         }
-        $this.planForm.Data = JSON.stringify(data)
-        return updateCustomize($this.planForm).then(response => {
+        const savePayload = $this.buildSavePayload(items)
+        const saveRequest = savePayload.ID ? updateCustomize(savePayload) : createCustomize(savePayload)
+        return saveRequest.then(response => {
           if (response.RetCode === 0) {
             Message.success('保存成功！')
+            $this.planForm = response.Data || savePayload
+            $this.$refs.compare.SetOldVal(JSON.parse(JSON.stringify(items)))
           }
         })
       })
@@ -1753,26 +1765,6 @@ export default {
       this.scriptViewResults = {}
       this.displayScriptViewMap = {}
       this.scriptViewMissingBetResults = {}
-    },
-    createCfg() {
-      const val = JSON.parse(JSON.stringify(this.showItem.Plans))
-      const items = this.proceedUpdateData(val)
-      const data = {
-        SlotsType: this.showItem.SlotsType,
-        Plans: items
-      }
-      this.planForm.AppId = this.copyTargetAppId || store.getters.appId
-      this.planForm.RedisSubkey = this.getSlotsCustomScriptKey()
-      this.planForm.Data = JSON.stringify(data)
-      const name = this.getGameName(this.queryGid) + '方案配置'
-      this.planForm.Name = name
-      this.planForm.Description = name
-      this.planForm.Type = 1
-      return createCustomize(this.planForm).then(response => {
-        if (response.RetCode === 0) {
-          Message.success('保存成功！')
-        }
-      })
     },
     checkData() {
       if (this.showItem.SlotsType <= 0) {
@@ -2231,7 +2223,6 @@ export default {
           Message.error(`配置复制失败！${errMsg ? '：' + errMsg : ''}`)
         }
       })
-      this.bCreateCfg = false
     },
     onCopyMultiAppCfg() {
       this.prepareAppTree()
@@ -2443,25 +2434,21 @@ export default {
     async confirmMultiAppCopy(appIds) {
       const successAppIds = []
       const failedApps = []
-      try {
-        for (const appId of appIds) {
-          const response = await createCustomize(this.buildCopyPayload(appId))
-          if (response.RetCode !== 0) {
-            const errMsg = response.Data ? (typeof response.Data === 'string' ? response.Data : JSON.stringify(response.Data)) : ''
-            failedApps.push({ appId, errMsg })
-            continue
-          }
-          successAppIds.push(appId)
+      for (const appId of appIds) {
+        const response = await createCustomize(this.buildCopyPayload(appId))
+        if (response.RetCode !== 0) {
+          const errMsg = response.Data ? (typeof response.Data === 'string' ? response.Data : JSON.stringify(response.Data)) : ''
+          failedApps.push({ appId, errMsg })
+          continue
         }
-        if (successAppIds.length > 0) {
-          Message.success(`配置复制完成，成功 ${successAppIds.length} 个App：${successAppIds.join(', ')}`)
-        }
-        if (failedApps.length > 0) {
-          const errText = failedApps.map(item => `${item.appId}${item.errMsg ? '：' + item.errMsg : ''}`).join('；')
-          Message.error(`配置复制失败 ${failedApps.length} 个App：${errText}`)
-        }
-      } finally {
-        this.copyTargetAppId = null
+        successAppIds.push(appId)
+      }
+      if (successAppIds.length > 0) {
+        Message.success(`配置复制完成，成功 ${successAppIds.length} 个App：${successAppIds.join(', ')}`)
+      }
+      if (failedApps.length > 0) {
+        const errText = failedApps.map(item => `${item.appId}${item.errMsg ? '：' + item.errMsg : ''}`).join('；')
+        Message.error(`配置复制失败 ${failedApps.length} 个App：${errText}`)
       }
     },
     async confirmMultiAppSave() {
