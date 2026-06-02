@@ -16,12 +16,12 @@
           <el-row :gutter="20">
             <el-col :span="24">
               <el-form-item label="活动名称" required>
-                <el-input v-model="item.activityName" placeholder="请输入活动名称" style="max-width: 400px" />
+                <el-input v-model="item.activityName" placeholder="请输入活动名称" style="max-width: 400px"/>
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
               <el-form-item label="活动开关">
-                <el-switch v-model="item.isOpen" :active-value="true" :inactive-value="false" />
+                <el-switch v-model="item.isOpen" :active-value="true" :inactive-value="false"/>
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
@@ -48,7 +48,7 @@
             </el-col>
             <el-col :xs="24" :sm="12">
               <el-form-item label="时间偏移">
-                <el-input v-model.number="item.debugTimeOffset" placeholder="请输入" style="max-width: 200px" />
+                <el-input v-model.number="item.debugTimeOffset" placeholder="请输入" style="max-width: 200px"/>
               </el-form-item>
             </el-col>
             <!-- 站点白名单 -->
@@ -127,7 +127,7 @@
                   </el-table-column>
                   <el-table-column label="道具数量" min-width="100">
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.propNum" placeholder="数量" size="mini" />
+                      <el-input v-model.number="scope.row.propNum" placeholder="数量" size="mini"/>
                     </template>
                   </el-table-column>
                 </el-table>
@@ -146,7 +146,7 @@
 </template>
 
 <script>
-import { Message } from 'element-ui'
+import {Message} from 'element-ui'
 import request from '@/utils/request'
 import store from '@/store'
 import SiteSelect from '@/components/SiteSelect/index.vue'
@@ -173,11 +173,11 @@ function createNewItem() {
 }
 
 export default {
-  components: { SiteSelect },
+  components: {SiteSelect},
   props: {
-    visible: { type: Boolean, default: false },
-    isEdit: { type: Boolean, default: false },
-    editData: { type: Object, default: () => ({}) }
+    visible: {type: Boolean, default: false},
+    isEdit: {type: Boolean, default: false},
+    editData: {type: Object, default: () => ({})}
   },
   data() {
     return {
@@ -186,14 +186,14 @@ export default {
       item: createNewItem(),
       propList: [],
       propTypeOptions: [
-        { value: 2, label: '头像框', disabled: false },
-        { value: 10, label: '互动道具', disabled: false },
+        {value: 2, label: '头像框', disabled: false},
+        {value: 10, label: '互动道具', disabled: false},
       ],
       propDayTypeOptions: [
-        { value: 1, label: '1天', disabled: false },
-        { value: 3, label: '3天', disabled: false },
-        { value: 7, label: '7天', disabled: false },
-        { value: 30, label: '30天', disabled: false }
+        {value: 1, label: '1天', disabled: false},
+        {value: 3, label: '3天', disabled: false},
+        {value: 7, label: '7天', disabled: false},
+        {value: 30, label: '30天', disabled: false}
       ]
     }
   },
@@ -243,9 +243,9 @@ export default {
     },
     loadEditData() {
       const data = JSON.parse(JSON.stringify(this.editData))
-      data.whitelistCfg = this.safeJsonParse(data.whitelistCfg, { siteIdList: [] })
+      data.whitelistCfg = this.safeJsonParse(data.whitelistCfg, {siteIdList: []})
       if (!data.whitelistCfg || typeof data.whitelistCfg !== 'object') {
-        data.whitelistCfg = { siteIdList: [] }
+        data.whitelistCfg = {siteIdList: []}
       }
       data.whitelistCfg.siteIdList = this.safeJsonParse(data.whitelistCfg.siteIdList, [])
       const parsedPropPools = this.safeJsonParse(data.propPools, {})
@@ -297,7 +297,7 @@ export default {
       const cpy = JSON.parse(JSON.stringify(this.item))
       cpy.startTime = Math.floor(cpy.startTime / 1000)
       cpy.endTime = Math.floor(cpy.endTime / 1000)
-      cpy.whitelistCfg = JSON.stringify(cpy.whitelistCfg || { siteIdList: [] })
+      cpy.whitelistCfg = JSON.stringify(cpy.whitelistCfg || {siteIdList: []})
       cpy.propPools = JSON.stringify(cpy.propPools || {})
       cpy.debugTimeOffset = Number(cpy.debugTimeOffset || 0)
       return cpy
@@ -313,7 +313,7 @@ export default {
       }
     },
     handleEditData(postData) {
-      request({ url: '/anniversaryactivity/update', method: 'post', data: postData }).then(response => {
+      request({url: '/anniversaryactivity/update', method: 'post', data: postData}).then(response => {
         if (response.RetCode === 0) {
           Message.success('保存成功！')
           this.dialogVisible = false
@@ -326,7 +326,7 @@ export default {
       })
     },
     handleAddData(postData) {
-      request({ url: '/anniversaryactivity/create', method: 'post', data: postData }).then(response => {
+      request({url: '/anniversaryactivity/create', method: 'post', data: postData}).then(response => {
         if (response.RetCode === 0) {
           Message.success('保存成功！')
           this.dialogVisible = false
@@ -380,7 +380,7 @@ export default {
       for (let i = 0; i < this.propList.length; i++) {
         const prop = this.propList[i]
         if (prop.item_type === propType && prop.status === 1) {
-          if (prop.item_type !== 2 && prop.item_type !== 4 && prop.item_type !== 5) {
+          if (prop.item_type !== 2 && prop.item_type !== 4 && prop.item_type !== 5 && prop.item_type !== 10) {
             const expTime = prop.expire_time * 1000
             if (currTime < expTime) {
               propOptions.push({

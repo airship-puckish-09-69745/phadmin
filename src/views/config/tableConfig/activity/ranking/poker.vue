@@ -918,7 +918,7 @@ export default {
         }
       })
     },
-    //* *********************** 修改/添加弹框相关 ************************
+    //************************ 修改/添加弹框相关 ************************
     getEditTitle() {
       return this.edit.isEdit ? '修改配置' : '新增配置'
     },
@@ -1053,8 +1053,8 @@ export default {
       }
       this.edit.item.activity.showEndTime = this.edit.item.activity.endTime + 1000 * 60 * 60 * 24
     },
-    //* *********************** 修改/添加弹框相关 ************************
-    //* *********************** 规则图片相关 ************************
+    //************************ 修改/添加弹框相关 ************************
+    //************************ 规则图片相关 ************************
     addRuleImage(type) {
       console.log('addRuleImage type:', type)
       if (type === 'Hor') {
@@ -1071,8 +1071,8 @@ export default {
         this.edit.item.activity.ruleImgVer.splice(index, 1)
       }
     },
-    //* *********************** 规则图片相关 ************************
-    //* *********************** 游戏列表相关 ************************
+    //************************ 规则图片相关 ************************
+    //************************ 游戏列表相关 ************************
     filterNode(value, data) {
       if (!value) return true
       return data.label.indexOf(value) !== -1
@@ -1188,24 +1188,24 @@ export default {
         return a.OrderNo - b.OrderNo
       })
     },
-    //* *********************** 游戏列表相关 ************************
-    //* *********************** 游戏场次底注列表相关 ************************
+    //************************ 游戏列表相关 ************************
+    //************************ 游戏场次底注列表相关 ************************
     async getGameAnteTables() {
       const gameIds = this.edit.item.gameIdList || []
       for (const gameId of gameIds) {
         let list = []
         switch (gameId) {
           case 22:
-            list = await this.getTongitsAnteList(1)
+            list =  await this.getTongitsAnteList(1)
             break
           case 28:
-            list = await this.getTongitsAnteList(2)
+            list =  await this.getTongitsAnteList(2)
             break
           case 29:
-            list = await this.getTongitsAnteList(3)
+            list =  await this.getTongitsAnteList(3)
             break
           default:
-            console.log('getGameAnteTables gameId: ', gameId, ' not supported')
+            console.log('getGameAnteTables gameId: ', gameId, ' not supported',)
         }
         this.edit.gameAntesMap[gameId] = list
       }
@@ -1235,7 +1235,7 @@ export default {
       console.log('getTongitsAnteList anteTables: ', anteTables)
       return anteTables
     },
-    //* *********************** 热门时段相关 ************************
+    //************************ 热门时段相关 ************************
     handleAddHotTime() {
       this.edit.item.activity.hotTimeList.push({
         startTime: '',
