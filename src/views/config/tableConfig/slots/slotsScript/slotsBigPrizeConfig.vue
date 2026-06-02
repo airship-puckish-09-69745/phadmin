@@ -1254,23 +1254,21 @@ export default {
     async confirmMultiAppCopy(appIds) {
       const successAppIds = []
       const failedApps = []
-      try {
-        for (const appId of appIds) {
-          const response = await createCustomize(this.buildCopyPayload(appId))
-          if (response.RetCode !== 0) {
-            const errMsg = response.Data ? (typeof response.Data === 'string' ? response.Data : JSON.stringify(response.Data)) : ''
-            failedApps.push({ appId, errMsg })
-            continue
-          }
-          successAppIds.push(appId)
+      for (const appId of appIds) {
+        const response = await createCustomize(this.buildCopyPayload(appId))
+        if (response.RetCode !== 0) {
+          const errMsg = response.Data ? (typeof response.Data === 'string' ? response.Data : JSON.stringify(response.Data)) : ''
+          failedApps.push({ appId, errMsg })
+          continue
         }
-        if (successAppIds.length > 0) {
-          Message.success(`配置复制完成，成功 ${successAppIds.length} 个App：${successAppIds.join(', ')}`)
-        }
-        if (failedApps.length > 0) {
-          const errText = failedApps.map(item => `${item.appId}${item.errMsg ? '：' + item.errMsg : ''}`).join('；')
-          Message.error(`配置复制失败 ${failedApps.length} 个App：${errText}`)
-        }
+        successAppIds.push(appId)
+      }
+      if (successAppIds.length > 0) {
+        Message.success(`配置复制完成，成功 ${successAppIds.length} 个App：${successAppIds.join(', ')}`)
+      }
+      if (failedApps.length > 0) {
+        const errText = failedApps.map(item => `${item.appId}${item.errMsg ? '：' + item.errMsg : ''}`).join('；')
+        Message.error(`配置复制失败 ${failedApps.length} 个App：${errText}`)
       }
     },
     async confirmMultiAppSave() {
