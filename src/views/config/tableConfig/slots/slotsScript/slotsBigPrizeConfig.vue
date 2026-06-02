@@ -532,14 +532,12 @@ export default {
         { value: 0, label: '旧版' }
       ],
       appId: store.getters.appId || 0,
-      bCreateCfg: false,
       multiAppDialogVisible: false,
       appTreeData: [],
       checkedAppKeys: [],
       selectAllNodeKey: 'all',
       diffData: {},
-      multiAppAction: 'save',
-      copyTargetAppId: null
+      multiAppAction: 'save'
     }
   },
 
@@ -618,6 +616,38 @@ export default {
       }
       return ret
     },
+    getDefaultItem() {
+      return {
+        BigPrizeCfg: {
+          TaxPerThousand: 0,
+          HitPerMillion: 0,
+          HitSteps: 0,
+          OddsCfg: [],
+          Plans: []
+        },
+        BigPrizeGroups: [],
+        WarmUpCfg: {
+          Scatter1Rate: 0,
+          Scatter2Rate: 0,
+          Scatter3Rate: 0,
+          MultiRate: 0,
+          MaxRate: 0,
+          WarmUpEnabled: false
+        },
+        BetOddsPlans: []
+      }
+    },
+    buildSavePayload() {
+      const payload = JSON.parse(JSON.stringify(this.form || {}))
+      const name = this.getGameName(this.queryGid) + '大奖配置'
+      payload.AppId = this.appId || store.getters.appId
+      payload.RedisSubkey = this.getSlotsBigPrizeConfigKey()
+      payload.Data = JSON.stringify(this.getPostData())
+      payload.Name = payload.Name || name
+      payload.Description = payload.Description || name
+      payload.Type = payload.Type || 1
+      return payload
+    },
     getData() {
       getCustomize(this.getSlotsBigPrizeConfigKey(), this.appId).then(response => {
         if (response.RetCode === 0) {
@@ -649,10 +679,8 @@ export default {
             this.$refs.compare.SetOldVal(response.Data)
           }
         } else {
-          if (store.getters.appId === this.appId) {
-            this.bCreateCfg = true
-            console.log('this.bCreateCfg', this.bCreateCfg)
-          }
+          this.form = {}
+          this.item = this.getDefaultItem()
         }
       })
     },
@@ -682,36 +710,33 @@ export default {
 
     setData() {
       if (!this.checkSaveData()) return false
-      this.form.Data = JSON.stringify(this.getPostData())
+      const savePayload = this.buildSavePayload()
 
-      if (!this.bCreateCfg) {
+      if (savePayload.ID) {
         const $this = this
-        this.$refs.compare.SetNewVal(this.form)
-        this.$refs.compare.Compare(function(isEdit) {
+        this.$refs.compare.SetNewVal(savePayload)
+        return this.$refs.compare.Compare(function(isEdit) {
           if (!isEdit) {
             Message.error('没有任何修改，不需要提交')
             return
           }
-          return updateCustomize($this.form).then(response => {
+          return updateCustomize(savePayload).then(response => {
             if (response.RetCode === 0) {
+              $this.form = savePayload
               console.log('sign reward save', response)
               Message.success('保存成功')
             }
           })
         })
-      } else {
-        this.form.AppId = this.copyTargetAppId || store.getters.appId
-        const name = this.getGameName(this.queryGid) + '大奖配置'
-        this.form.Description = name
-        this.form.Name = name
-        this.form.RedisSubkey = this.getSlotsBigPrizeConfigKey()
-        console.log('......')
-        return createCustomize(this.form).then(response => {
-          if (response.RetCode === 0) {
-            Message.success('保存成功！')
-          }
-        })
       }
+
+      return createCustomize(savePayload).then(response => {
+        if (response.RetCode === 0) {
+          this.form = response.Data || savePayload
+          this.$refs.compare.SetOldVal(this.form)
+          Message.success('保存成功！')
+        }
+      })
     },
 
     makeContent(key, addData, delData, editData) {
@@ -1085,7 +1110,6 @@ export default {
           Message.error(`配置复制失败！${errMsg ? '：' + errMsg : ''}`)
         }
       })
-      this.bCreateCfg = false
     },
     onCopyMultiAppCfg() {
       this.prepareAppTree()
@@ -1247,8 +1271,6 @@ export default {
           const errText = failedApps.map(item => `${item.appId}${item.errMsg ? '：' + item.errMsg : ''}`).join('；')
           Message.error(`配置复制失败 ${failedApps.length} 个App：${errText}`)
         }
-      } finally {
-        this.copyTargetAppId = null
       }
     },
     async confirmMultiAppSave() {
