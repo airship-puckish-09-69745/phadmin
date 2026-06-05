@@ -488,7 +488,7 @@ export default {
         if (IGNORE_GIDS.includes(item.Gid)) continue
         if (item.Gid > 5000) {
           const gid = parseInt(item.Gid / 100)
-          if (!PoolByAppSlotsGameIds.includes(gid)) continue
+          // if (!PoolByAppSlotsGameIds.includes(gid)) continue
           result.rowsSpanGameIdMap[gid] = (result.rowsSpanGameIdMap[gid] || 0) + 1
           result.slotsData.push(item)
         } else {
