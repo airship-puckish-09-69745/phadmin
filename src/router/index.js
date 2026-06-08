@@ -1014,7 +1014,7 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/pusoyJPCfg'),
                 name: 'pusoyJackpotCfg',
                 meta: { title: 'Jackpot配置' }
-              },    {
+              }, {
                 path: 'pusoyJPEGameControl',
                 component: () => import('@/views/config/tableConfig/pusoyJPEGameControl'),
                 name: 'pusoyJPEGameControl',
@@ -1253,7 +1253,7 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/miniTripleWheelSpin.vue'),
             name: 'miniTripleWheelSpin_cfg',
             meta: { title: 'T riple Wheel Spin ◐' }
-          },
+          }
 
         ]
       },
@@ -1491,7 +1491,7 @@ export const asyncRoutes = [
                 path: 'pacquiaofortune_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/pacquiaofortune_slots_cfg'),
                 name: 'pacquiaofortune_slots_cfg',
-                meta: { title: 'P acquiaoFortune', gameKey: 'pacquiaofortune' },
+                meta: { title: 'P acquiaoFortune', gameKey: 'pacquiaofortune' }
               },
               {
                 path: 'pacquiaofortuneplaynow_slots_cfg',
@@ -2229,7 +2229,7 @@ export const asyncRoutes = [
           }
         ]
       },
-      /*{
+      /* {
         path: 'easterConfig',
         component: () => import('@/views/empty'),
         name: 'easterConfig',
@@ -2257,7 +2257,7 @@ export const asyncRoutes = [
           }
         ]
       },
-      /*{
+      /* {
         path: 'airdropConfig',
         component: () => import('@/views/empty'),
         name: 'airdropConfig',
@@ -2271,7 +2271,7 @@ export const asyncRoutes = [
           }
         ]
       },*/
-      /*{
+      /* {
         path: 'redBagConfig',
         component: () => import('@/views/empty'),
         name: 'redBagConfig',
@@ -2319,13 +2319,13 @@ export const asyncRoutes = [
         name: 'tongitsHunter',
         meta: { title: 'TongitsHunter配置', noCache: true }
       },
-      /*{
+      /* {
         path: 'kingOfPot',
         component: () => import('@/views/config/tableConfig/activity/kingOfPot/index.vue'),
         name: 'kingOfPot',
         meta: { title: 'KingOfPot配置', noCache: true }
       },*/
-      /*{
+      /* {
         path: 'sevenDayTreasureVault',
         component: () => import('@/views/config/tableConfig/activity/sevenDayTreasureVaultConfig.vue'),
         name: 'sevenDayTreasureVault',
@@ -2354,6 +2354,18 @@ export const asyncRoutes = [
         component: () => import('@/views/config/tableConfig/activity/pokerPlus/index.vue'),
         name: 'pokerPlus',
         meta: { title: 'PokerPlus活动配置', noCache: true }
+      },
+      {
+        path: 'validBetRebate',
+        component: () => import('@/views/config/tableConfig/activity/validBetRebate/index.vue'),
+        name: 'validBetRebate',
+        meta: { title: '固定反水活动配置', noCache: true }
+      },
+      {
+        path: 'phasedBetRebate',
+        component: () => import('@/views/config/tableConfig/activity/phasedBetRebate/index.vue'),
+        name: 'phasedBetRebate',
+        meta: { title: '阶段性反水活动配置', noCache: true }
       }
     ]
   },
@@ -2629,9 +2641,8 @@ export const asyncRoutes = [
                 name: 'matchGtccConfig',
                 meta: { title: 'TPCC赛事时间配置', noCache: true }
               }
-            ],
-          },
-
+            ]
+          }
 
         ]
       },
