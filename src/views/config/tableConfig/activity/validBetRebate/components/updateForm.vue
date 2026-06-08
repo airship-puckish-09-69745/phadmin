@@ -24,34 +24,73 @@
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
-              <el-form-item label="开始时间：" required>
+              <el-form-item label="活动开始时间：" required>
                 <el-date-picker v-model="item.activity.startTime" type="datetime" placeholder="选择开始时间" value-format="timestamp" style="width:  200px" />
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
-              <el-form-item label="结束时间：" required>
+              <el-form-item label="活动结束时间：" required>
                 <el-date-picker v-model="item.activity.endTime" type="datetime" placeholder="选择结束时间" value-format="timestamp" style="width: 200px" />
               </el-form-item>
             </el-col>
+            <el-col :xs="24">
+              <el-form-item label="活动展示时间：" required>
+                <el-date-picker v-model="item.activity.showTime" type="datetime" placeholder="选择结束时间" value-format="timestamp" style="width: 200px" />
+              </el-form-item>
+            </el-col>
             <el-col :xs="24" :sm="12">
-              <el-form-item label="返水奖励比例：" required>
-                <el-input v-model="item.extend.rewardRatio" placeholder="返水奖励比例" style="max-width: 200px">
+              <el-form-item label="当日玩家个人奖励上限：" required>
+                <el-input v-model.number="item.extend.maxRewardAmount" placeholder="当日玩家个人奖励上限" style="max-width: 200px">
+                  <template slot="append">₱</template>
+                </el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="12">
+              <el-form-item label="解锁活动有效下注：" required>
+                <el-input v-model.number="item.extend.effectiveBet" placeholder="解锁活动有效下注" style="max-width: 200px">
+                  <template slot="append">₱</template>
+                </el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="12">
+              <el-form-item label="每日发奖上限：" required>
+                <el-input v-model.number="item.dayPrizeThreshold" placeholder="请输入" style="max-width: 200px">
+                  <template slot="append">₱</template>
+                </el-input>
+                <div style="color: #E6A23C; font-size: 12px; line-height: 1.4; margin-top: 4px">
+                  达到上限时会在Lark同步报警
+                </div>
+              </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="12">
+              <el-form-item label="最大发奖总上限：" required>
+                <el-input v-model.number="item.totalPrizeThreshold" placeholder="请输入" style="max-width: 200px">
+                  <template slot="append">₱</template>
+                </el-input>
+                <div style="color: #E6A23C; font-size: 12px; line-height: 1.4; margin-top: 4px">
+                  达到上限时会在Lark同步报警
+                </div>
+              </el-form-item>
+            </el-col>
+
+            <el-col :xs="24" :sm="12">
+              <el-form-item label="返水比例：" required>
+                <el-input v-model="item.extend.rewardRatio" placeholder="返水比例" style="max-width: 200px">
                   <template slot="append">%</template>
                 </el-input>
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
-              <el-form-item label="玩家个人奖励上限：" required>
-                <el-input v-model.number="item.extend.maxRewardAmount" placeholder="玩家个人奖励上限金额" style="max-width: 200px">
+              <el-form-item label="最低领取的返水奖励：" required>
+                <el-input v-model.number="item.extend.minReward" placeholder="玩家最总小投注金额" style="max-width: 200px">
                   <template slot="append">₱</template>
                 </el-input>
               </el-form-item>
+
             </el-col>
-            <el-col :xs="24" :sm="12">
-              <el-form-item label="玩家最小总投注金额：" required>
-                <el-input v-model.number="item.extend.minTotalBetAmount" placeholder="玩家最总小投注金额" style="max-width: 200px">
-                  <template slot="append">₱</template>
-                </el-input>
+            <el-col :span="24">
+              <el-form-item label="站点白名单：">
+                <SiteSelect v-model="item.activity.whitelist.siteIdList" multiple placeholder="请选择" style="width: 100%; max-width: 300px" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -79,22 +118,6 @@
                     已选中 {{ (item.activity.gameIdList || []).length }} 个游戏
                   </span>
                 </div>
-              </el-form-item>
-            </el-col>
-          </el-row>
-        </el-form>
-      </el-tab-pane>
-      <el-tab-pane label="白名单配置" name="whitelist">
-        <el-form label-width="180px" size="small">
-          <el-row>
-            <el-col :span="24">
-              <el-form-item label="站点白名单：">
-                <SiteSelect v-model="item.activity.whitelist.siteIdList" multiple placeholder="请选择" style="width: 100%; max-width: 300px" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="24">
-              <el-form-item label="Uid白名单：">
-                <el-input v-model="item.activity.whitelist.uidList" placeholder="输入Uid白名单，多个Uid用逗号分隔" style="width: 100%; max-width: 600px" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -160,6 +183,7 @@ function newItem() {
       isOpen: true,
       startTime: Date.now(),
       endTime: Date.now() + 30 * 24 * 60 * 60 * 1000,
+      showTime: Date.now() + 30 * 24 * 60 * 60 * 1000,
       gameIdList: [],
       whitelist: {
         siteIdList: [],
@@ -169,7 +193,8 @@ function newItem() {
     extend: {
       rewardRatio: 0,
       maxRewardAmount: 10,
-      minTotalBetAmount: 0
+      effectiveBet: 1,
+      minReward: 1
     }
   }
 }
@@ -240,6 +265,7 @@ export default {
       // 时间：秒 -> 毫秒
       data.activity.startTime *= 1000
       data.activity.endTime *= 1000
+      data.activity.showTime *= 1000
 
       // 奖励比例缩小1000倍
       data.extend.rewardRatio = data.extend.rewardRatio / 1000
@@ -278,6 +304,10 @@ export default {
         Message.error('请选择结束时间')
         return false
       }
+      if (!this.item.activity.showTime) {
+        Message.error('请选择展示时间')
+        return false
+      }
       if (!this.item.extend.rewardRatio || this.item.extend.rewardRatio <= 0) {
         Message.error('请输入奖励比例（大于0）')
         return false
@@ -307,6 +337,7 @@ export default {
       // 时间：毫秒 -> 秒
       data.activity.startTime = Math.floor(data.activity.startTime / 1000)
       data.activity.endTime = Math.floor(data.activity.endTime / 1000)
+      data.activity.showTime = Math.floor(data.activity.showTime / 1000)
 
       // 奖励比例放大1000倍
       data.extend.rewardRatio = Math.floor(data.extend.rewardRatio * 1000)
@@ -440,7 +471,7 @@ export default {
 
           this.allTreeData = builtTree
           // 默认只显示 Slots 和 Casino 游戏（CategoryID = [1, 3]），且不展开
-          this.applyGameTypeFilter([1, 3])
+          this.applyGameTypeFilter([1])
         }
       })
     },
