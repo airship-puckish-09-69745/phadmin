@@ -33,7 +33,7 @@
                 <el-date-picker v-model="item.endTime" type="datetime" placeholder="选择结束时间" value-format="timestamp" style="width: 200px" />
               </el-form-item>
             </el-col>
-            <el-col :xs="24" :sm="12">
+            <el-col :xs="24">
               <el-form-item label="活动展示时间：" required>
                 <el-date-picker v-model="item.showTime" type="datetime" placeholder="选择展示时间" value-format="timestamp" style="width: 200px" />
               </el-form-item>
@@ -48,13 +48,6 @@
             <el-col :xs="24" :sm="12">
               <el-form-item label="解锁活动有效下注：" required>
                 <el-input v-model.number="item.effectiveBet" placeholder="解锁活动有效下注" style="max-width: 200px">
-                  <template slot="append">₱</template>
-                </el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12">
-              <el-form-item label="最低领取的返水奖励：" required>
-                <el-input v-model.number="item.minReward" placeholder="最低领取的返水奖励" style="max-width: 200px">
                   <template slot="append">₱</template>
                 </el-input>
               </el-form-item>
@@ -81,7 +74,7 @@
             </el-col>
             <el-col :span="24">
               <el-form-item label="站点白名单：">
-                <SiteSelect v-model="item.whitelistCfg.siteIdList" multiple placeholder="请选择" style="width: 100%; max-width: 300px" />
+                <SiteSelect v-model="item.siteIdList" multiple placeholder="请选择" style="width: 100%; max-width: 300px" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -91,7 +84,7 @@
               <GameSelector
                 v-model="item.gameIdCfg"
                 label="参与活动游戏："
-                :category-ids="[1, 3]"
+                :category-ids="[1]"
               />
             </el-col>
           </el-row>
@@ -174,8 +167,8 @@
 
     <!-- 底部按钮 -->
     <div style="margin-top: 20px; text-align: center">
-      <el-button type="primary" @click="handleSave">保 存</el-button>
-      <el-button @click="dialogVisible = false">取 消</el-button>
+      <el-button type="primary" @click="handleSave">保存</el-button>
+      <el-button @click="dialogVisible = false">取消</el-button>
     </div>
   </el-dialog>
 </template>
@@ -186,7 +179,7 @@ import request from '@/utils/request'
 import SiteSelect from '@/components/SiteSelect/index.vue'
 import GameSelector from '@/components/Game/GameSelector.vue'
 
-const ACTIVITY_ID = 25
+const ACTIVITY_ID = 28
 
 function newTier() {
   return { minBet: 0, maxBet: 0, rewardRatio: 0 }
@@ -202,9 +195,7 @@ function newItem() {
     endTime: Date.now() + 30 * 24 * 60 * 60 * 1000,
     showTime: Date.now() + 30 * 24 * 60 * 60 * 1000,
     gameIdCfg: [],
-    whitelistCfg: {
-      siteIdList: []
-    },
+    siteIdList: [],
     maxRewardAmount: 10,
     effectiveBet: 1,
     minReward: 1,
@@ -265,6 +256,7 @@ export default {
       const act = typeof raw.activity === 'string' ? JSON.parse(raw.activity) : (raw.activity || {})
       const ext = typeof raw.extend === 'string' ? JSON.parse(raw.extend) : (raw.extend || {})
 
+      // 站点白名单：后端在 activity.whitelist.siteIdList，前端统一为 item.siteIdList（单层）
       const whitelist = act.whitelist || { siteIdList: [] }
       if (!Array.isArray(whitelist.siteIdList)) whitelist.siteIdList = []
 
@@ -288,12 +280,14 @@ export default {
         endTime: (act.endTime || 0) * 1000,
         showTime: (act.showTime || 0) * 1000,
         gameIdCfg: Array.isArray(act.gameIdList) ? act.gameIdList : [],
-        whitelistCfg: { siteIdList: whitelist.siteIdList },
-        maxRewardAmount: (ext.maxRewardAmount || 0) / 1000,
-        effectiveBet: (ext.effectiveBet || 0) / 1000,
-        minReward: (ext.minReward || 0) / 1000,
-        dayPrizeThreshold: (raw.dayPrizeThreshold || 0) / 1000,
-        totalPrizeThreshold: (raw.totalPrizeThreshold || 0) / 1000,
+        // 将站点白名单统一到 item.siteIdList
+        siteIdList: whitelist.siteIdList,
+        // 以下字段来自 activity（活动主配置），而不是 extend
+        maxRewardAmount: (act.maxRewardAmount || 0) / 1000,
+        effectiveBet: (act.effectiveBet || 0) / 1000,
+        minReward: (act.minReward || 0) / 1000,
+        dayPrizeThreshold: (act.dayPrizeThreshold || 0) / 1000,
+        totalPrizeThreshold: (act.totalPrizeThreshold || 0) / 1000,
         rewardTiers
       }
     },
@@ -346,7 +340,7 @@ export default {
         Message.error('请选择参与活动的游戏')
         return false
       }
-      if (!this.item.whitelistCfg.siteIdList.length) {
+      if (!this.item.siteIdList || this.item.siteIdList.length <= 0) {
         Message.error('请选择站点白名单')
         return false
       }
@@ -372,6 +366,7 @@ export default {
     getPostData() {
       const d = this.item
 
+      // 说明：反水阶梯 rewardTiers 存放在 extend 中，其他业务字段放在 activity 中
       const activityObj = {
         name: d.activityName,
         activityId: ACTIVITY_ID,
@@ -380,16 +375,17 @@ export default {
         endTime: Math.floor(d.endTime / 1000),
         showTime: Math.floor(d.showTime / 1000),
         gameIdList: d.gameIdCfg.map(v => Number(v)),
-        whitelist: {
-          siteIdList: d.whitelistCfg.siteIdList,
-          uidList: []
-        }
-      }
-
-      const extendObj = {
+        // 保持后端期待的字段结构：activity.whitelist.siteIdList
+        whitelist: { siteIdList: d.siteIdList },
+        // 奖励相关配置（以千分位保存）
         maxRewardAmount: Math.floor(d.maxRewardAmount * 1000),
         effectiveBet: Math.floor(d.effectiveBet * 1000),
         minReward: Math.floor((d.minReward || 0) * 1000),
+        dayPrizeThreshold: Math.floor((d.dayPrizeThreshold || 0) * 1000),
+        totalPrizeThreshold: Math.floor((d.totalPrizeThreshold || 0) * 1000)
+      }
+
+      const extendObj = {
         rewardTiers: d.rewardTiers.map(t => ({
           minBet: Math.floor((t.minBet || 0) * 1000),
           maxBet: Math.floor((t.maxBet || 0) * 1000),
@@ -400,8 +396,6 @@ export default {
       return {
         id: d.id,
         activityId: ACTIVITY_ID,
-        dayPrizeThreshold: Math.floor((d.dayPrizeThreshold || 0) * 1000),
-        totalPrizeThreshold: Math.floor((d.totalPrizeThreshold || 0) * 1000),
         activity: JSON.stringify(activityObj),
         extend: JSON.stringify(extendObj)
       }
@@ -449,5 +443,26 @@ export default {
 </script>
 
 <style scoped>
+/* 居中表单标签和输入文字 */
+.el-form-item__label {
+  text-align: center;
+}
 
+/* 让所有 el-input 的文字和 placeholder 居中 */
+.el-input__inner {
+  text-align: center;
+}
+
+/* 日期选择器和选择器默认使用 .el-input__inner，因此上面的规则生效。
+   针对表格内的紧凑输入也强制居中 */
+.el-table .el-input__inner {
+  text-align: center;
+}
+
+/* 小屏幕下标签仍居中显示 */
+@media (max-width: 600px) {
+  .el-form-item__label {
+    text-align: center;
+  }
+}
 </style>

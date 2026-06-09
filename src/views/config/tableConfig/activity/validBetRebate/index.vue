@@ -43,7 +43,7 @@
         </el-table-column>
         <el-table-column prop="rewardRatio" label="返水比例" width="100" align="center">
           <template slot-scope="scope">
-            {{ scope.row.rewardRatio != null ? (scope.row.rewardRatio / 1000) + '%' : '-' }}
+            {{ scope.row.rewardRatio != null ? (scope.row.rewardRatio) + '%' : '-' }}
           </template>
         </el-table-column>
         <el-table-column prop="maxRewardAmount" label="个人奖励上限" width="120" align="center">
@@ -119,7 +119,7 @@ export default {
       tableData: [],
       AttrNames: {
         id: '配置ID',
-        activityName: '活动名称',
+        Activity: '活动数据',
         isOpen: '活动开关',
         startTime: '开始时间',
         endTime: '结束时间',
@@ -216,13 +216,12 @@ export default {
               endTime: act.endTime || 0,
               showTime: act.showTime || 0,
               gameIdCfg: act.gameIdList || [],
-              whitelistCfg: act.whitelist || { siteIdList: [] },
-              // 展平 extend 字段（保留原始倍率，display时除以1000）
-              rewardRatio: ext.rewardRatio || 0,
-              maxRewardAmount: ext.maxRewardAmount || 0,
-              effectiveBet: ext.effectiveBet || 0,
-              minReward: ext.minReward || 0,
-              // 保留原始 activity/extend 字符串供 updateForm 使用
+              siteIdList: act.siteIdList || [],
+              rewardRatio: act.rewardRatio || 0,
+              maxRewardAmount: act.maxRewardAmount || 0,
+              effectiveBet: act.effectiveBet || 0,
+              minReward: act.minReward || 0,
+              dayPrizeThreshold: act.dayPrizeThreshold || 0,
               activity: act,
               extend: ext
             })
