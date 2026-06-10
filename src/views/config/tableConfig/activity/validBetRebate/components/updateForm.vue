@@ -15,27 +15,27 @@
           <el-row :gutter="20">
             <el-col :xs="24" :sm="12">
               <el-form-item label="活动开关：">
-                <el-switch v-model="item.isOpen" :active-value="true" :inactive-value="false"/>
+                <el-switch v-model="item.isOpen" :active-value="true" :inactive-value="false" />
               </el-form-item>
             </el-col>
             <el-col :span="24">
               <el-form-item label="活动名称：" required>
-                <el-input v-model="item.activityName" placeholder="请输入活动名称" style="max-width: 400px"/>
+                <el-input v-model="item.activityName" placeholder="请输入活动名称" style="max-width: 400px" />
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
               <el-form-item label="活动开始时间：" required>
-                <el-date-picker v-model="item.startTime" type="datetime" placeholder="选择开始时间" value-format="timestamp" style="width: 200px"/>
+                <el-date-picker v-model="item.startTime" type="datetime" placeholder="选择开始时间" value-format="timestamp" style="width: 200px" />
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
               <el-form-item label="活动结束时间：" required>
-                <el-date-picker v-model="item.endTime" type="datetime" placeholder="选择结束时间" value-format="timestamp" style="width: 200px"/>
+                <el-date-picker v-model="item.endTime" type="datetime" placeholder="选择结束时间" value-format="timestamp" style="width: 200px" />
               </el-form-item>
             </el-col>
-            <el-col :xs="24">
+            <el-col :xs="24" :sm="12">
               <el-form-item label="活动展示时间：" required>
-                <el-date-picker v-model="item.showTime" type="datetime" placeholder="选择展示时间" value-format="timestamp" style="width: 200px"/>
+                <el-date-picker v-model="item.showTime" type="datetime" placeholder="选择展示时间" value-format="timestamp" style="width: 200px" />
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
@@ -95,7 +95,11 @@
           <!-- 参与活动游戏选择 -->
           <el-row>
             <el-col :span="24">
-              <GameSelector v-model="item.gameIdCfg" label="参与活动游戏：" :category-ids="[1]"/>
+              <GameSelector
+                v-model="item.gameIdCfg"
+                label="参与活动游戏："
+                :category-ids="[1, 3]"
+              />
             </el-col>
           </el-row>
         </el-form>
@@ -104,8 +108,8 @@
 
     <!-- 底部按钮 -->
     <div style="margin-top: 20px; text-align: center">
-      <el-button type="primary" @click="handleSave">保存</el-button>
-      <el-button @click="dialogVisible = false">取消</el-button>
+      <el-button type="primary" @click="handleSave">保 存</el-button>
+      <el-button @click="dialogVisible = false">取 消</el-button>
     </div>
   </el-dialog>
 </template>
@@ -128,7 +132,7 @@ function newItem() {
     endTime: Date.now() + 30 * 24 * 60 * 60 * 1000,
     showTime: Date.now() + 30 * 24 * 60 * 60 * 1000,
     gameIdCfg: [],
-    whitelist: { siteIdList: [] },
+    siteIdList: [],
     rewardRatio: 0,
     maxRewardAmount: 10,
     effectiveBet: 1,
@@ -193,6 +197,9 @@ export default {
         siteIdList: (act.whitelist && Array.isArray(act.whitelist.siteIdList)) ? act.whitelist.siteIdList : (Array.isArray(act.siteIdList) ? act.siteIdList : [])
       }
 
+      const whitelist = act.whitelist || { siteIdList: [] }
+      if (!Array.isArray(whitelist.siteIdList)) whitelist.siteIdList = []
+
       this.item = {
         id: raw.id || 0,
         activityId: ACTIVITY_ID,
@@ -205,7 +212,7 @@ export default {
         endTime: (act.endTime || 0) * 1000,
         showTime: (act.showTime || 0) * 1000,
         gameIdCfg: Array.isArray(act.gameIdList) ? act.gameIdList : [],
-        whitelist,
+        siteIdList: Array.isArray(act.siteIdList) ? act.siteIdList : [],
         rewardRatio: (act.rewardRatio || 0),
         maxRewardAmount: (act.maxRewardAmount || 0) / 1000,
         effectiveBet: (act.effectiveBet || 0) / 1000,
@@ -249,7 +256,7 @@ export default {
         Message.error('请选择参与活动的游戏')
         return false
       }
-      if (!this.item.whitelist || !this.item.whitelist.siteIdList || this.item.whitelist.siteIdList.length <= 0) {
+      if (!this.item.siteIdList || this.item.siteIdList.length <= 0) {
         Message.error('请选择站点白名单')
         return false
       }
@@ -268,22 +275,18 @@ export default {
         endTime: Math.floor(d.endTime / 1000),
         showTime: Math.floor(d.showTime / 1000),
         gameIdList: d.gameIdCfg.map(v => Number(v)),
-        whitelist: {
-          siteIdList: (d.whitelist && Array.isArray(d.whitelist.siteIdList)) ? d.whitelist.siteIdList : []
-        },
+        siteIdList: d.siteIdList,
         rewardRatio: d.rewardRatio,
         maxRewardAmount: Math.floor(d.maxRewardAmount * 1000),
         effectiveBet: Math.floor(d.effectiveBet * 1000),
-        minReward: Math.floor((d.minReward || 0) * 1000),
-        dayPrizeThreshold: Math.floor((d.dayPrizeThreshold || 0) * 1000),
-        totalPrizeThreshold: Math.floor((d.totalPrizeThreshold || 0) * 1000)
+        minReward: Math.floor((d.minReward || 0) * 1000)
       }
-
-      const extendObj = {}
 
       return {
         id: d.id,
         activityId: ACTIVITY_ID,
+        dayPrizeThreshold: Math.floor((d.dayPrizeThreshold || 0) * 1000),
+        totalPrizeThreshold: Math.floor((d.totalPrizeThreshold || 0) * 1000),
         activity: JSON.stringify(activityObj),
         extend: JSON.stringify(extendObj)
       }
@@ -329,3 +332,7 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+
+</style>

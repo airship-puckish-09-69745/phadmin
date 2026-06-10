@@ -43,7 +43,7 @@
         </el-table-column>
         <el-table-column prop="rewardRatio" label="返水比例" width="100" align="center">
           <template slot-scope="scope">
-            {{ scope.row.rewardRatio != null ? (scope.row.rewardRatio) + '%' : '-' }}
+            {{ scope.row.rewardRatio != null ? (scope.row.rewardRatio / 1000) + '%' : '-' }}
           </template>
         </el-table-column>
         <el-table-column prop="maxRewardAmount" label="个人奖励上限" width="120" align="center">
@@ -119,7 +119,7 @@ export default {
       tableData: [],
       AttrNames: {
         id: '配置ID',
-        Activity: '活动数据',
+        activityName: '活动名称',
         isOpen: '活动开关',
         startTime: '开始时间',
         endTime: '结束时间',

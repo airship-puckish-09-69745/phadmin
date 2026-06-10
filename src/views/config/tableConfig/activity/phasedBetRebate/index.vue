@@ -31,16 +31,17 @@
             <el-tag :type="scope.row.isOpen ? 'success' : 'info'" size="mini">{{ scope.row.isOpen ? '开' : '关' }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="startTime" label="开始时间" sortable="custom" min-width="150" align="center">
+        <el-table-column prop="startTime" label="开始时间" sortable="custom" min-width="150">
           <template slot-scope="scope">
             {{ formatTime(scope.row.startTime) }}
           </template>
         </el-table-column>
-        <el-table-column prop="endTime" label="结束时间" sortable="custom" min-width="150" align="center">
+        <el-table-column prop="endTime" label="结束时间" sortable="custom" min-width="150">
           <template slot-scope="scope">
             {{ formatTime(scope.row.endTime) }}
           </template>
         </el-table-column>
+        <el-table-column prop="tiersCount" label="反水阶梯数" width="100" align="center" />
         <el-table-column prop="maxRewardAmount" label="个人奖励上限" width="120" align="center">
           <template slot-scope="scope">
             {{ scope.row.maxRewardAmount != null ? scope.row.maxRewardAmount / 1000 : '-' }}
@@ -51,13 +52,13 @@
             {{ scope.row.dayPrizeThreshold != null ? scope.row.dayPrizeThreshold / 1000 : '-' }}
           </template>
         </el-table-column>
-        <el-table-column prop="modifyUser" label="最后修改人" width="200" show-overflow-tooltip align="center" />
+        <el-table-column prop="modifyUser" label="最后修改人" width="110" show-overflow-tooltip />
         <el-table-column prop="status" label="状态" width="80" align="center">
           <template slot-scope="scope">
             <el-tag :type="statusTagType[scope.row.status]" size="mini">{{ statusNames[scope.row.status] || scope.row.status }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" column-key="op" fixed="right" align="center" width="300">
+        <el-table-column label="操作" column-key="op" fixed="right" min-width="220">
           <template slot-scope="scope">
             <el-button size="mini" type="primary" icon="el-icon-edit" @click="handleEdit(scope.row)">编辑</el-button>
             <el-button v-if="scope.row.status !== 2" size="mini" type="success" icon="el-icon-upload2" @click="handlePrepare(scope.row)">上架</el-button>
@@ -98,7 +99,7 @@ import { Message } from 'element-ui'
 import UpdateForm from './components/updateForm.vue'
 
 const filterMap = {}
-const ACTIVITY_ID = 28
+const ACTIVITY_ID = 25
 
 export default {
   components: { Publish, UpdateForm },
@@ -202,8 +203,6 @@ export default {
           for (const obj of objs) {
             const act = JSON.parse(obj.activity || '{}')
             const ext = JSON.parse(obj.extend || '{}')
-            // 说明：阶段性反水的业务字段都在 activity 中（maxRewardAmount、effectiveBet、minReward 等）
-            // 反水阶梯配置单独放在 extend.rewardTiers 中
             rows.push({
               ...obj,
               activityName: act.name || '',
@@ -212,13 +211,10 @@ export default {
               endTime: act.endTime || 0,
               showTime: act.showTime || 0,
               gameIdCfg: act.gameIdList || [],
-              // 站点白名单前端简化为单层数组 siteIdList，便于表单直接绑定
-              siteIdList: (act.whitelist && Array.isArray(act.whitelist.siteIdList)) ? act.whitelist.siteIdList : (act.siteIdList || []),
-              // 以下字段全部来自 activity
-              maxRewardAmount: act.maxRewardAmount || 0,
-              effectiveBet: act.effectiveBet || 0,
-              minReward: act.minReward || 0,
-              dayPrizeThreshold: act.dayPrizeThreshold || 0,
+              whitelistCfg: act.whitelist || { siteIdList: [] },
+              maxRewardAmount: ext.maxRewardAmount || 0,
+              effectiveBet: ext.effectiveBet || 0,
+              minReward: ext.minReward || 0,
               tiersCount: Array.isArray(ext.rewardTiers) ? ext.rewardTiers.length : 0,
               activity: act,
               extend: ext
