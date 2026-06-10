@@ -216,7 +216,7 @@ export default {
               endTime: act.endTime || 0,
               showTime: act.showTime || 0,
               gameIdCfg: act.gameIdList || [],
-              siteIdList: act.siteIdList || [],
+              siteIdList: (act.whitelist && Array.isArray(act.whitelist.siteIdList)) ? act.whitelist.siteIdList : (act.siteIdList || []),
               rewardRatio: act.rewardRatio || 0,
               maxRewardAmount: act.maxRewardAmount || 0,
               effectiveBet: act.effectiveBet || 0,

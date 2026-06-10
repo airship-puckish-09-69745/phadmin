@@ -74,7 +74,7 @@
             </el-col>
             <el-col :span="24">
               <el-form-item label="站点白名单：">
-                <SiteSelect v-model="item.siteIdList" multiple placeholder="请选择" style="width: 100%; max-width: 300px" />
+                <SiteSelect v-model="item.whitelist.siteIdList" multiple placeholder="请选择" style="width: 100%; max-width: 300px" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -195,7 +195,7 @@ function newItem() {
     endTime: Date.now() + 30 * 24 * 60 * 60 * 1000,
     showTime: Date.now() + 30 * 24 * 60 * 60 * 1000,
     gameIdCfg: [],
-    siteIdList: [],
+    whitelist: { siteIdList: [] },
     maxRewardAmount: 10,
     effectiveBet: 1,
     minReward: 1,
@@ -252,19 +252,20 @@ export default {
     // 加载编辑数据（后端嵌套格式 -> 前端扁平格式）
     loadEditData() {
       const raw = JSON.parse(JSON.stringify(this.data))
-
       const act = typeof raw.activity === 'string' ? JSON.parse(raw.activity) : (raw.activity || {})
       const ext = typeof raw.extend === 'string' ? JSON.parse(raw.extend) : (raw.extend || {})
-
-
       // 反水阶梯：/1000 还原金额和比例
       let rewardTiers = Array.isArray(ext.rewardTiers) ? ext.rewardTiers : [newTier()]
       rewardTiers = rewardTiers.map(t => ({
         minBet: (t.minBet || 0) / 1000,
         maxBet: (t.maxBet || 0) / 1000,
-        rewardRatio: (t.rewardRatio || 0) / 1000
+        rewardRatio: (t.rewardRatio || 0)
       }))
       if (rewardTiers.length === 0) rewardTiers = [newTier()]
+
+      const whitelist = {
+        siteIdList: (act.whitelist && Array.isArray(act.whitelist.siteIdList)) ? act.whitelist.siteIdList : (Array.isArray(act.siteIdList) ? act.siteIdList : [])
+      }
 
       this.item = {
         id: raw.id || 0,
@@ -277,7 +278,7 @@ export default {
         endTime: (act.endTime || 0) * 1000,
         showTime: (act.showTime || 0) * 1000,
         gameIdCfg: Array.isArray(act.gameIdList) ? act.gameIdList : [],
-        siteIdList: act.siteIdList,
+        whitelist,
         maxRewardAmount: (act.maxRewardAmount || 0) / 1000,
         effectiveBet: (act.effectiveBet || 0) / 1000,
         minReward: (act.minReward || 0) / 1000,
@@ -335,7 +336,7 @@ export default {
         Message.error('请选择参与活动的游戏')
         return false
       }
-      if (!this.item.siteIdList || this.item.siteIdList.length <= 0) {
+      if (!this.item.whitelist || !this.item.whitelist.siteIdList || this.item.whitelist.siteIdList.length <= 0) {
         Message.error('请选择站点白名单')
         return false
       }
@@ -370,7 +371,9 @@ export default {
         endTime: Math.floor(d.endTime / 1000),
         showTime: Math.floor(d.showTime / 1000),
         gameIdList: d.gameIdCfg.map(v => Number(v)),
-        siteIdList: d.siteIdList,
+        whitelist: {
+          siteIdList: (d.whitelist && Array.isArray(d.whitelist.siteIdList)) ? d.whitelist.siteIdList : []
+        },
         // 奖励相关配置（以千分位保存）
         maxRewardAmount: Math.floor(d.maxRewardAmount * 1000),
         effectiveBet: Math.floor(d.effectiveBet * 1000),
@@ -383,7 +386,7 @@ export default {
         rewardTiers: d.rewardTiers.map(t => ({
           minBet: Math.floor((t.minBet || 0) * 1000),
           maxBet: Math.floor((t.maxBet || 0) * 1000),
-          rewardRatio: Math.floor((t.rewardRatio || 0) * 1000)
+          rewardRatio: Math.floor((t.rewardRatio || 0))
         }))
       }
 

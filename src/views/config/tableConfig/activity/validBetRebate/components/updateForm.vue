@@ -88,7 +88,7 @@
             </el-col>
             <el-col :span="24">
               <el-form-item label="站点白名单：">
-                <SiteSelect v-model="item.siteIdList" multiple placeholder="请选择" style="width: 100%; max-width: 300px"/>
+                <SiteSelect v-model="item.whitelist.siteIdList" multiple placeholder="请选择" style="width: 100%; max-width: 300px"/>
               </el-form-item>
             </el-col>
           </el-row>
@@ -128,7 +128,7 @@ function newItem() {
     endTime: Date.now() + 30 * 24 * 60 * 60 * 1000,
     showTime: Date.now() + 30 * 24 * 60 * 60 * 1000,
     gameIdCfg: [],
-    siteIdList: [],
+    whitelist: { siteIdList: [] },
     rewardRatio: 0,
     maxRewardAmount: 10,
     effectiveBet: 1,
@@ -188,7 +188,10 @@ export default {
 
       // activity / extend 可能仍是字符串（由 index.vue 解析后传入的是对象）
       const act = typeof raw.activity === 'string' ? JSON.parse(raw.activity) : (raw.activity || {})
-      const ext = typeof raw.extend === 'string' ? JSON.parse(raw.extend) : (raw.extend || {})
+
+      const whitelist = {
+        siteIdList: (act.whitelist && Array.isArray(act.whitelist.siteIdList)) ? act.whitelist.siteIdList : (Array.isArray(act.siteIdList) ? act.siteIdList : [])
+      }
 
       this.item = {
         id: raw.id || 0,
@@ -202,7 +205,7 @@ export default {
         endTime: (act.endTime || 0) * 1000,
         showTime: (act.showTime || 0) * 1000,
         gameIdCfg: Array.isArray(act.gameIdList) ? act.gameIdList : [],
-        siteIdList: Array.isArray(act.siteIdList) ? act.siteIdList : [],
+        whitelist,
         rewardRatio: (act.rewardRatio || 0),
         maxRewardAmount: (act.maxRewardAmount || 0) / 1000,
         effectiveBet: (act.effectiveBet || 0) / 1000,
@@ -246,7 +249,7 @@ export default {
         Message.error('请选择参与活动的游戏')
         return false
       }
-      if (!this.item.siteIdList || this.item.siteIdList.length <= 0) {
+      if (!this.item.whitelist || !this.item.whitelist.siteIdList || this.item.whitelist.siteIdList.length <= 0) {
         Message.error('请选择站点白名单')
         return false
       }
@@ -265,7 +268,9 @@ export default {
         endTime: Math.floor(d.endTime / 1000),
         showTime: Math.floor(d.showTime / 1000),
         gameIdList: d.gameIdCfg.map(v => Number(v)),
-        siteIdList: d.siteIdList,
+        whitelist: {
+          siteIdList: (d.whitelist && Array.isArray(d.whitelist.siteIdList)) ? d.whitelist.siteIdList : []
+        },
         rewardRatio: d.rewardRatio,
         maxRewardAmount: Math.floor(d.maxRewardAmount * 1000),
         effectiveBet: Math.floor(d.effectiveBet * 1000),
