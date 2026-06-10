@@ -256,9 +256,6 @@ export default {
       const act = typeof raw.activity === 'string' ? JSON.parse(raw.activity) : (raw.activity || {})
       const ext = typeof raw.extend === 'string' ? JSON.parse(raw.extend) : (raw.extend || {})
 
-      // 站点白名单：后端在 activity.whitelist.siteIdList，前端统一为 item.siteIdList（单层）
-      const whitelist = act.whitelist || { siteIdList: [] }
-      if (!Array.isArray(whitelist.siteIdList)) whitelist.siteIdList = []
 
       // 反水阶梯：/1000 还原金额和比例
       let rewardTiers = Array.isArray(ext.rewardTiers) ? ext.rewardTiers : [newTier()]
@@ -280,9 +277,7 @@ export default {
         endTime: (act.endTime || 0) * 1000,
         showTime: (act.showTime || 0) * 1000,
         gameIdCfg: Array.isArray(act.gameIdList) ? act.gameIdList : [],
-        // 将站点白名单统一到 item.siteIdList
-        siteIdList: whitelist.siteIdList,
-        // 以下字段来自 activity（活动主配置），而不是 extend
+        siteIdList: act.siteIdList,
         maxRewardAmount: (act.maxRewardAmount || 0) / 1000,
         effectiveBet: (act.effectiveBet || 0) / 1000,
         minReward: (act.minReward || 0) / 1000,
@@ -375,8 +370,7 @@ export default {
         endTime: Math.floor(d.endTime / 1000),
         showTime: Math.floor(d.showTime / 1000),
         gameIdList: d.gameIdCfg.map(v => Number(v)),
-        // 保持后端期待的字段结构：activity.whitelist.siteIdList
-        whitelist: { siteIdList: d.siteIdList },
+        siteIdList: d.siteIdList,
         // 奖励相关配置（以千分位保存）
         maxRewardAmount: Math.floor(d.maxRewardAmount * 1000),
         effectiveBet: Math.floor(d.effectiveBet * 1000),
