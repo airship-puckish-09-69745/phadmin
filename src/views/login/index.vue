@@ -38,16 +38,60 @@
             @keyup.native="checkCapslock"
             @blur="capsTooltip = false"
             @keyup.enter.native="handleLogin"
+            @focus="checkGoogleAuth"
           />
           <span class="show-pwd" @click="showPwd">
             <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
           </span>
         </el-form-item>
       </el-tooltip>
-
+      <el-form-item prop="googleCode">
+        <span class="svg-container">
+          <i class="el-icon-key" />
+        </span>
+        <el-input
+          ref="googleCode"
+          v-model="loginForm.googleCode"
+          class="login-input"
+          placeholder="Google Code"
+          name="googleCode"
+          type="text"
+          tabindex="1"
+        />
+      </el-form-item>
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
 
     </el-form>
+
+    <el-dialog
+      title="Google 验证"
+      :visible.sync="showGoogleDialog"
+      width="700px"
+      :close-on-click-modal="false"
+      :show-close="false"
+      :close-on-press-escape="false"
+style="background-color: #283443;"
+    >
+      <el-form>
+        <div style="font-size: 18px; margin-bottom: 8px;">{{ '首次登录二维码'}}</div>
+        <div style="display: flex; gap: 20px; align-items: flex-start;">
+          <div style="flex: 0 0 260px; text-align: center;">
+            <el-image :src="codeUrl" alt="google-qr" style="max-width:240px;border-radius:6px;background:#fff;padding:6px;" />
+          </div>
+          <div style="flex: 1; margin-top: 5px;">
+            <div>{{ '登录名' + ':' }}</div>
+            <el-input v-model="googleForm.username" placeholder="请输入用户名" style="background-color: #1a2332; color: #fff;" />
+            <div>Key: </div>
+            <el-input v-model="googleForm.googleSecret" placeholder="请输入key" style="background-color: #1a2332; color: #fff;" />
+          </div>
+        </div>
+        <div style="font-size: 18px; margin-bottom: 8px; margin-top:10px;">{{ '验证码' }}</div>
+        <div style="display: flex; flex-direction:column;">
+          <el-input v-model="googleForm.googleCode" placeholder="请输入验证码" style="background-color: #1a2332; color: #fff; width: 300px;" />
+          <el-button type="primary" style="width: 100px; margin-top: 20px;" @click="handleGoogleSubmit">提交</el-button>
+        </div>
+      </el-form>
+    </el-dialog>
 
     <el-dialog title="Or connect with" :visible.sync="showDialog">
       Can not be simulated on local, so please combine you own business simulation! ! !
@@ -61,6 +105,8 @@
 
 <script>
 import SocialSign from './components/SocialSignin'
+import request from '@/utils/request';
+import {Message} from 'element-ui';
 
 export default {
   name: 'Login',
@@ -83,7 +129,13 @@ export default {
     return {
       loginForm: {
         username: '',
-        password: ''
+        password: '',
+        googleCode: ''
+      },
+      googleForm: {
+        username: '',
+        googleSecret: '',
+        googleCode: ''
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -94,6 +146,8 @@ export default {
       loading: false,
       showDialog: false,
       redirect: undefined,
+      showGoogleDialog: false,
+      codeUrl: '',
       otherQuery: {}
     }
   },
@@ -135,6 +189,76 @@ export default {
       }
       this.$nextTick(() => {
         this.$refs.password.focus()
+      })
+    },
+    checkGoogleAuth() {
+      if (!this.loginForm.username) {
+        return
+      }
+
+      request({
+        url: '/login/user/google/enabled',
+        method: 'get',
+        params: {
+          username: this.loginForm.username
+        }
+      }).then(response => {
+        if (response.RetCode === 0 && response.Data && response.Data.Secret && response.Data.CodeUrl) {
+          // 设置 Google 验证表单数据
+          this.googleForm.username = this.loginForm.username
+          this.googleForm.googleSecret = response.Data.Secret || ''
+          this.codeUrl = response.Data.CodeUrl || ''
+
+          // 显示 Google 验证对话框
+          this.showGoogleDialog = true
+        } else {
+          // 已绑定或不需要绑定，继续登录流程
+          console.log('用户已绑定 Google 验证或无需绑定')
+        }
+      }).catch(error => {
+        console.error('Check Google Auth failed:', error)
+      })
+    },
+    handleGoogleSubmit() {
+      if (!this.googleForm.username || !this.googleForm.googleCode || !this.googleForm.googleSecret) {
+        Message({
+          message: '请填写完整的验证信息',
+          type: 'warning',
+          duration: 3 * 1000
+        })
+        return
+      }
+
+      request({
+        url: '/adminuser/user/google/secret/update',
+        method: 'post',
+        data: {
+          name: this.googleForm.username,
+          code: this.googleForm.googleCode,
+          secret: this.googleForm.googleSecret
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          Message({
+            message: 'Google 验证设置成功',
+            type: 'success'
+          })
+          // 关闭对话框
+          this.showGoogleDialog = false
+        } else {
+          Message({
+            message: response.msg || 'Google 验证设置失败',
+            type: 'error'
+          })
+          // 失败时不关闭对话框，让用户可以重新操作
+        }
+      }).catch(error => {
+        console.error('Update Google Secret failed:', error)
+        Message({
+          message: '网络错误，请重试',
+          type: 'error'
+        })
+        // 失败时不关闭对话框，让用户可以重新操作
       })
     },
     handleLogin() {
