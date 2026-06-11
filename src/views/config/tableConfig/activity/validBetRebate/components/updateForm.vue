@@ -88,7 +88,7 @@
             </el-col>
             <el-col :span="24">
               <el-form-item label="站点白名单：">
-                <SiteSelect v-model="item.whitelist.siteIdList" multiple placeholder="请选择" style="width: 100%; max-width: 300px"/>
+                <SiteSelect v-model="item.whitelist.siteIdList" multiple placeholder="请选择" style="width: 100%; max-width: 300px" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -197,7 +197,6 @@ export default {
         siteIdList: (act.whitelist && Array.isArray(act.whitelist.siteIdList)) ? act.whitelist.siteIdList : (Array.isArray(act.siteIdList) ? act.siteIdList : [])
       }
 
-      const whitelist = act.whitelist || { siteIdList: [] }
       if (!Array.isArray(whitelist.siteIdList)) whitelist.siteIdList = []
 
       this.item = {
