@@ -1,16 +1,15 @@
 <template>
   <div class="app-container">
     <el-row :gutter="10" style="margin-top: 10px">
-      <el-col :span="22" :offset="1">
-        <p style="margin-bottom:30px;color:#dd0000;">
-          注意：支持按APP区分的奖池，需前往新后台配置：
-          1. 登录新后台，切换到目标【环境-APP】，例如【新版线上-1000005】。
-          2. 进入“场次管理-小游戏奖池配置”页面，配置游戏奖池。
-        </p>
+      <el-col :span="4" :offset="1">
+        <span>APP：</span>
+        <el-select v-model="selectedApp" placeholder="请选择APP" size="mini" style="width: 80%" @change="onAppChange">
+          <el-option label="旧版" :value="0" />
+          <el-option v-for="(item,index) in appOptions" :key="index" :label="item.label" :value="item.value" />
+        </el-select>
       </el-col>
-      <el-col :span="22" :offset="1">
+      <el-col :span="1">
         <el-button type="success" size="mini" @click="getData">刷新</el-button>
-        <el-button type="success" size="mini" @click="jumpToNewPage">按APP配置奖池->前往新后台</el-button>
       </el-col>
       <el-col :span="22" :offset="1">
         <el-tabs active-name="first">
@@ -58,7 +57,6 @@
             >
               <template slot-scope="scope">
                 <el-button type="primary" size="mini" @click="edit(scope.row)">编辑</el-button>
-                <el-button v-if="scope.row.IsByApp" type="success" size="mini" @click="jumpToNewPage">前往新后台</el-button>
               </template>
             </el-table-column>
           </el-table></el-tab-pane>
@@ -74,7 +72,7 @@
               width="150"
             >
               <template slot-scope="scope">
-                  {{ getSlotsName(scope.row.Gid) }}
+                {{ getSlotsName(scope.row.Gid) }}
               </template>
             </el-table-column>
             <el-table-column
@@ -157,7 +155,12 @@ import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import store from '@/store'
 import { $libShow, DataRule, ValidateVueItem } from '@/utils/common'
-import { switchNewAppEnv } from '@/utils/app';
+
+/**
+ * 支持分app奖池的Slots游戏id
+ */
+const PoolByAppSlotsGameIds = [86, 88, 90, 94, 98]
+const IGNORE_GIDS = [2, 3, 4, 5, 7, 8, 9, 13, 14, 16, 17, 18, 19]
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
@@ -184,11 +187,14 @@ export default {
       libShow: $libShow,
       dialogVisible: false,
       rowsSpanGameIdMap: {},
-      PrizePoolV2Url: process.env.VUE_APP_ADMIN_V2_URL
+      PrizePoolV2Url: process.env.VUE_APP_ADMIN_V2_URL,
+      selectedApp: 0,
+      appOptions: []
     }
   },
   created() {
     this.getData()
+    this.getAppInfos()
     console.log(1)
   },
   methods: {
@@ -222,7 +228,7 @@ export default {
         }
       }
     },
-/*    isSlots(o) {
+    /*    isSlots(o) {
       if (o > 50 && o < 100 || o > 149 && o < 200) {
         return true
       } else {
@@ -236,50 +242,78 @@ export default {
     dataRule(required, config) {
       return DataRule(required, config)
     },
+    slotsDataCompare(a, b) {
+      let aName = this.getSlotsName(a.Gid)
+      aName = aName !== undefined ? aName.toLowerCase() : ''
+      let bName = this.getSlotsName(b.Gid)
+      bName = bName !== undefined ? bName.toLowerCase() : ''
+      return aName.localeCompare(bName)
+    },
+    casioDataCompare(a, b) {
+      let aName = this.getGameName(a.Gid)
+      aName = aName !== undefined ? aName.toLowerCase() : ''
+      let bName = this.getGameName(b.Gid)
+      bName = bName !== undefined ? bName.toLowerCase() : ''
+      return aName.localeCompare(bName)
+    },
+    parsePoolList(data) {
+      const result = { slotsData: [], casioData: [], rowsSpanGameIdMap: {}}
+      for (const item of data) {
+        if (IGNORE_GIDS.includes(item.Gid)) continue
+        if (item.Gid > 5000) {
+          const gid = parseInt(item.Gid / 100)
+          // if (!PoolByAppSlotsGameIds.includes(gid)) continue
+          result.rowsSpanGameIdMap[gid] = (result.rowsSpanGameIdMap[gid] || 0) + 1
+          result.slotsData.push(item)
+        } else {
+          result.casioData.push(item)
+        }
+      }
+      result.slotsData.sort(this.slotsDataCompare)
+      result.casioData.sort(this.casioDataCompare)
+      return result
+    },
     getData() {
-      const $this = this
       request({
         url: '/dataProxy/info',
         method: 'get',
         data: {
           Path: '/user/game/prize/pool/list',
-          Env: store.getters.env
-
+          Env: store.getters.env,
+          AppId: this.selectedApp
         }
       }).then(response => {
-        console.log('list response', response)
-        const ignore = [2, 3, 4, 5, 7, 8, 9, 13, 14, 16, 17, 18, 19]
-         $this.slotsData = []
-         $this.casioData = []
         if (response.RetCode === 0) {
-          $this.rowsSpanGameIdMap = {}
-          for (let i = 0; i < response.Data.length; i++) {
-            const item = response.Data[i]
-            if (ignore.includes(item.Gid)) {
-              continue
-            }
-
-            if (item.Gid > 5000) {
-              const gid = parseInt(item.Gid / 100)
-              if (gid in $this.rowsSpanGameIdMap) {
-                $this.rowsSpanGameIdMap[gid] += 1
-              } else {
-                $this.rowsSpanGameIdMap[gid] = 1
-              }
-              $this.slotsData.push(item)
-            } else {
-              $this.casioData.push(item)
-            }
-            // $this.tableData.push(response.Data[i])
-          }
-          $this.slotsData.sort(function(a, b) {
-            return $this.getSlotsName(a.Gid).localeCompare($this.getSlotsName(b.Gid))
-          })
-          // $this.tableData.splice(0, 0)
+          const result = this.parsePoolList(response.Data)
+          this.slotsData = result.slotsData
+          this.casioData = result.casioData
+          this.rowsSpanGameIdMap = result.rowsSpanGameIdMap
         } else {
-          $this.$message.error(response.Data)
+          this.$message.error(response.Data)
         }
       })
+    },
+    getAppInfos() {
+      request({
+        url: '/thirdparties/all',
+        method: 'get',
+        data: {}
+      }).then(response => {
+        if (response.RetCode !== 0) {
+          return
+        }
+        response.Data.forEach(app => {
+          if (app.Status === 2) {
+            this.appOptions.push({
+              value: app.ID,
+              label: app.ID + '-' + app.Account
+            })
+          }
+        })
+      })
+    },
+    onAppChange() {
+      this.getData()
     },
     getGameName(gid) {
       const id = parseInt(gid)
@@ -288,10 +322,10 @@ export default {
       }
       return $libShow.GameNames[id]
     },
-    getSlotsName(gid){
+    getSlotsName(gid) {
       return $libShow.GameNames[parseInt(gid / 100)]
     },
-    getSlotsfSuffix(gid){
+    getSlotsfSuffix(gid) {
       return this.gameNamesSuffix[parseInt(gid % 100)]
     },
     writeLog() {
@@ -327,7 +361,8 @@ export default {
         'PrizePool': parseInt(this.form.LotteryPool) + parseInt(this.form.PrizePool * 1000),
         'FeeRate': this.form.FeeRate,
         'RecountRate': this.form.RecountRate,
-        'Ante': this.form.Ante
+        'Ante': this.form.Ante,
+        'AppId': this.selectedApp
       }
 
       // 设置修改后数据
@@ -363,8 +398,7 @@ export default {
     },
     jumpToNewPage() {
       // 跳转到新后台页面
-      const env = this.$store.getters.env
-      switchNewAppEnv(env, 1000002, this, '/prizePoolV2')
+      window.open(this.PrizePoolV2Url)
     }
   }
 }
