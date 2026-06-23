@@ -115,25 +115,14 @@
           style="width: 100%"
         >
           <el-table-column label="#" type="index" width="50" align="center" />
-          <el-table-column label="累计下注最小（₱）" min-width="160">
+          <el-table-column label="累计下注（₱）" min-width="160">
             <template slot-scope="scope">
               <el-input
-                v-model.number="scope.row.minBet"
+                v-model.number="scope.row.bet"
                 type="number"
                 :min="0"
                 size="mini"
-                placeholder="最小下注"
-              />
-            </template>
-          </el-table-column>
-          <el-table-column label="累计下注最大（₱）" min-width="160">
-            <template slot-scope="scope">
-              <el-input
-                v-model.number="scope.row.maxBet"
-                type="number"
-                :min="0"
-                size="mini"
-                placeholder="最大下注（0表示不限）"
+                placeholder="下注（0表示不限）"
               />
             </template>
           </el-table-column>
@@ -182,7 +171,7 @@ import GameSelector from '@/components/Game/GameSelector.vue'
 const ACTIVITY_ID = 29
 
 function newTier() {
-  return { minBet: 0, maxBet: 0, rewardRatio: 0 }
+  return { bet: 0, rewardRatio: 0 }
 }
 
 function newItem() {
@@ -257,8 +246,7 @@ export default {
       // 反水阶梯：/1000 还原金额和比例
       let rewardTiers = Array.isArray(ext.rewardTiers) ? ext.rewardTiers : [newTier()]
       rewardTiers = rewardTiers.map(t => ({
-        minBet: (t.minBet || 0) / 1000,
-        maxBet: (t.maxBet || 0) / 1000,
+        bet: (t.bet || 0) / 1000,
         rewardRatio: (t.rewardRatio || 0)
       }))
       if (rewardTiers.length === 0) rewardTiers = [newTier()]
@@ -346,7 +334,7 @@ export default {
       }
       for (let i = 0; i < this.item.rewardTiers.length; i++) {
         const t = this.item.rewardTiers[i]
-        if (t.minBet < 0 || t.maxBet < 0) {
+        if (t.bet < 0) {
           Message.error(`第${i + 1}行：下注金额不能为负数`)
           return false
         }
@@ -384,8 +372,7 @@ export default {
         dayPrizeThreshold: Math.floor((d.dayPrizeThreshold || 0) * 1000),
         totalPrizeThreshold: Math.floor((d.totalPrizeThreshold || 0) * 1000),
         rewardTiers: d.rewardTiers.map(t => ({
-          minBet: Math.floor((t.minBet || 0) * 1000),
-          maxBet: Math.floor((t.maxBet || 0) * 1000),
+          bet: Math.floor((t.bet || 0) * 1000),
           rewardRatio: Math.floor((t.rewardRatio || 0))
         }))
       }
