@@ -23,6 +23,18 @@
             <el-input v-model="cfg.GoldenSymbolOddsWeights" placeholder="请输入内容,如1,2,100"> <template slot="append">多个值用 , 连接。如1,2,100</template> </el-input>
           </el-form-item>
 
+          <el-form-item label="头行出现金框符号的概率" prop="GoldenSymbolRate" :rules="dataRule(true,{type:'n'})">
+            <el-input v-model.number="cfg.HeadGoldenSymbolRate" :required="true">
+              <template slot="append">‰</template>
+            </el-input>
+          </el-form-item>
+
+          <el-form-item label="头行金框符号获得随机倍率的概率" prop="GoldenSymbolOddsRate" :rules="dataRule(true,{type:'n'})">
+            <el-input v-model.number="cfg.HeadGoldenSymbolOddsRate" :required="true">
+              <template slot="append">‰</template>
+            </el-input>
+          </el-form-item>
+
           <el-form-item label="头行金框符号获得的倍率范围">
             <el-input v-model="cfg.HeadGoldenSymbolOddsRange" placeholder="请输入内容,如1,2,100"> <template slot="append">多个值用 , 连接。如1,2,100</template> </el-input>
           </el-form-item>
@@ -37,6 +49,14 @@
             </el-input>
           </el-form-item>
 
+          <el-form-item label="购买超级免费初始累计倍数范围">
+            <el-input v-model="cfg.InitSumMultiOddsRange" placeholder="请输入内容,如1,2,100"> <template slot="append">多个值用 , 连接。如1,2,100</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="购买超级免费初始累计倍数权重">
+            <el-input v-model="cfg.InitSumMultiOddsWeights" placeholder="请输入内容,如1,2,100"> <template slot="append">多个值用 , 连接。如1,2,100</template> </el-input>
+          </el-form-item>
+
           <el-form-item label="免费模式额外增加免费的概率" prop="ScatterPlusRate" :rules="dataRule(true,{type:'n'})">
             <el-input v-model.number="cfg.ScatterPlusRate" :required="true">
               <template slot="append">‰</template>
@@ -45,6 +65,10 @@
 
           <el-form-item label="免费模式购买倍数" prop="BuyFreeOdds" :rules="dataRule(true,{type:'n'})">
             <el-input v-model.number="cfg.BuyFreeOdds" :required="true" />
+          </el-form-item>
+
+          <el-form-item label="超级免费模式购买倍数" prop="BuySuperFreeOdds" :rules="dataRule(true,{type:'n'})">
+            <el-input v-model.number="cfg.BuySuperFreeOdds" :required="true" />
           </el-form-item>
 
           <el-form-item label="进入免费模式的最小赔率" prop="ScatterOdds" :rules="dataRule(true,{type:'n'})">
@@ -62,20 +86,38 @@
     <el-row>
       <el-col :span="12" :offset="3">
         <el-tabs v-model="activeTab">
-          <el-tab-pane label="购买免费倍数" name="script">
-            <el-button type="primary" @click="showDialog">添加配置</el-button>
+          <el-tab-pane label="购买免费倍数" name="BuyFreeOddsConf">
+            <el-button type="primary" @click="showDialog('BuyFreeOddsConf')">添加配置</el-button>
             <span style="margin-left:10px;color:#909399">(Bet为单线下注大小，Bet=0为默认配置，配置的倍数不能出现0倍的情况)</span>
 
             <el-table :data="cfg.BuyFreeOddsConf">
               <el-table-column prop="bet" label="Bet值" width="120">
                 <template slot-scope="scope">
-                  <el-button type="text" @click="editConfig(scope.row)">{{ scope.row.Bet.map(b => b/1000).join(', ') }}</el-button>
+                  <el-button type="text" @click="editConfig(scope.row, 'BuyFreeOddsConf')">{{ scope.row.Bet.map(b => b/1000).join(', ') }}</el-button>
                 </template>
               </el-table-column>
               <el-table-column label="操作" width="180" header-align="center">
                 <template slot-scope="scope">
-                  <el-button type="primary" @click="editConfig(scope.row)">编辑</el-button>
-                  <el-button type="danger" @click="removeConfig(scope.$index)">删除</el-button>
+                  <el-button type="primary" @click="editConfig(scope.row, 'BuyFreeOddsConf')">编辑</el-button>
+                  <el-button type="danger" @click="removeConfig(scope.$index, 'BuyFreeOddsConf')">删除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-tab-pane>
+          <el-tab-pane label="购买超级免费倍数" name="BuySuperFreeOddsConf">
+            <el-button type="primary" @click="showDialog('BuySuperFreeOddsConf')">添加配置</el-button>
+            <span style="margin-left:10px;color:#909399">(Bet为单线下注大小，Bet=0为默认配置，配置的倍数不能出现0倍的情况)</span>
+
+            <el-table :data="cfg.BuySuperFreeOddsConf">
+              <el-table-column prop="bet" label="Bet值" width="120">
+                <template slot-scope="scope">
+                  <el-button type="text" @click="editConfig(scope.row, 'BuySuperFreeOddsConf')">{{ scope.row.Bet.map(b => b/1000).join(', ') }}</el-button>
+                </template>
+              </el-table-column>
+              <el-table-column label="操作" width="180" header-align="center">
+                <template slot-scope="scope">
+                  <el-button type="primary" @click="editConfig(scope.row, 'BuySuperFreeOddsConf')">编辑</el-button>
+                  <el-button type="danger" @click="removeConfig(scope.$index, 'BuySuperFreeOddsConf')">删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -142,15 +184,13 @@
 </template>
 
 <script>
-import RatioInput from '@/components/RatioInput'
 import Compare from '@/components/Compare'
 import { DataRule, ValidateVueItem } from '@/utils/common'
 import { Message } from 'element-ui'
 
 export default {
-  // eslint-disable-next-line vue/no-unused-components
   name: 'SlotsPahiyasWinsExt',
-  components: { RatioInput, Compare },
+  components: { Compare },
   model: {
     prop: 'slotsData',
     event: 'cc'
@@ -168,9 +208,10 @@ export default {
     return {
       cfg: {
       },
-      activeTab: 'script',
+      activeTab: 'BuyFreeOddsConf',
       buyFreeOddsConf: {
         dialogVisible: false,
+        configKey: 'BuyFreeOddsConf',
         currentBet: '0',
         dialogTitle: '添加配置',
         currentConf: []
@@ -210,22 +251,52 @@ export default {
       // this.initSymbolMap()
       if (this.slotsData) {
         this.cfg = this.slotsData
+        this.ensureBuyFreeConfs('BuyFreeOddsConf')
+        this.ensureBuyFreeConfs('BuySuperFreeOddsConf')
         this.$refs.compare.SetOldVal(this.getDiffData())
         this.lock = true
       }
     },
-    showDialog() {
-      this.buyFreeOddsConf.dialogTitle = '添加配置'
+    getBuyFreeConfMeta(configKey) {
+      if (configKey === 'BuySuperFreeOddsConf') {
+        return {
+          listKey: 'BuySuperFreeOddsConf',
+          oddsKey: 'BuySuperFreeOdds',
+          addTitle: '添加购买超级免费配置',
+          editTitle: '编辑购买超级免费配置'
+        }
+      }
+      return {
+        listKey: 'BuyFreeOddsConf',
+        oddsKey: 'BuyFreeOdds',
+        addTitle: '添加购买免费配置',
+        editTitle: '编辑购买免费配置'
+      }
+    },
+    ensureBuyFreeConfs(configKey) {
+      const meta = this.getBuyFreeConfMeta(configKey)
+      if (!this.cfg[meta.listKey]) {
+        this.$set(this.cfg, meta.listKey, [])
+      }
+      return this.cfg[meta.listKey]
+    },
+    showDialog(configKey) {
+      const meta = this.getBuyFreeConfMeta(configKey)
+      this.buyFreeOddsConf.configKey = meta.listKey
+      this.buyFreeOddsConf.dialogTitle = meta.addTitle
       this.buyFreeOddsConf.currentBet = '0'
       this.buyFreeOddsConf.currentConf = [{ MinOdds: 0, MaxOdds: 0, InWeight: 0 }]
       this.buyFreeOddsConf.editIndex = -1
       this.buyFreeOddsConf.dialogVisible = true
     },
-    editConfig(row) {
-      this.buyFreeOddsConf.dialogTitle = '编辑配置'
+    editConfig(row, configKey) {
+      const meta = this.getBuyFreeConfMeta(configKey)
+      const confs = this.ensureBuyFreeConfs(meta.listKey)
+      this.buyFreeOddsConf.configKey = meta.listKey
+      this.buyFreeOddsConf.dialogTitle = meta.editTitle
       this.buyFreeOddsConf.currentBet = row.Bet.map(b => b / 1000).join(',')
       this.buyFreeOddsConf.currentConf = JSON.parse(JSON.stringify(row.Items))
-      this.buyFreeOddsConf.editIndex = this.cfg.BuyFreeOddsConf.findIndex(item => item.Bet === row.Bet)
+      this.buyFreeOddsConf.editIndex = confs.findIndex(item => item === row)
       this.buyFreeOddsConf.dialogVisible = true
     },
     addConfigRow() {
@@ -234,8 +305,8 @@ export default {
     removeConfigRow(index) {
       this.buyFreeOddsConf.currentConf.splice(index, 1)
     },
-    removeConfig(index) {
-      this.cfg.BuyFreeOddsConf.splice(index, 1)
+    removeConfig(index, configKey) {
+      this.ensureBuyFreeConfs(configKey).splice(index, 1)
     },
     saveConfig() {
       const currentBets = this.buyFreeOddsConf.currentBet
@@ -246,13 +317,14 @@ export default {
       if (this.checkBuyFreeOdds(currentBets) === false) {
         return
       }
+      const confs = this.ensureBuyFreeConfs(this.buyFreeOddsConf.configKey)
       if (this.buyFreeOddsConf.editIndex >= 0) {
-        this.$set(this.cfg.BuyFreeOddsConf, this.buyFreeOddsConf.editIndex, {
+        this.$set(confs, this.buyFreeOddsConf.editIndex, {
           Bet: currentBets,
           Items: this.buyFreeOddsConf.currentConf
         })
       } else {
-        this.cfg.BuyFreeOddsConf.push({
+        confs.push({
           Bet: currentBets,
           Items: this.buyFreeOddsConf.currentConf
         })
@@ -260,13 +332,12 @@ export default {
       this.buyFreeOddsConf.dialogVisible = false
     },
     checkBuyFreeOdds(currentBets) {
+      const meta = this.getBuyFreeConfMeta(this.buyFreeOddsConf.configKey)
+      const confs = this.ensureBuyFreeConfs(meta.listKey)
       let weightTotal = 0
       const existingBets = new Set()
-      if (!this.cfg.BuyFreeOddsConf) {
-        this.cfg.BuyFreeOddsConf = []
-      }
       // 排除正在编辑的项（如果是编辑模式）
-      this.cfg.BuyFreeOddsConf.forEach((item, index) => {
+      confs.forEach((item, index) => {
         if (this.buyFreeOddsConf.editIndex !== index) {
           item.Bet.forEach(bet => existingBets.add(bet))
         }
@@ -292,7 +363,7 @@ export default {
       // 检查rtp
       let rtp = 0
       for (const item of this.buyFreeOddsConf.currentConf) {
-        rtp += (item.MinOdds + item.MaxOdds) / 2 * item.InWeight / weightTotal / this.cfg.BuyFreeOdds / this.baseBet * 100
+        rtp += (item.MinOdds + item.MaxOdds) / 2 * item.InWeight / weightTotal / this.cfg[meta.oddsKey] / this.baseBet * 100
       }
       if (rtp >= 100) {
         Message.error(`当前RTP(${rtp})大于等于100%`)
@@ -305,10 +376,11 @@ export default {
       for (const item of this.buyFreeOddsConf.currentConf) {
         weightTotal += item.InWeight
       }
+      const meta = this.getBuyFreeConfMeta(this.buyFreeOddsConf.configKey)
       // rtp
       let rtp = 0
       for (const item of this.buyFreeOddsConf.currentConf) {
-        rtp += (item.MinOdds + item.MaxOdds) / 2 * item.InWeight / weightTotal / this.cfg.BuyFreeOdds / this.baseBet * 100
+        rtp += (item.MinOdds + item.MaxOdds) / 2 * item.InWeight / weightTotal / this.cfg[meta.oddsKey] / this.baseBet * 100
       }
       Message.info(`当前RTP(${rtp})`)
     },
