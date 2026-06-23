@@ -70,7 +70,8 @@
 
     <el-row style="margin-top: 30px">
       <el-col :offset="3">
-        <el-button type="success" @click="submitFrm">保存</el-button>
+        <el-button type="success" @click="submitFrm(false)">保存</el-button>
+        <el-button v-if="version === 'V2'" type="success" @click="submitFrm(true)">多APP保存</el-button>
       </el-col>
     </el-row>
 
@@ -83,6 +84,7 @@
 import RatioInput from '@/components/RatioInput'
 import Compare from '@/components/Compare'
 import { DataRule, ValidateVueItem } from '@/utils/common'
+import store from '@/store'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
@@ -108,7 +110,9 @@ export default {
       tempGoldSymbolStr: '',
       tempJackpotSymbolStr: '',
       tempJackpotHopeStr: '',
-      tempJackpotLimitStr: ''
+      tempJackpotLimitStr: '',
+      version: store.getters.version || 'V1',
+      oldData: JSON.parse(JSON.stringify(this.slotsData))
     }
   },
   created() {
@@ -123,7 +127,8 @@ export default {
     getDiffData() {
       return JSON.parse(JSON.stringify(this.slotsData))
     },
-    submitFrm() {
+    submitFrm(isMultiApp = false) {
+      const multiAppMode = isMultiApp === true
       // 放大1000倍并保存到cfg
       this.cfg.GoldSymbolStr = this.scaleUp(this.tempGoldSymbolStr)
       this.cfg.JackpotSymbolStr = this.scaleUp(this.tempJackpotSymbolStr)
@@ -139,7 +144,11 @@ export default {
           return
         }
 
-        $this.$emit('saveData')
+        if (!multiAppMode) {
+          $this.$emit('saveData')
+        } else {
+          $this.$emit('multiAppSave', $this.oldData, $this.slotsData)
+        }
         $this.lock = false
       })
     },
