@@ -1491,7 +1491,7 @@ export const asyncRoutes = [
                 path: 'pacquiaofortune_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/pacquiaofortune_slots_cfg'),
                 name: 'pacquiaofortune_slots_cfg',
-                meta: { title: 'P acquiaoFortune', gameKey: 'pacquiaofortune' },
+                meta: { title: 'P acquiaoFortune', gameKey: 'pacquiaofortune' }
               },
               {
                 path: 'pacquiaofortuneplaynow_slots_cfg',
