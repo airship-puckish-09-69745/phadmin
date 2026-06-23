@@ -47,7 +47,7 @@
             </el-col>
             <el-col :span="24" :sm="12">
               <el-form-item label="站点白名单：">
-                <SiteSelect v-model="item.whitelist.siteIdList" multiple placeholder="请选择" style="width: 100%; max-width: 300px" />
+                <SiteSelect v-model="item.whitelist.siteIdList" multiple placeholder="请选择" style="width: 100%; max-width: 200px" />
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
