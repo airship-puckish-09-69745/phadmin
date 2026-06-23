@@ -45,6 +45,11 @@
                 </el-input>
               </el-form-item>
             </el-col>
+            <el-col :span="24" :sm="12">
+              <el-form-item label="站点白名单：">
+                <SiteSelect v-model="item.whitelist.siteIdList" multiple placeholder="请选择" style="width: 100%; max-width: 300px" />
+              </el-form-item>
+            </el-col>
             <el-col :xs="24" :sm="12">
               <el-form-item label="每日发奖上限：" required>
                 <el-input v-model.number="item.dayPrizeThreshold" placeholder="请输入" style="max-width: 200px">
@@ -63,11 +68,6 @@
                 <div style="color: #E6A23C; font-size: 12px; line-height: 1.4; margin-top: 4px">
                   达到上限时会在Lark同步报警
                 </div>
-              </el-form-item>
-            </el-col>
-            <el-col :span="24">
-              <el-form-item label="站点白名单：">
-                <SiteSelect v-model="item.whitelist.siteIdList" multiple placeholder="请选择" style="width: 100%; max-width: 300px" />
               </el-form-item>
             </el-col>
           </el-row>
