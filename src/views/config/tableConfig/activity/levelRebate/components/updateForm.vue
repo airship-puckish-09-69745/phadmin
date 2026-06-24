@@ -122,7 +122,7 @@
           <el-table-column label="反水比例（%）" min-width="130">
             <template slot-scope="scope">
               <el-input
-                v-model="scope.row.rewardRatio"
+                v-model="scope.row.ratio"
                 type="number"
                 :min="0"
                 size="mini"
@@ -164,7 +164,7 @@ import GameSelector from '@/components/Game/GameSelector.vue'
 const ACTIVITY_ID = 29
 
 function newTier() {
-  return { bet: 0, rewardRatio: 0 }
+  return { bet: 0, ratio: 0 }
 }
 
 function newItem() {
@@ -239,7 +239,7 @@ export default {
       let rewardTiers = Array.isArray(ext.rewardTiers) ? ext.rewardTiers : [newTier()]
       rewardTiers = rewardTiers.map(t => ({
         bet: (t.bet || 0) / 1000,
-        rewardRatio: (t.rewardRatio || 0)
+        ratio: (t.ratio || 0)
       }))
       if (rewardTiers.length === 0) rewardTiers = [newTier()]
 
@@ -325,7 +325,7 @@ export default {
           Message.error(`第${i + 1}行：下注金额不能为负数`)
           return false
         }
-        if (!t.rewardRatio || t.rewardRatio <= 0) {
+        if (!t.ratio || t.ratio <= 0) {
           Message.error(`第${i + 1}行：反水比例必须大于0`)
           return false
         }
@@ -359,7 +359,7 @@ export default {
         totalPrizeThreshold: Math.floor((d.totalPrizeThreshold || 0) * 1000),
         rewardTiers: d.rewardTiers.map(t => ({
           bet: Math.floor((t.bet || 0) * 1000),
-          rewardRatio: Math.floor((t.rewardRatio || 0))
+          ratio: Math.floor((t.ratio || 0))
         }))
       }
 

@@ -40,7 +40,7 @@
             </el-col>
             <el-col :xs="24" :sm="12">
               <el-form-item label="返水比例：" required>
-                <el-input v-model="item.rewardRatio" placeholder="返水比例" style="max-width: 200px">
+                <el-input v-model="item.ratio" placeholder="返水比例" style="max-width: 200px">
                   <template slot="append">%</template>
                 </el-input>
               </el-form-item>
@@ -129,7 +129,7 @@ function newItem() {
     showEndTime: Date.now() + 30 * 24 * 60 * 60 * 1000,
     gameIdCfg: [],
     whitelist: { siteIdList: [] },
-    rewardRatio: 0,
+    ratio: 0,
     maxRewardAmount: 10,
     effectiveBet: 1,
     minReward: 1,
@@ -207,7 +207,7 @@ export default {
         showEndTime: (act.showEndTime || 0) * 1000,
         gameIdCfg: Array.isArray(act.gameIdList) ? act.gameIdList : [],
         whitelist,
-        rewardRatio: (ext.rewardRatio || 0),
+        ratio: (ext.ratio || 0),
         maxRewardAmount: (ext.maxRewardAmount || 0) / 1000,
         effectiveBet: (ext.effectiveBet || 0) / 1000,
         minReward: (ext.minReward || 0) / 1000,
@@ -234,7 +234,7 @@ export default {
         Message.error('请选择展示时间')
         return false
       }
-      if (!this.item.rewardRatio || this.item.rewardRatio <= 0) {
+      if (!this.item.ratio || this.item.ratio <= 0) {
         Message.error('请输入返水比例（大于0）')
         return false
       }
@@ -275,7 +275,7 @@ export default {
       }
 
       const extendObj = {
-        rewardRatio: d.rewardRatio,
+        ratio: d.ratio,
         maxRewardAmount: Math.floor(d.maxRewardAmount * 1000),
         effectiveBet: Math.floor(d.effectiveBet * 1000),
         minReward: Math.floor((d.minReward || 0) * 1000),
