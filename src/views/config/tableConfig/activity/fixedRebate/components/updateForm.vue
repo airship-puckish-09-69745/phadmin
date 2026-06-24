@@ -207,7 +207,7 @@ export default {
         showEndTime: (act.showEndTime || 0) * 1000,
         gameIdCfg: Array.isArray(act.gameIdList) ? act.gameIdList : [],
         whitelist,
-        ratio: (ext.ratio || 0),
+        ratio: (ext.ratio || 0) / 100,
         maxRewardAmount: (ext.maxRewardAmount || 0) / 1000,
         effectiveBet: (ext.effectiveBet || 0) / 1000,
         minReward: (ext.minReward || 0) / 1000,
@@ -275,7 +275,7 @@ export default {
       }
 
       const extendObj = {
-        ratio: d.ratio,
+        ratio: Math.floor(d.ratio * 100),
         maxRewardAmount: Math.floor(d.maxRewardAmount * 1000),
         effectiveBet: Math.floor(d.effectiveBet * 1000),
         minReward: Math.floor((d.minReward || 0) * 1000),
