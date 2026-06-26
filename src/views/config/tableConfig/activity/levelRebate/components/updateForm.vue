@@ -35,7 +35,7 @@
             </el-col>
             <el-col :xs="24">
               <el-form-item label="活动展示时间：" required>
-                <el-date-picker v-model="item.showTime" type="datetime" placeholder="选择展示时间" value-format="timestamp" style="width: 200px" />
+                <el-date-picker v-model="item.showEndTime" type="datetime" placeholder="选择展示时间" value-format="timestamp" style="width: 200px" />
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
@@ -175,7 +175,7 @@ function newItem() {
     isOpen: true,
     startTime: Date.now(),
     endTime: Date.now() + 30 * 24 * 60 * 60 * 1000,
-    showTime: Date.now() + 30 * 24 * 60 * 60 * 1000,
+    showEndTime: Date.now() + 30 * 24 * 60 * 60 * 1000,
     gameIdCfg: [],
     whitelist: { siteIdList: [] },
     maxRewardAmount: 10,
@@ -256,7 +256,7 @@ export default {
         isOpen: act.isOpen !== undefined ? act.isOpen : true,
         startTime: (act.startTime || 0) * 1000,
         endTime: (act.endTime || 0) * 1000,
-        showTime: (act.showTime || 0) * 1000,
+        showEndTime: (act.showEndTime || 0) * 1000,
         gameIdCfg: Array.isArray(act.gameIdList) ? act.gameIdList : [],
         whitelist,
         maxRewardAmount: (ext.maxRewardAmount || 0) / 1000,
@@ -299,7 +299,7 @@ export default {
         Message.error('请选择结束时间')
         return false
       }
-      if (!this.item.showTime) {
+      if (!this.item.showEndTime) {
         Message.error('请选择展示时间')
         return false
       }
@@ -344,7 +344,7 @@ export default {
         isOpen: d.isOpen,
         startTime: Math.floor(d.startTime / 1000),
         endTime: Math.floor(d.endTime / 1000),
-        showTime: Math.floor(d.showTime / 1000),
+        showEndTime: Math.floor(d.showEndTime / 1000),
         gameIdList: d.gameIdCfg.map(v => Number(v)),
         whitelist: {
           siteIdList: (d.whitelist && Array.isArray(d.whitelist.siteIdList)) ? d.whitelist.siteIdList : []
