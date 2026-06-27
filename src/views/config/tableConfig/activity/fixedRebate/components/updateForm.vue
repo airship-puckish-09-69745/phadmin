@@ -47,7 +47,7 @@
             </el-col>
             <el-col :xs="24" :sm="12">
               <el-form-item label="当日玩家个人奖励上限：" required>
-                <el-input v-model.number="item.maxRewardAmount" placeholder="当日玩家个人奖励上限" style="max-width: 200px">
+                <el-input v-model.number="item.userDayPrizeThreshold" placeholder="当日玩家个人奖励上限" style="max-width: 200px">
                   <template slot="append">₱</template>
                 </el-input>
               </el-form-item>
@@ -130,7 +130,7 @@ function newItem() {
     gameIdCfg: [],
     whitelist: { siteIdList: [] },
     ratio: 0,
-    maxRewardAmount: 10,
+    userDayPrizeThreshold: 10,
     effectiveBet: 1,
     minReward: 1,
     dayPrizeThreshold: 0,
@@ -208,7 +208,7 @@ export default {
         gameIdCfg: Array.isArray(act.gameIdList) ? act.gameIdList : [],
         whitelist,
         ratio: (ext.ratio || 0) / 100,
-        maxRewardAmount: (ext.maxRewardAmount || 0) / 1000,
+        userDayPrizeThreshold: (ext.userDayPrizeThreshold || 0) / 1000,
         effectiveBet: (ext.effectiveBet || 0) / 1000,
         minReward: (ext.minReward || 0) / 1000,
         dayPrizeThreshold: (ext.dayPrizeThreshold || 0) / 1000,
@@ -238,7 +238,7 @@ export default {
         Message.error('请输入返水比例（大于0）')
         return false
       }
-      if (!this.item.maxRewardAmount || this.item.maxRewardAmount <= 0) {
+      if (!this.item.userDayPrizeThreshold || this.item.userDayPrizeThreshold <= 0) {
         Message.error('请输入当日玩家个人奖励上限（大于0）')
         return false
       }
@@ -276,7 +276,7 @@ export default {
 
       const extendObj = {
         ratio: Math.floor(d.ratio * 100),
-        maxRewardAmount: Math.floor(d.maxRewardAmount * 1000),
+        userDayPrizeThreshold: Math.floor(d.userDayPrizeThreshold * 1000),
         effectiveBet: Math.floor(d.effectiveBet * 1000),
         minReward: Math.floor((d.minReward || 0) * 1000),
         dayPrizeThreshold: Math.floor((d.dayPrizeThreshold || 0) * 1000),
