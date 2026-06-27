@@ -45,14 +45,14 @@
             {{ formatTime(scope.row.endTime) }}
           </template>
         </el-table-column>
-        <el-table-column prop="rewardRatio" label="返水比例" width="100" align="center">
+        <el-table-column prop="ratio" label="返水比例" width="100" align="center">
           <template slot-scope="scope">
-            {{ scope.row.rewardRatio != null ? (scope.row.rewardRatio) + '%' : '-' }}
+            {{ scope.row.ratio != null ? (scope.row.ratio / 100) + '%' : '-' }}
           </template>
         </el-table-column>
-        <el-table-column prop="maxRewardAmount" label="个人奖励上限" width="120" align="center">
+        <el-table-column prop="userDayPrizeThreshold" label="个人奖励上限" width="120" align="center">
           <template slot-scope="scope">
-            {{ scope.row.maxRewardAmount != null ? scope.row.maxRewardAmount / 1000 : '-' }}
+            {{ scope.row.userDayPrizeThreshold != null ? scope.row.userDayPrizeThreshold / 1000 : '-' }}
           </template>
         </el-table-column>
         <el-table-column prop="dayPrizeThreshold" label="每日发奖上限" width="120" align="center">
@@ -136,8 +136,8 @@ export default {
         isOpen: '活动开关',
         startTime: '开始时间',
         endTime: '结束时间',
-        rewardRatio: '返水比例',
-        maxRewardAmount: '个人奖励上限',
+        ratio: '返水比例',
+        userDayPrizeThreshold: '个人奖励上限',
         effectiveBet: '解锁有效下注',
         minReward: '最低返水奖励',
         dayPrizeThreshold: '每日发奖上限',
@@ -231,8 +231,8 @@ export default {
               showEndTime: act.showEndTime || 0,
               gameIdCfg: act.gameIdList || [],
               siteIdList: (act.whitelist && Array.isArray(act.whitelist.siteIdList)) ? act.whitelist.siteIdList : (act.siteIdList || []),
-              rewardRatio: ext.rewardRatio || 0,
-              maxRewardAmount: ext.maxRewardAmount || 0,
+              ratio: ext.ratio || 0,
+              userDayPrizeThreshold: ext.userDayPrizeThreshold || 0,
               effectiveBet: ext.effectiveBet || 0,
               minReward: ext.minReward || 0,
               dayPrizeThreshold: ext.dayPrizeThreshold || 0,
