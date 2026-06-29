@@ -64,7 +64,8 @@
                   width="75px"
                 >
                   <template slot-scope="scope">
-                    {{ currentBaseBet * scope.row.bet / 1000 }}
+                    <span v-if="!scope.row.isSummary">{{ currentBaseBet * scope.row.bet / 1000 }}</span>
+                    <span v-else style="font-weight: bold; color: #409EFF;">所有</span>
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -73,7 +74,8 @@
                   width="90px"
                 >
                   <template slot-scope="scope">
-                    {{ scope.row.times }}
+                    <span v-if="!scope.row.isSummary">{{ scope.row.times }}</span>
+                    <span v-else style="font-weight: bold; color: #409EFF;">{{ scope.row.times }}</span>
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -82,7 +84,8 @@
                   width="90px"
                 >
                   <template slot-scope="scope">
-                    {{ (parseInt(scope.row.times) / getTotalOrdinaryBetTimes() * 100).toFixed(2) + '%' }}
+                    <span v-if="!scope.row.isSummary">{{ (parseInt(scope.row.times) / getTotalOrdinaryBetTimes() * 100).toFixed(2) + '%' }}</span>
+                    <span v-else style="font-weight: bold; color: #409EFF;">100%</span>
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -91,7 +94,8 @@
                   width="120px"
                 >
                   <template slot-scope="scope">
-                    {{ currentBaseBet * scope.row.bet * scope.row.times / 1000 }}
+                    <span v-if="!scope.row.isSummary">{{ currentBaseBet * scope.row.bet * scope.row.times / 1000 }}</span>
+                    <span v-else style="font-weight: bold; color: #409EFF;">{{ scope.row.totalBetAmount / 1000 }}</span>
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -100,7 +104,8 @@
                   width="90px"
                 >
                   <template slot-scope="scope">
-                    {{ ((parseInt( scope.row.bet * scope.row.times+'') / getTotalOrdinaryBet() )*100).toFixed(2) + '%' }}
+                    <span v-if="!scope.row.isSummary">{{ ((parseInt( scope.row.bet * scope.row.times+'') / getTotalOrdinaryBet() )*100).toFixed(2) + '%' }}</span>
+                    <span v-else style="font-weight: bold; color: #409EFF;">100%</span>
                   </template>
                 </el-table-column>
 
@@ -110,7 +115,8 @@
                   width="120px"
                 >
                   <template slot-scope="scope">
-                    {{ returnMap[scope.row.bet+'_'+betOddsKey+'_'+planId] / 1000 }}
+                    <span v-if="!scope.row.isSummary">{{ returnMap[scope.row.bet+'_'+betOddsKey+'_'+planId] / 1000 }}</span>
+                    <span v-else style="font-weight: bold; color: #409EFF;">{{ scope.row.totalReturnAmount / 1000 }}</span>
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -119,7 +125,8 @@
                   width="120px"
                 >
                   <template slot-scope="scope">
-                    {{ ((currentBaseBet * scope.row.bet * scope.row.times) - (returnMap[scope.row.bet+'_'+betOddsKey+'_'+planId])) / 1000 }}
+                    <span v-if="!scope.row.isSummary">{{ ((currentBaseBet * scope.row.bet * scope.row.times) - (returnMap[scope.row.bet+'_'+betOddsKey+'_'+planId])) / 1000 }}</span>
+                    <span v-else style="font-weight: bold; color: #409EFF;">{{ scope.row.totalGGR / 1000 }}</span>
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -127,9 +134,10 @@
                   label="返奖率"
                 >
                   <template slot-scope="scope">
-                    {{
-                      ((returnMap[scope.row.bet+'_'+betOddsKey+'_'+planId] /(currentBaseBet * scope.row.bet * scope.row.times))*100).toFixed(2) + "%"
-                 }}
+                    <span v-if="!scope.row.isSummary">{{
+                        ((returnMap[scope.row.bet+'_'+betOddsKey+'_'+planId] /(currentBaseBet * scope.row.bet * scope.row.times))*100).toFixed(2) + "%"
+                      }}</span>
+                    <span v-else style="font-weight: bold; color: #409EFF;">{{ scope.row.totalReturnRate }}</span>
                   </template>
                 </el-table-column>
               </el-table-column>
@@ -153,7 +161,8 @@
                   width="75px"
                 >
                   <template slot-scope="scope">
-                    {{ scope.row.bet / 1000 }}
+                    <span v-if="!scope.row.isSummary">{{ scope.row.bet / 1000 }}</span>
+                    <span v-else style="font-weight: bold; color: #409EFF;">所有</span>
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -162,7 +171,8 @@
                   width="90px"
                 >
                   <template slot-scope="scope">
-                    {{ scope.row.times }}
+                    <span v-if="!scope.row.isSummary">{{ scope.row.times }}</span>
+                    <span v-else style="font-weight: bold; color: #409EFF;">{{ scope.row.times }}</span>
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -171,7 +181,8 @@
                   width="90px"
                 >
                   <template slot-scope="scope">
-                    {{ (parseInt(scope.row.times) / getTotalBuyBetTimes() * 100).toFixed(2) + '%' }}
+                    <span v-if="!scope.row.isSummary">{{ (parseInt(scope.row.times) / getTotalBuyBetTimes() * 100).toFixed(2) + '%' }}</span>
+                    <span v-else style="font-weight: bold; color: #409EFF;">100%</span>
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -180,7 +191,8 @@
                   width="120px"
                 >
                   <template slot-scope="scope">
-                    {{ scope.row.bet * scope.row.times / 1000 }}
+                    <span v-if="!scope.row.isSummary">{{ scope.row.bet * scope.row.times / 1000 }}</span>
+                    <span v-else style="font-weight: bold; color: #409EFF;">{{ scope.row.totalBetAmount / 1000 }}</span>
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -189,7 +201,8 @@
                   width="90px"
                 >
                   <template slot-scope="scope">
-                    {{ ((parseInt( scope.row.bet * scope.row.times+'') / getTotalBuyOrdinaryBet() )*100).toFixed(2) + '%' }}
+                    <span v-if="!scope.row.isSummary">{{ ((parseInt( scope.row.bet * scope.row.times+'') / getTotalBuyOrdinaryBet() )*100).toFixed(2) + '%' }}</span>
+                    <span v-else style="font-weight: bold; color: #409EFF;">100%</span>
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -198,7 +211,8 @@
                   width="120px"
                 >
                   <template slot-scope="scope">
-                    {{ buyReturnMap[scope.row.bet+'_'+betOddsKey+'_'+planId]?buyReturnMap[scope.row.bet+'_'+betOddsKey+'_'+planId] / 1000:0 }}
+                    <span v-if="!scope.row.isSummary">{{ buyReturnMap[scope.row.bet+'_'+betOddsKey+'_'+planId]?buyReturnMap[scope.row.bet+'_'+betOddsKey+'_'+planId] / 1000:0 }}</span>
+                    <span v-else style="font-weight: bold; color: #409EFF;">{{ scope.row.totalReturnAmount / 1000 }}</span>
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -207,7 +221,8 @@
                   width="120px"
                 >
                   <template slot-scope="scope">
-                    {{ (( scope.row.bet * scope.row.times) - (buyReturnMap[scope.row.bet+'_'+betOddsKey+'_'+planId]?buyReturnMap[scope.row.bet+'_'+betOddsKey+'_'+planId]:0)) / 1000 }}
+                    <span v-if="!scope.row.isSummary">{{ (( scope.row.bet * scope.row.times) - (buyReturnMap[scope.row.bet+'_'+betOddsKey+'_'+planId]?buyReturnMap[scope.row.bet+'_'+betOddsKey+'_'+planId]:0)) / 1000 }}</span>
+                    <span v-else style="font-weight: bold; color: #409EFF;">{{ scope.row.totalGGR / 1000 }}</span>
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -215,9 +230,10 @@
                   label="返奖率"
                 >
                   <template slot-scope="scope">
-                    {{
-                      (buyReturnMap[scope.row.bet+'_'+betOddsKey+'_'+planId] / (scope.row.bet * scope.row.times) *100).toFixed(2) + "%"
-                    }}
+                    <span v-if="!scope.row.isSummary">{{
+                        (buyReturnMap[scope.row.bet+'_'+betOddsKey+'_'+planId] / (scope.row.bet * scope.row.times) *100).toFixed(2) + "%"
+                      }}</span>
+                    <span v-else style="font-weight: bold; color: #409EFF;">{{ scope.row.totalReturnRate }}</span>
                   </template>
                 </el-table-column>
 
@@ -226,9 +242,111 @@
 
           </el-col>
         </el-row>
-        <el-row v-if="queryGid === 186 || queryGid === 100186" style="overflow-x: auto; display: flex; flex-wrap: nowrap;padding-bottom: 30px">
-          <el-col :span="11">
+        <el-row v-if="extraStatisticsTables.length > 0" style="display: flex; flex-wrap: wrap;padding-bottom: 30px">
+          <el-col
+            v-for="(table, index) in extraStatisticsTables"
+            :key="table"
+            :span="11"
+            :offset="index % 2 === 0 ? 0 : 1"
+            style="margin-top: 20px"
+          >
             <el-table
+              v-if="table === 'super'"
+              ref="filterTable"
+              :data="SuperReturnMoneyTableData"
+              stripe
+              border
+              :header-cell-style="libShow.DefaultTableHeadClass"
+              :row-style="{height:'10px'}"
+              :cell-style="libShow.DefaultTableCell"
+            >
+              <el-table-column label="超级免费返奖统计">
+                <el-table-column
+                  prop="gid"
+                  label="Bet值"
+                  width="75px"
+                >
+                  <template slot-scope="scope">
+                    <span v-if="!scope.row.isSummary">{{ scope.row.bet / 1000 }}</span>
+                    <span v-else style="font-weight: bold; color: #409EFF;">所有</span>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="gid"
+                  label="下注次数"
+                  width="90px"
+                >
+                  <template slot-scope="scope">
+                    <span v-if="!scope.row.isSummary">{{ scope.row.times }}</span>
+                    <span v-else style="font-weight: bold; color: #409EFF;">{{ scope.row.times }}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="gid"
+                  label="下注次数占比"
+                  width="90px"
+                >
+                  <template slot-scope="scope">
+                    <span v-if="!scope.row.isSummary">{{ (parseInt(scope.row.times) / getTotalSuperBetTimes() * 100).toFixed(2) + '%' }}</span>
+                    <span v-else style="font-weight: bold; color: #409EFF;">100%</span>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="gid"
+                  label="下注额度"
+                  width="120px"
+                >
+                  <template slot-scope="scope">
+                    <span v-if="!scope.row.isSummary">{{ scope.row.bet * scope.row.times / 1000 }}</span>
+                    <span v-else style="font-weight: bold; color: #409EFF;">{{ scope.row.totalBetAmount / 1000 }}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="gid"
+                  label="下注额度占比"
+                  width="90px"
+                >
+                  <template slot-scope="scope">
+                    <span v-if="!scope.row.isSummary">{{ ((parseInt( scope.row.bet * scope.row.times+'') / getTotalSuperOrdinaryBet() )*100).toFixed(2) + '%' }}</span>
+                    <span v-else style="font-weight: bold; color: #409EFF;">100%</span>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="gid"
+                  label="返奖额度"
+                  width="120px"
+                >
+                  <template slot-scope="scope">
+                    <span v-if="!scope.row.isSummary">{{ superReturnMap[scope.row.bet+'_'+betOddsKey+'_'+planId]?superReturnMap[scope.row.bet+'_'+betOddsKey+'_'+planId] / 1000:0 }}</span>
+                    <span v-else style="font-weight: bold; color: #409EFF;">{{ scope.row.totalReturnAmount / 1000 }}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="gid"
+                  label="GGR"
+                  width="120px"
+                >
+                  <template slot-scope="scope">
+                    <span v-if="!scope.row.isSummary">{{ (( scope.row.bet * scope.row.times) - (superReturnMap[scope.row.bet+'_'+betOddsKey+'_'+planId]?superReturnMap[scope.row.bet+'_'+betOddsKey+'_'+planId]:0)) / 1000 }}</span>
+                    <span v-else style="font-weight: bold; color: #409EFF;">{{ scope.row.totalGGR / 1000 }}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="gid"
+                  label="返奖率"
+                >
+                  <template slot-scope="scope">
+                    <span v-if="!scope.row.isSummary">{{
+                        ((superReturnMap[scope.row.bet+'_'+betOddsKey+'_'+planId] || 0) / (scope.row.bet * scope.row.times) *100).toFixed(2) + "%"
+                      }}</span>
+                    <span v-else style="font-weight: bold; color: #409EFF;">{{ scope.row.totalReturnRate }}</span>
+                  </template>
+                </el-table-column>
+
+              </el-table-column>
+            </el-table>
+            <el-table
+              v-if="table === 'respin'"
               ref="filterTable"
               :data="Has2JPColsBuyRespinTableData"
               stripe
@@ -328,12 +446,8 @@
                 </el-table-column>
               </el-table-column>
             </el-table>
-
-          </el-col>
-        </el-row>
-        <el-row style="overflow-x: auto; display: flex; flex-wrap: nowrap;padding-bottom: 30px">
-          <el-col :span="11">
             <el-table
+              v-if="table === 'script'"
               ref="filterTable"
               :data="scriptTableData"
               stripe
@@ -341,7 +455,6 @@
               :header-cell-style="libShow.DefaultTableHeadClass"
               :row-style="{height:'10px'}"
               :cell-style="libShow.DefaultTableCell"
-              style=""
             >
               <el-table-column label="命中统计">
                 <el-table-column
@@ -388,276 +501,253 @@
 
               </el-table-column>
             </el-table>
-            <el-row>
-              <el-col :span="12">
-<!--                <div class="block">-->
-<!--                  <el-pagination-->
-<!--                    v-if="scriptClientDB[betOddsKey]"-->
-<!--                    :current-page="scriptClientDB[betOddsKey].GetPage().GetCurrentPage()"-->
-<!--                    :page-sizes="[5, 20, 30, 40]"-->
-<!--                    :page-size="scriptClientDB[betOddsKey].GetPage().GetPageNum()"-->
-<!--                    layout="total, sizes, prev, pager, next, jumper"-->
-<!--                    :total="scriptClientDB[betOddsKey].GetPage().GetTotalCount()"-->
-<!--                    @size-change="handleSizeChange"-->
-<!--                    @current-change="handleCurrentChange"-->
-<!--                  />-->
-<!--                </div>-->
-              </el-col>
-            </el-row>
-          </el-col>
-          <el-col :span="11" :offset="1">
-            <el-table
-              ref="filterTable"
-              :data="coordinateTableData"
-              stripe
-              border
-              :header-cell-style="libShow.DefaultTableHeadClass"
-              :row-style="{height:'10px'}"
-              :cell-style="libShow.DefaultTableCell"
-              style="width: 700px"
-            >
-              <el-table-column label="完成50步统计">
-                <el-table-column
-                  prop="gid"
-                  label="游戏"
-                  width="120px"
-                >
-                  <template slot-scope="scope">
-                    <span v-for="(item, index) in gameOptions" :key="index">
-                      {{ (scope.row.gid == item.key ? item.label : "") }}
-                    </span>
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  prop="type"
-                  label="类型"
-                  width="120px"
-                />
-                <el-table-column
-                  prop="cnt"
-                  label="次数"
-                />
-                <el-table-column
-                  prop="cnt"
-                  label="占比"
-                >
-                  <template slot-scope="scope">
-                    {{ (parseInt(scope.row.cnt) / coordinateSum[scope.row.gid] * 100).toFixed(2) + "%" }}
-                  </template>
-                </el-table-column>
-                <el-table-column label="最终输赢">
-                  <template slot-scope="scope">
-                    {{
-                      parseInt(Actions[scope.row.orgKey]) / cfgMap[parseInt(scope.row.gid)] ? cfgMap[parseInt(scope.row.gid)].Bet : 0
-                    }}
-                  </template>
-                </el-table-column>
-              </el-table-column>
-            </el-table>
-            <el-row>
-              <el-col :span="5">
-                <div class="block">
-                  <el-pagination
-                    :current-page="coordinateClientDB.GetPage().GetCurrentPage()"
-                    :page-sizes="[10, 20, 30, 40]"
-                    :page-size="coordinateClientDB.GetPage().GetPageNum()"
-                    layout="total, sizes, prev, pager, next"
-                    :total="coordinateClientDB.GetPage().GetTotalCount()"
-                    @size-change="coordinateHandleSizeChange"
-                    @current-change="coordinateHandleCurrentChange"
+            <template v-if="table === 'coordinate'">
+              <el-table
+                ref="filterTable"
+                :data="coordinateTableData"
+                stripe
+                border
+                :header-cell-style="libShow.DefaultTableHeadClass"
+                :row-style="{height:'10px'}"
+                :cell-style="libShow.DefaultTableCell"
+                style="width: 700px"
+              >
+                <el-table-column label="完成50步统计">
+                  <el-table-column
+                    prop="gid"
+                    label="游戏"
+                    width="120px"
+                  >
+                    <template slot-scope="scope">
+                      <span v-for="(item, index) in gameOptions" :key="index">
+                        {{ (scope.row.gid == item.key ? item.label : "") }}
+                      </span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    prop="type"
+                    label="类型"
+                    width="120px"
                   />
-                </div>
-              </el-col>
-            </el-row>
+                  <el-table-column
+                    prop="cnt"
+                    label="次数"
+                  />
+                  <el-table-column
+                    prop="cnt"
+                    label="占比"
+                  >
+                    <template slot-scope="scope">
+                      {{ (parseInt(scope.row.cnt) / coordinateSum[scope.row.gid] * 100).toFixed(2) + "%" }}
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="最终输赢">
+                    <template slot-scope="scope">
+                      {{
+                        parseInt(Actions[scope.row.orgKey]) / cfgMap[parseInt(scope.row.gid)] ? cfgMap[parseInt(scope.row.gid)].Bet : 0
+                      }}
+                    </template>
+                  </el-table-column>
+                </el-table-column>
+              </el-table>
+              <el-row>
+                <el-col :span="5">
+                  <div class="block">
+                    <el-pagination
+                      :current-page="coordinateClientDB.GetPage().GetCurrentPage()"
+                      :page-sizes="[10, 20, 30, 40]"
+                      :page-size="coordinateClientDB.GetPage().GetPageNum()"
+                      layout="total, sizes, prev, pager, next"
+                      :total="coordinateClientDB.GetPage().GetTotalCount()"
+                      @size-change="coordinateHandleSizeChange"
+                      @current-change="coordinateHandleCurrentChange"
+                    />
+                  </div>
+                </el-col>
+              </el-row>
+            </template>
+            <template v-if="table === 'step'">
+              <el-table
+                ref="filterTable"
+                :data="stepTableData"
+                stripe
+                border
+                :header-cell-style="libShow.DefaultTableHeadClass"
+                :row-style="{height:'10px'}"
+                :cell-style="libShow.DefaultTableCell"
+                style="width: 100%"
+              >
+                <el-table-column label="步数统计">
+                  <el-table-column
+                    prop="gid"
+                    label="游戏"
+                    width="120px"
+                  >
+                    <template slot-scope="scope">
+                      <span v-for="(item, index) in gameOptions" :key="index">
+                        {{ (scope.row.gid == item.key ? item.label : "") }}
+                      </span>
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column
+                    prop="title"
+                    label="类型"
+                    width="120px"
+                  />
+
+                  <el-table-column
+                    prop="cnt"
+                    label="详情"
+                  >
+                    <template slot-scope="scope">
+                      <el-button @click="showStepDetail(scope.row)"> 查看</el-button>
+                    </template>
+                  </el-table-column>
+                </el-table-column>
+              </el-table>
+              <el-row>
+                <el-col :span="5">
+                  <div class="block">
+                    <el-pagination
+                      :current-page="stepClientDB.GetPage().GetCurrentPage()"
+                      :page-sizes="[10, 20, 30, 40]"
+                      :page-size="stepClientDB.GetPage().GetPageNum()"
+                      layout="total, sizes, prev, pager, next"
+                      :total="stepClientDB.GetPage().GetTotalCount()"
+                      @size-change="stepHandleSizeChange"
+                      @current-change="stepHandleCurrentChange"
+                    />
+                  </div>
+                </el-col>
+              </el-row>
+            </template>
+            <template v-if="table === 'jackpot'">
+              <el-table
+                ref="filterTable"
+                :data="jackpotTableData"
+                stripe
+                border
+                :header-cell-style="libShow.DefaultTableHeadClass"
+                :row-style="{height:'10px'}"
+                :cell-style="libShow.DefaultTableCell"
+                style="width: 700px"
+              >
+                <el-table-column label="Jackpot统计">
+                  <el-table-column
+                    prop="gid"
+                    label="游戏"
+                    width="140px"
+                  >
+                    <template slot-scope="scope">
+                      <span v-for="(item, index) in gameOptions" :key="index">
+                        {{ (scope.row.gid == item.key ? item.label : "") }}
+                      </span>
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column
+                    prop="app"
+                    label="app"
+                    width="70px"
+                  >
+                    <template slot-scope="scope">
+                      {{ scope.row.app }}
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column
+                    prop="bet"
+                    label="下注值"
+                    width="70px"
+                  >
+                    <template slot-scope="scope">
+                      {{ scope.row.bet / 1000 }}
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column
+                    prop="type"
+                    label="Jackpot类型"
+                  >
+                    <template slot-scope="scope">
+                      {{ getJPLabel(scope.row.type) }}
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column
+                    prop="fee"
+                    label="收集金额"
+                  >
+                    <template slot-scope="scope">
+                      {{ scope.row.fee / 100000 }}
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column
+                    prop="count"
+                    label="发放次数"
+                    width="90px"
+                  />
+
+                  <el-table-column
+                    prop="winmoney"
+                    label="发放金额"
+                  >
+                    <template slot-scope="scope">
+                      {{ scope.row.winmoney / 1000 }}
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column
+                    prop="countpro"
+                    label="发放概率"
+                    width="110px"
+                  >
+                    <template slot-scope="scope">
+                      {{ (scope.row.countpro).toFixed(7) }}%
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column
+                    prop="confgrant"
+                    label="配置发放概率"
+                    width="110px"
+                  >
+                    <template slot-scope="scope">
+                      {{ scope.row.probability }}%
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column
+                    prop="bet"
+                    label="当前奖池金额"
+                    width="120px"
+                  >
+                    <template slot-scope="scope">
+                      {{ scope.row.pool / 100000 }}
+                    </template>
+                  </el-table-column>
+                </el-table-column>
+              </el-table>
+              <el-row>
+                <el-col :span="5">
+                  <div class="block">
+                    <el-pagination
+                      :current-page="jackpotClientDB.GetPage().GetCurrentPage()"
+                      :page-sizes="[10, 20, 30, 40]"
+                      :page-size="jackpotClientDB.GetPage().GetPageNum()"
+                      layout="total, sizes, prev, pager, next"
+                      :total="jackpotClientDB.GetPage().GetTotalCount()"
+                      @size-change="jackpotHandleSizeChange"
+                      @current-change="jackpotHandleCurrentChange"
+                    />
+                  </div>
+                </el-col>
+              </el-row>
+            </template>
           </el-col>
         </el-row>
-        <el-row style="overflow-x: auto; display: flex; flex-wrap: nowrap;padding-bottom: 30px">
-          <el-col :span="11">
-            <el-table
-              ref="filterTable"
-              :data="stepTableData"
-              stripe
-              border
-              :header-cell-style="libShow.DefaultTableHeadClass"
-              :row-style="{height:'10px'}"
-              :cell-style="libShow.DefaultTableCell"
-              style="width: 100%"
-            >
-              <el-table-column label="步数统计">
-                <el-table-column
-                  prop="gid"
-                  label="游戏"
-                  width="120px"
-                >
-                  <template slot-scope="scope">
-                    <span v-for="(item, index) in gameOptions" :key="index">
-                      {{ (scope.row.gid == item.key ? item.label : "") }}
-                    </span>
-                  </template>
-                </el-table-column>
-
-                <el-table-column
-                  prop="title"
-                  label="类型"
-                  width="120px"
-                />
-
-                <el-table-column
-                  prop="cnt"
-                  label="详情"
-                >
-                  <template slot-scope="scope">
-                    <el-button @click="showStepDetail(scope.row)"> 查看</el-button>
-                  </template>
-                </el-table-column>
-              </el-table-column>
-            </el-table>
-            <el-row>
-              <el-col :span="5">
-                <div class="block">
-                  <el-pagination
-                    :current-page="stepClientDB.GetPage().GetCurrentPage()"
-                    :page-sizes="[10, 20, 30, 40]"
-                    :page-size="stepClientDB.GetPage().GetPageNum()"
-                    layout="total, sizes, prev, pager, next"
-                    :total="stepClientDB.GetPage().GetTotalCount()"
-                    @size-change="stepHandleSizeChange"
-                    @current-change="stepHandleCurrentChange"
-                  />
-                </div>
-              </el-col>
-            </el-row>
-          </el-col>
-          <el-col
-            v-if="queryGid === 150 || queryGid === 90 || queryGid === 156 || queryGid === 166 || queryGid == 196"
-            :span="13"
-            :offset="1"
-          >
-            <el-table
-              ref="filterTable"
-              :data="jackpotTableData"
-              stripe
-              border
-              :header-cell-style="libShow.DefaultTableHeadClass"
-              :row-style="{height:'10px'}"
-              :cell-style="libShow.DefaultTableCell"
-              style="width: 700px"
-            >
-              <el-table-column label="Jackpot统计">
-                <el-table-column
-                  prop="gid"
-                  label="游戏"
-                  width="140px"
-                >
-                  <template slot-scope="scope">
-                    <span v-for="(item, index) in gameOptions" :key="index">
-                      {{ (scope.row.gid == item.key ? item.label : "") }}
-                    </span>
-                  </template>
-                </el-table-column>
-
-                <el-table-column
-                  prop="app"
-                  label="app"
-                  width="70px"
-                >
-                  <template slot-scope="scope">
-                    {{ scope.row.app }}
-                  </template>
-                </el-table-column>
-
-                <el-table-column
-                  prop="bet"
-                  label="下注值"
-                  width="70px"
-                >
-                  <template slot-scope="scope">
-                    {{ scope.row.bet / 1000 }}
-                  </template>
-                </el-table-column>
-
-                <el-table-column
-                  prop="type"
-                  label="Jackpot类型"
-                >
-                  <template slot-scope="scope">
-                    {{ getJPLabel(scope.row.type) }}
-                  </template>
-                </el-table-column>
-
-                <el-table-column
-                  prop="fee"
-                  label="收集金额"
-                >
-                  <template slot-scope="scope">
-                    {{ scope.row.fee / 100000 }}
-                  </template>
-                </el-table-column>
-
-                <el-table-column
-                  prop="count"
-                  label="发放次数"
-                  width="90px"
-                />
-
-                <el-table-column
-                  prop="winmoney"
-                  label="发放金额"
-                >
-                  <template slot-scope="scope">
-                    {{ scope.row.winmoney / 1000 }}
-                  </template>
-                </el-table-column>
-
-                <el-table-column
-                  prop="countpro"
-                  label="发放概率"
-                  width="110px"
-                >
-                  <template slot-scope="scope">
-                    {{ (scope.row.countpro).toFixed(7) }}%
-                  </template>
-                </el-table-column>
-
-                <el-table-column
-                  prop="confgrant"
-                  label="配置发放概率"
-                  width="110px"
-                >
-                  <template slot-scope="scope">
-                    {{ scope.row.probability }}%
-                  </template>
-                </el-table-column>
-
-                <el-table-column
-                  prop="bet"
-                  label="当前奖池金额"
-                  width="120px"
-                >
-                  <template slot-scope="scope">
-                    {{ scope.row.pool / 100000 }}
-                  </template>
-                </el-table-column>
-              </el-table-column>
-            </el-table>
-            <el-row>
-              <el-col :span="5">
-                <div class="block">
-                  <el-pagination
-                    :current-page="jackpotClientDB.GetPage().GetCurrentPage()"
-                    :page-sizes="[10, 20, 30, 40]"
-                    :page-size="jackpotClientDB.GetPage().GetPageNum()"
-                    layout="total, sizes, prev, pager, next"
-                    :total="jackpotClientDB.GetPage().GetTotalCount()"
-                    @size-change="jackpotHandleSizeChange"
-                    @current-change="jackpotHandleCurrentChange"
-                  />
-                </div>
-              </el-col>
-            </el-row>
-          </el-col>
-        </el-row>
-
       </el-tab-pane>
 
       <el-tab-pane label="大奖监控" name="second">
@@ -1036,6 +1126,7 @@ export default {
       ordinaryReturnClientDBNew : new ClientTableData([], 1, filterMap),
       buyReturnClientDB: { '全部': new ClientTableData([], 1, filterMap) },
       buyReturnClientDBNew: new ClientTableData([], 1, filterMap),
+      superReturnClientDBNew: new ClientTableData([], 1, filterMap),
       buyRespinReturnClientDB: { '全部': new ClientTableData([], 1, filterMap) },
       has2JPClosClientDB: { '全部': new ClientTableData([], 1, filterMap) },
       showBtn: 0,
@@ -1053,6 +1144,7 @@ export default {
       jackpotTableData: [],
       OrdinaryReturnTableData: [],
       BuyReturnMoneyTableData: [],
+      SuperReturnMoneyTableData: [],
       Has2JPColsBuyRespinTableData: [],
 
       queryTime: new Date().getTime(),
@@ -1073,6 +1165,7 @@ export default {
       scatterCounts: {},
       returnMap: {},
       buyReturnMap: {},
+      superReturnMap: {},
       buyRespinReturnMap: {},
       buyRespinTimeMap: {},
       buyRespinTotalBetMap: {},
@@ -1094,6 +1187,30 @@ export default {
     this.getGameList()
     this.getSlotsScriptStatistics()
     this.queryKeyInput()
+  },
+  computed: {
+    extraStatisticsTables() {
+      const tables = []
+      if (this.SuperReturnMoneyTableData.length > 0) {
+        tables.push('super')
+      }
+      if (this.Has2JPColsBuyRespinTableData.length > 0) {
+        tables.push('respin')
+      }
+      if (this.scriptTableData.length > 0) {
+        tables.push('script')
+      }
+      if (this.coordinateTableData.length > 0) {
+        tables.push('coordinate')
+      }
+      if (this.stepTableData.length > 0) {
+        tables.push('step')
+      }
+      if (this.jackpotTableData.length > 0) {
+        tables.push('jackpot')
+      }
+      return tables
+    }
   },
   methods: {
     refreshStep() {
@@ -1201,10 +1318,35 @@ export default {
         result[key].times += parseInt(item.times, 10);
       });
       this.OrdinaryReturnTableData = Object.values(result);
-      //排序
       this.OrdinaryReturnTableData.sort((a, b) => {
-          return a.bet - b.bet;
+        return a.bet - b.bet;
       });
+
+      // 添加汇总行
+      if (this.OrdinaryReturnTableData.length > 0) {
+        let totalTimes = 0;
+        let totalBetAmount = 0;
+        let totalReturnAmount = 0;
+
+        for (const item of this.OrdinaryReturnTableData) {
+          totalTimes += parseInt(item.times);
+          totalBetAmount += this.currentBaseBet * item.bet * item.times;
+          totalReturnAmount += this.returnMap[item.bet+'_'+bet+'_'+this.planId] || 0;
+        }
+
+        const totalGGR = totalBetAmount - totalReturnAmount;
+        const totalReturnRate = totalBetAmount > 0 ? (totalReturnAmount / totalBetAmount * 100).toFixed(2) + '%' : '0%';
+
+        this.OrdinaryReturnTableData.push({
+          isSummary: true,
+          bet: 0,
+          times: totalTimes,
+          totalBetAmount: totalBetAmount,
+          totalReturnAmount: totalReturnAmount,
+          totalGGR: totalGGR,
+          totalReturnRate: totalReturnRate
+        });
+      }
     },
 
 
@@ -1217,33 +1359,68 @@ export default {
       this.jackpotTableData = this.jackpotClientDB.GetCurrentPageData()
     },
     refreshBuyReturn() {
+      this.BuyReturnMoneyTableData = this.buildReturnMoneyTableData(
+        this.buyReturnClientDBNew,
+        this.buyReturnMap
+      )
+    },
+    refreshSuperReturn() {
+      this.SuperReturnMoneyTableData = this.buildReturnMoneyTableData(
+        this.superReturnClientDBNew,
+        this.superReturnMap
+      )
+    },
+    buildReturnMoneyTableData(clientDB, returnMap) {
       let bet = this.betOddsKey
-      if (this.betOddsKey===-1){
+      if (this.betOddsKey === -1) {
         bet = -1
       }
-      this.buyReturnClientDBNew.FilterValueMap={"odds":bet,"planId":this.planId}
-      this.buyReturnClientDBNew.FilterDataCustomize({"odds":-1,"planId":-1})
-      const getCurrentPageData = this.buyReturnClientDBNew.GetCurrentPageData();
-      const result = {};
+      clientDB.FilterValueMap = { odds: bet, planId: this.planId }
+      clientDB.FilterDataCustomize({ odds: -1, planId: -1 })
+      const getCurrentPageData = clientDB.GetCurrentPageData()
+      const result = {}
       getCurrentPageData.forEach(item => {
         // 方案选所有时过滤PlanId
-        let key = `${item.planId}_${item.bet}`;
+        let key = `${item.planId}_${item.bet}`
         if (this.planId === -1) {
-          key = '-1_'+item.bet;
-        }
-        if (this.bet === -1) {
-          key = item.planId+'_-1';
+          key = '-1_' + item.bet
         }
         if (!result[key]) {
-          result[key] = { ...item, times: 0 };
+          result[key] = { ...item, times: 0 }
         }
-        result[key].times += parseInt(item.times, 10);
-      });
-      this.BuyReturnMoneyTableData = Object.values(result);
-      //排序
-      this.BuyReturnMoneyTableData.sort((a, b) => {
-        return a.bet - b.bet;
-      });
+        result[key].times += parseInt(item.times, 10)
+      })
+      const tableData = Object.values(result)
+      tableData.sort((a, b) => {
+        return a.bet - b.bet
+      })
+
+      // 添加汇总行
+      if (tableData.length > 0) {
+        let totalTimes = 0
+        let totalBetAmount = 0
+        let totalReturnAmount = 0
+
+        for (const item of tableData) {
+          totalTimes += parseInt(item.times)
+          totalBetAmount += item.bet * item.times
+          totalReturnAmount += returnMap[item.bet + '_' + bet + '_' + this.planId] || 0
+        }
+
+        const totalGGR = totalBetAmount - totalReturnAmount
+        const totalReturnRate = totalBetAmount > 0 ? (totalReturnAmount / totalBetAmount * 100).toFixed(2) + '%' : '0%'
+
+        tableData.push({
+          isSummary: true,
+          bet: 0,
+          times: totalTimes,
+          totalBetAmount: totalBetAmount,
+          totalReturnAmount: totalReturnAmount,
+          totalGGR: totalGGR,
+          totalReturnRate: totalReturnRate
+        })
+      }
+      return tableData
     },
 
     refreshRespinReturn() {
@@ -1257,29 +1434,55 @@ export default {
     },
     getTotalOrdinaryBetTimes() {
       let cnt = 0
-        for (const o of this.OrdinaryReturnTableData) {
+      for (const o of this.OrdinaryReturnTableData) {
+        if (!o.isSummary) {
           cnt += parseInt(o.times)
+        }
       }
       return cnt
     },
     getTotalOrdinaryBet() {
       let cnt = 0
-        for (const o of this.OrdinaryReturnTableData) {
+      for (const o of this.OrdinaryReturnTableData) {
+        if (!o.isSummary) {
           cnt += parseInt(o.times * o.bet)
+        }
       }
       return cnt
     },
     getTotalBuyOrdinaryBet() {
       let cnt = 0
       for (const o of this.BuyReturnMoneyTableData) {
-        cnt += parseInt(o.times * o.bet )
+        if (!o.isSummary) {
+          cnt += parseInt(o.times * o.bet )
+        }
       }
       return cnt
     },
     getTotalBuyBetTimes() {
       let cnt = 0
       for (const o of this.BuyReturnMoneyTableData) {
-        cnt += parseInt(o.times)
+        if (!o.isSummary) {
+          cnt += parseInt(o.times)
+        }
+      }
+      return cnt
+    },
+    getTotalSuperOrdinaryBet() {
+      let cnt = 0
+      for (const o of this.SuperReturnMoneyTableData) {
+        if (!o.isSummary) {
+          cnt += parseInt(o.times * o.bet)
+        }
+      }
+      return cnt
+    },
+    getTotalSuperBetTimes() {
+      let cnt = 0
+      for (const o of this.SuperReturnMoneyTableData) {
+        if (!o.isSummary) {
+          cnt += parseInt(o.times)
+        }
       }
       return cnt
     },
@@ -1456,6 +1659,7 @@ export default {
       // this.refreshCoordinate()
       // this.refreshJackpot()
       this.refreshBuyReturn()
+      this.refreshSuperReturn()
       this.refreshOrdinaryReturn()
       this.refreshRespinReturn()
     },
@@ -1508,10 +1712,12 @@ export default {
         const scatterCounts = []
         const ordinaryReturnMoneyTableData = []
         const buyReturnMoneyTableData = []
+        const superReturnMoneyTableData = []
         const has2JpColsTableData = {}  // 出现2列JP的统计
 
         this.returnMap = {}
         this.buyReturnMap = {}
+        this.superReturnMap = {}
         this.stepSum = {}
         this.sumData = {}
         this.coordinateSum = {}
@@ -1530,6 +1736,7 @@ export default {
             this.processStepCount(strings,scriptTableData,scatterCounts,response,key)
             this.processOrdinaryRebateCount(strings,ordinaryReturnMoneyTableData,response,key)
             this.processBuyReturnCount(strings,buyReturnMoneyTableData,response,key)
+            this.processSuperReturnCount(strings, superReturnMoneyTableData, response, key)
           }
           // 步数统计
           this.scriptStepClientDB  = new ClientTableData(scriptTableData , 200, {}, 'sort', -1);
@@ -1538,6 +1745,8 @@ export default {
           this.ordinaryReturnClientDBNew  = new ClientTableData(ordinaryReturnMoneyTableData , 200, {}, 'sort', -1);
           // 购买免费
           this.buyReturnClientDBNew  = new ClientTableData(buyReturnMoneyTableData , 200, {}, 'sort', -1);
+          // 超级免费
+          this.superReturnClientDBNew = new ClientTableData(superReturnMoneyTableData, 200, {}, 'sort', -1)
 
 
           for (const key in response.Data['script']) {
@@ -2153,6 +2362,51 @@ export default {
         this.buyReturnMap[key] = 0;
       }
       this.buyReturnMap[key] += value
+    },
+    processSuperReturnCount(strings, superReturnMoneyTableData, response, key) {
+      if (strings[0] + strings[1] === 'spinsuper') {
+        let planId = 0
+        let odds = 0
+        if (strings.includes('plan') && strings.length === 8) {
+          planId = parseInt(strings[7])
+          odds = parseInt(strings[4])
+        }
+        // 兼容旧的返奖统计
+        if (!strings.includes('plan') && strings.length === 6) {
+          planId = 0
+          odds = parseInt(strings[4])
+        }
+        if (strings[2] === 'times' && strings.length === 8) {
+          superReturnMoneyTableData.push({
+            bet: parseInt(strings[3]),
+            planId: planId,
+            odds: odds,
+            times: response.Data['script'][key]
+          })
+        }
+        if (strings[2] === 'return') {
+          // key=bet_odds_planId
+          const ggr = parseInt(response.Data['script'][key])
+          if (strings.length === 8) {
+            this.updateSuperReturnMapEntry(strings[3] + '_' + strings[4] + '_' + strings[7], ggr)
+            this.updateSuperReturnMapEntry(strings[3] + '_-1_-1', ggr)
+            this.updateSuperReturnMapEntry(strings[3] + '_' + strings[4] + '_-1', ggr)
+            this.updateSuperReturnMapEntry(strings[3] + '_-1_' + strings[7], ggr)
+          } else if (strings.length === 6) { // 兼容旧的
+            const planId = 0
+            this.updateSuperReturnMapEntry(strings[3] + '_' + strings[4] + '_' + planId, ggr)
+            this.updateSuperReturnMapEntry(strings[3] + '_-1_-1', ggr)
+            this.updateSuperReturnMapEntry(strings[3] + '_' + strings[4] + '_-1', ggr)
+            this.updateSuperReturnMapEntry(strings[3] + '_-1_' + planId, ggr)
+          }
+        }
+      }
+    },
+    updateSuperReturnMapEntry(key, value) {
+      if (!this.superReturnMap[key]) {
+        this.superReturnMap[key] = 0
+      }
+      this.superReturnMap[key] += value
     },
     showStepDetail(data) {
       var row = JSON.parse(JSON.stringify(data))
