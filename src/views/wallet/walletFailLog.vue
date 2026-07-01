@@ -209,7 +209,8 @@ export default {
         1: '派彩失败', 2: '游戏结算失败', 3: '转入失败', 4: '下注失败', 5: '转出失败', 6: '增值业务失败',
         7: '比赛报名', 8: '比赛结束', 10: 'CP下注失败',
         11: 'CP结算失败', 12: 'CP离开回退失败', 13: 'CP打赏失败', 14: '再次买入失败', 15: '中JACKPOT',
-        16: '下注并派彩失败', 17: '创建门票失败', 18: '门票更新失败'
+        16: '下注并派彩失败', 17: '创建门票失败', 18: '门票更新失败',
+        22: '上报pot失败', 23: 'bet 下注失败', 24: 'bet 结算失败', 25: 'bonus发奖失败'
       },
       statusMap: {
         1: '等待重试', 2: '正在重试', 3: '重试成功'
@@ -401,11 +402,19 @@ export default {
         const sub = JSON.parse(data.CommonFailParamsJsonString)
         console.log('json data', JSON.parse(data.CommonFailParamsJsonString))
         return '下注:' + (sub.BetAmount / 1000) + ' | 派彩:' + sub.PayoffAmount / 1000
-      }  else if (data.FailType == 15) {
+      } else if (data.FailType == 15) {
         const sub = JSON.parse(data.CommonFailParamsJsonString)
         console.log('json data', JSON.parse(data.CommonFailParamsJsonString))
         return sub.JackpotAmount / 1000
-      }else {
+      } else if (data.FailType == 23) {
+        const sub = JSON.parse(data.CommonFailParamsJsonString)
+        console.log('json data', JSON.parse(data.CommonFailParamsJsonString))
+        return sub.Amount / 1000
+      } else if (data.FailType == 24) {
+        const sub = JSON.parse(data.CommonFailParamsJsonString)
+        console.log('json data', JSON.parse(data.CommonFailParamsJsonString))
+        return sub.PayoffAmount / 1000
+      } else {
         if (data.hasOwnProperty('BetParams')) {
           return data.BetParamsFail.BetAmount / 1000
         }
