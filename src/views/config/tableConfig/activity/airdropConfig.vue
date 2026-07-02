@@ -311,7 +311,7 @@
                   <el-radio-group v-model="edit.item.gameType" @change="onGameTypeChange">
                     <el-radio :label="1">Slot</el-radio>
                     <el-radio :label="2">Poker</el-radio>
-                    <!--                    <el-radio :label="3">Casino</el-radio>-->
+                    <el-radio :label="3">Casino</el-radio>
                   </el-radio-group>
                 </el-form-item>
               </el-col>
@@ -476,10 +476,7 @@
                   style="width: 100%"
                   :cell-style="libShow.DefaultTableCell"
                 >
-                  <el-table-column
-                    prop="taskValueRequired"
-                    label="进度要求"
-                  >
+                  <el-table-column prop="taskValueRequired" label="进度要求" v-if=" this.edit.item.gameType === 2">
                     <template slot-scope="scope">
                       <el-input v-model.number="scope.row.taskValueRequired" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
                     </template>
@@ -584,22 +581,22 @@
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-row>
-              <el-col :span="11">
-                <el-form-item label="A/B测试开关：" prop="item.whitelistCfg.abTest">
-                  <el-switch v-model="edit.item.whitelistCfg.abTest.switch" :active-value="true" :inactive-value="false" active-text="开启" inactive-text="关闭" />
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="11">
-                <el-form-item label="B分组比例：" prop="item.whitelistCfg.abTest.bPercent">
-                  <el-input v-model.number="edit.item.whitelistCfg.abTest.bPercent" oninput=" if(value < 0 || value === '' || value == null){value = 0;} ">
-                    <template slot="append">%</template>
-                  </el-input>
-                </el-form-item>
-              </el-col>
-            </el-row>
+<!--            <el-row>-->
+<!--              <el-col :span="11">-->
+<!--                <el-form-item label="A/B测试开关：" prop="item.whitelistCfg.abTest">-->
+<!--                  <el-switch v-model="edit.item.whitelistCfg.abTest.switch" :active-value="true" :inactive-value="false" active-text="开启" inactive-text="关闭" />-->
+<!--                </el-form-item>-->
+<!--              </el-col>-->
+<!--            </el-row>-->
+<!--            <el-row>-->
+<!--              <el-col :span="11">-->
+<!--                <el-form-item label="B分组比例：" prop="item.whitelistCfg.abTest.bPercent">-->
+<!--                  <el-input v-model.number="edit.item.whitelistCfg.abTest.bPercent" oninput=" if(value < 0 || value === '' || value == null){value = 0;} ">-->
+<!--                    <template slot="append">%</template>-->
+<!--                  </el-input>-->
+<!--                </el-form-item>-->
+<!--              </el-col>-->
+<!--            </el-row>-->
           </el-form>
         </el-tab-pane>
 
@@ -1019,7 +1016,7 @@ export default {
         levelTagIds.includes(this.edit.item.userFilterCondition.userTagConfig.tagId)
     },
     showRewardRangesConfig() {
-      return this.edit.item.gameType !== 1 // 1=Slot 时不显示大奖系数配置
+      return this.edit.item.gameType === 2 // 1=Slot 2=poker 3=casino 时不显示大奖系数配置
     },
     filteredTreeData() {
       const gameTypeMap = { 1: 'Slot', 2: 'Poker', 3: 'Casino' }
