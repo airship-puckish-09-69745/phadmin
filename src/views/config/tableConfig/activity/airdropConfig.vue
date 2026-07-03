@@ -700,7 +700,7 @@ function newItem() {
     rewardConfig: {
       rewardType: 2,
       useSceneId: 13,
-      totalReward: 88888,
+      totalReward: 0,
       remainRewardMonitorRate: 90,
       rewardRanges: [],
       userRewardLimit: 0
@@ -1312,10 +1312,10 @@ export default {
           return
         }
       }
-      if (!this.edit.item.rewardConfig.totalReward) {
-        Message.error('请填写总奖励')
-        return
-      }
+      // if (!this.edit.item.rewardConfig.totalReward) {
+      //   Message.error('请填写总奖励')
+      //   return
+      // }
       if (this.edit.item.taskConfig.taskType === 0 || this.edit.item.taskConfig.taskValueRequired === 0 || this.edit.item.taskConfig.taskText === '') {
         Message.error('请完善任务配置')
         return
@@ -1344,7 +1344,7 @@ export default {
         Message.error('请选择参与活动的游戏')
         return
       }
-      if (this.edit.item.gameType !== 1 && this.edit.item.rewardConfig.rewardRanges.length === 0) {
+      if (this.edit.item.gameType === 2 && this.edit.item.rewardConfig.rewardRanges.length === 0) {
         Message.error('请配置大奖系数配置')
         return
       }
