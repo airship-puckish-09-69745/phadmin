@@ -700,7 +700,7 @@ function newItem() {
     rewardConfig: {
       rewardType: 2,
       useSceneId: 13,
-      totalReward: 88888,
+      totalReward: 0,
       remainRewardMonitorRate: 90,
       rewardRanges: [],
       userRewardLimit: 0
@@ -1312,10 +1312,10 @@ export default {
           return
         }
       }
-      if (!this.edit.item.rewardConfig.totalReward) {
-        Message.error('请填写总奖励')
-        return
-      }
+      // if (!this.edit.item.rewardConfig.totalReward) {
+      //   Message.error('请填写总奖励')
+      //   return
+      // }
       if (this.edit.item.taskConfig.taskType === 0 || this.edit.item.taskConfig.taskValueRequired === 0 || this.edit.item.taskConfig.taskText === '') {
         Message.error('请完善任务配置')
         return
