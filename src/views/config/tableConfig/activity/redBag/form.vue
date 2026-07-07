@@ -44,9 +44,9 @@ import {Message} from 'element-ui'
 import request from '@/utils/request'
 import store from '@/store'
 import {divFields1000, mulFields1000} from '@/utils/index'
-import ActivityBaseConfig from './ActivityBaseConfig.vue'
-import TaskConfig from './TaskConfig.vue'
-import WhitelistConfig from './WhitelistConfig.vue'
+import ActivityBaseConfig from './components/ActivityBaseConfig.vue'
+import TaskConfig from './components/TaskConfig.vue'
+import WhitelistConfig from './components/WhitelistConfig.vue'
 
 export default {
   name: 'RedBagForm',
