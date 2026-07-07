@@ -301,9 +301,11 @@ export default {
       editItem: newTaskCfg(),
       propList: [], // 道具列表
       betScenes: [
-        { 'value': 1, 'label': '累计下注' },
+        { 'value': 1, 'label': '累计下注金币' },
         { 'value': 2, 'label': '连胜' },
-        { 'value': 3, 'label': '特殊玩法' }
+        { 'value': 3, 'label': '特殊玩法' },
+        { 'value': 4, 'label': '累计下注道具' },
+
       ],
       propTypeOptions: [
         // { 'value': 7, 'label': 'Tongits门票', disabled: false },
