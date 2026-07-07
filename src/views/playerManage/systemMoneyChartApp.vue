@@ -9,6 +9,7 @@
             :key="p.value"
             :type="p.type"
             size="mini"
+            :disabled="showLoading"
             @click="changeApp(p.value)"
           >
             {{ p.name }}
@@ -16,11 +17,13 @@
           <el-dropdown
             v-if="hasMoreApps"
             trigger="click"
+            :disabled="showLoading"
             @command="handleAppSelect"
           >
             <el-button
               size="mini"
               :type="isOtherAppSelected ? 'success' : 'info'"
+              :disabled="showLoading"
             >
               {{ otherButtonLabel }}
             </el-button>
@@ -30,6 +33,7 @@
                 :key="p.value"
                 :command="p.value"
                 :class="{ 'selected-app': p.value === appId }"
+                :disabled="showLoading"
               >
                 {{ p.name }}
               </el-dropdown-item>
@@ -38,25 +42,25 @@
         </el-button-group>
       </el-col>
       <el-col :span="2">
-        <el-button size="mini" @click="getInfo(10000, 1)">刷新</el-button>
+        <el-button size="mini" :disabled="showLoading" @click="getInfo(10000, 1)">刷新</el-button>
       </el-col>
     </el-row>
     <el-row style="margin-top: 5px;">
       <el-col :offset="2" :span="11">
         筛选：
         <el-button-group>
-          <el-button type="success" size="mini" @click="changeType(1)">默认</el-button>
-          <el-button type="success" size="mini" @click="changeType(2)">Poker</el-button>
-          <el-button type="success" size="mini" @click="changeType(3)">Slots</el-button>
-          <el-button type="success" size="mini" @click="changeType(4)">其他</el-button>
+          <el-button type="success" size="mini" :disabled="showLoading" @click="changeType(1)">默认</el-button>
+          <el-button type="success" size="mini" :disabled="showLoading" @click="changeType(2)">Poker</el-button>
+          <el-button type="success" size="mini" :disabled="showLoading" @click="changeType(3)">Slots</el-button>
+          <el-button type="success" size="mini" :disabled="showLoading" @click="changeType(4)">其他</el-button>
         </el-button-group>
       </el-col>
       <el-col :span="11">
         排序：
         <el-button-group>
-          <el-button type="primary" size="mini" @click="changeOrder(1)">默认</el-button>
-          <el-button type="primary" size="mini" @click="changeOrder(2)">按收益</el-button>
-          <el-button type="primary" size="mini" @click="changeOrder(3)">按流水</el-button>
+          <el-button type="primary" size="mini" :disabled="showLoading" @click="changeOrder(1)">默认</el-button>
+          <el-button type="primary" size="mini" :disabled="showLoading" @click="changeOrder(2)">按收益</el-button>
+          <el-button type="primary" size="mini" :disabled="showLoading" @click="changeOrder(3)">按流水</el-button>
         </el-button-group>
       </el-col>
     </el-row>
@@ -533,16 +537,19 @@ export default {
         if (IsProd()) { // 线上
           this.defaultOrder.push(76, 80, 78, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162, 164, 166, 170, 172,
             174, 176, 178, 180, 182, 168, 186, 184, 188, 190, 192, 194, 196, 198, 200, 202, 204, 206, 208, 210, 212, 214, 216, 218, 220,
-            222, 226, 228, 232, 234, 236, 238)
+            222, 226, 228, 232, 234, 236, 238, 240, 242, 244, 248, 250)
         } else {
           this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162, 164, 172, 188, 202,
             198, 192, 180, 166, 170, 176, 182, 174, 186, 178, 194, 184, 168, 196, 190, 200, 204, 206, 208, 210, 212, 214, 216, 218, 220, 222,
-            226, 228, 232, 234, 236, 238)
+            226, 228, 232, 234, 236, 238, 240, 242, 244, 248, 250)
         }
       }
       if (this.showZoogame) {
         this.defaultOrder.push(124, 125, 130, 131)
       }
+
+      // 去重
+      this.defaultOrder = [...new Set(this.defaultOrder)]
     },
     getPrizePool(o) {
       let pool = 0
@@ -555,6 +562,7 @@ export default {
       return this.formatNumber(pool / 1000)
     },
     getFreezePoolText(o) {
+      console.log('getFreezePoolText gid:', o, this.summary[o] && this.summary[o].FreezePool)
       return this.summary[o] && this.summary[o].FreezePool !== undefined ? '未提现冻结 ：' + this.formatNumber(this.summary[o].FreezePool / 1000) : ''
     },
     getGameName(o) {
@@ -729,10 +737,8 @@ export default {
           $this.initChartData()
           $this.showHealth()
         }
-      }).catch({
-        error: function(error) {
-          $this.showLoading = false
-        }
+      }).catch((error) => {
+        $this.showLoading = false
       })
       $this.getPoolList()
     },
@@ -948,6 +954,10 @@ export default {
         {
           'ID': 1000049,
           'Account': 'ZooGameDev'
+        },
+        {
+          'ID': 2000002,
+          'Account': 'CP内部（2000002）'
         }
       ]
       if (process.env.VUE_APP_PROJECT_NAME === '菲1-线上环境') {
@@ -960,6 +970,10 @@ export default {
             {
               'ID': 1000003,
               'Account': 'BP UAT'
+            },
+            {
+              'ID': 2000002,
+              'Account': 'CP内部 UAT（2000002）'
             },
             {
               'ID': 1000012,
@@ -991,6 +1005,10 @@ export default {
             {
               'ID': 1000002,
               'Account': '内部'
+            },
+            {
+              'ID': 2000002,
+              'Account': 'CP内部（2000002）'
             }
           ]
         }
