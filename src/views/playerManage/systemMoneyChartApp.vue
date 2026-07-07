@@ -664,7 +664,7 @@ export default {
           Env: this.env,
           Path: '/log/system/money/app',
           Gid: this.gid,
-          AppId: this.appId,
+          App: this.appId,
           Type: iType,
           Day: parseInt(this.item.date / 1000)
         }
