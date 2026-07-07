@@ -683,7 +683,7 @@ export default {
         data: {
           Path: '/user/game/prize/pool/list',
           Env: store.getters.env,
-          AppId: 0
+          AppId: -1
         }
       }).then(response => {
         console.log('list response', response)
