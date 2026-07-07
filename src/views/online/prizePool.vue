@@ -1,9 +1,9 @@
 <template>
-  <div class="app-container">
+  <div id="prizePoolContainer" class="app-container">
     <el-row :gutter="10" style="margin-top: 10px">
       <el-col :span="4" :offset="1">
         <span>APP：</span>
-        <el-select v-model="selectedApp" placeholder="请选择APP" size="mini" style="width: 80%" @change="onAppChange">
+        <el-select v-model="selectedApp" placeholder="请选择APP" size="mini" filterable style="width: 80%" @change="onAppChange">
           <el-option label="旧版" :value="0" />
           <el-option v-for="(item,index) in appOptions" :key="index" :label="item.label" :value="item.value" />
         </el-select>
@@ -13,53 +13,58 @@
       </el-col>
       <el-col :span="22" :offset="1">
         <el-tabs active-name="first">
-          <el-tab-pane label="下注类" name="first"><el-table
-            :data="casioData"
-            border
-          >
-            <el-table-column
-              prop="Gid"
-              label="子游戏"
-              width="150"
+          <el-tab-pane label="下注类" name="first">
+            <el-table
+              v-loading="loading"
+              element-loading-text="拼命加载中"
+              element-loading-spinner="el-icon-loading"
+              element-loading-background="rgba(0, 0, 0, 0.5)"
+              :data="casioData"
+              border
             >
-              <template slot-scope="scope">
-                <span v-if="scope.row.Gid===37">
-                  {{ getGameName(scope.row.Gid)+' '+scope.row.Ante/1000+'场' }}
-                </span>
-                <span v-else>
-                  {{ getGameName(scope.row.Gid) }}
-                </span>
-              </template>
-            </el-table-column>
-            <el-table-column
-              prop="PrizePool"
-              label="奖池"
-              width="200"
-            >
-              <template slot-scope="scope">
-                <span :style="scope.row.PrizePool/1000>1000000?'color:red':''">{{ Math.floor(scope.row.PrizePool/1000).toLocaleString() }}</span>
+              <el-table-column
+                prop="Gid"
+                label="子游戏"
+                width="150"
+              >
+                <template slot-scope="scope">
+                  <span v-if="scope.row.Gid===37">
+                    {{ getGameName(scope.row.Gid)+' '+scope.row.Ante/1000+'场' }}
+                  </span>
+                  <span v-else>
+                    {{ getGameName(scope.row.Gid) }}
+                  </span>
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="PrizePool"
+                label="奖池"
+                width="200"
+              >
+                <template slot-scope="scope">
+                  <span :style="scope.row.PrizePool/1000>1000000?'color:red':''">{{ Math.floor(scope.row.PrizePool/1000).toLocaleString() }}</span>
 
-              </template>
-            </el-table-column>
-            <el-table-column
-              prop="IsByApp"
-              label="支持按APP区分奖池"
-              width="150"
-            >
-              <template slot-scope="scope">
-                <span v-if="scope.row.IsByApp" style="color: red">{{ scope.row.IsByApp ? '是' : '否' }}</span>
-                <span v-if="!scope.row.IsByApp">{{ scope.row.IsByApp ? '是' : '否' }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column
-              prop="RecountRate"
-              label="操作"
-            >
-              <template slot-scope="scope">
-                <el-button type="primary" size="mini" @click="edit(scope.row)">编辑</el-button>
-              </template>
-            </el-table-column>
-          </el-table></el-tab-pane>
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="IsByApp"
+                label="支持按APP区分奖池"
+                width="150"
+              >
+                <template slot-scope="scope">
+                  <span v-if="scope.row.IsByApp" style="color: red">{{ scope.row.IsByApp ? '是' : '否' }}</span>
+                  <span v-if="!scope.row.IsByApp">{{ scope.row.IsByApp ? '是' : '否' }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="RecountRate"
+                label="操作"
+              >
+                <template slot-scope="scope">
+                  <el-button type="primary" size="mini" @click="edit(scope.row)">编辑</el-button>
+                </template>
+              </el-table-column>
+            </el-table></el-tab-pane>
           <el-tab-pane label="Slots" name="second"><el-table
             :data="slotsData"
             :span-method="objectSpanMethod"
@@ -153,6 +158,7 @@ import { Message } from 'element-ui'
 import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import request from '@/utils/request'
+import watermark from '@/utils/watermark'
 import store from '@/store'
 import { $libShow, DataRule, ValidateVueItem } from '@/utils/common'
 
@@ -189,7 +195,8 @@ export default {
       rowsSpanGameIdMap: {},
       PrizePoolV2Url: process.env.VUE_APP_ADMIN_V2_URL,
       selectedApp: 0,
-      appOptions: []
+      appOptions: [],
+      loading: false
     }
   },
   created() {
@@ -274,6 +281,7 @@ export default {
       return result
     },
     getData() {
+      this.loading = true
       request({
         url: '/dataProxy/info',
         method: 'get',
@@ -283,11 +291,18 @@ export default {
           AppId: this.selectedApp
         }
       }).then(response => {
+        this.loading = false
         if (response.RetCode === 0) {
           const result = this.parsePoolList(response.Data)
           this.slotsData = result.slotsData
           this.casioData = result.casioData
           this.rowsSpanGameIdMap = result.rowsSpanGameIdMap
+          const appName = this.getAppName(this.selectedApp)
+          this.$message({
+            title: '提示',
+            message: 'APP-' + appName + ' 奖池数据加载成功',
+            type: 'success'
+          })
         } else {
           this.$message.error(response.Data)
         }
@@ -309,11 +324,27 @@ export default {
               label: app.ID + '-' + app.Account
             })
           }
+
+          this.updateWatter()
         })
       })
     },
+    getAppName(appId) {
+      if (appId === 0) return '旧版'
+      const appInfo = this.appOptions.find(item => item.value === appId)
+      if (appInfo) {
+        return appInfo.label
+      }
+      return ''
+    },
     onAppChange() {
       this.getData()
+      this.updateWatter()
+    },
+    updateWatter() {
+      const appName = this.getAppName(this.selectedApp)
+      const parentElement = document.getElementById('prizePoolContainer')
+      watermark.setWatermark(appName, 99999999, parentElement, 160, 0)
     },
     getGameName(gid) {
       const id = parseInt(gid)
