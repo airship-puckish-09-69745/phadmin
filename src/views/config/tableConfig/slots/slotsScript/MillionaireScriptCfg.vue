@@ -493,9 +493,13 @@ export default {
         '228': 'jokerace',
         '226': 'fortunewheel',
         '230': 'pahiyaswins',
+        '1237': 'pahiyaswinsplaynow',
         '234': 'fortunetree',
         '240': 'bathalaageofcreation',
-        '242': 'fortuenmuseum'
+        '242': 'fortunemuseum',
+        '248': 'mayantemple',
+        '246': 'talareyessouthseapearls',
+        '100246': 'talareyessouthseapearls_x'
       }
     }
   },
