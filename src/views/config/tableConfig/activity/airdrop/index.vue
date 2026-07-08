@@ -192,7 +192,6 @@ export default {
       }
       if (editData.length > 0) {
         for (const i in editData) {
-          console.log(editData[i].Head)
           if (str === '') {
             str += `活动名称:【${editData[i].Head['activity.name']}】`
           } else {
@@ -235,8 +234,8 @@ export default {
           this.clientDB = new ClientTableData(objs, 10, filterMap, 'endTime', -1, 'id')
           this.handleCurrentChange(1)
         }
-      }).catch(err => {
-        console.log(err)
+      }).catch(() => {
+        // Error handled by request interceptor
       })
     },
     // 新增

@@ -128,14 +128,6 @@
                 />
               </el-form-item>
             </el-col>
-            <el-col :xs="24" :sm="12">
-              <el-form-item label="调试时间偏移量（仅测试用）：">
-                <el-input v-model.number="item.debugTimeOffset" placeholder="请输入" style="max-width: 200px">
-                  <template slot="append">秒</template>
-                </el-input>
-              </el-form-item>
-            </el-col>
-
           </el-row>
 
           <!-- 玩法大类型 -->
@@ -260,6 +252,24 @@ import UserTypeSelector from './components/UserTypeSelector.vue'
 
 const gameTaskTypeValidBet = 2 // 游戏任务类型：有效投注
 
+/**
+ * 用户类型常量
+ * 用于标识参与活动的用户分类方式
+ */
+const USER_TYPE_NEW_USER = 1 // 新增用户
+const USER_TYPE_ALL_USERS = 2 // 所有用户
+const USER_TYPE_IMPORTED = 3 // 导入用户
+const USER_TYPE_FILTERED = 4 // 筛选用户
+const USER_TYPE_USER_TAG = 5 // 用户标签
+
+/**
+ * 游戏类型常量
+ * 用于标识活动支持的游戏大类
+ */
+const GAME_TYPE_SLOT = 1 // Slot游戏
+const GAME_TYPE_POKER = 2 // Poker游戏
+const GAME_TYPE_CASINO = 3 // Casino游戏
+
 function newItem() {
   return {
     id: 0,
@@ -283,22 +293,22 @@ function newItem() {
     },
     debugTimeOffset: 0,
     taskConfig: {
-      taskType: 0,
+      taskType: gameTaskTypeValidBet, // 默认为有效投注
       taskText: '',
-      gameType: 1,
+      gameType: GAME_TYPE_SLOT,
       taskValueRequired: 20
     },
-    gameType: 1,
+    gameType: GAME_TYPE_SLOT,
     rewardConfig: {
       rewardType: 2,
-      useSceneId: 13,
+      useSceneId: 32, // 默认为Slot（32），Poker为13
       totalReward: 0,
       remainRewardMonitorRate: 90,
       rewardRanges: [],
       userRewardLimit: 0
     },
     progressPrizes: [],
-    userTypes: [2], // 2 所有用户
+    userTypes: [USER_TYPE_ALL_USERS],
     importedFilename: '',
     userFilterCondition: {
       registerTimeRange: {
@@ -384,7 +394,15 @@ export default {
   computed: {
     // Show imported users tab only when user type is "导入用户" and activity exists
     showImportElement() {
-      return this.item.id > 0 && this.item.userTypes.includes(3) // 3 导入用户
+      return this.item.id > 0 && this.item.userTypes.includes(USER_TYPE_IMPORTED)
+    },
+    /**
+     * 任务类型选项 - 直接提供所有可选任务类型
+     * 不再联动游戏选择，用户可以自由选择任何任务类型
+     * allGameTaskTypes 定义在 data 中，包含所有可用的任务类型
+     */
+    gameTaskTypes() {
+      return this.allGameTaskTypes
     }
   },
   watch: {
@@ -500,7 +518,10 @@ export default {
     },
     onGameTypeChange(val) {
       // 根据玩法大类型联动发放奖励类型：Slot=32，Poker=13
-      const gameTypeSceneMap = { 1: 32, 2: 13 }
+      const gameTypeSceneMap = {
+        [GAME_TYPE_SLOT]: 32,
+        [GAME_TYPE_POKER]: 13
+      }
       if (gameTypeSceneMap[val]) {
         this.item.rewardConfig.useSceneId = gameTypeSceneMap[val]
       }
@@ -569,13 +590,18 @@ export default {
         return
       }
       for (let i = 0; i < this.item.progressPrizes.length; i++) {
-        const item = this.item.progressPrizes[i]
-        if (item.propType === 0 || item.propId === 0 || item.propNum === 0 || item.propNumMax === 0) {
+        const prize = this.item.progressPrizes[i]
+        if (prize.propType === 0 || prize.propId === 0 || prize.propNum === 0 || prize.propNumMax === 0) {
           Message.error('请完善进度奖励配置')
           return
         }
-        if (item.propNumMax % item.propNum !== 0) {
+        if (prize.propNumMax % prize.propNum !== 0) {
           Message.error('道具数量上限必须为道具数量的倍数')
+          return
+        }
+        // 对于非Casino类型，需要验证进度要求
+        if (this.item.gameType !== GAME_TYPE_CASINO && (!prize.taskValueRequired || prize.taskValueRequired === 0)) {
+          Message.error(`请完善进度奖励配置的进度要求（第${i + 1}项）`)
           return
         }
       }
@@ -583,13 +609,13 @@ export default {
         Message.error('请完善任务配置')
         return
       }
-      if (this.item.userTypes[0] === 4) {
+      if (this.item.userTypes[0] === USER_TYPE_FILTERED) {
         if (!this.registerDateRange || this.registerDateRange.length === 0) {
           Message.error('请选择注册时间')
           return
         }
       }
-      if (this.item.userTypes[0] === 5) {
+      if (this.item.userTypes[0] === USER_TYPE_USER_TAG) {
         if (this.item.userFilterCondition.userTagConfig.tagType === 0) {
           Message.error('请选择标签类型')
           return
@@ -607,7 +633,7 @@ export default {
         Message.error('请选择参与活动的游戏')
         return
       }
-      if (this.item.gameType === 2 && this.item.rewardConfig.rewardRanges.length === 0) {
+      if (this.item.gameType === GAME_TYPE_POKER && this.item.rewardConfig.rewardRanges.length === 0) {
         Message.error('请配置大奖系数配置')
         return
       }

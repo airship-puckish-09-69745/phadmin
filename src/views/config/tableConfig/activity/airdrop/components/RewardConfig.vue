@@ -173,11 +173,15 @@ export default {
       MAX_REWARD_RANGES,
       MAX_PROGRESS_PRIZES,
       cellStyle: $libShow.DefaultTableCell,
-      env: 'test',
+      env: store.getters.env || 'test',
       // 道具数据列表
       propList: [],
-      // 道具选项列表
-      propOptions: {},
+      /**
+       * 道具选项列表 - 使用数组初始化以支持响应式
+       * 每个索引对应一个进度奖励项的可选道具列表
+       * 索引与 progressPrizes 数组的索引一一对应
+       */
+      propOptions: [],
       // 道具类型选项列表
       propTypeOptions: [
         { 'value': 1, 'label': 'Tongits门票', disabled: false },
@@ -202,6 +206,22 @@ export default {
     },
     showRewardRangesConfig() {
       return this.gameType === 2 // 1=Slot, 2=Poker, 3=Casino 时显示大奖系数配置
+    }
+  },
+  watch: {
+    'formData.progressPrizes': {
+      handler(newVal) {
+        // 确保每个progressPrize都有对应的propOptions
+        if (newVal && newVal.length > 0) {
+          newVal.forEach((prize, index) => {
+            if (prize.propType && (!this.propOptions[index] || this.propOptions[index].length === 0)) {
+              this.updatePropOptions(prize.propType, index)
+            }
+          })
+        }
+      },
+      immediate: true,
+      deep: true
     }
   },
   created() {
@@ -288,7 +308,7 @@ export default {
       })
     },
     updatePropOptions(propType, index) {
-      this.propOptions[index] = []
+      const options = []
       const currTime = new Date().getTime()
       for (let i = 0; i < this.propList.length; i++) {
         const prop = this.propList[i]
@@ -297,19 +317,21 @@ export default {
             const expTime = prop.expire_time * 1000
             if (currTime < expTime) {
               const option = { 'value': prop.id, 'label': prop.item_name, disabled: false }
-              this.propOptions[index].push(option)
+              options.push(option)
             }
           } else {
             const option = { 'value': prop.id, 'label': prop.item_name, disabled: false }
-            this.propOptions[index].push(option)
+            options.push(option)
           }
         }
       }
 
-      if (this.formData.progressPrizes[index] && this.propOptions[index].length > 0) {
-        this.formData.progressPrizes[index].propId = this.propOptions[index][0].value
+      // 使用 Vue.set 确保响应式更新
+      this.$set(this.propOptions, index, options)
+
+      if (this.formData.progressPrizes[index] && options.length > 0) {
+        this.formData.progressPrizes[index].propId = options[0].value
       }
-      this.$forceUpdate()
     },
     showPropTimeOptions(propType) {
       return [2, 5].includes(propType)

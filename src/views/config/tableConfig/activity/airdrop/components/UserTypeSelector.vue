@@ -222,6 +222,9 @@ export default {
         { value: 5, label: '用户标签' }
       ],
 
+      // 用户标签类型常量
+      TAG_TYPE_GAME_INTENSITY: 2, // 游戏强度标签类型
+
       // 用户标签类型
       userTagOptions: [
         { value: 2, label: '游戏强度', children: [{ value: 20000, label: '游戏强度' }] },
@@ -267,8 +270,8 @@ export default {
     },
     showUserTagGameIntensityCondition() {
       return this.value.includes(5) &&
-        this.userFilterConditionValue.userTagConfig.tagType === 2 && // 2=游戏强度
-        this.userFilterConditionValue.userTagConfig.tagId === 20000 // 20000=游戏强度
+        this.userFilterConditionValue.userTagConfig.tagType === this.TAG_TYPE_GAME_INTENSITY &&
+        this.userFilterConditionValue.userTagConfig.tagId === 20000
     },
     showUserLevelCondition() {
       const levelTagIds = [50005, 50006, 50003]
@@ -308,14 +311,15 @@ export default {
     }
   },
   mounted() {
-    if (this.activityId > 0) {
+    if (this.activityId > 0 && this.value.includes(3)) {
       this.getImportedUidCacheCount()
     }
   },
   methods: {
     handleUserTypeChange(val) {
       this.$emit('input', [val])
-      if (val !== 5) { // 用户标签
+      // 如果不是用户标签类型，重置用户标签配置
+      if (val !== 5) {
         this.userFilterConditionValue.userTagConfig.tagType = 0
         this.userFilterConditionValue.userTagConfig.tagId = 0
         this.userFilterConditionValue.userTagConfig.tagValue = 0
@@ -329,8 +333,11 @@ export default {
       this.userTagIdOptions = tagOptions && tagOptions.children || []
       if (this.userFilterConditionValue.userTagConfig.tagType !== tagType && this.userTagIdOptions.length > 0) {
         this.userFilterConditionValue.userTagConfig.tagId = this.userTagIdOptions[0].value
+        // 设置默认的标签值：游戏强度类型默认为1（无感），其他类型默认为0
+        this.userFilterConditionValue.userTagConfig.tagValue = tagType === this.TAG_TYPE_GAME_INTENSITY ? 1 : 0
       }
-      if (tagType !== 2) { // 游戏强度标签
+      // 如果不是游戏强度标签类型，重置标签值为0
+      if (tagType !== this.TAG_TYPE_GAME_INTENSITY) {
         this.userFilterConditionValue.userTagConfig.tagValue = 0
       }
     },
