@@ -54,14 +54,6 @@
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
-
-              <el-form-item label="调试时间偏移量（仅测试用）：">
-                <el-input v-model.number="item.debugTimeOffset" placeholder="请输入" style="max-width: 200px">
-                  <template slot="append">秒</template>
-                </el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12">
               <el-form-item label="发放奖励类型：" required>
                 <el-select v-model="item.rewardConfig.rewardType" placeholder="请选择" style="width:90px" disabled>
                   <el-option
@@ -126,7 +118,7 @@
               </el-form-item>
             </el-col>
 
-            <el-col  :xs="24" :sm="12">
+            <el-col :xs="24" :sm="12">
               <el-form-item label="SiteId白名单：">
                 <SiteSelect
                   v-model="item.whitelistCfg.siteIdList"
@@ -134,6 +126,13 @@
                   placeholder="请选择"
                   style="width: 100%; max-width: 400px"
                 />
+              </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="12">
+              <el-form-item label="调试时间偏移量（仅测试用）：">
+                <el-input v-model.number="item.debugTimeOffset" placeholder="请输入" style="max-width: 200px">
+                  <template slot="append">秒</template>
+                </el-input>
               </el-form-item>
             </el-col>
 
@@ -171,40 +170,6 @@
                 <el-select v-model="item.taskConfig.taskType" placeholder="请选择" style="width: 300px">
                   <el-option
                     v-for="item in gameTaskTypes"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  />
-                </el-select>
-              </el-form-item>
-            </el-col>
-
-          </el-row>
-
-          <!-- 白名单配置 - 合并到活动配置 -->
-          <el-row :gutter="20">
-            <el-col v-if="version === 'V1'" :span="11">
-              <el-form-item label="AppId白名单：">
-                <el-select v-model="item.whitelistCfg.appIdList" multiple placeholder="请选择" style="width: 400px">
-                  <el-option
-                    v-for="item in appIdOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  />
-                </el-select>
-              </el-form-item>
-            </el-col>
-          </el-row>
-
-
-          <!-- 参与活动用户类型 -->
-          <el-row :gutter="20">
-            <el-col :span="12">
-              <el-form-item label="参与活动用户类型：" required>
-                <el-select v-model="userType" placeholder="请选择" style="width:280px" @change="onUserTypeChange">
-                  <el-option
-                    v-for="item in userTypes"
                     :key="item.value"
                     :label="item.label"
                     :value="item.value"
@@ -284,7 +249,7 @@
   </el-dialog>
 </template>
 <script>
-import { $libDate, $libShow, ClientTableData } from '@/utils/common'
+import { $libDate, $libShow } from '@/utils/common'
 import { Message } from 'element-ui'
 import request from '@/utils/request'
 import store from '@/store'
