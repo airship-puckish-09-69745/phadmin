@@ -62,6 +62,7 @@
               >
                 <template slot-scope="scope">
                   <el-button type="primary" size="mini" @click="edit(scope.row)">编辑</el-button>
+                  <el-button type="success" size="mini" @click="refreshPool(scope.row, 'casio')">刷新</el-button>
                 </template>
               </el-table-column>
             </el-table></el-tab-pane>
@@ -114,7 +115,7 @@
             >
               <template slot-scope="scope">
                 <el-button type="primary" size="mini" @click="edit(scope.row)">编辑</el-button>
-                <el-button v-if="scope.row.IsByApp" type="success" size="mini" @click="jumpToNewPage">前往新后台</el-button>
+                <el-button type="success" size="mini" @click="refreshPool(scope.row, 'slots')">刷新</el-button>
               </template>
             </el-table-column>
           </el-table></el-tab-pane>
@@ -425,6 +426,41 @@ export default {
             $this.$message.error(response.Data)
           }
         })
+      })
+    },
+    refreshPool(row, type) {
+      console.log('refreshPool, row.Gid', row.Gid, ' type', type)
+      this.$set(row, '_refreshing', true)
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Path: '/lotteryschema/prize/pool',
+          Env: store.getters.env,
+          AppId: this.selectedApp,
+          Gid: row.Gid,
+          Ante: row.Ante
+        }
+      }).then(response => {
+        this.$set(row, '_refreshing', true)
+        if (response.RetCode === 0) {
+          const result = response.Data
+          if (result) {
+            const tableData = type === 'casio' ? this.casioData : this.slotsData
+            const item = tableData.find(item => item.Gid === row.Gid)
+            if (item) {
+              item.PrizePool = result.PrizePool
+              item.FreezePool = result.FreezePool
+            }
+            this.$message.success('刷新成功')
+          } else {
+            this.$message.warning('未找到该游戏数据')
+          }
+        } else {
+          this.$message.error(response.Data)
+        }
+      }).finally(() => {
+        this.$set(row, '_refreshing', false)
       })
     },
     jumpToNewPage() {

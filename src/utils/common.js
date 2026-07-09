@@ -120,8 +120,8 @@ export function LibShow() {
     150: 'SuperGemsIII', 152: 'Aladdin\'s Lamp', 154: 'GrandAce', 156: 'CrazyAce', 172: 'WrathOfZeus', 158: 'SharkKingdom', 160: 'GigaAce', 162: 'MajorAce', 164: 'MahjongFortune', 166: 'FireLink',
     170: 'EpicAce', 176: 'PuppyHome', 182: 'GodOfFortune', 186: 'MahjongJackpot', 174: 'TreasureBowl', 178: 'MayanTotem', 194: 'GoldTrain', 168: 'Pharaoh\'sTreasure', 196: 'GoldMiner', 184: 'Dance of the Lion',
     190: 'ArcaneEgypt', 198: 'FortuneBlessing', 200: 'AtlantisTreasure', 204: 'SpaceTreasure', 208: 'CandyBurst', 210: 'LuckySpirits', 216: 'Phoenix', 220: 'GoldenDragon', 222: 'LionFortune', 226: 'Fortune Wheel', 232: 'MafiaWars', // slots
-    230: 'PahiyasWins', 236: 'PacquiaoFortune', 234: 'Fortune Tree', 238: 'MasskaraFortune', 240: 'BathalaAgeOfCreation', '242': 'Fortune Museum', 244: 'WildBone', 246: 'TalaReyesSouthSeaPearls',
-    1139: 'Manny Punch 试玩', 1236: 'PacquiaoFortune试玩'
+    230: 'PahiyasWins', 236: 'PacquiaoFortune', 234: 'Fortune Tree', 238: 'MasskaraFortune', 240: 'BathalaAgeOfCreation', 242: 'Museo Yaman', 244: 'WildBone', 246: 'TalaReyesSouthSeaPearls', 248: 'MayanTemple', 250: 'LightOfMactan',
+    1139: 'Manny Punch 试玩', 1236: 'PacquiaoFortune试玩', 1237: 'Pahiyas Win\'s试玩', 145: 'Tongits1V1', 252: 'LuckyBang'
   }
   // 是否显示冻结池
   this.IsShowFreeFreezePool = function(gameId) {
