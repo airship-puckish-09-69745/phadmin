@@ -960,7 +960,7 @@ export default {
           'Account': 'CP内部（2000002）'
         }
       ]
-      if (process.env.VUE_APP_PROJECT_NAME === '菲1-线上环境') {
+      if (process.env.VUE_APP_PROJECT_NAME === '菲1-线上环境' || process.env.VUE_APP_PROJECT_NAME === '菲1-线上环境v2') {
         if (this.env == 'test') {
           apps = [
             {
