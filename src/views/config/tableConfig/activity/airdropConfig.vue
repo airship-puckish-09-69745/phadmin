@@ -467,7 +467,7 @@
             <legend>
               进度奖励配置
             </legend>
-            <el-button type="primary" @click="addProgressPrize()" size="mini">添加配置</el-button>
+            <el-button type="primary" @click="addProgressPrize()" v-if=" this.edit.item.gameType !== 3" size="mini">添加配置</el-button>
             <el-row :gutter="5">
               <el-col>
                 <el-table
