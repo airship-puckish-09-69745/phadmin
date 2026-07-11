@@ -120,14 +120,16 @@
             </el-form-item>
           </el-col>
 
-          <el-col>
-            <el-form-item label="奖励类型">
-              <el-radio-group v-model="formData.rewardType">
-                <el-radio :label="1">投注金</el-radio>
-                <el-radio :label="2">返水金</el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
+<!--          <el-col>-->
+<!--            <el-form-item label="奖励类型">-->
+<!--              <el-radio-group v-model="formData.rewardType">-->
+<!--                <el-radio :label="1">投注金</el-radio>-->
+<!--                <el-radio :label="2">返水金</el-radio>-->
+<!--                <el-radio :label="3">道具</el-radio>-->
+<!--              </el-radio-group>-->
+<!--            </el-form-item>-->
+<!--          </el-col>-->
+
           <el-col>
             <el-form-item label="玩法大类型">
               <el-radio-group v-model="formData.gameType" @change="handleGameTypeChange">

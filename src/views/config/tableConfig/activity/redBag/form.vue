@@ -127,7 +127,7 @@ export default {
       return {
         activityName: '',
         isOpen: true,
-        isSend: true,
+        isSend: false,
         startTime: 0,
         endTime: 0,
         everyDayStartTime: 0,
