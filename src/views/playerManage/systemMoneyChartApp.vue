@@ -1051,6 +1051,10 @@ export default {
       this.appId = app
       this.initAppOptions()
       this.getInfo(this.gid, 1)
+      if (this.gid != 10000) {
+        this.getInfo(this.gid, 2)
+      }
+      // this.changeType(1) // 重置为默认排序
     }
   }
 }
