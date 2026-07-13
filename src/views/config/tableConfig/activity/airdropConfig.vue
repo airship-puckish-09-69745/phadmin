@@ -1,8 +1,7 @@
 <template>
   <div id="app" class="page-container" style="padding: 10px">
     <el-row>
-      <publish primary-key="cfgId" key-id="AirdropConfig" :env-empty="false" :check="configCheck" compare-type="Array"
-               :make-content="makeContent" :attr-names="AttrNames" :head-attrs="['cfgId', 'activity.name']"/>
+      <publish primary-key="cfgId" key-id="AirdropConfig" :env-empty="false" :check="configCheck" compare-type="Array" :make-content="makeContent" :attr-names="AttrNames" :head-attrs="['cfgId', 'activity.name']" />
     </el-row>
     <el-row style="padding-top: 5px">
       <el-col :span="20">
@@ -26,8 +25,8 @@
         @row-click="clickData"
         @sort-change="sortChange"
       >
-        <el-table-column prop="id" label="id" sortable="custom" width="80"/>
-        <el-table-column prop="name" label="活动名称"/>
+        <el-table-column prop="id" label="id" sortable="custom" width="80" />
+        <el-table-column prop="name" label="活动名称" />
         <el-table-column prop="gameType" label="玩法大类型" width="120">
           <template slot-scope="scope">
             {{ gameTypeNames[scope.row.gameType] || '未设置' }}
@@ -48,7 +47,7 @@
             {{ formatTime(scope.row.showEndTime) }}
           </template>
         </el-table-column>
-        <el-table-column prop="modifyUser" label="最后修改人"/>
+        <el-table-column prop="modifyUser" label="最后修改人" />
         <el-table-column prop="status" label="状态" width="100">
           <template slot-scope="scope">
             {{ statusNames[scope.row.status] }}
@@ -56,13 +55,9 @@
         </el-table-column>
         <el-table-column label="操作" column-key="op">
           <template slot-scope="scope">
-            <el-button v-if="scope.row.status!=2" size="mini" type="success" icon="el-icon-upload2"
-                       @click="handlePrepare(scope.row)">上架
-            </el-button>
-            <el-button v-if="scope.row.status!=2" size="mini" icon="el-icon-delete" @click="handleDelete(scope.row)"/>
-            <el-button v-if="scope.row.status==2" size="mini" type="danger" icon="el-icon-download"
-                       @click="handleOffline(scope.row)">下架
-            </el-button>
+            <el-button v-if="scope.row.status!=2" size="mini" type="success" icon="el-icon-upload2" @click="handlePrepare(scope.row)">上架 </el-button>
+            <el-button v-if="scope.row.status!=2" size="mini" icon="el-icon-delete" @click="handleDelete(scope.row)" />
+            <el-button v-if="scope.row.status==2" size="mini" type="danger" icon="el-icon-download" @click="handleOffline(scope.row)">下架 </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -95,31 +90,27 @@
             <el-form :model="edit.item" label-width="220px" size="mini">
               <el-col :span="24">
                 <el-form-item label="空投活动名称：" prop="name" :required="true">
-                  <el-input v-model="edit.item.name" placeholder="请输入活动名称"/>
+                  <el-input v-model="edit.item.name" placeholder="请输入活动名称" />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="活动开始时间：" prop="startTime" :required="true">
-                  <el-date-picker v-model="edit.item.startTime" type="datetime" placeholder="选择开始时间"
-                                  value-format="timestamp"/>
+                  <el-date-picker v-model="edit.item.startTime" type="datetime" placeholder="选择开始时间" value-format="timestamp" />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="活动结束时间：" prop="endTime" :required="true">
-                  <el-date-picker v-model="edit.item.endTime" type="datetime" placeholder="选择结束时间"
-                                  value-format="timestamp" @change="onChangeEndTime"/>
+                  <el-date-picker v-model="edit.item.endTime" type="datetime" placeholder="选择结束时间" value-format="timestamp" @change="onChangeEndTime" />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="展示结束时间：" prop="showEndTime" :required="true">
-                  <el-date-picker v-model="edit.item.showEndTime" type="datetime" placeholder="选择展示结束时间"
-                                  value-format="timestamp"/>
+                  <el-date-picker v-model="edit.item.showEndTime" type="datetime" placeholder="选择展示结束时间" value-format="timestamp" />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="发放奖励类型：" :required="true">
-                  <el-select v-model="edit.item.rewardConfig.rewardType" placeholder="请选择" style="width:90px"
-                             disabled>
+                  <el-select v-model="edit.item.rewardConfig.rewardType" placeholder="请选择" style="width:90px" disabled>
                     <el-option
                       v-for="item in rewardTypes"
                       :key="item.value"
@@ -127,8 +118,7 @@
                       :value="item.value"
                     />
                   </el-select>
-                  <el-select v-if="edit.item.rewardConfig.rewardType === 2" v-model="edit.item.rewardConfig.useSceneId"
-                             placeholder="请选择投注金" style="width:200px" disabled>
+                  <el-select v-if="edit.item.rewardConfig.rewardType === 2" v-model="edit.item.rewardConfig.useSceneId" placeholder="请选择投注金" style="width:200px" disabled>
                     <el-option
                       v-for="scene in betScenes"
                       :key="scene.value"
@@ -136,8 +126,7 @@
                       :value="scene.value"
                     />
                   </el-select>
-                  <el-select v-if="edit.item.rewardConfig.rewardType === 3" v-model="edit.item.rewardConfig.useSceneId"
-                             placeholder="请选择返水金" style="width:150px" disabled>
+                  <el-select v-if="edit.item.rewardConfig.rewardType === 3" v-model="edit.item.rewardConfig.useSceneId" placeholder="请选择返水金" style="width:150px" disabled>
                     <el-option
                       v-for="scene in rebateScenes"
                       :key="scene.value"
@@ -159,16 +148,13 @@
                   <el-input v-model.number="edit.item.rewardConfig.remainRewardMonitorRate">
                     <template slot="append">％</template>
                   </el-input>
-                  <span
-                    v-if="sentRewardAmount > edit.item.rewardConfig.remainRewardMonitorRate*edit.item.rewardConfig.totalReward/100"
-                    style="color: red">发奖总额已超阈值（{{ sentRewardAmount }}）</span>
+                  <span v-if="sentRewardAmount > edit.item.rewardConfig.remainRewardMonitorRate*edit.item.rewardConfig.totalReward/100" style="color: red">发奖总额已超阈值（{{ sentRewardAmount }}）</span>
                   <span v-else style="color: red">已发奖总额（{{ sentRewardAmount }}）</span>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="参与活动用户类型：" :required="true">
-                  <el-select v-model="edit.userType" placeholder="请选择" style="width:280px"
-                             @change="onUserTypeChange">
+                  <el-select v-model="edit.userType" placeholder="请选择" style="width:280px" @change="onUserTypeChange">
                     <el-option
                       v-for="item in userTypes"
                       :key="item.value"
@@ -203,7 +189,7 @@
                     :auto-upload="false"
                     :limit="1"
                   >
-                    <el-icon class="el-icon-upload"/>
+                    <el-icon class="el-icon-upload" />
                     <div class="el-upload__text">
                       将文件拖到此处 或 <em>点击上传</em>
                     </div>
@@ -259,8 +245,7 @@
               </el-col>
               <el-col v-if="showUserTagCondition">
                 <el-form-item label="标签类型：">
-                  <el-select v-model="edit.item.userFilterCondition.userTagConfig.tagType" placeholder="请选择标签类型"
-                             @change="onTagTypeChange">
+                  <el-select v-model="edit.item.userFilterCondition.userTagConfig.tagType" placeholder="请选择标签类型" @change="onTagTypeChange">
                     <el-option
                       v-for="item in userTagOptions"
                       :key="item.value"
@@ -272,8 +257,7 @@
               </el-col>
               <el-col v-if="showUserTagCondition">
                 <el-form-item label="标签子类：">
-                  <el-select v-model="edit.item.userFilterCondition.userTagConfig.tagId" placeholder="请选择标签子类"
-                             @change="onTagIdChange">
+                  <el-select v-model="edit.item.userFilterCondition.userTagConfig.tagId" placeholder="请选择标签子类" @change="onTagIdChange">
                     <el-option
                       v-for="item in edit.userTagIdOptions"
                       :key="item.value"
@@ -285,8 +269,7 @@
               </el-col>
               <el-col :span="24" v-if="showUserLevelCondition">
                 <el-form-item label="用户等级：" :required="false">
-                  <el-select v-model="edit.item.userFilterCondition.userTagConfig.tagValue"
-                             placeholder="请选择用户等级">
+                  <el-select v-model="edit.item.userFilterCondition.userTagConfig.tagValue" placeholder="请选择用户等级">
                     <el-option
                       v-for="item in userLevelOptions"
                       :key="item.value"
@@ -298,8 +281,7 @@
               </el-col>
               <el-col :span="24" v-if="showUserTagGameIntensityCondition">
                 <el-form-item label="游戏强度：" :required="false">
-                  <el-select v-model="edit.item.userFilterCondition.userTagConfig.tagValue"
-                             placeholder="请选择游戏强度标签">
+                  <el-select v-model="edit.item.userFilterCondition.userTagConfig.tagValue" placeholder="请选择游戏强度标签">
                     <el-option
                       v-for="item in userTagGameIntensityOptions"
                       :key="item.value"
@@ -444,8 +426,7 @@
                     label="积分区间开始"
                   >
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.minScore"
-                                oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
+                      <el-input v-model.number="scope.row.minScore" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
                     </template>
                   </el-table-column>
                   <el-table-column
@@ -453,8 +434,7 @@
                     label="积分区间结束"
                   >
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.maxScore"
-                                oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
+                      <el-input v-model.number="scope.row.maxScore" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
                     </template>
                   </el-table-column>
                   <el-table-column
@@ -462,8 +442,7 @@
                     label="系数区间开始"
                   >
                     <template slot-scope="scope">
-                      <el-input v-model="scope.row.minCoefficient"
-                                oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
+                      <el-input v-model="scope.row.minCoefficient" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
                     </template>
                   </el-table-column>
                   <el-table-column
@@ -471,13 +450,12 @@
                     label="系数区间结束"
                   >
                     <template slot-scope="scope">
-                      <el-input v-model="scope.row.maxCoefficient"
-                                oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
+                      <el-input v-model="scope.row.maxCoefficient" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
                     </template>
                   </el-table-column>
                   <el-table-column label="操作" column-key="op" width="130">
                     <template slot-scope="scope">
-                      <el-button size="mini" icon="el-icon-delete" @click="removeRewardRange(scope.$index)"/>
+                      <el-button size="mini" icon="el-icon-delete" @click="removeRewardRange(scope.$index)" />
                     </template>
                   </el-table-column>
                 </el-table>
@@ -489,9 +467,7 @@
             <legend>
               进度奖励配置
             </legend>
-            <el-button type="primary" @click="addProgressPrize()" v-if=" this.edit.item.gameType != 3" size="mini">
-              添加配置
-            </el-button>
+            <el-button type="primary" @click="addProgressPrize()" size="mini">添加配置</el-button>
             <el-row :gutter="5">
               <el-col>
                 <el-table
@@ -502,8 +478,7 @@
                 >
                   <el-table-column prop="taskValueRequired" label="进度要求" v-if=" this.edit.item.gameType !== 3">
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.taskValueRequired"
-                                oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
+                      <el-input v-model.number="scope.row.taskValueRequired" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
                     </template>
                   </el-table-column>
                   <el-table-column
@@ -512,8 +487,7 @@
                     width="200"
                   >
                     <template slot-scope="scope">
-                      <el-select v-model.number="scope.row.propType" placeholder="请选择道具类型"
-                                 @change="updatePropOptions(scope.row.propType, scope.$index)">
+                      <el-select v-model.number="scope.row.propType" placeholder="请选择道具类型" @change="updatePropOptions(scope.row.propType, scope.$index)">
                         <el-option
                           v-for="item in propTypeOptions"
                           :key="item.value"
@@ -544,8 +518,7 @@
                     label="可用时间"
                   >
                     <template slot-scope="scope">
-                      <el-select v-model.number="scope.row.propExpireDays"
-                                 v-if="showPropTimeOptions(scope.row.propType)" placeholder="请选择可用时间">
+                      <el-select v-model.number="scope.row.propExpireDays" v-if="showPropTimeOptions(scope.row.propType)" placeholder="请选择可用时间">
                         <el-option
                           v-for="item in propDayTypeOptions"
                           :key="item.value"
@@ -560,8 +533,7 @@
                     label="道具数量"
                   >
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.propNum"
-                                oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
+                      <el-input v-model.number="scope.row.propNum" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
                     </template>
                   </el-table-column>
                   <el-table-column
@@ -569,13 +541,12 @@
                     label="道具上限"
                   >
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.propNumMax"
-                                oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
+                      <el-input v-model.number="scope.row.propNumMax" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
                     </template>
                   </el-table-column>
                   <el-table-column label="操作" column-key="op" width="130">
                     <template slot-scope="scope">
-                      <el-button size="mini" icon="el-icon-delete" @click="removeProgressPrize(scope.$index)"/>
+                      <el-button size="mini" icon="el-icon-delete" @click="removeProgressPrize(scope.$index)" />
                     </template>
                   </el-table-column>
                 </el-table>
@@ -589,8 +560,7 @@
             <el-row>
               <el-col v-if="version === 'V1'" :span="11">
                 <el-form-item label="AppId白名单：" prop="item.whitelistCfg.appIdList">
-                  <el-select v-model="edit.item.whitelistCfg.appIdList" multiple placeholder="请选择"
-                             style="width: 400px" @change="onAppIdOptionsChange">
+                  <el-select v-model="edit.item.whitelistCfg.appIdList" multiple placeholder="请选择" style="width: 400px" @change="onAppIdOptionsChange">
                     <el-option
                       v-for="item in appIdOptions"
                       :key="item.value"
@@ -611,22 +581,22 @@
                 </el-form-item>
               </el-col>
             </el-row>
-            <!--            <el-row>-->
-            <!--              <el-col :span="11">-->
-            <!--                <el-form-item label="A/B测试开关：" prop="item.whitelistCfg.abTest">-->
-            <!--                  <el-switch v-model="edit.item.whitelistCfg.abTest.switch" :active-value="true" :inactive-value="false" active-text="开启" inactive-text="关闭" />-->
-            <!--                </el-form-item>-->
-            <!--              </el-col>-->
-            <!--            </el-row>-->
-            <!--            <el-row>-->
-            <!--              <el-col :span="11">-->
-            <!--                <el-form-item label="B分组比例：" prop="item.whitelistCfg.abTest.bPercent">-->
-            <!--                  <el-input v-model.number="edit.item.whitelistCfg.abTest.bPercent" oninput=" if(value < 0 || value === '' || value == null){value = 0;} ">-->
-            <!--                    <template slot="append">%</template>-->
-            <!--                  </el-input>-->
-            <!--                </el-form-item>-->
-            <!--              </el-col>-->
-            <!--            </el-row>-->
+<!--            <el-row>-->
+<!--              <el-col :span="11">-->
+<!--                <el-form-item label="A/B测试开关：" prop="item.whitelistCfg.abTest">-->
+<!--                  <el-switch v-model="edit.item.whitelistCfg.abTest.switch" :active-value="true" :inactive-value="false" active-text="开启" inactive-text="关闭" />-->
+<!--                </el-form-item>-->
+<!--              </el-col>-->
+<!--            </el-row>-->
+<!--            <el-row>-->
+<!--              <el-col :span="11">-->
+<!--                <el-form-item label="B分组比例：" prop="item.whitelistCfg.abTest.bPercent">-->
+<!--                  <el-input v-model.number="edit.item.whitelistCfg.abTest.bPercent" oninput=" if(value < 0 || value === '' || value == null){value = 0;} ">-->
+<!--                    <template slot="append">%</template>-->
+<!--                  </el-input>-->
+<!--                </el-form-item>-->
+<!--              </el-col>-->
+<!--            </el-row>-->
           </el-form>
         </el-tab-pane>
 
@@ -662,7 +632,7 @@
                     layout="total, sizes, prev, pager, next, jumper"
                     :total="edit.importedUidListCount"
                     @size-change="handleUidImportedTableSizeChange"
-                    @current-change="handleUidImportedTableCurrentChange"/>
+                    @current-change="handleUidImportedTableCurrentChange" />
                 </div>
               </el-col>
             </el-col>
@@ -675,20 +645,20 @@
     </el-dialog>
 
     <!--对比组件-->
-    <compare ref="compare" :attr-names="AttrNames"/>
+    <compare ref="compare" :attr-names="AttrNames" />
   </div>
 </template>
 
 <script>
 
-import {$libDate, $libShow, ClientTableData, DataRule, MoneyShow} from '@/utils/common'
+import { $libDate, $libShow, ClientTableData, DataRule, MoneyShow } from '@/utils/common'
 import Publish from '@/components/Publish/index.vue'
 import Compare from '@/components/Compare/index.vue'
 import GameLevel from '@/components/GameLevel/index.vue'
 import MoneyInput from '@/components/MoneyInput/index.vue'
 import store from '@/store'
 import request from '@/utils/request'
-import {Message} from 'element-ui'
+import { Message } from 'element-ui'
 import SiteSelect from '@/components/SiteSelect/index.vue'
 
 const filterMap = {}
@@ -736,14 +706,15 @@ function newItem() {
       userRewardLimit: 0
     },
     progressPrizes: [
+      /*
       {
         propId: 0,
         propType: 0,
         propNum: 1,
         propNumMax: 1,
         propExpireDays: 0,
-        taskValueRequired: 1
-      }
+        taskValueRequired: 1,
+      }*/
     ],
     userTypes: [2], // 2 所有用户
     importedFilename: '',
@@ -766,7 +737,7 @@ function newItem() {
 }
 
 export default {
-  components: {Compare, Publish, GameLevel, MoneyInput, SiteSelect},
+  components: { Compare, Publish, GameLevel, MoneyInput, SiteSelect },
   data() {
     return {
       AttrNames: {
@@ -825,14 +796,14 @@ export default {
         clientDB: new ClientTableData([], 10, filterMap),
         userTagIdOptions: [],
         gameCategoriesSelected: [],
-        gameIdCfgCache: {1: [], 2: [], 3: []},
+        gameIdCfgCache: { 1: [], 2: [], 3: [] },
         prevGameType: 2
       },
       env: 'test',
       appId: parseInt(store.getters.appId) || -1,
       version: store.getters.version || 'V1',
-      statusNames: {2: '上架', 6: '下架', 7: '预上架', 8: '预下架'},
-      gameTypeNames: {1: 'Slot', 2: 'Poker', 3: 'Casino'},
+      statusNames: { 2: '上架', 6: '下架', 7: '预上架', 8: '预下架' },
+      gameTypeNames: { 1: 'Slot', 2: 'Poker', 3: 'Casino' },
       tableData: [],
       clientDB: new ClientTableData([], 10, filterMap),
       libDate: $libDate,
@@ -871,37 +842,37 @@ export default {
       // 奖励类型
       rewardTypes: [
         // { 'value': 1, 'label': '金币' },
-        {'value': 2, 'label': '投注金'}
+        { 'value': 2, 'label': '投注金' }
         // { 'value': 3, 'label': '返水金' }
       ],
 
       // 投注金
       betScenes: [
-        {'value': 13, 'label': '【空投活动poker】任意游戏投注'},
-        {'value': 32, 'label': '【空投活动solt】任意游戏投注'}
+        { 'value': 13, 'label': '【空投活动poker】任意游戏投注' },
+        { 'value': 32, 'label': '【空投活动solt】任意游戏投注' }
       ],
       // 返水金
       rebateScenes: [
-        {'value': 5, 'label': '没有任何限制的返水金'},
-        {'value': 6, 'label': '有限制倍数的返水金（10倍）'}
+        { 'value': 5, 'label': '没有任何限制的返水金' },
+        { 'value': 6, 'label': '有限制倍数的返水金（10倍）' }
       ],
 
       userTypes: [
-        {'value': 1, 'label': '新增用户'},
-        {'value': 2, 'label': '所有用户'},
-        {'value': 3, 'label': '导入用户'},
-        {'value': 4, 'label': '筛选用户'},
-        {'value': 5, 'label': '用户标签'}
+        { 'value': 1, 'label': '新增用户' },
+        { 'value': 2, 'label': '所有用户' },
+        { 'value': 3, 'label': '导入用户' },
+        { 'value': 4, 'label': '筛选用户' },
+        { 'value': 5, 'label': '用户标签' }
       ],
 
       // 公共游戏任务类型
       commonGameTaskTypes: [
-        {'value': 1, 'label': '「牌局」次数'},
-        {'value': 2, 'label': '「有效下注」总额'}
+        { 'value': 1, 'label': '「牌局」次数' },
+        { 'value': 2, 'label': '「有效下注」总额' }
       ],
 
       defaultGameTaskTypes: [
-        {'value': 0, 'label': '未选择'}
+        { 'value': 0, 'label': '未选择' }
       ],
 
       // 选定游戏后对应可选任务类型
@@ -909,13 +880,13 @@ export default {
 
       // 任务类型游戏配置映射
       taskTypeGameMap: {
-        3: {'label': '「Pot」次数', 'gameIds': [22, 28, 29, 23]},
-        100: {'label': '「Tongits」获胜次数', 'gameIds': [22, 28, 29]},
-        101: {'label': '「Tongits Fight」获胜次数', 'gameIds': [22, 28, 29]},
-        200: {'label': '「Pusoy 其它玩家」获胜次数', 'gameIds': [21, 126]},
-        201: {'label': '「Pusoy 全垒打」获胜次数', 'gameIds': [21, 126]},
-        202: {'label': '「Pusoy NATURALS」获胜次数', 'gameIds': [21, 126]},
-        300: {'label': '「Lucky9 三张牌获得9点」次数', 'gameIds': [23]}
+        3: { 'label': '「Pot」次数', 'gameIds': [22, 28, 29, 23] },
+        100: { 'label': '「Tongits」获胜次数', 'gameIds': [22, 28, 29] },
+        101: { 'label': '「Tongits Fight」获胜次数', 'gameIds': [22, 28, 29] },
+        200: { 'label': '「Pusoy 其它玩家」获胜次数', 'gameIds': [21, 126] },
+        201: { 'label': '「Pusoy 全垒打」获胜次数', 'gameIds': [21, 126] },
+        202: { 'label': '「Pusoy NATURALS」获胜次数', 'gameIds': [21, 126] },
+        300: { 'label': '「Lucky9 三张牌获得9点」次数', 'gameIds': [23] }
       },
 
       filterGameIds: [2031, 10002],
@@ -924,31 +895,30 @@ export default {
 
       // 用户标签类型
       userTagOptions: [
-        {value: 2, label: '游戏强度', children: [{value: 20000, label: '游戏强度'}]},
-        {
-          value: 5, label: 'Slots用户类型', children: [
-            {value: 50001, label: 'Slots新增用户'},
-            {value: 50002, label: 'Slots登录天数'},
-            {value: 50008, label: 'Slots回归用户'},
-            {value: 50005, label: '下注额度'},
-            {value: 50006, label: '日均下注额度'},
-            {value: 50003, label: '携带金额'}
+        { value: 2, label: '游戏强度', children: [{ value: 20000, label: '游戏强度' }] },
+        { value: 5, label: 'Slots用户类型', children: [
+            { value: 50001, label: 'Slots新增用户' },
+            { value: 50002, label: 'Slots登录天数' },
+            { value: 50008, label: 'Slots回归用户' },
+            { value: 50005, label: '下注额度' },
+            { value: 50006, label: '日均下注额度' },
+            { value: 50003, label: '携带金额' }
           ]
         }
       ],
       // 游戏强度标签值
       userTagGameIntensityOptions: [
-        {value: 0, label: '未选择'},
-        {value: 1, label: '无感'},
-        {value: 2, label: '尝试'},
-        {value: 3, label: '常玩'},
-        {value: 4, label: '核心'}
+        { value: 0, label: '未选择' },
+        { value: 1, label: '无感' },
+        { value: 2, label: '尝试' },
+        { value: 3, label: '常玩' },
+        { value: 4, label: '核心' }
       ],
       // 用户等级（下注额度/日均下注额度/携带金额）
       userLevelOptions: [
-        {value: 1, label: '轻度用户'},
-        {value: 2, label: '中度用户'},
-        {value: 3, label: '重度用户'}
+        { value: 1, label: '轻度用户' },
+        { value: 2, label: '中度用户' },
+        { value: 3, label: '重度用户' }
       ],
 
       defaultProps: {
@@ -974,18 +944,18 @@ export default {
       propOptions: {},
       // 道具类型选项列表
       propTypeOptions: [
-        {'value': 1, 'label': 'Tongits门票', disabled: false},
-        {'value': 2, 'label': '头像框', disabled: false},
-        {'value': 3, 'label': '德州门票', disabled: false},
-        {'value': 4, 'label': '德州头像框', disabled: false},
-        {'value': 5, 'label': 'SlotFreeSpin', disabled: false}
+        { 'value': 1, 'label': 'Tongits门票', disabled: false },
+        { 'value': 2, 'label': '头像框', disabled: false },
+        { 'value': 3, 'label': '德州门票', disabled: false },
+        { 'value': 4, 'label': '德州头像框', disabled: false },
+        { 'value': 5, 'label': 'SlotFreeSpin', disabled: false }
       ],
       // 道具有效时长选项列表
       propDayTypeOptions: [
-        {'value': 1, 'label': '1天', disabled: false},
-        {'value': 3, 'label': '3天', disabled: false},
-        {'value': 7, 'label': '7天', disabled: false},
-        {'value': 30, 'label': '30天', disabled: false},
+        { 'value': 1, 'label': '1天', disabled: false },
+        { 'value': 3, 'label': '3天', disabled: false },
+        { 'value': 7, 'label': '7天', disabled: false },
+        { 'value': 30, 'label': '30天', disabled: false },
       ],
 
       pickerOptions: {
@@ -1049,7 +1019,7 @@ export default {
       return this.edit.item.gameType === 2 // 1=Slot 2=poker 3=casino 时不显示大奖系数配置
     },
     filteredTreeData() {
-      const gameTypeMap = {1: 'Slot', 2: 'Poker', 3: 'Casino'}
+      const gameTypeMap = { 1: 'Slot', 2: 'Poker', 3: 'Casino' }
       const selectedCategory = gameTypeMap[this.edit.item.gameType]
       if (!selectedCategory) {
         return this.treeData
@@ -1120,9 +1090,9 @@ export default {
     },
     decodeHtmlEntities(str) {
       const txt = document.createElement('textarea')
-      txt.innerHTML = str.replace(/&#(\d+);/g, function (match, dec) {
+      txt.innerHTML = str.replace(/&#(\d+);/g, function(match, dec) {
         return String.fromCharCode(dec)
-      }).replace(/&#x([\da-fA-F]+);/g, function (match, hex) {
+      }).replace(/&#x([\da-fA-F]+);/g, function(match, hex) {
         return String.fromCharCode(parseInt(hex, 16))
       })
       return txt.value
@@ -1237,7 +1207,7 @@ export default {
       console.log('onGameTypeChange', val, 'prev:', this.edit.prevGameType)
 
       // 根据玩法大类型联动发放奖励类型：Slot=32，Poker=13
-      const gameTypeSceneMap = {1: 32, 2: 13}
+      const gameTypeSceneMap = { 1: 32, 2: 13 }
       if (gameTypeSceneMap[val]) {
         this.edit.item.rewardConfig.useSceneId = gameTypeSceneMap[val]
       }
@@ -1267,7 +1237,7 @@ export default {
     },
     cacheGameIdsByType(gameType) {
       // 缓存指定 gameType 对应类别的游戏ID
-      const gameTypeMap = {1: 'Slot', 2: 'Poker', 3: 'Casino'}
+      const gameTypeMap = { 1: 'Slot', 2: 'Poker', 3: 'Casino' }
       const category = gameTypeMap[gameType]
       if (!category) return
 
@@ -1447,7 +1417,7 @@ export default {
         // 设置修改后数据
         this.$refs.compare.SetNewVal(data)
         const $this = this
-        this.$refs.compare.Compare(function (isEdit) {
+        this.$refs.compare.Compare(function(isEdit) {
           if (!isEdit) {
             Message.error('没有任何修改，不需要提交')
           } else {
@@ -1536,13 +1506,13 @@ export default {
           if (prop.item_type !== 2 && prop.item_type !== 4 && prop.item_type !== 5) {
             const expTime = prop.expire_time * 1000
             if (currTime < expTime) {
-              let option = {'value': prop.id, 'label': prop.item_name, disabled: false}
+              let option = { 'value': prop.id, 'label': prop.item_name, disabled: false }
               this.propOptions[index].push(option)
             } else {
               console.log('道具 type:' + prop.item_type + ' name:' + prop.item_name + '已过期')
             }
           } else {
-            let option = {'value': prop.id, 'label': prop.item_name, disabled: false}
+            let option = { 'value': prop.id, 'label': prop.item_name, disabled: false }
             this.propOptions[index].push(option)
           }
         }
@@ -1565,7 +1535,7 @@ export default {
             if (time_type[j] === 0) {
               msg = '永久'
             }
-            let dataList = {'value': time_type[j], 'label': msg, disabled: false}
+            let dataList = { 'value': time_type[j], 'label': msg, disabled: false }
             this.propTimeList.push(dataList)
           }
           break
@@ -1619,7 +1589,7 @@ export default {
         this.getImportedUidCacheCount()
 
         // 初始化缓存：将已有的 gameIdCfg 按当前 gameType 缓存
-        this.edit.gameIdCfgCache = {1: [], 2: [], 3: []}
+        this.edit.gameIdCfgCache = { 1: [], 2: [], 3: [] }
         this.edit.prevGameType = this.edit.item.gameType
         this.cacheCurrentGameIds()
 
@@ -1633,7 +1603,7 @@ export default {
         this.getImportedUidList()
       } else {
         this.sentRewardAmount = 0
-        this.edit.gameIdCfgCache = {1: [], 2: [], 3: []}
+        this.edit.gameIdCfgCache = { 1: [], 2: [], 3: [] }
         this.$nextTick(() => {
           if (this.$refs.tree) {
             this.$refs.tree.setCheckedKeys([])
@@ -1678,7 +1648,7 @@ export default {
             this.edit.registerDateRange = [item.userFilterCondition.registerTimeRange.min * 1000, item.userFilterCondition.registerTimeRange.max * 1000]
             // 回显用户标签配置，缺少时补默认值
             if (!item.userFilterCondition.userTagConfig) {
-              item.userFilterCondition.userTagConfig = {tagId: 0, tagValue: 1, tagType: 0}
+              item.userFilterCondition.userTagConfig = { tagId: 0, tagValue: 1, tagType: 0 }
             } else if (item.userFilterCondition.userTagConfig.tagValue === undefined || item.userFilterCondition.userTagConfig.tagValue === null) {
               item.userFilterCondition.userTagConfig.tagValue = 1
             }
@@ -1760,7 +1730,7 @@ export default {
       this.edit.userType = this.edit.item.userTypes[0]
       this.edit.registerDateRange = []
       this.edit.gameCategoriesSelected = []
-      this.edit.gameIdCfgCache = {1: [], 2: [], 3: []}
+      this.edit.gameIdCfgCache = { 1: [], 2: [], 3: [] }
       this.edit.prevGameType = this.edit.item.gameType
       console.log(this.edit.item)
     },
@@ -1846,7 +1816,7 @@ export default {
         url: '/thirdpartygames/all',
         method: 'get',
         data: {},
-        params: {status: 2}
+        params: {status : 2}
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
@@ -1870,11 +1840,11 @@ export default {
 
           for (const key in data) {
             const games = data[key]
-            const cty = {id: 'p-' + key, label: categories[key], disabled: false, children: []}
+            const cty = { id: 'p-' + key, label: categories[key], disabled: false, children: [] }
 
             for (let i = 0; i < games.length; i++) {
               const game = games[i]
-              cty.children.push({id: game.Gid, category: categories[key], label: game.Name, disabled: false})
+              cty.children.push({ id: game.Gid, category: categories[key], label: game.Name, disabled: false })
             }
             this.treeData.push(cty)
           }
@@ -1905,7 +1875,7 @@ export default {
             }
           }
         }
-        this.GamesSorted.push({GameId: gameId, Name: name, OrderNo: i + 1})
+        this.GamesSorted.push({ GameId: gameId, Name: name, OrderNo: i+1 })
         gameTextList.push(name + '[' + gameId + ']')
       }
 
@@ -1925,7 +1895,7 @@ export default {
       for (const taskType in this.taskTypeGameMap) {
         const cfg = this.taskTypeGameMap[taskType]
         if (gameIds.every(gameId => cfg.gameIds.includes(gameId))) {
-          gameTaskTypes.push({label: cfg.label, value: parseInt(taskType)})
+          gameTaskTypes.push({ label: cfg.label, value: parseInt(taskType) })
         }
       }
 
