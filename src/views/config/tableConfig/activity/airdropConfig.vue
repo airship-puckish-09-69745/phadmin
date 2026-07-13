@@ -742,7 +742,7 @@ function newItem() {
         propNum: 1,
         propNumMax: 1,
         propExpireDays: 0,
-        taskValueRequired: 1,
+        taskValueRequired: 1
       }
     ],
     userTypes: [2], // 2 所有用户
