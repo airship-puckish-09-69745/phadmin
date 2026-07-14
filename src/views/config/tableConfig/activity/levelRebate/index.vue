@@ -46,9 +46,9 @@
             {{ scope.row.userDayPrizeThreshold != null ? scope.row.userDayPrizeThreshold / 1000 : '-' }}
           </template>
         </el-table-column>
-        <el-table-column prop="userDayPrizeThreshold" label="每日发奖上限" width="120" align="center">
+        <el-table-column prop="dayPrizeThreshold" label="每日发奖上限" width="120" align="center">
           <template slot-scope="scope">
-            {{ scope.row.userDayPrizeThreshold != null ? scope.row.userDayPrizeThreshold / 1000 : '-' }}
+            {{ scope.row.dayPrizeThreshold != null ? scope.row.dayPrizeThreshold / 1000 : '-' }}
           </template>
         </el-table-column>
         <el-table-column prop="modifyUser" label="最后修改人" width="200" show-overflow-tooltip align="center" />
@@ -123,7 +123,7 @@ export default {
         userDayPrizeThreshold: '个人奖励上限',
         effectiveBet: '解锁有效下注',
         minReward: '最低返水奖励',
-        userDayPrizeThreshold: '每日发奖上限',
+        dayPrizeThreshold: '每日发奖上限',
         totalPrizeThreshold: '最大发奖总上限',
         rewardTiers: '反水阶梯配置',
         modifyUser: '最后修改人',
