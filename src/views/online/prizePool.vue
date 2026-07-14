@@ -1,67 +1,71 @@
 <template>
-  <div class="app-container">
+  <div id="prizePoolContainer" class="app-container">
     <el-row :gutter="10" style="margin-top: 10px">
-      <el-col :span="22" :offset="1">
-        <p style="margin-bottom:30px;color:#dd0000;">
-          注意：支持按APP区分的奖池，需前往新后台配置：
-          1. 登录新后台，切换到目标【环境-APP】，例如【新版线上-1000005】。
-          2. 进入“场次管理-小游戏奖池配置”页面，配置游戏奖池。
-        </p>
+      <el-col :span="4" :offset="1">
+        <span>APP：</span>
+        <el-select v-model="selectedApp" placeholder="请选择APP" size="mini" filterable style="width: 80%" @change="onAppChange">
+          <el-option label="旧版" :value="0" />
+          <el-option v-for="(item,index) in appOptions" :key="index" :label="item.label" :value="item.value" />
+        </el-select>
       </el-col>
-      <el-col :span="22" :offset="1">
+      <el-col :span="1">
         <el-button type="success" size="mini" @click="getData">刷新</el-button>
-        <el-button type="success" size="mini" @click="jumpToNewPage">按APP配置奖池->前往新后台</el-button>
       </el-col>
       <el-col :span="22" :offset="1">
         <el-tabs active-name="first">
-          <el-tab-pane label="下注类" name="first"><el-table
-            :data="casioData"
-            border
-          >
-            <el-table-column
-              prop="Gid"
-              label="子游戏"
-              width="150"
+          <el-tab-pane label="下注类" name="first">
+            <el-table
+              v-loading="loading"
+              element-loading-text="拼命加载中"
+              element-loading-spinner="el-icon-loading"
+              element-loading-background="rgba(0, 0, 0, 0.5)"
+              :data="casioData"
+              border
             >
-              <template slot-scope="scope">
-                <span v-if="scope.row.Gid===37">
-                  {{ getGameName(scope.row.Gid)+' '+scope.row.Ante/1000+'场' }}
-                </span>
-                <span v-else>
-                  {{ getGameName(scope.row.Gid) }}
-                </span>
-              </template>
-            </el-table-column>
-            <el-table-column
-              prop="PrizePool"
-              label="奖池"
-              width="200"
-            >
-              <template slot-scope="scope">
-                <span :style="scope.row.PrizePool/1000>1000000?'color:red':''">{{ Math.floor(scope.row.PrizePool/1000).toLocaleString() }}</span>
+              <el-table-column
+                prop="Gid"
+                label="子游戏"
+                width="150"
+              >
+                <template slot-scope="scope">
+                  <span v-if="scope.row.Gid===37">
+                    {{ getGameName(scope.row.Gid)+' '+scope.row.Ante/1000+'场' }}
+                  </span>
+                  <span v-else>
+                    {{ getGameName(scope.row.Gid) }}
+                  </span>
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="PrizePool"
+                label="奖池"
+                width="200"
+              >
+                <template slot-scope="scope">
+                  <span :style="scope.row.PrizePool/1000>1000000?'color:red':''">{{ Math.floor(scope.row.PrizePool/1000).toLocaleString() }}</span>
 
-              </template>
-            </el-table-column>
-            <el-table-column
-              prop="IsByApp"
-              label="支持按APP区分奖池"
-              width="150"
-            >
-              <template slot-scope="scope">
-                <span v-if="scope.row.IsByApp" style="color: red">{{ scope.row.IsByApp ? '是' : '否' }}</span>
-                <span v-if="!scope.row.IsByApp">{{ scope.row.IsByApp ? '是' : '否' }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column
-              prop="RecountRate"
-              label="操作"
-            >
-              <template slot-scope="scope">
-                <el-button type="primary" size="mini" @click="edit(scope.row)">编辑</el-button>
-                <el-button v-if="scope.row.IsByApp" type="success" size="mini" @click="jumpToNewPage">前往新后台</el-button>
-              </template>
-            </el-table-column>
-          </el-table></el-tab-pane>
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="IsByApp"
+                label="支持按APP区分奖池"
+                width="150"
+              >
+                <template slot-scope="scope">
+                  <span v-if="scope.row.IsByApp" style="color: red">{{ scope.row.IsByApp ? '是' : '否' }}</span>
+                  <span v-if="!scope.row.IsByApp">{{ scope.row.IsByApp ? '是' : '否' }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="RecountRate"
+                label="操作"
+              >
+                <template slot-scope="scope">
+                  <el-button type="primary" size="mini" @click="edit(scope.row)">编辑</el-button>
+                  <el-button type="success" size="mini" @click="refreshPool(scope.row, 'casio')">刷新</el-button>
+                </template>
+              </el-table-column>
+            </el-table></el-tab-pane>
           <el-tab-pane label="Slots" name="second"><el-table
             :data="slotsData"
             :span-method="objectSpanMethod"
@@ -74,7 +78,7 @@
               width="150"
             >
               <template slot-scope="scope">
-                  {{ getSlotsName(scope.row.Gid) }}
+                {{ getSlotsName(scope.row.Gid) }}
               </template>
             </el-table-column>
             <el-table-column
@@ -111,7 +115,7 @@
             >
               <template slot-scope="scope">
                 <el-button type="primary" size="mini" @click="edit(scope.row)">编辑</el-button>
-                <el-button v-if="scope.row.IsByApp" type="success" size="mini" @click="jumpToNewPage">前往新后台</el-button>
+                <el-button type="success" size="mini" @click="refreshPool(scope.row, 'slots')">刷新</el-button>
               </template>
             </el-table-column>
           </el-table></el-tab-pane>
@@ -155,9 +159,15 @@ import { Message } from 'element-ui'
 import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import request from '@/utils/request'
+import watermark from '@/utils/watermark'
 import store from '@/store'
 import { $libShow, DataRule, ValidateVueItem } from '@/utils/common'
-import { switchNewAppEnv } from '@/utils/app';
+
+/**
+ * 支持分app奖池的Slots游戏id
+ */
+const PoolByAppSlotsGameIds = [86, 88, 90, 94, 98]
+const IGNORE_GIDS = [2, 3, 4, 5, 7, 8, 9, 13, 14, 16, 17, 18, 19]
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
@@ -184,11 +194,15 @@ export default {
       libShow: $libShow,
       dialogVisible: false,
       rowsSpanGameIdMap: {},
-      PrizePoolV2Url: process.env.VUE_APP_ADMIN_V2_URL
+      PrizePoolV2Url: process.env.VUE_APP_ADMIN_V2_URL,
+      selectedApp: 0,
+      appOptions: [],
+      loading: false
     }
   },
   created() {
     this.getData()
+    this.getAppInfos()
     console.log(1)
   },
   methods: {
@@ -222,7 +236,7 @@ export default {
         }
       }
     },
-/*    isSlots(o) {
+    /*    isSlots(o) {
       if (o > 50 && o < 100 || o > 149 && o < 200) {
         return true
       } else {
@@ -236,50 +250,102 @@ export default {
     dataRule(required, config) {
       return DataRule(required, config)
     },
+    slotsDataCompare(a, b) {
+      let aName = this.getSlotsName(a.Gid)
+      aName = aName !== undefined ? aName.toLowerCase() : ''
+      let bName = this.getSlotsName(b.Gid)
+      bName = bName !== undefined ? bName.toLowerCase() : ''
+      return aName.localeCompare(bName)
+    },
+    casioDataCompare(a, b) {
+      let aName = this.getGameName(a.Gid)
+      aName = aName !== undefined ? aName.toLowerCase() : ''
+      let bName = this.getGameName(b.Gid)
+      bName = bName !== undefined ? bName.toLowerCase() : ''
+      return aName.localeCompare(bName)
+    },
+    parsePoolList(data) {
+      const result = { slotsData: [], casioData: [], rowsSpanGameIdMap: {}}
+      for (const item of data) {
+        if (IGNORE_GIDS.includes(item.Gid)) continue
+        if (item.Gid > 5000) {
+          const gid = parseInt(item.Gid / 100)
+          // if (!PoolByAppSlotsGameIds.includes(gid)) continue
+          result.rowsSpanGameIdMap[gid] = (result.rowsSpanGameIdMap[gid] || 0) + 1
+          result.slotsData.push(item)
+        } else {
+          result.casioData.push(item)
+        }
+      }
+      result.slotsData.sort(this.slotsDataCompare)
+      result.casioData.sort(this.casioDataCompare)
+      return result
+    },
     getData() {
-      const $this = this
+      this.loading = true
       request({
         url: '/dataProxy/info',
         method: 'get',
         data: {
           Path: '/user/game/prize/pool/list',
-          Env: store.getters.env
-
+          Env: store.getters.env,
+          AppId: this.selectedApp
         }
       }).then(response => {
-        console.log('list response', response)
-        const ignore = [2, 3, 4, 5, 7, 8, 9, 13, 14, 16, 17, 18, 19]
-         $this.slotsData = []
-         $this.casioData = []
+        this.loading = false
         if (response.RetCode === 0) {
-          $this.rowsSpanGameIdMap = {}
-          for (let i = 0; i < response.Data.length; i++) {
-            const item = response.Data[i]
-            if (ignore.includes(item.Gid)) {
-              continue
-            }
-
-            if (item.Gid > 5000) {
-              const gid = parseInt(item.Gid / 100)
-              if (gid in $this.rowsSpanGameIdMap) {
-                $this.rowsSpanGameIdMap[gid] += 1
-              } else {
-                $this.rowsSpanGameIdMap[gid] = 1
-              }
-              $this.slotsData.push(item)
-            } else {
-              $this.casioData.push(item)
-            }
-            // $this.tableData.push(response.Data[i])
-          }
-          $this.slotsData.sort(function(a, b) {
-            return $this.getSlotsName(a.Gid).localeCompare($this.getSlotsName(b.Gid))
+          const result = this.parsePoolList(response.Data)
+          this.slotsData = result.slotsData
+          this.casioData = result.casioData
+          this.rowsSpanGameIdMap = result.rowsSpanGameIdMap
+          const appName = this.getAppName(this.selectedApp)
+          this.$message({
+            title: '提示',
+            message: 'APP-' + appName + ' 奖池数据加载成功',
+            type: 'success'
           })
-          // $this.tableData.splice(0, 0)
         } else {
-          $this.$message.error(response.Data)
+          this.$message.error(response.Data)
         }
       })
+    },
+    getAppInfos() {
+      request({
+        url: '/thirdparties/all',
+        method: 'get',
+        data: {}
+      }).then(response => {
+        if (response.RetCode !== 0) {
+          return
+        }
+        response.Data.forEach(app => {
+          if (app.Status === 2) {
+            this.appOptions.push({
+              value: app.ID,
+              label: app.ID + '-' + app.Account
+            })
+          }
+
+          this.updateWatter()
+        })
+      })
+    },
+    getAppName(appId) {
+      if (appId === 0) return '旧版'
+      const appInfo = this.appOptions.find(item => item.value === appId)
+      if (appInfo) {
+        return appInfo.label
+      }
+      return ''
+    },
+    onAppChange() {
+      this.getData()
+      this.updateWatter()
+    },
+    updateWatter() {
+      const appName = this.getAppName(this.selectedApp)
+      const parentElement = document.getElementById('prizePoolContainer')
+      watermark.setWatermark(appName, 99999999, parentElement, 160, 0)
     },
     getGameName(gid) {
       const id = parseInt(gid)
@@ -288,10 +354,10 @@ export default {
       }
       return $libShow.GameNames[id]
     },
-    getSlotsName(gid){
+    getSlotsName(gid) {
       return $libShow.GameNames[parseInt(gid / 100)]
     },
-    getSlotsfSuffix(gid){
+    getSlotsfSuffix(gid) {
       return this.gameNamesSuffix[parseInt(gid % 100)]
     },
     writeLog() {
@@ -327,7 +393,8 @@ export default {
         'PrizePool': parseInt(this.form.LotteryPool) + parseInt(this.form.PrizePool * 1000),
         'FeeRate': this.form.FeeRate,
         'RecountRate': this.form.RecountRate,
-        'Ante': this.form.Ante
+        'Ante': this.form.Ante,
+        'AppId': this.selectedApp
       }
 
       // 设置修改后数据
@@ -361,10 +428,44 @@ export default {
         })
       })
     },
+    refreshPool(row, type) {
+      console.log('refreshPool, row.Gid', row.Gid, ' type', type)
+      this.$set(row, '_refreshing', true)
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Path: '/lotteryschema/prize/pool',
+          Env: store.getters.env,
+          AppId: this.selectedApp,
+          Gid: row.Gid,
+          Ante: row.Ante
+        }
+      }).then(response => {
+        this.$set(row, '_refreshing', true)
+        if (response.RetCode === 0) {
+          const result = response.Data
+          if (result) {
+            const tableData = type === 'casio' ? this.casioData : this.slotsData
+            const item = tableData.find(item => item.Gid === row.Gid)
+            if (item) {
+              item.PrizePool = result.PrizePool
+              item.FreezePool = result.FreezePool
+            }
+            this.$message.success('刷新成功')
+          } else {
+            this.$message.warning('未找到该游戏数据')
+          }
+        } else {
+          this.$message.error(response.Data)
+        }
+      }).finally(() => {
+        this.$set(row, '_refreshing', false)
+      })
+    },
     jumpToNewPage() {
       // 跳转到新后台页面
-      const env = this.$store.getters.env
-      switchNewAppEnv(env, 1000002, this, '/prizePoolV2')
+      window.open(this.PrizePoolV2Url)
     }
   }
 }

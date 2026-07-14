@@ -62,6 +62,20 @@
           label="角色"
           min-width="200"
         />
+        <el-table-column prop="google_enable" label="google验证" width="150">
+          <template slot-scope="scope">
+            <el-switch
+              v-model="scope.row.google_enable"
+              active-color="#13ce66"
+              inactive-color="#c0c4cc"
+              :active-value="1"
+              :inactive-value="0"
+              @change="handleGoogleEnableChanged(scope.row)"
+              @click.native.stop
+            />
+            {{ getGoogleEnableDesc(scope.row.google_enable) }}
+          </template>
+        </el-table-column>
         <el-table-column
           label="操作"
           column-key="op"
@@ -267,6 +281,48 @@ export default {
     searchChange() {
       this.clientDB.Search(this.search, ['Name', 'Nick'])
       this.refreshShow()
+    },
+    getGoogleEnableDesc(val) {
+      if (val === 0) {
+        return '关闭'
+      } else {
+        return '打开'
+      }
+    },
+    handleGoogleEnableChanged(row) {
+      const action = row.google_enable === 0 ? '关闭验证' : '开启验证'
+
+      this.$confirm(`确定要用户 ${row.Name}${action}吗?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        // 调用确认方法
+        request({
+          url: '/adminuser/user/google/enabled/update',
+          method: 'post',
+          data: {
+            ID: row.ID,
+            googleEnable: row.google_enable
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            Message.success(action + '成功！')
+            // 可以在这里更新数据或刷新列表
+          } else {
+            Message.error(action + '失败：' + response.msg)
+            // 如果请求失败，回滚状态
+            row.google_enable = row.google_enable === 0 ? 1 : 0
+          }
+        }).catch(error => {
+          Message.error('请求失败：' + error)
+          // 如果请求失败，回滚状态
+          row.google_enable = row.google_enable === 0 ? 1 : 0
+        })
+      }).catch(() => {
+        // 用户取消操作时回滚状态
+        row.google_enable = row.google_enable === 0 ? 1 : 0
+      })
     },
 
     userRoleEdit(id, name) {

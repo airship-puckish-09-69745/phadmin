@@ -224,11 +224,14 @@
             </span>
           </template>
           <el-input
+            v-model="item.Detail"
             type="textarea"
             :rows="4"
             placeholder="异常详细信息"
-            v-model="item.Detail">
-          </el-input>
+          />
+        </el-form-item>
+        <el-form-item label="GoogleCode:" label-width="120px" :required="true">
+          <el-input v-model="item.googleCode" placeholder="GoogleCode" size="mini" />
         </el-form-item>
       </el-form>
       <el-row>
@@ -537,7 +540,8 @@ export default {
         Description: '',
         Amount: 0,
         Detail: '',
-        AbnormalTime: new Date().getTime(),
+        googleCode: '',
+        AbnormalTime: new Date().getTime()
       }
     },
     getDisable(row, idx) {

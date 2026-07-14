@@ -42,7 +42,7 @@ const actions = {
   login({ commit }, userInfo) {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
+      login({ username: username.trim(), password: password, googleCode: userInfo.googleCode || '' }).then(response => {
         console.log('login response', response)
         const { data } = response
         console.log(response)

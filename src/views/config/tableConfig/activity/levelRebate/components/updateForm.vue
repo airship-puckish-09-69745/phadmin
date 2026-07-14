@@ -239,7 +239,7 @@ export default {
       let rewardTiers = Array.isArray(ext.rewardTiers) ? ext.rewardTiers : [newTier()]
       rewardTiers = rewardTiers.map(t => ({
         bet: (t.bet || 0) / 1000,
-        ratio: (t.ratio || 0)
+        ratio: (t.ratio || 0) / 100,
       }))
       if (rewardTiers.length === 0) rewardTiers = [newTier()]
 
@@ -359,7 +359,7 @@ export default {
         totalPrizeThreshold: Math.floor((d.totalPrizeThreshold || 0) * 1000),
         rewardTiers: d.rewardTiers.map(t => ({
           bet: Math.floor((t.bet || 0) * 1000),
-          ratio: Math.floor((t.ratio || 0))
+          ratio: Math.floor((t.ratio || 0) * 100),
         }))
       }
 

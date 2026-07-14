@@ -5,15 +5,26 @@
         <el-form ref="item" label-width="220px">
           <el-col>
             <el-form-item label="活动名称" :required="true">
-              <el-input v-model="formData.activityName" style="width: 200px;" placeholder="请输入活动名称" />
+              <el-input v-model="formData.activityName" style="width: 500px;" placeholder="请输入活动名称"/>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col xs="24" :span="12">
             <el-form-item label="活动开关">
-              <el-switch v-model="formData.isOpen" :active-value="true" :inactive-value="false" />
+              <el-switch v-model="formData.isOpen" :active-value="true" :inactive-value="false"/>
             </el-form-item>
           </el-col>
-          <el-col>
+          <el-col xs="24" :span="12">
+            <el-form-item label="消息推送开关">
+              <el-switch v-model="formData.isSend" :active-value="true" :inactive-value="false"/>
+              <el-tooltip class="item" effect="light" placement="right-start">
+                <template #content>
+                  <div>控制推送红包任务进度</div>
+                </template>
+                <i class="el-icon-info"/>
+              </el-tooltip>
+            </el-form-item>
+          </el-col>
+          <el-col xs="24" :span="12">
             <el-form-item label="活动开始时间">
               <el-date-picker
                 v-model="formData.startTime"
@@ -24,7 +35,7 @@
               />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col xs="24" :span="12">
             <el-form-item label="活动结束时间">
               <el-date-picker
                 v-model="formData.endTime"
@@ -35,7 +46,7 @@
               />
             </el-form-item>
           </el-col>
-          <el-col>
+          <el-col xs="24" :span="12">
             <el-form-item label="每日活动开始时间">
               <el-date-picker
                 v-model="formData.everyDayStartTime"
@@ -46,7 +57,7 @@
               />
             </el-form-item>
           </el-col>
-          <el-col>
+          <el-col xs="24" :span="12">
             <el-form-item label="每日活动结束时间">
               <el-date-picker
                 v-model="formData.everyDayEndTime"
@@ -57,23 +68,34 @@
               />
             </el-form-item>
           </el-col>
-          <el-col>
+          <el-col xs="24" :span="12">
+            <el-form-item label="限制红包发送金币额度" :required="true">
+              <el-input v-model="formData.limitMaxNum" style="width: 200px;" placeholder="请输入限制数量"/>
+            </el-form-item>
+          </el-col>
+          <el-col xs="24" :span="12">
+            <el-form-item label="活动展示金额">
+              <el-input v-model.number="formData.showGold" style="width: 200px;" placeholder="请输入显示金额数量"/>
+            </el-form-item>
+          </el-col>
+          <el-col xs="24" :span="12">
             <el-form-item label="单日弹窗次数">
-              <el-input v-model.number="formData.showTimes" style="width: 200px;" placeholder="请输入限制数量" />
+              <el-input v-model.number="formData.showTimes" style="width: 200px;" placeholder="请输入限制数量"/>
               <el-tooltip class="item" effect="light" placement="right-start">
                 <template #content>
                   <div>配置1则所有用户单日只弹出1次该弹窗，配置0则该弹窗不主动弹出，配置-1则该弹窗次数为无限</div>
                 </template>
-                <i class="el-icon-info" />
+                <i class="el-icon-info"/>
               </el-tooltip>
             </el-form-item>
           </el-col>
-          <el-col>
-            <el-form-item label="活动展示金额">
-              <el-input v-model.number="formData.showGold" style="width: 200px;" placeholder="请输入显示金额数量" />
+          <el-col xs="24" :span="12" v-if="store.getters.env == 'test'">
+            <el-form-item label="时间偏移(秒)">
+              <el-input v-model="formData.timeS" style="width: 200px;" placeholder="请输入限制数量"/>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+
+          <el-col>
             <el-form-item label="参与活动用户类型" :required="true">
               <el-select v-model="formData.userType" placeholder="请选择" style="width:280px" @change="onUserTypeChange">
                 <el-option
@@ -97,27 +119,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col>
-            <el-form-item label="限制红包发送金币额度" :required="true">
-              <el-input v-model="formData.limitMaxNum" style="width: 200px;" placeholder="请输入限制数量" />
-            </el-form-item>
-          </el-col>
-          <el-col v-if="store.getters.env == 'test'">
-            <el-form-item label="时间偏移(秒)" :required="true">
-              <el-input v-model="formData.timeS" style="width: 200px;" placeholder="请输入限制数量" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="消息推送开关">
-              <el-switch v-model="formData.isSend" :active-value="true" :inactive-value="false" />
-              <el-tooltip class="item" effect="light" placement="right-start">
-                <template #content>
-                  <div>控制推送红包任务进度</div>
-                </template>
-                <i class="el-icon-info" />
-              </el-tooltip>
-            </el-form-item>
-          </el-col>
+
           <el-col>
             <el-form-item label="奖励类型">
               <el-radio-group v-model="formData.rewardType">
@@ -231,13 +233,13 @@ export default {
   data() {
     return {
       userTypes: [
-        { 'value': 2, 'label': '所有用户' },
-        { 'value': 5, 'label': '用户标签' }
+        {'value': 2, 'label': '所有用户'},
+        {'value': 5, 'label': '用户标签'}
       ],
       userTagIdOptions: [
-        { value: 50001, label: 'Slots新增用户' },
-        { value: 50002, label: 'Slots登录天数' },
-        { value: 50008, label: 'Slots回归用户' }
+        {value: 50001, label: 'Slots新增用户'},
+        {value: 50002, label: 'Slots登录天数'},
+        {value: 50008, label: 'Slots回归用户'}
       ],
       filterText: '',
       allTreeData: [],
@@ -408,7 +410,7 @@ export default {
         url: '/thirdpartygames/all',
         method: 'get',
         data: {},
-        params: { status: 2 }
+        params: {status: 2}
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
@@ -419,7 +421,7 @@ export default {
               continue
             }
 
-            const game = { Gid: obj.Gid, Name: obj.Name, Description: obj.Description }
+            const game = {Gid: obj.Gid, Name: obj.Name, Description: obj.Description}
             if (Object.prototype.hasOwnProperty.call(data, obj.CategoryID)) {
               data[obj.CategoryID].push(game)
             } else {
@@ -428,16 +430,16 @@ export default {
           }
 
           this.treeData = []
-          const categories = { 1: 'Slot', 2: 'Poker', 3: 'Casino' }
+          const categories = {1: 'Slot', 2: 'Poker', 3: 'Casino'}
 
           const builtTree = []
           for (const key in data) {
             const games = data[key]
-            const cty = { id: 'p-' + key, label: categories[key], children: [] }
+            const cty = {id: 'p-' + key, label: categories[key], children: []}
 
             for (let i = 0; i < games.length; i++) {
               const game = games[i]
-              cty.children.push({ id: game.Gid, label: game.Name })
+              cty.children.push({id: game.Gid, label: game.Name})
             }
             builtTree.push(cty)
           }

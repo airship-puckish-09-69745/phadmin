@@ -525,8 +525,15 @@ export default {
         '1236': 'pacquiaofortuneplaynow',
         '218': 'wrathofzeus2',
         '228': 'jokerace',
+        '226': 'fortunewheel',
         '230': 'pahiyaswins',
-        '234': 'fortunetree'
+        '1237': 'pahiyaswinsplaynow',
+        '234': 'fortunetree',
+        '240': 'bathalaageofcreation',
+        '242': 'fortunemuseum',
+        '248': 'mayantemple',
+        '246': 'talareyessouthseapearls',
+        '100246': 'talareyessouthseapearls_x'
       },
       appOptions: [
         { value: 0, label: '旧版' }

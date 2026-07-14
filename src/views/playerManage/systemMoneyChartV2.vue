@@ -682,7 +682,8 @@ export default {
         method: 'get',
         data: {
           Path: '/user/game/prize/pool/list',
-          Env: store.getters.env
+          Env: store.getters.env,
+          AppId: 0
         }
       }).then(response => {
         console.log('list response', response)
@@ -878,7 +879,7 @@ export default {
 </style>
 <style lang="scss" scoped>
 .panel-group {
-  margin-top: 10px;
+    margin-top: 10px;
 
   .card-panel-col {
     margin-bottom: 10px;

@@ -13,34 +13,26 @@
     </el-row>
 
     <el-row style="padding-top: 10px">
-      <el-table ref="filterTable"
-                :data="tableData"
-                stripe
-                border
-                :header-cell-style="libShow.DefaultTableHeadClass"
-                :row-style="{height:'10px'}"
-                :cell-style="libShow.DefaultTableCell"
-                style="width: 100%"
-                @sort-change="sortChange">
+      <el-table ref="filterTable" :data="tableData" stripe border :header-cell-style="libShow.DefaultTableHeadClass" :row-style="{height:'10px'}" :cell-style="libShow.DefaultTableCell" style="width: 100%" @sort-change="sortChange">
         <el-table-column prop="id" label="id" sortable="custom" width="80" />
-        <el-table-column prop="activityName" label="活动名称" />
-        <el-table-column prop="startTime" label="开始时间">
+        <el-table-column prop="activityName" label="活动名称" align="center" />
+        <el-table-column prop="startTime" label="开始时间"  align="center">
           <template slot-scope="scope">
             {{ formatTime(scope.row.startTime) }}
           </template>
         </el-table-column>
-        <el-table-column prop="endTime" label="结束时间" sortable="custom">
+        <el-table-column prop="endTime" label="结束时间" sortable="custom"  align="center">
           <template slot-scope="scope">
             {{ formatTime(scope.row.endTime) }}
           </template>
         </el-table-column>
-        <el-table-column prop="modifyUser" label="最后修改人" />
-        <el-table-column prop="status" label="状态" width="100">
+        <el-table-column prop="modifyUser" label="最后修改人"  align="center" />
+        <el-table-column prop="status" label="状态" width="100"  align="center">
           <template slot-scope="scope">
             {{ statusNames[scope.row.status] }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" column-key="op">
+        <el-table-column label="操作" column-key="op"  width="300">
           <template slot-scope="scope">
             <el-button size="mini" type="primary" icon="el-icon-edit" @click="openRedBagDialog(true,scope.row)">编辑</el-button>
             <el-button v-if="scope.row.status!=2" size="mini" type="success" icon="el-icon-upload2" @click="handlePrepare(scope.row)">上架 </el-button>
@@ -92,7 +84,8 @@ import Compare from '@/components/Compare/index.vue'
 import store from '@/store'
 import request from '@/utils/request'
 import { Message } from 'element-ui'
-import RedBagForm from './components/redBag/RedBagForm.vue'
+import RedBagForm from './form.vue'
+
 
 const filterMap = {}
 

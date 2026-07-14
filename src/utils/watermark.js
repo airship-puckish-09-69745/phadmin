@@ -3,11 +3,16 @@
 const watermark = {}
 let watermarkStr = '测试环境'
 let watermarkEnv = '测试环境'
+const watermarkId = '1.23452384164.123412415'
 
-const setWatermark = (str) => {
-  const id = '1.23452384164.123412415'
-
-  if (document.getElementById(id) !== null) {
+const setWatermark = (str, elementId, parentElement, top, left) => {
+  let id = watermarkId
+  if (elementId !== undefined) {
+    id = elementId
+  }
+  if (parentElement !== undefined && document.getElementById(id) !== null) {
+    parentElement.removeChild(document.getElementById(id))
+  } else if (document.getElementById(id) !== null) {
     document.body.removeChild(document.getElementById(id))
   }
 
@@ -30,15 +35,19 @@ const setWatermark = (str) => {
   const div = document.createElement('div')
   div.id = id
   div.style.pointerEvents = 'none'
-  div.style.top = '30px'
-  div.style.left = '0px'
+  div.style.top = top ? top + 'px' : '30px'
+  div.style.left = left ? left + 'px' : '0px'
   div.style.position = 'fixed'
   div.style.zIndex = '100000'
   div.style.width = document.documentElement.clientWidth + 'px'
   div.style.height = document.documentElement.clientHeight + 'px'
   div.style.background = 'url(' + can.toDataURL('image/png') + ') left top repeat'
   div.style.display = 'block'
-  document.body.appendChild(div)
+  if (parentElement !== undefined) {
+    parentElement.appendChild(div)
+  } else {
+    document.body.appendChild(div)
+  }
   return id
 }
 
@@ -79,7 +88,11 @@ watermark.out = () => {
 watermark.setStr = (str) => {
   watermarkStr = str
 }
+
 watermark.setEnv = (str) => {
   watermarkEnv = str
 }
+
+watermark.setWatermark = setWatermark
+
 export default watermark
