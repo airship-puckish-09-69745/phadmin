@@ -52,7 +52,7 @@
             </el-col>
             <el-col :xs="24" :sm="12">
               <el-form-item label="每日发奖上限：" required>
-                <el-input v-model.number="item.userDayPrizeThreshold" placeholder="请输入" style="max-width: 200px">
+                <el-input v-model.number="item.dayPrizeThreshold" placeholder="请输入" style="max-width: 200px">
                   <template slot="append">₱</template>
                 </el-input>
                 <div style="color: #E6A23C; font-size: 12px; line-height: 1.4; margin-top: 4px">
@@ -180,7 +180,7 @@ function newItem() {
     whitelist: { siteIdList: [] },
     userDayPrizeThreshold: 10,
     minReward: 1,
-    userDayPrizeThreshold: 0,
+    dayPrizeThreshold: 0,
     totalPrizeThreshold: 0,
     rewardTiers: [newTier()]
   }
@@ -261,7 +261,7 @@ export default {
         whitelist,
         userDayPrizeThreshold: (ext.userDayPrizeThreshold || 0) / 1000,
         minReward: (ext.minReward || 0) / 1000,
-        userDayPrizeThreshold: (ext.userDayPrizeThreshold || 0) / 1000,
+        dayPrizeThreshold: (ext.dayPrizeThreshold || 0) / 1000,
         totalPrizeThreshold: (ext.totalPrizeThreshold || 0) / 1000,
         rewardTiers
       }
@@ -355,7 +355,7 @@ export default {
         // 奖励相关配置（以千分位保存）
         userDayPrizeThreshold: Math.floor(d.userDayPrizeThreshold * 1000),
         minReward: Math.floor((d.minReward || 0) * 1000),
-        userDayPrizeThreshold: Math.floor((d.userDayPrizeThreshold || 0) * 1000),
+        dayPrizeThreshold: Math.floor((d.dayPrizeThreshold || 0) * 1000),
         totalPrizeThreshold: Math.floor((d.totalPrizeThreshold || 0) * 1000),
         rewardTiers: d.rewardTiers.map(t => ({
           bet: Math.floor((t.bet || 0) * 1000),
