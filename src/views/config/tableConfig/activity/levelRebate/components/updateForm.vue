@@ -40,7 +40,7 @@
             </el-col>
             <el-col :xs="24" :sm="12">
               <el-form-item label="当日玩家个人奖励上限：" required>
-                <el-input v-model.number="item.maxRewardAmount" placeholder="当日玩家个人奖励上限" style="max-width: 200px">
+                <el-input v-model.number="item.userDayPrizeThreshold" placeholder="当日玩家个人奖励上限" style="max-width: 200px">
                   <template slot="append">₱</template>
                 </el-input>
               </el-form-item>
@@ -178,7 +178,7 @@ function newItem() {
     showEndTime: Date.now() + 30 * 24 * 60 * 60 * 1000,
     gameIdCfg: [],
     whitelist: { siteIdList: [] },
-    maxRewardAmount: 10,
+    userDayPrizeThreshold: 10,
     minReward: 1,
     userDayPrizeThreshold: 0,
     totalPrizeThreshold: 0,
@@ -259,7 +259,7 @@ export default {
         showEndTime: (act.showEndTime || 0) * 1000,
         gameIdCfg: Array.isArray(act.gameIdList) ? act.gameIdList : [],
         whitelist,
-        maxRewardAmount: (ext.maxRewardAmount || 0) / 1000,
+        userDayPrizeThreshold: (ext.userDayPrizeThreshold || 0) / 1000,
         minReward: (ext.minReward || 0) / 1000,
         userDayPrizeThreshold: (ext.userDayPrizeThreshold || 0) / 1000,
         totalPrizeThreshold: (ext.totalPrizeThreshold || 0) / 1000,
@@ -303,7 +303,7 @@ export default {
         Message.error('请选择展示时间')
         return false
       }
-      if (!this.item.maxRewardAmount || this.item.maxRewardAmount <= 0) {
+      if (!this.item.userDayPrizeThreshold || this.item.userDayPrizeThreshold <= 0) {
         Message.error('请输入当日玩家个人奖励上限（大于0）')
         return false
       }
@@ -353,7 +353,7 @@ export default {
 
       const extendObj = {
         // 奖励相关配置（以千分位保存）
-        maxRewardAmount: Math.floor(d.maxRewardAmount * 1000),
+        userDayPrizeThreshold: Math.floor(d.userDayPrizeThreshold * 1000),
         minReward: Math.floor((d.minReward || 0) * 1000),
         userDayPrizeThreshold: Math.floor((d.userDayPrizeThreshold || 0) * 1000),
         totalPrizeThreshold: Math.floor((d.totalPrizeThreshold || 0) * 1000),

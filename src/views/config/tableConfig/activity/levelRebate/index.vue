@@ -41,9 +41,9 @@
             {{ formatTime(scope.row.endTime) }}
           </template>
         </el-table-column>
-        <el-table-column prop="maxRewardAmount" label="个人奖励上限" width="120" align="center">
+        <el-table-column prop="userDayPrizeThreshold" label="个人奖励上限" width="120" align="center">
           <template slot-scope="scope">
-            {{ scope.row.maxRewardAmount != null ? scope.row.maxRewardAmount / 1000 : '-' }}
+            {{ scope.row.userDayPrizeThreshold != null ? scope.row.userDayPrizeThreshold / 1000 : '-' }}
           </template>
         </el-table-column>
         <el-table-column prop="userDayPrizeThreshold" label="每日发奖上限" width="120" align="center">
@@ -120,7 +120,7 @@ export default {
         isOpen: '活动开关',
         startTime: '开始时间',
         endTime: '结束时间',
-        maxRewardAmount: '个人奖励上限',
+        userDayPrizeThreshold: '个人奖励上限',
         effectiveBet: '解锁有效下注',
         minReward: '最低返水奖励',
         userDayPrizeThreshold: '每日发奖上限',
@@ -204,7 +204,7 @@ export default {
           for (const obj of objs) {
             const act = JSON.parse(obj.activity || '{}')
             const ext = JSON.parse(obj.extend || '{}')
-            // 说明：阶段性反水的业务字段都在 activity 中（maxRewardAmount、effectiveBet、minReward 等）
+            // 说明：阶段性反水的业务字段都在 activity 中（userDayPrizeThreshold、effectiveBet、minReward 等）
             // 反水阶梯配置单独放在 extend.rewardTiers 中
             rows.push({
               ...obj,
@@ -217,7 +217,7 @@ export default {
               // 站点白名单前端简化为单层数组 siteIdList，便于表单直接绑定
               siteIdList: (act.whitelist && Array.isArray(act.whitelist.siteIdList)) ? act.whitelist.siteIdList : (act.siteIdList || []),
               // 以下字段全部来自 activity
-              maxRewardAmount: ext.maxRewardAmount || 0,
+              userDayPrizeThreshold: ext.userDayPrizeThreshold || 0,
               effectiveBet: ext.effectiveBet || 0,
               minReward: ext.minReward || 0,
               userDayPrizeThreshold: ext.userDayPrizeThreshold || 0,
