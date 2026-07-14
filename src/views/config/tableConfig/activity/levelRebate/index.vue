@@ -220,7 +220,7 @@ export default {
               userDayPrizeThreshold: ext.userDayPrizeThreshold || 0,
               effectiveBet: ext.effectiveBet || 0,
               minReward: ext.minReward || 0,
-              userDayPrizeThreshold: ext.userDayPrizeThreshold || 0,
+              dayPrizeThreshold: ext.dayPrizeThreshold || 0,
               tiersCount: Array.isArray(ext.rewardTiers) ? ext.rewardTiers.length : 0,
               activity: act,
               extend: ext
