@@ -1,7 +1,7 @@
 <template>
   <div class="page-container" style="padding: 10px">
     <el-row>
-      <publish primary-key="id" key-id="TongitsPlusActivity" :env-empty="false" :check="configCheck" compare-type="Array" :make-content="makeContent" :attr-names="AttrNames" :head-attrs="['id', 'activityName']" />
+      <publish primary-key="id" key-id="AnniversaryActivity" :env-empty="false" :check="configCheck" compare-type="Array" :make-content="makeContent" :attr-names="AttrNames" :head-attrs="['id', 'activityName']" />
     </el-row>
     <el-row style="padding-top: 5px">
       <el-col :span="20">
@@ -39,11 +39,6 @@
         <el-table-column prop="endTime" label="结束时间" sortable="custom" align="center" min-width="150">
           <template slot-scope="scope">
             {{ formatTime(scope.row.endTime) }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="betrayRatio" label="反水比例" width="90" align="center">
-          <template slot-scope="scope">
-            {{ scope.row.betrayRatio }}%
           </template>
         </el-table-column>
         <el-table-column prop="modifyUser" label="最后修改人" width="110" show-overflow-tooltip />
@@ -110,7 +105,6 @@ export default {
         isOpen: '活动开关',
         startTime: '开始时间',
         endTime: '结束时间',
-        betrayRatio: '反水比例',
         rewardType: '奖励类型',
         dayPrizeThreshold: '每日发奖上限监控',
         totalPrizeThreshold: '最大发奖总上限监控',
@@ -195,7 +189,7 @@ export default {
     // 获取列表
     getList() {
       request({
-        url: '/pokerpulsactivity/list',
+        url: '/anniversaryactivity/list',
         method: 'get',
         data: {}
       }).then(response => {
@@ -236,7 +230,7 @@ export default {
         type: 'warning'
       }).then(() => {
         request({
-          url: '/pokerpulsactivity/update/status',
+          url: '/anniversaryactivity/update/status',
           method: 'post',
           data: { id: ob.id, status: 3 }
         }).then(response => {
@@ -255,7 +249,7 @@ export default {
         type: 'warning'
       }).then(() => {
         request({
-          url: '/pokerpulsactivity/update/status',
+          url: '/anniversaryactivity/update/status',
           method: 'post',
           data: { id: id, status: status }
         }).then(response => {
