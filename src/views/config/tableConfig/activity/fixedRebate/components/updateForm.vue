@@ -86,9 +86,14 @@
                 </div>
               </el-form-item>
             </el-col>
-            <el-col :span="24">
+            <el-col :span="24" :sm="12">
               <el-form-item label="站点白名单：">
                 <SiteSelect v-model="item.whitelist.siteIdList" multiple placeholder="请选择" style="width: 100%; max-width: 300px"/>
+              </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="12">
+              <el-form-item label="时间偏移：">
+                <el-input v-model.number="item.debugTimeOffset" placeholder="请输入" style="max-width: 200px"/>
               </el-form-item>
             </el-col>
           </el-row>
@@ -111,7 +116,7 @@
 </template>
 
 <script>
-import { Message } from 'element-ui'
+import {Message} from 'element-ui'
 import request from '@/utils/request'
 import SiteSelect from '@/components/SiteSelect/index.vue'
 import GameSelector from '@/components/Game/GameSelector.vue'
@@ -134,7 +139,8 @@ function newItem() {
     effectiveBet: 1,
     minReward: 1,
     dayPrizeThreshold: 0,
-    totalPrizeThreshold: 0
+    totalPrizeThreshold: 0,
+    debugTimeOffset: 0
   }
 }
 
@@ -206,6 +212,7 @@ export default {
         endTime: (act.endTime || 0) * 1000,
         showEndTime: (act.showEndTime || 0) * 1000,
         gameIdCfg: Array.isArray(act.gameIdList) ? act.gameIdList : [],
+        debugTimeOffset: act.debugTimeOffset || 0,
         whitelist,
         ratio: (ext.ratio || 0) / 100,
         userDayPrizeThreshold: (ext.userDayPrizeThreshold || 0) / 1000,
@@ -269,6 +276,7 @@ export default {
         endTime: Math.floor(d.endTime / 1000),
         showEndTime: Math.floor(d.showEndTime / 1000),
         gameIdList: d.gameIdCfg.map(v => Number(v)),
+        debugTimeOffset: d.debugTimeOffset,
         whitelist: {
           siteIdList: (d.whitelist && Array.isArray(d.whitelist.siteIdList)) ? d.whitelist.siteIdList : []
         }
@@ -280,7 +288,8 @@ export default {
         effectiveBet: Math.floor(d.effectiveBet * 1000),
         minReward: Math.floor((d.minReward || 0) * 1000),
         dayPrizeThreshold: Math.floor((d.dayPrizeThreshold || 0) * 1000),
-        totalPrizeThreshold: Math.floor((d.totalPrizeThreshold || 0) * 1000)
+        totalPrizeThreshold: Math.floor((d.totalPrizeThreshold || 0) * 1000),
+        debugTimeOffset: d.debugTimeOffset
       }
 
       return {
