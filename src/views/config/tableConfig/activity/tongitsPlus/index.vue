@@ -1,53 +1,70 @@
 <template>
   <div class="page-container" style="padding: 10px">
     <el-row>
-      <publish primary-key="id" key-id="AnniversaryActivity" :env-empty="false" :check="configCheck" compare-type="Array" :make-content="makeContent" :attr-names="AttrNames" :head-attrs="['id', 'activityName']" />
+      <publish primary-key="id" key-id="TongitsPlusConfig" :env-empty="false" compare-type="Array" :attr-names="AttrNames" :head-attrs="['id', 'activityName']"/>
     </el-row>
-    <el-row style="padding-top: 5px">
+    <el-row style="padding-top: 10px">
       <el-col :span="20">
-        <el-button size="mini" type="primary" icon="el-icon-plus" @click="handleAdd">新增配置</el-button>
+        <el-button size="mini" type="primary" icon="el-icon-plus" @click="handleAdd()">添加配置项</el-button>
       </el-col>
       <el-col :span="2">
-        <el-button type="success" size="mini" icon="el-icon-refresh" @click="getList">刷新</el-button>
+        <el-button type="success" size="mini" icon="el-icon-refresh" @click="getList()">刷新</el-button>
       </el-col>
     </el-row>
 
     <el-row style="padding-top: 10px">
       <el-table
-        ref="filterTable"
-        :data="tableData"
-        stripe
-        border
-        :header-cell-style="libShow.DefaultTableHeadClass"
-        :row-style="{height:'10px'}"
-        :cell-style="libShow.DefaultTableCell"
-        style="width: 100%"
-        @sort-change="sortChange"
+          ref="filterTable"
+          :data="tableData"
+          stripe
+          border
+          :header-cell-style="libShow.DefaultTableHeadClass"
+          :row-style="{height:'10px'}"
+          :cell-style="libShow.DefaultTableCell"
+          style="width: 100%"
+          @sort-change="sortChange"
       >
-        <el-table-column prop="id" label="ID" sortable="custom" align="center" width="80" />
-        <el-table-column prop="activityName" label="活动名称" min-width="120" align="center" show-overflow-tooltip />
+        <el-table-column prop="id" label="ID" sortable="custom" width="80"/>
+        <el-table-column prop="activityName" label="活动名称" min-width="120" show-overflow-tooltip/>
         <el-table-column prop="isOpen" label="活动开关" width="80" align="center">
           <template slot-scope="scope">
-            <el-tag :type="scope.row.isOpen ? 'success' : 'info'" size="mini">{{ scope.row.isOpen ? '开' : '关' }}</el-tag>
+            <el-tag :type="scope.row.isOpen ? 'success' : 'info'" size="mini">{{scope.row.isOpen ? '开' : '关' }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="startTime" label="开始时间" sortable="custom" align="center" min-width="150">
+        <el-table-column prop="startTime" label="开始时间" sortable="custom" min-width="150">
           <template slot-scope="scope">
             {{ formatTime(scope.row.startTime) }}
           </template>
         </el-table-column>
-        <el-table-column prop="endTime" label="结束时间" sortable="custom" align="center" min-width="150">
+        <el-table-column prop="endTime" label="结束时间" sortable="custom" min-width="150">
           <template slot-scope="scope">
             {{ formatTime(scope.row.endTime) }}
           </template>
         </el-table-column>
-        <el-table-column prop="modifyUser" label="最后修改人" width="110" show-overflow-tooltip />
-        <el-table-column prop="status" label="状态" width="80" align="center">
+        <el-table-column prop="startTime" label="每日活动开始时间" sortable="custom" min-width="150">
           <template slot-scope="scope">
-            <el-tag :type="statusTagType[scope.row.status]" size="mini">{{ statusNames[scope.row.status] }}</el-tag>
+            {{ formatTime(scope.row.startTime) }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" column-key="op" width="300" fixed="right">
+        <el-table-column prop="endTime" label="每日活动结束时间" sortable="custom" min-width="150">
+          <template slot-scope="scope">
+            {{ formatTime(scope.row.endTime) }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="dayPrizeThreshold" label="每日发奖上限" width="120" align="center">
+          <template slot-scope="scope">
+            {{ scope.row.dayPrizeThreshold != null ? scope.row.dayPrizeThreshold / 1000 : '-' }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="modifyUser" label="最后修改人" width="110" show-overflow-tooltip/>
+        <el-table-column prop="status" label="状态" width="80" align="center">
+          <template slot-scope="scope">
+            <el-tag :type="statusTagType[scope.row.status]" size="mini">
+              {{ statusNames[scope.row.status] || scope.row.status }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" column-key="op" fixed="right" min-width="220">
           <template slot-scope="scope">
             <el-button size="mini" type="primary" icon="el-icon-edit" @click="handleEdit(scope.row)">编辑</el-button>
             <el-button v-if="scope.row.status !== 2" size="mini" type="success" icon="el-icon-upload2" @click="handlePrepare(scope.row)">上架</el-button>
@@ -59,114 +76,82 @@
       <el-col :offset="16" :span="8">
         <div class="block">
           <el-pagination
-            :current-page="clientDB.GetPage().GetCurrentPage()"
-            :page-sizes="[10, 20, 30, 40]"
-            :page-size="clientDB.GetPage().GetPageNum()"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="clientDB.GetPage().GetTotalCount()"
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
+              :current-page="clientDB.GetPage().GetCurrentPage()"
+              :page-sizes="[10, 20, 30, 40]"
+              :page-size="clientDB.GetPage().GetPageNum()"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="clientDB.GetPage().GetTotalCount()"
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
           />
         </div>
       </el-col>
     </el-row>
 
-    <!-- 聚宝盆配置弹窗 -->
-    <treasure-bowl-form
-      :visible.sync="formDialog.visible"
-      :is-edit="formDialog.isEdit"
-      :edit-data="formDialog.item"
-      @refresh="getList"
+    <update-form
+        :visible.sync="updateForm.visible"
+        :is-edit="updateForm.isEdit"
+        :data.sync="updateForm.data"
+        @changeData="getList"
     />
-
-    <!-- 对比组件 -->
-    <compare ref="compare" :attr-names="AttrNames" />
   </div>
 </template>
 
 <script>
-import { $libDate, $libShow, ClientTableData } from '@/utils/common'
 import Publish from '@/components/Publish/index.vue'
-import Compare from '@/components/Compare/index.vue'
-import store from '@/store'
+import {$libDate, $libShow, ClientTableData} from '@/utils/common'
 import request from '@/utils/request'
-import { Message } from 'element-ui'
-import TreasureBowlForm from './form.vue'
+import {Message} from 'element-ui'
+import UpdateForm from './components/updateForm.vue'
 
 const filterMap = {}
+const ACTIVITY_ID = 30
 
 export default {
-  components: { Compare, Publish, TreasureBowlForm },
+  components: {Publish, UpdateForm},
   data() {
     return {
+      libShow: $libShow,
+      clientDB: new ClientTableData([], 10, filterMap),
+      updateForm: {
+        visible: false,
+        isEdit: false,
+        data: null
+      },
+      tableData: [],
       AttrNames: {
-        id: '活动配置ID',
-        activityName: '活动名称',
+        id: '配置ID',
+        Activity: '活动数据',
+        Extend: '扩展数据',
         isOpen: '活动开关',
         startTime: '开始时间',
         endTime: '结束时间',
-        rewardType: '奖励类型',
-        dayPrizeThreshold: '每日发奖上限监控',
-        totalPrizeThreshold: '最大发奖总上限监控',
-        gameIdCfg: '参与活动游戏',
-        rankCfg: '排行榜配置',
-        whitelistCfg: '白名单配置',
-        propPools: '头像框奖励配置',
+        ratio: '返水比例',
+        userDayPrizeThreshold: '个人奖励上限',
+        effectiveBet: '解锁有效下注',
+        minReward: '最低返水奖励',
+        dayPrizeThreshold: '每日发奖上限',
+        totalPrizeThreshold: '最大发奖总上限',
         modifyUser: '最后修改人',
         status: '配置状态'
       },
-      env: 'test',
-      version: store.getters.version || 'V1',
-      statusNames: { 2: '上架', 6: '下架', 7: '预上架', 8: '预下架' },
-      statusTagType: { 2: 'success', 6: 'danger', 7: 'warning', 8: 'warning' },
-      tableData: [],
-      clientDB: new ClientTableData([], 10, filterMap),
-      libShow: $libShow,
-
-      // 弹窗相关
-      formDialog: {
-        visible: false,
-        isEdit: false,
-        item: {}
-      }
+      statusNames: {2: '上架', 6: '下架', 7: '预上架', 8: '预下架'},
+      statusTagType: {2: 'success', 6: 'danger', 7: 'warning', 8: 'warning'}
     }
-  },
-  created() {
-    this.env = store.getters.env || this.env
   },
   mounted() {
     this.getList()
   },
   methods: {
-    makeContent(key, addData, delData, editData) {
-      const parts = []
-      if (addData.length > 0) {
-        for (const i in addData) {
-          for (const j in addData[i]) {
-            if (addData[i][j].key === 'activityName') {
-              parts.push(`上架-活动名称:【${addData[i][j].newVal}】`)
-            }
-          }
-        }
-      }
-      if (delData.length > 0) {
-        for (const i in delData) {
-          for (const j in delData[i]) {
-            if (delData[i][j].key === 'activityName') {
-              parts.push(`下架-活动名称:【${delData[i][j].oldVal}】`)
-            }
-          }
-        }
-      }
-      if (editData.length > 0) {
-        for (const i in editData) {
-          parts.push(`活动名称:【${editData[i].Head.activityName || editData[i].Head.id}】`)
-        }
-      }
-      return parts.join('\r\n')
+    handleAdd() {
+      this.updateForm.visible = true
+      this.updateForm.isEdit = false
+      this.updateForm.data = {}
     },
-    configCheck() {
-      return true
+    handleEdit(row) {
+      this.updateForm.visible = true
+      this.updateForm.isEdit = true
+      this.updateForm.data = JSON.parse(JSON.stringify(row))
     },
     formatTime(ts) {
       return $libDate.FormateSecondStr(ts, 2)
@@ -186,62 +171,15 @@ export default {
       this.clientDB.SortByProp(ob.prop, ob.order)
       this.refreshShow()
     },
-    // 获取列表
-    getList() {
-      request({
-        url: '/anniversaryactivity/list',
-        method: 'get',
-        data: {}
-      }).then(response => {
-        if (response.RetCode === 0) {
-          const objs = response.Data || []
-          this.clientDB = new ClientTableData(objs, 10, filterMap, 'endTime', -1, 'id')
-          this.handleCurrentChange(1)
-        }
-      }).catch(err => {
-        console.log(err)
-      })
-    },
-    // 新增
-    handleAdd() {
-      this.formDialog.item = {}
-      this.formDialog.isEdit = false
-      this.formDialog.visible = true
-    },
-    // 编辑
-    handleEdit(row) {
-      this.formDialog.item = JSON.parse(JSON.stringify(row))
-      this.formDialog.isEdit = true
-      this.formDialog.visible = true
-    },
-    // 上架
     handlePrepare(ob) {
       this.changeStatus(ob.id, 2, '您确定要将记录状态修改为"上架"吗？该记录将在发布后同步到外网。')
     },
-    // 下架
     handleOffline(ob) {
       this.changeStatus(ob.id, 6, '您确定要将记录下架吗？下架的记录将在发布后从线上消失。')
     },
-    // 删除
     handleDelete(ob) {
-      this.$confirm('您确定要删除此配置吗？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        request({
-          url: '/anniversaryactivity/update/status',
-          method: 'post',
-          data: { id: ob.id, status: 3 }
-        }).then(response => {
-          if (response.RetCode === 0) {
-            Message.success('删除成功！')
-            this.getList()
-          }
-        })
-      }).catch(() => {})
+      this.changeStatus(ob.id, 3, '您确定要将记录状态修改为废弃吗？')
     },
-    // 修改状态（上架/下架）
     changeStatus(id, status, msg) {
       this.$confirm(msg, '提示', {
         confirmButtonText: '确定',
@@ -249,16 +187,55 @@ export default {
         type: 'warning'
       }).then(() => {
         request({
-          url: '/anniversaryactivity/update/status',
+          url: '/activityconfig/update/status',
           method: 'post',
-          data: { id: id, status: status }
+          data: {id, status, activityId: ACTIVITY_ID}
         }).then(response => {
           if (response.RetCode === 0) {
             Message.success('操作成功！')
             this.getList()
           }
         })
-      }).catch(() => {})
+      }).catch(() => {
+      })
+    },
+    getList() {
+      request({
+        url: '/activityconfig/all',
+        method: 'get',
+        data: {activityId: ACTIVITY_ID}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objs = response.Data || []
+          const rows = []
+          for (const obj of objs) {
+            const act = JSON.parse(obj.activity || '{}')
+            const ext = JSON.parse(obj.extend || '{}')
+            rows.push({
+              ...obj,
+              // 展平 activity 字段
+              activityName: act.name || '',
+              isOpen: act.isOpen,
+              startTime: act.startTime || 0,
+              endTime: act.endTime || 0,
+              showEndTime: act.showEndTime || 0,
+              gameIdCfg: act.gameIdList || [],
+              siteIdList: (act.whitelist && Array.isArray(act.whitelist.siteIdList)) ? act.whitelist.siteIdList : (act.siteIdList || []),
+              ratio: ext.ratio || 0,
+              userDayPrizeThreshold: ext.userDayPrizeThreshold || 0,
+              effectiveBet: ext.effectiveBet || 0,
+              minReward: ext.minReward || 0,
+              dayPrizeThreshold: ext.dayPrizeThreshold || 0,
+              activity: act,
+              extend: ext
+            })
+          }
+          this.clientDB = new ClientTableData(rows, 10, filterMap, 'id', -1, 'id')
+          this.handleCurrentChange(1)
+        }
+      }).catch(err => {
+        console.log(err)
+      })
     }
   }
 }
