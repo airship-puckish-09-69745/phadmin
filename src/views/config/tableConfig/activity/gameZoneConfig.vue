@@ -1028,7 +1028,8 @@ export default {
         { label: '聚宝盆活动活动-[22]', value: 22 },
         { label: '花节阶段一活动-[24]', value: 24 },
         { label: 'Poker Plus 红包活动-[26]', value: 26 },
-        { label: '周年庆-[27]', value: 27 }
+        { label: '周年庆-[27]', value: 27 },
+        { label: 'Slots Free Buy活动-[30]', value: 30 }
       ],
       gameSelect: [],
       activitySelect: [
@@ -1046,7 +1047,8 @@ export default {
         { name: '万圣节活动-[18]', id: 18 },
         { name: '竖版游戏排行榜活动-[19]', id: 19 },
         { name: 'Poker类排行榜活动-[20]', id: 20 },
-        { name: '活动地图-[21]', id: 21 }
+        { name: '活动地图-[21]', id: 21 },
+        { name: 'Slots Free Buy活动-[30]', id: 30 }
       ],
       blockGames: [36, 38, 39, 43, 44],
       hallGame: [],
