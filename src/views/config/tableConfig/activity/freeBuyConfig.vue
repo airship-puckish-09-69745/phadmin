@@ -103,6 +103,18 @@
           <el-tab-pane label="基础配置">
             <el-row :gutter="20">
               <el-col :span="12">
+                <el-form-item label="活动开关">
+                  <el-switch v-model="editItem.isOpen" active-text="开启" inactive-text="关闭" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="调试时间偏移(秒)">
+                  <el-input-number v-model="editItem.debugTimeOffset" :min="-31536000" :max="31536000" controls-position="right" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row :gutter="20">
+              <el-col :span="12">
                 <el-form-item label="期次ID" required>
                   <el-input-number v-model="editItem.id" :min="1" :max="2147483647" :disabled="activityEditMode" controls-position="right" />
                 </el-form-item>
@@ -134,18 +146,6 @@
                     placeholder="选择活动结束时间"
                     style="width: 100%"
                   />
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row :gutter="20">
-              <el-col :span="12">
-                <el-form-item label="活动开关">
-                  <el-switch v-model="editItem.isOpen" active-text="开启" inactive-text="关闭" />
-                </el-form-item>
-              </el-col>
-              <el-col :span="12">
-                <el-form-item label="调试时间偏移(秒)">
-                  <el-input-number v-model="editItem.debugTimeOffset" :min="-31536000" :max="31536000" controls-position="right" />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -271,31 +271,34 @@
         </el-form-item>
         <template v-if="taskEditItem.reward.rewardType === 1">
           <el-form-item label="FreeSpin道具" required>
-            <el-select v-model="taskEditItem.reward.propId" filterable allow-create default-first-option placeholder="请选择或输入道具ID" style="width: 100%">
+            <el-select v-model="taskEditItem.reward.propId" filterable placeholder="请选择FreeSpin道具" style="width: 100%">
               <el-option v-for="item in freeSpinPropOptions" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
           </el-form-item>
         </template>
         <template v-else>
-          <el-form-item label="富裕卡星级" required>
-            <el-select v-model="taskEditItem.reward.richCardLevel" placeholder="请选择星级" style="width: 100%">
-              <el-option v-for="level in 5" :key="level" :label="level + ' 星'" :value="level" />
-            </el-select>
-          </el-form-item>
           <el-form-item label="适用游戏" required>
-            <el-select v-model="taskEditItem.reward.slotsType" filterable allow-create default-first-option style="width: 100%">
-              <el-option label="Pahiyas Win's [230]" :value="230" />
+            <el-select v-model="taskEditItem.reward.slotsType" filterable placeholder="请选择游戏" style="width: 100%">
+              <el-option v-for="item in richCardGameOptions" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
           </el-form-item>
-          <el-form-item label="富裕卡Bet" required>
-            <el-input-number v-model="taskEditItem.rewardBet" :min="0.001" :max="1000000" :precision="3" :step="0.1" controls-position="right" />
+          <el-form-item label="富裕卡" required>
+            <el-cascader
+              v-model="taskEditItem.rewardRichCardSelect"
+              :options="richCardOptions"
+              :props="{ expandTrigger: 'hover' }"
+              placeholder="请选择星级和Bet"
+              style="width: 100%"
+            />
           </el-form-item>
         </template>
         <el-form-item label="奖励数量" required>
           <el-input-number v-model="taskEditItem.reward.rewardNum" :min="1" :max="100000" controls-position="right" />
         </el-form-item>
         <el-form-item label="有效天数" required>
-          <el-input-number v-model="taskEditItem.reward.validDays" :min="1" :max="3650" controls-position="right" />
+          <el-select v-model="taskEditItem.reward.validDays" :disabled="taskEditItem.reward.rewardType === 2" style="width: 100%">
+            <el-option v-for="item in validDayOptions" :key="item.value" :label="item.label" :value="item.value" />
+          </el-select>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -313,6 +316,7 @@ import request from '@/utils/request'
 import SiteSelect from '@/components/SiteSelect/index.vue'
 import Publish from '@/components/Publish/index.vue'
 import store from '@/store'
+import { ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS } from '@/utils/options'
 
 const SUB_KEY = 'free_buy_task_cfg'
 const STATUS_ONLINE = 2
@@ -323,9 +327,9 @@ function newReward(rewardType = 1) {
     rewardType,
     propId: 0,
     rewardNum: 1,
-    validDays: 1,
+    validDays: rewardType === 2 ? 2 : 1,
     richCardLevel: 0,
-    slotsType: 230,
+    slotsType: 0,
     bet: 0
   }
 }
@@ -338,7 +342,7 @@ function newTask(taskType = 1) {
     compareType: taskType === 1 ? 1 : 2,
     conditionAmount: 1,
     reward: newReward(taskType === 1 ? 1 : 2),
-    rewardBet: 0
+    rewardRichCardSelect: []
   }
 }
 
@@ -357,8 +361,8 @@ function defaultTasks() {
       conditionAmount: 600,
       reward: { ...newReward(1), rewardNum: 5 }
     },
-    { ...newTask(2), taskId: 1, conditionAmount: 1000, reward: { ...newReward(2), rewardNum: 1, bet: 500 }, rewardBet: 0.5 },
-    { ...newTask(2), taskId: 2, conditionAmount: 5000, reward: { ...newReward(2), rewardNum: 3, bet: 1000 }, rewardBet: 1 }
+    { ...newTask(2), taskId: 1, conditionAmount: 1000, reward: { ...newReward(2), rewardNum: 1, bet: 500 }},
+    { ...newTask(2), taskId: 2, conditionAmount: 5000, reward: { ...newReward(2), rewardNum: 3, bet: 1000 }}
   ]
 }
 
@@ -420,7 +424,11 @@ export default {
       taskEditMode: false,
       taskEditOriginalKey: '',
       taskEditItem: newTask(1),
-      freeSpinPropOptions: []
+      freeSpinPropOptions: [],
+      richCardOptions: [],
+      richCardGameOptions: [],
+      richCardOpenGameMap: {},
+      slotGameOptions: []
     }
   },
   computed: {
@@ -432,11 +440,16 @@ export default {
     },
     sortedEditTasks() {
       return [...(this.editItem.taskList || [])].sort((a, b) => a.taskType - b.taskType || a.taskId - b.taskId)
+    },
+    validDayOptions() {
+      return ITEM_DAY_TYPE_OPTIONS.filter(item => !item.disabled && item.value !== 0 && item.value !== 365)
     }
   },
   created() {
     this.getList()
     this.getFreeSpinProps()
+    this.getMissionData()
+    this.getGameAll()
   },
   methods: {
     getFullKey() {
@@ -487,7 +500,16 @@ export default {
     normalizeTask(task) {
       const data = { ...newTask(Number(task.taskType) || 1), ...task }
       data.reward = { ...newReward(Number(task.reward && task.reward.rewardType) || 1), ...(task.reward || {}) }
-      data.rewardBet = Number(data.reward.bet || 0) / 1000
+      if (Number(data.reward.rewardType) === 2) {
+        data.reward.validDays = 2
+        data.rewardRichCardSelect = Array.isArray(task.rewardRichCardSelect) && task.rewardRichCardSelect.length === 2
+          ? task.rewardRichCardSelect.map(Number)
+          : (Number(data.reward.richCardLevel) > 0 && Number(data.reward.bet) > 0
+            ? [Number(data.reward.richCardLevel), Number(data.reward.bet)]
+            : [])
+      } else {
+        data.rewardRichCardSelect = []
+      }
       return data
     },
     getFreeSpinProps() {
@@ -499,11 +521,60 @@ export default {
         if (response.RetCode !== 0) return
         const rows = response.Data && Array.isArray(response.Data.list) ? response.Data.list : []
         this.freeSpinPropOptions = rows
-          .filter(item => this.isCurrentAppSlotFreeSpinProp(item))
-          .map(item => ({ value: Number(item.id), label: `${item.item_name} [${item.id}]` }))
+          .filter(item => Number(item.item_type) === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN && Number(item.status) === 1)
+          .map(item => ({ value: Number(item.id), label: this.formatPropOptionLabel(item) }))
       }).catch(error => {
         console.error('FreeSpin道具列表加载失败:', error)
       })
+    },
+    getMissionData() {
+      request({
+        url: '/customizeconfig/one',
+        method: 'get',
+        data: { SubKey: 'slotsmission' }
+      }).then(response => {
+        if (response.RetCode !== 0 || !response.Data) return
+        const config = JSON.parse(response.Data.Data || '{}')
+        this.richCardOpenGameMap = (config.BuyFreeList || []).reduce((result, item) => {
+          result[Number(item.SlotsType)] = Boolean(item.Open)
+          return result
+        }, {})
+        this.richCardOptions = (config.RichCardList || []).map(item => ({
+          value: Number(item.RichCardLevel),
+          label: `星级${item.RichCardLevel}`,
+          children: (item.Bets || []).map(bet => ({
+            value: Number(bet),
+            label: `金额 ${Number(bet) / 1000}`
+          }))
+        }))
+        this.refreshRichCardGameOptions()
+      }).catch(error => {
+        console.error('富裕卡规则加载失败:', error)
+      })
+    },
+    getGameAll() {
+      request({
+        url: '/thirdpartygames/all',
+        method: 'get',
+        data: {},
+        params: { status: 2 }
+      }).then(response => {
+        if (response.RetCode !== 0) return
+        this.slotGameOptions = (response.Data || [])
+          .filter(item => {
+            const gameId = Number(item.Gid)
+            return gameId >= 50 && gameId <= 100 || gameId >= 150 && gameId <= 499
+          })
+          .map(item => ({ value: Number(item.Gid), label: `${item.Name} [${item.Gid}]` }))
+        this.refreshRichCardGameOptions()
+      }).catch(error => {
+        console.error('富裕卡游戏列表加载失败:', error)
+      })
+    },
+    refreshRichCardGameOptions() {
+      this.richCardGameOptions = this.slotGameOptions
+        .filter(item => this.richCardOpenGameMap[item.value])
+        .sort((a, b) => a.value - b.value)
     },
     openActivityDialog(isEdit, row) {
       this.activityEditMode = isEdit
@@ -563,17 +634,16 @@ export default {
       data.reward.rewardType = Number(data.reward.rewardType)
       data.reward.propId = Number(data.reward.propId) || 0
       data.reward.rewardNum = Number(data.reward.rewardNum)
-      data.reward.validDays = Number(data.reward.validDays)
-      data.reward.richCardLevel = Number(data.reward.richCardLevel) || 0
+      data.reward.validDays = data.reward.rewardType === 2 ? 2 : Number(data.reward.validDays)
       data.reward.slotsType = Number(data.reward.slotsType) || 0
-      data.reward.bet = data.reward.rewardType === 2 ? Math.round(Number(data.rewardBet) * 1000) : 0
+      data.reward.richCardLevel = data.reward.rewardType === 2 ? Number(data.rewardRichCardSelect[0]) || 0 : 0
+      data.reward.bet = data.reward.rewardType === 2 ? Number(data.rewardRichCardSelect[1]) || 0 : 0
       if (data.reward.rewardType === 1) {
-        data.reward.richCardLevel = 0
         data.reward.slotsType = 0
       } else {
         data.reward.propId = 0
       }
-      delete data.rewardBet
+      delete data.rewardRichCardSelect
       return data
     },
     persistConfigs(configs, successMessage) {
@@ -645,8 +715,8 @@ export default {
     },
     handleRewardTypeChange(rewardType) {
       const current = this.taskEditItem.reward
-      this.taskEditItem.reward = { ...newReward(rewardType), rewardNum: current.rewardNum, validDays: current.validDays }
-      this.taskEditItem.rewardBet = 0
+      this.taskEditItem.reward = { ...newReward(rewardType), rewardNum: current.rewardNum }
+      this.taskEditItem.rewardRichCardSelect = []
     },
     saveTask() {
       const task = this.cleanTask(this.taskEditItem)
@@ -775,20 +845,21 @@ export default {
     rewardText(reward) {
       if (!reward) return '-'
       if (Number(reward.rewardType) === 1) {
-        return `FreeSpin 道具 ${reward.propId || '未选'} × ${reward.rewardNum}，${reward.validDays}天`
+        const prop = this.freeSpinPropOptions.find(item => item.value === Number(reward.propId))
+        return `${prop ? prop.label : `FreeSpin 道具 ${reward.propId || '未选'}`} × ${reward.rewardNum}，${reward.validDays}天`
       }
-      return `${reward.richCardLevel || '未选'}星富裕卡 × ${reward.rewardNum}，Bet ${Number(reward.bet || 0) / 1000}，${reward.validDays}天`
+      const game = this.richCardGameOptions.find(item => item.value === Number(reward.slotsType))
+      return `${game ? game.label : `游戏 ${reward.slotsType || '未选'}`}，${reward.richCardLevel || '未选'}星富裕卡 × ${reward.rewardNum}，Bet ${Number(reward.bet || 0) / 1000}，${reward.validDays}天`
     },
-    // Free Buy只允许选择当前App下已上架的Slot类FreeSpin道具。
-    isCurrentAppSlotFreeSpinProp(item) {
-      if (Number(item.item_type) !== 5 || Number(item.status) !== 1) return false
+    formatPropOptionLabel(item) {
+      let name = item.item_name
       try {
         const extra = typeof item.item_extra === 'string' ? JSON.parse(item.item_extra) : item.item_extra
-        return extra && Number(extra.appId) === this.configAppId && Number(extra.specialAttr) === 1
+        if (extra && extra.showName) name += `(${extra.showName})`
       } catch (error) {
         console.warn(`FreeSpin道具 ${item.id} 的item_extra解析失败:`, error)
-        return false
       }
+      return `${name} [${item.id}]`
     }
   }
 }
