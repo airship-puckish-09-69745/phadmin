@@ -25,7 +25,7 @@
         @sort-change="sortChange"
       >
         <el-table-column prop="id" label="ID" sortable="custom" width="80" />
-        <el-table-column prop="activityName" label="活动名称" min-width="120" show-overflow-tooltip />
+        <el-table-column prop="activityName" label="活动名称" min-width="120" align="center" show-overflow-tooltip />
         <el-table-column prop="isOpen" label="活动开关" width="80" align="center">
           <template slot-scope="scope">
             <el-tag :type="scope.row.isOpen ? 'success' : 'info'" size="mini">{{ scope.row.isOpen ? '开' : '关' }}</el-tag>
@@ -41,9 +41,9 @@
             {{ formatTime(scope.row.endTime) }}
           </template>
         </el-table-column>
-        <el-table-column prop="maxRewardAmount" label="个人奖励上限" width="120" align="center">
+        <el-table-column prop="userDayPrizeThreshold" label="个人奖励上限" width="120" align="center">
           <template slot-scope="scope">
-            {{ scope.row.maxRewardAmount != null ? scope.row.maxRewardAmount / 1000 : '-' }}
+            {{ scope.row.userDayPrizeThreshold != null ? scope.row.userDayPrizeThreshold / 1000 : '-' }}
           </template>
         </el-table-column>
         <el-table-column prop="dayPrizeThreshold" label="每日发奖上限" width="120" align="center">
@@ -54,10 +54,12 @@
         <el-table-column prop="modifyUser" label="最后修改人" width="200" show-overflow-tooltip align="center" />
         <el-table-column prop="status" label="状态" width="80" align="center">
           <template slot-scope="scope">
-            <el-tag :type="statusTagType[scope.row.status]" size="mini">{{ statusNames[scope.row.status] || scope.row.status }}</el-tag>
+            <el-tag :type="statusTagType[scope.row.status]" size="mini">
+              {{ statusNames[scope.row.status] || scope.row.status }}
+            </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" column-key="op" fixed="right" align="center" width="300">
+        <el-table-column label="操作" column-key="op" fixed="right" min-width="220">
           <template slot-scope="scope">
             <el-button size="mini" type="primary" icon="el-icon-edit" @click="handleEdit(scope.row)">编辑</el-button>
             <el-button v-if="scope.row.status !== 2" size="mini" type="success" icon="el-icon-upload2" @click="handlePrepare(scope.row)">上架</el-button>
@@ -118,7 +120,7 @@ export default {
         isOpen: '活动开关',
         startTime: '开始时间',
         endTime: '结束时间',
-        maxRewardAmount: '个人奖励上限',
+        userDayPrizeThreshold: '个人奖励上限',
         effectiveBet: '解锁有效下注',
         minReward: '最低返水奖励',
         dayPrizeThreshold: '每日发奖上限',
@@ -202,7 +204,7 @@ export default {
           for (const obj of objs) {
             const act = JSON.parse(obj.activity || '{}')
             const ext = JSON.parse(obj.extend || '{}')
-            // 说明：阶段性反水的业务字段都在 activity 中（maxRewardAmount、effectiveBet、minReward 等）
+            // 说明：阶段性反水的业务字段都在 activity 中（userDayPrizeThreshold、effectiveBet、minReward 等）
             // 反水阶梯配置单独放在 extend.rewardTiers 中
             rows.push({
               ...obj,
@@ -215,7 +217,7 @@ export default {
               // 站点白名单前端简化为单层数组 siteIdList，便于表单直接绑定
               siteIdList: (act.whitelist && Array.isArray(act.whitelist.siteIdList)) ? act.whitelist.siteIdList : (act.siteIdList || []),
               // 以下字段全部来自 activity
-              maxRewardAmount: ext.maxRewardAmount || 0,
+              userDayPrizeThreshold: ext.userDayPrizeThreshold || 0,
               effectiveBet: ext.effectiveBet || 0,
               minReward: ext.minReward || 0,
               dayPrizeThreshold: ext.dayPrizeThreshold || 0,
