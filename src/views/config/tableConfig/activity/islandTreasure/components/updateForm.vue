@@ -163,9 +163,9 @@
               <el-input v-model.number="scope.row.drawNum" placeholder="请输入开奖数量" />
             </template>
           </el-table-column>
-          <el-table-column prop="prizeAmount" label="奖励金额">
+          <el-table-column prop="drawAmount" label="奖励金额">
             <template slot-scope="scope">
-              <el-input v-model.number="scope.row.prizeAmount" placeholder="请输入奖励金额" style="max-width: 200px" />
+              <el-input v-model.number="scope.row.drawAmount" placeholder="请输入奖励金额" style="max-width: 200px" />
             </template>
           </el-table-column>
           <el-table-column prop="islandIconNo" label="海岛图标编号">
@@ -272,7 +272,7 @@ function newDrawMap(drawMapId) {
     drawTime: 0,
     drawMapId: drawMapId,
     drawNum: 0,
-    prizeAmount: 0,
+    drawAmount: 0,
     islandIconNo: 0
   }
 }
@@ -447,7 +447,7 @@ export default {
           Message.error('请配置开奖地图序号[' + (i + 1) + ']-[' + drawTimeStr + ']的开奖数量（必须大于0）')
           return false
         }
-        if (drawMapConfig.prizeAmount <= 0) {
+        if (drawMapConfig.drawAmount <= 0) {
           Message.error('请配置开奖地图序号[' + (i + 1) + ']-[' + drawTimeStr + ']的奖励金额（必须大于0）')
           return false
         }
