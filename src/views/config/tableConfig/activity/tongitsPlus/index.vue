@@ -105,7 +105,7 @@ import {Message} from 'element-ui'
 import UpdateForm from './components/updateForm.vue'
 
 const filterMap = {}
-const ACTIVITY_ID = 30
+const ACTIVITY_ID = 32
 
 export default {
   components: {Publish, UpdateForm},
