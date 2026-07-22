@@ -147,9 +147,9 @@
                   <el-table-column label="要求局数" align="center">
                     <template slot-scope="scope">
                       <el-input
-                        v-model.number="scope.row.gameCount"
+                        v-model.number="scope.row.requiredGameCount"
                         :required="true"
-                        prop="gameCount"
+                        prop="requiredGameCount"
                         :min="1"
                         :precision="0"
                         size="mini"
@@ -221,15 +221,15 @@ function newItem() {
     totalPrizeThreshold: 0,
     debugTimeOffset: 0,
     activitySessionEnum: [
-      {value: '2500', label: '2.5/5'},
-      {value: '5000', label: '5/10'},
-      {value: '10000', label: '10/20'},
-      {value: '25000', label: '25/50'},
-      {value: '50000', label: '50/100'},
-      {value: '100000', label: '100/200'}
+      {value: 2500, label: '2.5/5'},
+      {value: 5000, label: '5/10'},
+      {value: 10000, label: '10/20'},
+      {value: 25000, label: '25/50'},
+      {value: 50000, label: '50/100'},
+      {value: 100000, label: '100/200'}
     ],
     winGameCount: [], // 参与活动场次（盲注级别）
-    treasureCfg: [{id: 1, claimAmount: '', gameCount: '', ratio: ''}] // 宝箱配置表格
+    treasureCfg: [{id: 1, claimAmount: '', requiredGameCount: '', ratio: ''}] // 宝箱配置表格
   }
 }
 
@@ -310,8 +310,9 @@ export default {
           ratio: ((row.ratio || 0) / 100).toFixed(2)
         }))
       }
-      console.log(ext.treasureCfg)
+
       this.item = {
+        ...newItem(),
         id: raw.id || 0,
         activityId: ACTIVITY_ID,
         status: raw.status,
@@ -331,7 +332,7 @@ export default {
         treasureCfg: Array.isArray(ext.treasureCfg) && ext.treasureCfg.length > 0 ? ext.treasureCfg : [{
           id: 1,
           claimAmount: '',
-          gameCount: '',
+          requiredGameCount: '',
           ratio: ''
         }]
       }
@@ -392,14 +393,14 @@ export default {
       if (Array.isArray(d.treasureCfg)) {
         d.treasureCfg.forEach(row => {
           row.claimAmount = Math.floor((row.claimAmount || 0) * 1000)
-          row.ratio = (row.ratio || 0) / 100
+          row.ratio = (row.ratio || 0) * 100
         })
       }
 
       const extendObj = {
         // 参与活动场次 -> JSON字符串
-        winGameCount: JSON.stringify(d.winGameCount || []),
-        treasureCfg: JSON.stringify(d.treasureCfg || []),
+        winGameCount: d.winGameCount || [],
+        treasureCfg: d.treasureCfg || [],
         dayPrizeThreshold: Math.floor((d.dayPrizeThreshold || 0) * 1000),
         totalPrizeThreshold: Math.floor((d.totalPrizeThreshold || 0) * 1000)
       }
@@ -456,7 +457,7 @@ export default {
       })
     },
     addTreasureRow() {
-      this.item.treasureCfg.push({id: this.item.treasureCfg.length + 1, claimAmount: '', gameCount: '', ratio: ''})
+      this.item.treasureCfg.push({id: this.item.treasureCfg.length + 1, claimAmount: '', requiredGameCount: '', ratio: ''})
       this.reindexTreasure()
     },
     deleteTreasureRow(index) {
