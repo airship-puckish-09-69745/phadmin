@@ -72,7 +72,7 @@
             </el-col>
             <el-col :xs="24" :sm="12">
               <el-form-item label="任务条件：">
-                <el-input v-model="item.taskCondition" placeholder="请输入" style="max-width: 300px"/>
+                <el-input v-model.number="item.taskCondition" placeholder="请输入" style="max-width: 300px"/>
               </el-form-item>
             </el-col>
           </el-row>
@@ -188,7 +188,7 @@ function newItem() {
     whitelist: {siteIdList: []},
     debugTimeOffset: 0,
     taskText: '',
-    taskCondition: '',
+    taskCondition: 0,
     gameIdList: [],
     propPools: {
       propType: 5,
@@ -299,7 +299,7 @@ export default {
         gameIdList: Array.isArray(act.gameIdList) ? act.gameIdList : [],
         whitelist,
         taskText: ext.taskText,
-        taskCondition: ext.taskCondition,
+        taskCondition: ext.taskCondition || 0,
         propPools: parsedPropPools
       }
     },
@@ -352,7 +352,7 @@ export default {
       const extendObj = {
         taskText: d.taskText,
         taskCondition: d.taskCondition,
-        propPools: JSON.stringify(d.propPools || [])
+        propPools: d.propPools || []
       }
 
       return {
