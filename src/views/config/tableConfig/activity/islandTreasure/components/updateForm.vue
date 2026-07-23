@@ -215,6 +215,7 @@ import SiteSelect from '@/components/SiteSelect/index.vue'
 import { $libShow } from '@/utils/common'
 
 const ACTIVITY_ID = 31
+const GAME_ID = 32
 
 // 参与活动场次枚举（扑克盲注级别）
 const ACTIVITY_SMALL_BLIND_ENUMS = [
@@ -237,7 +238,7 @@ function newItem() {
       startTime: Date.now(),
       endTime: Date.now() + 7 * 24 * 60 * 60 * 1000,
       showEndTime: Date.now() + 8 * 24 * 60 * 60 * 1000,
-      gameIdList: [],
+      gameIdList: [GAME_ID],
       whitelist: {
         siteIdList: []
       }
@@ -474,6 +475,7 @@ export default {
       data.activity.startTime = Math.floor(data.activity.startTime / 1000)
       data.activity.endTime = Math.floor(data.activity.endTime / 1000)
       data.activity.showEndTime = Math.floor(data.activity.showEndTime / 1000)
+      data.activity.gameIdList = [GAME_ID]
 
       // 每日开奖时间，将时间格式化为时间戳
       data.extend.dayStartTime = this.timeStringToTimestamp(this.dayStartTime)
