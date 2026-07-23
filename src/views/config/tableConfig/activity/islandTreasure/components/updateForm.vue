@@ -368,6 +368,7 @@ export default {
       data.extend.drawMapConfigs.forEach(item => {
         item.drawTime = Math.floor(item.drawTime * 1000)
         item.drawTimeStr = new Date(item.drawTime).Format('HH:mm')
+        item.drawAmount = Math.floor(item.drawAmount / 1000)
       })
 
       // 白名单
@@ -483,6 +484,7 @@ export default {
       // 抽奖地图配置，时间：毫秒 -> 秒
       data.extend.drawMapConfigs.forEach(item => {
         item.drawTime = Math.floor(this.timeStringToTimestamp(item.drawTimeStr) / 1000)
+        item.drawAmount = Math.floor(item.drawAmount * 1000)
       })
 
       // 白名单
