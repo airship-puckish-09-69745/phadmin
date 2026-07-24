@@ -333,7 +333,7 @@ export default {
           id: 1,
           claimAmount: '',
           requiredGameCount: '',
-          ratio: ''
+          ratio: 0
         }]
       }
     },
@@ -393,7 +393,7 @@ export default {
       if (Array.isArray(d.treasureCfg)) {
         d.treasureCfg.forEach(row => {
           row.claimAmount = Math.floor((row.claimAmount || 0) * 1000)
-          row.ratio = (row.ratio || 0) * 100
+          row.ratio = Math.floor((row.ratio || 0) * 100)
         })
       }
 
