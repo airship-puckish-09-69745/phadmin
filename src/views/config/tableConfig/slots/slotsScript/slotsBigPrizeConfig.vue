@@ -482,105 +482,8 @@ export default {
         { 'label': '启用', 'value': true },
         { 'label': '禁用', 'value': false }
       ],
-      subKeyMap: {
-        '76': 'candypartyway',
-        '89': 'crazy777mars',
-        '161': 'gigaacemars',
-        '94': 'chargebison',
-        '78': 'supergem',
-        '80': 'candycandy',
-        '85': 'superacemars',
-        '95': 'chargebisonmars',
-        '158': 'sharkkingdom',
-        '168': 'pharaohtreasure',
-        '169': 'pharaohtreasuremars',
-        '90': 'moneycoming',
-        '97': 'romanarenamars',
-        '153': 'aladdinlampmars',
-        '77': 'candypartyallline',
-        '174': 'treasurebowl',
-        '175': 'treasurebowlmars',
-        '81': 'supergemmars',
-        '79': 'candycandymars',
-        '99': 'supertongitmars',
-        '157': 'crazyacemars',
-        '154': 'grandace',
-        '86': 'supergemii',
-        '84': 'superace',
-        '88': 'crazy777',
-        '159': 'sharkkingdommars',
-        '98': 'supertongit',
-        '93': 'fortuneacegomars',
-        '96': 'romanarena',
-        '155': 'grandacemars',
-        '163': 'majoracemars',
-        '150': 'supergemiii',
-        '82': 'millionaire',
-        '152': 'aladdinlamp',
-        '160': 'gigaace',
-        '156': 'crazyace',
-        '162': 'majorace',
-        '87': 'supergemiimars',
-        '151': 'supergemiiimars',
-        '83': 'millionairemars',
-        '92': 'fortuneacego',
-        '91': 'moneycomingmars',
-        '164': 'mahjongfortune',
-        '170': 'epicace',
-        '171': 'epicacemars',
-        '166': 'firelink',
-        '167': 'firelinkmars',
-        '172': 'wrathofzeus',
-        '173': 'wrathofzeusmars',
-        '176': 'puppyhome',
-        '177': 'puppyhomemars',
-        '178': 'mayantotem',
-        '180': 'fishingmaster',
-        '184': 'dancelion',
-        '100180': 'fishingmaster_x',
-        '181': 'fishingmastermars',
-        '182': 'godoffortune',
-        '183': 'godoffortunemars',
-        '190': 'arcaneegypt',
-        '186': 'mahjongjackpot',
-        '100186': 'mahjongjackpot_x',
-        '188': 'streetfighting',
-        '194': 'goldtrain',
-        '192': 'bountyraid',
-        '196': 'goldminer',
-        '198': 'fortuneblessing',
-        '200': 'atlantistreasure',
-        '202': 'fortunateebisu',
-        '204': 'spacetreasure',
-        '208': 'candyburst',
-        '206': 'luckywineglass',
-        '210': 'luckyspirits',
-        '216': 'phoenix',
-        '220': 'goldendragon',
-        '221': 'goldendragonmars',
-        '212': 'pirateship',
-        '214': 'pumpkincash',
-        '222': 'lionfortune',
-        '224': 'supermahjong',
-        '232': 'mafiawars',
-        '236': 'pacquiaofortune',
-        '1236': 'pacquiaofortuneplaynow',
-        '218': 'wrathofzeus2',
-        '228': 'jokerace',
-        '226': 'fortunewheel',
-        '230': 'pahiyaswins',
-        '1237': 'pahiyaswinsplaynow',
-        '234': 'fortunetree',
-        '240': 'bathalaageofcreation',
-        '242': 'fortunemuseum',
-        '248': 'mayantemple',
-        '246': 'talareyessouthseapearls',
-        '100246': 'talareyessouthseapearls_x'
-      },
-      appOptions: [
-        { value: 0, label: '旧版' }
-      ],
-      appId: store.getters.appId || 0,
+      appOptions: [],
+      appId: store.getters.appId,
       multiAppDialogVisible: false,
       appTreeData: [],
       checkedAppKeys: [],
@@ -647,16 +550,10 @@ export default {
     },
 
     getFullKey(k) {
-      return 'CustomizeCfg_' + (this.isLegacyMode() ? this.getLegacyBigPrizeConfigKey() : k)
+      return 'CustomizeCfg_' + k
     },
     getSlotsBigPrizeConfigKey() {
       return 'SlotsBigPrizeConfig_' + this.queryGid
-    },
-    getLegacyBigPrizeConfigKey() {
-      return this.subKeyMap[this.queryGid] ? this.subKeyMap[this.queryGid] + '_script_cfg' : ''
-    },
-    isLegacyMode() {
-      return this.appId === 0
     },
     cloneData(data) {
       return JSON.parse(JSON.stringify(data))
@@ -705,12 +602,8 @@ export default {
     buildSavePayload() {
       const payload = JSON.parse(JSON.stringify(this.form || {}))
       const name = this.getGameName(this.queryGid) + '大奖配置'
-      if (this.isLegacyMode()) {
-        payload.RedisSubkey = this.getLegacyBigPrizeConfigKey()
-      } else {
-        payload.AppId = this.appId
-        payload.RedisSubkey = this.getSlotsBigPrizeConfigKey()
-      }
+      payload.AppId = this.appId
+      payload.RedisSubkey = this.getSlotsBigPrizeConfigKey()
       payload.Data = JSON.stringify(this.getPostData())
       payload.Name = payload.Name || name
       payload.Description = payload.Description || name
@@ -774,33 +667,7 @@ export default {
       this.form = {}
       this.applyConfigData(this.getDefaultItem())
     },
-    getLegacyData() {
-      const subKey = this.getLegacyBigPrizeConfigKey()
-      if (!subKey) {
-        Message.error('该游戏尚未配置key')
-        this.resetConfigData()
-        return
-      }
-      request({
-        url: '/customizeconfig/one',
-        method: 'get',
-        data: { SubKey: subKey }
-      }).then(response => {
-        if (response.RetCode !== 0) {
-          this.resetConfigData()
-          return
-        }
-        this.form = response.Data || {}
-        const data = response.Data && response.Data.Data ? JSON.parse(response.Data.Data) : this.getDefaultItem()
-        this.applyConfigData(data)
-        this.$refs.compare.SetOldVal(this.form)
-      })
-    },
     getData() {
-      if (this.isLegacyMode()) {
-        this.getLegacyData()
-        return
-      }
       getCustomize(this.getSlotsBigPrizeConfigKey(), this.appId).then(response => {
         if (response.RetCode === 0) {
           this.form = response.Data || {}
@@ -1410,7 +1277,7 @@ export default {
         {
           label: '全选',
           value: this.selectAllNodeKey,
-          children: this.appOptions.slice(1).map(app => ({
+          children: this.appOptions.map(app => ({
             label: app.label,
             value: app.value
           }))
@@ -1475,7 +1342,7 @@ export default {
         // 点击全选节点时
         if (checked) {
           // 勾选全选时，选中所有子节点
-          this.checkedAppKeys = this.appOptions.slice(1).map(app => app.value)
+          this.checkedAppKeys = this.appOptions.map(app => app.value)
         } else {
           // 取消全选时，清空所有子节点的选中状态
           this.checkedAppKeys = []
