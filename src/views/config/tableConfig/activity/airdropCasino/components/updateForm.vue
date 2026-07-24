@@ -299,7 +299,7 @@ export default {
         gameIdList: Array.isArray(act.gameIdList) ? act.gameIdList : [],
         whitelist,
         taskText: ext.taskText,
-        taskCondition:(ext.taskCondition || 0) * 1000,
+        taskCondition:(ext.taskCondition || 0) / 1000,
         propPools: parsedPropPools
       }
     },
@@ -351,7 +351,7 @@ export default {
 
       const extendObj = {
         taskText: d.taskText,
-        taskCondition: d.taskCondition ? Math.floor(d.taskCondition / 1000) : 0,
+        taskCondition: (d.taskCondition || 0) * 1000,
         propPools: d.propPools || []
       }
 
