@@ -1959,7 +1959,7 @@ export const asyncRoutes = [
           },
           {
             path: 'millionaire_script_cfg',
-            component: () => import('@/views/config/tableConfig/slots/slotsScript/MillionaireScriptCfg'),
+            component: () => import('@/views/config/tableConfig/slots/slotsScript/slotsBigPrizeConfig'),
             name: 'millionaire_script_cfg',
             meta: { title: '老虎机大奖配置', perm: 'SLOTS_SCRIPT_MNG' }
           },
