@@ -553,7 +553,7 @@ export default {
     deleteDrawMapRow(index) {
       this.item.extend.drawMapConfigs.splice(index, 1)
       this.item.extend.drawMapConfigs.forEach((item, index) => {
-        item.drapMapId = index + 1
+        item.drawMapId = index + 1
       })
     },
     // 添加任务行
