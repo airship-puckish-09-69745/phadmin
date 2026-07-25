@@ -340,6 +340,7 @@ export default {
         this.item.extend.drawMapConfigs = [
           newDrawMap(1)
         ]
+        this.selectedSiteId = ''
       }
     },
     dialogVisible(val) {
