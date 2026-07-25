@@ -192,7 +192,7 @@
           <el-row>
             <el-col :span="24">
               <el-form-item label="站点白名单：">
-                <SiteSelect v-model="item.activity.whitelist.siteIdList" multiple placeholder="请选择" style="width: 100%; max-width: 300px" />
+                <SiteSelect v-model="selectedSiteId" placeholder="请选择" style="width: 100%; max-width: 300px" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -315,7 +315,8 @@ export default {
         start: '00:00',
         step: '00:01',
         end: '23:59'
-      }
+      },
+      selectedSiteId: ''
     }
   },
   watch: {
@@ -379,6 +380,7 @@ export default {
         }
       }
       if (!Array.isArray(data.activity.whitelist.siteIdList)) data.activity.whitelist.siteIdList = []
+      this.selectedSiteId = data.activity.whitelist.siteIdList[0] || ''
 
       // 赋值给item
       this.item = data
@@ -401,7 +403,7 @@ export default {
         Message.error('请选择每日开奖时间区间')
         return false
       }
-      if (!this.item.activity.whitelist.siteIdList.length) {
+      if (!this.selectedSiteId) {
         Message.error('请选择站点白名单')
         return false
       }
@@ -495,7 +497,7 @@ export default {
           siteIdList: []
         }
       }
-      if (!Array.isArray(data.activity.whitelist.siteIdList)) data.activity.whitelist.siteIdList = []
+      data.activity.whitelist.siteIdList = [this.selectedSiteId]
 
       // 赋值给item
       this.item = data
