@@ -796,7 +796,7 @@
     </el-dialog>
 
     <!--对比组件-->
-    <compare ref="compare" />
+    <compare ref="compare" compare-type="Object" />
   </el-col>
 </template>
 
@@ -808,7 +808,7 @@ import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
 import { Message } from 'element-ui'
 import request from '@/utils/request'
 import Compare from '@/components/Compare/index.vue'
-import {getCustomize, updateCustomize} from "@/api/custome_configV2";
+import { getCustomize, updateCustomize } from '@/api/custome_configV2'
 import SiteSelect from '@/components/SiteSelect/index.vue'
 
 function newItem() {
@@ -913,8 +913,8 @@ export default {
             GameList: []
           }
         ],
-        AppIds: [],   //appids
-        SiteIdList:[], //SiteIdList
+        AppIds: [], // appids
+        SiteIdList: [], // SiteIdList
         MayLikeItem: [
           {
             Gid: 1,
@@ -935,11 +935,11 @@ export default {
           IsOpen: true,
           IconLink: '',
           ActivityIds: [],
-          AppIds:[],   //appids
-          SiteIdList:[]
+          AppIds: [], // appids
+          SiteIdList: []
         },
         ZoneGame: [],
-        HallGame: [],
+        HallGame: []
         /*
         WhitelistCfg: { //白名单配置
           AppIdList:[],
@@ -1025,10 +1025,16 @@ export default {
         { label: '万圣节活动-[18]', value: 18 },
         { label: '竖版游戏排行榜活动-[19]', value: 19 },
         { label: 'Poker类排行榜活动-[20]', value: 20 },
-        { label: '聚宝盆活动活动-[22]', value: 22 },
+        { label: '聚宝盆活动-[22]', value: 22 },
         { label: '花节阶段一活动-[24]', value: 24 },
-        { label: 'Poker Plus 红包活动-[26]', value: 26 },
-        { label: '周年庆-[27]', value: 27 }
+        { label: 'PokerPlus 红包活动-[26]', value: 26 },
+        { label: '周年庆-[27]', value: 27 },
+        { label: '固定反水活动-[28]', value: 28 },
+        { label: '阶梯反水活动-[29]', value: 29 },
+        { label: 'PokerPlus海岛寻宝活动-[31]', value: 31 },
+        { label: 'TongitsPlus 宝箱活动-[32]', value: 32 },
+        { label: '空投casino活动-[33]', value: 33 }
+
       ],
       gameSelect: [],
       activitySelect: [
@@ -1046,11 +1052,12 @@ export default {
         { name: '万圣节活动-[18]', id: 18 },
         { name: '竖版游戏排行榜活动-[19]', id: 19 },
         { name: 'Poker类排行榜活动-[20]', id: 20 },
-        { name: '活动地图-[21]', id: 21 }
+        { name: '活动地图-[21]', id: 21 },
+        { label: '聚宝盆活动-[22]', value: 22 }
       ],
       blockGames: [36, 38, 39, 43, 44],
       hallGame: [],
-      zoneGame: [],
+      zoneGame: []
       /*
       whitelistCfg: { //白名单配置
           AppIdList:[],
@@ -1110,16 +1117,13 @@ export default {
         url: '/thirdpartygames/all',
         method: 'get',
         data: {},
-        params: {status : 2}
+        params: { status: 2 }
       }).then(response => {
         if (response.RetCode === 0) {
           const objsZone = response.Data || []
           const dataZone = {}
           for (let i = 0; i < objsZone.length; i++) {
             const objZone = objsZone[i]
-            if (objZone.ShowDatacenter !== 1) {
-              continue
-            }
 
             const gameZone = { Gid: objZone.Gid, Name: objZone.Name, Description: objZone.Description }
             // eslint-disable-next-line no-prototype-builtins
@@ -1174,7 +1178,7 @@ export default {
         url: '/thirdpartygames/all',
         method: 'get',
         data: {},
-        params: {status : 2}
+        params: { status: 2 }
       }).then(response => {
         if (response.RetCode === 0) {
           const objsOtherZone = response.Data || []
@@ -1215,7 +1219,7 @@ export default {
         url: '/thirdpartygames/all',
         method: 'get',
         data: {},
-        params: {status : 2}
+        params: { status: 2 }
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
@@ -1492,11 +1496,11 @@ export default {
       this.edit.visible = false
       this.edit.isEdit = false
     },
-    onCompare(pre,pro) {
-      const preVal=JSON.parse(pre.Data)
-      const proVal=JSON.parse(pro.Data)
-      console.log('JSON.stringify(preVal.zoneGame',preVal)
-      console.log('JSON.stringify(proVal.zoneGame',proVal)
+    onCompare(pre, pro) {
+      const preVal = JSON.parse(pre.Data)
+      const proVal = JSON.parse(pro.Data)
+      console.log('JSON.stringify(preVal.zoneGame', preVal)
+      console.log('JSON.stringify(proVal.zoneGame', proVal)
       // 编辑
       let change = ''
       if ((JSON.stringify(preVal.IsOpen) !== JSON.stringify(proVal.IsOpen)) ||
@@ -1855,7 +1859,7 @@ export default {
       }
       cpy.HallGame = this.hallGame
       cpy.ZoneGame = this.zoneGame
-      //cpy.WhitelistCfg = this.whitelistCfg
+      // cpy.WhitelistCfg = this.whitelistCfg
       return JSON.stringify(cpy)
     },
     setData() {
