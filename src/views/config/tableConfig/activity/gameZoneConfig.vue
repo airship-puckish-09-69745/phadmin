@@ -1027,10 +1027,12 @@ export default {
         { label: 'Poker类排行榜活动-[20]', value: 20 },
         { label: '聚宝盆活动-[22]', value: 22 },
         { label: '花节阶段一活动-[24]', value: 24 },
+        { label: '花节阶段二活动-[25]', value: 25 },
         { label: 'PokerPlus 红包活动-[26]', value: 26 },
         { label: '周年庆-[27]', value: 27 },
         { label: '固定反水活动-[28]', value: 28 },
         { label: '阶梯反水活动-[29]', value: 29 },
+        { label: 'slots free buy活动-[30]', value: 30 },
         { label: 'PokerPlus海岛寻宝活动-[31]', value: 31 },
         { label: 'TongitsPlus 宝箱活动-[32]', value: 32 },
         { label: '空投casino活动-[33]', value: 33 }
