@@ -1,7 +1,7 @@
 <template>
   <el-col class="app-container">
     <el-row>
-      <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" :on-compare="onCompare" />
+      <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="CustomizeConfig" :on-compare="onCompare" />
     </el-row>
 
     <el-row>
@@ -1348,7 +1348,6 @@ export default {
               parsedData.WinMoreItem = []
             }
             $this.item = parsedData
-            const old = JSON.parse(response.Data.Data)
             console.log('[getData] 解析后的item.GameList:', $this.item.GameList)
             console.log('[getData] 解析后的WinMoreItem:', $this.item.WinMoreItem)
             this.item.GameZoneItem.forEach(value => {
@@ -1392,7 +1391,7 @@ export default {
               this.whitelistCfg = this.item.WhitelistCfg
             }
             */
-            this.$refs.compare.SetOldVal(old)
+            this.$refs.compare.SetOldVal(response.Data.Data)
           }
         }
         return response
