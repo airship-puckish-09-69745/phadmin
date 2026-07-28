@@ -41,7 +41,7 @@
             {{ formatTime(scope.row.endTime) }}
           </template>
         </el-table-column>
-        <el-table-column prop="userDayPrizeThreshold" label="个人奖励上限" width="120" align="center">
+        <el-table-column prop="userDayPrizeThreshold" label="个人奖励上限1" width="120" align="center">
           <template slot-scope="scope">
             {{ scope.row.userDayPrizeThreshold != null ? scope.row.userDayPrizeThreshold / 1000 : '-' }}
           </template>
