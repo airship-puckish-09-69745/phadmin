@@ -43,8 +43,7 @@
             </el-col>
             <el-col :xs="24" :sm="12">
               <el-form-item label="当日玩家个人奖励上限：" required>
-                <el-input v-model.number="item.userDayPrizeThreshold" placeholder="当日玩家个人奖励上限"
-                          style="max-width: 200px">
+                <el-input v-model.number="item.userDayPrizeThreshold" placeholder="当日玩家个人奖励上限" style="max-width: 200px">
                   <template slot="append">₱</template>
                 </el-input>
               </el-form-item>
@@ -187,7 +186,7 @@ function newItem() {
     endTime: Date.now() + 30 * 24 * 60 * 60 * 1000,
     showEndTime: Date.now() + 30 * 24 * 60 * 60 * 1000,
     gameIdCfg: [],
-    whitelist: {siteIdList: []},
+    whitelist: { siteIdList: [] },
     userDayPrizeThreshold: 10,
     minReward: 1,
     dayPrizeThreshold: 0,
