@@ -179,26 +179,12 @@
             </el-form-item>
           </el-tab-pane>
 
-          <el-tab-pane label="白名单与AB测试">
-            <el-form-item label="仅限白名单">
-              <el-switch v-model="editItem.isWhite" active-text="是" inactive-text="否" />
-            </el-form-item>
-            <el-form-item v-if="editItem.isWhite" label="白名单UID" required>
-              <el-select
-                v-model="editItem.whiteList"
-                multiple
-                filterable
-                allow-create
-                default-first-option
-                placeholder="输入 UID 后回车，可添加多个"
-                style="width: 100%"
-              />
-            </el-form-item>
+          <el-tab-pane label="A/B测试">
             <el-divider content-position="left">A/B测试</el-divider>
             <el-form-item label="A/B测试开关">
               <el-switch v-model="editItem.abTest.switch" active-text="开启" inactive-text="关闭" />
             </el-form-item>
-            <el-form-item v-if="editItem.abTest.switch" label="B组比例" required>
+            <el-form-item label="B分组比例" required>
               <el-input-number v-model="editItem.abTest.bPercent" :min="0" :max="100" :precision="0" controls-position="right" />
               <span class="unit-text">%</span>
             </el-form-item>
@@ -206,7 +192,7 @@
 
           <el-tab-pane label="任务与奖励">
             <div class="task-toolbar">
-              <span>两种任务类型是独立任务链，同一笔 Super Free 实际购买会分别判断。</span>
+              <span>两种任务类型是独立任务链，同一笔 Super Free 实际购买只会增加一条任务链，类型一优先。</span>
               <el-button type="primary" size="mini" icon="el-icon-plus" @click="openTaskDialog(false)">新增任务</el-button>
             </div>
             <el-table :data="sortedEditTasks" border size="small" empty-text="请至少配置两种任务类型各一项">
@@ -376,8 +362,6 @@ function newActivity(id) {
     endTimeValue: null,
     isOpen: false,
     status: STATUS_OFFLINE,
-    isWhite: false,
-    whiteList: [],
     siteIdList: ['BP', 'GP'],
     gameIdList: [230],
     dailyPropLimit: 1,
@@ -487,7 +471,9 @@ export default {
       delete data.appIdList
       data.isOpen = Boolean(data.isOpen)
       data.status = Number(data.status) || STATUS_OFFLINE
-      data.whiteList = Array.isArray(data.whiteList) ? data.whiteList : []
+      // 兼容并清理旧配置中的UID白名单字段，Free Buy只按站点范围和A/B测试控制参与玩家。
+      delete data.isWhite
+      delete data.whiteList
       data.siteIdList = Array.isArray(data.siteIdList) ? data.siteIdList : []
       data.gameIdList = Array.isArray(data.gameIdList) ? data.gameIdList : []
       data.dailyPropLimit = Number(data.dailyPropLimit) || 0
@@ -495,6 +481,8 @@ export default {
       data.taskList = Array.isArray(data.taskList) ? data.taskList.map(task => this.normalizeTask(task)) : []
       data.debugTimeOffset = Number(data.debugTimeOffset) || 0
       data.abTest = { switch: false, bPercent: 0, ...(data.abTest || {}) }
+      data.abTest.switch = Boolean(data.abTest.switch)
+      data.abTest.bPercent = Number(data.abTest.bPercent)
       return data
     },
     normalizeTask(task) {
@@ -616,7 +604,6 @@ export default {
       data.id = Number(data.id)
       data.startTime = Math.floor(Number(item.startTimeValue) / 1000)
       data.endTime = Math.floor(Number(item.endTimeValue) / 1000)
-      data.whiteList = this.toNumberList(data.whiteList)
       data.gameIdList = this.toNumberList(data.gameIdList)
       data.siteIdList = data.siteIdList.map(value => String(value)).filter(Boolean)
       data.taskList = data.taskList.map(task => this.cleanTask(task)).sort((a, b) => a.taskType - b.taskType || a.taskId - b.taskId)
@@ -775,8 +762,7 @@ export default {
       if (Number(activity.dailyPropLimit) <= 0) return '每日发放道具上限必须大于0'
       if (Number(activity.totalPropLimit) <= 0) return '总发放道具上限必须大于0'
       if (Number(activity.dailyPropLimit) > Number(activity.totalPropLimit)) return '每日发放道具上限不能大于总发放道具上限'
-      if (activity.isWhite && (!Array.isArray(activity.whiteList) || !activity.whiteList.length)) return '开启白名单后必须配置UID'
-      if (activity.abTest && activity.abTest.switch && (activity.abTest.bPercent < 0 || activity.abTest.bPercent > 100)) return 'B组比例必须在0到100之间'
+      if (!activity.abTest || !Number.isInteger(activity.abTest.bPercent) || activity.abTest.bPercent < 0 || activity.abTest.bPercent > 100) return 'B分组比例必须是0到100之间的整数'
       if (!Array.isArray(activity.taskList) || !activity.taskList.length) return '请配置任务'
       const taskTypes = new Set()
       const taskKeys = new Set()
