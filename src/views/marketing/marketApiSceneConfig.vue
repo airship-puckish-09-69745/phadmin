@@ -17,21 +17,21 @@
       </el-col>
     </el-row>
     <el-row style="padding-top: 5px">
-      <el-col :span="20">
+      <el-col :span="18">
         <el-button size="mini" type="primary" icon="el-icon-plus" @click="handleAdd()">添加配置项</el-button>
       </el-col>
       <el-col :span="2">
         <el-button type="success" size="mini" icon="el-icon-refresh" @click="getList()">刷新</el-button>
       </el-col>
-      <!--      <el-col :span="4">-->
-      <!--        <el-input-->
-      <!--          v-model="search"-->
-      <!--          size="mini"-->
-      <!--          placeholder="输入关键字搜索"-->
-      <!--          @input="searchChange"-->
-      <!--          @blur="search = search.trim()"-->
-      <!--        />-->
-      <!--      </el-col>-->
+      <el-col :span="4">
+        <el-input
+          v-model="search"
+          size="mini"
+          placeholder="输入关键字搜索"
+          @input="searchChange"
+          @blur="search = search.trim()"
+        />
+      </el-col>
     </el-row>
     <el-row style="padding-top: 10px">
       <el-table
@@ -60,6 +60,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="remark" label="备注" />
+        <el-table-column prop="propId" label="关联道具ID" />
         <el-table-column prop="modifyUser" label="最后修改人" />
         <el-table-column prop="status" label="状态" width="100">
           <template slot-scope="scope">
@@ -108,7 +109,7 @@
             <el-form label-width="220px" size="mini">
               <el-col :span="24">
                 <el-form-item label="场景ID（内部用）：" :required="true">
-                  <el-select v-model="edit.item.sceneId" placeholder="请选择" filterable>
+                  <el-select v-model="edit.item.sceneId" placeholder="请选择" filterable :disabled="edit.isEdit">
                     <el-option
                       v-for="item in sceneIdOptions"
                       :key="item.value"
@@ -120,7 +121,7 @@
               </el-col>
               <el-col :span="24">
                 <el-form-item label="站点：" :required="true">
-                  <MarketApiSiteSelect v-model="edit.item.site" />
+                  <MarketApiSiteSelect v-model="edit.item.site" :is-edit="edit.isEdit" />
                 </el-form-item>
               </el-col>
               <el-col :span="24">
@@ -136,6 +137,11 @@
               <el-col :span="24">
                 <el-form-item label="备注：" prop="remark">
                   <el-input v-model="edit.item.remark" maxlength="64" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="24">
+                <el-form-item label="关联道具ID：" prop="propId">
+                  <el-input v-model="edit.item.propId" number maxlength="64" />
                 </el-form-item>
               </el-col>
             </el-form>
@@ -173,7 +179,8 @@ function newItem() {
     site: '',
     scene: '',
     endTime: 0,
-    remark: ''
+    remark: '',
+    propId: 0
   }
 }
 
@@ -208,6 +215,7 @@ export default {
         status: '状态'
       },
       // 场景ID（内部用）选项。对应配置： phgames/base/gDefine/market_api.go
+      // todo 把这个迁移到 option.js 中
       sceneIdOptions: [
         // 常规场景
         { 'value': 1, 'label': '任意游戏投注' },
@@ -300,7 +308,7 @@ export default {
     },
     // 筛选相关逻辑
     searchChange() {
-      this.clientDB.Search(this.search, ['sceneId', 'scene'])
+      this.clientDB.Search(this.search, ['sceneId', 'scene', 'sceneName'])
       this.refreshShow()
     },
     // 分页处理
@@ -316,6 +324,7 @@ export default {
       this.refreshShow()
     },
     getList() {
+      const $this = this
       request({
         url: '/marketapisceneconfig/all',
         method: 'get',
@@ -323,6 +332,10 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
+          objs.forEach(function(item) {
+            item.sceneName = $this.getSceneName(item.sceneId)
+          })
+          console.log('objs ', objs)
           this.clientDB = new ClientTableData(objs, 10, filterMap, 'endTime', -1)
           this.handleCurrentChange(1)
         }

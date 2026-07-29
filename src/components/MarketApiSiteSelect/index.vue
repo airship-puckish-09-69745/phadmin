@@ -1,5 +1,5 @@
 <template>
-  <el-select v-model="selectedValue" v-bind="$attrs" @change="handleChange">
+  <el-select v-model="selectedValue" v-bind="$attrs" :disabled="isEdit" @change="handleChange">
     <el-option
       v-for="option in displayOptions"
       :key="option.value"
@@ -19,13 +19,14 @@ export default {
       type: [String, Number, Array],
       required: true
     },
-    showAll: {
+    isEdit: {
       type: Boolean,
       default: false
     }
   },
   data() {
     return {
+      // todo 把这个迁移到 option.js 中
       options: [
         { value: 'ALL', label: 'ALL' },
         { value: 'BP', label: 'BP' },
