@@ -244,12 +244,14 @@ function newItem() {
     totalPrizeThreshold: 0,
     debugTimeOffset: 0,
     activitySessionEnum: [
-      {value: 2500, label: '2.5/5'},
-      {value: 5000, label: '5/10'},
-      {value: 10000, label: '10/20'},
-      {value: 25000, label: '25/50'},
-      {value: 50000, label: '50/100'},
-      {value: 100000, label: '100/200'}
+      {value: 1000, label: '1'},
+      {value: 5000, label: '5'},
+      {value: 10000, label: '10'},
+      {value: 50000, label: '50'},
+      {value: 100000, label: '100'},
+      {value: 200000, label: '200'},
+      {value: 500000, label: '500'},
+      {value: 1000000, label: '1000'}
     ],
     winGameCount: [], // 参与活动场次（盲注级别）
     treasureCfg: [{id: 1, claimAmount: '', requiredGameCount: '', ratio: ''}] // 宝箱配置表格
