@@ -7,8 +7,8 @@
         :app-id="configAppId"
         :env-empty="false"
         :check="configCheck"
-        compare-type="Array"
-        :head-attrs="['id', 'activityName']"
+        compare-type="Object"
+        :attr-names="{ nextConfigId: '下一个期次ID', configs: '活动期次' }"
       />
     </el-row>
 
@@ -116,7 +116,7 @@
             <el-row :gutter="20">
               <el-col :span="12">
                 <el-form-item label="期次ID" required>
-                  <el-input-number v-model="editItem.id" :min="1" :max="2147483647" :disabled="activityEditMode" controls-position="right" />
+                  <el-input-number v-model="editItem.id" :min="1" :max="2147483647" :disabled="true" controls-position="right" />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
@@ -399,6 +399,7 @@ export default {
       configAppId,
       configRecord: newConfigRecord(configAppId),
       configs: [],
+      nextConfigId: 1,
       loading: false,
       saving: false,
       activityDialogVisible: false,
@@ -444,25 +445,43 @@ export default {
       getCustomize(SUB_KEY, this.configAppId).then(response => {
         if (response.RetCode === 0 && response.Data) {
           this.configRecord = { ...newConfigRecord(this.configAppId), ...response.Data, AppId: this.configAppId }
-          this.configs = this.parseConfigs(response.Data.Data)
+          const configData = this.parseConfigData(response.Data.Data)
+          this.configs = configData.configs
+          this.nextConfigId = configData.nextConfigId
         } else {
           this.configRecord = newConfigRecord(this.configAppId)
           this.configs = []
+          this.nextConfigId = 1
         }
       }).finally(() => {
         this.loading = false
       })
     },
-    parseConfigs(data) {
-      if (!data) return []
+    parseConfigData(data) {
+      if (!data) return { configs: [], nextConfigId: 1 }
       try {
         const parsed = typeof data === 'string' ? JSON.parse(data) : data
-        const list = Array.isArray(parsed) ? parsed : (parsed.configs || [])
-        return list.map(item => this.normalizeActivity(item)).sort((a, b) => b.id - a.id)
+        if (!parsed || Array.isArray(parsed) || !Array.isArray(parsed.configs)) {
+          throw new Error('Free Buy配置必须包含configs数组')
+        }
+        const nextConfigId = Number(parsed.nextConfigId)
+        if (!Number.isInteger(nextConfigId) || nextConfigId <= 0) {
+          throw new Error('Free Buy配置nextConfigId必须是正整数')
+        }
+        const list = parsed.configs
+        const configs = list.map(item => this.normalizeActivity(item)).sort((a, b) => b.id - a.id)
+        const maxConfigId = configs.reduce((max, item) => Math.max(max, Number(item.id) || 0), 0)
+        if (nextConfigId <= maxConfigId) {
+          throw new Error('Free Buy配置nextConfigId必须大于现有期次ID')
+        }
+        return {
+          configs,
+          nextConfigId
+        }
       } catch (error) {
         console.error('Free Buy配置解析失败:', error)
-        this.$message.error('Free Buy配置不是有效的JSON，请检查通用配置内容')
-        return []
+        this.$message.error('Free Buy配置格式错误，请检查nextConfigId和configs')
+        return { configs: [], nextConfigId: 1 }
       }
     },
     normalizeActivity(item) {
@@ -571,8 +590,7 @@ export default {
         this.$set(this.editItem, 'startTimeValue', Number(row.startTime) * 1000)
         this.$set(this.editItem, 'endTimeValue', Number(row.endTime) * 1000)
       } else {
-        const nextId = this.configs.reduce((max, item) => Math.max(max, Number(item.id) || 0), 0) + 1
-        this.editItem = newActivity(nextId)
+        this.editItem = newActivity(this.nextConfigId)
       }
       this.activityDialogVisible = true
     },
@@ -595,7 +613,8 @@ export default {
       } else {
         nextConfigs.push(activity)
       }
-      this.persistConfigs(nextConfigs, '活动期次保存成功').then(success => {
+      const nextConfigId = this.activityEditMode ? this.nextConfigId : Math.max(this.nextConfigId, activity.id + 1)
+      this.persistConfigs(nextConfigs, '活动期次保存成功', nextConfigId).then(success => {
         if (success) this.activityDialogVisible = false
       })
     },
@@ -633,7 +652,7 @@ export default {
       delete data.rewardRichCardSelect
       return data
     },
-    persistConfigs(configs, successMessage) {
+    persistConfigs(configs, successMessage, nextConfigId = this.nextConfigId) {
       this.saving = true
       const payload = {
         ...newConfigRecord(this.configAppId),
@@ -641,12 +660,13 @@ export default {
         AppId: this.configAppId,
         Type: 1,
         RedisSubkey: SUB_KEY,
-        Data: JSON.stringify(configs)
+        Data: JSON.stringify({ nextConfigId, configs })
       }
       const saveRequest = payload.ID ? updateCustomize(payload) : createCustomize(payload)
       return saveRequest.then(response => {
         if (response.RetCode !== 0) return false
         this.configs = configs.map(item => this.normalizeActivity(item)).sort((a, b) => b.id - a.id)
+        this.nextConfigId = nextConfigId
         this.$message.success(`${successMessage}，发布后生效`)
         this.getList()
         return true
@@ -739,6 +759,7 @@ export default {
         return false
       }
       const ids = new Set()
+      let maxConfigId = 0
       for (const activity of this.configs) {
         const error = this.validateActivity(activity)
         if (error) {
@@ -750,6 +771,11 @@ export default {
           return false
         }
         ids.add(activity.id)
+        maxConfigId = Math.max(maxConfigId, Number(activity.id) || 0)
+      }
+      if (!Number.isInteger(this.nextConfigId) || this.nextConfigId <= maxConfigId) {
+        this.$message.error('下一个期次ID必须大于现有期次ID')
+        return false
       }
       return true
     },
