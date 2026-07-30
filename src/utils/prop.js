@@ -1,12 +1,11 @@
-//道具用到的一些数据方法
+// 道具用到的一些数据方法
 
-//slotGameConfig
-import request from "@/utils/request";
-import { PROP_TYPE_OPTIONS } from '@/utils/options';
-import { IsProd } from '@/utils/env';
+// slotGameConfig
+import { PROP_TYPE_OPTIONS } from '@/utils/options'
+import { IsProd } from '@/utils/env'
 
-//走配置
-export const SLOT_GAME_CONFIG =[
+// 走配置
+export const SLOT_GAME_CONFIG = [
   // { 'value': 82, 'label': '百万富翁(Millionire)', 'configKey':'millionaire_slots_base', disabled: false },
   // { 'value': 92, 'label': '超级王牌Go(UltraAce)','configKey':'fortuneacego_slots_base', disabled: false },
   // { 'value': 76, 'label': '糖果派对Way(Candy Rush)', 'configKey':'candypartyway_slots_base',disabled: false },
@@ -16,56 +15,84 @@ export const SLOT_GAME_CONFIG =[
   // {'value': 164, 'label': 'Mahjong Fortune', 'configKey':'',disabled: false },
 ]
 
-//下注类游戏
-export const BETTING_GAME_CONFIG =[
-  {'value': 20, 'label': '扫雷(sweeper)', 'configKey':'gameSweeper', disabled: false },
-  {'value': 132, 'label': 'Mines Magic', 'configKey':'gameSweeper', disabled: false },
-  ]
+// 下注类游戏
+export const BETTING_GAME_CONFIG = [
+  { 'value': 20, 'label': '扫雷(sweeper)', 'configKey': 'gameSweeper', disabled: false },
+  { 'value': 132, 'label': 'Mines Magic', 'configKey': 'gameSweeper', disabled: false },
+  { 'value': 108, 'label': 'DropBall', 'configKey': 'gameSweeper', disabled: false },
+  { 'value': 25, 'label': 'Color Game', 'configKey': 'Color Game', disabled: false },
+  { 'value': 143, 'label': 'Triple Wheel Spin', 'configKey': 'triplewheelspin', disabled: false },
+  { 'value': 501, 'label': 'Balloon Tap', 'configKey': 'balloontap', disabled: false }
+]
 
-//比赛门票ID 关联门票权益配置 开发环境
+// 比赛门票ID 关联门票权益配置 开发环境
 export const MATCH_TICKET_RIGHTS_ID_CFG_DEV = {
-      1000002: [
-          { 'ticketId': 331, 'sceneId': 200, 'label': 'Tongits新版门票 带唯一ID-331' },
-          { 'ticketId': 334, 'sceneId': 201, 'label': 'Tongits新版TICKET-334' },
-          { 'ticketId': 372, 'sceneId': 202, 'label': 'Texas测试新版德州门票带唯一ID-372' },
-          { 'ticketId': 374, 'sceneId': 203, 'label': 'Pusoy新版门票 带唯一ID-374' },
+  1000002: [
+    { 'ticketId': 331, 'sceneId': 200, 'label': 'Tongits新版门票 带唯一ID-331' },
+    { 'ticketId': 334, 'sceneId': 201, 'label': 'Tongits新版TICKET-334' },
+    { 'ticketId': 372, 'sceneId': 202, 'label': 'Texas测试新版德州门票带唯一ID-372' },
+    { 'ticketId': 374, 'sceneId': 203, 'label': 'Pusoy新版门票 带唯一ID-374' },
 
-          { 'ticketId':410, 'sceneId':204 , 'label': '冬季赛日赛门票' },
-          { 'ticketId':412, 'sceneId':205 , 'label': '冬季赛周赛门票' },
-          { 'ticketId':413, 'sceneId':206, 'label': '冬季赛月赛门票' },
-          { 'ticketId':414, 'sceneId':207, 'label': '冬季赛semi-final' },
-          { 'ticketId':415, 'sceneId':208, 'label': '冬季赛线上决赛' },
-          { 'ticketId':416, 'sceneId':209 , 'label': '豪客赛门票' },
-          { 'ticketId':417, 'sceneId':210, 'label': '魔戒卫星赛门票' },
-          { 'ticketId':418 , 'sceneId':211, 'label': '机酒赛门票' },
-      ],
-      1000003: [
-        { 'ticketId': 407, 'sceneId': 200, 'label': 'Tongits新版门票 带唯一ID-407' },
-        { 'ticketId': 408, 'sceneId': 201, 'label': '德州新版参赛券-408' },
-        { 'ticketId': 409, 'sceneId': 202, 'label': 'Pusoy新版参赛券-409' },
-      ]
-    }
+    { 'ticketId': 584, 'sceneId': 204, 'label': 'S5决赛邀请函' },
+    { 'ticketId': 585, 'sceneId': 205, 'label': 'S5半决赛门票' },
+    { 'ticketId': 586, 'sceneId': 206, 'label': '第一周S5日赛门票' },
+    { 'ticketId': 587, 'sceneId': 207, 'label': '第二周S5日赛门票' },
+    { 'ticketId': 588, 'sceneId': 208, 'label': '第三周S5日赛门票' },
+    { 'ticketId': 589, 'sceneId': 209, 'label': '第四周S5日赛门票' },
+    { 'ticketId': 590, 'sceneId': 210, 'label': '第五周S5日赛门票' }
+  ],
 
+  1000003: [
+    { 'ticketId': 407, 'sceneId': 200, 'label': 'Tongits新版门票 带唯一ID-407' },
+    { 'ticketId': 408, 'sceneId': 201, 'label': '德州新版参赛券-408' },
+    { 'ticketId': 409, 'sceneId': 202, 'label': 'Pusoy新版参赛券-409' }
+  ]
+}
 
-
-//uat 线上配置
+// uat 线上配置
 export const MATCH_TICKET_RIGHTS_ID_CFG_PROD = {
-    1000002: [ // PROP_TYPE_TICKET_NEW
-      { 'ticketId': 347, 'sceneId': 200, 'label': 'UAT Tongtis 1000002 测试门票' },
-      { 'ticketId': 355, 'sceneId': 201, 'label': '新版Pusy门票-1000002' },
-      { 'ticketId': 356, 'sceneId': 202, 'label': '新版德州门票UAT用-1000002' },
-    ],
-    1000003: [ // PROP_TYPE_TICKET_NEW
-      { 'ticketId': 322, 'sceneId': 200, 'label': 'Tongits新版门票 带唯一ID-322'  },
-      { 'ticketId': 343, 'sceneId': 201, 'label': 'Texas测试新版德州门票带唯一ID-343' },
-      { 'ticketId': 345, 'sceneId': 202, 'label': 'UAT Pusoy新版比赛门票-345' },
+  1000002: [ // PROP_TYPE_TICKET_NEW
+    { 'ticketId': 347, 'sceneId': 200, 'label': 'UAT Tongtis 1000002 测试门票' },
+    { 'ticketId': 355, 'sceneId': 201, 'label': '新版Pusy门票-1000002' },
+    { 'ticketId': 521, 'sceneId': 202, 'label': '新版德州门票UAT用-1000002' },
 
-      { 'ticketId': 427, 'sceneId': 203, 'label': 'UATTongits新版TPCC门票 -427'  },
-      { 'ticketId': 471, 'sceneId': 204, 'label': 'UATTongits 带唯一ID-471'  },
-      { 'ticketId': 472, 'sceneId': 205, 'label': 'UATPusoy测试 带唯一ID-472' },
-      { 'ticketId': 473, 'sceneId': 206, 'label': 'UATTexas新版比赛门票-带唯一ID 473' },
-      { 'ticketId': 474, 'sceneId': 207, 'label': 'UAT TPCC-带唯一ID474' },
-    ],
+    { 'ticketId': 602, 'sceneId': 203, 'label': 'tongits 内部正式S5日赛门票w1' },
+    { 'ticketId': 603, 'sceneId': 204, 'label': 'tongits 内部正式S5日赛门票w2' },
+    { 'ticketId': 604, 'sceneId': 205, 'label': 'tongits 内部正式S5日赛门票w3' },
+    { 'ticketId': 605, 'sceneId': 206, 'label': 'tongits 内部正式S5日赛门票w4' },
+    { 'ticketId': 606, 'sceneId': 207, 'label': 'tongits 内部正式S5日赛门票w5' },
+    { 'ticketId': 607, 'sceneId': 208, 'label': 'tongits 内部正式S5半决赛门票' },
+    { 'ticketId': 608, 'sceneId': 209, 'label': 'tongits 内部正式S5决赛邀请函' }
+
+  ],
+  1000003: [ // PROP_TYPE_TICKET_NEW
+    { 'ticketId': 322, 'sceneId': 200, 'label': 'Tongits新版门票 带唯一ID-322' },
+    { 'ticketId': 343, 'sceneId': 201, 'label': 'Texas测试新版德州门票带唯一ID-343' },
+    { 'ticketId': 345, 'sceneId': 202, 'label': 'UAT Pusoy新版比赛门票-345' },
+
+    { 'ticketId': 427, 'sceneId': 203, 'label': 'UATTongits新版TPCC门票 -427' },
+    { 'ticketId': 471, 'sceneId': 204, 'label': 'UATTongits 带唯一ID-471' },
+    { 'ticketId': 472, 'sceneId': 205, 'label': 'UATPusoy测试 带唯一ID-472' },
+    { 'ticketId': 473, 'sceneId': 206, 'label': 'UATTexas新版比赛门票-带唯一ID 473' },
+    { 'ticketId': 474, 'sceneId': 207, 'label': 'UAT TPCC-带唯一ID474' },
+    { 'ticketId': 478, 'sceneId': 208, 'label': 'UAT TPCC-带唯一ID478' },
+    { 'ticketId': 479, 'sceneId': 209, 'label': 'UAT TPCC-带唯一ID479' },
+    { 'ticketId': 480, 'sceneId': 210, 'label': 'UAT TPCC-带唯一ID480' },
+    { 'ticketId': 516, 'sceneId': 218, 'label': 'UAT-Pusoy' },
+    { 'ticketId': 517, 'sceneId': 219, 'label': 'UAT-Pusoy' },
+    { 'ticketId': 518, 'sceneId': 220, 'label': 'UAT-Pusoy' },
+    { 'ticketId': 519, 'sceneId': 221, 'label': 'UAT-Pusoy' },
+    { 'ticketId': 522, 'sceneId': 222, 'label': 'UAT-Texas' },
+
+    { 'ticketId': 595, 'sceneId': 223, 'label': 'S5 Daily Ticket Week 1' },
+    { 'ticketId': 596, 'sceneId': 224, 'label': 'S5 Daily Ticket Week 2' },
+    { 'ticketId': 597, 'sceneId': 225, 'label': 'S5 Daily Ticket Week 3' },
+    { 'ticketId': 598, 'sceneId': 226, 'label': 'S5 Daily Ticket Week 4' },
+    { 'ticketId': 599, 'sceneId': 227, 'label': 'S5 Daily Ticket Week 5' },
+    { 'ticketId': 600, 'sceneId': 228, 'label': 'S5 Semi-Finals Ticket' },
+    { 'ticketId': 601, 'sceneId': 229, 'label': 'S5 Grand Finals Invitation' }
+
+  ],
   1000005: [
     { 'ticketId': 396, 'sceneId': 200, 'label': 'Tongits' },
     { 'ticketId': 397, 'sceneId': 201, 'label': 'Tongits' },
@@ -90,7 +117,28 @@ export const MATCH_TICKET_RIGHTS_ID_CFG_PROD = {
     { 'ticketId': 453, 'sceneId': 219, 'label': 'Tongits TPCC' },
     { 'ticketId': 455, 'sceneId': 220, 'label': 'Tongits TPCC' },
     { 'ticketId': 454, 'sceneId': 221, 'label': 'Tongits TPCC' },
-    ],
+
+    { 'ticketId': 497, 'sceneId': 222, 'label': 'Pusoy' },
+    { 'ticketId': 498, 'sceneId': 223, 'label': 'Pusoy' },
+    { 'ticketId': 499, 'sceneId': 224, 'label': 'Pusoy' },
+
+    { 'ticketId': 529, 'sceneId': 225, 'label': 'Tongits' },
+    { 'ticketId': 530, 'sceneId': 226, 'label': 'Tongits' },
+    { 'ticketId': 531, 'sceneId': 227, 'label': 'Tongits' },
+    { 'ticketId': 532, 'sceneId': 228, 'label': 'Tongits' },
+    { 'ticketId': 533, 'sceneId': 229, 'label': 'Tongits' },
+    { 'ticketId': 534, 'sceneId': 230, 'label': 'Tongits' },
+    { 'ticketId': 544, 'sceneId': 231, 'label': 'Texas' },
+    { 'ticketId': 545, 'sceneId': 232, 'label': 'Texas' },
+
+    { 'ticketId': 582, 'sceneId': 233, 'label': 'S5 Daily Ticket Week 1' },
+    { 'ticketId': 583, 'sceneId': 234, 'label': 'S5 Daily Ticket Week 2' },
+    { 'ticketId': 584, 'sceneId': 235, 'label': 'S5 Daily Ticket Week 3' },
+    { 'ticketId': 585, 'sceneId': 236, 'label': 'S5 Daily Ticket Week 4' },
+    { 'ticketId': 586, 'sceneId': 237, 'label': 'S5 Daily Ticket Week 5' },
+    { 'ticketId': 587, 'sceneId': 238, 'label': 'S5 Semi-Finals Ticket' },
+    { 'ticketId': 588, 'sceneId': 239, 'label': 'S5 Grand Finals Invitation' }
+  ]
 }
 
 // 获取比赛门票权益ID列表
@@ -102,64 +150,7 @@ export const GetMatchTicketRightsIdList = (appId) => {
   }
 }
 
-//是否是新版本门票
+// 是否是新版本门票
 export const IsNewTicketProp = (itemType) => {
-  return [
-    PROP_TYPE_OPTIONS.PROP_TYPE_TICKET_NEW,
-    PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW,
-    PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW
-  ].includes(itemType)
-}
-
-// 是否是门票类型道具
-export const IsTicketProp = (itemType) => {
-  return [
-    PROP_TYPE_OPTIONS.PROP_TYPE_TICKET,
-    PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET,
-    PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET
-  ].includes(itemType)
-}
-
-// 是否是头像框道具
-export const IsAvatarFrameProp = (itemType) => {
-  return [
-    PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME,
-    PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR
-  ].includes(itemType)
-}
-
-// 检查是否需要过期天数
-export const CheckPropNeedExpireDays = (itemType) => {
-  return [
-    PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME,
-    PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN,
-    PROP_TYPE_OPTIONS.PROP_TYPE_TICKET_NEW,
-    PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW,
-    PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW
-  ].includes(itemType)
-}
-
-// 道具过期时间是否合法
-export const CheckPropExpireDays = (propType, expireDays) => {
-  switch (propType) {
-    case PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME:
-    case PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR:
-      // 头像框：过期天数不能为负数
-      if (expireDays < 0) {
-        return false
-      }
-      break;
-    case PROP_TYPE_OPTIONS.PROP_TYPE_TICKET_NEW:
-    case PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW:
-    case PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW:
-      // 新版票券：不能为0、365或负数
-      if (expireDays === 0 || expireDays === 365 || expireDays < 0) {
-        return false
-      }
-      break;
-    default:
-      // 其他道具类型：默认有效
-      break;
-  }
-  return true
+  return [PROP_TYPE_OPTIONS.PROP_TYPE_TICKET_NEW, PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW, PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW].includes(itemType)
 }
