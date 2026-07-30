@@ -470,29 +470,19 @@ export default {
         if (IsProd()) { // 线上
           this.defaultOrder.push(76, 80, 78, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162, 164, 166, 170, 172,
             174, 176, 178, 180, 182, 168, 186, 184, 188, 190, 192, 194, 196, 198, 200, 202, 204, 206, 208, 210, 212, 214, 216, 218, 220,
-            222, 226, 228, 232, 234, 236, 238)
+            222, 226, 228, 232, 234, 236, 238, 240, 242, 246, 248, 250, 252, 253, 254, 255)
         } else {
           this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162, 164, 172, 188, 202,
             198, 192, 180, 166, 170, 176, 182, 174, 186, 178, 194, 184, 168, 196, 190, 200, 204, 206, 208, 210, 212, 214, 216, 218, 220, 222,
-            226, 228, 232, 234, 236, 238)
+            226, 228, 232, 234, 236, 238, 240, 242, 246, 248, 250, 252, 253, 254, 255)
         }
       }
       if (this.showZoogame) {
         this.defaultOrder.push(124, 125, 130, 131)
       }
-    },
-    getPrizePool(o) {
-      let pool = 0
-      if (this.summary[o]) {
-        pool = this.summary[o].PrizePool
-      }
-      if (this.summary[o] && this.summary[o].FreezePool != undefined) {
-        pool -= this.summary[o].FreezePool
-      }
-      return this.formatNumber(pool / 1000)
-    },
-    getFreezePoolText(o) {
-      return this.summary[o] && this.summary[o].FreezePool !== undefined ? '未提现冻结 ：' + this.formatNumber(this.summary[o].FreezePool / 1000) : ''
+
+      // 去重
+      this.defaultOrder = [...new Set(this.defaultOrder)]
     },
     getGameName(o) {
       const name = this.gameNames[o]
@@ -543,6 +533,19 @@ export default {
 
       this.clientDB.SortByProp(ob.prop, ob.order)
       this.refreshShow()
+    },
+    getPrizePool(o) {
+      let pool = 0
+      if (this.summary[o]) {
+        pool = this.summary[o].PrizePool
+      }
+      if (this.summary[o] && this.summary[o].FreezePool != undefined) {
+        pool -= this.summary[o].FreezePool
+      }
+      return this.formatNumber(pool / 1000)
+    },
+    getFreezePoolText(o) {
+      return this.summary[o] && this.summary[o].FreezePool !== undefined ? '未提现冻结 ：' + this.formatNumber(this.summary[o].FreezePool / 1000) : ''
     },
     getSummaryClass(ob, isSlot) {
       return systemMoneyChart.methods.getSummaryClass(ob, isSlot)
@@ -879,7 +882,7 @@ export default {
 </style>
 <style lang="scss" scoped>
 .panel-group {
-    margin-top: 10px;
+  margin-top: 10px;
 
   .card-panel-col {
     margin-bottom: 10px;
@@ -893,10 +896,6 @@ export default {
 
   .card-panel_selected {
     background: #90EE90;
-  }
-
-  .card-panel_selected_not {
-    background: #fff;
   }
 
   .card-panel {
