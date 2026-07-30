@@ -48,7 +48,30 @@
         <el-table-column prop="id" label="ID" sortable="custom" width="80" />
         <el-table-column prop="appId" label="平台ID" />
         <el-table-column prop="site" label="站点" />
-        <el-table-column prop="sceneId" label="场景ID（内部用）">
+        <el-table-column prop="sceneId" label="场景ID（内部用）" width="200">
+          <template #header>
+            <div class="header-filter-wrap">
+              <span class="header-label">场景ID（内部用）</span>
+              <el-select
+                v-model="clientDB.FilterValueMap['sceneId']"
+                multiple
+                size="mini"
+                placeholder="全部"
+                clearable
+                filterable
+                @change="handleFilter"
+                @click.native.stop
+              >
+                <el-option
+                  v-for="item in sceneIdOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </div>
+          </template>
+
           <template slot-scope="scope">
             {{ getSceneName(scope.row.sceneId) }}
           </template>
@@ -60,6 +83,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="remark" label="备注" />
+        <el-table-column prop="propId" label="关联道具ID" />
         <el-table-column prop="modifyUser" label="最后修改人" />
         <el-table-column prop="status" label="状态" width="100">
           <template slot-scope="scope">
@@ -108,7 +132,7 @@
             <el-form label-width="220px" size="mini">
               <el-col :span="24">
                 <el-form-item label="场景ID（内部用）：" :required="true">
-                  <el-select v-model="edit.item.sceneId" placeholder="请选择" filterable>
+                  <el-select v-model="edit.item.sceneId" placeholder="请选择" filterable :disabled="edit.isEdit" @change="handleSceneIdChange">
                     <el-option
                       v-for="item in sceneIdOptions"
                       :key="item.value"
@@ -120,7 +144,7 @@
               </el-col>
               <el-col :span="24">
                 <el-form-item label="站点：" :required="true">
-                  <MarketApiSiteSelect v-model="edit.item.site" />
+                  <MarketApiSiteSelect v-model="edit.item.site" :is-edit="edit.isEdit" />
                 </el-form-item>
               </el-col>
               <el-col :span="24">
@@ -136,6 +160,11 @@
               <el-col :span="24">
                 <el-form-item label="备注：" prop="remark">
                   <el-input v-model="edit.item.remark" maxlength="64" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="24">
+                <el-form-item label="关联道具ID：" prop="propId">
+                  <el-input v-model="edit.item.propId" number disabled="disabled" maxlength="64" />
                 </el-form-item>
               </el-col>
             </el-form>
@@ -162,6 +191,7 @@ import store from '@/store'
 import request from '@/utils/request'
 import { Message } from 'element-ui'
 import MarketApiSiteSelect from '@/components/MarketApiSiteSelect/index.vue'
+import { GetSceneOptions } from '@//utils/options'
 
 const filterMap = {}
 
@@ -173,7 +203,8 @@ function newItem() {
     site: '',
     scene: '',
     endTime: 0,
-    remark: ''
+    remark: '',
+    propId: 0
   }
 }
 
@@ -207,47 +238,8 @@ export default {
         remark: '备注',
         status: '状态'
       },
-      // 场景ID（内部用）选项。对应配置： phgames/base/gDefine/market_api.go
-      sceneIdOptions: [
-        // 常规场景
-        { 'value': 1, 'label': '任意游戏投注' },
-        { 'value': 2, 'label': '仅限Poker类游戏投注' },
-        { 'value': 3, 'label': '仅限Slots类游戏投注' },
-        { 'value': 4, 'label': '仅限Tongits游戏投注' },
-        { 'value': 5, 'label': '没有任何限制的返水金' },
-        { 'value': 6, 'label': '有限制倍数的返水金（10倍）' },
-        { 'value': 7, 'label': '【圣诞节礼物活动】任意游戏投注' },
-        { 'value': 8, 'label': '仅限GZ厅任意游戏投注的投注金【直播抽奖】' },
-        { 'value': 9, 'label': '仅限GZ任意游戏投注金【TexasPlus免费赛】' },
-        { 'value': 10, 'label': '没有任何限制的返水金【TexasPlus付费赛】' },
-        { 'value': 11, 'label': '仅限GZ任意游戏投注金【新手任务】' },
-        { 'value': 12, 'label': '仅限GZ任意游戏投注金【摇钱树活动】' },
-        { 'value': 13, 'label': '仅限GZ任意游戏投注金【空投活动】' },
-        { 'value': 14, 'label': '仅限GZ任意游戏投注金【红包雨活动Poker】' },
-        { 'value': 15, 'label': '仅限GZ任意游戏投注金【Tongits免费赛】' },
-        { 'value': 16, 'label': '没有任何限制的返水金【Tongits免费赛】' },
-        { 'value': 17, 'label': '仅限GZ任意游戏投注金【活动地图】' },
-        { 'value': 18, 'label': '仅限GZ任意游戏投注金【Poker专题活动】' },
-        { 'value': 19, 'label': 'Tongits自建赛投注金【Tongits自建赛】' },
-        { 'value': 20, 'label': '仅限GZ任意游戏投注金【TongitsHunter活动投注金】' },
-        { 'value': 21, 'label': '仅限GZ任意游戏投注金【TongitsKingOfPot活动】' },
-        { 'value': 22, 'label': 'GP站点的用户在gamezone厅下注【排行榜活动】' },
-        { 'value': 23, 'label': '仅限GZ任意游戏投注金【pusoy比赛】' },
-        { 'value': 24, 'label': '仅限GZ任意游戏投注金【7日留存活动】' },
-        { 'value': 26, 'label': '仅限GZ任意游戏返水金【万圣节活动】' },
-        { 'value': 27, 'label': '仅限GZ任意游戏投注金【竖版游戏排行榜活动】' },
-        { 'value': 28, 'label': '仅限GZ任意游戏投注金【Poker类排行榜活动】' },
-        { 'value': 29, 'label': '仅限GZ任意游戏投注金【聚宝盆活动】' },
-        { 'value': 30, 'label': '仅限GZ任意游戏返水金【奖励邮件】' },
-        { 'value': 31, 'label': '仅限GZ任意游戏投注金【红包雨活动slot】' },
-        { 'value': 32, 'label': '仅限GZ任意游戏投注金【空投活动 solt】' },
-        { 'value': 33, 'label': '仅限GZ任意游戏投注金【PokerPlus活动】' },
-        { 'value': 34, 'label': '仅限GZ任意游戏投注金【固定反水活动】' },
-        { 'value': 35, 'label': '仅限GZ任意游戏投注金【阶梯反水活动】' },
-        { 'value': 36, 'label': '仅限GZ任意游戏投注金【海岛寻宝活动BP】' },
-        { 'value': 37, 'label': '仅限GZ任意游戏投注金【海岛寻宝活动GP】' }
-        // 门票相关场景
-      ]
+      sceneIdOptions: [],
+      filterSceneSelected: {}
     }
   },
   computed: {
@@ -256,6 +248,7 @@ export default {
     this.env = store.getters.env || this.env
   },
   mounted() {
+    this.sceneIdOptions = GetSceneOptions(this.appId)
     this.getList()
   },
   methods: {
@@ -266,6 +259,14 @@ export default {
         }
       }
       return '未知场景'
+    },
+    handleSceneIdChange() {
+      console.log('handleSceneIdChange', this.edit.item.sceneId)
+      for (let i = 0; i < this.sceneIdOptions.length; i++) {
+        if (this.sceneIdOptions[i].value === this.edit.item.sceneId && this.sceneIdOptions[i].ticketId) {
+          this.edit.item.propId = this.sceneIdOptions[i].ticketId
+        }
+      }
     },
     makeContent(key, addData, delData, editData) {
       return ''
@@ -295,12 +296,25 @@ export default {
       this.refreshShow()
     },
     handleFilter() {
-      this.clientDB.FilterData()
+      const selectedSceneIds = this.clientDB.FilterValueMap['sceneId']
+      console.log('selectedSceneIds', selectedSceneIds)
+      // 如果 selectedSceneIds 为空，则返回所有数据
+      if (!selectedSceneIds || selectedSceneIds.length === 0) {
+        this.clientDB.ShowData = this.clientDB.TotalData
+      } else {
+        this.clientDB.ShowData = this.clientDB.TotalData.filter(data => {
+          // 筛选 数据中 字段 sceneId 为 selectedSceneIds 包含的数据
+          if (selectedSceneIds.includes(data.sceneId)) return true
+          return false
+        })
+      }
+
+      this.clientDB.Page.SetTotalCount(this.clientDB.ShowData.length)
       this.refreshShow()
     },
     // 筛选相关逻辑
     searchChange() {
-      this.clientDB.Search(this.search, ['sceneId', 'scene'])
+      this.clientDB.Search(this.search, ['sceneId', 'scene', 'sceneName'])
       this.refreshShow()
     },
     // 分页处理
@@ -316,6 +330,7 @@ export default {
       this.refreshShow()
     },
     getList() {
+      const $this = this
       request({
         url: '/marketapisceneconfig/all',
         method: 'get',
@@ -323,7 +338,11 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
-          this.clientDB = new ClientTableData(objs, 10, filterMap, 'endTime', -1)
+          objs.forEach(function(item) {
+            item.sceneName = $this.getSceneName(item.sceneId)
+          })
+          console.log('objs ', objs)
+          this.clientDB = new ClientTableData(objs, 10, filterMap)
           this.handleCurrentChange(1)
         }
       }).catch(err => {
@@ -455,3 +474,24 @@ export default {
   }
 }
 </script>
+<style scoped>
+.header-filter-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+}
+.header-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #303133;
+}
+.header-filter-wrap .el-select {
+  width: 100%;
+}
+/* 调整表头中 select 的尺寸 */
+.header-filter-wrap .el-select .el-input--mini .el-input__inner {
+  height: 24px;
+  line-height: 24px;
+}
+</style>
