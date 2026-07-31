@@ -476,7 +476,7 @@
                   style="width: 100%"
                   :cell-style="libShow.DefaultTableCell"
                 >
-                  <el-table-column prop="taskValueRequired" label="进度要求" v-if=" this.edit.item.gameType === 2">
+                  <el-table-column prop="taskValueRequired" label="进度要求">
                     <template slot-scope="scope">
                       <el-input v-model.number="scope.row.taskValueRequired" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
                     </template>
