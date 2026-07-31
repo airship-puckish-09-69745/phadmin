@@ -201,7 +201,7 @@ function newItem() {
     sceneId: 0,
     site: '',
     scene: '',
-    endTime: 0,
+    endTime: $libDate.GetDayBegin(new Date(new Date().getTime() + 24 * 60 * 60 * 1000)),
     remark: '',
     propId: 0
   }
