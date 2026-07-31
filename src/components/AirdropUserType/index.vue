@@ -3,7 +3,7 @@
     <!-- 用户类型选择 -->
     <el-form-item label="参与活动用户类型：" required>
       <el-select v-model="currentUserType" placeholder="请选择" style="width: 280px" @change="onUserTypeChange">
-        <el-option v-for="item in userTypeOptions" :key="item.value" :label="item.label" :value="item.value"/>
+        <el-option v-for="item in effectiveUserTypeOptions" :key="item.value" :label="item.label" :value="item.value"/>
       </el-select>
     </el-form-item>
 
@@ -79,7 +79,7 @@
     <template v-if="isTagUsers">
       <el-form-item label="标签类型：">
         <el-select v-model="localValue.userFilterCondition.userTagConfig.tagType" placeholder="请选择标签类型" @change="onTagTypeChange">
-          <el-option v-for="item in userTagOptions" :key="item.value" :label="item.label" :value="item.value"/>
+          <el-option v-for="item in effectiveUserTagOptions" :key="item.value" :label="item.label" :value="item.value"/>
         </el-select>
       </el-form-item>
       <el-form-item label="标签子类：">
@@ -127,6 +127,21 @@ export default {
     activityCfgId: {
       type: Number,
       default: 0
+    },
+    // 自定义"用户标签"选项的显示名称，例如 "casino 标签用户"
+    customUserTypeLabel: {
+      type: String,
+      default: ''
+    },
+    // 自定义标签类型选项，不传则使用内置的 Slots 标签选项
+    customUserTagOptions: {
+      type: Array,
+      default: null
+    },
+    // 触发"用户等级"子选择的 tagId 列表；不同玩法可覆盖
+    levelTagIds: {
+      type: Array,
+      default: () => [50005, 50006, 50003]
     }
   },
   data() {
@@ -135,6 +150,7 @@ export default {
       importedUidCacheCount: 0,
       registerDateRange: [],
       tagIdOptions: [],
+      // 内置的基础用户类型选项
       userTypeOptions: [
         { value: 1, label: '新增用户' },
         { value: 2, label: '所有用户' },
@@ -142,6 +158,7 @@ export default {
         { value: 4, label: '筛选用户' },
         { value: 5, label: '用户标签' }
       ],
+      // 内置的 Slots 标签类型选项（可被 customUserTagOptions prop 覆盖）
       userTagOptions: [
         { value: 2, label: '游戏强度', children: [{ value: 20000, label: '游戏强度' }] },
         {
@@ -196,6 +213,17 @@ export default {
     actionURL() {
       return process.env.VUE_APP_BASE_API + '/other/upload'
     },
+    // 实际使用的用户类型选项：若传入了自定义标签名则替换 value=5 的标签
+    effectiveUserTypeOptions() {
+      if (!this.customUserTypeLabel) return this.userTypeOptions
+      return this.userTypeOptions.map(opt =>
+        opt.value === 5 ? { ...opt, label: this.customUserTypeLabel } : opt
+      )
+    },
+    // 实际使用的标签类型选项：优先使用 prop 传入的，否则用内置 Slots 选项
+    effectiveUserTagOptions() {
+      return this.customUserTagOptions || this.userTagOptions
+    },
     isImportUsers() {
       return this.currentUserType === 3
     },
@@ -205,9 +233,9 @@ export default {
     isTagUsers() {
       return this.currentUserType === 5
     },
+    // 哪些 tagId 需要展示"用户等级"子选择（各玩法通过 levelTagIds prop 配置）
     showUserLevelCondition() {
-      const levelTagIds = [50005, 50006, 50003]
-      return this.isTagUsers && levelTagIds.includes(this.localValue.userFilterCondition.userTagConfig.tagId)
+      return this.isTagUsers && this.levelTagIds.includes(this.localValue.userFilterCondition.userTagConfig.tagId)
     },
     showGameIntensityCondition() {
       return this.isTagUsers &&
@@ -264,7 +292,8 @@ export default {
       this.emitChange()
     },
     onTagTypeChange(tagType) {
-      const found = this.userTagOptions.find(item => item.value === tagType)
+      // 使用 effectiveUserTagOptions 以支持各玩法自定义标签选项
+      const found = this.effectiveUserTagOptions.find(item => item.value === tagType)
       this.tagIdOptions = (found && found.children) || []
       if (this.localValue.userFilterCondition.userTagConfig.tagType !== tagType && this.tagIdOptions.length > 0) {
         this.localValue.userFilterCondition.userTagConfig.tagId = this.tagIdOptions[0].value

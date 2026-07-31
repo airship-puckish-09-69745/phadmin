@@ -57,20 +57,8 @@
             </el-col>
           </el-row>
 
-          <!-- 任务配置（合并到活动配置）-->
+          <!-- 任务文本（仅文本备注，任务类型/条件已移至奖励配置）-->
           <el-row :gutter="20">
-            <el-col :xs="24" :sm="12">
-              <el-form-item label="任务类型：" required>
-                <el-select v-model="item.taskType" placeholder="请选择" style="width: 240px">
-                  <el-option v-for="opt in casinoTaskTypes" :key="opt.value" :label="opt.label" :value="opt.value"/>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12">
-              <el-form-item label="任务条件(₱)：" required>
-                <el-input v-model.number="item.taskCondition" placeholder="请输入" style="max-width: 240px"/>
-              </el-form-item>
-            </el-col>
             <el-col :span="24">
               <el-form-item label="任务文本：">
                 <el-input v-model="item.taskText" placeholder="请输入" style="max-width: 400px"/>
@@ -93,47 +81,74 @@
           <!--1. AppId白名单 2. SiteId白名单 3. ABTest开关 4. UID白名单-->
           <WhitelistConfig v-model="item.whitelist" :features="[2, 3]"/>
 
-          <!-- 参与活动用户类型 -->
-          <AirdropUserType v-model="item.userConfig" :activity-cfg-id="item.id"/>
+          <!-- 参与活动用户类型：casino 标签用户支持 casino新增用户/casino下注/casino额度 -->
+          <AirdropUserType
+            v-model="item.userConfig"
+            :activity-cfg-id="item.id"
+            custom-user-type-label="casino 标签用户"
+            :custom-user-tag-options="casinoUserTagOptions"
+            :level-tag-ids="[]"
+          />
         </el-form>
       </el-tab-pane>
 
       <!-- ======================== 奖励配置（Casino - 单个道具） ======================== -->
       <el-tab-pane label="奖励配置" name="reward">
         <el-form ref="rewardForm" :model="item" label-width="160px" size="small">
-            <el-table :data="[item.propPools]" border size="small" style="width: 100%;">
-              <el-table-column label="道具类型" min-width="150">
-                <template slot-scope="scope">
-                  <el-select v-model="scope.row.propType" placeholder="请选择" size="mini" @change="handlePropTypeChange(scope.row)">
-                    <el-option v-for="opt in propTypeOptions" :key="opt.value" :label="opt.label" :value="opt.value"/>
-                  </el-select>
-                </template>
-              </el-table-column>
-              <el-table-column label="道具名称" min-width="160">
-                <template slot-scope="scope">
-                  <el-select v-model="scope.row.propId" placeholder="请选择" size="mini" @change="handlePropNameChange(scope.row)">
-                    <el-option v-for="opt in getPropOptionsByType(scope.row.propType)" :key="opt.value" :label="opt.label" :value="opt.value"/>
-                  </el-select>
-                </template>
-              </el-table-column>
-              <el-table-column label="可用时间" min-width="120">
-                <template slot-scope="scope">
-                  <el-select v-model="scope.row.propTime" placeholder="请选择" size="mini">
-                    <el-option v-for="opt in propDayTypeOptions" :key="opt.value" :label="opt.label" :value="opt.value"/>
-                  </el-select>
-                </template>
-              </el-table-column>
-              <el-table-column label="道具数量" min-width="110">
-                <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.propNum" placeholder="数量" size="mini"/>
-                </template>
-              </el-table-column>
-              <el-table-column label="道具上限" min-width="110">
-                <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.propLimit" placeholder="上限" size="mini"/>
-                </template>
-              </el-table-column>
-            </el-table>
+          <!--
+            任务要求和奖励相关，故将任务类型、任务条件直接放在道具类型前面，
+            使任务配置与奖励配置在同一行可见，便于配置关联。
+          -->
+          <el-table :data="[item.propPools]" border size="small" style="width: 100%;">
+            <!-- 任务类型（放在道具类型前面）-->
+            <el-table-column label="任务类型" min-width="160">
+              <template slot-scope="scope">
+                <el-select v-model="scope.row.taskType" placeholder="请选择" size="mini">
+                  <el-option v-for="opt in casinoTaskTypes" :key="opt.value" :label="opt.label" :value="opt.value"/>
+                </el-select>
+              </template>
+            </el-table-column>
+            <!-- 任务条件（放在道具类型前面）-->
+            <el-table-column label="任务条件(₱)" min-width="130">
+              <template slot-scope="scope">
+                <el-input v-model.number="scope.row.taskCondition" placeholder="请输入" size="mini"
+                          oninput="if(value<0||value===''){value=0}"/>
+              </template>
+            </el-table-column>
+            <el-table-column label="道具类型" min-width="150">
+              <template slot-scope="scope">
+                <el-select v-model="scope.row.propType" placeholder="请选择" size="mini" @change="handlePropTypeChange(scope.row)">
+                  <el-option v-for="opt in propTypeOptions" :key="opt.value" :label="opt.label" :value="opt.value"/>
+                </el-select>
+              </template>
+            </el-table-column>
+            <el-table-column label="道具名称" min-width="160">
+              <template slot-scope="scope">
+                <el-select v-model="scope.row.propId" placeholder="请选择" size="mini" @change="handlePropNameChange(scope.row)">
+                  <el-option v-for="opt in getPropOptionsByType(scope.row.propType)" :key="opt.value" :label="opt.label" :value="opt.value"/>
+                </el-select>
+              </template>
+            </el-table-column>
+            <el-table-column label="可用时间" min-width="120">
+              <template slot-scope="scope">
+                <el-select v-model="scope.row.propTime" placeholder="请选择" size="mini">
+                  <el-option v-for="opt in propDayTypeOptions" :key="opt.value" :label="opt.label" :value="opt.value"/>
+                </el-select>
+              </template>
+            </el-table-column>
+            <el-table-column label="道具数量" min-width="110">
+              <template slot-scope="scope">
+                <el-input v-model.number="scope.row.propNum" placeholder="数量" size="mini"
+                          oninput="if(value<0||value===''){value=0}"/>
+              </template>
+            </el-table-column>
+            <el-table-column label="道具上限" min-width="110">
+              <template slot-scope="scope">
+                <el-input v-model.number="scope.row.propLimit" placeholder="上限" size="mini"
+                          oninput="if(value<0||value===''){value=0}"/>
+              </template>
+            </el-table-column>
+          </el-table>
 
         </el-form>
       </el-tab-pane>
@@ -173,6 +188,11 @@ function defaultUserConfig() {
   }
 }
 
+function defaultPropPools() {
+  // taskType/taskCondition 随道具配置一并存储
+  return { taskType: 2, taskCondition: 0, propType: 5, propId: 0, propName: '', propTime: 1, propNum: 0, propLimit: 0 }
+}
+
 function newItem() {
   return {
     id: 0,
@@ -185,12 +205,9 @@ function newItem() {
     debugTimeOffset: 0,
     gameIdList: [],
     whitelist: defaultWhitelist(),
-    // 任务配置（合并到活动配置）
-    taskType: 2,
     taskText: '',
-    taskCondition: 0,
-    // 奖励配置
-    propPools: { propType: 5, propId: 0, propName: '', propTime: 1, propNum: 0, propLimit: 0 },
+    // 奖励配置（propPools 内含任务类型/条件）
+    propPools: defaultPropPools(),
     // 用户配置
     userConfig: defaultUserConfig()
   }
@@ -211,6 +228,7 @@ export default {
       activeTab: 'activity',
       saving: false,
       propList: [],
+      // 任务类型选项（暂时只有"有效下注总额"）
       casinoTaskTypes: [
         { value: 2, label: '有效下注总额' }
       ],
@@ -222,6 +240,16 @@ export default {
         { value: 3, label: '3天' },
         { value: 7, label: '7天' },
         { value: 30, label: '30天' }
+      ],
+      // Casino 专属标签用户选项（tagType/tagId 请与后端约定的值对齐）
+      casinoUserTagOptions: [
+        {
+          value: 6, label: 'casino用户类型', children: [
+            { value: 60001, label: 'casino 新增用户' },
+            { value: 60002, label: 'casino 下注' },
+            { value: 60003, label: 'casino 额度' }
+          ]
+        }
       ]
     }
   },
@@ -273,6 +301,19 @@ export default {
         importedFilename: ext.importedFilename || ''
       }
 
+      // 兼容旧数据：propPools 里若无 taskType/taskCondition 则从 ext 顶层读取
+      const rawPropPools = this.safeJson(ext.propPools, defaultPropPools())
+      const propPools = {
+        taskType: rawPropPools.taskType || ext.taskType || 2,
+        taskCondition: (rawPropPools.taskCondition !== undefined ? rawPropPools.taskCondition : (ext.taskCondition || 0)) / 1000,
+        propType: rawPropPools.propType || 5,
+        propId: rawPropPools.propId || 0,
+        propName: rawPropPools.propName || '',
+        propTime: rawPropPools.propTime || 1,
+        propNum: rawPropPools.propNum || 0,
+        propLimit: rawPropPools.propLimit || 0
+      }
+
       this.item = {
         id: raw.id || 0,
         activityId: ACTIVITY_ID,
@@ -286,10 +327,8 @@ export default {
         debugTimeOffset: act.debugTimeOffset || 0,
         gameIdList: Array.isArray(act.gameIdList) ? act.gameIdList : [],
         whitelist,
-        taskType: ext.taskType || 2,
         taskText: ext.taskText || '',
-        taskCondition: (ext.taskCondition || 0) / 1000,
-        propPools: this.safeJson(ext.propPools, { propType: 5, propId: 0, propName: '', propTime: 1, propNum: 0, propLimit: 0 }),
+        propPools,
         userConfig
       }
     },
@@ -320,11 +359,20 @@ export default {
         gameIdList: d.gameIdList,
         whitelist: d.whitelist
       }
+      // Casino extend：仅包含 casino 专用字段，不含 poker/slot 的 betReward/progressPrizes 等
       const extendObj = {
-        taskType: d.taskType,
         taskText: d.taskText || '',
-        taskCondition: (d.taskCondition || 0) * 1000,
-        propPools: d.propPools,
+        // propPools 中包含任务类型/条件和道具信息
+        propPools: {
+          taskType: d.propPools.taskType,
+          taskCondition: (d.propPools.taskCondition || 0) * 1000,
+          propType: d.propPools.propType,
+          propId: d.propPools.propId,
+          propName: d.propPools.propName,
+          propTime: d.propPools.propTime,
+          propNum: d.propPools.propNum,
+          propLimit: d.propPools.propLimit
+        },
         userTypes: d.userConfig.userTypes,
         userFilterCondition: d.userConfig.userFilterCondition,
         importedFilename: d.userConfig.importedFilename || ''

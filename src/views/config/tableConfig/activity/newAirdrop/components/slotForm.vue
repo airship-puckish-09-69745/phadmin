@@ -57,20 +57,8 @@
             </el-col>
           </el-row>
 
-          <!-- 任务配置（合并到活动配置）-->
+          <!-- 任务文本（任务类型/条件已移至奖励配置）-->
           <el-row :gutter="20">
-            <el-col :xs="24" :sm="12">
-              <el-form-item label="任务类型：" required>
-                <el-select v-model="item.taskType" placeholder="请选择" style="width: 240px">
-                  <el-option v-for="opt in slotTaskTypes" :key="opt.value" :label="opt.label" :value="opt.value"/>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12">
-              <el-form-item label="任务条件(₱)：" required>
-                <el-input v-model.number="item.taskCondition" placeholder="请输入" style="max-width: 240px"/>
-              </el-form-item>
-            </el-col>
             <el-col :span="24">
               <el-form-item label="任务文本：">
                 <el-input v-model="item.taskText" placeholder="请输入" style="max-width: 400px"/>
@@ -98,66 +86,123 @@
         </el-form>
       </el-tab-pane>
 
-      <!-- ======================== 奖励配置（Slot - 列表，最多20条） ======================== -->
+      <!-- ======================== 奖励配置（Slot - 道具奖励 + 投注金奖励） ======================== -->
       <el-tab-pane label="奖励配置" name="reward">
-        <div style="margin-bottom: 12px">
-          <el-button
-            type="primary"
-            size="mini"
-            icon="el-icon-plus"
-            :disabled="item.progressPrizes.length >= 20"
-            @click="addPrize"
-          >
-            添加奖励（{{ item.progressPrizes.length }}/20）
-          </el-button>
-          <span v-if="item.progressPrizes.length >= 20" style="color: #f56c6c; margin-left: 8px; font-size: 12px">最多配置20条</span>
-        </div>
-        <el-table :data="item.progressPrizes" border size="small" style="width: 100%">
-          <el-table-column label="ID" width="60" align="center">
-            <template slot-scope="scope">{{ scope.$index + 1 }}</template>
-          </el-table-column>
-          <el-table-column label="进度要求(₱)" min-width="120">
-            <template slot-scope="scope">
-              <el-input v-model.number="scope.row.taskValueRequired" placeholder="进度值" size="mini" oninput="if(value<0||value===''){value=0}"/>
-            </template>
-          </el-table-column>
-          <el-table-column label="道具类型" min-width="140">
-            <template slot-scope="scope">
-              <el-select v-model="scope.row.propType" placeholder="请选择" size="mini" @change="onPropTypeChange(scope.row, scope.$index)">
-                <el-option v-for="opt in propTypeOptions" :key="opt.value" :label="opt.label" :value="opt.value"/>
+
+        <!-- ---------- 道具奖励（进度奖励列表） ---------- -->
+        <fieldset style="margin-bottom: 20px">
+          <legend><b>道具奖励</b></legend>
+
+          <!-- 任务类型：从活动配置移入此处，置于进度要求前面 -->
+          <el-form :model="item" label-width="120px" size="small" style="margin-bottom: 8px">
+            <el-form-item label="任务类型：" required>
+              <el-select v-model="item.taskType" placeholder="请选择" style="width: 220px">
+                <el-option v-for="opt in slotTaskTypes" :key="opt.value" :label="opt.label" :value="opt.value"/>
               </el-select>
-            </template>
-          </el-table-column>
-          <el-table-column label="道具名称" min-width="160">
-            <template slot-scope="scope">
-              <el-select v-model="scope.row.propId" placeholder="请选择" size="mini" @change="onPropNameChange(scope.row, scope.$index)">
-                <el-option v-for="opt in propOptionsMap[scope.$index] || []" :key="opt.value" :label="opt.label" :value="opt.value"/>
-              </el-select>
-            </template>
-          </el-table-column>
-          <el-table-column label="可用时间" min-width="120">
-            <template slot-scope="scope">
-              <el-select v-model="scope.row.propTime" placeholder="请选择" size="mini">
-                <el-option v-for="opt in propDayTypeOptions" :key="opt.value" :label="opt.label" :value="opt.value"/>
-              </el-select>
-            </template>
-          </el-table-column>
-          <el-table-column label="道具数量" min-width="100">
-            <template slot-scope="scope">
-              <el-input v-model.number="scope.row.propNum" placeholder="数量" size="mini" oninput="if(value<0||value===''){value=0}"/>
-            </template>
-          </el-table-column>
-          <el-table-column label="道具上限" min-width="100">
-            <template slot-scope="scope">
-              <el-input v-model.number="scope.row.propLimit" placeholder="上限" size="mini" oninput="if(value<0||value===''){value=0}"/>
-            </template>
-          </el-table-column>
-          <el-table-column label="操作" width="80" align="center">
-            <template slot-scope="scope">
-              <el-button size="mini" type="danger" icon="el-icon-delete" circle :disabled="item.progressPrizes.length <= 1" @click="removePrize(scope.$index)"/>
-            </template>
-          </el-table-column>
-        </el-table>
+            </el-form-item>
+          </el-form>
+
+          <div style="margin-bottom: 12px">
+            <el-button
+              type="primary"
+              size="mini"
+              icon="el-icon-plus"
+              :disabled="item.progressPrizes.length >= 20"
+              @click="addPrize"
+            >
+              添加奖励（{{ item.progressPrizes.length }}/20）
+            </el-button>
+            <span v-if="item.progressPrizes.length >= 20" style="color: #f56c6c; margin-left: 8px; font-size: 12px">最多配置20条</span>
+          </div>
+          <el-table :data="item.progressPrizes" border size="small" style="width: 100%">
+            <el-table-column label="ID" width="60" align="center">
+              <template slot-scope="scope">{{ scope.$index + 1 }}</template>
+            </el-table-column>
+            <el-table-column label="进度要求(₱)" min-width="120">
+              <template slot-scope="scope">
+                <el-input v-model.number="scope.row.taskValueRequired" placeholder="进度值" size="mini" oninput="if(value<0||value===''){value=0}"/>
+              </template>
+            </el-table-column>
+            <el-table-column label="道具类型" min-width="140">
+              <template slot-scope="scope">
+                <el-select v-model="scope.row.propType" placeholder="请选择" size="mini" @change="onPropTypeChange(scope.row, scope.$index)">
+                  <el-option v-for="opt in propTypeOptions" :key="opt.value" :label="opt.label" :value="opt.value"/>
+                </el-select>
+              </template>
+            </el-table-column>
+            <el-table-column label="道具名称" min-width="160">
+              <template slot-scope="scope">
+                <el-select v-model="scope.row.propId" placeholder="请选择" size="mini" @change="onPropNameChange(scope.row, scope.$index)">
+                  <el-option v-for="opt in propOptionsMap[scope.$index] || []" :key="opt.value" :label="opt.label" :value="opt.value"/>
+                </el-select>
+              </template>
+            </el-table-column>
+            <el-table-column label="可用时间" min-width="120">
+              <template slot-scope="scope">
+                <el-select v-model="scope.row.propTime" placeholder="请选择" size="mini">
+                  <el-option v-for="opt in propDayTypeOptions" :key="opt.value" :label="opt.label" :value="opt.value"/>
+                </el-select>
+              </template>
+            </el-table-column>
+            <el-table-column label="道具数量" min-width="100">
+              <template slot-scope="scope">
+                <el-input v-model.number="scope.row.propNum" placeholder="数量" size="mini" oninput="if(value<0||value===''){value=0}"/>
+              </template>
+            </el-table-column>
+            <el-table-column label="道具上限" min-width="100">
+              <template slot-scope="scope">
+                <el-input v-model.number="scope.row.propLimit" placeholder="上限" size="mini" oninput="if(value<0||value===''){value=0}"/>
+              </template>
+            </el-table-column>
+            <el-table-column label="操作" width="80" align="center">
+              <template slot-scope="scope">
+                <el-button size="mini" type="danger" icon="el-icon-delete" circle :disabled="item.progressPrizes.length <= 1" @click="removePrize(scope.$index)"/>
+              </template>
+            </el-table-column>
+          </el-table>
+        </fieldset>
+
+        <!-- ---------- 投注金奖励（固定一条） ---------- -->
+        <fieldset>
+          <legend><b>投注金奖励</b>（固定一条）</legend>
+          <el-table :data="[item.betReward]" border size="small" style="width: 100%">
+            <!-- 任务类型 -->
+            <el-table-column label="任务类型" min-width="150">
+              <template slot-scope="scope">
+                <el-select v-model="scope.row.taskType" placeholder="请选择" size="mini">
+                  <el-option v-for="opt in slotTaskTypes" :key="opt.value" :label="opt.label" :value="opt.value"/>
+                </el-select>
+              </template>
+            </el-table-column>
+            <!-- 任务条件 -->
+            <el-table-column label="任务条件(₱)" min-width="130">
+              <template slot-scope="scope">
+                <el-input v-model.number="scope.row.taskCondition" placeholder="请输入" size="mini"
+                          oninput="if(value<0||value===''){value=0}"/>
+              </template>
+            </el-table-column>
+            <!-- 总奖励 -->
+            <el-table-column label="总奖励(₱)" min-width="120">
+              <template slot-scope="scope">
+                <el-input v-model.number="scope.row.totalReward" placeholder="请输入" size="mini"
+                          oninput="if(value<0||value===''){value=0}"/>
+              </template>
+            </el-table-column>
+            <!-- 已发奖励（只读，由后端更新）-->
+            <el-table-column label="已发奖励(₱)" min-width="120">
+              <template slot-scope="scope">
+                <el-input v-model.number="scope.row.issuedReward" placeholder="--" size="mini" disabled/>
+              </template>
+            </el-table-column>
+            <!-- 用户最大领奖 -->
+            <el-table-column label="用户最大领奖(₱)" min-width="150">
+              <template slot-scope="scope">
+                <el-input v-model.number="scope.row.userMaxReward" placeholder="请输入" size="mini"
+                          oninput="if(value<0||value===''){value=0}"/>
+              </template>
+            </el-table-column>
+          </el-table>
+        </fieldset>
       </el-tab-pane>
     </el-tabs>
 
@@ -201,6 +246,11 @@ function newPrize() {
   return { taskValueRequired: 0, propType: 5, propId: 0, propName: '', propTime: 1, propNum: 0, propLimit: 0 }
 }
 
+// 投注金奖励默认值（已发奖励为只读，初始为 0）
+function defaultBetReward() {
+  return { taskType: 2, taskCondition: 0, totalReward: 0, issuedReward: 0, userMaxReward: 0 }
+}
+
 function newItem() {
   return {
     id: 0,
@@ -213,10 +263,12 @@ function newItem() {
     debugTimeOffset: 0,
     gameIdList: [],
     whitelist: defaultWhitelist(),
+    // 任务类型（道具奖励全局设置，已移入奖励配置 tab）
     taskType: 2,
     taskText: '',
-    taskCondition: 0,
     progressPrizes: [newPrize()],
+    // 投注金奖励（固定一条）
+    betReward: defaultBetReward(),
     userConfig: defaultUserConfig()
   }
 }
@@ -237,6 +289,7 @@ export default {
       saving: false,
       propList: [],
       propOptionsMap: {},
+      // 任务类型选项（暂时只有"有效下注总额"）
       slotTaskTypes: [
         { value: 2, label: '有效下注总额' }
       ],
@@ -259,8 +312,8 @@ export default {
         this.loadEditData()
       } else {
         this.item = newItem()
-        //默认加载道具
-        this.buildPropOptionsForIndex(5,0)
+        // 默认加载道具选项
+        this.buildPropOptionsForIndex(5, 0)
         this.activeTab = 'activity'
       }
     },
@@ -301,11 +354,31 @@ export default {
         importedFilename: ext.importedFilename || ''
       }
 
+      const taskType = ext.taskType || 2
       const prizes = this.safeJson(ext.progressPrizes, [newPrize()])
-      // 任务类型为有效下注时，任务值除以1000
-      if (ext.taskType === 2) {
+      // 有效下注类型时进度要求存储单位为 1/1000 ₱，前端显示除以 1000
+      if (taskType === 2) {
         prizes.forEach(p => { p.taskValueRequired = (p.taskValueRequired || 0) / 1000 })
       }
+
+      // 兼容旧数据：若无 betReward 则从旧的 taskCondition 字段迁移
+      const rawBetReward = this.safeJson(ext.betReward, null)
+      const betReward = rawBetReward
+        ? {
+          taskType: rawBetReward.taskType || taskType,
+          taskCondition: (rawBetReward.taskCondition || 0) / 1000,
+          totalReward: (rawBetReward.totalReward || 0) / 1000,
+          issuedReward: (rawBetReward.issuedReward || 0) / 1000,
+          userMaxReward: (rawBetReward.userMaxReward || 0) / 1000
+        }
+        : {
+          taskType,
+          // 旧数据中 taskCondition 存储于 ext 顶层
+          taskCondition: taskType === 2 ? (ext.taskCondition || 0) / 1000 : (ext.taskCondition || 0),
+          totalReward: 0,
+          issuedReward: 0,
+          userMaxReward: 0
+        }
 
       this.item = {
         id: raw.id || 0,
@@ -320,14 +393,14 @@ export default {
         debugTimeOffset: act.debugTimeOffset || 0,
         gameIdList: Array.isArray(act.gameIdList) ? act.gameIdList : [],
         whitelist,
-        taskType: ext.taskType || 2,
+        taskType,
         taskText: ext.taskText || '',
-        taskCondition: ext.taskType === 2 ? (ext.taskCondition || 0) / 1000 : (ext.taskCondition || 0),
         progressPrizes: prizes.length > 0 ? prizes : [newPrize()],
+        betReward,
         userConfig
       }
 
-      // 初始化道具选项
+      // 初始化道具选项映射
       this.$nextTick(() => {
         this.item.progressPrizes.forEach((p, idx) => {
           this.buildPropOptionsForIndex(p.propType, idx)
@@ -358,6 +431,7 @@ export default {
     },
     getPostData() {
       const d = this.item
+      // 道具奖励：进度要求回存时乘以 1000
       const prizes = d.progressPrizes.map(p => {
         const copy = Object.assign({}, p)
         if (d.taskType === 2) {
@@ -377,11 +451,19 @@ export default {
         gameIdList: d.gameIdList,
         whitelist: d.whitelist
       }
+      // Slot extend：包含道具奖励(progressPrizes)和投注金奖励(betReward)
       const extendObj = {
         taskType: d.taskType,
         taskText: d.taskText || '',
-        taskCondition: d.taskType === 2 ? (d.taskCondition || 0) * 1000 : (d.taskCondition || 0),
         progressPrizes: prizes,
+        // 投注金奖励：货币字段乘以 1000 存储，已发奖励由后端维护保持原值
+        betReward: {
+          taskType: d.betReward.taskType,
+          taskCondition: Math.round((d.betReward.taskCondition || 0) * 1000),
+          totalReward: Math.round((d.betReward.totalReward || 0) * 1000),
+          issuedReward: Math.round((d.betReward.issuedReward || 0) * 1000),
+          userMaxReward: Math.round((d.betReward.userMaxReward || 0) * 1000)
+        },
         userTypes: d.userConfig.userTypes,
         userFilterCondition: d.userConfig.userFilterCondition,
         importedFilename: d.userConfig.importedFilename || ''
@@ -419,7 +501,7 @@ export default {
         return
       }
       this.item.progressPrizes.splice(index, 1)
-      // 重建道具选项索引
+      // 删除后重建道具选项索引
       const newMap = {}
       Object.keys(this.propOptionsMap).forEach(k => {
         const ki = parseInt(k)

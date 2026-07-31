@@ -58,20 +58,8 @@
             </el-col>
           </el-row>
 
-          <!-- 任务配置（合并到活动配置）-->
+          <!-- 任务文本（任务类型/条件已移至奖励配置）-->
           <el-row :gutter="20">
-            <el-col :xs="24" :sm="12">
-              <el-form-item label="任务类型：" required>
-                <el-select v-model="item.taskType" placeholder="请选择" style="width: 240px">
-                  <el-option v-for="opt in pokerTaskTypes" :key="opt.value" :label="opt.label" :value="opt.value"/>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12">
-              <el-form-item :label="taskConditionLabel" required>
-                <el-input v-model.number="item.taskCondition" placeholder="请输入" style="max-width: 240px"/>
-              </el-form-item>
-            </el-col>
             <el-col :span="24">
               <el-form-item label="任务文本：">
                 <el-input v-model="item.taskText" placeholder="请输入" style="max-width: 400px"/>
@@ -93,16 +81,32 @@
           <!-- 白名单配置 -->
           <!--1. AppId白名单 2. SiteId白名单 3. ABTest开关 4. UID白名单-->
           <WhitelistConfig v-model="item.whitelist" :features="[2, 3]"/>
-          <!-- 参与活动用户类型 -->
-          <AirdropUserType v-model="item.userConfig" :activity-cfg-id="item.id"/>
+          <!-- 参与活动用户类型：poker 标签用户支持 poker新增用户/poker下注/poker额度 -->
+          <AirdropUserType
+            v-model="item.userConfig"
+            :activity-cfg-id="item.id"
+            custom-user-type-label="poker 标签用户"
+            :custom-user-tag-options="pokerUserTagOptions"
+            :level-tag-ids="[]"
+          />
         </el-form>
       </el-tab-pane>
 
-      <!-- ======================== 奖励配置（Poker - 列表 + 大奖）======================== -->
+      <!-- ======================== 奖励配置（Poker - 道具奖励 + 投注金奖励）======================== -->
       <el-tab-pane label="奖励配置" name="reward">
-        <!-- 进度奖励列表 -->
+        <!-- ---------- 道具奖励（进度奖励列表） ---------- -->
         <fieldset style="margin-bottom: 20px">
-          <legend><b>进度奖励配置</b></legend>
+          <legend><b>道具奖励</b></legend>
+
+          <!-- 任务类型：从活动配置移入此处，置于进度要求前面 -->
+          <el-form :model="item" label-width="120px" size="small" style="margin-bottom: 8px">
+            <el-form-item label="任务类型：" required>
+              <el-select v-model="item.taskType" placeholder="请选择" style="width: 220px">
+                <el-option v-for="opt in pokerTaskTypes" :key="opt.value" :label="opt.label" :value="opt.value"/>
+              </el-select>
+            </el-form-item>
+          </el-form>
+
           <div style="margin-bottom: 12px">
             <el-button
               type="primary"
@@ -168,10 +172,30 @@
           </el-table>
         </fieldset>
 
-        <!-- 大奖配置（仅一条）-->
+        <!-- ---------- 投注金奖励（固定一条，原大奖配置）---------- -->
         <fieldset>
-          <legend><b>大奖配置</b>（仅可配置一条）</legend>
-          <el-table :data="[item.rewardRange]" border size="small" style="width: 100%; max-width: 900px">
+          <legend><b>投注金奖励</b>（仅可配置一条）</legend>
+          <el-table :data="[item.rewardRange]" border size="small" style="width: 100%">
+            <!-- 总奖励 -->
+            <el-table-column label="总奖励(₱)" min-width="120">
+              <template slot-scope="scope">
+                <el-input v-model.number="scope.row.totalReward" placeholder="总奖励" size="mini"
+                          oninput="if(value<0||value===''){value=0}"/>
+              </template>
+            </el-table-column>
+            <!-- 已发奖励（只读，由后端实时更新）-->
+            <el-table-column label="已发奖励(₱)" min-width="120">
+              <template slot-scope="scope">
+                <el-input v-model.number="scope.row.issuedReward" placeholder="--" size="mini" disabled/>
+              </template>
+            </el-table-column>
+            <!-- 用户最大领奖 -->
+            <el-table-column label="用户最大领奖(₱)" min-width="150">
+              <template slot-scope="scope">
+                <el-input v-model.number="scope.row.userMaxReward" placeholder="最大领奖" size="mini"
+                          oninput="if(value<0||value===''){value=0}"/>
+              </template>
+            </el-table-column>
             <el-table-column label="积分区间开始" min-width="130">
               <template slot-scope="scope">
                 <el-input v-model.number="scope.row.minScore" placeholder="起始积分" size="mini"
@@ -237,8 +261,17 @@ function defaultUserConfig() {
   }
 }
 
+// 投注金奖励默认值（新增 totalReward/issuedReward/userMaxReward）
 function defaultRewardRange() {
-  return { minScore: 0, maxScore: 0, minCoefficient: 0, maxCoefficient: 0 }
+  return {
+    totalReward: 0,
+    issuedReward: 0,
+    userMaxReward: 0,
+    minScore: 0,
+    maxScore: 0,
+    minCoefficient: 0,
+    maxCoefficient: 0
+  }
 }
 
 function newPrize() {
@@ -257,10 +290,11 @@ function newItem() {
     debugTimeOffset: 0,
     gameIdList: [],
     whitelist: defaultWhitelist(),
+    // 任务类型（已移入奖励配置 tab）
     taskType: 1,
     taskText: '',
-    taskCondition: 0,
     progressPrizes: [newPrize()],
+    // 投注金奖励（原大奖配置，含新增字段）
     rewardRange: defaultRewardRange(),
     userConfig: defaultUserConfig()
   }
@@ -282,6 +316,7 @@ export default {
       saving: false,
       propList: [],
       propOptionsMap: {},
+      // 任务类型选项（暂时只有"有效下注总额"）
       pokerTaskTypes: [
         { value: 1, label: '牌局次数' },
         { value: 2, label: '有效下注总额' },
@@ -299,13 +334,21 @@ export default {
         { value: 3, label: '3天' },
         { value: 7, label: '7天' },
         { value: 30, label: '30天' }
+      ],
+      // Poker 专属标签用户选项（tagType/tagId 请与后端约定的值对齐）
+      pokerUserTagOptions: [
+        {
+          value: 7, label: 'poker用户类型', children: [
+            { value: 70001, label: 'poker 新增用户' },
+            { value: 70002, label: 'poker 下注' },
+            { value: 70003, label: 'poker 额度' }
+          ]
+        }
       ]
     }
   },
   computed: {
-    taskConditionLabel() {
-      return this.item.taskType === 2 ? '任务条件(₱)：' : '任务条件：'
-    },
+    // 进度要求列的占位符：有效下注时显示金额单位
     progressPlaceholder() {
       return this.item.taskType === 2 ? '金额(₱)' : '次数'
     }
@@ -362,14 +405,17 @@ export default {
       const prizes = this.safeJson(ext.progressPrizes, [newPrize()])
       const taskType = ext.taskType || 1
 
-      // 有效下注类型时进度要求除以1000
+      // 有效下注类型时进度要求除以 1000 转换为 ₱ 显示
       if (taskType === 2) {
         prizes.forEach(p => { p.taskValueRequired = (p.taskValueRequired || 0) / 1000 })
       }
 
-      // 大奖配置（积分*1000存储 → 前端除以1000）
+      // 投注金奖励：货币字段除以 1000 转换为 ₱ 显示；系数除以 100
       const rr = this.safeJson(ext.rewardRange, defaultRewardRange())
       const rewardRange = {
+        totalReward: (rr.totalReward || 0) / 1000,
+        issuedReward: (rr.issuedReward || 0) / 1000, // 只读，显示已发放金额
+        userMaxReward: (rr.userMaxReward || 0) / 1000,
         minScore: (rr.minScore || 0) / 1000,
         maxScore: (rr.maxScore || 0) / 1000,
         minCoefficient: (rr.minCoefficient || 0) / 100,
@@ -391,7 +437,6 @@ export default {
         whitelist,
         taskType,
         taskText: ext.taskText || '',
-        taskCondition: taskType === 2 ? (ext.taskCondition || 0) / 1000 : (ext.taskCondition || 0),
         progressPrizes: prizes.length > 0 ? prizes : [newPrize()],
         rewardRange,
         userConfig
@@ -434,8 +479,11 @@ export default {
         }
         return copy
       })
-      // 大奖配置（前端 → 存储：积分*1000，系数*100取整）
+      // 投注金奖励：货币字段乘以 1000 存储；系数乘以 100 取整；已发奖励由后端维护
       const rewardRange = {
+        totalReward: Math.round((d.rewardRange.totalReward || 0) * 1000),
+        issuedReward: Math.round((d.rewardRange.issuedReward || 0) * 1000),
+        userMaxReward: Math.round((d.rewardRange.userMaxReward || 0) * 1000),
         minScore: Math.round((d.rewardRange.minScore || 0) * 1000),
         maxScore: Math.round((d.rewardRange.maxScore || 0) * 1000),
         minCoefficient: parseInt((d.rewardRange.minCoefficient || 0) * 100),
@@ -453,10 +501,10 @@ export default {
         gameIdList: d.gameIdList,
         whitelist: d.whitelist
       }
+      // Poker extend：包含道具奖励(progressPrizes)和投注金奖励(rewardRange)，不含 casino 的 propPools 或 slot 的 betReward
       const extendObj = {
         taskType: d.taskType,
         taskText: d.taskText || '',
-        taskCondition: d.taskType === 2 ? (d.taskCondition || 0) * 1000 : (d.taskCondition || 0),
         progressPrizes: prizes,
         rewardRange,
         userTypes: d.userConfig.userTypes,
