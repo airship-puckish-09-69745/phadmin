@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="page-container" style="padding: 10px">
     <el-row>
-      <publish primary-key="cfgId" key-id="MarketApiSceneConfig" :env-empty="false" :check="configCheck" :make-content="makeContent" :attr-names="getPublishAttrNames()" :head-attrs="['cfgId']" />
+      <publish primary-key="ID" key-id="MarketApiSceneConfig" :env-empty="false" :check="configCheck" compare-type="Array" :make-content="makeContent" :attr-names="getPublishAttrNames()" :head-attrs="['ID','AppId','SceneId','Site','Scene']" />
     </el-row>
     <el-row>
       <el-col :span="20">
