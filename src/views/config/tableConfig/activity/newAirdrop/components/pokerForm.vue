@@ -41,16 +41,7 @@
                 <el-date-picker v-model="item.showEndTime" type="datetime" placeholder="选择展示结束时间" value-format="timestamp" style="width: 280px"/>
               </el-form-item>
             </el-col>
-            <el-col :xs="24" :sm="12">
-              <el-form-item label="每日开始时间：">
-                <el-date-picker v-model="item.dailyStartTime" type="datetime" placeholder="选择每日开始时间" value-format="timestamp" style="width: 280px"/>
-              </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12">
-              <el-form-item label="每日结束时间：">
-                <el-date-picker v-model="item.dailyEndTime" type="datetime" placeholder="选择每日结束时间" value-format="timestamp" style="width: 280px"/>
-              </el-form-item>
-            </el-col>
+
             <el-col :xs="24" :sm="12">
               <el-form-item label="调试时间偏移(秒)：">
                 <el-input v-model.number="item.debugTimeOffset" placeholder="请输入" style="max-width: 200px"/>
@@ -68,7 +59,6 @@
           </el-row>
 
           <!-- 任务配置（合并到活动配置）-->
-          <el-divider content-position="left"><b>任务配置</b></el-divider>
           <el-row :gutter="20">
             <el-col :xs="24" :sm="12">
               <el-form-item label="任务类型：" required>
@@ -90,7 +80,6 @@
           </el-row>
 
           <!-- 勾选游戏 -->
-          <el-divider content-position="left"><b>参与活动游戏</b></el-divider>
           <el-row>
             <el-col :span="24">
               <GameSelector
@@ -102,11 +91,9 @@
           </el-row>
 
           <!-- 白名单配置 -->
-          <el-divider content-position="left"><b>白名单配置</b></el-divider>
-          <WhitelistConfig v-model="item.whitelist" :features="[2, 3, 1, 4]"/>
-
+          <!--1. AppId白名单 2. SiteId白名单 3. ABTest开关 4. UID白名单-->
+          <WhitelistConfig v-model="item.whitelist" :features="[2, 3]"/>
           <!-- 参与活动用户类型 -->
-          <el-divider content-position="left"><b>参与活动用户类型</b></el-divider>
           <AirdropUserType v-model="item.userConfig" :activity-cfg-id="item.id"/>
         </el-form>
       </el-tab-pane>
@@ -267,8 +254,6 @@ function newItem() {
     startTime: Date.now(),
     endTime: Date.now() + 30 * 24 * 60 * 60 * 1000,
     showEndTime: Date.now() + 30 * 24 * 60 * 60 * 1000,
-    dailyStartTime: 0,
-    dailyEndTime: 0,
     debugTimeOffset: 0,
     gameIdList: [],
     whitelist: defaultWhitelist(),
@@ -401,8 +386,6 @@ export default {
         startTime: (act.startTime || 0) * 1000,
         endTime: (act.endTime || 0) * 1000,
         showEndTime: (act.showEndTime || 0) * 1000,
-        dailyStartTime: (act.dailyStartTime || 0) * 1000 || 0,
-        dailyEndTime: (act.dailyEndTime || 0) * 1000 || 0,
         debugTimeOffset: act.debugTimeOffset || 0,
         gameIdList: Array.isArray(act.gameIdList) ? act.gameIdList : [],
         whitelist,
@@ -465,8 +448,6 @@ export default {
         startTime: Math.floor(d.startTime / 1000),
         endTime: Math.floor(d.endTime / 1000),
         showEndTime: Math.floor(d.showEndTime / 1000),
-        dailyStartTime: d.dailyStartTime ? Math.floor(d.dailyStartTime / 1000) : 0,
-        dailyEndTime: d.dailyEndTime ? Math.floor(d.dailyEndTime / 1000) : 0,
         debugTimeOffset: d.debugTimeOffset || 0,
         gameType: GAME_TYPE,
         gameIdList: d.gameIdList,

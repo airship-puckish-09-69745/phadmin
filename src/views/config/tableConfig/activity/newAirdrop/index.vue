@@ -52,12 +52,6 @@
         <el-table-column prop="showEndTime" label="展示结束时间" sortable="custom" min-width="160" align="center">
           <template slot-scope="scope">{{ formatTime(scope.row.showEndTime) }}</template>
         </el-table-column>
-        <el-table-column prop="dailyStartTime" label="每日开始时间" min-width="160" align="center">
-          <template slot-scope="scope">{{ formatTime(scope.row.dailyStartTime) }}</template>
-        </el-table-column>
-        <el-table-column prop="dailyEndTime" label="每日结束时间" min-width="160" align="center">
-          <template slot-scope="scope">{{ formatTime(scope.row.dailyEndTime) }}</template>
-        </el-table-column>
         <el-table-column prop="modifyUser" label="最后修改人" width="110" align="center" show-overflow-tooltip/>
         <el-table-column prop="status" label="状态" width="90" align="center">
           <template slot-scope="scope">
