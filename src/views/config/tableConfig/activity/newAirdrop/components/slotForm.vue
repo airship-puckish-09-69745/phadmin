@@ -259,7 +259,8 @@ export default {
         this.loadEditData()
       } else {
         this.item = newItem()
-        this.propOptionsMap = {}
+        //默认加载道具
+        this.buildPropOptionsForIndex(5,0)
         this.activeTab = 'activity'
       }
     },
@@ -435,27 +436,24 @@ export default {
         }
       })
     },
-    buildPropOptionsForIndex(propType) {
-      console.log(123232)
-
+    buildPropOptionsForIndex(propType, idx) {
       const currTime = Date.now()
-      return this.propList
+      const opts = this.propList
         .filter(p => p.item_type === propType && p.status === 1)
         .filter(p => {
-          if (![2, 4, 5].includes(p.item_type)) {
-            return currTime < p.expire_time * 1000
-          }
+          if (![2, 4, 5].includes(p.item_type)) return currTime < p.expire_time * 1000
           return true
         })
         .map(p => ({ value: p.id, label: p.item_name, disabled: false }))
+      this.$set(this.propOptionsMap, idx, opts)
     },
-    onPropTypeChange(row) {
-      console.log(112121)
+    onPropTypeChange(row, idx) {
       row.propId = 0
       row.propName = ''
+      this.buildPropOptionsForIndex(row.propType, idx)
     },
-    onPropNameChange(row) {
-      const opts = this.getPropOptionsByType(row.propType)
+    onPropNameChange(row, idx) {
+      const opts = this.propOptionsMap[idx] || []
       const sel = opts.find(o => o.value === row.propId)
       if (sel) row.propName = sel.label
     }
