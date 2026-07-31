@@ -54,12 +54,11 @@
               <span class="header-label">场景ID（内部用）</span>
               <el-select
                 v-model="clientDB.FilterValueMap['sceneId']"
-                multiple
                 size="mini"
                 placeholder="全部"
                 clearable
                 filterable
-                @change="handleFilter"
+                @change="handleSceneIdFilter"
                 @click.native.stop
               >
                 <el-option
@@ -193,7 +192,7 @@ import { Message } from 'element-ui'
 import MarketApiSiteSelect from '@/components/MarketApiSiteSelect/index.vue'
 import { GetSceneOptions } from '@//utils/options'
 
-const filterMap = {}
+const filterMap = { sceneId: [] }
 
 function newItem() {
   return {
@@ -291,30 +290,25 @@ export default {
     formatTime(ts) {
       return $libDate.FormateSecondStr(ts, 2)
     },
+    handleSceneIdFilter() {
+      const selectedSceneIds = this.clientDB.FilterValueMap['sceneId'] || []
+      if (selectedSceneIds.length === 0) {
+        this.clearFilter()
+      } else {
+        this.handleFilter()
+      }
+    },
     clearFilter() {
       this.clientDB.ClearFilterMap()
       this.refreshShow()
     },
     handleFilter() {
-      const selectedSceneIds = this.clientDB.FilterValueMap['sceneId']
-      console.log('selectedSceneIds', selectedSceneIds)
-      // 如果 selectedSceneIds 为空，则返回所有数据
-      if (!selectedSceneIds || selectedSceneIds.length === 0) {
-        this.clientDB.ShowData = this.clientDB.TotalData
-      } else {
-        this.clientDB.ShowData = this.clientDB.TotalData.filter(data => {
-          // 筛选 数据中 字段 sceneId 为 selectedSceneIds 包含的数据
-          if (selectedSceneIds.includes(data.sceneId)) return true
-          return false
-        })
-      }
-
-      this.clientDB.Page.SetTotalCount(this.clientDB.ShowData.length)
+      this.clientDB.FilterData()
       this.refreshShow()
     },
     // 筛选相关逻辑
     searchChange() {
-      this.clientDB.Search(this.search, ['sceneId', 'scene', 'sceneName'])
+      this.clientDB.Search(this.search, ['sceneId'])
       this.refreshShow()
     },
     // 分页处理
