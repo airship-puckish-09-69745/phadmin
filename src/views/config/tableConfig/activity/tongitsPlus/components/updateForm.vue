@@ -227,7 +227,7 @@ import {Message} from 'element-ui'
 import request from '@/utils/request'
 import SiteSelect from '@/components/SiteSelect/index.vue'
 
-const ACTIVITY_ID = 33
+const ACTIVITY_ID = 32
 
 function newItem() {
   return {
