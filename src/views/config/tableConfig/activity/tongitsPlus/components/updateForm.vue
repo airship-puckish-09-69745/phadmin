@@ -75,8 +75,31 @@
 
             <el-col :span="24" :sm="12">
               <el-form-item label="站点白名单：" required>
-                <SiteSelect v-model="item.whitelist.siteIdList" multiple placeholder="请选择"
-                            style="width: 100%; max-width: 300px"/>
+                <SiteSelect v-model="item.whitelist.siteIdList" multiple placeholder="请选择" style="width: 100%; max-width: 300px"/>
+              </el-form-item>
+            </el-col>
+            <el-col :span="24" :sm="12">
+              <el-form-item label="A/B测试开关：" required>
+                <el-switch
+                  v-model="item.whitelist.abTest.switch"
+                  :active-value="true"
+                  :inactive-value="false"
+                  active-text="开启"
+                  inactive-text="关闭"
+                />
+              </el-form-item>
+            </el-col>
+            <el-col :span="24" :sm="12">
+              <el-form-item label="B分组比例：" required>
+                <el-input
+                  v-model.number="item.whitelist.abTest.bPercent"
+                  placeholder="请输入B分组比例"
+                  style="width: 400px"
+                >
+                  <template slot="append">
+                    %
+                  </template>
+                </el-input>
               </el-form-item>
             </el-col>
 
@@ -216,17 +239,20 @@ function newItem() {
     endTime: Date.now() + 30 * 24 * 60 * 60 * 1000,
     dailyStartTime: new Date(new Date().setHours(0, 0, 0, 0)).getTime(),
     dailyEndTime: new Date(new Date().setDate(new Date().getDate() + 30)).setHours(23, 59, 59, 999),
-    whitelist: {siteIdList: []},
+    whitelist: {siteIdList: [], abTest: {switch: false, bPercent: 0}},
+    gameIdList: [22],
     dayPrizeThreshold: 0,
     totalPrizeThreshold: 0,
     debugTimeOffset: 0,
     activitySessionEnum: [
-      {value: 2500, label: '2.5/5'},
-      {value: 5000, label: '5/10'},
-      {value: 10000, label: '10/20'},
-      {value: 25000, label: '25/50'},
-      {value: 50000, label: '50/100'},
-      {value: 100000, label: '100/200'}
+      {value: 1000, label: '1'},
+      {value: 5000, label: '5'},
+      {value: 10000, label: '10'},
+      {value: 50000, label: '50'},
+      {value: 100000, label: '100'},
+      {value: 200000, label: '200'},
+      {value: 500000, label: '500'},
+      {value: 1000000, label: '1000'}
     ],
     winGameCount: [], // 参与活动场次（盲注级别）
     treasureCfg: [{id: 1, claimAmount: '', requiredGameCount: '', ratio: ''}] // 宝箱配置表格
@@ -286,7 +312,8 @@ export default {
       const ext = typeof raw.extend === 'string' ? JSON.parse(raw.extend) : (raw.extend || {})
 
       const whitelist = {
-        siteIdList: (act.whitelist && Array.isArray(act.whitelist.siteIdList)) ? act.whitelist.siteIdList : (Array.isArray(act.siteIdList) ? act.siteIdList : [])
+        siteIdList: (act.whitelist && Array.isArray(act.whitelist.siteIdList)) ? act.whitelist.siteIdList : (Array.isArray(act.siteIdList) ? act.siteIdList : []),
+        abTest: (act.whitelist && act.whitelist.abTest) ? act.whitelist.abTest : {switch: false, bPercent: 0}
       }
 
       // 参与活动场次 - JSON字符串 -> 数组
@@ -385,8 +412,10 @@ export default {
         dailyEndTime: Math.floor(d.dailyEndTime / 1000),
         debugTimeOffset: d.debugTimeOffset,
         whitelist: {
-          siteIdList: (d.whitelist && Array.isArray(d.whitelist.siteIdList)) ? d.whitelist.siteIdList : []
-        }
+          siteIdList: (d.whitelist && Array.isArray(d.whitelist.siteIdList)) ? d.whitelist.siteIdList : [],
+          abTest: (d.whitelist && d.whitelist.abTest) ? d.whitelist.abTest : {switch: false, bPercent: 0}
+        },
+        gameIdList: d.gameIdList || []
       }
 
       // 宝箱配置领取金额 claimAmount 元转分

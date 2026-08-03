@@ -1,6 +1,9 @@
 // 这个文件用于存放一些常量数据，一般是下拉框数据，方便复用
 
-// appid
+import {
+  GetMatchTicketRightsIdList
+} from '@/utils/prop'
+
 export const APPID_OPTIONS = [
   { 'value': 1000002, 'label': 'dayusenlin' },
   { 'value': 1000003, 'label': 'testaccount' },
@@ -16,22 +19,22 @@ export const CHANNEL_OPTIONS = [
   { 'value': 'BP', 'label': 'BP' },
   { 'value': 'AP', 'label': 'AP' },
   { 'value': 'GP', 'label': 'GP' },
-  //{ 'value': 'TP', 'label': 'TP' },
+  // { 'value': 'TP', 'label': 'TP' },
   // { 'value': 'PG', 'label': 'PG' }, 2025-12-22去除PG
   { 'value': 'Dev', 'label': 'Dev' }
 ]
 // 道具类型
 export const ITEM_TYPE_OPTIONS = [
-  //{ 'value': 1, 'label': 'Tongits门票', disabled: false },
+  { 'value': 1, 'label': 'Tongits门票', disabled: false },
   { 'value': 2, 'label': '头像框', disabled: false },
- // { 'value': 3, 'label': '德州门票', disabled: false },
+  { 'value': 3, 'label': '德州门票', disabled: false },
   { 'value': 4, 'label': '德州头像框', disabled: false },
   { 'value': 5, 'label': 'SlotFreeSpin', disabled: false },
- // { 'value': 6, 'label': 'Pusoy门票', disabled: false },
+  { 'value': 6, 'label': 'Pusoy门票', disabled: false },
   { 'value': 7, 'label': '新版Tongits门票', disabled: false },
   { 'value': 8, 'label': '新版德州参赛券', disabled: false },
   { 'value': 9, 'label': '新版Pusoy门票', disabled: false },
-  { 'value': 10, 'label': '互动道具', disabled: false },
+  { 'value': 10, 'label': '互动道具', disabled: false }
 ]
 
 // 道具过期时间下拉框
@@ -70,7 +73,7 @@ export const ITEM_STATUSES = {
   // 手动取消
   MANUAL_CANCEL_STATUS: 10,
   // 执行中
-  EXECUTING_STATUS: 11,
+  EXECUTING_STATUS: 11
 }
 
 // 道具发放审批状态
@@ -97,18 +100,17 @@ export const ITEM_STATUS_OPTIONS = [
   { 'value': ITEM_STATUSES.MANUAL_CANCEL_STATUS, 'label': '手动取消', disabled: false }
 ]
 
-//头像框常量枚举定义
+// 头像框常量枚举定义
 export const PROP_TYPE_OPTIONS = {
-  PROP_TYPE_TICKET: 1,        //门票
-  PROP_TYPE_AVATAR_FRAME: 2,    //头像框
-  PROP_TYPE_TEXAS_TICKET: 3,    //德州参赛券
-  PROP_TYPE_TEXAS_AVATAR: 4,    //德州头像框
-  PROP_TYPE_SLOT_FREE_SPIN: 5,  //slot freespin
-  PROP_TYPE_PUSOY_TICKET: 6,    //Pusoy参赛券
-  PROP_TYPE_TICKET_NEW:7,      //新版Tongits门票 带交易ID
-  PROP_TYPE_TEXAS_TICKET_NEW:8, //新版德州参赛券 带交易ID
-  PROP_TYPE_PUSOY_TICKET_NEW:9, //新版Pusoy门票 带交易ID
-  PROP_TYPE_EFFECT:10, //互动道具
+  PROP_TYPE_TICKET: 1, // 门票
+  PROP_TYPE_AVATAR_FRAME: 2, // 头像框
+  PROP_TYPE_TEXAS_TICKET: 3, // 德州参赛券
+  PROP_TYPE_TEXAS_AVATAR: 4, // 德州头像框
+  PROP_TYPE_SLOT_FREE_SPIN: 5, // slot freespin
+  PROP_TYPE_PUSOY_TICKET: 6, // Pusoy参赛券
+  PROP_TYPE_TICKET_NEW: 7, // 新版Tongits门票 带交易ID
+  PROP_TYPE_TEXAS_TICKET_NEW: 8, // 新版德州参赛券 带交易ID
+  PROP_TYPE_PUSOY_TICKET_NEW: 9 // 新版Pusoy门票 带交易ID
 }
 // 操作类型
 export const PROP_SOURCE_OPTIONS = [
@@ -129,13 +131,12 @@ export const PROP_SOURCE_OPTIONS = [
   { value: 16, label: 'free spin' }
 ]
 
-//奖励分类
+// 奖励分类
 export const REWARD_CURRENCY_OPTIONS = [
   { 'value': 1, 'label': '金币' },
   { 'value': 2, 'label': '投注金' },
   { 'value': 3, 'label': '返水金' }
 ]
-
 
 // 返水金
 export const REBATE_SCENES_CFG_OPTIONS = [
@@ -143,17 +144,17 @@ export const REBATE_SCENES_CFG_OPTIONS = [
   { 'value': 6, 'label': '有限制倍数的返水金（10倍）' }
 ]
 
-//投注金
-export const  BET_SCENES_CFG_OPTIONS = [
+// 投注金
+export const BET_SCENES_CFG_OPTIONS = [
   { 'value': 1, 'label': '任意游戏投注' },
   { 'value': 2, 'label': '仅限Poker类游戏投注' },
   { 'value': 3, 'label': '仅限Slots类游戏投注' },
-  { 'value': 4, 'label': '仅限Tongits游戏投注' },
+  { 'value': 4, 'label': '仅限Tongits游戏投注' }
 
 ]
 
 // 比赛Tongits全局ID集合
-export const MATCH_UNIQUE_ID_CFG =[
+export const MATCH_UNIQUE_ID_CFG = [
   { 'value': 0, 'label': '无' },
   { 'value': 10001, 'label': '188Free' },
   { 'value': 10002, 'label': '12888Free' },
@@ -163,7 +164,7 @@ export const MATCH_UNIQUE_ID_CFG =[
   { 'value': 10006, 'label': 'P100' },
   { 'value': 10007, 'label': 'P300' },
 
-  //以下全局ID为GTCC线上赛临时用 不长期占用
+  // 以下全局ID为GTCC线上赛临时用 不长期占用
   { 'value': 11001, 'label': 'GTCC日赛' },
   { 'value': 11002, 'label': 'GTCC周赛' },
   { 'value': 11003, 'label': 'GTCC月赛' },
@@ -173,16 +174,16 @@ export const MATCH_UNIQUE_ID_CFG =[
   { 'value': 11007, 'label': 'GTCC魔戒赛' },
   { 'value': 11008, 'label': 'GTCC豪客赛' },
 
-  //以下全局ID为圣诞活动赛线临时用 不长期占用
+  // 以下全局ID为圣诞活动赛线临时用 不长期占用
   { 'value': 11101, 'label': '双旦每日iwatch赛' },
   { 'value': 11102, 'label': '双旦每日IPhone赛' },
   { 'value': 11103, 'label': '双旦大赛' },
   { 'value': 11104, 'label': '双旦豪客赛' },
-  { 'value': 11105, 'label': '双旦大赛二' },
+  { 'value': 11105, 'label': '双旦大赛二' }
 ]
 
 // 比赛Pusoy全局ID集合
-export const MATCH_PUSOY_UNIQUE_ID_CFG =[
+export const MATCH_PUSOY_UNIQUE_ID_CFG = [
   { 'value': 0, 'label': '无' },
   { 'value': 20001, 'label': '188Free' },
   { 'value': 20002, 'label': '12888Free' },
@@ -194,82 +195,132 @@ export const MATCH_PUSOY_UNIQUE_ID_CFG =[
   { 'value': 20009, 'label': 'P60' },
   { 'value': 20010, 'label': 'P150' },
   { 'value': 20011, 'label': 'P400' },
-  { 'value': 20012, 'label': '6000Free' },
+  { 'value': 20012, 'label': '6000Free' }
 ]
 
-//牌桌TableId
-export const MATCH_TABLE_SCENE_ID_CFG =[
+// 牌桌TableId
+export const MATCH_TABLE_SCENE_ID_CFG = [
   { 'value': 0, 'label': '免费赛桌面' },
   { 'value': 1, 'label': '付费赛桌面' },
   { 'value': 2, 'label': 'GTCC预选赛1' },
   { 'value': 3, 'label': 'GTCC预选赛2' },
   { 'value': 4, 'label': 'GTCC预选赛3' },
-  { 'value': 5, 'label': 'Table5' },
+  { 'value': 5, 'label': 'Table5' }
 ]
-  //Pusoy 牌桌TableId
-export const MATCH_PUSOY_TABLE_SCENE_ID_CFG =[
+// Pusoy 牌桌TableId
+export const MATCH_PUSOY_TABLE_SCENE_ID_CFG = [
   { 'value': 100, 'label': '免费赛桌面' },
-  { 'value': 101, 'label': '付费赛桌面' },
+  { 'value': 101, 'label': '付费赛桌面' }
 ]
 
-//比赛页签选项
+// 比赛页签选项
 export const MATCH_LIST_TAG_OPTIONS = [
   { 'value': 0, 'label': '未分类', disabled: false },
   { 'value': 1, 'label': 'Events', disabled: false },
   { 'value': 2, 'label': 'FREE', disabled: false },
   { 'value': 3, 'label': 'Pro Arena', disabled: false },
   { 'value': 4, 'label': 'TPCC', disabled: false },
-  { 'value': 5, 'label': 'TPCC Events', disabled: false },
+  { 'value': 5, 'label': 'TPCC Events', disabled: false }
 ]
 
-//比赛GameId选项
+// 比赛GameId选项
 export const MATCH_GAME_ID_CFG_OPTIONS = [
   { 'value': 2031, 'label': 'Tongits', disabled: false },
   { 'value': 2032, 'label': 'TexasMtt', disabled: false },
-  { 'value': 2033, 'label': 'Pusoy', disabled: false },
+  { 'value': 2033, 'label': 'Pusoy', disabled: false }
 ]
 
-//比赛GameID 宏定义
+// 比赛GameID 宏定义
 export const MATCH_IUPSTREAM_TYPE_OPTIONS = {
-  MATCH_UPSTREAM_TYPE_TONGITS: 2031,        //tongits
-  UPSTREAM_TYPE_TEXAS_MTT:2032,             //德州MTT
-  MATCH_UPSTREAM_TYPE_PUSOY: 2033,          //pusoy
+  MATCH_UPSTREAM_TYPE_TONGITS: 2031, // tongits
+  UPSTREAM_TYPE_TEXAS_MTT: 2032, // 德州MTT
+  MATCH_UPSTREAM_TYPE_PUSOY: 2033 // pusoy
 }
 
-//数据记录状态
+// 数据记录状态
 export const RECORD_STATUS_OPTIONS = {
-  //上架
+  // 上架
   ONLINE: 2,
-  //删除
+  // 删除
   DELETE: 3,
-  //下架
+  // 下架
   OFFLINE: 6,
-  //预上架
+  // 预上架
   PRE_ONLINE: 7,
-  //预下架
-  PRE_OFFLINE: 8,
+  // 预下架
+  PRE_OFFLINE: 8
 }
 
-//活动奖励类型
+// 活动奖励类型
 export const ACTIVITY_REWARD_TYPES = {
-  //金币
+  // 金币
   GOLD: 1,
-  //投注金
+  // 投注金
   BET_GOLD: 2,
-  //返水金
+  // 返水金
   REBATE_GOLD: 3,
-  //道具
+  // 道具
   PROP: 4,
-  //活动物品
-  ACTIVITY_ITEM: 5,
+  // 活动物品
+  ACTIVITY_ITEM: 5
 }
 
-//活动奖励类型选项
+// 活动奖励类型选项
 export const ACTIVITY_REWARD_TYPE_OPTIONS = [
   { 'value': ACTIVITY_REWARD_TYPES.GOLD, 'label': '金币' },
   { 'value': ACTIVITY_REWARD_TYPES.BET_GOLD, 'label': '投注金' },
   { 'value': ACTIVITY_REWARD_TYPES.REBATE_GOLD, 'label': '返水金' },
   { 'value': ACTIVITY_REWARD_TYPES.PROP, 'label': '道具' },
-  { 'value': ACTIVITY_REWARD_TYPES.ACTIVITY_ITEM, 'label': '活动物品' },
+  { 'value': ACTIVITY_REWARD_TYPES.ACTIVITY_ITEM, 'label': '活动物品' }
 ]
 
+// 场景ID（内部用）选项。对应配置： phgames/base/gDefine/market_api.go
+const SCENE_ID_OPTIONS = [
+  // 常规场景
+  { 'value': 1, 'label': '任意游戏投注' },
+  { 'value': 2, 'label': '仅限Poker类游戏投注' },
+  { 'value': 3, 'label': '仅限Slots类游戏投注' },
+  { 'value': 4, 'label': '仅限Tongits游戏投注' },
+  { 'value': 5, 'label': '没有任何限制的返水金' },
+  { 'value': 6, 'label': '有限制倍数的返水金（10倍）' },
+  { 'value': 7, 'label': '【圣诞节礼物活动】任意游戏投注' },
+  { 'value': 8, 'label': '仅限GZ厅任意游戏投注的投注金【直播抽奖】' },
+  { 'value': 9, 'label': '仅限GZ任意游戏投注金【TexasPlus免费赛】' },
+  { 'value': 10, 'label': '没有任何限制的返水金【TexasPlus付费赛】' },
+  { 'value': 11, 'label': '仅限GZ任意游戏投注金【新手任务】' },
+  { 'value': 12, 'label': '仅限GZ任意游戏投注金【摇钱树活动】' },
+  { 'value': 13, 'label': '仅限GZ任意游戏投注金【空投活动】' },
+  { 'value': 14, 'label': '仅限GZ任意游戏投注金【红包雨活动Poker】' },
+  { 'value': 15, 'label': '仅限GZ任意游戏投注金【Tongits免费赛】' },
+  { 'value': 16, 'label': '没有任何限制的返水金【Tongits免费赛】' },
+  { 'value': 17, 'label': '仅限GZ任意游戏投注金【活动地图】' },
+  { 'value': 18, 'label': '仅限GZ任意游戏投注金【Poker专题活动】' },
+  { 'value': 19, 'label': 'Tongits自建赛投注金【Tongits自建赛】' },
+  { 'value': 20, 'label': '仅限GZ任意游戏投注金【TongitsHunter活动投注金】' },
+  { 'value': 21, 'label': '仅限GZ任意游戏投注金【TongitsKingOfPot活动】' },
+  { 'value': 22, 'label': 'GP站点的用户在gamezone厅下注【排行榜活动】' },
+  { 'value': 23, 'label': '仅限GZ任意游戏投注金【pusoy比赛】' },
+  { 'value': 24, 'label': '仅限GZ任意游戏投注金【7日留存活动】' },
+  { 'value': 26, 'label': '仅限GZ任意游戏返水金【万圣节活动】' },
+  { 'value': 27, 'label': '仅限GZ任意游戏投注金【竖版游戏排行榜活动】' },
+  { 'value': 28, 'label': '仅限GZ任意游戏投注金【Poker类排行榜活动】' },
+  { 'value': 29, 'label': '仅限GZ任意游戏投注金【聚宝盆活动】' },
+  { 'value': 30, 'label': '仅限GZ任意游戏返水金【奖励邮件】' },
+  { 'value': 31, 'label': '仅限GZ任意游戏投注金【红包雨活动slot】' },
+  { 'value': 32, 'label': '仅限GZ任意游戏投注金【空投活动 solt】' },
+  { 'value': 33, 'label': '仅限GZ任意游戏投注金【PokerPlus活动】' },
+  { 'value': 34, 'label': '仅限GZ任意游戏投注金【固定反水活动】' },
+  { 'value': 35, 'label': '仅限GZ任意游戏投注金【阶梯反水活动】' },
+  { 'value': 36, 'label': '仅限GZ任意游戏投注金【海岛寻宝活动BP】' },
+  { 'value': 37, 'label': '仅限GZ任意游戏投注金【海岛寻宝活动GP】' }
+]
+
+export const GetSceneOptions = (appId) => {
+  var sceneIdOptions = SCENE_ID_OPTIONS
+  // 门票相关场景
+  const matchTickets = GetMatchTicketRightsIdList(appId)
+  for (let i = 0; i < matchTickets.length; i++) {
+    sceneIdOptions.push({ 'value': matchTickets[i].sceneId, 'label': matchTickets[i].label, 'ticketId': matchTickets[i].ticketId })
+  }
+  return sceneIdOptions
+}
