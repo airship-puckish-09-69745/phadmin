@@ -240,6 +240,7 @@ function newItem() {
     dailyStartTime: new Date(new Date().setHours(0, 0, 0, 0)).getTime(),
     dailyEndTime: new Date(new Date().setDate(new Date().getDate() + 30)).setHours(23, 59, 59, 999),
     whitelist: {siteIdList: [], abTest: {switch: false, bPercent: 0}},
+    gameIdList: [22],
     dayPrizeThreshold: 0,
     totalPrizeThreshold: 0,
     debugTimeOffset: 0,
@@ -413,7 +414,8 @@ export default {
         whitelist: {
           siteIdList: (d.whitelist && Array.isArray(d.whitelist.siteIdList)) ? d.whitelist.siteIdList : [],
           abTest: (d.whitelist && d.whitelist.abTest) ? d.whitelist.abTest : {switch: false, bPercent: 0}
-        }
+        },
+        gameIdList: d.gameIdList || []
       }
 
       // 宝箱配置领取金额 claimAmount 元转分
