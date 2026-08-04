@@ -33,6 +33,11 @@ service.interceptors.request.use(
         config.headers['X-App-Id'] = store.getters.appId
       }
       config.headers['X-Version'] = store.getters.version
+      // 配置发布需要按列表中的目标 AppId 操作，而不是当前页面右上角选中的 AppId。
+      if (config.isGameCfg && config.data.AppId !== undefined) {
+        config.headers['X-App-Id'] = config.data.AppId
+        config.headers['X-Version'] = 'V2'
+      }
       isHandle = true
     }
     // do something before request is sent

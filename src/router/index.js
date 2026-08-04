@@ -7,6 +7,7 @@ Vue.use(Router)
 import Layout from '@/layout'
 import Watermark from '@/utils/watermark'
 import { IsMars } from '@/utils/env'
+import store from '@/store'
 import path from 'path'
 // import {IsMars} from "@/utils/env";
 /* Router Modules */
@@ -1959,7 +1960,10 @@ export const asyncRoutes = [
           },
           {
             path: 'millionaire_script_cfg',
-            component: () => import('@/views/config/tableConfig/slots/slotsScript/MillionaireScriptCfg'),
+            // 保持旧版、新版大奖配置页面各自独立，环境切换会刷新页面后重新加载对应组件。
+            component: () => store.getters.version === 'V2'
+              ? import('@/views/config/tableConfig/slots/slotsScript/slotsBigPrizeConfig')
+              : import('@/views/config/tableConfig/slots/slotsScript/MillionaireScriptCfg'),
             name: 'millionaire_script_cfg',
             meta: { title: '老虎机大奖配置', perm: 'SLOTS_SCRIPT_MNG' }
           },
