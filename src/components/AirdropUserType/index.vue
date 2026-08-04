@@ -3,7 +3,7 @@
     <!-- 用户类型选择 -->
     <el-form-item label="参与活动用户类型：" required>
       <el-select v-model="currentUserType" placeholder="请选择" style="width: 280px" @change="onUserTypeChange">
-        <el-option v-for="item in effectiveUserTypeOptions" :key="item.value" :label="item.label" :value="item.value"/>
+        <el-option v-for="item in effectiveUserTypeOptions" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
     </el-form-item>
 
@@ -30,7 +30,7 @@
           :limit="1"
           style="margin-top: 8px"
         >
-          <i class="el-icon-upload"/>
+          <i class="el-icon-upload" />
           <div class="el-upload__text">将文件拖到此处 或 <em>点击上传</em></div>
           <div slot="tip" class="el-upload__tip">只能上传 text/csv 格式文件，且不超过10MB</div>
         </el-upload>
@@ -79,22 +79,22 @@
     <template v-if="isTagUsers">
       <el-form-item label="标签类型：">
         <el-select v-model="localValue.userFilterCondition.userTagConfig.tagType" placeholder="请选择标签类型" @change="onTagTypeChange">
-          <el-option v-for="item in effectiveUserTagOptions" :key="item.value" :label="item.label" :value="item.value"/>
+          <el-option v-for="item in effectiveUserTagOptions" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
       <el-form-item label="标签子类：">
         <el-select v-model="localValue.userFilterCondition.userTagConfig.tagId" placeholder="请选择标签子类" @change="onTagIdChange">
-          <el-option v-for="item in tagIdOptions" :key="item.value" :label="item.label" :value="item.value"/>
+          <el-option v-for="item in tagIdOptions" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
       <el-form-item v-if="showUserLevelCondition" label="用户等级：">
         <el-select v-model="localValue.userFilterCondition.userTagConfig.tagValue" placeholder="请选择用户等级">
-          <el-option v-for="item in userLevelOptions" :key="item.value" :label="item.label" :value="item.value"/>
+          <el-option v-for="item in userLevelOptions" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
       <el-form-item v-if="showGameIntensityCondition" label="游戏强度：">
         <el-select v-model="localValue.userFilterCondition.userTagConfig.tagValue" placeholder="请选择游戏强度">
-          <el-option v-for="item in userTagGameIntensityOptions" :key="item.value" :label="item.label" :value="item.value"/>
+          <el-option v-for="item in userTagGameIntensityOptions" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
     </template>
@@ -295,8 +295,9 @@ export default {
       // 使用 effectiveUserTagOptions 以支持各玩法自定义标签选项
       const found = this.effectiveUserTagOptions.find(item => item.value === tagType)
       this.tagIdOptions = (found && found.children) || []
-      if (this.localValue.userFilterCondition.userTagConfig.tagType !== tagType && this.tagIdOptions.length > 0) {
-        this.localValue.userFilterCondition.userTagConfig.tagId = this.tagIdOptions[0].value
+      if (this.localValue.userFilterCondition.userTagConfig.tagType !== tagType) {
+        this.localValue.userFilterCondition.userTagConfig.tagId = this.tagIdOptions.length > 0 ? this.tagIdOptions[0].value : 0
+        this.localValue.userFilterCondition.userTagConfig.tagValue = 0
       }
       this.localValue.userFilterCondition.userTagConfig.tagType = tagType
       this.emitChange()
