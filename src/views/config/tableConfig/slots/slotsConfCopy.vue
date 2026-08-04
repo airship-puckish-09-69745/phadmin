@@ -91,8 +91,12 @@
             <div v-show="hasGameRelatedConfig"
                 style="margin-top: 15px; padding: 10px; border: 1px solid #eee;">
 
-                <div style="font-weight: bold; margin-bottom: 10px;">
-                    选择游戏
+                <div class="game-select-header">
+                    <div style="font-weight: bold;">
+                        选择游戏
+                    </div>
+                    <el-input v-model="gameIdKeyword" clearable size="mini" prefix-icon="el-icon-search"
+                        placeholder="输入游戏ID搜索" class="game-id-search" />
                 </div>
 
                 <!-- 全选 -->
@@ -105,7 +109,7 @@
 
                 <!-- 游戏列表 -->
                 <el-checkbox-group v-model="selectedGameIds" class="game-checkbox-grid" @change="handleGameChange">
-                    <el-checkbox v-for="g in gameOptions" :key="g.key" :label="g.key"
+                    <el-checkbox v-for="g in filteredGameOptions" :key="g.key" :label="g.key"
                         :disabled="isGameOptionDisabled(g.key)" @click.native="handleGameOptionClick(g.key)">
                         {{ g.label }}
                     </el-checkbox>
@@ -435,6 +439,7 @@ export default {
             selectedGameCfgKeys: ['base', 'rule', 'ext'],
             selectedGameIds: [],
             checkAllGames: false,
+            gameIdKeyword: '',
             lark: false,
             larkPages: [],
             larkConfig: {}
@@ -475,6 +480,17 @@ export default {
             }
             return this.gameOptions.filter(game => !this.isGameMissingSubKeyMap(game.key))
         },
+        filteredGameOptions() {
+            const keyword = this.gameIdKeyword.trim()
+            if (!keyword) {
+                return this.gameOptions
+            }
+            return this.gameOptions.filter(game => String(game.key).includes(keyword))
+        },
+        selectableFilteredGameOptions() {
+            const selectableGameIdSet = new Set(this.selectableGameOptions.map(game => String(game.key)))
+            return this.filteredGameOptions.filter(game => selectableGameIdSet.has(String(game.key)))
+        },
         requiresGameSubKeyMap() {
             return this.configTypes.includes('slot_game') ||
                 (this.isLegacySource && this.configTypes.includes('slot_jackpot'))
@@ -483,8 +499,10 @@ export default {
             return this.configTypes.some(type => ['slot_game', 'slot_plan', 'slot_jackpot'].includes(type))
         },
         isGameIndeterminate() {
-            const total = this.selectableGameOptions.length
-            return this.selectedGameIds.length > 0 && this.selectedGameIds.length < total
+            const total = this.selectableFilteredGameOptions.length
+            const selectedGameIdSet = new Set(this.selectedGameIds.map(gameId => String(gameId)))
+            const selectedCount = this.selectableFilteredGameOptions.filter(game => selectedGameIdSet.has(String(game.key))).length
+            return selectedCount > 0 && selectedCount < total
         },
         isV2Version() {
             return store.getters.version === 'V2'
@@ -637,6 +655,9 @@ export default {
             )
             this.resetLegacySourceCache()
             this.filterSelectedGamesBySubKeyMap(false)
+        },
+        gameIdKeyword() {
+            this.updateCheckAllGames()
         }
     },
 
@@ -1259,8 +1280,10 @@ export default {
         },
 
         updateCheckAllGames() {
-            const total = this.selectableGameOptions.length
-            this.checkAllGames = total > 0 && this.selectedGameIds.length === total
+            const total = this.selectableFilteredGameOptions.length
+            const selectedGameIdSet = new Set(this.selectedGameIds.map(gameId => String(gameId)))
+            const selectedCount = this.selectableFilteredGameOptions.filter(game => selectedGameIdSet.has(String(game.key))).length
+            this.checkAllGames = total > 0 && selectedCount === total
         },
 
         filterSelectedGamesBySubKeyMap(showTip = true) {
@@ -3238,14 +3261,19 @@ export default {
         },
 
         handleCheckAllGameChange(val) {
+            const filteredGameIds = this.filteredGameOptions.map(game => game.key)
             if (val) {
-                const allGameIds = this.gameOptions.map(g => g.key)
-                const missingGames = this.getMissingSubKeyMapGames(allGameIds)
-                this.selectedGameIds = this.selectableGameOptions.map(g => g.key)
+                const missingGames = this.getMissingSubKeyMapGames(filteredGameIds)
+                const selectedGameIdSet = new Set(this.selectedGameIds.map(gameId => String(gameId)))
+                const gameIdsToSelect = this.selectableFilteredGameOptions
+                    .map(game => game.key)
+                    .filter(gameId => !selectedGameIdSet.has(String(gameId)))
+                this.selectedGameIds = this.selectedGameIds.concat(gameIdsToSelect)
                 this.updateCheckAllGames()
                 this.showMissingSubKeyMapTip(missingGames)
             } else {
-                this.selectedGameIds = []
+                const filteredGameIdSet = new Set(filteredGameIds.map(gameId => String(gameId)))
+                this.selectedGameIds = this.selectedGameIds.filter(gameId => !filteredGameIdSet.has(String(gameId)))
                 this.updateCheckAllGames()
             }
         },
@@ -3291,6 +3319,17 @@ export default {
     color: #666;
     margin-bottom: 6px;
     font-weight: 600;
+}
+
+.game-select-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.game-id-search {
+    width: 220px;
 }
 
 .action {
