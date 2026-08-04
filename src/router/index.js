@@ -2370,6 +2370,12 @@ export const asyncRoutes = [
         component: () => import('@/views/config/tableConfig/activity/phasedBetRebate/index.vue'),
         name: 'phasedBetRebate',
         meta: { title: '阶段性反水活动配置', noCache: true }
+      },
+      {
+        path: 'newAirdrop',
+        component: () => import('@/views/config/tableConfig/activity/newAirdrop/index.vue'),
+        name: 'newAirdrop',
+        meta: { title: '新空投活动配置', noCache: true }
       }
     ]
   },
