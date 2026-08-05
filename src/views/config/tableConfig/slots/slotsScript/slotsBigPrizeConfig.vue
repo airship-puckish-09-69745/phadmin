@@ -24,7 +24,18 @@
         </el-col>
       </el-row>
 
-      <fieldset>
+      <el-row style="margin-top: 12px">
+        <el-col :span="24">
+          <span>适用于(单注)BET金额列表：</span>
+          <el-select v-model="queryBetsStr" size="mini" filterable default-first-option @change="changeSelectBets">
+            <el-option v-for="option in betsStrList" :key="option.key" :label="option.label" :value="option.key" />
+          </el-select>
+          <el-button type="success" size="mini" @click="addBetsStr">添加新的分BET配置</el-button>
+          <el-button type="danger" size="mini" :disabled="queryBetsStr === ''" @click="delBetsStr">删除当前分BET配置</el-button>
+        </el-col>
+      </el-row>
+
+      <fieldset style="margin-top: 20px">
         <el-form ref="item" :model="item" label-width="200px">
 
           <!-- 大奖配置 开始 -->
@@ -33,14 +44,14 @@
             <el-row>
               <el-col :span="8" style="text-align: center;">
                 <el-form-item label="下注总金额抽水(千分之一)：">
-                  <el-input v-model.number="item.BigPrizeCfg.TaxPerThousand" autosize>
+                  <el-input v-model.number="editItem.BigPrizeCfg.TaxPerThousand" autosize>
                     <template slot="append">‰(千分之一)</template>
                   </el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="中奖概率(百万分之一)：">
-                  <el-input v-model.number="item.BigPrizeCfg.HitPerMillion">
+                  <el-input v-model.number="editItem.BigPrizeCfg.HitPerMillion">
                     <template slot="append">单位:百万分之一</template>
                   </el-input>
                 </el-form-item>
@@ -49,7 +60,7 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item label="中奖最大间隔(多少次中一次奖)">
-                  <el-input v-model.number="item.BigPrizeCfg.HitSteps">
+                  <el-input v-model.number="editItem.BigPrizeCfg.HitSteps">
                     <template slot="append">次</template>
                   </el-input>
                 </el-form-item>
@@ -59,7 +70,7 @@
             <el-table
               ref="filterTable"
               :key="itemKey"
-              :data="item.BigPrizeCfg.Plans"
+              :data="editItem.BigPrizeCfg.Plans"
               stripe
               border
               :header-cell-style="libShow.DefaultTableHeadClass"
@@ -129,7 +140,7 @@
             <el-row>
               <el-button @click="addGroup">添加新的用户群大奖配置</el-button>
             </el-row>
-            <el-table :data="item.BigPrizeGroups" stripe border :header-cell-style="libShow.DefaultTableHeadClass" :row-style="{height:'10px'}" :cell-style="libShow.DefaultTableCell" style="width: 100%; margin: 10px auto;">
+            <el-table :data="editItem.BigPrizeGroups" stripe border :header-cell-style="libShow.DefaultTableHeadClass" :row-style="{height:'10px'}" :cell-style="libShow.DefaultTableCell" style="width: 100%; margin: 10px auto;">
               <el-table-column prop="GroupId" label="分组ID" width="100"><template slot-scope="scope"><el-input v-model.number="scope.row.GroupId" size="mini" /></template></el-table-column>
               <el-table-column prop="GroupName" label="分组名" width="300"><template slot-scope="scope"><el-input v-model="scope.row.GroupName" size="mini" /></template></el-table-column>
               <el-table-column prop="GroupDesc" label="描述" width="400"><template slot-scope="scope"><el-input v-model="scope.row.GroupDesc" type="textarea" :rows="3" size="mini" /></template></el-table-column>
@@ -148,7 +159,7 @@
           <!-- 用户群大奖配置 结束 -->
 
           <!-- 大奖预热配置 开始 -->
-          <fieldset style="margin:20px auto;">
+          <fieldset v-if="queryBetsStr === ''" style="margin:20px auto;">
             <legend>大奖预热配置</legend>
             <el-row>
               <el-col :span="8">
@@ -352,6 +363,18 @@
     </el-dialog>
     <!-- 用户群组条件弹窗 结束 -->
 
+    <el-dialog v-if="showEditBetsStr" title="添加新的分BET配置" :visible.sync="showEditBetsStr" width="600px">
+      <el-form label-width="300px">
+        <el-form-item label="BET列表（单注金额，使用英文逗号分隔）：">
+          <el-input v-model="editBetsStr" size="mini" />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="showEditBetsStr = false">取消</el-button>
+        <el-button type="primary" @click="doAddBetsStr">添加</el-button>
+      </div>
+    </el-dialog>
+
     <multi-app-select-dialog
       :visible.sync="multiAppDialogVisible"
       :app-options="appOptions"
@@ -400,18 +423,37 @@ export default {
           MultiRate: 0,
           MaxRate: 0,
           WarmUpEnabled: false
-        }
+        },
+        BigPrizeBetCfg: []
       },
       gameOptions: [],
       queryGid: 82,
+      betsStrList: [
+        { key: '', label: '默认' }
+      ],
+      queryBetsStr: '',
+      activeBetsStr: '',
+      showEditBetsStr: false,
+      editBetsStr: '',
+      editItem: {
+        BigPrizeCfg: {
+          TaxPerThousand: 0,
+          HitPerMillion: 0,
+          HitSteps: 0,
+          OddsCfg: [],
+          Plans: []
+        },
+        BigPrizeGroups: []
+      },
       form: {},
       libShow: $libShow,
       AttrNames: {
         'Data.BigPrizeCfg.TaxPerThousand': ' 下注总金额抽水比例',
         'Data.BigPrizeCfg.HitPerMillion': ' 中奖概率',
-        'Data.BigPrizeCfg.OddsCfg': ' 大奖中奖倍数配置',
+        'Data.BigPrizeCfg.Plans': ' 大奖方案',
         'Data.BigPrizeGroups': ' 用户群大奖配置',
         'Data.WarmUpCfg': '大奖预热配置',
+        'Data.BigPrizeBetCfg': '分BET大奖配置',
         types: {
           Data: 'jsonString' // 整个数据项的类型
         }
@@ -440,105 +482,8 @@ export default {
         { 'label': '启用', 'value': true },
         { 'label': '禁用', 'value': false }
       ],
-      subKeyMap: {
-        '76': 'candypartyway',
-        '89': 'crazy777mars',
-        '161': 'gigaacemars',
-        '94': 'chargebison',
-        '78': 'supergem',
-        '80': 'candycandy',
-        '85': 'superacemars',
-        '95': 'chargebisonmars',
-        '158': 'sharkkingdom',
-        '168': 'pharaohtreasure',
-        '169': 'pharaohtreasuremars',
-        '90': 'moneycoming',
-        '97': 'romanarenamars',
-        '153': 'aladdinlampmars',
-        '77': 'candypartyallline',
-        '174': 'treasurebowl',
-        '175': 'treasurebowlmars',
-        '81': 'supergemmars',
-        '79': 'candycandymars',
-        '99': 'supertongitmars',
-        '157': 'crazyacemars',
-        '154': 'grandace',
-        '86': 'supergemii',
-        '84': 'superace',
-        '88': 'crazy777',
-        '159': 'sharkkingdommars',
-        '98': 'supertongit',
-        '93': 'fortuneacegomars',
-        '96': 'romanarena',
-        '155': 'grandacemars',
-        '163': 'majoracemars',
-        '150': 'supergemiii',
-        '82': 'millionaire',
-        '152': 'aladdinlamp',
-        '160': 'gigaace',
-        '156': 'crazyace',
-        '162': 'majorace',
-        '87': 'supergemiimars',
-        '151': 'supergemiiimars',
-        '83': 'millionairemars',
-        '92': 'fortuneacego',
-        '91': 'moneycomingmars',
-        '164': 'mahjongfortune',
-        '170': 'epicace',
-        '171': 'epicacemars',
-        '166': 'firelink',
-        '167': 'firelinkmars',
-        '172': 'wrathofzeus',
-        '173': 'wrathofzeusmars',
-        '176': 'puppyhome',
-        '177': 'puppyhomemars',
-        '178': 'mayantotem',
-        '180': 'fishingmaster',
-        '184': 'dancelion',
-        '100180': 'fishingmaster_x',
-        '181': 'fishingmastermars',
-        '182': 'godoffortune',
-        '183': 'godoffortunemars',
-        '190': 'arcaneegypt',
-        '186': 'mahjongjackpot',
-        '100186': 'mahjongjackpot_x',
-        '188': 'streetfighting',
-        '194': 'goldtrain',
-        '192': 'bountyraid',
-        '196': 'goldminer',
-        '198': 'fortuneblessing',
-        '200': 'atlantistreasure',
-        '202': 'fortunateebisu',
-        '204': 'spacetreasure',
-        '208': 'candyburst',
-        '206': 'luckywineglass',
-        '210': 'luckyspirits',
-        '216': 'phoenix',
-        '220': 'goldendragon',
-        '221': 'goldendragonmars',
-        '212': 'pirateship',
-        '214': 'pumpkincash',
-        '222': 'lionfortune',
-        '224': 'supermahjong',
-        '232': 'mafiawars',
-        '236': 'pacquiaofortune',
-        '1236': 'pacquiaofortuneplaynow',
-        '218': 'wrathofzeus2',
-        '228': 'jokerace',
-        '226': 'fortunewheel',
-        '230': 'pahiyaswins',
-        '1237': 'pahiyaswinsplaynow',
-        '234': 'fortunetree',
-        '240': 'bathalaageofcreation',
-        '242': 'fortunemuseum',
-        '248': 'mayantemple',
-        '246': 'talareyessouthseapearls',
-        '100246': 'talareyessouthseapearls_x'
-      },
-      appOptions: [
-        { value: 0, label: '旧版' }
-      ],
-      appId: store.getters.appId || 0,
+      appOptions: [],
+      appId: store.getters.appId,
       multiAppDialogVisible: false,
       appTreeData: [],
       checkedAppKeys: [],
@@ -570,10 +515,10 @@ export default {
     },
 
     addBigPrizePlansCfgRow(row) {
-      if (!this.item.BigPrizeCfg.Plans) {
-        this.item.BigPrizeCfg['Plans'] = []
+      if (!this.editItem.BigPrizeCfg.Plans) {
+        this.editItem.BigPrizeCfg['Plans'] = []
       }
-      this.item.BigPrizeCfg.Plans.push({
+      this.editItem.BigPrizeCfg.Plans.push({
         'OddsMin': 0,
         'OddsMax': 0,
         'OddsCfg': []
@@ -582,14 +527,14 @@ export default {
     },
 
     delBigPrizePlansOddsCfgRow(row) {
-      this.item.BigPrizeCfg.Plans[this.showVisibleIdx].OddsCfg.splice(row, 1)
+      this.editItem.BigPrizeCfg.Plans[this.showVisibleIdx].OddsCfg.splice(row, 1)
     },
 
     addBigPrizePlansOddsCfgRow() {
-      if (!this.item.BigPrizeCfg.Plans) {
-        this.item.BigPrizeCfg['Plans'] = []
+      if (!this.editItem.BigPrizeCfg.Plans) {
+        this.editItem.BigPrizeCfg['Plans'] = []
       }
-      this.item.BigPrizeCfg.Plans[this.showVisibleIdx].OddsCfg.push({
+      this.editItem.BigPrizeCfg.Plans[this.showVisibleIdx].OddsCfg.push({
         'OddsMin': 0,
         'OddsMax': 0,
         'Weight': 0
@@ -597,7 +542,7 @@ export default {
     },
 
     delBigPrizePlansCfgRow(row) {
-      this.item.BigPrizeCfg.Plans.splice(row, 1)
+      this.editItem.BigPrizeCfg.Plans.splice(row, 1)
     },
 
     dataRule(required, config) {
@@ -610,28 +555,37 @@ export default {
     getSlotsBigPrizeConfigKey() {
       return 'SlotsBigPrizeConfig_' + this.queryGid
     },
+    cloneData(data) {
+      return JSON.parse(JSON.stringify(data))
+    },
+    getDefaultBigPrizeCfg() {
+      return {
+        TaxPerThousand: 0,
+        HitPerMillion: 0,
+        HitSteps: 0,
+        OddsCfg: [],
+        Plans: []
+      }
+    },
 
     getPostData() {
-      const ret = {}
-      Object.assign(ret, this.item)
-      for (const o of ret.BetOddsPlans) {
+      this.commitEditingData()
+      const ret = this.cloneData(this.item)
+      const betOddsPlans = Array.isArray(ret.BetOddsPlans) ? ret.BetOddsPlans : []
+      for (const o of betOddsPlans) {
         o.TargetBets = []
-        const arr = o.TargetBetStr.split(',')
+        const arr = String(o.TargetBetStr || '').split(',')
         for (const s of arr) {
-          o.TargetBets.push(Number(s) * 1000)
+          if (s !== '') {
+            o.TargetBets.push(Number(s) * 1000)
+          }
         }
       }
       return ret
     },
     getDefaultItem() {
       return {
-        BigPrizeCfg: {
-          TaxPerThousand: 0,
-          HitPerMillion: 0,
-          HitSteps: 0,
-          OddsCfg: [],
-          Plans: []
-        },
+        BigPrizeCfg: this.getDefaultBigPrizeCfg(),
         BigPrizeGroups: [],
         WarmUpCfg: {
           Scatter1Rate: 0,
@@ -641,13 +595,14 @@ export default {
           MaxRate: 0,
           WarmUpEnabled: false
         },
-        BetOddsPlans: []
+        BetOddsPlans: [],
+        BigPrizeBetCfg: []
       }
     },
     buildSavePayload() {
       const payload = JSON.parse(JSON.stringify(this.form || {}))
       const name = this.getGameName(this.queryGid) + '大奖配置'
-      payload.AppId = this.appId || store.getters.appId
+      payload.AppId = this.appId
       payload.RedisSubkey = this.getSlotsBigPrizeConfigKey()
       payload.Data = JSON.stringify(this.getPostData())
       payload.Name = payload.Name || name
@@ -655,60 +610,83 @@ export default {
       payload.Type = payload.Type || 1
       return payload
     },
+    applyConfigData(data) {
+      const defaultItem = this.getDefaultItem()
+      const source = data && typeof data === 'object' ? data : {}
+      const item = Object.assign({}, defaultItem, source)
+      item.BigPrizeCfg = Object.assign({}, defaultItem.BigPrizeCfg, source.BigPrizeCfg || {})
+      item.BigPrizeGroups = Array.isArray(source.BigPrizeGroups) ? source.BigPrizeGroups : []
+      item.WarmUpCfg = Object.assign({}, defaultItem.WarmUpCfg, source.WarmUpCfg || {})
+      item.BetOddsPlans = Array.isArray(source.BetOddsPlans) ? source.BetOddsPlans : []
+      item.BigPrizeBetCfg = Array.isArray(source.BigPrizeBetCfg) ? source.BigPrizeBetCfg : []
+
+      for (const betOddsPlan of item.BetOddsPlans) {
+        if (!Array.isArray(betOddsPlan.TargetBets)) continue
+        betOddsPlan.TargetBetStr = betOddsPlan.TargetBets.map(bet => Number(bet) / 1000).join(',')
+      }
+
+      this.item = item
+      this.normalizeBigPrizeBetConfigs()
+    },
+    normalizeBigPrizeBetConfigs() {
+      const configs = Array.isArray(this.item.BigPrizeBetCfg) ? this.item.BigPrizeBetCfg : []
+      for (const config of configs) {
+        config.Bets = Array.isArray(config.Bets) ? config.Bets : []
+        config.BetsStr = config.BetsStr || config.Bets.map(bet => Number(bet) / 1000).join(',')
+        config.BigPrizeCfg = Object.assign(this.getDefaultBigPrizeCfg(), config.BigPrizeCfg || {})
+        config.BigPrizeGroups = Array.isArray(config.BigPrizeGroups) ? config.BigPrizeGroups : []
+      }
+      this.item.BigPrizeBetCfg = configs
+      this.betsStrList = [{ key: '', label: '默认' }].concat(configs.map(config => ({
+        key: config.BetsStr,
+        label: config.BetsStr
+      })))
+      this.queryBetsStr = ''
+      this.activeBetsStr = ''
+      this.loadEditingData()
+    },
+    getSelectedBetConfig(betsStr) {
+      if (betsStr === '') return this.item
+      return this.item.BigPrizeBetCfg.find(config => config.BetsStr === betsStr)
+    },
+    loadEditingData() {
+      const config = this.getSelectedBetConfig(this.queryBetsStr) || this.item
+      this.editItem = {
+        BigPrizeCfg: this.cloneData(Object.assign(this.getDefaultBigPrizeCfg(), config.BigPrizeCfg || {})),
+        BigPrizeGroups: this.cloneData(Array.isArray(config.BigPrizeGroups) ? config.BigPrizeGroups : [])
+      }
+      this.activeBetsStr = this.queryBetsStr
+    },
+    commitEditingData() {
+      const config = this.getSelectedBetConfig(this.activeBetsStr)
+      if (!config) return
+      config.BigPrizeCfg = this.cloneData(this.editItem.BigPrizeCfg)
+      config.BigPrizeGroups = this.cloneData(this.editItem.BigPrizeGroups)
+    },
+    resetConfigData() {
+      this.form = {}
+      this.applyConfigData(this.getDefaultItem())
+    },
     getData() {
       getCustomize(this.getSlotsBigPrizeConfigKey(), this.appId).then(response => {
         if (response.RetCode === 0) {
           this.form = response.Data || {}
-          if (response.Data && response.Data.Data !== '') {
-            const item = JSON.parse(response.Data.Data)
-            if (typeof item['BigPrizeGroups'] === 'undefined') {
-              item['BigPrizeGroups'] = []
-            }
-            if (typeof item['WarmUpCfg'] === 'undefined') {
-              item['WarmUpCfg'] = {
-                Scatter1Rate: 0,
-                Scatter2Rate: 0,
-                Scatter3Rate: 0,
-                MultiRate: 0,
-                MaxRate: 0,
-                WarmUpEnabled: false
-              }
-            }
-            Object.assign(this.item, item)
-            for (const itemElement of item.BetOddsPlans) {
-              let str = ''
-              for (const o of itemElement.TargetBets) {
-                str += o / 1000 + ','
-              }
-              itemElement['TargetBetStr'] = str.substring(0, str.length - 1)
-            }
-            // 设置修改之前数据
-            this.$refs.compare.SetOldVal(response.Data)
-          }
+          const data = response.Data && response.Data.Data ? JSON.parse(response.Data.Data) : this.getDefaultItem()
+          this.applyConfigData(data)
+          this.$refs.compare.SetOldVal(response.Data)
         } else {
-          this.form = {}
-          this.item = this.getDefaultItem()
+          this.resetConfigData()
         }
       })
     },
 
     checkSaveData() {
       if (!ValidateVueItem(this.$refs['item'])) return false
-      if (this.item.BigPrizeCfg.TaxPerThousand < 0 || this.item.BigPrizeCfg.TaxPerThousand > 1000) {
-        Message.error('下注总金额抽水值必须在 0~1000 之间!')
+      this.commitEditingData()
+      if (!this.checkBigPrizeConfig(this.item.BigPrizeCfg, this.item.BigPrizeGroups)) {
         return false
       }
-      if (this.item.BigPrizeCfg.HitPerMillion < 0 || this.item.BigPrizeCfg.HitPerMillion > 1000000) {
-        Message.error('中奖概率值必须在 0~1000000 之间!')
-        return false
-      }
-      if (this.item.BigPrizeCfg.HitSteps < 0 || this.item.BigPrizeCfg.HitSteps > 100000000) {
-        Message.error('中奖最大间隔值必须在 0~100000000 之间!')
-        return false
-      }
-      if (!this.checkBigPrizeGroup()) {
-        return false
-      }
+      if (!this.checkBigPrizeBetConfigs()) return false
       if (!this.checkWarmUpCfg()) {
         return false
       }
@@ -788,15 +766,14 @@ export default {
     },
 
     async queryKeyInput() {
-      this.appId = store.getters.appId
       this.getData()
     },
 
     // 用户群组条件转为描述文字
     groupRules2Text(idx) {
       let txt = ''
-      for (const k in this.item.BigPrizeGroups[idx].Rules) {
-        const rule = this.item.BigPrizeGroups[idx].Rules[k]
+      for (const k in this.editItem.BigPrizeGroups[idx].Rules) {
+        const rule = this.editItem.BigPrizeGroups[idx].Rules[k]
         for (const kk in this.groupDays) {
           if (rule.Days == this.groupDays[kk].value) {
             txt += this.groupDays[kk].label + ' '
@@ -822,8 +799,8 @@ export default {
 
     // 添加用户群组配置
     addGroup() {
-      this.item.BigPrizeGroups.push({
-        GroupId: this.item.BigPrizeGroups.length + 1,
+      this.editItem.BigPrizeGroups.push({
+        GroupId: this.editItem.BigPrizeGroups.length + 1,
         GroupName: '未命名',
         GroupDesc: '请添加说明',
         HitPerMillion: 25,
@@ -833,14 +810,14 @@ export default {
 
     // 删除用户群组配置
     delGroup(idx) {
-      this.$delete(this.item.BigPrizeGroups, idx)
+      this.$delete(this.editItem.BigPrizeGroups, idx)
     },
 
     // 编辑用户群组条件
     editGroupRules(idx) {
       this.editGroupFlag = true
       this.editGroupIndex = idx
-      this.editGroupRulesData = this.item.BigPrizeGroups[idx].Rules
+      this.editGroupRulesData = this.editItem.BigPrizeGroups[idx].Rules
       for (const k in this.editGroupRulesData) {
         if (this.editGroupRulesData[k].BetMin == 0) {
           this.editGroupRulesData[k].BetMinStr = '不限'
@@ -889,11 +866,11 @@ export default {
         cnt++
       }
       // 验证数据有效性
-      if (!this.checkBigPrizeGroupRules(this.item.BigPrizeGroups[this.editGroupIndex].GroupId, this.editGroupRulesData)) {
+      if (!this.checkBigPrizeGroupRules(this.editItem.BigPrizeGroups[this.editGroupIndex].GroupId, this.editGroupRulesData)) {
         return
       }
       // 更新数据
-      this.item.BigPrizeGroups[this.editGroupIndex].Rules = this.editGroupRulesData
+      this.editItem.BigPrizeGroups[this.editGroupIndex].Rules = this.editGroupRulesData
       this.editGroupFlag = false
       this.editGroupIndex = -1
     },
@@ -917,29 +894,33 @@ export default {
       this.$delete(this.editGroupRulesData, idx)
     },
 
-    // 验证用户群配置
-    checkBigPrizeGroup() {
-      if (this.item.BigPrizeCfg.TaxPerThousand < 0 || this.item.BigPrizeCfg.TaxPerThousand > 1000) {
+    checkBigPrizeConfig(bigPrizeCfg, bigPrizeGroups) {
+      if (bigPrizeCfg.TaxPerThousand < 0 || bigPrizeCfg.TaxPerThousand > 1000) {
         Message.error('下注总金额抽水值必须在 0~1000 之间!')
         return false
       }
-      if (this.item.BigPrizeCfg.HitPerMillion < 0 || this.item.BigPrizeCfg.HitPerMillion > 1000000) {
+      if (bigPrizeCfg.HitPerMillion < 0 || bigPrizeCfg.HitPerMillion > 1000000) {
         Message.error('中奖概率值必须在 0~1000000 之间!')
         return false
       }
-      if (this.item.BigPrizeCfg.HitSteps < 0 || this.item.BigPrizeCfg.HitSteps > 100000000) {
+      if (bigPrizeCfg.HitSteps < 0 || bigPrizeCfg.HitSteps > 100000000) {
         Message.error('中奖最大间隔值必须在 0~100000000 之间!')
         return false
       }
+      if (!this.checkBigPrizePlans(bigPrizeCfg)) return false
+      return this.checkBigPrizeGroup(bigPrizeGroups)
+    },
 
+    // 验证用户群配置
+    checkBigPrizeGroup(bigPrizeGroups) {
       // 先按分组ID排序
-      this.item.BigPrizeGroups.sort(function(a, b) {
-        return a.GroupId < b.GroupId
+      bigPrizeGroups.sort(function(a, b) {
+        return a.GroupId - b.GroupId
       })
       // 检查每一个分组的数据
       let groupIdLast = 0
-      for (const k in this.item.BigPrizeGroups) {
-        const group = this.item.BigPrizeGroups[k]
+      for (const k in bigPrizeGroups) {
+        const group = bigPrizeGroups[k]
         // 检查分组ID是否有重复
         if (group.GroupId == groupIdLast) {
           Message.error('用户群配置的分组ID ' + groupIdLast + ' 有重复，请检查配置！')
@@ -964,6 +945,49 @@ export default {
         }
         // 检查每一个条件
         if (!this.checkBigPrizeGroupRules(group.GroupId, group.Rules)) {
+          return false
+        }
+      }
+      return true
+    },
+
+    checkBigPrizePlans(bigPrizeCfg) {
+      const plans = Array.isArray(bigPrizeCfg.Plans) ? bigPrizeCfg.Plans : []
+      for (const plan of plans) {
+        const planOddsMin = Number(plan.OddsMin || 0)
+        const oddsCfg = Array.isArray(plan.OddsCfg) ? plan.OddsCfg : []
+        for (const oddsConfig of oddsCfg) {
+          const oddsMin = Number(oddsConfig.OddsMin || 0)
+          const oddsMax = Number(oddsConfig.OddsMax || 0)
+          if (planOddsMin <= oddsMin || (oddsMax > 0 && planOddsMin < oddsMax)) {
+            Message.error('大奖配置最小倍数必须大于中奖倍数配置中的所有倍数')
+            return false
+          }
+        }
+      }
+      return true
+    },
+
+    checkBigPrizeBetConfigs() {
+      const usedBets = new Set()
+      for (const betConfig of this.item.BigPrizeBetCfg) {
+        if (!Array.isArray(betConfig.Bets) || betConfig.Bets.length === 0) {
+          Message.error('分BET配置至少需要一个有效的BET金额')
+          return false
+        }
+        for (const bet of betConfig.Bets) {
+          const betValue = Number(bet)
+          if (!Number.isInteger(betValue) || betValue <= 0) {
+            Message.error('分BET配置存在无效的BET金额')
+            return false
+          }
+          if (usedBets.has(betValue)) {
+            Message.error('同一个BET金额不能配置在多个分BET配置中')
+            return false
+          }
+          usedBets.add(betValue)
+        }
+        if (!this.checkBigPrizeConfig(betConfig.BigPrizeCfg, betConfig.BigPrizeGroups)) {
           return false
         }
       }
@@ -1041,6 +1065,72 @@ export default {
         return v.toFixed(3)
       }
     },
+    changeSelectBets() {
+      this.commitEditingData()
+      this.loadEditingData()
+    },
+    addBetsStr() {
+      this.editBetsStr = ''
+      this.showEditBetsStr = true
+    },
+    doAddBetsStr() {
+      const betsStr = this.editBetsStr.trim()
+      if (!betsStr) {
+        Message.error('新增加的单注BET金额列表不能为空!')
+        return
+      }
+      const values = betsStr.split(',')
+      const bets = []
+      const uniqueBets = new Set()
+      for (const value of values) {
+        if (!/^\d+(\.\d{1,3})?$/.test(value)) {
+          Message.error('单注BET金额格式不正确，最多支持三位小数!')
+          return
+        }
+        const bet = Math.round(Number(value) * 1000)
+        if (bet <= 0) {
+          Message.error('单注BET金额必须大于0!')
+          return
+        }
+        if (uniqueBets.has(bet)) {
+          Message.error('同一分BET配置中不能重复填写BET金额!')
+          return
+        }
+        uniqueBets.add(bet)
+        bets.push(bet)
+      }
+      if (this.item.BigPrizeBetCfg.some(config => config.BetsStr === betsStr)) {
+        Message.error('该分BET配置已存在!')
+        return
+      }
+      this.commitEditingData()
+      this.item.BigPrizeBetCfg.push({
+        Bets: bets,
+        BetsStr: betsStr,
+        BigPrizeCfg: this.getDefaultBigPrizeCfg(),
+        BigPrizeGroups: []
+      })
+      this.betsStrList.push({ key: betsStr, label: betsStr })
+      this.queryBetsStr = betsStr
+      this.loadEditingData()
+      this.showEditBetsStr = false
+      this.editBetsStr = ''
+    },
+    delBetsStr() {
+      const betsStr = this.queryBetsStr
+      if (!betsStr) return
+      this.$confirm('删除当前分BET配置后，未保存的数据将无法恢复，是否继续？', '提示', {
+        confirmButtonText: '删除',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.item.BigPrizeBetCfg = this.item.BigPrizeBetCfg.filter(config => config.BetsStr !== betsStr)
+        this.betsStrList = this.betsStrList.filter(config => config.key !== betsStr)
+        this.queryBetsStr = ''
+        this.activeBetsStr = ''
+        this.loadEditingData()
+      }).catch(() => {})
+    },
     getAppInfos() {
       request({
         url: '/thirdparties/all',
@@ -1061,51 +1151,7 @@ export default {
       })
     },
     onAppIdChange() {
-      if (this.appId === 0) {
-        if (!this.subKeyMap[this.queryGid]) {
-          Message.error('该游戏尚未配置key')
-          this.item = { BigPrizeGroups: [] }
-          return
-        }
-        request({
-          url: '/customizeconfig/one',
-          method: 'get',
-          data: {
-            SubKey: this.subKeyMap[this.queryGid] + '_script_cfg'
-          }
-        }).then(response => {
-          if (response.RetCode === 0) {
-            this.form = response.Data || {}
-            console.log('this.form', this.form)
-            if (response.Data && response.Data.Data !== '') {
-              const item = JSON.parse(response.Data.Data)
-              if (typeof item['BigPrizeGroups'] === 'undefined') {
-                item['BigPrizeGroups'] = []
-              }
-              if (typeof item['WarmUpCfg'] === 'undefined') {
-                item['WarmUpCfg'] = {
-                  Scatter1Rate: 0,
-                  Scatter2Rate: 0,
-                  Scatter3Rate: 0,
-                  MultiRate: 0,
-                  MaxRate: 0,
-                  WarmUpEnabled: false
-                }
-              }
-              Object.assign(this.item, item)
-              for (const itemElement of item.BetOddsPlans) {
-                let str = ''
-                for (const o of itemElement.TargetBets) {
-                  str += o / 1000 + ','
-                }
-                itemElement['TargetBetStr'] = str.substring(0, str.length - 1)
-              }
-            }
-          }
-        })
-      } else {
-        this.getData(false)
-      }
+      this.getData()
     },
     onCopyAllCfg() {
       if (!this.checkSaveData()) return false
@@ -1202,14 +1248,7 @@ export default {
       return currentConfig
     },
     onMultiAppSaveClick() {
-      if (!ValidateVueItem(this.$refs['item'])) return false
-      if (!this.checkBigPrizeGroup()) {
-        return false
-      }
-      if (!this.checkWarmUpCfg()) {
-        return false
-      }
-      this.form.Data = JSON.stringify(this.getPostData())
+      if (!this.checkSaveData()) return false
       const newData = this.getPostData()
       const oldData = JSON.parse(this.$refs.compare.oldVal.Data)
       this.form.Data = JSON.stringify(newData)
@@ -1238,7 +1277,7 @@ export default {
         {
           label: '全选',
           value: this.selectAllNodeKey,
-          children: this.appOptions.slice(1).map(app => ({
+          children: this.appOptions.map(app => ({
             label: app.label,
             value: app.value
           }))
@@ -1303,7 +1342,7 @@ export default {
         // 点击全选节点时
         if (checked) {
           // 勾选全选时，选中所有子节点
-          this.checkedAppKeys = this.appOptions.slice(1).map(app => app.value)
+          this.checkedAppKeys = this.appOptions.map(app => app.value)
         } else {
           // 取消全选时，清空所有子节点的选中状态
           this.checkedAppKeys = []
