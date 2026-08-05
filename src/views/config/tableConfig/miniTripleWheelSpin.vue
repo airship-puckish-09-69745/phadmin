@@ -5,14 +5,14 @@
       <el-col :span="18">
         <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" />
       </el-col>
-      
-      <el-col :span="2" v-if="IsDev()">
-        <el-button type="primary" @click="dialogFormVisible= true" size="mini" > 测试配置</el-button>
+
+      <el-col v-if="IsDev()" :span="2">
+        <el-button type="primary" size="mini" @click="dialogFormVisible= true"> 测试配置</el-button>
       </el-col>
-      
+
     </el-row>
 
-    <h3></h3>
+    <h3 />
 
     <el-row>
       <el-col :span="2">
@@ -23,11 +23,11 @@
     <el-row>
       <el-col :span="24">
         <span v-if="item.openTest=='2'">
-         <el-alert
-           title="测试模式已开启,记得关闭"
-           type="error">
-          </el-alert>
-      </span>
+          <el-alert
+            title="测试模式已开启,记得关闭"
+            type="error"
+          />
+        </span>
       </el-col>
     </el-row>
 
@@ -42,13 +42,13 @@
                 <el-form :inline="true">
                   <el-col :span="8">
                     <el-form-item label="保底奖池抽水">
-                      <el-input v-model="item.FeeRate" size="mini" ><template  slot="append">%</template></el-input>
+                      <el-input v-model="item.FeeRate" size="mini"><template slot="append">%</template></el-input>
                     </el-form-item>
                   </el-col>
 
                   <el-col :span="8">
                     <el-form-item label="超时放弃时间:">
-                      <el-input v-model.number="item.AutoDropTimer" size="mini" ><template  slot="append">秒</template></el-input>
+                      <el-input v-model.number="item.AutoDropTimer" size="mini"><template slot="append">秒</template></el-input>
                     </el-form-item>
                   </el-col>
 
@@ -72,7 +72,7 @@
                 >
                   <el-table-column type="index" />
 
-                  <el-table-column prop="TableMoney" label="下注列表" >
+                  <el-table-column prop="TableMoney" label="下注列表">
                     <template slot-scope="scope">
                       <el-input v-model="scope.row.TableMoney" size="mini" />
                     </template>
@@ -104,18 +104,18 @@
                 >
                   <el-table-column type="index" />
 
-                  <el-table-column prop="Inner" label="内圈" >
-                    <template slot-scope="scope" v-if="scope.$index < 4">
+                  <el-table-column prop="Inner" label="内圈">
+                    <template v-if="scope.$index < 4" slot-scope="scope">
                       <el-input v-model="scope.row.Inner" size="mini" />
                     </template>
                   </el-table-column>
-                  <el-table-column prop="Middle" label="中" >
-                    <template slot-scope="scope" v-if="scope.$index < 6">
+                  <el-table-column prop="Middle" label="中">
+                    <template v-if="scope.$index < 6" slot-scope="scope">
                       <el-input v-model="scope.row.Middle" size="mini" />
                     </template>
                   </el-table-column>
-                  <el-table-column prop="Outer" label="外圈" >
-                    <template slot-scope="scope" v-if="scope.$index < 8">
+                  <el-table-column prop="Outer" label="外圈">
+                    <template v-if="scope.$index < 8" slot-scope="scope">
                       <el-input v-model="scope.row.Outer" size="mini" />
                     </template>
                   </el-table-column>
@@ -146,12 +146,12 @@
                 >
                   <el-table-column type="index" />
 
-                  <el-table-column prop="odds" label="倍数" >
+                  <el-table-column prop="odds" label="倍数">
                     <template slot-scope="scope">
                       <el-input v-model="scope.row.Odds" size="mini" />
                     </template>
                   </el-table-column>
-                  <el-table-column prop="weight" label="权重" >
+                  <el-table-column prop="weight" label="权重">
                     <template slot-scope="scope">
                       <el-input v-model.number="scope.row.Weight" size="mini" />
                     </template>
@@ -167,7 +167,7 @@
               </fieldset>
 
               <!--小奖池触发重摇-->
-              <fieldset  v-if="!IsPHAuditEnv()">
+              <fieldset v-if="!IsPHAuditEnv()">
                 <legend>小奖池触发重摇</legend>
                 <el-row>
                   <el-col :span="11" :offset="1">
@@ -212,13 +212,13 @@
               <template>
                 <div class="csv-parser">
                   <!-- 文件选择（支持单文件或多文件） -->
-                  <input 
-                    type="file" 
+                  <input
                     ref="fileInput"
-                    @change="handleFileUpload"
+                    type="file"
                     accept=".csv"
                     multiple
-                  />
+                    @change="handleFileUpload"
+                  >
 
                   <!-- 文件预览（可选） -->
                   <div v-if="selectedFiles.length" class="file-preview">
@@ -254,7 +254,7 @@
               <el-form :inline="true">
                 <el-col :span="8">
                   <el-form-item label="jackpot服务费*bet">
-                    <el-input v-model.number="JackpotCfg.JackpotFee" size="mini" ><template slot="append">‰</template></el-input>
+                    <el-input v-model.number="JackpotCfg.JackpotFee" size="mini"><template slot="append">‰</template></el-input>
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
@@ -287,12 +287,12 @@
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label="开JP概率:">
-                    <el-input v-model="JackpotCfg.JackpotRate" size="mini" ><template  slot="append">%</template></el-input>
+                    <el-input v-model="JackpotCfg.JackpotRate" size="mini"><template slot="append">%</template></el-input>
                   </el-form-item>
                 </el-col>
               </el-form>
             </el-col>
-            
+
             <!--
             <el-col :span="24" :offset="5">
               <el-form :inline="true">
@@ -334,7 +334,7 @@
                       </el-select>
                     </template>
                   </el-table-column>
-                  <el-table-column label="奖励发放类型" prop="AwardType"   v-if="!IsPHAuditEnv()">
+                  <el-table-column v-if="!IsPHAuditEnv()" label="奖励发放类型" prop="AwardType">
                     <template slot-scope="scope">
                       <el-select v-model="scope.row.AwardType">
                         <el-option
@@ -346,7 +346,7 @@
                       </el-select>
                     </template>
                   </el-table-column>
-                  <el-table-column label="开出的奖池值" prop="PoolVal"   v-if="!IsPHAuditEnv()">
+                  <el-table-column v-if="!IsPHAuditEnv()" label="开出的奖池值" prop="PoolVal">
                     <template slot-scope="scope">
                       >=<el-input v-model.number="scope.row.PoolVal" style="width: 120px;" size="mini" :required="true" />
                     </template>
@@ -359,17 +359,17 @@
                       </el-input>
                     </template>
                   </el-table-column>
-                  <el-table-column label="每日限制开出个数(0为不限)" prop="DayLimit"   v-if="!IsPHAuditEnv()">
+                  <el-table-column v-if="!IsPHAuditEnv()" label="每日限制开出个数(0为不限)" prop="DayLimit">
                     <template slot-scope="scope">
                       <el-input v-model.number="scope.row.DayLimit" :disabled="checkShowDayLimit(scope.row.AwardType)" style="width: 120px;" size="mini" :required="true"><template slot="append">个</template></el-input>
                     </template>
                   </el-table-column>
-                  <el-table-column label="中奖概率" prop="DayLimit"   v-if="IsPHAuditEnv()">
+                  <el-table-column v-if="IsPHAuditEnv()" label="中奖概率" prop="DayLimit">
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.JackpotRate" ><template slot="append">‰</template></el-input>
+                      <el-input v-model.number="scope.row.JackpotRate"><template slot="append">‰</template></el-input>
                     </template>
                   </el-table-column>
-                  <el-table-column label="开奖数量概率" prop="RateArr"   v-if="!IsPHAuditEnv()">
+                  <el-table-column v-if="!IsPHAuditEnv()" label="开奖数量概率" prop="RateArr">
                     <template slot-scope="scope">
                       <el-button v-if="scope.row.AwardType == 1" type="primary" icon="el-icon-edit" circle size="mini" @click="showPoolNumDialog(scope.row)" />
                       {{ showOpenPoolRate(scope.row.JackpotType, scope.row.RateArr) }}
@@ -379,7 +379,7 @@
               </el-row>
             </fieldset>
 
-            <fieldset style="margin-top:10px"   v-if="!IsPHAuditEnv()">
+            <fieldset v-if="!IsPHAuditEnv()" style="margin-top:10px">
               <legend>jackpot奖池增长</legend>
               <jackpot-increase :pool-incr-arr="PoolIncrArr" />
             </fieldset>
@@ -394,8 +394,8 @@
       </el-form>
     </el-row>
 
-    <el-dialog title="测试配置" :visible.sync="dialogFormVisible"   width="550px">
-      <el-form  >
+    <el-dialog title="测试配置" :visible.sync="dialogFormVisible" width="550px">
+      <el-form>
         <el-form-item label="是否开启:">
           <el-radio v-model="item.openTest" label="1" :value="false">否</el-radio>
           <el-radio v-model="item.openTest" label="2" :value="true">是</el-radio>
@@ -403,7 +403,7 @@
         <el-form-item label="步数终点:">
           <el-form :inline="true">
             <el-col :span="8">
-                <el-input v-model.number="item.Card" size="mini" />
+              <el-input v-model.number="item.Card" size="mini" />
             </el-col>
           </el-form>
         </el-form-item>
@@ -499,7 +499,6 @@
       </el-table>
     </el-dialog>
 
-
     <!--对比组件-->
     <compare ref="compare" />
   </div>
@@ -511,7 +510,7 @@ import { Message } from 'element-ui'
 import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import request from '@/utils/request'
-import {$libShow, DataRule} from '@/utils/common'
+import { $libShow, DataRule } from '@/utils/common'
 import BetAmount from '@/components/BetAmount'
 import RobotOnlineItems from '@/views/config/components/robotOnlineItems.vue'
 import JackpotDayLimit from '@/views/config/components/jackpotDayLimit.vue'
@@ -522,21 +521,21 @@ export default {
   components: { JackpotIncrease, JackpotDayLimit, RobotOnlineItems, Compare, Publish, BetAmount },
   data() {
     return {
-      RateCfg:[],   //概率配置
+      RateCfg: [], // 概率配置
       RandAwards: [],
       item: {
-        FeeRate:3.15,
-        AutoDropTimer:200,
-        BetMoneyLevel:[], //下注
-        //小奖池重摇
-        ReChoiceCfg:{
+        FeeRate: 3.15,
+        AutoDropTimer: 200,
+        BetMoneyLevel: [], // 下注
+        // 小奖池重摇
+        ReChoiceCfg: {
           LowLotteryPoolReChoice: 1000,
           LowLotteryPoolReChoiceRate: 10000,
           HighLotteryPoolReChoice: 0,
-          HighLotteryPoolReChoiceRate: 0,
+          HighLotteryPoolReChoiceRate: 0
         },
-        OddsCfg:[],
-        BonusCfg:[],
+        OddsCfg: [],
+        BonusCfg: [],
         JackpotCfg: {},
         PoolIncrArr: [],
         JackpotTypes: [
@@ -548,15 +547,15 @@ export default {
         AwardTypes: [
           { 'Type': 1, 'Name': '奖池百分比' },
           { 'Type': 2, 'Name': '下注额倍数' }
-        ],
+        ]
       },
       form: {},
-      subKey: "miniTripleWheelSpin_cfg",
+      subKey: 'miniTripleWheelSpin_cfg',
       libShow: $libShow,
       showSetResultPage: false,
-      env:process.env.VUE_APP_PROJECT,
+      env: process.env.VUE_APP_PROJECT,
       dialogFormVisible: false,
-      JackpotCfg: {BaseValue:0, JackpotGrandBetMin:1000, JackpotMajorBetMin:1000, JackpotMinorBetMin:1000, JackpotRate:100},
+      JackpotCfg: { BaseValue: 0, JackpotGrandBetMin: 1000, JackpotMajorBetMin: 1000, JackpotMinorBetMin: 1000, JackpotRate: 100 },
       PoolIncrArr: [],
       JackpotTypes: [
         { 'label': 'GRAND', 'value': 1 },
@@ -579,10 +578,10 @@ export default {
         jackpotType: 0,
         title: ''
       },
-      //读取配置表
+      // 读取配置表
       selectedFiles: [], // 存储选中的文件
-      headers: ['Inner', 'Middle', 'Outer', 'BackRate', 'InnerRate', 'MiddleRate', 'OuterRate', 'KeepRate'],       // CSV 表头
-      csvData: [],       // CSV 数据
+      headers: ['Inner', 'Middle', 'Outer', 'BackRate', 'InnerRate', 'MiddleRate', 'OuterRate', 'KeepRate'], // CSV 表头
+      csvData: [] // CSV 数据
     }
   },
   created() {
@@ -601,7 +600,7 @@ export default {
       return 'CustomizeCfg_' + this.subKey
     },
     transMoneyForShow() {
-      let that = this
+      const that = this
       for (const j in that.item.BetMoneyLevel) {
         const betMoneyList = []
         for (const o of that.item.BetMoneyLevel[j].TableMoney) {
@@ -616,12 +615,12 @@ export default {
         /*
         BackRate: 50000, InnerRate: 244600, MiddleRate: 341100, OuterRate: 449400, KeepRate: 1000100
          */
-        let r1 = (o.BackRate / 10000).toString() + '%' //退
-        let r2 = ((o.InnerRate-o.BackRate) / 10000).toString() + '%' //内
-        let r3 = ((o.MiddleRate-o.InnerRate) / 10000).toString() + '%' //中
-        let r4 = ((o.OuterRate-o.MiddleRate) / 10000).toString() + '%' //外
-        let r5 = ((o.KeepRate-o.OuterRate) / 10000).toString() + '%' //保持
-        that.csvData.push([o.Inner/1, o.Middle/1, o.Outer/1, r1, r2, r3, r4, r5])
+        const r1 = (o.BackRate / 10000).toString() + '%' // 退
+        const r2 = ((o.InnerRate - o.BackRate) / 10000).toString() + '%' // 内
+        const r3 = ((o.MiddleRate - o.InnerRate) / 10000).toString() + '%' // 中
+        const r4 = ((o.OuterRate - o.MiddleRate) / 10000).toString() + '%' // 外
+        const r5 = ((o.KeepRate - o.OuterRate) / 10000).toString() + '%' // 保持
+        that.csvData.push([o.Inner / 1, o.Middle / 1, o.Outer / 1, r1, r2, r3, r4, r5])
       }
     },
     getData() {
@@ -636,7 +635,7 @@ export default {
           this.form = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
             const item = JSON.parse(response.Data.Data)
-            
+
             if (item.JackpotCfg && item.JackpotCfg.JackpotRegulation) {
               if (item.JackpotCfg.JackpotRegulation.RandAwards) {
                 this.RandAwards = item.JackpotCfg.JackpotRegulation.RandAwards
@@ -644,8 +643,8 @@ export default {
                   o.PoolVal /= 1000
                 }
               }
-            }else{
-              item['JackpotCfg'] = {BaseValue: 0, JackpotGrandBetMin: 1000, JackpotMajorBetMin: 1000, JackpotMinorBetMin: 1000, JackpotRate:1, JackpotRegulation: {RandAwards:[]}}
+            } else {
+              item['JackpotCfg'] = { BaseValue: 0, JackpotGrandBetMin: 1000, JackpotMajorBetMin: 1000, JackpotMinorBetMin: 1000, JackpotRate: 1, JackpotRegulation: { RandAwards: [] }}
             }
             this.JackpotCfg = item.JackpotCfg
             if (item.JackpotCfg && item.JackpotCfg.JackpotRegulation) {
@@ -655,22 +654,22 @@ export default {
             }
 
             if (item.OddsCfg) {
-              for (const o of item.OddsCfg){
+              for (const o of item.OddsCfg) {
                 o.Inner /= 1000
                 o.Middle /= 1000
                 o.Outer /= 1000
               }
             }
             if (item.BonusCfg) {
-              for (const o of item.BonusCfg){
+              for (const o of item.BonusCfg) {
                 o.Odds /= 1000
                 o.Weight /= 1
               }
             }
 
-            if (!item.Card){
-              item["Card"] = "0"
-              item["openTest"] = "1"
+            if (!item.Card) {
+              item['Card'] = '0'
+              item['openTest'] = '1'
             }
 
             Object.assign(this.item, item)
@@ -678,13 +677,13 @@ export default {
             this.transMoneyForShow()
             item.ReChoiceCfg.LowLotteryPoolReChoice /= 1000
             item.ReChoiceCfg.HighLotteryPoolReChoice /= 1000
-            item.JackpotCfg.BaseValue /= 1000 //保底
-            if (item.JackpotCfg.JackpotRate){
+            item.JackpotCfg.BaseValue /= 1000 // 保底
+            if (item.JackpotCfg.JackpotRate) {
               item.JackpotCfg.JackpotRate /= 10000
             }
             if (this.IsPHAuditEnv()) {
               item.FeeRate /= 1
-            }else{
+            } else {
               item.FeeRate /= 1000
             }
 
@@ -695,7 +694,6 @@ export default {
           }
         }
       })
-
     },
     deleteChars(str) {
       return (str + '').replace(/%/g, '')
@@ -703,7 +701,7 @@ export default {
     getPostData() {
       const ret = JSON.parse(JSON.stringify(this.item))
 
-      //下注配置
+      // 下注配置
       for (const i in this.item.BetMoneyLevel) {
         let betItem = []
         if (this.item.BetMoneyLevel[i].TableMoney instanceof Array) {
@@ -715,27 +713,27 @@ export default {
         }
         ret.BetMoneyLevel[i].TableMoney = (betItem)
       }
-      
+
       ret.RateCfg = []
       for (const i in this.csvData) {
-        if (this.csvData[i][3] != null){
-          let r1 = this.deleteChars(this.csvData[i][3]) * 10000//退1
-          let r2 = this.deleteChars(this.csvData[i][4]) * 10000//内
-          let r3 = this.deleteChars(this.csvData[i][5]) * 10000//中
-          let r4 = this.deleteChars(this.csvData[i][6]) * 10000//外
-          let r5 = this.deleteChars(this.csvData[i][7]) * 10000//保持
-          ret.RateCfg.push({'Idx': i*1, 
-            'Inner': this.csvData[i][0]*1, 
-            'Middle': this.csvData[i][1]*1, 
-            'Outer': this.csvData[i][2]*1, 
-            'BackRate': r1,   //退1
-            'InnerRate': r1+r2,  //内
-            'MiddleRate': r1+r2+r3, //中
-            'OuterRate': r1+r2+r3+r4,  //外
-            'KeepRate': r1+r2+r3+r4+r5,   //保持
-            'TotalWeight': r1+r2+r3+r4+r5 //总权重
+        if (this.csvData[i][3] != null) {
+          const r1 = this.deleteChars(this.csvData[i][3]) * 10000// 退1
+          const r2 = this.deleteChars(this.csvData[i][4]) * 10000// 内
+          const r3 = this.deleteChars(this.csvData[i][5]) * 10000// 中
+          const r4 = this.deleteChars(this.csvData[i][6]) * 10000// 外
+          const r5 = this.deleteChars(this.csvData[i][7]) * 10000// 保持
+          ret.RateCfg.push({ 'Idx': i * 1,
+            'Inner': this.csvData[i][0] * 1,
+            'Middle': this.csvData[i][1] * 1,
+            'Outer': this.csvData[i][2] * 1,
+            'BackRate': r1, // 退1
+            'InnerRate': r1 + r2, // 内
+            'MiddleRate': r1 + r2 + r3, // 中
+            'OuterRate': r1 + r2 + r3 + r4, // 外
+            'KeepRate': r1 + r2 + r3 + r4 + r5, // 保持
+            'TotalWeight': r1 + r2 + r3 + r4 + r5 // 总权重
           })
-        }        
+        }
       }
 
       for (const o of ret.OddsCfg) {
@@ -750,70 +748,70 @@ export default {
 
       ret.ReChoiceCfg.LowLotteryPoolReChoice *= 1000
       ret.ReChoiceCfg.HighLotteryPoolReChoice *= 1000
-      ret.JackpotCfg.BaseValue *= 1000 //保底
+      ret.JackpotCfg.BaseValue *= 1000 // 保底
       ret.JackpotCfg.JackpotRate *= 10000
       ret.AutoDropTimer *= 1
 
-      if (ret.JackpotCfg.JackpotRegulation){
+      if (ret.JackpotCfg.JackpotRegulation) {
         for (const o of ret.JackpotCfg.JackpotRegulation.RandAwards) {
           o.PoolVal = parseInt(o.PoolVal * 1000)
         }
       }
       if (this.IsPHAuditEnv()) {
         ret.FeeRate *= 1
-      }else{
+      } else {
         ret.FeeRate *= 1000
       }
 
-      //测试
-      if (!ret.openTest || ret.openTest=="1"){
+      // 测试
+      if (!ret.openTest || ret.openTest == '1') {
         delete ret['Card']
       }
-      console.log("上传====>",ret)
+      console.log('上传====>', ret)
       return ret
     },
 
-    //下注
+    // 下注
     doAddBetMoneyLevel() {
       if (!this.item.BetMoneyLevel) {
         this.item['BetMoneyLevel'] = []
       }
-      this.item.BetMoneyLevel.push({ TableMoney: '1,2,3,4,5,6,8,10,15,20,25,30,50,3000,10000'})
+      this.item.BetMoneyLevel.push({ TableMoney: '1,2,3,4,5,6,8,10,15,20,25,30,50,3000,10000' })
     },
     delRowBetMoneyLevel(index) {
       console.log(index)
       this.item.BetMoneyLevel.splice(index, 1)
     },
 
-    //odds
+    // odds
     doOddsCfg() {
       if (!this.item.OddsCfg) {
         this.item['OddsCfg'] = []
       }
-      this.item.OddsCfg.push({'Inner': 0, 'Middle': 0, 'Outer': 0})
+      this.item.OddsCfg.push({ 'Inner': 0, 'Middle': 0, 'Outer': 0 })
     },
     delOddsCfg(index) {
       console.log(index)
       this.item.OddsCfg.splice(index, 1)
     },
 
-    //bonus
+    // bonus
     doBonusCfg() {
       if (!this.item.BonusCfg) {
         this.item['BonusCfg'] = []
       }
-      this.item.BonusCfg.push({'Odds': 0, 'Weight': 0})
+      this.item.BonusCfg.push({ 'Odds': 0, 'Weight': 0 })
     },
     delBonusCfg(index) {
       console.log(index)
       this.item.BonusCfg.splice(index, 1)
     },
 
-    //落库
+    // 落库
     setData() {
-      var postData = this.getPostData();
+      var postData = this.getPostData()
       this.form.Data = JSON.stringify(postData)
-      console.log("==> ", this.form.Data)
+      console.log('==> ', this.form.Data)
       console.log(this.form)
       const $this = this
       // 设置修改后数据
@@ -823,16 +821,16 @@ export default {
           Message.error('没有任何修改，不需要提交')
           return
         }
-        if (postData.openTest=="2") {
+        if (postData.openTest == '2') {
           this.$alert('测试模式已开启，请测试后关闭', '提示', {
             confirmButtonText: '确定',
             callback: action => {
               this.$message({
                 type: 'info',
                 message: ``
-              });
+              })
             }
-          });
+          })
         }
         request({
           url: 'customizeconfig/update',
@@ -847,8 +845,8 @@ export default {
       })
     },
 
-    //是否是审核服
-    IsPHAuditEnv(){
+    // 是否是审核服
+    IsPHAuditEnv() {
       return this.env == 'ph_audit'
     },
     IsDev() {
@@ -910,7 +908,7 @@ export default {
       maxId++
       this.poolNumChange.data.push({ 'Id': maxId, 'Num': 0, 'Rate': 0 })
     },
-    ////////////////////////////////////////////
+    // //////////////////////////////////////////
     showDayLimitDialog(data) {
       if (data.JackpotType == 4) {
         return
@@ -972,119 +970,119 @@ export default {
       return '[' + data['StartHours'] + ',' + data['EndHours'] + ')点：' + data['Num'] + '个'
     },
 
-    //读取配置表
+    // 读取配置表
     // 处理文件上传
     handleFileUpload(event) {
-      const files = event.target.files;
-      if (!files.length) return;
+      const files = event.target.files
+      if (!files.length) return
 
       // 存储选中的文件
-      this.selectedFiles = Array.from(files);
+      this.selectedFiles = Array.from(files)
 
       // 只解析第一个文件（或遍历所有文件）
-      const file = files[0];
-      this.parseCSVFile(file);
+      const file = files[0]
+      this.parseCSVFile(file)
     },
 
     // 解析 CSV 文件
     parseCSVFile(file) {
-      const reader = new FileReader();
-      reader.readAsText(file, 'UTF-8');
+      const reader = new FileReader()
+      reader.readAsText(file, 'UTF-8')
       reader.onload = (e) => {
-        const content = e.target.result;
-        this.parseCSV(content);
-      };
-      //reader.readAsText(file); // 读取为文本
+        const content = e.target.result
+        this.parseCSV(content)
+      }
+      // reader.readAsText(file); // 读取为文本
     },
 
     // 解析 CSV 内容（增强版）
     parseCSV(csvContent) {
-      const lines = csvContent.split(/\r?\n/); // 处理不同换行符
-      if (lines.length === 0) return;
+      const lines = csvContent.split(/\r?\n/) // 处理不同换行符
+      if (lines.length === 0) return
 
       // 提取表头（第一行）
-      this.headers = this.parseCSVLine(lines[0]);
+      this.headers = this.parseCSVLine(lines[0])
 
       // 提取数据（剩余行）
-      this.csvData = lines.slice(1).map(line => this.parseCSVLine(line)).filter(row => row.length > 0);
-      console.log("this.csvData:", this.csvData)
+      this.csvData = lines.slice(1).map(line => this.parseCSVLine(line)).filter(row => row.length > 0)
+      console.log('this.csvData:', this.csvData)
     },
 
     // 解析单行 CSV（处理带引号、逗号的情况）
     parseCSVLine(line) {
-      const result = [];
-      let inQuotes = false;
-      let currentField = "";
+      const result = []
+      let inQuotes = false
+      let currentField = ''
 
       for (let i = 0; i < line.length; i++) {
-        const char = line[i];
+        const char = line[i]
 
         if (char === '"') {
           // 切换引号状态
-          inQuotes = !inQuotes;
+          inQuotes = !inQuotes
         } else if (char === ',' && !inQuotes) {
           // 遇到逗号且不在引号内，结束当前字段
-          result.push(currentField.trim());
-          currentField = "";
+          result.push(currentField.trim())
+          currentField = ''
         } else {
           // 普通字符，添加到当前字段
-          currentField += char;
+          currentField += char
         }
       }
 
       // 添加最后一个字段
-      result.push(currentField.trim());
-      return result;
+      result.push(currentField.trim())
+      return result
     },
 
     // 格式化文件大小（可选）
     formatFileSize(bytes) {
-      if (bytes < 1024) return bytes + " B";
-      else if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + " KB";
-      else return (bytes / (1024 * 1024)).toFixed(2) + " MB";
+      if (bytes < 1024) return bytes + ' B'
+      else if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + ' KB'
+      else return (bytes / (1024 * 1024)).toFixed(2) + ' MB'
     },
-  
+
     // 读取指定行列（二维数组版）
     getCellFromArray(rowIndex, colIndex) {
       // 边界检查
       if (rowIndex < 0 || rowIndex >= this.csvData.length) {
-        return "行索引越界";
+        return '行索引越界'
       }
-      console.log("this.csvData.length = ", this.csvData.length, " ; this.csvData[rowIndex].length = ", this.csvData[rowIndex].length)
+      console.log('this.csvData.length = ', this.csvData.length, ' ; this.csvData[rowIndex].length = ', this.csvData[rowIndex].length)
       if (colIndex < 0 || colIndex >= this.csvData[rowIndex].length) {
-        return "列索引越界";
+        return '列索引越界'
       }
-      return this.csvData[rowIndex][colIndex];
+      return this.csvData[rowIndex][colIndex]
     },
 
     // 读取指定行列（对象数组版）
     getCellFromObject(rowIndex, columnName) {
-      console.log("this.csvData.length = ", this.csvData.length)
+      console.log('this.csvData.length = ', this.csvData.length)
       // 行索引检查
       if (rowIndex < 0 || rowIndex >= this.csvData.length) {
-        return "行索引越界";
+        return '行索引越界'
       }
-      
+
       // 列名检查
       if (!this.csvData[rowIndex].hasOwnProperty(columnName)) {
-        return `列名 "${columnName}" 不存在`;
+        return `列名 "${columnName}" 不存在`
       }
-      return this.csvData[rowIndex][columnName];
+      return this.csvData[rowIndex][columnName]
     },
 
     // 通用读取方法（自动识别数据结构）
     getCell(row, col) {
-      if (this.csvData.length === 0) return "无数据";
-      
+      if (this.csvData.length === 0) return '无数据'
+
       // 判断第一行是数组还是对象
-      const isArrayStructure = Array.isArray(this.csvData[0]);
-      
+      const isArrayStructure = Array.isArray(this.csvData[0])
+
       if (isArrayStructure) {
-        return this.getCellFromArray(row, col);
+        return this.getCellFromArray(row, col)
       } else {
         // 转换为行列标识
-        const columnName = col;
-        return this.getCellFromObject(row, columnName);
+        const columnName = col
+        return this.getCellFromObject(row, columnName)
       }
     }
   }
@@ -1098,29 +1096,29 @@ export default {
     margin: 0 auto;
     padding: 20px;
   }
-  
+
   .file-preview {
     margin: 20px 0;
     padding: 10px;
     border: 1px solid #eee;
     border-radius: 4px;
   }
-  
+
   .csv-table {
     margin-top: 20px;
   }
-  
+
   table {
     width: 100%;
     border-collapse: collapse;
   }
-  
+
   th, td {
     border: 1px solid #ddd;
     padding: 8px;
     text-align: left;
   }
-  
+
   th {
     background-color: #f2f2f2;
   }
