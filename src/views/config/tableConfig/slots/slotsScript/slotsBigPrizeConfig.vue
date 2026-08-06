@@ -401,6 +401,13 @@ import ShowTip from '@/components/Tip/showTip.vue'
 import XLSX from 'xlsx'
 import { createCustomize, getCustomize, updateCustomize } from '@/api/custome_configV2'
 import store from '@/store'
+import { SubKeyMap } from '@/constants/subkey'
+
+const LegacyBigPrizeConfigSubKeyMap = {
+  256: 'gatesofolympus1000_script_cfg',
+  100180: 'fishingmaster_x_script_cfg',
+  100186: 'mahjongjackpot_x_script_cfg'
+}
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
@@ -482,8 +489,10 @@ export default {
         { 'label': '启用', 'value': true },
         { 'label': '禁用', 'value': false }
       ],
-      appOptions: [],
-      appId: store.getters.appId,
+      appOptions: [
+        { value: 0, label: '旧版' }
+      ],
+      appId: store.getters.appId || 0,
       multiAppDialogVisible: false,
       appTreeData: [],
       checkedAppKeys: [],
@@ -668,6 +677,10 @@ export default {
       this.applyConfigData(this.getDefaultItem())
     },
     getData() {
+      if (this.appId === 0) {
+        this.loadLegacyData()
+        return
+      }
       getCustomize(this.getSlotsBigPrizeConfigKey(), this.appId).then(response => {
         if (response.RetCode === 0) {
           this.form = response.Data || {}
@@ -766,6 +779,7 @@ export default {
     },
 
     async queryKeyInput() {
+      this.appId = store.getters.appId || 0
       this.getData()
     },
 
@@ -1150,7 +1164,47 @@ export default {
         }
       })
     },
+    getLegacyBigPrizeConfigKey() {
+      const gameId = Number(this.queryGid)
+      if (LegacyBigPrizeConfigSubKeyMap[gameId]) {
+        return LegacyBigPrizeConfigSubKeyMap[gameId]
+      }
+      const baseSubKey = SubKeyMap[gameId]
+      if (!baseSubKey || !baseSubKey.endsWith('_slots_base')) {
+        return ''
+      }
+      return baseSubKey.replace(/_slots_base$/, '_script_cfg')
+    },
+    loadLegacyData() {
+      const subKey = this.getLegacyBigPrizeConfigKey()
+      if (!subKey) {
+        Message.error('该游戏尚未配置旧版大奖配置Key')
+        this.resetConfigData()
+        return
+      }
+      request({
+        url: '/customizeconfig/one',
+        method: 'get',
+        data: {
+          SubKey: subKey
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.form = response.Data || {}
+          const data = response.Data && response.Data.Data ? JSON.parse(response.Data.Data) : this.getDefaultItem()
+          this.applyConfigData(data)
+          this.$refs.compare.SetOldVal(response.Data)
+        } else {
+          this.resetConfigData()
+          Message.error('获取旧版大奖配置失败')
+        }
+      })
+    },
     onAppIdChange() {
+      if (this.appId === 0) {
+        this.loadLegacyData()
+        return
+      }
       this.getData()
     },
     onCopyAllCfg() {
@@ -1277,7 +1331,7 @@ export default {
         {
           label: '全选',
           value: this.selectAllNodeKey,
-          children: this.appOptions.map(app => ({
+          children: this.appOptions.slice(1).map(app => ({
             label: app.label,
             value: app.value
           }))
@@ -1342,7 +1396,7 @@ export default {
         // 点击全选节点时
         if (checked) {
           // 勾选全选时，选中所有子节点
-          this.checkedAppKeys = this.appOptions.map(app => app.value)
+          this.checkedAppKeys = this.appOptions.slice(1).map(app => app.value)
         } else {
           // 取消全选时，清空所有子节点的选中状态
           this.checkedAppKeys = []
