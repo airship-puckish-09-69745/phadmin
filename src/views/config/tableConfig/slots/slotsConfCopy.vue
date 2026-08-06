@@ -450,15 +450,18 @@ export default {
         sourceAppOptions() {
             const options = [...this.appOptions]
             if (this.isLegacySourceAvailable) {
-                options.unshift({ value: legacySourceAppId, label: '旧版测试（无 AppId）' })
+                options.unshift({ value: legacySourceAppId, label: `${this.legacySourceName}（无 AppId）` })
             }
             return options
+        },
+        legacySourceName() {
+            return store.getters.env === 'pro' ? '旧版线上' : '旧版测试'
         },
         isLegacySource() {
             return this.appId !== null && this.appId !== undefined && Number(this.appId) === legacySourceAppId
         },
         isLegacySourceAvailable() {
-            return this.isV2Version && store.getters.env === 'test'
+            return this.isV2Version
         },
         filteredTargetAppOptions() {
             return this.appOptions.filter(
@@ -746,10 +749,6 @@ export default {
                 return this.$message.warning('请选择源 AppId')
             }
 
-            if (this.isLegacySource && !this.isLegacySourceAvailable) {
-                return this.$message.warning('旧版测试配置只能同步到新版测试环境')
-            }
-
             if (!this.targetAppIds.length) {
                 return this.$message.warning('请选择目标 AppId')
             }
@@ -912,9 +911,9 @@ export default {
             const fromAppId = this.extractErrorField(msg, 'fromAppId') || this.appId
             const configLabel = this.getConfigTypeOptionLabel(context.keyStr)
             const operationName = context.operationName || '操作'
-            const sourceName = Number(fromAppId) === legacySourceAppId ? '旧版测试' : `源 AppId ${fromAppId || '-'}`
+            const sourceName = Number(fromAppId) === legacySourceAppId ? this.legacySourceName : `源 AppId ${fromAppId || '-'}`
 
-            if (this.isCustomizeConfigNotFoundError(msg) || /旧版测试配置不存在/.test(msg)) {
+            if (this.isCustomizeConfigNotFoundError(msg) || String(msg).includes(`${this.legacySourceName}配置不存在`)) {
                 return `原因:${sourceName}未找到${configLabel}${subKey ? ` ${subKey}` : ''}。处理方式:请先在${sourceName}保存该配置，或取消勾选【${configLabel}】后重新复制。`
             }
 
@@ -1065,7 +1064,7 @@ export default {
                         gameId,
                         appId: this.appId,
                         subKey,
-                        errMsg: `旧版测试附属配置检测失败:${sourceResult.errMsg}`
+                        errMsg: `${this.legacySourceName}附属配置检测失败:${sourceResult.errMsg}`
                     })
                     return false
                 }
@@ -1201,7 +1200,7 @@ export default {
                 return false
             }
             if (this.isLegacySource) {
-                this.$message.warning('旧版测试配置不能在此页面直接发布，请先复制到目标 AppId')
+                this.$message.warning(`${this.legacySourceName}配置不能在此页面直接发布，请先复制到目标 AppId`)
                 return false
             }
             if (!this.configTypes.length) {
@@ -1514,12 +1513,12 @@ export default {
                         this.legacyCustomizeRecords[subKey] = null
                         return { record: null }
                     }
-                    return { errMsg: errMsg || `读取旧版测试自定义配置失败:${subKey}` }
+                    return { errMsg: errMsg || `读取${this.legacySourceName}自定义配置失败:${subKey}` }
                 }
                 this.legacyCustomizeRecords[subKey] = response.Data || null
                 return { record: this.legacyCustomizeRecords[subKey] }
             } catch (err) {
-                return { errMsg: this.getCopyError(null, err) || `读取旧版测试自定义配置异常:${subKey}` }
+                return { errMsg: this.getCopyError(null, err) || `读取${this.legacySourceName}自定义配置异常:${subKey}` }
             }
         },
 
@@ -1534,12 +1533,12 @@ export default {
                     data: {}
                 })
                 if (response.RetCode !== 0) {
-                    return { errMsg: this.getCopyError(response) || '读取旧版测试方案配置失败' }
+                    return { errMsg: this.getCopyError(response) || `读取${this.legacySourceName}方案配置失败` }
                 }
                 this.legacyPlanConfigRecords = Array.isArray(response.Data) ? response.Data : []
                 return { records: this.legacyPlanConfigRecords }
             } catch (err) {
-                return { errMsg: this.getCopyError(null, err) || '读取旧版测试方案配置异常' }
+                return { errMsg: this.getCopyError(null, err) || `读取${this.legacySourceName}方案配置异常` }
             }
         },
 
@@ -1553,7 +1552,7 @@ export default {
                 return { record: null }
             }
             if (records.length > 1) {
-                return { errMsg: `旧版测试方案配置存在重复记录:SlotsType=${cfgItem.gameId}，数量:${records.length}` }
+                return { errMsg: `${this.legacySourceName}方案配置存在重复记录:SlotsType=${cfgItem.gameId}，数量:${records.length}` }
             }
             const legacyRecord = records[0]
 
@@ -1561,7 +1560,7 @@ export default {
                 ? this.parseJson(legacyRecord.ConfigData, null)
                 : this.cloneData(legacyRecord.ConfigData)
             if (!Array.isArray(plans)) {
-                return { errMsg: `旧版测试方案配置数据格式错误:${cfgItem.subKey}` }
+                return { errMsg: `${this.legacySourceName}方案配置数据格式错误:${cfgItem.subKey}` }
             }
 
             const name = `${cfgItem.gameName || this.getGameLabel(cfgItem.gameId)}方案配置`
@@ -1597,7 +1596,7 @@ export default {
             if (!sourceSubKey) {
                 return {
                     RetCode: -1,
-                    RetMsg: `未配置旧版测试源Key映射:${cfgItem.subKey}`
+                    RetMsg: `未配置${this.legacySourceName}源Key映射:${cfgItem.subKey}`
                 }
             }
 
@@ -1608,7 +1607,7 @@ export default {
             if (!sourceResult.record || !sourceResult.record.Data) {
                 return {
                     RetCode: -1,
-                    RetMsg: `旧版测试配置不存在:${sourceSubKey}`
+                    RetMsg: `${this.legacySourceName}配置不存在:${sourceSubKey}`
                 }
             }
 
