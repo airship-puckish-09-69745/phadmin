@@ -1779,6 +1779,16 @@ export default {
             return Boolean(plan) && (plan.IsDisabled === true || Number(plan.IsDisabled) === 1)
         },
 
+        getLatestPlanVersion(plan) {
+            const versions = Array.isArray(plan && plan.Versions) ? plan.Versions : []
+            return versions.reduce((latestVersion, version) => {
+                if (!latestVersion || Number(version.Version) > Number(latestVersion.Version)) {
+                    return version
+                }
+                return latestVersion
+            }, null)
+        },
+
         async collectPlanScriptCreateTasks(tasks, failList, options = {}) {
             const createTasks = []
             for (const task of tasks) {
@@ -1793,12 +1803,11 @@ export default {
                     if (this.isPlanDisabled(plan)) {
                         continue
                     }
-                    for (const version of plan.Versions || []) {
-                        if (version.IsReady) {
-                            continue
-                        }
-                        createTasks.push(this.buildPlanScriptCreateTask(task, plan, version))
+                    const latestVersion = this.getLatestPlanVersion(plan)
+                    if (!latestVersion || latestVersion.IsReady) {
+                        continue
                     }
+                    createTasks.push(this.buildPlanScriptCreateTask(task, plan, latestVersion))
                 }
             }
             return createTasks
@@ -1925,14 +1934,13 @@ export default {
                     if (this.isPlanDisabled(plan)) {
                         continue
                     }
-                    for (const version of plan.Versions || []) {
-                        if (version.IsReady) {
-                            continue
-                        }
-                        const checkResult = await this.checkPlanVersionScripts(task, plan, version, betList)
-                        if (checkResult.ok) {
-                            readyTasks.push(this.buildPlanReadyPreviewTask(task, planData, plan, version, betList))
-                        }
+                    const latestVersion = this.getLatestPlanVersion(plan)
+                    if (!latestVersion || latestVersion.IsReady) {
+                        continue
+                    }
+                    const checkResult = await this.checkPlanVersionScripts(task, plan, latestVersion, betList)
+                    if (checkResult.ok) {
+                        readyTasks.push(this.buildPlanReadyPreviewTask(task, planData, plan, latestVersion, betList))
                     }
                 }
             }
