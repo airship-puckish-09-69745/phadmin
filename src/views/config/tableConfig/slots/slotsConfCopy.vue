@@ -1775,6 +1775,10 @@ export default {
             }
         },
 
+        isPlanDisabled(plan) {
+            return Boolean(plan) && (plan.IsDisabled === true || Number(plan.IsDisabled) === 1)
+        },
+
         async collectPlanScriptCreateTasks(tasks, failList, options = {}) {
             const createTasks = []
             for (const task of tasks) {
@@ -1786,6 +1790,9 @@ export default {
                     continue
                 }
                 for (const plan of planData.data.Plans || []) {
+                    if (this.isPlanDisabled(plan)) {
+                        continue
+                    }
                     for (const version of plan.Versions || []) {
                         if (version.IsReady) {
                             continue
@@ -1915,6 +1922,9 @@ export default {
                 }
 
                 for (const plan of planData.data.Plans || []) {
+                    if (this.isPlanDisabled(plan)) {
+                        continue
+                    }
                     for (const version of plan.Versions || []) {
                         if (version.IsReady) {
                             continue
