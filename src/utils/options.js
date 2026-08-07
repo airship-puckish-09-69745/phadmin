@@ -275,8 +275,8 @@ export const ACTIVITY_REWARD_TYPE_OPTIONS = [
   { 'value': ACTIVITY_REWARD_TYPES.ACTIVITY_ITEM, 'label': '活动物品' }
 ]
 
-// 场景ID（内部用）选项。对应配置： phgames/base/gDefine/market_api.go
-const SCENE_ID_OPTIONS = [
+// 场景发放ID（内部用）选项。对应配置： phgames/base/gDefine/market_api.go
+const SCENE_PID_OPTIONS = [
   // 常规场景
   { 'value': 1, 'label': '任意游戏投注' },
   { 'value': 2, 'label': '仅限Poker类游戏投注' },
@@ -316,8 +316,8 @@ const SCENE_ID_OPTIONS = [
   { 'value': 37, 'label': '仅限GZ任意游戏投注金【海岛寻宝活动GP】' }
 ]
 
-export const GetSceneOptions = (appId) => {
-  var sceneIdOptions = SCENE_ID_OPTIONS
+export const GetScenePidOptions = (appId) => {
+  var sceneIdOptions = SCENE_PID_OPTIONS
   // 门票相关场景
   const matchTickets = GetMatchTicketRightsIdList(appId)
   for (let i = 0; i < matchTickets.length; i++) {
@@ -325,3 +325,17 @@ export const GetSceneOptions = (appId) => {
   }
   return sceneIdOptions
 }
+
+// 营销发放类型
+export const MARKET_PROVIDE_TYPES = {
+  BONUS_CREDIT: 1, // 投注金
+  WAGER_REWARDS: 2, // 返水金
+  TICKET: 3 // 门票
+}
+
+// 营销发放类型选项
+export const SCENE_P_TYPE_OPTIONS = [
+  { 'value': MARKET_PROVIDE_TYPES.BONUS_CREDIT, 'label': '投注金' },
+  { 'value': MARKET_PROVIDE_TYPES.WAGER_REWARDS, 'label': '返水金' },
+  { 'value': MARKET_PROVIDE_TYPES.TICKET, 'label': '门票' }
+]

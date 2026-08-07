@@ -28,10 +28,10 @@ export default {
     return {
       // todo 把这个迁移到 option.js 中
       options: [
-        { value: 'ALL', label: 'ALL' },
+        // { value: 'ALL', label: 'ALL' },
         { value: 'BP', label: 'BP' },
         { value: 'GP', label: 'GP' },
-        // { value: 'Dev', label: 'Dev' }
+        { value: 'Dev', label: 'Dev' }
       ],
       selectedValue: this.value
     }
