@@ -422,8 +422,10 @@ export default {
         Message.error(`请选择对应站点`)
         return
       }
-      console.log('get post: ', this.edit.item)
-      return this.edit.item
+      const postData = this.edit.item
+      postData.endTime = postData.endTime / 1000
+      console.log('get post data: ', postData)
+      return postData
     },
     handleSave() {
       const data = this.getPostData()
