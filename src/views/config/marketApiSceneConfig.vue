@@ -170,7 +170,7 @@
               </el-col>
               <el-col :span="24">
                 <el-form-item label="场景有效时间（展示用）：" prop="EndTime">
-                  <el-date-picker v-model="edit.item.endTime" type="datetime" placeholder="选择结束时间" value-format="timestamp" :required="true" />
+                  <el-date-picker v-model="edit.pickerEndTime" type="datetime" placeholder="选择结束时间" value-format="timestamp" :required="true" @change="handleEndTimeChange" />
                 </el-form-item>
               </el-col>
               <el-col :span="24">
@@ -243,7 +243,8 @@ export default {
         isEdit: false,
         visible: false,
         item: newItem(),
-        title: '新增'
+        title: '新增',
+        pickerEndTime: null
       },
       env: 'test',
       AttrNames: {
@@ -422,10 +423,8 @@ export default {
         Message.error(`请选择对应站点`)
         return
       }
-      const postData = this.edit.item
-      postData.endTime = postData.endTime / 1000
-      console.log('get post data: ', postData)
-      return postData
+      console.log('get post data: ', this.edit.item)
+      return this.edit.item
     },
     handleSave() {
       const data = this.getPostData()
@@ -481,12 +480,18 @@ export default {
         this.edit.visible = true
       }
     },
+    // 日期选择器变化时：毫秒 → 秒
+    handleEndTimeChange(val) {
+      // val 为毫秒时间戳（或 null）
+      this.edit.item.endTime = val ? Math.floor(val / 1000) : 0
+    },
+    // 打开编辑对话框时，将秒转毫秒给 pickerEndTime
     initFormData(bEdit, row) {
       this.edit.isEdit = bEdit
       this.edit.item = row
-      console.log('initFormData: ', this.edit.item)
+      // 将秒级时间戳转为毫秒，供日期选择器显示
+      this.edit.pickerEndTime = row.endTime ? row.endTime * 1000 : null
       if (bEdit) {
-        // 设置修改之前数据
         this.$refs.compare.SetOldVal(row)
       }
     },
@@ -494,6 +499,7 @@ export default {
       this.edit.item = newItem()
       this.edit.isEdit = false
       this.edit.visible = true
+      this.edit.pickerEndTime = null
     }
     //* *********************** 修改/添加弹框相关 ************************
   }
