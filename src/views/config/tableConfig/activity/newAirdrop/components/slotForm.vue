@@ -91,49 +91,61 @@
 
         <!-- ---------- 道具奖励（进度奖励列表） ---------- -->
         <fieldset style="margin-bottom: 20px">
-          <legend><b>道具奖励</b></legend>
+          <legend style="display: flex; align-items: center; gap: 10px">
+            <b>道具奖励</b>
+            <el-tag size="mini" type="info" effect="plain">可选</el-tag>
+            <el-switch
+              v-model="item.enableProgressPrize"
+              active-text="启用"
+              inactive-text="不配置"
+              @change="onProgressPrizeEnabledChange"
+            />
+          </legend>
+          <div v-if="!item.enableProgressPrize" style="margin-bottom: 8px; color: #909399; font-size: 12px">
+            已标记为不配置道具奖励，仅保存投注金奖励配置。
+          </div>
           <el-table :data="[item.progressPrizes]" border size="small" style="width: 100%">
             <el-table-column label="任务类型" min-width="140" align="center">
               <template slot-scope="scope">
-                <el-select v-model="scope.row.taskType" placeholder="请选择" style="width: 220px">
+                <el-select v-model="scope.row.taskType" placeholder="请选择" style="width: 220px" :disabled="!item.enableProgressPrize">
                   <el-option v-for="opt in slotTaskTypes" :key="opt.value" :label="opt.label" :value="opt.value" />
                 </el-select>
               </template>
             </el-table-column>
             <el-table-column label="进度要求(₱)" min-width="120" align="center">
               <template slot-scope="scope">
-                <el-input v-model.number="scope.row.taskValueRequired" placeholder="进度值" size="mini" oninput="if(value<0||value===''){value=0}" />
+                <el-input v-model.number="scope.row.taskValueRequired" placeholder="进度值" size="mini" :disabled="!item.enableProgressPrize" oninput="if(value<0||value===''){value=0}" />
               </template>
             </el-table-column>
             <el-table-column label="道具类型" min-width="140" align="center">
               <template slot-scope="scope">
-                <el-select v-model="scope.row.propType" placeholder="请选择" size="mini" @change="onPropTypeChange(scope.row, scope.$index)">
+                <el-select v-model="scope.row.propType" placeholder="请选择" size="mini" :disabled="!item.enableProgressPrize" @change="onPropTypeChange(scope.row, scope.$index)">
                   <el-option v-for="opt in propTypeOptions" :key="opt.value" :label="opt.label" :value="opt.value" />
                 </el-select>
               </template>
             </el-table-column>
             <el-table-column label="道具名称" min-width="160" align="center">
               <template slot-scope="scope">
-                <el-select v-model="scope.row.propId" placeholder="请选择" size="mini" @change="onPropNameChange(scope.row, scope.$index)">
+                <el-select v-model="scope.row.propId" placeholder="请选择" size="mini" :disabled="!item.enableProgressPrize" @change="onPropNameChange(scope.row, scope.$index)">
                   <el-option v-for="opt in propOptionsMap[scope.$index] || []" :key="opt.value" :label="opt.label" :value="opt.value" />
                 </el-select>
               </template>
             </el-table-column>
             <el-table-column label="可用时间" min-width="120" align="center">
               <template slot-scope="scope">
-                <el-select v-model="scope.row.propTime" placeholder="请选择" size="mini">
+                <el-select v-model="scope.row.propTime" placeholder="请选择" size="mini" :disabled="!item.enableProgressPrize">
                   <el-option v-for="opt in propDayTypeOptions" :key="opt.value" :label="opt.label" :value="opt.value" />
                 </el-select>
               </template>
             </el-table-column>
             <el-table-column label="道具数量" min-width="100" align="center">
               <template slot-scope="scope">
-                <el-input v-model.number="scope.row.propNum" placeholder="数量" size="mini" oninput="if(value<0||value===''){value=0}" />
+                <el-input v-model.number="scope.row.propNum" placeholder="数量" size="mini" :disabled="!item.enableProgressPrize" oninput="if(value<0||value===''){value=0}" />
               </template>
             </el-table-column>
             <el-table-column label="道具上限" min-width="100" align="center">
               <template slot-scope="scope">
-                <el-input v-model.number="scope.row.propLimit" placeholder="上限" size="mini" oninput="if(value<0||value===''){value=0}" />
+                <el-input v-model.number="scope.row.propLimit" placeholder="上限" size="mini" :disabled="!item.enableProgressPrize" oninput="if(value<0||value===''){value=0}" />
               </template>
             </el-table-column>
           </el-table>
@@ -212,6 +224,10 @@ import AirdropUserType from '@/components/AirdropUserType/index.vue'
 import { ACTIVITY_ID } from '../index.vue'
 
 const GAME_TYPE = 1 // Slot
+const MAX_DEBUG_TIME_OFFSET = 30 * 24 * 60 * 60
+const MAX_COUNT = 1000000000
+const MAX_AMOUNT = Math.floor(Number.MAX_SAFE_INTEGER / 1000)
+const MAX_TEXT_LENGTH = 100
 
 function defaultWhitelist() {
   return { appIdList: [], siteIdList: [], abTest: { switch: false, bPercent: 0 }, uidList: [], isOpen: false }
@@ -230,7 +246,7 @@ function defaultUserConfig() {
 }
 
 function newPrize() {
-  return { taskType: 2, taskValueRequired: 0, propType: 5, propId: 0, propName: '', propTime: 1, propNum: 0, propLimit: 0 }
+  return { taskType: 2, taskValueRequired: 0, propType: 0, propId: 0, propName: '', propTime: 1, propNum: 0, propLimit: 0 }
 }
 
 // 投注金奖励默认值（已发奖励为只读，初始为 0）
@@ -250,8 +266,7 @@ function newItem() {
     debugTimeOffset: 0,
     gameIdList: [],
     whitelist: defaultWhitelist(),
-    // 任务类型（道具奖励全局设置，已移入奖励配置 tab）
-    taskType: 2,
+    enableProgressPrize: false,
     taskText: '',
     progressPrizes: newPrize(),
     // 投注金奖励（固定一条）
@@ -321,6 +336,87 @@ export default {
       }
       return (val !== null && val !== undefined) ? val : def
     },
+    toSafeNumber(val, def = 0) {
+      const num = Number(val)
+      return Number.isFinite(num) ? num : def
+    },
+    validateNumber(val, label, { min = 0, max = MAX_AMOUNT, integer = false } = {}) {
+      const num = Number(val)
+      if (!Number.isFinite(num)) {
+        Message.error(`${label}必须为数字`)
+        return false
+      }
+      if (integer && !Number.isInteger(num)) {
+        Message.error(`${label}必须为整数`)
+        return false
+      }
+      if (num < min || num > max) {
+        Message.error(`${label}需在 ${min} ~ ${max} 范围内`)
+        return false
+      }
+      return true
+    },
+    normalizePrize(rawPrize) {
+      const prize = this.safeJson(rawPrize, {})
+      if (Array.isArray(prize)) {
+        return { ...newPrize(), ...(prize[0] || {}) }
+      }
+      return { ...newPrize(), ...(prize || {}) }
+    },
+    isProgressPrizeConfigured(prize) {
+      return this.toSafeNumber(prize.propId) > 0 || this.toSafeNumber(prize.propNum) > 0 || this.toSafeNumber(prize.propLimit) > 0
+    },
+    validateUserConfig() {
+      const userConfig = this.item.userConfig || defaultUserConfig()
+      const userType = Array.isArray(userConfig.userTypes) && userConfig.userTypes.length > 0 ? userConfig.userTypes[0] : 2
+      userConfig.userTypes = [userType]
+      const condition = userConfig.userFilterCondition || defaultUserConfig().userFilterCondition
+      userConfig.userFilterCondition = condition
+      const registerTimeRange = condition.registerTimeRange || { min: 0, max: 0 }
+      const betTimesRange = condition.betTimesRange || { min: 0, max: 0 }
+      const userTagConfig = condition.userTagConfig || { tagType: 0, tagId: 0, tagValue: 0 }
+      if (userType === 4) {
+        if (!registerTimeRange.min || !registerTimeRange.max || registerTimeRange.max < registerTimeRange.min) {
+          Message.error('请选择有效的用户注册时间范围')
+          return false
+        }
+        if (!this.validateNumber(betTimesRange.min, '累计投注次数最小值', { min: 0, max: MAX_COUNT, integer: true })) return false
+        if (!this.validateNumber(betTimesRange.max, '累计投注次数最大值', { min: 0, max: MAX_COUNT, integer: true })) return false
+        if (this.toSafeNumber(betTimesRange.max) < this.toSafeNumber(betTimesRange.min)) {
+          Message.error('累计投注次数最大值不能小于最小值')
+          return false
+        }
+      }
+      if (userType === 5) {
+        if (!userTagConfig.tagType) {
+          Message.error('请选择标签类型')
+          return false
+        }
+        if (!userTagConfig.tagId) {
+          Message.error('请选择标签子类')
+          return false
+        }
+        if (userTagConfig.tagId === 20000 && !userTagConfig.tagValue) {
+          Message.error('请选择游戏强度')
+          return false
+        }
+      }
+      this.item.userConfig = userConfig
+      return true
+    },
+    onProgressPrizeEnabledChange(enabled) {
+      if (enabled) {
+        if (!this.item.progressPrizes.propType) {
+          this.item.progressPrizes.propType = this.propTypeOptions[0].value
+        }
+        this.buildPropOptionsForIndex(this.item.progressPrizes.propType, 0)
+      } else {
+        this.item.progressPrizes.propId = 0
+        this.item.progressPrizes.propName = ''
+        this.item.progressPrizes.propNum = 0
+        this.item.progressPrizes.propLimit = 0
+      }
+    },
     loadEditData() {
       const raw = JSON.parse(JSON.stringify(this.data))
       const act = this.safeJson(raw.activity, {})
@@ -331,22 +427,28 @@ export default {
       if (!whitelist.appIdList) whitelist.appIdList = []
       if (!whitelist.siteIdList) whitelist.siteIdList = []
 
+      const defaultFilterCondition = defaultUserConfig().userFilterCondition
+      const userFilterCondition = this.safeJson(ext.userFilterCondition, defaultFilterCondition)
+      if (!userFilterCondition.registerTimeRange) userFilterCondition.registerTimeRange = { min: 0, max: 0 }
+      if (!userFilterCondition.betTimesRange) userFilterCondition.betTimesRange = { min: 0, max: 0 }
+      if (!userFilterCondition.userTagConfig) userFilterCondition.userTagConfig = { tagType: 0, tagId: 0, tagValue: 0 }
+
       const userConfig = {
         userTypes: this.safeJson(ext.userTypes, [2]),
-        userFilterCondition: this.safeJson(ext.userFilterCondition, {
-          registerTimeRange: { min: 0, max: 0 },
-          betTimesRange: { min: 0, max: 0 },
-          userTagConfig: { tagType: 0, tagId: 0, tagValue: 0 }
-        }),
+        userFilterCondition,
         importedFilename: ext.importedFilename || ''
       }
 
-      const taskType = ext.taskType || 2
-      const prize = ext.progressPrizes ? ext.progressPrizes : newPrize()
+      const prize = this.normalizePrize(ext.progressPrizes)
+      const taskType = this.toSafeNumber(prize.taskType || ext.taskType, 2)
+      prize.taskType = taskType
       // 有效下注类型时进度要求存储单位为 1/1000 ₱，前端显示除以 1000
       if (taskType === 2) {
-        prize.taskValueRequired = (prize.taskValueRequired || 0) / 1000
+        prize.taskValueRequired = this.toSafeNumber(prize.taskValueRequired) / 1000
       }
+      const enableProgressPrize = typeof ext.enableProgressPrize === 'boolean'
+        ? ext.enableProgressPrize
+        : this.isProgressPrizeConfigured(prize)
 
       // 兼容旧数据：若无 betReward 则从旧的 taskCondition 字段迁移
       const rawBetReward = this.safeJson(ext.betReward, null)
@@ -380,7 +482,7 @@ export default {
         debugTimeOffset: act.debugTimeOffset || 0,
         gameIdList: Array.isArray(act.gameIdList) ? act.gameIdList : [],
         whitelist,
-        taskType,
+        enableProgressPrize,
         taskText: ext.taskText || '',
         progressPrizes: prize,
         betReward,
@@ -389,35 +491,66 @@ export default {
 
       // 初始化道具选项映射
       this.$nextTick(() => {
-        this.buildPropOptionsForIndex(this.item.progressPrizes[0].propType, 0)
+        const propType = this.item.progressPrizes.propType || this.propTypeOptions[0].value
+        this.buildPropOptionsForIndex(propType, 0)
       })
     },
     validateData() {
+      this.item.activityName = (this.item.activityName || '').trim()
       if (!this.item.activityName) { Message.error('请输入活动名称'); return false }
+      if (this.item.activityName.length > MAX_TEXT_LENGTH) { Message.error(`活动名称长度不能超过${MAX_TEXT_LENGTH}个字符`); return false }
       if (!this.item.startTime) { Message.error('请选择开始时间'); return false }
       if (!this.item.endTime) { Message.error('请选择结束时间'); return false }
       if (!this.item.showEndTime) { Message.error('请选择展示结束时间'); return false }
+      if (this.item.endTime <= this.item.startTime) { Message.error('活动结束时间必须晚于活动开始时间'); return false }
+      if (this.item.showEndTime < this.item.endTime) { Message.error('展示结束时间不能早于活动结束时间'); return false }
+      if (!this.validateNumber(this.item.debugTimeOffset, '调试时间偏移(秒)', { min: -MAX_DEBUG_TIME_OFFSET, max: MAX_DEBUG_TIME_OFFSET, integer: true })) return false
       if (!this.item.whitelist.siteIdList || this.item.whitelist.siteIdList.length === 0) {
         Message.error('请选择SiteId白名单'); return false
       }
       if (!this.item.gameIdList || this.item.gameIdList.length === 0) {
         Message.error('请选择参与活动的游戏'); return false
       }
+      if (!this.validateUserConfig()) return false
       const prize = this.item.progressPrizes
-      if (!prize.propType || !prize.propId) {
-        Message.error('请配置道具类型和道具名称'); return false
+      if (!this.validateNumber(prize.taskValueRequired, '进度要求(₱)', { min: 0, max: MAX_AMOUNT })) return false
+      if (this.item.enableProgressPrize) {
+        if (!prize.propType || !prize.propId) {
+          Message.error('请配置道具类型和道具名称'); return false
+        }
+        if (!this.validateNumber(prize.propNum, '道具数量', { min: 1, max: MAX_COUNT, integer: true })) return false
+        if (!this.validateNumber(prize.propLimit, '道具上限', { min: 1, max: MAX_COUNT, integer: true })) return false
+        if (this.toSafeNumber(prize.propLimit) < this.toSafeNumber(prize.propNum)) {
+          Message.error('道具上限不能小于道具数量'); return false
+        }
+        if (this.toSafeNumber(prize.propLimit) % this.toSafeNumber(prize.propNum) !== 0) {
+          Message.error('道具上限必须为道具数量的整数倍'); return false
+        }
       }
-      if (this.item.progressPrizes.taskValueRequired < 0) {
-        Message.error('进度要求不能小于0'); return false
+      const betReward = this.item.betReward
+      if (!this.validateNumber(betReward.taskCondition, '任务条件(₱)', { min: 0, max: MAX_AMOUNT })) return false
+      if (!this.validateNumber(betReward.totalReward, '总奖励(₱)', { min: 0, max: MAX_AMOUNT })) return false
+      if (!this.validateNumber(betReward.issuedReward, '已发奖励(₱)', { min: 0, max: MAX_AMOUNT })) return false
+      if (!this.validateNumber(betReward.userMaxReward, '用户最大领奖(₱)', { min: 0, max: MAX_AMOUNT })) return false
+      if (this.toSafeNumber(betReward.totalReward) > 0 && this.toSafeNumber(betReward.userMaxReward) > this.toSafeNumber(betReward.totalReward)) {
+        Message.error('用户最大领奖不能大于总奖励'); return false
       }
       return true
     },
     getPostData() {
       const d = this.item
       // 道具奖励：进度要求回存时乘以 1000
-      const prize = Object.assign({}, d.progressPrizes)
-      if (d.taskType === 2) {
-        prize.taskValueRequired = (prize.taskValueRequired || 0) * 1000
+      const prize = { ...newPrize(), ...d.progressPrizes }
+      prize.taskType = this.toSafeNumber(prize.taskType, 2)
+      if (prize.taskType === 2) {
+        prize.taskValueRequired = Math.round(this.toSafeNumber(prize.taskValueRequired) * 1000)
+      }
+      if (!d.enableProgressPrize) {
+        prize.propType = 0
+        prize.propId = 0
+        prize.propName = ''
+        prize.propNum = 0
+        prize.propLimit = 0
       }
 
       const activityObj = {
@@ -427,7 +560,7 @@ export default {
         startTime: Math.floor(d.startTime / 1000),
         endTime: Math.floor(d.endTime / 1000),
         showEndTime: Math.floor(d.showEndTime / 1000),
-        debugTimeOffset: d.debugTimeOffset || 0,
+        debugTimeOffset: this.toSafeNumber(d.debugTimeOffset, 0),
         gameType: GAME_TYPE,
         gameIdList: d.gameIdList,
         whitelist: d.whitelist
@@ -435,14 +568,15 @@ export default {
       // Slot extend：包含道具奖励(progressPrizes)和投注金奖励(betReward)
       const extendObj = {
         taskText: d.taskText || '',
+        enableProgressPrize: !!d.enableProgressPrize,
         progressPrizes: prize,
         // 投注金奖励：货币字段乘以 1000 存储，已发奖励由后端维护保持原值
         betReward: {
-          taskType: d.betReward.taskType,
-          taskCondition: Math.round((d.betReward.taskCondition || 0) * 1000),
-          totalReward: Math.round((d.betReward.totalReward || 0) * 1000),
-          issuedReward: Math.round((d.betReward.issuedReward || 0) * 1000),
-          userMaxReward: Math.round((d.betReward.userMaxReward || 0) * 1000)
+          taskType: this.toSafeNumber(d.betReward.taskType, 2),
+          taskCondition: Math.round(this.toSafeNumber(d.betReward.taskCondition) * 1000),
+          totalReward: Math.round(this.toSafeNumber(d.betReward.totalReward) * 1000),
+          issuedReward: Math.round(this.toSafeNumber(d.betReward.issuedReward) * 1000),
+          userMaxReward: Math.round(this.toSafeNumber(d.betReward.userMaxReward) * 1000)
         },
         userTypes: d.userConfig.userTypes,
         userFilterCondition: d.userConfig.userFilterCondition,
@@ -458,8 +592,6 @@ export default {
     handleSave() {
       if (!this.validateData()) return
       const postData = this.getPostData()
-      console.log(111)
-      console.log(postData)
       this.saving = true
       const url = postData.id > 0 ? '/activityconfig/update' : '/activityconfig/create'
       request({ url, method: 'post', data: postData }).then(response => {

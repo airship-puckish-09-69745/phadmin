@@ -254,11 +254,12 @@ export default {
         const rtr = cond.registerTimeRange || {}
         if (rtr.min && rtr.max) {
           this.registerDateRange = [rtr.min * 1000, rtr.max * 1000]
+        } else {
+          this.registerDateRange = []
         }
         // 初始化标签选项
-        if (cond.userTagConfig && cond.userTagConfig.tagType) {
-          this.onTagTypeChange(cond.userTagConfig.tagType)
-        }
+        const tagType = cond.userTagConfig ? Number(cond.userTagConfig.tagType) || 0 : 0
+        this.syncTagIdOptions(tagType)
       }
     },
     activityCfgId: {
@@ -271,6 +272,19 @@ export default {
     }
   },
   methods: {
+    getUserTagConfig() {
+      if (!this.localValue.userFilterCondition) {
+        this.$set(this.localValue, 'userFilterCondition', defaultUserFilterCondition())
+      }
+      if (!this.localValue.userFilterCondition.userTagConfig) {
+        this.$set(this.localValue.userFilterCondition, 'userTagConfig', { tagType: 0, tagId: 0, tagValue: 0 })
+      }
+      return this.localValue.userFilterCondition.userTagConfig
+    },
+    syncTagIdOptions(tagType) {
+      const found = this.effectiveUserTagOptions.find(item => item.value === tagType)
+      this.tagIdOptions = (found && found.children) || []
+    },
     emitChange() {
       this.$emit('input', {
         ...this.localValue,
@@ -280,7 +294,14 @@ export default {
     onUserTypeChange(val) {
       this.currentUserType = val
       if (val !== 5) {
-        this.localValue.userFilterCondition.userTagConfig = { tagType: 0, tagId: 0, tagValue: 0 }
+        const userTagConfig = this.getUserTagConfig()
+        userTagConfig.tagType = 0
+        userTagConfig.tagId = 0
+        userTagConfig.tagValue = 0
+        this.tagIdOptions = []
+      } else {
+        const userTagConfig = this.getUserTagConfig()
+        this.syncTagIdOptions(userTagConfig.tagType)
       }
       this.emitChange()
     },
@@ -292,18 +313,18 @@ export default {
       this.emitChange()
     },
     onTagTypeChange(tagType) {
-      // 使用 effectiveUserTagOptions 以支持各玩法自定义标签选项
-      const found = this.effectiveUserTagOptions.find(item => item.value === tagType)
-      this.tagIdOptions = (found && found.children) || []
-      if (this.localValue.userFilterCondition.userTagConfig.tagType !== tagType) {
-        this.localValue.userFilterCondition.userTagConfig.tagId = this.tagIdOptions.length > 0 ? this.tagIdOptions[0].value : 0
-        this.localValue.userFilterCondition.userTagConfig.tagValue = 0
+      const userTagConfig = this.getUserTagConfig()
+      this.syncTagIdOptions(tagType)
+      if (!this.tagIdOptions.some(opt => opt.value === userTagConfig.tagId)) {
+        userTagConfig.tagId = this.tagIdOptions.length > 0 ? this.tagIdOptions[0].value : 0
       }
-      this.localValue.userFilterCondition.userTagConfig.tagType = tagType
+      userTagConfig.tagType = tagType
+      userTagConfig.tagValue = 0
       this.emitChange()
     },
     onTagIdChange() {
-      this.localValue.userFilterCondition.userTagConfig.tagValue = 0
+      const userTagConfig = this.getUserTagConfig()
+      userTagConfig.tagValue = 0
       this.emitChange()
     },
     getImportedUidCacheCount() {
