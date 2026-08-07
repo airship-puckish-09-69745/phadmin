@@ -53,7 +53,7 @@
             <div class="header-filter-wrap">
               <span class="header-label">发放ID（内部用）</span>
               <el-select
-                v-model="clientDB.FilterValueMap['pid']"
+                v-model="filterPidSelected"
                 size="mini"
                 placeholder="全部"
                 clearable
@@ -136,7 +136,7 @@
             <el-form label-width="220px">
               <el-col :span="24">
                 <el-form-item label="发放ID（内部用）：" :required="true" size="medium">
-                  <el-select v-model="edit.item.pid" placeholder="请选择" style="width: 100%" filterable :disabled="edit.isEdit" @change="handleSceneIdChange">
+                  <el-select v-model="edit.item.pid" placeholder="请选择" style="width: 100%" filterable :disabled="edit.isEdit" @change="handlePidChange">
                     <el-option
                       v-for="item in scenePidOptions"
                       :key="item.value"
@@ -260,7 +260,7 @@ export default {
       },
       scenePidOptions: [],
       SCENE_P_TYPE_OPTIONS,
-      filterSceneSelected: {}
+      filterPidSelected: 0
     }
   },
   computed: {
@@ -289,8 +289,8 @@ export default {
       }
       return '未知发放类型'
     },
-    handleSceneIdChange() {
-      console.log('handleSceneIdChange', this.edit.item.pid)
+    handlePidChange() {
+      console.log('handlePidChange', this.edit.item.pid)
       for (let i = 0; i < this.scenePidOptions.length; i++) {
         if (this.scenePidOptions[i].value === this.edit.item.pid && this.scenePidOptions[i].ticketId) {
           this.edit.item.propId = this.scenePidOptions[i].ticketId
@@ -321,10 +321,12 @@ export default {
       return $libDate.FormateSecondStr(ts, 2)
     },
     handleScenePidFilter() {
-      const selectedScenePids = this.clientDB.FilterValueMap['pid'] || []
-      if (selectedScenePids.length === 0) {
+      const selectedScenePid = this.filterPidSelected || []
+      console.log('handleScenePidFilter', selectedScenePid)
+      if (selectedScenePid.length === 0) {
         this.clearFilter()
       } else {
+        this.clientDB.FilterValueMap['pid'] = selectedScenePid
         this.handleFilter()
       }
     },
@@ -367,7 +369,7 @@ export default {
           })
           console.log('objs ', objs)
           this.clientDB = new ClientTableData(objs, 10, filterMap)
-          this.handleCurrentChange(1)
+          this.handleScenePidFilter()
         }
       }).catch(err => {
         console.log(err)
@@ -496,7 +498,9 @@ export default {
       }
     },
     handleAdd() {
-      this.initFormData(false, newItem())
+      const row = newItem()
+      row.pid = this.filterPidSelected
+      this.initFormData(false, row)
       this.edit.visible = true
     }
     //* *********************** 修改/添加弹框相关 ************************
