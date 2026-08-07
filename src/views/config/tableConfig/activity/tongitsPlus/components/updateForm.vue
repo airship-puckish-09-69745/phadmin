@@ -255,7 +255,7 @@ function newItem() {
       {value: 1000000, label: '1000'}
     ],
     winGameCount: [], // 参与活动场次（盲注级别）
-    treasureCfg: [{id: 1, claimAmount: '', requiredGameCount: '', ratio: ''}] // 宝箱配置表格
+    treasureCfg: [{id: 1, claimAmount: 0, requiredGameCount: 0, ratio: 0}] // 宝箱配置表格
   }
 }
 
@@ -275,6 +275,16 @@ export default {
       type: Object,
       default: () => ({})
     }
+  },
+  rules: {
+    requiredGameCount: [
+      {
+        type: 'number',
+        min: 1,
+        message: '要求局数不能小于1',
+        trigger: 'blur'
+      }
+    ]
   },
   data() {
     return {
@@ -358,8 +368,8 @@ export default {
         winGameCount: ext.winGameCount || [],
         treasureCfg: Array.isArray(ext.treasureCfg) && ext.treasureCfg.length > 0 ? ext.treasureCfg : [{
           id: 1,
-          claimAmount: '',
-          requiredGameCount: '',
+          claimAmount: 0,
+          requiredGameCount: 0,
           ratio: 0
         }]
       }
@@ -486,7 +496,7 @@ export default {
       })
     },
     addTreasureRow() {
-      this.item.treasureCfg.push({id: this.item.treasureCfg.length + 1, claimAmount: '', requiredGameCount: '', ratio: ''})
+      this.item.treasureCfg.push({id: this.item.treasureCfg.length + 1, claimAmount: 0, requiredGameCount: 0, ratio: 0})
       this.reindexTreasure()
     },
     deleteTreasureRow(index) {
