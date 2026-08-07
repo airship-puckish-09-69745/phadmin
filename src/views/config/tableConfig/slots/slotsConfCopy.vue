@@ -96,7 +96,7 @@
                         选择游戏
                     </div>
                     <el-input v-model="gameIdKeyword" clearable size="mini" prefix-icon="el-icon-search"
-                        placeholder="输入游戏ID搜索" class="game-id-search" />
+                        placeholder="输入游戏ID或名称搜索" class="game-id-search" />
                 </div>
 
                 <!-- 全选 -->
@@ -484,11 +484,13 @@ export default {
             return this.gameOptions.filter(game => !this.isGameMissingSubKeyMap(game.key))
         },
         filteredGameOptions() {
-            const keyword = this.gameIdKeyword.trim()
+            const keyword = this.gameIdKeyword.trim().toLowerCase()
             if (!keyword) {
                 return this.gameOptions
             }
-            return this.gameOptions.filter(game => String(game.key).includes(keyword))
+            return this.gameOptions.filter(game => {
+                return String(game.key).includes(keyword) || String(game.label || '').toLowerCase().includes(keyword)
+            })
         },
         selectableFilteredGameOptions() {
             const selectableGameIdSet = new Set(this.selectableGameOptions.map(game => String(game.key)))
