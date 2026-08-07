@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="page-container" style="padding: 10px">
     <el-row>
-      <publish primary-key="ID" key-id="MarketApiSceneConfig" :env-empty="false" :check="configCheck" compare-type="Array" :make-content="makeContent" :attr-names="getPublishAttrNames()" :head-attrs="['ID','AppId','SceneId','Site','Scene']" />
+      <publish primary-key="ID" key-id="MarketApiSceneConfig" :env-empty="false" :check="configCheck" compare-type="Array" :make-content="makeContent" :attr-names="getPublishAttrNames()" :head-attrs="['ID','AppId','Pid','Site','Scene']" />
     </el-row>
     <el-row>
       <el-col :span="20">
@@ -12,7 +12,7 @@
           :label-style="{'text-align': 'right', 'font-weight':'bold','padding':'5px', 'color':'red'}"
           border
         >
-          <el-descriptions-item label="场景配置说明：">【当前平台】+【场景ID】+【站点】 组成配置唯一键。</el-descriptions-item>
+          <el-descriptions-item label="场景配置说明：">【当前平台】+【发放ID】+【站点】 组成配置唯一键。</el-descriptions-item>
         </el-descriptions>
       </el-col>
     </el-row>
@@ -48,21 +48,21 @@
         <el-table-column prop="id" label="ID" sortable="custom" width="80" />
         <el-table-column prop="appId" label="平台ID" />
         <el-table-column prop="site" label="站点" />
-        <el-table-column prop="sceneId" label="场景ID（内部用）" width="200">
+        <el-table-column prop="pid" label="发放ID（内部用）" width="200">
           <template #header>
             <div class="header-filter-wrap">
-              <span class="header-label">场景ID（内部用）</span>
+              <span class="header-label">发放ID（内部用）</span>
               <el-select
-                v-model="clientDB.FilterValueMap['sceneId']"
+                v-model="clientDB.FilterValueMap['pid']"
                 size="mini"
                 placeholder="全部"
                 clearable
                 filterable
-                @change="handleSceneIdFilter"
+                @change="handleScenePidFilter"
                 @click.native.stop
               >
                 <el-option
-                  v-for="item in sceneIdOptions"
+                  v-for="item in scenePidOptions"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
@@ -72,10 +72,15 @@
           </template>
 
           <template slot-scope="scope">
-            {{ getSceneName(scope.row.sceneId) }}
+            {{ getScenePidName(scope.row.pid) }}
           </template>
         </el-table-column>
         <el-table-column prop="scene" label="场景值" />
+        <el-table-column prop="pType" label="发放类型（展示用）" width="200">
+          <template slot-scope="scope">
+            {{ getPTypeName(scope.row.pType) }}
+          </template>
+        </el-table-column>
         <el-table-column prop="endTime" label="场景有效期" sortable="custom">
           <template slot-scope="scope">
             {{ formatTime(scope.row.endTime) }}
@@ -123,17 +128,29 @@
           <el-row>
             <el-col :span="24">
               <el-alert title="场景配置说明：" type="info" :closable="false">
-                【当前平台】+【场景ID】+【站点】 组成配置唯一键。
+                【当前平台】+【发放ID】+【站点】 组成配置唯一键。
               </el-alert>
             </el-col>
           </el-row>
           <el-row>
-            <el-form label-width="220px" size="mini">
+            <el-form label-width="220px">
               <el-col :span="24">
-                <el-form-item label="场景ID（内部用）：" :required="true">
-                  <el-select v-model="edit.item.sceneId" placeholder="请选择" filterable :disabled="edit.isEdit" @change="handleSceneIdChange">
+                <el-form-item label="发放ID（内部用）：" :required="true" size="medium">
+                  <el-select v-model="edit.item.pid" placeholder="请选择" style="width: 100%" filterable :disabled="edit.isEdit" @change="handleSceneIdChange">
                     <el-option
-                      v-for="item in sceneIdOptions"
+                      v-for="item in scenePidOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="24">
+                <el-form-item label="发放类型（展示用）：" :required="true">
+                  <el-select v-model="edit.item.pType" placeholder="请选择" filterable>
+                    <el-option
+                      v-for="item in SCENE_P_TYPE_OPTIONS"
                       :key="item.value"
                       :label="item.label"
                       :value="item.value"
@@ -152,7 +169,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="24">
-                <el-form-item label="场景有效时间（内部展示用）：" prop="EndTime">
+                <el-form-item label="场景有效时间（展示用）：" prop="EndTime">
                   <el-date-picker v-model="edit.item.endTime" type="datetime" placeholder="选择结束时间" value-format="timestamp" :required="true" />
                 </el-form-item>
               </el-col>
@@ -190,18 +207,19 @@ import store from '@/store'
 import request from '@/utils/request'
 import { Message } from 'element-ui'
 import MarketApiSiteSelect from '@/components/MarketApiSiteSelect/index.vue'
-import { GetSceneOptions } from '@//utils/options'
+import { GetScenePidOptions, SCENE_P_TYPE_OPTIONS } from '@//utils/options'
 
-const filterMap = { sceneId: [] }
+const filterMap = { pid: [] }
 
 function newItem() {
   return {
     id: 0,
     appId: 0,
-    sceneId: 0,
+    pid: 0,
+    pType: 0,
     site: '',
     scene: '',
-    endTime: 0,
+    endTime: $libDate.GetDayBegin(new Date(new Date().getTime() + 24 * 60 * 60 * 1000)),
     remark: '',
     propId: 0
   }
@@ -231,13 +249,16 @@ export default {
       AttrNames: {
         id: '配置ID',
         appId: '应用',
-        sceneId: '场景ID（内部用）',
+        pid: '发放ID（内部用）',
+        pType: '发放类型：1 投注金、2 返水金、3 门票',
         site: '站点',
+        scene: '场景值',
         endTime: '场景值有效期',
         remark: '备注',
         status: '状态'
       },
-      sceneIdOptions: [],
+      scenePidOptions: [],
+      SCENE_P_TYPE_OPTIONS,
       filterSceneSelected: {}
     }
   },
@@ -247,23 +268,31 @@ export default {
     this.env = store.getters.env || this.env
   },
   mounted() {
-    this.sceneIdOptions = GetSceneOptions(this.appId)
+    this.scenePidOptions = GetScenePidOptions(this.appId)
     this.getList()
   },
   methods: {
-    getSceneName(sceneId) {
-      for (let i = 0; i < this.sceneIdOptions.length; i++) {
-        if (this.sceneIdOptions[i].value === sceneId) {
-          return this.sceneIdOptions[i].label
+    getScenePidName(pid) {
+      for (let i = 0; i < this.scenePidOptions.length; i++) {
+        if (this.scenePidOptions[i].value === pid) {
+          return this.scenePidOptions[i].label
         }
       }
-      return '未知场景'
+      return '未知发放场景'
+    },
+    getPTypeName(pType) {
+      for (let i = 0; i < this.SCENE_P_TYPE_OPTIONS.length; i++) {
+        if (this.SCENE_P_TYPE_OPTIONS[i].value === pType) {
+          return this.SCENE_P_TYPE_OPTIONS[i].label
+        }
+      }
+      return '未知发放类型'
     },
     handleSceneIdChange() {
-      console.log('handleSceneIdChange', this.edit.item.sceneId)
-      for (let i = 0; i < this.sceneIdOptions.length; i++) {
-        if (this.sceneIdOptions[i].value === this.edit.item.sceneId && this.sceneIdOptions[i].ticketId) {
-          this.edit.item.propId = this.sceneIdOptions[i].ticketId
+      console.log('handleSceneIdChange', this.edit.item.pid)
+      for (let i = 0; i < this.scenePidOptions.length; i++) {
+        if (this.scenePidOptions[i].value === this.edit.item.pid && this.scenePidOptions[i].ticketId) {
+          this.edit.item.propId = this.scenePidOptions[i].ticketId
         }
       }
     },
@@ -290,9 +319,9 @@ export default {
     formatTime(ts) {
       return $libDate.FormateSecondStr(ts, 2)
     },
-    handleSceneIdFilter() {
-      const selectedSceneIds = this.clientDB.FilterValueMap['sceneId'] || []
-      if (selectedSceneIds.length === 0) {
+    handleScenePidFilter() {
+      const selectedScenePids = this.clientDB.FilterValueMap['pid'] || []
+      if (selectedScenePids.length === 0) {
         this.clearFilter()
       } else {
         this.handleFilter()
@@ -308,7 +337,7 @@ export default {
     },
     // 筛选相关逻辑
     searchChange() {
-      this.clientDB.Search(this.search, ['sceneId'])
+      this.clientDB.Search(this.search, ['pid'])
       this.refreshShow()
     },
     // 分页处理
@@ -333,7 +362,7 @@ export default {
         if (response.RetCode === 0) {
           const objs = response.Data || []
           objs.forEach(function(item) {
-            item.sceneName = $this.getSceneName(item.sceneId)
+            item.sceneName = $this.getScenePidName(item.pid)
           })
           console.log('objs ', objs)
           this.clientDB = new ClientTableData(objs, 10, filterMap)
@@ -381,8 +410,8 @@ export default {
       })
     },
     getPostData() {
-      if (this.edit.item.sceneId === 0) {
-        Message.error('请选择对应场景')
+      if (this.edit.item.pid === 0) {
+        Message.error('请选择对应发放场景')
         return
       }
       if (this.edit.item.scene.trim() === '') {
