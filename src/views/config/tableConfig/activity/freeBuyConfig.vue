@@ -169,12 +169,15 @@
                 v-model="editItem.gameIdList"
                 multiple
                 filterable
-                allow-create
-                default-first-option
                 placeholder="请选择参与游戏"
                 style="width: 100%"
               >
-                <el-option label="Pahiyas Win's [230]" :value="230" />
+                <el-option
+                  v-for="game in slotGameOptions"
+                  :key="game.value"
+                  :label="game.label"
+                  :value="game.value"
+                />
               </el-select>
             </el-form-item>
           </el-tab-pane>
@@ -363,7 +366,7 @@ function newActivity(id) {
     isOpen: false,
     status: STATUS_OFFLINE,
     siteIdList: ['BP', 'GP'],
-    gameIdList: [230],
+    gameIdList: [],
     dailyPropLimit: 1,
     totalPropLimit: 1,
     taskList: defaultTasks(),
@@ -568,11 +571,9 @@ export default {
       }).then(response => {
         if (response.RetCode !== 0) return
         this.slotGameOptions = (response.Data || [])
-          .filter(item => {
-            const gameId = Number(item.Gid)
-            return gameId >= 50 && gameId <= 100 || gameId >= 150 && gameId <= 499
-          })
+          .filter(item => Number(item.CategoryID) === 1)
           .map(item => ({ value: Number(item.Gid), label: `${item.Name} [${item.Gid}]` }))
+          .sort((a, b) => a.value - b.value)
         this.refreshRichCardGameOptions()
       }).catch(error => {
         console.error('富裕卡游戏列表加载失败:', error)
