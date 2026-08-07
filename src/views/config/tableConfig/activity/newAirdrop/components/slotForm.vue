@@ -233,12 +233,6 @@ function newPrize() {
   return { taskType: 2, taskValueRequired: 0, propType: 5, propId: 0, propName: '', propTime: 1, propNum: 0, propLimit: 0 }
 }
 
-function normalizeSinglePrize(prizes) {
-  const list = Array.isArray(prizes) ? prizes : []
-  const first = list.length > 0 ? list[0] : {}
-  return [Object.assign(newPrize(), first)]
-}
-
 // 投注金奖励默认值（已发奖励为只读，初始为 0）
 function defaultBetReward() {
   return { taskType: 2, taskCondition: 0, totalReward: 0, issuedReward: 0, userMaxReward: 0 }
@@ -348,10 +342,10 @@ export default {
       }
 
       const taskType = ext.taskType || 2
-      const prizes = normalizeSinglePrize(this.safeJson(ext.progressPrizes, [newPrize()]))
+      const prize = ext.progressPrizes ? ext.progressPrizes : newPrize()
       // 有效下注类型时进度要求存储单位为 1/1000 ₱，前端显示除以 1000
       if (taskType === 2) {
-        prizes[0].taskValueRequired = (prizes[0].taskValueRequired || 0) / 1000
+        prize.taskValueRequired = (prize.taskValueRequired || 0) / 1000
       }
 
       // 兼容旧数据：若无 betReward 则从旧的 taskCondition 字段迁移
@@ -388,7 +382,7 @@ export default {
         whitelist,
         taskType,
         taskText: ext.taskText || '',
-        progressPrizes: prizes,
+        progressPrizes: prize,
         betReward,
         userConfig
       }
@@ -464,6 +458,8 @@ export default {
     handleSave() {
       if (!this.validateData()) return
       const postData = this.getPostData()
+      console.log(111)
+      console.log(postData)
       this.saving = true
       const url = postData.id > 0 ? '/activityconfig/update' : '/activityconfig/create'
       request({ url, method: 'post', data: postData }).then(response => {
