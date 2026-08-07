@@ -219,7 +219,7 @@ function newItem() {
     pType: 0,
     site: '',
     scene: '',
-    endTime: $libDate.GetDayBegin(new Date(new Date().getTime() + 24 * 60 * 60 * 1000)),
+    endTime: $libDate.GetDayBegin(new Date().getTime() + 86400 * 1000) / 1000,
     remark: '',
     propId: 0
   }
@@ -496,10 +496,8 @@ export default {
       }
     },
     handleAdd() {
-      this.edit.item = newItem()
-      this.edit.isEdit = false
+      this.initFormData(false, newItem())
       this.edit.visible = true
-      this.edit.pickerEndTime = null
     }
     //* *********************** 修改/添加弹框相关 ************************
   }
