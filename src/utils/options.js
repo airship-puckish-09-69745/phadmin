@@ -22,12 +22,12 @@ export const CHANNEL_OPTIONS = [
 ]
 // 道具类型
 export const ITEM_TYPE_OPTIONS = [
-  { 'value': 1, 'label': 'Tongits门票', disabled: false },
+ // { 'value': 1, 'label': 'Tongits门票', disabled: false },
   { 'value': 2, 'label': '头像框', disabled: false },
-  { 'value': 3, 'label': '德州门票', disabled: false },
+  //{ 'value': 3, 'label': '德州门票', disabled: false },
   { 'value': 4, 'label': '德州头像框', disabled: false },
   { 'value': 5, 'label': 'SlotFreeSpin', disabled: false },
-  { 'value': 6, 'label': 'Pusoy门票', disabled: false },
+  //{ 'value': 6, 'label': 'Pusoy门票', disabled: false },
   { 'value': 7, 'label': '新版Tongits门票', disabled: false },
   { 'value': 8, 'label': '新版德州参赛券', disabled: false },
   { 'value': 9, 'label': '新版Pusoy门票', disabled: false },
@@ -108,6 +108,7 @@ export const PROP_TYPE_OPTIONS = {
   PROP_TYPE_TICKET_NEW:7,      //新版Tongits门票 带交易ID
   PROP_TYPE_TEXAS_TICKET_NEW:8, //新版德州参赛券 带交易ID
   PROP_TYPE_PUSOY_TICKET_NEW:9, //新版Pusoy门票 带交易ID
+  PROP_TYPE_EFFECT:10, //互动道具
 }
 // 操作类型
 export const PROP_SOURCE_OPTIONS = [
