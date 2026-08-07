@@ -91,8 +91,12 @@
             <div v-show="hasGameRelatedConfig"
                 style="margin-top: 15px; padding: 10px; border: 1px solid #eee;">
 
-                <div style="font-weight: bold; margin-bottom: 10px;">
-                    选择游戏
+                <div class="game-select-header">
+                    <div style="font-weight: bold;">
+                        选择游戏
+                    </div>
+                    <el-input v-model="gameIdKeyword" clearable size="mini" prefix-icon="el-icon-search"
+                        placeholder="输入游戏ID搜索" class="game-id-search" />
                 </div>
 
                 <!-- 全选 -->
@@ -105,7 +109,7 @@
 
                 <!-- 游戏列表 -->
                 <el-checkbox-group v-model="selectedGameIds" class="game-checkbox-grid" @change="handleGameChange">
-                    <el-checkbox v-for="g in gameOptions" :key="g.key" :label="g.key"
+                    <el-checkbox v-for="g in filteredGameOptions" :key="g.key" :label="g.key"
                         :disabled="isGameOptionDisabled(g.key)" @click.native="handleGameOptionClick(g.key)">
                         {{ g.label }}
                     </el-checkbox>
@@ -435,6 +439,7 @@ export default {
             selectedGameCfgKeys: ['base', 'rule', 'ext'],
             selectedGameIds: [],
             checkAllGames: false,
+            gameIdKeyword: '',
             lark: false,
             larkPages: [],
             larkConfig: {}
@@ -445,15 +450,18 @@ export default {
         sourceAppOptions() {
             const options = [...this.appOptions]
             if (this.isLegacySourceAvailable) {
-                options.unshift({ value: legacySourceAppId, label: '旧版测试（无 AppId）' })
+                options.unshift({ value: legacySourceAppId, label: `${this.legacySourceName}（无 AppId）` })
             }
             return options
+        },
+        legacySourceName() {
+            return store.getters.env === 'pro' ? '旧版线上' : '旧版测试'
         },
         isLegacySource() {
             return this.appId !== null && this.appId !== undefined && Number(this.appId) === legacySourceAppId
         },
         isLegacySourceAvailable() {
-            return this.isV2Version && store.getters.env === 'test'
+            return this.isV2Version
         },
         filteredTargetAppOptions() {
             return this.appOptions.filter(
@@ -475,6 +483,17 @@ export default {
             }
             return this.gameOptions.filter(game => !this.isGameMissingSubKeyMap(game.key))
         },
+        filteredGameOptions() {
+            const keyword = this.gameIdKeyword.trim()
+            if (!keyword) {
+                return this.gameOptions
+            }
+            return this.gameOptions.filter(game => String(game.key).includes(keyword))
+        },
+        selectableFilteredGameOptions() {
+            const selectableGameIdSet = new Set(this.selectableGameOptions.map(game => String(game.key)))
+            return this.filteredGameOptions.filter(game => selectableGameIdSet.has(String(game.key)))
+        },
         requiresGameSubKeyMap() {
             return this.configTypes.includes('slot_game') ||
                 (this.isLegacySource && this.configTypes.includes('slot_jackpot'))
@@ -483,8 +502,10 @@ export default {
             return this.configTypes.some(type => ['slot_game', 'slot_plan', 'slot_jackpot'].includes(type))
         },
         isGameIndeterminate() {
-            const total = this.selectableGameOptions.length
-            return this.selectedGameIds.length > 0 && this.selectedGameIds.length < total
+            const total = this.selectableFilteredGameOptions.length
+            const selectedGameIdSet = new Set(this.selectedGameIds.map(gameId => String(gameId)))
+            const selectedCount = this.selectableFilteredGameOptions.filter(game => selectedGameIdSet.has(String(game.key))).length
+            return selectedCount > 0 && selectedCount < total
         },
         isV2Version() {
             return store.getters.version === 'V2'
@@ -637,6 +658,9 @@ export default {
             )
             this.resetLegacySourceCache()
             this.filterSelectedGamesBySubKeyMap(false)
+        },
+        gameIdKeyword() {
+            this.updateCheckAllGames()
         }
     },
 
@@ -723,10 +747,6 @@ export default {
             console.log('1111appId:', this.appId)
             if (this.appId === null || this.appId === undefined) {
                 return this.$message.warning('请选择源 AppId')
-            }
-
-            if (this.isLegacySource && !this.isLegacySourceAvailable) {
-                return this.$message.warning('旧版测试配置只能同步到新版测试环境')
             }
 
             if (!this.targetAppIds.length) {
@@ -891,9 +911,9 @@ export default {
             const fromAppId = this.extractErrorField(msg, 'fromAppId') || this.appId
             const configLabel = this.getConfigTypeOptionLabel(context.keyStr)
             const operationName = context.operationName || '操作'
-            const sourceName = Number(fromAppId) === legacySourceAppId ? '旧版测试' : `源 AppId ${fromAppId || '-'}`
+            const sourceName = Number(fromAppId) === legacySourceAppId ? this.legacySourceName : `源 AppId ${fromAppId || '-'}`
 
-            if (this.isCustomizeConfigNotFoundError(msg) || /旧版测试配置不存在/.test(msg)) {
+            if (this.isCustomizeConfigNotFoundError(msg) || String(msg).includes(`${this.legacySourceName}配置不存在`)) {
                 return `原因:${sourceName}未找到${configLabel}${subKey ? ` ${subKey}` : ''}。处理方式:请先在${sourceName}保存该配置，或取消勾选【${configLabel}】后重新复制。`
             }
 
@@ -1044,7 +1064,7 @@ export default {
                         gameId,
                         appId: this.appId,
                         subKey,
-                        errMsg: `旧版测试附属配置检测失败:${sourceResult.errMsg}`
+                        errMsg: `${this.legacySourceName}附属配置检测失败:${sourceResult.errMsg}`
                     })
                     return false
                 }
@@ -1180,7 +1200,7 @@ export default {
                 return false
             }
             if (this.isLegacySource) {
-                this.$message.warning('旧版测试配置不能在此页面直接发布，请先复制到目标 AppId')
+                this.$message.warning(`${this.legacySourceName}配置不能在此页面直接发布，请先复制到目标 AppId`)
                 return false
             }
             if (!this.configTypes.length) {
@@ -1259,8 +1279,10 @@ export default {
         },
 
         updateCheckAllGames() {
-            const total = this.selectableGameOptions.length
-            this.checkAllGames = total > 0 && this.selectedGameIds.length === total
+            const total = this.selectableFilteredGameOptions.length
+            const selectedGameIdSet = new Set(this.selectedGameIds.map(gameId => String(gameId)))
+            const selectedCount = this.selectableFilteredGameOptions.filter(game => selectedGameIdSet.has(String(game.key))).length
+            this.checkAllGames = total > 0 && selectedCount === total
         },
 
         filterSelectedGamesBySubKeyMap(showTip = true) {
@@ -1491,12 +1513,12 @@ export default {
                         this.legacyCustomizeRecords[subKey] = null
                         return { record: null }
                     }
-                    return { errMsg: errMsg || `读取旧版测试自定义配置失败:${subKey}` }
+                    return { errMsg: errMsg || `读取${this.legacySourceName}自定义配置失败:${subKey}` }
                 }
                 this.legacyCustomizeRecords[subKey] = response.Data || null
                 return { record: this.legacyCustomizeRecords[subKey] }
             } catch (err) {
-                return { errMsg: this.getCopyError(null, err) || `读取旧版测试自定义配置异常:${subKey}` }
+                return { errMsg: this.getCopyError(null, err) || `读取${this.legacySourceName}自定义配置异常:${subKey}` }
             }
         },
 
@@ -1511,12 +1533,12 @@ export default {
                     data: {}
                 })
                 if (response.RetCode !== 0) {
-                    return { errMsg: this.getCopyError(response) || '读取旧版测试方案配置失败' }
+                    return { errMsg: this.getCopyError(response) || `读取${this.legacySourceName}方案配置失败` }
                 }
                 this.legacyPlanConfigRecords = Array.isArray(response.Data) ? response.Data : []
                 return { records: this.legacyPlanConfigRecords }
             } catch (err) {
-                return { errMsg: this.getCopyError(null, err) || '读取旧版测试方案配置异常' }
+                return { errMsg: this.getCopyError(null, err) || `读取${this.legacySourceName}方案配置异常` }
             }
         },
 
@@ -1530,7 +1552,7 @@ export default {
                 return { record: null }
             }
             if (records.length > 1) {
-                return { errMsg: `旧版测试方案配置存在重复记录:SlotsType=${cfgItem.gameId}，数量:${records.length}` }
+                return { errMsg: `${this.legacySourceName}方案配置存在重复记录:SlotsType=${cfgItem.gameId}，数量:${records.length}` }
             }
             const legacyRecord = records[0]
 
@@ -1538,7 +1560,7 @@ export default {
                 ? this.parseJson(legacyRecord.ConfigData, null)
                 : this.cloneData(legacyRecord.ConfigData)
             if (!Array.isArray(plans)) {
-                return { errMsg: `旧版测试方案配置数据格式错误:${cfgItem.subKey}` }
+                return { errMsg: `${this.legacySourceName}方案配置数据格式错误:${cfgItem.subKey}` }
             }
 
             const name = `${cfgItem.gameName || this.getGameLabel(cfgItem.gameId)}方案配置`
@@ -1574,7 +1596,7 @@ export default {
             if (!sourceSubKey) {
                 return {
                     RetCode: -1,
-                    RetMsg: `未配置旧版测试源Key映射:${cfgItem.subKey}`
+                    RetMsg: `未配置${this.legacySourceName}源Key映射:${cfgItem.subKey}`
                 }
             }
 
@@ -1585,7 +1607,7 @@ export default {
             if (!sourceResult.record || !sourceResult.record.Data) {
                 return {
                     RetCode: -1,
-                    RetMsg: `旧版测试配置不存在:${sourceSubKey}`
+                    RetMsg: `${this.legacySourceName}配置不存在:${sourceSubKey}`
                 }
             }
 
@@ -1753,6 +1775,20 @@ export default {
             }
         },
 
+        isPlanDisabled(plan) {
+            return Boolean(plan) && (plan.IsDisabled === true || Number(plan.IsDisabled) === 1)
+        },
+
+        getLatestPlanVersion(plan) {
+            const versions = Array.isArray(plan && plan.Versions) ? plan.Versions : []
+            return versions.reduce((latestVersion, version) => {
+                if (!latestVersion || Number(version.Version) > Number(latestVersion.Version)) {
+                    return version
+                }
+                return latestVersion
+            }, null)
+        },
+
         async collectPlanScriptCreateTasks(tasks, failList, options = {}) {
             const createTasks = []
             for (const task of tasks) {
@@ -1764,12 +1800,14 @@ export default {
                     continue
                 }
                 for (const plan of planData.data.Plans || []) {
-                    for (const version of plan.Versions || []) {
-                        if (version.IsReady) {
-                            continue
-                        }
-                        createTasks.push(this.buildPlanScriptCreateTask(task, plan, version))
+                    if (this.isPlanDisabled(plan)) {
+                        continue
                     }
+                    const latestVersion = this.getLatestPlanVersion(plan)
+                    if (!latestVersion || latestVersion.IsReady) {
+                        continue
+                    }
+                    createTasks.push(this.buildPlanScriptCreateTask(task, plan, latestVersion))
                 }
             }
             return createTasks
@@ -1893,14 +1931,16 @@ export default {
                 }
 
                 for (const plan of planData.data.Plans || []) {
-                    for (const version of plan.Versions || []) {
-                        if (version.IsReady) {
-                            continue
-                        }
-                        const checkResult = await this.checkPlanVersionScripts(task, plan, version, betList)
-                        if (checkResult.ok) {
-                            readyTasks.push(this.buildPlanReadyPreviewTask(task, planData, plan, version, betList))
-                        }
+                    if (this.isPlanDisabled(plan)) {
+                        continue
+                    }
+                    const latestVersion = this.getLatestPlanVersion(plan)
+                    if (!latestVersion || latestVersion.IsReady) {
+                        continue
+                    }
+                    const checkResult = await this.checkPlanVersionScripts(task, plan, latestVersion, betList)
+                    if (checkResult.ok) {
+                        readyTasks.push(this.buildPlanReadyPreviewTask(task, planData, plan, latestVersion, betList))
                     }
                 }
             }
@@ -3238,14 +3278,19 @@ export default {
         },
 
         handleCheckAllGameChange(val) {
+            const filteredGameIds = this.filteredGameOptions.map(game => game.key)
             if (val) {
-                const allGameIds = this.gameOptions.map(g => g.key)
-                const missingGames = this.getMissingSubKeyMapGames(allGameIds)
-                this.selectedGameIds = this.selectableGameOptions.map(g => g.key)
+                const missingGames = this.getMissingSubKeyMapGames(filteredGameIds)
+                const selectedGameIdSet = new Set(this.selectedGameIds.map(gameId => String(gameId)))
+                const gameIdsToSelect = this.selectableFilteredGameOptions
+                    .map(game => game.key)
+                    .filter(gameId => !selectedGameIdSet.has(String(gameId)))
+                this.selectedGameIds = this.selectedGameIds.concat(gameIdsToSelect)
                 this.updateCheckAllGames()
                 this.showMissingSubKeyMapTip(missingGames)
             } else {
-                this.selectedGameIds = []
+                const filteredGameIdSet = new Set(filteredGameIds.map(gameId => String(gameId)))
+                this.selectedGameIds = this.selectedGameIds.filter(gameId => !filteredGameIdSet.has(String(gameId)))
                 this.updateCheckAllGames()
             }
         },
@@ -3291,6 +3336,17 @@ export default {
     color: #666;
     margin-bottom: 6px;
     font-weight: 600;
+}
+
+.game-select-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.game-id-search {
+    width: 220px;
 }
 
 .action {
