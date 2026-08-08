@@ -245,11 +245,8 @@ function newItem() {
     totalPrizeThreshold: 0,
     debugTimeOffset: 0,
     activitySessionEnum: [
-      {value: 1000, label: '1'},
-      {value: 5000, label: '5'},
-      {value: 10000, label: '10'},
+      {value: 20000, label: '20'},
       {value: 50000, label: '50'},
-      {value: 100000, label: '100'},
       {value: 200000, label: '200'},
       {value: 500000, label: '500'},
       {value: 1000000, label: '1000'}
