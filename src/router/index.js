@@ -2373,7 +2373,7 @@ export const asyncRoutes = [
       },
       {
         path: 'newAirdrop',
-        component: () => import('@/views/config/tableConfig/activity/newAirdrop/index.vue'),
+        component: () => import('@/views/config/tableConfig/activity/airdropV2/index.vue'),
         name: 'newAirdrop',
         meta: { title: '新空投活动配置', noCache: true }
       }
