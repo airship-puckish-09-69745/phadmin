@@ -1,7 +1,7 @@
 <template>
   <div class="page-container" style="padding: 10px">
     <el-row>
-      <publish primary-key="id" key-id="NewAirdropConfig" :env-empty="false" compare-type="Array" :attr-names="AttrNames" :head-attrs="['id', 'activityName']"/>
+      <publish primary-key="id" key-id="AirdropV2Activity" :env-empty="false" compare-type="Array" :attr-names="AttrNames" :head-attrs="['id', 'activityName']"/>
     </el-row>
 
     <!-- 操作栏 -->
