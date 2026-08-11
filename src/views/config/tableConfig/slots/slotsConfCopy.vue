@@ -251,6 +251,22 @@
             </span>
         </el-dialog>
 
+        <el-dialog :title="publishedCheckDialogTitle" :visible.sync="publishedCheckDialogVisible" width="85%"
+            :append-to-body="true">
+            <el-alert class="published-check-alert" :title="publishedCheckDialogMessage"
+                :type="publishedCheckIsError ? 'error' : 'warning'" :closable="false" show-icon />
+            <el-table :data="publishedCheckTasks" stripe border style="width: 100%" max-height="520">
+                <el-table-column prop="appId" label="AppId" width="100" />
+                <el-table-column prop="gameName" label="游戏" width="220" />
+                <el-table-column prop="configName" label="配置类型" width="150" />
+                <el-table-column prop="subKey" label="配置Key" min-width="280" />
+                <el-table-column v-if="publishedCheckIsError" prop="errMsg" label="原因" min-width="300" />
+            </el-table>
+            <span slot="footer" class="dialog-footer">
+                <el-button type="primary" size="mini" @click="publishedCheckDialogVisible = false">确 定</el-button>
+            </span>
+        </el-dialog>
+
         <el-dialog :title="scriptCreateDialogTitle" :visible.sync="scriptCreateDialogVisible" width="85%"
             :append-to-body="true">
             <el-table :data="scriptCreateTasks" stripe border style="width: 100%" max-height="520">
@@ -356,6 +372,7 @@ const publishStageCopyConfig = 'copyConfig'
 const publishStageScriptCreate = 'scriptCreate'
 const publishStagePlanReady = 'planReady'
 const publishStagePlanConfig = 'planConfig'
+const publishedConfigCheckConcurrency = 5
 const publishStageLabelMap = {
     [publishStageSourceConfig]: '源配置发布',
     [publishStageCopyConfig]: '复制配置发布',
@@ -404,6 +421,11 @@ export default {
             scriptCreateDialogVisible: false,
             readyPreviewDialogVisible: false,
             diffDetailVisible: false,
+            publishedCheckDialogVisible: false,
+            publishedCheckDialogTitle: '',
+            publishedCheckDialogMessage: '',
+            publishedCheckIsError: false,
+            publishedCheckTasks: [],
             publishTasks: [],
             copyPublishTasks: [],
             scriptPublishTasks: [],
@@ -783,6 +805,11 @@ export default {
                 return this.showCopyReadyPublishConflict(planPublishConflictTasks)
             }
 
+            const publishedCheckTasks = await this.buildCopyPublishedCheckTasks()
+            if (!(await this.ensureNoPublishedTasks('复制', publishedCheckTasks))) {
+                return
+            }
+
             this.loading = true
             this.publishTasks = []
             this.copyPublishTasks = []
@@ -1090,6 +1117,131 @@ export default {
 
         getFullKey(subKey) {
             return 'CustomizeCfg_' + subKey
+        },
+
+        async buildCopyPublishedCheckTasks() {
+            const tasks = []
+            const appendTasks = (items, keyStr) => {
+                for (const item of items) {
+                    if (item.missingMap || !item.subKey) {
+                        continue
+                    }
+                    for (const appId of this.targetAppIds) {
+                        tasks.push(this.buildPublishTask(item, keyStr, appId))
+                    }
+                }
+            }
+
+            if (this.configTypes.includes('slot_game')) {
+                appendTasks(this.buildSlotGameCfgSubKeys(), 'slot_game')
+            }
+            if (this.configTypes.includes('slot_plan')) {
+                appendTasks(await this.buildGameSubKeysWithRelated('slot_plan'), 'slot_plan')
+            }
+            if (this.configTypes.includes('slot_jackpot')) {
+                appendTasks(await this.buildGameSubKeysWithRelated('slot_jackpot'), 'slot_jackpot')
+            }
+            if (this.configTypes.includes('slot_task')) {
+                appendTasks([{ subKey: this.getSlotsCustomScriptKey(0, 'slot_task') }], 'slot_task')
+            }
+            if (this.configTypes.includes('slot_script_stat')) {
+                appendTasks([{ subKey: this.getSlotsCustomScriptKey(0, 'slot_script_stat') }], 'slot_script_stat')
+            }
+            return tasks
+        },
+
+        async ensureNoPublishedTasks(operationName, tasks) {
+            if (store.getters.env === 'test') {
+                return true
+            }
+            const result = await this.getPublishedConfigCheckResult(tasks)
+            if (result.errorTasks.length > 0) {
+                this.showPublishedConfigCheckErrors(operationName, result.errorTasks)
+                return false
+            }
+            if (result.publishedTasks.length > 0) {
+                this.showPublishedConfigConflicts(operationName, result.publishedTasks)
+                return false
+            }
+            return true
+        },
+
+        async getPublishedConfigCheckResult(tasks) {
+            const taskMap = new Map()
+            for (const task of tasks) {
+                if (!task || !task.appId || !task.publishKey) {
+                    continue
+                }
+                taskMap.set(`${task.appId}_${task.publishKey}`, task)
+            }
+
+            const checkTasks = Array.from(taskMap.values())
+            const publishedTasks = []
+            const errorTasks = []
+            let nextIndex = 0
+            const worker = async () => {
+                while (nextIndex < checkTasks.length) {
+                    const task = checkTasks[nextIndex++]
+                    try {
+                        const response = await request({
+                            url: '/dataProxy/info',
+                            method: 'get',
+                            data: {
+                                Path: '/configcenter/one',
+                                Key: task.publishKey,
+                                App: task.appId
+                            }
+                        })
+                        if (response && response.RetCode === 0) {
+                            publishedTasks.push(task)
+                        } else if (!this.isPublishedConfigNotExists(response)) {
+                            errorTasks.push({
+                                task,
+                                errMsg: this.getCopyError(response) || '当前环境配置中心查询失败'
+                            })
+                        }
+                    } catch (err) {
+                        errorTasks.push({
+                            task,
+                            errMsg: this.getCopyError(null, err) || '当前环境配置中心查询异常'
+                        })
+                    }
+                }
+            }
+            const workerCount = Math.min(publishedConfigCheckConcurrency, checkTasks.length)
+            await Promise.all(Array.from({ length: workerCount }, () => worker()))
+            return { publishedTasks, errorTasks }
+        },
+
+        isPublishedConfigNotExists(response) {
+            return response && response.RetCode === -3 && /\bnot exists\b/i.test(this.getCopyError(response))
+        },
+
+        showPublishedConfigConflicts(operationName, tasks) {
+            this.showPublishedCheckDialog({
+                title: '存在已发布配置',
+                message: `以下配置已发布，不能继续执行【${operationName}】。请取消对应游戏、目标 AppId 或配置类型后重试。`,
+                tasks
+            })
+        },
+
+        showPublishedConfigCheckErrors(operationName, errorTasks) {
+            this.showPublishedCheckDialog({
+                title: '配置校验失败',
+                message: `当前环境配置校验失败，已停止执行【${operationName}】。请检查当前环境配置中心连接或配置 Key 后重试。`,
+                tasks: errorTasks.map(item => Object.assign({}, item.task, { errMsg: item.errMsg })),
+                isError: true
+            })
+        },
+
+        showPublishedCheckDialog({ title, message, tasks, isError = false }) {
+            this.publishedCheckDialogTitle = title
+            this.publishedCheckDialogMessage = message
+            this.publishedCheckTasks = tasks.map(task => Object.assign({}, task, {
+                gameName: task.gameName || this.getGameLabel(task.gameId)
+            }))
+            this.publishedCheckIsError = isError
+            this.publishedCheckDialogVisible = true
         },
 
         formatPublishError(task, response, err) {
@@ -1753,6 +1905,9 @@ export default {
             if (tasks.length === 0) {
                 return this.$message.warning('暂无可创建剧本的方案配置')
             }
+            if (!(await this.ensureNoPublishedTasks('创建剧本', tasks))) {
+                return
+            }
             const copyConflictTasks = this.getCopyPublishConflictsForPlanOperation(tasks)
             if (copyConflictTasks.length > 0) {
                 return this.showCopyPendingPlanOperationConflict(copyConflictTasks, '创建剧本')
@@ -1838,6 +1993,10 @@ export default {
             if (this.scriptCreateTasks.length === 0) {
                 return this.$message.warning('暂无可创建剧本')
             }
+            const tasks = this.scriptCreateTasks.map(item => item.task)
+            if (!(await this.ensureNoPublishedTasks('创建剧本', tasks))) {
+                return
+            }
 
             this.scriptLoading = true
             const failList = []
@@ -1892,6 +2051,9 @@ export default {
             const tasks = this.buildSelectedPlanTasks()
             if (tasks.length === 0) {
                 return this.$message.warning('暂无可就绪的方案配置')
+            }
+            if (!(await this.ensureNoPublishedTasks('剧本就绪', tasks))) {
+                return
             }
             const copyConflictTasks = this.getCopyPublishConflictsForPlanOperation(tasks)
             if (copyConflictTasks.length > 0) {
@@ -1995,6 +2157,10 @@ export default {
             if (!this.ensureV2Version()) return
             if (this.readyPreviewTasks.length === 0) {
                 return this.$message.warning('暂无可就绪方案')
+            }
+            const tasks = this.readyPreviewTasks.map(item => item.task)
+            if (!(await this.ensureNoPublishedTasks('剧本就绪', tasks))) {
+                return
             }
 
             this.readyLoading = true
@@ -3363,6 +3529,10 @@ export default {
 }
 
 .publish-dialog-tip {
+    margin-bottom: 12px;
+}
+
+.published-check-alert {
     margin-bottom: 12px;
 }
 
