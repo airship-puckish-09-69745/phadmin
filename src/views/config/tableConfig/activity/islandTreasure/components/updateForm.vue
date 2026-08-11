@@ -33,11 +33,6 @@
                 <el-date-picker v-model="item.activity.endTime" type="datetime" placeholder="选择结束时间" value-format="timestamp" style="width: 200px" />
               </el-form-item>
             </el-col>
-            <el-col :xs="24" :sm="12">
-              <el-form-item label="展示结束时间：" required>
-                <el-date-picker v-model="item.activity.showEndTime" type="datetime" placeholder="选择展示结束时间" value-format="timestamp" style="width: 200px" />
-              </el-form-item>
-            </el-col>
             <el-col :xs="24" :sm="24">
               <el-form-item label="每日开启时间：" required>
                 <el-time-select
@@ -415,11 +410,11 @@ export default {
         Message.error('请输入每日任务奖励阈值（大于0）')
         return false
       }
-      if (!this.item.extend.smallBlindList.length) {
+      if (!this.item.extend.smallBlindList || !this.item.extend.smallBlindList.length) {
         Message.error('请配置盲注列表')
         return false
       }
-      if (!this.item.extend.smallBlindConfigs.length) {
+      if (!this.item.extend.smallBlindConfigs || !this.item.extend.smallBlindConfigs.length) {
         Message.error('请配置任务列表')
         return false
       }
