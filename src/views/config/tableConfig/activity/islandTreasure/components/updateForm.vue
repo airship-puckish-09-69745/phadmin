@@ -146,6 +146,7 @@
             @click="addDrawMapRow"
           >添加开奖地图({{ item.extend.drawMapConfigs.length }}/20)
           </el-button>
+          每日开启时间：{{ dayStartTime }} 至 {{ dayEndTime }}<span style="color: red">（注意：最后一轮的开奖时间必须与每日开启时间的结束时间相吻合）</span>
         </div>
         <el-table :data="item.extend.drawMapConfigs" style="width: 100%">
           <el-table-column prop="drawMapId" label="地图序号" width="100px" />
@@ -364,6 +365,8 @@ export default {
       // 每日开启时间，将时间格式化为HH:mm
       this.dayStartTime = new Date(data.extend.dayStartTime).Format('HH:mm')
       this.dayEndTime = new Date(data.extend.dayEndTime).Format('HH:mm')
+      this.handleDayStartTimeChange()
+      this.handleDayEndTimeChange()
 
       // 每日任务奖励阈值缩小1000倍
       data.extend.dayPrizeThreshold = Math.floor(data.extend.dayPrizeThreshold / 1000)
@@ -461,6 +464,12 @@ export default {
       const drawTimes = this.item.extend.drawMapConfigs.map(item => item.drawTimeStr)
       if (drawTimes.some((item, index) => drawTimes.indexOf(item) !== index)) {
         Message.error('开奖时间不能重复')
+        return false
+      }
+      // 校验开奖时间是否与每日开启时间的结束时间相吻合
+      const lastDrawTime = this.item.extend.drawMapConfigs[this.item.extend.drawMapConfigs.length - 1].drawTimeStr
+      if (lastDrawTime !== this.dayEndTime) {
+        Message.error('最后一轮的开奖时间必须与每日开启时间的结束时间相吻合')
         return false
       }
       return true
