@@ -467,11 +467,18 @@ export default {
         Message.error('最后一轮的开奖时间必须与每日开启时间的结束时间相吻合')
         return false
       }
+
+      // 活动结束时间必须晚于每日开奖时间的结束时间（只比较时分秒）
+      if (this.item.activity.endTime < this.timeStringToTimestamp(this.dayEndTime, this.item.activity.endTime)) {
+        Message.error('活动结束时间(时分秒)必须晚于每日开奖时间的结束时间')
+        return false
+      }
       return true
     },
     // 时间字符串转换为时间戳
-    timeStringToTimestamp(timeString) {
-      const time = new Date(this.item.activity.startTime).Format('yyyy-MM-dd')
+    timeStringToTimestamp(timeString, baseTime) {
+      baseTime = baseTime || this.item.activity.startTime
+      const time = new Date(baseTime).Format('yyyy-MM-dd')
       return Date.parse(time + 'T' + timeString + ':00')
     },
     // 处理提交数据（前端展示格式 -> 后端数据）
@@ -481,7 +488,7 @@ export default {
       // 时间：毫秒 -> 秒
       data.activity.startTime = Math.floor(data.activity.startTime / 1000)
       data.activity.endTime = Math.floor(data.activity.endTime / 1000)
-      data.activity.showEndTime = Math.floor(data.activity.showEndTime / 1000)
+      data.activity.showEndTime = data.activity.endTime
       data.activity.gameIdList = [GAME_ID]
 
       // 每日开奖时间，将时间格式化为时间戳
