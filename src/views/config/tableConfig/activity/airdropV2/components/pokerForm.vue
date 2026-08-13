@@ -356,7 +356,8 @@ export default {
         { value: 2, label: '头像框', disabled: false },
         { value: 4, label: '德州头像框', disabled: false },
         { value: 8, label: '新版德州参赛券', disabled: false },
-        { value: 5, label: 'SlotFreeSpin', disabled: false }
+        { value: 5, label: 'SlotFreeSpin', disabled: false },
+        { value: 10, label: '互动道具', disabled: false }
       ],
       propDayTypeOptions: [
         { value: 1, label: '1天' },
