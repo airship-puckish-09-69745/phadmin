@@ -157,7 +157,7 @@ export default {
       return $libDate.FormateSecondStr(ts, 2)
     },
     formaHmTime(ts) {
-      return $libDate.FormateSecondStr(ts, 5)
+      return $libDate.FormateSecondStr(ts, 4)
     },
     refreshShow() {
       this.tableData = this.clientDB.GetCurrentPageData()
