@@ -33,11 +33,6 @@
                 <el-date-picker v-model="item.activity.endTime" type="datetime" placeholder="选择结束时间" value-format="timestamp" style="width: 200px" />
               </el-form-item>
             </el-col>
-            <el-col :xs="24" :sm="12">
-              <el-form-item label="展示结束时间：" required>
-                <el-date-picker v-model="item.activity.showEndTime" type="datetime" placeholder="选择展示结束时间" value-format="timestamp" style="width: 200px" />
-              </el-form-item>
-            </el-col>
             <el-col :xs="24" :sm="24">
               <el-form-item label="每日开启时间：" required>
                 <el-time-select
@@ -146,6 +141,7 @@
             @click="addDrawMapRow"
           >添加开奖地图({{ item.extend.drawMapConfigs.length }}/20)
           </el-button>
+          每日开启时间：{{ dayStartTime }} 至 {{ dayEndTime }}<span style="color: red">（注意：最后一轮的开奖时间必须与每日开启时间的结束时间相吻合）</span>
         </div>
         <el-table :data="item.extend.drawMapConfigs" style="width: 100%">
           <el-table-column prop="drawMapId" label="地图序号" width="100px" />
@@ -364,6 +360,8 @@ export default {
       // 每日开启时间，将时间格式化为HH:mm
       this.dayStartTime = new Date(data.extend.dayStartTime).Format('HH:mm')
       this.dayEndTime = new Date(data.extend.dayEndTime).Format('HH:mm')
+      this.handleDayStartTimeChange()
+      this.handleDayEndTimeChange()
 
       // 每日任务奖励阈值缩小1000倍
       data.extend.dayPrizeThreshold = Math.floor(data.extend.dayPrizeThreshold / 1000)
@@ -412,11 +410,11 @@ export default {
         Message.error('请输入每日任务奖励阈值（大于0）')
         return false
       }
-      if (!this.item.extend.smallBlindList.length) {
+      if (!this.item.extend.smallBlindList || !this.item.extend.smallBlindList.length) {
         Message.error('请配置盲注列表')
         return false
       }
-      if (!this.item.extend.smallBlindConfigs.length) {
+      if (!this.item.extend.smallBlindConfigs || !this.item.extend.smallBlindConfigs.length) {
         Message.error('请配置任务列表')
         return false
       }
@@ -463,11 +461,24 @@ export default {
         Message.error('开奖时间不能重复')
         return false
       }
+      // 校验开奖时间是否与每日开启时间的结束时间相吻合
+      const lastDrawTime = this.item.extend.drawMapConfigs[this.item.extend.drawMapConfigs.length - 1].drawTimeStr
+      if (lastDrawTime !== this.dayEndTime) {
+        Message.error('最后一轮的开奖时间必须与每日开启时间的结束时间相吻合')
+        return false
+      }
+
+      // 活动结束时间必须晚于每日开奖时间的结束时间（只比较时分秒）
+      if (this.item.activity.endTime < this.timeStringToTimestamp(this.dayEndTime, this.item.activity.endTime)) {
+        Message.error('活动结束时间(时分秒)必须晚于每日开奖时间的结束时间')
+        return false
+      }
       return true
     },
     // 时间字符串转换为时间戳
-    timeStringToTimestamp(timeString) {
-      const time = new Date(this.item.activity.startTime).Format('yyyy-MM-dd')
+    timeStringToTimestamp(timeString, baseTime) {
+      baseTime = baseTime || this.item.activity.startTime
+      const time = new Date(baseTime).Format('yyyy-MM-dd')
       return Date.parse(time + 'T' + timeString + ':00')
     },
     // 处理提交数据（前端展示格式 -> 后端数据）
@@ -477,7 +488,7 @@ export default {
       // 时间：毫秒 -> 秒
       data.activity.startTime = Math.floor(data.activity.startTime / 1000)
       data.activity.endTime = Math.floor(data.activity.endTime / 1000)
-      data.activity.showEndTime = Math.floor(data.activity.showEndTime / 1000)
+      data.activity.showEndTime = data.activity.endTime
       data.activity.gameIdList = [GAME_ID]
 
       // 每日开奖时间，将时间格式化为时间戳

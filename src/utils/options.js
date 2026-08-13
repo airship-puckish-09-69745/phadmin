@@ -102,15 +102,15 @@ export const ITEM_STATUS_OPTIONS = [
 
 // 头像框常量枚举定义
 export const PROP_TYPE_OPTIONS = {
-  PROP_TYPE_TICKET: 1, // 门票
-  PROP_TYPE_AVATAR_FRAME: 2, // 头像框
-  PROP_TYPE_TEXAS_TICKET: 3, // 德州参赛券
-  PROP_TYPE_TEXAS_AVATAR: 4, // 德州头像框
-  PROP_TYPE_SLOT_FREE_SPIN: 5, // slot freespin
-  PROP_TYPE_PUSOY_TICKET: 6, // Pusoy参赛券
-  PROP_TYPE_TICKET_NEW: 7, // 新版Tongits门票 带交易ID
-  PROP_TYPE_TEXAS_TICKET_NEW: 8, // 新版德州参赛券 带交易ID
-  PROP_TYPE_PUSOY_TICKET_NEW: 9, // 新版Pusoy门票 带交易ID
+  PROP_TYPE_TICKET: 1,        //门票
+  PROP_TYPE_AVATAR_FRAME: 2,    //头像框
+  PROP_TYPE_TEXAS_TICKET: 3,    //德州参赛券
+  PROP_TYPE_TEXAS_AVATAR: 4,    //德州头像框
+  PROP_TYPE_SLOT_FREE_SPIN: 5,  //slot freespin
+  PROP_TYPE_PUSOY_TICKET: 6,    //Pusoy参赛券
+  PROP_TYPE_TICKET_NEW:7,      //新版Tongits门票 带交易ID
+  PROP_TYPE_TEXAS_TICKET_NEW:8, //新版德州参赛券 带交易ID
+  PROP_TYPE_PUSOY_TICKET_NEW:9, //新版Pusoy门票 带交易ID
   PROP_TYPE_EFFECT:10, //互动道具
 }
 // 操作类型
