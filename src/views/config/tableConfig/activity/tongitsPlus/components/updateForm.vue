@@ -509,10 +509,6 @@ export default {
         return false
       }
       const now = Math.floor(Date.now())
-      console.log(11212121212121)
-      console.log(now)
-      console.log(this.item.startTime)
-      console.log(this.item.endTime)
 
       // 编辑状态，并且当前时间在活动开始和结束时间之间
       return now >= this.item.startTime && now <= this.item.endTime
