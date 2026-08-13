@@ -352,10 +352,10 @@ export default {
         { value: 3, label: 'Pot次数' }
       ],
       propTypeOptions: [
-        { value: 1, label: 'Tongits门票', disabled: false },
+        { value: 7, label: '新版Tongits门票', disabled: false },
         { value: 2, label: '头像框', disabled: false },
-        { value: 3, label: '德州门票', disabled: false },
         { value: 4, label: '德州头像框', disabled: false },
+        { value: 8, label: '新版德州参赛券', disabled: false },
         { value: 5, label: 'SlotFreeSpin', disabled: false }
       ],
       propDayTypeOptions: [
