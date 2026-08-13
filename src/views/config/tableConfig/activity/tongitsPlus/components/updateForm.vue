@@ -37,14 +37,12 @@
             </el-col>
             <el-col :xs="24" :sm="12">
               <el-form-item label="每日活动开始时间：" required>
-                <el-date-picker v-model="item.dailyStartTime" type="datetime" placeholder="选择开始时间" format="HH:mm"
-                                size="mini" style="width: 300px"/>
+                <el-date-picker v-model="item.dailyStartTime" type="datetime" placeholder="选择开始时间" format="HH:mm:ss" size="mini" style="width: 300px"/>
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
               <el-form-item label="每日活动结束时间：" required>
-                <el-date-picker v-model="item.dailyEndTime" type="datetime" placeholder="选择结束时间" format="HH:mm"
-                                size="mini" style="width: 300px"/>
+                <el-date-picker v-model="item.dailyEndTime" type="datetime" placeholder="选择结束时间" format="HH:mm:ss" size="mini" style="width: 300px"/>
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
