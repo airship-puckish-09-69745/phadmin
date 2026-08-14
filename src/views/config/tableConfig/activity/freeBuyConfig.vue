@@ -195,8 +195,25 @@
 
           <el-tab-pane label="任务与奖励">
             <div class="task-toolbar">
-              <span>两种任务类型是独立任务链，同一笔 Super Free 实际购买只会增加一条任务链，类型一优先。</span>
+              <span>各任务类型是独立任务链，同一笔 Super Free 实际购买只会增加一条任务链，匹配优先级由服务端定义。</span>
               <el-button type="primary" size="mini" icon="el-icon-plus" @click="openTaskDialog(false)">新增任务</el-button>
+            </div>
+            <div class="task-order-row">
+              <span class="task-order-text">展示顺序：</span>
+              <draggable
+                :value="taskTypeOrder"
+                class="task-order-list"
+                handle=".task-order-item"
+                ghost-class="task-order-ghost"
+                chosen-class="task-order-chosen"
+                :animation="150"
+                @end="onTaskTypeDragEnd"
+              >
+                <el-button v-for="taskType in taskTypeOrder" :key="taskType" class="task-order-item" size="small" plain>
+                  <i class="el-icon-rank" />
+                  类型{{ taskType }}
+                </el-button>
+              </draggable>
             </div>
             <el-table :data="sortedEditTasks" border size="small" empty-text="请至少配置两种任务类型各一项">
               <el-table-column prop="taskType" label="任务类型" min-width="170">
@@ -304,6 +321,7 @@ import { createCustomize, getCustomize, updateCustomize } from '@/api/custome_co
 import request from '@/utils/request'
 import SiteSelect from '@/components/SiteSelect/index.vue'
 import Publish from '@/components/Publish/index.vue'
+import draggable from 'vuedraggable'
 import store from '@/store'
 import { ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS } from '@/utils/options'
 
@@ -394,7 +412,8 @@ export default {
   name: 'FreeBuyConfig',
   components: {
     Publish,
-    SiteSelect
+    SiteSelect,
+    draggable
   },
   data() {
     const configAppId = parseInt(store.getters.appId) || -1
@@ -426,8 +445,18 @@ export default {
     taskDialogTitle() {
       return this.taskEditMode ? '编辑任务' : '新增任务'
     },
+    taskTypeOrder() {
+      const order = []
+      for (const task of this.editItem.taskList || []) {
+        const taskType = Number(task.taskType)
+        if (Number.isInteger(taskType) && taskType > 0 && !order.includes(taskType)) order.push(taskType)
+      }
+      return order
+    },
     sortedEditTasks() {
-      return [...(this.editItem.taskList || [])].sort((a, b) => a.taskType - b.taskType || a.taskId - b.taskId)
+      return [...(this.editItem.taskList || [])].sort((a, b) => {
+        return this.taskTypeOrder.indexOf(Number(a.taskType)) - this.taskTypeOrder.indexOf(Number(b.taskType)) || Number(a.taskId) - Number(b.taskId)
+      })
     },
     validDayOptions() {
       return ITEM_DAY_TYPE_OPTIONS.filter(item => !item.disabled && item.value !== 0 && item.value !== 365)
@@ -626,7 +655,14 @@ export default {
       data.endTime = Math.floor(Number(item.endTimeValue) / 1000)
       data.gameIdList = this.toNumberList(data.gameIdList)
       data.siteIdList = data.siteIdList.map(value => String(value)).filter(Boolean)
-      data.taskList = data.taskList.map(task => this.cleanTask(task)).sort((a, b) => a.taskType - b.taskType || a.taskId - b.taskId)
+      const taskTypeOrder = []
+      for (const task of data.taskList) {
+        const taskType = Number(task.taskType)
+        if (Number.isInteger(taskType) && taskType > 0 && !taskTypeOrder.includes(taskType)) taskTypeOrder.push(taskType)
+      }
+      data.taskList = data.taskList.map(task => this.cleanTask(task)).sort((a, b) => {
+        return taskTypeOrder.indexOf(a.taskType) - taskTypeOrder.indexOf(b.taskType) || a.taskId - b.taskId
+      })
       delete data.startTimeValue
       delete data.endTimeValue
       return data
@@ -749,6 +785,17 @@ export default {
       this.editItem.taskList = nextTasks
       this.taskDialogVisible = false
     },
+    onTaskTypeDragEnd(event) {
+      const taskTypeOrder = [...this.taskTypeOrder]
+      const oldIndex = Number(event.oldIndex)
+      const newIndex = Number(event.newIndex)
+      if (oldIndex === newIndex || oldIndex < 0 || newIndex < 0 || oldIndex >= taskTypeOrder.length || newIndex >= taskTypeOrder.length) return
+      const movedTypes = taskTypeOrder.splice(oldIndex, 1)
+      taskTypeOrder.splice(newIndex, 0, movedTypes[0])
+      this.editItem.taskList = [...(this.editItem.taskList || [])].sort((a, b) => {
+        return taskTypeOrder.indexOf(Number(a.taskType)) - taskTypeOrder.indexOf(Number(b.taskType)) || Number(a.taskId) - Number(b.taskId)
+      })
+    },
     deleteTask(row) {
       this.$confirm(`确认删除任务类型 ${row.taskType} 的任务 ${row.taskId} 吗？`, '提示', { type: 'warning' }).then(() => {
         this.editItem.taskList = this.editItem.taskList.filter(item => this.taskKey(item) !== this.taskKey(row))
@@ -850,7 +897,9 @@ export default {
       return row.status === STATUS_ONLINE ? '已上架' : '已下架'
     },
     taskTypeText(taskType) {
-      return Number(taskType) === 1 ? '类型一：大于等于' : '类型二：固定额度'
+      if (Number(taskType) === 1) return '类型一：大于等于'
+      if (Number(taskType) === 2) return '类型二：固定额度'
+      return `类型${taskType}`
     },
     compareText(compareType) {
       return Number(compareType) === 1 ? '≥' : '='
@@ -901,6 +950,48 @@ export default {
   justify-content: space-between;
   margin-bottom: 10px;
   color: #606266;
+}
+
+.task-order-row {
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  padding: 10px 12px 2px;
+  margin-bottom: 10px;
+  background: #f5f7fa;
+  border: 1px solid #ebeef5;
+}
+
+.task-order-text {
+  flex-shrink: 0;
+  margin-right: 10px;
+  line-height: 32px;
+}
+
+.task-order-list {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  min-height: 32px;
+}
+
+.task-order-item {
+  margin: 0 8px 8px 0 !important;
+  cursor: move;
+}
+
+.task-order-item i {
+  margin-right: 4px;
+}
+
+.task-order-ghost {
+  opacity: 0.35;
+}
+
+.task-order-chosen {
+  color: #409eff;
+  background: #ecf5ff;
+  border-color: #409eff;
 }
 
 .unit-text {
