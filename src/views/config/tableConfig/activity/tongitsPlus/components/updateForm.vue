@@ -37,14 +37,12 @@
             </el-col>
             <el-col :xs="24" :sm="12">
               <el-form-item label="每日活动开始时间：" required>
-                <el-date-picker v-model="item.dailyStartTime" type="datetime" placeholder="选择开始时间" format="HH:mm"
-                                size="mini" style="width: 300px"/>
+                <el-date-picker v-model="item.dailyStartTime" type="datetime" placeholder="选择开始时间" format="HH:mm:ss" size="mini" style="width: 300px"/>
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
               <el-form-item label="每日活动结束时间：" required>
-                <el-date-picker v-model="item.dailyEndTime" type="datetime" placeholder="选择结束时间" format="HH:mm"
-                                size="mini" style="width: 300px"/>
+                <el-date-picker v-model="item.dailyEndTime" type="datetime" placeholder="选择结束时间" format="HH:mm:ss" size="mini" style="width: 300px"/>
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
@@ -86,6 +84,7 @@
                   :inactive-value="false"
                   active-text="开启"
                   inactive-text="关闭"
+                  :disabled="isAbTestSwitchDisabled()"
                 />
               </el-form-item>
             </el-col>
@@ -503,6 +502,16 @@ export default {
       }
       this.item.treasureCfg.splice(index, 1)
       this.reindexTreasure()
+    },
+    isAbTestSwitchDisabled() {
+      // 新增状态，不禁用
+      if (!this.item.id || this.item.id <= 0) {
+        return false
+      }
+      const now = Math.floor(Date.now())
+
+      // 编辑状态，并且当前时间在活动开始和结束时间之间
+      return now >= this.item.startTime && now <= this.item.endTime
     }
   }
 }
