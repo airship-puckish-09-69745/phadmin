@@ -114,7 +114,7 @@
             </el-table-column>
             <el-table-column label="进度要求(₱)" min-width="120" align="center">
               <template slot-scope="scope">
-                <el-input v-model.number="scope.row.taskValueRequired" placeholder="进度值" size="mini" :disabled="!item.enableProgressPrize" oninput="if(value<0||value===''){value=0}" />
+                <el-input v-model.number="scope.row.taskCondition" placeholder="进度值" size="mini" :disabled="!item.enableProgressPrize" oninput="if(value<0||value===''){value=0}" />
               </template>
             </el-table-column>
             <el-table-column label="道具类型" min-width="140" align="center">
@@ -246,7 +246,7 @@ function defaultUserConfig() {
 }
 
 function newPrize() {
-  return { taskType: 2, taskValueRequired: 0, propType: 0, propId: 0, propName: '', propTime: 1, propNum: 0, propLimit: 0 }
+  return { taskType: 2, taskCondition: 0, propType: 0, propId: 0, propName: '', propTime: 1, propNum: 0, propLimit: 0 }
 }
 
 // 投注金奖励默认值（已发奖励为只读，初始为 0）
@@ -444,7 +444,7 @@ export default {
       prize.taskType = taskType
       // 有效下注类型时进度要求存储单位为 1/1000 ₱，前端显示除以 1000
       if (taskType === 2) {
-        prize.taskValueRequired = this.toSafeNumber(prize.taskValueRequired) / 1000
+        prize.taskCondition = this.toSafeNumber(prize.taskCondition) / 1000
       }
       const enableProgressPrize = typeof ext.enableProgressPrize === 'boolean'
         ? ext.enableProgressPrize
@@ -513,7 +513,7 @@ export default {
       }
       if (!this.validateUserConfig()) return false
       const prize = this.item.progressPrizes
-      if (!this.validateNumber(prize.taskValueRequired, '进度要求(₱)', { min: 0, max: MAX_AMOUNT })) return false
+      if (!this.validateNumber(prize.taskCondition, '进度要求(₱)', { min: 0, max: MAX_AMOUNT })) return false
       if (this.item.enableProgressPrize) {
         if (!prize.propType || !prize.propId) {
           Message.error('请配置道具类型和道具名称'); return false
@@ -543,7 +543,7 @@ export default {
       const prize = { ...newPrize(), ...d.progressPrizes }
       prize.taskType = this.toSafeNumber(prize.taskType, 2)
       if (prize.taskType === 2) {
-        prize.taskValueRequired = Math.round(this.toSafeNumber(prize.taskValueRequired) * 1000)
+        prize.taskCondition = Math.round(this.toSafeNumber(prize.taskCondition) * 1000)
       }
       if (!d.enableProgressPrize) {
         prize.propType = 0
