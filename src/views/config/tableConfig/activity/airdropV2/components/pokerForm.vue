@@ -121,7 +121,7 @@
             <el-table-column label="进度要求" min-width="120">
               <template slot-scope="scope">
                 <el-input
-                  v-model.number="scope.row.taskValueRequired"
+                  v-model.number="scope.row.taskCondition"
                   :placeholder="progressPlaceholder"
                   size="mini"
                   :disabled="!item.enableProgressPrize"
@@ -202,6 +202,17 @@
                 <el-input
                   v-model.number="scope.row.userMaxReward"
                   placeholder="最大领奖"
+                  size="mini"
+                  oninput="if(value<0||value===''){value=0}"
+                />
+              </template>
+            </el-table-column>
+            <!-- 任务条件 -->
+            <el-table-column label="任务条件(₱)" min-width="130">
+              <template slot-scope="scope">
+                <el-input
+                  v-model.number="scope.row.taskCondition"
+                  placeholder="请输入"
                   size="mini"
                   oninput="if(value<0||value===''){value=0}"
                 />
@@ -297,6 +308,7 @@ function defaultRewardRange() {
     totalReward: 0,
     issuedReward: 0,
     userMaxReward: 0,
+    taskCondition: 0,
     minScore: 0,
     maxScore: 0,
     minCoefficient: 0,
@@ -305,7 +317,7 @@ function defaultRewardRange() {
 }
 
 function newPrize() {
-  return { taskType: 2, taskValueRequired: 0, propType: 0, propId: 0, propName: '', propTime: 1, propNum: 0, propLimit: 0 }
+  return { taskType: 2, taskCondition: 0, propType: 0, propId: 0, propName: '', propTime: 1, propNum: 0, propLimit: 0 }
 }
 
 function newItem() {
@@ -352,11 +364,12 @@ export default {
         { value: 3, label: 'Pot次数' }
       ],
       propTypeOptions: [
-        { value: 1, label: 'Tongits门票', disabled: false },
+        { value: 7, label: '新版Tongits门票', disabled: false },
         { value: 2, label: '头像框', disabled: false },
-        { value: 3, label: '德州门票', disabled: false },
         { value: 4, label: '德州头像框', disabled: false },
-        { value: 5, label: 'SlotFreeSpin', disabled: false }
+        { value: 8, label: '新版德州参赛券', disabled: false },
+        { value: 5, label: 'SlotFreeSpin', disabled: false },
+        { value: 10, label: '互动道具', disabled: false }
       ],
       propDayTypeOptions: [
         { value: 1, label: '1天' },
@@ -520,7 +533,7 @@ export default {
 
       // 有效下注类型时进度要求除以 1000 转换为 ₱ 显示
       if (taskType === 2) {
-        prize.taskValueRequired = this.toSafeNumber(prize.taskValueRequired) / 1000
+        prize.taskCondition = this.toSafeNumber(prize.taskCondition) / 1000
       }
       const enableProgressPrize = typeof ext.enableProgressPrize === 'boolean'
         ? ext.enableProgressPrize
@@ -532,6 +545,7 @@ export default {
         totalReward: (rr.totalReward || 0) / 1000,
         issuedReward: (rr.issuedReward || 0) / 1000, // 只读，显示已发放金额
         userMaxReward: (rr.userMaxReward || 0) / 1000,
+        taskCondition: (rr.taskCondition || 0) / 1000,
         minScore: (rr.minScore || 0) / 1000,
         maxScore: (rr.maxScore || 0) / 1000,
         minCoefficient: (rr.minCoefficient || 0) / 100,
@@ -581,7 +595,7 @@ export default {
       }
       if (!this.validateUserConfig()) return false
       const prize = this.item.progressPrizes
-      if (!this.validateNumber(prize.taskValueRequired, this.progressPlaceholder, { min: 0, max: MAX_AMOUNT })) return false
+      if (!this.validateNumber(prize.taskCondition, this.progressPlaceholder, { min: 0, max: MAX_AMOUNT })) return false
       if (this.item.enableProgressPrize) {
         if (!prize.propType || !prize.propId) {
           Message.error('请配置道具类型和道具名称'); return false
@@ -602,8 +616,15 @@ export default {
       if (this.toSafeNumber(rewardRange.totalReward) > 0 && this.toSafeNumber(rewardRange.userMaxReward) > this.toSafeNumber(rewardRange.totalReward)) {
         Message.error('用户最大领奖不能大于总奖励'); return false
       }
+      if (!this.validateNumber(rewardRange.taskCondition, '任务条件', { min: 0, max: MAX_AMOUNT })) return false
       if (!this.validateNumber(rewardRange.minScore, '积分区间开始', { min: 0, max: MAX_AMOUNT })) return false
       if (!this.validateNumber(rewardRange.maxScore, '积分区间结束', { min: 0, max: MAX_AMOUNT })) return false
+      if (this.toSafeNumber(rewardRange.taskCondition) < this.toSafeNumber(rewardRange.minScore)) {
+        Message.error('任务条件不能小于积分区间开始'); return false
+      }
+      if (this.toSafeNumber(rewardRange.taskCondition) > this.toSafeNumber(rewardRange.maxScore)) {
+        Message.error('任务条件不能小于积分区间开始'); return false
+      }
       if (this.toSafeNumber(rewardRange.maxScore) < this.toSafeNumber(rewardRange.minScore)) {
         Message.error('积分区间结束不能小于积分区间开始'); return false
       }
@@ -619,7 +640,7 @@ export default {
       const prize = { ...newPrize(), ...d.progressPrizes }
       prize.taskType = this.toSafeNumber(prize.taskType, 1)
       if (prize.taskType === 2) {
-        prize.taskValueRequired = Math.round(this.toSafeNumber(prize.taskValueRequired) * 1000)
+        prize.taskCondition = Math.round(this.toSafeNumber(prize.taskCondition) * 1000)
       }
       if (!d.enableProgressPrize) {
         prize.propType = 0
@@ -633,6 +654,7 @@ export default {
         totalReward: Math.round(this.toSafeNumber(d.rewardRange.totalReward) * 1000),
         issuedReward: Math.round(this.toSafeNumber(d.rewardRange.issuedReward) * 1000),
         userMaxReward: Math.round(this.toSafeNumber(d.rewardRange.userMaxReward) * 1000),
+        taskCondition: Math.round(this.toSafeNumber(d.rewardRange.taskCondition) * 1000),
         minScore: Math.round(this.toSafeNumber(d.rewardRange.minScore) * 1000),
         maxScore: Math.round(this.toSafeNumber(d.rewardRange.maxScore) * 1000),
         minCoefficient: Math.round(this.toSafeNumber(d.rewardRange.minCoefficient) * 100),
@@ -652,7 +674,7 @@ export default {
       }
       // Poker extend：包含道具奖励(progressPrizes)和投注金奖励(rewardRange)，不含 casino 的 propPools 或 slot 的 betReward
       const extendObj = {
-        taskType: prize.taskType,
+        // taskType: prize.taskType,
         taskText: d.taskText || '',
         enableProgressPrize: !!d.enableProgressPrize,
         progressPrizes: prize,
