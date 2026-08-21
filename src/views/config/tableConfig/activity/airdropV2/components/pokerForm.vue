@@ -178,7 +178,7 @@
         <!-- ---------- 投注金奖励（固定一条，原大奖配置）---------- -->
         <fieldset>
           <legend><b>投注金奖励</b>（仅可配置一条）</legend>
-          <el-table :data="[item.rewardRange]" border size="small" style="width: 100%">
+          <el-table :data="[item.pokerBetMoney]" border size="small" style="width: 100%">
             <!-- 总奖励 -->
             <el-table-column label="总奖励(₱)" min-width="120">
               <template slot-scope="scope">
@@ -301,9 +301,8 @@ function defaultUserConfig() {
     importedFilename: ''
   }
 }
-
 // 投注金奖励默认值（新增 totalReward/issuedReward/userMaxReward）
-function defaultRewardRange() {
+function defaultPokerBetMoney() {
   return {
     totalReward: 0,
     issuedReward: 0,
@@ -316,7 +315,7 @@ function defaultRewardRange() {
   }
 }
 
-function newPrize() {
+function newProp() {
   return { taskType: 2, taskCondition: 0, propType: 0, propId: 0, propName: '', propTime: 1, propNum: 0, propLimit: 0 }
 }
 
@@ -334,9 +333,8 @@ function newItem() {
     whitelist: defaultWhitelist(),
     taskText: '',
     enableProgressPrize: false,
-    progressPrizes: newPrize(),
-    // 投注金奖励（原大奖配置，含新增字段）
-    rewardRange: defaultRewardRange(),
+    progressPrizes: newProp(),
+    pokerBetMoney: defaultPokerBetMoney(),
     userConfig: defaultUserConfig()
   }
 }
@@ -447,9 +445,9 @@ export default {
     normalizePrize(rawPrize) {
       const prize = this.safeJson(rawPrize, {})
       if (Array.isArray(prize)) {
-        return { ...newPrize(), ...(prize[0] || {}) }
+        return { ...newProp(), ...(prize[0] || {}) }
       }
-      return { ...newPrize(), ...(prize || {}) }
+      return { ...newProp(), ...(prize || {}) }
     },
     isProgressPrizeConfigured(prize) {
       return this.toSafeNumber(prize.propId) > 0 || this.toSafeNumber(prize.propNum) > 0 || this.toSafeNumber(prize.propLimit) > 0
@@ -540,8 +538,8 @@ export default {
         : this.isProgressPrizeConfigured(prize)
 
       // 投注金奖励：货币字段除以 1000 转换为 ₱ 显示；系数除以 100
-      const rr = this.safeJson(ext.rewardRange, defaultRewardRange())
-      const rewardRange = {
+      const rr = this.safeJson(ext.pokerBetMoney, defaultPokerBetMoney())
+      const pokerBetMoney = {
         totalReward: (rr.totalReward || 0) / 1000,
         issuedReward: (rr.issuedReward || 0) / 1000, // 只读，显示已发放金额
         userMaxReward: (rr.userMaxReward || 0) / 1000,
@@ -568,7 +566,7 @@ export default {
         taskText: ext.taskText || '',
         enableProgressPrize,
         progressPrizes: prize,
-        rewardRange,
+        pokerBetMoney,
         userConfig
       }
 
@@ -609,35 +607,35 @@ export default {
           Message.error('道具上限必须为道具数量的整数倍'); return false
         }
       }
-      const rewardRange = this.item.rewardRange
-      if (!this.validateNumber(rewardRange.totalReward, '总奖励(₱)', { min: 0, max: MAX_AMOUNT })) return false
-      if (!this.validateNumber(rewardRange.issuedReward, '已发奖励(₱)', { min: 0, max: MAX_AMOUNT })) return false
-      if (!this.validateNumber(rewardRange.userMaxReward, '用户最大领奖(₱)', { min: 0, max: MAX_AMOUNT })) return false
-      if (this.toSafeNumber(rewardRange.totalReward) > 0 && this.toSafeNumber(rewardRange.userMaxReward) > this.toSafeNumber(rewardRange.totalReward)) {
+      const pokerBetMoney = this.item.pokerBetMoney
+      if (!this.validateNumber(pokerBetMoney.totalReward, '总奖励(₱)', { min: 0, max: MAX_AMOUNT })) return false
+      if (!this.validateNumber(pokerBetMoney.issuedReward, '已发奖励(₱)', { min: 0, max: MAX_AMOUNT })) return false
+      if (!this.validateNumber(pokerBetMoney.userMaxReward, '用户最大领奖(₱)', { min: 0, max: MAX_AMOUNT })) return false
+      if (this.toSafeNumber(pokerBetMoney.totalReward) > 0 && this.toSafeNumber(pokerBetMoney.userMaxReward) > this.toSafeNumber(pokerBetMoney.totalReward)) {
         Message.error('用户最大领奖不能大于总奖励'); return false
       }
-      if (!this.validateNumber(rewardRange.taskCondition, '任务条件', { min: 0, max: MAX_AMOUNT })) return false
-      if (!this.validateNumber(rewardRange.minScore, '积分区间开始', { min: 0, max: MAX_AMOUNT })) return false
-      if (!this.validateNumber(rewardRange.maxScore, '积分区间结束', { min: 0, max: MAX_AMOUNT })) return false
-      if (this.toSafeNumber(rewardRange.taskCondition) < this.toSafeNumber(rewardRange.minScore)) {
+      if (!this.validateNumber(pokerBetMoney.taskCondition, '任务条件', { min: 0, max: MAX_AMOUNT })) return false
+      if (!this.validateNumber(pokerBetMoney.minScore, '积分区间开始', { min: 0, max: MAX_AMOUNT })) return false
+      if (!this.validateNumber(pokerBetMoney.maxScore, '积分区间结束', { min: 0, max: MAX_AMOUNT })) return false
+      if (this.toSafeNumber(pokerBetMoney.taskCondition) < this.toSafeNumber(pokerBetMoney.minScore)) {
         Message.error('任务条件不能小于积分区间开始'); return false
       }
-      if (this.toSafeNumber(rewardRange.taskCondition) > this.toSafeNumber(rewardRange.maxScore)) {
+      if (this.toSafeNumber(pokerBetMoney.taskCondition) > this.toSafeNumber(pokerBetMoney.maxScore)) {
         Message.error('任务条件不能小于积分区间开始'); return false
       }
-      if (this.toSafeNumber(rewardRange.maxScore) < this.toSafeNumber(rewardRange.minScore)) {
+      if (this.toSafeNumber(pokerBetMoney.maxScore) < this.toSafeNumber(pokerBetMoney.minScore)) {
         Message.error('积分区间结束不能小于积分区间开始'); return false
       }
-      if (!this.validateNumber(rewardRange.minCoefficient, '系数区间开始', { min: 0, max: MAX_COEFFICIENT })) return false
-      if (!this.validateNumber(rewardRange.maxCoefficient, '系数区间结束', { min: 0, max: MAX_COEFFICIENT })) return false
-      if (this.toSafeNumber(rewardRange.maxCoefficient) < this.toSafeNumber(rewardRange.minCoefficient)) {
+      if (!this.validateNumber(pokerBetMoney.minCoefficient, '系数区间开始', { min: 0, max: MAX_COEFFICIENT })) return false
+      if (!this.validateNumber(pokerBetMoney.maxCoefficient, '系数区间结束', { min: 0, max: MAX_COEFFICIENT })) return false
+      if (this.toSafeNumber(pokerBetMoney.maxCoefficient) < this.toSafeNumber(pokerBetMoney.minCoefficient)) {
         Message.error('系数区间结束不能小于系数区间开始'); return false
       }
       return true
     },
     getPostData() {
       const d = this.item
-      const prize = { ...newPrize(), ...d.progressPrizes }
+      const prize = { ...newProp(), ...d.progressPrizes }
       prize.taskType = this.toSafeNumber(prize.taskType, 1)
       if (prize.taskType === 2) {
         prize.taskCondition = Math.round(this.toSafeNumber(prize.taskCondition) * 1000)
@@ -650,15 +648,15 @@ export default {
         prize.propLimit = 0
       }
       // 投注金奖励：货币字段乘以 1000 存储；系数乘以 100 取整；已发奖励由后端维护
-      const rewardRange = {
-        totalReward: Math.round(this.toSafeNumber(d.rewardRange.totalReward) * 1000),
-        issuedReward: Math.round(this.toSafeNumber(d.rewardRange.issuedReward) * 1000),
-        userMaxReward: Math.round(this.toSafeNumber(d.rewardRange.userMaxReward) * 1000),
-        taskCondition: Math.round(this.toSafeNumber(d.rewardRange.taskCondition) * 1000),
-        minScore: Math.round(this.toSafeNumber(d.rewardRange.minScore) * 1000),
-        maxScore: Math.round(this.toSafeNumber(d.rewardRange.maxScore) * 1000),
-        minCoefficient: Math.round(this.toSafeNumber(d.rewardRange.minCoefficient) * 100),
-        maxCoefficient: Math.round(this.toSafeNumber(d.rewardRange.maxCoefficient) * 100)
+      const pokerBetMoney = {
+        totalReward: Math.round(this.toSafeNumber(d.pokerBetMoney.totalReward) * 1000),
+        issuedReward: Math.round(this.toSafeNumber(d.pokerBetMoney.issuedReward) * 1000),
+        userMaxReward: Math.round(this.toSafeNumber(d.pokerBetMoney.userMaxReward) * 1000),
+        taskCondition: Math.round(this.toSafeNumber(d.pokerBetMoney.taskCondition) * 1000),
+        minScore: Math.round(this.toSafeNumber(d.pokerBetMoney.minScore) * 1000),
+        maxScore: Math.round(this.toSafeNumber(d.pokerBetMoney.maxScore) * 1000),
+        minCoefficient: Math.round(this.toSafeNumber(d.pokerBetMoney.minCoefficient) * 100),
+        maxCoefficient: Math.round(this.toSafeNumber(d.pokerBetMoney.maxCoefficient) * 100)
       }
       const activityObj = {
         name: d.activityName,
@@ -672,13 +670,12 @@ export default {
         gameIdList: d.gameIdList,
         whitelist: d.whitelist
       }
-      // Poker extend：包含道具奖励(progressPrizes)和投注金奖励(rewardRange)，不含 casino 的 propPools 或 slot 的 betReward
       const extendObj = {
         // taskType: prize.taskType,
         taskText: d.taskText || '',
         enableProgressPrize: !!d.enableProgressPrize,
         progressPrizes: prize,
-        rewardRange,
+        pokerBetMoney,
         userTypes: d.userConfig.userTypes,
         userFilterCondition: d.userConfig.userFilterCondition,
         importedFilename: d.userConfig.importedFilename || ''
