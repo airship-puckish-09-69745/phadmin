@@ -49,6 +49,7 @@
         <template slot-scope="scope">
           <div>站点：{{ formatList(scope.row.siteIdList, '全部') }}</div>
           <div>游戏：{{ formatGameList(scope.row.gameIdList) }}</div>
+          <div>用户：{{ userTypeText(scope.row.userTypes) }}</div>
         </template>
       </el-table-column>
       <el-table-column label="任务" width="130" align="center">
@@ -180,6 +181,86 @@
                 />
               </el-select>
             </el-form-item>
+            <el-form-item label="参与用户类型" required>
+              <el-select v-model="editItem.userType" style="width: 100%" @change="onUserTypeChange">
+                <el-option
+                  v-for="item in userTypeOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item v-if="editItem.userType === 3" label="导入用户">
+              <span>已导入用户：{{ importedUidCount }}</span>
+              <span class="user-import-tip">（重复导入不会覆盖已有用户）</span>
+              <br>
+              <span class="user-import-warning">活动结束时间需要晚于当前时间，否则导入用户无法参与活动。</span>
+              <el-upload
+                ref="freeBuyUidUpload"
+                drag
+                action="#"
+                :auto-upload="false"
+                :limit="1"
+                accept=".csv,.txt"
+                :before-upload="handleBeforeUpload"
+                :on-change="handleFreeBuyFileChange"
+                :on-remove="handleFreeBuyFileRemove"
+              >
+                <i class="el-icon-upload" />
+                <div class="el-upload__text">将文件拖到此处或<em>点击上传</em></div>
+                <div slot="tip" class="el-upload__tip">只能上传 CSV 或 TXT 格式文件，且不超过10MB</div>
+              </el-upload>
+              <el-button type="success" size="mini" @click="submitUpload">上传用户ID数据</el-button>
+              <el-button type="danger" size="mini" @click="delImportedUid">重置已导入用户</el-button>
+            </el-form-item>
+            <template v-if="editItem.userType === 5">
+              <el-form-item label="新增标签条件" required>
+                <el-select v-model="userTagDraft.tagType" style="width: 100%" @change="onUserTagTypeChange">
+                  <el-option
+                    v-for="item in userTagTypeOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </el-form-item>
+              <el-form-item label="标签条件" required>
+                <el-select v-model="userTagDraft.tagId" style="width: 100%" @change="onUserTagIdChange">
+                  <el-option
+                    v-for="item in currentUserTagOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </el-form-item>
+              <el-form-item label="标签值" required>
+                <el-select v-if="isGameIntensityTag" v-model="userTagDraft.tagValue" style="width: 100%">
+                  <el-option v-for="item in gameIntensityOptions" :key="item.value" :label="item.label" :value="item.value" />
+                </el-select>
+                <el-select v-else-if="isUserLevelTag" v-model="userTagDraft.tagValue" style="width: 100%">
+                  <el-option v-for="item in userLevelOptions" :key="item.value" :label="item.label" :value="item.value" />
+                </el-select>
+                <el-input-number v-else v-model="userTagDraft.tagValue" :min="1" :max="2147483647" controls-position="right" />
+                <el-button type="primary" size="mini" icon="el-icon-plus" @click="addUserTag">加入标签</el-button>
+              </el-form-item>
+              <el-form-item label="已选标签" required>
+                <div class="user-tag-list">
+                  <el-tag
+                    v-for="(tag, index) in editItem.userTagConfig"
+                    :key="userTagKey(tag, index)"
+                    closable
+                    size="small"
+                    @close="removeUserTag(index)"
+                  >
+                    {{ userTagText(tag) }}
+                  </el-tag>
+                  <span v-if="!editItem.userTagConfig.length" class="user-import-tip">请先加入至少一个标签</span>
+                  <span class="user-import-tip">多个标签之间为“或”关系，满足任意一个即可参与活动。</span>
+                </div>
+              </el-form-item>
+            </template>
           </el-tab-pane>
 
           <el-tab-pane label="A/B测试">
@@ -353,6 +434,14 @@ function newTask(taskType = 1) {
   }
 }
 
+function newUserTagConfig() {
+  return {
+    tagType: 2,
+    tagId: 20000,
+    tagValue: 1
+  }
+}
+
 // 需求文档明确了四个任务档位；未提供的道具ID和富裕卡星级保留为空，必须由运营确认。
 function defaultTasks() {
   return [
@@ -388,6 +477,8 @@ function newActivity(id) {
     dailyPropLimit: 1,
     totalPropLimit: 1,
     taskList: defaultTasks(),
+    userTypes: [2],
+    userTagConfig: [],
     debugTimeOffset: 0,
     abTest: {
       switch: false,
@@ -419,6 +510,7 @@ export default {
     const configAppId = parseInt(store.getters.appId) || -1
     return {
       configAppId,
+      env: store.getters.env || '',
       configRecord: newConfigRecord(configAppId),
       configs: [],
       nextConfigId: 1,
@@ -427,6 +519,7 @@ export default {
       activityDialogVisible: false,
       activityEditMode: false,
       editItem: newActivity(1),
+      userTagDraft: newUserTagConfig(),
       taskDialogVisible: false,
       taskEditMode: false,
       taskEditOriginalKey: '',
@@ -435,7 +528,40 @@ export default {
       richCardOptions: [],
       richCardGameOptions: [],
       richCardOpenGameMap: {},
-      slotGameOptions: []
+      slotGameOptions: [],
+      importedUidCount: 0,
+      freeBuyUidFile: null,
+      userTypeOptions: [
+        { value: 2, label: '全部用户' },
+        { value: 3, label: '导入用户' },
+        { value: 5, label: '用户标签' }
+      ],
+      userTagTypeOptions: [
+        { value: 2, label: '游戏强度' },
+        { value: 5, label: 'Slots用户类型' }
+      ],
+      gameIntensityTagOptions: [
+        { value: 20000, label: '游戏强度' }
+      ],
+      slotsTagOptions: [
+        { value: 50001, label: 'Slots新增用户' },
+        { value: 50002, label: 'Slots登录天数' },
+        { value: 50008, label: 'Slots回归用户' },
+        { value: 50005, label: 'Slots下注额度' },
+        { value: 50006, label: 'Slots日均下注额度' },
+        { value: 50003, label: 'Slots携带金额' }
+      ],
+      userLevelOptions: [
+        { value: 1, label: '用户等级1' },
+        { value: 2, label: '用户等级2' },
+        { value: 3, label: '用户等级3' }
+      ],
+      gameIntensityOptions: [
+        { value: 1, label: '强度1' },
+        { value: 2, label: '强度2' },
+        { value: 3, label: '强度3' },
+        { value: 4, label: '强度4' }
+      ]
     }
   },
   computed: {
@@ -460,9 +586,21 @@ export default {
     },
     validDayOptions() {
       return ITEM_DAY_TYPE_OPTIONS.filter(item => !item.disabled && item.value !== 0 && item.value !== 365)
+    },
+    currentUserTagOptions() {
+      return Number(this.userTagDraft.tagType) === 2
+        ? this.gameIntensityTagOptions
+        : this.slotsTagOptions
+    },
+    isUserLevelTag() {
+      return [50001, 50002, 50008].includes(Number(this.userTagDraft.tagId))
+    },
+    isGameIntensityTag() {
+      return Number(this.userTagDraft.tagId) === 20000
     }
   },
   created() {
+    this.env = store.getters.env || this.env
     this.getList()
     this.getFreeSpinProps()
     this.getMissionData()
@@ -522,7 +660,7 @@ export default {
       delete data.appIdList
       data.isOpen = Boolean(data.isOpen)
       data.status = Number(data.status) || STATUS_OFFLINE
-      // 兼容并清理旧配置中的UID白名单字段，Free Buy只按站点范围和A/B测试控制参与玩家。
+      // 清理旧配置中的UID白名单字段，Free Buy按参与用户类型控制玩家范围。
       delete data.isWhite
       delete data.whiteList
       data.siteIdList = Array.isArray(data.siteIdList) ? data.siteIdList : []
@@ -530,6 +668,21 @@ export default {
       data.dailyPropLimit = Number(data.dailyPropLimit) || 0
       data.totalPropLimit = Number(data.totalPropLimit) || 0
       data.taskList = Array.isArray(data.taskList) ? data.taskList.map(task => this.normalizeTask(task)) : []
+      data.userTypes = Array.isArray(data.userTypes)
+        ? data.userTypes.map(Number).filter(item => [2, 3, 5].includes(item))
+        : [2]
+      if (!data.userTypes.length) data.userTypes = [2]
+      data.userType = data.userTypes[0]
+      const userTagList = Array.isArray(data.userTagConfig)
+        ? data.userTagConfig
+        : (data.userTagConfig ? [data.userTagConfig] : [])
+      data.userTagConfig = userTagList.map(tag => ({
+        ...newUserTagConfig(),
+        ...(tag || {}),
+        tagType: Number(tag && tag.tagType) || 2,
+        tagId: Number(tag && tag.tagId) || 20000,
+        tagValue: Number(tag && tag.tagValue) || 1
+      }))
       data.debugTimeOffset = Number(data.debugTimeOffset) || 0
       data.abTest = { switch: false, bPercent: 0, ...(data.abTest || {}) }
       data.abTest.switch = Boolean(data.abTest.switch)
@@ -622,7 +775,162 @@ export default {
       } else {
         this.editItem = newActivity(this.nextConfigId)
       }
+      this.userTagDraft = this.editItem.userTagConfig.length
+        ? { ...this.editItem.userTagConfig[0] }
+        : newUserTagConfig()
+      this.importedUidCount = 0
+      this.freeBuyUidFile = null
+      if (isEdit && this.editItem.userType === 3) this.getImportedUidCount()
       this.activityDialogVisible = true
+    },
+    onUserTypeChange(userType) {
+      if (Number(userType) === 3 && this.activityEditMode) {
+        this.getImportedUidCount()
+      } else {
+        this.importedUidCount = 0
+        this.freeBuyUidFile = null
+        if (this.$refs.freeBuyUidUpload) this.$refs.freeBuyUidUpload.clearFiles()
+      }
+    },
+    onUserTagTypeChange(tagType) {
+      const options = Number(tagType) === 2 ? this.gameIntensityTagOptions : this.slotsTagOptions
+      this.userTagDraft.tagId = options[0].value
+      this.userTagDraft.tagValue = 1
+    },
+    onUserTagIdChange() {
+      this.userTagDraft.tagValue = 1
+    },
+    addUserTag() {
+      const tag = {
+        tagType: Number(this.userTagDraft.tagType),
+        tagId: Number(this.userTagDraft.tagId),
+        tagValue: Number(this.userTagDraft.tagValue)
+      }
+      if (tag.tagType <= 0 || tag.tagId <= 0 || tag.tagValue <= 0) {
+        this.$message.error('请先配置完整的标签条件')
+        return
+      }
+      if (this.editItem.userTagConfig.some(item =>
+        Number(item.tagType) === tag.tagType &&
+        Number(item.tagId) === tag.tagId &&
+        Number(item.tagValue) === tag.tagValue
+      )) {
+        this.$message.warning('该标签条件已经加入')
+        return
+      }
+      this.editItem.userTagConfig.push(tag)
+      this.userTagDraft = newUserTagConfig()
+    },
+    removeUserTag(index) {
+      this.editItem.userTagConfig.splice(index, 1)
+    },
+    getImportedUidCount() {
+      if (!this.editItem.id) return
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Env: this.env,
+          ConfigId: this.editItem.id,
+          Path: '/activity/freebuy/uid/import/count'
+        }
+      }).then(response => {
+        if (response.RetCode === 0) this.importedUidCount = Number(response.Data) || 0
+      })
+    },
+    delImportedUid() {
+      this.$confirm('确定要重置已导入的用户ID吗？', '提示', { type: 'warning' }).then(() => {
+        return request({
+          url: '/dataProxy/info',
+          method: 'post',
+          timeout: 90000,
+          data: {
+            Env: this.env,
+            ConfigId: this.editItem.id,
+            Path: '/activity/freebuy/uid/import/del'
+          }
+        })
+      }).then(response => {
+        if (response && response.RetCode === 0) {
+          this.importedUidCount = 0
+          this.$message.success('已重置导入用户')
+        }
+      }).catch(() => {})
+    },
+    handleBeforeUpload(file) {
+      const validType = /\.(csv|txt)$/i.test(file.name || '')
+      if (!validType) {
+        this.$message.error('上传的文件只能是 CSV 或 TXT 格式')
+        return false
+      }
+      if (file.size / 1024 / 1024 >= 10) {
+        this.$message.error('上传文件不能超过10MB')
+        return false
+      }
+      return true
+    },
+    handleFreeBuyFileChange(file) {
+      if (file && file.raw && this.handleBeforeUpload(file.raw)) this.freeBuyUidFile = file.raw
+    },
+    handleFreeBuyFileRemove() {
+      this.freeBuyUidFile = null
+    },
+    submitUpload() {
+      if (!this.activityEditMode || !this.editItem.id) {
+        this.$message.error('请先保存活动期次，再导入用户')
+        return
+      }
+      if (Number(this.editItem.endTime) <= Math.floor(Date.now() / 1000)) {
+        this.$message.error('活动结束时间不能早于当前时间')
+        return
+      }
+      if (!this.freeBuyUidFile) {
+        this.$message.error('请选择要导入的用户文件')
+        return
+      }
+
+      const reader = new FileReader()
+      reader.onload = async event => {
+        const uidSet = new Set()
+        String(event.target.result || '').split(/\r?\n/).forEach(line => {
+          const value = String(line).split(/[,;\t]/)[0].trim().replace(/^\uFEFF/, '')
+          if (/^\d+$/.test(value) && Number(value) > 0) uidSet.add(Number(value))
+        })
+        const uidList = [...uidSet]
+        if (!uidList.length) {
+          this.$message.error('文件中没有有效的用户ID')
+          return
+        }
+
+        let imported = 0
+        const expireAt = Number(this.editItem.endTime) + 30 * 24 * 60 * 60
+        try {
+          for (let start = 0; start < uidList.length; start += 5000) {
+            const response = await request({
+              url: '/dataProxy/info',
+              method: 'post',
+              timeout: 90000,
+              data: {
+                Env: this.env,
+                ConfigId: this.editItem.id,
+                ExpireAt: expireAt,
+                Uids: uidList.slice(start, start + 5000),
+                Path: '/activity/freebuy/uid/import'
+              }
+            })
+            if (!response || response.RetCode !== 0) throw new Error('导入用户失败')
+            imported += Number(response.Data && response.Data.imported) || 0
+          }
+          this.$message.success(`上传成功，新导入用户 ${imported} 个`)
+          this.getImportedUidCount()
+          this.freeBuyUidFile = null
+          if (this.$refs.freeBuyUidUpload) this.$refs.freeBuyUidUpload.clearFiles()
+        } catch (error) {
+          console.error('Free Buy导入用户失败:', error)
+        }
+      }
+      reader.onerror = () => this.$message.error('读取用户文件失败')
+      reader.readAsText(this.freeBuyUidFile, 'UTF-8')
     },
     saveActivity() {
       const activity = this.buildActivityForSave(this.editItem)
@@ -655,6 +963,13 @@ export default {
       data.endTime = Math.floor(Number(item.endTimeValue) / 1000)
       data.gameIdList = this.toNumberList(data.gameIdList)
       data.siteIdList = data.siteIdList.map(value => String(value)).filter(Boolean)
+      data.userTypes = [Number(item.userType)]
+      data.userTagConfig = data.userTagConfig.map(tag => ({
+        tagType: Number(tag.tagType),
+        tagId: Number(tag.tagId),
+        tagValue: Number(tag.tagValue)
+      }))
+      delete data.userType
       const taskTypeOrder = []
       for (const task of data.taskList) {
         const taskType = Number(task.taskType)
@@ -691,18 +1006,24 @@ export default {
     },
     persistConfigs(configs, successMessage, nextConfigId = this.nextConfigId) {
       this.saving = true
+      const persistedConfigs = configs.map(item => {
+        const data = this.normalizeActivity(item)
+        data.userTypes = [Number(item.userType || data.userTypes[0])]
+        delete data.userType
+        return data
+      })
       const payload = {
         ...newConfigRecord(this.configAppId),
         ...this.configRecord,
         AppId: this.configAppId,
         Type: 1,
         RedisSubkey: SUB_KEY,
-        Data: JSON.stringify({ nextConfigId, configs })
+        Data: JSON.stringify({ nextConfigId, configs: persistedConfigs })
       }
       const saveRequest = payload.ID ? updateCustomize(payload) : createCustomize(payload)
       return saveRequest.then(response => {
         if (response.RetCode !== 0) return false
-        this.configs = configs.map(item => this.normalizeActivity(item)).sort((a, b) => b.id - a.id)
+        this.configs = persistedConfigs.map(item => this.normalizeActivity(item)).sort((a, b) => b.id - a.id)
         this.nextConfigId = nextConfigId
         this.$message.success(`${successMessage}，发布后生效`)
         this.getList()
@@ -833,6 +1154,16 @@ export default {
       if (Number(activity.startTime) <= 0) return '请填写开始时间'
       if (Number(activity.endTime) <= Number(activity.startTime)) return '结束时间必须晚于开始时间'
       if (!Array.isArray(activity.gameIdList) || !activity.gameIdList.length) return '请至少选择一个参与游戏'
+      if (!Array.isArray(activity.userTypes) || activity.userTypes.length !== 1 || ![2, 3, 5].includes(Number(activity.userTypes[0]))) return '请选择参与用户类型'
+      if (Number(activity.userTypes[0]) === 5) {
+        if (!Array.isArray(activity.userTagConfig) || !activity.userTagConfig.length) return '请至少加入一个用户标签条件'
+        for (const tag of activity.userTagConfig) {
+          if (!tag || Number(tag.tagType) <= 0 || Number(tag.tagId) <= 0 || Number(tag.tagValue) <= 0) return '请配置有效的用户标签条件'
+          if (Number(tag.tagId) === 20000 && (Number(tag.tagType) !== 2 || Number(tag.tagValue) > 4)) return '游戏强度标签配置无效'
+          if ([50001, 50002, 50003, 50005, 50006, 50008].includes(Number(tag.tagId)) && Number(tag.tagType) !== 5) return 'Slots标签配置无效'
+          if (![20000, 50001, 50002, 50003, 50005, 50006, 50008].includes(Number(tag.tagId))) return `不支持的标签ID：${tag.tagId}`
+        }
+      }
       if (Number(activity.dailyPropLimit) <= 0) return '每日发放道具上限必须大于0'
       if (Number(activity.totalPropLimit) <= 0) return '总发放道具上限必须大于0'
       if (Number(activity.dailyPropLimit) > Number(activity.totalPropLimit)) return '每日发放道具上限不能大于总发放道具上限'
@@ -886,6 +1217,28 @@ export default {
       if (!Array.isArray(values) || !values.length) return '-'
       return values.map(value => Number(value) === 230 ? `Pahiyas Win's [${value}]` : value).join('、')
     },
+    userTypeText(values) {
+      const userType = Array.isArray(values) ? Number(values[0]) : Number(values)
+      const option = this.userTypeOptions.find(item => item.value === userType)
+      return option ? option.label : '-'
+    },
+    userTagKey(tag, index) {
+      return `${Number(tag.tagType)}:${Number(tag.tagId)}:${Number(tag.tagValue)}:${index}`
+    },
+    userTagText(tag) {
+      const type = this.userTagTypeOptions.find(item => item.value === Number(tag.tagType))
+      const options = Number(tag.tagType) === 2 ? this.gameIntensityTagOptions : this.slotsTagOptions
+      const tagOption = options.find(item => item.value === Number(tag.tagId))
+      let valueText = tag.tagValue
+      if (Number(tag.tagId) === 20000) {
+        const value = this.gameIntensityOptions.find(item => item.value === Number(tag.tagValue))
+        valueText = value ? value.label : tag.tagValue
+      } else if ([50001, 50002, 50008].includes(Number(tag.tagId))) {
+        const value = this.userLevelOptions.find(item => item.value === Number(tag.tagValue))
+        valueText = value ? value.label : tag.tagValue
+      }
+      return `${type ? type.label : '标签'}：${tagOption ? tagOption.label : tag.tagId} = ${valueText}`
+    },
     taskCountText(tasks) {
       const list = Array.isArray(tasks) ? tasks : []
       const typeOne = list.filter(item => Number(item.taskType) === 1).length
@@ -938,6 +1291,25 @@ export default {
 
 .toolbar-actions {
   text-align: right;
+}
+
+.user-import-tip {
+  color: #909399;
+  margin-left: 8px;
+}
+
+.user-tag-list {
+  line-height: 30px;
+}
+
+.user-tag-list .el-tag {
+  margin: 0 8px 8px 0;
+}
+
+.user-import-warning {
+  color: #e6a23c;
+  display: inline-block;
+  margin: 6px 0;
 }
 
 .config-alert {
