@@ -235,14 +235,13 @@
                   />
                 </el-select>
               </el-form-item>
-              <el-form-item label="标签值" required>
-                <el-select v-if="isGameIntensityTag" v-model="userTagDraft.tagValue" style="width: 100%">
-                  <el-option v-for="item in gameIntensityOptions" :key="item.value" :label="item.label" :value="item.value" />
-                </el-select>
-                <el-select v-else-if="isUserLevelTag" v-model="userTagDraft.tagValue" style="width: 100%">
+              <el-form-item v-if="isUserLevelTag" label="标签值" required>
+                <el-select v-model="userTagDraft.tagValue" style="width: 100%">
                   <el-option v-for="item in userLevelOptions" :key="item.value" :label="item.label" :value="item.value" />
                 </el-select>
-                <el-input-number v-else v-model="userTagDraft.tagValue" :min="1" :max="2147483647" controls-position="right" />
+                <el-button type="primary" size="mini" icon="el-icon-plus" @click="addUserTag">加入标签</el-button>
+              </el-form-item>
+              <el-form-item v-else label="">
                 <el-button type="primary" size="mini" icon="el-icon-plus" @click="addUserTag">加入标签</el-button>
               </el-form-item>
               <el-form-item label="已选标签" required>
@@ -436,8 +435,8 @@ function newTask(taskType = 1) {
 
 function newUserTagConfig() {
   return {
-    tagType: 2,
-    tagId: 20000,
+    tagType: 5,
+    tagId: 50001,
     tagValue: 1
   }
 }
@@ -537,11 +536,7 @@ export default {
         { value: 5, label: '用户标签' }
       ],
       userTagTypeOptions: [
-        { value: 2, label: '游戏强度' },
         { value: 5, label: 'Slots用户类型' }
-      ],
-      gameIntensityTagOptions: [
-        { value: 20000, label: '游戏强度' }
       ],
       slotsTagOptions: [
         { value: 50001, label: 'Slots新增用户' },
@@ -552,15 +547,9 @@ export default {
         { value: 50003, label: 'Slots携带金额' }
       ],
       userLevelOptions: [
-        { value: 1, label: '用户等级1' },
-        { value: 2, label: '用户等级2' },
-        { value: 3, label: '用户等级3' }
-      ],
-      gameIntensityOptions: [
-        { value: 1, label: '强度1' },
-        { value: 2, label: '强度2' },
-        { value: 3, label: '强度3' },
-        { value: 4, label: '强度4' }
+        { value: 1, label: '轻度用户' },
+        { value: 2, label: '中度用户' },
+        { value: 3, label: '重度用户' }
       ]
     }
   },
@@ -588,15 +577,10 @@ export default {
       return ITEM_DAY_TYPE_OPTIONS.filter(item => !item.disabled && item.value !== 0 && item.value !== 365)
     },
     currentUserTagOptions() {
-      return Number(this.userTagDraft.tagType) === 2
-        ? this.gameIntensityTagOptions
-        : this.slotsTagOptions
+      return this.slotsTagOptions
     },
     isUserLevelTag() {
-      return [50001, 50002, 50008].includes(Number(this.userTagDraft.tagId))
-    },
-    isGameIntensityTag() {
-      return Number(this.userTagDraft.tagId) === 20000
+      return [50003, 50005, 50006].includes(Number(this.userTagDraft.tagId))
     }
   },
   created() {
@@ -679,8 +663,8 @@ export default {
       data.userTagConfig = userTagList.map(tag => ({
         ...newUserTagConfig(),
         ...(tag || {}),
-        tagType: Number(tag && tag.tagType) || 2,
-        tagId: Number(tag && tag.tagId) || 20000,
+        tagType: Number(tag && tag.tagType) || 5,
+        tagId: Number(tag && tag.tagId) || 50001,
         tagValue: Number(tag && tag.tagValue) || 1
       }))
       data.debugTimeOffset = Number(data.debugTimeOffset) || 0
@@ -793,8 +777,7 @@ export default {
       }
     },
     onUserTagTypeChange(tagType) {
-      const options = Number(tagType) === 2 ? this.gameIntensityTagOptions : this.slotsTagOptions
-      this.userTagDraft.tagId = options[0].value
+      this.userTagDraft.tagId = this.slotsTagOptions[0].value
       this.userTagDraft.tagValue = 1
     },
     onUserTagIdChange() {
@@ -1159,9 +1142,9 @@ export default {
         if (!Array.isArray(activity.userTagConfig) || !activity.userTagConfig.length) return '请至少加入一个用户标签条件'
         for (const tag of activity.userTagConfig) {
           if (!tag || Number(tag.tagType) <= 0 || Number(tag.tagId) <= 0 || Number(tag.tagValue) <= 0) return '请配置有效的用户标签条件'
-          if (Number(tag.tagId) === 20000 && (Number(tag.tagType) !== 2 || Number(tag.tagValue) > 4)) return '游戏强度标签配置无效'
-          if ([50001, 50002, 50003, 50005, 50006, 50008].includes(Number(tag.tagId)) && Number(tag.tagType) !== 5) return 'Slots标签配置无效'
-          if (![20000, 50001, 50002, 50003, 50005, 50006, 50008].includes(Number(tag.tagId))) return `不支持的标签ID：${tag.tagId}`
+          if (Number(tag.tagType) !== 5) return 'Slots标签配置无效'
+          if (![50001, 50002, 50003, 50005, 50006, 50008].includes(Number(tag.tagId))) return `不支持的标签ID：${tag.tagId}`
+          if ([50003, 50005, 50006].includes(Number(tag.tagId)) && ![1, 2, 3].includes(Number(tag.tagValue))) return '请选择有效的用户等级'
         }
       }
       if (Number(activity.dailyPropLimit) <= 0) return '每日发放道具上限必须大于0'
@@ -1227,17 +1210,12 @@ export default {
     },
     userTagText(tag) {
       const type = this.userTagTypeOptions.find(item => item.value === Number(tag.tagType))
-      const options = Number(tag.tagType) === 2 ? this.gameIntensityTagOptions : this.slotsTagOptions
-      const tagOption = options.find(item => item.value === Number(tag.tagId))
-      let valueText = tag.tagValue
-      if (Number(tag.tagId) === 20000) {
-        const value = this.gameIntensityOptions.find(item => item.value === Number(tag.tagValue))
-        valueText = value ? value.label : tag.tagValue
-      } else if ([50001, 50002, 50008].includes(Number(tag.tagId))) {
+      const tagOption = this.slotsTagOptions.find(item => item.value === Number(tag.tagId))
+      if ([50003, 50005, 50006].includes(Number(tag.tagId))) {
         const value = this.userLevelOptions.find(item => item.value === Number(tag.tagValue))
-        valueText = value ? value.label : tag.tagValue
+        return `${type ? type.label : '标签'}：${tagOption ? tagOption.label : tag.tagId} - ${value ? value.label : tag.tagValue}`
       }
-      return `${type ? type.label : '标签'}：${tagOption ? tagOption.label : tag.tagId} = ${valueText}`
+      return `${type ? type.label : '标签'}：${tagOption ? tagOption.label : tag.tagId}`
     },
     taskCountText(tasks) {
       const list = Array.isArray(tasks) ? tasks : []
