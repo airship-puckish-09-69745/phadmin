@@ -110,7 +110,7 @@
             已标记为不配置道具奖励，仅保存投注金奖励配置。
           </div>
 
-          <el-table :data="[item.progressPrizes]" border size="small" style="width: 100%">
+          <el-table :data="[item.propPools]" border size="small" style="width: 100%">
             <el-table-column label="任务类型" min-width="140" align="center">
               <template slot-scope="scope">
                 <el-select v-model="scope.row.taskType" placeholder="请选择" style="width: 220px" :disabled="!item.enableProgressPrize">
@@ -333,7 +333,7 @@ function newItem() {
     whitelist: defaultWhitelist(),
     taskText: '',
     enableProgressPrize: false,
-    progressPrizes: newProp(),
+    propPools: newProp(),
     pokerBetMoney: defaultPokerBetMoney(),
     userConfig: defaultUserConfig()
   }
@@ -390,7 +390,7 @@ export default {
   computed: {
     // 进度要求列的占位符：有效下注时显示金额单位
     progressPlaceholder() {
-      return this.item.progressPrizes && this.item.progressPrizes.taskType === 2 ? '金额(₱)' : '次数'
+      return this.item.propPools && this.item.propPools.taskType === 2 ? '金额(₱)' : '次数'
     }
   },
   watch: {
@@ -492,15 +492,15 @@ export default {
     },
     onProgressPrizeEnabledChange(enabled) {
       if (enabled) {
-        if (!this.item.progressPrizes.propType) {
-          this.item.progressPrizes.propType = this.propTypeOptions[0].value
+        if (!this.item.propPools.propType) {
+          this.item.propPools.propType = this.propTypeOptions[0].value
         }
-        this.buildPropOptionsForIndex(this.item.progressPrizes.propType, 0)
+        this.buildPropOptionsForIndex(this.item.propPools.propType, 0)
       } else {
-        this.item.progressPrizes.propId = 0
-        this.item.progressPrizes.propName = ''
-        this.item.progressPrizes.propNum = 0
-        this.item.progressPrizes.propLimit = 0
+        this.item.propPools.propId = 0
+        this.item.propPools.propName = ''
+        this.item.propPools.propNum = 0
+        this.item.propPools.propLimit = 0
       }
     },
     loadEditData() {
@@ -525,7 +525,7 @@ export default {
         importedFilename: ext.importedFilename || ''
       }
 
-      const prize = this.normalizePrize(ext.progressPrizes)
+      const prize = this.normalizePrize(ext.propPools)
       const taskType = this.toSafeNumber(prize.taskType || ext.taskType, 1)
       prize.taskType = taskType
 
@@ -565,13 +565,13 @@ export default {
         whitelist,
         taskText: ext.taskText || '',
         enableProgressPrize,
-        progressPrizes: prize,
+        propPools: prize,
         pokerBetMoney,
         userConfig
       }
 
       this.$nextTick(() => {
-        const propType = this.item.progressPrizes.propType || this.propTypeOptions[0].value
+        const propType = this.item.propPools.propType || this.propTypeOptions[0].value
         this.buildPropOptionsForIndex(propType, 0)
       })
     },
@@ -592,7 +592,7 @@ export default {
         Message.error('请选择参与活动的游戏'); return false
       }
       if (!this.validateUserConfig()) return false
-      const prize = this.item.progressPrizes
+      const prize = this.item.propPools
       if (!this.validateNumber(prize.taskCondition, this.progressPlaceholder, { min: 0, max: MAX_AMOUNT })) return false
       if (this.item.enableProgressPrize) {
         if (!prize.propType || !prize.propId) {
@@ -635,7 +635,7 @@ export default {
     },
     getPostData() {
       const d = this.item
-      const prize = { ...newProp(), ...d.progressPrizes }
+      const prize = { ...newProp(), ...d.propPools }
       prize.taskType = this.toSafeNumber(prize.taskType, 1)
       if (prize.taskType === 2) {
         prize.taskCondition = Math.round(this.toSafeNumber(prize.taskCondition) * 1000)
@@ -674,7 +674,7 @@ export default {
         // taskType: prize.taskType,
         taskText: d.taskText || '',
         enableProgressPrize: !!d.enableProgressPrize,
-        progressPrizes: prize,
+        propPools: prize,
         pokerBetMoney,
         userTypes: d.userConfig.userTypes,
         userFilterCondition: d.userConfig.userFilterCondition,

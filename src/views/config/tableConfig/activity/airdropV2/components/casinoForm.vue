@@ -456,7 +456,6 @@ export default {
         gameIdList: d.gameIdList,
         whitelist: d.whitelist
       }
-      // Casino extend：仅包含 casino 专用字段，不含 poker/slot 的 betReward/progressPrizes 等
       const extendObj = {
         taskText: d.taskText || '',
         // propPools 中包含任务类型/条件和道具信息
