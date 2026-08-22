@@ -154,7 +154,7 @@
         <!-- ---------- 投注金奖励（固定一条） ---------- -->
         <fieldset>
           <legend><b>投注金奖励</b>（固定一条）</legend>
-          <el-table :data="[item.betReward]" border size="small" style="width: 100%">
+          <el-table :data="[item.slotBetMoney]" border size="small" style="width: 100%">
             <!-- 任务类型 -->
             <el-table-column label="任务类型" min-width="150">
               <template slot-scope="scope">
@@ -245,12 +245,13 @@ function defaultUserConfig() {
   }
 }
 
-function newPrize() {
+
+function newProp() {
   return { taskType: 2, taskCondition: 0, propType: 0, propId: 0, propName: '', propTime: 1, propNum: 0, propLimit: 0 }
 }
 
 // 投注金奖励默认值（已发奖励为只读，初始为 0）
-function defaultBetReward() {
+function defaultSlotBetMoney() {
   return { taskType: 2, taskCondition: 0, totalReward: 0, issuedReward: 0, userMaxReward: 0 }
 }
 
@@ -268,9 +269,9 @@ function newItem() {
     whitelist: defaultWhitelist(),
     enableProgressPrize: false,
     taskText: '',
-    progressPrizes: newPrize(),
+    progressPrizes: newProp(),
     // 投注金奖励（固定一条）
-    betReward: defaultBetReward(),
+    slotBetMoney: defaultSlotBetMoney(),
     userConfig: defaultUserConfig()
   }
 }
@@ -359,9 +360,9 @@ export default {
     normalizePrize(rawPrize) {
       const prize = this.safeJson(rawPrize, {})
       if (Array.isArray(prize)) {
-        return { ...newPrize(), ...(prize[0] || {}) }
+        return { ...newProp(), ...(prize[0] || {}) }
       }
-      return { ...newPrize(), ...(prize || {}) }
+      return { ...newProp(), ...(prize || {}) }
     },
     isProgressPrizeConfigured(prize) {
       return this.toSafeNumber(prize.propId) > 0 || this.toSafeNumber(prize.propNum) > 0 || this.toSafeNumber(prize.propLimit) > 0
@@ -439,35 +440,29 @@ export default {
         importedFilename: ext.importedFilename || ''
       }
 
-      const prize = this.normalizePrize(ext.progressPrizes)
-      const taskType = this.toSafeNumber(prize.taskType || ext.taskType, 2)
-      prize.taskType = taskType
+      const prop = this.normalizePrize(ext.progressPrizes)
+      const taskType = this.toSafeNumber(prop.taskType || ext.taskType, 2)
+      prop.taskType = taskType
       // 有效下注类型时进度要求存储单位为 1/1000 ₱，前端显示除以 1000
       if (taskType === 2) {
-        prize.taskCondition = this.toSafeNumber(prize.taskCondition) / 1000
+        prop.taskCondition = this.toSafeNumber(prop.taskCondition) / 1000
       }
-      const enableProgressPrize = typeof ext.enableProgressPrize === 'boolean'
-        ? ext.enableProgressPrize
-        : this.isProgressPrizeConfigured(prize)
+      const enableProgressPrize = typeof ext.enableProgressPrize === 'boolean' ? ext.enableProgressPrize : this.isProgressPrizeConfigured(prize)
 
-      // 兼容旧数据：若无 betReward 则从旧的 taskCondition 字段迁移
-      const rawBetReward = this.safeJson(ext.betReward, null)
-      const betReward = rawBetReward
-        ? {
-          taskType: rawBetReward.taskType || taskType,
-          taskCondition: (rawBetReward.taskCondition || 0) / 1000,
-          totalReward: (rawBetReward.totalReward || 0) / 1000,
-          issuedReward: (rawBetReward.issuedReward || 0) / 1000,
-          userMaxReward: (rawBetReward.userMaxReward || 0) / 1000
-        }
-        : {
-          taskType,
-          // 旧数据中 taskCondition 存储于 ext 顶层
-          taskCondition: taskType === 2 ? (ext.taskCondition || 0) / 1000 : (ext.taskCondition || 0),
-          totalReward: 0,
-          issuedReward: 0,
-          userMaxReward: 0
-        }
+      // 投注金奖励：货币字段除以 1000 转换为 ₱ 显示；系数除以 100
+      const rr = this.safeJson(ext.slotBetMoney, defaultSlotBetMoney())
+      console.log(1111)
+      console.log(rr)
+      const slotBetMoney = {
+        taskType: this.toSafeNumber(rr.taskType || 2),
+        issuedReward: (rr.issuedReward || 0) / 1000, // 只读，显示已发放金额
+        userMaxReward: (rr.userMaxReward || 0) / 1000,
+        totalReward: (rr.totalReward || 0) / 1000
+      }
+      // 有效下注类型时进度要求存储单位为 1/1000 ₱，前端显示除以 1000
+      if (slotBetMoney.taskType === 2) {
+        slotBetMoney.taskCondition = (rr.taskCondition || 0) / 1000
+      }
 
       this.item = {
         id: raw.id || 0,
@@ -484,8 +479,8 @@ export default {
         whitelist,
         enableProgressPrize,
         taskText: ext.taskText || '',
-        progressPrizes: prize,
-        betReward,
+        progressPrizes: prop,
+        slotBetMoney,
         userConfig
       }
 
@@ -527,12 +522,12 @@ export default {
           Message.error('道具上限必须为道具数量的整数倍'); return false
         }
       }
-      const betReward = this.item.betReward
-      if (!this.validateNumber(betReward.taskCondition, '任务条件(₱)', { min: 0, max: MAX_AMOUNT })) return false
-      if (!this.validateNumber(betReward.totalReward, '总奖励(₱)', { min: 0, max: MAX_AMOUNT })) return false
-      if (!this.validateNumber(betReward.issuedReward, '已发奖励(₱)', { min: 0, max: MAX_AMOUNT })) return false
-      if (!this.validateNumber(betReward.userMaxReward, '用户最大领奖(₱)', { min: 0, max: MAX_AMOUNT })) return false
-      if (this.toSafeNumber(betReward.totalReward) > 0 && this.toSafeNumber(betReward.userMaxReward) > this.toSafeNumber(betReward.totalReward)) {
+      const slotBetMoney = this.item.slotBetMoney
+      if (!this.validateNumber(slotBetMoney.taskCondition, '任务条件(₱)', { min: 0, max: MAX_AMOUNT })) return false
+      if (!this.validateNumber(slotBetMoney.totalReward, '总奖励(₱)', { min: 0, max: MAX_AMOUNT })) return false
+      if (!this.validateNumber(slotBetMoney.issuedReward, '已发奖励(₱)', { min: 0, max: MAX_AMOUNT })) return false
+      if (!this.validateNumber(slotBetMoney.userMaxReward, '用户最大领奖(₱)', { min: 0, max: MAX_AMOUNT })) return false
+      if (this.toSafeNumber(slotBetMoney.totalReward) > 0 && this.toSafeNumber(slotBetMoney.userMaxReward) > this.toSafeNumber(slotBetMoney.totalReward)) {
         Message.error('用户最大领奖不能大于总奖励'); return false
       }
       return true
@@ -540,17 +535,17 @@ export default {
     getPostData() {
       const d = this.item
       // 道具奖励：进度要求回存时乘以 1000
-      const prize = { ...newPrize(), ...d.progressPrizes }
-      prize.taskType = this.toSafeNumber(prize.taskType, 2)
-      if (prize.taskType === 2) {
-        prize.taskCondition = Math.round(this.toSafeNumber(prize.taskCondition) * 1000)
+      const prop = { ...newProp(), ...d.progressPrizes }
+      prop.taskType = this.toSafeNumber(prop.taskType, 2)
+      if (prop.taskType === 2) {
+        prop.taskCondition = Math.round(this.toSafeNumber(prop.taskCondition) * 1000)
       }
       if (!d.enableProgressPrize) {
-        prize.propType = 0
-        prize.propId = 0
-        prize.propName = ''
-        prize.propNum = 0
-        prize.propLimit = 0
+        prop.propType = 0
+        prop.propId = 0
+        prop.propName = ''
+        prop.propNum = 0
+        prop.propLimit = 0
       }
 
       const activityObj = {
@@ -565,18 +560,17 @@ export default {
         gameIdList: d.gameIdList,
         whitelist: d.whitelist
       }
-      // Slot extend：包含道具奖励(progressPrizes)和投注金奖励(betReward)
       const extendObj = {
         taskText: d.taskText || '',
         enableProgressPrize: !!d.enableProgressPrize,
-        progressPrizes: prize,
+        progressPrizes: prop,
         // 投注金奖励：货币字段乘以 1000 存储，已发奖励由后端维护保持原值
-        betReward: {
-          taskType: this.toSafeNumber(d.betReward.taskType, 2),
-          taskCondition: Math.round(this.toSafeNumber(d.betReward.taskCondition) * 1000),
-          totalReward: Math.round(this.toSafeNumber(d.betReward.totalReward) * 1000),
-          issuedReward: Math.round(this.toSafeNumber(d.betReward.issuedReward) * 1000),
-          userMaxReward: Math.round(this.toSafeNumber(d.betReward.userMaxReward) * 1000)
+        slotBetMoney: {
+          taskType: this.toSafeNumber(d.slotBetMoney.taskType, 2),
+          taskCondition: Math.round(this.toSafeNumber(d.slotBetMoney.taskCondition) * 1000),
+          totalReward: Math.round(this.toSafeNumber(d.slotBetMoney.totalReward) * 1000),
+          issuedReward: Math.round(this.toSafeNumber(d.slotBetMoney.issuedReward) * 1000),
+          userMaxReward: Math.round(this.toSafeNumber(d.slotBetMoney.userMaxReward) * 1000)
         },
         userTypes: d.userConfig.userTypes,
         userFilterCondition: d.userConfig.userFilterCondition,
