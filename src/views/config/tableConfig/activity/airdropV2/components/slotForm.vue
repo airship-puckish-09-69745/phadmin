@@ -104,7 +104,7 @@
           <div v-if="!item.enableProgressPrize" style="margin-bottom: 8px; color: #909399; font-size: 12px">
             已标记为不配置道具奖励，仅保存投注金奖励配置。
           </div>
-          <el-table :data="[item.progressPrizes]" border size="small" style="width: 100%">
+          <el-table :data="[item.propPools]" border size="small" style="width: 100%">
             <el-table-column label="任务类型" min-width="140" align="center">
               <template slot-scope="scope">
                 <el-select v-model="scope.row.taskType" placeholder="请选择" style="width: 220px" :disabled="!item.enableProgressPrize">
@@ -269,7 +269,7 @@ function newItem() {
     whitelist: defaultWhitelist(),
     enableProgressPrize: false,
     taskText: '',
-    progressPrizes: newProp(),
+    propPools: newProp(),
     // 投注金奖励（固定一条）
     slotBetMoney: defaultSlotBetMoney(),
     userConfig: defaultUserConfig()
@@ -407,15 +407,15 @@ export default {
     },
     onProgressPrizeEnabledChange(enabled) {
       if (enabled) {
-        if (!this.item.progressPrizes.propType) {
-          this.item.progressPrizes.propType = this.propTypeOptions[0].value
+        if (!this.item.propPools.propType) {
+          this.item.propPools.propType = this.propTypeOptions[0].value
         }
-        this.buildPropOptionsForIndex(this.item.progressPrizes.propType, 0)
+        this.buildPropOptionsForIndex(this.item.propPools.propType, 0)
       } else {
-        this.item.progressPrizes.propId = 0
-        this.item.progressPrizes.propName = ''
-        this.item.progressPrizes.propNum = 0
-        this.item.progressPrizes.propLimit = 0
+        this.item.propPools.propId = 0
+        this.item.propPools.propName = ''
+        this.item.propPools.propNum = 0
+        this.item.propPools.propLimit = 0
       }
     },
     loadEditData() {
@@ -440,7 +440,7 @@ export default {
         importedFilename: ext.importedFilename || ''
       }
 
-      const prop = this.normalizePrize(ext.progressPrizes)
+      const prop = this.normalizePrize(ext.propPools)
       const taskType = this.toSafeNumber(prop.taskType || ext.taskType, 2)
       prop.taskType = taskType
       // 有效下注类型时进度要求存储单位为 1/1000 ₱，前端显示除以 1000
@@ -451,8 +451,7 @@ export default {
 
       // 投注金奖励：货币字段除以 1000 转换为 ₱ 显示；系数除以 100
       const rr = this.safeJson(ext.slotBetMoney, defaultSlotBetMoney())
-      console.log(1111)
-      console.log(rr)
+
       const slotBetMoney = {
         taskType: this.toSafeNumber(rr.taskType || 2),
         issuedReward: (rr.issuedReward || 0) / 1000, // 只读，显示已发放金额
@@ -479,14 +478,14 @@ export default {
         whitelist,
         enableProgressPrize,
         taskText: ext.taskText || '',
-        progressPrizes: prop,
+        propPools: prop,
         slotBetMoney,
         userConfig
       }
 
       // 初始化道具选项映射
       this.$nextTick(() => {
-        const propType = this.item.progressPrizes.propType || this.propTypeOptions[0].value
+        const propType = this.item.propPools.propType || this.propTypeOptions[0].value
         this.buildPropOptionsForIndex(propType, 0)
       })
     },
@@ -507,7 +506,7 @@ export default {
         Message.error('请选择参与活动的游戏'); return false
       }
       if (!this.validateUserConfig()) return false
-      const prize = this.item.progressPrizes
+      const prize = this.item.propPools
       if (!this.validateNumber(prize.taskCondition, '进度要求(₱)', { min: 0, max: MAX_AMOUNT })) return false
       if (this.item.enableProgressPrize) {
         if (!prize.propType || !prize.propId) {
@@ -535,7 +534,7 @@ export default {
     getPostData() {
       const d = this.item
       // 道具奖励：进度要求回存时乘以 1000
-      const prop = { ...newProp(), ...d.progressPrizes }
+      const prop = { ...newProp(), ...d.propPools }
       prop.taskType = this.toSafeNumber(prop.taskType, 2)
       if (prop.taskType === 2) {
         prop.taskCondition = Math.round(this.toSafeNumber(prop.taskCondition) * 1000)
@@ -563,7 +562,7 @@ export default {
       const extendObj = {
         taskText: d.taskText || '',
         enableProgressPrize: !!d.enableProgressPrize,
-        progressPrizes: prop,
+        propPools: prop,
         // 投注金奖励：货币字段乘以 1000 存储，已发奖励由后端维护保持原值
         slotBetMoney: {
           taskType: this.toSafeNumber(d.slotBetMoney.taskType, 2),
