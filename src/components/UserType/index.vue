@@ -342,13 +342,12 @@ export default {
     getImportedUidCacheCount() {
       if (!this.activityCfgId) return
       request({
-        url: '/activityconfig/uids/imported/delete',
+        url: '/activityconfig/uids/total',
         method: 'post',
         data: { ActCfgId: this.activityCfgId, ActivityId: this.activityId }
       }).then(res => {
         if (res.RetCode === 0) {
-          Message.success('已重置导入的用户id！')
-          this.importedUidCacheCount = 0
+          this.importedUidCacheCount = res.Data.total || 0
         }
       })
     },
@@ -414,7 +413,8 @@ export default {
             Filename: uploadedFilename
           }
         })
-
+        console.log(111)
+        console.log(importResponse)
         // UID 导入失败
         if (importResponse.RetCode !== 0) {
           this.$message.error(importResponse.Data)
@@ -442,8 +442,7 @@ export default {
         }
       } catch (reason) {
         // 真正的 UID 导入请求异常
-        console.error('UID 导入失败：', reason)
-        this.$message.error('UID 导入失败，请稍后重试')
+        Message.error('UID 导入失败，请稍后重试')
       } finally {
         // 清理定时器
         clearInterval(ticker)
@@ -470,7 +469,7 @@ export default {
           data: { ActCfgId: this.activityCfgId, ActivityId: this.activityId }
         }).then(res => {
           if (res.RetCode === 0) {
-            Message.success('已重置导入的用户id！')
+            Message.success('已重置导入的用户id1！')
             this.importedUidCacheCount = 0
           }
         })
