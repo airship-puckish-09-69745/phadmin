@@ -235,6 +235,10 @@
                   />
                 </el-select>
               </el-form-item>
+              <el-form-item label="判断方式">
+                <el-checkbox v-model="userTagDraft.isReverse">反向判断</el-checkbox>
+                <span class="user-import-tip">命中此标签的用户不参与活动</span>
+              </el-form-item>
               <el-form-item v-if="isUserLevelTag" label="标签值" required>
                 <el-select v-model="userTagDraft.tagValue" style="width: 100%">
                   <el-option v-for="item in userLevelOptions" :key="item.value" :label="item.label" :value="item.value" />
@@ -256,7 +260,7 @@
                     {{ userTagText(tag) }}
                   </el-tag>
                   <span v-if="!editItem.userTagConfig.length" class="user-import-tip">请先加入至少一个标签</span>
-                  <span class="user-import-tip">多个标签之间为“或”关系，满足任意一个即可参与活动。</span>
+                  <span class="user-import-tip">同一种标签只能添加一次；正向标签命中任意一个即可参与，反向标签命中后立即拒绝。</span>
                 </div>
               </el-form-item>
             </template>
@@ -437,7 +441,8 @@ function newUserTagConfig() {
   return {
     tagType: 5,
     tagId: 50001,
-    tagValue: 1
+    tagValue: 1,
+    isReverse: false
   }
 }
 
@@ -544,7 +549,8 @@ export default {
         { value: 50008, label: 'Slots回归用户' },
         { value: 50005, label: 'Slots下注额度' },
         { value: 50006, label: 'Slots日均下注额度' },
-        { value: 50003, label: 'Slots携带金额' }
+        { value: 50003, label: 'Slots携带金额' },
+        { value: 50043, label: 'Slots Super Free Buy' }
       ],
       userLevelOptions: [
         { value: 1, label: '轻度用户' },
@@ -580,7 +586,7 @@ export default {
       return this.slotsTagOptions
     },
     isUserLevelTag() {
-      return [50003, 50005, 50006].includes(Number(this.userTagDraft.tagId))
+      return [50003, 50005, 50006, 50043].includes(Number(this.userTagDraft.tagId))
     }
   },
   created() {
@@ -665,7 +671,8 @@ export default {
         ...(tag || {}),
         tagType: Number(tag && tag.tagType) || 5,
         tagId: Number(tag && tag.tagId) || 50001,
-        tagValue: Number(tag && tag.tagValue) || 1
+        tagValue: Number(tag && tag.tagValue) || 1,
+        isReverse: Boolean(tag && tag.isReverse)
       }))
       data.debugTimeOffset = Number(data.debugTimeOffset) || 0
       data.abTest = { switch: false, bPercent: 0, ...(data.abTest || {}) }
@@ -787,18 +794,15 @@ export default {
       const tag = {
         tagType: Number(this.userTagDraft.tagType),
         tagId: Number(this.userTagDraft.tagId),
-        tagValue: Number(this.userTagDraft.tagValue)
+        tagValue: Number(this.userTagDraft.tagValue),
+        isReverse: Boolean(this.userTagDraft.isReverse)
       }
       if (tag.tagType <= 0 || tag.tagId <= 0 || tag.tagValue <= 0) {
         this.$message.error('请先配置完整的标签条件')
         return
       }
-      if (this.editItem.userTagConfig.some(item =>
-        Number(item.tagType) === tag.tagType &&
-        Number(item.tagId) === tag.tagId &&
-        Number(item.tagValue) === tag.tagValue
-      )) {
-        this.$message.warning('该标签条件已经加入')
+      if (this.editItem.userTagConfig.some(item => Number(item.tagId) === tag.tagId)) {
+        this.$message.warning('同一种标签只能添加一次')
         return
       }
       this.editItem.userTagConfig.push(tag)
@@ -950,7 +954,8 @@ export default {
       data.userTagConfig = data.userTagConfig.map(tag => ({
         tagType: Number(tag.tagType),
         tagId: Number(tag.tagId),
-        tagValue: Number(tag.tagValue)
+        tagValue: Number(tag.tagValue),
+        isReverse: Boolean(tag.isReverse)
       }))
       delete data.userType
       const taskTypeOrder = []
@@ -1140,11 +1145,14 @@ export default {
       if (!Array.isArray(activity.userTypes) || activity.userTypes.length !== 1 || ![2, 3, 5].includes(Number(activity.userTypes[0]))) return '请选择参与用户类型'
       if (Number(activity.userTypes[0]) === 5) {
         if (!Array.isArray(activity.userTagConfig) || !activity.userTagConfig.length) return '请至少加入一个用户标签条件'
+        const tagIds = new Set()
         for (const tag of activity.userTagConfig) {
           if (!tag || Number(tag.tagType) <= 0 || Number(tag.tagId) <= 0 || Number(tag.tagValue) <= 0) return '请配置有效的用户标签条件'
           if (Number(tag.tagType) !== 5) return 'Slots标签配置无效'
-          if (![50001, 50002, 50003, 50005, 50006, 50008].includes(Number(tag.tagId))) return `不支持的标签ID：${tag.tagId}`
-          if ([50003, 50005, 50006].includes(Number(tag.tagId)) && ![1, 2, 3].includes(Number(tag.tagValue))) return '请选择有效的用户等级'
+          if (![50001, 50002, 50003, 50005, 50006, 50008, 50043].includes(Number(tag.tagId))) return `不支持的标签ID：${tag.tagId}`
+          if ([50003, 50005, 50006, 50043].includes(Number(tag.tagId)) && ![1, 2, 3].includes(Number(tag.tagValue))) return '请选择有效的用户等级'
+          if (tagIds.has(Number(tag.tagId))) return `同一种标签只能添加一次：${tag.tagId}`
+          tagIds.add(Number(tag.tagId))
         }
       }
       if (Number(activity.dailyPropLimit) <= 0) return '每日发放道具上限必须大于0'
@@ -1206,16 +1214,17 @@ export default {
       return option ? option.label : '-'
     },
     userTagKey(tag, index) {
-      return `${Number(tag.tagType)}:${Number(tag.tagId)}:${Number(tag.tagValue)}:${index}`
+      return `${Number(tag.tagType)}:${Number(tag.tagId)}:${Number(tag.tagValue)}:${Boolean(tag.isReverse)}:${index}`
     },
     userTagText(tag) {
       const type = this.userTagTypeOptions.find(item => item.value === Number(tag.tagType))
       const tagOption = this.slotsTagOptions.find(item => item.value === Number(tag.tagId))
-      if ([50003, 50005, 50006].includes(Number(tag.tagId))) {
+      const direction = tag.isReverse ? '反向' : '正向'
+      if ([50003, 50005, 50006, 50043].includes(Number(tag.tagId))) {
         const value = this.userLevelOptions.find(item => item.value === Number(tag.tagValue))
-        return `${type ? type.label : '标签'}：${tagOption ? tagOption.label : tag.tagId} - ${value ? value.label : tag.tagValue}`
+        return `${direction}${type ? type.label : '标签'}：${tagOption ? tagOption.label : tag.tagId} - ${value ? value.label : tag.tagValue}`
       }
-      return `${type ? type.label : '标签'}：${tagOption ? tagOption.label : tag.tagId}`
+      return `${direction}${type ? type.label : '标签'}：${tagOption ? tagOption.label : tag.tagId}`
     },
     taskCountText(tasks) {
       const list = Array.isArray(tasks) ? tasks : []
