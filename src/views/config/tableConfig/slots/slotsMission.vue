@@ -204,6 +204,7 @@ export default {
   data() {
     return {
       games: [],
+      gameNames: {},
       options: [],
       cfgData: {
         Newbie: {
@@ -262,7 +263,7 @@ export default {
       }
     },
     gameName(slotsType) {
-      return $libShow.GameNames[slotsType]
+      return this.gameNames[slotsType]
     },
     getDefaultCfgData() {
       return {
@@ -417,25 +418,32 @@ export default {
       return postData
     },
     getGameList() {
-      request({
+      return request({
         url: '/thirdpartygames/all',
         method: 'get',
         data: {}
       }).then(response => {
         if (response.RetCode === 0) {
+          const games = []
+          const gameNames = {}
+          const options = []
           for (let i = 0; i < response.Data.length; i++) {
             if (response.Data[i].Gid < 50 || response.Data[i].Gid >= 100 && response.Data[i].Gid < 150 || response.Data[i].Gid > 499) {
               continue
             }
-            this.games.push(response.Data[i].Gid)
-            this.options.push({ 'label': $libShow.GameNames[response.Data[i].Gid], 'value': response.Data[i].Gid })
+            games.push(response.Data[i].Gid)
+            gameNames[response.Data[i].Gid] = response.Data[i].Name
+            options.push({ 'label': response.Data[i].Name, 'value': response.Data[i].Gid })
           }
-          this.games.sort(function(a, b) {
+          games.sort(function(a, b) {
             return a - b
           })
-          this.options.sort(function(a, b) {
+          options.sort(function(a, b) {
             return a.value - b.value
           })
+          this.games = games
+          this.gameNames = gameNames
+          this.options = options
         }
         console.log('getGameList')
       })
