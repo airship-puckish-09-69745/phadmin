@@ -8,12 +8,12 @@
               <el-input v-model="formData.activityName" style="width: 500px;" placeholder="请输入活动名称"/>
             </el-form-item>
           </el-col>
-          <el-col xs="24" :span="12">
+          <el-col :xs="24" :sm="12">
             <el-form-item label="活动开关">
               <el-switch v-model="formData.isOpen" :active-value="true" :inactive-value="false"/>
             </el-form-item>
           </el-col>
-          <el-col xs="24" :span="12">
+          <el-col :xs="24" :sm="12">
             <el-form-item label="消息推送开关">
               <el-switch v-model="formData.isSend" :active-value="true" :inactive-value="false"/>
               <el-tooltip class="item" effect="light" placement="right-start">
@@ -24,7 +24,7 @@
               </el-tooltip>
             </el-form-item>
           </el-col>
-          <el-col xs="24" :span="12">
+          <el-col :xs="24" :sm="12">
             <el-form-item label="活动开始时间">
               <el-date-picker
                 v-model="formData.startTime"
@@ -35,7 +35,7 @@
               />
             </el-form-item>
           </el-col>
-          <el-col xs="24" :span="12">
+          <el-col :xs="24" :sm="12">
             <el-form-item label="活动结束时间">
               <el-date-picker
                 v-model="formData.endTime"
@@ -46,7 +46,7 @@
               />
             </el-form-item>
           </el-col>
-          <el-col xs="24" :span="12">
+          <el-col :xs="24" :sm="12">
             <el-form-item label="每日活动开始时间">
               <el-date-picker
                 v-model="formData.everyDayStartTime"
@@ -57,7 +57,7 @@
               />
             </el-form-item>
           </el-col>
-          <el-col xs="24" :span="12">
+          <el-col :xs="24" :sm="12">
             <el-form-item label="每日活动结束时间">
               <el-date-picker
                 v-model="formData.everyDayEndTime"
@@ -68,17 +68,17 @@
               />
             </el-form-item>
           </el-col>
-          <el-col xs="24" :span="12">
+          <el-col :xs="24" :sm="12">
             <el-form-item label="限制红包发送金币额度" :required="true">
               <el-input v-model="formData.limitMaxNum" style="width: 200px;" placeholder="请输入限制数量"/>
             </el-form-item>
           </el-col>
-          <el-col xs="24" :span="12">
+          <el-col :xs="24" :sm="12">
             <el-form-item label="活动展示金额">
               <el-input v-model.number="formData.showGold" style="width: 200px;" placeholder="请输入显示金额数量"/>
             </el-form-item>
           </el-col>
-          <el-col xs="24" :span="12">
+          <el-col :xs="24" :sm="12">
             <el-form-item label="单日弹窗次数">
               <el-input v-model.number="formData.showTimes" style="width: 200px;" placeholder="请输入限制数量"/>
               <el-tooltip class="item" effect="light" placement="right-start">
@@ -89,11 +89,14 @@
               </el-tooltip>
             </el-form-item>
           </el-col>
-          <el-col xs="24" :span="12" v-if="store.getters.env == 'test'">
+          <el-col :xs="24" :sm="12" v-if="store.getters.env == 'test'">
             <el-form-item label="时间偏移(秒)">
               <el-input v-model="formData.timeS" style="width: 200px;" placeholder="请输入限制数量"/>
             </el-form-item>
           </el-col>
+
+          <!-- 参与活动用户类型 -->
+          <UserType v-model="formData.userConfig" :activity-cfg-id="formData.id" :activity-id="13" />
 
           <el-col>
             <el-form-item label="参与活动用户类型" :required="true">
@@ -107,6 +110,8 @@
               </el-select>
             </el-form-item>
           </el-col>
+
+
           <el-col v-if="formData.userType == 5">
             <el-form-item label="标签子类">
               <el-select v-model="formData.userLabel" placeholder="请选择标签子类">
@@ -120,14 +125,6 @@
             </el-form-item>
           </el-col>
 
-          <el-col>
-            <el-form-item label="奖励类型">
-              <el-radio-group v-model="formData.rewardType">
-                <el-radio :label="1">投注金</el-radio>
-                <el-radio :label="2">返水金</el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
           <el-col>
             <el-form-item label="玩法大类型">
               <el-radio-group v-model="formData.gameType" @change="handleGameTypeChange">
@@ -217,9 +214,23 @@
 <script>
 import request from '@/utils/request'
 import store from "@/store";
+import UserType from "@/components/UserType/index.vue";
+
+function defaultUserConfig() {
+  return {
+    userTypes: [2],
+    userFilterCondition: {
+      registerTimeRange: { min: 0, max: 0 },
+      betTimesRange: { min: 0, max: 0 },
+      userTagConfig: { tagType: 0, tagId: 0, tagValue: 0 }
+    },
+    importedFilename: ''
+  }
+}
 
 export default {
   name: 'ActivityBaseConfig',
+  components: {UserType},
   props: {
     value: {
       type: Object,
@@ -232,6 +243,7 @@ export default {
   },
   data() {
     return {
+      userConfig: defaultUserConfig(),
       userTypes: [
         {'value': 2, 'label': '所有用户'},
         {'value': 5, 'label': '用户标签'}

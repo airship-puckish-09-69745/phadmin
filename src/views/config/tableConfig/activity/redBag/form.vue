@@ -350,7 +350,7 @@ export default {
         timeS: this.item.timeS ?? 0, // 时间偏移
         rewardType: this.item.rewardType, // 奖励类型
         gameType: this.item.gameType, // 玩法大类型
-        userType: this.item.userType, // 用户类型
+        userType: this.item.userConfig.userTypes, // 用户类型
         userLabel: this.item.userLabel, // 用户标签
         taskCfgData: taskCfgData, // 任务配置（JSON字符串）
         // redBagCfg: redBagCfg, // 红包价值配置（JSON字符串）
