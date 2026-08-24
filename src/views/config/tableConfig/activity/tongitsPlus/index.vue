@@ -24,31 +24,31 @@
           style="width: 100%"
           @sort-change="sortChange"
       >
-        <el-table-column prop="id" label="ID" sortable="custom" width="80"/>
-        <el-table-column prop="activityName" label="活动名称" min-width="120" show-overflow-tooltip/>
+        <el-table-column prop="id" label="ID" sortable="custom" align="center" width="80"/>
+        <el-table-column prop="activityName" label="活动名称" min-width="120" align="center" show-overflow-tooltip/>
         <el-table-column prop="isOpen" label="活动开关" width="80" align="center">
           <template slot-scope="scope">
             <el-tag :type="scope.row.isOpen ? 'success' : 'info'" size="mini">{{scope.row.isOpen ? '开' : '关' }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="startTime" label="开始时间" sortable="custom" min-width="150">
+        <el-table-column prop="startTime" label="开始时间" sortable="custom" min-width="150" align="center">
           <template slot-scope="scope">
             {{ formatTime(scope.row.startTime) }}
           </template>
         </el-table-column>
-        <el-table-column prop="endTime" label="结束时间" sortable="custom" min-width="150">
+        <el-table-column prop="endTime" label="结束时间" sortable="custom" min-width="150" align="center">
           <template slot-scope="scope">
             {{ formatTime(scope.row.endTime) }}
           </template>
         </el-table-column>
-        <el-table-column prop="startTime" label="每日活动开始时间" sortable="custom" min-width="150">
+        <el-table-column prop="dailyStartTime" label="每日活动开始时间" sortable="custom" min-width="150" align="center">
           <template slot-scope="scope">
-            {{ formatTime(scope.row.startTime) }}
+            {{ formaHmTime(scope.row.dailyStartTime) }}
           </template>
         </el-table-column>
-        <el-table-column prop="endTime" label="每日活动结束时间" sortable="custom" min-width="150">
+        <el-table-column prop="dailyEndTime" label="每日活动结束时间" sortable="custom" min-width="150" align="center">
           <template slot-scope="scope">
-            {{ formatTime(scope.row.endTime) }}
+            {{ formaHmTime(scope.row.dailyEndTime) }}
           </template>
         </el-table-column>
         <el-table-column prop="dayPrizeThreshold" label="每日发奖上限" width="120" align="center">
@@ -56,7 +56,7 @@
             {{ scope.row.dayPrizeThreshold != null ? scope.row.dayPrizeThreshold / 1000 : '-' }}
           </template>
         </el-table-column>
-        <el-table-column prop="modifyUser" label="最后修改人" width="110" show-overflow-tooltip/>
+        <el-table-column prop="modifyUser" label="最后修改人" width="110" show-overflow-tooltip align="center"/>
         <el-table-column prop="status" label="状态" width="80" align="center">
           <template slot-scope="scope">
             <el-tag :type="statusTagType[scope.row.status]" size="mini">
@@ -156,6 +156,9 @@ export default {
     formatTime(ts) {
       return $libDate.FormateSecondStr(ts, 2)
     },
+    formaHmTime(ts) {
+      return $libDate.FormateSecondStr(ts, 4)
+    },
     refreshShow() {
       this.tableData = this.clientDB.GetCurrentPageData()
     },
@@ -180,6 +183,7 @@ export default {
     handleDelete(ob) {
       this.changeStatus(ob.id, 3, '您确定要将记录状态修改为废弃吗？')
     },
+
     changeStatus(id, status, msg) {
       this.$confirm(msg, '提示', {
         confirmButtonText: '确定',
@@ -218,7 +222,8 @@ export default {
               isOpen: act.isOpen,
               startTime: act.startTime || 0,
               endTime: act.endTime || 0,
-              showEndTime: act.showEndTime || 0,
+              dailyStartTime: act.dailyStartTime || 0,
+              dailyEndTime: act.dailyEndTime || 0,
               gameIdCfg: act.gameIdList || [],
               siteIdList: (act.whitelist && Array.isArray(act.whitelist.siteIdList)) ? act.whitelist.siteIdList : (act.siteIdList || []),
               ratio: ext.ratio || 0,
@@ -236,7 +241,8 @@ export default {
       }).catch(err => {
         console.log(err)
       })
-    }
+    },
+
   }
 }
 </script>
