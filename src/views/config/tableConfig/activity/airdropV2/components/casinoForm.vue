@@ -82,12 +82,13 @@
           <WhitelistConfig v-model="item.whitelist" :features="[2, 3]" />
 
           <!-- 参与活动用户类型：casino 标签用户支持 casino新增用户/casino下注/casino额度 -->
-          <AirdropUserType
+          <UserType
             v-model="item.userConfig"
             :activity-cfg-id="item.id"
             custom-user-type-label="casino 标签用户"
             :custom-user-tag-options="casinoUserTagOptions"
             :level-tag-ids="[]"
+            :activity-id="item.activityId"
           />
         </el-form>
       </el-tab-pane>
@@ -179,7 +180,8 @@ import { Message } from 'element-ui'
 import request from '@/utils/request'
 import GameSelector from '@/components/Game/GameSelector.vue'
 import WhitelistConfig from '@/components/WhitelistConfig/index.vue'
-import AirdropUserType from '@/components/AirdropUserType/index.vue'
+import UserType from '@/components/UserType/index.vue'
+
 import { ACTIVITY_ID } from '../index.vue'
 
 const GAME_TYPE = 3 // Casino
@@ -231,7 +233,7 @@ function newItem() {
 
 export default {
   name: 'CasinoForm',
-  components: { GameSelector, WhitelistConfig, AirdropUserType },
+  components: { GameSelector, WhitelistConfig, UserType },
   props: {
     visible: { type: Boolean, default: false },
     isEdit: { type: Boolean, default: false },

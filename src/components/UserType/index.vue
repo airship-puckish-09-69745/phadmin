@@ -128,6 +128,10 @@ export default {
       type: Number,
       default: 0
     },
+    activityId: {
+      type: Number,
+      default: 0
+    },
     // 自定义"用户标签"选项的显示名称，例如 "casino 标签用户"
     customUserTypeLabel: {
       type: String,
@@ -144,12 +148,16 @@ export default {
       default: () => [50005, 50006, 50003]
     }
   },
+
   data() {
     return {
+
       currentUserType: 2,
       importedUidCacheCount: 0,
       registerDateRange: [],
       tagIdOptions: [],
+      uploadProgress: 0,
+      uploadElapsed: 0,
       // 内置的基础用户类型选项
       userTypeOptions: [
         { value: 1, label: '新增用户' },
@@ -272,6 +280,10 @@ export default {
     }
   },
   methods: {
+    changeUploadLoadingText(progress, elapsedSeconds) {
+      this.uploadProgress = Number(progress) || 0
+      this.uploadElapsed = Number(elapsedSeconds) || 0
+    },
     getUserTagConfig() {
       if (!this.localValue.userFilterCondition) {
         this.$set(this.localValue, 'userFilterCondition', defaultUserFilterCondition())
@@ -330,12 +342,13 @@ export default {
     getImportedUidCacheCount() {
       if (!this.activityCfgId) return
       request({
-        url: '/dataProxy/info',
-        method: 'get',
-        data: { ActCfgId: this.activityCfgId, Path: '/activity/airdrop/uid/import/count' }
+        url: '/activityconfig/uids/imported/delete',
+        method: 'post',
+        data: { ActCfgId: this.activityCfgId, ActivityId: this.activityId }
       }).then(res => {
         if (res.RetCode === 0) {
-          this.importedUidCacheCount = res.Data || 0
+          Message.success('已重置导入的用户id！')
+          this.importedUidCacheCount = 0
         }
       })
     },
@@ -355,14 +368,94 @@ export default {
         this.$refs.upload.submit()
       }
     },
-    handleUploadSuccess(res, file) {
-      if (res && res.RetCode === 0) {
-        Message.success('用户ID数据上传成功！')
-        const updated = { ...this.localValue, importedFilename: file.name }
-        this.$emit('input', updated)
-        this.getImportedUidCacheCount()
-      } else {
-        Message.error((res && res.Message) || '上传失败')
+
+    async handleUploadSuccess(response, _file, _fileList) {
+      this.$refs.upload.clearFiles()
+      // 文件上传失败
+      if (response.RetCode !== 0) {
+        this.$message.error(response.Data)
+        return
+      }
+
+      // 获取服务器上传后的文件名
+      const uploadedFilename = response.Data
+      console.log('upload success:', uploadedFilename)
+
+      // 记录开始时间
+      const startTime = Date.now()
+
+      // 模拟导入进度，最多到 99%
+      let progress = Math.ceil(Math.random() * 10)
+
+      const ticker = setInterval(() => {
+        progress += Math.ceil(Math.random() * 10)
+
+        if (progress >= 99) {
+          progress = 99
+          clearInterval(ticker)
+        }
+
+        const elapsedTime = (Date.now() - startTime) / 1000
+        this.changeUploadLoadingText(progress, elapsedTime)
+      }, 1000)
+
+      let imported = 0
+
+      try {
+        // 真正执行 UID 导入
+        const importResponse = await request({
+          url: '/activityconfig/uids/import',
+          method: 'post',
+          timeout: 90000,
+          data: {
+            Env: this.env,
+            ActCfgId: this.activityCfgId,
+            ActivityId: this.activityId,
+            Filename: uploadedFilename
+          }
+        })
+
+        // UID 导入失败
+        if (importResponse.RetCode !== 0) {
+          this.$message.error(importResponse.Data)
+          return
+        }
+
+        imported = importResponse.Data.imported
+
+        // UID 导入成功
+        this.$message.success('上传成功，新导入的数量为：' + imported)
+
+        // 更新页面数据
+        if (this.activityCfgId === 0) {
+          // 新增活动
+          this.edit.importedUidCacheCount = imported
+        } else {
+          // 已有活动
+          try {
+            await this.getImportedUidCacheCount()
+            // await this.getImportedUidList()
+          } catch (reason) {
+            // UID 已经导入成功，只是刷新页面数据失败
+            console.error('刷新 UID 数据失败：', reason)
+          }
+        }
+      } catch (reason) {
+        // 真正的 UID 导入请求异常
+        console.error('UID 导入失败：', reason)
+        this.$message.error('UID 导入失败，请稍后重试')
+      } finally {
+        // 清理定时器
+        clearInterval(ticker)
+
+        // 计算总耗时
+        const elapsedTime = (Date.now() - startTime) / 1000
+
+        // 导入流程结束，显示 100%
+        this.changeUploadLoadingText(100, elapsedTime)
+        console.log('导入数量：' + imported + '，用时：' + elapsedTime + 's')
+        // 清理上传组件
+        this.$refs.upload.clearFiles()
       }
     },
     delImportedUid() {
@@ -372,9 +465,9 @@ export default {
         type: 'warning'
       }).then(() => {
         request({
-          url: '/airdropconfig/uids/imported/delete',
+          url: '/activityconfig/uids/imported/delete',
           method: 'post',
-          data: { ActCfgId: this.activityCfgId }
+          data: { ActCfgId: this.activityCfgId, ActivityId: this.activityId }
         }).then(res => {
           if (res.RetCode === 0) {
             Message.success('已重置导入的用户id！')
