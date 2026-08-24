@@ -507,6 +507,7 @@ export default {
       ItemUseTime: 1,
       ItemNum: 0,
       ItemSceneId:0, //道具权益场景ID
+      ItemCost:0, //道具价值
       propFrom: {
         ItemUuId: ''
       },
@@ -1393,14 +1394,19 @@ export default {
       if(this.isNewTicketProp(this.item.ItemType)){
         const ticketsConfig = IsProd() ? MATCH_TICKET_RIGHTS_ID_CFG_PROD : MATCH_TICKET_RIGHTS_ID_CFG_DEV
         if(ticketsConfig && typeof ticketsConfig === 'object'){
-          for(const appId in ticketsConfig){
-            if(ticketsConfig[appId] && Array.isArray(ticketsConfig[appId])){
-              const ticket = ticketsConfig[appId].find(ticket => ticket.ticketId === this.item.ItemCfgId)
-              if(ticket){
-                this.item.ItemSceneId = ticket.sceneId
-              }
+          const appId = this.item.AppID
+          if(ticketsConfig[appId] && Array.isArray(ticketsConfig[appId])){
+            const ticket = ticketsConfig[appId].find(ticket => ticket.ticketId === this.item.ItemCfgId)
+            if(ticket){
+              this.item.ItemSceneId = ticket.sceneId
             }
           }
+        }
+        //查找门票价值
+        this.item.ItemCost = 0
+        const ticket = this.tableData.find(ticket => ticket.id === this.item.ItemCfgId)
+        if(ticket){
+          this.item.ItemCost = ticket.item_cost*1000
         }
         if(typeof this.item.ItemSceneId === 'undefined' || this.item.ItemSceneId <=0){
           Message.error('当前道具没有关联到正确的场景ID，请检查道具ID是否正确')
@@ -1427,7 +1433,7 @@ export default {
             Path: '/user/info',
             Uid: this.item.Uid,
             Type: 12,
-            Money: 0,
+            Money: this.item.ItemCost,
             ItemId: this.item.ItemCfgId,
             ItemNum: this.item.ItemNum,
             ItemType: this.item.ItemType,
@@ -1780,7 +1786,7 @@ export default {
         data: {
           Env: this.env,
           PageNum: 1,
-          PageSize: 200
+          PageSize: 500
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -1842,20 +1848,23 @@ export default {
             if (this.isNewTicketProp(itemType)) {
               const ticketsConfig = IsProd() ? MATCH_TICKET_RIGHTS_ID_CFG_PROD : MATCH_TICKET_RIGHTS_ID_CFG_DEV
               if(ticketsConfig && typeof ticketsConfig === 'object'){
-                for(const appId in ticketsConfig){
-                  if(ticketsConfig[appId] && Array.isArray(ticketsConfig[appId])){
-                    ticketsConfig[appId].forEach(ticket => {
-                      if(ticket.ticketId === this.tableData[i].id){
-                        this.tableItemData.push({'value': Number(this.tableData[i].id), 'label': str, disabled: false})
-                      }
-                    })
-                  }
+                const appId = this.item.AppID
+                if(ticketsConfig[appId] && Array.isArray(ticketsConfig[appId])){
+                  ticketsConfig[appId].forEach(ticket => {
+                    if(ticket.ticketId === this.tableData[i].id){
+                      this.tableItemData.push({'value': Number(this.tableData[i].id), 'label': str, disabled: false})
+                    }
+                  })
                 }
               }
-            } else {  //头像框
-              this.tableItemData.push({'value': Number(this.tableData[i].id), 'label': str, disabled: false})
+            } else {// 头像框/互动道具
+              const isExpired = this.isInteractionPropExpired(this.tableData[i])
+              this.tableItemData.push({
+                'value': Number(this.tableData[i].id),
+                'label': str + (isExpired ? ' (已过期)' : ''),
+                disabled: isExpired
+              })
             }
-            //console.log("this.tableItemData ",this.tableItemData)
           }
         }
       }
@@ -1864,14 +1873,27 @@ export default {
 
     disableByPropId(propId) {
       for (let i = 0; i < this.tableData.length; i++) {
-        if (this.tableData[i].id === propId && this.tableData[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET) {
-          if (this.tableData[i].item_extra !== null && JSON.parse(this.tableData[i].item_extra).specialAttr === 1) { // 如果是邀请函
-            return true
-          }
+        if (Number(this.tableData[i].id) !== Number(propId)) {
+          continue
+        }
+        if (this.isInteractionPropExpired(this.tableData[i])) {
+          return true
         }
       }
       return false
     },
+    // 互动道具过期后保留展示，但禁止选中
+    isInteractionPropExpired(prop) {
+      if (!prop || prop.item_type !== PROP_TYPE_OPTIONS.PROP_TYPE_INTERACTION) {
+        return false
+      }
+      const expireTime = Number(prop.expire_time)
+      if (!expireTime) {
+        return false
+      }
+      return expireTime <= Math.floor(Date.now() / 1000)
+    },
+
 
     handleItemChange(val) {
       this.propFrom.ItemUuId = ''
@@ -1948,8 +1970,8 @@ export default {
       })
     },
     isItemUseTimeDisabled(option) {
-    
-     
+
+
       // 如果道具类型是 5, 7, 8, 9，且选项值是 0 或 365，则禁用
       if ([5, 7, 8, 9].includes(this.item.ItemType) && (option.value === 0 || option.value === 365)) {
         return true
