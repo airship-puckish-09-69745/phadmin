@@ -289,6 +289,9 @@
 
         <el-dialog :title="readyPreviewDialogTitle" :visible.sync="readyPreviewDialogVisible" width="85%"
             :append-to-body="true">
+            <div class="ready-result-title ready-result-success">
+                {{ readyPreviewMode === 'result' ? '就绪成功方案' : '可就绪方案' }}（{{ readyPreviewTasks.length }}）
+            </div>
             <el-table :data="readyPreviewTasks" stripe border style="width: 100%" max-height="520">
                 <el-table-column prop="appId" label="AppId" width="90" />
                 <el-table-column prop="gameName" label="游戏名" width="180" />
@@ -300,9 +303,24 @@
                 <el-table-column prop="scriptNumber" label="所需剧本数" width="110" />
                 <el-table-column prop="betListText" label="下注额" min-width="180" />
             </el-table>
+            <div class="ready-result-title ready-result-fail">
+                未就绪方案（{{ readyFailedPreviewTasks.length }}）
+            </div>
+            <el-table :data="readyFailedPreviewTasks" stripe border style="width: 100%" max-height="300">
+                <el-table-column prop="appId" label="AppId" width="90" />
+                <el-table-column prop="gameName" label="游戏名" width="180" />
+                <el-table-column prop="subKey" label="Key" min-width="240" />
+                <el-table-column prop="planId" label="方案ID" width="90" />
+                <el-table-column prop="planName" label="方案名" width="140" />
+                <el-table-column prop="planVersion" label="版本" width="80" />
+                <el-table-column prop="scriptNumber" label="所需剧本数" width="110" />
+                <el-table-column prop="scriptCountText" label="剧本数量" min-width="180" />
+                <el-table-column prop="reason" label="原因" width="140" />
+            </el-table>
             <span slot="footer" class="dialog-footer">
-                <el-button size="mini" :disabled="readyLoading" @click="readyPreviewDialogVisible = false">取 消</el-button>
-                <el-button type="primary" size="mini" :loading="readyLoading" @click="confirmReadyTasks">确认就绪</el-button>
+                <el-button size="mini" :disabled="readyLoading" @click="closeReadyPreviewDialog">关 闭</el-button>
+                <el-button v-if="readyPreviewMode === 'check'" type="primary" size="mini" :loading="readyLoading"
+                    :disabled="readyPreviewTasks.length === 0" @click="confirmReadyTasks">确认就绪</el-button>
             </span>
         </el-dialog>
 
@@ -434,6 +452,8 @@ export default {
             publishResultSuccessTasks: [],
             scriptCreateTasks: [],
             readyPreviewTasks: [],
+            readyFailedPreviewTasks: [],
+            readyPreviewMode: 'check',
             selectedPublishTasks: [],
             currentDiffTask: null,
             publishOpType: PUBLISH_STEPS.PUBLISH_STEP_TEST,
@@ -583,7 +603,8 @@ export default {
             return `待创建剧本列表(${this.scriptCreateTasks.length})`
         },
         readyPreviewDialogTitle() {
-            return `待就绪方案列表(${this.readyPreviewTasks.length})`
+            const title = this.readyPreviewMode === 'result' ? '剧本就绪结果' : '剧本就绪检查结果'
+            return `${title}（成功/可就绪：${this.readyPreviewTasks.length}，未就绪：${this.readyFailedPreviewTasks.length}）`
         },
         pendingPublishTaskCount() {
             return this.getAllPendingPublishTasks().length
@@ -815,6 +836,8 @@ export default {
             this.copyPublishTasks = []
             this.scriptCreateTasks = []
             this.readyPreviewTasks = []
+            this.readyFailedPreviewTasks = []
+            this.readyPreviewMode = 'check'
             this.scriptCreateDialogVisible = false
             this.readyPreviewDialogVisible = false
             this.activePublishStage = publishStageCopyConfig
@@ -2063,16 +2086,14 @@ export default {
             this.readyLoading = true
             const failList = []
             try {
-                const readyTasks = await this.collectPlanReadyPreviewTasks(tasks, failList)
-                if (failList.length > 0) {
-                    this.showPlanOperationResult('剧本就绪检查', 0, failList)
-                    return
-                }
-                if (readyTasks.length === 0) {
+                const result = await this.collectPlanReadyPreviewTasks(tasks, failList)
+                if (result.readyTasks.length === 0 && result.failedTasks.length === 0) {
                     return this.$message.warning('没有符合就绪条件的方案版本')
                 }
 
-                this.readyPreviewTasks = readyTasks
+                this.readyPreviewTasks = result.readyTasks
+                this.readyFailedPreviewTasks = result.failedTasks
+                this.readyPreviewMode = 'check'
                 this.readyPreviewDialogVisible = true
             } finally {
                 this.readyLoading = false
@@ -2081,16 +2102,26 @@ export default {
 
         async collectPlanReadyPreviewTasks(tasks, failList) {
             const readyTasks = []
+            const failedTasks = []
             for (const task of tasks) {
-                if (!(await this.shouldHandlePlanTask(task, failList))) {
+                const taskFailList = []
+                if (!(await this.shouldHandlePlanTask(task, taskFailList))) {
+                    if (taskFailList.length > 0) {
+                        failList.push(...taskFailList)
+                        failedTasks.push(...this.buildPlanReadyFailureTasks(task, taskFailList))
+                    }
                     continue
                 }
-                const planData = await this.loadPlanCustomizeData(task, failList)
+                const planData = await this.loadPlanCustomizeData(task, taskFailList)
                 if (!planData) {
+                    failList.push(...taskFailList)
+                    failedTasks.push(...this.buildPlanReadyFailureTasks(task, taskFailList))
                     continue
                 }
-                const betList = await this.loadPlanScriptBets(task, failList)
+                const betList = await this.loadPlanScriptBets(task, taskFailList)
                 if (!betList || betList.length === 0) {
+                    failList.push(...taskFailList)
+                    failedTasks.push(...this.buildPlanReadyFailureTasks(task, taskFailList, '下注额配置为空'))
                     continue
                 }
 
@@ -2105,10 +2136,19 @@ export default {
                     const checkResult = await this.checkPlanVersionScripts(task, plan, latestVersion, betList)
                     if (checkResult.ok) {
                         readyTasks.push(this.buildPlanReadyPreviewTask(task, planData, plan, latestVersion, betList))
+                    } else {
+                        failedTasks.push(this.buildPlanReadyFailurePreviewTask(
+                            task,
+                            plan,
+                            latestVersion,
+                            betList,
+                            checkResult.errMsg,
+                            checkResult.betCountText
+                        ))
                     }
                 }
             }
-            return readyTasks
+            return { readyTasks, failedTasks }
         },
 
         async shouldHandlePlanTask(task, failList) {
@@ -2153,6 +2193,66 @@ export default {
             }
         },
 
+        buildPlanReadyFailurePreviewTask(task, plan, version, betList, errMsg, scriptCountText = '') {
+            const scriptCfg = version && version.ScriptCfg ? version.ScriptCfg : {}
+            return {
+                appId: task.appId,
+                gameName: task.gameName || this.getGameLabel(task.gameId),
+                subKey: task.subKey,
+                planId: plan ? plan.PlanId : '-',
+                planName: plan ? (plan.PlanName || '') : '-',
+                planVersion: version ? version.Version : '-',
+                scriptNumber: version ? scriptCfg.ScriptNumber : '-',
+                scriptCountText: scriptCountText || '-',
+                betListText: betList && betList.length > 0 ? betList.join('，') : '-',
+                reason: this.getReadyFailureReason(errMsg)
+            }
+        },
+
+        buildPlanReadyFailureTasks(task, failList, fallbackReason = '剧本就绪失败') {
+            const errors = failList.length > 0 ? failList : [{ errMsg: fallbackReason }]
+            return errors.map(item => this.buildPlanReadyFailurePreviewTask(
+                item.task || task,
+                null,
+                null,
+                [],
+                item.errMsg || fallbackReason
+            ))
+        },
+
+        getReadyFailureReason(errMsg) {
+            const msg = String(errMsg || '')
+            if (/剧本数量不足/.test(msg)) {
+                return '剧本数量不足'
+            }
+            if (/查询下注额|查询剧本/.test(msg)) {
+                return '查询剧本失败'
+            }
+            if (/方案配置/.test(msg)) {
+                return '方案配置不存在'
+            }
+            if (/基础配置/.test(msg)) {
+                return '基础配置不存在'
+            }
+            if (/下注额配置为空/.test(msg)) {
+                return '下注额配置为空'
+            }
+            if (/附属/.test(msg)) {
+                return '附属配置检查失败'
+            }
+            if (/保存方案就绪状态失败/.test(msg)) {
+                return '保存就绪失败'
+            }
+            return '剧本就绪失败'
+        },
+
+        closeReadyPreviewDialog() {
+            this.readyPreviewDialogVisible = false
+            this.readyPreviewTasks = []
+            this.readyFailedPreviewTasks = []
+            this.readyPreviewMode = 'check'
+        },
+
         async confirmReadyTasks() {
             if (!this.ensureV2Version()) return
             if (this.readyPreviewTasks.length === 0) {
@@ -2165,12 +2265,12 @@ export default {
 
             this.readyLoading = true
             const failList = []
-            let readyCount = 0
+            const checkedFailedTasks = this.readyFailedPreviewTasks.slice()
+            const checkedReadyTasks = this.readyPreviewTasks.slice()
             try {
                 const planDataMap = new Map()
                 for (const item of this.readyPreviewTasks) {
                     item.version.IsReady = true
-                    readyCount++
                     const key = `${item.task.appId}_${item.task.subKey}`
                     if (!planDataMap.has(key)) {
                         planDataMap.set(key, {
@@ -2204,11 +2304,42 @@ export default {
                     this.persistCopyFlowState()
                 }
 
-                if (failList.length === 0) {
-                    this.readyPreviewDialogVisible = false
-                    this.readyPreviewTasks = []
+                const publishTaskKeySet = new Set(publishTasks.map(task => `${task.appId}_${task.subKey}`))
+                const successTasks = checkedReadyTasks.filter(item => {
+                    return publishTaskKeySet.has(`${item.task.appId}_${item.task.subKey}`)
+                })
+                const saveFailedTasks = []
+                for (const item of failList) {
+                    const failedPlanTasks = checkedReadyTasks.filter(readyItem => {
+                        return `${readyItem.task.appId}_${readyItem.task.subKey}` === `${item.task.appId}_${item.task.subKey}`
+                    })
+                    if (failedPlanTasks.length === 0) {
+                        saveFailedTasks.push(this.buildPlanReadyFailurePreviewTask(
+                            item.task,
+                            null,
+                            null,
+                            [],
+                            '保存方案就绪状态失败'
+                        ))
+                        continue
+                    }
+                    saveFailedTasks.push(...failedPlanTasks.map(readyItem => this.buildPlanReadyFailurePreviewTask(
+                        readyItem.task,
+                        readyItem.plan,
+                        readyItem.version,
+                        readyItem.betList,
+                        '保存方案就绪状态失败'
+                    )))
                 }
-                this.showPlanOperationResult('剧本就绪', readyCount, failList)
+                this.readyPreviewTasks = successTasks
+                this.readyFailedPreviewTasks = checkedFailedTasks.concat(saveFailedTasks)
+                this.readyPreviewMode = 'result'
+                this.readyPreviewDialogVisible = true
+                if (this.readyFailedPreviewTasks.length > 0) {
+                    this.$message.warning(`剧本就绪完成，成功 ${successTasks.length} 个方案，未就绪 ${this.readyFailedPreviewTasks.length} 个方案`)
+                } else {
+                    this.$message.success(`剧本就绪完成，成功 ${successTasks.length} 个方案`)
+                }
             } finally {
                 this.readyLoading = false
             }
@@ -2417,7 +2548,7 @@ export default {
                     if (!betResponse || betResponse.RetCode !== 0) {
                         return {
                             ok: false,
-                            errMsg: `查询下注额 ${bet} 剧本失败:${this.getCopyError(betResponse) || ''}`
+                            errMsg: '查询剧本失败'
                         }
                     }
 
@@ -2431,7 +2562,8 @@ export default {
                 if (notEnoughBets.length > 0) {
                     return {
                         ok: false,
-                        errMsg: `剧本数量不足 ${notEnoughBets.join('，')}`
+                        errMsg: '剧本数量不足',
+                        betCountText: notEnoughBets.join('，')
                     }
                 }
 
@@ -2439,7 +2571,7 @@ export default {
             } catch (err) {
                 return {
                     ok: false,
-                    errMsg: this.getCopyError(null, err) || '查询剧本异常'
+                    errMsg: this.getCopyError(null, err) || '查询剧本失败'
                 }
             }
         },
@@ -3275,6 +3407,8 @@ export default {
             this.publishTasks = []
             this.scriptCreateTasks = []
             this.readyPreviewTasks = []
+            this.readyFailedPreviewTasks = []
+            this.readyPreviewMode = 'check'
             this.publishDialogVisible = false
             this.scriptCreateDialogVisible = false
             this.readyPreviewDialogVisible = false
@@ -3308,6 +3442,8 @@ export default {
                 this.selectedPublishTasks = []
                 this.scriptCreateTasks = []
                 this.readyPreviewTasks = []
+                this.readyFailedPreviewTasks = []
+                this.readyPreviewMode = 'check'
                 this.publishResultFailTasks = []
                 this.publishResultSuccessTasks = []
                 this.currentDiffTask = null
@@ -3534,6 +3670,20 @@ export default {
 
 .published-check-alert {
     margin-bottom: 12px;
+}
+
+.ready-result-title {
+    margin: 10px 0 8px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.ready-result-success {
+    color: #67c23a;
+}
+
+.ready-result-fail {
+    color: #f56c6c;
 }
 
 .publish-filter-bar {
