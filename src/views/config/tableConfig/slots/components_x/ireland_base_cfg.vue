@@ -71,6 +71,8 @@
               <el-option label="189:StreetFighting Mars" :value="189" />
               <el-option label="192:BountyRaid" :value="192" />
               <el-option label="193:BountyRaid Mars" :value="193" />
+              <el-option label="246:TalaReyesSouthSeaPearls" :value="246" />
+              <el-option label="250:LightOfMactan" :value="250" />
               <el-option label="180:FishingMaster" :value="180" />
               <el-option label="181:FishingMaster Mars" :value="181" />
               <el-option label="GodOfFortune" :value="182" />
