@@ -296,6 +296,7 @@
                 <template slot-scope="scope">{{ taskTypeText(scope.row.taskType) }}</template>
               </el-table-column>
               <el-table-column prop="taskId" label="任务ID" width="80" align="center" />
+              <el-table-column prop="taskText" label="任务文本" min-width="180" show-overflow-tooltip />
               <el-table-column label="完成条件" min-width="200">
                 <template slot-scope="scope">
                   单次实际消耗 {{ compareText(scope.row.compareType) }} {{ scope.row.conditionAmount }}，完成 {{ scope.row.targetProgress }} 次
@@ -336,6 +337,16 @@
         </el-form-item>
         <el-form-item label="任务ID" required>
           <el-input-number v-model="taskEditItem.taskId" :min="1" :max="1000" controls-position="right" />
+        </el-form-item>
+        <el-form-item label="任务文本" required>
+          <el-input
+            v-model="taskEditItem.taskText"
+            type="textarea"
+            :rows="2"
+            maxlength="200"
+            show-word-limit
+            placeholder="请输入前端展示的任务说明"
+          />
         </el-form-item>
         <el-form-item label="实际消耗条件" required>
           <el-input-number v-model="taskEditItem.conditionAmount" :min="1" :max="1000000000" controls-position="right" />
@@ -422,6 +433,7 @@ function newTask(taskType = 1) {
   return {
     taskType,
     taskId: 1,
+    taskText: '',
     targetProgress: 1,
     compareType: taskType === 1 ? 1 : 2,
     conditionAmount: 1,
@@ -649,6 +661,7 @@ export default {
     },
     normalizeTask(task) {
       const data = { ...newTask(Number(task.taskType) || 1), ...task }
+      data.taskText = String(data.taskText || '')
       data.reward = { ...newReward(Number(task.reward && task.reward.rewardType) || 1), ...(task.reward || {}) }
       if (Number(data.reward.rewardType) === 2) {
         data.reward.validDays = 2
@@ -970,6 +983,7 @@ export default {
       const data = this.normalizeTask(task)
       data.taskType = Number(data.taskType)
       data.taskId = Number(data.taskId)
+      data.taskText = String(data.taskText || '').trim()
       data.targetProgress = Number(data.targetProgress)
       data.compareType = data.taskType === 1 ? 1 : 2
       data.conditionAmount = Number(data.conditionAmount)
@@ -1150,6 +1164,8 @@ export default {
     validateTask(task) {
       if (![1, 2].includes(Number(task.taskType))) return '任务类型无效'
       if (Number(task.taskId) <= 0) return '任务ID必须大于0'
+      if (!String(task.taskText || '').trim()) return `任务 ${task.taskId} 请填写任务文本`
+      if ([...String(task.taskText)].length > 200) return `任务 ${task.taskId} 的任务文本不能超过200个字符`
       if (Number(task.targetProgress) <= 0) return `任务 ${task.taskId} 的完成次数必须大于0`
       if (Number(task.conditionAmount) <= 0) return `任务 ${task.taskId} 的实际消耗条件必须大于0`
       if (Number(task.taskType) === 1 && Number(task.compareType) !== 1) return `任务 ${task.taskId} 的比较方式应为大于等于`
