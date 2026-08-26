@@ -21,11 +21,11 @@
         </el-tab-pane>
 
         <el-tab-pane label="任务配置">
-          <TaskConfig v-model="item"/>
+          <TaskConfig v-model="item" />
         </el-tab-pane>
 
         <el-tab-pane label="白名单配置">
-          <WhitelistConfig v-model="item"/>
+          <WhitelistConfig v-model="item" />
         </el-tab-pane>
       </el-tabs>
 
@@ -40,13 +40,14 @@
 </template>
 
 <script>
-import {Message} from 'element-ui'
+import { Message } from 'element-ui'
 import request from '@/utils/request'
 import store from '@/store'
-import {divFields1000, mulFields1000} from '@/utils/index'
+import { divFields1000, mulFields1000 } from '@/utils/index'
 import ActivityBaseConfig from './components/ActivityBaseConfig.vue'
 import TaskConfig from './components/TaskConfig.vue'
 import WhitelistConfig from './components/WhitelistConfig.vue'
+import { defaultUserConfig } from '@/components/UserType/config'
 
 export default {
   name: 'RedBagForm',
@@ -124,6 +125,9 @@ export default {
   methods: {
     // 获取一个全新的默认表单数据对象（用于新增或重置表单）
     getDefaultItem() {
+      const userConfig = defaultUserConfig()
+      userConfig.userFilterCondition.userTagConfig.tagType = 5
+      userConfig.userFilterCondition.userTagConfig.tagId = 50001
       return {
         activityName: '',
         isOpen: true,
@@ -140,7 +144,8 @@ export default {
         rewardUseSceneId: 0,
         limitMaxNum: 0,
         timeS: 0,
-        userType: 2, // 2 所有用户
+        userType: [2], // 兼容旧数据
+        userConfig,
         appId: -1,
         prizePoolCfg: [],
         gameIdCfg: [],
@@ -176,7 +181,7 @@ export default {
     getTaskCfgData(cfgData) {
       return cfgData.map(data => {
         const newData = mulFields1000(data, this.fields)
-        const result = {...data, rewardNum: newData.rewardNum}
+        const result = { ...data, rewardNum: newData.rewardNum }
         // 处理 rewardPools 中的 value1 和 value2（金额字段 * 1000），weight（权重字段 * 100）
         if (result.rewardPools && Array.isArray(result.rewardPools)) {
           result.rewardPools = result.rewardPools.map(pool => ({
@@ -191,7 +196,7 @@ export default {
     // 处理红包配置，将金额字段 * 1000，权重字段 * 100
     formatRedBagCfgForSave(cfgList) {
       return cfgList.map(item => {
-        const newItem = {...item}
+        const newItem = { ...item }
         // 处理rewardPools数组
         if (newItem.rewardPools && Array.isArray(newItem.rewardPools)) {
           newItem.rewardPools = newItem.rewardPools.map(pool => ({
@@ -208,7 +213,7 @@ export default {
     // 处理红包配置，将金额字段 / 1000，权重字段 / 100
     formatRedBagCfgForEdit(cfgList) {
       return cfgList.map(item => {
-        const newItem = {...item}
+        const newItem = { ...item }
         // 处理rewardPools数组
         if (newItem.rewardPools && Array.isArray(newItem.rewardPools)) {
           newItem.rewardPools = newItem.rewardPools.map(pool => ({
@@ -234,6 +239,55 @@ export default {
           data[f] = newData[f]
         }
       })
+    },
+
+    normalizeUserConfig(userConfig, fallbackUserType = 2) {
+      const normalized = defaultUserConfig(fallbackUserType)
+      if (userConfig && typeof userConfig === 'object') {
+        const currentType = Array.isArray(userConfig.userTypes) && userConfig.userTypes.length > 0
+          ? Number(userConfig.userTypes[0]) || fallbackUserType
+          : fallbackUserType
+        normalized.userTypes = [currentType]
+        const condition = userConfig.userFilterCondition || {}
+        normalized.userFilterCondition = {
+          registerTimeRange: {
+            min: Number((condition.registerTimeRange || {}).min) || 0,
+            max: Number((condition.registerTimeRange || {}).max) || 0
+          },
+          betTimesRange: {
+            min: Number((condition.betTimesRange || {}).min) || 0,
+            max: Number((condition.betTimesRange || {}).max) || 0
+          },
+          userTagConfig: {
+            tagType: Number((condition.userTagConfig || {}).tagType) || 0,
+            tagId: Number((condition.userTagConfig || {}).tagId) || 0,
+            tagValue: Number((condition.userTagConfig || {}).tagValue) || 0
+          }
+        }
+        normalized.importedFilename = userConfig.importedFilename || ''
+      }
+      return normalized
+    },
+    buildUserConfigFromLegacy(userType, userLabel, userConfig) {
+      let parsedUserType = userType
+      if (typeof userType === 'string') {
+        try {
+          parsedUserType = JSON.parse(userType || '[2]')
+        } catch (e) {
+          parsedUserType = [2]
+        }
+      }
+      const userTypes = Array.isArray(parsedUserType)
+        ? parsedUserType.map(v => Number(v)).filter(v => Number.isInteger(v))
+        : [Number(parsedUserType) || 2]
+      const fallbackType = userTypes.length > 0 ? userTypes[0] : 2
+      const normalized = this.normalizeUserConfig(userConfig, fallbackType)
+      normalized.userTypes = [fallbackType]
+      if (fallbackType === 5) {
+        normalized.userFilterCondition.userTagConfig.tagType = 5
+        normalized.userFilterCondition.userTagConfig.tagId = Number(userLabel) || 50001
+      }
+      return normalized
     },
     configCheck() {
       if (this.item.startTime === 0) {
@@ -334,6 +388,22 @@ export default {
       }
       // 5. 金额/权重等字段批量 *1000 处理
       const newItem = mulFields1000(this.item, this.fields)
+      const normalizedUserConfig = this.normalizeUserConfig(this.item.userConfig, 2)
+      const currentUserType = normalizedUserConfig.userTypes[0]
+      if (currentUserType === 5 && !normalizedUserConfig.userFilterCondition.userTagConfig.tagType) {
+        normalizedUserConfig.userFilterCondition.userTagConfig.tagType = 5
+      }
+      const currentUserLabel = currentUserType === 5
+        ? Number(normalizedUserConfig.userFilterCondition.userTagConfig.tagId) || 50001
+        : null
+      if (currentUserType === 5 && !currentUserLabel) {
+        this.errmsg('请选择用户标签')
+        return
+      }
+      this.item.userConfig = normalizedUserConfig
+      this.item.userType = normalizedUserConfig.userTypes
+      this.item.userLabel = currentUserLabel
+
       // 6. 组装最终提交数据对象
       const fromData = {
         activityName: this.item.activityName, // 活动名称
@@ -350,8 +420,8 @@ export default {
         timeS: this.item.timeS ?? 0, // 时间偏移
         rewardType: this.item.rewardType, // 奖励类型
         gameType: this.item.gameType, // 玩法大类型
-        userType: this.item.userType, // 用户类型
-        userLabel: this.item.userLabel, // 用户标签
+        userType: normalizedUserConfig.userTypes, // 用户类型
+        userLabel: currentUserLabel, // 用户标签
         taskCfgData: taskCfgData, // 任务配置（JSON字符串）
         // redBagCfg: redBagCfg, // 红包价值配置（JSON字符串）
         gameIdCfg: gameIdCfg, // 游戏ID配置（JSON字符串）
@@ -408,8 +478,7 @@ export default {
         data.whiteList = safeJsonParse(data.whiteList, [])
         data.appIdList = safeJsonParse(data.appIdList, [])
         data.siteIdList = safeJsonParse(data.siteIdList, [])
-        data.abTest = safeJsonParse(data.abTest, {switch: false, bPercent: 0})
-
+        data.abTest = safeJsonParse(data.abTest, { switch: false, bPercent: 0 })
         //  对需要按千倍/百分位处理的字段做统一转换（使用工具函数）
         // divFields1000 会将指定字段除以 1000（反向处理），返回一个新对象
         const newData = divFields1000(data, this.fields)
@@ -418,7 +487,7 @@ export default {
         //  处理 taskCfgData 中 rewardNum 字段（前端期望的单位）
         if (Array.isArray(data.taskCfgData)) {
           data.taskCfgData = data.taskCfgData.map(item => {
-            const newItem = {...item}
+            const newItem = { ...item }
             // 处理 rewardNum
             if (newItem.rewardNum !== undefined && newItem.rewardNum !== null) {
               newItem.rewardNum = Number(newItem.rewardNum) / 1000
@@ -428,7 +497,7 @@ export default {
               newItem.rewardPools = newItem.rewardPools.map(pool => ({
                 ...pool,
                 value1: Number(pool.value1) / 1000,
-                value2: Number(pool.value2) / 1000,
+                value2: Number(pool.value2) / 1000
               }))
             }
             return newItem
@@ -457,6 +526,11 @@ export default {
         if (typeof data.userLabel === 'string') {
           data.userLabel = parseInt(data.userLabel, 10)
         }
+        data.userConfig = this.buildUserConfigFromLegacy(data.userType, data.userLabel, data.userConfig)
+        data.userType = data.userConfig.userTypes
+        data.userLabel = data.userConfig.userTypes[0] === 5
+          ? data.userConfig.userFilterCondition.userTagConfig.tagId
+          : null
         this.item = data
       }
     },
