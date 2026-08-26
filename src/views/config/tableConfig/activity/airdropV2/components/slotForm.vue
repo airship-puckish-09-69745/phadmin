@@ -245,7 +245,6 @@ function defaultUserConfig() {
   }
 }
 
-
 function newProp() {
   return { taskType: 2, taskCondition: 0, propType: 0, propId: 0, propName: '', propTime: 1, propNum: 0, propLimit: 0 }
 }
