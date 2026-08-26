@@ -111,7 +111,7 @@ export const PROP_TYPE_OPTIONS = {
   PROP_TYPE_TICKET_NEW:7,      //新版Tongits门票 带交易ID
   PROP_TYPE_TEXAS_TICKET_NEW:8, //新版德州参赛券 带交易ID
   PROP_TYPE_PUSOY_TICKET_NEW:9, //新版Pusoy门票 带交易ID
-  PROP_TYPE_EFFECT:10, //互动道具
+  PROP_TYPE_INTERACTION: 10,  //互动道具
 }
 // 操作类型
 export const PROP_SOURCE_OPTIONS = [
