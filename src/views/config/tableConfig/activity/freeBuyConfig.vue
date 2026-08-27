@@ -174,7 +174,13 @@
               </el-select>
             </el-form-item>
             <el-form-item label="参与用户类型" required>
-              <el-select v-model="editItem.userType" style="width: 100%" @change="onUserTypeChange">
+              <el-select
+                v-model="editItem.userTypes"
+                multiple
+                placeholder="请选择参与用户类型"
+                style="width: 100%"
+                @change="onUserTypeChange"
+              >
                 <el-option
                   v-for="item in userTypeOptions"
                   :key="item.value"
@@ -183,7 +189,7 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item v-if="editItem.userType === 3" label="导入用户">
+            <el-form-item v-if="editItem.userTypes.includes(3)" label="导入用户">
               <span>已导入用户：{{ importedUidCount }}</span>
               <span class="user-import-tip">（重复导入不会覆盖已有用户）</span>
               <br>
@@ -206,7 +212,7 @@
               <el-button type="success" size="mini" @click="submitUpload">上传用户ID数据</el-button>
               <el-button type="danger" size="mini" @click="delImportedUid">重置已导入用户</el-button>
             </el-form-item>
-            <template v-if="editItem.userType === 5">
+            <template v-if="editItem.userTypes.includes(5)">
               <el-form-item label="新增标签条件" required>
                 <el-select v-model="userTagDraft.tagType" style="width: 100%" @change="onUserTagTypeChange">
                   <el-option
@@ -639,10 +645,9 @@ export default {
       data.totalPropLimit = Number(data.totalPropLimit) || 0
       data.taskList = Array.isArray(data.taskList) ? data.taskList.map(task => this.normalizeTask(task)) : []
       data.userTypes = Array.isArray(data.userTypes)
-        ? data.userTypes.map(Number).filter(item => [2, 3, 5].includes(item))
+        ? [...new Set(data.userTypes.map(Number).filter(item => [1, 2, 3, 5].includes(item)))]
         : [2]
       if (!data.userTypes.length) data.userTypes = [2]
-      data.userType = data.userTypes[0]
       const userTagList = Array.isArray(data.userTagConfig)
         ? data.userTagConfig
         : (data.userTagConfig ? [data.userTagConfig] : [])
@@ -752,11 +757,19 @@ export default {
         : newUserTagConfig()
       this.importedUidCount = 0
       this.freeBuyUidFile = null
-      if (isEdit && this.editItem.userType === 3) this.getImportedUidCount()
+      if (isEdit && this.editItem.userTypes.includes(3)) this.getImportedUidCount()
       this.activityDialogVisible = true
     },
-    onUserTypeChange(userType) {
-      if (Number(userType) === 3 && this.activityEditMode) {
+    onUserTypeChange(userTypes) {
+      const selected = [...new Set((userTypes || []).map(Number))]
+      if (selected.length > 1 && selected[selected.length - 1] === 2) {
+        this.editItem.userTypes = [2]
+      } else if (selected.length > 1 && selected.includes(2)) {
+        this.editItem.userTypes = selected.filter(item => item !== 2)
+      } else {
+        this.editItem.userTypes = selected
+      }
+      if (this.editItem.userTypes.includes(3) && this.activityEditMode) {
         this.getImportedUidCount()
       } else {
         this.importedUidCount = 0
@@ -929,14 +942,13 @@ export default {
       data.endTime = Math.floor(Number(item.endTimeValue) / 1000)
       data.gameIdList = this.toNumberList(data.gameIdList)
       data.siteIdList = data.siteIdList.map(value => String(value)).filter(Boolean)
-      data.userTypes = [Number(item.userType)]
+      data.userTypes = [...new Set((item.userTypes || []).map(Number))]
       data.userTagConfig = data.userTagConfig.map(tag => ({
         tagType: Number(tag.tagType),
         tagId: Number(tag.tagId),
         tagValue: Number(tag.tagValue),
         isReverse: Boolean(tag.isReverse)
       }))
-      delete data.userType
       const taskTypeOrder = []
       for (const task of data.taskList) {
         const taskType = Number(task.taskType)
@@ -1131,8 +1143,10 @@ export default {
       if (Number(activity.startTime) <= 0) return '请填写开始时间'
       if (Number(activity.endTime) <= Number(activity.startTime)) return '结束时间必须晚于开始时间'
       if (!Array.isArray(activity.gameIdList) || !activity.gameIdList.length) return '请至少选择一个参与游戏'
-      if (!Array.isArray(activity.userTypes) || activity.userTypes.length !== 1 || ![1, 2, 3, 5].includes(Number(activity.userTypes[0]))) return '请选择参与用户类型'
-      if (Number(activity.userTypes[0]) === 5) {
+      if (!Array.isArray(activity.userTypes) || !activity.userTypes.length || activity.userTypes.some(item => ![1, 2, 3, 5].includes(Number(item)))) return '请选择参与用户类型'
+      if (new Set(activity.userTypes.map(Number)).size !== activity.userTypes.length) return '参与用户类型不能重复'
+      if (activity.userTypes.includes(2) && activity.userTypes.length > 1) return '全部用户不能与其它参与用户类型同时选择'
+      if (activity.userTypes.includes(5)) {
         if (!Array.isArray(activity.userTagConfig) || !activity.userTagConfig.length) return '请至少加入一个用户标签条件'
         const tagIds = new Set()
         for (const tag of activity.userTagConfig) {
@@ -1200,9 +1214,12 @@ export default {
       return values.map(value => Number(value) === 230 ? `Pahiyas Win's [${value}]` : value).join('、')
     },
     userTypeText(values) {
-      const userType = Array.isArray(values) ? Number(values[0]) : Number(values)
-      const option = this.userTypeOptions.find(item => item.value === userType)
-      return option ? option.label : '-'
+      const userTypes = Array.isArray(values) ? values.map(Number) : [Number(values)]
+      const labels = userTypes.map(userType => {
+        const option = this.userTypeOptions.find(item => item.value === userType)
+        return option ? option.label : ''
+      }).filter(Boolean)
+      return labels.length ? labels.join('、') : '-'
     },
     userTagKey(tag, index) {
       return `${Number(tag.tagType)}:${Number(tag.tagId)}:${Number(tag.tagValue)}:${Boolean(tag.isReverse)}:${index}`
