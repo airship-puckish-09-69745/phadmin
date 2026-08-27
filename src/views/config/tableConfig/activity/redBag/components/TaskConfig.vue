@@ -145,7 +145,7 @@
               </el-table-column>
               <el-table-column label="权重" min-width="100">
                 <template slot-scope="scope">
-                  <el-input-number :controls="false" v-model="scope.row.weight" :min="1" size="mini"/>
+                  <el-input-number v-model="scope.row.weight" :controls="false" :min="1" size="mini" />
                 </template>
               </el-table-column>
               <el-table-column label="数量限制" min-width="100">
@@ -304,7 +304,7 @@ export default {
         { 'value': 1, 'label': '累计下注金币' },
         { 'value': 2, 'label': '连胜' },
         { 'value': 3, 'label': '特殊玩法' },
-        { 'value': 4, 'label': '累计下注道具' },
+        { 'value': 4, 'label': '累计下注道具' }
 
       ],
       propTypeOptions: [
@@ -318,7 +318,7 @@ export default {
         { 'value': 1, 'label': '1天', disabled: false },
         { 'value': 3, 'label': '3天', disabled: false },
         { 'value': 7, 'label': '7天', disabled: false },
-        { 'value': 30, 'label': '30天', disabled: false },
+        { 'value': 30, 'label': '30天', disabled: false }
       ]
     }
   },
