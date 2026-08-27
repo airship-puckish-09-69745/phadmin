@@ -528,6 +528,7 @@ export default {
       freeBuyUidFile: null,
       userTypeOptions: [
         { value: 2, label: '全部用户' },
+        { value: 1, label: '新增用户' },
         { value: 3, label: '导入用户' },
         { value: 5, label: '用户标签' }
       ],
@@ -1130,7 +1131,7 @@ export default {
       if (Number(activity.startTime) <= 0) return '请填写开始时间'
       if (Number(activity.endTime) <= Number(activity.startTime)) return '结束时间必须晚于开始时间'
       if (!Array.isArray(activity.gameIdList) || !activity.gameIdList.length) return '请至少选择一个参与游戏'
-      if (!Array.isArray(activity.userTypes) || activity.userTypes.length !== 1 || ![2, 3, 5].includes(Number(activity.userTypes[0]))) return '请选择参与用户类型'
+      if (!Array.isArray(activity.userTypes) || activity.userTypes.length !== 1 || ![1, 2, 3, 5].includes(Number(activity.userTypes[0]))) return '请选择参与用户类型'
       if (Number(activity.userTypes[0]) === 5) {
         if (!Array.isArray(activity.userTagConfig) || !activity.userTagConfig.length) return '请至少加入一个用户标签条件'
         const tagIds = new Set()
