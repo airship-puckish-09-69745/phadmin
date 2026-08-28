@@ -153,12 +153,24 @@
 
         <!-- ---------- 投注金奖励（固定一条） ---------- -->
         <fieldset>
-          <legend><b>投注金奖励</b>（固定一条）</legend>
+          <legend style="display: flex; align-items: center; gap: 10px">
+            <b>投注金奖励</b>（固定一条）
+            <el-tag size="mini" type="info" effect="plain">可选</el-tag>
+            <el-switch
+              v-model="item.enableBetMoneyPrize"
+              active-text="启用"
+              inactive-text="不配置"
+              @change="onBetMoneyPrizeEnabledChange"
+            />
+          </legend>
+          <div v-if="!item.enableBetMoneyPrize" style="margin-bottom: 8px; color: #909399; font-size: 12px">
+            已标记为不配置投注金奖励，仅保存道具奖励配置。
+          </div>
           <el-table :data="[item.slotBetMoney]" border size="small" style="width: 100%">
             <!-- 任务类型 -->
             <el-table-column label="任务类型" min-width="150">
               <template slot-scope="scope">
-                <el-select v-model="scope.row.taskType" placeholder="请选择" size="mini">
+                <el-select v-model="scope.row.taskType" placeholder="请选择" size="mini" :disabled="!item.enableBetMoneyPrize">
                   <el-option v-for="opt in slotTaskTypes" :key="opt.value" :label="opt.label" :value="opt.value" />
                 </el-select>
               </template>
@@ -170,6 +182,7 @@
                   v-model.number="scope.row.taskCondition"
                   placeholder="请输入"
                   size="mini"
+                  :disabled="!item.enableBetMoneyPrize"
                   oninput="if(value<0||value===''){value=0}"
                 />
               </template>
@@ -181,6 +194,7 @@
                   v-model.number="scope.row.totalReward"
                   placeholder="请输入"
                   size="mini"
+                  :disabled="!item.enableBetMoneyPrize"
                   oninput="if(value<0||value===''){value=0}"
                 />
               </template>
@@ -198,6 +212,7 @@
                   v-model.number="scope.row.userMaxReward"
                   placeholder="请输入"
                   size="mini"
+                  :disabled="!item.enableBetMoneyPrize"
                   oninput="if(value<0||value===''){value=0}"
                 />
               </template>
@@ -267,6 +282,7 @@ function newItem() {
     gameIdList: [],
     whitelist: defaultWhitelist(),
     enableProgressPrize: false,
+    enableBetMoneyPrize: true,
     taskText: '',
     propPools: newProp(),
     // 投注金奖励（固定一条）
@@ -366,6 +382,10 @@ export default {
     isProgressPrizeConfigured(prize) {
       return this.toSafeNumber(prize.propId) > 0 || this.toSafeNumber(prize.propNum) > 0 || this.toSafeNumber(prize.propLimit) > 0
     },
+    isBetMoneyPrizeConfigured(slotBetMoney) {
+      if (!slotBetMoney) return false
+      return this.toSafeNumber(slotBetMoney.totalReward) > 0 || this.toSafeNumber(slotBetMoney.taskCondition) > 0 || this.toSafeNumber(slotBetMoney.userMaxReward) > 0
+    },
     validateUserConfig() {
       const userConfig = this.item.userConfig || defaultUserConfig()
       const userType = Array.isArray(userConfig.userTypes) && userConfig.userTypes.length > 0 ? userConfig.userTypes[0] : 2
@@ -417,6 +437,13 @@ export default {
         this.item.propPools.propLimit = 0
       }
     },
+    onBetMoneyPrizeEnabledChange(enabled) {
+      if (!enabled) {
+        this.item.slotBetMoney.taskCondition = 0
+        this.item.slotBetMoney.totalReward = 0
+        this.item.slotBetMoney.userMaxReward = 0
+      }
+    },
     loadEditData() {
       const raw = JSON.parse(JSON.stringify(this.data))
       const act = this.safeJson(raw.activity, {})
@@ -446,7 +473,7 @@ export default {
       if (taskType === 2) {
         prop.taskCondition = this.toSafeNumber(prop.taskCondition) / 1000
       }
-      const enableProgressPrize = typeof ext.enableProgressPrize === 'boolean' ? ext.enableProgressPrize : this.isProgressPrizeConfigured(prize)
+      const enableProgressPrize = typeof ext.enableProgressPrize === 'boolean' ? ext.enableProgressPrize : this.isProgressPrizeConfigured(prop)
 
       // 投注金奖励：货币字段除以 1000 转换为 ₱ 显示；系数除以 100
       const rr = this.safeJson(ext.slotBetMoney, defaultSlotBetMoney())
@@ -462,6 +489,8 @@ export default {
         slotBetMoney.taskCondition = (rr.taskCondition || 0) / 1000
       }
 
+      const enableBetMoneyPrize = typeof ext.enableBetMoneyPrize === 'boolean' ? ext.enableBetMoneyPrize : this.isBetMoneyPrizeConfigured(slotBetMoney)
+
       this.item = {
         id: raw.id || 0,
         activityId: ACTIVITY_ID,
@@ -476,6 +505,7 @@ export default {
         gameIdList: Array.isArray(act.gameIdList) ? act.gameIdList : [],
         whitelist,
         enableProgressPrize,
+        enableBetMoneyPrize,
         taskText: ext.taskText || '',
         propPools: prop,
         slotBetMoney,
@@ -505,9 +535,16 @@ export default {
         Message.error('请选择参与活动的游戏'); return false
       }
       if (!this.validateUserConfig()) return false
+
+      // Task 4: 至少保留一个奖励类型
+      if (!this.item.enableProgressPrize && !this.item.enableBetMoneyPrize) {
+        Message.error('道具奖励和投注金奖励至少需要启用一个')
+        return false
+      }
+
       const prize = this.item.propPools
-      if (!this.validateNumber(prize.taskCondition, '进度要求(₱)', { min: 0, max: MAX_AMOUNT })) return false
       if (this.item.enableProgressPrize) {
+        if (!this.validateNumber(prize.taskCondition, '进度要求(₱)', { min: 0, max: MAX_AMOUNT })) return false
         if (!prize.propType || !prize.propId) {
           Message.error('请配置道具类型和道具名称'); return false
         }
@@ -520,13 +557,16 @@ export default {
           Message.error('道具上限必须为道具数量的整数倍'); return false
         }
       }
-      const slotBetMoney = this.item.slotBetMoney
-      if (!this.validateNumber(slotBetMoney.taskCondition, '任务条件(₱)', { min: 0, max: MAX_AMOUNT })) return false
-      if (!this.validateNumber(slotBetMoney.totalReward, '总奖励(₱)', { min: 0, max: MAX_AMOUNT })) return false
-      if (!this.validateNumber(slotBetMoney.issuedReward, '已发奖励(₱)', { min: 0, max: MAX_AMOUNT })) return false
-      if (!this.validateNumber(slotBetMoney.userMaxReward, '用户最大领奖(₱)', { min: 0, max: MAX_AMOUNT })) return false
-      if (this.toSafeNumber(slotBetMoney.totalReward) > 0 && this.toSafeNumber(slotBetMoney.userMaxReward) > this.toSafeNumber(slotBetMoney.totalReward)) {
-        Message.error('用户最大领奖不能大于总奖励'); return false
+
+      if (this.item.enableBetMoneyPrize) {
+        const slotBetMoney = this.item.slotBetMoney
+        if (!this.validateNumber(slotBetMoney.taskCondition, '任务条件(₱)', { min: 0, max: MAX_AMOUNT })) return false
+        if (!this.validateNumber(slotBetMoney.totalReward, '总奖励(₱)', { min: 0, max: MAX_AMOUNT })) return false
+        if (!this.validateNumber(slotBetMoney.issuedReward, '已发奖励(₱)', { min: 0, max: MAX_AMOUNT })) return false
+        if (!this.validateNumber(slotBetMoney.userMaxReward, '用户最大领奖(₱)', { min: 0, max: MAX_AMOUNT })) return false
+        if (this.toSafeNumber(slotBetMoney.totalReward) > 0 && this.toSafeNumber(slotBetMoney.userMaxReward) > this.toSafeNumber(slotBetMoney.totalReward)) {
+          Message.error('用户最大领奖不能大于总奖励'); return false
+        }
       }
       return true
     },
@@ -561,9 +601,10 @@ export default {
       const extendObj = {
         taskText: d.taskText || '',
         enableProgressPrize: !!d.enableProgressPrize,
+        enableBetMoneyPrize: !!d.enableBetMoneyPrize,
         propPools: prop,
         // 投注金奖励：货币字段乘以 1000 存储，已发奖励由后端维护保持原值
-        slotBetMoney: {
+        slotBetMoney: !d.enableBetMoneyPrize ? defaultSlotBetMoney() : {
           taskType: this.toSafeNumber(d.slotBetMoney.taskType, 2),
           taskCondition: Math.round(this.toSafeNumber(d.slotBetMoney.taskCondition) * 1000),
           totalReward: Math.round(this.toSafeNumber(d.slotBetMoney.totalReward) * 1000),
