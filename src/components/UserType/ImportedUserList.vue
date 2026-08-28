@@ -1,7 +1,16 @@
 <template>
   <div class="imported-user-list">
-    <div v-if="showRefreshButton" style="margin-top: 8px">
-      <el-button type="primary" size="mini" @click="refresh">查询</el-button>
+    <div v-if="showRefreshButton" style="margin-top: 8px; display: flex; align-items: center; gap: 8px">
+      <el-input
+        v-model.trim="searchUidInput"
+        clearable
+        size="mini"
+        placeholder="请输入UID（支持模糊搜索）"
+        style="max-width: 260px"
+        @keyup.enter.native="handleSearch"
+      />
+      <el-button type="primary" size="mini" @click="handleSearch">查询</el-button>
+      <el-button size="mini" @click="handleSearchReset">重置</el-button>
     </div>
     <el-table
       :data="list"
@@ -78,7 +87,9 @@ export default {
       list: [],
       total: 0,
       page: 1,
-      pageSize: 10
+      pageSize: 10,
+      searchUidInput: '',
+      uidKeyword: ''
     }
   },
   watch: {
@@ -93,6 +104,8 @@ export default {
     activityCfgId(val, oldVal) {
       if (val !== oldVal) {
         this.page = 1
+        this.searchUidInput = ''
+        this.uidKeyword = ''
         this.refresh()
       }
     }
@@ -120,7 +133,21 @@ export default {
       if (this.includeActivityId && this.activityId > 0) {
         data.ActivityId = this.activityId
       }
+      if (this.uidKeyword) {
+        data.Uid = this.uidKeyword
+      }
       return data
+    },
+    handleSearch() {
+      this.uidKeyword = (this.searchUidInput || '').trim()
+      this.page = 1
+      this.refresh()
+    },
+    handleSearchReset() {
+      this.searchUidInput = ''
+      this.uidKeyword = ''
+      this.page = 1
+      this.refresh()
     },
     refresh() {
       if (!this.visible || this.activityCfgId <= 0) {
