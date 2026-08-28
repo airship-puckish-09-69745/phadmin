@@ -191,6 +191,15 @@
           <div v-if="!item.enableBetMoneyPrize" style="margin-bottom: 8px; color: #909399; font-size: 12px">
             已标记为不配置投注金奖励。
           </div>
+          <div v-if="item.enableBetMoneyPrize" style="margin-bottom: 12px; padding: 10px; background-color: #f0f9ff; border-left: 4px solid #409eff; font-size: 13px">
+<!--            <div style="margin-bottom: 5px"><strong>说明：</strong></div>-->
+<!--            <div style="color: #606266; line-height: 1.6">-->
+<!--              • <strong>总奖励</strong>：活动奖励池总额<br>-->
+<!--              • <strong>已发奖励</strong>：已经发放的奖励金额（由后端自动更新，只读）<br>-->
+<!--              • <strong>任务条件</strong>：用户投注金额需达到此值才能参与奖励<br>-->
+<!--              • <strong>奖励阶梯</strong>：根据用户积分区间和系数范围计算实际奖励，每个阶梯设定不同的奖励上限-->
+<!--            </div>-->
+          </div>
           <div style="margin-bottom: 12px">
             <el-button
               size="small"
@@ -214,7 +223,7 @@
           >
             <!-- 总奖励 -->
             <el-table-column label="总奖励(₱)" min-width="120">
-              <template>
+              <template slot-scope="_">
                 <el-input
                   v-model.number="item.pokerBetMoney.totalReward"
                   placeholder="总奖励"
@@ -226,13 +235,13 @@
             </el-table-column>
             <!-- 已发奖励（只读，由后端实时更新）-->
             <el-table-column label="已发奖励(₱)" min-width="120">
-              <template>
+              <template slot-scope="_">
                 <el-input v-model.number="item.pokerBetMoney.issuedReward" placeholder="--" size="mini" disabled />
               </template>
             </el-table-column>
             <!-- 任务条件 -->
             <el-table-column label="任务条件(₱)" min-width="130">
-              <template>
+              <template slot-scope="_">
                 <el-input
                   v-model.number="item.pokerBetMoney.taskCondition"
                   placeholder="请输入"
