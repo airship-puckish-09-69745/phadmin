@@ -584,7 +584,7 @@ export default {
       return this.slotsTagOptions
     },
     isUserLevelTag() {
-      return [50003, 50005, 50006, 50043].includes(Number(this.userTagDraft.tagId))
+      return [50002, 50003, 50005, 50006, 50043].includes(Number(this.userTagDraft.tagId))
     }
   },
   created() {
@@ -1153,7 +1153,7 @@ export default {
           if (!tag || Number(tag.tagType) <= 0 || Number(tag.tagId) <= 0 || Number(tag.tagValue) <= 0) return '请配置有效的用户标签条件'
           if (Number(tag.tagType) !== 5) return 'Slots标签配置无效'
           if (![50001, 50002, 50003, 50005, 50006, 50008, 50043].includes(Number(tag.tagId))) return `不支持的标签ID：${tag.tagId}`
-          if ([50003, 50005, 50006, 50043].includes(Number(tag.tagId)) && ![1, 2, 3].includes(Number(tag.tagValue))) return '请选择有效的用户等级'
+          if ([50002, 50003, 50005, 50006, 50043].includes(Number(tag.tagId)) && ![1, 2, 3].includes(Number(tag.tagValue))) return '请选择有效的用户等级'
           if (tagIds.has(Number(tag.tagId))) return `同一种标签只能添加一次：${tag.tagId}`
           tagIds.add(Number(tag.tagId))
         }
@@ -1228,7 +1228,7 @@ export default {
       const type = this.userTagTypeOptions.find(item => item.value === Number(tag.tagType))
       const tagOption = this.slotsTagOptions.find(item => item.value === Number(tag.tagId))
       const direction = tag.isReverse ? '反向' : '正向'
-      if ([50003, 50005, 50006, 50043].includes(Number(tag.tagId))) {
+      if ([50002, 50003, 50005, 50006, 50043].includes(Number(tag.tagId))) {
         const value = this.userLevelOptions.find(item => item.value === Number(tag.tagValue))
         return `${direction}${type ? type.label : '标签'}：${tagOption ? tagOption.label : tag.tagId} - ${value ? value.label : tag.tagValue}`
       }
