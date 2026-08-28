@@ -763,9 +763,9 @@ export default {
     onUserTypeChange(userTypes) {
       const selected = [...new Set((userTypes || []).map(Number))]
       if (selected.length > 1 && selected[selected.length - 1] === 2) {
-        this.editItem.userTypes = [2]
+        this.editItem.userTypes = selected.includes(5) ? [2, 5] : [2]
       } else if (selected.length > 1 && selected.includes(2)) {
-        this.editItem.userTypes = selected.filter(item => item !== 2)
+        this.editItem.userTypes = selected[selected.length - 1] === 5 ? [2, 5] : selected.filter(item => item !== 2)
       } else {
         this.editItem.userTypes = selected
       }
@@ -1145,7 +1145,7 @@ export default {
       if (!Array.isArray(activity.gameIdList) || !activity.gameIdList.length) return '请至少选择一个参与游戏'
       if (!Array.isArray(activity.userTypes) || !activity.userTypes.length || activity.userTypes.some(item => ![1, 2, 3, 5].includes(Number(item)))) return '请选择参与用户类型'
       if (new Set(activity.userTypes.map(Number)).size !== activity.userTypes.length) return '参与用户类型不能重复'
-      if (activity.userTypes.includes(2) && activity.userTypes.length > 1) return '全部用户不能与其它参与用户类型同时选择'
+      if (activity.userTypes.includes(2) && (activity.userTypes.length !== 1 && !(activity.userTypes.length === 2 && activity.userTypes.includes(5)))) return '全部用户只能单独选择或与用户标签组合'
       if (activity.userTypes.includes(5)) {
         if (!Array.isArray(activity.userTagConfig) || !activity.userTagConfig.length) return '请至少加入一个用户标签条件'
         const tagIds = new Set()
@@ -1157,6 +1157,7 @@ export default {
           if (tagIds.has(Number(tag.tagId))) return `同一种标签只能添加一次：${tag.tagId}`
           tagIds.add(Number(tag.tagId))
         }
+        if (activity.userTypes.includes(2) && activity.userTagConfig.some(tag => !tag.isReverse)) return '全部用户与用户标签组合时只能配置反向标签'
       }
       if (Number(activity.dailyPropLimit) <= 0) return '每日发放道具上限必须大于0'
       if (Number(activity.totalPropLimit) <= 0) return '总发放道具上限必须大于0'
