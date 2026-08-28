@@ -157,7 +157,7 @@ export default {
     // 触发"用户等级"子选择的 tagId 列表；不同玩法可覆盖
     levelTagIds: {
       type: Array,
-      default: () => [50005, 50006, 50003]
+      default: () => [50005, 50006, 50003, 50002]
     },
     // 允许的用户类型列表，默认全部可选
     enabledUserTypes: {
