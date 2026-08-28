@@ -220,7 +220,7 @@
                   placeholder="总奖励"
                   size="mini"
                   :disabled="!item.enableBetMoneyPrize"
-                  @input="val => { if (val < 0 || val === '') item.pokerBetMoney.totalReward = 0 }"
+                  oninput="if(value<0||value===''){value=0}"
                 />
               </template>
             </el-table-column>
@@ -238,7 +238,7 @@
                   placeholder="请输入"
                   size="mini"
                   :disabled="!item.enableBetMoneyPrize"
-                  @input="val => { if (val < 0 || val === '') item.pokerBetMoney.taskCondition = 0 }"
+                  oninput="if(value<0||value===''){value=0}"
                 />
               </template>
             </el-table-column>
@@ -717,6 +717,13 @@ export default {
         Message.error('请选择参与活动的游戏'); return false
       }
       if (!this.validateUserConfig()) return false
+
+      // Task 4: 至少保留一个奖励类型
+      if (!this.item.enableProgressPrize && !this.item.enableBetMoneyPrize) {
+        Message.error('道具奖励和投注金奖励至少需要启用一个')
+        return false
+      }
+
       const prize = this.item.propPools
       if (!this.validateNumber(prize.taskCondition, this.progressPlaceholder, { min: 0, max: MAX_AMOUNT })) return false
       if (this.item.enableProgressPrize) {
@@ -749,8 +756,9 @@ export default {
           const prefix = `第${i + 1}条投注金阶梯`
           if (!this.validateNumber(tier.minScore, `${prefix}积分区间开始`, { min: 0, max: MAX_AMOUNT })) return false
           if (!this.validateNumber(tier.maxScore, `${prefix}积分区间结束`, { min: 0, max: MAX_AMOUNT })) return false
-          if (this.toSafeNumber(tier.maxScore) < this.toSafeNumber(tier.minScore)) {
-            Message.error(`${prefix}积分区间结束不能小于开始`); return false
+          // Task 3: 积分区间开始 < 积分区间结束
+          if (this.toSafeNumber(tier.maxScore) <= this.toSafeNumber(tier.minScore)) {
+            Message.error(`${prefix}积分区间结束必须大于开始`); return false
           }
           if (!this.validateNumber(tier.minCoefficient, `${prefix}系数区间开始`, { min: 0, max: MAX_COEFFICIENT })) return false
           if (!this.validateNumber(tier.maxCoefficient, `${prefix}系数区间结束`, { min: 0, max: MAX_COEFFICIENT })) return false
@@ -758,6 +766,21 @@ export default {
             Message.error(`${prefix}系数区间结束不能小于开始`); return false
           }
           if (!this.validateNumber(tier.maxReward, `${prefix}奖励上限(₱)`, { min: 0, max: MAX_AMOUNT })) return false
+        }
+        // Task 3: 检查积分区间是否交叉
+        for (let i = 0; i < rewardTiers.length; i++) {
+          for (let j = i + 1; j < rewardTiers.length; j++) {
+            const tier1 = rewardTiers[i]
+            const tier2 = rewardTiers[j]
+            const min1 = this.toSafeNumber(tier1.minScore)
+            const max1 = this.toSafeNumber(tier1.maxScore)
+            const min2 = this.toSafeNumber(tier2.minScore)
+            const max2 = this.toSafeNumber(tier2.maxScore)
+            // 检查区间是否有交叉：区间1和区间2有交叉当且仅当 max1 > min2 且 max2 > min1
+            if (max1 > min2 && max2 > min1) {
+              Message.error(`第${i + 1}条和第${j + 1}条投注金阶梯的积分区间存在交叉，请调整`); return false
+            }
+          }
         }
       }
       return true
