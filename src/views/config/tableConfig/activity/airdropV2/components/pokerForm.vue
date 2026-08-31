@@ -119,7 +119,7 @@
                 </el-select>
               </template>
             </el-table-column>
-            <el-table-column label="进度要求" min-width="120">
+            <el-table-column label="进度要求" min-width="120" align="center">
               <template slot-scope="scope">
                 <el-input
                   v-model.number="scope.row.taskCondition"
@@ -130,28 +130,28 @@
                 />
               </template>
             </el-table-column>
-            <el-table-column label="道具类型" min-width="140">
+            <el-table-column label="道具类型" min-width="140" align="center">
               <template slot-scope="scope">
                 <el-select v-model="scope.row.propType" placeholder="请选择" size="mini" :disabled="!item.enableProgressPrize" @change="onPropTypeChange(scope.row, scope.$index)">
                   <el-option v-for="opt in propTypeOptions" :key="opt.value" :label="opt.label" :value="opt.value" />
                 </el-select>
               </template>
             </el-table-column>
-            <el-table-column label="道具名称" min-width="160">
+            <el-table-column label="道具名称" min-width="160" align="center">
               <template slot-scope="scope">
                 <el-select v-model="scope.row.propId" placeholder="请选择" size="mini" :disabled="!item.enableProgressPrize" @change="onPropNameChange(scope.row, scope.$index)">
                   <el-option v-for="opt in propOptionsMap[scope.$index] || []" :key="opt.value" :label="opt.label" :value="opt.value" />
                 </el-select>
               </template>
             </el-table-column>
-            <el-table-column label="可用时间" min-width="120">
+            <el-table-column label="可用时间" min-width="120" align="center">
               <template slot-scope="scope">
                 <el-select v-model="scope.row.propTime" placeholder="请选择" size="mini" :disabled="!item.enableProgressPrize">
                   <el-option v-for="opt in propDayTypeOptions" :key="opt.value" :label="opt.label" :value="opt.value" />
                 </el-select>
               </template>
             </el-table-column>
-            <el-table-column label="道具数量" min-width="100">
+            <el-table-column label="道具数量" min-width="100" align="center">
               <template slot-scope="scope">
                 <el-input
                   v-model.number="scope.row.propNum"
@@ -162,7 +162,7 @@
                 />
               </template>
             </el-table-column>
-            <el-table-column label="道具上限" min-width="100">
+            <el-table-column label="道具上限" min-width="100" align="center">
               <template slot-scope="scope">
                 <el-input
                   v-model.number="scope.row.propLimit"
@@ -191,7 +191,7 @@
           <div v-if="!item.enableBetMoneyPrize" style="margin-bottom: 8px; color: #909399; font-size: 12px">
             已标记为不配置投注金奖励。
           </div>
-          <div v-if="item.enableBetMoneyPrize" style="margin-bottom: 12px; padding: 10px; background-color: #f0f9ff; border-left: 4px solid #409eff; font-size: 13px">
+<!--          <div v-if="item.enableBetMoneyPrize" style="margin-bottom: 12px; padding: 10px; background-color: #f0f9ff; border-left: 4px solid #409eff; font-size: 13px">-->
 <!--            <div style="margin-bottom: 5px"><strong>说明：</strong></div>-->
 <!--            <div style="color: #606266; line-height: 1.6">-->
 <!--              • <strong>总奖励</strong>：活动奖励池总额<br>-->
@@ -199,7 +199,7 @@
 <!--              • <strong>任务条件</strong>：用户投注金额需达到此值才能参与奖励<br>-->
 <!--              • <strong>奖励阶梯</strong>：根据用户积分区间和系数范围计算实际奖励，每个阶梯设定不同的奖励上限-->
 <!--            </div>-->
-          </div>
+<!--          </div>-->
           <div style="margin-bottom: 12px">
             <el-button
               size="small"
@@ -221,8 +221,17 @@
             style="width: 100%"
             :span-method="pokerBetMoneySpanMethod"
           >
+            <!-- 任务类型 -->
+            <el-table-column label="任务类型" min-width="150" align="center">
+              <template slot-scope="_">
+                <el-select v-model="item.pokerBetMoney.taskType" placeholder="请选择" style="width: 220px" :disabled="!item.enableBetMoneyPrize">
+                  <el-option v-for="opt in pokerTaskTypes" :key="opt.value" :label="opt.label" :value="opt.value" />
+                </el-select>
+              </template>
+            </el-table-column>
+
             <!-- 总奖励 -->
-            <el-table-column label="总奖励(₱)" min-width="120">
+            <el-table-column label="总奖励(₱)" min-width="80" align="center">
               <template slot-scope="_">
                 <el-input
                   v-model.number="item.pokerBetMoney.totalReward"
@@ -234,13 +243,13 @@
               </template>
             </el-table-column>
             <!-- 已发奖励（只读，由后端实时更新）-->
-            <el-table-column label="已发奖励(₱)" min-width="120">
+            <el-table-column label="已发奖励(₱)" min-width="80" align="center">
               <template slot-scope="_">
                 <el-input v-model.number="item.pokerBetMoney.issuedReward" placeholder="--" size="mini" disabled />
               </template>
             </el-table-column>
             <!-- 任务条件 -->
-            <el-table-column label="任务条件(₱)" min-width="130">
+            <el-table-column label="任务条件" min-width="80" align="center">
               <template slot-scope="_">
                 <el-input
                   v-model.number="item.pokerBetMoney.taskCondition"
@@ -251,7 +260,7 @@
                 />
               </template>
             </el-table-column>
-            <el-table-column label="积分区间开始" min-width="130">
+            <el-table-column label="积分区间开始" min-width="80" align="center">
               <template slot-scope="scope">
                 <el-input
                   v-model.number="scope.row.minScore"
@@ -262,7 +271,7 @@
                 />
               </template>
             </el-table-column>
-            <el-table-column label="积分区间结束" min-width="130">
+            <el-table-column label="积分区间结束" min-width="80" align="center">
               <template slot-scope="scope">
                 <el-input
                   v-model.number="scope.row.maxScore"
@@ -273,7 +282,7 @@
                 />
               </template>
             </el-table-column>
-            <el-table-column label="系数区间开始" min-width="130">
+            <el-table-column label="系数区间开始" min-width="80" align="center">
               <template slot-scope="scope">
                 <el-input
                   v-model="scope.row.minCoefficient"
@@ -284,7 +293,7 @@
                 />
               </template>
             </el-table-column>
-            <el-table-column label="系数区间结束" min-width="100">
+            <el-table-column label="系数区间结束" min-width="80" align="center">
               <template slot-scope="scope">
                 <el-input
                   v-model="scope.row.maxCoefficient"
@@ -295,7 +304,7 @@
                 />
               </template>
             </el-table-column>
-            <el-table-column label="奖励上限(₱)" min-width="100">
+            <el-table-column label="奖励上限(₱)" min-width="80" align="center">
               <template slot-scope="scope">
                 <el-input
                   v-model.number="scope.row.maxReward"
@@ -374,6 +383,7 @@ function newPokerBetMoneyTier() {
 // 投注金奖励默认值
 function defaultPokerBetMoney() {
   return {
+    taskType: 2,
     totalReward: 1,
     issuedReward: 0,
     taskCondition: 2,
@@ -540,15 +550,21 @@ export default {
           maxCoefficient: this.toSafeNumber(t.maxCoefficient) / 100,
           maxReward: this.toSafeNumber(t.maxReward) / 1000
         }))
+      const taskType = this.toSafeNumber(rr.taskType) || 2
+      if (taskType === 2) {
+        rr.taskCondition = this.toSafeNumber(rr.taskCondition) / 1000
+      }
       return {
+        taskType: taskType,
         totalReward: this.toSafeNumber(rr.totalReward) / 1000,
         issuedReward: this.toSafeNumber(rr.issuedReward) / 1000,
-        taskCondition: this.toSafeNumber(rr.taskCondition) / 1000,
+        taskCondition: this.toSafeNumber(rr.taskCondition),
         rewardTiers
       }
     },
     isBetMoneyPrizeConfigured(pokerBetMoney) {
       if (!pokerBetMoney) return false
+      if (this.toSafeNumber(pokerBetMoney.taskType) > 0) return true
       if (this.toSafeNumber(pokerBetMoney.totalReward) > 0) return true
       if (this.toSafeNumber(pokerBetMoney.issuedReward) > 0) return true
       if (this.toSafeNumber(pokerBetMoney.taskCondition) > 0) return true
@@ -665,23 +681,21 @@ export default {
         importedFilename: ext.importedFilename || ''
       }
 
-      const prize = this.normalizePrize(ext.propPools)
-      const taskType = this.toSafeNumber(prize.taskType || ext.taskType, 1)
-      prize.taskType = taskType
+      const prop = this.normalizePrize(ext.propPools)
+      const taskType = this.toSafeNumber(prop.taskType || ext.taskType, 1)
+      prop.taskType = taskType
 
       // 有效下注类型时进度要求除以 1000 转换为 ₱ 显示
       if (taskType === 2) {
-        prize.taskCondition = this.toSafeNumber(prize.taskCondition) / 1000
+        prop.taskCondition = this.toSafeNumber(prop.taskCondition) / 1000
       }
       const enableProgressPrize = typeof ext.enableProgressPrize === 'boolean'
         ? ext.enableProgressPrize
-        : this.isProgressPrizeConfigured(prize)
+        : this.isProgressPrizeConfigured(prop)
 
       // 投注金奖励：货币字段除以 1000 转换为 ₱ 显示；系数除以 100
       const pokerBetMoney = this.normalizePokerBetMoney(ext.pokerBetMoney)
-      const enableBetMoneyPrize = typeof ext.enableBetMoneyPrize === 'boolean'
-        ? ext.enableBetMoneyPrize
-        : this.isBetMoneyPrizeConfigured(pokerBetMoney)
+      const enableBetMoneyPrize = typeof ext.enableBetMoneyPrize === 'boolean' ? ext.enableBetMoneyPrize : this.isBetMoneyPrizeConfigured(pokerBetMoney)
 
       this.item = {
         id: raw.id || 0,
@@ -699,7 +713,7 @@ export default {
         taskText: ext.taskText || '',
         enableProgressPrize,
         enableBetMoneyPrize,
-        propPools: prize,
+        propPools: prop,
         pokerBetMoney,
         userConfig
       }
@@ -750,6 +764,7 @@ export default {
       }
       const pokerBetMoney = this.item.pokerBetMoney
       if (this.item.enableBetMoneyPrize) {
+        if (!this.validateNumber(pokerBetMoney.taskType, '任务类型', { min: 0, max: MAX_AMOUNT })) return false
         if (!this.validateNumber(pokerBetMoney.totalReward, '总奖励(₱)', { min: 0, max: MAX_AMOUNT })) return false
         if (!this.validateNumber(pokerBetMoney.issuedReward, '已发奖励(₱)', { min: 0, max: MAX_AMOUNT })) return false
         if (!this.validateNumber(pokerBetMoney.taskCondition, '任务条件(₱)', { min: 0, max: MAX_AMOUNT })) return false
@@ -796,26 +811,27 @@ export default {
     },
     getPostData() {
       const d = this.item
-      const prize = { ...newProp(), ...d.propPools }
-      prize.taskType = this.toSafeNumber(prize.taskType, 1)
-      if (prize.taskType === 2) {
-        prize.taskCondition = Math.round(this.toSafeNumber(prize.taskCondition) * 1000)
+      const prop = { ...newProp(), ...d.propPools }
+      prop.taskType = this.toSafeNumber(prop.taskType, 1)
+      if (prop.taskType === 2) {
+        prop.taskCondition = Math.round(this.toSafeNumber(prop.taskCondition) * 1000)
       }
       if (!d.enableProgressPrize) {
-        prize.propType = 0
-        prize.propId = 0
-        prize.propName = ''
-        prize.propNum = 0
-        prize.propLimit = 0
+        prop.propType = 0
+        prop.propId = 0
+        prop.propName = ''
+        prop.propNum = 0
+        prop.propLimit = 0
       }
       // 投注金奖励：货币字段乘以 1000 存储；系数乘以 100 取整；已发奖励由后端维护
       const rewardTiers = Array.isArray(d.pokerBetMoney.rewardTiers) && d.pokerBetMoney.rewardTiers.length > 0
         ? d.pokerBetMoney.rewardTiers
         : [newPokerBetMoneyTier()]
       const pokerBetMoney = {
+        taskType: this.toSafeNumber(d.pokerBetMoney.taskType, 2),
         totalReward: Math.round(this.toSafeNumber(d.pokerBetMoney.totalReward) * 1000),
         issuedReward: Math.round(this.toSafeNumber(d.pokerBetMoney.issuedReward) * 1000),
-        taskCondition: Math.round(this.toSafeNumber(d.pokerBetMoney.taskCondition) * 1000),
+        taskCondition: Math.round(this.toSafeNumber(d.pokerBetMoney.taskCondition)),
         rewardTiers: rewardTiers.slice(0, MAX_REWARD_TIER_COUNT).map(t => ({
           minScore: Math.round(this.toSafeNumber(t.minScore) * 1000),
           maxScore: Math.round(this.toSafeNumber(t.maxScore) * 1000),
@@ -824,7 +840,12 @@ export default {
           maxReward: Math.round(this.toSafeNumber(t.maxReward) * 1000)
         }))
       }
+      // taskType 2: 投注金奖励任务条件为有效下注总额时，乘以 1000 存储
+      if (pokerBetMoney.taskType === 2) {
+        pokerBetMoney.taskCondition = Math.round(this.toSafeNumber(pokerBetMoney.taskCondition) * 1000)
+      }
       if (!d.enableBetMoneyPrize) {
+        pokerBetMoney.taskType = 2
         pokerBetMoney.totalReward = 0
         pokerBetMoney.taskCondition = 0
         pokerBetMoney.rewardTiers = [newPokerBetMoneyTier()]
@@ -842,11 +863,10 @@ export default {
         whitelist: d.whitelist
       }
       const extendObj = {
-        // taskType: prize.taskType,
         taskText: d.taskText || '',
         enableProgressPrize: !!d.enableProgressPrize,
         enableBetMoneyPrize: !!d.enableBetMoneyPrize,
-        propPools: prize,
+        propPools: prop,
         pokerBetMoney,
         userTypes: d.userConfig.userTypes,
         userFilterCondition: d.userConfig.userFilterCondition,

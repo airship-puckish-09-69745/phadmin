@@ -586,6 +586,19 @@ export default {
         prop.propLimit = 0
       }
 
+      const slotBetMoney = !d.enableBetMoneyPrize ? defaultSlotBetMoney() : {
+        taskType: this.toSafeNumber(d.slotBetMoney.taskType, 2),
+        taskCondition: Math.round(this.toSafeNumber(d.slotBetMoney.taskCondition)),
+        totalReward: Math.round(this.toSafeNumber(d.slotBetMoney.totalReward) * 1000),
+        issuedReward: Math.round(this.toSafeNumber(d.slotBetMoney.issuedReward) * 1000),
+        userMaxReward: Math.round(this.toSafeNumber(d.slotBetMoney.userMaxReward) * 1000)
+      }
+
+      // taskType 2: 投注金奖励任务条件为有效下注总额时，乘以 1000 存储
+      if (slotBetMoney.taskType === 2) {
+        slotBetMoney.taskCondition = Math.round(this.toSafeNumber(slotBetMoney.taskCondition) * 1000)
+      }
+
       const activityObj = {
         name: d.activityName,
         activityId: ACTIVITY_ID,
@@ -604,13 +617,7 @@ export default {
         enableBetMoneyPrize: !!d.enableBetMoneyPrize,
         propPools: prop,
         // 投注金奖励：货币字段乘以 1000 存储，已发奖励由后端维护保持原值
-        slotBetMoney: !d.enableBetMoneyPrize ? defaultSlotBetMoney() : {
-          taskType: this.toSafeNumber(d.slotBetMoney.taskType, 2),
-          taskCondition: Math.round(this.toSafeNumber(d.slotBetMoney.taskCondition) * 1000),
-          totalReward: Math.round(this.toSafeNumber(d.slotBetMoney.totalReward) * 1000),
-          issuedReward: Math.round(this.toSafeNumber(d.slotBetMoney.issuedReward) * 1000),
-          userMaxReward: Math.round(this.toSafeNumber(d.slotBetMoney.userMaxReward) * 1000)
-        },
+        slotBetMoney: slotBetMoney,
         userTypes: d.userConfig.userTypes,
         userFilterCondition: d.userConfig.userFilterCondition,
         importedFilename: d.userConfig.importedFilename || ''
