@@ -685,7 +685,11 @@ export default {
       request({
         url: '/propsconfig/props/config/list',
         method: 'get',
-        data: { PageNum: 1, PageSize: 1000 }
+        data: {
+          PageNum: 1,
+          PageSize: 1000,
+          PropType: PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN
+        }
       }).then(response => {
         if (response.RetCode !== 0) return
         const rows = response.Data && Array.isArray(response.Data.list) ? response.Data.list : []
