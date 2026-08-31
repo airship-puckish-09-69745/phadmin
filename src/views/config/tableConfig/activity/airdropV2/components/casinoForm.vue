@@ -497,12 +497,12 @@ export default {
         userFilterCondition,
         importedFilename: ext.importedFilename || ''
       }
-
-      // 兼容旧数据：propPools 里若无 taskType/taskCondition 则从 ext 顶层读取
       const rawPropPools = this.safeJson(ext.propPools, defaultPropPools())
+      const taskType = rawPropPools.taskType || ext.taskType || 2
+
       const propPools = {
-        taskType: rawPropPools.taskType || ext.taskType || 2,
-        taskCondition: (rawPropPools.taskCondition !== undefined ? rawPropPools.taskCondition : (ext.taskCondition || 0)) / 1000,
+        taskType: taskType,
+        taskCondition: (rawPropPools.taskCondition || 0) / (taskType === 2 ? 1000 : 1), // 任务类型为 2 时，任务条件除以 1000 转换为 ₱ 显示
         propType: rawPropPools.propType || 5,
         propId: rawPropPools.propId || 0,
         propName: rawPropPools.propName || '',
@@ -614,14 +614,16 @@ export default {
         gameIdList: d.gameIdList,
         whitelist: d.whitelist
       }
+      const taskType = this.toSafeNumber(d.propPools.taskType, 2)
+
       const extendObj = {
         taskText: d.taskText || '',
         enableProgressPrize: !!d.enableProgressPrize,
         enableBetMoneyPrize: !!d.enableBetMoneyPrize,
         // propPools 中包含任务类型/条件和道具信息
         propPools: !d.enableProgressPrize ? defaultPropPools() : {
-          taskType: this.toSafeNumber(d.propPools.taskType, 2),
-          taskCondition: Math.round(this.toSafeNumber(d.propPools.taskCondition) * 1000),
+          taskType: taskType,
+          taskCondition: Math.round(this.toSafeNumber(d.propPools.taskCondition) * (taskType === 2 ? 1000 : 1)), // 任务类型为 2 时，任务条件乘以 1000 存储
           propType: this.toSafeNumber(d.propPools.propType),
           propId: this.toSafeNumber(d.propPools.propId),
           propName: d.propPools.propName,
@@ -629,6 +631,7 @@ export default {
           propNum: this.toSafeNumber(d.propPools.propNum),
           propLimit: this.toSafeNumber(d.propPools.propLimit)
         },
+
         // 投注金奖励：货币字段乘以 1000 存储
         casinosBetMoney: !d.enableBetMoneyPrize ? defaultCasinosBetMoney() : {
           taskType: this.toSafeNumber(d.casinosBetMoney.taskType, 2),
