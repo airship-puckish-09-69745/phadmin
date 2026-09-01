@@ -47,11 +47,6 @@
               {{ formatTime(scope.row.activity.endTime) }}
             </template>
           </el-table-column>
-          <el-table-column prop="showEndTime" label="展示结束时间" sortable="custom" align="center">
-            <template slot-scope="scope">
-              {{ formatTime(scope.row.activity.showEndTime) }}
-            </template>
-          </el-table-column>
           <el-table-column prop="modifyUser" label="最后修改人" align="center" />
           <el-table-column prop="status" label="状态" align="center" width="100">
             <template slot-scope="scope">

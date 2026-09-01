@@ -37,14 +37,12 @@
             </el-col>
             <el-col :xs="24" :sm="12">
               <el-form-item label="每日活动开始时间：" required>
-                <el-date-picker v-model="item.dailyStartTime" type="datetime" placeholder="选择开始时间" format="HH:mm"
-                                size="mini" style="width: 300px"/>
+                <el-date-picker v-model="item.dailyStartTime" type="datetime" placeholder="选择开始时间" format="HH:mm:ss" size="mini" style="width: 300px"/>
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
               <el-form-item label="每日活动结束时间：" required>
-                <el-date-picker v-model="item.dailyEndTime" type="datetime" placeholder="选择结束时间" format="HH:mm"
-                                size="mini" style="width: 300px"/>
+                <el-date-picker v-model="item.dailyEndTime" type="datetime" placeholder="选择结束时间" format="HH:mm:ss" size="mini" style="width: 300px"/>
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
@@ -86,6 +84,7 @@
                   :inactive-value="false"
                   active-text="开启"
                   inactive-text="关闭"
+                  :disabled="isAbTestSwitchDisabled()"
                 />
               </el-form-item>
             </el-col>
@@ -240,21 +239,19 @@ function newItem() {
     dailyStartTime: new Date(new Date().setHours(0, 0, 0, 0)).getTime(),
     dailyEndTime: new Date(new Date().setDate(new Date().getDate() + 30)).setHours(23, 59, 59, 999),
     whitelist: {siteIdList: [], abTest: {switch: false, bPercent: 0}},
+    gameIdList: [22],
     dayPrizeThreshold: 0,
     totalPrizeThreshold: 0,
     debugTimeOffset: 0,
     activitySessionEnum: [
-      {value: 1000, label: '1'},
-      {value: 5000, label: '5'},
-      {value: 10000, label: '10'},
+      {value: 20000, label: '20'},
       {value: 50000, label: '50'},
-      {value: 100000, label: '100'},
       {value: 200000, label: '200'},
       {value: 500000, label: '500'},
       {value: 1000000, label: '1000'}
     ],
     winGameCount: [], // 参与活动场次（盲注级别）
-    treasureCfg: [{id: 1, claimAmount: '', requiredGameCount: '', ratio: ''}] // 宝箱配置表格
+    treasureCfg: [{id: 1, claimAmount: 0, requiredGameCount: 0, ratio: 0}] // 宝箱配置表格
   }
 }
 
@@ -274,6 +271,16 @@ export default {
       type: Object,
       default: () => ({})
     }
+  },
+  rules: {
+    requiredGameCount: [
+      {
+        type: 'number',
+        min: 1,
+        message: '要求局数不能小于1',
+        trigger: 'blur'
+      }
+    ]
   },
   data() {
     return {
@@ -357,8 +364,8 @@ export default {
         winGameCount: ext.winGameCount || [],
         treasureCfg: Array.isArray(ext.treasureCfg) && ext.treasureCfg.length > 0 ? ext.treasureCfg : [{
           id: 1,
-          claimAmount: '',
-          requiredGameCount: '',
+          claimAmount: 0,
+          requiredGameCount: 0,
           ratio: 0
         }]
       }
@@ -413,7 +420,8 @@ export default {
         whitelist: {
           siteIdList: (d.whitelist && Array.isArray(d.whitelist.siteIdList)) ? d.whitelist.siteIdList : [],
           abTest: (d.whitelist && d.whitelist.abTest) ? d.whitelist.abTest : {switch: false, bPercent: 0}
-        }
+        },
+        gameIdList: d.gameIdList || []
       }
 
       // 宝箱配置领取金额 claimAmount 元转分
@@ -484,7 +492,7 @@ export default {
       })
     },
     addTreasureRow() {
-      this.item.treasureCfg.push({id: this.item.treasureCfg.length + 1, claimAmount: '', requiredGameCount: '', ratio: ''})
+      this.item.treasureCfg.push({id: this.item.treasureCfg.length + 1, claimAmount: 0, requiredGameCount: 0, ratio: 0})
       this.reindexTreasure()
     },
     deleteTreasureRow(index) {
@@ -494,6 +502,16 @@ export default {
       }
       this.item.treasureCfg.splice(index, 1)
       this.reindexTreasure()
+    },
+    isAbTestSwitchDisabled() {
+      // 新增状态，不禁用
+      if (!this.item.id || this.item.id <= 0) {
+        return false
+      }
+      const now = Math.floor(Date.now())
+
+      // 编辑状态，并且当前时间在活动开始和结束时间之间
+      return now >= this.item.startTime && now <= this.item.endTime
     }
   }
 }
