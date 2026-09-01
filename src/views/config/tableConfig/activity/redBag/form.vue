@@ -109,7 +109,17 @@
                 </el-col>
 
                 <!-- 参与活动用户类型 -->
-
+                <el-col>
+                  <UserTypeUnit
+                    :key="userTypeUnitKey"
+                    v-model="item.userConfig"
+                    :enabled-user-types="[2,3,5]"
+                    :activity-cfg-id="Number(item.id) || 0"
+                    :custom-user-type-label="currentUserTypeLabel"
+                    :custom-user-tag-options="currentUserTagOptions"
+                    :level-tag-ids="currentLevelTagIds"
+                  />
+                </el-col>
 
                 <el-col>
                   <el-form-item label="玩法大类型">
@@ -227,15 +237,63 @@ import UserTypeUnit from '@/components/UserType/index.vue'
 import TaskConfig from './components/TaskConfig.vue'
 import WhitelistConfig from './components/WhitelistConfig.vue'
 
-function defaultUserConfig() {
+function defaultUserConfig(defaultUserType = 2) {
   return {
-    userTypes: [2],
+    userTypes: [defaultUserType],
     userFilterCondition: {
       registerTimeRange: { min: 0, max: 0 },
       betTimesRange: { min: 0, max: 0 },
       userTagConfig: { tagType: 0, tagId: 0, tagValue: 0 }
     },
     importedFilename: ''
+  }
+}
+
+const GAME_TYPE_USER_TAG_PRESET = {
+  1: {
+    customUserTypeLabel: '',
+    levelTagIds: [],
+    customUserTagOptions: [
+      {
+        value: 5,
+        label: 'Slots用户类型',
+        children: [
+          { value: 50001, label: 'Slots新增用户' },
+          { value: 50002, label: 'Slots登录天数' },
+          { value: 50008, label: 'Slots回归用户' }
+        ]
+      }
+    ]
+  },
+  2: {
+    customUserTypeLabel: 'poker 标签用户',
+    levelTagIds: [],
+    customUserTagOptions: [
+      {
+        value: 7,
+        label: 'poker用户类型',
+        children: [
+          { value: 70001, label: 'poker 新增用户' },
+          { value: 70002, label: 'poker 下注' },
+          { value: 70003, label: 'poker 额度' }
+        ]
+      }
+    ]
+  },
+  3: {
+    customUserTypeLabel: 'casino 标签用户',
+    levelTagIds: [],
+    customUserTagOptions: [
+      {
+        value: 6,
+        label: 'casino用户类型',
+        children: [
+          { value: 60001, label: 'casino 新增用户' },
+          { value: 60002, label: 'casino 下注' },
+          { value: 60003, label: 'casino 额度' }
+        ]
+      }
+    ]
   }
 }
 export default {
@@ -283,17 +341,6 @@ export default {
       ],
       env: store.getters.env || '',
       // 游戏树相关
-      redBagUserTagOptions: [
-        {
-          value: 5,
-          label: 'Slots用户类型',
-          children: [
-            { value: 50001, label: 'Slots新增用户' },
-            { value: 50002, label: 'Slots登录天数' },
-            { value: 50008, label: 'Slots回归用户' }
-          ]
-        }
-      ],
       filterText: '',
       allTreeData: [],
       treeData: [],
@@ -304,6 +351,23 @@ export default {
       },
       gamesSorted: [],
       gamesSortDialogVisible: false
+    }
+  },
+  computed: {
+    userTypeUnitKey() {
+      return `red-bag-user-type-${Number((this.item && this.item.gameType) || 1)}`
+    },
+    currentUserTypePreset() {
+      return this.getUserTypePreset(this.item && this.item.gameType)
+    },
+    currentUserTagOptions() {
+      return this.currentUserTypePreset.customUserTagOptions
+    },
+    currentUserTypeLabel() {
+      return this.currentUserTypePreset.customUserTypeLabel
+    },
+    currentLevelTagIds() {
+      return this.currentUserTypePreset.levelTagIds
     }
   },
   // 侦听属性变化，自动处理弹窗显示/隐藏和数据加载/重置
@@ -362,12 +426,78 @@ export default {
     this.getGameAll()
   },
   methods: {
+    getUserTypePreset(gameType = 1) {
+      const normalizedGameType = Number(gameType) || 1
+      return GAME_TYPE_USER_TAG_PRESET[normalizedGameType] || GAME_TYPE_USER_TAG_PRESET[1]
+    },
+    getDefaultTagByGameType(gameType = 1) {
+      const preset = this.getUserTypePreset(gameType)
+      const firstTagType = (preset.customUserTagOptions && preset.customUserTagOptions[0]) || {}
+      const firstTagChild = (firstTagType.children && firstTagType.children[0]) || {}
+      return {
+        tagType: Number(firstTagType.value) || 0,
+        tagId: Number(firstTagChild.value) || 0
+      }
+    },
+    normalizeTagConfigByGameType(userTagConfig, gameType, forceResetTag = false) {
+      const preset = this.getUserTypePreset(gameType)
+      const options = Array.isArray(preset.customUserTagOptions) ? preset.customUserTagOptions : []
+      const defaultTag = this.getDefaultTagByGameType(gameType)
+      const normalized = {
+        tagType: Number((userTagConfig || {}).tagType) || 0,
+        tagId: Number((userTagConfig || {}).tagId) || 0,
+        tagValue: Number((userTagConfig || {}).tagValue) || 0
+      }
+
+      const validTagTypes = options.map(opt => Number(opt.value)).filter(v => Number.isInteger(v))
+      if (forceResetTag || !validTagTypes.includes(normalized.tagType)) {
+        normalized.tagType = defaultTag.tagType
+      }
+
+      const currentTagType = options.find(opt => Number(opt.value) === normalized.tagType)
+      const validTagIds = currentTagType && Array.isArray(currentTagType.children)
+        ? currentTagType.children.map(child => Number(child.value)).filter(v => Number.isInteger(v))
+        : []
+      if (forceResetTag || !validTagIds.includes(normalized.tagId)) {
+        normalized.tagId = validTagIds.length > 0 ? validTagIds[0] : defaultTag.tagId
+      }
+      return normalized
+    },
+    syncUserConfigByGameType(forceResetTag = false) {
+      if (!this.item) return
+      const fallbackType = Array.isArray(this.item.userType) && this.item.userType.length > 0
+        ? Number(this.item.userType[0]) || 2
+        : 2
+      const normalizedUserConfig = this.normalizeUserConfig(this.item.userConfig, fallbackType)
+      const currentUserType = Array.isArray(normalizedUserConfig.userTypes) && normalizedUserConfig.userTypes.length > 0
+        ? Number(normalizedUserConfig.userTypes[0]) || fallbackType
+        : fallbackType
+      normalizedUserConfig.userTypes = [currentUserType]
+
+      if (currentUserType === 5) {
+        normalizedUserConfig.userFilterCondition.userTagConfig = this.normalizeTagConfigByGameType(
+          normalizedUserConfig.userFilterCondition.userTagConfig,
+          this.item.gameType,
+          forceResetTag
+        )
+      }
+
+      this.$set(this.item, 'userConfig', normalizedUserConfig)
+      this.item.userType = normalizedUserConfig.userTypes
+      this.item.userLabel = currentUserType === 5
+        ? Number(normalizedUserConfig.userFilterCondition.userTagConfig.tagId) || this.getDefaultTagByGameType(this.item.gameType).tagId
+        : null
+    },
     // 确保 item.userConfig 已初始化，防止 UserType 渲染时 userConfig 为 undefined
     ensureUserConfig() {
       if (!this.item) return
       if (!this.item.userConfig) {
-        this.$set(this.item, 'userConfig', defaultUserConfig())
+        const fallbackType = Array.isArray(this.item.userType) && this.item.userType.length > 0
+          ? Number(this.item.userType[0]) || 2
+          : 2
+        this.$set(this.item, 'userConfig', defaultUserConfig(fallbackType))
       }
+      this.syncUserConfigByGameType(false)
     },
     // 获取一个全新的默认表单数据对象（用于新增或重置表单）
     getDefaultItem() {
@@ -514,7 +644,7 @@ export default {
       }
       return normalized
     },
-    buildUserConfigFromLegacy(userType, userLabel, userConfig) {
+    buildUserConfigFromLegacy(userType, userLabel, userConfig, gameType = 1) {
       let parsedUserType = userType
       if (typeof userType === 'string') {
         try {
@@ -530,8 +660,11 @@ export default {
       const normalized = this.normalizeUserConfig(userConfig, fallbackType)
       normalized.userTypes = [fallbackType]
       if (fallbackType === 5) {
-        normalized.userFilterCondition.userTagConfig.tagType = 5
-        normalized.userFilterCondition.userTagConfig.tagId = Number(userLabel) || 50001
+        const nextTagConfig = {
+          ...normalized.userFilterCondition.userTagConfig,
+          tagId: Number(userLabel) || Number((normalized.userFilterCondition.userTagConfig || {}).tagId) || 0
+        }
+        normalized.userFilterCondition.userTagConfig = this.normalizeTagConfigByGameType(nextTagConfig, gameType)
       }
       return normalized
     },
@@ -636,11 +769,15 @@ export default {
       const newItem = mulFields1000(this.item, this.fields)
       const normalizedUserConfig = this.normalizeUserConfig(this.item.userConfig, 2)
       const currentUserType = normalizedUserConfig.userTypes[0]
-      if (currentUserType === 5 && !normalizedUserConfig.userFilterCondition.userTagConfig.tagType) {
-        normalizedUserConfig.userFilterCondition.userTagConfig.tagType = 5
+      if (currentUserType === 5) {
+        normalizedUserConfig.userFilterCondition.userTagConfig = this.normalizeTagConfigByGameType(
+          normalizedUserConfig.userFilterCondition.userTagConfig,
+          this.item.gameType
+        )
       }
+      const defaultTag = this.getDefaultTagByGameType(this.item.gameType)
       const currentUserLabel = currentUserType === 5
-        ? Number(normalizedUserConfig.userFilterCondition.userTagConfig.tagId) || 50001
+        ? Number(normalizedUserConfig.userFilterCondition.userTagConfig.tagId) || defaultTag.tagId
         : null
       if (currentUserType === 5 && !currentUserLabel) {
         this.errmsg('请选择用户标签')
@@ -772,7 +909,7 @@ export default {
         if (typeof data.userLabel === 'string') {
           data.userLabel = parseInt(data.userLabel, 10)
         }
-        data.userConfig = this.buildUserConfigFromLegacy(data.userType, data.userLabel, data.userConfig)
+        data.userConfig = this.buildUserConfigFromLegacy(data.userType, data.userLabel, data.userConfig, data.gameType)
         data.userType = data.userConfig.userTypes
         data.userLabel = data.userConfig.userTypes[0] === 5
           ? data.userConfig.userFilterCondition.userTagConfig.tagId
@@ -796,6 +933,7 @@ export default {
     },
     handleGameTypeChange() {
       // 切换玩法大类型时，清除已选游戏和排序缓存
+      this.syncUserConfigByGameType(true)
       this.item.gameIdCfg = []
       this.gamesSorted = []
       this.applyGameTypeFilter()
