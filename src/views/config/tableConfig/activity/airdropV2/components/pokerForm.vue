@@ -542,24 +542,22 @@ export default {
           maxReward: rr.maxReward !== undefined ? rr.maxReward : (rr.userMaxReward || 0)
         }]
       }
+      const taskType = this.toSafeNumber(rr.taskType) || 2
+      const divisor = taskType === 2 ? 1000 : 1
       rewardTiers = rewardTiers
         .slice(0, MAX_REWARD_TIER_COUNT)
         .map(t => ({
-          minScore: this.toSafeNumber(t.minScore) / 1000,
-          maxScore: this.toSafeNumber(t.maxScore) / 1000,
+          minScore: this.toSafeNumber(t.minScore) / divisor,
+          maxScore: this.toSafeNumber(t.maxScore) / divisor,
           minCoefficient: this.toSafeNumber(t.minCoefficient) / 100,
           maxCoefficient: this.toSafeNumber(t.maxCoefficient) / 100,
           maxReward: this.toSafeNumber(t.maxReward) / 1000
         }))
-      const taskType = this.toSafeNumber(rr.taskType) || 2
-      if (taskType === 2) {
-        rr.taskCondition = this.toSafeNumber(rr.taskCondition) / 1000
-      }
       return {
         taskType: taskType,
         totalReward: this.toSafeNumber(rr.totalReward) / 1000,
         issuedReward: this.toSafeNumber(rr.issuedReward) / 1000,
-        taskCondition: this.toSafeNumber(rr.taskCondition),
+        taskCondition: this.toSafeNumber(rr.taskCondition) / divisor,
         rewardTiers
       }
     },
@@ -825,18 +823,21 @@ export default {
         prop.propNum = 0
         prop.propLimit = 0
       }
+      const taskType = this.toSafeNumber(d.pokerBetMoney.taskType, 2)
+      const mult = taskType === 2 ? 1000 : 1
+
       // 投注金奖励：货币字段乘以 1000 存储；系数乘以 100 取整；已发奖励由后端维护
       const rewardTiers = Array.isArray(d.pokerBetMoney.rewardTiers) && d.pokerBetMoney.rewardTiers.length > 0
         ? d.pokerBetMoney.rewardTiers
         : [newPokerBetMoneyTier()]
       const pokerBetMoney = {
-        taskType: this.toSafeNumber(d.pokerBetMoney.taskType, 2),
+        taskType: taskType,
         totalReward: Math.round(this.toSafeNumber(d.pokerBetMoney.totalReward) * 1000),
         issuedReward: Math.round(this.toSafeNumber(d.pokerBetMoney.issuedReward) * 1000),
-        taskCondition: Math.round(this.toSafeNumber(d.pokerBetMoney.taskCondition)),
+        taskCondition: Math.round(this.toSafeNumber(d.pokerBetMoney.taskCondition) * mult),
         rewardTiers: rewardTiers.slice(0, MAX_REWARD_TIER_COUNT).map(t => ({
-          minScore: Math.round(this.toSafeNumber(t.minScore) * 1000),
-          maxScore: Math.round(this.toSafeNumber(t.maxScore) * 1000),
+          minScore: Math.round(this.toSafeNumber(t.minScore) * mult),
+          maxScore: Math.round(this.toSafeNumber(t.maxScore) * mult),
           minCoefficient: Math.round(this.toSafeNumber(t.minCoefficient) * 100),
           maxCoefficient: Math.round(this.toSafeNumber(t.maxCoefficient) * 100),
           maxReward: Math.round(this.toSafeNumber(t.maxReward) * 1000)
