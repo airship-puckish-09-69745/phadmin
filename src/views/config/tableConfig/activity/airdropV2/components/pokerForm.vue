@@ -544,6 +544,8 @@ export default {
       }
       const taskType = this.toSafeNumber(rr.taskType) || 2
       const divisor = taskType === 2 ? 1000 : 1
+
+
       rewardTiers = rewardTiers
         .slice(0, MAX_REWARD_TIER_COUNT)
         .map(t => ({
@@ -842,10 +844,6 @@ export default {
           maxCoefficient: Math.round(this.toSafeNumber(t.maxCoefficient) * 100),
           maxReward: Math.round(this.toSafeNumber(t.maxReward) * 1000)
         }))
-      }
-      // taskType 2: 投注金奖励任务条件为有效下注总额时，乘以 1000 存储
-      if (pokerBetMoney.taskType === 2) {
-        pokerBetMoney.taskCondition = Math.round(this.toSafeNumber(pokerBetMoney.taskCondition) * 1000)
       }
       if (!d.enableBetMoneyPrize) {
         pokerBetMoney.taskType = 2
