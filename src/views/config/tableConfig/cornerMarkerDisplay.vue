@@ -89,7 +89,7 @@
 
                         <!-- 生效站点多选 -->
                         <el-form-item label="生效站点：">
-                            <SiteSelect v-model="edit.item.SiteList" multiple placeholder="请选择站点"
+                            <SiteSelect v-model="edit.item.SiteList" multiple placeholder="请选择站点" :showCP="true"
                                 style="width: 300px" />
                         </el-form-item>
 
@@ -232,7 +232,7 @@ export default {
             // 处理直接数组数据，不需要JSON.parse
             const preData = Array.isArray(pre) ? pre : (pre.Data || [])
             const proData = Array.isArray(pro) ? pro : (pro.Data || [])
-            
+
             // 按ID分组数据
             const groupById = (data) => {
                 const groups = {}
@@ -249,60 +249,60 @@ export default {
                 })
                 return groups
             }
-            
+
             const newGroups = groupById(preData)
             const oldGroups = groupById(proData)
-            
+
             let str = ""
             // 处理switchData - 可能是数组或字符串
             let has = false
-            
+
             // 处理修改的配置
             for (const id in newGroups) {
                 if (oldGroups[id]) {
                     const newItem = newGroups[id]
                     const oldItem = oldGroups[id]
-                    
+
                     // 检查是否有变化（除了channel之外的其他字段）
                     const newCorner = JSON.parse(JSON.stringify(newItem.CornerMarker))
                     const oldCorner = JSON.parse(JSON.stringify(oldItem.CornerMarker))
-                    
+
                     // 检查各个字段的变化
                     const changes = []
-                    
+
                     if (oldItem.app_id !== newItem.app_id) {
                         changes.push(`应用ID：${oldItem.app_id} → ${newItem.app_id}`)
                     }
-                    
+
                     // 检查站点变化
                     const oldChannels = oldItem.channels.sort().join('，')
                     const newChannels = newItem.channels.sort().join('，')
                     if (oldChannels !== newChannels) {
                         changes.push(`站点：${oldChannels} → ${newChannels}`)
                     }
-                    
+
                     if (JSON.stringify(oldCorner.StartTime) !== JSON.stringify(newCorner.StartTime)) {
                         const oldStart = new Date(oldItem.CornerMarker.StartTime * 1000).toLocaleString()
                         const newStart = new Date(newItem.CornerMarker.StartTime * 1000).toLocaleString()
                         changes.push(`开始时间：${oldStart} → ${newStart}`)
                     }
-                    
+
                     if (JSON.stringify(oldCorner.EndTime) !== JSON.stringify(newCorner.EndTime)) {
                         const oldEnd = new Date(oldItem.CornerMarker.EndTime * 1000).toLocaleString()
                         const newEnd = new Date(newItem.CornerMarker.EndTime * 1000).toLocaleString()
                         changes.push(`结束时间：${oldEnd} → ${newEnd}`)
                     }
-                    
+
                     if (JSON.stringify(oldCorner.GameIdList) !== JSON.stringify(newCorner.GameIdList)) {
                         const oldGames = this.formatGameNames(oldItem.CornerMarker.GameIdList)
                         const newGames = this.formatGameNames(newItem.CornerMarker.GameIdList)
                         changes.push(`游戏列表：${oldGames} → ${newGames}`)
                     }
-                    
+
                     if (oldCorner.ImgUrl !== newCorner.ImgUrl) {
                         changes.push(`图片：${oldItem.CornerMarker.ImgUrl} → ${newItem.CornerMarker.ImgUrl}`)
                     }
-                    
+
                     if (changes.length > 0) {
                         has && (str += "\r\n---"); has = true
                         str += `\r\n修改：【${newItem.app_id}】，配置ID：${id}`
@@ -312,7 +312,7 @@ export default {
                     }
                 }
             }
-            
+
             // 处理新增的配置
             for (const id in newGroups) {
                 if (!oldGroups[id]) {
@@ -327,7 +327,7 @@ export default {
                     str += `\r\n图片：${newItem.CornerMarker.ImgUrl}`
                 }
             }
-            
+
             // 处理删除的配置
             for (const id in oldGroups) {
                 if (!newGroups[id]) {
@@ -345,7 +345,7 @@ export default {
             console.log('最终str结果:', str)
             return str
         },
-        
+
         // 获取所有游戏信息（用于游戏树）
         async getAllGames() {
             try {

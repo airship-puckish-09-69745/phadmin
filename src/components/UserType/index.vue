@@ -11,7 +11,8 @@
     <template v-if="isImportUsers">
       <el-form-item label="导入用户：">
         <div>
-          <span>已导入用户：{{ importedUidCacheCount }}</span>
+          <span>已导入用户：{{ importedUidListCount }}</span>
+          <span style="margin-left: 8px">（已生效用户：{{ importedUidCacheCount }}）</span>
           <span style="margin-left: 8px; color: #0088ff">重复导入不会覆盖原有的用户ID</span>
         </div>
         <div style="margin-top: 4px; color: #e6a23c; font-size: 12px">
@@ -39,6 +40,17 @@
           <el-button type="danger" size="small" style="margin-left: 8px" @click="delImportedUid">重置已导入的用户ID</el-button>
         </div>
         <div v-else style="color: #909399; font-size: 12px; margin-top: 4px">请先保存活动后再导入用户</div>
+        <ImportedUserList
+          v-if="showImportUserList && activityCfgId > 0 && currentUserType ==  3"
+          ref="importedUserList"
+          :visible="isImportUsers"
+          :activity-cfg-id="activityCfgId"
+          :activity-id="activityId"
+          :request-url="importListApi"
+          :include-activity-id="includeActivityId"
+          :extra-data="importRequestData"
+          @loaded="onImportedUserListLoaded"
+        />
       </el-form-item>
     </template>
 
@@ -104,25 +116,25 @@
 <script>
 import request from '@/utils/request'
 import { Message } from 'element-ui'
-
-function defaultUserFilterCondition() {
-  return {
-    registerTimeRange: { min: 0, max: 0 },
-    betTimesRange: { min: 0, max: 0 },
-    userTagConfig: { tagType: 0, tagId: 0, tagValue: 0 }
-  }
-}
+import ImportedUserList from './ImportedUserList.vue'
+import {
+  DEFAULT_ENABLED_USER_TYPES,
+  DEFAULT_USER_TYPE_OPTIONS,
+  USER_TYPE_VALUES,
+  defaultUserConfig,
+  defaultUserFilterCondition
+} from './config'
 
 export default {
-  name: 'AirdropUserType',
+  name: 'ActivityUserType',
+  components: {
+    ImportedUserList
+  },
+  // 父组件 → 子组件: 用 props 传值
   props: {
     value: {
       type: Object,
-      default: () => ({
-        userTypes: [2],
-        userFilterCondition: defaultUserFilterCondition(),
-        importedFilename: ''
-      })
+      default: () => defaultUserConfig()
     },
     activityCfgId: {
       type: Number,
@@ -145,7 +157,47 @@ export default {
     // 触发"用户等级"子选择的 tagId 列表；不同玩法可覆盖
     levelTagIds: {
       type: Array,
-      default: () => [50005, 50006, 50003]
+      default: () => [50005, 50006, 50003, 50002]
+    },
+    // 允许的用户类型列表，默认全部可选
+    enabledUserTypes: {
+      type: Array,
+      default: () => DEFAULT_ENABLED_USER_TYPES
+    },
+    // 是否显示导入用户列表，默认显示
+    showImportUserList: {
+      type: Boolean,
+      default: true
+    },
+    // 是否在导入请求中包含 activityId，默认包含
+    includeActivityId: {
+      type: Boolean,
+      default: true
+    },
+    // 导入请求的额外参数，默认空对象
+    importRequestData: {
+      type: Object,
+      default: () => ({})
+    },
+    // 导入相关的 API 接口地址，默认值可覆盖
+    importTotalApi: {
+      type: String,
+      default: '/activityconfig/uids/total'
+    },
+    // 导入用户的 API 接口地址，默认值可覆盖
+    importUploadApi: {
+      type: String,
+      default: '/activityconfig/uids/import'
+    },
+    // 删除已导入用户的 API 接口地址，默认值可覆盖
+    importDeleteApi: {
+      type: String,
+      default: '/activityconfig/uids/imported/delete'
+    },
+    //  获取已导入用户列表的 API 接口地址，默认值可覆盖
+    importListApi: {
+      type: String,
+      default: '/activityconfig/uids/imported'
     }
   },
 
@@ -154,18 +206,13 @@ export default {
 
       currentUserType: 2,
       importedUidCacheCount: 0,
+      importedUidListCount: 0,
       registerDateRange: [],
       tagIdOptions: [],
       uploadProgress: 0,
       uploadElapsed: 0,
       // 内置的基础用户类型选项
-      userTypeOptions: [
-        { value: 1, label: '新增用户' },
-        { value: 2, label: '所有用户' },
-        { value: 3, label: '导入用户' },
-        { value: 4, label: '筛选用户' },
-        { value: 5, label: '用户标签' }
-      ],
+      userTypeOptions: DEFAULT_USER_TYPE_OPTIONS,
       // 内置的 Slots 标签类型选项（可被 customUserTagOptions prop 覆盖）
       userTagOptions: [
         { value: 2, label: '游戏强度', children: [{ value: 20000, label: '游戏强度' }] },
@@ -221,11 +268,24 @@ export default {
     actionURL() {
       return process.env.VUE_APP_BASE_API + '/other/upload'
     },
+    normalizedEnabledUserTypes() {
+      const list = Array.isArray(this.enabledUserTypes) ? this.enabledUserTypes : []
+      const normalized = list.map(v => Number(v)).filter(v => Number.isInteger(v))
+      return normalized.length > 0 ? normalized : DEFAULT_ENABLED_USER_TYPES
+    },
+    defaultUserType() {
+      if (this.normalizedEnabledUserTypes.includes(USER_TYPE_VALUES.ALL)) {
+        return USER_TYPE_VALUES.ALL
+      }
+      return this.normalizedEnabledUserTypes[0]
+    },
     // 实际使用的用户类型选项：若传入了自定义标签名则替换 value=5 的标签
     effectiveUserTypeOptions() {
-      if (!this.customUserTypeLabel) return this.userTypeOptions
-      return this.userTypeOptions.map(opt =>
-        opt.value === 5 ? { ...opt, label: this.customUserTypeLabel } : opt
+      const enabledSet = new Set(this.normalizedEnabledUserTypes)
+      const baseOptions = this.userTypeOptions.filter(opt => enabledSet.has(opt.value))
+      if (!this.customUserTypeLabel) return baseOptions
+      return baseOptions.map(opt =>
+        opt.value === USER_TYPE_VALUES.TAG ? { ...opt, label: this.customUserTypeLabel } : opt
       )
     },
     // 实际使用的标签类型选项：优先使用 prop 传入的，否则用内置 Slots 选项
@@ -233,22 +293,24 @@ export default {
       return this.customUserTagOptions || this.userTagOptions
     },
     isImportUsers() {
-      return this.currentUserType === 3
+      return this.currentUserType === USER_TYPE_VALUES.IMPORT
     },
     isFilterUsers() {
-      return this.currentUserType === 4
+      return this.currentUserType === USER_TYPE_VALUES.FILTER
     },
     isTagUsers() {
-      return this.currentUserType === 5
+      return this.currentUserType === USER_TYPE_VALUES.TAG
     },
     // 哪些 tagId 需要展示"用户等级"子选择（各玩法通过 levelTagIds prop 配置）
     showUserLevelCondition() {
-      return this.isTagUsers && this.levelTagIds.includes(this.localValue.userFilterCondition.userTagConfig.tagId)
+      const userTagConfig = (this.localValue.userFilterCondition && this.localValue.userFilterCondition.userTagConfig) || {}
+      return this.isTagUsers && this.levelTagIds.includes(userTagConfig.tagId)
     },
     showGameIntensityCondition() {
+      const userTagConfig = (this.localValue.userFilterCondition && this.localValue.userFilterCondition.userTagConfig) || {}
       return this.isTagUsers &&
-        this.localValue.userFilterCondition.userTagConfig.tagType === 2 &&
-        this.localValue.userFilterCondition.userTagConfig.tagId === 20000
+        userTagConfig.tagType === 2 &&
+        userTagConfig.tagId === 20000
     }
   },
   watch: {
@@ -256,7 +318,12 @@ export default {
       immediate: true,
       handler(val) {
         if (!val) return
-        this.currentUserType = (val.userTypes && val.userTypes.length > 0) ? val.userTypes[0] : 2
+        const userType = (val.userTypes && val.userTypes.length > 0) ? Number(val.userTypes[0]) : this.defaultUserType
+        const normalizedUserType = this.normalizeUserType(userType)
+        this.currentUserType = normalizedUserType
+        if (normalizedUserType !== userType) {
+          this.emitChange()
+        }
         // 初始化注册时间范围
         const cond = val.userFilterCondition || {}
         const rtr = cond.registerTimeRange || {}
@@ -270,16 +337,54 @@ export default {
         this.syncTagIdOptions(tagType)
       }
     },
+    normalizedEnabledUserTypes() {
+      const normalized = this.normalizeUserType(this.currentUserType)
+      if (normalized !== this.currentUserType) {
+        this.currentUserType = normalized
+        this.emitChange()
+      }
+    },
     activityCfgId: {
       immediate: true,
       handler(val) {
         if (val > 0) {
           this.getImportedUidCacheCount()
+          this.refreshImportedUserList()
+        } else {
+          this.importedUidCacheCount = 0
+          this.importedUidListCount = 0
         }
       }
     }
   },
   methods: {
+    normalizeUserType(userType) {
+      const type = Number(userType)
+      if (this.normalizedEnabledUserTypes.includes(type)) {
+        return type
+      }
+      return this.defaultUserType
+    },
+    buildImportRequestData(extraData = {}) {
+      const data = {
+        ...this.importRequestData,
+        ActCfgId: this.activityCfgId,
+        ...extraData
+      }
+      if (this.includeActivityId && this.activityId > 0) {
+        data.ActivityId = this.activityId
+      }
+      return data
+    },
+    onImportedUserListLoaded(payload) {
+      this.importedUidListCount = Number(payload && payload.total) || 0
+    },
+    refreshImportedUserList() {
+      if (!this.showImportUserList || !this.$refs.importedUserList) {
+        return
+      }
+      this.$refs.importedUserList.refresh()
+    },
     changeUploadLoadingText(progress, elapsedSeconds) {
       this.uploadProgress = Number(progress) || 0
       this.uploadElapsed = Number(elapsedSeconds) || 0
@@ -299,13 +404,15 @@ export default {
     },
     emitChange() {
       this.$emit('input', {
+        ...defaultUserConfig(this.defaultUserType),
         ...this.localValue,
         userTypes: [this.currentUserType]
       })
     },
     onUserTypeChange(val) {
-      this.currentUserType = val
-      if (val !== 5) {
+      const normalizedUserType = this.normalizeUserType(val)
+      this.currentUserType = normalizedUserType
+      if (normalizedUserType !== USER_TYPE_VALUES.TAG) {
         const userTagConfig = this.getUserTagConfig()
         userTagConfig.tagType = 0
         userTagConfig.tagId = 0
@@ -315,12 +422,18 @@ export default {
         const userTagConfig = this.getUserTagConfig()
         this.syncTagIdOptions(userTagConfig.tagType)
       }
+      if (normalizedUserType === USER_TYPE_VALUES.IMPORT) {
+        this.refreshImportedUserList()
+      }
       this.emitChange()
     },
     onRegisterDateChange(range) {
       const min = range ? Math.floor(range[0] / 1000) : 0
       const endOfDay = range ? new Date(range[1]).setHours(23, 59, 59, 0) : 0
       const max = range ? Math.floor(endOfDay / 1000) : 0
+      if (!this.localValue.userFilterCondition) {
+        this.$set(this.localValue, 'userFilterCondition', defaultUserFilterCondition())
+      }
       this.localValue.userFilterCondition.registerTimeRange = { min, max }
       this.emitChange()
     },
@@ -340,14 +453,15 @@ export default {
       this.emitChange()
     },
     getImportedUidCacheCount() {
-      if (!this.activityCfgId) return
-      request({
-        url: '/activityconfig/uids/total',
+      if (!this.activityCfgId) return Promise.resolve()
+      return request({
+        url: this.importTotalApi,
         method: 'post',
-        data: { ActCfgId: this.activityCfgId, ActivityId: this.activityId }
+        data: this.buildImportRequestData()
       }).then(res => {
         if (res.RetCode === 0) {
-          this.importedUidCacheCount = res.Data.total || 0
+          const total = res.Data && res.Data.total !== undefined ? res.Data.total : res.Data
+          this.importedUidCacheCount = Number(total) || 0
         }
       })
     },
@@ -369,7 +483,9 @@ export default {
     },
 
     async handleUploadSuccess(response, _file, _fileList) {
-      this.$refs.upload.clearFiles()
+      if (this.$refs.upload) {
+        this.$refs.upload.clearFiles()
+      }
       // 文件上传失败
       if (response.RetCode !== 0) {
         this.$message.error(response.Data)
@@ -379,6 +495,8 @@ export default {
       // 获取服务器上传后的文件名
       const uploadedFilename = response.Data
       console.log('upload success:', uploadedFilename)
+      this.$set(this.localValue, 'importedFilename', uploadedFilename)
+      this.emitChange()
 
       // 记录开始时间
       const startTime = Date.now()
@@ -403,46 +521,27 @@ export default {
       try {
         // 真正执行 UID 导入
         const importResponse = await request({
-          url: '/activityconfig/uids/import',
+          url: this.importUploadApi,
           method: 'post',
           timeout: 90000,
-          data: {
-            Env: this.env,
-            ActCfgId: this.activityCfgId,
-            ActivityId: this.activityId,
+          data: this.buildImportRequestData({
             Filename: uploadedFilename
-          }
+          })
         })
-        console.log(111)
-        console.log(importResponse)
         // UID 导入失败
         if (importResponse.RetCode !== 0) {
           this.$message.error(importResponse.Data)
           return
         }
-
-        imported = importResponse.Data.imported
-
+        imported = importResponse.Data.imported || 0
         // UID 导入成功
         this.$message.success('上传成功，新导入的数量为：' + imported)
-
-        // 更新页面数据
-        if (this.activityCfgId === 0) {
-          // 新增活动
-          this.edit.importedUidCacheCount = imported
-        } else {
-          // 已有活动
-          try {
-            await this.getImportedUidCacheCount()
-            // await this.getImportedUidList()
-          } catch (reason) {
-            // UID 已经导入成功，只是刷新页面数据失败
-            console.error('刷新 UID 数据失败：', reason)
-          }
-        }
+        this.importedUidCacheCount = imported
+        await this.getImportedUidCacheCount()
+        this.refreshImportedUserList()
       } catch (reason) {
         // 真正的 UID 导入请求异常
-        Message.error('UID 导入失败，请稍后重试')
+        // Message.error('UID 导入失败，请稍后重试')
       } finally {
         // 清理定时器
         clearInterval(ticker)
@@ -454,7 +553,9 @@ export default {
         this.changeUploadLoadingText(100, elapsedTime)
         console.log('导入数量：' + imported + '，用时：' + elapsedTime + 's')
         // 清理上传组件
-        this.$refs.upload.clearFiles()
+        if (this.$refs.upload) {
+          this.$refs.upload.clearFiles()
+        }
       }
     },
     delImportedUid() {
@@ -464,13 +565,15 @@ export default {
         type: 'warning'
       }).then(() => {
         request({
-          url: '/activityconfig/uids/imported/delete',
+          url: this.importDeleteApi,
           method: 'post',
-          data: { ActCfgId: this.activityCfgId, ActivityId: this.activityId }
+          data: this.buildImportRequestData()
         }).then(res => {
           if (res.RetCode === 0) {
-            Message.success('已重置导入的用户id1！')
+            Message.success('已重置导入的用户id！')
             this.importedUidCacheCount = 0
+            this.importedUidListCount = 0
+            this.refreshImportedUserList()
           }
         })
       }).catch(() => {})

@@ -7,8 +7,9 @@
         :app-id="configAppId"
         :env-empty="false"
         :check="configCheck"
-        compare-type="Object"
-        :attr-names="{ nextConfigId: '下一个期次ID', configs: '活动期次' }"
+        compare-type="Array"
+        :attr-names="{ id: '配置ID', activityName: '活动名称', startTime: '开始时间', endTime: '结束时间', status: '状态' }"
+        :head-attrs="['id', 'activityName']"
       />
     </el-row>
 
@@ -20,15 +21,6 @@
         <el-button type="success" size="mini" icon="el-icon-refresh" :loading="loading" @click="getList">刷新</el-button>
       </el-col>
     </el-row>
-
-    <el-alert
-      v-if="!configRecord.ID"
-      title="当前环境尚未创建 Free Buy 通用配置，保存首个活动期次后即可发布。"
-      type="info"
-      show-icon
-      :closable="false"
-      class="config-alert"
-    />
 
     <el-table
       v-loading="loading"
@@ -116,8 +108,8 @@
             </el-row>
             <el-row :gutter="20">
               <el-col :span="12">
-                <el-form-item label="期次ID" required>
-                  <el-input-number v-model="editItem.id" :min="1" :max="2147483647" :disabled="true" controls-position="right" />
+                <el-form-item label="期次ID">
+                  <el-input :value="editItem.id || '保存后自动生成'" disabled />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
@@ -182,7 +174,13 @@
               </el-select>
             </el-form-item>
             <el-form-item label="参与用户类型" required>
-              <el-select v-model="editItem.userType" style="width: 100%" @change="onUserTypeChange">
+              <el-select
+                v-model="editItem.userTypes"
+                multiple
+                placeholder="请选择参与用户类型"
+                style="width: 100%"
+                @change="onUserTypeChange"
+              >
                 <el-option
                   v-for="item in userTypeOptions"
                   :key="item.value"
@@ -191,7 +189,7 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item v-if="editItem.userType === 3" label="导入用户">
+            <el-form-item v-if="editItem.userTypes.includes(3)" label="导入用户">
               <span>已导入用户：{{ importedUidCount }}</span>
               <span class="user-import-tip">（重复导入不会覆盖已有用户）</span>
               <br>
@@ -214,7 +212,7 @@
               <el-button type="success" size="mini" @click="submitUpload">上传用户ID数据</el-button>
               <el-button type="danger" size="mini" @click="delImportedUid">重置已导入用户</el-button>
             </el-form-item>
-            <template v-if="editItem.userType === 5">
+            <template v-if="editItem.userTypes.includes(5)">
               <el-form-item label="新增标签条件" required>
                 <el-select v-model="userTagDraft.tagType" style="width: 100%" @change="onUserTagTypeChange">
                   <el-option
@@ -304,6 +302,7 @@
                 <template slot-scope="scope">{{ taskTypeText(scope.row.taskType) }}</template>
               </el-table-column>
               <el-table-column prop="taskId" label="任务ID" width="80" align="center" />
+              <el-table-column prop="taskText" label="任务文本" min-width="180" show-overflow-tooltip />
               <el-table-column label="完成条件" min-width="200">
                 <template slot-scope="scope">
                   单次实际消耗 {{ compareText(scope.row.compareType) }} {{ scope.row.conditionAmount }}，完成 {{ scope.row.targetProgress }} 次
@@ -344,6 +343,16 @@
         </el-form-item>
         <el-form-item label="任务ID" required>
           <el-input-number v-model="taskEditItem.taskId" :min="1" :max="1000" controls-position="right" />
+        </el-form-item>
+        <el-form-item label="任务文本" required>
+          <el-input
+            v-model="taskEditItem.taskText"
+            type="textarea"
+            :rows="2"
+            maxlength="200"
+            show-word-limit
+            placeholder="请输入前端展示的任务说明"
+          />
         </el-form-item>
         <el-form-item label="实际消耗条件" required>
           <el-input-number v-model="taskEditItem.conditionAmount" :min="1" :max="1000000000" controls-position="right" />
@@ -401,7 +410,6 @@
 
 <script>
 import { $libDate } from '@/utils/common'
-import { createCustomize, getCustomize, updateCustomize } from '@/api/custome_configV2'
 import request from '@/utils/request'
 import SiteSelect from '@/components/SiteSelect/index.vue'
 import Publish from '@/components/Publish/index.vue'
@@ -409,8 +417,10 @@ import draggable from 'vuedraggable'
 import store from '@/store'
 import { ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS } from '@/utils/options'
 
-const SUB_KEY = 'free_buy_task_cfg'
+const CONFIG_KEY = 'FreeBuyConfig'
+const ACTIVITY_ID = 30
 const STATUS_ONLINE = 2
+const STATUS_ABANDONED = 3
 const STATUS_OFFLINE = 6
 
 function newReward(rewardType = 1) {
@@ -429,6 +439,7 @@ function newTask(taskType = 1) {
   return {
     taskType,
     taskId: 1,
+    taskText: '',
     targetProgress: 1,
     compareType: taskType === 1 ? 1 : 2,
     conditionAmount: 1,
@@ -466,10 +477,10 @@ function defaultTasks() {
   ]
 }
 
-function newActivity(id) {
+function newActivity(id = 0) {
   return {
     id,
-    activityName: `第${id}期 Free Buy`,
+    activityName: '',
     startTime: 0,
     endTime: 0,
     startTimeValue: null,
@@ -491,18 +502,6 @@ function newActivity(id) {
   }
 }
 
-function newConfigRecord(appId) {
-  return {
-    ID: 0,
-    AppId: appId,
-    Type: 1,
-    Name: 'Slots Free Buy活动配置',
-    Description: 'Slots Free Buy活动期次、实际消耗任务与奖励配置',
-    Data: '[]',
-    RedisSubkey: SUB_KEY
-  }
-}
-
 export default {
   name: 'FreeBuyConfig',
   components: {
@@ -515,14 +514,12 @@ export default {
     return {
       configAppId,
       env: store.getters.env || '',
-      configRecord: newConfigRecord(configAppId),
       configs: [],
-      nextConfigId: 1,
       loading: false,
       saving: false,
       activityDialogVisible: false,
       activityEditMode: false,
-      editItem: newActivity(1),
+      editItem: newActivity(),
       userTagDraft: newUserTagConfig(),
       taskDialogVisible: false,
       taskEditMode: false,
@@ -537,6 +534,7 @@ export default {
       freeBuyUidFile: null,
       userTypeOptions: [
         { value: 2, label: '全部用户' },
+        { value: 1, label: '新增用户' },
         { value: 3, label: '导入用户' },
         { value: 5, label: '用户标签' }
       ],
@@ -586,7 +584,7 @@ export default {
       return this.slotsTagOptions
     },
     isUserLevelTag() {
-      return [50003, 50005, 50006, 50043].includes(Number(this.userTagDraft.tagId))
+      return [50002, 50003, 50005, 50006, 50043].includes(Number(this.userTagDraft.tagId))
     }
   },
   created() {
@@ -598,51 +596,39 @@ export default {
   },
   methods: {
     getFullKey() {
-      return 'CustomizeCfg_' + SUB_KEY
+      return CONFIG_KEY
     },
     getList() {
       this.loading = true
-      getCustomize(SUB_KEY, this.configAppId).then(response => {
-        if (response.RetCode === 0 && response.Data) {
-          this.configRecord = { ...newConfigRecord(this.configAppId), ...response.Data, AppId: this.configAppId }
-          const configData = this.parseConfigData(response.Data.Data)
-          this.configs = configData.configs
-          this.nextConfigId = configData.nextConfigId
-        } else {
-          this.configRecord = newConfigRecord(this.configAppId)
-          this.configs = []
-          this.nextConfigId = 1
-        }
+      request({
+        url: '/activityconfig/all',
+        method: 'get',
+        data: { activityId: ACTIVITY_ID }
+      }).then(response => {
+        if (response.RetCode !== 0) return
+        this.configs = (response.Data || []).map(item => {
+          const activity = JSON.parse(item.activity || '{}')
+          const extend = JSON.parse(item.extend || '{}')
+          const whitelist = activity.whitelist || {}
+          return this.normalizeActivity({
+            id: Number(item.id),
+            activityName: activity.name || '',
+            startTime: Number(activity.startTime) || 0,
+            endTime: Number(activity.endTime) || 0,
+            isOpen: Boolean(activity.isOpen),
+            status: Number(item.status) || STATUS_OFFLINE,
+            siteIdList: Array.isArray(whitelist.siteIdList) ? whitelist.siteIdList : [],
+            gameIdList: Array.isArray(activity.gameIdList) ? activity.gameIdList : [],
+            debugTimeOffset: Number(activity.debugTimeOffset) || 0,
+            abTest: whitelist.abTest || {},
+            ...extend
+          })
+        }).sort((a, b) => b.id - a.id)
+      }).catch(error => {
+        console.error('Free Buy配置列表加载失败:', error)
       }).finally(() => {
         this.loading = false
       })
-    },
-    parseConfigData(data) {
-      if (!data) return { configs: [], nextConfigId: 1 }
-      try {
-        const parsed = typeof data === 'string' ? JSON.parse(data) : data
-        if (!parsed || Array.isArray(parsed) || !Array.isArray(parsed.configs)) {
-          throw new Error('Free Buy配置必须包含configs数组')
-        }
-        const nextConfigId = Number(parsed.nextConfigId)
-        if (!Number.isInteger(nextConfigId) || nextConfigId <= 0) {
-          throw new Error('Free Buy配置nextConfigId必须是正整数')
-        }
-        const list = parsed.configs
-        const configs = list.map(item => this.normalizeActivity(item)).sort((a, b) => b.id - a.id)
-        const maxConfigId = configs.reduce((max, item) => Math.max(max, Number(item.id) || 0), 0)
-        if (nextConfigId <= maxConfigId) {
-          throw new Error('Free Buy配置nextConfigId必须大于现有期次ID')
-        }
-        return {
-          configs,
-          nextConfigId
-        }
-      } catch (error) {
-        console.error('Free Buy配置解析失败:', error)
-        this.$message.error('Free Buy配置格式错误，请检查nextConfigId和configs')
-        return { configs: [], nextConfigId: 1 }
-      }
     },
     normalizeActivity(item) {
       const data = JSON.parse(JSON.stringify(item || {}))
@@ -659,10 +645,9 @@ export default {
       data.totalPropLimit = Number(data.totalPropLimit) || 0
       data.taskList = Array.isArray(data.taskList) ? data.taskList.map(task => this.normalizeTask(task)) : []
       data.userTypes = Array.isArray(data.userTypes)
-        ? data.userTypes.map(Number).filter(item => [2, 3, 5].includes(item))
+        ? [...new Set(data.userTypes.map(Number).filter(item => [1, 2, 3, 5].includes(item)))]
         : [2]
       if (!data.userTypes.length) data.userTypes = [2]
-      data.userType = data.userTypes[0]
       const userTagList = Array.isArray(data.userTagConfig)
         ? data.userTagConfig
         : (data.userTagConfig ? [data.userTagConfig] : [])
@@ -682,6 +667,7 @@ export default {
     },
     normalizeTask(task) {
       const data = { ...newTask(Number(task.taskType) || 1), ...task }
+      data.taskText = String(data.taskText || '')
       data.reward = { ...newReward(Number(task.reward && task.reward.rewardType) || 1), ...(task.reward || {}) }
       if (Number(data.reward.rewardType) === 2) {
         data.reward.validDays = 2
@@ -699,7 +685,11 @@ export default {
       request({
         url: '/propsconfig/props/config/list',
         method: 'get',
-        data: { PageNum: 1, PageSize: 1000 }
+        data: {
+          PageNum: 1,
+          PageSize: 1000,
+          PropType: PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN
+        }
       }).then(response => {
         if (response.RetCode !== 0) return
         const rows = response.Data && Array.isArray(response.Data.list) ? response.Data.list : []
@@ -764,18 +754,26 @@ export default {
         this.$set(this.editItem, 'startTimeValue', Number(row.startTime) * 1000)
         this.$set(this.editItem, 'endTimeValue', Number(row.endTime) * 1000)
       } else {
-        this.editItem = newActivity(this.nextConfigId)
+        this.editItem = newActivity()
       }
       this.userTagDraft = this.editItem.userTagConfig.length
         ? { ...this.editItem.userTagConfig[0] }
         : newUserTagConfig()
       this.importedUidCount = 0
       this.freeBuyUidFile = null
-      if (isEdit && this.editItem.userType === 3) this.getImportedUidCount()
+      if (isEdit && this.editItem.userTypes.includes(3)) this.getImportedUidCount()
       this.activityDialogVisible = true
     },
-    onUserTypeChange(userType) {
-      if (Number(userType) === 3 && this.activityEditMode) {
+    onUserTypeChange(userTypes) {
+      const selected = [...new Set((userTypes || []).map(Number))]
+      if (selected.length > 1 && selected[selected.length - 1] === 2) {
+        this.editItem.userTypes = selected.includes(5) ? [2, 5] : [2]
+      } else if (selected.length > 1 && selected.includes(2)) {
+        this.editItem.userTypes = selected[selected.length - 1] === 5 ? [2, 5] : selected.filter(item => item !== 2)
+      } else {
+        this.editItem.userTypes = selected
+      }
+      if (this.editItem.userTypes.includes(3) && this.activityEditMode) {
         this.getImportedUidCount()
       } else {
         this.importedUidCount = 0
@@ -921,26 +919,24 @@ export default {
     },
     saveActivity() {
       const activity = this.buildActivityForSave(this.editItem)
-      const error = this.validateActivity(activity)
+      const error = this.validateActivity(activity, this.activityEditMode)
       if (error) {
         this.$message.error(error)
         return
       }
-      const exists = this.configs.some(item => item.id === activity.id)
-      if (!this.activityEditMode && exists) {
-        this.$message.error(`期次ID ${activity.id} 已存在`)
-        return
-      }
-      const nextConfigs = JSON.parse(JSON.stringify(this.configs))
-      const index = nextConfigs.findIndex(item => item.id === activity.id)
-      if (index >= 0) {
-        nextConfigs.splice(index, 1, activity)
-      } else {
-        nextConfigs.push(activity)
-      }
-      const nextConfigId = this.activityEditMode ? this.nextConfigId : Math.max(this.nextConfigId, activity.id + 1)
-      this.persistConfigs(nextConfigs, '活动期次保存成功', nextConfigId).then(success => {
-        if (success) this.activityDialogVisible = false
+      this.saving = true
+      request({
+        url: this.activityEditMode ? '/activityconfig/update' : '/activityconfig/create',
+        method: 'post',
+        data: this.buildActivityPostData(activity)
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.$message.success('活动期次保存成功，发布后生效')
+          this.activityDialogVisible = false
+          this.getList()
+        }
+      }).finally(() => {
+        this.saving = false
       })
     },
     buildActivityForSave(item) {
@@ -950,14 +946,13 @@ export default {
       data.endTime = Math.floor(Number(item.endTimeValue) / 1000)
       data.gameIdList = this.toNumberList(data.gameIdList)
       data.siteIdList = data.siteIdList.map(value => String(value)).filter(Boolean)
-      data.userTypes = [Number(item.userType)]
+      data.userTypes = [...new Set((item.userTypes || []).map(Number))]
       data.userTagConfig = data.userTagConfig.map(tag => ({
         tagType: Number(tag.tagType),
         tagId: Number(tag.tagId),
         tagValue: Number(tag.tagValue),
         isReverse: Boolean(tag.isReverse)
       }))
-      delete data.userType
       const taskTypeOrder = []
       for (const task of data.taskList) {
         const taskType = Number(task.taskType)
@@ -970,10 +965,42 @@ export default {
       delete data.endTimeValue
       return data
     },
+    buildActivityPostData(data) {
+      const activity = {
+        activityId: ACTIVITY_ID,
+        name: data.activityName,
+        startTime: data.startTime,
+        endTime: data.endTime,
+        showEndTime: data.endTime,
+        gameIdList: data.gameIdList,
+        whitelist: {
+          siteIdList: data.siteIdList,
+          abTest: data.abTest
+        },
+        status: data.status,
+        isOpen: data.isOpen,
+        debugTimeOffset: data.debugTimeOffset,
+        GameType: 1
+      }
+      const extend = {
+        dailyPropLimit: data.dailyPropLimit,
+        totalPropLimit: data.totalPropLimit,
+        taskList: data.taskList,
+        userTypes: data.userTypes,
+        userTagConfig: data.userTagConfig
+      }
+      return {
+        id: data.id,
+        activityId: ACTIVITY_ID,
+        activity: JSON.stringify(activity),
+        extend: JSON.stringify(extend)
+      }
+    },
     cleanTask(task) {
       const data = this.normalizeTask(task)
       data.taskType = Number(data.taskType)
       data.taskId = Number(data.taskId)
+      data.taskText = String(data.taskText || '').trim()
       data.targetProgress = Number(data.targetProgress)
       data.compareType = data.taskType === 1 ? 1 : 2
       data.conditionAmount = Number(data.conditionAmount)
@@ -992,34 +1019,6 @@ export default {
       delete data.rewardRichCardSelect
       return data
     },
-    persistConfigs(configs, successMessage, nextConfigId = this.nextConfigId) {
-      this.saving = true
-      const persistedConfigs = configs.map(item => {
-        const data = this.normalizeActivity(item)
-        data.userTypes = [Number(item.userType || data.userTypes[0])]
-        delete data.userType
-        return data
-      })
-      const payload = {
-        ...newConfigRecord(this.configAppId),
-        ...this.configRecord,
-        AppId: this.configAppId,
-        Type: 1,
-        RedisSubkey: SUB_KEY,
-        Data: JSON.stringify({ nextConfigId, configs: persistedConfigs })
-      }
-      const saveRequest = payload.ID ? updateCustomize(payload) : createCustomize(payload)
-      return saveRequest.then(response => {
-        if (response.RetCode !== 0) return false
-        this.configs = persistedConfigs.map(item => this.normalizeActivity(item)).sort((a, b) => b.id - a.id)
-        this.nextConfigId = nextConfigId
-        this.$message.success(`${successMessage}，发布后生效`)
-        this.getList()
-        return true
-      }).finally(() => {
-        this.saving = false
-      })
-    },
     changeStatus(row, status) {
       const action = status === STATUS_ONLINE ? '上架' : '下架'
       if (status === STATUS_ONLINE) {
@@ -1030,17 +1029,30 @@ export default {
         }
       }
       this.$confirm(`确认${action}活动“${row.activityName}”吗？保存后仍需发布配置才会同步到 Redis。`, '提示', { type: 'warning' }).then(() => {
-        const nextConfigs = JSON.parse(JSON.stringify(this.configs))
-        const item = nextConfigs.find(config => config.id === row.id)
-        item.status = status
-        if (status === STATUS_ONLINE) item.isOpen = true
-        return this.persistConfigs(nextConfigs, `${action}状态保存成功`)
+        return request({
+          url: '/activityconfig/update/status',
+          method: 'post',
+          data: { id: row.id, status, activityId: ACTIVITY_ID }
+        })
+      }).then(response => {
+        if (response && response.RetCode === 0) {
+          this.$message.success(`${action}状态保存成功，发布后生效`)
+          this.getList()
+        }
       }).catch(() => {})
     },
     deleteActivity(row) {
       this.$confirm(`确认删除活动“${row.activityName}”吗？`, '提示', { type: 'warning' }).then(() => {
-        const nextConfigs = this.configs.filter(item => item.id !== row.id)
-        return this.persistConfigs(nextConfigs, '活动期次删除成功')
+        return request({
+          url: '/activityconfig/update/status',
+          method: 'post',
+          data: { id: row.id, status: STATUS_ABANDONED, activityId: ACTIVITY_ID }
+        })
+      }).then(response => {
+        if (response && response.RetCode === 0) {
+          this.$message.success('活动期次已废弃，配置ID继续保留')
+          this.getList()
+        }
       }).catch(() => {})
     },
     openTaskDialog(isEdit, row) {
@@ -1112,11 +1124,9 @@ export default {
     },
     configCheck() {
       if (!this.configs.length) {
-        this.$message.error('至少需要一个 Free Buy 活动期次')
-        return false
+        return true
       }
       const ids = new Set()
-      let maxConfigId = 0
       for (const activity of this.configs) {
         const error = this.validateActivity(activity)
         if (error) {
@@ -1128,32 +1138,30 @@ export default {
           return false
         }
         ids.add(activity.id)
-        maxConfigId = Math.max(maxConfigId, Number(activity.id) || 0)
-      }
-      if (!Number.isInteger(this.nextConfigId) || this.nextConfigId <= maxConfigId) {
-        this.$message.error('下一个期次ID必须大于现有期次ID')
-        return false
       }
       return true
     },
-    validateActivity(activity) {
-      if (!activity || Number(activity.id) <= 0) return '期次ID必须大于0'
+    validateActivity(activity, requireId = true) {
+      if (!activity || (requireId && Number(activity.id) <= 0)) return '期次ID必须大于0'
       if (!String(activity.activityName || '').trim()) return '请填写活动名称'
       if (Number(activity.startTime) <= 0) return '请填写开始时间'
       if (Number(activity.endTime) <= Number(activity.startTime)) return '结束时间必须晚于开始时间'
       if (!Array.isArray(activity.gameIdList) || !activity.gameIdList.length) return '请至少选择一个参与游戏'
-      if (!Array.isArray(activity.userTypes) || activity.userTypes.length !== 1 || ![2, 3, 5].includes(Number(activity.userTypes[0]))) return '请选择参与用户类型'
-      if (Number(activity.userTypes[0]) === 5) {
+      if (!Array.isArray(activity.userTypes) || !activity.userTypes.length || activity.userTypes.some(item => ![1, 2, 3, 5].includes(Number(item)))) return '请选择参与用户类型'
+      if (new Set(activity.userTypes.map(Number)).size !== activity.userTypes.length) return '参与用户类型不能重复'
+      if (activity.userTypes.includes(2) && (activity.userTypes.length !== 1 && !(activity.userTypes.length === 2 && activity.userTypes.includes(5)))) return '全部用户只能单独选择或与用户标签组合'
+      if (activity.userTypes.includes(5)) {
         if (!Array.isArray(activity.userTagConfig) || !activity.userTagConfig.length) return '请至少加入一个用户标签条件'
         const tagIds = new Set()
         for (const tag of activity.userTagConfig) {
           if (!tag || Number(tag.tagType) <= 0 || Number(tag.tagId) <= 0 || Number(tag.tagValue) <= 0) return '请配置有效的用户标签条件'
           if (Number(tag.tagType) !== 5) return 'Slots标签配置无效'
           if (![50001, 50002, 50003, 50005, 50006, 50008, 50043].includes(Number(tag.tagId))) return `不支持的标签ID：${tag.tagId}`
-          if ([50003, 50005, 50006, 50043].includes(Number(tag.tagId)) && ![1, 2, 3].includes(Number(tag.tagValue))) return '请选择有效的用户等级'
+          if ([50002, 50003, 50005, 50006, 50043].includes(Number(tag.tagId)) && ![1, 2, 3].includes(Number(tag.tagValue))) return '请选择有效的用户等级'
           if (tagIds.has(Number(tag.tagId))) return `同一种标签只能添加一次：${tag.tagId}`
           tagIds.add(Number(tag.tagId))
         }
+        if (activity.userTypes.includes(2) && activity.userTagConfig.some(tag => !tag.isReverse)) return '全部用户与用户标签组合时只能配置反向标签'
       }
       if (Number(activity.dailyPropLimit) <= 0) return '每日发放道具上限必须大于0'
       if (Number(activity.totalPropLimit) <= 0) return '总发放道具上限必须大于0'
@@ -1176,6 +1184,8 @@ export default {
     validateTask(task) {
       if (![1, 2].includes(Number(task.taskType))) return '任务类型无效'
       if (Number(task.taskId) <= 0) return '任务ID必须大于0'
+      if (!String(task.taskText || '').trim()) return `任务 ${task.taskId} 请填写任务文本`
+      if ([...String(task.taskText)].length > 200) return `任务 ${task.taskId} 的任务文本不能超过200个字符`
       if (Number(task.targetProgress) <= 0) return `任务 ${task.taskId} 的完成次数必须大于0`
       if (Number(task.conditionAmount) <= 0) return `任务 ${task.taskId} 的实际消耗条件必须大于0`
       if (Number(task.taskType) === 1 && Number(task.compareType) !== 1) return `任务 ${task.taskId} 的比较方式应为大于等于`
@@ -1209,9 +1219,12 @@ export default {
       return values.map(value => Number(value) === 230 ? `Pahiyas Win's [${value}]` : value).join('、')
     },
     userTypeText(values) {
-      const userType = Array.isArray(values) ? Number(values[0]) : Number(values)
-      const option = this.userTypeOptions.find(item => item.value === userType)
-      return option ? option.label : '-'
+      const userTypes = Array.isArray(values) ? values.map(Number) : [Number(values)]
+      const labels = userTypes.map(userType => {
+        const option = this.userTypeOptions.find(item => item.value === userType)
+        return option ? option.label : ''
+      }).filter(Boolean)
+      return labels.length ? labels.join('、') : '-'
     },
     userTagKey(tag, index) {
       return `${Number(tag.tagType)}:${Number(tag.tagId)}:${Number(tag.tagValue)}:${Boolean(tag.isReverse)}:${index}`
@@ -1220,7 +1233,7 @@ export default {
       const type = this.userTagTypeOptions.find(item => item.value === Number(tag.tagType))
       const tagOption = this.slotsTagOptions.find(item => item.value === Number(tag.tagId))
       const direction = tag.isReverse ? '反向' : '正向'
-      if ([50003, 50005, 50006, 50043].includes(Number(tag.tagId))) {
+      if ([50002, 50003, 50005, 50006, 50043].includes(Number(tag.tagId))) {
         const value = this.userLevelOptions.find(item => item.value === Number(tag.tagValue))
         return `${direction}${type ? type.label : '标签'}：${tagOption ? tagOption.label : tag.tagId} - ${value ? value.label : tag.tagValue}`
       }
