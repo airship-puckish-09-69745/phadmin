@@ -109,7 +109,6 @@
                 </el-col>
 
                 <!-- 参与活动用户类型 -->
-                <UserTypeUnit v-model="item.UserTypeUnitData" :activity-cfg-id="19" :activity-id="13" />
 
 
                 <el-col>
@@ -227,7 +226,6 @@ import { divFields1000, mulFields1000 } from '@/utils/index'
 import UserTypeUnit from '@/components/UserType/index.vue'
 import TaskConfig from './components/TaskConfig.vue'
 import WhitelistConfig from './components/WhitelistConfig.vue'
-import UserType from "@/components/UserType/index.vue";
 
 function defaultUserConfig() {
   return {
@@ -244,7 +242,6 @@ export default {
   name: 'RedBagForm',
   // 注册子组件
   components: {
-    UserType,
     UserTypeUnit, // 参与活动用户类型选择组件
     TaskConfig, // 任务配置组件（任务列表管理、新增/编辑/删除任务、红包价值配置）
     WhitelistConfig // 白名单配置组件（AppId/SiteId白名单、A/B测试）
@@ -394,7 +391,7 @@ export default {
         limitMaxNum: 0,
         timeS: 0,
         userType: [2], // 兼容旧数据
-        UserTypeUnitData: {},
+        UserTypeUnitData: defaultUserConfig(),
         appId: -1,
         prizePoolCfg: [],
         gameIdCfg: [],
