@@ -118,6 +118,7 @@
                     :custom-user-type-label="currentUserTypeLabel"
                     :custom-user-tag-options="currentUserTagOptions"
                     :level-tag-ids="currentLevelTagIds"
+                    :activity-id="13"
                   />
                 </el-col>
 
