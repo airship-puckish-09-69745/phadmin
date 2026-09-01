@@ -80,9 +80,7 @@
           <!-- 白名单配置 -->
           <!--1. AppId白名单 2. SiteId白名单 3. ABTest开关 4. UID白名单-->
           <WhitelistConfig v-model="item.whitelist" :features="[2, 3]" />
-
-          <!-- 参与活动用户类型：casino 标签用户支持 casino新增用户/casino下注/casino额度 -->
-          <UserType
+          <UserTypeUnit
             v-model="item.userConfig"
             :activity-cfg-id="item.id"
             custom-user-type-label="casino 标签用户"
@@ -111,12 +109,9 @@
             已标记为不配置道具奖励，仅保存投注金奖励配置。
           </div>
           <el-form ref="rewardForm" :model="item" label-width="160px" size="small">
-            <!--
-              任务要求和奖励相关，故将任务类型、任务条件直接放在道具类型前面，
-              使任务配置与奖励配置在同一行可见，便于配置关联。
-            -->
+            <!--任务要求和奖励相关，故将任务类型、任务条件直接放在道具类型前面，使任务配置与奖励配置在同一行可见，便于配置关联 -->
             <el-table :data="[item.propPools]" border size="small" style="width: 100%;">
-              <!-- 任务类型（放在道具类型前面）-->
+              <!-- 任务类型-->
               <el-table-column label="任务类型" min-width="160">
                 <template slot-scope="scope">
                   <el-select v-model="scope.row.taskType" placeholder="请选择" size="mini" :disabled="!item.enableProgressPrize">
@@ -124,7 +119,7 @@
                   </el-select>
                 </template>
               </el-table-column>
-              <!-- 任务条件（放在道具类型前面）-->
+              <!-- 任务条件-->
               <el-table-column label="任务条件(₱)" min-width="130">
                 <template slot-scope="scope">
                   <el-input
@@ -267,7 +262,7 @@ import { Message } from 'element-ui'
 import request from '@/utils/request'
 import GameSelector from '@/components/Game/GameSelector.vue'
 import WhitelistConfig from '@/components/WhitelistConfig/index.vue'
-import UserType from '@/components/UserType/index.vue'
+import UserTypeUnit from '@/components/UserType/index.vue'
 
 import { ACTIVITY_ID } from '../index.vue'
 
@@ -329,7 +324,7 @@ function newItem() {
 
 export default {
   name: 'CasinoForm',
-  components: { GameSelector, WhitelistConfig, UserType },
+  components: { GameSelector, WhitelistConfig, UserTypeUnit },
   props: {
     visible: { type: Boolean, default: false },
     isEdit: { type: Boolean, default: false },

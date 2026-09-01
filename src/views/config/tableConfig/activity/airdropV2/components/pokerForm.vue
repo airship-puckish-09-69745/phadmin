@@ -82,7 +82,7 @@
           <!--1. AppId白名单 2. SiteId白名单 3. ABTest开关 4. UID白名单-->
           <WhitelistConfig v-model="item.whitelist" :features="[2, 3]" />
           <!-- 参与活动用户类型：poker 标签用户支持 poker新增用户/poker下注/poker额度 -->
-          <UserType
+          <UserTypeUnit
             v-model="item.userConfig"
             :activity-cfg-id="item.id"
             :activity-id="item.activityId"
@@ -344,7 +344,7 @@ import { Message } from 'element-ui'
 import request from '@/utils/request'
 import GameSelector from '@/components/Game/GameSelector.vue'
 import WhitelistConfig from '@/components/WhitelistConfig/index.vue'
-import UserType from '@/components/UserType/index.vue'
+import UserTypeUnit from '@/components/UserType/index.vue'
 import { ACTIVITY_ID } from '../index.vue'
 
 const GAME_TYPE = 2 // Poker
@@ -418,7 +418,7 @@ function newItem() {
 
 export default {
   name: 'PokerForm',
-  components: { GameSelector, WhitelistConfig, UserType },
+  components: { GameSelector, WhitelistConfig, UserTypeUnit },
   props: {
     visible: { type: Boolean, default: false },
     isEdit: { type: Boolean, default: false },
