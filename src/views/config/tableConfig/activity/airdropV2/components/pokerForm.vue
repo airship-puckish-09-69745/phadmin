@@ -242,12 +242,6 @@
                 />
               </template>
             </el-table-column>
-            <!-- 已发奖励（只读，由后端实时更新）-->
-            <el-table-column label="已发奖励(₱)" min-width="80" align="center">
-              <template slot-scope="_">
-                <el-input v-model.number="item.pokerBetMoney.issuedReward" placeholder="--" size="mini" disabled />
-              </template>
-            </el-table-column>
             <!-- 任务条件 -->
             <el-table-column label="任务条件" min-width="80" align="center">
               <template slot-scope="_">
@@ -260,6 +254,13 @@
                 />
               </template>
             </el-table-column>
+            <!-- 已发奖励（只读，由后端实时更新）-->
+            <el-table-column label="已发奖励(₱)" min-width="80" align="center">
+              <template slot-scope="_">
+                <el-input v-model.number="item.pokerBetMoney.issuedReward" placeholder="--" size="mini" disabled />
+              </template>
+            </el-table-column>
+
             <el-table-column label="积分区间开始" min-width="80" align="center">
               <template slot-scope="scope">
                 <el-input
@@ -577,8 +578,9 @@ export default {
         this.toSafeNumber(t.maxReward) > 0
       )
     },
+    // 投注金奖励表格合并单元格：任务类型/总奖励/任务条件/已发奖励 4列合并
     pokerBetMoneySpanMethod({ rowIndex, columnIndex }) {
-      if (![0, 1, 2].includes(columnIndex)) return undefined
+      if (![0, 1, 2,3].includes(columnIndex)) return undefined
       const tiers = (this.item.pokerBetMoney && this.item.pokerBetMoney.rewardTiers) || []
       const rowspan = tiers.length > 0 ? tiers.length : 1
       if (rowIndex === 0) {
