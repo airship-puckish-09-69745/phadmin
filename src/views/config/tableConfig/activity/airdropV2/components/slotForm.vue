@@ -82,7 +82,7 @@
           <WhitelistConfig v-model="item.whitelist" :features="[2, 3]" />
 
           <!-- 参与活动用户类型 -->
-          <UserType v-model="item.userConfig" :activity-cfg-id="item.id" :activity-id="item.activityId" />
+          <UserTypeUnit v-model="item.userConfig" :activity-cfg-id="item.id" :activity-id="item.activityId" />
         </el-form>
       </el-tab-pane>
 
@@ -235,7 +235,7 @@ import { Message } from 'element-ui'
 import request from '@/utils/request'
 import GameSelector from '@/components/Game/GameSelector.vue'
 import WhitelistConfig from '@/components/WhitelistConfig/index.vue'
-import UserType from '@/components/UserType/index.vue'
+import UserTypeUnit from '@/components/UserType/index.vue'
 import { ACTIVITY_ID } from '../index.vue'
 
 const GAME_TYPE = 1 // Slot
@@ -293,7 +293,7 @@ function newItem() {
 
 export default {
   name: 'SlotForm',
-  components: { GameSelector, WhitelistConfig, UserType },
+  components: { GameSelector, WhitelistConfig, UserTypeUnit },
   props: {
     visible: { type: Boolean, default: false },
     isEdit: { type: Boolean, default: false },

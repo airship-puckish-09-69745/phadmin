@@ -13,11 +13,191 @@
       <br>
       <el-tabs type="border-card">
         <el-tab-pane label="红包雨活动配置">
-          <ActivityBaseConfig
-            ref="activityBaseConfig"
-            v-model="item"
-            :is-edit="isEdit"
-          />
+          <el-row :gutter="5">
+            <el-col :span="16">
+              <el-form ref="baseConfigForm" label-width="220px">
+                <el-col>
+                  <el-form-item label="活动名称" :required="true">
+                    <el-input v-model="item.activityName" style="width: 500px;" placeholder="请输入活动名称" />
+                  </el-form-item>
+                </el-col>
+                <el-col :xs="24" :sm="12">
+                  <el-form-item label="活动开关">
+                    <el-switch v-model="item.isOpen" :active-value="true" :inactive-value="false" />
+                  </el-form-item>
+                </el-col>
+                <el-col :xs="24" :sm="12">
+                  <el-form-item label="消息推送开关">
+                    <el-switch v-model="item.isSend" :active-value="true" :inactive-value="false" />
+                    <el-tooltip class="item" effect="light" placement="right-start">
+                      <template #content>
+                        <div>控制推送红包任务进度</div>
+                      </template>
+                      <i class="el-icon-info" />
+                    </el-tooltip>
+                  </el-form-item>
+                </el-col>
+                <el-col :xs="24" :sm="12">
+                  <el-form-item label="活动开始时间">
+                    <el-date-picker
+                      v-model="item.startTime"
+                      type="datetime"
+                      placeholder="选择开始时间"
+                      value-format="timestamp"
+                      size="mini"
+                    />
+                  </el-form-item>
+                </el-col>
+                <el-col :xs="24" :sm="12">
+                  <el-form-item label="活动结束时间">
+                    <el-date-picker
+                      v-model="item.endTime"
+                      type="datetime"
+                      placeholder="选择结束时间"
+                      value-format="timestamp"
+                      size="mini"
+                    />
+                  </el-form-item>
+                </el-col>
+                <el-col :xs="24" :sm="12">
+                  <el-form-item label="每日活动开始时间">
+                    <el-date-picker
+                      v-model="item.everyDayStartTime"
+                      type="datetime"
+                      placeholder="选择结束时间"
+                      format="HH:mm"
+                      size="mini"
+                    />
+                  </el-form-item>
+                </el-col>
+                <el-col :xs="24" :sm="12">
+                  <el-form-item label="每日活动结束时间">
+                    <el-date-picker
+                      v-model="item.everyDayEndTime"
+                      type="datetime"
+                      placeholder="选择结束时间"
+                      format="HH:mm"
+                      size="mini"
+                    />
+                  </el-form-item>
+                </el-col>
+                <el-col :xs="24" :sm="12">
+                  <el-form-item label="限制红包发送金币额度" :required="true">
+                    <el-input v-model="item.limitMaxNum" style="width: 200px;" placeholder="请输入限制数量" />
+                  </el-form-item>
+                </el-col>
+                <el-col :xs="24" :sm="12">
+                  <el-form-item label="活动展示金额">
+                    <el-input v-model.number="item.showGold" style="width: 200px;" placeholder="请输入显示金额数量" />
+                  </el-form-item>
+                </el-col>
+                <el-col :xs="24" :sm="12">
+                  <el-form-item label="单日弹窗次数">
+                    <el-input v-model.number="item.showTimes" style="width: 200px;" placeholder="请输入限制数量" />
+                    <el-tooltip class="item" effect="light" placement="right-start">
+                      <template #content>
+                        <div>配置1则所有用户单日只弹出1次该弹窗，配置0则该弹窗不主动弹出，配置-1则该弹窗次数为无限</div>
+                      </template>
+                      <i class="el-icon-info" />
+                    </el-tooltip>
+                  </el-form-item>
+                </el-col>
+                <el-col v-if="env == 'test'" :xs="24" :sm="12">
+                  <el-form-item label="时间偏移(秒)">
+                    <el-input v-model="item.timeS" style="width: 200px;" placeholder="请输入限制数量" />
+                  </el-form-item>
+                </el-col>
+
+                <!-- 参与活动用户类型 -->
+                <UserTypeUnit v-model="item.UserTypeUnitData" :activity-cfg-id="19" :activity-id="13" />
+
+
+                <el-col>
+                  <el-form-item label="玩法大类型">
+                    <el-radio-group v-model="item.gameType" @change="handleGameTypeChange">
+                      <el-radio :label="1">Slot</el-radio>
+                      <el-radio :label="2">Poker</el-radio>
+                      <el-radio :label="3">Casino</el-radio>
+                    </el-radio-group>
+                  </el-form-item>
+                </el-col>
+              </el-form>
+            </el-col>
+          </el-row>
+          <el-row :gutter="5">
+            <el-form label-width="220px">
+              <el-col :span="12">
+                <el-form-item label="勾选支持的游戏" :required="true">
+                  <el-input
+                    v-model="filterText"
+                    placeholder="输入关键字进行过滤"
+                  />
+                  <el-tree
+                    ref="tree"
+                    :data="treeData"
+                    show-checkbox
+                    node-key="id"
+                    highlight-current
+                    :props="defaultProps"
+                    :filter-node-method="filterNode"
+                    @check-change="handleCheckChange"
+                  />
+                </el-form-item>
+                <el-form-item label="给选中游戏排序" :required="true">
+                  <el-button size="mini" type="primary" @click="showGamesSortDialog">
+                    排序
+                  </el-button>
+                </el-form-item>
+              </el-col>
+            </el-form>
+          </el-row>
+
+          <!-- 游戏排序弹窗 -->
+          <el-dialog
+            title="给选中游戏排序"
+            :visible.sync="gamesSortDialogVisible"
+            :close-on-click-modal="false"
+            :close-on-press-escape="false"
+            append-to-body
+          >
+            <el-table
+              :data="gamesSorted"
+              border
+              style="width: 100%"
+            >
+              <el-table-column
+                prop="gameId"
+                label="游戏Id"
+                width="200"
+              />
+              <el-table-column
+                prop="name"
+                label="游戏名称"
+                width="200"
+              />
+              <el-table-column
+                prop="orderNo"
+                label="排序编号"
+                width="200"
+              >
+                <template slot-scope="scope">
+                  <el-input-number
+                    v-model="scope.row.orderNo"
+                    :min="0"
+                    :precision="0"
+                    :step="1"
+                    :controls="false"
+                    size="mini"
+                    style="width: 100%;"
+                    @change="onOrderNoChange"
+                  />
+                </template>
+              </el-table-column>
+            </el-table>
+            <el-row style="top: 10px">
+              <el-button type="primary" @click="saveGamesSort">保存</el-button>
+            </el-row>
+          </el-dialog>
         </el-tab-pane>
 
         <el-tab-pane label="任务配置">
@@ -44,16 +224,28 @@ import { Message } from 'element-ui'
 import request from '@/utils/request'
 import store from '@/store'
 import { divFields1000, mulFields1000 } from '@/utils/index'
-import ActivityBaseConfig from './components/ActivityBaseConfig.vue'
+import UserTypeUnit from '@/components/UserType/index.vue'
 import TaskConfig from './components/TaskConfig.vue'
 import WhitelistConfig from './components/WhitelistConfig.vue'
-import { defaultUserConfig } from '@/components/UserType/config'
+import UserType from "@/components/UserType/index.vue";
 
+function defaultUserConfig() {
+  return {
+    userTypes: [2],
+    userFilterCondition: {
+      registerTimeRange: { min: 0, max: 0 },
+      betTimesRange: { min: 0, max: 0 },
+      userTagConfig: { tagType: 0, tagId: 0, tagValue: 0 }
+    },
+    importedFilename: ''
+  }
+}
 export default {
   name: 'RedBagForm',
   // 注册子组件
   components: {
-    ActivityBaseConfig, // 红包雨活动基础配置组件（活动信息、时间、金额限制、游戏选择）
+    UserType,
+    UserTypeUnit, // 参与活动用户类型选择组件
     TaskConfig, // 任务配置组件（任务列表管理、新增/编辑/删除任务、红包价值配置）
     WhitelistConfig // 白名单配置组件（AppId/SiteId白名单、A/B测试）
   },
@@ -91,7 +283,30 @@ export default {
       appId: parseInt(store.getters.appId) || -1,
       fields: [
         'showGold', 'limitMaxNum', 'rewardNum'
-      ]
+      ],
+      env: store.getters.env || '',
+      // 游戏树相关
+      redBagUserTagOptions: [
+        {
+          value: 5,
+          label: 'Slots用户类型',
+          children: [
+            { value: 50001, label: 'Slots新增用户' },
+            { value: 50002, label: 'Slots登录天数' },
+            { value: 50008, label: 'Slots回归用户' }
+          ]
+        }
+      ],
+      filterText: '',
+      allTreeData: [],
+      treeData: [],
+      defaultProps: {
+        label: 'label',
+        children: 'children',
+        disabled: 'disabled'
+      },
+      gamesSorted: [],
+      gamesSortDialogVisible: false
     }
   },
   // 侦听属性变化，自动处理弹窗显示/隐藏和数据加载/重置
@@ -117,12 +332,46 @@ export default {
      */
     dialogVisible(val) {
       this.$emit('update:visible', val)
+    },
+    // 游戏树关键字过滤
+    filterText(val) {
+      this.$refs.tree && this.$refs.tree.filter(val)
+    },
+    // 编辑模式下，游戏ID变化时同步树的选中状态
+    'item.gameIdCfg': {
+      handler() {
+        if (this.isEdit && this.$refs.tree) {
+          this.$nextTick(() => {
+            this.$refs.tree.setCheckedKeys(this.item.gameIdCfg || [])
+            this.updateGamesSorted()
+          })
+        }
+      },
+      immediate: true
+    },
+    // 监听 item 对象引用变化（如新增/编辑切换），重置游戏选择状态
+    item(newVal, oldVal) {
+      if (newVal !== oldVal) {
+        this.ensureUserConfig()
+        this.gamesSorted = []
+        this.$nextTick(() => {
+          this.applyGameTypeFilter()
+        })
+      }
     }
   },
-  created() {
-    this.env = store.getters.env || this.env
+  mounted() {
+    this.ensureUserConfig()
+    this.getGameAll()
   },
   methods: {
+    // 确保 item.userConfig 已初始化，防止 UserType 渲染时 userConfig 为 undefined
+    ensureUserConfig() {
+      if (!this.item) return
+      if (!this.item.userConfig) {
+        this.$set(this.item, 'userConfig', defaultUserConfig())
+      }
+    },
     // 获取一个全新的默认表单数据对象（用于新增或重置表单）
     getDefaultItem() {
       const userConfig = defaultUserConfig()
@@ -145,7 +394,7 @@ export default {
         limitMaxNum: 0,
         timeS: 0,
         userType: [2], // 兼容旧数据
-        userConfig,
+        UserTypeUnitData: {},
         appId: -1,
         prizePoolCfg: [],
         gameIdCfg: [],
@@ -307,9 +556,9 @@ export default {
     handleDialogOpened() {
       this.$emit('opened')
       // 如果是编辑模式，设置已选中的游戏
-      if (this.isEdit && this.$refs.activityBaseConfig) {
+      if (this.isEdit) {
         this.$nextTick(() => {
-          this.$refs.activityBaseConfig.setCheckedGames()
+          this.setCheckedGames()
         })
       }
     },
@@ -537,6 +786,164 @@ export default {
     // 重置from，防止数据残留
     resetData() {
       this.item = this.getDefaultItem()
+      this.gamesSorted = []
+      this.$nextTick(() => {
+        this.applyGameTypeFilter()
+      })
+    },
+
+    // 游戏树筛选方法
+    filterNode(value, data) {
+      if (!value) return true
+      return data.label.indexOf(value) !== -1
+    },
+    handleGameTypeChange() {
+      // 切换玩法大类型时，清除已选游戏和排序缓存
+      this.item.gameIdCfg = []
+      this.gamesSorted = []
+      this.applyGameTypeFilter()
+    },
+    applyGameTypeFilter() {
+      const selectedKey = 'p-' + this.item.gameType
+      this.treeData = this.allTreeData.filter(cty => cty.id === selectedKey)
+
+      this.$nextTick(() => {
+        if (this.$refs.tree) {
+          this.$refs.tree.setCheckedKeys(this.item.gameIdCfg || [])
+        }
+        this.updateGamesSorted()
+      })
+    },
+    // 游戏树选中变化
+    handleCheckChange(data, checked) {
+      if (data.label === 'Slot' || data.label === 'Poker' || data.label === 'Casino') {
+        return
+      }
+
+      if (!this.item.gameIdCfg) {
+        this.item.gameIdCfg = []
+      }
+      const gameIdCfg = this.item.gameIdCfg
+      const index = gameIdCfg.indexOf(data.id)
+      if (checked) {
+        if (index < 0) {
+          gameIdCfg.push(data.id)
+        }
+      } else {
+        if (index >= 0) {
+          gameIdCfg.splice(index, 1)
+        }
+      }
+
+      this.item.gameIdCfg = gameIdCfg
+      this.updateGamesSorted()
+    },
+    // 更新选中游戏的排序列表
+    updateGamesSorted() {
+      const gamesSorted = []
+      const gameIdCfg = this.item.gameIdCfg || []
+      this.treeData.forEach(category => {
+        if (category.children) {
+          category.children.forEach(game => {
+            if (gameIdCfg.includes(game.id)) {
+              const existIndex = gamesSorted.findIndex(g => g.gameId === game.id)
+              if (existIndex < 0) {
+                gamesSorted.push({
+                  gameId: game.id,
+                  name: game.label,
+                  orderNo: gameIdCfg.indexOf(game.id) + 1
+                })
+              }
+            }
+          })
+        }
+      })
+      gamesSorted.sort((a, b) => a.orderNo - b.orderNo)
+      this.gamesSorted = gamesSorted
+    },
+    // 显示游戏排序弹窗
+    showGamesSortDialog() {
+      this.updateGamesSorted()
+      this.gamesSortDialogVisible = true
+    },
+    // 保存游戏排序
+    saveGamesSort() {
+      this.gamesSortDialogVisible = false
+      this.gamesSorted.sort((a, b) => a.orderNo - b.orderNo)
+      const gameIdCfg = []
+      this.gamesSorted.forEach(item => {
+        gameIdCfg.push(item.gameId)
+      })
+      this.item.gameIdCfg = gameIdCfg
+    },
+    // 排序号变化时自动排序
+    onOrderNoChange() {
+      this.gamesSorted.forEach(item => {
+        const orderNo = Number(item.orderNo)
+        item.orderNo = Number.isFinite(orderNo) && orderNo >= 0 ? Math.floor(orderNo) : 0
+      })
+      this.gamesSorted.sort((a, b) => a.orderNo - b.orderNo)
+    },
+    // 设置选中的游戏
+    setCheckedGames() {
+      if (this.$refs.tree && this.item.gameIdCfg) {
+        this.$nextTick(() => {
+          this.$refs.tree.setCheckedKeys(this.item.gameIdCfg)
+          this.updateGamesSorted()
+        })
+      }
+    },
+    // 获取游戏列表
+    getGameAll() {
+      request({
+        url: '/thirdpartygames/all',
+        method: 'get',
+        data: {},
+        params: { status: 2 }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objs = response.Data || []
+          const data = {}
+          for (let i = 0; i < objs.length; i++) {
+            const obj = objs[i]
+            if (obj.ShowDatacenter !== 1) {
+              continue
+            }
+
+            const game = { Gid: obj.Gid, Name: obj.Name, Description: obj.Description }
+            if (Object.prototype.hasOwnProperty.call(data, obj.CategoryID)) {
+              data[obj.CategoryID].push(game)
+            } else {
+              data[obj.CategoryID] = [game]
+            }
+          }
+
+          this.treeData = []
+          const categories = { 1: 'Slot', 2: 'Poker', 3: 'Casino' }
+
+          const builtTree = []
+          for (const key in data) {
+            const games = data[key]
+            const cty = { id: 'p-' + key, label: categories[key], children: [] }
+
+            for (let i = 0; i < games.length; i++) {
+              const game = games[i]
+              cty.children.push({ id: game.Gid, label: game.Name })
+            }
+            builtTree.push(cty)
+          }
+
+          this.allTreeData = builtTree
+          this.applyGameTypeFilter()
+
+          if (this.isEdit && this.$refs.tree && this.item.gameIdCfg) {
+            this.$nextTick(() => {
+              this.$refs.tree.setCheckedKeys(this.item.gameIdCfg)
+              this.updateGamesSorted()
+            })
+          }
+        }
+      })
     }
   }
 }
