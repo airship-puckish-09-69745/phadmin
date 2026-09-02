@@ -113,7 +113,7 @@
                   <UserTypeUnit
                     :key="userTypeUnitKey"
                     v-model="item.userConfig"
-                    :enabled-user-types="[2,3,5]"
+                    :enabled-user-types="[1,2,3,5]"
                     :activity-cfg-id="Number(item.id) || 0"
                     :custom-user-type-label="currentUserTypeLabel"
                     :custom-user-tag-options="currentUserTagOptions"
@@ -261,7 +261,10 @@ const GAME_TYPE_USER_TAG_PRESET = {
         children: [
           { value: 50001, label: 'Slots新增用户' },
           { value: 50002, label: 'Slots登录天数' },
-          { value: 50008, label: 'Slots回归用户' }
+          { value: 50008, label: 'Slots回归用户' },
+          { value: 50005, label: '下注额度' },
+          { value: 50006, label: '日均下注额度' },
+          { value: 50003, label: '携带金额' }
         ]
       }
     ]
