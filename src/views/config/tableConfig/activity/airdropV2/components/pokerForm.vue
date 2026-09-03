@@ -191,15 +191,15 @@
           <div v-if="!item.enableBetMoneyPrize" style="margin-bottom: 8px; color: #909399; font-size: 12px">
             已标记为不配置投注金奖励。
           </div>
-<!--          <div v-if="item.enableBetMoneyPrize" style="margin-bottom: 12px; padding: 10px; background-color: #f0f9ff; border-left: 4px solid #409eff; font-size: 13px">-->
-<!--            <div style="margin-bottom: 5px"><strong>说明：</strong></div>-->
-<!--            <div style="color: #606266; line-height: 1.6">-->
-<!--              • <strong>总奖励</strong>：活动奖励池总额<br>-->
-<!--              • <strong>已发奖励</strong>：已经发放的奖励金额（由后端自动更新，只读）<br>-->
-<!--              • <strong>任务条件</strong>：用户投注金额需达到此值才能参与奖励<br>-->
-<!--              • <strong>奖励阶梯</strong>：根据用户积分区间和系数范围计算实际奖励，每个阶梯设定不同的奖励上限-->
-<!--            </div>-->
-<!--          </div>-->
+          <!--          <div v-if="item.enableBetMoneyPrize" style="margin-bottom: 12px; padding: 10px; background-color: #f0f9ff; border-left: 4px solid #409eff; font-size: 13px">-->
+          <!--            <div style="margin-bottom: 5px"><strong>说明：</strong></div>-->
+          <!--            <div style="color: #606266; line-height: 1.6">-->
+          <!--              • <strong>总奖励</strong>：活动奖励池总额<br>-->
+          <!--              • <strong>已发奖励</strong>：已经发放的奖励金额（由后端自动更新，只读）<br>-->
+          <!--              • <strong>任务条件</strong>：用户投注金额需达到此值才能参与奖励<br>-->
+          <!--              • <strong>奖励阶梯</strong>：根据用户积分区间和系数范围计算实际奖励，每个阶梯设定不同的奖励上限-->
+          <!--            </div>-->
+          <!--          </div>-->
           <div style="margin-bottom: 12px">
             <el-button
               size="small"
@@ -349,7 +349,8 @@ import UserTypeUnit from '@/components/UserType/index.vue'
 import { ACTIVITY_ID } from '../index.vue'
 import {PROP_TYPE_OPTIONS} from "@/utils/options";
 import {IsProd} from "@/utils/env";
-import {GetMatchTicketRightsIdList, MATCH_TICKET_RIGHTS_ID_CFG_PROD, MATCH_TICKET_RIGHTS_ID_CFG_DEV} from "@/utils/prop";
+import { MATCH_TICKET_RIGHTS_ID_CFG_PROD, MATCH_TICKET_RIGHTS_ID_CFG_DEV } from "@/utils/prop";
+import store from "@/store";
 
 
 const GAME_TYPE = 2 // Poker
@@ -493,6 +494,11 @@ export default {
   },
   mounted() {
     this.getPropList()
+  },
+  created() {
+    this.name = store.getters.name
+    this.env = store.getters.env || this.env
+    this.appId = store.getters.appId || this.appId
   },
   methods: {
     handleDialogClose() {
@@ -726,7 +732,11 @@ export default {
 
       this.$nextTick(() => {
         const propType = this.item.propPools.propType || this.propTypeOptions[0].value
-        this.buildPropOptionsForIndex(propType, 0)
+        if (this.isNewTicketProp(propType)) {
+          this.onPropTypeChange(this.item.propPools, 0, false)
+        } else {
+          this.buildPropOptionsForIndex(propType, 0)
+        }
       })
     },
     validateData() {
@@ -920,24 +930,45 @@ export default {
         .map(p => ({ value: p.id, label: p.item_name, disabled: false }))
       this.$set(this.propOptionsMap, idx, opts)
     },
-    onPropTypeChange(row, idx) {
-      row.propId = 0
-      row.propName = ''
+    onPropTypeChange(row, idx, shouldReset = true) {
+      const prevPropId = row.propId
+      const prevPropName = row.propName
+      const prevSceneId = row.sceneId
+      if (shouldReset) {
+        row.propId = 0
+        row.propName = ''
+      }
+      const isTicketProp = this.isNewTicketProp(row.propType)
+      if (!isTicketProp && Object.prototype.hasOwnProperty.call(row, 'sceneId')) {
+        row.sceneId = 0
+      }
+
       // 是否是新版道具类型（如新版Tongits门票、新版德州参赛券等），如果是则需要重新构建道具选项
-      if (this.isNewTicketProp(row.propType)) {
-        //根据当前道具类型获取对应的门票配置
+      if (isTicketProp) {
+        // 根据当前道具类型获取对应的门票配置
         const ticketsConfig = IsProd() ? MATCH_TICKET_RIGHTS_ID_CFG_PROD : MATCH_TICKET_RIGHTS_ID_CFG_DEV
-        if(ticketsConfig && typeof ticketsConfig === 'object'){
-          console.log(111232)
-          // 收集所有appId下的ticketId
-          const allowedTicketIds = new Set()
-          for(const appId in ticketsConfig){
-            if(ticketsConfig[appId] && Array.isArray(ticketsConfig[appId])){
-              ticketsConfig[appId].forEach(ticket => {
-                if(ticket.ticketId){
-                  allowedTicketIds.add(ticket.ticketId)
-                }
-              })
+        const ticketList = ticketsConfig[this.appId]
+        const opts = (Array.isArray(ticketList) ? ticketList : [])
+          .filter(ticket => ticket && ticket.ticketId !== undefined && ticket.ticketId !== null)
+          .map(ticket => ({
+            value: ticket.ticketId,
+            label: ticket.label || String(ticket.ticketId),
+            sceneId: ticket.sceneId,
+            disabled: false
+          }))
+        this.$set(this.propOptionsMap, idx, opts)
+
+        if (!shouldReset) {
+          const matchedTicket = opts.find(opt => String(opt.value) === String(prevPropId))
+          if (matchedTicket) {
+            row.propId = matchedTicket.value
+            row.propName = matchedTicket.label
+            row.sceneId = matchedTicket.sceneId
+          } else {
+            row.propId = prevPropId
+            row.propName = prevPropName
+            if (prevSceneId !== undefined) {
+              row.sceneId = prevSceneId
             }
           }
         }
@@ -947,8 +978,13 @@ export default {
     },
     onPropNameChange(row, idx) {
       const opts = this.propOptionsMap[idx] || []
-      const sel = opts.find(o => o.value === row.propId)
-      if (sel) row.propName = sel.label
+      const sel = opts.find(o => String(o.value) === String(row.propId))
+      if (sel) {
+        row.propName = sel.label
+        if (this.isNewTicketProp(row.propType) && sel.sceneId !== undefined && sel.sceneId !== null) {
+          row.sceneId = sel.sceneId
+        }
+      }
     }
   }
 }
