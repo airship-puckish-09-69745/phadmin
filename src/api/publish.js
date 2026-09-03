@@ -16,11 +16,23 @@ export const PUBLISH_STEPS = {
   // 已审核待发布步骤
   PUBLISH_STEP_REVIEWED: 5,
   // 已发布到线上步骤
-  PUBLISH_STEP_PRO: 6,
+  PUBLISH_STEP_PRO: 6
 }
 
-function getVer() {
+// function getVer() {
+//   return store.getters.version === 'V2' ? 'V2' : ''
+// }
+
+// 辅助函数：获取有效 cfgMangeVer
+function getEffectiveVersion(cfgMangeVer) {
+  if (cfgMangeVer !== undefined) return cfgMangeVer
   return store.getters.version === 'V2' ? 'V2' : ''
+}
+
+// 辅助函数：获取有效 appId
+function getEffectiveAppId(appId) {
+  if (appId !== undefined) return appId
+  return store.getters.appId
 }
 
 /**
@@ -29,19 +41,26 @@ function getVer() {
  * @param keyID
  * @param envEmpty true环境变量为空
  * @param appId
+ * @param options
  * @returns {*}
  */
-export function getDiff(opType, keyID, envEmpty, appId) {
-  const ver = getVer()
+export function getDiff(opType, keyID, envEmpty, appId, options = {}) {
+  const { cfgMangeVer } = options
+  const effectiveAppId = getEffectiveAppId(appId)
+  const ver = getEffectiveVersion(cfgMangeVer)
   return request({
     url: `configfile${ver}/diff`,
     method: 'get',
     data: {
       opType: opType,
       keyID: keyID,
-      AppId: appId
+      AppId: effectiveAppId
     },
-    envEmpty: envEmpty
+    envEmpty: envEmpty,
+    headers: {
+      'X-App-Id': effectiveAppId,
+      'X-Version': ver
+    }
   })
 }
 
@@ -53,10 +72,13 @@ export function getDiff(opType, keyID, envEmpty, appId) {
  * @param envEmpty true环境变量为空
  * @param attrInfo
  * @param appId
+ * @param options
  * @returns {*}
  */
-export function submitPublish(opType, keyID, summary, envEmpty, attrInfo, appId) {
-  const ver = getVer()
+export function submitPublish(opType, keyID, summary, envEmpty, attrInfo, appId, options = {}) {
+  const { cfgMangeVer } = options
+  const effectiveAppId = getEffectiveAppId(appId)
+  const ver = getEffectiveVersion(cfgMangeVer)
   return request({
     url: `configfile${ver}/publish`,
     method: 'post',
@@ -66,38 +88,54 @@ export function submitPublish(opType, keyID, summary, envEmpty, attrInfo, appId)
       summary: summary,
       AttrInfo: attrInfo,
       EnvEmpty: envEmpty ? 1 : 0,
-      AppId: appId
+      AppId: effectiveAppId
     },
-    envEmpty: envEmpty
+    envEmpty: envEmpty,
+    headers: {
+      'X-App-Id': effectiveAppId,
+      'X-Version': ver
+    }
   })
 }
 
 // 当前发布状态 getView
 // 判断权限，是否需要审核
-export function getView(keyID, envEmpty, appId) {
-  const ver = getVer()
+export function getView(keyID, envEmpty, appId, options = {}) {
+  const { cfgMangeVer } = options
+  const effectiveAppId = getEffectiveAppId(appId)
+  const ver = getEffectiveVersion(cfgMangeVer)
   console.log('getView keyID', keyID, envEmpty, appId)
   return request({
     url: `configfile${ver}/review`,
     method: 'get',
     data: {
       keyID: keyID,
-      AppId: appId
+      AppId: effectiveAppId
     },
-    envEmpty: envEmpty
+    envEmpty: envEmpty,
+    headers: {
+      'X-App-Id': effectiveAppId,
+      'X-Version': ver
+    }
   })
 }
 
 // 回滚 rollback
-export function rollback(keyID, envEmpty, appId) {
-  const ver = getVer()
+export function rollback(keyID, envEmpty, appId, options = {}) {
+  const { cfgMangeVer } = options
+  const effectiveAppId = getEffectiveAppId(appId)
+  const ver = getEffectiveVersion(cfgMangeVer)
   return request({
     url: `configfile${ver}/rollback`,
     method: 'post',
     data: {
       keyID: keyID,
-      AppId: appId
+      AppId: effectiveAppId
     },
-    envEmpty: envEmpty
+    envEmpty: envEmpty,
+    headers: {
+      'X-App-Id': effectiveAppId,
+      'X-Version': ver
+    }
   })
 }

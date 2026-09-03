@@ -1,10 +1,11 @@
 <template>
   <div id="app" class="page-container" style="padding: 10px">
     <el-row>
-      <publish primary-key="ID" key-id="MarketApiSceneConfig" :env-empty="false" :check="configCheck" compare-type="Array" :make-content="makeContent" :attr-names="getPublishAttrNames()" :head-attrs="['ID','AppId','Pid','Site','Scene']" />
+      <!--      <publishV2 primary-key="ID" key-id="MarketApiSceneConfig" :app-id="appId" :env-empty="false" :check="configCheck" compare-type="Array" :make-content="makeContent" :attr-names="getPublishAttrNames()" :head-attrs="['ID','AppId','Pid','Site','Scene']" />-->
+      <publish primary-key="ID" key-id="MarketApiSceneConfig" :app-id="appId" :env-empty="false" :check="configCheck" compare-type="Array" :make-content="makeContent" :attr-names="getPublishAttrNames()" :head-attrs="['ID','AppId','Pid','Site','Scene']" />
     </el-row>
     <el-row>
-      <el-col :span="20">
+      <el-col :span="24">
         <el-descriptions
           class="margin-top"
           :column="1"
@@ -16,12 +17,21 @@
         </el-descriptions>
       </el-col>
     </el-row>
-    <el-row style="padding-top: 5px">
-      <el-col :span="20">
-        <el-button size="mini" type="primary" icon="el-icon-plus" @click="handleAdd()">添加配置项</el-button>
+    <el-row>
+      <el-col :span="22">
+        <label>App</label>
+        <el-select v-model="appId" placeholder="请选择APP" @change="onAppChange">
+          <!--          <el-option label="请选择App" :value="0" />-->
+          <el-option v-for="(item,index) in appOptions" :key="index" :label="item.label" :value="item.value" />
+        </el-select>
       </el-col>
       <el-col :span="2">
         <el-button type="success" size="mini" icon="el-icon-refresh" @click="getList()">刷新</el-button>
+      </el-col>
+    </el-row>
+    <el-row style="padding-top: 5px">
+      <el-col :span="20">
+        <el-button size="mini" type="primary" icon="el-icon-plus" @click="handleAdd()">添加配置项</el-button>
       </el-col>
       <!--      <el-col :span="4">-->
       <!--        <el-input-->
@@ -62,9 +72,9 @@
                 @click.native.stop
               >
                 <el-option
-                  v-for="item in scenePidOptions"
-                  :key="item.value"
-                  :label="item.label"
+                  v-for="(item, index) in scenePidOptions"
+                  :key="index"
+                  :label="'[' + item.value + ']' + item.label"
                   :value="item.value"
                 />
               </el-select>
@@ -138,9 +148,9 @@
                 <el-form-item label="发放ID（内部用）：" :required="true" size="medium">
                   <el-select v-model="edit.item.pid" placeholder="请选择" style="width: 100%" filterable :disabled="edit.isEdit" @change="handlePidChange">
                     <el-option
-                      v-for="item in scenePidOptions"
-                      :key="item.value"
-                      :label="item.label"
+                      v-for="(item, index) in scenePidOptions"
+                      :key="index"
+                      :label="'[' + item.value + ']' + item.label"
                       :value="item.value"
                     />
                   </el-select>
@@ -201,13 +211,14 @@
 <script>
 
 import { $libDate, $libShow, ClientTableData, MoneyShow } from '@/utils/common'
-import Publish from '@/components/Publish/index.vue'
 import Compare from '@/components/Compare/index.vue'
 import store from '@/store'
 import request from '@/utils/request'
 import { Message } from 'element-ui'
 import MarketApiSiteSelect from '@/components/MarketApiSiteSelect/index.vue'
 import { GetScenePidOptions, SCENE_P_TYPE_OPTIONS } from '@//utils/options'
+// import PublishV2 from '@/components/Publish/indexV2.vue'
+import Publish from '@/components/Publish/index.vue'
 
 const filterMap = { pid: [] }
 
@@ -226,7 +237,7 @@ function newItem() {
 }
 
 export default {
-  components: { Compare, Publish, MarketApiSiteSelect },
+  components: { Publish, Compare, MarketApiSiteSelect },
   data() {
     return {
       tableData: [],
@@ -236,7 +247,7 @@ export default {
       libShow: $libShow,
       libMoney: new MoneyShow([]),
       statusNames: { 2: '上架', 6: '下架', 7: '预上架', 8: '预下架' },
-      appId: parseInt(store.getters.appId) || -1,
+      appId: 0,
       version: store.getters.version || 'V1',
       search: '',
       edit: {
@@ -260,23 +271,28 @@ export default {
       },
       scenePidOptions: [],
       SCENE_P_TYPE_OPTIONS,
-      filterPidSelected: 0
+      filterPidSelected: 0,
+      appOptions: [],
+      cfgMangeVer: 'V2'
     }
   },
   computed: {
   },
   created() {
     this.env = store.getters.env || this.env
+    this.getAppInfos()
   },
   mounted() {
-    this.scenePidOptions = GetScenePidOptions(this.appId)
-    this.getList()
   },
   methods: {
+    init() {
+      this.scenePidOptions = GetScenePidOptions(this.appId)
+      this.getList()
+    },
     getScenePidName(pid) {
       for (let i = 0; i < this.scenePidOptions.length; i++) {
         if (this.scenePidOptions[i].value === pid) {
-          return this.scenePidOptions[i].label
+          return '[' + pid + ']' + this.scenePidOptions[i].label
         }
       }
       return '未知发放场景'
@@ -343,6 +359,12 @@ export default {
       this.clientDB.Search(this.search, ['pid'])
       this.refreshShow()
     },
+    onAppChange() {
+      this.filterPidSelected = 0
+      this.scenePidOptions = GetScenePidOptions(this.appId)
+      console.log('scenePidOptions', this.scenePidOptions.toString())
+      this.getList()
+    },
     // 分页处理
     refreshShow() {
       this.tableData = this.clientDB.GetCurrentPageData()
@@ -355,18 +377,48 @@ export default {
       this.clientDB.GetPage().SetPageNo(val)
       this.refreshShow()
     },
+    getAppInfos() {
+      request({
+        url: '/thirdparties/all',
+        method: 'get',
+        data: {
+          AppId: this.appId,
+          Env: this.env
+        }
+      }).then(response => {
+        if (response.RetCode !== 0) {
+          return
+        }
+        response.Data.forEach(app => {
+          if (app.Status === 2) {
+            this.appOptions.push({
+              value: app.ID,
+              label: app.ID + '-' + app.Account
+            })
+          }
+        })
+        if (this.appId === 0 && this.appOptions.length > 0) {
+          this.appId = this.appOptions[0].value
+        }
+        this.init()
+      })
+    },
     getList() {
       const $this = this
       request({
         url: '/marketapisceneconfig/all',
         method: 'get',
-        data: {}
+        data: {
+          Env: $this.env,
+          AppId: $this.appId
+        },
+        headers: {
+          'X-App-Id': $this.appId,
+          'X-Version': $this.cfgMangeVer
+        }
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
-          objs.forEach(function(item) {
-            item.sceneName = $this.getScenePidName(item.pid)
-          })
           console.log('objs ', objs)
           this.clientDB = new ClientTableData(objs, 10, filterMap)
           this.handleScenePidFilter()
@@ -376,19 +428,19 @@ export default {
       })
     },
     handlePrepare(ob) {
-      this.changeStatus(ob.id, 2, '您确定要将记录状态修改为"上架"吗？该记录将在发布后同步到外网。')
+      this.changeStatus(ob.id, ob.appId, 2, '您确定要将记录状态修改为"上架"吗？该记录将在发布后同步到外网。')
     },
     handleOffline(ob) {
-      this.changeStatus(ob.id, 6, '您确定要将记录下架吗？下架的记录将在发布后从线上消失。')
+      this.changeStatus(ob.id, ob.appId, 6, '您确定要将记录下架吗？下架的记录将在发布后从线上消失。')
     },
     handleDelete(ob) {
       const deleteList = []
       deleteList.push(ob)
       this.deleteData = deleteList
-      this.changeStatus(ob.id, 3, '您确定要将记录状态修改为废弃吗？')
+      this.changeStatus(ob.id, ob.appId, 3, '您确定要将记录状态修改为废弃吗？')
     },
-    changeStatus(id, status, msg) {
-      // const $this = this
+    changeStatus(id, appId, status, msg) {
+      const $this = this
       this.$confirm(msg, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -399,7 +451,12 @@ export default {
           method: 'post',
           data: {
             id: id,
+            appId: appId,
             status: status
+          },
+          headers: {
+            'X-App-Id': appId,
+            'X-Version': $this.cfgMangeVer
           }
         }).then(response => {
           if (response.RetCode === 0) {
@@ -446,10 +503,15 @@ export default {
       }
     },
     createData(data) {
+      const $this = this
       request({
         url: '/marketapisceneconfig/create',
         method: 'post',
-        data: data
+        data: data,
+        headers: {
+          'X-App-Id': $this.appId,
+          'X-Version': $this.cfgMangeVer
+        }
       }).then(response => {
         if (response.RetCode === 0) {
           this.getList()
@@ -459,10 +521,15 @@ export default {
       })
     },
     updateData(data) {
+      const $this = this
       request({
         url: '/marketapisceneconfig/update',
         method: 'post',
-        data: data
+        data: data,
+        headers: {
+          'X-App-Id': $this.appId,
+          'X-Version': $this.cfgMangeVer
+        }
       }).then(response => {
         if (response.RetCode === 0) {
           this.getList()
@@ -501,6 +568,7 @@ export default {
       const row = newItem()
       row.pid = this.filterPidSelected
       this.initFormData(false, row)
+      this.handlePidChange()
       this.edit.visible = true
     }
     //* *********************** 修改/添加弹框相关 ************************

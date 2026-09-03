@@ -1055,7 +1055,7 @@ export default {
         { name: '竖版游戏排行榜活动-[19]', id: 19 },
         { name: 'Poker类排行榜活动-[20]', id: 20 },
         { name: '活动地图-[21]', id: 21 },
-        { label: '聚宝盆活动-[22]', value: 22 }
+        { label: '聚宝盆活动-[22]', value: 22 },
         { name: 'Slots Free Buy活动-[30]', id: 30 },
         { label: '聚宝盆活动-[22]', value: 22 }
       ],
