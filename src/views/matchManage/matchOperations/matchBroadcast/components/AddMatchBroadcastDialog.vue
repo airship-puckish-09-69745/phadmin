@@ -363,7 +363,7 @@ export default {
       return totalLength;
     },
     goToExternalSite() {
-      window.open('http://192.168.8.2:4000/', '_blank');
+      window.open('http://192.168.6.69:4000/', '_blank');
     }
   }
 }

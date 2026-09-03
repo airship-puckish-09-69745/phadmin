@@ -30,7 +30,14 @@
           inactive-text="关">
         </el-switch>
       </el-form-item>
-      </el-form>
+
+      <el-form-item v-if="formData.Display" label="站点选择：">
+        <el-checkbox-group v-model="formData.ChannelId" style="width: 700px">
+          <el-checkbox v-for="item in CHANNEL_OPTIONS" :key="item.value" :label="item.value">{{ item.label }}</el-checkbox>
+        </el-checkbox-group>
+      </el-form-item>
+
+    </el-form>
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="handleClose(false)">取消</el-button>
@@ -41,7 +48,7 @@
 </template>
 
 <script>
-import {MATCH_GAME_ID_CFG_OPTIONS, MATCH_LIST_TAG_OPTIONS} from '@/utils/options'
+import {MATCH_GAME_ID_CFG_OPTIONS, MATCH_LIST_TAG_OPTIONS, CHANNEL_OPTIONS} from '@/utils/options'
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
 export default {
   components: {
@@ -70,10 +77,12 @@ export default {
         Display: 1,   //展示开关 1:打开 0:关闭
         GameId:0,
         Sort:0,     //排序字段
+        ChannelId:[],   //站点ID
       },
       tableData: [],
       MATCH_LIST_TAG_OPTIONS,
       MATCH_GAME_ID_CFG_OPTIONS,
+      CHANNEL_OPTIONS,
       showTip:false,
     }
   },
@@ -90,7 +99,22 @@ export default {
   watch: {
     updateData(newData) {
       if (newData) {
-        this.formData = { ...newData }
+        const defaultForm = {
+          ID: '',
+          TagName: '',
+          TagId: 0,
+          Display: 1,
+          GameId: 0,
+          Sort: 0,
+          ChannelId: [],
+        }
+        const mergedForm = { ...defaultForm, ...newData }
+        if (!Array.isArray(mergedForm.ChannelId)) {
+          mergedForm.ChannelId = mergedForm.ChannelId
+            ? [mergedForm.ChannelId]
+            : []
+        }
+        this.formData = mergedForm
       } else {
         this.resetForm()
       }
@@ -121,7 +145,6 @@ export default {
         this.$message.error('请选择游戏ID')
         return false
       }
-      console.log("111 ",this.formData)
       if(this.formData.Sort <= 0) {
         this.$message.error('请填写排序')
         return false
@@ -159,6 +182,7 @@ export default {
         Display: 1,
         GameId: 0,
         Sort:0,
+        ChannelId: [],
       }
       this.$emit('update:visible', false)
     },

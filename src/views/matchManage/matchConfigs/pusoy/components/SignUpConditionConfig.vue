@@ -67,7 +67,7 @@
 
     <el-form-item
       v-if="editForm.data.signUpType == 1"
-      label="今日投注下限(0不限制)："
+      label="自然日投注局数下限(不区分游戏类型,0不限制)："
       :required="true"
     >
       <el-input
@@ -76,6 +76,9 @@
         size="mini"
         placeholder="请填写限制数值"
       />
+      <span  style="color: #409eff; margin-left: 10px;">
+        自然日投注局数下限（不区分游戏类型）
+      </span>
     </el-form-item>
 
     <el-form-item

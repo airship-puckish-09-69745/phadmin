@@ -838,7 +838,10 @@ export default {
       },
       detailVisible: false,
       slotCfg: {},
-      localSubKeyMap: { ...SubKeyMap },
+      localSubKeyMap: {
+        ...SubKeyMap,
+        100246: 'talareyessouthseapearls_slots_base'
+      },
       addDialogVisible: false,
       addFormData: {
         PlanId: 0,
@@ -921,7 +924,8 @@ export default {
 
       AdditionalArray: [
         { key: 100180, label: 'Fishing Master(额外加注)' },
-        { key: 100186, label: 'Mahjong Jackpot(额外加注)' }
+        { key: 100186, label: 'Mahjong Jackpot(额外加注)' },
+        { key: 100246, label: 'Tala Reyes South Sea Pearls(额外加注)' }
       ],
       scriptPlanVolatilityStat: {},
       selectedUserTags: [],

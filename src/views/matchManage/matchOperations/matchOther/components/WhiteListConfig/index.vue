@@ -14,7 +14,7 @@
         </el-form-item>
       </el-col>
       <el-col>
-        <el-form-item label="SiteId白名单dd：">
+        <el-form-item label="SiteId白名单：">
           <el-select
             v-model="formData.SiteIdList"
             placeholder="请选择"
