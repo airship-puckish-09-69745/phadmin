@@ -129,7 +129,11 @@ export const PROP_SOURCE_OPTIONS = [
   { value: 12, label: '红包活动' },
   { value: 13, label: 'rebuy' },
   { value: 14, label: 'rebuy回退' },
-  { value: 16, label: 'free spin' }
+  { value: 16, label: 'free spin' },
+  { value: 17, label: '富裕卡任务' },
+  { value: 18, label: '7日留存活动' },
+  { value: 19, label: '万圣节活动' },
+  { value: 20, label: '复活节活动' },
 ]
 
 // 奖励分类
@@ -165,22 +169,28 @@ export const MATCH_UNIQUE_ID_CFG = [
   { 'value': 10006, 'label': 'P100' },
   { 'value': 10007, 'label': 'P300' },
 
-  // 以下全局ID为GTCC线上赛临时用 不长期占用
-  { 'value': 11001, 'label': 'GTCC日赛' },
-  { 'value': 11002, 'label': 'GTCC周赛' },
-  { 'value': 11003, 'label': 'GTCC月赛' },
-  { 'value': 11004, 'label': 'GTCC线上半决赛' },
-  { 'value': 11005, 'label': 'GTCC线上决赛' },
-  { 'value': 11006, 'label': 'GTCC机酒赛' },
-  { 'value': 11007, 'label': 'GTCC魔戒赛' },
-  { 'value': 11008, 'label': 'GTCC豪客赛' },
+  //以下全局ID为GTCC线上赛临时用 不长期占用
+  // { 'value': 11001, 'label': 'GTCC日赛' },
+  // { 'value': 11002, 'label': 'GTCC周赛' },
+  // { 'value': 11003, 'label': 'GTCC月赛' },
+  // { 'value': 11004, 'label': 'GTCC线上半决赛' },
+  // { 'value': 11005, 'label': 'GTCC线上决赛' },
+  // { 'value': 11006, 'label': 'GTCC机酒赛' },
+  // { 'value': 11007, 'label': 'GTCC魔戒赛' },
+  // { 'value': 11008, 'label': 'GTCC豪客赛' },
 
-  // 以下全局ID为圣诞活动赛线临时用 不长期占用
-  { 'value': 11101, 'label': '双旦每日iwatch赛' },
-  { 'value': 11102, 'label': '双旦每日IPhone赛' },
-  { 'value': 11103, 'label': '双旦大赛' },
-  { 'value': 11104, 'label': '双旦豪客赛' },
-  { 'value': 11105, 'label': '双旦大赛二' }
+  //周年庆全局ID 不长期占用
+  { 'value': 11105, 'label': 'Air pods pro 3' },
+  { 'value': 11106, 'label': 'DJI Osmo Pocket' },
+  { 'value': 11107, 'label': 'AirPods Max 2' },
+  { 'value': 11108, 'label': 'JBL Partybox' },
+  { 'value': 11109, 'label': 'Apple Watch Ultra 3' },
+  { 'value': 11110, 'label': 'iPhone pro max 512' },
+
+
+  { 'value': 11102, 'label': 'S5 Daily' },
+  { 'value': 11103, 'label': 'S5 Daily Plus' },
+  { 'value': 11104, 'label': 'S5 SemiFinal' },
 ]
 
 // 比赛Pusoy全局ID集合
@@ -203,10 +213,10 @@ export const MATCH_PUSOY_UNIQUE_ID_CFG = [
 export const MATCH_TABLE_SCENE_ID_CFG = [
   { 'value': 0, 'label': '免费赛桌面' },
   { 'value': 1, 'label': '付费赛桌面' },
-  { 'value': 2, 'label': 'GTCC预选赛1' },
-  { 'value': 3, 'label': 'GTCC预选赛2' },
-  { 'value': 4, 'label': 'GTCC预选赛3' },
-  { 'value': 5, 'label': 'Table5' }
+  { 'value': 2, 'label': 's5赛事-付费赛' },
+  { 'value': 3, 'label': 's5赛事-日赛' },
+  { 'value': 4, 'label': 's5赛事-半决赛' },
+  { 'value': 5, 'label': 'Table5' },
 ]
 // Pusoy 牌桌TableId
 export const MATCH_PUSOY_TABLE_SCENE_ID_CFG = [
@@ -221,7 +231,8 @@ export const MATCH_LIST_TAG_OPTIONS = [
   { 'value': 2, 'label': 'FREE', disabled: false },
   { 'value': 3, 'label': 'Pro Arena', disabled: false },
   { 'value': 4, 'label': 'TPCC', disabled: false },
-  { 'value': 5, 'label': 'TPCC Events', disabled: false }
+  { 'value': 5, 'label': 'TPCC Events', disabled: false },
+  { 'value': 6, 'label': 'Anniversary', disabled: false },
 ]
 
 // 比赛GameId选项
@@ -236,6 +247,13 @@ export const MATCH_IUPSTREAM_TYPE_OPTIONS = {
   MATCH_UPSTREAM_TYPE_TONGITS: 2031, // tongits
   UPSTREAM_TYPE_TEXAS_MTT: 2032, // 德州MTT
   MATCH_UPSTREAM_TYPE_PUSOY: 2033 // pusoy
+}
+
+
+export const RULE_END_MATCH_CFG ={
+  END_MATCH_CFG_TIME_AND_USER:3,// 时间+人数
+  END_MATCH_CFG_DYNAMIC_PROMOTE:4, //动态晋级
+
 }
 
 // 数据记录状态
