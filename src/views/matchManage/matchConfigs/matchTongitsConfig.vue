@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-row>
-      <publish primary-key="matchCfgId" key-id="MatchConfig" :env-empty="true" :attr-names="AttrNames" :make-content="makeContent" :head-attrs="['matchCfgId','title']" />
+      <publish primary-key="matchCfgId" key-id="MatchConfig" :env-empty="false" :attr-names="AttrNames" :make-content="makeContent" :head-attrs="['matchCfgId','title']" compare-type="Array" />
     </el-row>
     <el-row>
       <el-form :model="form" label-width="100px" :inline="true" size="mini">
@@ -1156,6 +1156,8 @@ export default {
           tableSceneId: '牌桌场景ID',
           delaySignUpSeconds: '延迟报名时间(秒)',
         },
+        app_id:"应用ID",
+        env:"环境"
       },
       singleCopy: {
         id: 0,
@@ -1663,7 +1665,8 @@ export default {
           data: {
             Env: this.env,
             Id: id,
-            Status: status
+            Status: status,
+            GameId:this.form.gameId,
           }
         }).then(response => {
           if (response.RetCode === 0) {
@@ -1701,7 +1704,8 @@ export default {
           data: {
             Env: this.env,
             Id: id,
-            Status: status
+            Status: status,
+            GameId:this.form.gameId,
           }
         }).then(response => {
           if (response.RetCode === 0) {
@@ -2140,7 +2144,8 @@ export default {
             method: 'post',
             data: {
               Env: this.env,
-              Id: id
+              Id: id,
+              GameId:this.form.gameId,
             }
           }).then(response => {
             if (response.RetCode === 0) {
@@ -2214,6 +2219,7 @@ export default {
           method: 'post',
           data: {
             Gid:2031,
+            Env: this.env,
           }
         }).then(response => {
           if (response.RetCode === 0) {
@@ -2239,7 +2245,9 @@ export default {
           method: 'post',
           data: {
             Env: this.env,
-            Id: id
+            Id: id,
+            GameId:this.form.gameId,
+
           }
         }).then(response => {
           if (response.RetCode === 0) {

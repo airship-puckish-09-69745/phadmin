@@ -4,6 +4,7 @@
  */
 import { Message, MessageBox } from 'element-ui'
 import request from '@/utils/request'
+import {MATCH_IUPSTREAM_TYPE_OPTIONS} from "@/utils/options";
 
 export const matchActionMixin = {
   methods: {
@@ -50,7 +51,8 @@ export const matchActionMixin = {
           method: 'POST',
           data: {
             Env: this.$store.getters.env,
-            Id: id
+            Id: id,
+            GameId:MATCH_IUPSTREAM_TYPE_OPTIONS.MATCH_UPSTREAM_TYPE_PUSOY,
           }
         })
 
@@ -89,7 +91,8 @@ export const matchActionMixin = {
           method: 'POST',
           data: {
             Env: this.$store.getters.env,
-            Id: id
+            Id: id,
+            GameId:MATCH_IUPSTREAM_TYPE_OPTIONS.MATCH_UPSTREAM_TYPE_PUSOY,
           }
         })
 
@@ -170,7 +173,8 @@ export const matchActionMixin = {
           data: {
             Env: this.$store.getters.env,
             Id: id,
-            Status: status ? 0 : 1
+            Status: status ? 0 : 1,
+            GameId:MATCH_IUPSTREAM_TYPE_OPTIONS.MATCH_UPSTREAM_TYPE_PUSOY,
           }
         })
 
@@ -269,6 +273,7 @@ export const matchActionMixin = {
           method: 'POST',
           data: {
             Gid:2033,
+            Env: this.$store.getters.env
           }
         })
 

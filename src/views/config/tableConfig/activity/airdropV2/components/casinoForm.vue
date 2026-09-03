@@ -80,9 +80,7 @@
           <!-- 白名单配置 -->
           <!--1. AppId白名单 2. SiteId白名单 3. ABTest开关 4. UID白名单-->
           <WhitelistConfig v-model="item.whitelist" :features="[2, 3]" />
-
-          <!-- 参与活动用户类型：casino 标签用户支持 casino新增用户/casino下注/casino额度 -->
-          <UserType
+          <UserTypeUnit
             v-model="item.userConfig"
             :activity-cfg-id="item.id"
             custom-user-type-label="casino 标签用户"
@@ -111,12 +109,9 @@
             已标记为不配置道具奖励，仅保存投注金奖励配置。
           </div>
           <el-form ref="rewardForm" :model="item" label-width="160px" size="small">
-            <!--
-              任务要求和奖励相关，故将任务类型、任务条件直接放在道具类型前面，
-              使任务配置与奖励配置在同一行可见，便于配置关联。
-            -->
+            <!--任务要求和奖励相关，故将任务类型、任务条件直接放在道具类型前面，使任务配置与奖励配置在同一行可见，便于配置关联 -->
             <el-table :data="[item.propPools]" border size="small" style="width: 100%;">
-              <!-- 任务类型（放在道具类型前面）-->
+              <!-- 任务类型-->
               <el-table-column label="任务类型" min-width="160">
                 <template slot-scope="scope">
                   <el-select v-model="scope.row.taskType" placeholder="请选择" size="mini" :disabled="!item.enableProgressPrize">
@@ -124,7 +119,7 @@
                   </el-select>
                 </template>
               </el-table-column>
-              <!-- 任务条件（放在道具类型前面）-->
+              <!-- 任务条件-->
               <el-table-column label="任务条件(₱)" min-width="130">
                 <template slot-scope="scope">
                   <el-input
@@ -267,7 +262,7 @@ import { Message } from 'element-ui'
 import request from '@/utils/request'
 import GameSelector from '@/components/Game/GameSelector.vue'
 import WhitelistConfig from '@/components/WhitelistConfig/index.vue'
-import UserType from '@/components/UserType/index.vue'
+import UserTypeUnit from '@/components/UserType/index.vue'
 
 import { ACTIVITY_ID } from '../index.vue'
 
@@ -329,7 +324,7 @@ function newItem() {
 
 export default {
   name: 'CasinoForm',
-  components: { GameSelector, WhitelistConfig, UserType },
+  components: { GameSelector, WhitelistConfig, UserTypeUnit },
   props: {
     visible: { type: Boolean, default: false },
     isEdit: { type: Boolean, default: false },
@@ -497,12 +492,12 @@ export default {
         userFilterCondition,
         importedFilename: ext.importedFilename || ''
       }
-
-      // 兼容旧数据：propPools 里若无 taskType/taskCondition 则从 ext 顶层读取
       const rawPropPools = this.safeJson(ext.propPools, defaultPropPools())
+      const taskType = rawPropPools.taskType || ext.taskType || 2
+
       const propPools = {
-        taskType: rawPropPools.taskType || ext.taskType || 2,
-        taskCondition: (rawPropPools.taskCondition !== undefined ? rawPropPools.taskCondition : (ext.taskCondition || 0)) / 1000,
+        taskType: taskType,
+        taskCondition: (rawPropPools.taskCondition || 0) / (taskType === 2 ? 1000 : 1), // 任务类型为 2 时，任务条件除以 1000 转换为 ₱ 显示
         propType: rawPropPools.propType || 5,
         propId: rawPropPools.propId || 0,
         propName: rawPropPools.propName || '',
@@ -614,14 +609,16 @@ export default {
         gameIdList: d.gameIdList,
         whitelist: d.whitelist
       }
+      const taskType = this.toSafeNumber(d.propPools.taskType, 2)
+
       const extendObj = {
         taskText: d.taskText || '',
         enableProgressPrize: !!d.enableProgressPrize,
         enableBetMoneyPrize: !!d.enableBetMoneyPrize,
         // propPools 中包含任务类型/条件和道具信息
         propPools: !d.enableProgressPrize ? defaultPropPools() : {
-          taskType: this.toSafeNumber(d.propPools.taskType, 2),
-          taskCondition: Math.round(this.toSafeNumber(d.propPools.taskCondition) * 1000),
+          taskType: taskType,
+          taskCondition: Math.round(this.toSafeNumber(d.propPools.taskCondition) * (taskType === 2 ? 1000 : 1)), // 任务类型为 2 时，任务条件乘以 1000 存储
           propType: this.toSafeNumber(d.propPools.propType),
           propId: this.toSafeNumber(d.propPools.propId),
           propName: d.propPools.propName,
@@ -629,6 +626,7 @@ export default {
           propNum: this.toSafeNumber(d.propPools.propNum),
           propLimit: this.toSafeNumber(d.propPools.propLimit)
         },
+
         // 投注金奖励：货币字段乘以 1000 存储
         casinosBetMoney: !d.enableBetMoneyPrize ? defaultCasinosBetMoney() : {
           taskType: this.toSafeNumber(d.casinosBetMoney.taskType, 2),

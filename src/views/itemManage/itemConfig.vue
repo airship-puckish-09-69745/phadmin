@@ -876,7 +876,6 @@ export default {
       var create  = false
       if (this.editForm.data.ID === 0) {
         this.editForm.data.status = 1
-      }else{
         create = true
       }
       this.dataUpdateRequest(create, expireTime, timeList)

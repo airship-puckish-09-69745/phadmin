@@ -2501,6 +2501,7 @@ export const asyncRoutes = [
         path: 'matchType',
         component: () => import('@/views/empty'),
         redirect: 'noRedirect',
+        hidden: process.env.NODE_ENV === 'development',
         meta: { title: '赛事管理', noCache: true },
         children: [
           {
@@ -2757,6 +2758,7 @@ export const asyncRoutes = [
         path: 'itemConfig',
         component: () => import('@/views/itemManage/itemConfig'),
         name: 'itemConfig',
+        hidden: process.env.NODE_ENV === 'development',
         meta: { title: '道具列表', noCache: true }
       },
       {
