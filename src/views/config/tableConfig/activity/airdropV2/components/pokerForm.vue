@@ -347,6 +347,10 @@ import GameSelector from '@/components/Game/GameSelector.vue'
 import WhitelistConfig from '@/components/WhitelistConfig/index.vue'
 import UserTypeUnit from '@/components/UserType/index.vue'
 import { ACTIVITY_ID } from '../index.vue'
+import {PROP_TYPE_OPTIONS} from "@/utils/options";
+import {IsProd} from "@/utils/env";
+import {GetMatchTicketRightsIdList, MATCH_TICKET_RIGHTS_ID_CFG_PROD, MATCH_TICKET_RIGHTS_ID_CFG_DEV} from "@/utils/prop";
+
 
 const GAME_TYPE = 2 // Poker
 const MAX_DEBUG_TIME_OFFSET = 30 * 24 * 60 * 60
@@ -440,11 +444,11 @@ export default {
         { value: 3, label: 'Pot次数' }
       ],
       propTypeOptions: [
-        { value: 7, label: '新版Tongits门票', disabled: false },
         { value: 2, label: '头像框', disabled: false },
         { value: 4, label: '德州头像框', disabled: false },
         { value: 8, label: '新版德州参赛券', disabled: false },
         { value: 5, label: 'SlotFreeSpin', disabled: false },
+        { value: 7, label: '新版Tongits门票', disabled: false },
         { value: 10, label: '互动道具', disabled: false }
       ],
       propDayTypeOptions: [
@@ -901,6 +905,10 @@ export default {
         }
       })
     },
+    // 是否是新版道具
+    isNewTicketProp(itemType) {
+      return [PROP_TYPE_OPTIONS.PROP_TYPE_TICKET_NEW,PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW,PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW].includes(itemType)
+    },
     buildPropOptionsForIndex(propType, idx) {
       const currTime = Date.now()
       const opts = this.propList
@@ -915,7 +923,27 @@ export default {
     onPropTypeChange(row, idx) {
       row.propId = 0
       row.propName = ''
-      this.buildPropOptionsForIndex(row.propType, idx)
+      // 是否是新版道具类型（如新版Tongits门票、新版德州参赛券等），如果是则需要重新构建道具选项
+      if (this.isNewTicketProp(row.propType)) {
+        //根据当前道具类型获取对应的门票配置
+        const ticketsConfig = IsProd() ? MATCH_TICKET_RIGHTS_ID_CFG_PROD : MATCH_TICKET_RIGHTS_ID_CFG_DEV
+        if(ticketsConfig && typeof ticketsConfig === 'object'){
+          console.log(111232)
+          // 收集所有appId下的ticketId
+          const allowedTicketIds = new Set()
+          for(const appId in ticketsConfig){
+            if(ticketsConfig[appId] && Array.isArray(ticketsConfig[appId])){
+              ticketsConfig[appId].forEach(ticket => {
+                if(ticket.ticketId){
+                  allowedTicketIds.add(ticket.ticketId)
+                }
+              })
+            }
+          }
+        }
+      } else {
+        this.buildPropOptionsForIndex(row.propType, idx)
+      }
     },
     onPropNameChange(row, idx) {
       const opts = this.propOptionsMap[idx] || []
