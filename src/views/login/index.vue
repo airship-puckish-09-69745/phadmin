@@ -45,7 +45,7 @@
           </span>
         </el-form-item>
       </el-tooltip>
-      <el-form-item prop="googleCode">
+      <el-form-item v-if="isProduction" prop="googleCode">
         <span class="svg-container">
           <i class="el-icon-key" />
         </span>
@@ -111,6 +111,11 @@ import {Message} from 'element-ui';
 export default {
   name: 'Login',
   components: { SocialSign },
+  computed: {
+    isProduction() {
+      return process.env.NODE_ENV === 'production'
+    }
+  },
   data() {
     const validateUsername = (rule, value, callback) => {
       // if (!validUsername(value)) {
