@@ -478,9 +478,9 @@ export default {
             records: []
           }
           record.label = this.useSceneCfg.find(item => item.value === record.scene_id).label
-          if (record.scene_id === 3 || record.scene_id === 4) {
-            record.left_time = 0
-          }
+          // if (record.scene_id === 3 || record.scene_id === 4) {
+          //   record.left_time = 0
+          // }
           return record
         })
         this.editForm.data.scheme_records = scheme_records
@@ -612,9 +612,14 @@ export default {
           }
         })
       })
-      if ((data.scene_id === 3 || data.scene_id === 4) && (!data.left_time || data.left_time <= 0)) {
-        timeChecked = false
-      }
+      console.log("data data ",data)
+      //判断 scene_id 为3 或 4的时候 left_time 必须填写且大于0
+      data.scheme_records.forEach(item => {
+        if ((item.scene_id === 3 || item.scene_id === 4) && ( item.left_time <= 0)) {
+          timeChecked = false
+          return true
+        }
+      })
 
       if (!data.scheme_title) {
         this.errmsg('需要填写配置标题')
@@ -625,7 +630,7 @@ export default {
         return false
       }
       if (!timeChecked) {
-        this.errmsg('当前场景需要填写时间')
+        this.errmsg('大厅无次数+报大赛-弹窗 or 等待界面-弹窗 需要填时间 请检查配置')
         return false
       }
       return true

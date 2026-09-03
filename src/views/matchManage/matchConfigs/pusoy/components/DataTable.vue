@@ -185,7 +185,7 @@
               编辑
             </el-button>
             <el-button
-              v-if="showDevTool && scope.row.openShow == false"
+              v-if="scope.row.openShow === false"
               size="mini"
               type="danger"
               @click="handleDelete(scope.row.id)"

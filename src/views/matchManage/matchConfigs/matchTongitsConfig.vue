@@ -71,8 +71,8 @@
       <div style="float: right; margin-bottom: 10px;">
         <el-button size="mini" icon="el-icon-setting" @click="handleShowDevTools()">开发工具</el-button>
         <el-button size="mini" icon="el-icon-plus" @click="showForm(0)">添加比赛</el-button>
-       <!-- <el-button size="mini" icon="el-icon-document-copy" @click="copyAll">复制整日</el-button> -->
-       <!-- <el-button size="mini" icon="el-icon-delete" @click="expireAll">下架过往</el-button> -->
+        <!-- <el-button size="mini" icon="el-icon-document-copy" @click="copyAll">复制整日</el-button> -->
+        <!-- <el-button size="mini" icon="el-icon-delete" @click="expireAll">下架过往</el-button> -->
         <el-button size="mini" icon="el-icon-delete" @click="deleteAllOff">清理下架</el-button>
       </div>
       <el-table
@@ -177,7 +177,7 @@
               icon="el-icon-edit"
               @click="showForm(scope.row.id)"
             >编辑</el-button>
-            <el-button v-if="showDevTool&&(scope.row.openShow==false)" type="danger" size="mini" @click="handleDelete(scope.row.id)">删除</el-button>
+            <el-button v-if="(scope.row.openShow===false)" type="danger" size="mini" @click="handleDelete(scope.row.id)">删除</el-button>
             <el-button
               v-else="showDevTool"
               type="success"
@@ -195,7 +195,7 @@
       <div class="block">
         <el-pagination
           :current-page="page"
-          :page-sizes="[10, 20, 30, 40]"
+          :page-sizes="[50, 100, 150, 200]"
           :page-size="limit"
           layout="slot, total, sizes, prev, next"
           prev-text="上一页"
@@ -502,11 +502,14 @@
           <el-form-item v-if="editForm.data.opentMatchType===2" label="提前进入时间(秒)：" :required="true">
             <el-input v-model.number="editForm.data.preEnterSeconds" style="width: 200px;" placeholder="请填写提前进入时间" />
           </el-form-item>
-          <el-form-item v-if="editForm.data.opentMatchType===2" label="延迟进入时间(秒)：" :required="true">
+          <!--<el-form-item v-if="editForm.data.opentMatchType===2" label="延迟进入时间(秒)：" :required="true">
             <el-input v-model.number="editForm.data.delayEnterSeconds" style="width: 200px;" placeholder="请填写延迟进入时间" />
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item v-if="editForm.data.opentMatchType===2" label="延迟报名时间(秒)：" :required="true">
             <el-input v-model.number="editForm.listExtra.delaySignUpSeconds" style="width: 200px;" placeholder="请填写延迟报名时间" />
+            <span  style="color: #409eff; margin-left: 10px;">
+              延迟报名时间需要小于等于Rebuy时间加额外的10秒
+            </span>
           </el-form-item>
         </fieldset>
         <fieldset>
@@ -557,6 +560,9 @@
 
           <el-form-item v-if="editForm.data.signUpType === 1" label="今日投注下限(0不限制)：" :required="true">
             <el-input v-model.number="editForm.signExtra.betCnt" style="width: 200px;" size="mini" placeholder="请填写限制数值" />
+            <span  style="color: #409eff; margin-left: 10px;">
+              自然日投注局数下限（不区分游戏类型）
+            </span>
           </el-form-item>
 
           <el-form-item v-if="editForm.data.signUpType ===1" label="是否启用每日限制：" :required="true">
@@ -895,7 +901,8 @@ import {
   MATCH_TABLE_SCENE_ID_CFG,
   MATCH_LIST_TAG_OPTIONS,
   MATCH_IUPSTREAM_TYPE_OPTIONS,
-  MATCH_UNIQUE_ID_CFG
+  MATCH_UNIQUE_ID_CFG,
+  RULE_END_MATCH_CFG
 } from '@/utils/options'
 
 export default {
@@ -916,6 +923,7 @@ export default {
       MATCH_LIST_TAG_OPTIONS,
       MATCH_IUPSTREAM_TYPE_OPTIONS,
       MATCH_UNIQUE_ID_CFG,
+      RULE_END_MATCH_CFG,
       form: {
         gameId: MATCH_IUPSTREAM_TYPE_OPTIONS.MATCH_UPSTREAM_TYPE_TONGITS,
         status: -1,
@@ -1009,6 +1017,7 @@ export default {
       growTotalNumCfgs: new Map(), // 打立阶段淘汰分轮数
       disuseScoreGrowDetail: new Map(), // 打立阶段淘汰分配置
       csExtraCfgs:new Map(),          //赛制拓展信息
+      csEndMethodCfgs:new Map(),      //赛制打立阶段结束方式 3: 时间+人数 4: 动态晋级
       csIdCfg: [], // 赛制ID集合
       reubyGrowCfgs: [],
       tableData: [],
@@ -1156,8 +1165,6 @@ export default {
           tableSceneId: '牌桌场景ID',
           delaySignUpSeconds: '延迟报名时间(秒)',
         },
-        app_id:"应用ID",
-        env:"环境"
       },
       singleCopy: {
         id: 0,
@@ -1666,7 +1673,7 @@ export default {
             Env: this.env,
             Id: id,
             Status: status,
-            GameId:this.form.gameId,
+            GameId:this.form.gameId
           }
         }).then(response => {
           if (response.RetCode === 0) {
@@ -1705,7 +1712,7 @@ export default {
             Env: this.env,
             Id: id,
             Status: status,
-            GameId:this.form.gameId,
+            GameId:this.form.gameId
           }
         }).then(response => {
           if (response.RetCode === 0) {
@@ -2145,7 +2152,7 @@ export default {
             data: {
               Env: this.env,
               Id: id,
-              GameId:this.form.gameId,
+              GameId:this.form.gameId
             }
           }).then(response => {
             if (response.RetCode === 0) {
@@ -2247,7 +2254,6 @@ export default {
             Env: this.env,
             Id: id,
             GameId:this.form.gameId,
-
           }
         }).then(response => {
           if (response.RetCode === 0) {
@@ -2309,7 +2315,7 @@ export default {
                     }
                     const exitData = JSON.parse(objs.list[i].item_extra)
                     //console.log("ticketID 2222 exitData   ",objs.list[i].id,exitData)
-                   if(exitData === null || exitData === undefined || exitData.appId === 0 || typeof exitData.appId === 'undefined'){
+                    if(exitData === null || exitData === undefined || exitData.appId === 0 || typeof exitData.appId === 'undefined'){
                       continue
                     }
                     if (!ticketConfigList.hasOwnProperty(exitData.appId)) {
@@ -2327,20 +2333,20 @@ export default {
                   if (canPush) {
                     this.matchPropsCfgs.push(
                       {
-                      'propsType': objs.list[i].item_type,
-                      'propsId': objs.list[i].id,
-                      'propsName': objs.list[i].item_name,
-                      'propsIcon': objs.list[i].image,
-                      'propsAttr': objs.list[i].item_describe,
-                      'propsCost': objs.list[i].item_cost,
-                      'propsShowName': str,
-                      'propsSceneId': sceneId,
-                      'propsAppId': appId
-                  })
-                }
+                        'propsType': objs.list[i].item_type,
+                        'propsId': objs.list[i].id,
+                        'propsName': objs.list[i].item_name,
+                        'propsIcon': objs.list[i].image,
+                        'propsAttr': objs.list[i].item_describe,
+                        'propsCost': objs.list[i].item_cost,
+                        'propsShowName': str,
+                        'propsSceneId': sceneId,
+                        'propsAppId': appId
+                      })
+                  }
                   if (objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET || objs.list[i].item_type ===PROP_TYPE_OPTIONS.PROP_TYPE_TICKET_NEW ) { // Tongits 门票
                     if (canPush) {
-                    this.matchTicketsCfgs.push({
+                      this.matchTicketsCfgs.push({
                         'label': str,
                         'value': objs.list[i].id,
                         'propsAppId': appId,
@@ -2349,7 +2355,7 @@ export default {
                     }
                   }
                   //console.log("matchTicketsCfgs",this.matchTicketsCfgs)
-                 //console.log("matchPropsCfgs",this.matchPropsCfgs)
+                  //console.log("matchPropsCfgs",this.matchPropsCfgs)
                 }
               }
             }
@@ -2440,8 +2446,8 @@ export default {
       if(this.editForm.data.repeatType == 0){
         // 检查时间控件是否已选择
         if (!this.editForm.loopDetail.onceTime || !Array.isArray(this.editForm.loopDetail.onceTime) ||
-            this.editForm.loopDetail.onceTime[0] == null || this.editForm.loopDetail.onceTime[1] == null ||
-            this.editForm.loopDetail.onceTime[0] == '' || this.editForm.loopDetail.onceTime[1] == '') {
+          this.editForm.loopDetail.onceTime[0] == null || this.editForm.loopDetail.onceTime[1] == null ||
+          this.editForm.loopDetail.onceTime[0] == '' || this.editForm.loopDetail.onceTime[1] == '') {
           this.errmsg('开赛时间不能为空')
           return false
         }
@@ -2530,28 +2536,30 @@ export default {
         const endNum = this.endNumCfgs.get(this.editForm.data.csId)
         const promoteNum = this.promoteNumCfgs.get(this.editForm.data.csId)
         const ruleExtra = this.csExtraCfgs.get(this.editForm.data.csId)
+        const endMethod = this.csEndMethodCfgs.get(this.editForm.data.csId)
 
-        if (this.editForm.data.opentMatchType == 2 && this.editForm.data.opentMatchMember < endNum) {
-          if(ruleExtra == null || ruleExtra.skip_strikeout == 0) { //跳过打立阶段赛事不做数值检查
+        //MTT
+        if (endMethod === RULE_END_MATCH_CFG.END_MATCH_CFG_TIME_AND_USER &&   this.editForm.data.opentMatchType === 2 && this.editForm.data.opentMatchMember < endNum) {
+          if(ruleExtra == null || ruleExtra.rule_skip_type === 1 || ruleExtra.rule_skip_type ===3) { //仅打立 或者 打立+定局
             this.errmsg('开赛人数不能小于打立出局的结束规则的剩余人数')
             return false
           }
         }
 
-        if (this.editForm.data.opentMatchType == 2 && this.editForm.data.opentMatchMember < promoteNum) {
-          if(ruleExtra == null || ruleExtra.skip_strikeout == 0) { //跳过打立阶段赛事不做数值检查
+        if (endMethod === RULE_END_MATCH_CFG.END_MATCH_CFG_TIME_AND_USER &&  this.editForm.data.opentMatchType === 2 && this.editForm.data.opentMatchMember < promoteNum) {
+          if(ruleExtra == null || ruleExtra.rule_skip_type ===2 || ruleExtra.rule_skip_type ===3 ) { //定局 或者 打立+定局
             this.errmsg('开赛人数不能小于打立出局的晋级规则的晋级人数')
             return false
           }
         }
-        if (this.editForm.data.opentMatchType == 1) {
+        if (this.editForm.data.opentMatchType === 1) {
           const promotion_user_num = this.reachOutNumCfgs.get(this.editForm.data.csId)
           if (this.editForm.data.opentMatchMember < promotion_user_num) {
             this.errmsg('开赛人数不能小于定局第一阶段的晋级人数')
             return false
           }
         }
-        if (this.editForm.data.opentMatchType == 1 && this.editForm.data.disappearType != 1) {
+        if (this.editForm.data.opentMatchType === 1 && this.editForm.data.disappearType !== 1) {
           this.errmsg('sng比赛必须开赛后消失')
           return false
         }
@@ -2571,11 +2579,11 @@ export default {
           return false
         }
       }
-      if (this.editForm.prizeExtra.awardType == 1 && this.editForm.prizeExtra.prizeTemplateId == 0) {
+      if (this.editForm.prizeExtra.awardType === 1 && this.editForm.prizeExtra.prizeTemplateId === 0) {
         this.errmsg('当前是动态奖池，请选择模板')
         return false
       }
-      if ((this.editForm.prizeExtra.awardType == 1) && (this.editForm.prizeExtra.prizeRate < 1 || this.editForm.prizeExtra.prizeRate >= 100)) {
+      if ((this.editForm.prizeExtra.awardType === 1) && (this.editForm.prizeExtra.prizeRate < 1 || this.editForm.prizeExtra.prizeRate >= 100)) {
         this.errmsg('当前是动态奖池手续费率范围是[1-100)')
         return false
       }
@@ -2935,7 +2943,7 @@ export default {
     },
     // 在这里实现APPID过滤
     filterMatchListByAppId(appInfo) {
-    // 在这里实现APPID过滤
+      // 在这里实现APPID过滤
       let show_appinfo = ''
       const appInfoTemp = JSON.parse(appInfo)
       for (let i = 0; i < appInfoTemp.length; i++) {
@@ -3036,9 +3044,9 @@ export default {
       this.reubyGrowCfgs = []
       for (let i = 0; i < grow_total - 1; i++) {
         this.reubyGrowCfgs.push({
-          'label': i + 1 + '轮',
-          'value': i + 1
-        }
+            'label': i + 1 + '轮',
+            'value': i + 1
+          }
         )
       }
       // var disuseScores = this.disuseScoreGrowDetail.get(this.editForm.data.csId)
@@ -3218,6 +3226,7 @@ export default {
                   this.promoteNumCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.promotion_rule.user_number)
                   this.growTotalNumCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.disuse_score_growth.grow_total)
                   this.disuseScoreGrowDetail.set(objs.list[i].id, stage_detail[j].system_strike_out.disuse_score_growth.disuse_score_grow_detail)
+                  this.csEndMethodCfgs.set(objs.list[i].id,stage_detail[j].system_strike_out.end_rule.end_method)
                 } else if (stage_detail[j].system_type === 2) {
                   // 存储定局信息
                   this.reachOutNumCfgs.set(objs.list[i].id, stage_detail[j].system_reach_out.round_config[0].promotion_user)
@@ -3333,7 +3342,7 @@ export default {
         if(this.editForm.data.repeatType ===2 && this.editForm.loopDetail.loopData.length >0){
           for(let i=0;i<this.editForm.loopDetail.loopData.length;i++){
             if(this.editForm.loopDetail.loopData[i].intervalSeconds < 30*60) {
-              this.errmsg('每日循环赛的间隔时间不能小于30分钟')
+              this.errmsg('延迟报名开启,每日循环赛的间隔时间不能小于30分钟')
               return false
             }
           }
