@@ -217,7 +217,6 @@ import request from '@/utils/request'
 import { Message } from 'element-ui'
 import MarketApiSiteSelect from '@/components/MarketApiSiteSelect/index.vue'
 import { GetScenePidOptions, SCENE_P_TYPE_OPTIONS } from '@//utils/options'
-// import PublishV2 from '@/components/Publish/indexV2.vue'
 import Publish from '@/components/Publish/index.vue'
 
 const filterMap = { pid: [] }
@@ -361,8 +360,9 @@ export default {
     },
     onAppChange() {
       this.filterPidSelected = 0
+      this.scenePidOptions = []
       this.scenePidOptions = GetScenePidOptions(this.appId)
-      console.log('scenePidOptions', this.scenePidOptions.toString())
+      // console.log('scenePidOptions', this.scenePidOptions)
       this.getList()
     },
     // 分页处理
@@ -419,7 +419,6 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
-          console.log('objs ', objs)
           this.clientDB = new ClientTableData(objs, 10, filterMap)
           this.handleScenePidFilter()
         }
