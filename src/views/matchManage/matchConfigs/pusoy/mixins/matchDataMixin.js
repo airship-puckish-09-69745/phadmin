@@ -366,6 +366,7 @@ export const matchDataMixin = {
           this.configs.promoteNumCfgs.set(ruleId, stage.system_strike_out.promotion_rule.user_number)
           this.configs.growTotalNumCfgs.set(ruleId, stage.system_strike_out.disuse_score_growth.grow_total)
           this.configs.disuseScoreGrowDetail.set(ruleId, stage.system_strike_out.disuse_score_growth.disuse_score_grow_detail)
+          this.configs.csEndMethodCfgs.set(ruleId,stage.system_strike_out.end_rule.end_method)
         } else if (stage.system_type === 2) { // 定局
           this.configs.reachOutNumCfgs.set(ruleId, stage.system_reach_out.round_config[0].promotion_user)
         }

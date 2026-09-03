@@ -5,7 +5,10 @@
 
             <!-- 标题 -->
             <div class="title">
-                🎮 游戏配置复制工具
+                <span>🎮 游戏配置复制工具</span>
+                <el-checkbox v-model="lark" :disabled="$store.getters.env === 'pro'" @change="setLarkPage">
+                    <span style="color: #4468fb">Lark群通知</span>
+                </el-checkbox>
             </div>
 
             <el-divider />
@@ -17,7 +20,7 @@
                 <el-col :span="8">
                     <div class="label">源 AppId</div>
                     <el-select v-model="appId" clearable placeholder="请选择源应用" style="width: 100%">
-                        <el-option v-for="o in sourceAppOptions" :key="o.value" :label="o.label" :value="o.value" />
+                        <el-option v-for="o in appOptions" :key="o.value" :label="o.label" :value="o.value" />
                     </el-select>
                 </el-col>
 
@@ -120,7 +123,8 @@
 
             <!-- 操作区 -->
             <div class="action">
-                <el-button type="primary" size="medium" :loading="loading" @click="handleCopy">
+                <el-button type="primary" size="medium" :loading="loading" :disabled="scriptFlowLocked"
+                    @click="handleCopy">
                     🚀 执行复制
                 </el-button>
                 <el-button type="primary" size="medium" :disabled="!canPlanCreateScripts || readyLoading"
@@ -144,8 +148,16 @@
                 </span>
             </div>
 
+            <p class="script-create-notice">*注意:创建剧本需要先确保1000的appid已发布剧本</p>
+
             <el-alert v-if="hasUnpublishedCopyTasks" class="copy-publish-tip" type="warning" :closable="false"
                 show-icon title="注意：如果要创建本次复制后的方案剧本，请先发布复制配置；未发布时，创建剧本会读取当前已发布的方案配置，不包含本次复制内容。" />
+
+            <el-alert v-if="scriptFlowLocked" class="copy-publish-tip" type="warning" :closable="false"
+                show-icon title="复制方案已发布，请完成当前已选方案的创建剧本、剧本就绪和方案发布后再执行复制；如需结束本次流程，请使用【清理缓存】。" />
+
+            <el-alert v-if="hasPendingScriptReadyTasks" class="copy-publish-tip" type="warning" :closable="false"
+                show-icon title="剧本已创建，但方案尚未全部就绪；请先执行【剧本就绪】，完成后才能发布方案配置。" />
 
         </el-card>
 
@@ -221,7 +233,8 @@
             </span>
         </el-dialog>
 
-        <el-dialog title="发布结果" :visible.sync="publishResultDialogVisible" width="85%" :append-to-body="true">
+        <el-dialog title="发布结果" :visible.sync="publishResultDialogVisible" width="85%" :append-to-body="true"
+            @closed="handlePublishResultClosed">
             <div class="publish-result-title publish-result-title-fail">
                 失败配置列表（{{ publishResultFailTasks.length }}）
             </div>
@@ -251,25 +264,138 @@
             </span>
         </el-dialog>
 
-        <el-dialog :title="publishedCheckDialogTitle" :visible.sync="publishedCheckDialogVisible" width="85%"
+        <el-dialog title="复制方案发布结果" :visible.sync="scriptFlowGuideDialogVisible" width="85%"
+            :append-to-body="true" :show-close="false" :close-on-click-modal="false" :close-on-press-escape="false">
+            <el-alert class="script-flow-guide-alert" type="warning" :closable="false" show-icon
+                title="以下结果仅检查本次成功发布的方案配置。需要创建剧本的配置将在确认后自动选中，并暂停执行复制。" />
+            <div class="ready-result-title ready-result-fail">
+                异常方案配置（{{ scriptFlowAbnormalTasks.length }}）
+            </div>
+            <el-table :data="scriptFlowAbnormalTasks" stripe border style="width: 100%" max-height="260">
+                <el-table-column prop="appId" label="AppId" width="100" />
+                <el-table-column prop="gameName" label="游戏" min-width="200" />
+                <el-table-column prop="subKey" label="配置Key" min-width="260" />
+                <el-table-column prop="reason" label="原因" width="160" />
+            </el-table>
+            <div class="ready-result-title ready-result-success">
+                需要创建剧本（{{ scriptFlowNeedCreateTasks.length }}）
+            </div>
+            <el-table :data="scriptFlowNeedCreateTasks" stripe border style="width: 100%" max-height="300">
+                <el-table-column prop="appId" label="AppId" width="100" />
+                <el-table-column prop="gameName" label="游戏" min-width="200" />
+                <el-table-column prop="subKey" label="配置Key" min-width="260" />
+                <el-table-column prop="enabledPlanCount" label="可用方案数" width="110" />
+                <el-table-column prop="pendingVersionCount" label="待创建版本数" width="120" />
+            </el-table>
+            <span slot="footer" class="dialog-footer">
+                <el-button type="primary" size="mini" @click="confirmScriptFlowGuide">确 定</el-button>
+            </span>
+        </el-dialog>
+
+        <el-dialog :title="formalCheckDialogTitle" :visible.sync="formalCheckDialogVisible" width="85%"
             :append-to-body="true">
-            <el-alert class="published-check-alert" :title="publishedCheckDialogMessage"
-                :type="publishedCheckIsError ? 'error' : 'warning'" :closable="false" show-icon />
-            <el-table :data="publishedCheckTasks" stripe border style="width: 100%" max-height="520">
+            <el-alert class="formal-check-alert" :title="formalCheckDialogMessage"
+                :type="formalCheckIsError ? 'error' : 'warning'" :closable="false" show-icon />
+            <el-table :data="formalCheckTasks" stripe border style="width: 100%" max-height="520">
                 <el-table-column prop="appId" label="AppId" width="100" />
                 <el-table-column prop="gameName" label="游戏" width="220" />
                 <el-table-column prop="configName" label="配置类型" width="150" />
                 <el-table-column prop="subKey" label="配置Key" min-width="280" />
-                <el-table-column v-if="publishedCheckIsError" prop="errMsg" label="原因" min-width="300" />
+                <el-table-column v-if="formalCheckIsError" prop="errMsg" label="原因" min-width="300" />
             </el-table>
             <span slot="footer" class="dialog-footer">
-                <el-button type="primary" size="mini" @click="publishedCheckDialogVisible = false">确 定</el-button>
+                <el-button type="primary" size="mini" @click="formalCheckDialogVisible = false">确 定</el-button>
+            </span>
+        </el-dialog>
+
+        <el-dialog :title="copyPreviewDialogTitle" :visible.sync="copyPreviewDialogVisible" width="92%"
+            :append-to-body="true" :close-on-click-modal="false" @close="resetCopyPreviewState">
+            <el-alert class="copy-preview-alert" type="warning" :closable="false" show-icon
+                title="仅复制有差异配置；无差异配置将自动跳过，方案配置无差异时不会写入目标 AppId。" />
+            <div v-if="copyPreviewFailTasks.length > 0">
+                <div class="copy-preview-title copy-preview-title-fail">
+                    差异检查失败（{{ copyPreviewFailTasks.length }}）
+                </div>
+                <el-table :data="copyPreviewFailTasks" stripe border style="width: 100%" max-height="220">
+                    <el-table-column prop="appId" label="目标AppId" width="100" />
+                    <el-table-column prop="gameName" label="游戏" width="180" />
+                    <el-table-column prop="configName" label="配置类型" width="140" />
+                    <el-table-column prop="subKey" label="配置Key" min-width="240" />
+                    <el-table-column prop="errMsg" label="失败原因" min-width="280" />
+                </el-table>
+            </div>
+            <div class="copy-preview-title copy-preview-title-diff">
+                有差异配置（{{ copyPreviewDiffTasks.length }}）
+            </div>
+            <el-table :data="copyPreviewDiffTasks" stripe border style="width: 100%" max-height="360">
+                <el-table-column prop="appId" label="目标AppId" width="100" />
+                <el-table-column prop="gameName" label="游戏" min-width="180" />
+                <el-table-column prop="configName" label="配置类型" width="140" />
+                <el-table-column prop="subKey" label="配置Key" min-width="240" />
+                <el-table-column label="操作" width="100">
+                    <template slot-scope="scope">
+                        <el-button size="mini" type="primary" @click="showCopyPreviewDiffDetail(scope.row)">
+                            差异详情
+                        </el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <div class="copy-preview-title copy-preview-title-same">
+                无差异配置（{{ copyPreviewSameTasks.length }}）
+            </div>
+            <el-table :data="copyPreviewSameTasks" stripe border style="width: 100%" max-height="300">
+                <el-table-column prop="appId" label="目标AppId" width="100" />
+                <el-table-column prop="gameName" label="游戏" min-width="180" />
+                <el-table-column prop="configName" label="配置类型" width="140" />
+                <el-table-column prop="subKey" label="配置Key" min-width="240" />
+                <el-table-column prop="skipReason" label="处理" min-width="180" />
+            </el-table>
+            <el-alert v-if="copyPreviewSamePlanCount > 0" class="copy-preview-plan-alert" type="warning"
+                :closable="false" show-icon
+                :title="`${copyPreviewSamePlanCount} 个方案配置与目标内容无差异，已禁止复制。`" />
+            <span slot="footer" class="dialog-footer">
+                <el-button size="mini" :disabled="loading" @click="closeCopyPreviewDialog">关 闭</el-button>
+                <el-button type="primary" size="mini" :loading="loading"
+                    :disabled="copyPreviewDiffTasks.length === 0" @click="confirmCopyPreview">
+                    复制有差异配置
+                </el-button>
             </span>
         </el-dialog>
 
         <el-dialog :title="scriptCreateDialogTitle" :visible.sync="scriptCreateDialogVisible" width="85%"
-            :append-to-body="true">
+            :append-to-body="true" :close-on-click-modal="false" :close-on-press-escape="false"
+            :show-close="scriptCreateCanClose" @closed="handleScriptCreateDialogClosed">
+            <div class="ready-result-title ready-result-fail">
+                已就绪剧本异常（{{ scriptReadyAbnormalTasks.length }}）
+            </div>
+            <el-alert v-if="scriptReadyAbnormalTasks.length > 0" class="script-ready-zero-alert" type="error"
+                :closable="false" show-icon title="以下已就绪版本存在剧本数量异常或查询失败，请重点检查。" />
+            <el-table :data="scriptReadyAbnormalTasks" stripe border style="width: 100%" max-height="300">
+                <el-table-column prop="appId" label="AppId" width="90" />
+                <el-table-column prop="gameName" label="游戏名" width="180" />
+                <el-table-column prop="subKey" label="Key" min-width="240" />
+                <el-table-column prop="planId" label="方案ID" width="90" />
+                <el-table-column prop="planName" label="方案名" width="140" />
+                <el-table-column prop="planVersion" label="版本" width="80" />
+                <el-table-column prop="scriptCountText" label="各下注额实际数量" min-width="220" />
+                <el-table-column prop="scriptCountStatus" label="异常原因" width="170" />
+            </el-table>
+            <div class="ready-result-title ready-result-success">
+                剧本创建任务（{{ scriptCreateTasks.length }}）
+            </div>
             <el-table :data="scriptCreateTasks" stripe border style="width: 100%" max-height="520">
+                <el-table-column label="状态" width="130" fixed="left">
+                    <template slot-scope="scope">
+                        <span :class="['script-create-status', `script-create-status-${scope.row.createStatus}`]">
+                            <i v-if="scope.row.createStatus === 'creating'" class="el-icon-loading" />
+                            <i v-else-if="scope.row.createStatus === 'completed'" class="el-icon-circle-check" />
+                            <i v-else-if="scope.row.createStatus === 'failed'" class="el-icon-circle-close" />
+                            <i v-else-if="scope.row.createStatus === 'paused'" class="el-icon-remove-outline" />
+                            <i v-else class="el-icon-time" />
+                            {{ scope.row.createStatusText }}
+                        </span>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="appId" label="AppId" width="90" />
                 <el-table-column prop="gameName" label="游戏名" width="180" />
                 <el-table-column prop="subKey" label="Key" min-width="240" />
@@ -278,17 +404,64 @@
                 <el-table-column prop="planVersion" label="版本" width="80" />
                 <el-table-column prop="versionComment" label="版本说明" min-width="160" />
                 <el-table-column prop="scriptSteps" label="剧本步数" width="100" />
-                <el-table-column prop="scriptNumber" label="剧本数量" width="100" />
+                <el-table-column label="创建进度" width="120">
+                    <template slot-scope="scope">
+                        <span :class="['script-create-progress', `script-create-progress-${scope.row.createStatus}`]">
+                            {{ scope.row.createProgressCurrent }}/{{ scope.row.createProgressTotal }}
+                        </span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="createError" label="异常原因" min-width="220" show-overflow-tooltip />
+            </el-table>
+            <div class="ready-result-title copy-preview-title-same">
+                已就绪剧本（{{ scriptReadyNormalTasks.length }}）
+            </div>
+            <el-table :data="scriptReadyNormalTasks" stripe border style="width: 100%" max-height="300">
+                <el-table-column prop="appId" label="AppId" width="90" />
+                <el-table-column prop="gameName" label="游戏名" width="180" />
+                <el-table-column prop="subKey" label="Key" min-width="240" />
+                <el-table-column prop="planId" label="方案ID" width="90" />
+                <el-table-column prop="planName" label="方案名" width="140" />
+                <el-table-column prop="planVersion" label="版本" width="80" />
+                <el-table-column prop="scriptNumber" label="配置数量" width="100" />
+                <el-table-column prop="scriptCountText" label="各下注额实际数量" min-width="220" />
+                <el-table-column label="状态" width="170">
+                    <template slot-scope="scope">
+                        <el-tag size="mini" :type="scope.row.scriptCountStatusType">
+                            {{ scope.row.scriptCountStatus }}
+                        </el-tag>
+                    </template>
+                </el-table-column>
             </el-table>
             <span slot="footer" class="dialog-footer">
-                <el-button size="mini" :disabled="scriptLoading" @click="scriptCreateDialogVisible = false">取 消</el-button>
+                <el-button v-if="scriptCreateState === 'idle'" size="mini" :disabled="scriptLoading"
+                    @click="closeScriptCreateDialog">取 消</el-button>
                 <el-button type="primary" size="mini" :loading="scriptLoading"
-                    @click="confirmCreateScripts">确认创建</el-button>
+                    :disabled="scriptCreateTasks.length === 0" @click="handleScriptCreateAction">
+                    {{ scriptCreateActionText }}
+                </el-button>
             </span>
         </el-dialog>
 
         <el-dialog :title="readyPreviewDialogTitle" :visible.sync="readyPreviewDialogVisible" width="85%"
             :append-to-body="true">
+            <div class="ready-result-title ready-result-fail">
+                未就绪方案（{{ readyFailedPreviewTasks.length }}）
+            </div>
+            <el-table :data="readyFailedPreviewTasks" stripe border style="width: 100%" max-height="300">
+                <el-table-column prop="appId" label="AppId" width="90" />
+                <el-table-column prop="gameName" label="游戏名" width="180" />
+                <el-table-column prop="subKey" label="Key" min-width="240" />
+                <el-table-column prop="planId" label="方案ID" width="90" />
+                <el-table-column prop="planName" label="方案名" width="140" />
+                <el-table-column prop="planVersion" label="版本" width="80" />
+                <el-table-column prop="scriptNumber" label="所需剧本数" width="110" />
+                <el-table-column prop="scriptCountText" label="剧本数量" min-width="180" />
+                <el-table-column prop="reason" label="原因" width="140" />
+            </el-table>
+            <div class="ready-result-title ready-result-success">
+                {{ readyPreviewMode === 'result' ? '就绪成功方案' : '可就绪方案' }}（{{ readyPreviewTasks.length }}）
+            </div>
             <el-table :data="readyPreviewTasks" stripe border style="width: 100%" max-height="520">
                 <el-table-column prop="appId" label="AppId" width="90" />
                 <el-table-column prop="gameName" label="游戏名" width="180" />
@@ -301,8 +474,40 @@
                 <el-table-column prop="betListText" label="下注额" min-width="180" />
             </el-table>
             <span slot="footer" class="dialog-footer">
-                <el-button size="mini" :disabled="readyLoading" @click="readyPreviewDialogVisible = false">取 消</el-button>
-                <el-button type="primary" size="mini" :loading="readyLoading" @click="confirmReadyTasks">确认就绪</el-button>
+                <el-button size="mini" :disabled="readyLoading" @click="closeReadyPreviewDialog">关 闭</el-button>
+                <el-button v-if="readyPreviewMode === 'check'" type="primary" size="mini" :loading="readyLoading"
+                    :disabled="readyPreviewTasks.length === 0" @click="confirmReadyTasks">确认就绪</el-button>
+            </span>
+        </el-dialog>
+
+        <el-dialog title="剧本就绪发布检查" :visible.sync="planPublishGuardDialogVisible" width="88%"
+            :append-to-body="true" :close-on-click-modal="false">
+            <el-alert class="publish-dialog-tip" type="warning" :closable="false" show-icon
+                title="未就绪方案配置已从本次剧本就绪发布中移除，并重新加入待就绪范围；复制配置发布不参与本项检查。" />
+            <div class="ready-result-title ready-result-fail">
+                未就绪/检查异常（{{ planPublishGuardBlockedRows.length }}）
+            </div>
+            <el-table :data="planPublishGuardBlockedRows" stripe border style="width: 100%" max-height="360">
+                <el-table-column prop="appId" label="AppId" width="90" />
+                <el-table-column prop="gameName" label="游戏" min-width="180" />
+                <el-table-column prop="subKey" label="配置Key" min-width="240" />
+                <el-table-column prop="planId" label="方案ID" width="90" />
+                <el-table-column prop="planName" label="方案名" width="140" />
+                <el-table-column prop="planVersion" label="版本" width="80" />
+                <el-table-column prop="reason" label="原因" width="160" />
+            </el-table>
+            <div class="ready-result-title ready-result-success">
+                可以发布的剧本就绪配置（{{ planPublishGuardAllowedTasks.length }}）
+            </div>
+            <el-table :data="planPublishGuardAllowedTasks" stripe border style="width: 100%" max-height="260">
+                <el-table-column prop="appId" label="AppId" width="90" />
+                <el-table-column prop="gameName" label="游戏" min-width="180" />
+                <el-table-column prop="subKey" label="配置Key" min-width="260" />
+                <el-table-column prop="configName" label="配置类型" width="140" />
+                <el-table-column prop="guardStatus" label="检查结果" width="120" />
+            </el-table>
+            <span slot="footer" class="dialog-footer">
+                <el-button type="primary" size="mini" @click="planPublishGuardDialogVisible = false">确 定</el-button>
             </span>
         </el-dialog>
 
@@ -318,19 +523,19 @@
             <el-table v-else-if="currentDiffTask && currentDiffTask.diffRows && currentDiffTask.diffRows.length > 0"
                 :data="currentDiffTask.diffRows" stripe border style="width: 100%" max-height="520">
                 <el-table-column prop="key" label="字段" width="180" />
-                <el-table-column prop="oldVal" label="当前已发布值" min-width="240">
+                <el-table-column prop="oldVal" :label="diffDetailOldLabel" min-width="240">
                     <template slot-scope="scope">
                         <pre class="diff-value">{{ formatDiffValue(scope.row.oldVal) }}</pre>
                     </template>
                 </el-table-column>
-                <el-table-column prop="newVal" label="发布值" min-width="240">
+                <el-table-column prop="newVal" :label="diffDetailNewLabel" min-width="240">
                     <template slot-scope="scope">
                         <pre class="diff-value">{{ formatDiffValue(scope.row.newVal) }}</pre>
                     </template>
                 </el-table-column>
             </el-table>
             <div v-else style="color: red;font-size: 14px;text-align: center">
-                本次发布与当前已发布内容无任何差异！
+                {{ diffDetailEmptyText }}
             </div>
         </el-dialog>
 
@@ -364,15 +569,22 @@ const gameCfgLabelMap = {
 const relatedGameIdOffset = 100000
 const relatedGameConfigTypes = ['slot_plan', 'slot_jackpot']
 const scriptPlanDataRequestTimeout = 30000
-const legacySourceAppId = 0
-const copyFlowStorageVersion = 2
+const scriptCreateNormalPollInterval = 60 * 1000
+const scriptCreateFastPollInterval = 30 * 1000
+const scriptCreateFastPollThreshold = 500
+const scriptCreateStateIdle = 'idle'
+const scriptCreateStateRunning = 'running'
+const scriptCreateStatePaused = 'paused'
+const scriptCreateStateError = 'error'
+const scriptCreateStateCompleted = 'completed'
+const copyFlowStorageVersion = 1
 const copyFlowStoragePrefix = 'slots-conf-copy-flow'
 const publishStageSourceConfig = 'sourceConfig'
 const publishStageCopyConfig = 'copyConfig'
 const publishStageScriptCreate = 'scriptCreate'
 const publishStagePlanReady = 'planReady'
 const publishStagePlanConfig = 'planConfig'
-const publishedConfigCheckConcurrency = 5
+const formalConfigCheckConcurrency = 5
 const publishStageLabelMap = {
     [publishStageSourceConfig]: '源配置发布',
     [publishStageCopyConfig]: '复制配置发布',
@@ -406,9 +618,8 @@ export default {
             gameOptions: [],
 
             appId: null,
-            appOptions: [],
-            legacyCustomizeRecords: {},
-            legacyPlanConfigRecords: null,
+            // 旧版配置没有 AppId，但可以作为复制源。
+            appOptions: [{ value: 0, label: '旧版' }],
 
             targetAppIds: [],
 
@@ -418,22 +629,45 @@ export default {
             readyLoading: false,
             publishDialogVisible: false,
             publishResultDialogVisible: false,
+            scriptFlowGuideDialogVisible: false,
+            planPublishGuardDialogVisible: false,
             scriptCreateDialogVisible: false,
             readyPreviewDialogVisible: false,
+            copyPreviewDialogVisible: false,
             diffDetailVisible: false,
-            publishedCheckDialogVisible: false,
-            publishedCheckDialogTitle: '',
-            publishedCheckDialogMessage: '',
-            publishedCheckIsError: false,
-            publishedCheckTasks: [],
+            diffDetailMode: 'publish',
+            formalCheckDialogVisible: false,
+            formalCheckDialogTitle: '',
+            formalCheckDialogMessage: '',
+            formalCheckIsError: false,
+            formalCheckTasks: [],
+            copyPreviewDiffTasks: [],
+            copyPreviewSameTasks: [],
+            copyPreviewFailTasks: [],
             publishTasks: [],
             copyPublishTasks: [],
             scriptPublishTasks: [],
             readyPublishTasks: [],
             publishResultFailTasks: [],
             publishResultSuccessTasks: [],
+            scriptFlowNeedCreateTasks: [],
+            scriptFlowNoUsableTasks: [],
+            scriptFlowCheckFailTasks: [],
+            planPublishGuardBlockedRows: [],
+            planPublishGuardAllowedTasks: [],
+            scriptFlowGuidePending: false,
+            scriptFlowLockedTasks: [],
             scriptCreateTasks: [],
+            scriptReadyPreviewTasks: [],
+            scriptCreateState: scriptCreateStateIdle,
+            scriptCreateCurrentIndex: -1,
+            scriptCreateWorkerActive: false,
+            scriptCreateRunId: 0,
+            scriptCreatePollTimer: null,
+            scriptCreatePollResolve: null,
             readyPreviewTasks: [],
+            readyFailedPreviewTasks: [],
+            readyPreviewMode: 'check',
             selectedPublishTasks: [],
             currentDiffTask: null,
             publishOpType: PUBLISH_STEPS.PUBLISH_STEP_TEST,
@@ -469,25 +703,9 @@ export default {
     },
 
     computed: {
-        sourceAppOptions() {
-            const options = [...this.appOptions]
-            if (this.isLegacySourceAvailable) {
-                options.unshift({ value: legacySourceAppId, label: `${this.legacySourceName}（无 AppId）` })
-            }
-            return options
-        },
-        legacySourceName() {
-            return store.getters.env === 'pro' ? '旧版线上' : '旧版测试'
-        },
-        isLegacySource() {
-            return this.appId !== null && this.appId !== undefined && Number(this.appId) === legacySourceAppId
-        },
-        isLegacySourceAvailable() {
-            return this.isV2Version
-        },
         filteredTargetAppOptions() {
             return this.appOptions.filter(
-                i => i.value !== this.appId
+                i => i.value !== 0 && i.value !== this.appId
             )
         },
         isAllSelected() {
@@ -500,7 +718,7 @@ export default {
             return this.hasGameRelatedConfig ? this.selectedGameIds.length : 0
         },
         selectableGameOptions() {
-            if (!this.requiresGameSubKeyMap) {
+            if (!this.configTypes.includes('slot_game')) {
                 return this.gameOptions
             }
             return this.gameOptions.filter(game => !this.isGameMissingSubKeyMap(game.key))
@@ -515,12 +733,10 @@ export default {
             })
         },
         selectableFilteredGameOptions() {
-            const selectableGameIdSet = new Set(this.selectableGameOptions.map(game => String(game.key)))
-            return this.filteredGameOptions.filter(game => selectableGameIdSet.has(String(game.key)))
-        },
-        requiresGameSubKeyMap() {
-            return this.configTypes.includes('slot_game') ||
-                (this.isLegacySource && this.configTypes.includes('slot_jackpot'))
+            if (!this.configTypes.includes('slot_game')) {
+                return this.filteredGameOptions
+            }
+            return this.filteredGameOptions.filter(game => !this.isGameMissingSubKeyMap(game.key))
         },
         hasGameRelatedConfig() {
             return this.configTypes.some(type => ['slot_game', 'slot_plan', 'slot_jackpot'].includes(type))
@@ -535,34 +751,41 @@ export default {
             return store.getters.version === 'V2'
         },
         hasSelectedPlanScope() {
-            return this.isV2Version && this.targetAppIds.length > 0 && this.selectedGameIds.length > 0
+            return this.isV2Version && (this.scriptFlowLocked || (this.targetAppIds.length > 0 && this.selectedGameIds.length > 0))
+        },
+        scriptFlowLocked() {
+            return this.scriptFlowLockedTasks.length > 0
         },
         canOperateCopiedPlanTasks() {
             return this.hasSelectedPlanScope && !this.loading && !this.publishLoading
         },
         canPlanCreateScripts() {
-            return this.canOperateCopiedPlanTasks && !this.scriptLoading && !this.readyLoading
+            return this.canOperateCopiedPlanTasks && !this.scriptLoading && !this.readyLoading && !this.scriptCreateQueueActive
         },
         canPlanReady() {
-            return this.canOperateCopiedPlanTasks && !this.scriptLoading && !this.readyLoading
+            return this.canOperateCopiedPlanTasks && !this.scriptLoading && !this.readyLoading && !this.scriptCreateQueueActive
         },
         canOneKeyPublish() {
-            if (!this.isV2Version || this.loading || this.scriptLoading || this.readyLoading || this.publishLoading) {
+            if (!this.isV2Version || this.loading || this.scriptLoading || this.readyLoading || this.publishLoading || this.scriptCreateQueueActive) {
                 return false
             }
             return this.pendingPublishTaskCount > 0 || this.canPublishSourceConfig
         },
         canClearCopyFlowCache() {
-            if (!this.isV2Version || this.loading || this.scriptLoading || this.readyLoading || this.publishLoading) {
+            if (!this.isV2Version || this.loading || this.scriptLoading || this.readyLoading || this.publishLoading || this.scriptCreateQueueActive) {
                 return false
             }
             return this.pendingPublishTaskCount > 0 ||
+                this.hasPendingScriptReadyTasks ||
                 this.publishTasks.length > 0 ||
                 this.scriptCreateTasks.length > 0 ||
-                this.readyPreviewTasks.length > 0
+                this.scriptReadyPreviewTasks.length > 0 ||
+                this.readyPreviewTasks.length > 0 ||
+                this.readyFailedPreviewTasks.length > 0 ||
+                this.scriptFlowLocked
         },
         canPublishSourceConfig() {
-            if (this.isLegacySource || this.targetAppIds.length > 0 || this.appId === null || this.appId === undefined || this.configTypes.length === 0) {
+            if (this.isLegacySource() || this.targetAppIds.length > 0 || this.appId === null || this.appId === undefined || this.configTypes.length === 0) {
                 return false
             }
             if (this.configTypes.includes('slot_game') && !this.selectedGameCfgKeys.length) {
@@ -579,11 +802,62 @@ export default {
         publishDialogTitle() {
             return '待发布配置列表'
         },
+        copyPreviewDialogTitle() {
+            return `复制前差异检查（有差异：${this.copyPreviewDiffTasks.length}，无差异：${this.copyPreviewSameTasks.length}）`
+        },
+        copyPreviewSamePlanCount() {
+            return this.copyPreviewSameTasks.filter(task => task.keyStr === 'slot_plan').length
+        },
+        diffDetailOldLabel() {
+            return this.diffDetailMode === 'copy' ? '目标当前值' : '当前已发布值'
+        },
+        diffDetailNewLabel() {
+            return this.diffDetailMode === 'copy' ? '源当前值' : '发布值'
+        },
+        diffDetailEmptyText() {
+            return this.diffDetailMode === 'copy'
+                ? '源配置与目标配置无任何差异！'
+                : '本次发布与当前已发布内容无任何差异！'
+        },
         scriptCreateDialogTitle() {
-            return `待创建剧本列表(${this.scriptCreateTasks.length})`
+            const completedCount = this.scriptCreateTasks.filter(item => item.createStatus === 'completed').length
+            return `创建剧本检查（已完成：${completedCount}/${this.scriptCreateTasks.length}，已就绪：${this.scriptReadyPreviewTasks.length}）`
+        },
+        scriptCreateQueueActive() {
+            return [scriptCreateStateRunning, scriptCreateStatePaused, scriptCreateStateError].includes(this.scriptCreateState)
+        },
+        scriptCreateCanClose() {
+            return [scriptCreateStateIdle, scriptCreateStateCompleted].includes(this.scriptCreateState)
+        },
+        scriptCreateActionText() {
+            if (this.scriptCreateState === scriptCreateStateRunning) {
+                return '停止'
+            }
+            if ([scriptCreateStatePaused, scriptCreateStateError].includes(this.scriptCreateState)) {
+                return '继续'
+            }
+            if (this.scriptCreateState === scriptCreateStateCompleted) {
+                return '完成'
+            }
+            return '开始创建'
+        },
+        scriptFlowAbnormalTasks() {
+            return this.scriptFlowNoUsableTasks.concat(this.scriptFlowCheckFailTasks)
+        },
+        scriptReadyAbnormalTasks() {
+            return this.scriptReadyPreviewTasks.filter(item => {
+                return ['all_zero', 'partial_zero', 'query_failed'].includes(item.scriptCountState)
+            })
+        },
+        scriptReadyNormalTasks() {
+            return this.scriptReadyPreviewTasks.filter(item => item.scriptCountState === 'normal')
+        },
+        hasPendingScriptReadyTasks() {
+            return this.scriptPublishTasks.length > 0
         },
         readyPreviewDialogTitle() {
-            return `待就绪方案列表(${this.readyPreviewTasks.length})`
+            const title = this.readyPreviewMode === 'result' ? '剧本就绪结果' : '剧本就绪检查结果'
+            return `${title}（成功/可就绪：${this.readyPreviewTasks.length}，未就绪：${this.readyFailedPreviewTasks.length}）`
         },
         pendingPublishTaskCount() {
             return this.getAllPendingPublishTasks().length
@@ -678,10 +952,8 @@ export default {
     watch: {
         appId(newVal) {
             this.targetAppIds = this.targetAppIds.filter(
-                id => id !== newVal
+                id => id !== 0 && id !== newVal
             )
-            this.resetLegacySourceCache()
-            this.filterSelectedGamesBySubKeyMap(false)
         },
         gameIdKeyword() {
             this.updateCheckAllGames()
@@ -693,6 +965,10 @@ export default {
         Promise.all([this.getGameList(), this.getAppInfos()]).then(() => {
             this.restoreCopyFlowState()
         })
+    },
+
+    beforeDestroy() {
+        this.resetScriptCreateQueueState()
     },
 
     methods: {
@@ -707,6 +983,9 @@ export default {
         getAppLabel(id) {
             const found = this.filteredTargetAppOptions.find(o => o.value === id)
             return found ? found.label : id
+        },
+        isLegacySource() {
+            return Number(this.appId) === 0
         },
         ensureV2Version() {
             if (!this.isV2Version) {
@@ -768,6 +1047,9 @@ export default {
         async handleCopy() {
             if (this.loading) return
             if (!this.ensureV2Version()) return
+            if (this.scriptFlowLocked) {
+                return this.$message.warning('请先完成当前已选方案的创建剧本、剧本就绪和方案发布')
+            }
             console.log('1111appId:', this.appId)
             if (this.appId === null || this.appId === undefined) {
                 return this.$message.warning('请选择源 AppId')
@@ -795,76 +1077,29 @@ export default {
                 return this.$message.warning('请选择游戏')
             }
 
-            if (this.isLegacySource) {
-                this.resetLegacySourceCache()
-            }
-
 
             const planPublishConflictTasks = await this.getReadyPublishConflictsForCopy()
             if (planPublishConflictTasks.length > 0) {
                 return this.showCopyReadyPublishConflict(planPublishConflictTasks)
             }
 
-            const publishedCheckTasks = await this.buildCopyPublishedCheckTasks()
-            if (!(await this.ensureNoPublishedTasks('复制', publishedCheckTasks))) {
+            const targetCheckTasks = await this.buildCopyTargetCheckTasks()
+            if (!(await this.ensureNoTargetExistingTasks('复制', targetCheckTasks))) {
                 return
             }
 
             this.loading = true
-            this.publishTasks = []
-            this.copyPublishTasks = []
-            this.scriptCreateTasks = []
-            this.readyPreviewTasks = []
-            this.scriptCreateDialogVisible = false
-            this.readyPreviewDialogVisible = false
-            this.activePublishStage = publishStageCopyConfig
-
             try {
-                const failList = []
-                const successTasks = []
-
-                // 1. 复制老虎机基础、规则、扩展配置
-                if (this.configTypes.includes('slot_game')) {
-                    await this.copySlotGameConfigs(failList, successTasks)
-                }
-
-                // 2. 复制老虎机方案配置
-                if (this.configTypes.includes('slot_plan')) {
-                    await this.copyConfigBySubKeys(await this.buildGameSubKeysWithRelated('slot_plan', failList), 'slot_plan', failList, successTasks)
-                }
-
-                // 3. 复制老虎机大奖配置
-                if (this.configTypes.includes('slot_jackpot')) {
-                    await this.copyConfigBySubKeys(await this.buildGameSubKeysWithRelated('slot_jackpot', failList), 'slot_jackpot', failList, successTasks)
-                }
-
-
-                // 4. 复制slot任务配置
-                if (this.configTypes.includes('slot_task')) {
-                    await this.copyConfigBySubKeys([this.getSlotsCustomScriptKey(0, 'slot_task')], 'slot_task', failList, successTasks)
-                }
-
-                // 5. 复制剧本统计配置
-                if (this.configTypes.includes('slot_script_stat')) {
-                    await this.copyConfigBySubKeys([this.getSlotsCustomScriptKey(0, 'slot_script_stat')], 'slot_script_stat', failList, successTasks)
-                }
-
-                this.copyPublishTasks = successTasks
-                this.scriptPublishTasks = this.removeOverlappedPublishTasks(this.scriptPublishTasks, successTasks)
-                this.readyPublishTasks = this.removeOverlappedPublishTasks(this.readyPublishTasks, successTasks)
-                this.persistCopyFlowState()
-
-                // 所有复制结束后统一提示
-                if (failList.length > 0) {
-                    const msg = failList
-                        .map(item => this.formatCopyFailMessage(item))
-                        .join('\n')
-
-                    this.$alert(msg, '部分复制失败', {
-                        type: 'warning'
-                    })
-                } else {
-                    this.$message.success('全部复制成功')
+                this.resetCopyPreviewState()
+                const previewResult = await this.buildCopyPreview()
+                this.copyPreviewDiffTasks = previewResult.diffTasks
+                this.copyPreviewSameTasks = previewResult.sameTasks
+                this.copyPreviewFailTasks = previewResult.failTasks
+                this.copyPreviewDialogVisible = true
+                if (this.copyPreviewDiffTasks.length === 0) {
+                    this.$message.warning('所选配置与目标配置无差异，没有可复制内容')
+                } else if (this.copyPreviewSamePlanCount > 0) {
+                    this.$message.warning('存在无差异方案配置，这些方案将不会复制')
                 }
             } finally {
                 this.loading = false
@@ -872,12 +1107,384 @@ export default {
 
         },
 
+        async buildCopyPreview() {
+            const failList = []
+            const candidates = await this.buildCopyPreviewCandidates(failList)
+            const context = {
+                appRecordCache: new Map(),
+                sourceRecordCache: new Map()
+            }
+            const diffTasks = []
+            const sameTasks = []
+
+            for (const candidate of candidates) {
+                try {
+                    const result = await this.buildCopyPreviewTask(candidate, context)
+                    if (result.errMsg) {
+                        failList.push(Object.assign({}, candidate, { errMsg: result.errMsg }))
+                        continue
+                    }
+                    if (result.task.diffRows.length > 0) {
+                        diffTasks.push(result.task)
+                    } else {
+                        sameTasks.push(result.task)
+                    }
+                } catch (err) {
+                    failList.push(Object.assign({}, candidate, {
+                        errMsg: this.getCopyError(null, err) || '生成复制差异失败'
+                    }))
+                }
+            }
+
+            return {
+                diffTasks,
+                sameTasks,
+                failTasks: failList.map(item => this.buildCopyPreviewFailTask(item))
+            }
+        },
+
+        async buildCopyPreviewCandidates(failList) {
+            const candidates = []
+            const appendCandidates = (items, keyStr) => {
+                for (const item of items) {
+                    const cfgItem = typeof item === 'string'
+                        ? { subKey: item, configName: typeLabelMap[keyStr] || keyStr }
+                        : item
+                    if (cfgItem.missingMap || !cfgItem.subKey) {
+                        for (const appId of this.targetAppIds) {
+                            failList.push({
+                                keyStr,
+                                gameId: cfgItem.gameId,
+                                gameName: cfgItem.gameName,
+                                configName: cfgItem.configName || typeLabelMap[keyStr] || keyStr,
+                                appId,
+                                subKey: cfgItem.subKey || '-',
+                                errMsg: '未配置老虎机配置Key映射，请维护SubKeyMap'
+                            })
+                        }
+                        continue
+                    }
+                    for (const appId of this.targetAppIds) {
+                        candidates.push({
+                            cfgItem,
+                            keyStr,
+                            gameId: cfgItem.gameId,
+                            gameName: cfgItem.gameName || this.getGameLabel(cfgItem.gameId),
+                            configName: cfgItem.configName || typeLabelMap[keyStr] || keyStr,
+                            subKey: cfgItem.subKey,
+                            appId
+                        })
+                    }
+                }
+            }
+
+            if (this.configTypes.includes('slot_game')) {
+                appendCandidates(this.buildSlotGameCfgSubKeys(), 'slot_game')
+            }
+            if (this.configTypes.includes('slot_plan')) {
+                appendCandidates(await this.buildGameSubKeysWithRelated('slot_plan', failList), 'slot_plan')
+            }
+            if (this.configTypes.includes('slot_jackpot')) {
+                appendCandidates(await this.buildGameSubKeysWithRelated('slot_jackpot', failList), 'slot_jackpot')
+            }
+            if (this.configTypes.includes('slot_task')) {
+                appendCandidates([this.getSlotsCustomScriptKey(0, 'slot_task')], 'slot_task')
+            }
+            if (this.configTypes.includes('slot_script_stat')) {
+                appendCandidates([this.getSlotsCustomScriptKey(0, 'slot_script_stat')], 'slot_script_stat')
+            }
+            return candidates
+        },
+
+        async buildCopyPreviewTask(candidate, context) {
+            const sourceResult = await this.getCopyPreviewSourceRecord(candidate, context)
+            if (sourceResult.errMsg) {
+                return { errMsg: sourceResult.errMsg }
+            }
+            if (!sourceResult.record || sourceResult.record.Data === undefined || sourceResult.record.Data === null) {
+                return { errMsg: `源配置不存在:${candidate.subKey}` }
+            }
+
+            const targetResult = await this.getCopyPreviewAppRecord(candidate.subKey, candidate.appId, context.appRecordCache)
+            if (targetResult.errMsg) {
+                return { errMsg: targetResult.errMsg }
+            }
+
+            const sourceDataResult = this.buildCopyPreviewSourceData(candidate, sourceResult.record)
+            if (sourceDataResult.errMsg) {
+                return { errMsg: sourceDataResult.errMsg }
+            }
+            const targetRecord = targetResult.record
+            const targetData = targetRecord
+                ? this.parseCopyComparableData(targetRecord.Data)
+                : undefined
+            const diffRows = targetRecord
+                ? this.buildObjectDiffRows(targetData, sourceDataResult.compareData)
+                : [{
+                    key: '配置',
+                    oldVal: '目标配置不存在',
+                    newVal: sourceDataResult.compareData
+                }]
+            const task = Object.assign(
+                this.buildPublishTask(candidate.cfgItem, candidate.keyStr, candidate.appId),
+                {
+                    cfgItem: candidate.cfgItem,
+                    sourceRecord: sourceResult.record,
+                    targetRecord,
+                    copyData: sourceDataResult.copyData,
+                    diffRows,
+                    diffScene: 'copy',
+                    skipReason: candidate.keyStr === 'slot_plan' ? '方案无差异，禁止复制' : '内容无差异，跳过复制'
+                }
+            )
+            return { task }
+        },
+
+        buildCopyPreviewSourceData(candidate, sourceRecord) {
+            if (candidate.keyStr !== 'slot_plan') {
+                const data = this.parseCopyComparableData(sourceRecord.Data)
+                return {
+                    compareData: this.cloneData(data),
+                    copyData: this.cloneData(data)
+                }
+            }
+
+            let data = this.parseJson(sourceRecord.Data, null)
+            if (this.isLegacySource() && Array.isArray(data)) {
+                data = {
+                    SlotsType: candidate.gameId,
+                    Plans: data
+                }
+            }
+            if (!data || !Array.isArray(data.Plans)) {
+                return { errMsg: `源方案配置数据格式错误:${candidate.subKey}` }
+            }
+            // 复制前先比较源、目标当前配置；实际写入时才调整剧本就绪状态和测试剧本数量。
+            const compareData = this.cloneData(data)
+            const copyData = this.cloneData(data)
+            this.resetPlanDataReady(copyData)
+            return {
+                compareData,
+                copyData
+            }
+        },
+
+        parseCopyComparableData(raw) {
+            if (typeof raw !== 'string') {
+                return raw && typeof raw === 'object' ? this.cloneData(raw) : raw
+            }
+            const parsed = this.parseJson(raw, undefined)
+            return parsed === undefined ? raw : parsed
+        },
+
+        async getCopyPreviewSourceRecord(candidate, context) {
+            if (!this.isLegacySource()) {
+                return this.getCopyPreviewAppRecord(candidate.subKey, this.appId, context.appRecordCache)
+            }
+            const cacheKey = `${candidate.keyStr}_${candidate.gameId === undefined ? '-' : candidate.gameId}_${candidate.subKey}`
+            if (!context.sourceRecordCache.has(cacheKey)) {
+                context.sourceRecordCache.set(cacheKey, this.getSourceConfigRecord(candidate.cfgItem, candidate.keyStr))
+            }
+            return context.sourceRecordCache.get(cacheKey)
+        },
+
+        async getCopyPreviewAppRecord(subKey, appId, cache) {
+            const cacheKey = String(appId)
+            if (!cache.has(cacheKey)) {
+                cache.set(cacheKey, (async () => {
+                    try {
+                        const response = await getAllCustomizes(store.getters.env, appId)
+                        if (response.RetCode !== 0) {
+                            return {
+                                errMsg: this.getCopyError(response) || `读取App配置列表失败:${appId}`
+                            }
+                        }
+                        const records = Array.isArray(response.Data) ? response.Data : []
+                        return {
+                            recordMap: new Map(records.map(item => [item.RedisSubkey, item]))
+                        }
+                    } catch (err) {
+                        return {
+                            errMsg: this.getCopyError(null, err) || `读取App配置列表异常:${appId}`
+                        }
+                    }
+                })())
+            }
+            const result = await cache.get(cacheKey)
+            if (result.errMsg) {
+                return result
+            }
+            return { record: result.recordMap.get(subKey) || null }
+        },
+
+        buildCopyPreviewFailTask(item) {
+            const task = {
+                appId: item.appId || '-',
+                gameId: item.gameId,
+                gameName: item.gameName || this.getGameLabel(item.gameId),
+                configName: item.configName || typeLabelMap[item.keyStr] || item.keyStr || '配置',
+                subKey: item.subKey || '-',
+                keyStr: item.keyStr,
+                errMsg: item.errMsg || '生成复制差异失败'
+            }
+            task.rawFailure = Object.assign({}, item, {
+                appId: item.appId,
+                gameName: task.gameName,
+                configName: task.configName,
+                subKey: item.subKey
+            })
+            return task
+        },
+
+        async confirmCopyPreview() {
+            if (this.loading) return
+            if (this.copyPreviewDiffTasks.length === 0) {
+                return this.$message.warning('没有可复制的差异配置')
+            }
+
+            const copyTasks = this.copyPreviewDiffTasks.slice()
+            if (!(await this.ensureNoTargetExistingTasks('复制', copyTasks))) {
+                return
+            }
+            const skippedCount = this.copyPreviewSameTasks.length
+            const failList = this.copyPreviewFailTasks.map(item => item.rawFailure)
+            const successTasks = []
+            this.loading = true
+            this.publishTasks = []
+            this.copyPublishTasks = []
+            this.resetScriptCreateQueueState()
+            this.scriptCreateTasks = []
+            this.readyPreviewTasks = []
+            this.readyFailedPreviewTasks = []
+            this.readyPreviewMode = 'check'
+            this.scriptCreateDialogVisible = false
+            this.readyPreviewDialogVisible = false
+            this.activePublishStage = publishStageCopyConfig
+
+            try {
+                for (const task of copyTasks) {
+                    try {
+                        const result = await this.executeCopyPreviewTask(task)
+                        if (result.errMsg) {
+                            failList.push({
+                                keyStr: task.keyStr,
+                                gameId: task.gameId,
+                                gameName: task.gameName,
+                                appId: task.appId,
+                                subKey: task.subKey,
+                                errMsg: result.errMsg
+                            })
+                            continue
+                        }
+                        const successTask = this.buildPublishTask(task.cfgItem, task.keyStr, task.appId)
+                        if (task.keyStr === 'slot_plan') {
+                            successTask.planRecord = result.record
+                            successTask.planConfigData = result.data
+                        }
+                        successTasks.push(successTask)
+                    } catch (err) {
+                        failList.push({
+                            keyStr: task.keyStr,
+                            gameId: task.gameId,
+                            gameName: task.gameName,
+                            appId: task.appId,
+                            subKey: task.subKey,
+                            errMsg: this.getCopyError(null, err) || '复制配置异常'
+                        })
+                    }
+                }
+
+                this.copyPublishTasks = successTasks
+                this.scriptPublishTasks = this.removeOverlappedPublishTasks(this.scriptPublishTasks, successTasks)
+                this.readyPublishTasks = this.removeOverlappedPublishTasks(this.readyPublishTasks, successTasks)
+                this.persistCopyFlowState()
+                this.copyPreviewDialogVisible = false
+
+                if (failList.length > 0) {
+                    const msg = failList.map(item => this.formatCopyFailMessage(item)).join('\n')
+                    this.$alert(msg, '部分复制失败', { type: 'warning' })
+                } else {
+                    this.$message.success(`复制完成，成功 ${successTasks.length} 个配置，跳过无差异 ${skippedCount} 个配置`)
+                }
+            } finally {
+                this.loading = false
+            }
+        },
+
+        async executeCopyPreviewTask(task) {
+            if (task.keyStr === 'slot_plan') {
+                return this.saveCopyPreviewPlanTask(task)
+            }
+            const response = this.isLegacySource()
+                ? await this.saveCopyPreviewLegacyTask(task)
+                : await copyCustomize(task.subKey, this.appId, task.appId)
+            if (response.errMsg || response.RetCode !== 0) {
+                return {
+                    errMsg: response.errMsg || this.getCopyError(response) || `复制配置失败:${task.subKey}`
+                }
+            }
+            return { record: response.Data || null }
+        },
+
+        async saveCopyPreviewPlanTask(task) {
+            const data = this.cloneData(task.copyData)
+            const payload = this.buildPlanCopyPayload(task.sourceRecord, task.cfgItem, task.appId, data, task.targetRecord)
+            const response = task.targetRecord ? await updateCustomize(payload) : await createCustomize(payload)
+            if (response.RetCode !== 0) {
+                return {
+                    errMsg: this.getCopyError(response) || `${task.targetRecord ? '更新' : '创建'}目标方案配置失败:${task.subKey}`
+                }
+            }
+            return {
+                record: response.Data || payload,
+                data
+            }
+        },
+
+        async saveCopyPreviewLegacyTask(task) {
+            const payload = this.buildLegacyCopyPayload(
+                task.sourceRecord,
+                Object.assign({}, task.cfgItem, { keyStr: task.keyStr }),
+                task.appId,
+                task.targetRecord
+            )
+            const response = task.targetRecord ? await updateCustomize(payload) : await createCustomize(payload)
+            if (response.RetCode !== 0) {
+                return { errMsg: this.getCopyError(response) || `写入目标新版配置失败:${task.subKey}` }
+            }
+            return response
+        },
+
+        closeCopyPreviewDialog() {
+            this.copyPreviewDialogVisible = false
+        },
+
+        resetCopyPreviewState() {
+            this.copyPreviewDiffTasks = []
+            this.copyPreviewSameTasks = []
+            this.copyPreviewFailTasks = []
+            if (this.diffDetailMode === 'copy') {
+                this.diffDetailVisible = false
+                this.currentDiffTask = null
+                this.diffDetailMode = 'publish'
+            }
+        },
+
+        showCopyPreviewDiffDetail(task) {
+            this.diffDetailMode = 'copy'
+            this.currentDiffTask = task
+            this.diffDetailVisible = true
+        },
+
 
 
         async loadConfig(keyStr) {
 
             const tasks = this.selectedGameIds.map(async (gameId) => {
-                const result = await this.getCustomizeRecordFromAll(this.getSlotsCustomScriptKey(gameId, keyStr), this.appId)
+                const result = await this.getSourceConfigRecord({
+                    gameId,
+                    subKey: this.getSlotsCustomScriptKey(gameId, keyStr)
+                }, keyStr)
                 if (result.errMsg || !result.record || !result.record.Data) {
                     return null
                 }
@@ -938,12 +1545,12 @@ export default {
             const msg = errMsg || '未知错误'
             const subKey = context.subKey || this.extractErrorField(msg, 'subKey') || this.extractKnownSubKey(msg)
             const fromAppId = this.extractErrorField(msg, 'fromAppId') || this.appId
+            const fromAppLabel = Number(fromAppId) === 0 ? '旧版' : (fromAppId || '-')
             const configLabel = this.getConfigTypeOptionLabel(context.keyStr)
             const operationName = context.operationName || '操作'
-            const sourceName = Number(fromAppId) === legacySourceAppId ? this.legacySourceName : `源 AppId ${fromAppId || '-'}`
 
-            if (this.isCustomizeConfigNotFoundError(msg) || String(msg).includes(`${this.legacySourceName}配置不存在`)) {
-                return `原因:${sourceName}未找到${configLabel}${subKey ? ` ${subKey}` : ''}。处理方式:请先在${sourceName}保存该配置，或取消勾选【${configLabel}】后重新复制。`
+            if (this.isCustomizeConfigNotFoundError(msg)) {
+                return `原因:源 AppId ${fromAppLabel} 未找到${configLabel}${subKey ? ` ${subKey}` : ''}。处理方式:请先在源 AppId 保存该配置，或取消勾选【${configLabel}】后重新复制。`
             }
 
             if (this.isPublishedPlanConfigMissingError(msg, context)) {
@@ -953,7 +1560,7 @@ export default {
             }
 
             if (/源方案配置不存在/.test(msg)) {
-                return `原因:${sourceName}未找到方案配置 ${subKey || ''}。处理方式:请先在${sourceName}保存该方案配置，或取消勾选【老虎机方案配置】后重新复制。`
+                return `原因:源 AppId ${fromAppLabel} 未找到方案配置 ${subKey || ''}。处理方式:请先在源 AppId 保存该方案配置，或取消勾选【老虎机方案配置】后重新复制。`
             }
 
             if (/目标方案配置不存在/.test(msg)) {
@@ -1083,24 +1690,25 @@ export default {
         },
 
         async hasSourceRelatedConfig(subKey, keyStr, gameId, failList = []) {
-            if (this.isLegacySource) {
-                const sourceResult = keyStr === 'slot_plan'
-                    ? await this.getLegacyPlanSourceRecord({ gameId, subKey })
-                    : await this.getLegacyCustomizeRecord(this.getLegacyCustomizeSourceKey(gameId, keyStr, subKey))
-                if (sourceResult.errMsg) {
-                    failList.push({
-                        keyStr,
-                        gameId,
-                        appId: this.appId,
-                        subKey,
-                        errMsg: `${this.legacySourceName}附属配置检测失败:${sourceResult.errMsg}`
-                    })
-                    return false
-                }
-                return Boolean(sourceResult.record)
-            }
-
             try {
+                if (this.isLegacySource()) {
+                    const sourceResult = await this.getSourceConfigRecord({ gameId, subKey }, keyStr)
+                    if (sourceResult.errMsg) {
+                        // 旧版未配置附属玩法大奖时，直接跳过该附属配置。
+                        if (/CustomizeConfig not found|sql:\s*no rows in result set/i.test(sourceResult.errMsg)) {
+                            return false
+                        }
+                        failList.push({
+                            keyStr,
+                            gameId,
+                            appId: this.appId,
+                            subKey,
+                            errMsg: `检测旧版附属配置失败:${sourceResult.errMsg}`
+                        })
+                        return false
+                    }
+                    return !!(sourceResult.record && sourceResult.record.Data)
+                }
                 const response = await existCustomize(subKey, this.appId)
                 return response.RetCode === 0 && response.Data === true
             } catch (err) {
@@ -1119,7 +1727,7 @@ export default {
             return 'CustomizeCfg_' + subKey
         },
 
-        async buildCopyPublishedCheckTasks() {
+        async buildCopyTargetCheckTasks() {
             const tasks = []
             const appendTasks = (items, keyStr) => {
                 for (const item of items) {
@@ -1150,23 +1758,107 @@ export default {
             return tasks
         },
 
-        async ensureNoPublishedTasks(operationName, tasks) {
+        async ensureNoTargetExistingTasks(operationName, tasks) {
+            // 测试环境允许重复复制；正式环境的配置复制只用于创建尚不存在的目标配置。
             if (store.getters.env === 'test') {
                 return true
             }
-            const result = await this.getPublishedConfigCheckResult(tasks)
+            const result = await this.getTargetExistingConfigCheckResult(tasks)
             if (result.errorTasks.length > 0) {
-                this.showPublishedConfigCheckErrors(operationName, result.errorTasks)
+                this.showTargetConfigCheckErrors(operationName, result.errorTasks)
                 return false
             }
-            if (result.publishedTasks.length > 0) {
-                this.showPublishedConfigConflicts(operationName, result.publishedTasks)
+            if (result.existingTasks.length > 0) {
+                this.showTargetExistingConfigConflicts(operationName, result.existingTasks)
                 return false
             }
             return true
         },
 
-        async getPublishedConfigCheckResult(tasks) {
+        async getTargetExistingConfigCheckResult(tasks) {
+            const taskMap = new Map()
+            for (const task of tasks) {
+                if (!task || task.appId === undefined || task.appId === null || !task.subKey) {
+                    continue
+                }
+                taskMap.set(`${task.appId}_${task.subKey}`, task)
+            }
+
+            const appTaskMap = new Map()
+            for (const task of taskMap.values()) {
+                const appIdKey = String(task.appId)
+                if (!appTaskMap.has(appIdKey)) {
+                    appTaskMap.set(appIdKey, {
+                        appId: task.appId,
+                        tasks: []
+                    })
+                }
+                appTaskMap.get(appIdKey).tasks.push(task)
+            }
+
+            const appEntries = Array.from(appTaskMap.values())
+            const existingTasks = []
+            const errorTasks = []
+            let nextIndex = 0
+            const worker = async () => {
+                while (nextIndex < appEntries.length) {
+                    const { appId, tasks: appTasks } = appEntries[nextIndex++]
+                    try {
+                        const response = await getAllCustomizes(store.getters.env, appId)
+                        if (response.RetCode !== 0) {
+                            const errMsg = this.getCopyError(response) || `读取目标 AppId ${appId} 配置列表失败`
+                            errorTasks.push(...appTasks.map(task => ({ task, errMsg })))
+                            continue
+                        }
+                        const records = Array.isArray(response.Data) ? response.Data : []
+                        const existingKeySet = new Set(records.map(item => item.RedisSubkey))
+                        existingTasks.push(...appTasks.filter(task => existingKeySet.has(task.subKey)))
+                    } catch (err) {
+                        const errMsg = this.getCopyError(null, err) || `读取目标 AppId ${appId} 配置列表异常`
+                        errorTasks.push(...appTasks.map(task => ({ task, errMsg })))
+                    }
+                }
+            }
+            const workerCount = Math.min(formalConfigCheckConcurrency, appEntries.length)
+            await Promise.all(Array.from({ length: workerCount }, () => worker()))
+            return { existingTasks, errorTasks }
+        },
+
+        showTargetExistingConfigConflicts(operationName, tasks) {
+            this.showFormalCheckDialog({
+                title: '目标配置已存在',
+                message: `以下目标配置已经存在，不能继续执行【${operationName}】。配置复制仅用于尚未创建这些配置的目标 AppId，请取消对应目标 AppId、游戏或配置类型后重试。`,
+                tasks
+            })
+        },
+
+        showTargetConfigCheckErrors(operationName, errorTasks) {
+            this.showFormalCheckDialog({
+                title: '目标配置检查失败',
+                message: `目标配置检查失败，已停止执行【${operationName}】。请检查目标 AppId 配置列表后重试。`,
+                tasks: errorTasks.map(item => Object.assign({}, item.task, { errMsg: item.errMsg })),
+                isError: true
+            })
+        },
+
+        async ensureNoFormalPublishedTasks(operationName, tasks) {
+            // 测试环境允许重复复制和调整剧本，不校验已发布配置。
+            if (store.getters.env === 'test') {
+                return true
+            }
+            const result = await this.getFormalConfigCheckResult(tasks)
+            if (result.errorTasks.length > 0) {
+                this.showFormalConfigCheckErrors(operationName, result.errorTasks)
+                return false
+            }
+            if (result.publishedTasks.length > 0) {
+                this.showFormalPublishedConfigConflicts(operationName, result.publishedTasks)
+                return false
+            }
+            return true
+        },
+
+        async getFormalConfigCheckResult(tasks) {
             const taskMap = new Map()
             for (const task of tasks) {
                 if (!task || !task.appId || !task.publishKey) {
@@ -1183,65 +1875,66 @@ export default {
                 while (nextIndex < checkTasks.length) {
                     const task = checkTasks[nextIndex++]
                     try {
-                        const response = await request({
+                        const response = await legacyRequest({
                             url: '/dataProxy/info',
                             method: 'get',
                             data: {
                                 Path: '/configcenter/one',
+                                Env: store.getters.env,
                                 Key: task.publishKey,
                                 App: task.appId
                             }
                         })
                         if (response && response.RetCode === 0) {
                             publishedTasks.push(task)
-                        } else if (!this.isPublishedConfigNotExists(response)) {
+                        } else if (!this.isFormalConfigNotExists(response)) {
                             errorTasks.push({
                                 task,
-                                errMsg: this.getCopyError(response) || '当前环境配置中心查询失败'
+                                errMsg: this.getCopyError(response) || '正式配置中心查询失败'
                             })
                         }
                     } catch (err) {
                         errorTasks.push({
                             task,
-                            errMsg: this.getCopyError(null, err) || '当前环境配置中心查询异常'
+                            errMsg: this.getCopyError(null, err) || '正式配置中心查询异常'
                         })
                     }
                 }
             }
-            const workerCount = Math.min(publishedConfigCheckConcurrency, checkTasks.length)
+            const workerCount = Math.min(formalConfigCheckConcurrency, checkTasks.length)
             await Promise.all(Array.from({ length: workerCount }, () => worker()))
             return { publishedTasks, errorTasks }
         },
 
-        isPublishedConfigNotExists(response) {
+        isFormalConfigNotExists(response) {
             return response && response.RetCode === -3 && /\bnot exists\b/i.test(this.getCopyError(response))
         },
 
-        showPublishedConfigConflicts(operationName, tasks) {
-            this.showPublishedCheckDialog({
+        showFormalPublishedConfigConflicts(operationName, tasks) {
+            this.showFormalCheckDialog({
                 title: '存在已发布配置',
                 message: `以下配置已发布，不能继续执行【${operationName}】。请取消对应游戏、目标 AppId 或配置类型后重试。`,
                 tasks
             })
         },
 
-        showPublishedConfigCheckErrors(operationName, errorTasks) {
-            this.showPublishedCheckDialog({
-                title: '配置校验失败',
-                message: `当前环境配置校验失败，已停止执行【${operationName}】。请检查当前环境配置中心连接或配置 Key 后重试。`,
+        showFormalConfigCheckErrors(operationName, errorTasks) {
+            this.showFormalCheckDialog({
+                title: '正式配置校验失败',
+                message: `正式配置校验失败，已停止执行【${operationName}】。请检查正式配置中心连接或配置 Key 后重试。`,
                 tasks: errorTasks.map(item => Object.assign({}, item.task, { errMsg: item.errMsg })),
                 isError: true
             })
         },
 
-        showPublishedCheckDialog({ title, message, tasks, isError = false }) {
-            this.publishedCheckDialogTitle = title
-            this.publishedCheckDialogMessage = message
-            this.publishedCheckTasks = tasks.map(task => Object.assign({}, task, {
+        showFormalCheckDialog({ title, message, tasks, isError = false }) {
+            this.formalCheckDialogTitle = title
+            this.formalCheckDialogMessage = message
+            this.formalCheckTasks = tasks.map(task => Object.assign({}, task, {
                 gameName: task.gameName || this.getGameLabel(task.gameId)
             }))
-            this.publishedCheckIsError = isError
-            this.publishedCheckDialogVisible = true
+            this.formalCheckIsError = isError
+            this.formalCheckDialogVisible = true
         },
 
         formatPublishError(task, response, err) {
@@ -1310,9 +2003,6 @@ export default {
         },
 
         async buildSourcePublishTasks() {
-            if (this.isLegacySource) {
-                return []
-            }
             const tasks = []
             const failList = []
             if (this.configTypes.includes('slot_game')) {
@@ -1345,16 +2035,16 @@ export default {
         },
 
         validateSourcePublishSelection() {
+            if (this.isLegacySource()) {
+                this.$message.warning('旧版仅支持复制到新版，不能作为新版发布源')
+                return false
+            }
             if (this.appId === null || this.appId === undefined) {
                 this.$message.warning('请选择源 AppId')
                 return false
             }
             if (this.targetAppIds.length > 0) {
                 this.$message.warning('已有目标 AppId 时，请先执行复制后再发布复制内容')
-                return false
-            }
-            if (this.isLegacySource) {
-                this.$message.warning(`${this.legacySourceName}配置不能在此页面直接发布，请先复制到目标 AppId`)
                 return false
             }
             if (!this.configTypes.length) {
@@ -1385,7 +2075,7 @@ export default {
         },
 
         isGameOptionDisabled(gameId) {
-            return this.requiresGameSubKeyMap && this.isGameMissingSubKeyMap(gameId)
+            return this.configTypes.includes('slot_game') && this.isGameMissingSubKeyMap(gameId)
         },
 
         handleGameOptionClick(gameId) {
@@ -1404,7 +2094,7 @@ export default {
         },
 
         getMissingSubKeyMapGames(gameIds) {
-            if (!this.requiresGameSubKeyMap) {
+            if (!this.configTypes.includes('slot_game')) {
                 return []
             }
             return gameIds.filter(gameId => this.isGameMissingSubKeyMap(gameId)).map(gameId => {
@@ -1426,7 +2116,7 @@ export default {
                 rows.push(`还有 ${missingGames.length - maxShowCount} 个游戏未展示`)
             }
             this.$alert(
-                `以下游戏缺少SubKeyMap映射，不能复制当前所选配置，请先维护映射：\n${rows.join('\n')}`,
+                `以下游戏缺少SubKeyMap映射，不能选择老虎机游戏配置，请先维护映射：\n${rows.join('\n')}`,
                 '缺少配置Key映射',
                 { type: 'warning' }
             )
@@ -1515,16 +2205,16 @@ export default {
                             continue
                         }
 
-                        const res = this.isLegacySource
-                            ? await this.copyLegacyCustomizeConfig(cfgItem, keyStr, appId)
+                        const res = this.isLegacySource()
+                            ? await this.copyLegacyConfig(cfgItem, keyStr, appId)
                             : await copyCustomize(cfgItem.subKey, this.appId, appId)
-                        if (res.RetCode !== 0) {
+                        if (res.errMsg || res.RetCode !== 0) {
                             failList.push({
                                 keyStr,
                                 gameId: cfgItem.gameId,
                                 appId,
                                 subKey: cfgItem.subKey,
-                                errMsg: this.getCopyError(res)
+                                errMsg: res.errMsg || this.getCopyError(res)
                             })
                         } else {
                             successTasks.push(this.buildPublishTask(cfgItem, keyStr, appId))
@@ -1549,9 +2239,7 @@ export default {
 
         async copyPlanConfig(cfgItem, appId) {
             try {
-                const sourceResult = this.isLegacySource
-                    ? await this.getLegacyPlanSourceRecord(cfgItem)
-                    : await this.getCustomizeRecordFromAll(cfgItem.subKey, this.appId)
+                const sourceResult = await this.getSourceConfigRecord(cfgItem, 'slot_plan')
                 if (sourceResult.errMsg) {
                     return {
                         errMsg: sourceResult.errMsg
@@ -1561,7 +2249,13 @@ export default {
                     return { errMsg: `源方案配置不存在:${cfgItem.subKey}` }
                 }
 
-                const data = this.parseJson(sourceResult.record.Data, null)
+                let data = this.parseJson(sourceResult.record.Data, null)
+                if (this.isLegacySource() && Array.isArray(data)) {
+                    data = {
+                        SlotsType: cfgItem.gameId,
+                        Plans: data
+                    }
+                }
                 if (!data || !Array.isArray(data.Plans)) {
                     return { errMsg: `源方案配置数据格式错误:${cfgItem.subKey}` }
                 }
@@ -1596,7 +2290,7 @@ export default {
         },
 
         resetPlanDataReady(data) {
-            const shouldReduceScriptNumber = this.isLegacySource && store.getters.env === 'test'
+            const shouldReduceScriptNumber = this.isLegacySource() && store.getters.env === 'test'
             for (const plan of data.Plans || []) {
                 for (const version of plan.Versions || []) {
                     version.IsReady = false
@@ -1646,40 +2340,39 @@ export default {
             }
         },
 
-        resetLegacySourceCache() {
-            this.legacyCustomizeRecords = {}
-            this.legacyPlanConfigRecords = null
+        getLegacySourceSubKey(cfgItem, keyStr) {
+            if (keyStr !== 'slot_jackpot') {
+                return cfgItem.subKey
+            }
+            const gameId = Number(cfgItem.gameId)
+            const baseGameId = gameId >= relatedGameIdOffset ? gameId - relatedGameIdOffset : gameId
+            const prefix = this.getSlotGameSubKeyPrefix(baseGameId)
+            if (!prefix) {
+                return ''
+            }
+            return `${prefix}${gameId >= relatedGameIdOffset ? '_x_script_cfg' : '_script_cfg'}`
         },
 
         async getLegacyCustomizeRecord(subKey) {
-            if (Object.prototype.hasOwnProperty.call(this.legacyCustomizeRecords, subKey)) {
-                return { record: this.legacyCustomizeRecords[subKey] }
+            if (!subKey) {
+                return { errMsg: '旧版配置Key为空' }
             }
             try {
-                const response = await legacyRequest({
+                const response = await request({
                     url: '/customizeconfig/one',
                     method: 'get',
                     data: { SubKey: subKey }
                 })
                 if (response.RetCode !== 0) {
-                    const errMsg = this.getCopyError(response)
-                    if (/sql:\s*no rows in result set/i.test(errMsg || '')) {
-                        this.legacyCustomizeRecords[subKey] = null
-                        return { record: null }
-                    }
-                    return { errMsg: errMsg || `读取${this.legacySourceName}自定义配置失败:${subKey}` }
+                    return { errMsg: this.getCopyError(response) || `读取旧版配置失败:${subKey}` }
                 }
-                this.legacyCustomizeRecords[subKey] = response.Data || null
-                return { record: this.legacyCustomizeRecords[subKey] }
+                return { record: response.Data || null }
             } catch (err) {
-                return { errMsg: this.getCopyError(null, err) || `读取${this.legacySourceName}自定义配置异常:${subKey}` }
+                return { errMsg: this.getCopyError(null, err) || `读取旧版配置异常:${subKey}` }
             }
         },
 
-        async loadLegacyPlanConfigRecords() {
-            if (Array.isArray(this.legacyPlanConfigRecords)) {
-                return { records: this.legacyPlanConfigRecords }
-            }
+        async getLegacyPlanRecord(gameId) {
             try {
                 const response = await request({
                     url: '/slotsScriptV3Config/all',
@@ -1687,117 +2380,78 @@ export default {
                     data: {}
                 })
                 if (response.RetCode !== 0) {
-                    return { errMsg: this.getCopyError(response) || `读取${this.legacySourceName}方案配置失败` }
+                    return { errMsg: this.getCopyError(response) || `读取旧版方案配置失败:${gameId}` }
                 }
-                this.legacyPlanConfigRecords = Array.isArray(response.Data) ? response.Data : []
-                return { records: this.legacyPlanConfigRecords }
+                const source = (response.Data || []).find(item => Number(item.SlotsType) === Number(gameId))
+                if (!source || !source.ConfigData) {
+                    return { record: null }
+                }
+                return {
+                    record: {
+                        Data: source.ConfigData,
+                        Name: `${this.getGameLabel(gameId)}方案配置`,
+                        Description: `${this.getGameLabel(gameId)}方案配置`,
+                        Type: 1
+                    }
+                }
             } catch (err) {
-                return { errMsg: this.getCopyError(null, err) || `读取${this.legacySourceName}方案配置异常` }
+                return { errMsg: this.getCopyError(null, err) || `读取旧版方案配置异常:${gameId}` }
             }
         },
 
-        async getLegacyPlanSourceRecord(cfgItem) {
-            const result = await this.loadLegacyPlanConfigRecords()
-            if (result.errMsg) {
-                return result
+        async getSourceConfigRecord(cfgItem, keyStr) {
+            if (!this.isLegacySource()) {
+                return this.getCustomizeRecordFromAll(cfgItem.subKey, this.appId)
             }
-            const records = result.records.filter(item => Number(item.SlotsType) === Number(cfgItem.gameId))
-            if (records.length === 0) {
-                return { record: null }
+            if (keyStr === 'slot_plan') {
+                return this.getLegacyPlanRecord(cfgItem.gameId)
             }
-            if (records.length > 1) {
-                return { errMsg: `${this.legacySourceName}方案配置存在重复记录:SlotsType=${cfgItem.gameId}，数量:${records.length}` }
-            }
-            const legacyRecord = records[0]
-
-            const plans = typeof legacyRecord.ConfigData === 'string'
-                ? this.parseJson(legacyRecord.ConfigData, null)
-                : this.cloneData(legacyRecord.ConfigData)
-            if (!Array.isArray(plans)) {
-                return { errMsg: `${this.legacySourceName}方案配置数据格式错误:${cfgItem.subKey}` }
-            }
-
-            const name = `${cfgItem.gameName || this.getGameLabel(cfgItem.gameId)}方案配置`
-            return {
-                record: {
-                    RedisSubkey: cfgItem.subKey,
-                    Data: JSON.stringify({
-                        SlotsType: Number(cfgItem.gameId),
-                        Plans: plans
-                    }),
-                    Name: name,
-                    Description: name,
-                    Type: 1
-                }
-            }
+            return this.getLegacyCustomizeRecord(this.getLegacySourceSubKey(cfgItem, keyStr))
         },
 
-        getLegacyCustomizeSourceKey(gameId, keyStr, targetSubKey) {
-            if (keyStr !== 'slot_jackpot') {
-                return targetSubKey
-            }
-            const id = Number(gameId)
-            const baseGameId = id >= relatedGameIdOffset ? id - relatedGameIdOffset : id
-            const prefix = this.getSlotGameSubKeyPrefix(baseGameId)
-            if (!prefix) {
-                return ''
-            }
-            return `${prefix}${id >= relatedGameIdOffset ? '_x_script_cfg' : '_script_cfg'}`
-        },
-
-        async copyLegacyCustomizeConfig(cfgItem, keyStr, appId) {
-            const sourceSubKey = this.getLegacyCustomizeSourceKey(cfgItem.gameId, keyStr, cfgItem.subKey)
-            if (!sourceSubKey) {
-                return {
-                    RetCode: -1,
-                    RetMsg: `未配置${this.legacySourceName}源Key映射:${cfgItem.subKey}`
-                }
-            }
-
-            const sourceResult = await this.getLegacyCustomizeRecord(sourceSubKey)
-            if (sourceResult.errMsg) {
-                return { RetCode: -1, RetMsg: sourceResult.errMsg }
-            }
-            if (!sourceResult.record || !sourceResult.record.Data) {
-                return {
-                    RetCode: -1,
-                    RetMsg: `${this.legacySourceName}配置不存在:${sourceSubKey}`
-                }
-            }
-
-            const targetResult = await this.getCustomizeRecordFromAll(cfgItem.subKey, appId)
-            if (targetResult.errMsg) {
-                return { RetCode: -1, RetMsg: targetResult.errMsg }
-            }
-
-            const sourceRecord = sourceResult.record
-            const targetRecord = targetResult.record
-            const defaultName = keyStr === 'slot_game'
-                ? (cfgItem.configName || cfgItem.subKey)
-                : this.getSlotsName(cfgItem.gameId, keyStr)
-            const name = sourceRecord.Name || defaultName
-            const payload = {
-                AppId: appId,
-                RedisSubkey: cfgItem.subKey,
-                Data: sourceRecord.Data,
-                Name: name,
-                Description: sourceRecord.Description || name,
-                Type: sourceRecord.Type || 1,
-                ModifyUser: store.getters.name,
-                LastModify: Math.floor(new Date().getTime() / 1000)
-            }
+        buildLegacyCopyPayload(sourceRecord, cfgItem, appId, targetRecord) {
+            const payload = this.cloneData(sourceRecord)
             if (targetRecord && targetRecord.ID) {
                 payload.ID = targetRecord.ID
+            } else {
+                delete payload.ID
             }
-            if (sourceRecord.Subtype !== undefined && sourceRecord.Subtype !== null) {
-                payload.Subtype = sourceRecord.Subtype
-            }
+            payload.AppId = appId
+            payload.RedisSubkey = cfgItem.subKey
+            const configName = typeLabelMap[cfgItem.keyStr] || cfgItem.keyStr
+            payload.Name = payload.Name || (cfgItem.gameId === undefined ? configName : `${this.getGameLabel(cfgItem.gameId)}${configName}`)
+            payload.Description = payload.Description || payload.Name
+            payload.Type = payload.Type || 1
+            payload.ModifyUser = store.getters.name
+            payload.LastModify = Math.floor(new Date().getTime() / 1000)
+            return payload
+        },
 
-            return targetRecord ? updateCustomize(payload) : createCustomize(payload)
+        async copyLegacyConfig(cfgItem, keyStr, appId) {
+            const sourceResult = await this.getSourceConfigRecord(cfgItem, keyStr)
+            if (sourceResult.errMsg) {
+                return sourceResult
+            }
+            if (!sourceResult.record || !sourceResult.record.Data) {
+                return { errMsg: `源旧版配置不存在:${this.getLegacySourceSubKey(cfgItem, keyStr)}` }
+            }
+            const targetResult = await this.getCustomizeRecordFromAll(cfgItem.subKey, appId)
+            if (targetResult.errMsg) {
+                return targetResult
+            }
+            const payload = this.buildLegacyCopyPayload(sourceResult.record, Object.assign({}, cfgItem, { keyStr }), appId, targetResult.record)
+            const response = targetResult.record ? await updateCustomize(payload) : await createCustomize(payload)
+            if (response.RetCode !== 0) {
+                return { errMsg: this.getCopyError(response) || `写入目标新版配置失败:${cfgItem.subKey}` }
+            }
+            return response
         },
 
         ensurePlanOperationSelection() {
             if (!this.ensureV2Version()) return false
+            if (this.scriptFlowLocked) {
+                return true
+            }
             if (!this.targetAppIds.length) {
                 this.$message.warning('请选择目标 AppId')
                 return false
@@ -1842,6 +2496,13 @@ export default {
             return tasks
         },
 
+        buildPlanOperationTasks() {
+            if (this.scriptFlowLocked) {
+                return this.cloneData(this.scriptFlowLockedTasks)
+            }
+            return this.buildSelectedPlanTasks()
+        },
+
         async getReadyPublishConflictsForCopy() {
             const pendingPlanTasks = this.scriptPublishTasks.concat(this.readyPublishTasks)
             if (!this.configTypes.includes('slot_plan') || pendingPlanTasks.length === 0) {
@@ -1880,7 +2541,8 @@ export default {
         },
 
         getCopyPublishConflictsForPlanOperation(planTasks) {
-            return this.mergePublishTasks([], this.getOverlappedPublishTasks(this.copyPublishTasks, planTasks))
+            const unpublishedCopyTasks = this.copyPublishTasks.filter(task => task.scriptFlowPublished !== true)
+            return this.mergePublishTasks([], this.getOverlappedPublishTasks(unpublishedCopyTasks, planTasks))
         },
 
         showCopyPendingPlanOperationConflict(conflictTasks, operationName) {
@@ -1901,11 +2563,11 @@ export default {
 
         async handleOneKeyCreateScripts() {
             if (!this.ensurePlanOperationSelection()) return
-            const tasks = this.buildSelectedPlanTasks()
+            const tasks = this.buildPlanOperationTasks()
             if (tasks.length === 0) {
                 return this.$message.warning('暂无可创建剧本的方案配置')
             }
-            if (!(await this.ensureNoPublishedTasks('创建剧本', tasks))) {
+            if (!(await this.ensureNoFormalPublishedTasks('创建剧本', tasks))) {
                 return
             }
             const copyConflictTasks = this.getCopyPublishConflictsForPlanOperation(tasks)
@@ -1916,16 +2578,18 @@ export default {
             this.scriptLoading = true
             const failList = []
             try {
-                const createTasks = await this.collectPlanScriptCreateTasks(tasks, failList, { usePublished: true })
+                const result = await this.collectPlanScriptCreateTasks(tasks, failList, { usePublished: true })
                 if (failList.length > 0) {
                     this.showPlanOperationResult('创建剧本检查', 0, failList)
                     return
                 }
-                if (createTasks.length === 0) {
-                    return this.$message.warning('没有待创建剧本的方案版本')
+                if (result.createTasks.length === 0 && result.readyTasks.length === 0) {
+                    return this.$message.warning('没有可检查的方案版本')
                 }
 
-                this.scriptCreateTasks = createTasks
+                this.resetScriptCreateQueueState()
+                this.scriptCreateTasks = result.createTasks
+                this.scriptReadyPreviewTasks = result.readyTasks
                 this.scriptCreateDialogVisible = true
             } finally {
                 this.scriptLoading = false
@@ -1934,6 +2598,10 @@ export default {
 
         isPlanDisabled(plan) {
             return Boolean(plan) && (plan.IsDisabled === true || Number(plan.IsDisabled) === 1)
+        },
+
+        isDefaultPlan(plan) {
+            return Boolean(plan) && (plan.IsDefault === true || Number(plan.IsDefault) === 1)
         },
 
         getLatestPlanVersion(plan) {
@@ -1948,6 +2616,7 @@ export default {
 
         async collectPlanScriptCreateTasks(tasks, failList, options = {}) {
             const createTasks = []
+            const readyTasks = []
             for (const task of tasks) {
                 if (!(await this.shouldHandlePlanTask(task, failList))) {
                     continue
@@ -1956,22 +2625,62 @@ export default {
                 if (!planData) {
                     continue
                 }
+                const createPlanItems = []
+                const readyPlanItems = []
                 for (const plan of planData.data.Plans || []) {
                     if (this.isPlanDisabled(plan)) {
                         continue
                     }
                     const latestVersion = this.getLatestPlanVersion(plan)
-                    if (!latestVersion || latestVersion.IsReady) {
+                    if (!latestVersion) {
                         continue
                     }
-                    createTasks.push(this.buildPlanScriptCreateTask(task, plan, latestVersion))
+                    if (this.isPlanVersionReady(latestVersion)) {
+                        readyPlanItems.push({ plan, version: latestVersion })
+                    } else {
+                        createPlanItems.push({ plan, version: latestVersion })
+                    }
+                }
+
+                if (createPlanItems.length > 0 || readyPlanItems.length > 0) {
+                    const betFailList = []
+                    const betList = await this.loadPlanScriptBets(task, betFailList)
+                    if (betFailList.length === 0 && betList.length === 0) {
+                        betFailList.push({
+                            task,
+                            errMsg: '基础配置下注列表为空'
+                        })
+                    }
+                    if (betFailList.length > 0 || betList.length === 0) {
+                        failList.push(...betFailList)
+                        continue
+                    }
+                    for (const item of createPlanItems) {
+                        createTasks.push(this.buildPlanScriptCreateTask(
+                            task,
+                            item.plan,
+                            item.version,
+                            betList
+                        ))
+                    }
+                    for (const item of readyPlanItems) {
+                        const countResult = await this.inspectReadyPlanVersionScripts(task, item.plan, item.version, betList)
+                        readyTasks.push(this.buildPlanScriptReadyPreviewTask(
+                            task,
+                            item.plan,
+                            item.version,
+                            countResult
+                        ))
+                    }
                 }
             }
-            return createTasks
+            return { createTasks, readyTasks }
         },
 
-        buildPlanScriptCreateTask(task, plan, version) {
+        buildPlanScriptCreateTask(task, plan, version, betList) {
             const scriptCfg = version.ScriptCfg || {}
+            const scriptNumber = Number(scriptCfg.ScriptNumber) || 0
+            const normalizedBetList = Array.isArray(betList) ? betList.slice() : []
             return {
                 task,
                 plan,
@@ -1984,75 +2693,364 @@ export default {
                 planVersion: version.Version,
                 versionComment: version.Comment || '',
                 scriptSteps: scriptCfg.ScriptSteps,
-                scriptNumber: scriptCfg.ScriptNumber
+                scriptNumber,
+                betList: normalizedBetList,
+                createStatus: 'pending',
+                createStatusText: '等待创建',
+                createProgressCurrent: 0,
+                createProgressTotal: scriptNumber * normalizedBetList.length,
+                createError: '',
+                createRequestAccepted: false,
+                createFailureStage: ''
             }
         },
 
+        buildPlanScriptReadyPreviewTask(task, plan, version, countResult) {
+            return Object.assign(this.buildPlanScriptCreateTask(task, plan, version), countResult)
+        },
+
+        buildReadyScriptQueryFailureResult() {
+            return {
+                scriptCountState: 'query_failed',
+                scriptCountStatus: '数量查询失败',
+                scriptCountStatusType: 'danger',
+                scriptCountText: '-'
+            }
+        },
+
+        async inspectReadyPlanVersionScripts(task, plan, version, betList) {
+            try {
+                const data = await this.loadPlanVersionScriptCountMap(task, plan, version, betList)
+                if (!data) {
+                    return this.buildReadyScriptQueryFailureResult()
+                }
+                const betCounts = betList.map(bet => ({
+                    bet,
+                    count: Number(data[String(bet)] || 0)
+                }))
+
+                const zeroCount = betCounts.filter(item => item.count === 0).length
+                let scriptCountState = 'normal'
+                let scriptCountStatus = '已有剧本'
+                let scriptCountStatusType = 'success'
+                if (zeroCount === betCounts.length) {
+                    scriptCountState = 'all_zero'
+                    scriptCountStatus = '全部下注额数量为0'
+                    scriptCountStatusType = 'danger'
+                } else if (zeroCount > 0) {
+                    scriptCountState = 'partial_zero'
+                    scriptCountStatus = '部分下注额数量为0'
+                    scriptCountStatusType = 'warning'
+                }
+
+                return {
+                    scriptCountState,
+                    scriptCountStatus,
+                    scriptCountStatusType,
+                    scriptCountText: betCounts.map(item => `${item.bet}:${item.count}`).join('，')
+                }
+            } catch (err) {
+                return this.buildReadyScriptQueryFailureResult()
+            }
+        },
+
+        closeScriptCreateDialog() {
+            if (!this.scriptCreateCanClose) {
+                return
+            }
+            this.scriptCreateDialogVisible = false
+        },
+
+        handleScriptCreateDialogClosed() {
+            const shouldOpenReadyPreview = this.scriptCreateState === scriptCreateStateCompleted
+            this.resetScriptCreateQueueState()
+            this.scriptCreateTasks = []
+            this.scriptReadyPreviewTasks = []
+            if (shouldOpenReadyPreview) {
+                this.$nextTick(() => {
+                    this.handleOneKeyReady()
+                })
+            }
+        },
+
+        resetScriptCreateQueueState() {
+            this.clearScriptCreatePollTimer()
+            this.scriptCreateRunId++
+            this.scriptCreateState = scriptCreateStateIdle
+            this.scriptCreateCurrentIndex = -1
+            this.scriptCreateWorkerActive = false
+        },
+
+        clearScriptCreatePollTimer() {
+            if (this.scriptCreatePollTimer) {
+                clearTimeout(this.scriptCreatePollTimer)
+                this.scriptCreatePollTimer = null
+            }
+            if (this.scriptCreatePollResolve) {
+                const resolve = this.scriptCreatePollResolve
+                this.scriptCreatePollResolve = null
+                resolve(false)
+            }
+        },
+
+        waitForNextScriptCreatePoll(remainingCount) {
+            this.clearScriptCreatePollTimer()
+            const pollInterval = remainingCount < scriptCreateFastPollThreshold
+                ? scriptCreateFastPollInterval
+                : scriptCreateNormalPollInterval
+            return new Promise(resolve => {
+                this.scriptCreatePollResolve = resolve
+                this.scriptCreatePollTimer = setTimeout(() => {
+                    this.scriptCreatePollTimer = null
+                    this.scriptCreatePollResolve = null
+                    resolve(true)
+                }, pollInterval)
+            })
+        },
+
+        handleScriptCreateAction() {
+            if (this.scriptCreateState === scriptCreateStateRunning) {
+                this.pauseScriptCreateQueue()
+                return
+            }
+            if ([scriptCreateStatePaused, scriptCreateStateError].includes(this.scriptCreateState)) {
+                this.resumeScriptCreateQueue()
+                return
+            }
+            if (this.scriptCreateState === scriptCreateStateCompleted) {
+                this.closeScriptCreateDialog()
+                return
+            }
+            this.confirmCreateScripts()
+        },
+
         async confirmCreateScripts() {
+            if (this.scriptLoading || this.scriptCreateState !== scriptCreateStateIdle) return
             if (!this.ensureV2Version()) return
             if (this.scriptCreateTasks.length === 0) {
                 return this.$message.warning('暂无可创建剧本')
             }
             const tasks = this.scriptCreateTasks.map(item => item.task)
-            if (!(await this.ensureNoPublishedTasks('创建剧本', tasks))) {
-                return
-            }
-
             this.scriptLoading = true
-            const failList = []
-            let successCount = 0
-            const publishTaskMap = new Map()
             try {
-                for (const item of this.scriptCreateTasks) {
-                    try {
-                        const response = await this.createPlanVersionScripts(item.task, item.plan, item.version)
-                        if (response && response.RetCode === 0) {
-                            successCount++
-                            publishTaskMap.set(`${item.task.appId}_${item.task.subKey}`, item.task)
-                        } else {
-                            failList.push({
-                                task: item.task,
-                                plan: item.plan,
-                                version: item.version,
-                                createTask: item,
-                                errMsg: this.getCopyError(response) || '创建剧本失败'
-                            })
-                        }
-                    } catch (err) {
-                        failList.push({
-                            task: item.task,
-                            plan: item.plan,
-                            version: item.version,
-                            createTask: item,
-                            errMsg: this.getCopyError(null, err) || '创建剧本异常'
-                        })
-                    }
+                if (!(await this.ensureNoFormalPublishedTasks('创建剧本', tasks))) {
+                    return
                 }
-                const publishTasks = Array.from(publishTaskMap.values())
-                if (publishTasks.length > 0) {
-                    this.markCopiedChangeTasks(publishTasks)
-                    this.scriptPublishTasks = this.mergePublishTasks(this.scriptPublishTasks, publishTasks)
-                    this.persistCopyFlowState()
-                }
-                if (failList.length === 0) {
-                    this.scriptCreateDialogVisible = false
-                    this.scriptCreateTasks = []
-                } else {
-                    this.scriptCreateTasks = failList.map(item => item.createTask).filter(Boolean)
-                }
-                this.showPlanOperationResult('创建剧本', successCount, failList)
+                this.scriptCreateState = scriptCreateStateRunning
+                this.scriptCreateCurrentIndex = 0
+                this.startScriptCreateWorker()
             } finally {
                 this.scriptLoading = false
             }
         },
 
+        pauseScriptCreateQueue() {
+            if (this.scriptCreateState !== scriptCreateStateRunning) {
+                return
+            }
+            this.scriptCreateState = scriptCreateStatePaused
+            const currentTask = this.scriptCreateTasks[this.scriptCreateCurrentIndex]
+            if (currentTask && currentTask.createStatus === 'creating') {
+                currentTask.createStatus = 'paused'
+                currentTask.createStatusText = '已暂停'
+            }
+            this.clearScriptCreatePollTimer()
+        },
+
+        resumeScriptCreateQueue() {
+            if (![scriptCreateStatePaused, scriptCreateStateError].includes(this.scriptCreateState)) {
+                return
+            }
+            const currentTask = this.scriptCreateTasks[this.scriptCreateCurrentIndex]
+            if (currentTask) {
+                if (currentTask.createFailureStage === 'create') {
+                    currentTask.createRequestAccepted = false
+                }
+                currentTask.createStatus = 'creating'
+                currentTask.createStatusText = '创建中'
+                currentTask.createError = ''
+                currentTask.createFailureStage = ''
+            }
+            this.scriptCreateState = scriptCreateStateRunning
+            this.startScriptCreateWorker()
+        },
+
+        startScriptCreateWorker() {
+            this.runScriptCreateQueue().catch(err => {
+                const currentTask = this.scriptCreateTasks[this.scriptCreateCurrentIndex]
+                if (currentTask && this.scriptCreateState === scriptCreateStateRunning) {
+                    this.failScriptCreateTask(
+                        currentTask,
+                        currentTask.createRequestAccepted ? 'query' : 'create',
+                        this.getCopyError(null, err) || '创建剧本异常'
+                    )
+                }
+            })
+        },
+
+        async runScriptCreateQueue() {
+            if (this.scriptCreateWorkerActive || this.scriptCreateState !== scriptCreateStateRunning) {
+                return
+            }
+            const runId = this.scriptCreateRunId
+            this.scriptCreateWorkerActive = true
+            try {
+                while (runId === this.scriptCreateRunId && this.scriptCreateState === scriptCreateStateRunning) {
+                    const nextIndex = this.scriptCreateTasks.findIndex(item => item.createStatus !== 'completed')
+                    if (nextIndex < 0) {
+                        this.scriptCreateCurrentIndex = -1
+                        this.scriptCreateState = scriptCreateStateCompleted
+                        return
+                    }
+                    this.scriptCreateCurrentIndex = nextIndex
+                    const result = await this.processScriptCreateTask(this.scriptCreateTasks[nextIndex], runId)
+                    if (result !== 'completed') {
+                        return
+                    }
+                }
+            } finally {
+                if (runId === this.scriptCreateRunId) {
+                    this.scriptCreateWorkerActive = false
+                }
+            }
+        },
+
+        async processScriptCreateTask(item, runId) {
+            item.createStatus = 'creating'
+            item.createStatusText = '创建中'
+            item.createError = ''
+
+            if (item.betList.length === 0 || item.scriptNumber <= 0) {
+                this.failScriptCreateTask(item, 'create', '剧本数量配置错误')
+                return 'failed'
+            }
+
+            if (!item.createRequestAccepted) {
+                try {
+                    const response = await this.createPlanVersionScripts(item.task, item.plan, item.version)
+                    if (runId !== this.scriptCreateRunId) {
+                        return 'stopped'
+                    }
+                    if (!response || response.RetCode !== 0) {
+                        this.failScriptCreateTask(item, 'create', this.getCopyError(response) || '创建剧本失败')
+                        return 'failed'
+                    }
+                    this.markScriptCreateRequestAccepted(item)
+                } catch (err) {
+                    if (runId !== this.scriptCreateRunId) {
+                        return 'stopped'
+                    }
+                    this.failScriptCreateTask(item, 'create', this.getCopyError(null, err) || '创建剧本异常')
+                    return 'failed'
+                }
+            }
+
+            while (runId === this.scriptCreateRunId) {
+                if (this.scriptCreateState !== scriptCreateStateRunning) {
+                    this.markScriptCreateTaskPaused(item)
+                    return 'paused'
+                }
+
+                const progressResult = await this.queryScriptCreateTaskProgress(item)
+                if (runId !== this.scriptCreateRunId) {
+                    return 'stopped'
+                }
+                if (this.scriptCreateState !== scriptCreateStateRunning) {
+                    this.markScriptCreateTaskPaused(item)
+                    return 'paused'
+                }
+                if (!progressResult.ok) {
+                    this.failScriptCreateTask(item, 'query', progressResult.errMsg)
+                    return 'failed'
+                }
+                if (progressResult.completed) {
+                    this.completeScriptCreateTask(item)
+                    return 'completed'
+                }
+
+                const pollElapsed = await this.waitForNextScriptCreatePoll(progressResult.remainingCount)
+                if (!pollElapsed && this.scriptCreateState !== scriptCreateStateRunning) {
+                    this.markScriptCreateTaskPaused(item)
+                    return 'paused'
+                }
+            }
+            return 'stopped'
+        },
+
+        async queryScriptCreateTaskProgress(item) {
+            try {
+                const data = await this.loadPlanVersionScriptCountMap(
+                    item.task,
+                    item.plan,
+                    item.version,
+                    item.betList
+                )
+                if (!data) {
+                    return { ok: false, errMsg: '查询剧本数量失败' }
+                }
+
+                let currentCount = 0
+                let remainingCount = 0
+                let completed = item.betList.length > 0 && item.scriptNumber > 0
+                for (const bet of item.betList) {
+                    const count = Number(data[String(bet)] || 0)
+                    currentCount += count
+                    remainingCount += Math.max(item.scriptNumber - count, 0)
+                    if (count < item.scriptNumber) {
+                        completed = false
+                    }
+                }
+                this.updateScriptCreateTaskProgress(item, currentCount)
+                return { ok: true, completed, remainingCount }
+            } catch (err) {
+                return {
+                    ok: false,
+                    errMsg: this.getCopyError(null, err) || '查询剧本数量异常'
+                }
+            }
+        },
+
+        markScriptCreateRequestAccepted(item) {
+            item.createRequestAccepted = true
+        },
+
+        markScriptCreateTaskPaused(item) {
+            item.createStatus = 'paused'
+            item.createStatusText = '已暂停'
+        },
+
+        updateScriptCreateTaskProgress(item, currentCount) {
+            item.createProgressCurrent = currentCount
+        },
+
+        failScriptCreateTask(item, failureStage, errMsg) {
+            item.createStatus = 'failed'
+            item.createStatusText = '创建失败'
+            item.createFailureStage = failureStage
+            item.createError = errMsg
+            this.scriptCreateState = scriptCreateStateError
+            this.clearScriptCreatePollTimer()
+        },
+
+        completeScriptCreateTask(item) {
+            item.createStatus = 'completed'
+            item.createStatusText = '已完成'
+            item.createError = ''
+            item.createFailureStage = ''
+            item.task.scriptFlowReadyComplete = false
+            this.markCopiedChangeTasks([item.task])
+            this.readyPublishTasks = this.removeOverlappedPublishTasks(this.readyPublishTasks, [item.task])
+            this.scriptPublishTasks = this.mergePublishTasks(this.scriptPublishTasks, [item.task])
+            this.persistCopyFlowState()
+        },
+
         async handleOneKeyReady() {
             if (!this.ensurePlanOperationSelection()) return
-            const tasks = this.buildSelectedPlanTasks()
+            const tasks = this.buildPlanOperationTasks()
             if (tasks.length === 0) {
                 return this.$message.warning('暂无可就绪的方案配置')
             }
-            if (!(await this.ensureNoPublishedTasks('剧本就绪', tasks))) {
+            if (!(await this.ensureNoFormalPublishedTasks('剧本就绪', tasks))) {
                 return
             }
             const copyConflictTasks = this.getCopyPublishConflictsForPlanOperation(tasks)
@@ -2063,16 +3061,14 @@ export default {
             this.readyLoading = true
             const failList = []
             try {
-                const readyTasks = await this.collectPlanReadyPreviewTasks(tasks, failList)
-                if (failList.length > 0) {
-                    this.showPlanOperationResult('剧本就绪检查', 0, failList)
-                    return
-                }
-                if (readyTasks.length === 0) {
+                const result = await this.collectPlanReadyPreviewTasks(tasks, failList)
+                if (result.readyTasks.length === 0 && result.failedTasks.length === 0) {
                     return this.$message.warning('没有符合就绪条件的方案版本')
                 }
 
-                this.readyPreviewTasks = readyTasks
+                this.readyPreviewTasks = result.readyTasks
+                this.readyFailedPreviewTasks = result.failedTasks
+                this.readyPreviewMode = 'check'
                 this.readyPreviewDialogVisible = true
             } finally {
                 this.readyLoading = false
@@ -2081,16 +3077,26 @@ export default {
 
         async collectPlanReadyPreviewTasks(tasks, failList) {
             const readyTasks = []
+            const failedTasks = []
             for (const task of tasks) {
-                if (!(await this.shouldHandlePlanTask(task, failList))) {
+                const taskFailList = []
+                if (!(await this.shouldHandlePlanTask(task, taskFailList))) {
+                    if (taskFailList.length > 0) {
+                        failList.push(...taskFailList)
+                        failedTasks.push(...this.buildPlanReadyFailureTasks(task, taskFailList))
+                    }
                     continue
                 }
-                const planData = await this.loadPlanCustomizeData(task, failList)
+                const planData = await this.loadPlanCustomizeData(task, taskFailList)
                 if (!planData) {
+                    failList.push(...taskFailList)
+                    failedTasks.push(...this.buildPlanReadyFailureTasks(task, taskFailList))
                     continue
                 }
-                const betList = await this.loadPlanScriptBets(task, failList)
+                const betList = await this.loadPlanScriptBets(task, taskFailList)
                 if (!betList || betList.length === 0) {
+                    failList.push(...taskFailList)
+                    failedTasks.push(...this.buildPlanReadyFailureTasks(task, taskFailList, '下注额配置为空'))
                     continue
                 }
 
@@ -2105,10 +3111,19 @@ export default {
                     const checkResult = await this.checkPlanVersionScripts(task, plan, latestVersion, betList)
                     if (checkResult.ok) {
                         readyTasks.push(this.buildPlanReadyPreviewTask(task, planData, plan, latestVersion, betList))
+                    } else {
+                        failedTasks.push(this.buildPlanReadyFailurePreviewTask(
+                            task,
+                            plan,
+                            latestVersion,
+                            betList,
+                            checkResult.errMsg,
+                            checkResult.betCountText
+                        ))
                     }
                 }
             }
-            return readyTasks
+            return { readyTasks, failedTasks }
         },
 
         async shouldHandlePlanTask(task, failList) {
@@ -2149,8 +3164,75 @@ export default {
                 planVersion: version.Version,
                 versionComment: version.Comment || '',
                 scriptNumber: scriptCfg.ScriptNumber,
+                betList,
                 betListText: betList.join('，')
             }
+        },
+
+        buildPlanReadyFailurePreviewTask(task, plan, version, betList, errMsg, scriptCountText = '') {
+            const scriptCfg = version && version.ScriptCfg ? version.ScriptCfg : {}
+            return {
+                appId: task.appId,
+                gameName: task.gameName || this.getGameLabel(task.gameId),
+                subKey: task.subKey,
+                planId: plan ? plan.PlanId : '-',
+                planName: plan ? (plan.PlanName || '') : '-',
+                planVersion: version ? version.Version : '-',
+                scriptNumber: version ? scriptCfg.ScriptNumber : '-',
+                scriptCountText: scriptCountText || '-',
+                betListText: betList && betList.length > 0 ? betList.join('，') : '-',
+                reason: this.getReadyFailureReason(errMsg)
+            }
+        },
+
+        buildPlanReadyFailureTasks(task, failList, fallbackReason = '剧本就绪失败') {
+            const errors = failList.length > 0 ? failList : [{ errMsg: fallbackReason }]
+            return errors.map(item => this.buildPlanReadyFailurePreviewTask(
+                item.task || task,
+                null,
+                null,
+                [],
+                item.errMsg || fallbackReason
+            ))
+        },
+
+        getReadyFailureReason(errMsg) {
+            const msg = String(errMsg || '')
+            if (/剧本数量不足/.test(msg)) {
+                return '剧本数量不足'
+            }
+            if (/查询下注额|查询剧本/.test(msg)) {
+                return '查询剧本失败'
+            }
+            if (/保存方案就绪状态失败/.test(msg)) {
+                return '保存就绪失败'
+            }
+            if (/下注额配置为空|基础配置下注列表为空/.test(msg)) {
+                return '下注额配置为空'
+            }
+            if (/方案配置数据格式错误/.test(msg)) {
+                return '方案配置格式错误'
+            }
+            if (/读取已发布方案配置|读取方案配置/.test(msg)) {
+                return '方案配置读取失败'
+            }
+            if (/目标方案配置不存在|源方案配置不存在|方案配置不存在/.test(msg)) {
+                return '方案配置不存在'
+            }
+            if (/基础配置不存在|未找到游戏基础配置Key/.test(msg)) {
+                return '基础配置不存在'
+            }
+            if (/附属/.test(msg)) {
+                return '附属配置检查失败'
+            }
+            return '剧本就绪失败'
+        },
+
+        closeReadyPreviewDialog() {
+            this.readyPreviewDialogVisible = false
+            this.readyPreviewTasks = []
+            this.readyFailedPreviewTasks = []
+            this.readyPreviewMode = 'check'
         },
 
         async confirmReadyTasks() {
@@ -2159,18 +3241,18 @@ export default {
                 return this.$message.warning('暂无可就绪方案')
             }
             const tasks = this.readyPreviewTasks.map(item => item.task)
-            if (!(await this.ensureNoPublishedTasks('剧本就绪', tasks))) {
+            if (!(await this.ensureNoFormalPublishedTasks('剧本就绪', tasks))) {
                 return
             }
 
             this.readyLoading = true
             const failList = []
-            let readyCount = 0
+            const checkedFailedTasks = this.readyFailedPreviewTasks.slice()
+            const checkedReadyTasks = this.readyPreviewTasks.slice()
             try {
                 const planDataMap = new Map()
                 for (const item of this.readyPreviewTasks) {
                     item.version.IsReady = true
-                    readyCount++
                     const key = `${item.task.appId}_${item.task.subKey}`
                     if (!planDataMap.has(key)) {
                         planDataMap.set(key, {
@@ -2193,22 +3275,58 @@ export default {
                     }
                     item.task.planRecord = response.Data || item.planData.record
                     item.task.planConfigData = this.cloneData(item.planData.data)
+                    const enabledPlans = (item.planData.data.Plans || []).filter(plan => !this.isPlanDisabled(plan))
+                    item.task.scriptFlowReadyComplete = enabledPlans.every(plan => {
+                        return this.isPlanVersionReady(this.getLatestPlanVersion(plan))
+                    })
                     publishTasks.push(item.task)
                 }
 
                 if (publishTasks.length > 0) {
                     this.markCopiedChangeTasks(publishTasks)
                     this.copyPublishTasks = this.removeOverlappedPublishTasks(this.copyPublishTasks, publishTasks)
-                    this.scriptPublishTasks = this.removeOverlappedPublishTasks(this.scriptPublishTasks, publishTasks)
+                    const readyCompleteTasks = publishTasks.filter(task => task.scriptFlowReadyComplete === true)
+                    this.scriptPublishTasks = this.removeOverlappedPublishTasks(this.scriptPublishTasks, readyCompleteTasks)
                     this.readyPublishTasks = this.mergePublishTasks(this.readyPublishTasks, publishTasks)
                     this.persistCopyFlowState()
                 }
 
-                if (failList.length === 0) {
-                    this.readyPreviewDialogVisible = false
-                    this.readyPreviewTasks = []
+                const publishTaskKeySet = new Set(publishTasks.map(task => `${task.appId}_${task.subKey}`))
+                const successTasks = checkedReadyTasks.filter(item => {
+                    return publishTaskKeySet.has(`${item.task.appId}_${item.task.subKey}`)
+                })
+                const saveFailedTasks = []
+                for (const item of failList) {
+                    const failedPlanTasks = checkedReadyTasks.filter(readyItem => {
+                        return `${readyItem.task.appId}_${readyItem.task.subKey}` === `${item.task.appId}_${item.task.subKey}`
+                    })
+                    if (failedPlanTasks.length === 0) {
+                        saveFailedTasks.push(this.buildPlanReadyFailurePreviewTask(
+                            item.task,
+                            null,
+                            null,
+                            [],
+                            '保存方案就绪状态失败'
+                        ))
+                        continue
+                    }
+                    saveFailedTasks.push(...failedPlanTasks.map(readyItem => this.buildPlanReadyFailurePreviewTask(
+                        readyItem.task,
+                        readyItem.plan,
+                        readyItem.version,
+                        readyItem.betList,
+                        '保存方案就绪状态失败'
+                    )))
                 }
-                this.showPlanOperationResult('剧本就绪', readyCount, failList)
+                this.readyPreviewTasks = successTasks
+                this.readyFailedPreviewTasks = checkedFailedTasks.concat(saveFailedTasks)
+                this.readyPreviewMode = 'result'
+                this.readyPreviewDialogVisible = true
+                if (this.readyFailedPreviewTasks.length > 0) {
+                    this.$message.warning(`剧本就绪完成，成功 ${successTasks.length} 个方案，未就绪 ${this.readyFailedPreviewTasks.length} 个方案`)
+                } else {
+                    this.$message.success(`剧本就绪完成，成功 ${successTasks.length} 个方案`)
+                }
             } finally {
                 this.readyLoading = false
             }
@@ -2408,20 +3526,36 @@ export default {
             })
         },
 
+        async loadPlanVersionScriptCountMap(task, plan, version, betList) {
+            const response = await this.requestPlanVersionScripts(task, plan, version)
+            if (!response || response.RetCode !== 0) {
+                return null
+            }
+
+            let data = Object.assign({}, response.Data || {})
+            const missingBets = betList.filter(bet => data[String(bet)] === undefined)
+            for (const bet of missingBets) {
+                const betResponse = await this.requestPlanVersionScripts(task, plan, version, bet)
+                if (!betResponse || betResponse.RetCode !== 0) {
+                    return null
+                }
+                data = Object.assign(data, betResponse.Data || {})
+            }
+            return data
+        },
+
         async checkPlanVersionScripts(task, plan, version, betList) {
             const scriptNumber = Number(version.ScriptCfg && version.ScriptCfg.ScriptNumber) || 0
             try {
+                const data = await this.loadPlanVersionScriptCountMap(task, plan, version, betList)
+                if (!data) {
+                    return {
+                        ok: false,
+                        errMsg: '查询剧本失败'
+                    }
+                }
                 const notEnoughBets = []
                 for (const bet of betList) {
-                    const betResponse = await this.requestPlanVersionScripts(task, plan, version, bet)
-                    if (!betResponse || betResponse.RetCode !== 0) {
-                        return {
-                            ok: false,
-                            errMsg: `查询下注额 ${bet} 剧本失败:${this.getCopyError(betResponse) || ''}`
-                        }
-                    }
-
-                    const data = betResponse.Data || {}
                     const count = Number(data[String(bet)] || 0)
                     if (count < scriptNumber) {
                         notEnoughBets.push(`${bet}:${count}/${scriptNumber}`)
@@ -2431,7 +3565,8 @@ export default {
                 if (notEnoughBets.length > 0) {
                     return {
                         ok: false,
-                        errMsg: `剧本数量不足 ${notEnoughBets.join('，')}`
+                        errMsg: '剧本数量不足',
+                        betCountText: notEnoughBets.join('，')
                     }
                 }
 
@@ -2444,8 +3579,15 @@ export default {
             }
         },
 
-        showPlanOperationResult(title, successCount, failList) {
+        showPlanOperationResult(title, successCount, failList, pendingMessage = '') {
             if (failList.length === 0) {
+                if (pendingMessage) {
+                    this.$message.warning({
+                        message: pendingMessage,
+                        duration: successCount > 5 ? 8000 : 5000
+                    })
+                    return
+                }
                 this.$message.success(`${title}完成，成功 ${successCount} 个版本`)
                 return
             }
@@ -2458,6 +3600,9 @@ export default {
                 messages.push(this.formatPlanPublishMissingGroupMessage(publishMissingItems, operationName))
             }
             messages.push(...otherFailItems.map(item => this.formatPlanOperationFailMessage(item, operationName)))
+            if (pendingMessage) {
+                messages.push(pendingMessage)
+            }
             const msg = messages.join('\n')
 
             this.$alert(msg, `${title}部分失败`, {
@@ -2489,6 +3634,315 @@ export default {
             return `以下 ${items.length} 个方案配置尚未发布到${envName}，无法${operationName}。处理方式:请先点击【发布】，将这些复制配置${actionName}后再执行【${operationName}】：\n${rows.join('\n')}`
         },
 
+        inspectPlanDefault(task, result) {
+            if (result.errMsg) {
+                return { allowed: false, reason: '方案配置读取失败' }
+            }
+            if (!result.record || !result.record.Data) {
+                return { allowed: false, reason: '方案配置不存在' }
+            }
+            const planConfig = this.parseJson(result.record.Data, null)
+            if (!planConfig || !Array.isArray(planConfig.Plans)) {
+                return { allowed: false, reason: '方案配置格式错误' }
+            }
+            if (!planConfig.Plans.some(plan => this.isDefaultPlan(plan))) {
+                return { allowed: false, reason: '缺少默认方案' }
+            }
+            return { allowed: true, reason: '' }
+        },
+
+        setPlanDefaultPublishBlocked(task, reason) {
+            Object.assign(task, {
+                publishBlocked: true,
+                publishBlockMsg: reason,
+                diffStatus: '不可发布',
+                configDesc: reason
+            })
+        },
+
+        async applyPlanDefaultPublishGuard(tasks) {
+            const blockedTasks = []
+            const appRecordMap = new Map()
+            for (const task of tasks) {
+                if (task.keyStr !== 'slot_plan') {
+                    continue
+                }
+                const appKey = String(task.appId)
+                if (!appRecordMap.has(appKey)) {
+                    try {
+                        const response = await getAllCustomizes(store.getters.env, task.appId)
+                        appRecordMap.set(appKey, response.RetCode === 0
+                            ? { records: Array.isArray(response.Data) ? response.Data : [] }
+                            : { errMsg: this.getCopyError(response) || `读取App配置列表失败:${task.appId}` })
+                    } catch (error) {
+                        appRecordMap.set(appKey, {
+                            errMsg: this.getCopyError(null, error) || `读取App配置列表异常:${task.appId}`
+                        })
+                    }
+                }
+                const appResult = appRecordMap.get(appKey)
+                const result = this.inspectPlanDefault(task, {
+                    errMsg: appResult.errMsg,
+                    record: appResult.records ? (appResult.records.find(item => item.RedisSubkey === task.subKey) || null) : null
+                })
+                if (!result.allowed) {
+                    this.setPlanDefaultPublishBlocked(task, result.reason)
+                    blockedTasks.push(task)
+                }
+            }
+            return blockedTasks
+        },
+
+        getScriptFlowTaskKey(task) {
+            return `${task.appId}_${task.subKey}`
+        },
+
+        isPlanVersionReady(version) {
+            return Boolean(version) && (version.IsReady === true || Number(version.IsReady) === 1)
+        },
+
+        buildPlanPublishGuardTasks(sourceTasks) {
+            if (!sourceTasks.some(task => task.publishStage === publishStagePlanConfig)) {
+                return sourceTasks
+            }
+            const pendingTasks = this.scriptPublishTasks.map(task => Object.assign({}, task, {
+                publishStage: publishStagePlanConfig,
+                planPublishGuardOnly: true
+            }))
+            return this.mergePublishTasks(pendingTasks, sourceTasks)
+        },
+
+        buildPlanPublishGuardRow(task, plan, version, reason) {
+            return {
+                appId: task.appId,
+                gameName: task.gameName || this.getGameLabel(task.gameId),
+                subKey: task.subKey,
+                planId: plan ? plan.PlanId : '-',
+                planName: plan ? (plan.PlanName || '') : '-',
+                planVersion: version ? version.Version : '-',
+                reason
+            }
+        },
+
+        async inspectPlanPublishReadiness(sourceTasks) {
+            const allowedTasks = []
+            const allowedPlanTasks = []
+            const blockedTasks = []
+            const blockedRows = []
+            for (const task of sourceTasks) {
+                if (task.publishStage !== publishStagePlanConfig) {
+                    allowedTasks.push(task)
+                    continue
+                }
+
+                const result = await this.getCustomizeRecordFromAll(task.subKey, task.appId)
+                const taskBlockedRows = []
+                if (result.errMsg) {
+                    taskBlockedRows.push(this.buildPlanPublishGuardRow(task, null, null, '方案配置读取失败'))
+                } else if (!result.record || !result.record.Data) {
+                    taskBlockedRows.push(this.buildPlanPublishGuardRow(task, null, null, '方案配置不存在'))
+                } else {
+                    const planConfig = this.parseJson(result.record.Data, null)
+                    if (!planConfig || !Array.isArray(planConfig.Plans)) {
+                        taskBlockedRows.push(this.buildPlanPublishGuardRow(task, null, null, '方案配置格式错误'))
+                    } else {
+                        const enabledPlans = planConfig.Plans.filter(plan => !this.isPlanDisabled(plan))
+                        for (const plan of enabledPlans) {
+                            const latestVersion = this.getLatestPlanVersion(plan)
+                            if (!latestVersion) {
+                                taskBlockedRows.push(this.buildPlanPublishGuardRow(task, plan, null, '方案缺少版本'))
+                            } else if (!this.isPlanVersionReady(latestVersion)) {
+                                taskBlockedRows.push(this.buildPlanPublishGuardRow(task, plan, latestVersion, '剧本未就绪'))
+                            }
+                        }
+                    }
+                }
+
+                if (taskBlockedRows.length > 0) {
+                    blockedTasks.push(task)
+                    blockedRows.push(...taskBlockedRows)
+                    continue
+                }
+                if (!task.planPublishGuardOnly) {
+                    const allowedTask = Object.assign({}, task, { guardStatus: '可以发布' })
+                    allowedTasks.push(allowedTask)
+                    allowedPlanTasks.push(allowedTask)
+                }
+            }
+            return { allowedTasks, allowedPlanTasks, blockedTasks, blockedRows }
+        },
+
+        applyPlanPublishGuardResult(result) {
+            if (!result || result.blockedTasks.length === 0) {
+                return
+            }
+            const blockedTasks = result.blockedTasks.map(task => {
+                const stateTask = this.readyPublishTasks.concat(this.scriptPublishTasks).find(item => {
+                    return this.getScriptFlowTaskKey(item) === this.getScriptFlowTaskKey(task)
+                }) || task
+                return Object.assign({}, stateTask, { scriptFlowReadyComplete: false })
+            })
+            this.readyPublishTasks = this.removeOverlappedPublishTasks(this.readyPublishTasks, blockedTasks)
+            this.scriptPublishTasks = this.mergePublishTasks(this.scriptPublishTasks, blockedTasks)
+            this.persistCopyFlowState()
+        },
+
+        showPlanPublishGuardResult(result) {
+            this.planPublishGuardBlockedRows = result.blockedRows
+            this.planPublishGuardAllowedTasks = result.allowedPlanTasks
+            this.planPublishGuardDialogVisible = true
+        },
+
+        markScriptFlowPublishedTasks(tasks) {
+            const taskKeySet = new Set(tasks.map(task => this.getScriptFlowTaskKey(task)))
+            for (const task of this.copyPublishTasks) {
+                if (taskKeySet.has(this.getScriptFlowTaskKey(task))) {
+                    this.$set(task, 'scriptFlowPublished', true)
+                }
+            }
+        },
+
+        async prepareScriptFlowGuide(successTasks) {
+            if (this.activePublishStage !== publishStageCopyConfig) {
+                return
+            }
+            const readInfo = this.getPlanPublishedReadInfo()
+            const planTasks = this.mergePublishTasks([], successTasks.filter(task => {
+                return task.keyStr === 'slot_plan' && task.publishOpType === readInfo.opType
+            }))
+            if (planTasks.length === 0) {
+                return
+            }
+
+            this.markScriptFlowPublishedTasks(planTasks)
+            const needCreateTasks = []
+            const noUsableTasks = []
+            const checkFailTasks = []
+            for (const task of planTasks) {
+                const failList = []
+                const planData = await this.loadPublishedPlanCustomizeData(task, failList)
+                if (!planData) {
+                    const failItem = failList[0] || {}
+                    checkFailTasks.push({
+                        appId: task.appId,
+                        gameName: task.gameName || this.getGameLabel(task.gameId),
+                        subKey: task.subKey,
+                        reason: this.getReadyFailureReason(failItem.errMsg || '读取方案配置失败')
+                    })
+                    continue
+                }
+
+                const plans = Array.isArray(planData.data.Plans) ? planData.data.Plans : []
+                if (plans.length === 0) {
+                    checkFailTasks.push({
+                        appId: task.appId,
+                        gameName: task.gameName || this.getGameLabel(task.gameId),
+                        subKey: task.subKey,
+                        reason: '方案配置为空'
+                    })
+                    continue
+                }
+                const enabledPlans = plans.filter(plan => !this.isPlanDisabled(plan))
+                if (enabledPlans.length === 0) {
+                    noUsableTasks.push({
+                        task: this.cloneData(task),
+                        appId: task.appId,
+                        gameName: task.gameName || this.getGameLabel(task.gameId),
+                        subKey: task.subKey,
+                        reason: '方案均已禁用'
+                    })
+                    continue
+                }
+
+                const latestVersions = enabledPlans.map(plan => this.getLatestPlanVersion(plan))
+                if (latestVersions.some(version => !version)) {
+                    checkFailTasks.push({
+                        appId: task.appId,
+                        gameName: task.gameName || this.getGameLabel(task.gameId),
+                        subKey: task.subKey,
+                        reason: '可用方案缺少版本'
+                    })
+                    continue
+                }
+                const pendingVersions = latestVersions.filter(version => !this.isPlanVersionReady(version))
+                if (pendingVersions.length > 0) {
+                    needCreateTasks.push({
+                        task: this.cloneData(task),
+                        appId: task.appId,
+                        gameName: task.gameName || this.getGameLabel(task.gameId),
+                        subKey: task.subKey,
+                        enabledPlanCount: enabledPlans.length,
+                        pendingVersionCount: pendingVersions.length
+                    })
+                }
+            }
+
+            this.scriptFlowNeedCreateTasks = needCreateTasks
+            this.scriptFlowNoUsableTasks = noUsableTasks
+            this.scriptFlowCheckFailTasks = checkFailTasks
+            this.scriptFlowGuidePending = needCreateTasks.length > 0 || noUsableTasks.length > 0 || checkFailTasks.length > 0
+            if (needCreateTasks.length > 0) {
+                this.scriptFlowLockedTasks = this.mergePublishTasks(
+                    this.scriptFlowLockedTasks,
+                    needCreateTasks.map(item => item.task)
+                )
+            }
+        },
+
+        handlePublishResultClosed() {
+            if (!this.scriptFlowGuidePending) {
+                return
+            }
+            this.$nextTick(() => {
+                this.scriptFlowGuideDialogVisible = true
+            })
+        },
+
+        confirmScriptFlowGuide() {
+            this.scriptFlowGuideDialogVisible = false
+            this.scriptFlowGuidePending = false
+            let shouldOpenScriptCreateDialog = false
+            if (this.scriptFlowLocked) {
+                const appIds = this.scriptFlowLockedTasks.map(task => task.appId)
+                const gameIds = this.scriptFlowLockedTasks.map(task => this.getBaseGameId(task.gameId))
+                this.targetAppIds = this.getValidOptionValues(appIds, this.filteredTargetAppOptions, 'value')
+                this.selectedGameIds = this.getValidOptionValues(gameIds, this.gameOptions, 'key')
+                if (!this.configTypes.includes('slot_plan')) {
+                    this.configTypes.push('slot_plan')
+                }
+                this.updateCheckAllGames()
+                shouldOpenScriptCreateDialog = this.scriptFlowNeedCreateTasks.length > 0
+            }
+            this.persistCopyFlowState()
+            if (shouldOpenScriptCreateDialog) {
+                this.$nextTick(() => {
+                    this.handleOneKeyCreateScripts()
+                })
+            }
+        },
+
+        async releaseCompletedScriptFlowLocks(publishedTasks) {
+            if (!this.scriptFlowLocked || publishedTasks.length === 0) {
+                return
+            }
+            const publishedTaskKeySet = new Set(publishedTasks.map(task => this.getScriptFlowTaskKey(task)))
+            const retainedTasks = []
+            let releasedCount = 0
+            for (const task of this.scriptFlowLockedTasks) {
+                if (publishedTaskKeySet.has(this.getScriptFlowTaskKey(task))) {
+                    releasedCount++
+                    continue
+                }
+                retainedTasks.push(task)
+            }
+            this.scriptFlowLockedTasks = retainedTasks
+            if (releasedCount > 0 && retainedTasks.length === 0) {
+                this.$message.success('创建剧本和剧本就绪流程已完成，可以继续执行复制')
+            } else if (releasedCount > 0) {
+                this.$message.warning(`已完成 ${releasedCount} 个方案配置，仍有 ${retainedTasks.length} 个方案配置未完成，复制继续保持禁用`)
+            }
+        },
+
         async handleOneKeyPublish() {
             if (!this.ensureV2Version()) return
             if (this.scriptLoading || this.readyLoading) {
@@ -2509,7 +3963,19 @@ export default {
             }
             this.publishLoading = true
             try {
+                let planGuardResult = null
+                if (sourceTasks.some(task => task.publishStage === publishStagePlanConfig)) {
+                    const guardTasks = this.buildPlanPublishGuardTasks(sourceTasks)
+                    planGuardResult = await this.inspectPlanPublishReadiness(guardTasks)
+                    this.applyPlanPublishGuardResult(planGuardResult)
+                    sourceTasks = planGuardResult.allowedTasks
+                    if (sourceTasks.length === 0) {
+                        this.showPlanPublishGuardResult(planGuardResult)
+                        return
+                    }
+                }
                 const tasks = this.cloneData(sourceTasks)
+                await this.applyPlanDefaultPublishGuard(tasks)
 
                 for (const task of tasks) {
                     task.publishTaskId = `${task.publishStage}_${task.appId}_${task.subKey}`
@@ -2556,6 +4022,9 @@ export default {
                 this.ensureActivePublishStep()
                 this.publishDialogVisible = true
                 this.refreshPublishSelection()
+                if (planGuardResult && planGuardResult.blockedRows.length > 0) {
+                    this.$nextTick(() => this.showPlanPublishGuardResult(planGuardResult))
+                }
             } finally {
                 this.publishLoading = false
             }
@@ -2632,7 +4101,10 @@ export default {
         },
 
         getAllPendingPublishTasks() {
-            const copyTasks = this.copyPublishTasks.map(task => Object.assign({}, task, {
+            const lockedTaskKeySet = new Set(this.scriptFlowLockedTasks.map(task => this.getScriptFlowTaskKey(task)))
+            const copyTasks = this.copyPublishTasks.filter(task => {
+                return !lockedTaskKeySet.has(this.getScriptFlowTaskKey(task))
+            }).map(task => Object.assign({}, task, {
                 publishStage: publishStageCopyConfig
             }))
             return copyTasks.concat(this.buildPlanConfigPublishTasks())
@@ -2640,14 +4112,10 @@ export default {
 
         buildPlanConfigPublishTasks() {
             const taskMap = new Map()
-            for (const task of this.scriptPublishTasks) {
-                taskMap.set(`${task.appId}_${task.subKey}`, Object.assign({}, task, {
-                    publishStage: publishStagePlanConfig,
-                    configDesc: task.configDesc || '创建剧本',
-                    planPublishSource: '创建剧本'
-                }))
-            }
             for (const task of this.readyPublishTasks) {
+                if (task.scriptFlowReadyComplete !== true) {
+                    continue
+                }
                 taskMap.set(`${task.appId}_${task.subKey}`, Object.assign({}, task, {
                     publishStage: publishStagePlanConfig,
                     configDesc: task.configDesc || '剧本就绪',
@@ -2864,35 +4332,29 @@ export default {
 
         buildObjectDiffRows(oldValue, newValue, prefix = '') {
             const rows = []
-            const oldObj = oldValue || {}
-            const newObj = newValue || {}
-            if (!this.isPlainObject(oldObj) || !this.isPlainObject(newObj)) {
-                if (JSON.stringify(oldObj) !== JSON.stringify(newObj)) {
-                    rows.push({
-                        key: prefix || '-',
-                        oldVal: oldObj,
-                        newVal: newObj
-                    })
+            if (this.isPlainObject(oldValue) && this.isPlainObject(newValue)) {
+                const keys = new Set([...Object.keys(oldValue), ...Object.keys(newValue)])
+                keys.forEach(key => {
+                    const path = prefix ? `${prefix}.${key}` : key
+                    rows.push(...this.buildObjectDiffRows(oldValue[key], newValue[key], path))
+                })
+                return rows
+            }
+            if (Array.isArray(oldValue) && Array.isArray(newValue)) {
+                const length = Math.max(oldValue.length, newValue.length)
+                for (let index = 0; index < length; index++) {
+                    const path = prefix ? `${prefix}.${index + 1}` : String(index + 1)
+                    rows.push(...this.buildObjectDiffRows(oldValue[index], newValue[index], path))
                 }
                 return rows
             }
-            const keys = new Set([...Object.keys(oldObj), ...Object.keys(newObj)])
-            keys.forEach(key => {
-                const oldVal = oldObj[key]
-                const newVal = newObj[key]
-                const path = prefix ? `${prefix}.${key}` : key
-                if (this.isPlainObject(oldVal) && this.isPlainObject(newVal)) {
-                    rows.push(...this.buildObjectDiffRows(oldVal, newVal, path))
-                    return
-                }
-                if (JSON.stringify(oldVal) !== JSON.stringify(newVal)) {
-                    rows.push({
-                        key: path,
-                        oldVal,
-                        newVal
-                    })
-                }
-            })
+            if (JSON.stringify(oldValue) !== JSON.stringify(newValue)) {
+                rows.push({
+                    key: prefix || '-',
+                    oldVal: oldValue,
+                    newVal: newValue
+                })
+            }
             return rows
         },
 
@@ -2910,6 +4372,7 @@ export default {
         },
 
         showDiffDetail(task) {
+            this.diffDetailMode = 'publish'
             this.currentDiffTask = task
             this.diffDetailVisible = true
         },
@@ -2937,6 +4400,37 @@ export default {
             }).catch(e => {
                 console.log('getLarkPage err', e)
             })
+        },
+
+        async setLarkPage(enabled) {
+            const routeName = this.$route.name
+            const previousPages = this.larkPages.slice()
+            const nextPages = previousPages.filter(item => item !== routeName)
+            if (enabled) {
+                nextPages.push(routeName)
+            }
+
+            if (!this.larkConfig || Object.keys(this.larkConfig).length === 0) {
+                this.lark = !enabled
+                return this.$message.error('Lark通知配置读取失败，请刷新页面后重试')
+            }
+
+            const nextConfig = Object.assign({}, this.larkConfig, {
+                Data: JSON.stringify(nextPages)
+            })
+            try {
+                const response = await updateCustomize(nextConfig)
+                if (response.RetCode !== 0) {
+                    throw new Error(response.RetMsg || response.Msg || 'Lark设置失败')
+                }
+                this.larkPages = nextPages
+                this.larkConfig = nextConfig
+                this.$message.success(enabled ? '添加通知成功!' : '取消通知成功!')
+            } catch (e) {
+                this.lark = !enabled
+                this.larkPages = previousPages
+                this.$message.error(e.message || 'Lark设置失败')
+            }
         },
 
         getRoutesName() {
@@ -3008,6 +4502,19 @@ export default {
             if (tasks.length === 0) {
                 return this.$message.warning('请选择要发布的配置')
             }
+            this.publishLoading = true
+            let defaultPlanBlockedTasks = []
+            try {
+                defaultPlanBlockedTasks = await this.applyPlanDefaultPublishGuard(tasks)
+            } finally {
+                this.publishLoading = false
+            }
+            if (defaultPlanBlockedTasks.length > 0) {
+                this.selectedPublishTasks = []
+                this.activePublishStep = publishStepBlocked
+                this.$nextTick(() => this.refreshPublishSelection())
+                return this.$message.warning('存在缺少默认方案或读取异常的方案配置，已停止发布')
+            }
             const opTypeNames = Array.from(new Set(tasks.map(task => task.publishOpTypeName || this.getPublishOpTypeName(task.publishOpType))))
             const hasProPublish = tasks.some(task => task.publishOpType === PUBLISH_STEPS.PUBLISH_STEP_PRO)
             const confirmMessage = hasProPublish
@@ -3026,6 +4533,21 @@ export default {
             }
             this.publishLoading = true
             try {
+                if (this.activePublishStage === publishStagePlanConfig) {
+                    const planGuardResult = await this.inspectPlanPublishReadiness(tasks)
+                    if (planGuardResult.blockedRows.length > 0) {
+                        this.applyPlanPublishGuardResult(planGuardResult)
+                        const blockedTaskKeySet = new Set(planGuardResult.blockedTasks.map(task => this.getScriptFlowTaskKey(task)))
+                        this.publishTasks = this.publishTasks.filter(task => {
+                            return !blockedTaskKeySet.has(this.getScriptFlowTaskKey(task))
+                        })
+                        this.selectedPublishTasks = []
+                        this.ensureActivePublishStep()
+                        this.refreshPublishSelection()
+                        this.showPlanPublishGuardResult(planGuardResult)
+                        return
+                    }
+                }
                 const finishedTasks = []
                 const successTasks = []
                 const failTasks = []
@@ -3054,8 +4576,12 @@ export default {
                 }
                 await this.sendPublishLark(successLarkTasks, false)
                 await this.sendPublishLark(failLarkTasks, true)
+                await this.prepareScriptFlowGuide(successLarkTasks)
                 if (finishedTasks.length > 0) {
                     this.removePendingPublishTasks(this.activePublishStage, finishedTasks)
+                    if (this.activePublishStage === publishStagePlanConfig) {
+                        await this.releaseCompletedScriptFlowLocks(finishedTasks)
+                    }
                 }
                 this.publishResultFailTasks = failTasks
                 this.publishResultSuccessTasks = successTasks
@@ -3202,7 +4728,7 @@ export default {
             if (!window.sessionStorage) {
                 return
             }
-            if (this.pendingPublishTaskCount === 0) {
+            if (this.pendingPublishTaskCount === 0 && !this.scriptFlowLocked && !this.hasPendingScriptReadyTasks) {
                 this.clearCopyFlowState()
                 return
             }
@@ -3217,7 +4743,8 @@ export default {
                 selectedGameIds: this.selectedGameIds,
                 copyPublishTasks: this.buildCopyFlowStorageTasks(this.copyPublishTasks),
                 scriptPublishTasks: this.buildCopyFlowStorageTasks(this.scriptPublishTasks),
-                readyPublishTasks: this.buildCopyFlowStorageTasks(this.readyPublishTasks)
+                readyPublishTasks: this.buildCopyFlowStorageTasks(this.readyPublishTasks),
+                scriptFlowLockedTasks: this.buildCopyFlowStorageTasks(this.scriptFlowLockedTasks)
             }
 
             try {
@@ -3246,7 +4773,7 @@ export default {
                 return
             }
 
-            const appId = this.getValidOptionValue(state.appId, this.sourceAppOptions, 'value')
+            const appId = this.getValidOptionValue(state.appId, this.appOptions, 'value')
             if (appId === undefined || appId === null) {
                 this.clearCopyFlowState()
                 return
@@ -3255,13 +4782,14 @@ export default {
             const copyPublishTasks = this.getValidCopyFlowTasks(state.copyPublishTasks || state.lastCopyTasks)
             const scriptPublishTasks = this.getValidCopyFlowTasks(state.scriptPublishTasks)
             const readyPublishTasks = this.getValidCopyFlowTasks(state.readyPublishTasks)
-            if (copyPublishTasks.length === 0 && scriptPublishTasks.length === 0 && readyPublishTasks.length === 0) {
+            const scriptFlowLockedTasks = this.getValidCopyFlowTasks(state.scriptFlowLockedTasks)
+            if (copyPublishTasks.length === 0 && scriptPublishTasks.length === 0 && readyPublishTasks.length === 0 && scriptFlowLockedTasks.length === 0) {
                 this.clearCopyFlowState()
                 return
             }
 
             this.appId = appId
-            this.targetAppIds = this.getValidOptionValues(state.targetAppIds, this.appOptions, 'value').filter(id => id !== appId)
+            this.targetAppIds = this.getValidOptionValues(state.targetAppIds, this.filteredTargetAppOptions, 'value').filter(id => id !== appId)
             this.configTypes = this.getValidConfigTypes(state.configTypes)
             this.selectedGameCfgKeys = this.getValidGameCfgKeys(state.selectedGameCfgKeys)
             this.selectedGameIds = this.getValidOptionValues(state.selectedGameIds, this.gameOptions, 'key')
@@ -3269,15 +4797,30 @@ export default {
             this.copyPublishTasks = copyPublishTasks
             this.scriptPublishTasks = scriptPublishTasks
             this.readyPublishTasks = readyPublishTasks
+            this.scriptFlowLockedTasks = scriptFlowLockedTasks
             this.activePublishStage = copyPublishTasks.length > 0
                 ? publishStageCopyConfig
                 : publishStagePlanConfig
             this.publishTasks = []
+            this.resetScriptCreateQueueState()
             this.scriptCreateTasks = []
+            this.scriptReadyPreviewTasks = []
             this.readyPreviewTasks = []
+            this.readyFailedPreviewTasks = []
+            this.readyPreviewMode = 'check'
+            this.scriptFlowNeedCreateTasks = []
+            this.scriptFlowNoUsableTasks = []
+            this.scriptFlowCheckFailTasks = []
+            this.planPublishGuardBlockedRows = []
+            this.planPublishGuardAllowedTasks = []
+            this.scriptFlowGuidePending = false
             this.publishDialogVisible = false
             this.scriptCreateDialogVisible = false
             this.readyPreviewDialogVisible = false
+            this.scriptFlowGuideDialogVisible = false
+            this.planPublishGuardDialogVisible = false
+            this.copyPreviewDialogVisible = false
+            this.resetCopyPreviewState()
         },
 
         clearCopyFlowState() {
@@ -3301,20 +4844,35 @@ export default {
                     type: 'warning'
                 }
             ).then(() => {
+                this.resetScriptCreateQueueState()
                 this.copyPublishTasks = []
                 this.scriptPublishTasks = []
                 this.readyPublishTasks = []
+                this.scriptFlowLockedTasks = []
                 this.publishTasks = []
                 this.selectedPublishTasks = []
                 this.scriptCreateTasks = []
+                this.scriptReadyPreviewTasks = []
                 this.readyPreviewTasks = []
+                this.readyFailedPreviewTasks = []
+                this.readyPreviewMode = 'check'
                 this.publishResultFailTasks = []
                 this.publishResultSuccessTasks = []
+                this.scriptFlowNeedCreateTasks = []
+                this.scriptFlowNoUsableTasks = []
+                this.scriptFlowCheckFailTasks = []
+                this.planPublishGuardBlockedRows = []
+                this.planPublishGuardAllowedTasks = []
+                this.scriptFlowGuidePending = false
                 this.currentDiffTask = null
                 this.publishDialogVisible = false
                 this.publishResultDialogVisible = false
+                this.scriptFlowGuideDialogVisible = false
+                this.planPublishGuardDialogVisible = false
                 this.scriptCreateDialogVisible = false
                 this.readyPreviewDialogVisible = false
+                this.copyPreviewDialogVisible = false
+                this.resetCopyPreviewState()
                 this.diffDetailVisible = false
                 this.activePublishStage = publishStageCopyConfig
                 this.activePublishStep = String(PUBLISH_STEPS.PUBLISH_STEP_TEST)
@@ -3340,7 +4898,9 @@ export default {
                 subKey: task.subKey,
                 publishKey: task.publishKey,
                 keyStr: task.keyStr,
-                hasCopiedChanges: task.hasCopiedChanges === true
+                hasCopiedChanges: task.hasCopiedChanges === true,
+                scriptFlowPublished: task.scriptFlowPublished === true,
+                scriptFlowReadyComplete: task.scriptFlowReadyComplete === true
             }))
         },
 
@@ -3368,7 +4928,9 @@ export default {
                     subKey: task.subKey,
                     publishKey: task.publishKey || this.getFullKey(task.subKey),
                     keyStr: task.keyStr,
-                    hasCopiedChanges: task.hasCopiedChanges === true
+                    hasCopiedChanges: task.hasCopiedChanges === true,
+                    scriptFlowPublished: task.scriptFlowPublished === true,
+                    scriptFlowReadyComplete: task.scriptFlowReadyComplete === true
                 }
             }).filter(Boolean)
         },
@@ -3494,6 +5056,9 @@ export default {
 }
 
 .title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     font-size: 18px;
     font-weight: 600;
     margin-bottom: 10px;
@@ -3524,16 +5089,108 @@ export default {
     gap: 15px;
 }
 
+.script-create-notice {
+    margin: 10px 0 0;
+    color: #f56c6c;
+    font-size: 14px;
+}
+
 .copy-publish-tip {
     margin-top: 12px;
+}
+
+.script-flow-guide-alert {
+    margin-bottom: 12px;
+}
+
+.script-ready-zero-alert {
+    margin-bottom: 10px;
+}
+
+.script-create-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+}
+
+.script-create-status-creating {
+    color: #409eff;
+}
+
+.script-create-status-completed,
+.script-create-progress-completed {
+    color: #67c23a;
+    font-weight: 600;
+}
+
+.script-create-status-failed,
+.script-create-progress-failed {
+    color: #f56c6c;
+    font-weight: 600;
+}
+
+.script-create-status-paused {
+    color: #e6a23c;
+}
+
+.script-create-status-pending,
+.script-create-progress-pending,
+.script-create-progress-paused {
+    color: #909399;
+}
+
+.script-create-progress-creating {
+    color: #409eff;
+    font-weight: 600;
 }
 
 .publish-dialog-tip {
     margin-bottom: 12px;
 }
 
-.published-check-alert {
+.formal-check-alert {
     margin-bottom: 12px;
+}
+
+.copy-preview-alert {
+    margin-bottom: 12px;
+}
+
+.copy-preview-title {
+    margin: 10px 0 8px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.copy-preview-title-diff {
+    color: #409eff;
+}
+
+.copy-preview-title-same {
+    color: #909399;
+}
+
+.copy-preview-title-fail {
+    color: #f56c6c;
+}
+
+.copy-preview-plan-alert {
+    margin-top: 12px;
+}
+
+.ready-result-title {
+    margin: 10px 0 8px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.ready-result-success {
+    color: #67c23a;
+}
+
+.ready-result-fail {
+    color: #f56c6c;
 }
 
 .publish-filter-bar {

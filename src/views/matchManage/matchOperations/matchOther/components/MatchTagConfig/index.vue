@@ -1,6 +1,6 @@
 <template>
   <div>
-
+    <!-- Pusoy页签白名单 
     <el-row>
       <el-col :span="11">
         <el-form>
@@ -33,6 +33,7 @@
         </el-form>
       </el-col>
     </el-row>
+    -->
 
     <el-row style="padding-bottom: 12px;">
       <el-button size="mini" type="success" icon="el-icon-plus" style="float: right;" @click="handleEdit()">添加配置</el-button>

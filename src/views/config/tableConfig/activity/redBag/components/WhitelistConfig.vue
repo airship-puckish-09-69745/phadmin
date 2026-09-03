@@ -3,7 +3,7 @@
     <el-row>
       <el-col>
         <el-form-item label="白名单开关">
-          <el-switch v-model="formData.isWhite" :active-value="true" :inactive-value="false"/>
+          <el-switch v-model="formData.isWhite" :active-value="true" :inactive-value="false" />
         </el-form-item>
       </el-col>
       <el-col :span="11">

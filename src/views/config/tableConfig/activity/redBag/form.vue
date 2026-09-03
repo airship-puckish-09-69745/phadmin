@@ -13,19 +13,209 @@
       <br>
       <el-tabs type="border-card">
         <el-tab-pane label="红包雨活动配置">
-          <ActivityBaseConfig
-            ref="activityBaseConfig"
-            v-model="item"
-            :is-edit="isEdit"
-          />
+          <el-row :gutter="5">
+            <el-col :span="16">
+              <el-form ref="baseConfigForm" label-width="220px">
+                <el-col>
+                  <el-form-item label="活动名称" :required="true">
+                    <el-input v-model="item.activityName" style="width: 500px;" placeholder="请输入活动名称" />
+                  </el-form-item>
+                </el-col>
+                <el-col :xs="24" :sm="12">
+                  <el-form-item label="活动开关">
+                    <el-switch v-model="item.isOpen" :active-value="true" :inactive-value="false" />
+                  </el-form-item>
+                </el-col>
+                <el-col :xs="24" :sm="12">
+                  <el-form-item label="消息推送开关">
+                    <el-switch v-model="item.isSend" :active-value="true" :inactive-value="false" />
+                    <el-tooltip class="item" effect="light" placement="right-start">
+                      <template #content>
+                        <div>控制推送红包任务进度</div>
+                      </template>
+                      <i class="el-icon-info" />
+                    </el-tooltip>
+                  </el-form-item>
+                </el-col>
+                <el-col :xs="24" :sm="12">
+                  <el-form-item label="活动开始时间">
+                    <el-date-picker
+                      v-model="item.startTime"
+                      type="datetime"
+                      placeholder="选择开始时间"
+                      value-format="timestamp"
+                      size="mini"
+                    />
+                  </el-form-item>
+                </el-col>
+                <el-col :xs="24" :sm="12">
+                  <el-form-item label="活动结束时间">
+                    <el-date-picker
+                      v-model="item.endTime"
+                      type="datetime"
+                      placeholder="选择结束时间"
+                      value-format="timestamp"
+                      size="mini"
+                    />
+                  </el-form-item>
+                </el-col>
+                <el-col :xs="24" :sm="12">
+                  <el-form-item label="每日活动开始时间">
+                    <el-date-picker
+                      v-model="item.everyDayStartTime"
+                      type="datetime"
+                      placeholder="选择结束时间"
+                      format="HH:mm"
+                      size="mini"
+                    />
+                  </el-form-item>
+                </el-col>
+                <el-col :xs="24" :sm="12">
+                  <el-form-item label="每日活动结束时间">
+                    <el-date-picker
+                      v-model="item.everyDayEndTime"
+                      type="datetime"
+                      placeholder="选择结束时间"
+                      format="HH:mm"
+                      size="mini"
+                    />
+                  </el-form-item>
+                </el-col>
+                <el-col :xs="24" :sm="12">
+                  <el-form-item label="限制红包发送金币额度" :required="true">
+                    <el-input v-model="item.limitMaxNum" style="width: 200px;" placeholder="请输入限制数量" />
+                  </el-form-item>
+                </el-col>
+                <el-col :xs="24" :sm="12">
+                  <el-form-item label="活动展示金额">
+                    <el-input v-model.number="item.showGold" style="width: 200px;" placeholder="请输入显示金额数量" />
+                  </el-form-item>
+                </el-col>
+                <el-col :xs="24" :sm="12">
+                  <el-form-item label="单日弹窗次数">
+                    <el-input v-model.number="item.showTimes" style="width: 200px;" placeholder="请输入限制数量" />
+                    <el-tooltip class="item" effect="light" placement="right-start">
+                      <template #content>
+                        <div>配置1则所有用户单日只弹出1次该弹窗，配置0则该弹窗不主动弹出，配置-1则该弹窗次数为无限</div>
+                      </template>
+                      <i class="el-icon-info" />
+                    </el-tooltip>
+                  </el-form-item>
+                </el-col>
+                <el-col v-if="env == 'test'" :xs="24" :sm="12">
+                  <el-form-item label="时间偏移(秒)">
+                    <el-input v-model="item.timeS" style="width: 200px;" placeholder="请输入限制数量" />
+                  </el-form-item>
+                </el-col>
+
+                <!-- 参与活动用户类型 -->
+                <el-col>
+                  <UserTypeUnit
+                    :key="userTypeUnitKey"
+                    v-model="item.userConfig"
+                    :enabled-user-types="[1,2,3,5]"
+                    :activity-cfg-id="Number(item.id) || 0"
+                    :custom-user-type-label="currentUserTypeLabel"
+                    :custom-user-tag-options="currentUserTagOptions"
+                    :level-tag-ids="currentLevelTagIds"
+                    :activity-id="13"
+                  />
+                </el-col>
+
+                <el-col>
+                  <el-form-item label="玩法大类型">
+                    <el-radio-group v-model="item.gameType" @change="handleGameTypeChange">
+                      <el-radio :label="1">Slot</el-radio>
+                      <el-radio :label="2">Poker</el-radio>
+                      <el-radio :label="3">Casino</el-radio>
+                    </el-radio-group>
+                  </el-form-item>
+                </el-col>
+              </el-form>
+            </el-col>
+          </el-row>
+          <el-row :gutter="5">
+            <el-form label-width="220px">
+              <el-col :span="12">
+                <el-form-item label="勾选支持的游戏" :required="true">
+                  <el-input
+                    v-model="filterText"
+                    placeholder="输入关键字进行过滤"
+                  />
+                  <el-tree
+                    ref="tree"
+                    :data="treeData"
+                    show-checkbox
+                    node-key="id"
+                    highlight-current
+                    :props="defaultProps"
+                    :filter-node-method="filterNode"
+                    @check-change="handleCheckChange"
+                  />
+                </el-form-item>
+                <el-form-item label="给选中游戏排序" :required="true">
+                  <el-button size="mini" type="primary" @click="showGamesSortDialog">
+                    排序
+                  </el-button>
+                </el-form-item>
+              </el-col>
+            </el-form>
+          </el-row>
+
+          <!-- 游戏排序弹窗 -->
+          <el-dialog
+            title="给选中游戏排序"
+            :visible.sync="gamesSortDialogVisible"
+            :close-on-click-modal="false"
+            :close-on-press-escape="false"
+            append-to-body
+          >
+            <el-table
+              :data="gamesSorted"
+              border
+              style="width: 100%"
+            >
+              <el-table-column
+                prop="gameId"
+                label="游戏Id"
+                width="200"
+              />
+              <el-table-column
+                prop="name"
+                label="游戏名称"
+                width="200"
+              />
+              <el-table-column
+                prop="orderNo"
+                label="排序编号"
+                width="200"
+              >
+                <template slot-scope="scope">
+                  <el-input-number
+                    v-model="scope.row.orderNo"
+                    :min="0"
+                    :precision="0"
+                    :step="1"
+                    :controls="false"
+                    size="mini"
+                    style="width: 100%;"
+                    @change="onOrderNoChange"
+                  />
+                </template>
+              </el-table-column>
+            </el-table>
+            <el-row style="top: 10px">
+              <el-button type="primary" @click="saveGamesSort">保存</el-button>
+            </el-row>
+          </el-dialog>
         </el-tab-pane>
 
         <el-tab-pane label="任务配置">
-          <TaskConfig v-model="item"/>
+          <TaskConfig v-model="item" />
         </el-tab-pane>
 
         <el-tab-pane label="白名单配置">
-          <WhitelistConfig v-model="item"/>
+          <WhitelistConfig v-model="item" />
         </el-tab-pane>
       </el-tabs>
 
@@ -40,19 +230,81 @@
 </template>
 
 <script>
-import {Message} from 'element-ui'
+import { Message } from 'element-ui'
 import request from '@/utils/request'
 import store from '@/store'
-import {divFields1000, mulFields1000} from '@/utils/index'
-import ActivityBaseConfig from './components/ActivityBaseConfig.vue'
+import { divFields1000, mulFields1000 } from '@/utils/index'
+import UserTypeUnit from '@/components/UserType/index.vue'
 import TaskConfig from './components/TaskConfig.vue'
 import WhitelistConfig from './components/WhitelistConfig.vue'
 
+function defaultUserConfig(defaultUserType = 2) {
+  return {
+    userTypes: [defaultUserType],
+    userFilterCondition: {
+      registerTimeRange: { min: 0, max: 0 },
+      betTimesRange: { min: 0, max: 0 },
+      userTagConfig: { tagType: 0, tagId: 0, tagValue: 0 }
+    },
+    importedFilename: ''
+  }
+}
+
+const GAME_TYPE_USER_TAG_PRESET = {
+  1: {
+    customUserTypeLabel: '',
+    levelTagIds: [],
+    customUserTagOptions: [
+      {
+        value: 5,
+        label: 'Slots用户类型',
+        children: [
+          { value: 50001, label: 'Slots新增用户' },
+          { value: 50002, label: 'Slots登录天数' },
+          { value: 50008, label: 'Slots回归用户' },
+          { value: 50005, label: '下注额度' },
+          { value: 50006, label: '日均下注额度' },
+          { value: 50003, label: '携带金额' }
+        ]
+      }
+    ]
+  },
+  2: {
+    customUserTypeLabel: 'poker 标签用户',
+    levelTagIds: [],
+    customUserTagOptions: [
+      {
+        value: 7,
+        label: 'poker用户类型',
+        children: [
+          { value: 70001, label: 'poker 新增用户' },
+          { value: 70002, label: 'poker 下注' },
+          { value: 70003, label: 'poker 额度' }
+        ]
+      }
+    ]
+  },
+  3: {
+    customUserTypeLabel: 'casino 标签用户',
+    levelTagIds: [],
+    customUserTagOptions: [
+      {
+        value: 6,
+        label: 'casino用户类型',
+        children: [
+          { value: 60001, label: 'casino 新增用户' },
+          { value: 60002, label: 'casino 下注' },
+          { value: 60003, label: 'casino 额度' }
+        ]
+      }
+    ]
+  }
+}
 export default {
   name: 'RedBagForm',
   // 注册子组件
   components: {
-    ActivityBaseConfig, // 红包雨活动基础配置组件（活动信息、时间、金额限制、游戏选择）
+    UserTypeUnit, // 参与活动用户类型选择组件
     TaskConfig, // 任务配置组件（任务列表管理、新增/编辑/删除任务、红包价值配置）
     WhitelistConfig // 白名单配置组件（AppId/SiteId白名单、A/B测试）
   },
@@ -90,7 +342,36 @@ export default {
       appId: parseInt(store.getters.appId) || -1,
       fields: [
         'showGold', 'limitMaxNum', 'rewardNum'
-      ]
+      ],
+      env: store.getters.env || '',
+      // 游戏树相关
+      filterText: '',
+      allTreeData: [],
+      treeData: [],
+      defaultProps: {
+        label: 'label',
+        children: 'children',
+        disabled: 'disabled'
+      },
+      gamesSorted: [],
+      gamesSortDialogVisible: false
+    }
+  },
+  computed: {
+    userTypeUnitKey() {
+      return `red-bag-user-type-${Number((this.item && this.item.gameType) || 1)}`
+    },
+    currentUserTypePreset() {
+      return this.getUserTypePreset(this.item && this.item.gameType)
+    },
+    currentUserTagOptions() {
+      return this.currentUserTypePreset.customUserTagOptions
+    },
+    currentUserTypeLabel() {
+      return this.currentUserTypePreset.customUserTypeLabel
+    },
+    currentLevelTagIds() {
+      return this.currentUserTypePreset.levelTagIds
     }
   },
   // 侦听属性变化，自动处理弹窗显示/隐藏和数据加载/重置
@@ -116,14 +397,117 @@ export default {
      */
     dialogVisible(val) {
       this.$emit('update:visible', val)
+    },
+    // 游戏树关键字过滤
+    filterText(val) {
+      this.$refs.tree && this.$refs.tree.filter(val)
+    },
+    // 编辑模式下，游戏ID变化时同步树的选中状态
+    'item.gameIdCfg': {
+      handler() {
+        if (this.isEdit && this.$refs.tree) {
+          this.$nextTick(() => {
+            this.$refs.tree.setCheckedKeys(this.item.gameIdCfg || [])
+            this.updateGamesSorted()
+          })
+        }
+      },
+      immediate: true
+    },
+    // 监听 item 对象引用变化（如新增/编辑切换），重置游戏选择状态
+    item(newVal, oldVal) {
+      if (newVal !== oldVal) {
+        this.ensureUserConfig()
+        this.gamesSorted = []
+        this.$nextTick(() => {
+          this.applyGameTypeFilter()
+        })
+      }
     }
   },
-  created() {
-    this.env = store.getters.env || this.env
+  mounted() {
+    this.ensureUserConfig()
+    this.getGameAll()
   },
   methods: {
+    getUserTypePreset(gameType = 1) {
+      const normalizedGameType = Number(gameType) || 1
+      return GAME_TYPE_USER_TAG_PRESET[normalizedGameType] || GAME_TYPE_USER_TAG_PRESET[1]
+    },
+    getDefaultTagByGameType(gameType = 1) {
+      const preset = this.getUserTypePreset(gameType)
+      const firstTagType = (preset.customUserTagOptions && preset.customUserTagOptions[0]) || {}
+      const firstTagChild = (firstTagType.children && firstTagType.children[0]) || {}
+      return {
+        tagType: Number(firstTagType.value) || 0,
+        tagId: Number(firstTagChild.value) || 0
+      }
+    },
+    normalizeTagConfigByGameType(userTagConfig, gameType, forceResetTag = false) {
+      const preset = this.getUserTypePreset(gameType)
+      const options = Array.isArray(preset.customUserTagOptions) ? preset.customUserTagOptions : []
+      const defaultTag = this.getDefaultTagByGameType(gameType)
+      const normalized = {
+        tagType: Number((userTagConfig || {}).tagType) || 0,
+        tagId: Number((userTagConfig || {}).tagId) || 0,
+        tagValue: Number((userTagConfig || {}).tagValue) || 0
+      }
+
+      const validTagTypes = options.map(opt => Number(opt.value)).filter(v => Number.isInteger(v))
+      if (forceResetTag || !validTagTypes.includes(normalized.tagType)) {
+        normalized.tagType = defaultTag.tagType
+      }
+
+      const currentTagType = options.find(opt => Number(opt.value) === normalized.tagType)
+      const validTagIds = currentTagType && Array.isArray(currentTagType.children)
+        ? currentTagType.children.map(child => Number(child.value)).filter(v => Number.isInteger(v))
+        : []
+      if (forceResetTag || !validTagIds.includes(normalized.tagId)) {
+        normalized.tagId = validTagIds.length > 0 ? validTagIds[0] : defaultTag.tagId
+      }
+      return normalized
+    },
+    syncUserConfigByGameType(forceResetTag = false) {
+      if (!this.item) return
+      const fallbackType = Array.isArray(this.item.userType) && this.item.userType.length > 0
+        ? Number(this.item.userType[0]) || 2
+        : 2
+      const normalizedUserConfig = this.normalizeUserConfig(this.item.userConfig, fallbackType)
+      const currentUserType = Array.isArray(normalizedUserConfig.userTypes) && normalizedUserConfig.userTypes.length > 0
+        ? Number(normalizedUserConfig.userTypes[0]) || fallbackType
+        : fallbackType
+      normalizedUserConfig.userTypes = [currentUserType]
+
+      if (currentUserType === 5) {
+        normalizedUserConfig.userFilterCondition.userTagConfig = this.normalizeTagConfigByGameType(
+          normalizedUserConfig.userFilterCondition.userTagConfig,
+          this.item.gameType,
+          forceResetTag
+        )
+      }
+
+      this.$set(this.item, 'userConfig', normalizedUserConfig)
+      this.item.userType = normalizedUserConfig.userTypes
+      this.item.userLabel = currentUserType === 5
+        ? Number(normalizedUserConfig.userFilterCondition.userTagConfig.tagId) || this.getDefaultTagByGameType(this.item.gameType).tagId
+        : null
+    },
+    // 确保 item.userConfig 已初始化，防止 UserType 渲染时 userConfig 为 undefined
+    ensureUserConfig() {
+      if (!this.item) return
+      if (!this.item.userConfig) {
+        const fallbackType = Array.isArray(this.item.userType) && this.item.userType.length > 0
+          ? Number(this.item.userType[0]) || 2
+          : 2
+        this.$set(this.item, 'userConfig', defaultUserConfig(fallbackType))
+      }
+      this.syncUserConfigByGameType(false)
+    },
     // 获取一个全新的默认表单数据对象（用于新增或重置表单）
     getDefaultItem() {
+      const userConfig = defaultUserConfig()
+      userConfig.userFilterCondition.userTagConfig.tagType = 5
+      userConfig.userFilterCondition.userTagConfig.tagId = 50001
       return {
         activityName: '',
         isOpen: true,
@@ -140,7 +524,8 @@ export default {
         rewardUseSceneId: 0,
         limitMaxNum: 0,
         timeS: 0,
-        userType: 2, // 2 所有用户
+        userType: [2], // 兼容旧数据
+        UserTypeUnitData: defaultUserConfig(),
         appId: -1,
         prizePoolCfg: [],
         gameIdCfg: [],
@@ -176,7 +561,7 @@ export default {
     getTaskCfgData(cfgData) {
       return cfgData.map(data => {
         const newData = mulFields1000(data, this.fields)
-        const result = {...data, rewardNum: newData.rewardNum}
+        const result = { ...data, rewardNum: newData.rewardNum }
         // 处理 rewardPools 中的 value1 和 value2（金额字段 * 1000），weight（权重字段 * 100）
         if (result.rewardPools && Array.isArray(result.rewardPools)) {
           result.rewardPools = result.rewardPools.map(pool => ({
@@ -191,7 +576,7 @@ export default {
     // 处理红包配置，将金额字段 * 1000，权重字段 * 100
     formatRedBagCfgForSave(cfgList) {
       return cfgList.map(item => {
-        const newItem = {...item}
+        const newItem = { ...item }
         // 处理rewardPools数组
         if (newItem.rewardPools && Array.isArray(newItem.rewardPools)) {
           newItem.rewardPools = newItem.rewardPools.map(pool => ({
@@ -208,7 +593,7 @@ export default {
     // 处理红包配置，将金额字段 / 1000，权重字段 / 100
     formatRedBagCfgForEdit(cfgList) {
       return cfgList.map(item => {
-        const newItem = {...item}
+        const newItem = { ...item }
         // 处理rewardPools数组
         if (newItem.rewardPools && Array.isArray(newItem.rewardPools)) {
           newItem.rewardPools = newItem.rewardPools.map(pool => ({
@@ -235,6 +620,58 @@ export default {
         }
       })
     },
+
+    normalizeUserConfig(userConfig, fallbackUserType = 2) {
+      const normalized = defaultUserConfig(fallbackUserType)
+      if (userConfig && typeof userConfig === 'object') {
+        const currentType = Array.isArray(userConfig.userTypes) && userConfig.userTypes.length > 0
+          ? Number(userConfig.userTypes[0]) || fallbackUserType
+          : fallbackUserType
+        normalized.userTypes = [currentType]
+        const condition = userConfig.userFilterCondition || {}
+        normalized.userFilterCondition = {
+          registerTimeRange: {
+            min: Number((condition.registerTimeRange || {}).min) || 0,
+            max: Number((condition.registerTimeRange || {}).max) || 0
+          },
+          betTimesRange: {
+            min: Number((condition.betTimesRange || {}).min) || 0,
+            max: Number((condition.betTimesRange || {}).max) || 0
+          },
+          userTagConfig: {
+            tagType: Number((condition.userTagConfig || {}).tagType) || 0,
+            tagId: Number((condition.userTagConfig || {}).tagId) || 0,
+            tagValue: Number((condition.userTagConfig || {}).tagValue) || 0
+          }
+        }
+        normalized.importedFilename = userConfig.importedFilename || ''
+      }
+      return normalized
+    },
+    buildUserConfigFromLegacy(userType, userLabel, userConfig, gameType = 1) {
+      let parsedUserType = userType
+      if (typeof userType === 'string') {
+        try {
+          parsedUserType = JSON.parse(userType || '[2]')
+        } catch (e) {
+          parsedUserType = [2]
+        }
+      }
+      const userTypes = Array.isArray(parsedUserType)
+        ? parsedUserType.map(v => Number(v)).filter(v => Number.isInteger(v))
+        : [Number(parsedUserType) || 2]
+      const fallbackType = userTypes.length > 0 ? userTypes[0] : 2
+      const normalized = this.normalizeUserConfig(userConfig, fallbackType)
+      normalized.userTypes = [fallbackType]
+      if (fallbackType === 5) {
+        const nextTagConfig = {
+          ...normalized.userFilterCondition.userTagConfig,
+          tagId: Number(userLabel) || Number((normalized.userFilterCondition.userTagConfig || {}).tagId) || 0
+        }
+        normalized.userFilterCondition.userTagConfig = this.normalizeTagConfigByGameType(nextTagConfig, gameType)
+      }
+      return normalized
+    },
     configCheck() {
       if (this.item.startTime === 0) {
         this.errmsg('请填写输入开始时间')
@@ -253,9 +690,9 @@ export default {
     handleDialogOpened() {
       this.$emit('opened')
       // 如果是编辑模式，设置已选中的游戏
-      if (this.isEdit && this.$refs.activityBaseConfig) {
+      if (this.isEdit) {
         this.$nextTick(() => {
-          this.$refs.activityBaseConfig.setCheckedGames()
+          this.setCheckedGames()
         })
       }
     },
@@ -334,6 +771,26 @@ export default {
       }
       // 5. 金额/权重等字段批量 *1000 处理
       const newItem = mulFields1000(this.item, this.fields)
+      const normalizedUserConfig = this.normalizeUserConfig(this.item.userConfig, 2)
+      const currentUserType = normalizedUserConfig.userTypes[0]
+      if (currentUserType === 5) {
+        normalizedUserConfig.userFilterCondition.userTagConfig = this.normalizeTagConfigByGameType(
+          normalizedUserConfig.userFilterCondition.userTagConfig,
+          this.item.gameType
+        )
+      }
+      const defaultTag = this.getDefaultTagByGameType(this.item.gameType)
+      const currentUserLabel = currentUserType === 5
+        ? Number(normalizedUserConfig.userFilterCondition.userTagConfig.tagId) || defaultTag.tagId
+        : null
+      if (currentUserType === 5 && !currentUserLabel) {
+        this.errmsg('请选择用户标签')
+        return
+      }
+      this.item.userConfig = normalizedUserConfig
+      this.item.userType = normalizedUserConfig.userTypes
+      this.item.userLabel = currentUserLabel
+
       // 6. 组装最终提交数据对象
       const fromData = {
         activityName: this.item.activityName, // 活动名称
@@ -350,8 +807,8 @@ export default {
         timeS: this.item.timeS ?? 0, // 时间偏移
         rewardType: this.item.rewardType, // 奖励类型
         gameType: this.item.gameType, // 玩法大类型
-        userType: this.item.userType, // 用户类型
-        userLabel: this.item.userLabel, // 用户标签
+        userType: normalizedUserConfig.userTypes, // 用户类型
+        userLabel: currentUserLabel, // 用户标签
         taskCfgData: taskCfgData, // 任务配置（JSON字符串）
         // redBagCfg: redBagCfg, // 红包价值配置（JSON字符串）
         gameIdCfg: gameIdCfg, // 游戏ID配置（JSON字符串）
@@ -408,8 +865,7 @@ export default {
         data.whiteList = safeJsonParse(data.whiteList, [])
         data.appIdList = safeJsonParse(data.appIdList, [])
         data.siteIdList = safeJsonParse(data.siteIdList, [])
-        data.abTest = safeJsonParse(data.abTest, {switch: false, bPercent: 0})
-
+        data.abTest = safeJsonParse(data.abTest, { switch: false, bPercent: 0 })
         //  对需要按千倍/百分位处理的字段做统一转换（使用工具函数）
         // divFields1000 会将指定字段除以 1000（反向处理），返回一个新对象
         const newData = divFields1000(data, this.fields)
@@ -418,7 +874,7 @@ export default {
         //  处理 taskCfgData 中 rewardNum 字段（前端期望的单位）
         if (Array.isArray(data.taskCfgData)) {
           data.taskCfgData = data.taskCfgData.map(item => {
-            const newItem = {...item}
+            const newItem = { ...item }
             // 处理 rewardNum
             if (newItem.rewardNum !== undefined && newItem.rewardNum !== null) {
               newItem.rewardNum = Number(newItem.rewardNum) / 1000
@@ -428,7 +884,7 @@ export default {
               newItem.rewardPools = newItem.rewardPools.map(pool => ({
                 ...pool,
                 value1: Number(pool.value1) / 1000,
-                value2: Number(pool.value2) / 1000,
+                value2: Number(pool.value2) / 1000
               }))
             }
             return newItem
@@ -457,12 +913,176 @@ export default {
         if (typeof data.userLabel === 'string') {
           data.userLabel = parseInt(data.userLabel, 10)
         }
+        data.userConfig = this.buildUserConfigFromLegacy(data.userType, data.userLabel, data.userConfig, data.gameType)
+        data.userType = data.userConfig.userTypes
+        data.userLabel = data.userConfig.userTypes[0] === 5
+          ? data.userConfig.userFilterCondition.userTagConfig.tagId
+          : null
         this.item = data
       }
     },
     // 重置from，防止数据残留
     resetData() {
       this.item = this.getDefaultItem()
+      this.gamesSorted = []
+      this.$nextTick(() => {
+        this.applyGameTypeFilter()
+      })
+    },
+
+    // 游戏树筛选方法
+    filterNode(value, data) {
+      if (!value) return true
+      return data.label.indexOf(value) !== -1
+    },
+    handleGameTypeChange() {
+      // 切换玩法大类型时，清除已选游戏和排序缓存
+      this.syncUserConfigByGameType(true)
+      this.item.gameIdCfg = []
+      this.gamesSorted = []
+      this.applyGameTypeFilter()
+    },
+    applyGameTypeFilter() {
+      const selectedKey = 'p-' + this.item.gameType
+      this.treeData = this.allTreeData.filter(cty => cty.id === selectedKey)
+
+      this.$nextTick(() => {
+        if (this.$refs.tree) {
+          this.$refs.tree.setCheckedKeys(this.item.gameIdCfg || [])
+        }
+        this.updateGamesSorted()
+      })
+    },
+    // 游戏树选中变化
+    handleCheckChange(data, checked) {
+      if (data.label === 'Slot' || data.label === 'Poker' || data.label === 'Casino') {
+        return
+      }
+
+      if (!this.item.gameIdCfg) {
+        this.item.gameIdCfg = []
+      }
+      const gameIdCfg = this.item.gameIdCfg
+      const index = gameIdCfg.indexOf(data.id)
+      if (checked) {
+        if (index < 0) {
+          gameIdCfg.push(data.id)
+        }
+      } else {
+        if (index >= 0) {
+          gameIdCfg.splice(index, 1)
+        }
+      }
+
+      this.item.gameIdCfg = gameIdCfg
+      this.updateGamesSorted()
+    },
+    // 更新选中游戏的排序列表
+    updateGamesSorted() {
+      const gamesSorted = []
+      const gameIdCfg = this.item.gameIdCfg || []
+      this.treeData.forEach(category => {
+        if (category.children) {
+          category.children.forEach(game => {
+            if (gameIdCfg.includes(game.id)) {
+              const existIndex = gamesSorted.findIndex(g => g.gameId === game.id)
+              if (existIndex < 0) {
+                gamesSorted.push({
+                  gameId: game.id,
+                  name: game.label,
+                  orderNo: gameIdCfg.indexOf(game.id) + 1
+                })
+              }
+            }
+          })
+        }
+      })
+      gamesSorted.sort((a, b) => a.orderNo - b.orderNo)
+      this.gamesSorted = gamesSorted
+    },
+    // 显示游戏排序弹窗
+    showGamesSortDialog() {
+      this.updateGamesSorted()
+      this.gamesSortDialogVisible = true
+    },
+    // 保存游戏排序
+    saveGamesSort() {
+      this.gamesSortDialogVisible = false
+      this.gamesSorted.sort((a, b) => a.orderNo - b.orderNo)
+      const gameIdCfg = []
+      this.gamesSorted.forEach(item => {
+        gameIdCfg.push(item.gameId)
+      })
+      this.item.gameIdCfg = gameIdCfg
+    },
+    // 排序号变化时自动排序
+    onOrderNoChange() {
+      this.gamesSorted.forEach(item => {
+        const orderNo = Number(item.orderNo)
+        item.orderNo = Number.isFinite(orderNo) && orderNo >= 0 ? Math.floor(orderNo) : 0
+      })
+      this.gamesSorted.sort((a, b) => a.orderNo - b.orderNo)
+    },
+    // 设置选中的游戏
+    setCheckedGames() {
+      if (this.$refs.tree && this.item.gameIdCfg) {
+        this.$nextTick(() => {
+          this.$refs.tree.setCheckedKeys(this.item.gameIdCfg)
+          this.updateGamesSorted()
+        })
+      }
+    },
+    // 获取游戏列表
+    getGameAll() {
+      request({
+        url: '/thirdpartygames/all',
+        method: 'get',
+        data: {},
+        params: { status: 2 }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objs = response.Data || []
+          const data = {}
+          for (let i = 0; i < objs.length; i++) {
+            const obj = objs[i]
+            if (obj.ShowDatacenter !== 1) {
+              continue
+            }
+
+            const game = { Gid: obj.Gid, Name: obj.Name, Description: obj.Description }
+            if (Object.prototype.hasOwnProperty.call(data, obj.CategoryID)) {
+              data[obj.CategoryID].push(game)
+            } else {
+              data[obj.CategoryID] = [game]
+            }
+          }
+
+          this.treeData = []
+          const categories = { 1: 'Slot', 2: 'Poker', 3: 'Casino' }
+
+          const builtTree = []
+          for (const key in data) {
+            const games = data[key]
+            const cty = { id: 'p-' + key, label: categories[key], children: [] }
+
+            for (let i = 0; i < games.length; i++) {
+              const game = games[i]
+              cty.children.push({ id: game.Gid, label: game.Name })
+            }
+            builtTree.push(cty)
+          }
+
+          this.allTreeData = builtTree
+          this.applyGameTypeFilter()
+
+          if (this.isEdit && this.$refs.tree && this.item.gameIdCfg) {
+            this.$nextTick(() => {
+              this.$refs.tree.setCheckedKeys(this.item.gameIdCfg)
+              this.updateGamesSorted()
+            })
+          }
+        }
+      })
     }
   }
 }

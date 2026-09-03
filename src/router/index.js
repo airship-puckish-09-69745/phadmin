@@ -1295,6 +1295,18 @@ export const asyncRoutes = [
                 meta: { title: 'B ountyRaid' }
               },
               {
+                path: 'talareyessouthseapearls_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/talareyessouthseapearls_slots_cfg'),
+                name: 'talareyessouthseapearls_slots_cfg',
+                meta: { title: 'T alaReyesSouthSeaPearls' }
+              },
+              {
+                path: 'lightofmactan_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/lightofmactan_slots_cfg'),
+                name: 'lightofmactan_slots_cfg',
+                meta: { title: 'L ightOfMactan' }
+              },
+              {
                 path: 'candyburst_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/candyburst_slots_cfg'),
                 name: 'candyburst_slots_cfg',
@@ -2370,6 +2382,12 @@ export const asyncRoutes = [
         component: () => import('@/views/config/tableConfig/activity/phasedBetRebate/index.vue'),
         name: 'phasedBetRebate',
         meta: { title: '阶段性反水活动配置', noCache: true }
+      },
+      {
+        path: 'newAirdrop',
+        component: () => import('@/views/config/tableConfig/activity/airdropV2/index.vue'),
+        name: 'newAirdrop',
+        meta: { title: '新空投活动配置', noCache: true }
       }
     ]
   },
@@ -2483,6 +2501,7 @@ export const asyncRoutes = [
         path: 'matchType',
         component: () => import('@/views/empty'),
         redirect: 'noRedirect',
+        hidden: process.env.NODE_ENV === 'development',
         meta: { title: '赛事管理', noCache: true },
         children: [
           {
@@ -2628,25 +2647,25 @@ export const asyncRoutes = [
             meta: { title: 'kyc配置', noCache: true }
           },
           {
-            path: 'matchTpcc',
+            path: 'matchS5',
             component: () => import('@/views/empty'),
-            name: 'matchTPCCPrize',
-            meta: { title: 'TPCC配置', noCache: true },
+            name: 'matchS5',
+            meta: { title: 'S5配置', noCache: true },
             children: [
               {
-                path: 'matchTPCCPrize',
-                component: () => import('@/views/matchManage/matchOperations/matchTpcc/matchGtccPrize.vue'),
-                name: 'matchTPCCPrize',
-                meta: { title: 'TPCC邀请函配置', noCache: true }
+                path: 's5',
+                component: () => import('@/views/matchManage/matchOperations/matchS5/s5.vue'),
+                name: 's5',
+                meta: { title: 'S5配置', noCache: true }
               },
-              {
-                path: 'matchGtccConfig',
-                component: () => import('@/views/matchManage/matchOperations/matchTpcc/matchGtccConfig.vue'),
-                name: 'matchGtccConfig',
-                meta: { title: 'TPCC赛事时间配置', noCache: true }
-              }
             ]
-          }
+          },
+          {
+            path: 'onlineObConfig',
+            component: () => import('@/views/matchManage/matchOperations/onlineOb.vue'),
+            name: 'onlineObConfig',
+            meta: { title: '线上OB', noCache: true }
+          },
 
         ]
       },
@@ -2739,6 +2758,7 @@ export const asyncRoutes = [
         path: 'itemConfig',
         component: () => import('@/views/itemManage/itemConfig'),
         name: 'itemConfig',
+        hidden: process.env.NODE_ENV === 'development',
         meta: { title: '道具列表', noCache: true }
       },
       {
@@ -3276,6 +3296,18 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'bountyraid_slots_log',
             meta: { title: 'B ountyRaid', gid: 192 }
+          },
+          {
+            path: 'talareyessouthseapearls_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'talareyessouthseapearls_slots_log',
+            meta: { title: 'T alaReyesSouthSeaPearls', gid: 246 }
+          },
+          {
+            path: 'lightofmactan_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'lightofmactan_slots_log',
+            meta: { title: 'L ightOfMactan', gid: 250 }
           },
           {
             path: 'candyburst_slots_log',
