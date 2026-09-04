@@ -4,9 +4,9 @@
       <el-col :span="24">
         <div style="background-color: #fff8e6; font-size: 18px">
           <div class="el-alert el-alert--warning is-light">
-            <i v-if="this.$store.getters.version==='V2'" class="el-alert__icon el-icon-warning is-big" style="color: #ffba00" />
-            <div  v-if="this.$store.getters.version==='V2'" class="el-alert__content">
-              <p class="el-alert__description">新版后台配置-App-{{ this.$store.getters.appId }}</p>
+            <i v-if="isCfgManageV2" class="el-alert__icon el-icon-warning is-big" style="color: #ffba00" />
+            <div v-if="isCfgManageV2" class="el-alert__content">
+              <p class="el-alert__description">新版后台配置-App-{{ appId }}</p>
             </div>
             <el-col v-if="!diffView" :span="6" style="margin-left: 20px">
               <el-button v-if="showTestBtn" type="success" size="mini" round @click="toTest">测试</el-button>
@@ -16,7 +16,7 @@
               <span v-if="processInfo !== ''" style="font-size: 14px; color: #4468fb; margin-left: 10px">{{ processInfo }}</span>
             </el-col>
             <el-col :offset="13" :span="1">
-              <el-checkbox v-model="lark" :disabled="this.env==='pro'" @change="setLarkPage" style="margin-left: 15px">
+              <el-checkbox v-model="lark" :disabled="this.env==='pro'" style="margin-left: 15px" @change="setLarkPage">
                 <span style="color: #4468fb">Lark群通知</span>
               </el-checkbox>
             </el-col>
@@ -48,7 +48,7 @@
     </el-col>
 
     <div class="compare-container">
-            <multi-app-select-dialog
+      <multi-app-select-dialog
         :visible.sync="multiAppDialogVisible"
         :app-options="appOptions"
         :checked-keys.sync="checkedAppKeys"
@@ -281,8 +281,8 @@ import { $libDate, $LibJsonDiff, $libType, ClientTableData } from '@/utils/commo
 import store from '@/store'
 import request from '@/utils/request'
 import { IsMars } from '@/utils/env'
-import { getCustomize, updateCustomize } from "@/api/custome_configV2";
-import MultiAppSelectDialog from "@/components/Publish/MultiAppSelectDialog";
+import { getCustomize, updateCustomize } from '@/api/custome_configV2'
+import MultiAppSelectDialog from '@/components/Publish/MultiAppSelectDialog'
 
 const jsonDiff = require('diff')
 
@@ -307,6 +307,10 @@ export default {
       default: parseInt(store.getters.appId)
     },
     compareType: { // 发布内容格式，支持：Array, Object, String, CustomizeConfig
+      type: String,
+      default: ''
+    },
+    cfgManageVer: { // 配置管理版本，V2 走新版本
       type: String,
       default: ''
     },
@@ -424,10 +428,10 @@ export default {
       }
     },
     showMultiTestBtn() {
-      return this.$store.getters.version === 'V2' && this.showTestBtn
+      return this.isCfgManageV2() && this.showTestBtn
     },
     showMultiProBtn() {
-      return this.$store.getters.version === 'V2' && this.showProBtn
+      return this.isCfgManageV2() && this.showProBtn
     },
     showCloseBtn() {
       return this.isPublish || this.isTestBtn
@@ -467,18 +471,6 @@ export default {
       return this.currentMultiAppResult ? (this.currentMultiAppResult.objectData || { Result: [] }) : this.ObjectData
     }
   },
-  mounted() {
-    this.env = store.getters.env || this.env
-    this.resetData()
-    this.checkProcessing()
-    if (this.$store.getters.version === 'V2') {
-      this.getAppInfos()
-    }
-    if (!IsMars()) {
-      console.log('==', IsMars)
-      this.getLarkPage()
-    }
-  },
   watch: {
     keyId: {
       handler(newVal, oldVal) {
@@ -491,12 +483,27 @@ export default {
       immediate: true
     }
   },
+  mounted() {
+    this.env = store.getters.env || this.env
+    this.resetData()
+    this.checkProcessing()
+    if (this.isCfgManageV2()) {
+      this.getAppInfos()
+    }
+    if (!IsMars()) {
+      console.log('==', IsMars)
+      this.getLarkPage()
+    }
+  },
   methods: {
     init() {
       this.addData = []
       this.delData = []
       this.editData = []
       this.compareRets = []
+    },
+    isCfgManageV2() {
+      return this.cfgManageVer === 'V2' || this.$store.getters.version === 'V2'
     },
     getAttrName(attr) {
       // console.log(attr)
@@ -710,8 +717,8 @@ export default {
       }
       return str
     },
-    getLarkPage(){
-      getCustomize('lark_page_cfg', 0).then(response => {
+    getLarkPage() {
+      getCustomize('lark_page_cfg', 0, { cfgMangeVer: this.cfgManageVer }).then(response => {
         if (response.RetCode === 0) {
           console.log('cfg', response)
           this.larkConfig = response.Data || {}
@@ -816,7 +823,7 @@ export default {
       this.opType = PUBLISH_STEPS.PUBLISH_STEP_TEST // 应该执行发布到测试的操作
       this.getDiff()
     },
-    dialogClose(isCancel=true) {
+    dialogClose(isCancel = true) {
       if (isCancel) {
         this.opType -= 1 // 取消发布，opType回退1步
       }

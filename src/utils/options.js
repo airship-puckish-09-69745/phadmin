@@ -25,12 +25,12 @@ export const CHANNEL_OPTIONS = [
 ]
 // 道具类型
 export const ITEM_TYPE_OPTIONS = [
- // { 'value': 1, 'label': 'Tongits门票', disabled: false },
+  // { 'value': 1, 'label': 'Tongits门票', disabled: false },
   { 'value': 2, 'label': '头像框', disabled: false },
- // { 'value': 3, 'label': '德州门票', disabled: false },
+  // { 'value': 3, 'label': '德州门票', disabled: false },
   { 'value': 4, 'label': '德州头像框', disabled: false },
   { 'value': 5, 'label': 'SlotFreeSpin', disabled: false },
- // { 'value': 6, 'label': 'Pusoy门票', disabled: false },
+  // { 'value': 6, 'label': 'Pusoy门票', disabled: false },
   { 'value': 7, 'label': '新版Tongits门票', disabled: false },
   { 'value': 8, 'label': '新版德州参赛券', disabled: false },
   { 'value': 9, 'label': '新版Pusoy门票', disabled: false },
@@ -102,16 +102,16 @@ export const ITEM_STATUS_OPTIONS = [
 
 // 头像框常量枚举定义
 export const PROP_TYPE_OPTIONS = {
-  PROP_TYPE_TICKET: 1,        //门票
-  PROP_TYPE_AVATAR_FRAME: 2,    //头像框
-  PROP_TYPE_TEXAS_TICKET: 3,    //德州参赛券
-  PROP_TYPE_TEXAS_AVATAR: 4,    //德州头像框
-  PROP_TYPE_SLOT_FREE_SPIN: 5,  //slot freespin
-  PROP_TYPE_PUSOY_TICKET: 6,    //Pusoy参赛券
-  PROP_TYPE_TICKET_NEW:7,      //新版Tongits门票 带交易ID
-  PROP_TYPE_TEXAS_TICKET_NEW:8, //新版德州参赛券 带交易ID
-  PROP_TYPE_PUSOY_TICKET_NEW:9, //新版Pusoy门票 带交易ID
-  PROP_TYPE_INTERACTION: 10,  //互动道具
+  PROP_TYPE_TICKET: 1, // 门票
+  PROP_TYPE_AVATAR_FRAME: 2, // 头像框
+  PROP_TYPE_TEXAS_TICKET: 3, // 德州参赛券
+  PROP_TYPE_TEXAS_AVATAR: 4, // 德州头像框
+  PROP_TYPE_SLOT_FREE_SPIN: 5, // slot freespin
+  PROP_TYPE_PUSOY_TICKET: 6, // Pusoy参赛券
+  PROP_TYPE_TICKET_NEW: 7, // 新版Tongits门票 带交易ID
+  PROP_TYPE_TEXAS_TICKET_NEW: 8, // 新版德州参赛券 带交易ID
+  PROP_TYPE_PUSOY_TICKET_NEW: 9, // 新版Pusoy门票 带交易ID
+  PROP_TYPE_INTERACTION: 10 // 互动道具
 }
 // 操作类型
 export const PROP_SOURCE_OPTIONS = [
@@ -133,7 +133,7 @@ export const PROP_SOURCE_OPTIONS = [
   { value: 17, label: '富裕卡任务' },
   { value: 18, label: '7日留存活动' },
   { value: 19, label: '万圣节活动' },
-  { value: 20, label: '复活节活动' },
+  { value: 20, label: '复活节活动' }
 ]
 
 // 奖励分类
@@ -169,7 +169,7 @@ export const MATCH_UNIQUE_ID_CFG = [
   { 'value': 10006, 'label': 'P100' },
   { 'value': 10007, 'label': 'P300' },
 
-  //以下全局ID为GTCC线上赛临时用 不长期占用
+  // 以下全局ID为GTCC线上赛临时用 不长期占用
   // { 'value': 11001, 'label': 'GTCC日赛' },
   // { 'value': 11002, 'label': 'GTCC周赛' },
   // { 'value': 11003, 'label': 'GTCC月赛' },
@@ -179,7 +179,7 @@ export const MATCH_UNIQUE_ID_CFG = [
   // { 'value': 11007, 'label': 'GTCC魔戒赛' },
   // { 'value': 11008, 'label': 'GTCC豪客赛' },
 
-  //周年庆全局ID 不长期占用
+  // 周年庆全局ID 不长期占用
   { 'value': 11105, 'label': 'Air pods pro 3' },
   { 'value': 11106, 'label': 'DJI Osmo Pocket' },
   { 'value': 11107, 'label': 'AirPods Max 2' },
@@ -187,10 +187,9 @@ export const MATCH_UNIQUE_ID_CFG = [
   { 'value': 11109, 'label': 'Apple Watch Ultra 3' },
   { 'value': 11110, 'label': 'iPhone pro max 512' },
 
-
   { 'value': 11102, 'label': 'S5 Daily' },
   { 'value': 11103, 'label': 'S5 Daily Plus' },
-  { 'value': 11104, 'label': 'S5 SemiFinal' },
+  { 'value': 11104, 'label': 'S5 SemiFinal' }
 ]
 
 // 比赛Pusoy全局ID集合
@@ -216,7 +215,7 @@ export const MATCH_TABLE_SCENE_ID_CFG = [
   { 'value': 2, 'label': 's5赛事-付费赛' },
   { 'value': 3, 'label': 's5赛事-日赛' },
   { 'value': 4, 'label': 's5赛事-半决赛' },
-  { 'value': 5, 'label': 'Table5' },
+  { 'value': 5, 'label': 'Table5' }
 ]
 // Pusoy 牌桌TableId
 export const MATCH_PUSOY_TABLE_SCENE_ID_CFG = [
@@ -232,7 +231,7 @@ export const MATCH_LIST_TAG_OPTIONS = [
   { 'value': 3, 'label': 'Pro Arena', disabled: false },
   { 'value': 4, 'label': 'TPCC', disabled: false },
   { 'value': 5, 'label': 'TPCC Events', disabled: false },
-  { 'value': 6, 'label': 'Anniversary', disabled: false },
+  { 'value': 6, 'label': 'Anniversary', disabled: false }
 ]
 
 // 比赛GameId选项
@@ -249,11 +248,9 @@ export const MATCH_IUPSTREAM_TYPE_OPTIONS = {
   MATCH_UPSTREAM_TYPE_PUSOY: 2033 // pusoy
 }
 
-
-export const RULE_END_MATCH_CFG ={
-  END_MATCH_CFG_TIME_AND_USER:3,// 时间+人数
-  END_MATCH_CFG_DYNAMIC_PROMOTE:4, //动态晋级
-
+export const RULE_END_MATCH_CFG = {
+  END_MATCH_CFG_TIME_AND_USER: 3, // 时间+人数
+  END_MATCH_CFG_DYNAMIC_PROMOTE: 4 // 动态晋级
 }
 
 // 数据记录状态

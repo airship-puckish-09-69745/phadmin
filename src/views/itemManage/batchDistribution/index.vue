@@ -205,6 +205,7 @@ export default {
   created() {
     this.name = store.getters.name
     this.env = store.getters.env || this.env
+    this.appId = store.getters.appId || this.appId
   },
   mounted() {
     this.getList()
