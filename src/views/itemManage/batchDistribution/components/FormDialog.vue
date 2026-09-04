@@ -351,14 +351,16 @@ export default {
             this.total = objs.total
             this.itemList = []
             for (let i = 0; i < objs.total; i++) {
-              if (objs.list[i].status === 1 && this.isTicketProp(objs.list[i].item_type) && objs.list[i].expire_time > timestamp) {
-                this.itemList.push(objs.list[i])
-              }
+              //freeSpin
               if (objs.list[i].status === 1 && (this.isAvatarFrameProp(objs.list[i].item_type) || objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN)) {
                 this.itemList.push(objs.list[i])
               }
               // 新版道具
               if(objs.list[i].status === 1 && this.isNewTicketProp(objs.list[i].item_type)){
+                this.itemList.push(objs.list[i])
+              }
+              //互动道具
+              if(objs.list[i].status === 1 && objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_INTERACTION && objs.list[i].expire_time > timestamp) {
                 this.itemList.push(objs.list[i])
               }
             }
@@ -394,7 +396,10 @@ export default {
       this.form.PropDetails.prop_name = ''
       this.form.PropDetails.prop_num = 1
       this.form.PropDetails.prop_expire_days = 1
-      let filteredItems = this.itemList.filter(item => item.item_type === value)
+     // console.log("itemList ",this.itemList)
+      let sth = this.itemList.filter(item => item.item_type === 10)
+         console.log("筛选结果1111 ", sth)
+   let filteredItems = this.itemList.filter(item => item.item_type === value)
       if(this.isNewTicketProp(value)){
         //根据当前道具类型获取对应的门票配置
         const ticketsConfig = IsProd() ? MATCH_TICKET_RIGHTS_ID_CFG_PROD : MATCH_TICKET_RIGHTS_ID_CFG_DEV
@@ -417,9 +422,9 @@ export default {
           }
         }
       }
-     // console.log('筛选后的道具列表', filteredItems)
+     //console.log('筛选后的道具列表', filteredItems)
       this.updateItemOption(filteredItems)
-     // console.log('道具下拉框选项', this.itemOptions)
+      //console.log('道具下拉框选项', this.itemOptions)
       this.checkShowFreeSpinGame()
     },
     /**
@@ -521,10 +526,6 @@ export default {
       }
     },
 
-    // 是否是门票类型道具
-    isTicketProp(itemType) {
-      return itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET || itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET || itemType === PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET
-    },
     // 是否是头像框道具
     isAvatarFrameProp(itemType) {
       return itemType === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME || itemType === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR
