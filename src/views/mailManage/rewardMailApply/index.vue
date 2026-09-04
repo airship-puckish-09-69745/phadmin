@@ -505,7 +505,7 @@ export default {
             this.propList = []
             for (let i = 0; i < objs.total; i++) {
               const obj = objs.list[i]
-              if (obj.status === 1 && obj.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_EFFECT  && obj.expire_time > timestamp) {
+              if (obj.status === 1 && obj.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_INTERACTION  && obj.expire_time > timestamp) {
                 this.propList.push(obj)
               }
               if (obj.status === 1 && (IsAvatarFrameProp(obj.item_type) || obj.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN)) {
