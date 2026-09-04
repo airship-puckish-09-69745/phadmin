@@ -396,9 +396,6 @@ export default {
       this.form.PropDetails.prop_name = ''
       this.form.PropDetails.prop_num = 1
       this.form.PropDetails.prop_expire_days = 1
-     // console.log("itemList ",this.itemList)
-      let sth = this.itemList.filter(item => item.item_type === 10)
-         console.log("筛选结果1111 ", sth)
    let filteredItems = this.itemList.filter(item => item.item_type === value)
       if(this.isNewTicketProp(value)){
         //根据当前道具类型获取对应的门票配置
