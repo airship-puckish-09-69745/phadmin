@@ -260,7 +260,7 @@
               <el-checkbox label="BP" value="BP" />
               <el-checkbox label="AP" value="AP" />
               <el-checkbox label="GP" value="GP" />
-              <!-- <el-checkbox label="PG" value="PG"></el-checkbox> -->
+              <el-checkbox label="PG" value="PG" />
               <el-checkbox label="TP" value="TP" />
               <el-checkbox label="SP" value="SP" />
             </el-checkbox-group>
@@ -838,10 +838,7 @@ export default {
       },
       detailVisible: false,
       slotCfg: {},
-      localSubKeyMap: {
-        ...SubKeyMap,
-        100246: 'talareyessouthseapearls_slots_base'
-      },
+      localSubKeyMap: { ...SubKeyMap },
       addDialogVisible: false,
       addFormData: {
         PlanId: 0,
@@ -923,9 +920,9 @@ export default {
       showCompletionScriptMap: {},
 
       AdditionalArray: [
-        { key: 100180, label: 'Fishing Master(额外加注)' },
-        { key: 100186, label: 'Mahjong Jackpot(额外加注)' },
-        { key: 100246, label: 'Tala Reyes South Sea Pearls(额外加注)' }
+        { key: 100180, label: 'Fishing Master 额外加注 (GID:100180)' },
+        { key: 100186, label: 'Mahjong Jackpot 额外加注 (GID:100186)' },
+        { key: 100246, label: 'Tala Reyes South 额外加注 (GID:100246)' }
       ],
       scriptPlanVolatilityStat: {},
       selectedUserTags: [],
@@ -1134,7 +1131,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           for (let i = 0; i < response.Data.length; i++) {
-            if (response.Data[i].Gid < 50 || response.Data[i].Gid > 100 && response.Data[i].Gid < 150 || (response.Data[i].Gid > 499 && response.Data[i].Gid != 1236)) {
+            if (response.Data[i].Gid < 50 || response.Data[i].Gid > 100 && response.Data[i].Gid < 150 || (response.Data[i].Gid > 499 && response.Data[i].Gid !== 1236 && response.Data[i].Gid !== 1237 && response.Data[i].Gid !== 1242)) {
               continue
             }
             this.gameOptions.push({
@@ -1679,7 +1676,7 @@ export default {
           planID: planRow.PlanId,
           gameID: $this.queryGid,
           planVer: row.Version,
-          appID: store.getters.appId || 0
+          appID: 0
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -1700,7 +1697,7 @@ export default {
           planID: planRow.PlanId,
           gameID: $this.queryGid,
           planVer: row.Version,
-          appID: store.getters.appId || 0
+          appID: 0
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -2026,7 +2023,7 @@ export default {
             gid: $this.queryGid,
             planId: planId,
             planVer: planVer,
-            appId: store.getters.appId || 0
+            appId: 0
           }
         }).then(response => {
           if (response.RetCode !== 0 && typeof response.Data !== 'object') {
@@ -2048,7 +2045,7 @@ export default {
         data: {
           Path: '/slotsStat/script/volatility',
           gid: gid,
-          appId: store.getters.appId || 0
+          appId: 0
         }
       }).then(response => {
         if (response.RetCode !== 0 && typeof response.Data !== 'object') {
