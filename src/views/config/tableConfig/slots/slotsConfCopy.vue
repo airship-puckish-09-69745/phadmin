@@ -6,7 +6,7 @@
             <!-- 标题 -->
             <div class="title">
                 <span>🎮 游戏配置复制工具</span>
-                <el-checkbox v-model="lark" :disabled="$store.getters.env === 'pro'" @change="setLarkPage">
+                <el-checkbox v-model="lark" @change="setLarkPage">
                     <span style="color: #4468fb">Lark群通知</span>
                 </el-checkbox>
             </div>
@@ -3030,6 +3030,9 @@ export default {
             item.createError = errMsg
             this.scriptCreateState = scriptCreateStateError
             this.clearScriptCreatePollTimer()
+            if (failureStage === 'create') {
+                this.sendScriptCreateFailureLark(item, errMsg)
+            }
         },
 
         completeScriptCreateTask(item) {
@@ -4444,13 +4447,7 @@ export default {
         },
 
         shouldSendPublishLark(tasks) {
-            if (!this.lark || !tasks.length || store.getters.env !== 'pro') {
-                return false
-            }
-            return tasks.some(task => [
-                PUBLISH_STEPS.PUBLISH_STEP_REVIEWING,
-                PUBLISH_STEPS.PUBLISH_STEP_PRO
-            ].includes(task.publishOpType))
+            return this.lark && tasks.length > 0
         },
 
         buildPublishLarkContent(tasks, failed) {
@@ -4480,8 +4477,12 @@ export default {
                 if (response.RetCode !== 0) {
                     return
                 }
-                const hasProPublish = tasks.some(task => task.publishOpType === PUBLISH_STEPS.PUBLISH_STEP_PRO)
-                const step = failed ? '【发布失败】' : (hasProPublish ? '【已发布】' : '【待审核】')
+                const hasPublish = tasks.some(task => [
+                    PUBLISH_STEPS.PUBLISH_STEP_TEST,
+                    PUBLISH_STEPS.PUBLISH_STEP_PRE,
+                    PUBLISH_STEPS.PUBLISH_STEP_PRO
+                ].includes(task.publishOpType))
+                const step = failed ? '【发布失败】' : (hasPublish ? '【已发布】' : '【待审核】')
                 const nick = response.Data.nick
                 const routes = this.getRoutesName()
                 const at = '<at user_id="ou_2b283f529fc901b97b443b946f692efd">SamYe</at>\r\n'
@@ -4490,6 +4491,42 @@ export default {
                 await sendLark(text, '', store.getters.env)
             } catch (e) {
                 console.log('sendPublishLark failed', e)
+            }
+        },
+
+        async sendScriptCreateFailureLark(item, errMsg) {
+            const env = store.getters.env
+            if (!this.lark) {
+                return
+            }
+            try {
+                const envNameMap = {
+                    test: '测试环境',
+                    pre: '预发布环境',
+                    pro: '正式环境'
+                }
+                const projectName = process.env.VUE_APP_PROJECT_NAME || '菲律宾棋牌'
+                const envName = envNameMap[env] || env
+                const content = [
+                    `页面：${this.getRoutesName()}`,
+                    `环境：${projectName}（${envName}）`,
+                    `AppId：${item.appId}`,
+                    `游戏：${item.gameName}，GID：${item.task.gameId}`,
+                    `配置Key：${item.subKey}`,
+                    `方案：${item.planName}（ID：${item.planId}），版本：${item.planVersion}`,
+                    `创建进度：${item.createProgressCurrent}/${item.createProgressTotal}`,
+                    `原因：${errMsg}`,
+                    '创建队列已停止，请处理异常后点击继续。'
+                ].join('\r\n')
+                const response = await getInfo(this.$store.getters.token)
+                if (response.RetCode !== 0) {
+                    return
+                }
+                const at = '<at user_id="ou_2b283f529fc901b97b443b946f692efd">SamYe</at>\r\n'
+                const text = `【剧本创建失败】【${response.Data.nick}】\r\n${at}${content}`
+                await sendLark(text, '', env)
+            } catch (e) {
+                console.log('sendScriptCreateFailureLark failed', e)
             }
         },
 
