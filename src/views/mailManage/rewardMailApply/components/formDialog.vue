@@ -122,9 +122,8 @@ import { IsProd } from "@/utils/env";
 import {
   CheckPropNeedExpireDays,
   IsNewTicketProp,
-  MATCH_TICKET_RIGHTS_ID_CFG_DEV,
-  MATCH_TICKET_RIGHTS_ID_CFG_PROD
 } from '@/utils/prop'
+import {GetMatchTicketRightsId} from "@/utils/propV2";
 
 function newRewardItem() {
   return {
@@ -374,26 +373,6 @@ export default {
       }
       return emptyArr
     },
-    /*
-     * 获取门票道具的场景ID
-     */
-    getTicketPropSceneID(propId, propType) {
-      if (IsNewTicketProp(propType)) {
-        //根据当前道具类型获取对应的门票配置
-        const ticketsConfig = IsProd() ? MATCH_TICKET_RIGHTS_ID_CFG_PROD : MATCH_TICKET_RIGHTS_ID_CFG_DEV
-        if(ticketsConfig && typeof ticketsConfig === 'object'){
-          for(const appId in ticketsConfig){
-            if(ticketsConfig[appId] && Array.isArray(ticketsConfig[appId]) && ticketsConfig[appId].some(ticket => ticket.ticketId === propId)){
-              const sceneIdCfg = ticketsConfig[appId].find(ticket => ticket.ticketId === propId)
-              if(sceneIdCfg){
-                return sceneIdCfg.sceneId
-              }
-            }
-          }
-        }
-      }
-      return -1
-    },
     /**
      * 将form参数转换为后端接口需要的参数
      */
@@ -405,8 +384,8 @@ export default {
         if (item.itemType === this.rewardItemType.betCoin) {
           item.itemNum *= 1000
         } else if (IsNewTicketProp(item.itemSubType)) {
-          const itemSceneId = this.getTicketPropSceneID(item.itemId, item.itemSubType)
-          if (itemSceneId < 0) {
+          const itemSceneId = GetMatchTicketRightsId(item.itemId)
+          if (itemSceneId === null) {
             this.$message.error('道具' + item.itemId + '没有配置场景ID')
             return false
           }
@@ -502,29 +481,6 @@ export default {
         }
       }
       let filteredItems = this.propList.filter(item => item.item_type === itemSubType)
-      if(IsNewTicketProp(itemSubType)){
-        //根据当前道具类型获取对应的门票配置
-        const ticketsConfig = IsProd() ? MATCH_TICKET_RIGHTS_ID_CFG_PROD : MATCH_TICKET_RIGHTS_ID_CFG_DEV
-        //console.log('ticketsConfig', ticketsConfig, 'value', value)
-        if(ticketsConfig && typeof ticketsConfig === 'object'){
-          // 收集所有appId下的ticketId
-          const allowedTicketIds = new Set()
-          for(const appId in ticketsConfig){
-            if(ticketsConfig[appId] && Array.isArray(ticketsConfig[appId])){
-              ticketsConfig[appId].forEach(ticket => {
-                if(ticket.ticketId){
-                  allowedTicketIds.add(ticket.ticketId)
-                }
-              })
-            }
-          }
-          // 只保留在允許列表中的道具
-          if(allowedTicketIds.size > 0){
-            filteredItems = filteredItems.filter(item => allowedTicketIds.has(item.id))
-          }
-        }
-      }
-      // console.log('筛选后的道具列表', filteredItems)
       this.updateItemOption(filteredItems)
       // console.log('道具下拉框选项', this.itemOptions)
       //this.checkShowFreeSpinGame()

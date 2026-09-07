@@ -276,6 +276,7 @@ export default {
         growTotalNumCfgs: new Map(),
         disuseScoreGrowDetail: new Map(),
         csExtraCfgs: new Map(),
+        csEndMethodCfgs: new Map(), // 赛制打立阶段结束方式 3: 时间+人数 4: 动态晋级
         csIdCfg: [],
         reubyGrowCfgs: []
       },
@@ -349,7 +350,7 @@ export default {
         await this.getGuideCfgs()
 
         if (!IsMars()) {
-          await this.getMatchProps(env)
+          await this.getMatchPropsV2(env)
         }
 
         await this.getMatchList(env)

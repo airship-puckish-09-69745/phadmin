@@ -2501,7 +2501,7 @@ export const asyncRoutes = [
         path: 'matchType',
         component: () => import('@/views/empty'),
         redirect: 'noRedirect',
-        hidden: process.env.NODE_ENV === 'development',
+       // hidden: process.env.NODE_ENV === 'development',
         meta: { title: '赛事管理', noCache: true },
         children: [
           {

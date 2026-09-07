@@ -8,7 +8,10 @@ import { IsMars,IsProd } from '@/utils/env'
 import { MATCH_IUPSTREAM_TYPE_OPTIONS } from '@/utils/options'
 import { PROP_TYPE_OPTIONS } from '../utils/matchConfigConstants'
 import { getAllMatchGuidesConfig } from '@/utils/common-game-config'
-import { IsNewTicketProp, MATCH_TICKET_RIGHTS_ID_CFG_PROD, MATCH_TICKET_RIGHTS_ID_CFG_DEV } from '@/utils/prop'
+import {
+  GetMatchTicketRightsIdList
+} from '@/utils/prop'
+import {GetPropConfigListFromCache} from "@/utils/propV2";
 export const matchDataMixin = {
   methods: {
     /**
@@ -199,106 +202,179 @@ export const matchDataMixin = {
         // 获取奖品模板配置错误
       }
     },
+    async getMatchPropsV2(env) {
+      // 缓存接口已过滤 status=1 及可用道具，这里只组装本页需要的头像框 / 新版门票
+      this.configs.matchPropsCfgs = [{
+        propsId: 0,
+        propsType: 0,
+        propsName: '无',
+        propsIcon: '',
+        propsAttr: '',
+        propsCost: '',
+        propsShowName: '',
+        propsSceneId: 0,
+        propsAppId: 0
+      }]
+      this.configs.matchTicketsCfgs = []
 
-    /**
-     * 获取比赛道具配置
-     */
-    async getMatchProps(env) {
       try {
-        const response = await request({
-          url: '/dataProxy/info',
-          method: 'get',
-          data: {
-            Env: env,
-            Path: '/match/props/config/list',
-            PropType: 0
+        const { itemList } = await GetPropConfigListFromCache()
+        const list = itemList || []
+        for (const item of list) {
+          const isAvatar = item.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME
+          const isNewTicket = item.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW
+          if (!isAvatar && !isNewTicket) {
+            continue
           }
-        })
 
-        if (response.RetCode === 0) {
-          const data = response.Data || {}
-          if (data.total > 0) {
-            this.configs.matchPropsCfgs = [{
-              propsId: 0,
-              propsType: 0,
-              propsName: '无',
-              propsIcon: '',
-              propsAttr: '',
-              propsCost: '',
-              propsShowName: '',
-              propsSceneId: 0,
-              propsAppId: 0,
-            }]
-
-            let ticketConfigList = IsProd() ? MATCH_TICKET_RIGHTS_ID_CFG_PROD : MATCH_TICKET_RIGHTS_ID_CFG_DEV
-            this.configs.matchTicketsCfgs = []
-            const timestamp = Date.now() / 1000
-            const propsTypeList = [PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET, PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME,PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW]
-            for (const item of data.list) {
-              if (propsTypeList.includes(item.item_type)) {
-                let canPush = false
-                let sceneId = 0
-                let appId = 0
-
-                if (item.status === 1 &&
-                    ((item.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET && item.expire_time > timestamp) ||
-                     item.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME || item.item_type=== PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW)) {
-                  const showName = item.show_name ? `${item.item_name}(${item.show_name})` : item.item_name
-                  if (IsNewTicketProp(item.item_type)) {
-                    if(item.item_extra.length <= 0){
-                      continue
-                    }
-                    const exitData = JSON.parse(item.item_extra)
-                    if(exitData === null || exitData === undefined || exitData.appId === 0 || typeof exitData.appId === 'undefined'){
-                      continue
-                    }
-                    appId = exitData.appId
-                    if (!ticketConfigList.hasOwnProperty(appId)) {
-                      continue
-                    }
-                    let tickets = ticketConfigList[exitData.appId].find(ticket => ticket.ticketId === item.id)
-                    if(tickets){
-                      canPush = true
-                      sceneId = tickets.sceneId
-                    }
-                  }else{
-                    canPush = true
-                  }
-                  if (canPush) {
-                    this.configs.matchPropsCfgs.push({
-                      propsType: item.item_type,
-                      propsId: item.id,
-                      propsName: item.item_name,
-                      propsIcon: item.image,
-                      propsAttr: item.item_describe,
-                      propsCost: item.item_cost,
-                      propsShowName: showName,
-                      propsSceneId: sceneId,
-                      propsAppId: appId,
-                    })
-                  }
-                  if (item.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET || item.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW) {
-                    if (canPush) {
-                      this.configs.matchTicketsCfgs.push({
-                        'label': showName,
-                        'value': item.id,
-                        'propsAppId': appId,
-                        'propsType': item.item_type,
-                      })
-                    }
-                  }
-                }
-              }
-              //console.log("matchTicketsCfgs",this.configs.matchTicketsCfgs)
-             // console.log("matchPropsCfgs",this.configs.matchPropsCfgs)
+          let sceneId = 0
+          let appId = 0
+          if (isNewTicket) {
+            let extra = null
+            try {
+              extra = item.item_extra ? JSON.parse(item.item_extra) : null
+            } catch (e) {
+              continue
             }
+            if (!extra || !extra.appId) {
+              continue
+            }
+            const ticket = (GetMatchTicketRightsIdList(extra.appId) || []).find(
+              t => Number(t.ticketId) === Number(item.id)
+            )
+            if (!ticket || !ticket.sceneId) {
+              continue
+            }
+            sceneId = ticket.sceneId
+            appId = extra.appId
+          }
 
+          const showName = item.show_name
+            ? `${item.item_name}(${item.show_name})`
+            : item.item_name
+          this.configs.matchPropsCfgs.push({
+            propsType: item.item_type,
+            propsId: item.id,
+            propsName: item.item_name,
+            propsIcon: item.image,
+            propsAttr: item.item_describe,
+            propsCost: item.item_cost,
+            propsShowName: showName,
+            propsSceneId: sceneId,
+            propsAppId: appId
+          })
+          if (isNewTicket) {
+            this.configs.matchTicketsCfgs.push({
+              label: showName,
+              value: item.id,
+              propsAppId: appId,
+              propsType: item.item_type
+            })
           }
         }
       } catch (error) {
-        // 获取比赛道具配置错误
+        console.log(error)
       }
     },
+    /**
+     * 获取比赛道具配置
+     */
+    // async getMatchProps(env) {
+    //   try {
+    //     const response = await request({
+    //       url: '/dataProxy/info',
+    //       method: 'get',
+    //       data: {
+    //         Env: env,
+    //         Path: '/match/props/config/list',
+    //         PropType: 0
+    //       }
+    //     })
+    //
+    //     if (response.RetCode === 0) {
+    //       const data = response.Data || {}
+    //       if (data.total > 0) {
+    //         this.configs.matchPropsCfgs = [{
+    //           propsId: 0,
+    //           propsType: 0,
+    //           propsName: '无',
+    //           propsIcon: '',
+    //           propsAttr: '',
+    //           propsCost: '',
+    //           propsShowName: '',
+    //           propsSceneId: 0,
+    //           propsAppId: 0,
+    //         }]
+    //
+    //         let ticketConfigList = IsProd() ? MATCH_TICKET_RIGHTS_ID_CFG_PROD : MATCH_TICKET_RIGHTS_ID_CFG_DEV
+    //         this.configs.matchTicketsCfgs = []
+    //         const timestamp = Date.now() / 1000
+    //         const propsTypeList = [PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET, PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME,PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW]
+    //         for (const item of data.list) {
+    //           if (propsTypeList.includes(item.item_type)) {
+    //             let canPush = false
+    //             let sceneId = 0
+    //             let appId = 0
+    //
+    //             if (item.status === 1 &&
+    //                 ((item.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET && item.expire_time > timestamp) ||
+    //                  item.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME || item.item_type=== PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW)) {
+    //               const showName = item.show_name ? `${item.item_name}(${item.show_name})` : item.item_name
+    //               if (IsNewTicketProp(item.item_type)) {
+    //                 if(item.item_extra.length <= 0){
+    //                   continue
+    //                 }
+    //                 const exitData = JSON.parse(item.item_extra)
+    //                 if(exitData === null || exitData === undefined || exitData.appId === 0 || typeof exitData.appId === 'undefined'){
+    //                   continue
+    //                 }
+    //                 appId = exitData.appId
+    //                 if (!ticketConfigList.hasOwnProperty(appId)) {
+    //                   continue
+    //                 }
+    //                 let tickets = ticketConfigList[exitData.appId].find(ticket => ticket.ticketId === item.id)
+    //                 if(tickets){
+    //                   canPush = true
+    //                   sceneId = tickets.sceneId
+    //                 }
+    //               }else{
+    //                 canPush = true
+    //               }
+    //               if (canPush) {
+    //                 this.configs.matchPropsCfgs.push({
+    //                   propsType: item.item_type,
+    //                   propsId: item.id,
+    //                   propsName: item.item_name,
+    //                   propsIcon: item.image,
+    //                   propsAttr: item.item_describe,
+    //                   propsCost: item.item_cost,
+    //                   propsShowName: showName,
+    //                   propsSceneId: sceneId,
+    //                   propsAppId: appId,
+    //                 })
+    //               }
+    //               if (item.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET || item.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW) {
+    //                 if (canPush) {
+    //                   this.configs.matchTicketsCfgs.push({
+    //                     'label': showName,
+    //                     'value': item.id,
+    //                     'propsAppId': appId,
+    //                     'propsType': item.item_type,
+    //                   })
+    //                 }
+    //               }
+    //             }
+    //           }
+    //           //console.log("matchTicketsCfgs",this.configs.matchTicketsCfgs)
+    //          // console.log("matchPropsCfgs",this.configs.matchPropsCfgs)
+    //         }
+    //
+    //       }
+    //     }
+    //   } catch (error) {
+    //     // 获取比赛道具配置错误
+    //   }
+    // },
 
     /**
      * 获取引导配置
@@ -366,7 +442,10 @@ export const matchDataMixin = {
           this.configs.promoteNumCfgs.set(ruleId, stage.system_strike_out.promotion_rule.user_number)
           this.configs.growTotalNumCfgs.set(ruleId, stage.system_strike_out.disuse_score_growth.grow_total)
           this.configs.disuseScoreGrowDetail.set(ruleId, stage.system_strike_out.disuse_score_growth.disuse_score_grow_detail)
-          this.configs.csEndMethodCfgs.set(ruleId,stage.system_strike_out.end_rule.end_method)
+          if (!this.configs.csEndMethodCfgs) {
+            this.configs.csEndMethodCfgs = new Map()
+          }
+          this.configs.csEndMethodCfgs.set(ruleId, stage.system_strike_out.end_rule.end_method)
         } else if (stage.system_type === 2) { // 定局
           this.configs.reachOutNumCfgs.set(ruleId, stage.system_reach_out.round_config[0].promotion_user)
         }
