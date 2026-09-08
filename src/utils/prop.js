@@ -17,15 +17,15 @@ export const SLOT_GAME_CONFIG = [
   // {'value': 164, 'label': 'Mahjong Fortune', 'configKey':'',disabled: false },
 ]
 
-// 下注类游戏
+// 下注类游戏 //shareBet是否共用下注amount
 export const BETTING_GAME_CONFIG = [
-  { 'value': 20, 'label': '扫雷(sweeper)', 'configKey': 'gameSweeper', disabled: false },
-  { 'value': 132, 'label': 'Mines Magic', 'configKey': 'gameSweeper', disabled: false },
-  { 'value': 108, 'label': 'DropBall', 'configKey': 'gameSweeper', disabled: false },
-  { 'value': 25, 'label': 'Color Game', 'configKey': 'Color Game', disabled: false },
-  { 'value': 143, 'label': 'Triple Wheel Spin', 'configKey': 'triplewheelspin', disabled: false },
-  { 'value': 501, 'label': 'Balloon Tap', 'configKey': 'balloontap', disabled: false },
-  { 'value': 500, 'label': 'Gold Master', 'configKey': 'Gold Master', disabled: false }
+  { 'value': 20, 'label': '扫雷(sweeper)', 'configKey': 'gameSweeper', disabled: false,"shareBet":true },
+  { 'value': 132, 'label': 'Mines Magic', 'configKey': 'gameSweeper', disabled: false,"shareBet":true  },
+  { 'value': 108, 'label': 'DropBall', 'configKey': 'gameSweeper', disabled: false,"shareBet":true  },
+  { 'value': 25, 'label': 'Color Game', 'configKey': 'Color Game', disabled: false,"shareBet":true  },
+  { 'value': 143, 'label': 'Triple Wheel Spin', 'configKey': 'triplewheelspin', disabled: false,"shareBet":true  },
+  { 'value': 501, 'label': 'Balloon Tap', 'configKey': 'balloontap', disabled: false,"shareBet":true  },
+  { 'value': 500, 'label': 'Gold Master', 'configKey': 'Gold Master', disabled: false,"shareBet":false }
 ]
 
 //比赛门票ID 关联门票权益配置 开发环境

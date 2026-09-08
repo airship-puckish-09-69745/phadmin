@@ -338,7 +338,7 @@ export default {
       ITEM_TYPE_OPTIONS,
       ITEM_DAY_TYPE_OPTIONS,
       BETTING_GAME_CONFIG,
-      SLOT_GAME_CONFIG:[],
+      SLOT_GAME_CONFIG: [],
       APPID_OPTIONS,
       freeSpinGameMap: {},
       libShow: $libShow,
@@ -349,28 +349,28 @@ export default {
 
       //道具子类型
       ItemSubAttrCfg: [
-        { 'value': 1, 'label': 'Slot游戏', disabled: false,"propType":PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN }, //freeSpin
-        { 'value': 2, 'label': '街机类游戏', disabled: false,"propType":PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN } //freeSpin
+        {'value': 1, 'label': 'Slot游戏', disabled: false, "propType": PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN}, //freeSpin
+        {'value': 2, 'label': '街机类游戏', disabled: false, "propType": PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN} //freeSpin
       ],
 
       statusCfgs: [
-        { 'value': 1, 'label': '上架' },
-        { 'value': 2, 'label': '下架' }
+        {'value': 1, 'label': '上架'},
+        {'value': 2, 'label': '下架'}
       ],
       qualityTypeCfgs: [
-        { 'value': 1, 'label': 'S', disabled: false },
-        { 'value': 2, 'label': 'A', disabled: false },
-        { 'value': 3, 'label': 'B', disabled: false },
-        { 'value': 4, 'label': 'C', disabled: false },
-        { 'value': 5, 'label': '无品质', disabled: false }
+        {'value': 1, 'label': 'S', disabled: false},
+        {'value': 2, 'label': 'A', disabled: false},
+        {'value': 3, 'label': 'B', disabled: false},
+        {'value': 4, 'label': 'C', disabled: false},
+        {'value': 5, 'label': '无品质', disabled: false}
       ],
       effectTypeCfgs: [
-        { 'value': 1, 'label': '礼炮', disabled: false },
-        { 'value': 2, 'label': '吹龙', disabled: false },
-        { 'value': 3, 'label': '蛋糕', disabled: false },
-        { 'value': 4, 'label': '香槟', disabled: false },
-        { 'value': 5, 'label': '派对帽', disabled: false },
-        { 'value': 6, 'label': '皮纳塔', disabled: false },
+        {'value': 1, 'label': '礼炮', disabled: false},
+        {'value': 2, 'label': '吹龙', disabled: false},
+        {'value': 3, 'label': '蛋糕', disabled: false},
+        {'value': 4, 'label': '香槟', disabled: false},
+        {'value': 5, 'label': '派对帽', disabled: false},
+        {'value': 6, 'label': '皮纳塔', disabled: false},
       ],
       slotDefaultBetAmount: [
         // 样式 { 'value': 300, 'label': 'bet-0.3', disabled: false },
@@ -384,7 +384,7 @@ export default {
       page: 1,
       form: {
         itemOfType: 0,
-        appId:0,
+        appId: 0,
       },
       editForm: {
         visable: false,
@@ -428,7 +428,8 @@ export default {
         propExtra: '拓展信息'
       },
       slotBetAmountCfg: new Map(), // slot 下注数值
-      slotFreeSpinDetailMap: {} // free spin 道具詳情展開狀態
+      slotFreeSpinDetailMap: {}, // free spin 道具詳情展開狀態
+      littleGameBetAmountCfg: new Map(),  //小游戏独有的下注额度
     }
   },
   computed: {
@@ -903,21 +904,37 @@ export default {
       // 根据free spin道具的子类型(1:slot类 2: 下注类)
       this.slotBetAmountCfg.set(1, [300, 1000, 2000, 3000, 5000,10000])
       this.slotBetAmountCfg.set(2, [1000, 2000, 3000, 5000, 10000])
+      //小游戏独有的下注额度
+      this.littleGameBetAmountCfg.set(500, [100,200,500]) //gid,betList
     },
     // 设置样式
     setSlotBetAmountStyle(indexId) {
       const oneBetAmountCfg = this.slotBetAmountCfg.get(indexId)
-      console.log(' oneBetAmountCfg ', indexId, oneBetAmountCfg)
       // 样式 { 'value': 300, 'label': 'bet-0.3', disabled: false },
       this.slotDefaultBetAmount = []
       for (let i = 0; i < oneBetAmountCfg.length; i++) {
         const amount = oneBetAmountCfg[i] / 1000
         this.slotDefaultBetAmount.push({ 'value': oneBetAmountCfg[i], 'label': 'bet-' + amount.toString(), disabled: false })
       }
+      //如果editForm.itemExtra.gid 只勾选了一个,且是独有的betAmount，则单独显示改独立的betAmount
+      if(this.editForm.itemExtra.gid.length ===1 ){
+        let oneConfig = BETTING_GAME_CONFIG.find(game => game.value === this.editForm.itemExtra.gid[0])
+        if (oneConfig && oneConfig.shareBet === false) {
+          const littleGameBetAmount = this.littleGameBetAmountCfg.get(oneConfig.value)
+          if (littleGameBetAmount && littleGameBetAmount.length > 0) {
+            for (let i = 0; i < littleGameBetAmount.length; i++) {
+              const amount = littleGameBetAmount[i] / 1000
+              this.slotDefaultBetAmount.push({ 'value': littleGameBetAmount[i], 'label': 'bet-' + amount.toString(), disabled: false })
+            }
+          }
+        }
+      }
     },
     // 切换类别
     changeCategory() {
       this.editForm.itemExtra.gid = []
+      this.slotDefaultBetAmount = []
+      this.editForm.itemExtra.betAmount = 0
     },
     configCheck() {
       if (this.editForm.data.itemName === '') {
@@ -930,7 +947,7 @@ export default {
         return false
       }
 
-      if (!this.isFreeSpin(this.editForm.data.itemType)){
+      if (!this.isFreeSpin(this.editForm.data.itemType)) {
         this.editForm.itemExtra.specialAttr = 0
       }
 
@@ -944,7 +961,7 @@ export default {
           return false
         }
       }
-      if(this.isTicketPropNew(this.editForm.data.itemType)){
+      if (this.isTicketPropNew(this.editForm.data.itemType)) {
         if (typeof this.editForm.itemExtra.appId === 'undefined' || this.editForm.itemExtra.appId === 0 || this.editForm.itemExtra.appId === '') {
           this.errmsg('请选择道具对应的APPID')
           return false
@@ -965,7 +982,7 @@ export default {
         return false
       }
 
-      if (this.isFreeSpin(this.editForm.data.itemType)){
+      if (this.isFreeSpin(this.editForm.data.itemType)) {
         if (this.editForm.itemExtra.specialAttr <= 0) {
           this.errmsg('请确认游戏类型')
           return false
@@ -982,6 +999,20 @@ export default {
       if (this.isAvatarFrameProp(this.editForm.data.itemType) && this.editForm.data.quality === 0) {
         this.errmsg('请选择品质')
         return false
+      }
+      if (this.editForm.itemExtra.specialAttr === 2) {
+        const commonBetAmount = this.slotBetAmountCfg.get(this.editForm.itemExtra.specialAttr) || []
+        // 遍历勾选的gid：shareBet=true 只能用公共下注额度
+        for (const gid of this.editForm.itemExtra.gid) {
+          const oneConfig = BETTING_GAME_CONFIG.find(game => game.value === gid)
+          if (!oneConfig) {
+            continue
+          }
+          if (oneConfig.shareBet === true && !commonBetAmount.includes(this.editForm.itemExtra.betAmount)) {
+            this.errmsg('当前选择的游戏不支持当前的betAmount，请重新选择')
+            return false
+          }
+        }
       }
       return true
     },
