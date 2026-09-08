@@ -15,27 +15,30 @@
           <el-row :gutter="20">
             <el-col :xs="24" :sm="12">
               <el-form-item label="活动开关：">
-                <el-switch v-model="item.isOpen" :active-value="true" :inactive-value="false" />
+                <el-switch v-model="item.isOpen" :active-value="true" :inactive-value="false"/>
               </el-form-item>
             </el-col>
             <el-col :span="24">
               <el-form-item label="活动名称：" required>
-                <el-input v-model="item.activityName" placeholder="请输入活动名称" style="max-width: 400px" />
+                <el-input v-model="item.activityName" placeholder="请输入活动名称" style="max-width: 400px"/>
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
               <el-form-item label="活动开始时间：" required>
-                <el-date-picker v-model="item.startTime" type="datetime" placeholder="选择开始时间" value-format="timestamp" style="width: 200px" />
+                <el-date-picker v-model="item.startTime" type="datetime" placeholder="选择开始时间"
+                                value-format="timestamp" style="width: 200px"/>
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
               <el-form-item label="活动结束时间：" required>
-                <el-date-picker v-model="item.endTime" type="datetime" placeholder="选择结束时间" value-format="timestamp" style="width: 200px" />
+                <el-date-picker v-model="item.endTime" type="datetime" placeholder="选择结束时间"
+                                value-format="timestamp" style="width: 200px"/>
               </el-form-item>
             </el-col>
             <el-col :xs="24">
               <el-form-item label="活动展示时间：" required>
-                <el-date-picker v-model="item.showEndTime" type="datetime" placeholder="选择展示时间" value-format="timestamp" style="width: 200px" />
+                <el-date-picker v-model="item.showEndTime" type="datetime" placeholder="选择展示时间"
+                                value-format="timestamp" style="width: 200px"/>
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
@@ -47,7 +50,8 @@
             </el-col>
             <el-col :span="24" :sm="12">
               <el-form-item label="站点白名单：">
-                <SiteSelect v-model="item.whitelist.siteIdList" multiple placeholder="请选择" style="width: 100%; max-width: 200px" />
+                <SiteSelect v-model="item.whitelist.siteIdList" multiple placeholder="请选择"
+                            style="width: 100%; max-width: 200px"/>
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
@@ -68,6 +72,11 @@
                 <div style="color: #E6A23C; font-size: 12px; line-height: 1.4; margin-top: 4px">
                   达到上限时会在Lark同步报警
                 </div>
+              </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="12">
+              <el-form-item label="时间偏移：">
+                <el-input v-model.number="item.debugTimeOffset" placeholder="请输入" style="max-width: 200px"/>
               </el-form-item>
             </el-col>
           </el-row>
@@ -107,7 +116,7 @@
           size="small"
           style="width: 100%"
         >
-          <el-table-column label="#" type="index" width="50" align="center" />
+          <el-table-column label="#" type="index" width="50" align="center"/>
           <el-table-column label="累计下注（₱）" min-width="160">
             <template slot-scope="scope">
               <el-input
@@ -156,7 +165,7 @@
 </template>
 
 <script>
-import { Message } from 'element-ui'
+import {Message} from 'element-ui'
 import request from '@/utils/request'
 import SiteSelect from '@/components/SiteSelect/index.vue'
 import GameSelector from '@/components/Game/GameSelector.vue'
@@ -164,7 +173,7 @@ import GameSelector from '@/components/Game/GameSelector.vue'
 const ACTIVITY_ID = 29
 
 function newTier() {
-  return { bet: 0, ratio: 0 }
+  return {bet: 0, ratio: 0}
 }
 
 function newItem() {
@@ -182,13 +191,14 @@ function newItem() {
     minReward: 1,
     dayPrizeThreshold: 0,
     totalPrizeThreshold: 0,
+    debugTimeOffset: 0,
     rewardTiers: [newTier()]
   }
 }
 
 export default {
   name: 'PhasedUpdateForm',
-  components: { SiteSelect, GameSelector },
+  components: {SiteSelect, GameSelector},
   props: {
     visible: {
       type: Boolean,
@@ -217,6 +227,7 @@ export default {
 
       if (this.isEdit && Object.keys(this.data).length > 0) {
         this.loadEditData()
+        console.log(111111)
       } else {
         this.item = newItem()
       }
@@ -258,6 +269,7 @@ export default {
         endTime: (act.endTime || 0) * 1000,
         showEndTime: (act.showEndTime || 0) * 1000,
         gameIdCfg: Array.isArray(act.gameIdList) ? act.gameIdList : [],
+        debugTimeOffset: act.debugTimeOffset || 0,
         whitelist,
         userDayPrizeThreshold: (ext.userDayPrizeThreshold || 0) / 1000,
         minReward: (ext.minReward || 0) / 1000,
@@ -345,6 +357,7 @@ export default {
         startTime: Math.floor(d.startTime / 1000),
         endTime: Math.floor(d.endTime / 1000),
         showEndTime: Math.floor(d.showEndTime / 1000),
+        debugTimeOffset: d.debugTimeOffset,
         gameIdList: d.gameIdCfg.map(v => Number(v)),
         whitelist: {
           siteIdList: (d.whitelist && Array.isArray(d.whitelist.siteIdList)) ? d.whitelist.siteIdList : []
@@ -359,7 +372,7 @@ export default {
         totalPrizeThreshold: Math.floor((d.totalPrizeThreshold || 0) * 1000),
         rewardTiers: d.rewardTiers.map(t => ({
           bet: Math.floor((t.bet || 0) * 1000),
-          ratio: Math.floor((t.ratio || 0) * 100),
+          ratio: Math.floor((t.ratio || 0) * 100)
         }))
       }
 

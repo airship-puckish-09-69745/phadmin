@@ -14,6 +14,7 @@ import {
   initListExtra,
   initPrizeExtra, initSingleCopy
 } from '../utils/matchConfigUtils'
+import {RULE_END_MATCH_CFG} from "@/utils/options";
 
 export const matchFormMixin = {
   methods: {
@@ -296,7 +297,7 @@ export const matchFormMixin = {
       }
 
       if (this.editForm.data.signUpType === 1) {
-         // 如果是免费报名，重置报名费数量为0
+        // 如果是免费报名，重置报名费数量为0
         this.editForm.data.signUpNum = 0
       }
 
@@ -360,7 +361,7 @@ export const matchFormMixin = {
         if (this.editForm.prizeExtra.rewardType === 2) {
           this.editForm.prizeExtra.rewardType = 3
         }
-         // 动态奖池奖励类型如果是返水金，填充返水金类型
+        // 动态奖池奖励类型如果是返水金，填充返水金类型
         if (this.editForm.prizeExtra.rewardType === 3) {
           this.editForm.prizeExtra.sceneId = this.configs.rebateScenesCfgs[0].value
         }
@@ -371,9 +372,9 @@ export const matchFormMixin = {
       }
 
       if (this.editForm.whileList.type == 1) {
-         // 如果开启白名单，则白名单不可为空
+        // 如果开启白名单，则白名单不可为空
         if (this.editForm.whileList.data == '') {
-           Message.error('白名单不可为空！')
+          Message.error('白名单不可为空！')
           return false
         }
       }
@@ -382,9 +383,9 @@ export const matchFormMixin = {
       if(this.editForm.data.repeatType == 0){
         // 检查时间控件是否已选择
         if (!this.editForm.loopDetail.onceTime || !Array.isArray(this.editForm.loopDetail.onceTime) ||
-            this.editForm.loopDetail.onceTime[0] == null || this.editForm.loopDetail.onceTime[1] == null ||
-            this.editForm.loopDetail.onceTime[0] == '' || this.editForm.loopDetail.onceTime[1] == '') {
-              Message.error('开赛时间不能为空')
+          this.editForm.loopDetail.onceTime[0] == null || this.editForm.loopDetail.onceTime[1] == null ||
+          this.editForm.loopDetail.onceTime[0] == '' || this.editForm.loopDetail.onceTime[1] == '') {
+          Message.error('开赛时间不能为空')
           return false
         }
         const bTime = Math.floor(this.editForm.loopDetail.onceTime[0] / 1000)
@@ -415,7 +416,7 @@ export const matchFormMixin = {
 
       if (this.editForm.data.repeatType != 0) {
         if (this.editForm.loopDetail.intervalDay < 0) {
-           Message.error('循环赛间隔天数需要设置大于等于0（最小为0表示每天创建）！')
+          Message.error('循环赛间隔天数需要设置大于等于0（最小为0表示每天创建）！')
           return false
         }
       }
@@ -446,13 +447,13 @@ export const matchFormMixin = {
       }
 
       if (this.editForm.data.opentMatchMember <= 0) {
-           Message.error('开赛人数值无效！')
+        Message.error('开赛人数值无效！')
         return false
       } else if (this.editForm.data.opentMatchMember < 4) {
-           Message.error('最低开赛人数值大于4！')
+        Message.error('最低开赛人数值大于4！')
         return false
       } else if (this.editForm.signExtra.matchMaxLimit > 0 && this.editForm.signExtra.matchMaxLimit < this.editForm.data.opentMatchMember) {
-           Message.error('报名最大限制必须大于最低开赛人数')
+        Message.error('报名最大限制必须大于最低开赛人数')
         return false
       } else if (this.editForm.data.signUpNum < 0) {
         Message.error('报名费数值不能小于零')
@@ -475,22 +476,23 @@ export const matchFormMixin = {
         const endNum = this.configs.endNumCfgs.get(this.editForm.data.csId)
         const promoteNum = this.configs.promoteNumCfgs.get(this.editForm.data.csId)
         const ruleExtra = this.configs.csExtraCfgs.get(this.editForm.data.csId)
+        const endMethod = this.configs.csEndMethodCfgs.get(this.editForm.data.csId)
 
-        if (this.editForm.data.opentMatchType == 2 && this.editForm.data.opentMatchMember < endNum) {
-          if(ruleExtra == null || ruleExtra.skip_strikeout == 0) { //跳过打立赛事不做数值检查
+        //MTT
+        if (endMethod === RULE_END_MATCH_CFG.END_MATCH_CFG_TIME_AND_USER &&   this.editForm.data.opentMatchType === 2 && this.editForm.data.opentMatchMember < endNum) {
+          if(ruleExtra == null || ruleExtra.rule_skip_type === 1 || ruleExtra.rule_skip_type ===3) { //仅打立 或者 打立+定局
             Message.error('开赛人数不能小于打立出局的结束规则的剩余人数')
             return false
           }
         }
-
-        if (this.editForm.data.opentMatchType == 2 && this.editForm.data.opentMatchMember < promoteNum) {
-          if(ruleExtra == null || ruleExtra.skip_strikeout == 0) { //跳过打立赛事不做数值检查
-            Message.error('开赛人数不能小于打立出局的晋级规则的晋级人数')
+        if (endMethod === RULE_END_MATCH_CFG.END_MATCH_CFG_TIME_AND_USER &&  this.editForm.data.opentMatchType === 2 && this.editForm.data.opentMatchMember < promoteNum) {
+          if(ruleExtra == null || ruleExtra.rule_skip_type ===2 || ruleExtra.rule_skip_type ===3 ) { //定局 或者 打立+定局
+            this.errmsg('开赛人数不能小于打立出局的晋级规则的晋级人数')
             return false
           }
         }
 
-        if (this.editForm.data.opentMatchType == 1) {
+        if (this.editForm.data.opentMatchType === 1) {
           const promotion_user_num = this.configs.reachOutNumCfgs.get(this.editForm.data.csId)
           if (this.editForm.data.opentMatchMember < promotion_user_num) {
             Message.error('开赛人数不能小于定局第一阶段的晋级人数')
@@ -498,7 +500,7 @@ export const matchFormMixin = {
           }
         }
 
-        if (this.editForm.data.opentMatchType == 1 && this.editForm.data.disappearType != 1) {
+        if (this.editForm.data.opentMatchType === 1 && this.editForm.data.disappearType !== 1) {
           Message.error('sng比赛必须开赛后消失')
           return false
         }
@@ -607,7 +609,7 @@ export const matchFormMixin = {
         if (this.editForm.signExtra.reubyExtra.reubyRound === 0 ||
           this.editForm.signExtra.reubyExtra.reubyScores === 0 || this.editForm.signExtra.reubyExtra.reubySecs === 0 ||
           this.editForm.signExtra.reubyExtra.reubyCount === 0) {
-            Message.error('reuby配置有错,请检查')
+          Message.error('reuby配置有错,请检查')
           return false
         }
         // 付费 或者金币or门票
@@ -696,7 +698,7 @@ export const matchFormMixin = {
 
       // Rebuy 道具检测
       if ((this.editForm.signExtra.reubyExtra.rebuySignType === 2 || this.editForm.signExtra.reubyExtra.rebuySignType === 3) &&
-          this.editForm.signExtra.reubyExtra.rebuyPropId > 0) {
+        this.editForm.signExtra.reubyExtra.rebuyPropId > 0) {
         if (!await this.propTakeEffectCheck(this.editForm.signExtra.reubyExtra.rebuyPropId)) {
           Message.error('Rebuy所选择的道具不生效')
           return false
@@ -966,18 +968,18 @@ export const matchFormMixin = {
      * 添加排名奖励
      */
     addRankReward() {
-        let index = 0
-        let maxRank = 0
-        if (this.editForm.rankRewards.length > 0) {
-            index = this.editForm.rankRewards.length
-            for (let i = 0; i < this.editForm.rankRewards.length; i++) {
-                if (this.editForm.rankRewards[i].endRank > maxRank) {
-                    maxRank = this.editForm.rankRewards[i].endRank
-                }
-            }
+      let index = 0
+      let maxRank = 0
+      if (this.editForm.rankRewards.length > 0) {
+        index = this.editForm.rankRewards.length
+        for (let i = 0; i < this.editForm.rankRewards.length; i++) {
+          if (this.editForm.rankRewards[i].endRank > maxRank) {
+            maxRank = this.editForm.rankRewards[i].endRank
+          }
         }
-        index ++
-        maxRank++
+      }
+      index ++
+      maxRank++
       const newReward = {
         index: index,
         startRank: maxRank,
@@ -1075,14 +1077,14 @@ export const matchFormMixin = {
     checkDelaySignUpConfig(){
       if(this.editForm.listExtra.delaySignUpSeconds > 0){
         if(this.editForm.data.opentMatchType === 1){
-          this.errmsg('sng比赛不支持延迟报名')
+          Message.error('sng比赛不支持延迟报名')
           return false
         }
         //如果开启了每日多长循环赛
         if(this.editForm.data.repeatType ===2 && this.editForm.loopDetail.loopData.length >0){
           for(let i=0;i<this.editForm.loopDetail.loopData.length;i++){
             if(this.editForm.loopDetail.loopData[i].intervalSeconds < 30*60) {
-              this.errmsg('每日循环赛的间隔时间不能小于30分钟')
+              Message.error('每日循环赛的间隔时间不能小于30分钟')
               return false
             }
           }
@@ -1090,7 +1092,7 @@ export const matchFormMixin = {
 
         //不同时支持延迟进入 跟延迟报名
         if(this.editForm.data.delayEnterSeconds >0 && this.editForm.listExtra.delaySignUpSeconds >0){
-          this.errmsg('延迟进入时间不能跟延迟报名时间同时配置')
+          Message.error('延迟进入时间不能跟延迟报名时间同时配置')
           return false
         }
         return true

@@ -501,7 +501,6 @@ export default {
           rewardItem.itemNum = 1
         }
       }
-
       let filteredItems = this.propList.filter(item => item.item_type === itemSubType)
       if(IsNewTicketProp(itemSubType)){
         //根据当前道具类型获取对应的门票配置
@@ -534,7 +533,6 @@ export default {
       if (filteredItems === null) {
         return
       }
-
       // 先按 item_name 排序
       const sortedItems = [...filteredItems].sort((a, b) => {
         return a.item_name.localeCompare(b.item_name)

@@ -223,7 +223,7 @@
           <el-form-item v-if="editForm.data.jump_id===4" label="分类跳转" :required="true">
             <el-select v-model="editForm.data.game_id" placeholder="请选择" size="mini" @change="selectMatchConfig(true)">
               <el-option
-                v-for="item in jumpTypeCfgs"
+                v-for="item in MATCH_LIST_TAG_OPTIONS"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -286,10 +286,13 @@ import { $libDate, $libShow } from '@/utils/common'
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
 import Compare from '@/components/Compare'
 import { getAllCommonGameConfig } from '@/utils/common-game-config'
-import {APPID_OPTIONS, CHANNEL_OPTIONS, MATCH_IUPSTREAM_TYPE_OPTIONS, MATCH_UNIQUE_ID_CFG,MATCH_PUSOY_UNIQUE_ID_CFG} from "@/utils/options";
+import {
+  APPID_OPTIONS, CHANNEL_OPTIONS, MATCH_IUPSTREAM_TYPE_OPTIONS, MATCH_UNIQUE_ID_CFG, MATCH_PUSOY_UNIQUE_ID_CFG,
+  MATCH_LIST_TAG_OPTIONS
+} from "@/utils/options";
 
 export default {
-  components: { Compare, Publish, DateTimeShow, ImagePicker },
+  components: { Compare, Publish, DateTimeShow, ImagePicker, },
   data() {
     return {
       activeTab: 'base',
@@ -346,12 +349,13 @@ export default {
        // { 'value': 3, 'label': '跳转比赛详情' },
         { 'value': 4, 'label': '跳转分类' },
       ],
-      jumpTypeCfgs: [
-        { 'value': 1, 'label': 'Events' },
-        { 'value': 2, 'label': 'Free' },
-        { 'value': 3, 'label': 'PRO ARENA ' },
-        { 'value': 4, 'label': 'GTCC' },
-      ],
+      // jumpTypeCfgs: [
+      //   { 'value': 1, 'label': 'Events' },
+      //   { 'value': 2, 'label': 'Free' },
+      //   { 'value': 3, 'label': 'PRO ARENA ' },
+      //   { 'value': 4, 'label': 'TPCC' },
+      //   { 'value': 5, 'label': 'TPCC Events' },
+      // ],
       statusCfgs: [
         { "value": false, "label": "关闭" },
         { "value": true, "label": "开启" },
@@ -362,6 +366,7 @@ export default {
       MATCH_UNIQUE_ID_CFG,
       CHANNEL_OPTIONS,
       MATCH_PUSOY_UNIQUE_ID_CFG,
+      MATCH_LIST_TAG_OPTIONS,
     }
   },
   computed: {

@@ -4,10 +4,11 @@
       <publish
         primary-key="matchCfgId"
         key-id="MatchConfigPusoy"
-        :env-empty="true"
+        :env-empty="false"
         :attr-names="AttrNames"
         :make-content="makeContent"
         :head-attrs="headAttrs"
+        compare-type="Array"
       />
     </el-row>
     <el-row>
