@@ -1408,8 +1408,8 @@ export default {
           })
           if (isNewTicket) {
             this.matchTicketsCfgs.push({
-              label: showName,
-              value: item.id,
+              propsId: item.id,
+              propsName: showName,
               propsAppId: appId,
               propsType: item.item_type
             })
