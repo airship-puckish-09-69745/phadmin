@@ -43,6 +43,8 @@ export const MATCH_TICKET_RIGHTS_ID_CFG_DEV = {
     { 'ticketId': 588, 'sceneId': 208, 'label': '第三周S5日赛门票' },
     { 'ticketId': 589, 'sceneId': 209, 'label': '第四周S5日赛门票' },
     { 'ticketId': 590, 'sceneId': 210, 'label': '第五周S5日赛门票' },
+    { 'ticketId': 646, 'sceneId': 211, 'label': 'Tongits-646门票P10 ' },
+    { 'ticketId': 648, 'sceneId': 212, 'label': 'Pusoy-648门票P10 ' },
   ],
 
   1000003: [
