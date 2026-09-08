@@ -1295,6 +1295,18 @@ export const asyncRoutes = [
                 meta: { title: 'B ountyRaid' }
               },
               {
+                path: 'talareyessouthseapearls_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/talareyessouthseapearls_slots_cfg'),
+                name: 'talareyessouthseapearls_slots_cfg',
+                meta: { title: 'T alaReyesSouthSeaPearls' }
+              },
+              {
+                path: 'lightofmactan_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/lightofmactan_slots_cfg'),
+                name: 'lightofmactan_slots_cfg',
+                meta: { title: 'L ightOfMactan' }
+              },
+              {
                 path: 'candyburst_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/candyburst_slots_cfg'),
                 name: 'candyburst_slots_cfg',
@@ -3276,6 +3288,18 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'bountyraid_slots_log',
             meta: { title: 'B ountyRaid', gid: 192 }
+          },
+          {
+            path: 'talareyessouthseapearls_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'talareyessouthseapearls_slots_log',
+            meta: { title: 'T alaReyesSouthSeaPearls', gid: 246 }
+          },
+          {
+            path: 'lightofmactan_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'lightofmactan_slots_log',
+            meta: { title: 'L ightOfMactan', gid: 250 }
           },
           {
             path: 'candyburst_slots_log',
