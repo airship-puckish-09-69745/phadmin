@@ -384,16 +384,19 @@ export default {
     handleDialogClose() {
       this.$emit('close')
     },
+    // 将值转换为安全的 JSON 对象，若无法解析则返回默认值
     safeJson(val, def) {
       if (typeof val === 'string') {
         try { return JSON.parse(val) } catch (e) { return def }
       }
       return (val !== null && val !== undefined) ? val : def
     },
+    // 将值转换为安全的数字，若无法转换则返回默认值
     toSafeNumber(val, def = 0) {
       const num = Number(val)
       return Number.isFinite(num) ? num : def
     },
+    // 验证数字输入，支持整数/范围验证
     validateNumber(val, label, { min = 0, max = MAX_AMOUNT, integer = false } = {}) {
       const num = Number(val)
       if (!Number.isFinite(num)) {
@@ -410,6 +413,7 @@ export default {
       }
       return true
     },
+    // 验证用户配置
     validateUserConfig() {
       const userConfig = this.item.userConfig || defaultUserConfig()
       const userType = Array.isArray(userConfig.userTypes) && userConfig.userTypes.length > 0 ? userConfig.userTypes[0] : 2
