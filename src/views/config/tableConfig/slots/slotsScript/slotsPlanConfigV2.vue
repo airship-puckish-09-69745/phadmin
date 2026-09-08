@@ -169,35 +169,38 @@
 <!--            </el-checkbox-group>-->
 <!--          </el-form-item>-->
           <el-form-item label="用户标签">
-            <div class="user-tags-container">
-              <div
-                v-for="(tag, index) in userTags"
-                :key="tag.value"
-                :class="['user-tag-item', index % 2 === 0 ? 'left-column' : 'right-column']"
-              >
-                <el-checkbox
-                  v-model="selectedUserTags"
-                  :label="tag.value"
-                  :value="tag.value"
-                  @change="handleUserTagChange(tag.value, $event)"
+            <div class="user-tags-scroll-container">
+              <div class="user-tags-container">
+                <div
+                  v-for="(tag, index) in userTags"
+                  :key="tag.value"
+                  :class="['user-tag-item', index % 2 === 0 ? 'left-column' : 'right-column', { 'full-width-tag': isTagManyLevel(tag.value) && isTagSelected(tag.value) }]"
                 >
-                  {{ tag.label }}
-                </el-checkbox>
-                <el-checkbox-group
-                  v-if="!isBoolTag(tag.value) && isTagSelected(tag.value)"
-                  v-model="tagValues[tag.value]"
-                  :min="1"
-                  class="inline-checkbox-group"
-                >
-                  <el-checkbox :label="1" :value="1">轻度</el-checkbox>
-                  <el-checkbox :label="2" :value="2">中度</el-checkbox>
-                  <el-checkbox :label="3" :value="3">重度</el-checkbox>
-                </el-checkbox-group>
+                  <el-checkbox
+                    v-model="selectedUserTags"
+                    :label="tag.value"
+                    :value="tag.value"
+                    @change="handleUserTagChange(tag.value, $event)"
+                  >
+                    {{ tag.label }}
+                  </el-checkbox>
+                  <el-checkbox-group
+                    v-if="!isBoolTag(tag.value) && isTagSelected(tag.value)"
+                    v-model="tagValues[tag.value]"
+                    :min="1"
+                    class="inline-checkbox-group"
+                  >
+                    <el-checkbox v-for="(val, index) in tag.grade" :key="index" :label="index + 1" :value="index + 1">{{ showTagName(tag.value, index + 1) }}</el-checkbox>
+                  </el-checkbox-group>
+                </div>
               </div>
             </div>
           </el-form-item>
           <el-form-item label="流量控制(权重)">
             <el-input v-model.number="addFormData.ScriptRuleDescription.TrafficCtrl" placeholder=" " />
+          </el-form-item>
+          <el-form-item label="掐头下注次数">
+            <el-input v-model.number="addFormData.ScriptRuleDescription.PlanFixedSpin" placeholder="" />
           </el-form-item>
           <fieldset>
             <legend>方案切换配置</legend>
@@ -251,35 +254,54 @@
             </el-checkbox-group>
           </el-form-item>
           <el-form-item label="用户标签">
-            <div class="user-tags-container">
-              <div
-                v-for="(tag, index) in userTags"
-                :key="tag.value"
-                :class="['user-tag-item', index % 2 === 0 ? 'left-column' : 'right-column']"
+            <div class="filter-buttons">
+              <el-button
+                size="mini"
+                :type="filterType === 'all' ? 'primary' : 'default'"
+                @click="filterType = 'all'"
               >
-                <el-checkbox
-                  v-model="selectedUserTags"
-                  :label="tag.value"
-                  :value="tag.value"
-                  @change="handleUserTagChange(tag.value, $event)"
+                显示全部
+              </el-button>
+              <el-button
+                size="mini"
+                :type="filterType === 'selected' ? 'primary' : 'default'"
+                @click="filterType = 'selected'"
+              >
+                显示已选
+              </el-button>
+            </div>
+            <div class="user-tags-scroll-container">
+              <div class="user-tags-container">
+                <div
+                  v-for="(tag, index) in filteredUserTags"
+                  :key="tag.value"
+                  :class="['user-tag-item', index % 2 === 0 ? 'left-column' : 'right-column', { 'full-width-tag': isTagManyLevel(tag.value) && isTagSelected(tag.value) }]"
                 >
-                  {{ tag.label }}
-                </el-checkbox>
-                <el-checkbox-group
-                  v-if="!isBoolTag(tag.value) && isTagSelected(tag.value)"
-                  v-model="tagValues[tag.value]"
-                  :min="1"
-                  class="inline-checkbox-group"
-                >
-                  <el-checkbox :label="1" :value="1">轻度</el-checkbox>
-                  <el-checkbox :label="2" :value="2">中度</el-checkbox>
-                  <el-checkbox :label="3" :value="3">重度</el-checkbox>
-                </el-checkbox-group>
+                  <el-checkbox
+                    v-model="selectedUserTags"
+                    :label="tag.value"
+                    :value="tag.value"
+                    @change="handleUserTagChange(tag.value, $event)"
+                  >
+                    {{ tag.label }}
+                  </el-checkbox>
+                  <el-checkbox-group
+                    v-if="!isBoolTag(tag.value) && isTagSelected(tag.value)"
+                    v-model="tagValues[tag.value]"
+                    :min="1"
+                    class="inline-checkbox-group"
+                  >
+                    <el-checkbox v-for="(val, index) in tag.grade" :key="index" :label="index + 1" :value="index + 1">{{ showTagName(tag.value, index + 1) }}</el-checkbox>
+                  </el-checkbox-group>
+                </div>
               </div>
             </div>
           </el-form-item>
           <el-form-item label="流量控制(权重)">
             <el-input v-model.number="editFormData.ScriptRuleDescription.TrafficCtrl" placeholder=" " />
+          </el-form-item>
+          <el-form-item label="掐头下注次数">
+            <el-input v-model.number="editFormData.ScriptRuleDescription.PlanFixedSpin" placeholder="" />
           </el-form-item>
           <fieldset>
             <legend>方案切换配置</legend>
@@ -793,6 +815,7 @@ export default {
   components: { MultiAppSelectDialog, ShowTip, Compare, Publish, BetAmount, MoneyInput },
   data() {
     return {
+      filterType: 'all', // 筛选类型：'all'显示全部，'selected'显示已选
       showItem: {
         SlotsType: 0,
         Plans: []
@@ -820,14 +843,17 @@ export default {
       },
       detailVisible: false,
       slotCfg: {},
-      localSubKeyMap: { ...SubKeyMap },
+      localSubKeyMap: {
+        ...SubKeyMap,
+        100246: 'talareyessouthseapearls_slots_base'
+      },
       addDialogVisible: false,
       addFormData: {
         PlanId: 0,
         PlanName: '',
         IsDefault: 0,
         IsDisabled: 0,
-        ScriptRuleDescription: { Platform: '', UserType: 0, TrafficCtrl: 0, PlatformList: [], UserTagRules: [] },
+        ScriptRuleDescription: { Platform: '', UserType: 0, TrafficCtrl: 0, PlatformList: [], UserTagRules: [], PlanFixedSpin: 0 },
         SwitchRule: { StatDays: 0, SpinMin: 0, BetMin: 0, TargetPlanId: 0 }
       },
       editDialogVisible: false,
@@ -836,7 +862,7 @@ export default {
         PlanName: '',
         IsDefault: 0,
         IsDisabled: 0,
-        ScriptRuleDescription: { Platform: '', UserType: 0, TrafficCtrl: 0, PlatformList: [], UserTagRules: [] },
+        ScriptRuleDescription: { Platform: '', UserType: 0, TrafficCtrl: 0, PlatformList: [], UserTagRules: [], PlanFixedSpin: 0 },
         SwitchRule: { StatDays: 0, SpinMin: 0, BetMin: 0, TargetPlanId: 0 }
       },
       editIndex: -1,
@@ -910,12 +936,14 @@ export default {
 
       AdditionalArray: [
         { key: 100180, label: 'Fishing Master(额外加注)' },
-        { key: 100186, label: 'Mahjong Jackpot(额外加注)' }
+        { key: 100186, label: 'Mahjong Jackpot(额外加注)' },
+        { key: 100246, label: 'Tala Reyes South Sea Pearls(额外加注)' }
       ],
 
       scriptPlanVolatilityStat: {},
       selectedUserTags: [],
       tagValues: {},
+      tagsConfig: [],
       userTags: [
         { 'value': 50001, 'label': 'Slots新增用户' },
         { 'value': 50002, 'label': 'Slots登录天数' },
@@ -958,6 +986,13 @@ export default {
     }
   },
   computed: {
+    // 根据筛选类型过滤用户标签
+    filteredUserTags() {
+      if (this.filterType === 'selected') {
+        return this.userTags.filter(tag => this.selectedUserTags.includes(tag.value))
+      }
+      return this.userTags
+    },
     currentScriptViewEntries() {
       return Object.entries(this.displayScriptViewMap || {}).map(([key, value]) => ({
         key,
@@ -972,6 +1007,7 @@ export default {
   created() {
     this.fetchData()
     this.getAppInfos()
+    this.getTagConfig()
   },
   methods: {
     async fetchData() {
@@ -1143,7 +1179,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           for (let i = 0; i < response.Data.length; i++) {
-            if (response.Data[i].Gid < 50 || response.Data[i].Gid > 100 && response.Data[i].Gid < 150 || (response.Data[i].Gid > 499 && response.Data[i].Gid !== 1236)) {
+            if (response.Data[i].Gid < 50 || response.Data[i].Gid > 100 && response.Data[i].Gid < 150 || (response.Data[i].Gid > 499 && response.Data[i].Gid !== 1236 && response.Data[i].Gid !== 1237 && response.Data[i].Gid !== 1242)) {
               continue
             }
             this.gameOptions.push({
@@ -1167,6 +1203,42 @@ export default {
       for (const o of this.AdditionalArray) {
         this.gameOptions.push(o)
       }
+    },
+    getTagConfig() {
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Path: '/thirdparties/tag/config'
+        }
+      }).then(response => {
+        if (response.RetCode !== 0 || !Array.isArray(response.Data)) {
+          return
+        }
+        response.Data.sort((a, b) => a.id - b.id)
+        this.tagsConfig = []
+        for (const o of response.Data) {
+          if (o.tagId >= 50000) {
+            this.tagsConfig.push(o)
+          }
+        }
+        this.updateUserTags()
+      })
+    },
+    updateUserTags() {
+      this.userTags = []
+      for (const o of this.tagsConfig) {
+        if (o.tagGid > 0 && o.tagGid !== this.queryGid) {
+          continue
+        }
+        const attr = JSON.parse(o.tagAttr)
+        this.userTags.push({
+          value: o.tagId,
+          label: o.tagName,
+          grade: attr.grade
+        })
+      }
+      this.userTags.sort((a, b) => a.value - b.value)
     },
 
     checkedBoxChange(a) {
@@ -1209,6 +1281,7 @@ export default {
     },
     async queryKeyInput() {
       this.appId = store.getters.appId
+      this.updateUserTags()
       await this.getData(true)
     },
     newItem() {
@@ -1231,7 +1304,7 @@ export default {
         Versions: [
 
         ],
-        ScriptRuleDescription: { Platform: '', UserType: 0, TrafficCtrl: 0, PlatformList: [], UserTagRules: [] },
+        ScriptRuleDescription: { Platform: '', UserType: 0, TrafficCtrl: 0, PlatformList: [], UserTagRules: [], PlanFixedSpin: 0 },
         SwitchRule: { StatDays: 0, SpinMin: 0, BetMin: 0, TargetPlanId: 0 }
       }
     },
@@ -1283,6 +1356,9 @@ export default {
         IsDisabled: row.IsDisabled,
         ScriptRuleDescription: row.ScriptRule,
         SwitchRule: row.SwitchRule || this.addFormData.SwitchRule
+      }
+      if (typeof this.editFormData.ScriptRuleDescription.PlanFixedSpin === 'undefined') {
+        this.$set(this.editFormData.ScriptRuleDescription, 'PlanFixedSpin', 0)
       }
       this.editIndex = idx
 
@@ -1554,7 +1630,7 @@ export default {
               }
             }
           ],
-          ScriptRule: { Platform: '', UserType: 0, TrafficCtrl: 0, PlatformList: [] }
+          ScriptRule: { Platform: '', UserType: 0, TrafficCtrl: 0, PlatformList: [], UserTagRules: [], PlanFixedSpin: 0 }
         }
       ]
     },
@@ -2128,8 +2204,17 @@ export default {
     isTagSelected(tagValue) {
       return this.selectedUserTags.includes(tagValue)
     },
+    isTagManyLevel(tagId) {
+      return tagId >= 50010 && tagId < 50040
+    },
     isBoolTag(tagId) {
       return tagId === 50001 || tagId === 50008
+    },
+    showTagName(tagId, grade) {
+      if (this.isTagManyLevel(tagId)) {
+        return grade + '级'
+      }
+      return grade === 1 ? '轻度' : (grade === 2 ? '中度' : '重度')
     },
     // 处理用户标签变化
     handleUserTagChange(tagId, isSelected) {
@@ -2138,6 +2223,8 @@ export default {
         if (!this.tagValues[tagId]) {
           if (this.isBoolTag(tagId)) {
             this.$set(this.tagValues, tagId, [0])
+          } else if (this.isTagManyLevel(tagId)) {
+            this.$set(this.tagValues, tagId, [this.userTags.find(tag => tag.value === tagId).grade.length])
           } else {
             this.$set(this.tagValues, tagId, [3])
           }
@@ -2177,6 +2264,14 @@ export default {
           }
         }
       }
+    },
+    showUserTag(tag) {
+      for (const item of this.userTags) {
+        if (item.value === tag) {
+          return item.label
+        }
+      }
+      return '未知:' + tag
     },
     onAppIdChange() {
       if (this.appId === 0) {
@@ -2522,14 +2617,27 @@ tr:hover {
   background-color: #f5f5f5;
 }
 
+.full-width-tag {
+  width: 100% !important;
+  padding-right: 0 !important;
+  padding-left: 0 !important;
+}
+
+.user-tags-scroll-container {
+  max-height: 600px;
+  padding: 0 12px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
 /* 用户标签两列布局 */
 .user-tags-container {
   display: flex;
   flex-wrap: wrap;
   width: 100%;
-  border: 1px solid #ddd;
-  padding-left: 12px;
-  border-radius: 4px;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
 .user-tag-item {
@@ -2556,6 +2664,14 @@ tr:hover {
 .inline-checkbox-group .el-checkbox {
   margin-right: 15px;
   white-space: nowrap;
+}
+
+.filter-buttons {
+  margin-bottom: 10px;
+}
+
+.filter-buttons .el-button {
+  margin-right: 10px;
 }
 
 .multi-app-script-title {

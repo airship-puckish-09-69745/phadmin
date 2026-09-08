@@ -249,6 +249,7 @@ export default {
       gameCfgs: [
         { 'value': 2031, 'label': 'tongits' },
         { 'value': 2033, 'label': 'pusoy' },
+        { 'value': 236, 'label': '返水活动-Pacquiao Fortune' },
       ],
       PlaySequence: [
         { 'value': 0, 'label': '第一条随机播放' },
@@ -493,7 +494,7 @@ export default {
 
     },
     goToExternalSite() {
-      window.open('http://192.168.8.2:4000/', '_blank');
+      window.open('http://192.168.6.69:4000/', '_blank');
     },
     handleContentLength(str) {
       const matches = str.match(/<[^>]+>/g);

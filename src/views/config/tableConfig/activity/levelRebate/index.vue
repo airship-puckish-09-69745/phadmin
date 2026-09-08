@@ -25,7 +25,7 @@
         @sort-change="sortChange"
       >
         <el-table-column prop="id" label="ID" sortable="custom" width="80" />
-        <el-table-column prop="activityName" label="活动名称" min-width="120" show-overflow-tooltip />
+        <el-table-column prop="activityName" label="活动名称" min-width="120" align="center" show-overflow-tooltip />
         <el-table-column prop="isOpen" label="活动开关" width="80" align="center">
           <template slot-scope="scope">
             <el-tag :type="scope.row.isOpen ? 'success' : 'info'" size="mini">{{ scope.row.isOpen ? '开' : '关' }}</el-tag>
@@ -54,10 +54,12 @@
         <el-table-column prop="modifyUser" label="最后修改人" width="200" show-overflow-tooltip align="center" />
         <el-table-column prop="status" label="状态" width="80" align="center">
           <template slot-scope="scope">
-            <el-tag :type="statusTagType[scope.row.status]" size="mini">{{ statusNames[scope.row.status] || scope.row.status }}</el-tag>
+            <el-tag :type="statusTagType[scope.row.status]" size="mini">
+              {{ statusNames[scope.row.status] || scope.row.status }}
+            </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" column-key="op" fixed="right" align="center" width="300">
+        <el-table-column label="操作" column-key="op" fixed="right" min-width="220">
           <template slot-scope="scope">
             <el-button size="mini" type="primary" icon="el-icon-edit" @click="handleEdit(scope.row)">编辑</el-button>
             <el-button v-if="scope.row.status !== 2" size="mini" type="success" icon="el-icon-upload2" @click="handlePrepare(scope.row)">上架</el-button>

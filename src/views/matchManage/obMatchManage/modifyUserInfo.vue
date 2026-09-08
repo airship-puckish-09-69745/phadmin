@@ -186,7 +186,7 @@ export default {
             if(rows[2]){
               rows[2] = cndUrl + rows[2] +"?="+Date.now()/1000 //加上cdn资源地址前缀
             }
-            this.tableData.push({'Uid':rows[0],'Nick':rows[1],'Image':rows[2]
+            this.tableData.push({'Uid':rows[0],'Nick':String(rows[1]),'Image':rows[2]
             })
           }
         }

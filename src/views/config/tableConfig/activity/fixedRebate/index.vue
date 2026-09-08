@@ -26,7 +26,7 @@
         @sort-change="sortChange"
       >
         <el-table-column prop="id" label="ID" sortable="custom" width="80"/>
-        <el-table-column prop="activityName" label="活动名称" min-width="120" show-overflow-tooltip/>
+        <el-table-column prop="activityName" label="活动名称" min-width="120" align="center" show-overflow-tooltip/>
         <el-table-column prop="isOpen" label="活动开关" width="80" align="center">
           <template slot-scope="scope">
             <el-tag :type="scope.row.isOpen ? 'success' : 'info'" size="mini">{{
@@ -71,15 +71,9 @@
         <el-table-column label="操作" column-key="op" fixed="right" min-width="220">
           <template slot-scope="scope">
             <el-button size="mini" type="primary" icon="el-icon-edit" @click="handleEdit(scope.row)">编辑</el-button>
-            <el-button v-if="scope.row.status !== 2" size="mini" type="success" icon="el-icon-upload2"
-                       @click="handlePrepare(scope.row)">上架
-            </el-button>
-            <el-button v-if="scope.row.status !== 2" size="mini" type="danger" icon="el-icon-delete"
-                       @click="handleDelete(scope.row)">删除
-            </el-button>
-            <el-button v-if="scope.row.status === 2" size="mini" type="danger" icon="el-icon-download"
-                       @click="handleOffline(scope.row)">下架
-            </el-button>
+            <el-button v-if="scope.row.status !== 2" size="mini" type="success" icon="el-icon-upload2" @click="handlePrepare(scope.row)">上架</el-button>
+            <el-button v-if="scope.row.status !== 2" size="mini" type="danger" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
+            <el-button v-if="scope.row.status === 2" size="mini" type="danger" icon="el-icon-download" @click="handleOffline(scope.row)">下架</el-button>
           </template>
         </el-table-column>
       </el-table>
