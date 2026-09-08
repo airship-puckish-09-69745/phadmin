@@ -141,9 +141,9 @@
     <el-form-item v-if="editForm.data.opentMatchType==2" label="提前进入时间(秒)：" :required="true">
       <el-input v-model.number="editForm.data.preEnterSeconds" style="width: 200px;" placeholder="请填写提前进入时间" />
     </el-form-item>
-    <el-form-item v-if="editForm.data.opentMatchType==2" label="延迟进入时间(秒)：" :required="true">
+    <!--<el-form-item v-if="editForm.data.opentMatchType==2" label="延迟进入时间(秒)：" :required="true">
       <el-input v-model.number="editForm.data.delayEnterSeconds" style="width: 200px;" placeholder="请填写延迟进入时间" />
-    </el-form-item>
+    </el-form-item> -->
     <el-form-item v-if="editForm.data.opentMatchType===2" label="延迟报名时间(秒)：" :required="true">
          <el-input v-model.number="editForm.listExtra.delaySignUpSeconds" style="width: 200px;" placeholder="请填写延迟报名时间" />
       <span style="color: #409eff; margin-left: 10px;"> 延迟报名时间需要小于等于Rebuy时间加额外的10秒 </span>

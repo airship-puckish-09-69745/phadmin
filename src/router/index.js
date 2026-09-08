@@ -2501,7 +2501,7 @@ export const asyncRoutes = [
         path: 'matchType',
         component: () => import('@/views/empty'),
         redirect: 'noRedirect',
-        hidden: process.env.NODE_ENV === 'development',
+       // hidden: process.env.NODE_ENV === 'development',
         meta: { title: '赛事管理', noCache: true },
         children: [
           {
@@ -2647,25 +2647,25 @@ export const asyncRoutes = [
             meta: { title: 'kyc配置', noCache: true }
           },
           {
-            path: 'matchTpcc',
+            path: 'matchS5',
             component: () => import('@/views/empty'),
-            name: 'matchTPCCPrize',
-            meta: { title: 'TPCC配置', noCache: true },
+            name: 'matchS5',
+            meta: { title: 'S5配置', noCache: true },
             children: [
               {
-                path: 'matchTPCCPrize',
-                component: () => import('@/views/matchManage/matchOperations/matchTpcc/matchGtccPrize.vue'),
-                name: 'matchTPCCPrize',
-                meta: { title: 'TPCC邀请函配置', noCache: true }
+                path: 's5',
+                component: () => import('@/views/matchManage/matchOperations/matchS5/s5.vue'),
+                name: 's5',
+                meta: { title: 'S5配置', noCache: true }
               },
-              {
-                path: 'matchGtccConfig',
-                component: () => import('@/views/matchManage/matchOperations/matchTpcc/matchGtccConfig.vue'),
-                name: 'matchGtccConfig',
-                meta: { title: 'TPCC赛事时间配置', noCache: true }
-              }
             ]
-          }
+          },
+          {
+            path: 'onlineObConfig',
+            component: () => import('@/views/matchManage/matchOperations/onlineOb.vue'),
+            name: 'onlineObConfig',
+            meta: { title: '线上OB', noCache: true }
+          },
 
         ]
       },
