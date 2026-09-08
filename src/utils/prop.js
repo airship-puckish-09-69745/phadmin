@@ -2,7 +2,9 @@
 
 // slotGameConfig
 import { PROP_TYPE_OPTIONS } from '@/utils/options'
-import { IsProd } from '@/utils/env'
+import {IsDev, IsProd, IsUat} from '@/utils/env'
+import request from '@/utils/request'
+import store from "@/store";
 
 // 走配置
 export const SLOT_GAME_CONFIG = [
@@ -41,6 +43,8 @@ export const MATCH_TICKET_RIGHTS_ID_CFG_DEV = {
     { 'ticketId': 588, 'sceneId': 208, 'label': '第三周S5日赛门票' },
     { 'ticketId': 589, 'sceneId': 209, 'label': '第四周S5日赛门票' },
     { 'ticketId': 590, 'sceneId': 210, 'label': '第五周S5日赛门票' },
+    { 'ticketId': 646, 'sceneId': 211, 'label': 'Tongits-646门票P10 ' },
+    { 'ticketId': 648, 'sceneId': 212, 'label': 'Pusoy-648门票P10 ' },
   ],
 
   1000003: [
@@ -50,24 +54,9 @@ export const MATCH_TICKET_RIGHTS_ID_CFG_DEV = {
   ]
 }
 
-
-
-//uat 线上配置
-export const MATCH_TICKET_RIGHTS_ID_CFG_PROD = {
-  1000002: [ // PROP_TYPE_TICKET_NEW
-    { 'ticketId': 347, 'sceneId': 200, 'label': 'UAT Tongtis 1000002 测试门票' },
-    { 'ticketId': 355, 'sceneId': 201, 'label': '新版Pusy门票-1000002' },
-    { 'ticketId': 521, 'sceneId': 202, 'label': '新版德州门票UAT用-1000002' },
-
-    { 'ticketId': 602, 'sceneId': 203, 'label': 'tongits 内部正式S5日赛门票w1' },
-    { 'ticketId': 603, 'sceneId': 204, 'label': 'tongits 内部正式S5日赛门票w2' },
-    { 'ticketId': 604, 'sceneId': 205, 'label': 'tongits 内部正式S5日赛门票w3' },
-    { 'ticketId': 605, 'sceneId': 206, 'label': 'tongits 内部正式S5日赛门票w4' },
-    { 'ticketId': 606, 'sceneId': 207, 'label': 'tongits 内部正式S5日赛门票w5' },
-    { 'ticketId': 607, 'sceneId': 208, 'label': 'tongits 内部正式S5半决赛门票' },
-    { 'ticketId': 608, 'sceneId': 209, 'label': 'tongits 内部正式S5决赛邀请函' },
-
-  ],
+//UAT门票配置
+export const MATCH_TICKET_RIGHTS_ID_CFG_UAT = {
+  10000002:[],
   1000003: [ // PROP_TYPE_TICKET_NEW
     { 'ticketId': 322, 'sceneId': 200, 'label': 'Tongits新版门票 带唯一ID-322'  },
     { 'ticketId': 343, 'sceneId': 201, 'label': 'Texas测试新版德州门票带唯一ID-343' },
@@ -94,6 +83,24 @@ export const MATCH_TICKET_RIGHTS_ID_CFG_PROD = {
     { 'ticketId':599 , 'sceneId': 227, 'label': 'S5 Daily Ticket Week 5'  },
     { 'ticketId':600 , 'sceneId': 228, 'label': 'S5 Semi-Finals Ticket'  },
     { 'ticketId':601 , 'sceneId': 229, 'label': 'S5 Grand Finals Invitation'  },
+
+  ],
+}
+
+//线上配置
+export const MATCH_TICKET_RIGHTS_ID_CFG_PROD = {
+  1000002: [ // PROP_TYPE_TICKET_NEW
+    { 'ticketId': 347, 'sceneId': 200, 'label': 'UAT Tongtis 1000002 测试门票' },
+    { 'ticketId': 355, 'sceneId': 201, 'label': '新版Pusy门票-1000002' },
+    { 'ticketId': 521, 'sceneId': 202, 'label': '新版德州门票UAT用-1000002' },
+
+    { 'ticketId': 602, 'sceneId': 203, 'label': 'tongits 内部正式S5日赛门票w1' },
+    { 'ticketId': 603, 'sceneId': 204, 'label': 'tongits 内部正式S5日赛门票w2' },
+    { 'ticketId': 604, 'sceneId': 205, 'label': 'tongits 内部正式S5日赛门票w3' },
+    { 'ticketId': 605, 'sceneId': 206, 'label': 'tongits 内部正式S5日赛门票w4' },
+    { 'ticketId': 606, 'sceneId': 207, 'label': 'tongits 内部正式S5日赛门票w5' },
+    { 'ticketId': 607, 'sceneId': 208, 'label': 'tongits 内部正式S5半决赛门票' },
+   { 'ticketId': 608, 'sceneId': 209, 'label': 'tongits 内部正式S5决赛邀请函' },
 
   ],
   1000005: [
@@ -146,13 +153,15 @@ export const MATCH_TICKET_RIGHTS_ID_CFG_PROD = {
 
 // 获取比赛门票权益ID列表
 export const GetMatchTicketRightsIdList = (appId) => {
-  if (IsProd()) {
-    return MATCH_TICKET_RIGHTS_ID_CFG_PROD[appId] || []
-  } else {
+  if (IsDev()) {
     return MATCH_TICKET_RIGHTS_ID_CFG_DEV[appId] || []
+  } else  if (IsUat()) {
+    return MATCH_TICKET_RIGHTS_ID_CFG_UAT[appId] || []
+  } else if (IsProd()) {
+    return MATCH_TICKET_RIGHTS_ID_CFG_PROD[appId] || []
   }
+  return []
 }
-
 // 是否是新版本门票
 export const IsNewTicketProp = (itemType) => {
   return [
@@ -179,6 +188,15 @@ export const IsAvatarFrameProp = (itemType) => {
   ].includes(itemType)
 }
 
+//是否为freeSpin
+export const IsFreeSpinProp = (itemType) => {
+  return  itemType === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN
+}
+
+//是否为互动道具
+export const IsEffectProp = (itemType) => {
+  return itemType === PROP_TYPE_OPTIONS.PROP_TYPE_INTERACTION
+}
 // 检查是否需要过期天数
 export const CheckPropNeedExpireDays = (itemType) => {
   return [
