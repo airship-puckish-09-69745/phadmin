@@ -86,6 +86,11 @@ export default {
     categoryIds: {
       type: Array,
       default: () => [2] // 默认只显示 Poker
+    },
+    // 指定需要展示的游戏ID
+    gameIds: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
@@ -203,6 +208,12 @@ export default {
 
     /**
      * 获取所有游戏列表并构建树结构
+     *
+     * 过滤规则：
+     * 1. ShowDatacenter 必须为 1
+     * 2. Gid 不能在 filterGameIds 中
+     * 3. CategoryID 必须在 categoryIds 中
+     * 4. 如果指定了 gameIds，则只展示 gameIds 中的游戏
      */
     getGameAll() {
       request({
@@ -218,14 +229,33 @@ export default {
           // 按游戏类别分组
           for (let i = 0; i < objs.length; i++) {
             const obj = objs[i]
-            if (obj.ShowDatacenter !== 1 || this.filterGameIds.indexOf(obj.Gid) >= 0) {
+
+            // 过滤掉不展示的数据中心游戏
+            if (obj.ShowDatacenter !== 1) {
+              continue
+            }
+
+            // 过滤指定的游戏ID
+            if (this.filterGameIds.indexOf(obj.Gid) >= 0) {
               continue
             }
 
             // 只保留指定的 CategoryID
-            if (!this.categoryIds.includes(obj.CategoryID)) continue
+            if (!this.categoryIds.includes(obj.CategoryID)) {
+              continue
+            }
 
-            const game = { Gid: obj.Gid, Name: obj.Name, Description: obj.Description }
+            // 如果指定了 gameIds，则只展示指定的游戏
+            if (this.gameIds.length > 0 && !this.gameIds.includes(obj.Gid)) {
+              continue
+            }
+
+            const game = {
+              Gid: obj.Gid,
+              Name: obj.Name,
+              Description: obj.Description
+            }
+
             if (Object.prototype.hasOwnProperty.call(data, obj.CategoryID)) {
               data[obj.CategoryID].push(game)
             } else {
@@ -233,27 +263,48 @@ export default {
             }
           }
 
+          // 游戏类别
+          const categories = {
+            1: 'Slot',
+            2: 'Poker',
+            3: 'Casino'
+          }
+
           // 构建游戏树结构
-          const categories = { 1: 'Slot', 2: 'Poker', 3: 'Casino' }
           const builtTree = []
 
           for (const key in data) {
             const games = data[key]
-            const cty = { id: 'p-' + key, label: categories[key], children: [] }
+
+            const cty = {
+              id: 'p-' + key,
+              label: categories[key],
+              children: []
+            }
+
             for (let i = 0; i < games.length; i++) {
               const game = games[i]
-              cty.children.push({ id: game.Gid, label: game.Name })
+
+              cty.children.push({
+                id: game.Gid,
+                label: game.Name
+              })
             }
+
             builtTree.push(cty)
           }
 
+          // 保存完整树数据
           this.allTreeData = builtTree
+
+          // 保存当前展示的树数据
           this.treeData = builtTree
 
           // 设置已选中的游戏
           this.$nextTick(() => {
             if (this.$refs.tree && this.internalValue) {
               this.$refs.tree.setCheckedKeys(this.internalValue)
+
               this.$nextTick(() => {
                 this.restoreExpandedState()
               })
