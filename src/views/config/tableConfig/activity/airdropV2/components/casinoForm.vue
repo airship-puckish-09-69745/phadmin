@@ -73,6 +73,7 @@
                 v-model="item.gameIdList"
                 label="Casino游戏："
                 :category-ids="[3]"
+                :game-ids="[500,138,501,143]"
               />
             </el-col>
           </el-row>
