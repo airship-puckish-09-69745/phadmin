@@ -636,7 +636,13 @@ import {
   APPID_OPTIONS,
   MATCH_IUPSTREAM_TYPE_OPTIONS
 } from "@/utils/options";
-import {IsNewTicketProp, MATCH_TICKET_RIGHTS_ID_CFG_PROD, MATCH_TICKET_RIGHTS_ID_CFG_DEV} from "@/utils/prop";
+import {
+  IsNewTicketProp,
+  MATCH_TICKET_RIGHTS_ID_CFG_PROD,
+  MATCH_TICKET_RIGHTS_ID_CFG_DEV,
+  GetMatchTicketRightsIdList
+} from "@/utils/prop";
+import {GetPropConfigListFromCache} from "@/utils/propV2";
 
 const filterMap = {}
 
@@ -1337,83 +1343,160 @@ export default {
       }
       return gameName
     },
-    getMatchProps() {
+
+    async getMatchProps() {
       const _this = this
-      request({
-        url: '/dataProxy/info',
-        method: 'get',
-        data: {
-          Env: _this.env,
-          Path: '/match/props/config/list',
-          PropType: 0,
-        }
-      }).then(response => {
-        if (response.RetCode === 0) {
-          const objs = response.Data || {}
-          var timestamp = Date.parse(new Date())/1000
-          if (objs.total > 0) {
-            let ticketConfigList = IsProd() ? MATCH_TICKET_RIGHTS_ID_CFG_PROD : MATCH_TICKET_RIGHTS_ID_CFG_DEV
-            for (let i=0;i<objs.list.length;i++) {
-              let canPush = false
-              let sceneId = 0
-              let appId = 0
-              if(objs.list[i].status ===1 && ((objs.list[i].item_type===PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET && objs.list[i].expire_time>timestamp) ||
-                 [PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW,PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR].includes(objs.list[i].item_type) )) { //类型参考 PROP_TYPE_OPTIONS定义
-                  let str = objs.list[i].item_name
-                  if (objs.list[i].show_name.length > 0) {
-                    str = str + '(' + objs.list[i].show_name + ')'
-                  }
-                  if (IsNewTicketProp(objs.list[i].item_type)) { //如果是新门票 需要检查 门票场景ID 以及门票APPID
-                    if(objs.list[i].item_extra.length <=0){
-                      continue
-                    }
-                    const exitData = JSON.parse(objs.list[i].item_extra)
-                    if(exitData === null || exitData === undefined || exitData.appId === 0 || typeof exitData.appId === 'undefined'){
-                        continue
-                    }
-                    if (!ticketConfigList.hasOwnProperty(exitData.appId)) {
-                      continue
-                    }
-                    let ticket = ticketConfigList[exitData.appId].find(ticket => ticket.ticketId === objs.list[i].id)
-                    if(ticket){
-                      canPush = true
-                      sceneId = ticket.sceneId
-                      appId = exitData.appId
-                    }
-                  }else{
-                    canPush = true
-                  }
+      // 缓存接口已过滤 status=1 及可用道具，这里只组装本页需要的头像框 / 新版门票
+      this.matchPropsCfgs = [{
+        propsId: 0,
+        propsType: 0,
+        propsName: '无',
+        propsIcon: '',
+        propsAttr: '',
+        propsCost: '',
+        propsShowName: '',
+        propsSceneId: 0,
+        propsAppId: 0
+      }]
+      this.matchTicketsCfgs = []
 
-                  if(canPush){
-                    this.matchPropsCfgs.push({
-                      'propsType': objs.list[i].item_type,
-                      'propsId': objs.list[i].id,
-                      'propsName': objs.list[i].item_name,
-                      'propsIcon': objs.list[i].image,
-                      'propsAttr': objs.list[i].item_describe,
-                      'propsCost': objs.list[i].item_cost,
-                      'propsExpireTime': objs.list[i].expire_time,
-                      'propsSceneId': sceneId,
-                      'propsAppId': appId,
-                    })
-                    if ([PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET,PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW].includes(objs.list[i].item_type)){
-                      this.matchTicketsCfgs.push({
-                        'propsId': objs.list[i].id,
-                        'propsName':  str,// objs.list[i].item_name,
-                        'propsAppId': appId,
-                        'propsType': objs.list[i].item_type,
-                      })
-                    }
-                  }
-                }
-
-            }
+      try {
+        const { itemList } = await GetPropConfigListFromCache()
+        const list = itemList || []
+        for (const item of list) {
+          const isAvatar = item.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR
+          const isNewTicket = item.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW
+          if (!isAvatar && !isNewTicket) {
+            continue
           }
-          //console.log('1111 matchTicketsCfgs', this.matchTicketsCfgs)
-         // console.log('2222 matchPropsCfgs', this.matchPropsCfgs)
+
+          let sceneId = 0
+          let appId = 0
+          if (isNewTicket) {
+            let extra = null
+            try {
+              extra = item.item_extra ? JSON.parse(item.item_extra) : null
+            } catch (e) {
+              continue
+            }
+            if (!extra || !extra.appId) {
+              continue
+            }
+            const ticket = (GetMatchTicketRightsIdList(extra.appId) || []).find(
+              t => Number(t.ticketId) === Number(item.id)
+            )
+            if (!ticket || !ticket.sceneId) {
+              continue
+            }
+            sceneId = ticket.sceneId
+            appId = extra.appId
+          }
+
+          const showName = item.show_name
+            ? `${item.item_name}(${item.show_name})`
+            : item.item_name
+          this.matchPropsCfgs.push({
+            propsType: item.item_type,
+            propsId: item.id,
+            propsName: item.item_name,
+            propsIcon: item.image,
+            propsAttr: item.item_describe,
+            propsCost: item.item_cost,
+            propsShowName: showName,
+            propsSceneId: sceneId,
+            propsAppId: appId
+          })
+          if (isNewTicket) {
+            this.matchTicketsCfgs.push({
+              propsId: item.id,
+              propsName: showName,
+              propsAppId: appId,
+              propsType: item.item_type
+            })
+          }
         }
-      })
+      } catch (error) {
+        console.log(error)
+      }
     },
+
+    // getMatchPropsOld() {
+    //   const _this = this
+    //   request({
+    //     url: '/dataProxy/info',
+    //     method: 'get',
+    //     data: {
+    //       Env: _this.env,
+    //       Path: '/match/props/config/list',
+    //       PropType: 0,
+    //     }
+    //   }).then(response => {
+    //     if (response.RetCode === 0) {
+    //       const objs = response.Data || {}
+    //       var timestamp = Date.parse(new Date())/1000
+    //       if (objs.total > 0) {
+    //         let ticketConfigList = IsProd() ? MATCH_TICKET_RIGHTS_ID_CFG_PROD : MATCH_TICKET_RIGHTS_ID_CFG_DEV
+    //         for (let i=0;i<objs.list.length;i++) {
+    //           let canPush = false
+    //           let sceneId = 0
+    //           let appId = 0
+    //           if(objs.list[i].status ===1 && ((objs.list[i].item_type===PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET && objs.list[i].expire_time>timestamp) ||
+    //              [PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW,PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR].includes(objs.list[i].item_type) )) { //类型参考 PROP_TYPE_OPTIONS定义
+    //               let str = objs.list[i].item_name
+    //               if (objs.list[i].show_name.length > 0) {
+    //                 str = str + '(' + objs.list[i].show_name + ')'
+    //               }
+    //               if (IsNewTicketProp(objs.list[i].item_type)) { //如果是新门票 需要检查 门票场景ID 以及门票APPID
+    //                 if(objs.list[i].item_extra.length <=0){
+    //                   continue
+    //                 }
+    //                 const exitData = JSON.parse(objs.list[i].item_extra)
+    //                 if(exitData === null || exitData === undefined || exitData.appId === 0 || typeof exitData.appId === 'undefined'){
+    //                     continue
+    //                 }
+    //                 if (!ticketConfigList.hasOwnProperty(exitData.appId)) {
+    //                   continue
+    //                 }
+    //                 let ticket = ticketConfigList[exitData.appId].find(ticket => ticket.ticketId === objs.list[i].id)
+    //                 if(ticket){
+    //                   canPush = true
+    //                   sceneId = ticket.sceneId
+    //                   appId = exitData.appId
+    //                 }
+    //               }else{
+    //                 canPush = true
+    //               }
+    //
+    //               if(canPush){
+    //                 this.matchPropsCfgs.push({
+    //                   'propsType': objs.list[i].item_type,
+    //                   'propsId': objs.list[i].id,
+    //                   'propsName': objs.list[i].item_name,
+    //                   'propsIcon': objs.list[i].image,
+    //                   'propsAttr': objs.list[i].item_describe,
+    //                   'propsCost': objs.list[i].item_cost,
+    //                   'propsExpireTime': objs.list[i].expire_time,
+    //                   'propsSceneId': sceneId,
+    //                   'propsAppId': appId,
+    //                 })
+    //                 if ([PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET,PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW].includes(objs.list[i].item_type)){
+    //                   this.matchTicketsCfgs.push({
+    //                     'propsId': objs.list[i].id,
+    //                     'propsName':  str,// objs.list[i].item_name,
+    //                     'propsAppId': appId,
+    //                     'propsType': objs.list[i].item_type,
+    //                   })
+    //                 }
+    //               }
+    //             }
+    //
+    //         }
+    //       }
+    //       //console.log('1111 matchTicketsCfgs', this.matchTicketsCfgs)
+    //      // console.log('2222 matchPropsCfgs', this.matchPropsCfgs)
+    //     }
+    //   })
+    // },
     addRankRewards() {
       var index = 0
       var maxRank = 0

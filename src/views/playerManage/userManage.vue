@@ -419,10 +419,8 @@ import { toRupee, numberFormat } from '@/utils'
 import DateTimeShow from '@/components/DatetimeShow'
 import { ITEM_TYPE_OPTIONS, ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS } from '@/utils/options'
 import payWithdrawLog from '@/views/playerManage/payWithdrawLog.vue'
-import {IsProd} from "@/utils/env";
-import {MATCH_TICKET_RIGHTS_ID_CFG_DEV, MATCH_TICKET_RIGHTS_ID_CFG_PROD} from "@/utils/prop";
-import { GetMatchTicketRightsIdList,IsNewTicketProp } from '@//utils/prop'
-import openWindow from '@/utils/open-window'
+import { GetPropConfigListFromCache, GetMatchTicketRightsId } from '@/utils/propV2'
+import {CheckPropNeedExpireDays, IsNewTicketProp} from "@/utils/prop";
 
 function NewRelationSummary() {
   return {
@@ -1380,7 +1378,7 @@ export default {
         Message.error('请输入道具数量')
         return
       }
-      if (this.item.ItemNum > 0 && [2, 4, 5, 7, 8, 9].includes(this.item.ItemType)) { //道具数值类型参照 options.js 中 ITEM_DAY_TYPE_OPTIONS
+      if (this.item.ItemNum > 0 && CheckPropNeedExpireDays(this.item.ItemType)) { //道具数值类型参照 options.js 中 ITEM_DAY_TYPE_OPTIONS
         if (typeof this.item.ItemUseTime === 'undefined') {
           Message.error('请选择时间')
           return
@@ -1390,34 +1388,26 @@ export default {
           return
         }
       }
-      //如果是新门票道具 则确认场景ID字段值
-      if(this.isNewTicketProp(this.item.ItemType)){
-        const ticketsConfig = IsProd() ? MATCH_TICKET_RIGHTS_ID_CFG_PROD : MATCH_TICKET_RIGHTS_ID_CFG_DEV
-        if(ticketsConfig && typeof ticketsConfig === 'object'){
-          const appId = this.item.AppID
-          if(ticketsConfig[appId] && Array.isArray(ticketsConfig[appId])){
-            const ticket = ticketsConfig[appId].find(ticket => ticket.ticketId === this.item.ItemCfgId)
-            if(ticket){
-              this.item.ItemSceneId = ticket.sceneId
-            }
-          }
+      //门票的逻辑判断
+      if(IsNewTicketProp(this.item.ItemType)){
+        //查找门票的权益Id
+        const sceneId = GetMatchTicketRightsId(this.item.ItemCfgId)
+        if (sceneId == null){
+          Message.error('当前门票没有配置权益值,请检查配置')
+          return
         }
+        this.item.ItemSceneId = sceneId
         //查找门票价值
         this.item.ItemCost = 0
         const ticket = this.tableData.find(ticket => ticket.id === this.item.ItemCfgId)
         if(ticket){
           this.item.ItemCost = ticket.item_cost*1000
         }
-        if(typeof this.item.ItemSceneId === 'undefined' || this.item.ItemSceneId <=0){
-          Message.error('当前道具没有关联到正确的场景ID，请检查道具ID是否正确')
-          return
-        }
-        //console.log("场景ID", this.item.ItemSceneId)
       }
 
       let msg = '确定添加物品吗?'
       let tmpTime = 0
-      if ([2, 4, 5, 7, 8, 9].includes(this.item.ItemType)) {
+      if(CheckPropNeedExpireDays(this.item.ItemType)){
         tmpTime = this.item.ItemUseTime
       }
       this.$confirm(msg, '提示', {
@@ -1780,28 +1770,14 @@ export default {
       })
     },
     getItemList() {
-      request({
-        url: '/propsconfig/props/config/list',
-        method: 'get',
-        data: {
-          Env: this.env,
-          PageNum: 1,
-          PageSize: 500
-        }
-      }).then(response => {
-        if (response.RetCode === 0) {
-          const objs = response.Data || {}
-          if (objs.total > 0) {
-            this.total = objs.total
-            this.tableData = []
-            this.tableData = objs.list
-          }
-        } else {
-          this.total = 0
-          this.tableData = []
-        }
+      GetPropConfigListFromCache().then(({total, itemList}) => {
+        this.total = total
+        this.tableData = itemList
+        console.log("获取道具数据 ",this.tableData)
       })
+
     },
+
     getGameList() {
       const $this = this
       request({
@@ -1823,51 +1799,20 @@ export default {
       this.tablePropUuIdData = []
       this.$set(this.item, 'ItemCfgId', null) // 使用 $set 确保响应式更新
       this.propFrom.ItemUuId = ''
-      let itemType = 0
-      // this.item.ItemNum = 0 // 移除此行，避免影響輸入框的值
-      const currTime = new Date().getTime()
-      for (let i = 0; i < this.tableData.length; i++) {
-        let str = this.tableData[i].item_name
-        itemType = this.tableData[i].item_type
-        if (this.tableData[i].item_extra.length > 0) {
-          const exitData = JSON.parse(this.tableData[i].item_extra)
-          if (exitData != null) {
-            if (exitData.showName != null) {
-              str = str + '(' + exitData.showName + ')'
-            }
+      let fitPropList = this.tableData.filter(item => item.item_type === id)
+      this.tableItemData = fitPropList.map(item => {
+        let label = item.item_name || ''
+        if (item.item_extra && item.item_extra.length > 0) {
+          const extra = JSON.parse(item.item_extra)
+          if (extra != null && extra.showName != null) {
+            label += `(${extra.showName})`
           }
         }
-        if (this.tableData[i].item_type === id && this.tableData[i].status === 1) {
-          if (this.isTicketProp(itemType)) { // 旧版门票道具
-            const expTime = this.tableData[i].expire_time * 1000
-            if (currTime < expTime) {
-              this.tableItemData.push({ 'value': Number(this.tableData[i].id), 'label': str, disabled: false })
-            }
-          } else {
-            //如果是新版门票道具 需要确认所配置的门票是否关联到 权益场景ID 参考 props.js MATCH_TICKET_RIGHTS_ID_CFG_DEV
-            if (this.isNewTicketProp(itemType)) {
-              const ticketsConfig = IsProd() ? MATCH_TICKET_RIGHTS_ID_CFG_PROD : MATCH_TICKET_RIGHTS_ID_CFG_DEV
-              if(ticketsConfig && typeof ticketsConfig === 'object'){
-                const appId = this.item.AppID
-                if(ticketsConfig[appId] && Array.isArray(ticketsConfig[appId])){
-                  ticketsConfig[appId].forEach(ticket => {
-                    if(ticket.ticketId === this.tableData[i].id){
-                      this.tableItemData.push({'value': Number(this.tableData[i].id), 'label': str, disabled: false})
-                    }
-                  })
-                }
-              }
-            } else {// 头像框/互动道具
-              const isExpired = this.isInteractionPropExpired(this.tableData[i])
-              this.tableItemData.push({
-                'value': Number(this.tableData[i].id),
-                'label': str + (isExpired ? ' (已过期)' : ''),
-                disabled: isExpired
-              })
-            }
-          }
+        return {
+          value: Number(item.id),
+          label: label,
         }
-      }
+      })
       this.checkShowFreeSpinGame()
     },
 

@@ -1,12 +1,13 @@
-//道具用到的一些数据方法
+// 道具用到的一些数据方法
 
-//slotGameConfig
-import request from "@/utils/request";
-import { PROP_TYPE_OPTIONS } from '@/utils/options';
-import { IsProd } from '@/utils/env';
+// slotGameConfig
+import { PROP_TYPE_OPTIONS } from '@/utils/options'
+import {IsDev, IsProd, IsUat} from '@/utils/env'
+import request from '@/utils/request'
+import store from "@/store";
 
-//走配置
-export const SLOT_GAME_CONFIG =[
+// 走配置
+export const SLOT_GAME_CONFIG = [
   // { 'value': 82, 'label': '百万富翁(Millionire)', 'configKey':'millionaire_slots_base', disabled: false },
   // { 'value': 92, 'label': '超级王牌Go(UltraAce)','configKey':'fortuneacego_slots_base', disabled: false },
   // { 'value': 76, 'label': '糖果派对Way(Candy Rush)', 'configKey':'candypartyway_slots_base',disabled: false },
@@ -16,16 +17,16 @@ export const SLOT_GAME_CONFIG =[
   // {'value': 164, 'label': 'Mahjong Fortune', 'configKey':'',disabled: false },
 ]
 
-//下注类游戏
-export const BETTING_GAME_CONFIG =[
-  {'value': 20, 'label': '扫雷(sweeper)', 'configKey':'gameSweeper', disabled: false },
-  {'value': 132, 'label': 'Mines Magic', 'configKey':'gameSweeper', disabled: false },
-  {'value': 108, 'label': 'DropBall', 'configKey':'gameSweeper', disabled: false },
-  {'value': 25, 'label': 'Color Game', 'configKey':'Color Game', disabled: false },
-  {'value': 143, 'label': 'Triple Wheel Spin', 'configKey':'triplewheelspin', disabled: false },
-  {'value': 501, 'label': 'Balloon Tap', 'configKey':'balloontap', disabled: false },
-  {'value': 500, 'label': 'Gold Master', 'configKey':'Gold Master', disabled: false },
-  ]
+// 下注类游戏
+export const BETTING_GAME_CONFIG = [
+  { 'value': 20, 'label': '扫雷(sweeper)', 'configKey': 'gameSweeper', disabled: false },
+  { 'value': 132, 'label': 'Mines Magic', 'configKey': 'gameSweeper', disabled: false },
+  { 'value': 108, 'label': 'DropBall', 'configKey': 'gameSweeper', disabled: false },
+  { 'value': 25, 'label': 'Color Game', 'configKey': 'Color Game', disabled: false },
+  { 'value': 143, 'label': 'Triple Wheel Spin', 'configKey': 'triplewheelspin', disabled: false },
+  { 'value': 501, 'label': 'Balloon Tap', 'configKey': 'balloontap', disabled: false },
+  { 'value': 500, 'label': 'Gold Master', 'configKey': 'Gold Master', disabled: false }
+]
 
 //比赛门票ID 关联门票权益配置 开发环境
 export const MATCH_TICKET_RIGHTS_ID_CFG_DEV = {
@@ -42,6 +43,8 @@ export const MATCH_TICKET_RIGHTS_ID_CFG_DEV = {
     { 'ticketId': 588, 'sceneId': 208, 'label': '第三周S5日赛门票' },
     { 'ticketId': 589, 'sceneId': 209, 'label': '第四周S5日赛门票' },
     { 'ticketId': 590, 'sceneId': 210, 'label': '第五周S5日赛门票' },
+    { 'ticketId': 646, 'sceneId': 211, 'label': 'Tongits-646门票P10 ' },
+    { 'ticketId': 648, 'sceneId': 212, 'label': 'Pusoy-648门票P10 ' },
   ],
 
   1000003: [
@@ -51,24 +54,9 @@ export const MATCH_TICKET_RIGHTS_ID_CFG_DEV = {
   ]
 }
 
-
-
-//uat 线上配置
-export const MATCH_TICKET_RIGHTS_ID_CFG_PROD = {
-  1000002: [ // PROP_TYPE_TICKET_NEW
-    { 'ticketId': 347, 'sceneId': 200, 'label': 'UAT Tongtis 1000002 测试门票' },
-    { 'ticketId': 355, 'sceneId': 201, 'label': '新版Pusy门票-1000002' },
-    { 'ticketId': 521, 'sceneId': 202, 'label': '新版德州门票UAT用-1000002' },
-
-    { 'ticketId': 602, 'sceneId': 203, 'label': 'tongits 内部正式S5日赛门票w1' },
-    { 'ticketId': 603, 'sceneId': 204, 'label': 'tongits 内部正式S5日赛门票w2' },
-    { 'ticketId': 604, 'sceneId': 205, 'label': 'tongits 内部正式S5日赛门票w3' },
-    { 'ticketId': 605, 'sceneId': 206, 'label': 'tongits 内部正式S5日赛门票w4' },
-    { 'ticketId': 606, 'sceneId': 207, 'label': 'tongits 内部正式S5日赛门票w5' },
-    { 'ticketId': 607, 'sceneId': 208, 'label': 'tongits 内部正式S5半决赛门票' },
-    { 'ticketId': 608, 'sceneId': 209, 'label': 'tongits 内部正式S5决赛邀请函' },
-
-  ],
+//UAT门票配置
+export const MATCH_TICKET_RIGHTS_ID_CFG_UAT = {
+  10000002:[],
   1000003: [ // PROP_TYPE_TICKET_NEW
     { 'ticketId': 322, 'sceneId': 200, 'label': 'Tongits新版门票 带唯一ID-322'  },
     { 'ticketId': 343, 'sceneId': 201, 'label': 'Texas测试新版德州门票带唯一ID-343' },
@@ -97,6 +85,24 @@ export const MATCH_TICKET_RIGHTS_ID_CFG_PROD = {
     { 'ticketId':601 , 'sceneId': 229, 'label': 'S5 Grand Finals Invitation'  },
 
   ],
+}
+
+//线上配置
+export const MATCH_TICKET_RIGHTS_ID_CFG_PROD = {
+  1000002: [ // PROP_TYPE_TICKET_NEW
+    { 'ticketId': 347, 'sceneId': 200, 'label': 'UAT Tongtis 1000002 测试门票' },
+    { 'ticketId': 355, 'sceneId': 201, 'label': '新版Pusy门票-1000002' },
+    { 'ticketId': 521, 'sceneId': 202, 'label': '新版德州门票UAT用-1000002' },
+
+    { 'ticketId': 602, 'sceneId': 203, 'label': 'tongits 内部正式S5日赛门票w1' },
+    { 'ticketId': 603, 'sceneId': 204, 'label': 'tongits 内部正式S5日赛门票w2' },
+    { 'ticketId': 604, 'sceneId': 205, 'label': 'tongits 内部正式S5日赛门票w3' },
+    { 'ticketId': 605, 'sceneId': 206, 'label': 'tongits 内部正式S5日赛门票w4' },
+    { 'ticketId': 606, 'sceneId': 207, 'label': 'tongits 内部正式S5日赛门票w5' },
+    { 'ticketId': 607, 'sceneId': 208, 'label': 'tongits 内部正式S5半决赛门票' },
+   { 'ticketId': 608, 'sceneId': 209, 'label': 'tongits 内部正式S5决赛邀请函' },
+
+  ],
   1000005: [
     { 'ticketId': 396, 'sceneId': 200, 'label': 'Tongits' },
     { 'ticketId': 397, 'sceneId': 201, 'label': 'Tongits' },
@@ -113,14 +119,14 @@ export const MATCH_TICKET_RIGHTS_ID_CFG_PROD = {
     { 'ticketId': 429, 'sceneId': 212, 'label': 'Texas' },
     { 'ticketId': 430, 'sceneId': 213, 'label': 'Texas' },
 
-    // { 'ticketId': 448, 'sceneId': 214, 'label': 'Tongits TPCC' },
-    // { 'ticketId': 449, 'sceneId': 215, 'label': 'Tongits TPCC' },
-    // { 'ticketId': 451, 'sceneId': 216, 'label': 'Tongits TPCC' },
-    // { 'ticketId': 450, 'sceneId': 217, 'label': 'Tongits TPCC' },
-    // { 'ticketId': 452, 'sceneId': 218, 'label': 'Tongits TPCC' },
-    // { 'ticketId': 453, 'sceneId': 219, 'label': 'Tongits TPCC' },
-    // { 'ticketId': 455, 'sceneId': 220, 'label': 'Tongits TPCC' },
-    // { 'ticketId': 454, 'sceneId': 221, 'label': 'Tongits TPCC' },
+    { 'ticketId': 448, 'sceneId': 214, 'label': 'Tongits TPCC' },
+    { 'ticketId': 449, 'sceneId': 215, 'label': 'Tongits TPCC' },
+    { 'ticketId': 451, 'sceneId': 216, 'label': 'Tongits TPCC' },
+    { 'ticketId': 450, 'sceneId': 217, 'label': 'Tongits TPCC' },
+    { 'ticketId': 452, 'sceneId': 218, 'label': 'Tongits TPCC' },
+    { 'ticketId': 453, 'sceneId': 219, 'label': 'Tongits TPCC' },
+    { 'ticketId': 455, 'sceneId': 220, 'label': 'Tongits TPCC' },
+    { 'ticketId': 454, 'sceneId': 221, 'label': 'Tongits TPCC' },
 
     { 'ticketId': 497, 'sceneId': 222, 'label': 'Pusoy' },
     { 'ticketId': 498, 'sceneId': 223, 'label': 'Pusoy' },
@@ -144,16 +150,19 @@ export const MATCH_TICKET_RIGHTS_ID_CFG_PROD = {
     { 'ticketId':588 , 'sceneId': 239, 'label': 'S5 Grand Finals Invitation'  },
   ],
 }
+
 // 获取比赛门票权益ID列表
 export const GetMatchTicketRightsIdList = (appId) => {
-  if (IsProd()) {
-    return MATCH_TICKET_RIGHTS_ID_CFG_PROD[appId] || []
-  } else {
+  if (IsDev()) {
     return MATCH_TICKET_RIGHTS_ID_CFG_DEV[appId] || []
+  } else  if (IsUat()) {
+    return MATCH_TICKET_RIGHTS_ID_CFG_UAT[appId] || []
+  } else if (IsProd()) {
+    return MATCH_TICKET_RIGHTS_ID_CFG_PROD[appId] || []
   }
+  return []
 }
-
-//是否是新版本门票
+// 是否是新版本门票
 export const IsNewTicketProp = (itemType) => {
   return [
     PROP_TYPE_OPTIONS.PROP_TYPE_TICKET_NEW,
@@ -179,6 +188,15 @@ export const IsAvatarFrameProp = (itemType) => {
   ].includes(itemType)
 }
 
+//是否为freeSpin
+export const IsFreeSpinProp = (itemType) => {
+  return  itemType === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN
+}
+
+//是否为互动道具
+export const IsEffectProp = (itemType) => {
+  return itemType === PROP_TYPE_OPTIONS.PROP_TYPE_INTERACTION
+}
 // 检查是否需要过期天数
 export const CheckPropNeedExpireDays = (itemType) => {
   return [
@@ -199,7 +217,7 @@ export const CheckPropExpireDays = (propType, expireDays) => {
       if (expireDays < 0) {
         return false
       }
-      break;
+      break
     case PROP_TYPE_OPTIONS.PROP_TYPE_TICKET_NEW:
     case PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW:
     case PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW:
@@ -207,10 +225,10 @@ export const CheckPropExpireDays = (propType, expireDays) => {
       if (expireDays === 0 || expireDays === 365 || expireDays < 0) {
         return false
       }
-      break;
+      break
     default:
       // 其他道具类型：默认有效
-      break;
+      break
   }
   return true
 }
