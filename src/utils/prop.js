@@ -56,7 +56,11 @@ export const MATCH_TICKET_RIGHTS_ID_CFG_DEV = {
 
 //UAT门票配置
 export const MATCH_TICKET_RIGHTS_ID_CFG_UAT = {
-  10000002:[],
+  10000002:[
+    { 'ticketId': 613, 'sceneId': 200, 'label': 'Tongits新版门票 带唯一ID-614'  },
+    { 'ticketId': 614, 'sceneId': 201, 'label': 'Pusoy新版门票 带唯一ID-614'  },
+    { 'ticketId': 615, 'sceneId': 202, 'label': 'Poker新版门票 带唯一ID-615'  },
+  ],
   1000003: [ // PROP_TYPE_TICKET_NEW
     { 'ticketId': 322, 'sceneId': 200, 'label': 'Tongits新版门票 带唯一ID-322'  },
     { 'ticketId': 343, 'sceneId': 201, 'label': 'Texas测试新版德州门票带唯一ID-343' },
