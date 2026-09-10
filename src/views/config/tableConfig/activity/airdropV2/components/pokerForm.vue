@@ -352,8 +352,7 @@ import {PROP_TYPE_OPTIONS} from "@/utils/options";
 import {IsProd} from "@/utils/env";
 import { MATCH_TICKET_RIGHTS_ID_CFG_PROD, MATCH_TICKET_RIGHTS_ID_CFG_DEV } from "@/utils/prop";
 import store from "@/store";
-import {GetPropConfigListFromCache} from "@/utils/propV2";
-
+import {GetPropConfigListFromCache,GetMatchTicketRightsId} from "@/utils/propV2";
 
 const GAME_TYPE = 2 // Poker
 const MAX_DEBUG_TIME_OFFSET = 30 * 24 * 60 * 60
@@ -400,7 +399,7 @@ function defaultPokerBetMoney() {
 }
 
 function newProp() {
-  return { taskType: 2, taskCondition: 0, propType: 0, propId: 0, propName: '', propTime: 1, propNum: 0, propLimit: 0 }
+  return { taskType: 2, taskCondition: 0, propType: 0, propId: 0, propName: '', propTime: 1, propNum: 0, propLimit: 0, sceneId: 0 }
 }
 
 function newItem() {
@@ -556,8 +555,6 @@ export default {
       }
       const taskType = this.toSafeNumber(rr.taskType) || 2
       const divisor = taskType === 2 ? 1000 : 1
-
-
       rewardTiers = rewardTiers
         .slice(0, MAX_REWARD_TIER_COUNT)
         .map(t => ({
@@ -660,6 +657,7 @@ export default {
       this.item.userConfig = userConfig
       return true
     },
+
     onProgressPrizeEnabledChange(enabled) {
       if (enabled) {
         if (!this.item.propPools.propType) {
@@ -671,6 +669,7 @@ export default {
         this.item.propPools.propName = ''
         this.item.propPools.propNum = 0
         this.item.propPools.propLimit = 0
+        this.item.propPools.sceneId = 0
       }
     },
     loadEditData() {
@@ -834,13 +833,23 @@ export default {
       if (prop.taskType === 2) {
         prop.taskCondition = Math.round(this.toSafeNumber(prop.taskCondition) * 1000)
       }
+
+      console.log(111)
+      console.log(prop.propId)
       if (!d.enableProgressPrize) {
         prop.propType = 0
         prop.propId = 0
         prop.propName = ''
         prop.propNum = 0
         prop.propLimit = 0
+        prop.sceneId = 0
+      } else if (prop.propId) {
+        // 保存时，根据门票 ID 获取 sceneId
+        prop.sceneId = GetMatchTicketRightsId(prop.propId) || 0
       }
+      console.log(prop.sceneId)
+      console.log(111)
+
       const taskType = this.toSafeNumber(d.pokerBetMoney.taskType, 2)
       const mult = taskType === 2 ? 1000 : 1
 
@@ -911,11 +920,6 @@ export default {
     },
     // ---- 道具相关 ----
     getPropList() {
-      // request({ url: '/propsconfig/props/config/list', method: 'get', data: { PageNum: 1, PageSize: 1000 }}).then(res => {
-      //   if (res.RetCode === 0) {
-      //     this.propList = (res.Data && res.Data.list) || []
-      //   }
-      // })
       GetPropConfigListFromCache().then(({ itemList }) => {
         this.propList = itemList || []
       })
@@ -939,48 +943,84 @@ export default {
       const prevPropId = row.propId
       const prevPropName = row.propName
       const prevSceneId = row.sceneId
+
       if (shouldReset) {
         row.propId = 0
         row.propName = ''
       }
+
       const isTicketProp = this.isNewTicketProp(row.propType)
+
+      // 非新版门票类型，清空 sceneId
       if (!isTicketProp && Object.prototype.hasOwnProperty.call(row, 'sceneId')) {
         row.sceneId = 0
       }
 
-      // 是否是新版道具类型（如新版Tongits门票、新版德州参赛券等），如果是则需要重新构建道具选项
-      if (isTicketProp) {
-        // 根据当前道具类型获取对应的门票配置
-        const ticketsConfig = IsProd() ? MATCH_TICKET_RIGHTS_ID_CFG_PROD : MATCH_TICKET_RIGHTS_ID_CFG_DEV
-        const ticketList = ticketsConfig[this.appId]
-        const opts = (Array.isArray(ticketList) ? ticketList : [])
-          .filter(ticket => ticket && ticket.ticketId !== undefined && ticket.ticketId !== null)
-          .map(ticket => ({
-            value: ticket.ticketId,
-            label: ticket.label || String(ticket.ticketId),
-            sceneId: ticket.sceneId,
-            disabled: false
-          }))
-        this.$set(this.propOptionsMap, idx, opts)
+      // 普通道具
+      if (!isTicketProp) {
+        this.buildPropOptionsForIndex(row.propType, idx)
+        return
+      }
 
-        if (!shouldReset) {
-          const matchedTicket = opts.find(opt => String(opt.value) === String(prevPropId))
-          if (matchedTicket) {
-            row.propId = matchedTicket.value
-            row.propName = matchedTicket.label
-            row.sceneId = matchedTicket.sceneId
-          } else {
-            row.propId = prevPropId
-            row.propName = prevPropName
-            if (prevSceneId !== undefined) {
-              row.sceneId = prevSceneId
-            }
+      // 新版门票道具
+      const opts = this.buildTicketPropOptions()
+
+      this.$set(this.propOptionsMap, idx, opts)
+
+      // 编辑已有数据时，恢复原来的道具
+      if (!shouldReset) {
+        const matchedTicket = opts.find(
+          opt => String(opt.value) === String(prevPropId)
+        )
+
+        if (matchedTicket) {
+          row.propId = matchedTicket.value
+          row.propName = matchedTicket.label
+          row.sceneId = matchedTicket.sceneId
+        } else {
+          // propList 中没有找到原道具，保留原数据
+          row.propId = prevPropId
+          row.propName = prevPropName
+
+          if (prevSceneId !== undefined) {
+            row.sceneId = prevSceneId
           }
         }
-      } else {
-        this.buildPropOptionsForIndex(row.propType, idx)
       }
     },
+    buildTicketPropOptions() {
+      if (!Array.isArray(this.propList)) {
+        return []
+      }
+      return this.propList
+        .filter(item => {
+          if (!item || item.id === undefined || item.id === null) {
+            return false
+          }
+          // 从 item_extra 获取 appId
+          let extra = {}
+          try {
+            extra = item.item_extra ? JSON.parse(item.item_extra) : {}
+          } catch (e) {
+            return false
+          }
+          return String(extra.appId) === String(this.appId)
+        }).map(item => {
+          let extra = {}
+          try {
+            extra = item.item_extra ? JSON.parse(item.item_extra) : {}
+          } catch (e) {
+            extra = {}
+          }
+          return {
+            value: item.id,
+            label: item.show_name || item.item_name,
+            sceneId: extra.sceneId,
+            disabled: false
+          }
+        })
+    },
+
     onPropNameChange(row, idx) {
       const opts = this.propOptionsMap[idx] || []
       const sel = opts.find(o => String(o.value) === String(row.propId))
