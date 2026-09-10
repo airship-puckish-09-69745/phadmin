@@ -352,6 +352,7 @@ import {PROP_TYPE_OPTIONS} from "@/utils/options";
 import {IsProd} from "@/utils/env";
 import { MATCH_TICKET_RIGHTS_ID_CFG_PROD, MATCH_TICKET_RIGHTS_ID_CFG_DEV } from "@/utils/prop";
 import store from "@/store";
+import {GetPropConfigListFromCache} from "@/utils/propV2";
 
 
 const GAME_TYPE = 2 // Poker
@@ -910,10 +911,13 @@ export default {
     },
     // ---- 道具相关 ----
     getPropList() {
-      request({ url: '/propsconfig/props/config/list', method: 'get', data: { PageNum: 1, PageSize: 1000 }}).then(res => {
-        if (res.RetCode === 0) {
-          this.propList = (res.Data && res.Data.list) || []
-        }
+      // request({ url: '/propsconfig/props/config/list', method: 'get', data: { PageNum: 1, PageSize: 1000 }}).then(res => {
+      //   if (res.RetCode === 0) {
+      //     this.propList = (res.Data && res.Data.list) || []
+      //   }
+      // })
+      GetPropConfigListFromCache().then(({ itemList }) => {
+        this.propList = itemList || []
       })
     },
     // 是否是新版道具

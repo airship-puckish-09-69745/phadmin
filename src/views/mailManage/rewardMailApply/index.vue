@@ -148,9 +148,10 @@ import DetailDialog from "@/views/mailManage/rewardMailApply/components/detailDi
 import { $libDate, $libShow } from '@/utils/common'
 import { formatTime } from "@/utils"
 import request from '@/utils/request'
-import { PROP_TYPE_OPTIONS, ITEM_STATUSES, ITEM_TYPE_OPTIONS, ITEM_STATUS_OPTIONS } from '@/utils/options'
-import { IsNewTicketProp, IsTicketProp, IsAvatarFrameProp } from '@/utils/prop'
+import {ITEM_STATUSES, ITEM_TYPE_OPTIONS, ITEM_STATUS_OPTIONS } from '@/utils/options'
+
 import { Message } from "element-ui";
+import {GetPropConfigListFromCache} from "@/utils/propV2";
 
 export default {
   name: 'PropsConfig',
@@ -480,7 +481,7 @@ export default {
       return prop ? prop.label : '未知道具类型:' + propType
     },
     getPropNameText(propId) {
-      const prop = this.propList.find(item => item.id === propId)
+      const prop = (this.propList || []).find(item => item.id === propId)
       return prop ? prop.item_name : '未知ID:' + propId
     },
     /**
@@ -488,39 +489,8 @@ export default {
      * 由于没有提供道具下拉框接口，这里使用列表的接口，size为100
      */
     getPropList() {
-      request({
-        url: '/dataProxy/info',
-        method: 'get',
-        data: {
-          Env: this.env,
-          Path: '/match/props/config/list',
-          PropType: 0
-        }
-      }).then(response => {
-        if (response.RetCode === 0) {
-          const objs = response.Data || {}
-          if (objs.total > 0) {
-            const timestamp = Date.parse(new Date()) / 1000;
-            this.total = objs.total
-            this.propList = []
-            for (let i = 0; i < objs.total; i++) {
-              const obj = objs.list[i]
-              if (obj.status === 1 && obj.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_INTERACTION  && obj.expire_time > timestamp) {
-                this.propList.push(obj)
-              }
-              if (obj.status === 1 && (IsAvatarFrameProp(obj.item_type) || obj.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN)) {
-                this.propList.push(obj)
-              }
-              // 新版道具
-              if(obj.status === 1 && IsNewTicketProp(obj.item_type)){
-                this.propList.push(obj)
-              }
-            }
-          }
-        } else {
-          this.total = 0
-          this.propList = []
-        }
+      GetPropConfigListFromCache().then(({ itemList }) => {
+        this.propList = itemList || []
       })
     },
   }

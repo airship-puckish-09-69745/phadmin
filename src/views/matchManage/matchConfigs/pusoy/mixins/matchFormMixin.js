@@ -476,7 +476,7 @@ export const matchFormMixin = {
         const endNum = this.configs.endNumCfgs.get(this.editForm.data.csId)
         const promoteNum = this.configs.promoteNumCfgs.get(this.editForm.data.csId)
         const ruleExtra = this.configs.csExtraCfgs.get(this.editForm.data.csId)
-        const endMethod = this.configs.csEndMethodCfgs.get(this.editForm.data.csId)
+        const endMethod = this.configs.csEndMethodCfgs && this.configs.csEndMethodCfgs.get(this.editForm.data.csId)
 
         //MTT
         if (endMethod === RULE_END_MATCH_CFG.END_MATCH_CFG_TIME_AND_USER &&   this.editForm.data.opentMatchType === 2 && this.editForm.data.opentMatchMember < endNum) {

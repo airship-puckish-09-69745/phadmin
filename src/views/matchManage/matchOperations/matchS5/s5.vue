@@ -547,7 +547,10 @@
   } from "@/utils/options";
   import {$libDate, $libShow} from "@/utils/common";
   import {IsProd} from "@/utils/env";
-  import {IsNewTicketProp, MATCH_TICKET_RIGHTS_ID_CFG_DEV, MATCH_TICKET_RIGHTS_ID_CFG_PROD} from "@/utils/prop";
+  import {
+    GetMatchTicketRightsIdList,
+  } from "@/utils/prop";
+  import {GetPropConfigListFromCache} from "@/utils/propV2";
 
   export default {
     name: 'MatchS5Config',
@@ -1330,88 +1333,72 @@
           }
         })
       },
-
       async getMatchProps() {
+        // 缓存接口已过滤 status=1 及可用道具，这里只组装本页需要的头像框 / 新版门票
+        this.matchPropsCfgs = [{
+          propsId: 0,
+          propsType: 0,
+          propsName: '无',
+          propsIcon: '',
+          propsAttr: '',
+          propsCost: '',
+          propsShowName: '',
+          propsSceneId: 0,
+          propsAppId: 0
+        }]
+
         try {
-          const response = await request({
-            url: '/dataProxy/info',
-            method: 'get',
-            data: {
-              Env: this.env,
-              Path: '/match/props/config/list',
-              PropType: 0
+          const { itemList } = await GetPropConfigListFromCache()
+          const list = itemList || []
+          for (const item of list) {
+            const isNewTicket = item.item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET_NEW
+            if (!isNewTicket) {
+              continue
             }
-          })
-          if (response.RetCode === 0) {
-            const objs = response.Data || {}
-            if (objs.total > 0) {
-              this.matchPropsCfgs = [
-                {
-                  'propsId': 0,
-                  'propsType': 0,
-                  'propsName': '无',
-                  'propsIcon': '',
-                  'propsAttr': '',
-                  'propsCost': '',
-                  'propsShowName': '',
-                  'propsSceneId': 0,
-                  'propsAppId': 0,  // 道具所属appId
-                }
-              ]
-              let ticketConfigList = IsProd() ? MATCH_TICKET_RIGHTS_ID_CFG_PROD : MATCH_TICKET_RIGHTS_ID_CFG_DEV
-              for (let i = 0; i < objs.list.length; i++) {
-                if (this.propsTypeList.includes(objs.list[i].item_type)) {
-                  let canPush = false
-                  let sceneId = 0
-                  let appId = 0
 
-                    let str = objs.list[i].item_name
-                    if (objs.list[i].show_name.length > 0) {
-                      str = str + '(' + objs.list[i].show_name + ')'
-                    }
-
-                      if (objs.list[i].item_extra.length <=  0) {
-                        continue
-                      }
-                      const exitData = JSON.parse(objs.list[i].item_extra)
-                      if(exitData === null || exitData === undefined || exitData.appId === 0 || typeof exitData.appId === 'undefined'){
-                        continue
-                      }
-                      if (!ticketConfigList.hasOwnProperty(exitData.appId)) {
-                        continue
-                      }
-                      let ticket = ticketConfigList[exitData.appId].find(ticket => ticket.ticketId === objs.list[i].id)
-                      if(ticket){
-                        canPush = true
-                        sceneId = ticket.sceneId
-                        appId = exitData.appId
-                      }
-
-                    if (canPush) {
-                      this.matchPropsCfgs.push(
-                        {
-                          'propsType': objs.list[i].item_type,
-                          'propsId': objs.list[i].id,
-                          'propsName': objs.list[i].item_name,
-                          'propsIcon': objs.list[i].image,
-                          'propsAttr': objs.list[i].item_describe,
-                          'propsCost': objs.list[i].item_cost,
-                          'propsShowName': str,
-                          'propsSceneId': sceneId,
-                          'propsAppId': appId
-                        })
-                    }
-                }
+            let sceneId = 0
+            let appId = 0
+            if (isNewTicket) {
+              let extra = null
+              try {
+                extra = item.item_extra ? JSON.parse(item.item_extra) : null
+              } catch (e) {
+                continue
               }
+              if (!extra || !extra.appId) {
+                continue
+              }
+              const ticket = (GetMatchTicketRightsIdList(extra.appId) || []).find(
+                t => Number(t.ticketId) === Number(item.id)
+              )
+              if (!ticket || !ticket.sceneId) {
+                continue
+              }
+              sceneId = ticket.sceneId
+              appId = extra.appId
             }
+
+            const showName = item.show_name
+              ? `${item.item_name}(${item.show_name})`
+              : item.item_name
+            this.matchPropsCfgs.push({
+              propsType: item.item_type,
+              propsId: item.id,
+              propsName: item.item_name,
+              propsIcon: item.image,
+              propsAttr: item.item_describe,
+              propsCost: item.item_cost,
+              propsShowName: showName,
+              propsSceneId: sceneId,
+              propsAppId: appId
+            })
           }
         } catch (error) {
           console.log(error)
-        } finally {
+        }finally {
           this.normalizePropReward(this.editForm.day_rank_cfg || {})
         }
       },
-
       addPointCfg() {
         if (!Array.isArray(this.editForm.day_rank_cfg.add_point_cfg)) {
           this.$set(this.editForm.day_rank_cfg, 'add_point_cfg', [])
