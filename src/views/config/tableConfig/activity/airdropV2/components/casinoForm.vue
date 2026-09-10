@@ -266,6 +266,7 @@ import WhitelistConfig from '@/components/WhitelistConfig/index.vue'
 import UserTypeUnit from '@/components/UserType/index.vue'
 
 import { ACTIVITY_ID } from '../index.vue'
+import {GetPropConfigListFromCache} from "@/utils/propV2";
 
 const GAME_TYPE = 3 // Casino
 const MAX_DEBUG_TIME_OFFSET = 30 * 24 * 60 * 60
@@ -343,7 +344,7 @@ export default {
         { value: 2, label: '有效下注总额' }
       ],
       propTypeOptions: [
-        { value: 5, label: 'SlotFreeSpin', disabled: false }
+        { value: 5, label: 'FreeSpin', disabled: false }
       ],
       propDayTypeOptions: [
         { value: 1, label: '1天' },
@@ -666,10 +667,8 @@ export default {
     },
     // ---- 道具相关 ----
     getPropList() {
-      request({ url: '/propsconfig/props/config/list', method: 'get', data: { PageNum: 1, PageSize: 1000 }}).then(res => {
-        if (res.RetCode === 0) {
-          this.propList = (res.Data && res.Data.list) || []
-        }
+      GetPropConfigListFromCache().then(({ itemList }) => {
+        this.propList = itemList || []
       })
     },
     getPropOptionsByType(propType) {
@@ -682,7 +681,7 @@ export default {
           }
           return true
         })
-        .map(p => ({ value: p.id, label: p.item_name, disabled: false }))
+        .map(p => ({ value: p.id, label: p.show_name, disabled: false }))
     },
     handlePropTypeChange(row) {
       row.propId = 0
