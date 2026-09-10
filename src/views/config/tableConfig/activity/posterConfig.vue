@@ -118,7 +118,7 @@
           <el-row>
             <el-form :model="edit.item" label-width="220px" size="mini">
               <el-form-item label="打点上报code：" prop="name">
-                <el-input v-model.number="edit.item.ReportCode" placeholder="请输入" style="width: 400px"  />
+                <el-input v-model.number="edit.item.ReportCode" placeholder="系统自动生成" style="width: 400px"   disabled />
               </el-form-item>
             </el-form>
           </el-row>
@@ -570,6 +570,7 @@ export default {
     },
     handleAdd() {
       this.edit.item = newItem()
+      this.edit.item.ReportCode = this.getNewReportCode()
       this.edit.userTagConfig = {
         TagId: [],
         TagType: 0,
@@ -707,6 +708,23 @@ export default {
       }
       return maxId + 1
     },
+    getNewReportCode() {
+      let maxReportCode = 0
+
+      for (let i = 0; i < this.tableData.length; i++) {
+        const item = this.tableData[i]
+
+        if (
+          item &&
+          typeof item.ReportCode === 'number' &&
+          item.ReportCode > maxReportCode
+        ) {
+          maxReportCode = item.ReportCode
+        }
+      }
+
+      return maxReportCode + 1
+    },
     handleSave() {
       const raw = JSON.parse(JSON.stringify(this.edit.item || {}))
       raw.StartTime = Math.floor(raw.StartTime / 1000)
@@ -732,6 +750,7 @@ export default {
           this.clientDB.UpdateData(raw)
         } else {
           if (!raw.ID || raw.ID === 0) raw.ID = this.getNewCfgId()
+          if (!raw.ReportCode || raw.ReportCode === 0) raw.ReportCode = this.getNewReportCode()
           this.clientDB.AddData(raw)
         }
         this.refreshShow()
