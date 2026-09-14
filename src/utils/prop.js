@@ -45,6 +45,15 @@ export const MATCH_TICKET_RIGHTS_ID_CFG_DEV = {
     { 'ticketId': 590, 'sceneId': 210, 'label': '第五周S5日赛门票' },
     { 'ticketId': 646, 'sceneId': 211, 'label': 'Tongits-646门票P10 ' },
     { 'ticketId': 648, 'sceneId': 212, 'label': 'Pusoy-648门票P10 ' },
+
+
+    { 'ticketId': 656, 'sceneId': 213, 'label': 'S6第一周积分赛门票' },
+    { 'ticketId': 657, 'sceneId': 214, 'label': 'S6第二周积分赛门票 ' },
+    { 'ticketId': 658, 'sceneId': 215, 'label': 'S6第三周积分赛门票 ' },
+    { 'ticketId': 659, 'sceneId': 216, 'label': 'S6第四周积分赛门票 ' },
+    { 'ticketId': 660, 'sceneId': 217, 'label': 'S6第五周积分赛门票 ' },
+    { 'ticketId': 661, 'sceneId': 218, 'label': 'S6半决赛门票 ' },
+    { 'ticketId': 662, 'sceneId': 219, 'label': 'S6决赛邀请函 ' },
   ],
 
   1000003: [
