@@ -2748,33 +2748,33 @@ export const asyncRoutes = [
       }
     ]
   },
-  {
-    path: '/item',
-    component: Layout,
-    redirect: 'noRedirect',
-    meta: { title: '道具管理', icon: 'example', perm: 'CFG_MANAGEMENT' },
-    children: [
-      {
-        path: 'itemConfig',
-        component: () => import('@/views/itemManage/itemConfig'),
-        name: 'itemConfig',
-        hidden: process.env.NODE_ENV === 'development',
-        meta: { title: '道具列表', noCache: true }
-      },
-      {
-        path: 'batchDistribution',
-        component: () => import('@/views/itemManage/batchDistribution/index.vue'),
-        name: 'batchDistribution',
-        meta: { title: '批量发放', noCache: true }
-      },
-      {
-        path: 'itemUser',
-        component: () => import('@/views/itemManage/itemUser/index.vue'),
-        name: 'itemUser',
-        meta: { title: '使用说明', noCache: true }
-      }
-    ]
-  },
+  // {
+  //   path: '/item',
+  //   component: Layout,
+  //   redirect: 'noRedirect',
+  //   meta: { title: '道具管理', icon: 'example', perm: 'CFG_MANAGEMENT' },
+  //   children: [
+  //     {
+  //       path: 'itemConfig',
+  //       component: () => import('@/views/itemManage/itemConfig'),
+  //       name: 'itemConfig',
+  //       hidden: process.env.NODE_ENV === 'development',
+  //       meta: { title: '道具列表', noCache: true }
+  //     },
+  //     {
+  //       path: 'batchDistribution',
+  //       component: () => import('@/views/itemManage/batchDistribution/index.vue'),
+  //       name: 'batchDistribution',
+  //       meta: { title: '批量发放', noCache: true }
+  //     },
+  //     {
+  //       path: 'itemUser',
+  //       component: () => import('@/views/itemManage/itemUser/index.vue'),
+  //       name: 'itemUser',
+  //       meta: { title: '使用说明', noCache: true }
+  //     }
+  //   ]
+  // },
   {
     path: '/playlog',
     component: Layout,
