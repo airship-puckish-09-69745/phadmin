@@ -187,9 +187,9 @@ export const MATCH_UNIQUE_ID_CFG = [
   { 'value': 11109, 'label': 'Apple Watch Ultra 3' },
   { 'value': 11110, 'label': 'iPhone pro max 512' },
 
-  { 'value': 11102, 'label': 'S5 Daily' },
-  { 'value': 11103, 'label': 'S5 Daily Plus' },
-  { 'value': 11104, 'label': 'S5 SemiFinal' }
+  { 'value': 11102, 'label': 'S6 Daily' },
+  //{ 'value': 11103, 'label': 'S5 Daily Plus' },
+  { 'value': 11104, 'label': 'S6 SemiFinal' }
 ]
 
 // 比赛Pusoy全局ID集合

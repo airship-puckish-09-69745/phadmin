@@ -2656,7 +2656,7 @@ export const asyncRoutes = [
                 path: 's5',
                 component: () => import('@/views/matchManage/matchOperations/matchS5/s5.vue'),
                 name: 's5',
-                meta: { title: 'S5配置', noCache: true }
+                meta: { title: 'S6配置', noCache: true }
               },
             ]
           },
