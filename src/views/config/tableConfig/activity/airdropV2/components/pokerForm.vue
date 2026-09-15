@@ -74,7 +74,7 @@
                 v-model="item.gameIdList"
                 label="Poker游戏："
                 :category-ids="[2]"
-                :game-ids="[23,22,15,21,34,28,29,126]"
+                :game-ids="[23,22,15,21,34,28,29,126,134]"
               />
             </el-col>
           </el-row>
