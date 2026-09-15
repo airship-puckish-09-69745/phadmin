@@ -329,6 +329,7 @@ import { $libDate, $libShow } from '@/utils/common'
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
 import { ITEM_TYPE_OPTIONS, ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS,APPID_OPTIONS } from '@/utils/options'
 import { BETTING_GAME_CONFIG } from '@/utils/prop'
+import {getAppId} from "@/utils/app";
 
 export default {
   name: 'PropsConfig',
@@ -964,6 +965,10 @@ export default {
       if (this.isTicketPropNew(this.editForm.data.itemType)) {
         if (typeof this.editForm.itemExtra.appId === 'undefined' || this.editForm.itemExtra.appId === 0 || this.editForm.itemExtra.appId === '') {
           this.errmsg('请选择道具对应的APPID')
+          return false
+        }
+        if(this.editForm.itemExtra.appId !==  getAppId()) {
+          this.errmsg('勾选的APPID 跟当前环境的APPID不一致')
           return false
         }
       }
