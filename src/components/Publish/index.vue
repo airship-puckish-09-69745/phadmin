@@ -652,7 +652,7 @@ export default {
         return Promise.resolve()
       }
       // 同步到正式
-      if (this.env === 'pro' && ![PUBLISH_STEPS.PUBLISH_STEP_REVIEWED, PUBLISH_STEPS.PUBLISH_STEP_PRO].includes(this.opType)) {
+      if (this.env === 'pro' && ![PUBLISH_STEPS.PUBLISH_STEP_REVIEWING,PUBLISH_STEPS.PUBLISH_STEP_REVIEWED, PUBLISH_STEPS.PUBLISH_STEP_PRO].includes(this.opType)) {
         console.log('生产环境只在审核和同步正式发送通知')
         return Promise.resolve()
       }
@@ -664,7 +664,7 @@ export default {
             step = '【发布失败】'
           }
           if ($this.env === 'pro') {
-            if (!options.failed && $this.opType === PUBLISH_STEPS.PUBLISH_STEP_REVIEWED) { step = '【待审核】' }
+            if (!options.failed && $this.opType === PUBLISH_STEPS.PUBLISH_STEP_REVIEWING) { step = '【待审核】' }
             if (!options.failed && $this.opType === PUBLISH_STEPS.PUBLISH_STEP_PRO) { step = '【已发布】' }
           }
           const nick = response.Data.nick
@@ -688,6 +688,7 @@ export default {
           const appIdInfo = appIds.length > 0 ? `【App:${appIds.join(',')}】 ` : ''
           const failedMessage = options.failed ? `失败原因：${options.failedMessage || '发布失败'}\r\n` : ''
           const text = `${step}【${nick}】发布配置：${routes} ${appIdInfo}🚩\r\n${at}${failedMessage}` + content
+
           return sendLark(text, warn, $this.env).then(response => {
             if (response.RetCode === 0) {
               console.log('wanring success')
