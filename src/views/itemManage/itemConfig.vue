@@ -372,6 +372,13 @@ export default {
         {'value': 4, 'label': '香槟', disabled: false},
         {'value': 5, 'label': '派对帽', disabled: false},
         {'value': 6, 'label': '皮纳塔', disabled: false},
+        {'value': 7, 'label': '拖鞋', disabled: false},
+        {'value': 8, 'label': '冰桶', disabled: false},
+        {'value': 9, 'label': '烤乳猪', disabled: false},
+        {'value': 10, 'label': '金蛋', disabled: false},
+        {'value': 11, 'label': '大风扇', disabled: false},
+        {'value': 12, 'label': '爱心', disabled: false},
+
       ],
       slotDefaultBetAmount: [
         // 样式 { 'value': 300, 'label': 'bet-0.3', disabled: false },
