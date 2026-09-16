@@ -908,6 +908,7 @@ import {
   RULE_END_MATCH_CFG
 } from '@/utils/options'
 import {GetPropConfigListFromCache} from "@/utils/propV2";
+import {getAppId} from "@/utils/app";
 
 export default {
   name: 'MatchConfig',
@@ -2588,6 +2589,11 @@ export default {
         return false
       }
       if(!this.checkDelaySignUpConfig()){
+        return false
+      }
+      //appId校验
+      if(this.editForm.appInfo[0].appId !== getAppId()){
+        this.errmsg("当前勾选的APPID 跟当前环境的APPID 不一致")
         return false
       }
 
