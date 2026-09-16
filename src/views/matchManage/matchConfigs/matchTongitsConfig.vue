@@ -908,6 +908,7 @@ import {
   RULE_END_MATCH_CFG
 } from '@/utils/options'
 import {GetPropConfigListFromCache} from "@/utils/propV2";
+import {getAppId} from "@/utils/app";
 
 export default {
   name: 'MatchConfig',
@@ -2590,7 +2591,11 @@ export default {
       if(!this.checkDelaySignUpConfig()){
         return false
       }
-
+      //appId校验
+      if(this.editForm.appInfo[0].appId !== getAppId()){
+         this.errmsg("当前勾选的APPID 跟当前环境的APPID 不一致")
+        return false
+      }
       if (this.envProjectName === 'ph_audit') {
         // 验证比赛玩家ID列表
         if (this.editForm.uidObList && this.editForm.uidObList.length > 0) {

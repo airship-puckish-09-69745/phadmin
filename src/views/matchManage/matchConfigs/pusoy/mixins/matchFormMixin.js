@@ -15,6 +15,7 @@ import {
   initPrizeExtra, initSingleCopy
 } from '../utils/matchConfigUtils'
 import {RULE_END_MATCH_CFG} from "@/utils/options";
+import {getAppId} from "@/utils/app";
 
 export const matchFormMixin = {
   methods: {
@@ -516,6 +517,11 @@ export const matchFormMixin = {
       }
 
       if (!this.checkDelaySignUpConfig()) {
+        return false
+      }
+      //appId校验
+      if(this.editForm.appInfo[0].appId !== getAppId()){
+        Message.error("当前勾选的APPID 跟当前环境的APPID 不一致")
         return false
       }
       return true
