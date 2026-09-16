@@ -366,12 +366,12 @@ export default {
         {'value': 5, 'label': '无品质', disabled: false}
       ],
       effectTypeCfgs: [
-        {'value': 1, 'label': '礼炮', disabled: false},
-        {'value': 2, 'label': '吹龙', disabled: false},
-        {'value': 3, 'label': '蛋糕', disabled: false},
-        {'value': 4, 'label': '香槟', disabled: false},
-        {'value': 5, 'label': '派对帽', disabled: false},
-        {'value': 6, 'label': '皮纳塔', disabled: false},
+        // {'value': 1, 'label': '礼炮', disabled: false},
+        // {'value': 2, 'label': '吹龙', disabled: false},
+        // {'value': 3, 'label': '蛋糕', disabled: false},
+        // {'value': 4, 'label': '香槟', disabled: false},
+        // {'value': 5, 'label': '派对帽', disabled: false},
+        // {'value': 6, 'label': '皮纳塔', disabled: false},
         {'value': 7, 'label': '拖鞋', disabled: false},
         {'value': 8, 'label': '冰桶', disabled: false},
         {'value': 9, 'label': '烤乳猪', disabled: false},
