@@ -2501,20 +2501,20 @@ export const asyncRoutes = [
         path: 'matchType',
         component: () => import('@/views/empty'),
         redirect: 'noRedirect',
-       // hidden: process.env.NODE_ENV === 'development',
+       hidden:true,
         meta: { title: '赛事管理', noCache: true },
         children: [
           {
             path: 'matchTongitsConfig',
             component: () => import('@/views/matchManage/matchConfigs/matchTongitsConfig'),
             name: 'matchTongitsConfig',
-            meta: { title: 'Tongits赛事', noCache: true }
+            meta: { title: 'Tongits赛事', noCache: true}
           },
           {
             path: 'matchPusoyConfig',
             component: () => import('@/views/matchManage/matchConfigs/pusoy/matchPusoyConfigOptimized.vue'),
             name: 'matchPusoyConfig',
-            meta: { title: 'Pusoy赛事', noCache: true }
+            meta: { title: 'Pusoy赛事', noCache: true, hidden: true}
           }
         ]
       },
