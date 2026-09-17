@@ -38,7 +38,8 @@
 
     <el-row style="margin-top: 30px">
       <el-col :offset="3">
-        <el-button type="success" @click="submitFrm">保存</el-button>
+        <el-button type="success" @click="submitFrm(false)">保存</el-button>
+        <el-button v-if="version === 'V2'" type="success" @click="submitFrm(true)">多APP保存</el-button>
       </el-col>
     </el-row>
 
@@ -50,6 +51,7 @@
 import Compare from '@/components/Compare'
 import { DataRule, ValidateVueItem } from '@/utils/common'
 import TalaReyesSouthSeaPearlsBetConfig from './talareyessouthseapearls_bet_config'
+import store from '@/store'
 
 const BET_CONFIG_KEYS = [
   'MultiplierOdds',
@@ -96,7 +98,9 @@ export default {
         ExtraBetConfig: {}
       },
       cfgReady: false,
-      betConfigTab: 'normal'
+      betConfigTab: 'normal',
+      version: store.getters.version || 'V1',
+      oldData: JSON.parse(JSON.stringify(this.slotsData))
     }
   },
   created() {
@@ -117,7 +121,8 @@ export default {
       this.scaleExtraBetMax(data, 1000)
       return data
     },
-    submitFrm() {
+    submitFrm(isMultiApp = false) {
+      const multiAppMode = isMultiApp === true
       if (!ValidateVueItem(this.$refs['baseFrm'])) return false
       if (this.$refs.normalBetConfig && !this.$refs.normalBetConfig.validate()) return false
       if (this.$refs.extraBetConfig && !this.$refs.extraBetConfig.validate()) return false
@@ -136,7 +141,11 @@ export default {
         Object.keys(storeData).forEach(key => {
           $this.$set($this.slotsData, key, storeData[key])
         })
-        $this.$emit('saveData')
+        if (!multiAppMode) {
+          $this.$emit('saveData')
+        } else {
+          $this.$emit('multiAppSave', $this.oldData, $this.slotsData)
+        }
         $this.initData()
       })
     },
