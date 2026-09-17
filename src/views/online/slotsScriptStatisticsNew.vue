@@ -6,25 +6,25 @@
         <el-row>
           <el-col>
             <el-form inline>
-            <el-form-item label="日期">
-            <el-date-picker
-              v-model="queryTime"
-              size="mini"
-              type="date"
-              placeholder="选择日期"
-              @change="updateGid"
-            />
-            </el-form-item>
+              <el-form-item label="日期">
+                <el-date-picker
+                  v-model="queryTime"
+                  size="mini"
+                  type="date"
+                  placeholder="选择日期"
+                  @change="updateGid"
+                />
+              </el-form-item>
               <el-form-item label="游戏">
-            <el-select v-model="queryGid" size="mini" filterable default-first-option @change="queryKeyInput">
-              <!--              <el-option label="所有" :value="0"/>-->
-              <el-option
-                v-for="row in gameOptions"
-                :key="row.key"
-                :label="row.label"
-                :value="row.key"
-              />
-            </el-select>
+                <el-select v-model="queryGid" size="mini" filterable default-first-option @change="queryKeyInput">
+                  <!--              <el-option label="所有" :value="0"/>-->
+                  <el-option
+                    v-for="row in gameOptions"
+                    :key="row.key"
+                    :label="row.label"
+                    :value="row.key"
+                  />
+                </el-select>
               </el-form-item>
               <el-form-item label="倍率">
                 <el-select v-model="betOddsKey" size="mini" filterable default-first-option @change="betOddsKeyInput">
@@ -492,7 +492,7 @@
 
                 <el-table-column prop="idx" label="Scatter次数" width="130px">
                   <template slot-scope="scope">
-                   {{getScatterCnt(scope.row)}}
+                    {{getScatterCnt(scope.row)}}
                   </template>
                 </el-table-column>
                 <el-table-column prop="idx" label="Scatter占比" width="130px">
@@ -952,16 +952,16 @@
           <el-tabs type="border-card">
             <table class="table table-border table-bordered table-bg table-striped" border="0" cellspacing="0" cellpadding="0" STYLE="width:100%;table-layout:fixed;">
               <thead>
-                <th>
-                  <template>
-                    <span class="colStyle"> {{ '位置' }}</span>
-                  </template>
-                </th>
-                <th v-for="(v,k) in 50" class="colStyle">
-                  <template>
-                    <span class="colStyle"> {{ k + 1 }}</span>
-                  </template>
-                </th>
+              <th>
+                <template>
+                  <span class="colStyle"> {{ '位置' }}</span>
+                </template>
+              </th>
+              <th v-for="(v,k) in 50" class="colStyle">
+                <template>
+                  <span class="colStyle"> {{ k + 1 }}</span>
+                </template>
+              </th>
               </thead>
               <tr v-for=" (v,k) in stepData" style="text-align: left">
                 <td class="colStyle">{{ (k) * 50 + '' }}</td>
@@ -993,44 +993,44 @@
           <el-tabs type="border-card">
             <table class="table table-border table-bordered table-bg table-striped" cellspacing="0" cellpadding="0">
               <thead>
-                <th>
-                  <template>
-                    总次数：{{ timesSum }}
-                  </template>
-                </th>
-                <th v-for="(v,k) in showData.column">
-                  <template>
-                    <span>{{ v }}</span>
-                  </template>
-                </th>
+              <th>
+                <template>
+                  总次数：{{ timesSum }}
+                </template>
+              </th>
+              <th v-for="(v,k) in showData.column">
+                <template>
+                  <span>{{ v }}</span>
+                </template>
+              </th>
               </thead>
               <thead>
-                <th>
-                  <template>
-                    概率：
-                  </template>
-                </th>
-                <th v-for="(v,k) in showData.column">
-                  <template>
-                    <span style="font-size: 11px">{{ ((parseInt(v) / timesSum) * 100).toFixed(2) + '%' }}</span>
-                  </template>
-                </th>
+              <th>
+                <template>
+                  概率：
+                </template>
+              </th>
+              <th v-for="(v,k) in showData.column">
+                <template>
+                  <span style="font-size: 11px">{{ ((parseInt(v) / timesSum) * 100).toFixed(2) + '%' }}</span>
+                </template>
+              </th>
               </thead>
 
               <thead>
-                <th>
-                  <template>
-                    步数 / 剧本
-                  </template>
-                </th>
-                <th v-for="(v,k) in showData.column">
-                  <template>
-                    <!--
-                <span @click="showChart(idx, k1)">{{ k1 }}</span>
-                -->
-                    <span>{{ k }}</span>
-                  </template>
-                </th>
+              <th>
+                <template>
+                  步数 / 剧本
+                </template>
+              </th>
+              <th v-for="(v,k) in showData.column">
+                <template>
+                  <!--
+              <span @click="showChart(idx, k1)">{{ k1 }}</span>
+              -->
+                  <span>{{ k }}</span>
+                </template>
+              </th>
               </thead>
               <tr v-for=" (v,k) in showData.rows" style="text-align: center">
                 <td>{{ k }}</td>
@@ -1117,13 +1117,13 @@ export default {
       },
       tableData: [],
       scriptClientDB: { '全部': new ClientTableData([], 1, filterMap) },
-      scriptStepClientDB:  new ClientTableData([], 1, filterMap),
-      scriptStepScatterClientDB:  new ClientTableData([], 1, filterMap),
+      scriptStepClientDB: new ClientTableData([], 1, filterMap),
+      scriptStepScatterClientDB: new ClientTableData([], 1, filterMap),
       coordinateClientDB: new ClientTableData([], 1, filterMap),
       stepClientDB: new ClientTableData([], 1, filterMap),
       jackpotClientDB: new ClientTableData([], 1, filterMap),
       ordinaryReturnClientDB: { '全部': new ClientTableData([], 1, filterMap) },
-      ordinaryReturnClientDBNew : new ClientTableData([], 1, filterMap),
+      ordinaryReturnClientDBNew: new ClientTableData([], 1, filterMap),
       buyReturnClientDB: { '全部': new ClientTableData([], 1, filterMap) },
       buyReturnClientDBNew: new ClientTableData([], 1, filterMap),
       superReturnClientDBNew: new ClientTableData([], 1, filterMap),
@@ -1179,14 +1179,9 @@ export default {
       planOptions: {},
       betOddsKeySelect: {},
 
-      stepCount:{},
+      stepCount: {},
+      gidExt: [180, 186, 246]
     }
-  },
-  created() {
-    this.getData()
-    this.getGameList()
-    this.getSlotsScriptStatistics()
-    this.queryKeyInput()
   },
   computed: {
     extraStatisticsTables() {
@@ -1212,6 +1207,12 @@ export default {
       return tables
     }
   },
+  created() {
+    this.getData()
+    this.getGameList()
+    this.getSlotsScriptStatistics()
+    this.queryKeyInput()
+  },
   methods: {
     refreshStep() {
       // let bet = this.betOddsKey
@@ -1235,107 +1236,106 @@ export default {
       // });
       // this.stepTableData = Object.values(result);
 
-
     },
     refreshScript() {
       let bet = this.betOddsKey
-      if (this.betOddsKey===-1){
+      if (this.betOddsKey === -1) {
         bet = -1
       }
-      this.scriptStepClientDB.FilterValueMap={"bet":bet,"planId":this.planId}
-      this.scriptStepClientDB.FilterDataCustomize({"bet":-1,"planId":-1})
-      const getCurrentPageData = this.scriptStepClientDB.GetCurrentPageData();
+      this.scriptStepClientDB.FilterValueMap = { 'bet': bet, 'planId': this.planId }
+      this.scriptStepClientDB.FilterDataCustomize({ 'bet': -1, 'planId': -1 })
+      const getCurrentPageData = this.scriptStepClientDB.GetCurrentPageData()
       // 命中scatter
       this.refreshHitScriptScatter()
 
-      const result = {};
+      const result = {}
       getCurrentPageData.forEach(item => {
         // 方案选所有时过滤PlanId
-        let key =  item.idx +'_'+this.planId+'_'+this.bet;
+        const key = item.idx + '_' + this.planId + '_' + this.bet
         if (!result[key]) {
-          result[key] = { ...item, cnt: 0 };
+          result[key] = { ...item, cnt: 0 }
         }
-        result[key].cnt += parseInt(item.cnt, 10);
-      });
-      this.scriptTableData = Object.values(result);
-      //排序
+        result[key].cnt += parseInt(item.cnt, 10)
+      })
+      this.scriptTableData = Object.values(result)
+      // 排序
       this.scriptTableData.sort((a, b) => {
         if (a.idx === b.idx) {
-          return a.bet - b.bet;
+          return a.bet - b.bet
         } else {
-          return a.idx - b.idx;
+          return a.idx - b.idx
         }
-      });
+      })
     },
     refreshHitScriptScatter() {
       let bet = this.betOddsKey
-      if (this.betOddsKey===-1){
+      if (this.betOddsKey === -1) {
         bet = -1
       }
-      this.scriptStepScatterClientDB.FilterValueMap={"bet":bet,"planId":this.planId}
-      this.scriptStepScatterClientDB.FilterDataCustomize({"bet":-1,"planId":-1})
-      const getStepScatterPageData = this.scriptStepScatterClientDB.GetCurrentPageData();
+      this.scriptStepScatterClientDB.FilterValueMap = { 'bet': bet, 'planId': this.planId }
+      this.scriptStepScatterClientDB.FilterDataCustomize({ 'bet': -1, 'planId': -1 })
+      const getStepScatterPageData = this.scriptStepScatterClientDB.GetCurrentPageData()
 
-      const result = {};
+      const result = {}
       getStepScatterPageData.forEach(item => {
         // 方案选所有时过滤PlanId
-        let key =`${item.idx}`;
+        let key = `${item.idx}`
         if (this.planId > -1) {
-          key += `_${item.planId}`;
+          key += `_${item.planId}`
         }
         if (bet > -1) {
-          key += `_${item.bet}`;
+          key += `_${item.bet}`
         }
         if (!result[key]) {
           result[key] = 0
         }
-        result[key]  += parseInt(item.cnt, 10);
-      }, {});
+        result[key] += parseInt(item.cnt, 10)
+      }, {})
       this.scatterCounts = result
     },
     refreshOrdinaryReturn() {
       let bet = this.betOddsKey
-      if (this.betOddsKey===-1){
+      if (this.betOddsKey === -1) {
         bet = -1
       }
-      this.ordinaryReturnClientDBNew.FilterValueMap={"odds":bet,"planId":this.planId}
-      this.ordinaryReturnClientDBNew.FilterDataCustomize({"odds":-1,"planId":-1})
-      const getCurrentPageData = this.ordinaryReturnClientDBNew.GetCurrentPageData();
-      const result = {};
+      this.ordinaryReturnClientDBNew.FilterValueMap = { 'odds': bet, 'planId': this.planId }
+      this.ordinaryReturnClientDBNew.FilterDataCustomize({ 'odds': -1, 'planId': -1 })
+      const getCurrentPageData = this.ordinaryReturnClientDBNew.GetCurrentPageData()
+      const result = {}
       getCurrentPageData.forEach(item => {
         // 方案选所有时过滤PlanId
-        let key = `${item.planId}_${item.bet}`;
+        let key = `${item.planId}_${item.bet}`
         if (this.planId === -1) {
-          key = '-1_'+item.bet;
+          key = '-1_' + item.bet
         }
         if (this.bet === -1) {
-          key = item.planId+'_-1';
+          key = item.planId + '_-1'
         }
 
         if (!result[key]) {
-          result[key] = { ...item, times: 0 };
+          result[key] = { ...item, times: 0 }
         }
-        result[key].times += parseInt(item.times, 10);
-      });
-      this.OrdinaryReturnTableData = Object.values(result);
+        result[key].times += parseInt(item.times, 10)
+      })
+      this.OrdinaryReturnTableData = Object.values(result)
       this.OrdinaryReturnTableData.sort((a, b) => {
-        return a.bet - b.bet;
-      });
+        return a.bet - b.bet
+      })
 
       // 添加汇总行
       if (this.OrdinaryReturnTableData.length > 0) {
-        let totalTimes = 0;
-        let totalBetAmount = 0;
-        let totalReturnAmount = 0;
+        let totalTimes = 0
+        let totalBetAmount = 0
+        let totalReturnAmount = 0
 
         for (const item of this.OrdinaryReturnTableData) {
-          totalTimes += parseInt(item.times);
-          totalBetAmount += this.currentBaseBet * item.bet * item.times;
-          totalReturnAmount += this.returnMap[item.bet+'_'+bet+'_'+this.planId] || 0;
+          totalTimes += parseInt(item.times)
+          totalBetAmount += this.currentBaseBet * item.bet * item.times
+          totalReturnAmount += this.returnMap[item.bet + '_' + bet + '_' + this.planId] || 0
         }
 
-        const totalGGR = totalBetAmount - totalReturnAmount;
-        const totalReturnRate = totalBetAmount > 0 ? (totalReturnAmount / totalBetAmount * 100).toFixed(2) + '%' : '0%';
+        const totalGGR = totalBetAmount - totalReturnAmount
+        const totalReturnRate = totalBetAmount > 0 ? (totalReturnAmount / totalBetAmount * 100).toFixed(2) + '%' : '0%'
 
         this.OrdinaryReturnTableData.push({
           isSummary: true,
@@ -1345,12 +1345,9 @@ export default {
           totalReturnAmount: totalReturnAmount,
           totalGGR: totalGGR,
           totalReturnRate: totalReturnRate
-        });
+        })
       }
     },
-
-
-
 
     refreshCoordinate() {
       this.coordinateTableData = this.coordinateClientDB.GetCurrentPageData()
@@ -1454,7 +1451,7 @@ export default {
       let cnt = 0
       for (const o of this.BuyReturnMoneyTableData) {
         if (!o.isSummary) {
-          cnt += parseInt(o.times * o.bet )
+          cnt += parseInt(o.times * o.bet)
         }
       }
       return cnt
@@ -1489,10 +1486,11 @@ export default {
     getBuyRespinBet(bet, multiOdds) {
       if (this.betOddsKey in this.buyRespinTotalBetMap) {
         if (bet in this.buyRespinTotalBetMap[this.betOddsKey]) {
-          for (const o of this.buyRespinTotalBetMap[this.betOddsKey][bet])
+          for (const o of this.buyRespinTotalBetMap[this.betOddsKey][bet]) {
             if (o.multiOdds === multiOdds) {
               return o.totalBet
             }
+          }
         }
       }
       return 0
@@ -1510,9 +1508,9 @@ export default {
       return 0
     },
     getBuyRespinTimes(bet, multiOdds) {
-      console.log('-----------',this.betOddsKey, bet, multiOdds, this.buyRespinTimeMap)
+      console.log('-----------', this.betOddsKey, bet, multiOdds, this.buyRespinTimeMap)
       if (this.betOddsKey in this.buyRespinTimeMap) {
-        console.log('000----',this.betOddsKey,bet in this.buyRespinTimeMap[this.betOddsKey])
+        console.log('000----', this.betOddsKey, bet in this.buyRespinTimeMap[this.betOddsKey])
         if (bet in this.buyRespinTimeMap[this.betOddsKey]) {
           for (const o of this.buyRespinTimeMap[this.betOddsKey][bet]) {
             if (o.multiOdds === multiOdds) {
@@ -1713,7 +1711,7 @@ export default {
         const ordinaryReturnMoneyTableData = []
         const buyReturnMoneyTableData = []
         const superReturnMoneyTableData = []
-        const has2JpColsTableData = {}  // 出现2列JP的统计
+        const has2JpColsTableData = {} // 出现2列JP的统计
 
         this.returnMap = {}
         this.buyReturnMap = {}
@@ -1733,21 +1731,20 @@ export default {
 
           for (const key in response.Data['script']) {
             var strings = key.split('_')
-            this.processStepCount(strings,scriptTableData,scatterCounts,response,key)
-            this.processOrdinaryRebateCount(strings,ordinaryReturnMoneyTableData,response,key)
-            this.processBuyReturnCount(strings,buyReturnMoneyTableData,response,key)
+            this.processStepCount(strings, scriptTableData, scatterCounts, response, key)
+            this.processOrdinaryRebateCount(strings, ordinaryReturnMoneyTableData, response, key)
+            this.processBuyReturnCount(strings, buyReturnMoneyTableData, response, key)
             this.processSuperReturnCount(strings, superReturnMoneyTableData, response, key)
           }
           // 步数统计
-          this.scriptStepClientDB  = new ClientTableData(scriptTableData , 200, {}, 'sort', -1);
-          this.scriptStepScatterClientDB  = new ClientTableData(scatterCounts , 200, {}, 'sort', -1);
+          this.scriptStepClientDB = new ClientTableData(scriptTableData, 200, {}, 'sort', -1)
+          this.scriptStepScatterClientDB = new ClientTableData(scatterCounts, 200, {}, 'sort', -1)
           // 普通返奖
-          this.ordinaryReturnClientDBNew  = new ClientTableData(ordinaryReturnMoneyTableData , 200, {}, 'sort', -1);
+          this.ordinaryReturnClientDBNew = new ClientTableData(ordinaryReturnMoneyTableData, 200, {}, 'sort', -1)
           // 购买免费
-          this.buyReturnClientDBNew  = new ClientTableData(buyReturnMoneyTableData , 200, {}, 'sort', -1);
+          this.buyReturnClientDBNew = new ClientTableData(buyReturnMoneyTableData, 200, {}, 'sort', -1)
           // 超级免费
           this.superReturnClientDBNew = new ClientTableData(superReturnMoneyTableData, 200, {}, 'sort', -1)
-
 
           for (const key in response.Data['script']) {
             var strings1 = key.split('_')
@@ -1840,7 +1837,6 @@ export default {
               // }
             } else if (strings1[0] === 'spin') {
               if (strings1[1] === '2coljp') {
-
                 if (strings1.length === 6) {
                   if (!(-1 in has2JpColsTableData)) {
                     has2JpColsTableData[-1] = []
@@ -1872,7 +1868,7 @@ export default {
                     if (!(bet in this.buyRespinTimeMap[-1])) {
                       this.buyRespinTimeMap[-1][bet] = []
                     }
-                    console.log("-1-------",bet,multiOdds,!(bet in this.buyRespinTimeMap[-1]),this.buyRespinTimeMap[-1],this.buyRespinTimeMap[-1][bet],bet)
+                    console.log('-1-------', bet, multiOdds, !(bet in this.buyRespinTimeMap[-1]), this.buyRespinTimeMap[-1], this.buyRespinTimeMap[-1][bet], bet)
                     this.buyRespinTimeMap[-1][bet].push({ multiOdds: multiOdds, times: parseInt(response.Data['script'][key]) })
                   } else if (strings1.length === 7) {
                     const bet = parseInt(strings1[3])
@@ -1897,7 +1893,7 @@ export default {
                     if (!(bet in this.buyRespinReturnMap[-1])) {
                       this.buyRespinReturnMap[-1][bet] = []
                     }
-                    this.buyRespinReturnMap[-1][bet].push({ multiOdds: multiOdds, return: parseInt(response.Data['script'][key])})
+                    this.buyRespinReturnMap[-1][bet].push({ multiOdds: multiOdds, return: parseInt(response.Data['script'][key]) })
                   } else {
                     const bet = parseInt(strings1[3])
                     const betOdds = parseInt(strings1[4])
@@ -1908,7 +1904,7 @@ export default {
                     if (!(bet in this.buyRespinReturnMap[betOdds])) {
                       this.buyRespinReturnMap[betOdds][bet] = []
                     }
-                    this.buyRespinReturnMap[betOdds][bet].push({ multiOdds: multiOdds, return: parseInt(response.Data['script'][key])})
+                    this.buyRespinReturnMap[betOdds][bet].push({ multiOdds: multiOdds, return: parseInt(response.Data['script'][key]) })
                   }
                 }
                 if (strings1[2] === 'bet') {
@@ -1921,7 +1917,7 @@ export default {
                     if (!(bet in this.buyRespinTotalBetMap[-1])) {
                       this.buyRespinTotalBetMap[-1][bet] = []
                     }
-                    this.buyRespinTotalBetMap[-1][bet].push({ multiOdds: multiOdds, totalBet: parseInt(response.Data['script'][key])})
+                    this.buyRespinTotalBetMap[-1][bet].push({ multiOdds: multiOdds, totalBet: parseInt(response.Data['script'][key]) })
                   } else {
                     const bet = parseInt(strings1[3])
                     const betOdds = parseInt(strings1[4])
@@ -1975,7 +1971,6 @@ export default {
               sheet: scriptMap[key].sheet
             })
           }
-
 
           for (const key in jackpotMap) {
             jackpotTableData.push({
@@ -2175,7 +2170,7 @@ export default {
       }
     },
     queryBase(gid) { // 加载基础配置
-      if (this.gameScene[gid%100000] === undefined || this.gameScene[gid%100000] === 'undefined') {
+      if (this.gameScene[gid % 100000] === undefined || this.gameScene[gid % 100000] === 'undefined') {
         return
       }
       try {
@@ -2191,7 +2186,7 @@ export default {
           198: 'fortuneblessing',
           216: 'phoenix'
         }
-        let key = this.gameScene[gid%100000] + '_slots_base'
+        let key = this.gameScene[gid % 100000] + '_slots_base'
         for (const k in realKey) {
           if (gid === parseInt(k)) {
             key = realKey[gid] + '_slots_base'
@@ -2201,11 +2196,12 @@ export default {
         getCustomize(key).then(response => {
           if (response.RetCode === 0) {
             const baseCfg = JSON.parse(response.Data.Data)
+            console.log('base>>>', baseCfg)
             if (baseCfg.BetList) {
               if (gid > 100000) {
-                let arr = []
+                const arr = []
                 for (const k in baseCfg.BetList) {
-                  arr.push(baseCfg.BetList[k]*1.5)
+                  arr.push(baseCfg.BetList[k] * baseCfg.BetOddsList[1] / 1000)
                 }
                 this.handleSlotsBetOptions(arr, baseCfg.BaseBet)
               } else {
@@ -2235,7 +2231,7 @@ export default {
     getSlotsActConfig(ActId) {
 
     },
-    //步数统计处理
+    // 步数统计处理
     processStepCount(strings, scriptTableData, scatterCounts, response, key) {
       // script_count_4_1_plan_0
       if (strings[0] === 'script' && strings[1] === 'count') {
@@ -2268,16 +2264,16 @@ export default {
         }
       }
     },
-    //普通返奖处理
+    // 普通返奖处理
     processOrdinaryRebateCount(strings, ordinaryReturnMoneyTableData, response, key) {
-      if (strings[0]+strings[1] === 'spinordinary') {
+      if (strings[0] + strings[1] === 'spinordinary') {
         let planId = 0
         let odds = 0
         if (strings.includes('plan') && strings.length === 8) {
           planId = parseInt(strings[7])
           odds = parseInt(strings[4])
           this.betOddsKeySelect[parseInt(strings[4])] = parseInt(strings[4])
-          console.log("===============================================",  this.betOddsKeySelect)
+          console.log('===============================================', this.betOddsKeySelect)
         }
         // 兼容旧的返奖统计
         if (!strings.includes('plan') && strings.length === 6) {
@@ -2295,14 +2291,14 @@ export default {
         }
         if (strings[2] === 'return') {
           // key=bet_odds_planId
-          let ggr = parseInt(response.Data['script'][key])
+          const ggr = parseInt(response.Data['script'][key])
 
           if (strings.length === 8) {
             this.updateMapEntry(strings[3] + '_' + strings[4] + '_' + strings[7], ggr)
             this.updateMapEntry(strings[3] + '_-1_-1', ggr)
             this.updateMapEntry(strings[3] + '_' + strings[4] + '_-1', ggr)
             this.updateMapEntry(strings[3] + '_-1_' + strings[7], ggr)
-          } else if (strings.length === 6) {// 兼容旧的
+          } else if (strings.length === 6) { // 兼容旧的
             const planId = 0
             this.updateMapEntry(strings[3] + '_' + strings[4] + '_' + planId, ggr)
             this.updateMapEntry(strings[3] + '_-1_-1', ggr)
@@ -2314,24 +2310,24 @@ export default {
     },
     updateMapEntry(key, value) {
       if (!this.returnMap[key]) {
-        this.returnMap[key] = 0;
+        this.returnMap[key] = 0
       }
       this.returnMap[key] += value
     },
     processBuyReturnCount(strings, buyReturnMoneyTableData, response, key) {
-      if (strings[0]+strings[1] === 'spinbuy') {
+      if (strings[0] + strings[1] === 'spinbuy') {
         let planId = 0
         let odds = 0
         if (strings.includes('plan') && strings.length === 8) {
-          planId =parseInt(strings[7])
+          planId = parseInt(strings[7])
           odds = parseInt(strings[4])
         }
         // 兼容旧的返奖统计
-        if (!strings.includes('plan') && strings.length === 6){
+        if (!strings.includes('plan') && strings.length === 6) {
           planId = 0
           odds = parseInt(strings[4])
         }
-        if (strings[2] === 'times' && strings.length===8) {
+        if (strings[2] === 'times' && strings.length === 8) {
           buyReturnMoneyTableData.push({
             bet: parseInt(strings[3]),
             planId: planId,
@@ -2341,25 +2337,25 @@ export default {
         }
         if (strings[2] === 'return') {
           // key=bet_odds_planId
-          let ggr = parseInt(response.Data['script'][key])
-          if (strings.length===8){
-            this.updateBuyReturnMapEntry(strings[3]+'_'+strings[4]+'_'+strings[7],ggr)
-            this.updateBuyReturnMapEntry(strings[3]+'_-1_-1',ggr)
-            this.updateBuyReturnMapEntry(strings[3]+'_'+strings[4]+'_-1',ggr)
-            this.updateBuyReturnMapEntry(strings[3]+'_-1_'+strings[7],ggr)
-          }else if (strings.length===6){// 兼容旧的
-            const planId= 0
-            this.updateBuyReturnMapEntry(strings[3]+'_'+strings[4]+'_'+planId,ggr)
-            this.updateBuyReturnMapEntry(strings[3]+'_-1_-1',ggr)
-            this.updateBuyReturnMapEntry(strings[3]+'_'+strings[4]+'_-1',ggr)
-            this.updateBuyReturnMapEntry(strings[3]+'_-1_'+planId,ggr)
+          const ggr = parseInt(response.Data['script'][key])
+          if (strings.length === 8) {
+            this.updateBuyReturnMapEntry(strings[3] + '_' + strings[4] + '_' + strings[7], ggr)
+            this.updateBuyReturnMapEntry(strings[3] + '_-1_-1', ggr)
+            this.updateBuyReturnMapEntry(strings[3] + '_' + strings[4] + '_-1', ggr)
+            this.updateBuyReturnMapEntry(strings[3] + '_-1_' + strings[7], ggr)
+          } else if (strings.length === 6) { // 兼容旧的
+            const planId = 0
+            this.updateBuyReturnMapEntry(strings[3] + '_' + strings[4] + '_' + planId, ggr)
+            this.updateBuyReturnMapEntry(strings[3] + '_-1_-1', ggr)
+            this.updateBuyReturnMapEntry(strings[3] + '_' + strings[4] + '_-1', ggr)
+            this.updateBuyReturnMapEntry(strings[3] + '_-1_' + planId, ggr)
           }
         }
       }
     },
     updateBuyReturnMapEntry(key, value) {
       if (!this.buyReturnMap[key]) {
-        this.buyReturnMap[key] = 0;
+        this.buyReturnMap[key] = 0
       }
       this.buyReturnMap[key] += value
     },
@@ -2558,7 +2554,7 @@ export default {
         method: 'get',
         data: {}
       }).then(response => {
-        let gameOptionsArr = []
+        const gameOptionsArr = []
         if (response.RetCode === 0) {
           for (let i = 0; i < response.Data.length; i++) {
             if (response.Data[i].CategoryID != 1) {
@@ -2571,23 +2567,13 @@ export default {
             })
             this.gameScene[response.Data[i].Gid] = response.Data[i].Scene
             this.gidOptions[response.Data[i].Gid] = response.Data[i].Gid
+            if (this.gidExt.indexOf(response.Data[i].Gid) !== -1) {
+              gameOptionsArr.push({
+                key: response.Data[i].Gid + 100000,
+                label: response.Data[i].Name + '(额外加注)'
+              })
+            }
           }
-
-          this.gidOptions[100180] ='Fishing Master(额外加注)'
-          gameOptionsArr.push({
-            key: 100180,
-            label: 'Fishing Master(额外加注)'
-          })
-          this.gidOptions[100186] ='Mahjong Jackpot(额外加注)'
-          gameOptionsArr.push({
-            key: 100186,
-            label: 'Mahjong Jackpot(额外加注)'
-          })
-          this.gidOptions[100246] ='Tala Reyes South Sea Pearls(额外加注)'
-          gameOptionsArr.push({
-            key: 100246,
-            label: 'Tala Reyes South Sea Pearls(额外加注)'
-          })
           // 对gameOptionsArr按游戏名称排序
           gameOptionsArr.sort((a, b) => {
             return a.label.localeCompare(b.label)
@@ -2616,7 +2602,7 @@ export default {
     getSumCnt(){
       let cnt =0
       for (const o of this.scriptTableData) {
-          cnt+=o.cnt
+        cnt+=o.cnt
       }
       return cnt
     },
