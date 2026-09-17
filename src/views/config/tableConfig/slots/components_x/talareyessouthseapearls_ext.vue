@@ -1,13 +1,13 @@
 <template>
   <div class="app-container">
     <el-row :gutter="10" style="margin-top: 30px">
-      <el-col :span="14" :offset="2">
-        <el-form ref="form" :model="cfg" label-width="220px">
-          <el-form-item label="购买免费倍数" prop="BuyFreeOdds" :rules="dataRule(true, { type: 'n' })">
-            <el-input v-model.number="cfg.BuyFreeOdds" />
+      <el-col :span="12" :offset="3">
+        <el-form ref="baseFrm" :model="cfg" label-width="230px">
+          <el-form-item label="免费模式购买倍数" prop="BuyFreeOdds" :rules="dataRule(true, { type: 'n' })">
+            <el-input v-model.number="cfg.BuyFreeOdds" :required="true" />
           </el-form-item>
-          <el-form-item label="额外下注最大 Bet">
-            <el-input v-model.number="cfg.ExtraBetMax" />
+          <el-form-item label="加倍投注最大Bet" prop="ExtraBetMax" :rules="dataRule(true, { type: 'n' })">
+            <el-input v-model.number="cfg.ExtraBetMax" :required="true" />
           </el-form-item>
         </el-form>
       </el-col>
@@ -15,122 +15,32 @@
 
     <el-row>
       <el-col :span="22" :offset="1">
-        <el-tabs v-model="activeConfig">
-          <el-tab-pane label="普通下注配置" name="NormalConfig"></el-tab-pane>
-          <el-tab-pane label="额外下注配置" name="ExtraBetConfig"></el-tab-pane>
+        <el-tabs v-if="cfgReady" v-model="betConfigTab" type="border-card">
+          <el-tab-pane label="普通下注配置" name="normal">
+            <tala-reyes-south-sea-pearls-bet-config
+              ref="normalBetConfig"
+              :config="cfg.NormalConfig"
+              :buy-free-odds="cfg.BuyFreeOdds"
+              :base-bet="baseBet"
+            />
+          </el-tab-pane>
+          <el-tab-pane label="加倍投注配置" name="extra">
+            <tala-reyes-south-sea-pearls-bet-config
+              ref="extraBetConfig"
+              :config="cfg.ExtraBetConfig"
+              :buy-free-odds="cfg.BuyFreeOdds"
+              :base-bet="baseBet"
+            />
+          </el-tab-pane>
         </el-tabs>
-
-        <el-form :model="cfg[activeConfig]" label-width="220px">
-          <el-row :gutter="20">
-            <el-col :span="12">
-              <el-form-item label="倍率列表">
-                <el-input v-model="cfg[activeConfig].MultiplierOdds" placeholder="如 1,2,3,5,10" />
-              </el-form-item>
-              <el-form-item label="倍率颜色列表">
-                <el-input v-model="cfg[activeConfig].MultiplierColor" placeholder="与倍率列表一一对应" />
-              </el-form-item>
-              <el-form-item label="普通模式最小执行倍率">
-                <el-input v-model.number="cfg[activeConfig].ScatterOdds" />
-              </el-form-item>
-              <el-form-item label="普通模式权重">
-                <el-input v-model="cfg[activeConfig].ModeWeight" placeholder="普通,转盘,重转,JACKPOT,转盘JACKPOT,重转JACKPOT" />
-              </el-form-item>
-              <el-form-item label="购买免费模式权重">
-                <el-input v-model="cfg[activeConfig].FreeModeWeight" placeholder="普通,转盘,重转,JACKPOT,转盘JACKPOT,重转JACKPOT" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item label="JACKPOT 类型权重">
-                <el-input v-model="cfg[activeConfig].JackpotTypeWeight" placeholder="GRAND,MAJOR,MINOR,MINI" />
-              </el-form-item>
-              <el-form-item label="JACKPOT 倍率">
-                <el-input v-model="cfg[activeConfig].JackpotOdds" placeholder="GRAND,MAJOR,MINOR,MINI" />
-              </el-form-item>
-              <el-form-item label="JACKPOT 数量权重">
-                <el-input v-model="cfg[activeConfig].JackpotCountWeight" placeholder="3 至 9 个 JACKPOT 的权重" />
-              </el-form-item>
-              <el-form-item label="转盘内圈倍率">
-                <el-input v-model="cfg[activeConfig].WheelConfig.InnerOdds" />
-              </el-form-item>
-              <el-form-item label="转盘内圈权重">
-                <el-input v-model="cfg[activeConfig].WheelConfig.InnerWeight" />
-              </el-form-item>
-              <el-form-item label="转盘外圈倍率">
-                <el-input v-model="cfg[activeConfig].WheelConfig.OuterOdds" />
-              </el-form-item>
-              <el-form-item label="转盘外圈权重">
-                <el-input v-model="cfg[activeConfig].WheelConfig.OuterWeight" />
-              </el-form-item>
-            </el-col>
-          </el-row>
-        </el-form>
-
-        <el-divider>倍数列配置</el-divider>
-        <el-card v-for="group in rowGroups" :key="group.key" class="row-config-card">
-          <div slot="header" class="row-config-header">
-            <span>{{ group.label }}</span>
-            <el-button v-if="!group.required" type="primary" size="mini" @click="addMultiplierRow(group.key)">添加行</el-button>
-          </div>
-          <el-table :data="cfg[activeConfig][group.key]">
-            <el-table-column label="倍数/WHEEL/RESPINS 图标权重">
-              <template slot-scope="scope"><el-input v-model="scope.row.IconWeight" /></template>
-            </el-table-column>
-            <el-table-column label="倍率权重">
-              <template slot-scope="scope"><el-input v-model="scope.row.MultiplierWeight" /></template>
-            </el-table-column>
-            <el-table-column label="彩色倍率概率">
-              <template slot-scope="scope"><el-input v-model.number="scope.row.PinkRate"><template slot="append">千分比</template></el-input></template>
-            </el-table-column>
-            <el-table-column v-if="!group.required" label="操作" width="90">
-              <template slot-scope="scope"><el-button type="danger" size="mini" @click="removeMultiplierRow(group.key, scope.$index)">删除</el-button></template>
-            </el-table-column>
-          </el-table>
-        </el-card>
-
-        <el-divider>购买免费目标倍率</el-divider>
-        <el-button type="primary" @click="showOddsDialog">添加配置</el-button>
-        <el-table :data="cfg[activeConfig].BuyFreeOddsConf" style="margin-top: 12px">
-          <el-table-column label="Bet值" width="260">
-            <template slot-scope="scope">{{ displayBets(scope.row.Bet) }}</template>
-          </el-table-column>
-          <el-table-column label="倍率范围数量">
-            <template slot-scope="scope">{{ scope.row.Items ? scope.row.Items.length : 0 }}</template>
-          </el-table-column>
-          <el-table-column label="操作" width="180">
-            <template slot-scope="scope">
-              <el-button type="primary" @click="editOddsConfig(scope.row)">编辑</el-button>
-              <el-button type="danger" @click="cfg[activeConfig].BuyFreeOddsConf.splice(scope.$index, 1)">删除</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
       </el-col>
     </el-row>
 
-    <el-row style="margin-top: 24px">
-      <el-col :offset="2">
-        <el-button type="success" @click="submitFrm(false)">保存</el-button>
-        <el-button v-if="version === 'V2'" type="success" @click="submitFrm(true)">多App保存</el-button>
+    <el-row style="margin-top: 30px">
+      <el-col :offset="3">
+        <el-button type="success" @click="submitFrm">保存</el-button>
       </el-col>
     </el-row>
-
-    <el-dialog :title="oddsDialog.title" :visible.sync="oddsDialog.visible" :close-on-click-modal="false" :close-on-press-escape="false" width="48%">
-      <el-form label-width="70px">
-        <el-form-item label="Bet值">
-          <el-input v-model="oddsDialog.bets" placeholder="如 0.1,0.2"><template slot="append">多个 Bet 用逗号分隔</template></el-input>
-        </el-form-item>
-      </el-form>
-      <el-button type="primary" @click="oddsDialog.items.push({ MinOdds: 0, MaxOdds: 0, InWeight: 1 })">添加倍率范围</el-button>
-      <el-table :data="oddsDialog.items">
-        <el-table-column label="最小倍率" width="180"><template slot-scope="scope"><el-input v-model.number="scope.row.MinOdds" /></template></el-table-column>
-        <el-table-column label="最大倍率" width="180"><template slot-scope="scope"><el-input v-model.number="scope.row.MaxOdds" /></template></el-table-column>
-        <el-table-column label="权重"><template slot-scope="scope"><el-input v-model.number="scope.row.InWeight" /></template></el-table-column>
-        <el-table-column label="操作" width="110"><template slot-scope="scope"><el-button type="danger" @click="oddsDialog.items.splice(scope.$index, 1)">删除</el-button></template></el-table-column>
-      </el-table>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="oddsDialog.visible = false">取消</el-button>
-        <el-button type="primary" @click="saveOddsConfig">保存</el-button>
-      </span>
-    </el-dialog>
 
     <compare ref="compare" />
   </div>
@@ -139,35 +49,28 @@
 <script>
 import Compare from '@/components/Compare'
 import { DataRule, ValidateVueItem } from '@/utils/common'
-import { Message } from 'element-ui'
-import store from '@/store'
+import TalaReyesSouthSeaPearlsBetConfig from './talareyessouthseapearls_bet_config'
 
-function createMultiplierRow() {
-  return { IconWeight: '', MultiplierWeight: '', PinkRate: 0 }
-}
-
-function createBetConfig() {
-  return {
-    BuyFreeOddsConf: [],
-    FreeModeWeight: '',
-    FreeMultiplierRows: [],
-    FreeRespinsMultiplierRows: [],
-    JackpotCountWeight: '',
-    JackpotOdds: '',
-    JackpotTypeWeight: '',
-    ModeWeight: '',
-    MultiplierColor: '',
-    MultiplierOdds: '',
-    NormalMultiplierRows: [createMultiplierRow(), createMultiplierRow(), createMultiplierRow()],
-    RespinsMultiplierRows: [createMultiplierRow(), createMultiplierRow(), createMultiplierRow()],
-    ScatterOdds: 0,
-    WheelConfig: { InnerOdds: '', InnerWeight: '', OuterOdds: '', OuterWeight: '' }
-  }
-}
+const BET_CONFIG_KEYS = [
+  'MultiplierOdds',
+  'MultiplierColor',
+  'BuyFreeOddsConf',
+  'ScatterOdds',
+  'ModeWeight',
+  'FreeModeWeight',
+  'WheelConfig',
+  'JackpotTypeWeight',
+  'JackpotOdds',
+  'JackpotCountWeight',
+  'NormalMultiplierRows',
+  'RespinsMultiplierRows',
+  'FreeMultiplierRows',
+  'FreeRespinsMultiplierRows'
+]
 
 export default {
   name: 'SlotsTalaReyesSouthSeaPearlsExt',
-  components: { Compare },
+  components: { Compare, TalaReyesSouthSeaPearlsBetConfig },
   model: {
     prop: 'slotsData',
     event: 'cc'
@@ -175,140 +78,213 @@ export default {
   props: {
     slotsData: {
       type: Object,
-      default: () => ({})
+      default: function() {
+        return {}
+      }
+    },
+    baseBet: {
+      type: Number,
+      default: 0
     }
   },
   data() {
     return {
-      activeConfig: 'NormalConfig',
       cfg: {
-        NormalConfig: createBetConfig(),
-        ExtraBetConfig: createBetConfig()
+        BuyFreeOdds: 100,
+        ExtraBetMax: 0,
+        NormalConfig: {},
+        ExtraBetConfig: {}
       },
-      oddsDialog: {
-        bets: '',
-        editIndex: -1,
-        items: [],
-        title: '',
-        visible: false
-      },
-      oldData: JSON.parse(JSON.stringify(this.slotsData)),
-      rowGroups: [
-        { key: 'NormalMultiplierRows', label: '普通模式倍数列', required: true },
-        { key: 'RespinsMultiplierRows', label: 'RESPINS 模式倍数列', required: true },
-        { key: 'FreeMultiplierRows', label: '免费模式倍数列', required: false },
-        { key: 'FreeRespinsMultiplierRows', label: '免费 RESPINS 模式倍数列', required: false }
-      ],
-      version: store.getters.version || 'V1'
+      cfgReady: false,
+      betConfigTab: 'normal'
     }
   },
   created() {
-    this.$nextTick(() => this.initData())
+    this.$nextTick(() => {
+      this.initData()
+    })
   },
   methods: {
     dataRule(required, config) {
       return DataRule(required, config)
     },
-    initData() {
-      this.cfg = this.slotsData
-      if (!this.cfg.NormalConfig) this.$set(this.cfg, 'NormalConfig', createBetConfig())
-      if (!this.cfg.ExtraBetConfig) this.$set(this.cfg, 'ExtraBetConfig', createBetConfig())
-      this.ensureBetConfig('NormalConfig')
-      this.ensureBetConfig('ExtraBetConfig')
-      this.$refs.compare.SetOldVal(this.getDiffData())
-    },
     getDiffData() {
-      return JSON.parse(JSON.stringify(this.slotsData))
+      return JSON.parse(JSON.stringify(this.cfg))
     },
-    ensureBetConfig(configKey) {
-      const config = this.cfg[configKey]
-      if (!config.WheelConfig) this.$set(config, 'WheelConfig', { InnerOdds: '', InnerWeight: '', OuterOdds: '', OuterWeight: '' })
-      this.rowGroups.forEach(group => {
-        if (!Array.isArray(config[group.key])) this.$set(config, group.key, [])
-      })
-      if (!Array.isArray(config.BuyFreeOddsConf)) this.$set(config, 'BuyFreeOddsConf', [])
+    getStoreData() {
+      const data = this.getDiffData()
+      this.scaleExtendCfgOdds(data, 100)
+      this.scaleExtraBetMax(data, 1000)
+      return data
     },
-    addMultiplierRow(groupKey) {
-      this.cfg[this.activeConfig][groupKey].push(createMultiplierRow())
-    },
-    removeMultiplierRow(groupKey, index) {
-      this.cfg[this.activeConfig][groupKey].splice(index, 1)
-    },
-    displayBets(bets) {
-      return (bets || []).map(bet => bet / 1000).join(', ')
-    },
-    showOddsDialog() {
-      this.oddsDialog = {
-        bets: '0',
-        editIndex: -1,
-        items: [{ MinOdds: 0, MaxOdds: 0, InWeight: 1 }],
-        title: '添加购买免费目标倍率',
-        visible: true
-      }
-    },
-    editOddsConfig(config) {
-      this.oddsDialog = {
-        bets: this.displayBets(config.Bet),
-        editIndex: this.cfg[this.activeConfig].BuyFreeOddsConf.indexOf(config),
-        items: JSON.parse(JSON.stringify(config.Items || [])),
-        title: '编辑购买免费目标倍率',
-        visible: true
-      }
-    },
-    saveOddsConfig() {
-      const bets = this.oddsDialog.bets.split(',').map(item => parseFloat(item.trim()) * 1000).filter(item => !isNaN(item) && item >= 0)
-      if (bets.length === 0 || this.oddsDialog.items.length === 0 || new Set(bets).size !== bets.length) {
-        Message.error('Bet 值或目标倍率范围不合法')
-        return
-      }
-      if (this.oddsDialog.items.some(item => item.MinOdds < 0 || item.MaxOdds < item.MinOdds || item.InWeight <= 0)) {
-        Message.error('目标倍率范围或权重不合法')
-        return
-      }
-      const configs = this.cfg[this.activeConfig].BuyFreeOddsConf
-      const usedBets = new Set()
-      configs.forEach((config, index) => {
-        if (index !== this.oddsDialog.editIndex) (config.Bet || []).forEach(bet => usedBets.add(bet))
-      })
-      if (bets.some(bet => usedBets.has(bet))) {
-        Message.error('同一个配置中不能有重复 Bet 值')
-        return
-      }
-      const config = { Bet: bets, Items: this.oddsDialog.items }
-      if (this.oddsDialog.editIndex >= 0) {
-        this.$set(configs, this.oddsDialog.editIndex, config)
-      } else {
-        configs.push(config)
-      }
-      this.oddsDialog.visible = false
-    },
-    submitFrm(isMultiApp) {
-      if (!ValidateVueItem(this.$refs.form)) return
-      this.$refs.compare.SetNewVal(this.getDiffData())
-      this.$refs.compare.Compare(isEdit => {
+    submitFrm() {
+      if (!ValidateVueItem(this.$refs['baseFrm'])) return false
+      if (this.$refs.normalBetConfig && !this.$refs.normalBetConfig.validate()) return false
+      if (this.$refs.extraBetConfig && !this.$refs.extraBetConfig.validate()) return false
+      const $this = this
+      this.$refs.compare.SetNewVal(this.getStoreData())
+      this.$refs.compare.Compare(function(isEdit) {
         if (!isEdit) {
-          this.$message.error('没有任何修改，不需要提交')
+          $this.$message.error('没有任何修改，不需要提交')
           return
         }
-        if (isMultiApp) {
-          this.$emit('multiAppSave', this.oldData, this.slotsData)
-        } else {
-          this.$emit('saveData')
+
+        const storeData = $this.getStoreData()
+        Object.keys($this.slotsData).forEach(key => {
+          $this.$delete($this.slotsData, key)
+        })
+        Object.keys(storeData).forEach(key => {
+          $this.$set($this.slotsData, key, storeData[key])
+        })
+        $this.$emit('saveData')
+        $this.initData()
+      })
+    },
+    initDefaultCfg(betCfg) {
+      const multiplierOdds = '100,200,300,500,1000,1500,2000,2500,5000,10000,20000,50000'
+      const multiplierWeight = this.buildWeightStr(multiplierOdds)
+      const defaults = {
+        MultiplierOdds: multiplierOdds,
+        MultiplierColor: '2,2,2,2,3,3,5,5,4,4,5,5',
+        ScatterOdds: 0,
+        ModeWeight: '100,100,100,100,100,100',
+        FreeModeWeight: '100,100,100,100,100,100',
+        JackpotTypeWeight: '100,100,100,100',
+        JackpotOdds: '10000,5000,3000,1000',
+        JackpotCountWeight: '100,100,100,100,100,100,100,100,100'
+      }
+      Object.keys(defaults).forEach(key => {
+        if (betCfg[key] === undefined || betCfg[key] === null || betCfg[key] === '') {
+          this.$set(betCfg, key, defaults[key])
         }
       })
+      if (!betCfg.WheelConfig) {
+        this.$set(betCfg, 'WheelConfig', {})
+      }
+      const wheelDefaults = {
+        InnerOdds: '100,300,500,800,1000,1500,2000,3000,5000,10000,20000,100000',
+        InnerWeight: '100,100,100,100,100,100,100,100,100,100,100,100',
+        OuterOdds: '100,200,300,500,1000',
+        OuterWeight: '100,100,100,100,100'
+      }
+      Object.keys(wheelDefaults).forEach(key => {
+        if (betCfg.WheelConfig[key] === undefined || betCfg.WheelConfig[key] === null || betCfg.WheelConfig[key] === '') {
+          this.$set(betCfg.WheelConfig, key, wheelDefaults[key])
+        }
+      })
+      if (!betCfg.BuyFreeOddsConf) {
+        this.$set(betCfg, 'BuyFreeOddsConf', [])
+      }
+      this.initMultiplierRows(betCfg, 'NormalMultiplierRows', multiplierWeight, false)
+      this.initMultiplierRows(betCfg, 'RespinsMultiplierRows', multiplierWeight, true)
+      this.initMultiplierRows(betCfg, 'FreeMultiplierRows', multiplierWeight, false)
+      this.initMultiplierRows(betCfg, 'FreeRespinsMultiplierRows', multiplierWeight, true)
+    },
+    initMultiplierRows(betCfg, key, multiplierWeight, needPink) {
+      if (!betCfg[key] || betCfg[key].length === 0) {
+        const rows = []
+        for (let i = 0; i < 3; i++) {
+          rows.push({
+            IconWeight: '100,100,100',
+            MultiplierWeight: multiplierWeight,
+            PinkRate: 0
+          })
+        }
+        this.$set(betCfg, key, rows)
+      }
+      betCfg[key].forEach(row => {
+        if (!needPink) {
+          row.PinkRate = 0
+        }
+      })
+    },
+    buildWeightStr(value) {
+      return value.split(',').map(() => '100').join(',')
+    },
+    cloneData(value) {
+      return JSON.parse(JSON.stringify(value || {}))
+    },
+    extractOldBetConfig(data) {
+      const betCfg = {}
+      BET_CONFIG_KEYS.forEach(key => {
+        if (data[key] !== undefined) {
+          betCfg[key] = this.cloneData(data[key])
+        }
+      })
+      return betCfg
+    },
+    migrateExtendConfig(data) {
+      const source = this.cloneData(data)
+      const hasNewConfig = source.NormalConfig || source.ExtraBetConfig
+      const normalCfg = hasNewConfig ? this.cloneData(source.NormalConfig) : this.extractOldBetConfig(source)
+      this.initDefaultCfg(normalCfg)
+
+      let extraCfg = hasNewConfig ? this.cloneData(source.ExtraBetConfig) : {}
+      if (!extraCfg || Object.keys(extraCfg).length === 0) {
+        extraCfg = this.buildExtraBetConfig(normalCfg)
+      } else {
+        this.initDefaultCfg(extraCfg)
+      }
+
+      return {
+        BuyFreeOdds: source.BuyFreeOdds || 100,
+        ExtraBetMax: source.ExtraBetMax || 0,
+        NormalConfig: normalCfg,
+        ExtraBetConfig: extraCfg
+      }
+    },
+    buildExtraBetConfig(normalCfg) {
+      const extraCfg = this.cloneData(normalCfg)
+      extraCfg.MultiplierOdds = this.scaleOddsStr(extraCfg.MultiplierOdds, 8)
+      if (extraCfg.WheelConfig) {
+        extraCfg.WheelConfig.OuterOdds = this.scaleOddsStr(extraCfg.WheelConfig.OuterOdds, 8)
+      }
+      return extraCfg
+    },
+    scaleOddsStr(value, rate) {
+      if (value === undefined || value === null || value === '') {
+        return value
+      }
+      return value.toString().split(',').map(item => {
+        const text = item.trim()
+        const val = parseFloat(text)
+        if (isNaN(val)) {
+          return text
+        }
+        return parseFloat((val * rate).toFixed(6)).toString()
+      }).join(',')
+    },
+    scaleBetCfgOdds(betCfg, rate) {
+      if (!betCfg) {
+        return
+      }
+      betCfg.MultiplierOdds = this.scaleOddsStr(betCfg.MultiplierOdds, rate)
+      betCfg.JackpotOdds = this.scaleOddsStr(betCfg.JackpotOdds, rate)
+      if (betCfg.WheelConfig) {
+        betCfg.WheelConfig.InnerOdds = this.scaleOddsStr(betCfg.WheelConfig.InnerOdds, rate)
+        betCfg.WheelConfig.OuterOdds = this.scaleOddsStr(betCfg.WheelConfig.OuterOdds, rate)
+      }
+    },
+    scaleExtendCfgOdds(extendCfg, rate) {
+      this.scaleBetCfgOdds(extendCfg.NormalConfig, rate)
+      this.scaleBetCfgOdds(extendCfg.ExtraBetConfig, rate)
+    },
+    scaleExtraBetMax(extendCfg, rate) {
+      const val = parseFloat(extendCfg.ExtraBetMax)
+      if (isNaN(val)) {
+        return
+      }
+      extendCfg.ExtraBetMax = parseFloat((val * rate).toFixed(6))
+    },
+    initData() {
+      const migratedCfg = this.migrateExtendConfig(this.slotsData)
+      this.scaleExtendCfgOdds(migratedCfg, 0.01)
+      this.scaleExtraBetMax(migratedCfg, 0.001)
+      this.cfg = migratedCfg
+      this.cfgReady = true
+      this.$refs.compare.SetOldVal(this.getStoreData())
+      this.lock = true
     }
   }
 }
 </script>
-
-<style scoped>
-.row-config-card {
-  margin-bottom: 16px;
-}
-
-.row-config-header {
-  align-items: center;
-  display: flex;
-  justify-content: space-between;
-}
-</style>
