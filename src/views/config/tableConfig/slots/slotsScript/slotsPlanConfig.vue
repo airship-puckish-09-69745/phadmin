@@ -922,7 +922,7 @@ export default {
       AdditionalArray: [
         { key: 100180, label: 'Fishing Master 额外加注 (GID:100180)' },
         { key: 100186, label: 'Mahjong Jackpot 额外加注 (GID:100186)' },
-        { key: 100246, label: 'Tala Reyes South 额外加注 (GID:100246)' }
+        { key: 100246, label: 'Tala Reyes South Sea Pearls 额外加注 (GID:100246)' }
       ],
       scriptPlanVolatilityStat: {},
       selectedUserTags: [],
