@@ -2591,9 +2591,9 @@ export default {
       if(!this.checkDelaySignUpConfig()){
         return false
       }
-      //appId校验
-      if(this.editForm.appInfo[0].appId !== getAppId()){
-         this.errmsg("当前勾选的APPID 跟当前环境的APPID 不一致")
+      //appId 校验：表单里是 number，getAppId() 来自 Cookie 是 string，必须转成同一类型再比
+      if (Number(this.editForm.appInfo[0].appId) !== Number(getAppId())) {
+        this.errmsg('当前勾选的APPID 跟当前环境的APPID 不一致')
         return false
       }
       if (this.envProjectName === 'ph_audit') {
