@@ -2592,7 +2592,7 @@ export default {
         return false
       }
       //appId校验
-      if(this.editForm.appInfo[0].appId !== getAppId()){
+      if(Number(this.editForm.appInfo[0].appId) !== Number(getAppId())){
         this.errmsg("当前勾选的APPID 跟当前环境的APPID 不一致")
         return false
       }
