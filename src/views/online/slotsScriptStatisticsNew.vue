@@ -2583,6 +2583,11 @@ export default {
             key: 100186,
             label: 'Mahjong Jackpot(额外加注)'
           })
+          this.gidOptions[100246] ='Tala Reyes South Sea Pearls(额外加注)'
+          gameOptionsArr.push({
+            key: 100246,
+            label: 'Tala Reyes South Sea Pearls(额外加注)'
+          })
           // 对gameOptionsArr按游戏名称排序
           gameOptionsArr.sort((a, b) => {
             return a.label.localeCompare(b.label)
