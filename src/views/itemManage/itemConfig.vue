@@ -974,7 +974,7 @@ export default {
           this.errmsg('请选择道具对应的APPID')
           return false
         }
-        if(this.editForm.itemExtra.appId !==  getAppId()) {
+        if(Number(this.editForm.itemExtra.appId) !==  Number(getAppId())) {
           this.errmsg('勾选的APPID 跟当前环境的APPID不一致')
           return false
         }
