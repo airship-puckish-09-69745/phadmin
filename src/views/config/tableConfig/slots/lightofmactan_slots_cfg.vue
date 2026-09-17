@@ -25,6 +25,16 @@
             <publish primary-key="ID" :key-id="getFullKey(subKey)" :env-empty="false" compare-type="Object" />
             <slots-pay-table v-if="baseCfgBool" v-model="baseCfg" :symbol-list="ruleCfg.SymbolList" :start-col="3" @saveData="saveBaseCfg" @multiAppSave="onMultiAppBaseSave" />
           </el-tab-pane>
+          <el-tab-pane label="2套轴图标" name="reels_double">
+            <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布】</h3>
+            <publish primary-key="ID" :key-id="getFullKey(subKey)" :env-empty="false" compare-type="Object" />
+            <slots-reels-double v-if="baseCfgBool" v-model="baseCfg" :symbol-list="ruleCfg.SymbolList" @saveData="saveBaseCfg" />
+          </el-tab-pane>
+          <el-tab-pane label="进入免费方案配置" name="scatter_trigger_plans">
+            <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布】</h3>
+            <publish primary-key="ID" :key-id="getFullKey(subKey)" :env-empty="false" compare-type="Object" />
+            <slots-free-trigger-plans v-if="baseCfgBool" v-model="baseCfg" :odds-str="false" :scatter-trigger-plans="baseCfg.scatterTriggerPlans" @saveData="saveBaseCfg" />
+          </el-tab-pane>
           <el-tab-pane label="扩展配置" name="ext">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，发布即生效】</h3>
             <publish primary-key="ID" :key-id="getFullKey(getExtSubKey())" :env-empty="false" compare-type="Object" />
@@ -60,6 +70,8 @@ import slotsBaseCfg from './components_x/ireland_base_cfg'
 import slotsSymbolValue from './components_x/symbol_value'
 import slotsPayTable from './components_x/pay_table_rate'
 import slotsLightOfMactanExt from './components_x/lightofmactan_ext'
+import slotsReelsDouble from './components_x/reels_double'
+import SlotsFreeTriggerPlans from '@/views/config/tableConfig/slots/components_x/slotsFreeTriggerPlans.vue'
 import slotsScript from './components_x/slots_script'
 
 export default {
@@ -70,6 +82,8 @@ export default {
     slotsBaseCfg,
     slotsLightOfMactanExt,
     slotsPayTable,
+    slotsReelsDouble,
+    SlotsFreeTriggerPlans,
     slotsScript,
     slotsSymbolValue
   },
