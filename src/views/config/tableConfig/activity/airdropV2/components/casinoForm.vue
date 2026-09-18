@@ -73,6 +73,7 @@
                 v-model="item.gameIdList"
                 label="Casino游戏："
                 :category-ids="[3]"
+                :game-ids="[500,138,501,143]"
               />
             </el-col>
           </el-row>
@@ -265,6 +266,7 @@ import WhitelistConfig from '@/components/WhitelistConfig/index.vue'
 import UserTypeUnit from '@/components/UserType/index.vue'
 
 import { ACTIVITY_ID } from '../index.vue'
+import {GetPropConfigListFromCache} from "@/utils/propV2";
 
 const GAME_TYPE = 3 // Casino
 const MAX_DEBUG_TIME_OFFSET = 30 * 24 * 60 * 60
@@ -342,7 +344,7 @@ export default {
         { value: 2, label: '有效下注总额' }
       ],
       propTypeOptions: [
-        { value: 5, label: 'SlotFreeSpin', disabled: false }
+        { value: 5, label: 'FreeSpin', disabled: false }
       ],
       propDayTypeOptions: [
         { value: 1, label: '1天' },
@@ -384,16 +386,19 @@ export default {
     handleDialogClose() {
       this.$emit('close')
     },
+    // 将值转换为安全的 JSON 对象，若无法解析则返回默认值
     safeJson(val, def) {
       if (typeof val === 'string') {
         try { return JSON.parse(val) } catch (e) { return def }
       }
       return (val !== null && val !== undefined) ? val : def
     },
+    // 将值转换为安全的数字，若无法转换则返回默认值
     toSafeNumber(val, def = 0) {
       const num = Number(val)
       return Number.isFinite(num) ? num : def
     },
+    // 验证数字输入，支持整数/范围验证
     validateNumber(val, label, { min = 0, max = MAX_AMOUNT, integer = false } = {}) {
       const num = Number(val)
       if (!Number.isFinite(num)) {
@@ -410,6 +415,7 @@ export default {
       }
       return true
     },
+    // 验证用户配置
     validateUserConfig() {
       const userConfig = this.item.userConfig || defaultUserConfig()
       const userType = Array.isArray(userConfig.userTypes) && userConfig.userTypes.length > 0 ? userConfig.userTypes[0] : 2
@@ -661,10 +667,8 @@ export default {
     },
     // ---- 道具相关 ----
     getPropList() {
-      request({ url: '/propsconfig/props/config/list', method: 'get', data: { PageNum: 1, PageSize: 1000 }}).then(res => {
-        if (res.RetCode === 0) {
-          this.propList = (res.Data && res.Data.list) || []
-        }
+      GetPropConfigListFromCache().then(({ itemList }) => {
+        this.propList = itemList || []
       })
     },
     getPropOptionsByType(propType) {
@@ -677,7 +681,7 @@ export default {
           }
           return true
         })
-        .map(p => ({ value: p.id, label: p.item_name, disabled: false }))
+        .map(p => ({ value: p.id, label: p.show_name, disabled: false }))
     },
     handlePropTypeChange(row) {
       row.propId = 0
