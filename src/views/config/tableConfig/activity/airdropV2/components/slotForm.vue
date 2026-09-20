@@ -353,7 +353,7 @@ export default {
         url: '/dataProxy/info',
         method: 'post',
         data: {
-          Path: '/activity/airdropv2/task/stat',
+          Path: '/activity/airdrop/v2/task/stat',
           actCfgId: actCfgId
         }
       }).then(response => {
