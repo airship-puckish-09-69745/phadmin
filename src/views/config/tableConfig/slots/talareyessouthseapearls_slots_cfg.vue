@@ -76,6 +76,9 @@ import slotsSymbolValue from './components_x/symbol_value'
 import slotsPayTable from './components_x/pay_table_rate'
 import slotsTalaReyesSouthSeaPearlsExt from './components_x/talareyessouthseapearls_ext'
 import slotsScript from './components_x/slots_script'
+import slotsPayLine from './components_x/pay_line'
+import slotsReelsDouble from './components_x/reels_double'
+import slotsSymbolcountReels from './components_x/symbolcount_reels.vue'
 
 export default {
   components: {
@@ -86,7 +89,10 @@ export default {
     slotsPayTable,
     slotsScript,
     slotsSymbolValue,
-    slotsTalaReyesSouthSeaPearlsExt
+    slotsTalaReyesSouthSeaPearlsExt,
+    slotsPayLine,
+    slotsReelsDouble,
+    slotsSymbolcountReels
   },
   mixins: [appSlotsConfig, multiAppSlotsConfig],
   data() {
