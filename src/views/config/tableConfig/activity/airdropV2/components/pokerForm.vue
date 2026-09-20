@@ -502,6 +502,24 @@ export default {
     this.appId = store.getters.appId || this.appId
   },
   methods: {
+    getTaskStat() {
+      const actCfgId = this.toSafeNumber((this.data && this.data.id) || this.item.id, 0)
+      if (actCfgId <= 0) return
+      request({
+        url: '/dataProxy/info',
+        method: 'post',
+        data: {
+          Path: '/activity/airdropv2/task/stat',
+          actCfgId: actCfgId
+        }
+      }).then(response => {
+        console.log('response',response)
+        if (response.RetCode === 0 && response.Data) {
+          console.log(response.Data)
+          this.item.pokerBetMoney.issuedReward = this.toSafeNumber(response.Data.BetMoneyTaskAmount, 0) / 1000
+        }
+      })
+    },
     handleDialogClose() {
       this.$emit('close')
     },
@@ -730,7 +748,7 @@ export default {
         pokerBetMoney,
         userConfig
       }
-
+      this.getTaskStat()
       this.$nextTick(() => {
         const propType = this.item.propPools.propType || this.propTypeOptions[0].value
         if (this.isNewTicketProp(propType)) {
@@ -963,7 +981,7 @@ export default {
       }
 
       // 新版门票道具
-      const opts = this.buildTicketPropOptions()
+      const opts = this.buildTicketPropOptions(row.propType)
 
       this.$set(this.propOptionsMap, idx, opts)
 
@@ -988,11 +1006,12 @@ export default {
         }
       }
     },
-    buildTicketPropOptions() {
+    buildTicketPropOptions(propType) {
       if (!Array.isArray(this.propList)) {
         return []
       }
       return this.propList
+        .filter(p => p.item_type === propType && p.status === 1)
         .filter(item => {
           if (!item || item.id === undefined || item.id === null) {
             return false

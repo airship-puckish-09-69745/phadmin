@@ -238,6 +238,7 @@ import WhitelistConfig from '@/components/WhitelistConfig/index.vue'
 import UserTypeUnit from '@/components/UserType/index.vue'
 import { ACTIVITY_ID } from '../index.vue'
 import {GetPropConfigListFromCache} from "@/utils/propV2";
+import Log from "echarts/src/scale/Log";
 
 const GAME_TYPE = 1 // Slot
 const MAX_DEBUG_TIME_OFFSET = 30 * 24 * 60 * 60
@@ -344,6 +345,26 @@ export default {
     this.getPropList()
   },
   methods: {
+    getTaskStat() {
+      const actCfgId = this.toSafeNumber((this.data && this.data.id) || this.item.id, 0)
+      if (actCfgId <= 0) return
+
+      request({
+        url: '/dataProxy/info',
+        method: 'post',
+        data: {
+          Path: '/activity/airdropv2/task/stat',
+          actCfgId: actCfgId
+        }
+      }).then(response => {
+        console.log('response',response)
+        if (response.RetCode === 0 && response.Data) {
+          console.log(response.Data)
+          this.item.slotBetMoney.issuedReward = this.toSafeNumber(response.Data.BetMoneyTaskAmount, 0) / 1000
+        }
+      })
+    },
+
     handleDialogClose() {
       this.$emit('close')
     },
@@ -481,7 +502,7 @@ export default {
 
       const slotBetMoney = {
         taskType: this.toSafeNumber(rr.taskType || 2),
-        issuedReward: (rr.issuedReward || 0) / 1000, // 只读，显示已发放金额
+        // issuedReward: (rr.issuedReward || 0) / 1000, // 只读，显示已发放金额
         userMaxReward: (rr.userMaxReward || 0) / 1000,
         totalReward: (rr.totalReward || 0) / 1000
       }
@@ -512,6 +533,7 @@ export default {
         slotBetMoney,
         userConfig
       }
+      this.getTaskStat()
 
       // 初始化道具选项映射
       this.$nextTick(() => {
@@ -563,7 +585,7 @@ export default {
         const slotBetMoney = this.item.slotBetMoney
         if (!this.validateNumber(slotBetMoney.taskCondition, '任务条件(₱)', { min: 0, max: MAX_AMOUNT })) return false
         if (!this.validateNumber(slotBetMoney.totalReward, '总奖励(₱)', { min: 0, max: MAX_AMOUNT })) return false
-        if (!this.validateNumber(slotBetMoney.issuedReward, '已发奖励(₱)', { min: 0, max: MAX_AMOUNT })) return false
+        // if (!this.validateNumber(slotBetMoney.issuedReward, '已发奖励(₱)', { min: 0, max: MAX_AMOUNT })) return false
         if (!this.validateNumber(slotBetMoney.userMaxReward, '用户最大领奖(₱)', { min: 0, max: MAX_AMOUNT })) return false
         if (this.toSafeNumber(slotBetMoney.totalReward) > 0 && this.toSafeNumber(slotBetMoney.userMaxReward) > this.toSafeNumber(slotBetMoney.totalReward)) {
           Message.error('用户最大领奖不能大于总奖励'); return false
@@ -591,7 +613,7 @@ export default {
         taskType: this.toSafeNumber(d.slotBetMoney.taskType, 2),
         taskCondition: Math.round(this.toSafeNumber(d.slotBetMoney.taskCondition)),
         totalReward: Math.round(this.toSafeNumber(d.slotBetMoney.totalReward) * 1000),
-        issuedReward: Math.round(this.toSafeNumber(d.slotBetMoney.issuedReward) * 1000),
+        // issuedReward: Math.round(this.toSafeNumber(d.slotBetMoney.issuedReward) * 1000),
         userMaxReward: Math.round(this.toSafeNumber(d.slotBetMoney.userMaxReward) * 1000)
       }
 
