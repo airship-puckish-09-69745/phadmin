@@ -1295,18 +1295,6 @@ export const asyncRoutes = [
                 meta: { title: 'B ountyRaid' }
               },
               {
-                path: 'talareyessouthseapearls_slots_cfg',
-                component: () => import('@/views/config/tableConfig/slots/talareyessouthseapearls_slots_cfg'),
-                name: 'talareyessouthseapearls_slots_cfg',
-                meta: { title: 'T alaReyesSouthSeaPearls' }
-              },
-              {
-                path: 'lightofmactan_slots_cfg',
-                component: () => import('@/views/config/tableConfig/slots/lightofmactan_slots_cfg'),
-                name: 'lightofmactan_slots_cfg',
-                meta: { title: 'L ightOfMactan' }
-              },
-              {
                 path: 'candyburst_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/candyburst_slots_cfg'),
                 name: 'candyburst_slots_cfg',
@@ -1434,6 +1422,12 @@ export const asyncRoutes = [
                 meta: { title: 'J okerAce' }
               },
               {
+                path: 'lightofmactan_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/lightofmactan_slots_cfg'),
+                name: 'lightofmactan_slots_cfg',
+                meta: { title: 'L ightOfMactan' }
+              },
+              {
                 path: 'lionfortune_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/lionfortune_slots_cfg'),
                 name: 'lionfortune_slots_cfg',
@@ -1555,6 +1549,12 @@ export const asyncRoutes = [
                 meta: { title: 'R oman Arena' }
               },
               {
+                path: 'sarimanokfortune_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/sarimanokfortune_slots_cfg'),
+                name: 'sarimanokfortune_slots_cfg',
+                meta: { title: 'S arimanokFortune' }
+              },
+              {
                 path: 'streetfighting_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/streetfighting_slots_cfg'),
                 name: 'streetfighting_slots_cfg',
@@ -1596,6 +1596,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/supertongit_slots_cfg'),
                 name: 'supertongit_slots_cfg',
                 meta: { title: 'S uperTongit' }
+              },
+              {
+                path: 'talareyessouthseapearls_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/talareyessouthseapearls_slots_cfg'),
+                name: 'talareyessouthseapearls_slots_cfg',
+                meta: { title: 'T alaReyesSouthSeaPearls' }
               },
               {
                 path: 'treasurebowl_slots_cfg',
@@ -2657,7 +2663,7 @@ export const asyncRoutes = [
                 component: () => import('@/views/matchManage/matchOperations/matchS5/s5.vue'),
                 name: 's5',
                 meta: { title: 'S5配置', noCache: true }
-              },
+              }
             ]
           },
           {
@@ -2665,7 +2671,7 @@ export const asyncRoutes = [
             component: () => import('@/views/matchManage/matchOperations/onlineOb.vue'),
             name: 'onlineObConfig',
             meta: { title: '线上OB', noCache: true }
-          },
+          }
 
         ]
       },
@@ -3298,18 +3304,6 @@ export const asyncRoutes = [
             meta: { title: 'B ountyRaid', gid: 192 }
           },
           {
-            path: 'talareyessouthseapearls_slots_log',
-            component: () => import('@/views/playerManage/slotsLog'),
-            name: 'talareyessouthseapearls_slots_log',
-            meta: { title: 'T alaReyesSouthSeaPearls', gid: 246 }
-          },
-          {
-            path: 'lightofmactan_slots_log',
-            component: () => import('@/views/playerManage/slotsLog'),
-            name: 'lightofmactan_slots_log',
-            meta: { title: 'L ightOfMactan', gid: 250 }
-          },
-          {
             path: 'candyburst_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'candyburst_slots_log',
@@ -3436,6 +3430,12 @@ export const asyncRoutes = [
             meta: { title: 'J okerAce', gid: 228 }
           },
           {
+            path: 'lightofmactan_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'lightofmactan_slots_log',
+            meta: { title: 'L ightOfMactan', gid: 250 }
+          },
+          {
             path: 'lionfortune_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'lionfortune_slots_log',
@@ -3556,6 +3556,12 @@ export const asyncRoutes = [
             meta: { title: 'R oman Arena', gid: 96 }
           },
           {
+            path: 'sarimanokfortune_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'sarimanokfortune_slots_log',
+            meta: { title: 'S arimanokFortune', gid: 274 }
+          },
+          {
             path: 'sharkkingdom_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'sharkkingdom_slots_log',
@@ -3597,6 +3603,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'streetfighting_slots_log',
             meta: { title: 'S treetFighting', gid: 188 }
+          },
+          {
+            path: 'talareyessouthseapearls_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'talareyessouthseapearls_slots_log',
+            meta: { title: 'T alaReyesSouthSeaPearls', gid: 246 }
           },
           {
             path: 'treasurebowl_slots_log',

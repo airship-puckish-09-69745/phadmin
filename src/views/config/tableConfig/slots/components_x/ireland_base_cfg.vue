@@ -73,6 +73,7 @@
               <el-option label="193:BountyRaid Mars" :value="193" />
               <el-option label="246:TalaReyesSouthSeaPearls" :value="246" />
               <el-option label="250:LightOfMactan" :value="250" />
+              <el-option label="274:SarimanokFortune" :value="274" />
               <el-option label="180:FishingMaster" :value="180" />
               <el-option label="181:FishingMaster Mars" :value="181" />
               <el-option label="GodOfFortune" :value="182" />
@@ -170,21 +171,21 @@
 
           <span style="color: red; font-size: 11px;">注: ①无限=-1 ②数字后面加上*表示推荐，例如10* </span>
           <el-form-item label="普通自动下注轮数">
-            <el-input v-model="slotsData.AutoSpinNum[0]"> </el-input>
+            <el-input v-model="slotsData.AutoSpinNum[0]" />
           </el-form-item>
 
           <span style="color: red; font-size: 11px;">注: ①无限=-1 ②数字后面加上*表示推荐，例如10* </span>
           <el-form-item label="比赛自动下注轮数">
-            <el-input v-model="slotsData.AutoSpinNum[1]"> </el-input>
+            <el-input v-model="slotsData.AutoSpinNum[1]" />
           </el-form-item>
 
           <span style="color: red; font-size: 11px;">注: 正式生效日期为填写日期的第二天 </span>
           <el-form-item label="TopWins开始生效日期">
             <el-date-picker
               v-model="topWinsStartTime"
-              @change="handleDateChange"
               placeholder="选择日期"
               type="date"
+              @change="handleDateChange"
             />
           </el-form-item>
 
@@ -240,7 +241,7 @@
 <script>
 import Compare from '@/components/Compare'
 import RatioInput from '@/components/RatioInput'
-import store from "@/store";
+import store from '@/store'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
@@ -288,16 +289,6 @@ export default {
     }
     return data
   },
-  // updated() {
-  //   if (this.lock === false) {
-  //     this.$refs.compare.SetOldVal(this.getDiffData(this.initialWinTypeMinOdds, this.initialBets, this.initialAutoSpinNum))
-  //     this.lock = true
-  //     console.log('origin data', this.getDiffData(this.initialWinTypeMinOdds, this.initialBets, this.initialAutoSpinNum))
-  //   }
-  // },
-  mounted() {
-    this.initCompare()
-  },
   watch: {
     slotsData: {
       deep: true,
@@ -307,6 +298,16 @@ export default {
         }
       }
     }
+  },
+  // updated() {
+  //   if (this.lock === false) {
+  //     this.$refs.compare.SetOldVal(this.getDiffData(this.initialWinTypeMinOdds, this.initialBets, this.initialAutoSpinNum))
+  //     this.lock = true
+  //     console.log('origin data', this.getDiffData(this.initialWinTypeMinOdds, this.initialBets, this.initialAutoSpinNum))
+  //   }
+  // },
+  mounted() {
+    this.initCompare()
   },
   methods: {
     initCompare() {
@@ -361,8 +362,8 @@ export default {
       if (this.slotsData.SlotsType === 180 || this.slotsData.SlotsType === 186) {
         const bets = this.slotsData.Bets.split(',')
         for (const i in bets) {
-          let betFlot = parseFloat(bets[i])
-          let bet = betFlot * 1000
+          const betFlot = parseFloat(bets[i])
+          const bet = betFlot * 1000
           if (bet < 10 && bet % 2 === 1) {
             $this.$message.error(`下注大小是三位小数时只支持偶数 err bet:${betFlot}`)
             return
