@@ -84,10 +84,9 @@
           <UserTypeUnit
             v-model="item.userConfig"
             :activity-cfg-id="item.id"
-            custom-user-type-label="casino 标签用户"
-            :custom-user-tag-options="casinoUserTagOptions"
             :level-tag-ids="[]"
             :activity-id="item.activityId"
+            :user-type-options="casinoUserTypeOptions"
           />
         </el-form>
       </el-tab-pane>
@@ -267,6 +266,7 @@ import UserTypeUnit from '@/components/UserType/index.vue'
 
 import { ACTIVITY_ID } from '../index.vue'
 import {GetPropConfigListFromCache} from "@/utils/propV2";
+import {USER_TYPE_VALUES} from "@/components/UserType/config";
 
 const GAME_TYPE = 3 // Casino
 const MAX_DEBUG_TIME_OFFSET = 30 * 24 * 60 * 60
@@ -361,6 +361,12 @@ export default {
             { value: 60003, label: 'casino 额度' }
           ]
         }
+      ],
+      casinoUserTypeOptions: [
+        { value: USER_TYPE_VALUES.NEW, label: '新增用户' },
+        { value: USER_TYPE_VALUES.ALL, label: '所有用户' },
+        { value: USER_TYPE_VALUES.IMPORT, label: '导入用户' },
+        { value: USER_TYPE_VALUES.FILTER, label: '筛选用户' }
       ]
     }
   },

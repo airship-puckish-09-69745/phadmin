@@ -87,9 +87,8 @@
             v-model="item.userConfig"
             :activity-cfg-id="item.id"
             :activity-id="item.activityId"
-            custom-user-type-label="poker 标签用户"
-            :custom-user-tag-options="pokerUserTagOptions"
             :level-tag-ids="[]"
+            :user-type-options="pokerUserTypeOptions"
           />
         </el-form>
       </el-tab-pane>
@@ -360,6 +359,7 @@ import {IsProd} from "@/utils/env";
 import { MATCH_TICKET_RIGHTS_ID_CFG_PROD, MATCH_TICKET_RIGHTS_ID_CFG_DEV } from "@/utils/prop";
 import store from "@/store";
 import {GetPropConfigListFromCache,GetMatchTicketRightsId} from "@/utils/propV2";
+import {USER_TYPE_VALUES} from "@/components/UserType/config";
 
 const GAME_TYPE = 2 // Poker
 const MAX_DEBUG_TIME_OFFSET = 30 * 24 * 60 * 60
@@ -466,15 +466,11 @@ export default {
         { value: 7, label: '7天' },
         { value: 30, label: '30天' }
       ],
-      // Poker 专属标签用户选项（tagType/tagId 请与后端约定的值对齐）
-      pokerUserTagOptions: [
-        {
-          value: 7, label: 'poker用户类型', children: [
-            { value: 70001, label: 'poker 新增用户' },
-            { value: 70002, label: 'poker 下注' },
-            { value: 70003, label: 'poker 额度' }
-          ]
-        }
+      pokerUserTypeOptions: [
+        { value: USER_TYPE_VALUES.NEW, label: '新增用户' },
+        { value: USER_TYPE_VALUES.ALL, label: '所有用户' },
+        { value: USER_TYPE_VALUES.IMPORT, label: '导入用户' },
+        { value: USER_TYPE_VALUES.FILTER, label: '筛选用户' }
       ]
     }
   },
