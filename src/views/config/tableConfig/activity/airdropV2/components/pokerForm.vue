@@ -258,7 +258,7 @@
             <!-- 已发奖励（只读，由后端实时更新）-->
             <el-table-column label="已发奖励(₱)" min-width="80" align="center">
               <template slot-scope="_">
-                <el-input v-model.number="item.pokerBetMoney.issuedReward" placeholder="--" size="mini" disabled />
+                <el-input :value="formatIssuedReward(item.pokerBetMoney.issuedReward)"  size="mini" disabled />
               </template>
             </el-table-column>
 
@@ -502,6 +502,9 @@ export default {
     this.appId = store.getters.appId || this.appId
   },
   methods: {
+    formatIssuedReward(val) {
+      return Number.isFinite(Number(val)) ? Number(val) : ''
+    },
     getTaskStat() {
       const actCfgId = this.toSafeNumber((this.data && this.data.id) || this.item.id, 0)
       if (actCfgId <= 0) return
@@ -515,7 +518,6 @@ export default {
       }).then(response => {
         console.log('response',response)
         if (response.RetCode === 0 && response.Data) {
-          console.log(response.Data)
           this.item.pokerBetMoney.issuedReward = this.toSafeNumber(response.Data.BetMoneyTaskAmount, 0) / 1000
         }
       })
