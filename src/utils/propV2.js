@@ -74,6 +74,12 @@ export const IsAvailablePropItem = (item) => {
   if (!item || item.status !== 1) {
     return false
   }
+  if(isNewVersion()){
+    const appId = Number(getAppId())
+    if (item.appId !== undefined &&  appId !== item.appId){
+      return false
+    }
+  }
   //头像框、freeSpin
   if (IsAvatarFrameProp(item.item_type) || IsFreeSpinProp(item.item_type)) {
     return true
