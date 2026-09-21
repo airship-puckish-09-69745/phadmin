@@ -286,6 +286,7 @@
             </el-table-column>
             <el-table-column label="系数区间开始" min-width="80" align="center">
               <template slot-scope="scope">
+                <div style="display: flex; align-items: center; flex-wrap: nowrap;">
                 <el-input
                   v-model="scope.row.minCoefficient"
                   placeholder="如 0.5"
@@ -293,17 +294,23 @@
                   :disabled="!item.enableBetMoneyPrize"
                   oninput="if(value<0||value===''){value=0}"
                 />
+                <span style="margin-left: 3px;">%</span>
+                </div>
               </template>
             </el-table-column>
             <el-table-column label="系数区间结束" min-width="80" align="center">
               <template slot-scope="scope">
-                <el-input
-                  v-model="scope.row.maxCoefficient"
-                  placeholder="如 1.0"
-                  size="mini"
-                  :disabled="!item.enableBetMoneyPrize"
-                  oninput="if(value<0||value===''){value=0}"
-                />
+                <div style="display: flex; align-items: center; flex-wrap: nowrap;">
+                  <el-input
+                    max-width="50px"
+                    v-model="scope.row.maxCoefficient"
+                    placeholder="如 1.0"
+                    size="mini"
+                    :disabled="!item.enableBetMoneyPrize"
+                    oninput="if(value<0||value===''){value=0}"
+                  />
+                  <span style="margin-left: 3px;">%</span>
+                </div>
               </template>
             </el-table-column>
             <el-table-column label="奖励上限(₱)" min-width="80" align="center">
