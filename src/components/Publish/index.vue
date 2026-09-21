@@ -684,7 +684,7 @@ export default {
             at = '<at user_id="ou_2b283f529fc901b97b443b946f692efd">SamYe</at>\r\n'
             // at += '<at user_id="ou_932b1ed1e7064b512199b77ce83236c1">高勋</at>'
           }
-          const appIds = options.appIds || (options.appId ? [options.appId] : [$this.appId])
+          const appIds = (options.appIds || [options.appId || $this.appId]).filter(Boolean)
           const appIdInfo = appIds.length > 0 ? `【App:${appIds.join(',')}】 ` : ''
           const failedMessage = options.failed ? `失败原因：${options.failedMessage || '发布失败'}\r\n` : ''
           const text = `${step}【${nick}】发布配置：${routes} ${appIdInfo}🚩\r\n${at}${failedMessage}` + content
