@@ -202,7 +202,7 @@
             <!-- 已发奖励（只读，由后端更新）-->
             <el-table-column label="已发奖励(₱)" min-width="120">
               <template slot-scope="scope">
-                <el-input v-model.number="scope.row.issuedReward" placeholder="--" size="mini" disabled />
+                <el-input :value="formatIssuedReward(scope.row.issuedReward)"  size="mini" disabled />
               </template>
             </el-table-column>
             <!-- 用户最大领奖 -->
@@ -238,7 +238,6 @@ import WhitelistConfig from '@/components/WhitelistConfig/index.vue'
 import UserTypeUnit from '@/components/UserType/index.vue'
 import { ACTIVITY_ID } from '../index.vue'
 import {GetPropConfigListFromCache} from "@/utils/propV2";
-import Log from "echarts/src/scale/Log";
 
 const GAME_TYPE = 1 // Slot
 const MAX_DEBUG_TIME_OFFSET = 30 * 24 * 60 * 60
@@ -359,7 +358,6 @@ export default {
       }).then(response => {
         console.log('response',response)
         if (response.RetCode === 0 && response.Data) {
-          console.log(response.Data)
           this.item.slotBetMoney.issuedReward = this.toSafeNumber(response.Data.BetMoneyTaskAmount, 0) / 1000
         }
       })
@@ -377,6 +375,9 @@ export default {
     toSafeNumber(val, def = 0) {
       const num = Number(val)
       return Number.isFinite(num) ? num : def
+    },
+    formatIssuedReward(val) {
+      return Number.isFinite(Number(val)) ? Number(val) : ''
     },
     validateNumber(val, label, { min = 0, max = MAX_AMOUNT, integer = false } = {}) {
       const num = Number(val)
@@ -502,7 +503,7 @@ export default {
 
       const slotBetMoney = {
         taskType: this.toSafeNumber(rr.taskType || 2),
-        // issuedReward: (rr.issuedReward || 0) / 1000, // 只读，显示已发放金额
+        issuedReward: this.toSafeNumber(rr.issuedReward, 0) / 1000,
         userMaxReward: (rr.userMaxReward || 0) / 1000,
         totalReward: (rr.totalReward || 0) / 1000
       }
