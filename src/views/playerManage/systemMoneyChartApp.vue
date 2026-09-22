@@ -149,8 +149,8 @@
               <div class="card-panel-description">
                 <div class="card-panel-text">
                   {{ gameNames[o] }}：<span
-                    :class="getSummaryClass(summary[o],false)"
-                  > {{ getSummaryResult(summary[o], false).toFixed(2) }}%</span>
+                  :class="getSummaryClass(summary[o],false)"
+                > {{ getSummaryResult(summary[o], false).toFixed(2) }}%</span>
                 </div>
                 <div>
                   收益：{{ getSystemGot(summary[o], false) }}
@@ -165,7 +165,7 @@
                   奖池： {{ formatNumber(blackJackSum / 1000) }}
                 </div>
                 <div v-else>
-                  奖池：{{ getPrizePool(o) }} <div v-if="libShow.IsShowFreeFreezePool(o)" style="color: green">{{ getFreezePoolText(o) }}</div>
+                  奖池：{{ getPrizePool(o) }} <span v-if="libShow.IsShowFreeFreezePool(o)" style="color: green">{{ getFreezePoolText(o) }}</span>
                 </div>
               </div>
             </el-tooltip>
@@ -382,7 +382,7 @@ export default {
       appList: [],
       appOptions: [],
       showLoading: false,
-      showAppNum: 3 // 显示前 n 个应用
+      showAppNum: 4 // 显示前 n 个应用
     }
   },
   computed: {
@@ -537,11 +537,11 @@ export default {
         if (IsProd()) { // 线上
           this.defaultOrder.push(76, 80, 78, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162, 164, 166, 170, 172,
             174, 176, 178, 180, 182, 168, 186, 184, 188, 190, 192, 194, 196, 198, 200, 202, 204, 206, 208, 210, 212, 214, 216, 218, 220,
-            222, 226, 228, 232, 234, 236, 238, 240, 242, 244, 246, 248, 250, 252, 253, 254, 255)
+            222, 226, 228, 232, 234, 236, 238, 240, 242, 244, 246, 248, 250, 253, 254, 255, 257, 258)
         } else {
           this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162, 164, 172, 188, 202,
             198, 192, 180, 166, 170, 176, 182, 174, 186, 178, 194, 184, 168, 196, 190, 200, 204, 206, 208, 210, 212, 214, 216, 218, 220, 222,
-            226, 228, 232, 234, 236, 238, 240, 242, 244, 246, 248, 250, 252, 253, 254, 255)
+            226, 228, 232, 234, 236, 238, 240, 242, 244, 246, 248, 250, 253, 254, 255, 257, 258)
         }
       }
       if (this.showZoogame) {
@@ -563,7 +563,7 @@ export default {
     },
     getFreezePoolText(o) {
       console.log('getFreezePoolText gid:', o, this.summary[o] && this.summary[o].FreezePool)
-      return this.summary[o] && this.summary[o].FreezePool !== undefined ? '奖池未提现冻结 ：' + this.formatNumber(this.summary[o].FreezePool / 1000) : ''
+      return this.summary[o] && this.summary[o].FreezePool !== undefined ? '未提现冻结 ：' + this.formatNumber(this.summary[o].FreezePool / 1000) : ''
     },
     getGameName(o) {
       const name = this.gameNames[o]
@@ -1005,6 +1005,18 @@ export default {
               'Account': 'CP UAT（1000014）'
             },
             {
+              'ID': 2000013,
+              'Account': 'CP线二QAT（2000013）'
+            },
+            {
+              'ID': 2000014,
+              'Account': 'CP线二UAT（2000014）'
+            },
+            {
+              'ID': 2000012,
+              'Account': 'CP线二内部（2000012）'
+            },
+            {
               'ID': 1000002,
               'Account': '内部'
             }
@@ -1024,12 +1036,20 @@ export default {
               'Account': 'CP正式'
             },
             {
+              'ID': 2000015,
+              'Account': 'CP线二正式'
+            },
+            {
               'ID': 1000002,
               'Account': '内部'
             },
             {
               'ID': 2000002,
               'Account': 'CP内部（2000002）'
+            },
+            {
+              'ID': 2000012,
+              'Account': 'CP线二内部（2000012）'
             }
           ]
         }
@@ -1122,7 +1142,7 @@ export default {
   }
 
   .card-panel {
-    height: 140px;
+    height: 120px;
     cursor: pointer;
     font-size: 12px;
     position: relative;
