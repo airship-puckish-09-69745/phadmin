@@ -173,6 +173,46 @@
                 />
               </el-select>
             </el-form-item>
+            <el-form-item label="活动背景图：" :required="true">
+              <ImagePicker v-model="editItem.bgUrl" />
+            </el-form-item>
+            <el-form-item label="活动人物图片：" :required="true">
+              <ImagePicker v-model="editItem.userUrl" />
+            </el-form-item>
+            <el-form-item label="png图片：" :required="true">
+              <ImagePicker v-model="editItem.pngUrl" />
+            </el-form-item>
+            <el-form-item label="json文件：" :required="true">
+              <el-upload
+                ref="freeBuyJsonUpload"
+                :action="uploadActionURL"
+                :show-file-list="false"
+                accept=".json,.txt,text/plain,application/json"
+                :with-credentials="true"
+                :before-upload="file => handleTextAssetBeforeUpload(file, ['json', 'txt'], 'JSON')"
+                :on-success="response => handleTextAssetUploadSuccess(response, 'jsonUrl', 'JSON', 'freeBuyJsonUpload')"
+                :on-error="() => handleTextAssetUploadError('JSON')"
+              >
+                <el-button size="mini" type="primary">上传 JSON 文件</el-button>
+              </el-upload>
+              <div v-if="editItem.jsonUrl" class="upload-path-text">{{ editItem.jsonUrl }}</div>
+            </el-form-item>
+            <el-form-item label="atlas文件：" :required="true">
+              <el-upload
+                ref="freeBuyAtlasUpload"
+                :action="uploadActionURL"
+                :show-file-list="false"
+                accept=".atlas,.txt,text/plain"
+                :with-credentials="true"
+                :before-upload="file => handleTextAssetBeforeUpload(file, ['atlas', 'txt'], 'ATLAS')"
+                :on-success="response => handleTextAssetUploadSuccess(response, 'atlasUrl', 'ATLAS', 'freeBuyAtlasUpload')"
+                :on-error="() => handleTextAssetUploadError('ATLAS')"
+              >
+                <el-button size="mini" type="primary">上传 ATLAS 文件</el-button>
+              </el-upload>
+              <div v-if="editItem.atlasUrl" class="upload-path-text">{{ editItem.atlasUrl }}</div>
+            </el-form-item>
+
             <el-form-item label="参与用户类型" required>
               <el-select
                 v-model="editItem.userTypes"
@@ -409,13 +449,14 @@
 </template>
 
 <script>
-import { $libDate } from '@/utils/common'
+import { $libDate, $libShow } from '@/utils/common'
 import request from '@/utils/request'
 import SiteSelect from '@/components/SiteSelect/index.vue'
 import Publish from '@/components/Publish/index.vue'
 import draggable from 'vuedraggable'
 import store from '@/store'
 import { ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS } from '@/utils/options'
+import ImagePicker from "@/components/ImagePicker/ImagePicker.vue";
 
 const CONFIG_KEY = 'FreeBuyConfig'
 const ACTIVITY_ID = 30
@@ -495,6 +536,11 @@ function newActivity(id = 0) {
     userTypes: [2],
     userTagConfig: [],
     debugTimeOffset: 0,
+    bgUrl: '',
+    userUrl: '',
+    pngUrl: '',
+    jsonUrl: '',
+    atlasUrl: '',
     abTest: {
       switch: false,
       bPercent: 0
@@ -505,6 +551,7 @@ function newActivity(id = 0) {
 export default {
   name: 'FreeBuyConfig',
   components: {
+    ImagePicker,
     Publish,
     SiteSelect,
     draggable
@@ -585,6 +632,9 @@ export default {
     },
     isUserLevelTag() {
       return [50002, 50003, 50005, 50006, 50043].includes(Number(this.userTagDraft.tagId))
+    },
+    uploadActionURL() {
+      return process.env.VUE_APP_BASE_API + '/other/upload'
     }
   },
   created() {
@@ -663,7 +713,17 @@ export default {
       data.abTest = { switch: false, bPercent: 0, ...(data.abTest || {}) }
       data.abTest.switch = Boolean(data.abTest.switch)
       data.abTest.bPercent = Number(data.abTest.bPercent)
+      data.jsonUrl = this.normalizeUploadStaticPath(data.jsonUrl || '')
+      data.atlasUrl = this.normalizeUploadStaticPath(data.atlasUrl || '')
       return data
+    },
+    normalizeUploadStaticPath(url) {
+      const value = String(url || '').trim()
+      if (!value) return ''
+      if (/^https?:\/\//i.test(value)) return value
+      const withoutStaticPrefix = value.replace(/^\/?static\//, '')
+      const path = `/${withoutStaticPrefix.replace(/^\/+/, '')}`
+      return $libShow.GetFullPath(path)
     },
     normalizeTask(task) {
       const data = { ...newTask(Number(task.taskType) || 1), ...task }
@@ -848,7 +908,7 @@ export default {
         this.$message.error('上传的文件只能是 CSV 或 TXT 格式')
         return false
       }
-      if (file.size / 1024 / 1024 >= 10) {
+      if (file.size / 1024 / 1024 > 10) {
         this.$message.error('上传文件不能超过10MB')
         return false
       }
@@ -916,6 +976,31 @@ export default {
       }
       reader.onerror = () => this.$message.error('读取用户文件失败')
       reader.readAsText(this.freeBuyUidFile, 'UTF-8')
+    },
+    handleTextAssetBeforeUpload(file, allowedExts, label) {
+      const filename = String(file?.name || '')
+      const ext = filename.includes('.') ? filename.split('.').pop().toLowerCase() : ''
+      if (!allowedExts.includes(ext)) {
+        this.$message.error(`上传的${label}文件格式不正确`)
+        return false
+      }
+      if (file.size / 1024 / 1024 > 10) {
+        this.$message.error('上传文件不能超过10MB')
+        return false
+      }
+      return true
+    },
+    handleTextAssetUploadSuccess(response, field, label, uploadRefName) {
+      if (!response || response.RetCode !== 0) {
+        this.$message.error((response && (response.Msg || response.Message)) || `${label}文件上传失败`)
+        return
+      }
+      if (this.$refs[uploadRefName]) this.$refs[uploadRefName].clearFiles()
+      this.$set(this.editItem, field, this.normalizeUploadStaticPath(response.Data || ''))
+      this.$message.success(`${label}文件上传成功`)
+    },
+    handleTextAssetUploadError(label) {
+      this.$message.error(`${label}文件上传失败`)
     },
     saveActivity() {
       const activity = this.buildActivityForSave(this.editItem)
@@ -987,7 +1072,12 @@ export default {
         totalPropLimit: data.totalPropLimit,
         taskList: data.taskList,
         userTypes: data.userTypes,
-        userTagConfig: data.userTagConfig
+        userTagConfig: data.userTagConfig,
+        bgUrl: data.bgUrl || '',
+        userUrl: data.userUrl || '',
+        pngUrl: data.pngUrl || '',
+        jsonUrl: data.jsonUrl || '',
+        atlasUrl: data.atlasUrl || ''
       }
       return {
         id: data.id,
@@ -1310,6 +1400,13 @@ export default {
   color: #e6a23c;
   display: inline-block;
   margin: 6px 0;
+}
+
+.upload-path-text {
+  margin-top: 6px;
+  line-height: 1.5;
+  color: #606266;
+  word-break: break-all;
 }
 
 .config-alert {
