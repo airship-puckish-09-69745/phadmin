@@ -173,6 +173,16 @@
                 />
               </el-select>
             </el-form-item>
+            <el-form-item label="活动背景图：" :required="true">
+              <ImagePicker v-model="editItem.bgUrl" />
+            </el-form-item>
+            <el-form-item label="活动人物图片：" :required="true">
+              <ImagePicker v-model="editItem.userUrl" />
+            </el-form-item>
+            <el-form-item label="png图片：" :required="true">
+              <ImagePicker v-model="editItem.pngUrl" />
+            </el-form-item>
+
             <el-form-item label="参与用户类型" required>
               <el-select
                 v-model="editItem.userTypes"
@@ -416,6 +426,7 @@ import Publish from '@/components/Publish/index.vue'
 import draggable from 'vuedraggable'
 import store from '@/store'
 import { ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS } from '@/utils/options'
+import ImagePicker from "@/components/ImagePicker/ImagePicker.vue";
 
 const CONFIG_KEY = 'FreeBuyConfig'
 const ACTIVITY_ID = 30
@@ -495,6 +506,9 @@ function newActivity(id = 0) {
     userTypes: [2],
     userTagConfig: [],
     debugTimeOffset: 0,
+    bgUrl: '',
+    userUrl: '',
+    pngUrl: '',
     abTest: {
       switch: false,
       bPercent: 0
@@ -505,6 +519,7 @@ function newActivity(id = 0) {
 export default {
   name: 'FreeBuyConfig',
   components: {
+    ImagePicker,
     Publish,
     SiteSelect,
     draggable
@@ -987,7 +1002,10 @@ export default {
         totalPropLimit: data.totalPropLimit,
         taskList: data.taskList,
         userTypes: data.userTypes,
-        userTagConfig: data.userTagConfig
+        userTagConfig: data.userTagConfig,
+        bgUrl: data.bgUrl || '',
+        userUrl: data.userUrl || '',
+        pngUrl: data.pngUrl || ''
       }
       return {
         id: data.id,
