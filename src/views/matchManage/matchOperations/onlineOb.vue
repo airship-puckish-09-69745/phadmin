@@ -107,9 +107,9 @@
      //this.OB_MATCH_UNIQUE_ID_CFG = this.MATCH_UNIQUE_ID_CFG.slice(1)
       this.OB_MATCH_UNIQUE_ID_CFG=[
         { 'value': 10003, 'label': 'P10' },
-        { 'value': 11102, 'label': 'S5 Daily' },
-        { 'value': 11103, 'label': 'S5 Daily Plus' },
-        { 'value': 11104, 'label': 'S5 SemiFinal' },]
+        { 'value': 11102, 'label': 'S6 Daily' },
+       // { 'value': 11103, 'label': 'S5 Daily Plus' },
+        { 'value': 11104, 'label': 'S6 SemiFinal' },]
     },
     methods: {
       getFullKey() {
