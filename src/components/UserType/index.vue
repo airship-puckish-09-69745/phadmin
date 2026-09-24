@@ -164,6 +164,11 @@ export default {
       type: Array,
       default: () => DEFAULT_ENABLED_USER_TYPES
     },
+    // 可选：外部传入用户类型选项；不传时使用内置默认选项
+    userTypeOptions: {
+      type: Array,
+      default: null
+    },
     // 是否显示导入用户列表，默认显示
     showImportUserList: {
       type: Boolean,
@@ -211,8 +216,6 @@ export default {
       tagIdOptions: [],
       uploadProgress: 0,
       uploadElapsed: 0,
-      // 内置的基础用户类型选项
-      userTypeOptions: DEFAULT_USER_TYPE_OPTIONS,
       // 内置的 Slots 标签类型选项（可被 customUserTagOptions prop 覆盖）
       userTagOptions: [
         { value: 2, label: '游戏强度', children: [{ value: 20000, label: '游戏强度' }] },
@@ -273,6 +276,12 @@ export default {
       const normalized = list.map(v => Number(v)).filter(v => Number.isInteger(v))
       return normalized.length > 0 ? normalized : DEFAULT_ENABLED_USER_TYPES
     },
+    normalizedUserTypeOptions() {
+      if (Array.isArray(this.userTypeOptions) && this.userTypeOptions.length > 0) {
+        return this.userTypeOptions
+      }
+      return DEFAULT_USER_TYPE_OPTIONS
+    },
     defaultUserType() {
       if (this.normalizedEnabledUserTypes.includes(USER_TYPE_VALUES.ALL)) {
         return USER_TYPE_VALUES.ALL
@@ -282,7 +291,7 @@ export default {
     // 实际使用的用户类型选项：若传入了自定义标签名则替换 value=5 的标签
     effectiveUserTypeOptions() {
       const enabledSet = new Set(this.normalizedEnabledUserTypes)
-      const baseOptions = this.userTypeOptions.filter(opt => enabledSet.has(opt.value))
+      const baseOptions = this.normalizedUserTypeOptions.filter(opt => enabledSet.has(opt.value))
       if (!this.customUserTypeLabel) return baseOptions
       return baseOptions.map(opt =>
         opt.value === USER_TYPE_VALUES.TAG ? { ...opt, label: this.customUserTypeLabel } : opt

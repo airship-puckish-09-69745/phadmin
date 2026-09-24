@@ -33,7 +33,7 @@ export const GetPropConfigListFromCache = () => {
       return { total: 0, itemList: [] }
     }
     const itemList = list.filter(item => IsAvailablePropItem(item))
-   // console.log("getPropConfigListFromCache list ", itemList)
+    //console.log("getPropConfigListFromCache list ", itemList)
     return { total: objs.total, itemList }
   }).catch((err) => {
     console.error('GetPropConfigListFromCache failed', err)
