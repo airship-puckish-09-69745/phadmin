@@ -15,7 +15,7 @@
         </el-form-item>
         <el-form-item label="App：">
           <el-select v-model="item.appId" size="mini">
-            <el-option v-for="(o, idx) in appOptions" :key="idx" :label="o.label" :value="o.value" />
+            <el-option v-for="(o, idx) in appInfos" :key="idx" :label="o.Account" :value="o.ID" />
           </el-select>
         </el-form-item>
         <el-form-item label="类型：">
@@ -31,6 +31,19 @@
             type="date"
             placeholder="选择日期"
           />
+        </el-form-item>
+        <el-form-item label="时间段：">
+          <el-time-picker
+            v-model="item.timeRange"
+            is-range
+            format="HH:mm:ss"
+            value-format="HH:mm:ss"
+            range-separator="至"
+            start-placeholder="开始时间"
+            end-placeholder="结束时间"
+            placeholder="选择时间段(可不填)"
+          />
+          <span style="color:#909399;font-size:12px;margin-left:8px;">同一天内，间隔不超过6小时</span>
         </el-form-item>
         <el-form-item>
           <el-switch
@@ -155,7 +168,7 @@
           label="命中"
           width="70"
         />
-        <template v-if="[150,156,166,174,196,204,210,216,232].indexOf(gid) >= 0">
+        <template v-if="[150,156,166,174,196,204,210,216,232,248].indexOf(gid) >= 0">
           <el-table-column
             header-align="center"
             label="Jackpot"
@@ -202,7 +215,7 @@
           </el-table-column>
         </template>
         <template
-          v-if="gid % 2 === 0"
+          v-if="hasScriptLog(gid)"
         >
           <el-table-column
             header-align="center"
@@ -289,7 +302,7 @@
         :visible.sync="showDetail"
         width="50%"
       >
-        <p>命中支付线：{{ detailPayLine }}</p>
+        <p>Hit the payment line：{{ detailPayLine }}</p>
         <div id="slotsLogDetail" v-html="detailContent"/>
       </el-dialog>
     </el-row>
@@ -350,6 +363,7 @@ export default {
       item: {
         Uid: 0,
         date: $libDate.GetDayBegin(new Date().getTime()),
+        timeRange: null,
         actType: -1,
         appId: store.getters.appId || 0
       },
@@ -369,8 +383,8 @@ export default {
       showDetail: false,
       detailContent: '',
       detailPayLine: 0,
-      appOptions: [
-        { value: 0, label: '全部' }
+      appInfos: [
+        { ID: 0, Account: '全部' }
       ]
     }
   },
@@ -378,7 +392,7 @@ export default {
   created() {
     this.env = store.getters.env || this.env
     this.gid = this.$route.meta.gid
-    if (this.gid === 150 || this.gid === 166 || this.gid === 176 || this.gid === 178 || this.gid === 232) {
+    if (this.gid === 150 || this.gid === 166 || this.gid === 176 || this.gid === 178 || this.gid === 232 || this.gid === 248) {
       this.typeNames[1] = 'bonus'
     }
     this.getAppInfos()
@@ -386,16 +400,16 @@ export default {
   methods: {
     getDescription() {
       // eslint-disable-next-line no-empty
-      if (this.gid === 232) {
-        return '数据根据Uid分表，需要模糊匹配请输入 0-9 数字查询。输赢图表只支持指定有效Uid查询,MafiaWars的bonus模式存在延迟1到3分钟'
-      }
       return '数据根据Uid分表，需要模糊匹配请输入 0-9 数字查询。输赢图表只支持指定有效Uid查询'
     },
     // V2剧本
     isActV2(gid) {
       return [78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 154, 156, 158, 160, 162, 164, 166, 170,
         172, 188, 198, 192, 180, 176, 182, 174, 178, 168, 196, 184, 202, 190, 200, 204, 206, 208, 210,
-        212, 216, 218, 220, 228, 230, 232, 236, 238].indexOf(gid) >= 0
+        212, 216, 218, 220, 226, 228, 230, 232, 234, 236, 238, 240, 242, 248, 253, 254, 255, 257, 1237, 1242, 258].indexOf(gid) >= 0
+    },
+    hasScriptLog(gid) {
+      return gid % 2 === 0 || gid > 251
     },
     // 收集剧本
     isActCollect(gid) {
@@ -411,6 +425,10 @@ export default {
     },
     showChart() {
       const $this = this
+      const timeRange = this.getTimeRangeParam()
+      if (timeRange === null) {
+        return
+      }
       request({
         url: '/dataProxy/info',
         method: 'get',
@@ -421,7 +439,10 @@ export default {
           SlotsType: this.gid,
           Time: this.getTime(this.item.date),
           ActType: this.item.actType,
-          IsVup: this.isVup ? 1 : 0
+          IsVup: this.isVup ? 1 : 0,
+          AppId: this.item.appId,
+          StartTime: timeRange[0],
+          EndTime: timeRange[1]
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -599,8 +620,53 @@ export default {
       // }
       return toDate / 1000
     },
+    // 把 HH:mm:ss 转成当天的秒偏移，格式非法时返回 null
+    timeToSecond(timeStr) {
+      const arr = ('' + timeStr).split(':')
+      if (arr.length !== 3) {
+        return null
+      }
+      const hour = parseInt(arr[0], 10)
+      const min = parseInt(arr[1], 10)
+      const sec = parseInt(arr[2], 10)
+      if (isNaN(hour) || isNaN(min) || isNaN(sec)) {
+        return null
+      }
+      return hour * 3600 + min * 60 + sec
+    },
+    // 校验时间段并换算成所选日期的起止时间戳(秒)，供 StartTime/EndTime 使用
+    // 未选择时间段返回 [0, 0]；间隔超过6小时等不合法情况提示后返回 null
+    getTimeRangeParam() {
+      const range = this.item.timeRange || []
+      if (range.length !== 2 || !range[0] || !range[1]) {
+        return [0, 0]
+      }
+      if (!this.item.date) { // 未选日期时后端按当天范围校验会不通过，这里不传时间段
+        return [0, 0]
+      }
+      const start = this.timeToSecond(range[0])
+      const end = this.timeToSecond(range[1])
+      if (start === null || end === null) {
+        Message.error('时间段格式有误，请重新选择')
+        return null
+      }
+      if (end < start) {
+        Message.error('结束时间不能早于开始时间')
+        return null
+      }
+      if (end - start > 6 * 3600) {
+        Message.error('开始时间与结束时间的间隔不能超过6小时')
+        return null
+      }
+      const dayBegin = this.getTime(this.item.date)
+      return [dayBegin + start, dayBegin + end]
+    },
     getInfo() {
       const $this = this
+      const timeRange = this.getTimeRangeParam()
+      if (timeRange === null) {
+        return
+      }
       request({
         url: '/dataProxy/info',
         method: 'get',
@@ -614,7 +680,9 @@ export default {
           Limit: this.pageNum,
           ActType: this.item.actType,
           IsVup: this.isVup ? 1 : 0,
-          AppId: this.item.appId
+          AppId: this.item.appId,
+          StartTime: timeRange[0],
+          EndTime: timeRange[1]
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -635,7 +703,7 @@ export default {
             }
 
             if ($this.gid === 150 || $this.gid === 156 || $this.gid === 166 || $this.gid === 174 || $this.gid === 196 ||
-              $this.gid === 204 || $this.gid === 210 || $this.gid === 216 || $this.gid === 232) {
+              $this.gid === 204 || $this.gid === 210 || $this.gid === 216 || $this.gid === 232 || $this.gid === 248) {
               if (objs[i]['JackpotLog'] && objs[i]['JackpotLog'] !== 'null') {
                 objs[i]['JackpotLogObj'] = JSON.parse(objs[i]['JackpotLog'])
               } else {
@@ -655,7 +723,7 @@ export default {
         }
       })
     },
-    async getExportData(page) {
+    async getExportData(page, timeRange) {
       console.log('qwwer', page)
       // sleep 2s
       await new Promise(resolve => {
@@ -674,7 +742,10 @@ export default {
           Page: page,
           Limit: this.pageNum,
           ActType: this.item.actType,
-          IsVup: this.isVup ? 1 : 0
+          IsVup: this.isVup ? 1 : 0,
+          AppId: this.item.appId,
+          StartTime: timeRange[0],
+          EndTime: timeRange[1]
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -692,7 +763,7 @@ export default {
             }
 
             if ($this.gid === 150 || $this.gid === 156 || $this.gid === 166 || $this.gid === 174 || $this.gid === 196 ||
-              $this.gid === 204 || $this.gid === 210 || $this.gid === 216 || $this.gid === 232) {
+              $this.gid === 204 || $this.gid === 210 || $this.gid === 216 || $this.gid === 232 || $this.gid === 248) {
               if (objs[i]['JackpotLog'] && objs[i]['JackpotLog'] !== 'null') {
                 objs[i]['JackpotLogObj'] = JSON.parse(objs[i]['JackpotLog'])
               } else {
@@ -709,7 +780,7 @@ export default {
             tmp.push(this.formatNumber(objs[i].ReturnBet / 1000))
             tmp.push(this.formatNumber(objs[i].ServiceFee / 1000))
             tmp.push(objs[i].PayLine)
-            if ([150, 156, 166, 174, 196, 204, 210, 216, 232].indexOf(this.gid) >= 0) {
+            if ([150, 156, 166, 174, 196, 204, 210, 216, 232,248].indexOf(this.gid) >= 0) {
               tmp.push(this.getJPFee(objs[i].JackpotLogObj, 4))
               tmp.push(this.getJPFee(objs[i].JackpotLogObj, 3))
               tmp.push(this.getJPFee(objs[i].JackpotLogObj, 2))
@@ -718,7 +789,7 @@ export default {
               tmp.push(objs[i].JackpotLogObj.JackpotInfo ? objs[i].JackpotLogObj.JackpotInfo[0].MultiOdds : null)
               tmp.push(objs[i].JackpotLogObj.JackpotInfo ? objs[i].JackpotLogObj.JackpotInfo[0].AddMoney / 1000 : null)
             }
-            if (this.gid % 2 === 0) {
+            if (this.hasScriptLog(this.gid)) {
               const actLogObj = objs[i].ActLogObj
               tmp.push(actLogObj.ActOdds)
               tmp.push(actLogObj.TargetOdds)
@@ -773,6 +844,10 @@ export default {
       })
     },
     exportExcel() {
+      const timeRange = this.getTimeRangeParam()
+      if (timeRange === null) {
+        return
+      }
       request({
         url: '/other/export/time',
         method: 'get'
@@ -795,7 +870,7 @@ export default {
           const max = Math.ceil(this.totalCount / this.pageNum)
           this.isButtonDisabled = true
           for (let i = 1; i <= max; i++) {
-            await this.getExportData(i)
+            await this.getExportData(i, timeRange)
           }
           this.isButtonDisabled = false
           const data = this.exportData
@@ -863,7 +938,7 @@ export default {
     },
     getAppInfos() {
       request({
-        url: '/thirdparties/all',
+        url: '/thirdparties/apps',
         method: 'get',
         data: {}
       }).then(response => {
@@ -872,9 +947,9 @@ export default {
             if (response.Data[i].Status !== 2) {
               continue
             }
-            this.appOptions.push({
-              value: response.Data[i].ID,
-              label: response.Data[i].ID + '-' + response.Data[i].Account
+            this.appInfos.push({
+              ID: response.Data[i].ID,
+              Account: response.Data[i].ID + '-' + response.Data[i].Account
             })
           }
         }
