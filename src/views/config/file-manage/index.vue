@@ -13,7 +13,7 @@
     </div>
     <div class="file-manage-container">
       <div class="file-manage__header">
-        <div class="file-manage__header__title">{{ !title ? '全部' : title }}</div>
+        <div class="file-manage__header__title">{{ !title ? '全部' : title }}<span>/点击文件复制链接/</span></div>
         <div class="file-manage__header__operations">
           <el-input v-model="keyword" placeholder="请输入关键字" @input="handleKeywordChange">
             <template #append />
@@ -55,7 +55,9 @@
             @size-change="handleSizeChange" />
           </div>
         </template>
-        <!-- <el-empty v-else :image-size="200" /> -->
+        <div v-else style="width: 100%;">
+          <el-empty :image-size="200" />
+        </div>
       </div>
     </div>
   </div>
@@ -352,10 +354,18 @@ export default {
     justify-content: space-between;
 
     &__title {
+      line-height: 40px;
       font-size: 24px;
       font-weight: bold;
       color: #303133;
-      width: 100px;
+      width: 300px;
+
+      span {
+        line-height: 40px;
+        font-size: 14px;
+        margin-left: 10px;
+        color: #ff0000;
+      }
     }
 
     &__operations {
