@@ -4317,7 +4317,13 @@ export const asyncRoutes = [
         path: 'image-manage',
         component: () => import('@/views/config/image-manage'),
         name: 'ImageManage',
-        meta: { title: '图片管理', noCache: true }
+        meta: { title: '图片管理', icon: 'image-manage', noCache: true }
+      },
+      {
+        path: 'file-manage',
+        component: () => import('@/views/config/file-manage'),
+        name: 'FileManage',
+        meta: { title: '文件管理', icon: 'file-manage', noCache: true }
       },
       {
         path: 'common-game-config',
