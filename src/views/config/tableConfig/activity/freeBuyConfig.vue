@@ -179,6 +179,9 @@
             <el-form-item label="活动人物图片：" :required="true">
               <ImagePicker v-model="editItem.userUrl" />
             </el-form-item>
+            <el-form-item label="压缩包链接" required>
+              <el-input v-model.trim="editItem.zipUtrl" show-word-limit />
+            </el-form-item>
             <el-form-item label="参与用户类型" required>
               <el-select
                 v-model="editItem.userTypes"
@@ -504,9 +507,7 @@ function newActivity(id = 0) {
     debugTimeOffset: 0,
     bgUrl: '',
     userUrl: '',
-    pngUrl: '',
-    jsonUrl: '',
-    atlasUrl: '',
+    zipUtrl: '',
     abTest: {
       switch: false,
       bPercent: 0
@@ -1041,9 +1042,7 @@ export default {
         userTagConfig: data.userTagConfig,
         bgUrl: data.bgUrl || '',
         userUrl: data.userUrl || '',
-        pngUrl: data.pngUrl || '',
-        jsonUrl: data.jsonUrl || '',
-        atlasUrl: data.atlasUrl || ''
+        zipUtrl: data.zipUtrl || ''
       }
       return {
         id: data.id,
