@@ -186,6 +186,7 @@
               <el-upload
                 ref="freeBuyJsonUpload"
                 :action="uploadActionURL"
+                :data="{ category: 'static',Env: env }"
                 :show-file-list="false"
                 accept=".json,.txt,text/plain,application/json"
                 :with-credentials="true"
@@ -201,6 +202,7 @@
               <el-upload
                 ref="freeBuyAtlasUpload"
                 :action="uploadActionURL"
+                :data="{ category: 'static',Env: env }"
                 :show-file-list="false"
                 accept=".atlas,.txt,text/plain"
                 :with-credentials="true"
@@ -634,7 +636,7 @@ export default {
       return [50002, 50003, 50005, 50006, 50043].includes(Number(this.userTagDraft.tagId))
     },
     uploadActionURL() {
-      return process.env.VUE_APP_BASE_API + '/other/upload'
+      return process.env.VUE_APP_BASE_API + '/file/upload'
     }
   },
   created() {
