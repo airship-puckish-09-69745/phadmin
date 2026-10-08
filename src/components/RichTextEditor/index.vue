@@ -80,7 +80,7 @@
       <div class="preview-section">
         <div class="preview-header">
           <span>预览效果</span>
-          <el-tag size="mini" type="info">Cocos Creator v3 RichText</el-tag>
+          <el-tag size="mini" type="info">RichText</el-tag>
         </div>
         <div ref="previewBox" class="preview-box">
           <div class="preview-content" v-html="renderedHtml" />
