@@ -179,42 +179,6 @@
             <el-form-item label="活动人物图片：" :required="true">
               <ImagePicker v-model="editItem.userUrl" />
             </el-form-item>
-            <el-form-item label="png图片：" :required="true">
-              <ImagePicker v-model="editItem.pngUrl" />
-            </el-form-item>
-            <el-form-item label="json文件：" :required="true">
-              <el-upload
-                ref="freeBuyJsonUpload"
-                :action="uploadActionURL"
-                :data="{ category: 'static',Env: env }"
-                :show-file-list="false"
-                accept=".json,.txt,text/plain,application/json"
-                :with-credentials="true"
-                :before-upload="file => handleTextAssetBeforeUpload(file, ['json', 'txt'], 'JSON')"
-                :on-success="response => handleTextAssetUploadSuccess(response, 'jsonUrl', 'JSON', 'freeBuyJsonUpload')"
-                :on-error="() => handleTextAssetUploadError('JSON')"
-              >
-                <el-button size="mini" type="primary">上传 JSON 文件</el-button>
-              </el-upload>
-              <div v-if="editItem.jsonUrl" class="upload-path-text">{{ editItem.jsonUrl }}</div>
-            </el-form-item>
-            <el-form-item label="atlas文件：" :required="true">
-              <el-upload
-                ref="freeBuyAtlasUpload"
-                :action="uploadActionURL"
-                :data="{ category: 'static',Env: env }"
-                :show-file-list="false"
-                accept=".atlas,.txt,text/plain"
-                :with-credentials="true"
-                :before-upload="file => handleTextAssetBeforeUpload(file, ['atlas', 'txt'], 'ATLAS')"
-                :on-success="response => handleTextAssetUploadSuccess(response, 'atlasUrl', 'ATLAS', 'freeBuyAtlasUpload')"
-                :on-error="() => handleTextAssetUploadError('ATLAS')"
-              >
-                <el-button size="mini" type="primary">上传 ATLAS 文件</el-button>
-              </el-upload>
-              <div v-if="editItem.atlasUrl" class="upload-path-text">{{ editItem.atlasUrl }}</div>
-            </el-form-item>
-
             <el-form-item label="参与用户类型" required>
               <el-select
                 v-model="editItem.userTypes"
