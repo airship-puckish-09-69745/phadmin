@@ -163,8 +163,8 @@
             <el-button v-if="scope.row.status===2" size="mini" type="success" @click="handleUpdate(scope.row.id)">上架</el-button>
             <!-- <el-button v-if="scope.row.status===1"  size="mini" type="danger" @click="handleUpdate(scope.row.id)">下架</el-button> -->
             <el-button v-if="scope.row.status===1 && !isTicketPropNew(scope.row.item_type)" size="mini" type="danger" @click="handleUpdate(scope.row.id)">下架</el-button>
-            <!--  <el-button v-if="scope.row.status===2" size="mini" type="danger" @click="handleDelete(scope.row.id, false)">删除</el-button> -->
-            <el-button v-if="itemEnv==='development' &&  scope.row.status===2" size="mini" type="danger" @click="handleDelete(scope.row.id, false)">删除</el-button>
+            <!-- <el-button v-if="scope.row.status===2" size="mini" type="danger" @click="handleDelete(scope.row.id, false)">删除</el-button> -->
+           <el-button v-if="itemEnv==='development' &&  scope.row.status===2" size="mini" type="danger" @click="handleDelete(scope.row.id, false)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -378,7 +378,6 @@ export default {
         {'value': 10, 'label': '金蛋', disabled: false},
         {'value': 11, 'label': '大风扇', disabled: false},
         {'value': 12, 'label': '爱心', disabled: false},
-
       ],
       slotDefaultBetAmount: [
         // 样式 { 'value': 300, 'label': 'bet-0.3', disabled: false },
@@ -974,7 +973,7 @@ export default {
           this.errmsg('请选择道具对应的APPID')
           return false
         }
-        if(Number(this.editForm.itemExtra.appId) !==  Number(getAppId())) {
+        if(Number(this.editForm.itemExtra.appId) !== Number(getAppId())) {
           this.errmsg('勾选的APPID 跟当前环境的APPID不一致')
           return false
         }

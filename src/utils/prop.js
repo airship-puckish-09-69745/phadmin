@@ -17,7 +17,7 @@ export const SLOT_GAME_CONFIG = [
   // {'value': 164, 'label': 'Mahjong Fortune', 'configKey':'',disabled: false },
 ]
 
-// 下注类游戏 //shareBet是否共用下注amount
+// 下注类游戏
 export const BETTING_GAME_CONFIG = [
   { 'value': 20, 'label': '扫雷(sweeper)', 'configKey': 'gameSweeper', disabled: false,"shareBet":true },
   { 'value': 132, 'label': 'Mines Magic', 'configKey': 'gameSweeper', disabled: false,"shareBet":true  },
@@ -46,7 +46,6 @@ export const MATCH_TICKET_RIGHTS_ID_CFG_DEV = {
     { 'ticketId': 646, 'sceneId': 211, 'label': 'Tongits-646门票P10 ' },
     { 'ticketId': 648, 'sceneId': 212, 'label': 'Pusoy-648门票P10 ' },
 
-
     { 'ticketId': 656, 'sceneId': 213, 'label': 'S6第一周积分赛门票' },
     { 'ticketId': 657, 'sceneId': 214, 'label': 'S6第二周积分赛门票 ' },
     { 'ticketId': 658, 'sceneId': 215, 'label': 'S6第三周积分赛门票 ' },
@@ -69,7 +68,6 @@ export const MATCH_TICKET_RIGHTS_ID_CFG_UAT = {
     { 'ticketId': 613, 'sceneId': 200, 'label': 'Tongits新版门票 带唯一ID-614'  },
     { 'ticketId': 614, 'sceneId': 201, 'label': 'Pusoy新版门票 带唯一ID-614'  },
     { 'ticketId': 615, 'sceneId': 202, 'label': 'Poker新版门票 带唯一ID-615'  },
-
     //s6赛事门票
     { 'ticketId': 667, 'sceneId': 203, 'label': 'S6日赛门票w1'  },
     { 'ticketId': 668, 'sceneId': 203, 'label': 'S6日赛门票w2'  },
@@ -78,6 +76,7 @@ export const MATCH_TICKET_RIGHTS_ID_CFG_UAT = {
     { 'ticketId': 671, 'sceneId': 203, 'label': 'S6日赛门票w5'  },
     { 'ticketId': 666, 'sceneId': 203, 'label': 'S6半决赛门票'  },
     { 'ticketId': 672, 'sceneId': 203, 'label': 'S6决赛邀请函'  },
+
   ],
   1000003: [ // PROP_TYPE_TICKET_NEW
     { 'ticketId': 322, 'sceneId': 200, 'label': 'Tongits新版门票 带唯一ID-322'  },
@@ -125,6 +124,7 @@ export const MATCH_TICKET_RIGHTS_ID_CFG_PROD = {
     { 'ticketId': 679, 'sceneId': 214, 'label': 'S6日赛门票w5'  },
     { 'ticketId': 674, 'sceneId': 215, 'label': 'S6半决赛门票'  },
     { 'ticketId': 673, 'sceneId': 216, 'label': 'S6决赛邀请函'  },
+
   ],
   1000005: [
     { 'ticketId': 396, 'sceneId': 200, 'label': 'Tongits' },
