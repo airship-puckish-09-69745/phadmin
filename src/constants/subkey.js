@@ -108,6 +108,7 @@ export const SubKeyMap = {
   244: 'wildbone_slots_base',
   246: 'talareyessouthseapearls_slots_base',
   250: 'lightofmactan_slots_base',
+  255: 'bernardocarpio_slots_base',
   100180: 'fishingmaster_slots_base',
   1236: 'pacquiaofortuneplaynow_slots_base',
   274: 'sarimanokfortune_slots_base'
