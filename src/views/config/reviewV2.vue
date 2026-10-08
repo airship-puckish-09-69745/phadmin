@@ -43,7 +43,7 @@
         style="width: 100%"
         @selection-change="handleSelectionChange"
       >
-        <el-table-column type="selection" width="55" :selectable="(row, index) => (row.Status === 1 && row.ConfigKey === 'ApplyCompensation') "></el-table-column>
+        <el-table-column type="selection" width="55" :selectable="(row, index) => (row.Status === 1) " />
         <el-table-column
           prop="ID"
           label="ID"
@@ -191,6 +191,39 @@
         </template>
       </el-form>
     </el-dialog>
+
+    <el-dialog
+      title="批量审核信息"
+      :visible.sync="batchDialogVisible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      width="600px"
+    >
+      <div v-html="batchDialogContent" />
+      <el-button
+        v-if="batchConfigKeys.length > maxDisplayConfigKeys"
+        type="primary"
+        size="mini"
+        style="margin-top: 10px"
+        @click="toggleShowAllKeys"
+      >
+        {{ batchShowAllKeys ? '收起' : '显示所有' }}
+      </el-button>
+      <el-form style="margin-top: 20px">
+        <el-form-item label="审批意见" :required="true">
+          <el-input
+            v-model="batchComment"
+            type="textarea"
+            :autosize="{ minRows: 3, maxRows: 5}"
+            placeholder="请输入审批意见"
+          />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="handleBatchCancel">拒 绝</el-button>
+        <el-button type="primary" @click="handleBatchConfirm">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <style>
@@ -271,7 +304,18 @@ export default {
         opType: 0
       },
       isAllSelected: false, // 全选状态
-      selectedRows: [] // 选中的行数据
+      selectedRows: [], // 选中的行数据
+      showAllConfigKeys: false,
+      maxDisplayConfigKeys: 2,
+
+      batchDialogVisible: false,
+      batchDialogContent: '',
+      batchConfigKeys: [],
+      batchShowAllKeys: false,
+      batchComment: '',
+      batchIds: [],
+      batchHasApplyCompensation: false,
+      batchTotalAmount: 0
     }
   },
   created() {
@@ -285,7 +329,7 @@ export default {
     handleSelectAll(checked) {
       if (checked) {
         this.tableData.forEach(row => {
-          if (row.Status === 1 && row.ConfigKey === 'ApplyCompensation') {
+          if (row.Status === 1) {
             this.$refs.filterTable.toggleRowSelection(row, true)
           }
         })
@@ -304,7 +348,7 @@ export default {
       return $libDate.FormateSecondStr(ts, 2)
     },
     getStatusShow(status) {
-      const names = { 1: '审核中', 2: '已通过', 3: '已拒绝' ,4:'已取消'}
+      const names = { 1: '审核中', 2: '已通过', 3: '已拒绝', 4: '已取消' }
       return names[status]
     },
     handleSizeChange(val) {
@@ -394,7 +438,7 @@ export default {
         Pass: iType,
         Comment: this.edit.item.Comment,
         Env: this.env,
-        ApplyCompensationEnv:this.applyCompensationEnv,
+        ApplyCompensationEnv: this.applyCompensationEnv
       }
     },
     passReview(iType) {
@@ -433,8 +477,12 @@ export default {
         this.$message.warning('请至少选择一条记录进行批量审核！')
         return
       }
+
       let totalAmount = 0
       const Ids = []
+      const configKeys = []
+      const configKeySet = new Set()
+
       this.selectedRows.forEach(row => {
         const summary = row.Summary
         const match = summary.match(/申请金额:(\d+\.\d+)/)
@@ -444,52 +492,88 @@ export default {
         if (typeof row.ID === 'number') {
           Ids.push(row.ID)
         }
-      })
-      let inputValue = ''
-      this.edit.item.EnvEmpty = 1
-      this.$prompt(`选中记录的申请金额总和为: ${totalAmount.toFixed(2)}`, '批量审核信息', {
-        inputPlaceholder: '请输入审批意见',
-        inputValidator: (value) => {
-          if (value.trim() === '') {
-            return '审批意见不能为空'
-          }
-          inputValue = value
-          return true
-        },
-        confirmButtonText: '确定',
-        cancelButtonText: '拒绝',
-        type: 'warning'
-      }).then(() => {
-        const comment = inputValue
-        Ids.forEach((id) => {
-          // 假设 iType 为 1 表示通过审核，可根据实际情况调整
-          const iType = 1
-          const succMsg = '审核已通过！'
-          // 修改 edit.item.ID 为当前处理的 ID
-          this.edit.item.ID = id
-          // 修改 edit.item.Comment 为用户输入的审批意见
-          this.edit.item.Comment = comment
-          this.doPassRequest(iType, succMsg)
-        })
-      }).catch((action) => {
-        if (action === 'cancel') {
-          const comment = inputValue
-          Ids.forEach((id) => {
-            const iType = 2
-            const succMsg = '申请已打回！'
-            // 修改 edit.item.ID 为当前处理的 ID
-            this.edit.item.ID = id
-            // 修改 edit.item.Comment 为用户输入的审批意见
-            this.edit.item.Comment = comment
-            this.doPassRequest(iType, succMsg)
-          })
+        if (row.ConfigKey && !configKeySet.has(row.ConfigKey)) {
+          configKeySet.add(row.ConfigKey)
+          configKeys.push(row.ConfigKey)
         }
       })
-      this.edit.item.Comment = ''
+
+      this.batchIds = Ids
+      this.batchTotalAmount = totalAmount
+      this.batchConfigKeys = configKeys
+      this.batchHasApplyCompensation = configKeys.includes('ApplyCompensation')
+      this.batchShowAllKeys = false
+      this.batchComment = ''
+
+      this.updateBatchDialogContent()
+      this.batchDialogVisible = true
+    },
+    updateBatchDialogContent() {
+      let content = ''
+
+      if (this.batchHasApplyCompensation) {
+        content = `选中记录的申请金额总和为: ${this.batchTotalAmount.toFixed(2)}`
+      }
+
+      if (this.batchConfigKeys.length > 0) {
+        if (content) {
+          content += '<br/><br/>'
+        }
+
+        content += `共选择了 ${this.batchIds.length} 条记录进行批量审核`
+        content += `<br/>涉及 ${this.batchConfigKeys.length} 个不同的配置类型`
+
+        if (this.batchShowAllKeys) {
+          content += `：<br/>${this.batchConfigKeys.map((key, index) => `${index + 1}. ${key}`).join('<br/>')}`
+        } else {
+          const displayKeys = this.batchConfigKeys.slice(0, this.maxDisplayConfigKeys)
+          const moreCount = this.batchConfigKeys.length > this.maxDisplayConfigKeys ? this.batchConfigKeys.length - this.maxDisplayConfigKeys : 0
+          if (this.batchConfigKeys.length <= this.maxDisplayConfigKeys) {
+            content += `<br/>配置类型：${displayKeys.join(', ')}`
+          } else {
+            content += `<br/>前${this.maxDisplayConfigKeys}个配置类型：${displayKeys.join(', ')}...等${moreCount}个`
+          }
+        }
+      }
+
+      this.batchDialogContent = content
+    },
+    toggleShowAllKeys() {
+      this.batchShowAllKeys = !this.batchShowAllKeys
+      this.updateBatchDialogContent()
+    },
+    handleBatchConfirm() {
+      if (!this.batchComment || this.batchComment.trim() === '') {
+        this.$message.warning('审批意见不能为空')
+        return
+      }
+
+      const comment = this.batchComment.trim()
+      this.batchIds.forEach((id) => {
+        this.edit.item.ID = id
+        this.edit.item.Comment = comment
+        this.doPassRequest(1, '审核已通过！')
+      })
+
+      this.batchDialogVisible = false
+    },
+    handleBatchCancel() {
+      if (!this.batchComment || this.batchComment.trim() === '') {
+        this.$message.warning('审批意见不能为空')
+        return
+      }
+
+      const comment = this.batchComment.trim()
+      this.batchIds.forEach((id) => {
+        this.edit.item.ID = id
+        this.edit.item.Comment = comment
+        this.doPassRequest(2, '申请已打回！')
+      })
+
+      this.batchDialogVisible = false
     },
     doPassRequest(iType, succMsg) {
       const postData = this.getPostData(iType)
-      console.log('11111', postData)
       if (!postData) return
       request({
         url: '/reviewV2/pass',
@@ -531,16 +615,16 @@ export default {
         url: '/reviewV2/process',
         method: 'get',
         data: {
-          Env:this.env,
+          Env: this.env,
           ReviewID: reviewID,
-          ApplyCompensationEnv:this.applyCompensationEnv,
+          ApplyCompensationEnv: this.applyCompensationEnv
         },
         envEmpty: this.edit.item.EnvEmpty === 1
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data
           if (objs != null) {
-            this.edit.actions=[]
+            this.edit.actions = []
             for (let i = objs.length - 1; i >= 0; i--) {
               const ob = {
                 UserName: objs[i].UserName,
