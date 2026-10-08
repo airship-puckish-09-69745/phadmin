@@ -352,7 +352,7 @@
       </div>
     </el-dialog>
 
-    <CocosRichTextEditor
+    <RichTextEditor
       :visible.sync="richTextEditorVisible"
       :initial-content="item.taskText"
       @confirm="handleRichTextConfirm"
@@ -372,7 +372,7 @@ import { PROP_TYPE_OPTIONS } from '@/utils/options'
 import store from '@/store'
 import { GetPropConfigListFromCache, GetMatchTicketRightsId } from '@/utils/propV2'
 import { USER_TYPE_VALUES } from '@/components/UserType/config'
-import CocosRichTextEditor from '@/components/CocosRichTextEditor/index.vue'
+import RichTextEditor from '@/components/RichTextEditor/index.vue'
 import { ToRawHtml } from '@/utils/common'
 
 const GAME_TYPE = 2 // Poker
@@ -446,7 +446,7 @@ function newItem() {
 
 export default {
   name: 'PokerForm',
-  components: { GameSelector, WhitelistConfig, UserTypeUnit, CocosRichTextEditor },
+  components: { GameSelector, WhitelistConfig, UserTypeUnit, RichTextEditor },
   props: {
     visible: { type: Boolean, default: false },
     isEdit: { type: Boolean, default: false },
