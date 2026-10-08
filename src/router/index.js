@@ -1289,6 +1289,12 @@ export const asyncRoutes = [
                 meta: { title: 'A rcaneEgypt' }
               },
               {
+                path: 'bernardocarpio_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/bernardocarpio_slots_cfg'),
+                name: 'bernardocarpio_slots_cfg',
+                meta: { title: 'B ernardoCarpio', gameKey: 'bernardocarpio' }
+              },
+              {
                 path: 'bountyraid_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/bountyraid_slots_cfg'),
                 name: 'bountyraid_slots_cfg',
@@ -3296,6 +3302,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'arcaneegypt_slots_log',
             meta: { title: 'A rcaneEgypt', gid: 190 }
+          },
+          {
+            path: 'bernardocarpio_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'bernardocarpio_slots_log',
+            meta: { title: 'B ernardoCarpio', gid: 255 }
           },
           {
             path: 'bountyraid_slots_log',
