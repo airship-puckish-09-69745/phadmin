@@ -22,7 +22,7 @@
       <el-form-item label="内容" required>
         <el-input v-model="formData.Content" type="textarea" style="width: 360px;" />
         <template>
-          <button @click="goToExternalSite">预览</button>
+          <button @click="goToRichTextSite">预览</button>
         </template>
       </el-form-item>
       <el-form-item v-if="formData.BroadcastType === 1" label="播报来源" required>
@@ -65,6 +65,8 @@
 // import request from '@/utils/request'
 
 import store from '@/store'
+import { goToRichTextSite } from '@/utils/open-window'
+
 export default {
   props: {
     appId: {
@@ -155,6 +157,7 @@ export default {
     }
   },
   methods: {
+    goToRichTextSite,
     /**
      * 校验表单数据
      */
@@ -178,8 +181,8 @@ export default {
       }
 
       if (this.formData.BroadcastType === 4) {
-        let nCount = this.handleContentLength(this.formData.Content)
-        let diffCount = this.formData.Content.length - nCount
+        const nCount = this.handleContentLength(this.formData.Content)
+        const diffCount = this.formData.Content.length - nCount
         if (diffCount > 200) {
           this.$message.warning('内容不能超过200!')
           return false
@@ -331,8 +334,8 @@ export default {
           this.formData.Content = ''
           const currTime = new Date()
           currTime.setHours(0, 0, 0, 0)
-          let startTime = currTime.getTime()
-          let endTime = startTime + 24 * 60 * 60 * 1000 * 7 - 1000
+          const startTime = currTime.getTime()
+          const endTime = startTime + 24 * 60 * 60 * 1000 * 7 - 1000
           this.formData.BroadcastTimeRange = [startTime, endTime]
         }
       } else {
@@ -342,28 +345,25 @@ export default {
         this.formData.Content = ''
         if (this.formData.Content.length === 0) {
           if (this.formData.BroadcastType === 1) {
-            const textString = `<size=36><b><outline color=#2553B3 width=3>Congratulations the <color=#FFFC00>__name__</color> to get the <color=#00FFD2>__rank__</color> in <color=#FFFC00>__title__</color> with <color=#FFFC00>__rewards__</color>!</outline></b></size>`;
+            const textString = `<size=36><b><outline color=#2553B3 width=3>Congratulations the <color=#FFFC00>__name__</color> to get the <color=#00FFD2>__rank__</color> in <color=#FFFC00>__title__</color> with <color=#FFFC00>__rewards__</color>!</outline></b></size>`
             this.formData.Content = textString
           } else if (this.formData.BroadcastType === 2) {
-            const textString = `<size=36><b><outline color=#2553B3 width=3>Congratulations to <color=#FFFC00>__name__</color> on winning the jackpot <color=#00FFD2>__extraJackpotType__</color> of <color=#FFFC00>__rewards__</color>!</outline></b></size>`;
+            const textString = `<size=36><b><outline color=#2553B3 width=3>Congratulations to <color=#FFFC00>__name__</color> on winning the jackpot <color=#00FFD2>__extraJackpotType__</color> of <color=#FFFC00>__rewards__</color>!</outline></b></size>`
             this.formData.Content = textString
           }
         }
       }
     },
     handleContentLength(str) {
-      const matches = str.match(/<[^>]+>/g);
+      const matches = str.match(/<[^>]+>/g)
       if (!matches) {
         return 0
       }
-      let totalLength = 0;
+      let totalLength = 0
       matches.forEach(match => {
-        totalLength += match.length; // 减去<和>的长度
-      });
-      return totalLength;
-    },
-    goToExternalSite() {
-      window.open('http://192.168.6.69:4000/', '_blank');
+        totalLength += match.length // 减去<和>的长度
+      })
+      return totalLength
     }
   }
 }

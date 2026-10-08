@@ -179,40 +179,9 @@
             <el-form-item label="活动人物图片：" :required="true">
               <ImagePicker v-model="editItem.userUrl" />
             </el-form-item>
-            <el-form-item label="png图片：" :required="true">
-              <ImagePicker v-model="editItem.pngUrl" />
+            <el-form-item label="压缩包链接" required>
+              <el-input v-model.trim="editItem.zipUtrl" show-word-limit />
             </el-form-item>
-            <el-form-item label="json文件：" :required="true">
-              <el-upload
-                ref="freeBuyJsonUpload"
-                :action="uploadActionURL"
-                :show-file-list="false"
-                accept=".json,.txt,text/plain,application/json"
-                :with-credentials="true"
-                :before-upload="file => handleTextAssetBeforeUpload(file, ['json', 'txt'], 'JSON')"
-                :on-success="response => handleTextAssetUploadSuccess(response, 'jsonUrl', 'JSON', 'freeBuyJsonUpload')"
-                :on-error="() => handleTextAssetUploadError('JSON')"
-              >
-                <el-button size="mini" type="primary">上传 JSON 文件</el-button>
-              </el-upload>
-              <div v-if="editItem.jsonUrl" class="upload-path-text">{{ editItem.jsonUrl }}</div>
-            </el-form-item>
-            <el-form-item label="atlas文件：" :required="true">
-              <el-upload
-                ref="freeBuyAtlasUpload"
-                :action="uploadActionURL"
-                :show-file-list="false"
-                accept=".atlas,.txt,text/plain"
-                :with-credentials="true"
-                :before-upload="file => handleTextAssetBeforeUpload(file, ['atlas', 'txt'], 'ATLAS')"
-                :on-success="response => handleTextAssetUploadSuccess(response, 'atlasUrl', 'ATLAS', 'freeBuyAtlasUpload')"
-                :on-error="() => handleTextAssetUploadError('ATLAS')"
-              >
-                <el-button size="mini" type="primary">上传 ATLAS 文件</el-button>
-              </el-upload>
-              <div v-if="editItem.atlasUrl" class="upload-path-text">{{ editItem.atlasUrl }}</div>
-            </el-form-item>
-
             <el-form-item label="参与用户类型" required>
               <el-select
                 v-model="editItem.userTypes"
@@ -538,9 +507,7 @@ function newActivity(id = 0) {
     debugTimeOffset: 0,
     bgUrl: '',
     userUrl: '',
-    pngUrl: '',
-    jsonUrl: '',
-    atlasUrl: '',
+    zipUtrl: '',
     abTest: {
       switch: false,
       bPercent: 0
@@ -634,7 +601,7 @@ export default {
       return [50002, 50003, 50005, 50006, 50043].includes(Number(this.userTagDraft.tagId))
     },
     uploadActionURL() {
-      return process.env.VUE_APP_BASE_API + '/other/upload'
+      return process.env.VUE_APP_BASE_API + '/file/upload'
     }
   },
   created() {
@@ -1075,9 +1042,7 @@ export default {
         userTagConfig: data.userTagConfig,
         bgUrl: data.bgUrl || '',
         userUrl: data.userUrl || '',
-        pngUrl: data.pngUrl || '',
-        jsonUrl: data.jsonUrl || '',
-        atlasUrl: data.atlasUrl || ''
+        zipUtrl: data.zipUtrl || ''
       }
       return {
         id: data.id,

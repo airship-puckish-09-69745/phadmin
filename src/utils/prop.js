@@ -17,7 +17,7 @@ export const SLOT_GAME_CONFIG = [
   // {'value': 164, 'label': 'Mahjong Fortune', 'configKey':'',disabled: false },
 ]
 
-// 下注类游戏 //shareBet是否共用下注amount
+// 下注类游戏
 export const BETTING_GAME_CONFIG = [
   { 'value': 20, 'label': '扫雷(sweeper)', 'configKey': 'gameSweeper', disabled: false,"shareBet":true },
   { 'value': 132, 'label': 'Mines Magic', 'configKey': 'gameSweeper', disabled: false,"shareBet":true  },
@@ -46,7 +46,6 @@ export const MATCH_TICKET_RIGHTS_ID_CFG_DEV = {
     { 'ticketId': 646, 'sceneId': 211, 'label': 'Tongits-646门票P10 ' },
     { 'ticketId': 648, 'sceneId': 212, 'label': 'Pusoy-648门票P10 ' },
 
-
     { 'ticketId': 656, 'sceneId': 213, 'label': 'S6第一周积分赛门票' },
     { 'ticketId': 657, 'sceneId': 214, 'label': 'S6第二周积分赛门票 ' },
     { 'ticketId': 658, 'sceneId': 215, 'label': 'S6第三周积分赛门票 ' },
@@ -69,6 +68,15 @@ export const MATCH_TICKET_RIGHTS_ID_CFG_UAT = {
     { 'ticketId': 613, 'sceneId': 200, 'label': 'Tongits新版门票 带唯一ID-614'  },
     { 'ticketId': 614, 'sceneId': 201, 'label': 'Pusoy新版门票 带唯一ID-614'  },
     { 'ticketId': 615, 'sceneId': 202, 'label': 'Poker新版门票 带唯一ID-615'  },
+    //s6赛事门票
+    { 'ticketId': 667, 'sceneId': 203, 'label': 'S6日赛门票w1'  },
+    { 'ticketId': 668, 'sceneId': 203, 'label': 'S6日赛门票w2'  },
+    { 'ticketId': 669, 'sceneId': 203, 'label': 'S6日赛门票w3'  },
+    { 'ticketId': 670 , 'sceneId': 203, 'label': 'S6日赛门票w4'  },
+    { 'ticketId': 671, 'sceneId': 203, 'label': 'S6日赛门票w5'  },
+    { 'ticketId': 666, 'sceneId': 203, 'label': 'S6半决赛门票'  },
+    { 'ticketId': 672, 'sceneId': 203, 'label': 'S6决赛邀请函'  },
+
   ],
   1000003: [ // PROP_TYPE_TICKET_NEW
     { 'ticketId': 322, 'sceneId': 200, 'label': 'Tongits新版门票 带唯一ID-322'  },
@@ -89,13 +97,14 @@ export const MATCH_TICKET_RIGHTS_ID_CFG_UAT = {
     { 'ticketId':519 , 'sceneId': 221, 'label': 'UAT-Pusoy'  },
     { 'ticketId':522 , 'sceneId': 222, 'label': 'UAT-Texas'  },
 
-    { 'ticketId':595 , 'sceneId': 223, 'label': 'S5 Daily Ticket Week 1'  },
-    { 'ticketId':596 , 'sceneId': 224, 'label': 'S5 Daily Ticket Week 2'  },
-    { 'ticketId':597 , 'sceneId': 225, 'label': 'S5 Daily Ticket Week 3'  },
-    { 'ticketId':598 , 'sceneId': 226, 'label': 'S5 Daily Ticket Week 4'  },
-    { 'ticketId':599 , 'sceneId': 227, 'label': 'S5 Daily Ticket Week 5'  },
-    { 'ticketId':600 , 'sceneId': 228, 'label': 'S5 Semi-Finals Ticket'  },
-    { 'ticketId':601 , 'sceneId': 229, 'label': 'S5 Grand Finals Invitation'  },
+    //s6赛事门票
+    { 'ticketId': 644, 'sceneId': 230, 'label': 'S6日赛门票w1'  },
+    { 'ticketId': 645, 'sceneId': 231, 'label': 'S6日赛门票w2'  },
+    { 'ticketId': 646, 'sceneId': 232, 'label': 'S6日赛门票w3'  },
+    { 'ticketId': 647, 'sceneId': 233, 'label': 'S6日赛门票w4'  },
+    { 'ticketId': 648, 'sceneId': 234, 'label': 'S6日赛门票w5'  },
+    { 'ticketId': 642, 'sceneId': 235, 'label': 'S6半决赛门票'  },
+    { 'ticketId': 643, 'sceneId': 236, 'label': 'S6决赛邀请函'  },
 
   ],
 }
@@ -107,13 +116,14 @@ export const MATCH_TICKET_RIGHTS_ID_CFG_PROD = {
     { 'ticketId': 355, 'sceneId': 201, 'label': '新版Pusy门票-1000002' },
     { 'ticketId': 521, 'sceneId': 202, 'label': '新版德州门票UAT用-1000002' },
 
-    { 'ticketId': 602, 'sceneId': 203, 'label': 'tongits 内部正式S5日赛门票w1' },
-    { 'ticketId': 603, 'sceneId': 204, 'label': 'tongits 内部正式S5日赛门票w2' },
-    { 'ticketId': 604, 'sceneId': 205, 'label': 'tongits 内部正式S5日赛门票w3' },
-    { 'ticketId': 605, 'sceneId': 206, 'label': 'tongits 内部正式S5日赛门票w4' },
-    { 'ticketId': 606, 'sceneId': 207, 'label': 'tongits 内部正式S5日赛门票w5' },
-    { 'ticketId': 607, 'sceneId': 208, 'label': 'tongits 内部正式S5半决赛门票' },
-   { 'ticketId': 608, 'sceneId': 209, 'label': 'tongits 内部正式S5决赛邀请函' },
+    //s6赛事门票
+    { 'ticketId': 675, 'sceneId': 210, 'label': 'S6日赛门票w1'  },
+    { 'ticketId': 676, 'sceneId': 211, 'label': 'S6日赛门票w2'  },
+    { 'ticketId': 677, 'sceneId': 212, 'label': 'S6日赛门票w3'  },
+    { 'ticketId': 678, 'sceneId': 213, 'label': 'S6日赛门票w4'  },
+    { 'ticketId': 679, 'sceneId': 214, 'label': 'S6日赛门票w5'  },
+    { 'ticketId': 674, 'sceneId': 215, 'label': 'S6半决赛门票'  },
+    { 'ticketId': 673, 'sceneId': 216, 'label': 'S6决赛邀请函'  },
 
   ],
   1000005: [
@@ -154,13 +164,14 @@ export const MATCH_TICKET_RIGHTS_ID_CFG_PROD = {
     { 'ticketId': 544, 'sceneId': 231, 'label': 'Texas' },
     { 'ticketId': 545, 'sceneId': 232, 'label': 'Texas' },
 
-    { 'ticketId':582 , 'sceneId': 233, 'label': 'S5 Daily Ticket Week 1'  },
-    { 'ticketId':583 , 'sceneId': 234, 'label': 'S5 Daily Ticket Week 2'  },
-    { 'ticketId':584 , 'sceneId': 235, 'label': 'S5 Daily Ticket Week 3'  },
-    { 'ticketId':585 , 'sceneId': 236, 'label': 'S5 Daily Ticket Week 4'  },
-    { 'ticketId':586 , 'sceneId': 237, 'label': 'S5 Daily Ticket Week 5'  },
-    { 'ticketId':587 , 'sceneId': 238, 'label': 'S5 Semi-Finals Ticket'  },
-    { 'ticketId':588 , 'sceneId': 239, 'label': 'S5 Grand Finals Invitation'  },
+    //s6赛事门票
+    { 'ticketId': 682, 'sceneId': 240, 'label': 'S6日赛门票w1'  },
+    { 'ticketId': 683, 'sceneId': 241, 'label': 'S6日赛门票w2'  },
+    { 'ticketId': 684, 'sceneId': 242, 'label': 'S6日赛门票w3'  },
+    { 'ticketId': 685 , 'sceneId':243, 'label': 'S6日赛门票w4'  },
+    { 'ticketId': 686, 'sceneId': 244, 'label': 'S6日赛门票w5'  },
+    { 'ticketId': 650, 'sceneId': 245, 'label': 'S6半决赛门票'  },
+    { 'ticketId': 680, 'sceneId': 246, 'label': 'S6决赛邀请函'  },
   ],
 }
 
