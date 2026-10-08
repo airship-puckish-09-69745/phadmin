@@ -23,3 +23,7 @@ export default function openWindow(url, title, w, h) {
   }
 }
 
+export function goToRichTextSite() {
+  window.open('http://192.168.6.69:4000/', '_blank')
+}
+
