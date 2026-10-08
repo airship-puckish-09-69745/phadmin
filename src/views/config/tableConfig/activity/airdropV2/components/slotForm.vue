@@ -235,7 +235,7 @@
       </div>
     </el-dialog>
 
-    <CocosRichTextEditor
+    <RichTextEditor
       :visible.sync="richTextEditorVisible"
       :initial-content="item.taskText"
       @confirm="handleRichTextConfirm"
@@ -252,7 +252,7 @@ import WhitelistConfig from '@/components/WhitelistConfig/index.vue'
 import UserTypeUnit from '@/components/UserType/index.vue'
 import { ACTIVITY_ID } from '../index.vue'
 import { GetPropConfigListFromCache } from '@/utils/propV2'
-import CocosRichTextEditor from '@/components/CocosRichTextEditor/index.vue'
+import RichTextEditor from '@/components/RichTextEditor/index.vue'
 
 const GAME_TYPE = 1 // Slot
 const MAX_DEBUG_TIME_OFFSET = 30 * 24 * 60 * 60
@@ -309,7 +309,7 @@ function newItem() {
 
 export default {
   name: 'SlotForm',
-  components: { CocosRichTextEditor, GameSelector, WhitelistConfig, UserTypeUnit },
+  components: { RichTextEditor, GameSelector, WhitelistConfig, UserTypeUnit },
   props: {
     visible: { type: Boolean, default: false },
     isEdit: { type: Boolean, default: false },

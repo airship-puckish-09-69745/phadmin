@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    title="Cocos RichText 富文本编辑器"
+    title="富文本编辑器"
     :visible.sync="dialogVisible"
     width="800px"
     top="5vh"
