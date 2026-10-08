@@ -1,350 +1,364 @@
 <template>
-  <el-dialog
-    title="Poker 空投活动"
-    :visible.sync="dialogVisible"
-    :close-on-click-modal="false"
-    :close-on-press-escape="false"
-    width="80%"
-    top="3vh"
-    append-to-body
-    @close="handleDialogClose"
-  >
-    <el-tabs v-model="activeTab" type="border-card">
-      <!-- ======================== 活动配置 ======================== -->
-      <el-tab-pane label="活动配置" name="activity">
-        <el-form ref="activityForm" :model="item" label-width="180px" size="small">
-          <el-row :gutter="20">
-            <el-col :span="24">
-              <el-form-item label="活动名称：" required>
-                <el-input v-model="item.activityName" placeholder="请输入活动名称" style="max-width: 500px" />
-              </el-form-item>
-            </el-col>
-            <el-col :xs="24">
-              <el-form-item label="活动开关：">
-                <el-switch v-model="item.isOpen" :active-value="true" :inactive-value="false" />
-              </el-form-item>
-            </el-col>
+  <div>
+    <el-dialog
+      title="Poker 空投活动"
+      :visible.sync="dialogVisible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      width="80%"
+      top="3vh"
+      append-to-body
+      @close="handleDialogClose"
+    >
+      <el-tabs v-model="activeTab" type="border-card">
+        <!-- ======================== 活动配置 ======================== -->
+        <el-tab-pane label="活动配置" name="activity">
+          <el-form ref="activityForm" :model="item" label-width="180px" size="small">
+            <el-row :gutter="20">
+              <el-col :span="24">
+                <el-form-item label="活动名称：" required>
+                  <el-input v-model="item.activityName" placeholder="请输入活动名称" style="max-width: 500px" />
+                </el-form-item>
+              </el-col>
+              <el-col :xs="24">
+                <el-form-item label="活动开关：">
+                  <el-switch v-model="item.isOpen" :active-value="true" :inactive-value="false" />
+                </el-form-item>
+              </el-col>
 
-            <!-- 时间配置 -->
-            <el-col :xs="24" :sm="12">
-              <el-form-item label="活动开始时间：" required>
-                <el-date-picker v-model="item.startTime" type="datetime" placeholder="选择开始时间" value-format="timestamp" style="width: 280px" />
-              </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12">
-              <el-form-item label="活动结束时间：" required>
-                <el-date-picker v-model="item.endTime" type="datetime" placeholder="选择结束时间" value-format="timestamp" style="width: 280px" />
-              </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12">
-              <el-form-item label="展示结束时间：" required>
-                <el-date-picker v-model="item.showEndTime" type="datetime" placeholder="选择展示结束时间" value-format="timestamp" style="width: 280px" />
-              </el-form-item>
-            </el-col>
+              <!-- 时间配置 -->
+              <el-col :xs="24" :sm="12">
+                <el-form-item label="活动开始时间：" required>
+                  <el-date-picker v-model="item.startTime" type="datetime" placeholder="选择开始时间" value-format="timestamp" style="width: 280px" />
+                </el-form-item>
+              </el-col>
+              <el-col :xs="24" :sm="12">
+                <el-form-item label="活动结束时间：" required>
+                  <el-date-picker v-model="item.endTime" type="datetime" placeholder="选择结束时间" value-format="timestamp" style="width: 280px" />
+                </el-form-item>
+              </el-col>
+              <el-col :xs="24" :sm="12">
+                <el-form-item label="展示结束时间：" required>
+                  <el-date-picker v-model="item.showEndTime" type="datetime" placeholder="选择展示结束时间" value-format="timestamp" style="width: 280px" />
+                </el-form-item>
+              </el-col>
 
-            <el-col :xs="24" :sm="12">
-              <el-form-item label="调试时间偏移(秒)：">
-                <el-input v-model.number="item.debugTimeOffset" placeholder="请输入" style="max-width: 200px" />
-              </el-form-item>
-            </el-col>
-          </el-row>
+              <el-col :xs="24" :sm="12">
+                <el-form-item label="调试时间偏移(秒)：">
+                  <el-input v-model.number="item.debugTimeOffset" placeholder="请输入" style="max-width: 200px" />
+                </el-form-item>
+              </el-col>
+            </el-row>
 
-          <!-- 玩法类型（只读） -->
-          <el-row>
-            <el-col :span="24">
-              <el-form-item label="玩法大类型：">
-                <el-tag type="success" size="medium">Poker</el-tag>
-              </el-form-item>
-            </el-col>
-          </el-row>
+            <!-- 玩法类型（只读） -->
+            <el-row>
+              <el-col :span="24">
+                <el-form-item label="玩法大类型：">
+                  <el-tag type="success" size="medium">Poker</el-tag>
+                </el-form-item>
+              </el-col>
+            </el-row>
 
-          <!-- 任务文本（任务类型/条件已移至奖励配置）-->
-          <el-row :gutter="20">
-            <el-col :span="24">
-              <el-form-item label="任务文本：">
-                <el-input v-model="item.taskText" placeholder="请输入" style="max-width: 400px" />
-              </el-form-item>
-            </el-col>
-          </el-row>
+            <!-- 任务文本（任务类型/条件已移至奖励配置）-->
+            <el-row :gutter="20">
+              <el-col :span="24">
+                <el-form-item label="任务文本：">
+                  <el-input v-model="item.taskText" type="textarea" placeholder="请输入" style="max-width: 400px" />
+                  <div style="margin-top: 8px">
+                    <el-button size="mini" type="primary" icon="el-icon-edit-outline" @click="richTextEditorVisible = true">
+                      打开富文本编辑器
+                    </el-button>
+                  </div>
+                </el-form-item>
+              </el-col>
+            </el-row>
 
-          <!-- 勾选游戏 -->
-          <el-row>
-            <el-col :span="24">
-              <GameSelector
-                v-model="item.gameIdList"
-                label="Poker游戏："
-                :category-ids="[2]"
-                :game-ids="[23,22,15,21,34,28,29,126,134]"
+            <!-- 勾选游戏 -->
+            <el-row>
+              <el-col :span="24">
+                <GameSelector
+                  v-model="item.gameIdList"
+                  label="Poker游戏："
+                  :category-ids="[2]"
+                  :game-ids="[23,22,15,21,34,28,29,126,134]"
+                />
+              </el-col>
+            </el-row>
+
+            <!-- 白名单配置 -->
+            <!--1. AppId白名单 2. SiteId白名单 3. ABTest开关 4. UID白名单-->
+            <WhitelistConfig v-model="item.whitelist" :features="[2, 3]" />
+            <!-- 参与活动用户类型：poker 标签用户支持 poker新增用户/poker下注/poker额度 -->
+            <UserTypeUnit
+              v-model="item.userConfig"
+              :activity-cfg-id="item.id"
+              :activity-id="item.activityId"
+              :level-tag-ids="[]"
+              :user-type-options="pokerUserTypeOptions"
+            />
+          </el-form>
+        </el-tab-pane>
+
+        <!-- ======================== 奖励配置（Poker - 道具奖励 + 投注金奖励）======================== -->
+        <el-tab-pane label="奖励配置" name="reward">
+          <!-- ---------- 道具奖励（进度奖励列表） ---------- -->
+          <fieldset style="margin-bottom: 20px">
+            <legend style="display: flex; align-items: center; gap: 10px">
+              <b>道具奖励</b>
+              <el-tag size="mini" type="info" effect="plain">可选</el-tag>
+              <el-switch
+                v-model="item.enableProgressPrize"
+                active-text="启用"
+                inactive-text="不配置"
+                @change="onProgressPrizeEnabledChange"
               />
-            </el-col>
-          </el-row>
+            </legend>
+            <div v-if="!item.enableProgressPrize" style="margin-bottom: 8px; color: #909399; font-size: 12px">
+              已标记为不配置道具奖励，仅保存投注金奖励配置。
+            </div>
 
-          <!-- 白名单配置 -->
-          <!--1. AppId白名单 2. SiteId白名单 3. ABTest开关 4. UID白名单-->
-          <WhitelistConfig v-model="item.whitelist" :features="[2, 3]" />
-          <!-- 参与活动用户类型：poker 标签用户支持 poker新增用户/poker下注/poker额度 -->
-          <UserTypeUnit
-            v-model="item.userConfig"
-            :activity-cfg-id="item.id"
-            :activity-id="item.activityId"
-            :level-tag-ids="[]"
-            :user-type-options="pokerUserTypeOptions"
-          />
-        </el-form>
-      </el-tab-pane>
-
-      <!-- ======================== 奖励配置（Poker - 道具奖励 + 投注金奖励）======================== -->
-      <el-tab-pane label="奖励配置" name="reward">
-        <!-- ---------- 道具奖励（进度奖励列表） ---------- -->
-        <fieldset style="margin-bottom: 20px">
-          <legend style="display: flex; align-items: center; gap: 10px">
-            <b>道具奖励</b>
-            <el-tag size="mini" type="info" effect="plain">可选</el-tag>
-            <el-switch
-              v-model="item.enableProgressPrize"
-              active-text="启用"
-              inactive-text="不配置"
-              @change="onProgressPrizeEnabledChange"
-            />
-          </legend>
-          <div v-if="!item.enableProgressPrize" style="margin-bottom: 8px; color: #909399; font-size: 12px">
-            已标记为不配置道具奖励，仅保存投注金奖励配置。
-          </div>
-
-          <el-table :data="[item.propPools]" border size="small" style="width: 100%">
-            <el-table-column label="任务类型" min-width="140" align="center">
-              <template slot-scope="scope">
-                <el-select v-model="scope.row.taskType" placeholder="请选择" style="width: 220px" :disabled="!item.enableProgressPrize">
-                  <el-option v-for="opt in pokerTaskTypes" :key="opt.value" :label="opt.label" :value="opt.value" />
-                </el-select>
-              </template>
-            </el-table-column>
-            <el-table-column label="进度要求" min-width="120" align="center">
-              <template slot-scope="scope">
-                <el-input
-                  v-model.number="scope.row.taskCondition"
-                  :placeholder="progressPlaceholder"
-                  size="mini"
-                  :disabled="!item.enableProgressPrize"
-                  oninput="if(value<0||value===''){value=0}"
-                />
-              </template>
-            </el-table-column>
-            <el-table-column label="道具类型" min-width="140" align="center">
-              <template slot-scope="scope">
-                <el-select v-model="scope.row.propType" placeholder="请选择" size="mini" :disabled="!item.enableProgressPrize" @change="onPropTypeChange(scope.row, scope.$index)">
-                  <el-option v-for="opt in propTypeOptions" :key="opt.value" :label="opt.label" :value="opt.value" />
-                </el-select>
-              </template>
-            </el-table-column>
-            <el-table-column label="道具名称" min-width="160" align="center">
-              <template slot-scope="scope">
-                <el-select v-model="scope.row.propId" placeholder="请选择" size="mini" :disabled="!item.enableProgressPrize" @change="onPropNameChange(scope.row, scope.$index)">
-                  <el-option v-for="opt in propOptionsMap[scope.$index] || []" :key="opt.value" :label="opt.label" :value="opt.value" />
-                </el-select>
-              </template>
-            </el-table-column>
-            <el-table-column label="可用时间" min-width="120" align="center">
-              <template slot-scope="scope">
-                <el-select v-model="scope.row.propTime" placeholder="请选择" size="mini" :disabled="!item.enableProgressPrize">
-                  <el-option v-for="opt in propDayTypeOptions" :key="opt.value" :label="opt.label" :value="opt.value" />
-                </el-select>
-              </template>
-            </el-table-column>
-            <el-table-column label="道具数量" min-width="100" align="center">
-              <template slot-scope="scope">
-                <el-input
-                  v-model.number="scope.row.propNum"
-                  placeholder="数量"
-                  size="mini"
-                  :disabled="!item.enableProgressPrize"
-                  oninput="if(value<0||value===''){value=0}"
-                />
-              </template>
-            </el-table-column>
-            <el-table-column label="道具上限" min-width="100" align="center">
-              <template slot-scope="scope">
-                <el-input
-                  v-model.number="scope.row.propLimit"
-                  placeholder="上限"
-                  size="mini"
-                  :disabled="!item.enableProgressPrize"
-                  oninput="if(value<0||value===''){value=0}"
-                />
-              </template>
-            </el-table-column>
-          </el-table>
-        </fieldset>
-
-        <!-- ---------- 投注金奖励（阶梯配置）---------- -->
-        <fieldset>
-          <legend style="display: flex; align-items: center; gap: 10px">
-            <b>投注金奖励</b>
-            <el-tag size="mini" type="info" effect="plain">可选</el-tag>
-            <el-switch
-              v-model="item.enableBetMoneyPrize"
-              active-text="启用"
-              inactive-text="不配置"
-              @change="onBetMoneyPrizeEnabledChange"
-            />
-          </legend>
-          <div v-if="!item.enableBetMoneyPrize" style="margin-bottom: 8px; color: #909399; font-size: 12px">
-            已标记为不配置投注金奖励。
-          </div>
-          <!--          <div v-if="item.enableBetMoneyPrize" style="margin-bottom: 12px; padding: 10px; background-color: #f0f9ff; border-left: 4px solid #409eff; font-size: 13px">-->
-          <!--            <div style="margin-bottom: 5px"><strong>说明：</strong></div>-->
-          <!--            <div style="color: #606266; line-height: 1.6">-->
-          <!--              • <strong>总奖励</strong>：活动奖励池总额<br>-->
-          <!--              • <strong>已发奖励</strong>：已经发放的奖励金额（由后端自动更新，只读）<br>-->
-          <!--              • <strong>任务条件</strong>：用户投注金额需达到此值才能参与奖励<br>-->
-          <!--              • <strong>奖励阶梯</strong>：根据用户积分区间和系数范围计算实际奖励，每个阶梯设定不同的奖励上限-->
-          <!--            </div>-->
-          <!--          </div>-->
-          <div style="margin-bottom: 12px">
-            <el-button
-              size="small"
-              type="primary"
-              icon="el-icon-plus"
-              :disabled="!item.enableBetMoneyPrize || item.pokerBetMoney.rewardTiers.length >= 20"
-              @click="addPokerBetMoneyTier"
-            >
-              添加阶梯（最多20行）
-            </el-button>
-            <span style="margin-left: 12px; color: #909399; font-size: 13px">
-              当前 {{ item.pokerBetMoney.rewardTiers.length }} 行，最少1行，最多20行
-            </span>
-          </div>
-          <el-table
-            :data="item.pokerBetMoney.rewardTiers"
-            border
-            size="small"
-            style="width: 100%"
-            :span-method="pokerBetMoneySpanMethod"
-          >
-            <!-- 任务类型 -->
-            <el-table-column label="任务类型" min-width="150" align="center">
-              <template slot-scope="_">
-                <el-select v-model="item.pokerBetMoney.taskType" placeholder="请选择" style="width: 220px" :disabled="!item.enableBetMoneyPrize">
-                  <el-option v-for="opt in pokerTaskTypes" :key="opt.value" :label="opt.label" :value="opt.value" />
-                </el-select>
-              </template>
-            </el-table-column>
-
-            <!-- 总奖励 -->
-            <el-table-column label="总奖励(₱)" min-width="80" align="center">
-              <template slot-scope="_">
-                <el-input
-                  v-model.number="item.pokerBetMoney.totalReward"
-                  placeholder="总奖励"
-                  size="mini"
-                  :disabled="!item.enableBetMoneyPrize"
-                  oninput="if(value<0||value===''){value=0}"
-                />
-              </template>
-            </el-table-column>
-            <!-- 任务条件 -->
-            <el-table-column label="任务条件" min-width="80" align="center">
-              <template slot-scope="_">
-                <el-input
-                  v-model.number="item.pokerBetMoney.taskCondition"
-                  placeholder="请输入"
-                  size="mini"
-                  :disabled="!item.enableBetMoneyPrize"
-                  oninput="if(value<0||value===''){value=0}"
-                />
-              </template>
-            </el-table-column>
-            <!-- 已发奖励（只读，由后端实时更新）-->
-            <el-table-column label="已发奖励(₱)" min-width="80" align="center">
-              <template slot-scope="_">
-                <el-input :value="formatIssuedReward(item.pokerBetMoney.issuedReward)"  size="mini" disabled />
-              </template>
-            </el-table-column>
-
-            <el-table-column label="积分区间开始" min-width="80" align="center">
-              <template slot-scope="scope">
-                <el-input
-                  v-model.number="scope.row.minScore"
-                  placeholder="起始积分"
-                  size="mini"
-                  :disabled="!item.enableBetMoneyPrize"
-                  oninput="if(value<0||value===''){value=0}"
-                />
-              </template>
-            </el-table-column>
-            <el-table-column label="积分区间结束" min-width="80" align="center">
-              <template slot-scope="scope">
-                <el-input
-                  v-model.number="scope.row.maxScore"
-                  placeholder="结束积分"
-                  size="mini"
-                  :disabled="!item.enableBetMoneyPrize"
-                  oninput="if(value<0||value===''){value=0}"
-                />
-              </template>
-            </el-table-column>
-            <el-table-column label="系数区间开始" min-width="80" align="center">
-              <template slot-scope="scope">
-                <div style="display: flex; align-items: center; flex-wrap: nowrap;">
-                <el-input
-                  v-model="scope.row.minCoefficient"
-                  placeholder="如 0.5"
-                  size="mini"
-                  :disabled="!item.enableBetMoneyPrize"
-                  oninput="if(value<0||value===''){value=0}"
-                />
-                <span style="margin-left: 3px;">%</span>
-                </div>
-              </template>
-            </el-table-column>
-            <el-table-column label="系数区间结束" min-width="80" align="center">
-              <template slot-scope="scope">
-                <div style="display: flex; align-items: center; flex-wrap: nowrap;">
+            <el-table :data="[item.propPools]" border size="small" style="width: 100%">
+              <el-table-column label="任务类型" min-width="140" align="center">
+                <template slot-scope="scope">
+                  <el-select v-model="scope.row.taskType" placeholder="请选择" style="width: 220px" :disabled="!item.enableProgressPrize">
+                    <el-option v-for="opt in pokerTaskTypes" :key="opt.value" :label="opt.label" :value="opt.value" />
+                  </el-select>
+                </template>
+              </el-table-column>
+              <el-table-column label="进度要求" min-width="120" align="center">
+                <template slot-scope="scope">
                   <el-input
-                    max-width="50px"
-                    v-model="scope.row.maxCoefficient"
-                    placeholder="如 1.0"
+                    v-model.number="scope.row.taskCondition"
+                    :placeholder="progressPlaceholder"
+                    size="mini"
+                    :disabled="!item.enableProgressPrize"
+                    oninput="if(value<0||value===''){value=0}"
+                  />
+                </template>
+              </el-table-column>
+              <el-table-column label="道具类型" min-width="140" align="center">
+                <template slot-scope="scope">
+                  <el-select v-model="scope.row.propType" placeholder="请选择" size="mini" :disabled="!item.enableProgressPrize" @change="onPropTypeChange(scope.row, scope.$index)">
+                    <el-option v-for="opt in propTypeOptions" :key="opt.value" :label="opt.label" :value="opt.value" />
+                  </el-select>
+                </template>
+              </el-table-column>
+              <el-table-column label="道具名称" min-width="160" align="center">
+                <template slot-scope="scope">
+                  <el-select v-model="scope.row.propId" placeholder="请选择" size="mini" :disabled="!item.enableProgressPrize" @change="onPropNameChange(scope.row, scope.$index)">
+                    <el-option v-for="opt in propOptionsMap[scope.$index] || []" :key="opt.value" :label="opt.label" :value="opt.value" />
+                  </el-select>
+                </template>
+              </el-table-column>
+              <el-table-column label="可用时间" min-width="120" align="center">
+                <template slot-scope="scope">
+                  <el-select v-model="scope.row.propTime" placeholder="请选择" size="mini" :disabled="!item.enableProgressPrize">
+                    <el-option v-for="opt in propDayTypeOptions" :key="opt.value" :label="opt.label" :value="opt.value" />
+                  </el-select>
+                </template>
+              </el-table-column>
+              <el-table-column label="道具数量" min-width="100" align="center">
+                <template slot-scope="scope">
+                  <el-input
+                    v-model.number="scope.row.propNum"
+                    placeholder="数量"
+                    size="mini"
+                    :disabled="!item.enableProgressPrize"
+                    oninput="if(value<0||value===''){value=0}"
+                  />
+                </template>
+              </el-table-column>
+              <el-table-column label="道具上限" min-width="100" align="center">
+                <template slot-scope="scope">
+                  <el-input
+                    v-model.number="scope.row.propLimit"
+                    placeholder="上限"
+                    size="mini"
+                    :disabled="!item.enableProgressPrize"
+                    oninput="if(value<0||value===''){value=0}"
+                  />
+                </template>
+              </el-table-column>
+            </el-table>
+          </fieldset>
+
+          <!-- ---------- 投注金奖励（阶梯配置）---------- -->
+          <fieldset>
+            <legend style="display: flex; align-items: center; gap: 10px">
+              <b>投注金奖励</b>
+              <el-tag size="mini" type="info" effect="plain">可选</el-tag>
+              <el-switch
+                v-model="item.enableBetMoneyPrize"
+                active-text="启用"
+                inactive-text="不配置"
+                @change="onBetMoneyPrizeEnabledChange"
+              />
+            </legend>
+            <div v-if="!item.enableBetMoneyPrize" style="margin-bottom: 8px; color: #909399; font-size: 12px">
+              已标记为不配置投注金奖励。
+            </div>
+            <!--          <div v-if="item.enableBetMoneyPrize" style="margin-bottom: 12px; padding: 10px; background-color: #f0f9ff; border-left: 4px solid #409eff; font-size: 13px">-->
+            <!--            <div style="margin-bottom: 5px"><strong>说明：</strong></div>-->
+            <!--            <div style="color: #606266; line-height: 1.6">-->
+            <!--              • <strong>总奖励</strong>：活动奖励池总额<br>-->
+            <!--              • <strong>已发奖励</strong>：已经发放的奖励金额（由后端自动更新，只读）<br>-->
+            <!--              • <strong>任务条件</strong>：用户投注金额需达到此值才能参与奖励<br>-->
+            <!--              • <strong>奖励阶梯</strong>：根据用户积分区间和系数范围计算实际奖励，每个阶梯设定不同的奖励上限-->
+            <!--            </div>-->
+            <!--          </div>-->
+            <div style="margin-bottom: 12px">
+              <el-button
+                size="small"
+                type="primary"
+                icon="el-icon-plus"
+                :disabled="!item.enableBetMoneyPrize || item.pokerBetMoney.rewardTiers.length >= 20"
+                @click="addPokerBetMoneyTier"
+              >
+                添加阶梯（最多20行）
+              </el-button>
+              <span style="margin-left: 12px; color: #909399; font-size: 13px">
+                当前 {{ item.pokerBetMoney.rewardTiers.length }} 行，最少1行，最多20行
+              </span>
+            </div>
+            <el-table
+              :data="item.pokerBetMoney.rewardTiers"
+              border
+              size="small"
+              style="width: 100%"
+              :span-method="pokerBetMoneySpanMethod"
+            >
+              <!-- 任务类型 -->
+              <el-table-column label="任务类型" min-width="150" align="center">
+                <template slot-scope="_">
+                  <el-select v-model="item.pokerBetMoney.taskType" placeholder="请选择" style="width: 220px" :disabled="!item.enableBetMoneyPrize">
+                    <el-option v-for="opt in pokerTaskTypes" :key="opt.value" :label="opt.label" :value="opt.value" />
+                  </el-select>
+                </template>
+              </el-table-column>
+
+              <!-- 总奖励 -->
+              <el-table-column label="总奖励(₱)" min-width="80" align="center">
+                <template slot-scope="_">
+                  <el-input
+                    v-model.number="item.pokerBetMoney.totalReward"
+                    placeholder="总奖励"
                     size="mini"
                     :disabled="!item.enableBetMoneyPrize"
                     oninput="if(value<0||value===''){value=0}"
                   />
-                  <span style="margin-left: 3px;">%</span>
-                </div>
-              </template>
-            </el-table-column>
-            <el-table-column label="奖励上限(₱)" min-width="80" align="center">
-              <template slot-scope="scope">
-                <el-input
-                  v-model.number="scope.row.maxReward"
-                  placeholder="奖励上限"
-                  size="mini"
-                  :disabled="!item.enableBetMoneyPrize"
-                  oninput="if(value<0||value===''){value=0}"
-                />
-              </template>
-            </el-table-column>
-            <el-table-column label="操作" width="80" align="center">
-              <template slot-scope="scope">
-                <el-button
-                  size="mini"
-                  type="danger"
-                  icon="el-icon-delete"
-                  :disabled="!item.enableBetMoneyPrize || item.pokerBetMoney.rewardTiers.length <= 1"
-                  @click="removePokerBetMoneyTier(scope.$index)"
-                />
-              </template>
-            </el-table-column>
-          </el-table>
-        </fieldset>
-      </el-tab-pane>
-    </el-tabs>
+                </template>
+              </el-table-column>
+              <!-- 任务条件 -->
+              <el-table-column label="任务条件" min-width="80" align="center">
+                <template slot-scope="_">
+                  <el-input
+                    v-model.number="item.pokerBetMoney.taskCondition"
+                    placeholder="请输入"
+                    size="mini"
+                    :disabled="!item.enableBetMoneyPrize"
+                    oninput="if(value<0||value===''){value=0}"
+                  />
+                </template>
+              </el-table-column>
+              <!-- 已发奖励（只读，由后端实时更新）-->
+              <el-table-column label="已发奖励(₱)" min-width="80" align="center">
+                <template slot-scope="_">
+                  <el-input :value="formatIssuedReward(item.pokerBetMoney.issuedReward)" size="mini" disabled />
+                </template>
+              </el-table-column>
 
-    <!-- 底部按钮 -->
-    <div style="margin-top: 20px; text-align: center">
-      <el-button type="primary" :loading="saving" @click="handleSave">保存</el-button>
-      <el-button @click="dialogVisible = false">取消</el-button>
-    </div>
-  </el-dialog>
+              <el-table-column label="积分区间开始" min-width="80" align="center">
+                <template slot-scope="scope">
+                  <el-input
+                    v-model.number="scope.row.minScore"
+                    placeholder="起始积分"
+                    size="mini"
+                    :disabled="!item.enableBetMoneyPrize"
+                    oninput="if(value<0||value===''){value=0}"
+                  />
+                </template>
+              </el-table-column>
+              <el-table-column label="积分区间结束" min-width="80" align="center">
+                <template slot-scope="scope">
+                  <el-input
+                    v-model.number="scope.row.maxScore"
+                    placeholder="结束积分"
+                    size="mini"
+                    :disabled="!item.enableBetMoneyPrize"
+                    oninput="if(value<0||value===''){value=0}"
+                  />
+                </template>
+              </el-table-column>
+              <el-table-column label="系数区间开始" min-width="80" align="center">
+                <template slot-scope="scope">
+                  <div style="display: flex; align-items: center; flex-wrap: nowrap;">
+                    <el-input
+                      v-model="scope.row.minCoefficient"
+                      placeholder="如 0.5"
+                      size="mini"
+                      :disabled="!item.enableBetMoneyPrize"
+                      oninput="if(value<0||value===''){value=0}"
+                    />
+                    <span style="margin-left: 3px;">%</span>
+                  </div>
+                </template>
+              </el-table-column>
+              <el-table-column label="系数区间结束" min-width="80" align="center">
+                <template slot-scope="scope">
+                  <div style="display: flex; align-items: center; flex-wrap: nowrap;">
+                    <el-input
+                      v-model="scope.row.maxCoefficient"
+                      max-width="50px"
+                      placeholder="如 1.0"
+                      size="mini"
+                      :disabled="!item.enableBetMoneyPrize"
+                      oninput="if(value<0||value===''){value=0}"
+                    />
+                    <span style="margin-left: 3px;">%</span>
+                  </div>
+                </template>
+              </el-table-column>
+              <el-table-column label="奖励上限(₱)" min-width="80" align="center">
+                <template slot-scope="scope">
+                  <el-input
+                    v-model.number="scope.row.maxReward"
+                    placeholder="奖励上限"
+                    size="mini"
+                    :disabled="!item.enableBetMoneyPrize"
+                    oninput="if(value<0||value===''){value=0}"
+                  />
+                </template>
+              </el-table-column>
+              <el-table-column label="操作" width="80" align="center">
+                <template slot-scope="scope">
+                  <el-button
+                    size="mini"
+                    type="danger"
+                    icon="el-icon-delete"
+                    :disabled="!item.enableBetMoneyPrize || item.pokerBetMoney.rewardTiers.length <= 1"
+                    @click="removePokerBetMoneyTier(scope.$index)"
+                  />
+                </template>
+              </el-table-column>
+            </el-table>
+          </fieldset>
+        </el-tab-pane>
+      </el-tabs>
+
+      <!-- 底部按钮 -->
+      <div style="margin-top: 20px; text-align: center">
+        <el-button type="primary" :loading="saving" @click="handleSave">保存</el-button>
+        <el-button @click="dialogVisible = false">取消</el-button>
+      </div>
+    </el-dialog>
+
+    <RichTextEditor
+      :visible.sync="richTextEditorVisible"
+      :initial-content="item.taskText"
+      @confirm="handleRichTextConfirm"
+      @close="richTextEditorVisible = false"
+    />
+  </div>
 </template>
 
 <script>
@@ -354,12 +368,12 @@ import GameSelector from '@/components/Game/GameSelector.vue'
 import WhitelistConfig from '@/components/WhitelistConfig/index.vue'
 import UserTypeUnit from '@/components/UserType/index.vue'
 import { ACTIVITY_ID } from '../index.vue'
-import {PROP_TYPE_OPTIONS} from "@/utils/options";
-import {IsProd} from "@/utils/env";
-import { MATCH_TICKET_RIGHTS_ID_CFG_PROD, MATCH_TICKET_RIGHTS_ID_CFG_DEV } from "@/utils/prop";
-import store from "@/store";
-import {GetPropConfigListFromCache,GetMatchTicketRightsId} from "@/utils/propV2";
-import {USER_TYPE_VALUES} from "@/components/UserType/config";
+import { PROP_TYPE_OPTIONS } from '@/utils/options'
+import store from '@/store'
+import { GetPropConfigListFromCache, GetMatchTicketRightsId } from '@/utils/propV2'
+import { USER_TYPE_VALUES } from '@/components/UserType/config'
+import RichTextEditor from '@/components/RichTextEditor/index.vue'
+import { ToRawHtml } from '@/utils/common'
 
 const GAME_TYPE = 2 // Poker
 const MAX_DEBUG_TIME_OFFSET = 30 * 24 * 60 * 60
@@ -432,7 +446,7 @@ function newItem() {
 
 export default {
   name: 'PokerForm',
-  components: { GameSelector, WhitelistConfig, UserTypeUnit },
+  components: { GameSelector, WhitelistConfig, UserTypeUnit, RichTextEditor },
   props: {
     visible: { type: Boolean, default: false },
     isEdit: { type: Boolean, default: false },
@@ -446,6 +460,7 @@ export default {
       saving: false,
       propList: [],
       propOptionsMap: {},
+      richTextEditorVisible: false,
       // 任务类型选项（暂时只有"有效下注总额"）
       pokerTaskTypes: [
         { value: 1, label: '牌局次数' },
@@ -475,9 +490,11 @@ export default {
     }
   },
   computed: {
-    // 进度要求列的占位符：有效下注时显示金额单位
     progressPlaceholder() {
       return this.item.propPools && this.item.propPools.taskType === 2 ? '金额(₱)' : '次数'
+    },
+    renderRichTextPreview() {
+      return ToRawHtml(this.item.taskText)
     }
   },
   watch: {
@@ -505,6 +522,9 @@ export default {
     this.appId = store.getters.appId || this.appId
   },
   methods: {
+    handleRichTextConfirm(content) {
+      this.item.taskText = content
+    },
     formatIssuedReward(val) {
       return Number.isFinite(Number(val)) ? Number(val) : ''
     },
@@ -519,7 +539,7 @@ export default {
           actCfgId: actCfgId
         }
       }).then(response => {
-        console.log('response',response)
+        console.log('response', response)
         if (response.RetCode === 0 && response.Data) {
           this.item.pokerBetMoney.issuedReward = this.toSafeNumber(response.Data.BetMoneyTaskAmount, 0) / 1000
         }
@@ -612,7 +632,7 @@ export default {
     },
     // 投注金奖励表格合并单元格：任务类型/总奖励/任务条件/已发奖励 4列合并
     pokerBetMoneySpanMethod({ rowIndex, columnIndex }) {
-      if (![0, 1, 2,3].includes(columnIndex)) return undefined
+      if (![0, 1, 2, 3].includes(columnIndex)) return undefined
       const tiers = (this.item.pokerBetMoney && this.item.pokerBetMoney.rewardTiers) || []
       const rowspan = tiers.length > 0 ? tiers.length : 1
       if (rowIndex === 0) {
@@ -949,7 +969,7 @@ export default {
     },
     // 是否是新版道具
     isNewTicketProp(itemType) {
-      return [PROP_TYPE_OPTIONS.PROP_TYPE_TICKET_NEW,PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW,PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW].includes(itemType)
+      return [PROP_TYPE_OPTIONS.PROP_TYPE_TICKET_NEW, PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW, PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW].includes(itemType)
     },
     buildPropOptionsForIndex(propType, idx) {
       const currTime = Date.now()
@@ -1058,3 +1078,19 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.rich-preview-box {
+  padding: 20px;
+  background: #fff;
+  border: 1px solid #ebeef5;
+  border-radius: 4px;
+  min-height: 80px;
+  line-height: 1.6;
+  word-break: break-word;
+}
+.rich-preview-empty {
+  color: #909399;
+  font-size: 14px;
+}
+</style>

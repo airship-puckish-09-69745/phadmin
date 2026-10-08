@@ -1099,3 +1099,38 @@ export function LibJsonDiff() {
 
 export const $LibJsonDiff = new LibJsonDiff()
 
+export function ToRawHtml(text) {
+  if (!text) return ''
+  let result = text
+
+  result = result.replace(/<img\s+src=['"]([^'"]+)['"](?:\s+width=(\d+))?(?:\s+height=(\d+))?\s*\/?>/gi, (match, src, w, h) => {
+    const wAttr = w ? ` width="${w}"` : ''
+    const hAttr = h ? ` height="${h}"` : ''
+    return `<img src="${src}"${wAttr}${hAttr} alt=""  style="vertical-align: middle;" />`
+  })
+
+  result = result.replace(/<on\s+click=['"]([^'"]+)['"]>/gi, '<span>')
+  result = result.replace(/<\/on>/gi, '</span>')
+
+  result = result.replace(/<size=(\d+)>/gi, '<span style="font-size: $1px;">')
+  result = result.replace(/<\/size>/gi, '</span>')
+
+  result = result.replace(/<color=([#a-fA-F0-9]+)>/gi, '<span style="color: $1;">')
+  result = result.replace(/<\/color>/gi, '</span>')
+
+  result = result.replace(/<outline\s+color=([#a-fA-F0-9]+)\s+width=(\d+)>/gi, '<span style="text-shadow: 0 0 $2px $1, 0 0 $2px $1, 0 0 $2px $1, 0 0 $2px $1;">')
+  result = result.replace(/<\/outline>/gi, '</span>')
+
+  result = result.replace(/<b>/gi, '<b>')
+  result = result.replace(/<\/b>/gi, '</b>')
+
+  result = result.replace(/<i>/gi, '<i>')
+  result = result.replace(/<\/i>/gi, '</i>')
+
+  result = result.replace(/<u>/gi, '<u>')
+  result = result.replace(/<\/u>/gi, '</u>')
+
+  result = result.replace(/\n/g, '<br/>')
+
+  return result
+}
