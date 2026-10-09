@@ -119,6 +119,7 @@ export const systemMoneyChart = {
         244: 'Wild Bone',
         248: 'Mayan Temple',
         250: 'Light Of Mactan',
+        277: 'Super Ace 1000',
         9: 'Teen Patti',
         126: 'Pusoy Wild',
         2031: 'TongitsMtt',

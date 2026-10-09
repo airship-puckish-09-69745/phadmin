@@ -1561,6 +1561,12 @@ export const asyncRoutes = [
                 meta: { title: 'S treetFighting' }
               },
               {
+                path: 'superace1000_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/superace1000_slots_cfg'),
+                name: 'superace1000_slots_cfg',
+                meta: { title: 'S uperAce1000' }
+              },
+              {
                 path: 'supergem_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/supergem_slots_cfg'),
                 name: 'supergem_slots_cfg',

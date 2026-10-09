@@ -104,6 +104,7 @@
               <el-option label="230:PahiyasWins" :value="230" />
               <el-option label="231:PahiyasWins Mars" :value="231" />
               <el-option label="232:MafiaWars" :value="232" />
+              <el-option label="277:SuperAce1000" :value="277" />
               <el-option label="233:MafiaWars Mars" :value="233" />
               <el-option label="234:FortuneTree" :value="234" />
               <el-option label="235:FortuneTreeMars" :value="235" />

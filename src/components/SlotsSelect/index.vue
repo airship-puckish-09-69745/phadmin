@@ -52,6 +52,7 @@ export default {
         { label: 'Millionaire', value: 82 },
         { label: 'MillionaireMars', value: 83 },
         { label: 'FortuneAce', value: 84 },
+        { label: 'SuperAce1000', value: 277 },
         { label: 'FortuneAceMars', value: 85 }
       ]
     }
