@@ -386,11 +386,14 @@
         </el-tab-pane>
       </el-tabs>
 
+      <!-- 本弹窗嵌套在「修改配置」弹窗内部，需 append-to-body：父弹窗 wrapper 为 position:fixed 自成一层的层叠上下文，
+           否则本弹窗 z-index 被关在父弹窗内，被挂到 body 的遮罩压住导致变灰、点不动 -->
       <el-dialog
         title="给选中游戏排序"
         :visible.sync="edit.gamesSortDialogVisible"
         :close-on-click-modal="false"
         :close-on-press-escape="false"
+        append-to-body
       >
         <el-table
           :data="GamesSorted"
