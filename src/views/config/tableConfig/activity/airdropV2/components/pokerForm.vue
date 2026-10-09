@@ -59,19 +59,48 @@
               </el-col>
             </el-row>
 
-            <!-- 任务文本（任务类型/条件已移至奖励配置）-->
+
             <el-row :gutter="20">
               <el-col :span="24">
                 <el-form-item label="任务文本：">
                   <el-input v-model="item.taskText" type="textarea" placeholder="请输入" style="max-width: 400px" />
                   <div style="margin-top: 8px">
-                    <el-button size="mini" type="primary" icon="el-icon-edit-outline" @click="richTextEditorVisible = true">
+                    <el-button size="mini" type="primary" icon="el-icon-edit-outline" @click="openRichEditor(item, 'taskText')">
                       打开富文本编辑器
                     </el-button>
                   </div>
                 </el-form-item>
               </el-col>
             </el-row>
+            <el-row :gutter="20">
+              <el-col :span="24">
+                <el-form-item label="活动界面文本：">
+                  <el-input v-model="item.activityTitle" type="textarea" placeholder="请输入" style="max-width: 400px" />
+                  <div style="color: #E6A23C; font-size: 12px; line-height: 1.4; margin-top: 4px">
+                    奖励只有道具的起到作用
+                  </div>
+                  <div style="margin-top: 8px">
+                    <el-button size="small" type="primary" @click="openRichEditor(item, 'activityTitle')">打开富文本编辑器</el-button>
+                  </div>
+
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row :gutter="20">
+              <el-col :span="24">
+                <el-form-item label="活动界面文本：">
+                  <el-input v-model="item.sideTitle" type="textarea" placeholder="请输入" style="max-width: 400px" />
+                  <div style="color: #E6A23C; font-size: 12px; line-height: 1.4; margin-top: 4px">
+                    奖励只有道具的起到作用
+                  </div>
+                  <div style="margin-top: 8px">
+                    <el-button size="small" type="primary" @click="openRichEditor(item, 'sideTitle')">打开富文本编辑器</el-button>
+                  </div>
+
+                </el-form-item>
+              </el-col>
+            </el-row>
+
 
             <!-- 勾选游戏 -->
             <el-row>
@@ -354,7 +383,7 @@
 
     <RichTextEditor
       :visible.sync="richTextEditorVisible"
-      :initial-content="item.taskText"
+      :initial-content="currentRichTarget.editObj ? currentRichTarget.editObj[currentRichTarget.fieldKey] : ''"
       @confirm="handleRichTextConfirm"
       @close="richTextEditorVisible = false"
     />
@@ -436,6 +465,8 @@ function newItem() {
     gameIdList: [],
     whitelist: defaultWhitelist(),
     taskText: '',
+    activityTitle: '',
+    sideTitle: '',
     enableProgressPrize: false,
     enableBetMoneyPrize: true,
     propPools: newProp(),
@@ -461,6 +492,11 @@ export default {
       propList: [],
       propOptionsMap: {},
       richTextEditorVisible: false,
+      // 新增：记录当前正在编辑的字段上下文
+      currentRichTarget: {
+        editObj: null,
+        fieldKey: '',
+      },
       // 任务类型选项（暂时只有"有效下注总额"）
       pokerTaskTypes: [
         { value: 1, label: '牌局次数' },
@@ -493,9 +529,6 @@ export default {
     progressPlaceholder() {
       return this.item.propPools && this.item.propPools.taskType === 2 ? '金额(₱)' : '次数'
     },
-    renderRichTextPreview() {
-      return ToRawHtml(this.item.taskText)
-    }
   },
   watch: {
     visible(val) {
@@ -522,8 +555,19 @@ export default {
     this.appId = store.getters.appId || this.appId
   },
   methods: {
+    // 通用打开富文本的方法：不管哪个字段的编辑按钮，都调这个
+    openRichEditor(editObj, fieldKey) {
+      // 先存好当前要改的是哪个对象、哪个字段
+      this.currentRichTarget = {
+        editObj: editObj,
+        fieldKey: fieldKey
+      }
+      this.richTextEditorVisible = true
+    },
     handleRichTextConfirm(content) {
-      this.item.taskText = content
+      if (this.currentRichTarget && this.currentRichTarget.editObj && this.currentRichTarget.fieldKey) {
+        this.currentRichTarget.editObj[this.currentRichTarget.fieldKey] = content
+      }
     },
     formatIssuedReward(val) {
       return Number.isFinite(Number(val)) ? Number(val) : ''
@@ -767,6 +811,8 @@ export default {
         gameIdList: Array.isArray(act.gameIdList) ? act.gameIdList : [],
         whitelist,
         taskText: ext.taskText || '',
+        activityTitle: ext.activityTitle || '',
+        sideTitle: ext.sideTitle || '',
         enableProgressPrize,
         enableBetMoneyPrize,
         propPools: prop,
@@ -933,6 +979,8 @@ export default {
       }
       const extendObj = {
         taskText: d.taskText || '',
+        activityTitle: d.activityTitle || '',
+        sideTitle: d.sideTitle || '',
         enableProgressPrize: !!d.enableProgressPrize,
         enableBetMoneyPrize: !!d.enableBetMoneyPrize,
         propPools: prop,

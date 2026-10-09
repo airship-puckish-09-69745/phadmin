@@ -57,17 +57,27 @@
                 </el-form-item>
               </el-col>
             </el-row>
-
-            <!-- 任务文本（仅文本备注，任务类型/条件已移至奖励配置）-->
             <el-row :gutter="20">
               <el-col :span="24">
                 <el-form-item label="任务文本：">
                   <el-input v-model="item.taskText" type="textarea" placeholder="请输入" style="max-width: 400px" />
                   <div style="margin-top: 8px">
-                    <el-button size="mini" type="primary" icon="el-icon-edit-outline" @click="richTextEditorVisible = true">
-                      打开富文本编辑器
-                    </el-button>
+                    <el-button size="small" type="primary" icon="el-icon-edit-outline" @click="openRichEditor(item, 'taskText')">打开富文本编辑器</el-button>
                   </div>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row :gutter="20">
+              <el-col :span="24">
+                <el-form-item label="活动界面文本：">
+                  <el-input v-model="item.activityTitle" type="textarea" placeholder="请输入" style="max-width: 400px" />
+                  <div style="color: #E6A23C; font-size: 12px; line-height: 1.4; margin-top: 4px">
+                    奖励只有道具的起到作用
+                  </div>
+                  <div style="margin-top: 8px">
+                    <el-button size="small" type="primary" @click="openRichEditor(item, 'activityTitle')">打开富文本编辑器</el-button>
+                  </div>
+
                 </el-form-item>
               </el-col>
             </el-row>
@@ -264,7 +274,7 @@
 
     <RichTextEditor
       :visible.sync="richTextEditorVisible"
-      :initial-content="item.taskText"
+      :initial-content="currentRichTarget.editObj ? currentRichTarget.editObj[currentRichTarget.fieldKey] : ''"
       @confirm="handleRichTextConfirm"
       @close="richTextEditorVisible = false"
     />
@@ -330,6 +340,7 @@ function newItem() {
     enableProgressPrize: true,
     enableBetMoneyPrize: false,
     taskText: '',
+    activityTitle: '',
     // 奖励配置（propPools 内含任务类型/条件）
     propPools: defaultPropPools(),
     // 投注金奖励（固定一条）
@@ -383,7 +394,12 @@ export default {
         { value: USER_TYPE_VALUES.IMPORT, label: '导入用户' },
         { value: USER_TYPE_VALUES.FILTER, label: '筛选用户' }
       ],
-      richTextEditorVisible: false
+      richTextEditorVisible: false,
+      // 新增：记录当前正在编辑的字段上下文
+      currentRichTarget: {
+        editObj: null,
+        fieldKey: '',
+      }
     }
   },
   watch: {
@@ -405,8 +421,20 @@ export default {
     this.getPropList()
   },
   methods: {
+    // 通用打开富文本的方法：不管哪个字段的编辑按钮，都调这个
+    openRichEditor(editObj, fieldKey) {
+      // 先存好当前要改的是哪个对象、哪个字段
+      this.currentRichTarget = {
+        editObj: editObj,
+        fieldKey: fieldKey
+      }
+      // 弹出编辑器
+      this.richTextEditorVisible = true
+    },
     handleRichTextConfirm(content) {
-      this.item.taskText = content
+      if (this.currentRichTarget && this.currentRichTarget.editObj && this.currentRichTarget.fieldKey) {
+        this.currentRichTarget.editObj[this.currentRichTarget.fieldKey] = content
+      }
     },
     handleDialogClose() {
       this.$emit('close')
@@ -567,6 +595,7 @@ export default {
         enableProgressPrize,
         enableBetMoneyPrize,
         taskText: ext.taskText || '',
+        activityTitle: ext.activityTitle || '',
         propPools,
         casinosBetMoney,
         userConfig
@@ -576,8 +605,6 @@ export default {
       this.item.activityName = (this.item.activityName || '').trim()
       if (!this.item.activityName) { Message.error('请输入活动名称'); return false }
       if (this.item.activityName.length > MAX_TEXT_LENGTH) { Message.error(`活动名称长度不能超过${MAX_TEXT_LENGTH}个字符`); return false }
-      this.item.taskText = (this.item.taskText || '').trim()
-      if (this.item.taskText.length > MAX_TEXT_LENGTH) { Message.error(`任务文本长度不能超过${MAX_TEXT_LENGTH}个字符`); return false }
       if (!this.item.startTime) { Message.error('请选择开始时间'); return false }
       if (!this.item.endTime) { Message.error('请选择结束时间'); return false }
       if (!this.item.showEndTime) { Message.error('请选择展示结束时间'); return false }
@@ -644,6 +671,7 @@ export default {
 
       const extendObj = {
         taskText: d.taskText || '',
+        activityTitle: d.activityTitle || '',
         enableProgressPrize: !!d.enableProgressPrize,
         enableBetMoneyPrize: !!d.enableBetMoneyPrize,
         // propPools 中包含任务类型/条件和道具信息
