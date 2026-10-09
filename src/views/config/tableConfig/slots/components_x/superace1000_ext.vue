@@ -57,7 +57,7 @@
           </el-form-item>
 
           <el-form-item label="变红蓝Wild权重" prop="wildRate">
-            <el-input v-model="cfg.wildRate" :required="true"><template slot="append">第一个是红wild,第二个是蓝wild用 , 连接</template> </el-input>
+            <el-input v-model="cfg.wildWeight" :required="true"><template slot="append">第一个是红wild,第二个是蓝wild用 , 连接</template> </el-input>
           </el-form-item>
 
           <el-form-item label="进入红免费概率" prop="redFreeRate">
