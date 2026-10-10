@@ -177,7 +177,7 @@ import store from '@/store'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  name: 'SlotsFortuneAceExt',
+  name: 'SlotsSuperAce1000Ext',
   components: { RatioInput, Compare },
   model: {
     prop: 'slotsData',
