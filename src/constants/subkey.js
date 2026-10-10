@@ -112,5 +112,6 @@ export const SubKeyMap = {
   100180: 'fishingmaster_slots_base',
   1236: 'pacquiaofortuneplaynow_slots_base',
   274: 'sarimanokfortune_slots_base',
-  277: 'superace1000_slots_base'
+  277: 'superace1000_slots_base',
+  275: 'anubissverdict_slots_base'
 }
