@@ -545,7 +545,8 @@ export default {
         '248': 'mayantemple',
         '246': 'talareyessouthseapearls',
         '100246': 'talareyessouthseapearls_x',
-        '275': 'anubissverdict'
+        '275': 'anubissverdict',
+        '271': 'sweetbonanza5000'
       }
     }
   },

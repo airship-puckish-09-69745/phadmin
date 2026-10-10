@@ -121,6 +121,7 @@ export const systemMoneyChart = {
         250: 'Light Of Mactan',
         277: 'Super Ace 1000',
         275: 'Anubis\'s Verdict',
+        271: 'Sweet Bonanza 5000',
         9: 'Teen Patti',
         126: 'Pusoy Wild',
         2031: 'TongitsMtt',
