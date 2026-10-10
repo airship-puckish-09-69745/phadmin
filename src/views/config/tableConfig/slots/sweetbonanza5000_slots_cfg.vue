@@ -1,262 +1,151 @@
 <template>
-    <div class="app-container">
-        <el-row :gutter="10" style="margin-top: 30px">
-            <el-col :span="24">
-                <el-tabs type="border-card" value="base" @tab-click="onShowTab">
-                    <el-tab-pane label="基础配置" name="base">
-                        <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，重启生效】</h3>
-                        <publish primary-key="ID" :key-id="getFullKey('sweetbonanza5000_slots_base')" :env-empty="false"
-                            compare-type="Object" />
-                        <slots-base-cfg v-if="baseCfgBool" v-model="baseCfg" :odds-str="false"
-                            @saveData="saveBaseCfg" />
-                    </el-tab-pane>
-                    <el-tab-pane label="符号表配置" name="symbol">
-                        <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，重启生效】</h3>
-                        <publish primary-key="ID" :key-id="getFullKey('sweetbonanza5000_slots_rule')" :env-empty="false"
-                            compare-type="Object" />
-                        <slots-symbol-value v-if="ruleCfgBool" v-model="ruleCfg" @saveData="saveRuleCfg" />
-                    </el-tab-pane>
-                    <el-tab-pane label="赔付线配置" name="pay_table">
-                        <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，重启生效】</h3>
-                        <publish primary-key="ID" :key-id="getFullKey('sweetbonanza5000_slots_base')" :env-empty="false"
-                            compare-type="Object" />
-                        <slots-pay-table v-if="baseCfgBool" v-model="baseCfg" :symbol-list="ruleCfg.SymbolList"
-                            :label-map="labelMap" :start-col="1" @saveData="saveBaseCfg" />
-                    </el-tab-pane>
-                    <el-tab-pane label="2套轴图标" name="reels_double">
-                        <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布】</h3>
-                        <publish primary-key="ID" :key-id="getFullKey('sweetbonanza5000_slots_base')" :env-empty="false"
-                            compare-type="Object" />
-                        <slots-reels-double v-if="baseCfgBool" v-model="baseCfg" :symbol-list="ruleCfg.SymbolList"
-                            @saveData="saveBaseCfg" />
-                    </el-tab-pane>
-                    <el-tab-pane label="拓展配置" name="scatter">
-                        <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，发布即生效】</h3>
-                        <publish primary-key="ID" :key-id="getFullKey('sweetbonanza5000_slots_ext')" :env-empty="false"
-                            compare-type="Object" />
-                        <slots-sweet-bonanza-5000-ext v-if="extCfgBool" v-model="extCfg" :base-bet="baseCfg.BaseBet"
-                            @saveData="saveExtCfg" />
-                    </el-tab-pane>
-                </el-tabs>
-            </el-col>
-        </el-row>
+  <div class="app-container">
+    <el-row :gutter="10" style="margin-top: 30px">
+      <el-col v-if="version === 'V2'" :span="20">
+        <el-select v-model="appId" placeholder="请选择" @change="onAppIdChange">
+          <el-option v-for="(option, index) in appOptions" :key="index" :label="option.label" :value="option.value" />
+        </el-select>
+        <el-button type="primary" icon="el-icon-document-copy" @click="onCopyAllCfg">复制配置</el-button>
+        <el-button type="primary" icon="el-icon-document-copy" @click="onCopyMultiAppCfg">多App复制</el-button>
+      </el-col>
+      <el-col :span="24">
+        <el-tabs type="border-card" value="base" @tab-click="onShowTab">
+          <el-tab-pane label="基础配置" name="base">
+            <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，重启生效】</h3>
+            <publish primary-key="ID" :key-id="getFullKey(subKey)" :env-empty="false" compare-type="Object" />
+            <slots-base-cfg v-if="baseCfgBool" v-model="baseCfg" :odds-str="false" @saveData="saveBaseCfg" @multiAppSave="onMultiAppBaseSave" />
+          </el-tab-pane>
+          <el-tab-pane label="符号表配置" name="symbol">
+            <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，重启生效】</h3>
+            <publish primary-key="ID" :key-id="getFullKey(getRuleSubKey())" :env-empty="false" compare-type="Object" />
+            <slots-symbol-value v-if="ruleCfgBool" v-model="ruleCfg" @saveData="saveRuleCfg" @multiAppSave="onMultiAppRuleSave" />
+          </el-tab-pane>
+          <el-tab-pane label="赔付表配置" name="pay_table">
+            <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，重启生效】</h3>
+            <publish primary-key="ID" :key-id="getFullKey(subKey)" :env-empty="false" compare-type="Object" />
+            <slots-pay-table v-if="baseCfgBool" v-model="baseCfg" :symbol-list="ruleCfg.SymbolList" :start-col="3" @saveData="saveBaseCfg" @multiAppSave="onMultiAppBaseSave" />
+          </el-tab-pane>
+          <el-tab-pane label="2套轴图标" name="reels_double">
+            <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布】</h3>
+            <publish primary-key="ID" :key-id="getFullKey(subKey)" :env-empty="false" compare-type="Object" />
+            <slots-reels-double v-if="baseCfgBool" v-model="baseCfg" :symbol-list="ruleCfg.SymbolList" @saveData="saveBaseCfg" />
+          </el-tab-pane>
+          <el-tab-pane label="扩展配置" name="ext">
+            <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，发布即生效】</h3>
+            <publish primary-key="ID" :key-id="getFullKey(getExtSubKey())" :env-empty="false" compare-type="Object" />
+            <slots-sweet-bonanza-5000-ext v-if="extCfgBool" v-model="extCfg" @saveData="saveExtCfg" @multiAppSave="onMultiAppExtSave" />
+          </el-tab-pane>
+          <el-tab-pane label="剧本" name="script">
+            <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，发布即生效】</h3>
+            <publish primary-key="ID" :key-id="getFullKey(getRuleSubKey())" :env-empty="false" compare-type="Object" />
+            <slots-script v-if="ruleCfgBool" v-model="ruleCfg" :bets="baseCfg.BetListAct" @saveData="saveRuleCfg" @multiAppSave="onMultiAppRuleSave" />
+          </el-tab-pane>
+        </el-tabs>
+      </el-col>
+    </el-row>
 
-        <!--对比组件-->
-        <compare ref="compare" />
-
-    </div>
+    <multi-app-select-dialog
+      :visible.sync="multiAppDialogVisible"
+      :app-options="appOptions"
+      :checked-keys.sync="checkedAppKeys"
+      :confirm-text="multiAppAction === 'copy' ? '确认复制' : '确认保存'"
+      @confirm="confirmMultiAppSave"
+    />
+    <compare ref="compare" />
+  </div>
 </template>
 
 <script>
 import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
-import request from '@/utils/request'
+import MultiAppSelectDialog from '@/components/Publish/MultiAppSelectDialog'
+import appSlotsConfig from './utils/appSlotsConfig'
+import multiAppSlotsConfig from './utils/multiAppSlotsConfig'
 import slotsBaseCfg from './components_x/ireland_base_cfg'
 import slotsSymbolValue from './components_x/symbol_value'
-import slotsPayLine from './components_x/pay_line'
 import slotsPayTable from './components_x/pay_table_rate'
-import slotsReelsIcon from './components_x/aladdin_reels_icon'
 import slotsSweetBonanza5000Ext from './components_x/sweetbonanza5000_ext'
-import slotsBigWinnerCfg from './components_x/big_winner_cfg'
-import slotsVup from './components_x/slots_vup'
-import slotsReelsDouble from './components_x/reels_double'
 import slotsScript from './components_x/slots_script'
+import slotsPayLine from './components_x/pay_line'
+import slotsReelsDouble from './components_x/reels_double'
+import slotsSymbolcountReels from './components_x/symbolcount_reels.vue'
 
 export default {
-    // eslint-disable-next-line vue/no-unused-components
-    components: { Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotsSweetBonanza5000Ext, slotsBigWinnerCfg, slotsVup, slotsReelsDouble, slotsScript },
-    data() {
-        return {
-            activeTab: 'base',
-            baseCfg: {},
-            baseCfgBool: false,
-            ruleCfg: {},
-            ruleCfgBool: false,
-            extCfg: {},
-            extCfgBool: false,
-            baseForm: {},
-            ruleForm: {},
-            extForm: {},
-            txt: '',
-            subKey: 'sweetbonanza5000_slots_base',
-            inc: 0,
-            labelMap: {
-                1: '4个',
-                2: '5个',
-                3: '6+个',
-                4: '8-9个',
-                5: '10-11个',
-                6: '12+个'
-            }
-        }
-    },
-    created() {
-        this.getData()
-    },
-    methods: {
-        getFullKey(k) {
-            return 'CustomizeCfg_' + k
-        },
-        getData() {
-            // 加载基础数值配置
-            request({
-                url: '/customizeconfig/one',
-                method: 'get',
-                data: {
-                    SubKey: this.subKey
-                }
-            }).then(response => {
-                if (response.RetCode === 0) {
-                    this.baseForm = response.Data || {}
-                    if (response.Data && response.Data.Data !== '') {
-                        const cfg = JSON.parse(response.Data.Data)
-                        const BetList = []
-                        for (const k in cfg.BetList) {
-                            BetList[k] = cfg.BetList[k] / 1000
-                        }
-                        cfg.Bets = BetList.join(',')
-
-                        const BetOddsList = []
-                        for (const k in cfg.BetOddsList) {
-                            BetOddsList[k] = cfg.BetOddsList[k] / 1000
-                        }
-                        cfg.OddsStr = BetOddsList.join(',')
-
-                        const BetListAct = []
-                        for (const k in cfg.BetList) {
-                            for (const t in cfg.OddsList) {
-                                BetListAct.push(cfg.BetList[k] * cfg.OddsList[t])
-                            }
-                        }
-                        cfg.BetListAct = BetListAct
-
-                        this.baseCfg = cfg
-                        // 设置修改之前数据
-                        // this.$refs.compare.SetOldVal(response.Data.Data)
-                        this.baseCfgBool = true
-                    }
-                }
-            })
-
-            // 加载规则配置
-            request({
-                url: '/customizeconfig/one',
-                method: 'get',
-                data: {
-                    SubKey: 'sweetbonanza5000_slots_rule'
-                }
-            }).then(response => {
-                if (response.RetCode === 0) {
-                    this.ruleForm = response.Data || {}
-                    if (response.Data && response.Data.Data !== '') {
-                        this.ruleCfg = JSON.parse(response.Data.Data)
-                        // 设置修改之前数据
-                        // this.$refs.compare.SetOldVal(response.Data.Data)
-                    }
-                    this.ruleCfgBool = true
-                }
-            })
-
-            // 加载扩展配置
-            request({
-                url: '/customizeconfig/one',
-                method: 'get',
-                data: {
-                    SubKey: 'sweetbonanza5000_slots_ext'
-                }
-            }).then(response => {
-                if (response.RetCode === 0) {
-                    this.extForm = response.Data || {}
-                    if (response.Data && response.Data.Data !== '') {
-                        this.extCfg = JSON.parse(response.Data.Data)
-                        console.log('ext-data:', this.extCfg)
-                        // 设置修改之前数据
-                        // this.$refs.compare.SetOldVal(response.Data.Data)
-                    }
-                }
-                this.extCfgBool = true
-            })
-        },
-
-        saveBaseCfg() {
-            if (this.baseCfg.Bets) {
-                const bets = this.baseCfg.Bets.split(',')
-                this.baseCfg.BetList = []
-                for (const i in bets) {
-                    this.baseCfg.BetList.push(parseFloat(bets[i]) * 1000)
-                }
-            }
-
-            if (this.baseCfg.OddsStr) {
-                const odds = this.baseCfg.OddsStr.split(',')
-                console.log('odds:', odds)
-                this.baseCfg.BetOddsList = []
-                for (const i in odds) {
-                    this.baseCfg.BetOddsList.push(parseFloat(odds[i]) * 1000)
-                }
-            }
-
-            this.baseForm.Data = JSON.stringify(this.baseCfg)
-            request({
-                url: 'customizeconfig/update',
-                method: 'post',
-                data: this.baseForm
-            }).then(response => {
-                if (response.RetCode === 0) {
-                    this.$message.success('保存成功')
-                }
-            })
-        },
-
-        saveRuleCfg() {
-            this.ruleForm.Data = JSON.stringify(this.ruleCfg)
-            request({
-                url: 'customizeconfig/update',
-                method: 'post',
-                data: this.ruleForm
-            }).then(response => {
-                if (response.RetCode === 0) {
-                    this.$message.success('保存成功')
-                }
-            })
-        },
-
-        saveExtCfg() {
-            this.extForm.Data = JSON.stringify(this.extCfg)
-            request({
-                url: 'customizeconfig/update',
-                method: 'post',
-                data: this.extForm
-            }).then(response => {
-                if (response.RetCode === 0) {
-                    this.$message.success('保存成功')
-                }
-            })
-        },
-
-        onShowTab(tab) {
-            this.activeTab = tab.name
-            // 设置修改之前数据
-            if (this.activeTab === 'base' || this.activeTab === 'pay_table' || this.activeTab === 'reels' || this.activeTab === 'reels_double') {
-                this.$refs.compare.SetOldVal(this.baseForm.Data)
-            } else if (this.activeTab === 'symbol' || this.activeTab === 'pay_line' || this.activeTab === 'script') {
-                this.$refs.compare.SetOldVal(this.ruleForm.Data)
-            } else if (this.activeTab === 'scatter' || this.activeTab === 'bonus') {
-                this.$refs.compare.SetOldVal(this.extForm.Data)
-            }
-        }
+  components: {
+    Compare,
+    MultiAppSelectDialog,
+    Publish,
+    slotsBaseCfg,
+    slotsPayTable,
+    slotsScript,
+    slotsSymbolValue,
+    slotsSweetBonanza5000Ext,
+    slotsPayLine,
+    slotsReelsDouble,
+    slotsSymbolcountReels
+  },
+  mixins: [appSlotsConfig, multiAppSlotsConfig],
+  data() {
+    return {
+      activeTab: 'base',
+      baseCfg: {},
+      baseCfgBool: false,
+      baseForm: {},
+      extCfg: {},
+      extCfgBool: false,
+      extForm: {},
+      ruleCfg: {},
+      ruleCfgBool: false,
+      ruleForm: {},
+      subKey: 'sweetbonanza5000_slots_base'
     }
+  },
+  created() {
+    this.getData()
+    this.getAppInfos()
+  },
+  methods: {
+    buildBaseCfg(cfg) {
+      const betList = cfg.BetList || []
+      const betOddsList = cfg.BetOddsList || []
+      cfg.Bets = betList.map(item => item / 1000).join(',')
+      cfg.OddsStr = betOddsList.map(item => item / 1000).join(',')
+      cfg.BetListAct = betList.reduce((bets, bet) => {
+        betOddsList.forEach(odds => bets.push(bet * odds / 1000))
+        return bets
+      }, [])
+      return cfg
+    },
+    saveBaseCfg() {
+      this.syncBetOddsList(this.baseCfg)
+      return appSlotsConfig.methods.saveBaseCfg.call(this)
+    },
+    onMultiAppBaseSave(oldData, newData) {
+      this.syncBetOddsList(newData)
+      return multiAppSlotsConfig.methods.onMultiAppBaseSave.call(this, oldData, newData)
+    },
+    buildMultiAppCopyPayloads(appId) {
+      this.syncBetOddsList(this.baseCfg)
+      return multiAppSlotsConfig.methods.buildMultiAppCopyPayloads.call(this, appId)
+    },
+    syncBetOddsList(cfg) {
+      if (cfg.Bets) {
+        cfg.BetList = cfg.Bets.split(',').map(item => parseFloat(item) * 1000)
+      }
+      if (cfg.OddsStr) {
+        cfg.BetOddsList = cfg.OddsStr.split(',').map(item => parseFloat(item) * 1000)
+      }
+    },
+    onShowTab(tab) {
+      this.activeTab = tab.name
+      if (['base', 'pay_table'].includes(this.activeTab)) {
+        this.$refs.compare.SetOldVal(this.baseForm.Data)
+      } else if (['symbol', 'script'].includes(this.activeTab)) {
+        this.$refs.compare.SetOldVal(this.ruleForm.Data)
+      } else if (this.activeTab === 'ext') {
+        this.$refs.compare.SetOldVal(this.extForm.Data)
+      }
+    }
+  }
 }
 </script>
-<style>
-.symbol-img {
-    width: 100px;
-    height: 100px;
-    margin-right: 20px;
-}
-
-.symbol-img:hover,
-.symbol-img.active {
-    border: 3px solid red;
-}
-</style>
