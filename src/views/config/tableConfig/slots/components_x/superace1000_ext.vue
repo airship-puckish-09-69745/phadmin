@@ -60,12 +60,15 @@
             <el-input v-model="cfg.wildWeight" :required="true"><template slot="append">第一个是红wild,第二个是蓝wild用 , 连接</template> </el-input>
           </el-form-item>
 
-          <el-form-item label="进入红免费概率" prop="redFreeRate">
-            <el-input v-model.number="cfg.redFreeRate" :required="true" />
+          <el-form-item label="变红蓝模式权重" prop="wildRate">
+            <el-input v-model="cfg.freeModeWeight" :required="true"><template slot="append">第一个是红模式,第二个是蓝模式,第三个是红蓝模式,用 , 连接</template> </el-input>
           </el-form-item>
-          <el-form-item label="进入蓝免费概率" prop="blueFreeRate">
-            <el-input v-model.number="cfg.blueFreeRate" :required="true" />
-          </el-form-item>
+          <!--          <el-form-item label="进入红免费概率" prop="redFreeRate">-->
+          <!--            <el-input v-model.number="cfg.redFreeRate" :required="true" />-->
+          <!--          </el-form-item>-->
+          <!--          <el-form-item label="进入蓝免费概率" prop="blueFreeRate">-->
+          <!--            <el-input v-model.number="cfg.blueFreeRate" :required="true" />-->
+          <!--          </el-form-item>-->
           <!--          <el-form-item label="购买免费模式中奖倍数范围V2">-->
           <!--            <el-input v-model="cfg.BuyFreeOddsRangeV2" placeholder="请输入内容,如0,150,151,750"> <template slot="append">四个值用 , 连接。如0,150,151,750表示0,150和151,750</template> </el-input>-->
           <!--          </el-form-item>-->
