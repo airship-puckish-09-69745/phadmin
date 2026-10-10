@@ -112,6 +112,7 @@
               <el-option label="238:MasskaraFortune" :value="238" />
               <el-option label="239:MasskaraFortuneMars" :value="239" />
               <el-option label="1236:PacquiaoFortunePlayNow" :value="1236" />
+              <el-option label="275:Anubis\'s Verdict" :value="275" />
             </el-select>
           </el-form-item>
 

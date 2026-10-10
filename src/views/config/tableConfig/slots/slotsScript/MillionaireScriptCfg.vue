@@ -543,7 +543,8 @@ export default {
         '242': 'fortunemuseum',
         '248': 'mayantemple',
         '246': 'talareyessouthseapearls',
-        '100246': 'talareyessouthseapearls_x'
+        '100246': 'talareyessouthseapearls_x',
+        '275': 'anubissverdict'
       }
     }
   },
