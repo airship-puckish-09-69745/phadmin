@@ -23,7 +23,7 @@
           <el-tab-pane label="赔付表配置" name="pay_table">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，重启生效】</h3>
             <publish primary-key="ID" :key-id="getFullKey(subKey)" :env-empty="false" compare-type="Object" />
-            <slots-pay-table v-if="baseCfgBool" v-model="baseCfg" :symbol-list="ruleCfg.SymbolList" :start-col="3" @saveData="saveBaseCfg" @multiAppSave="onMultiAppBaseSave" />
+            <slots-pay-table v-if="baseCfgBool" v-model="baseCfg" :symbol-list="ruleCfg.SymbolList" :label-map="labelMap" :start-col="1" @saveData="saveBaseCfg" @multiAppSave="onMultiAppBaseSave" />
           </el-tab-pane>
           <el-tab-pane label="2套轴图标" name="reels_double">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布】</h3>
@@ -97,7 +97,15 @@ export default {
       ruleCfg: {},
       ruleCfgBool: false,
       ruleForm: {},
-      subKey: 'sweetbonanza5000_slots_base'
+      subKey: 'sweetbonanza5000_slots_base',
+      labelMap: {
+                1: '4个',
+                2: '5个',
+                3: '6+个',
+                4: '8-9个',
+                5: '10-11个',
+                6: '12+个'
+            }
     }
   },
   created() {
