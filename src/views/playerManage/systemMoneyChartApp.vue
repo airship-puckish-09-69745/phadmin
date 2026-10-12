@@ -979,6 +979,10 @@ export default {
         {
           'ID': 2000002,
           'Account': 'CP内部（2000002）'
+        },
+        {
+          'ID': 2000012,
+          'Account': 'CP线2内部（2000012）'
         }
       ]
       if (process.env.VUE_APP_PROJECT_NAME === '菲1-线上环境' || process.env.VUE_APP_PROJECT_NAME === '菲1-线上环境v2') {
