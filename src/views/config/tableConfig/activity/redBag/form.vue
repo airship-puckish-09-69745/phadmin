@@ -727,8 +727,8 @@ export default {
         data: tableData
       }).then(response => {
         if (response.RetCode === 0) {
-          Message.success('更新成功！')
           this.dialogVisible = false
+          Message.success('更新成功！')
           this.$emit('refresh')
         }
       })
