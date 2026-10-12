@@ -780,9 +780,7 @@ export default {
         )
       }
       const defaultTag = this.getDefaultTagByGameType(this.item.gameType)
-      const currentUserLabel = currentUserType === 5
-        ? Number(normalizedUserConfig.userFilterCondition.userTagConfig.tagId) || defaultTag.tagId
-        : null
+      const currentUserLabel = currentUserType === 5 ? Number(normalizedUserConfig.userFilterCondition.userTagConfig.tagId) || defaultTag.tagId : 0
       if (currentUserType === 5 && !currentUserLabel) {
         this.errmsg('请选择用户标签')
         return
