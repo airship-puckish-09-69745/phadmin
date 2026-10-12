@@ -5,43 +5,43 @@
         <el-form ref="frm2" :model="cfg" label-width="230px">
 
           <el-form-item label="普通模式固定额外倍数">
-            <el-input v-model="cfg.NormalPrevExtraOdds" placeholder="请输入内容,如1,2,3,5"> <template slot="append">四个值用 , 连接</template> </el-input>
+            <el-input v-model="cfg.NormalPrevExtraOdds" placeholder="请输入内容,如1,2,3,5"> <template slot="append">用 , 连接</template> </el-input>
           </el-form-item>
 
           <el-form-item label="普通模式随机额外倍数">
-            <el-input v-model="cfg.NormalNextExtraOdds" placeholder="请输入内容,如1,2,3,5"> <template slot="append">四个值用 , 连接</template> </el-input>
+            <el-input v-model="cfg.NormalNextExtraOdds" placeholder="请输入内容,如1,2,3,5"> <template slot="append">用 , 连接</template> </el-input>
           </el-form-item>
 
           <el-form-item label="蓝免费模式固定额外倍数">
-            <el-input v-model="cfg.BluePrevExtraOdds" placeholder="请输入内容,如1,2,3,5"> <template slot="append">四个值用 , 连接</template> </el-input>
+            <el-input v-model="cfg.BluePrevExtraOdds" placeholder="请输入内容,如1,2,3,5"> <template slot="append">用 , 连接</template> </el-input>
           </el-form-item>
 
           <el-form-item label="蓝免费模式随机额外倍数">
-            <el-input v-model="cfg.BlueNextExtraOdds" placeholder="请输入内容,如1,2,3,5"> <template slot="append">四个值用 , 连接</template> </el-input>
+            <el-input v-model="cfg.BlueNextExtraOdds" placeholder="请输入内容,如1,2,3,5"> <template slot="append">用 , 连接</template> </el-input>
           </el-form-item>
 
           <el-form-item label="红免费模式固定额外倍数">
-            <el-input v-model="cfg.RedPrevExtraOdds" placeholder="请输入内容,如1,2,3,5"> <template slot="append">四个值用 , 连接</template> </el-input>
+            <el-input v-model="cfg.RedPrevExtraOdds" placeholder="请输入内容,如1,2,3,5"> <template slot="append">用 , 连接</template> </el-input>
           </el-form-item>
 
           <el-form-item label="红免费模式随机额外倍数">
-            <el-input v-model="cfg.RedNextExtraOdds" placeholder="请输入内容,如1,2,3,5"> <template slot="append">四个值用 , 连接</template> </el-input>
+            <el-input v-model="cfg.RedNextExtraOdds" placeholder="请输入内容,如1,2,3,5"> <template slot="append">用 , 连接</template> </el-input>
           </el-form-item>
 
           <el-form-item label="红蓝免费模式固定额外倍数">
-            <el-input v-model="cfg.RedBluePrevExtraOdds" placeholder="请输入内容,如1,2,3,5"> <template slot="append">四个值用 , 连接</template> </el-input>
+            <el-input v-model="cfg.RedBluePrevExtraOdds" placeholder="请输入内容,如1,2,3,5"> <template slot="append">用 , 连接</template> </el-input>
           </el-form-item>
 
           <el-form-item label="红蓝免费模式随机额外倍数">
-            <el-input v-model="cfg.RedBlueNextExtraOdds" placeholder="请输入内容,如1,2,3,5"> <template slot="append">四个值用 , 连接</template> </el-input>
+            <el-input v-model="cfg.RedBlueNextExtraOdds" placeholder="请输入内容,如1,2,3,5"> <template slot="append">用 , 连接</template> </el-input>
           </el-form-item>
 
           <el-form-item label="超级购买免费模式固定额外倍数">
-            <el-input v-model="cfg.SuperBuyPrevExtraOdds" placeholder="请输入内容,如1,2,3,5"> <template slot="append">四个值用 , 连接</template> </el-input>
+            <el-input v-model="cfg.SuperBuyPrevExtraOdds" placeholder="请输入内容,如1,2,3,5"> <template slot="append">用 , 连接</template> </el-input>
           </el-form-item>
 
           <el-form-item label="超级购买免费模式随机额外倍数">
-            <el-input v-model="cfg.SuperBuyNextExtraOdds" placeholder="请输入内容,如1,2,3,5"> <template slot="append">四个值用 , 连接</template> </el-input>
+            <el-input v-model="cfg.SuperBuyNextExtraOdds" placeholder="请输入内容,如1,2,3,5"> <template slot="append">用 , 连接</template> </el-input>
           </el-form-item>
 
           <el-form-item label="免费模式购买倍数" prop="BuyFreeOdds" :rules="dataRule(true,{type:'n'})">
@@ -60,7 +60,7 @@
             <el-input v-model="cfg.WildWeight" :required="true"><template slot="append">第一个是红wild,第二个是蓝wild用 , 连接</template> </el-input>
           </el-form-item>
 
-          <el-form-item label="变红蓝模式权重" prop="FreeModeWeight">
+          <el-form-item label="进入红蓝模式权重" prop="FreeModeWeight">
             <el-input v-model="cfg.FreeModeWeight" :required="true"><template slot="append">第一个是红模式,第二个是蓝模式,第三个是红蓝模式,用 , 连接</template> </el-input>
           </el-form-item>
           <!--          <el-form-item label="进入红免费概率" prop="redFreeRate">-->
@@ -70,7 +70,7 @@
           <!--            <el-input v-model.number="cfg.blueFreeRate" :required="true" />-->
           <!--          </el-form-item>-->
           <!--          <el-form-item label="购买免费模式中奖倍数范围V2">-->
-          <!--            <el-input v-model="cfg.BuyFreeOddsRangeV2" placeholder="请输入内容,如0,150,151,750"> <template slot="append">四个值用 , 连接。如0,150,151,750表示0,150和151,750</template> </el-input>-->
+          <!--            <el-input v-model="cfg.BuyFreeOddsRangeV2" placeholder="请输入内容,如0,150,151,750"> <template slot="append">用 , 连接。如0,150,151,750表示0,150和151,750</template> </el-input>-->
           <!--          </el-form-item>-->
 
           <!--          <el-form-item label="购买免费模式中奖左范围概率V2">-->
