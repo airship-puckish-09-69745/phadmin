@@ -806,7 +806,7 @@ export default {
         rewardType: this.item.rewardType, // 奖励类型
         gameType: this.item.gameType, // 玩法大类型
         userType: normalizedUserConfig.userTypes, // 用户类型
-        userLabel: currentUserLabel, // 用户标签
+        userLabel: currentUserLabel ?? 0, // 用户标签
         taskCfgData: taskCfgData, // 任务配置（JSON字符串）
         // redBagCfg: redBagCfg, // 红包价值配置（JSON字符串）
         gameIdCfg: gameIdCfg, // 游戏ID配置（JSON字符串）
