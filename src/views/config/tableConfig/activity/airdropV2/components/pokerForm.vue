@@ -521,7 +521,8 @@ export default {
         { value: USER_TYPE_VALUES.NEW, label: '新增用户' },
         { value: USER_TYPE_VALUES.ALL, label: '所有用户' },
         { value: USER_TYPE_VALUES.IMPORT, label: '导入用户' },
-        { value: USER_TYPE_VALUES.FILTER, label: '筛选用户' }
+        { value: USER_TYPE_VALUES.FILTER, label: '筛选用户' },
+        { value: USER_TYPE_VALUES.TAG, label: '用户标签' }
       ]
     }
   },
