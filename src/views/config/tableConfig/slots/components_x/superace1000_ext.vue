@@ -61,7 +61,7 @@
           </el-form-item>
 
           <el-form-item label="进入红蓝模式权重" prop="FreeModeWeight">
-            <el-input v-model="cfg.FreeModeWeight" :required="true"><template slot="append">第一个是普通模式,第二个是红模式,第三个是蓝模式,第四个是红蓝模式,用 , 连接</template> </el-input>
+            <el-input v-model="cfg.FreeModeWeight" :required="true"><template slot="append">第一个是继续普通模式,第二个是红模式,第三个是蓝模式,第四个是红蓝模式,用 , 连接</template> </el-input>
           </el-form-item>
           <!--          <el-form-item label="进入红免费概率" prop="redFreeRate">-->
           <!--            <el-input v-model.number="cfg.redFreeRate" :required="true" />-->
