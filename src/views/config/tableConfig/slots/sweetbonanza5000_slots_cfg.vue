@@ -33,7 +33,7 @@
           <el-tab-pane label="扩展配置" name="ext">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，发布即生效】</h3>
             <publish primary-key="ID" :key-id="getFullKey(getExtSubKey())" :env-empty="false" compare-type="Object" />
-            <slots-sweet-bonanza-5000-ext v-if="extCfgBool" v-model="extCfg" @saveData="saveExtCfg" @multiAppSave="onMultiAppExtSave" />
+            <slots-sweet-bonanza-5000-ext v-if="extCfgBool" v-model="extCfg" :base-bet="baseCfg.BaseBet" @saveData="saveExtCfg" @multiAppSave="onMultiAppExtSave" />
           </el-tab-pane>
           <el-tab-pane label="剧本" name="script">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，发布即生效】</h3>
@@ -64,7 +64,7 @@ import multiAppSlotsConfig from './utils/multiAppSlotsConfig'
 import slotsBaseCfg from './components_x/ireland_base_cfg'
 import slotsSymbolValue from './components_x/symbol_value'
 import slotsPayTable from './components_x/pay_table_rate'
-import slotsSweetBonanza5000Ext from './components_x/sweetbonanza5000_ext'
+import SlotsSweetBonanza5000Ext from './components_x/sweetbonanza5000_ext'
 import slotsScript from './components_x/slots_script'
 import slotsPayLine from './components_x/pay_line'
 import slotsReelsDouble from './components_x/reels_double'
@@ -79,7 +79,7 @@ export default {
     slotsPayTable,
     slotsScript,
     slotsSymbolValue,
-    slotsSweetBonanza5000Ext,
+    SlotsSweetBonanza5000Ext,
     slotsPayLine,
     slotsReelsDouble,
     slotsSymbolcountReels
