@@ -541,7 +541,7 @@ export default {
         taskCfgData: [],
         rewardType: 1, // 默认选中 投注金
         gameType: 1, // 默认选中 Slot
-        userLabel: null // 用户标签
+        userLabel: 0 // 用户标签
 
       }
     },
