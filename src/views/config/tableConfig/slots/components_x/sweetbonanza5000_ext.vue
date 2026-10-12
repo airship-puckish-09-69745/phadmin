@@ -426,13 +426,7 @@ export default {
             }
             const meta = this.getBuyFreeConfMeta(this.buyFreeOddsConf.configKey)
 
-             // 👇 就在这里打印
-    console.log('configKey =', this.buyFreeOddsConf.configKey)
-    console.log('oddsKey =', meta.oddsKey)
-    console.log('odds =', this.cfg[meta.oddsKey])
-    console.log('baseBet =', this.baseBet)
-    console.log('weightTotal =', weightTotal)
-    console.log('currentConf =', this.buyFreeOddsConf.currentConf)
+
 
             // rtp
             let rtp = 0
