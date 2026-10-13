@@ -1289,7 +1289,7 @@ export default {
       const isSameStep = viewResults.every(item => item.data.Step === first.Step)
       const isSameNeedView = viewResults.every(item => item.data.NeedView === first.NeedView)
       let isSameOwner = viewResults.every(item => item.data.IsMy === first.IsMy && item.data.CurUser === first.CurUser)
-      if (isSameStep && first.data.Step === 1) {
+      if (isSameStep && first.Step === 1) {
         isSameOwner = true
       }
       if (!isSameStep || !isSameNeedView || !isSameOwner) {
