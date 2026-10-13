@@ -28,6 +28,18 @@ export const BETTING_GAME_CONFIG = [
   { 'value': 500, 'label': 'Gold Master', 'configKey': 'Gold Master', disabled: false,"shareBet":false }
 ]
 
+export const TONGITS_POT_COIN_GID_CONFIG = [
+  {'value':22,'label':'Tongits-Pot',disabled:false},
+  {'value':28,'label':'Tongits-Joker',disabled:false},
+  {'value':145,'label':'Tongits-1V1',disabled:false},
+]
+
+export const TONGITS_POT_COIN_BETA_MOUNT_CONFIG = [
+  {'value':1000,'label':'bet-1',disabled:false},
+  {'value':2000,'label':'bet-2',disabled:false},
+  {'value':5000,'label':'bet-5',disabled:false},
+]
+
 //比赛门票ID 关联门票权益配置 开发环境
 export const MATCH_TICKET_RIGHTS_ID_CFG_DEV = {
   1000002: [
@@ -221,14 +233,21 @@ export const IsFreeSpinProp = (itemType) => {
 export const IsEffectProp = (itemType) => {
   return itemType === PROP_TYPE_OPTIONS.PROP_TYPE_INTERACTION
 }
+
+//是否为pot券
+export const IsPotCoin = (itemType) => {
+  return itemType === PROP_TYPE_OPTIONS.PROP_TONGITS_POT_COIN
+}
 // 检查是否需要过期天数
 export const CheckPropNeedExpireDays = (itemType) => {
   return [
     PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME,
+    PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_AVATAR,
     PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN,
     PROP_TYPE_OPTIONS.PROP_TYPE_TICKET_NEW,
     PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW,
-    PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW
+    PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW,
+    PROP_TYPE_OPTIONS.PROP_TONGITS_POT_COIN,
   ].includes(itemType)
 }
 
