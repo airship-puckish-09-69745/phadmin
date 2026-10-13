@@ -208,8 +208,8 @@
             <el-col :span="2">
               <el-input v-model.number="item.ItemNum" size="mini" type="number" min="0" :disabled="isNewTicketProp(item.ItemType)"  @input="item.ItemNum = item.ItemNum < 0 ? 0 : item.ItemNum" />
             </el-col>
-            <el-col v-show="(item.ItemType === 2 || item.ItemType === 4 || item.ItemType === 5 ||[7,8,9].includes(item.ItemType))&&!isNegativeItemNum" :span="1" :offset="1"> {{ '时间:' }} </el-col>
-            <el-col v-show="(item.ItemType === 2 ||item.ItemType === 4 || item.ItemType === 5 ||[7,8,9].includes(item.ItemType)) && !isNegativeItemNum" :span="2">
+            <el-col v-show="(CheckPropNeedExpireDays(item.ItemType))&&!isNegativeItemNum" :span="1" :offset="1"> {{ '时间:' }} </el-col>
+            <el-col v-show="(CheckPropNeedExpireDays(item.ItemType)) && !isNegativeItemNum" :span="2">
               <template>
                 <el-select v-model="item.ItemUseTime" size="mini" placeholder="请选择">
                   <el-option v-for="option in ITEM_DAY_TYPE_OPTIONS" :key="'itemusertime'+option.value"
@@ -420,7 +420,7 @@ import DateTimeShow from '@/components/DatetimeShow'
 import { ITEM_TYPE_OPTIONS, ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS } from '@/utils/options'
 import payWithdrawLog from '@/views/playerManage/payWithdrawLog.vue'
 import { GetPropConfigListFromCache, GetMatchTicketRightsId } from '@/utils/propV2'
-import {CheckPropNeedExpireDays, IsNewTicketProp} from "@/utils/prop";
+import {CheckPropNeedExpireDays, IsNewTicketProp,IsPotCoin} from "@/utils/prop";
 
 function NewRelationSummary() {
   return {
@@ -689,6 +689,7 @@ export default {
     this.getInfo()
   },
   methods: {
+    CheckPropNeedExpireDays,
     showSourceAppid(appid) {
       if (appid < 0) { // 出现错误或者空
         return '-'
@@ -1916,9 +1917,8 @@ export default {
     },
     isItemUseTimeDisabled(option) {
 
-
-      // 如果道具类型是 5, 7, 8, 9，且选项值是 0 或 365，则禁用
-      if ([5, 7, 8, 9].includes(this.item.ItemType) && (option.value === 0 || option.value === 365)) {
+      // 如果道具类型是 5, 7, 8, 9，11,且选项值是 0 或 365，则禁用
+      if ([5, 7, 8, 9,11].includes(this.item.ItemType) && (option.value === 0 || option.value === 365)) {
         return true
       }
       if(option.value < 0 ){

@@ -34,7 +34,8 @@ export const ITEM_TYPE_OPTIONS = [
   { 'value': 7, 'label': '新版Tongits门票', disabled: false },
   { 'value': 8, 'label': '新版德州参赛券', disabled: false },
   { 'value': 9, 'label': '新版Pusoy门票', disabled: false },
-  { 'value': 10, 'label': '互动道具', disabled: false }
+  { 'value': 10, 'label': '互动道具', disabled: false },
+  { 'value': 11, 'label': 'Tongits Pot券', disabled: false }
 ]
 
 // 道具过期时间下拉框
@@ -111,7 +112,8 @@ export const PROP_TYPE_OPTIONS = {
   PROP_TYPE_TICKET_NEW: 7, // 新版Tongits门票 带交易ID
   PROP_TYPE_TEXAS_TICKET_NEW: 8, // 新版德州参赛券 带交易ID
   PROP_TYPE_PUSOY_TICKET_NEW: 9, // 新版Pusoy门票 带交易ID
-  PROP_TYPE_INTERACTION: 10 // 互动道具
+  PROP_TYPE_INTERACTION: 10, // 互动道具
+  PROP_TONGITS_POT_COIN: 11 //pot券
 }
 // 操作类型
 export const PROP_SOURCE_OPTIONS = [

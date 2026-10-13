@@ -4,7 +4,7 @@ import {
   GetMatchTicketRightsIdList,
   IsAvatarFrameProp, IsEffectProp,
   IsFreeSpinProp,
-  IsNewTicketProp, MATCH_TICKET_RIGHTS_ID_CFG_DEV,
+  IsNewTicketProp, IsPotCoin, MATCH_TICKET_RIGHTS_ID_CFG_DEV,
   MATCH_TICKET_RIGHTS_ID_CFG_PROD, MATCH_TICKET_RIGHTS_ID_CFG_UAT
 } from "@/utils/prop";
 import {IsDev, IsProdNew, IsUat} from "@/utils/env";
@@ -94,7 +94,11 @@ export const IsAvailablePropItem = (item) => {
   if (IsNewTicketProp(item.item_type)) {
     return GetMatchTicketRightsId(item.id) != null
   }
-  return false
+
+
+  //pot券
+  return IsPotCoin(item.item_type);
+
 }
 
 /**

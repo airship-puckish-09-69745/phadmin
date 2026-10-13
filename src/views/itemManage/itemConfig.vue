@@ -206,7 +206,7 @@
             <el-input v-model="editForm.itemExtra.showName" style="width: 200px;" placeholder="请填写后台名称" />
           </el-form-item>
 
-          <el-form-item v-if="isTicketPropNew(editForm.data.itemType)" label="道具价值：" :required="true">
+          <el-form-item v-if="isTicketPropNew(editForm.data.itemType) || isPotCoin(editForm.data.itemType)" label="道具价值：" :required="true">
             <el-input v-model.number="editForm.data.itemCost" style="width: 200px;" placeholder="请填写道具价值" />
           </el-form-item>
 
@@ -288,12 +288,24 @@
                   <el-option v-for="item in BETTING_GAME_CONFIG" :key="item.value" :label="item.label" :value="item.value" :disabled="item.disabled" />
                 </el-select>
               </el-form-item>
+
+              <el-form-item v-if="isPotCoin(editForm.data.itemType)" label="关联游戏:" :required="true">
+                <el-select v-model="editForm.itemExtra.gid" placeholder="请选择" size="mini"  multiple filterable >
+                  <el-option v-for="item in TONGITS_POT_COIN_GID_CONFIG" :key="item.value" :label="item.label" :value="item.value" :disabled="item.disabled" />
+                </el-select>
+              </el-form-item>
             </el-col>
 
             <el-col :span="11">
               <el-form-item v-if="isFreeSpin(editForm.data.itemType)" label="betAmount:" :required="true">
                 <el-select v-model="editForm.itemExtra.betAmount" placeholder="请选择" size="mini" :disabled="!editForm.isAdd">
                   <el-option v-for="item in slotDefaultBetAmount" :key="item.value" :label="item.label" :value="item.value" :disabled="item.disabled" />
+                </el-select>
+              </el-form-item>
+
+              <el-form-item v-if="isPotCoin(editForm.data.itemType)" label="适用场次:" :required="true">
+                <el-select v-model="editForm.itemExtra.betAmountList" placeholder="请选择" size="mini"  multiple filterable >
+                  <el-option v-for="item in TONGITS_POT_COIN_BETA_MOUNT_CONFIG" :key="item.value" :label="item.label" :value="item.value" :disabled="item.disabled" />
                 </el-select>
               </el-form-item>
             </el-col>
@@ -328,7 +340,10 @@ import DateTimeShow from '@/components/DatetimeShow'
 import { $libDate, $libShow } from '@/utils/common'
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
 import { ITEM_TYPE_OPTIONS, ITEM_DAY_TYPE_OPTIONS, PROP_TYPE_OPTIONS,APPID_OPTIONS } from '@/utils/options'
-import { BETTING_GAME_CONFIG } from '@/utils/prop'
+import {
+  BETTING_GAME_CONFIG, TONGITS_POT_COIN_GID_CONFIG,
+  TONGITS_POT_COIN_BETA_MOUNT_CONFIG
+} from '@/utils/prop'
 import {getAppId} from "@/utils/app";
 
 export default {
@@ -347,6 +362,8 @@ export default {
       selectTime: [$libDate.GetDayBegin(new Date().setSeconds(0)), $libDate.GetDayEnd(new Date().setSeconds(0))],
       imagePickerVisible: false,
       itemEnv: process.env.NODE_ENV, // 项目环境
+      TONGITS_POT_COIN_GID_CONFIG,
+      TONGITS_POT_COIN_BETA_MOUNT_CONFIG,
 
       //道具子类型
       ItemSubAttrCfg: [
@@ -416,7 +433,8 @@ export default {
           showName: '',
           gid: [],
           betAmount: 0,
-          effectType: 1
+          effectType: 1,
+          betAmountList:[],
         },
         itemEndDate: $libDate.GetDayBegin(new Date().setSeconds(0))
       },
@@ -527,7 +545,8 @@ export default {
           gid: [],
           betAmount: 0,
           appId: 1000002,
-          effectType: 1
+          effectType: 1,
+          betAmountList:[],
         }
         this.checkAll()
         this.editForm.itemEndDate = $libDate.GetDayBegin(new Date().setSeconds(0))
@@ -585,6 +604,9 @@ export default {
       const itemType = item.item_type;
       if (this.isTicketPropNew(itemType)) {
         return item.item_cost || 0;
+      }
+      if(this.isPotCoin(itemType)){
+        return item.item_cost;
       }
       if (this.isFreeSpin(itemType)) {
         if (item.item_extra && item.item_extra.trim().length > 0) {
@@ -963,7 +985,10 @@ export default {
         this.slotFreeSpinPropReset()
       } else if (this.isTicketPropNew(this.editForm.data.itemType)) {
         this.slotFreeSpinPropReset()
-        if (typeof this.editForm.data.itemCost === 'undefined' || this.editForm.data.itemCost === null || this.editForm.data.itemCost === '') {
+      }
+
+      if(this.isPotCoin(this.editForm.data.itemType) || this.isTicketPropNew(this.editForm.data.itemType)){
+        if (typeof this.editForm.data.itemCost === 'undefined' || this.editForm.data.itemCost === 0 || this.editForm.data.itemCost === '') {
           this.errmsg('请填写道具价值')
           return false
         }
@@ -1025,6 +1050,16 @@ export default {
           }
         }
       }
+      if(this.isPotCoin(this.editForm.data.itemType)) {
+        if(this.editForm.itemExtra.gid.length === 0) {
+          this.errmsg('需要勾选适配游戏')
+          return false
+        }
+        if(this.editForm.itemExtra.betAmountList.length === 0) {
+          this.errmsg('需要勾选适用场次')
+          return false
+        }
+      }
       return true
     },
     isTicketPropNew(itemType) {
@@ -1040,6 +1075,9 @@ export default {
     },
     isFreeSpin(itemType){
       return itemType === PROP_TYPE_OPTIONS.PROP_TYPE_SLOT_FREE_SPIN
+    },
+    isPotCoin(itemType) {
+      return itemType ===  PROP_TYPE_OPTIONS.PROP_TONGITS_POT_COIN
     },
     getAppIdName(item_extra) {
       try {
