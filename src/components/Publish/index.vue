@@ -1288,7 +1288,10 @@ export default {
       const first = viewResults[0].data
       const isSameStep = viewResults.every(item => item.data.Step === first.Step)
       const isSameNeedView = viewResults.every(item => item.data.NeedView === first.NeedView)
-      const isSameOwner = viewResults.every(item => item.data.IsMy === first.IsMy && item.data.CurUser === first.CurUser)
+      let isSameOwner = viewResults.every(item => item.data.IsMy === first.IsMy && item.data.CurUser === first.CurUser)
+      if (isSameStep && first.data.Step === 1) {
+        isSameOwner = true
+      }
       if (!isSameStep || !isSameNeedView || !isSameOwner) {
         this.$message.error('所选App发布流程状态不一致，请分别处理')
         this.clearMultiAppFlow()
