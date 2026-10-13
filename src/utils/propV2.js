@@ -94,6 +94,8 @@ export const IsAvailablePropItem = (item) => {
   if (IsNewTicketProp(item.item_type)) {
     return GetMatchTicketRightsId(item.id) != null
   }
+
+
   //pot券
   return IsPotCoin(item.item_type);
 
