@@ -507,8 +507,7 @@ export default {
           this.getData()
         }
       })
-    }
-  },
+    },
     getAppInfos() {
       request({
         url: '/thirdparties/all',
