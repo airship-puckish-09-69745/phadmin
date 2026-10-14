@@ -65,7 +65,7 @@
           </el-form-item>
 
           <el-form-item label="顶部筹码状态scatter个数" prop="FreeModeWeight">
-            <el-input v-model="cfg.TopMoneyScatterNum" :required="true"><template slot="append">共三个值,达到一定数量即可进入某一个状态</template> </el-input>
+            <el-input v-model="cfg.TopMoneyScatterNum" :required="true"><template slot="append">共三个值,累计达到一定数量即可进入某一个状态</template> </el-input>
           </el-form-item>
           <!--          <el-form-item label="进入红免费概率" prop="redFreeRate">-->
           <!--            <el-input v-model.number="cfg.redFreeRate" :required="true" />-->
