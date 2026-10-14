@@ -48,6 +48,10 @@
             <el-input v-model.number="cfg.BuyFreeOdds" :required="true" />
           </el-form-item>
 
+          <el-form-item label="超级免费模式购买倍数" prop="BuySuperFreeOdds" :rules="dataRule(true,{type:'n'})">
+            <el-input v-model.number="cfg.BuySuperFreeOdds" :required="true" />
+          </el-form-item>
+
           <el-form-item label="进入免费模式的最小赔率" prop="ScatterOdds" :rules="dataRule(true,{type:'n'})">
             <el-input v-model.number="cfg.ScatterOdds" :required="true" />
           </el-form-item>
@@ -64,7 +68,7 @@
             <el-input v-model="cfg.FreeModeWeight" :required="true"><template slot="append">第一个是红模式,第二个是蓝模式,第三个是红蓝模式,用 , 连接</template> </el-input>
           </el-form-item>
 
-          <el-form-item label="顶部筹码状态scatter个数" prop="FreeModeWeight">
+          <el-form-item label="顶部筹码状态scatter个数" prop="TopMoneyScatterNum">
             <el-input v-model="cfg.TopMoneyScatterNum" :required="true"><template slot="append">共三个值,累计达到一定数量即可进入某一个状态</template> </el-input>
           </el-form-item>
           <!--          <el-form-item label="进入红免费概率" prop="redFreeRate">-->
