@@ -19,10 +19,6 @@
             <el-input v-model.number="config.ScatterOdds" :required="true" />
           </el-form-item>
 
-          <el-form-item label="">
-            模式权重顺序：普通,NUDGE
-          </el-form-item>
-
           <el-form-item label="模式权重" prop="ModeWeight" :rules="dataRule(true, { type: 's' })">
             <el-input v-model="config.ModeWeight" placeholder="请输入内容,如100,100">
               <template slot="append">长度必须为3：普通,NUDGE,免费</template>
