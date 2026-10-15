@@ -269,6 +269,11 @@ export const CheckPropExpireDays = (propType, expireDays) => {
         return false
       }
       break
+    case PROP_TYPE_OPTIONS.PROP_TONGITS_POT_COIN:
+      if (expireDays === 0 || expireDays === 365) {
+        return false
+      }
+      break
     default:
       // 其他道具类型：默认有效
       break
