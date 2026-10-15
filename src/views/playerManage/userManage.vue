@@ -1926,6 +1926,9 @@ export default {
         if (this.item.ItemType === 5){
           return false
         }
+        if(IsPotCoin(this.item.ItemType)){
+          return false
+        }
         return true
       }
       return false
