@@ -489,13 +489,19 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           for (let i = 0; i < response.Data.length; i++) {
-            if (response.Data[i].Gid < 50 || response.Data[i].CategoryID !== 1) {
+            if (response.Data[i].Gid < 50 || response.Data[i].Gid > 100 && response.Data[i].Gid < 150 || (response.Data[i].Gid > 499 && response.Data[i].Gid !== 1236 && response.Data[i].Gid !== 1237 && response.Data[i].Gid !== 1242)) {
               continue
             }
             this.gameOptions.push({
               key: response.Data[i].Gid,
               label: response.Data[i].Name
             })
+          }
+          if (!this.gameOptions.some(o => parseInt(o.key) === 1237)) {
+            this.gameOptions.push({ key: 1237, label: 'Pahiyas Win\'s试玩' })
+          }
+          if (!this.gameOptions.some(o => parseInt(o.key) === 1242)) {
+            this.gameOptions.push({ key: 1242, label: 'Museo Yaman试玩' })
           }
           this.gameOptions.sort((a, b) => a.label.localeCompare(b.label))
           this.getData()
