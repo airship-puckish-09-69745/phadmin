@@ -25,7 +25,7 @@
 
           <el-form-item label="模式权重" prop="ModeWeight" :rules="dataRule(true, { type: 's' })">
             <el-input v-model="config.ModeWeight" placeholder="请输入内容,如100,100">
-              <template slot="append">长度必须为2：普通,NUDGE</template>
+              <template slot="append">长度必须为3：普通,NUDGE,免费</template>
             </el-input>
           </el-form-item>
 
@@ -220,8 +220,8 @@ export default {
         Message.error('倍数颜色配置长度需和公共倍数一致')
         return false
       }
-      if (splitLen(this.config.ModeWeight) !== 2) {
-        Message.error('模式权重长度必须为2（普通,NUDGE）')
+      if (splitLen(this.config.ModeWeight) !== 3) {
+        Message.error('模式权重长度必须为3（普通,NUDGE,免费）')
         return false
       }
       if (splitLen(this.config.FreeModeWeight) !== 2) {
