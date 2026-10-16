@@ -421,7 +421,10 @@
                 </fieldset>
                 <fieldset style="margin-top: 10px">
                   <legend>排名奖励配置</legend>
-                  <el-button size="mini" type="primary" @click="handleAddRankReward()">添加</el-button>
+                  <div style="margin-bottom: 8px; display: flex; align-items: center; gap: 12px;">
+                    <el-button size="mini" type="primary" icon="el-icon-plus" @click="handleAddRankReward()">添加奖励</el-button>
+                    <span style="color: #909399; font-size: 12px;">当前 {{ edit.item.extend.rewardList.length }} 行，最少1行，最多20行</span>
+                  </div>
                   <el-table
                     :data="edit.item.extend.rewardList"
                     border
@@ -446,99 +449,17 @@
                         <el-input v-model.number="scope.row.rankEnd" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
                       </template>
                     </el-table-column>
-                    <el-table-column
-                      prop="rewardItem"
-                      label="奖励类型"
-                    >
+                    <el-table-column prop="rewardItem" label="奖励配置">
                       <template slot-scope="scope">
-                        <el-select
-                          v-model.number="scope.row.rewardItem.rewardType"
-                          disabled
-                          placeholder="请选择奖励类型"
-                          @change="onRowRewardTypeChange(scope.row.rewardItem)"
-                        >
-                          <el-option
-                            v-for="item in rewardTypes"
-                            :key="item.value"
-                            :label="item.label"
-                            :value="item.value"
-                          />
-                        </el-select>
+                        <RewardConfig
+                          v-model="scope.row.rewardItem"
+                          :enabled-types="['betMoney', 'Prop', 'RichCard']"
+                        />
                       </template>
                     </el-table-column>
-                    <el-table-column
-                      prop="reward"
-                      width="105"
-                    >
-                      <template slot="header" slot-scope="scope">
-                        {{ edit.item.extend.rewardWay === 1 ? '奖励数值' : '奖励百分比%' }}
-                      </template>
+                    <el-table-column label="操作" width="80" column-key="op">
                       <template slot-scope="scope">
-                        <el-input v-model="scope.row.rewardItem.rewardNum" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
-                      </template>
-                    </el-table-column>
-                    <el-table-column
-                      prop="rewardItem"
-                      label="道具类型"
-                    >
-                      <template slot-scope="scope">
-                        <el-select
-                          v-if="showRowPropSelect(scope.row.rewardItem)"
-                          v-model.number="scope.row.rewardItem.rewardSubType"
-                          placeholder="请选择道具类型"
-                          @change="updatePropOptions(scope.row.rewardItem.rewardSubType, scope.$index + 1)"
-                        >
-                          <el-option
-                            v-for="item in propTypeOptions"
-                            :key="item.value"
-                            :label="item.label"
-                            :value="item.value"
-                          />
-                        </el-select>
-                      </template>
-                    </el-table-column>
-                    <el-table-column
-                      prop="rewardItem"
-                      label="道具名称"
-                      width="200"
-                    >
-                      <template slot-scope="scope">
-                        <el-select
-                          v-if="showRowPropSelect(scope.row.rewardItem)"
-                          v-model.number="scope.row.rewardItem.rewardId"
-                          placeholder="请选择道具"
-                        >
-                          <el-option
-                            v-for="item in propOptions[scope.$index + 1]"
-                            :key="item.value"
-                            :label="item.label"
-                            :value="item.value"
-                          />
-                        </el-select>
-                      </template>
-                    </el-table-column>
-                    <el-table-column
-                      prop="rewardItem"
-                      label="可用时间"
-                    >
-                      <template slot-scope="scope">
-                        <el-select
-                          v-if="showPropTimeOptions(scope.row.rewardItem.rewardSubType)"
-                          v-model.number="scope.row.rewardItem.rewardExpireDays"
-                          placeholder="请选择可用时间"
-                        >
-                          <el-option
-                            v-for="item in propDayTypeOptions"
-                            :key="item.value"
-                            :label="item.label"
-                            :value="item.value"
-                          />
-                        </el-select>
-                      </template>
-                    </el-table-column>
-                    <el-table-column label="操作" column-key="op">
-                      <template slot-scope="scope">
-                        <el-button size="mini" icon="el-icon-delete" @click="handleDelRankReward(scope.$index)" />
+                        <el-button size="mini" type="danger" icon="el-icon-delete" @click="handleDelRankReward(scope.$index)" />
                       </template>
                     </el-table-column>
                   </el-table>
@@ -590,6 +511,7 @@ import SiteSelect from "@/components/SiteSelect/index.vue";
 import Compare from "@/components/Compare/index.vue";
 import GameTreeSelector from "@/components/GamesTreeSelector/index.vue";
 import ImagePicker from "@/components/ImagePicker/ImagePicker.vue"
+import RewardConfig from "@/components/RewardConfig/index.vue";
 import store from "@/store";
 import {$libDate, $libShow, ClientTableData, DataRule} from "@/utils/common";
 import request from "@/utils/request";
@@ -669,8 +591,7 @@ function newRankRewardItem() {
   return {
     rankStart: 0,
     rankEnd: 0,
-    reward: 0,
-    rewardItem: newRewardItem()
+    rewardItem: { betMoney: [], Prop: [], RichCard: [] }
   }
 }
 
@@ -680,7 +601,8 @@ export default {
     GameTreeSelector,
     SiteSelect,
     Publish,
-    ImagePicker
+    ImagePicker,
+    RewardConfig
   },
   data() {
     return {
@@ -833,12 +755,7 @@ export default {
     },
     'edit.item.extend.rewardWay': {
       handler(newVal, oldVal) {
-        this.isRewardTypesSelectDisabled = newVal === 2 // 是否按比例发放奖励
-        if (newVal === 2) {
-          for (let item of this.edit.item.extend.rewardList) {
-            item.rewardItem.rewardType = 2 // 投注金
-          }
-        }
+        this.isRewardTypesSelectDisabled = newVal === 2
       }
     }
   },
@@ -894,9 +811,17 @@ export default {
       this.changeStatus(ob.id, 3, '您确定要将记录状态修改为废弃吗？')
     },
     handleAddRankReward() {
+      if (this.edit.item.extend.rewardList.length >= 20) {
+        Message.error('排名奖励最多添加20行')
+        return
+      }
       this.edit.item.extend.rewardList.push(newRankRewardItem())
     },
     handleDelRankReward(index) {
+      if (this.edit.item.extend.rewardList.length <= 1) {
+        Message.error('排名奖励至少保留1行')
+        return
+      }
       this.edit.item.extend.rewardList.splice(index, 1)
     },
     getList() {
@@ -1063,14 +988,6 @@ export default {
 
       let maxRankShow = 0
       for (const reward of item.extend.rewardList) {
-        if (item.extend.rewardWay === 1 && reward.rewardItem.rewardType === 2) {
-          reward.rewardItem.rewardNum *= 1000
-        } else if (item.extend.rewardWay === 2) {
-          reward.rewardItem.rewardNum *= 100
-        } else {
-          reward.rewardItem.rewardNum = parseInt(reward.rewardItem.rewardNum)
-        }
-        reward.reward = reward.rewardItem.rewardNum
         maxRankShow = Math.max(maxRankShow, reward.rankEnd)
       }
       item.extend.maxRankShow = maxRankShow
@@ -1122,18 +1039,10 @@ export default {
           item.extend.totalRewardLimitPerDay /= 1000
 
           for (const rewardCfg of item.extend.rewardList) {
-            if (rewardCfg.rewardItem === undefined) {
-              rewardCfg.rewardItem = {}
-              this.$set(rewardCfg, 'rewardItem', newRewardItem())
-              rewardCfg.rewardItem.rewardNum = rewardCfg.reward
-              rewardCfg.rewardItem.rewardType = 2
+            // 兼容旧格式：将 rewardItem 规范化为新格式 {betMoney,Prop,RichCard}
+            if (!rewardCfg.rewardItem || typeof rewardCfg.rewardItem.betMoney === 'undefined') {
+              this.$set(rewardCfg, 'rewardItem', { betMoney: [], Prop: [], RichCard: [] })
             }
-            if (item.extend.rewardWay === 1 && rewardCfg.rewardItem.rewardType === 2) {
-              rewardCfg.rewardItem.rewardNum /= 1000
-            } else if (item.extend.rewardWay === 2) {
-              rewardCfg.rewardItem.rewardNum /= 100
-            }
-            rewardCfg.reward = rewardCfg.rewardItem.rewardNum
           }
 
           if (item.activity.whitelist.uidList.length > 0) {
