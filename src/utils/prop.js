@@ -40,6 +40,10 @@ export const TONGITS_POT_COIN_BETA_MOUNT_CONFIG = [
   {'value':5000,'label':'bet-5',disabled:false},
 ]
 
+export const TONGITS_POT_BET_LIST_CONFIG =[
+  
+]
+
 //比赛门票ID 关联门票权益配置 开发环境
 export const MATCH_TICKET_RIGHTS_ID_CFG_DEV = {
   1000002: [
