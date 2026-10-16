@@ -115,6 +115,7 @@ export const systemMoneyChart = {
         236: 'Pacquiao Fortune',
         238: 'Masskara Fortune',
         240: 'Bathala Age of Creation',
+        277: 'Super Ace 1000',
         242: 'Museo Yaman',
         244: 'Wild Bone',
         246: 'Tala Reyes South Sea Pearls',
