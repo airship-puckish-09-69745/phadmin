@@ -26,127 +26,89 @@
       append-to-body
       :close-on-click-modal="false"
     >
-      <!-- 金币（投注金） -->
-      <fieldset v-if="showType('betMoney')" style="margin-bottom:16px;">
-        <legend><b>金币（投注金）</b></legend>
-        <el-button size="mini" type="primary" icon="el-icon-plus" @click="addBetMoney" style="margin-bottom:8px;">添加</el-button>
-        <el-table :data="form.betMoney" border size="small" style="width:100%;">
-          <el-table-column label="投注金方式" width="220" align="center">
-            <template slot-scope="scope">
-              <el-radio-group v-model="scope.row.method">
-                <el-radio label="percent">百分百</el-radio>
-                <el-radio label="fixed">固定数值</el-radio>
-              </el-radio-group>
-            </template>
-          </el-table-column>
-          <el-table-column label="投注金数值" align="center">
-            <template slot-scope="scope">
-              <el-input v-model.number="scope.row.amount" size="mini" placeholder="数值" oninput="if(value<0||value===''){value=0}" />
-            </template>
-          </el-table-column>
-          <el-table-column label="发放上限" align="center">
-            <template slot-scope="scope">
-              <el-input v-model.number="scope.row.limit" size="mini" placeholder="上限" oninput="if(value<0||value===''){value=0}" />
-            </template>
-          </el-table-column>
-          <el-table-column label="操作" width="60" align="center">
-            <template slot-scope="scope">
-              <el-button size="mini" type="danger" icon="el-icon-delete" @click="form.betMoney.splice(scope.$index,1)" />
-            </template>
-          </el-table-column>
-        </el-table>
+      <fieldset style="margin-bottom:16px;">
+        <legend><b>奖励类型</b></legend>
+        <el-radio-group v-model="selectedRewardType" @change="ensureSingleRow">
+          <el-radio v-for="item in availableRewardTypes" :key="item.value" :label="item.value">{{ item.label }}</el-radio>
+        </el-radio-group>
+      </fieldset>
+
+      <!-- 投注金 -->
+      <fieldset v-if="selectedRewardType === 'betMoney' && form.betMoney[0]" style="margin-bottom:16px;">
+        <legend><b>投注金</b></legend>
+        <el-form label-width="100px" size="mini">
+          <el-form-item label="投注金方式">
+            <el-radio-group v-model="form.betMoney[0].method">
+              <el-radio label="percent">百分比</el-radio>
+              <el-radio label="fixed">固定数值</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="投注金数值">
+            <el-input v-model.number="form.betMoney[0].amount" placeholder="数值" oninput="if(value<0||value===''){value=0}" />
+          </el-form-item>
+          <el-form-item label="发放上限">
+            <el-input v-model.number="form.betMoney[0].limit" placeholder="上限" oninput="if(value<0||value===''){value=0}" />
+          </el-form-item>
+        </el-form>
       </fieldset>
 
       <!-- 道具 -->
-      <fieldset v-if="showType('Prop')" style="margin-bottom:16px;">
+      <fieldset v-if="selectedRewardType === 'Prop' && form.Prop[0]" style="margin-bottom:16px;">
         <legend><b>道具</b></legend>
-        <el-button size="mini" type="primary" icon="el-icon-plus" @click="addProp" style="margin-bottom:8px;">添加</el-button>
-        <el-table :data="form.Prop" border size="small" style="width:100%;">
-          <el-table-column label="道具类型" width="170" align="center">
-            <template slot-scope="scope">
-              <el-select v-model.number="scope.row.propType" size="mini" placeholder="请选择" style="width:100%;" @change="onPropTypeChange(scope.row)">
-                <el-option v-for="opt in filteredPropTypeOptions" :key="opt.value" :label="opt.label" :value="opt.value" />
-              </el-select>
-            </template>
-          </el-table-column>
-          <el-table-column label="道具名称" width="190" align="center">
-            <template slot-scope="scope">
-              <el-select v-model.number="scope.row.propId" size="mini" placeholder="请选择" style="width:100%;" @change="onPropNameChange(scope.row)">
-                <el-option v-for="opt in getPropNameOptions(scope.row.propType)" :key="opt.value" :label="opt.label" :value="opt.value" />
-              </el-select>
-            </template>
-          </el-table-column>
-          <el-table-column label="可用时间" width="120" align="center">
-            <template slot-scope="scope">
-              <el-select v-model.number="scope.row.expireDays" size="mini" placeholder="请选择" style="width:100%;">
-                <el-option v-for="opt in propDayTypeOptions" :key="opt.value" :label="opt.label" :value="opt.value" />
-              </el-select>
-            </template>
-          </el-table-column>
-          <el-table-column label="道具数量" width="90" align="center">
-            <template slot-scope="scope">
-              <el-input v-model.number="scope.row.propNum" size="mini" oninput="if(value<0||value===''){value=0}" />
-            </template>
-          </el-table-column>
-          <el-table-column label="道具上限" width="90" align="center">
-            <template slot-scope="scope">
-              <el-input v-model.number="scope.row.propLimit" size="mini" oninput="if(value<0||value===''){value=0}" />
-            </template>
-          </el-table-column>
-          <el-table-column label="操作" width="60" align="center">
-            <template slot-scope="scope">
-              <el-button size="mini" type="danger" icon="el-icon-delete" @click="form.Prop.splice(scope.$index,1)" />
-            </template>
-          </el-table-column>
-        </el-table>
+        <el-form label-width="100px" size="mini">
+          <el-form-item label="道具类型">
+            <el-select v-model.number="form.Prop[0].propType" placeholder="请选择" style="width:100%;" @change="onPropTypeChange(form.Prop[0])">
+              <el-option v-for="opt in filteredPropTypeOptions" :key="opt.value" :label="opt.label" :value="opt.value" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="道具名称">
+            <el-select v-model.number="form.Prop[0].propId" placeholder="请选择" style="width:100%;" @change="onPropNameChange(form.Prop[0])">
+              <el-option v-for="opt in getPropNameOptions(form.Prop[0].propType)" :key="opt.value" :label="opt.label" :value="opt.value" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="可用时间">
+            <el-select v-model.number="form.Prop[0].expireDays" placeholder="请选择" style="width:100%;">
+              <el-option v-for="opt in propDayTypeOptions" :key="opt.value" :label="opt.label" :value="opt.value" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="道具数量">
+            <el-input v-model.number="form.Prop[0].propNum" oninput="if(value<0||value===''){value=0}" />
+          </el-form-item>
+          <el-form-item label="道具上限">
+            <el-input v-model.number="form.Prop[0].propLimit" oninput="if(value<0||value===''){value=0}" />
+          </el-form-item>
+        </el-form>
       </fieldset>
 
       <!-- 富裕卡 -->
-      <fieldset v-if="showType('RichCard')" style="margin-bottom:16px;">
+      <fieldset v-if="selectedRewardType === 'RichCard' && form.RichCard[0]" style="margin-bottom:16px;">
         <legend><b>富裕卡</b></legend>
-        <el-button size="mini" type="primary" icon="el-icon-plus" @click="addRichCard" style="margin-bottom:8px;">添加</el-button>
-        <el-table :data="form.RichCard" border size="small" style="width:100%;">
-          <el-table-column label="适用游戏" width="210" align="center">
-            <template slot-scope="scope">
-              <el-select v-model.number="scope.row.slotsType" filterable size="mini" placeholder="请选择游戏" style="width:100%;">
-                <el-option v-for="opt in richCardGameOptions" :key="opt.value" :label="opt.label" :value="opt.value" />
-              </el-select>
-            </template>
-          </el-table-column>
-          <el-table-column label="富裕卡（星级/Bet）" width="200" align="center">
-            <template slot-scope="scope">
-              <el-cascader
-                v-model="scope.row._richCardSelect"
-                :options="richCardOptions"
-                :props="{ expandTrigger: 'hover' }"
-                size="mini"
-                placeholder="请选择"
-                style="width:100%;"
-                @change="onRichCardSelectChange(scope.row)"
-              />
-            </template>
-          </el-table-column>
-          <el-table-column label="奖励数量" width="90" align="center">
-            <template slot-scope="scope">
-              <el-input v-model.number="scope.row.rewardNum" size="mini" oninput="if(value<0||value===''){value=0}" />
-            </template>
-          </el-table-column>
-          <el-table-column label="有效天数" width="90" align="center">
-            <template slot-scope="scope">
-              <el-input v-model.number="scope.row.validDays" size="mini" oninput="if(value<0||value===''){value=0}" />
-            </template>
-          </el-table-column>
-          <el-table-column label="发放上限" width="90" align="center">
-            <template slot-scope="scope">
-              <el-input v-model.number="scope.row.limit" size="mini" oninput="if(value<0||value===''){value=0}" />
-            </template>
-          </el-table-column>
-          <el-table-column label="操作" width="60" align="center">
-            <template slot-scope="scope">
-              <el-button size="mini" type="danger" icon="el-icon-delete" @click="form.RichCard.splice(scope.$index,1)" />
-            </template>
-          </el-table-column>
-        </el-table>
+        <el-form label-width="100px" size="mini">
+          <el-form-item label="适用游戏">
+            <el-select v-model.number="form.RichCard[0].slotsType" filterable placeholder="请选择游戏" style="width:100%;">
+              <el-option v-for="opt in richCardGameOptions" :key="opt.value" :label="opt.label" :value="opt.value" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="星级/Bet">
+            <el-cascader
+              v-model="form.RichCard[0]._richCardSelect"
+              :options="richCardOptions"
+              :props="{ expandTrigger: 'hover' }"
+              placeholder="请选择"
+              style="width:100%;"
+              @change="onRichCardSelectChange(form.RichCard[0])"
+            />
+          </el-form-item>
+          <el-form-item label="奖励数量">
+            <el-input v-model.number="form.RichCard[0].rewardNum" oninput="if(value<0||value===''){value=0}" />
+          </el-form-item>
+          <el-form-item label="有效天数">
+            <el-input v-model.number="form.RichCard[0].validDays" oninput="if(value<0||value===''){value=0}" />
+          </el-form-item>
+          <el-form-item label="发放上限">
+            <el-input v-model.number="form.RichCard[0].limit" oninput="if(value<0||value===''){value=0}" />
+          </el-form-item>
+        </el-form>
       </fieldset>
 
       <div slot="footer">
@@ -215,6 +177,7 @@ export default {
   data() {
     return {
       dialogVisible: false,
+      selectedRewardType: '',
       // 弹窗内的编辑表单，从 value 初始化
       form: emptyReward(),
 
@@ -252,13 +215,23 @@ export default {
       }
       return ALL_PROP_TYPE_OPTIONS.filter(o => this.propTypes.includes(o.value))
     },
+    availableRewardTypes() {
+      const labels = {
+        betMoney: '投注金',
+        Prop: '道具',
+        RichCard: '富裕卡'
+      }
+      return this.enabledTypes
+        .filter(type => labels[type])
+        .map(type => ({ value: type, label: labels[type] }))
+    },
     // 摘要文字列表，用于已配置时显示
     summaryTexts() {
       const v = this.value || emptyReward()
       const texts = []
 
       // betMoney
-      ;(v.betMoney || []).forEach(item => {
+      ;(v.betMoney || []).slice(0, 1).forEach(item => {
         if (item.method === 'percent') {
           texts.push(`投注金 ${item.amount}%，上限 ${item.limit}`)
         } else {
@@ -267,7 +240,7 @@ export default {
       })
 
       // Prop
-      ;(v.Prop || []).forEach(item => {
+      ;(v.Prop || []).slice(0, 1).forEach(item => {
         const typeLabel = PROP_LABEL_MAP[item.propType] || `道具${item.propType}`
         const name = item.propName || `ID:${item.propId}`
         const days = item.expireDays === 0 ? '永久' : `${item.expireDays}天`
@@ -275,7 +248,7 @@ export default {
       })
 
       // RichCard
-      ;(v.RichCard || []).forEach(item => {
+      ;(v.RichCard || []).slice(0, 1).forEach(item => {
         const game = this.richCardGameOptions.find(o => o.value === item.slotsType)
         const gameName = game ? game.label : (item.slotsType ? `游戏[${item.slotsType}]` : '未选游戏')
         const bet = item.bet ? `Bet ${Number(item.bet) / 1000}` : 'Bet ?'
@@ -301,66 +274,97 @@ export default {
     },
 
     openDialog() {
+      if (this.availableRewardTypes.length === 0) {
+        Message.error('未配置可用奖励类型')
+        return
+      }
       // 深拷贝 value 进入表单，为 RichCard 添加 _richCardSelect 辅助字段
       const raw = JSON.parse(JSON.stringify(this.value || emptyReward()))
-      raw.betMoney = raw.betMoney || []
-      raw.Prop = raw.Prop || []
-      raw.RichCard = (raw.RichCard || []).map(item => ({
+      raw.betMoney = (raw.betMoney || []).slice(0, 1)
+      raw.Prop = (raw.Prop || []).slice(0, 1)
+      raw.RichCard = (raw.RichCard || []).slice(0, 1).map(item => ({
         ...item,
         _richCardSelect: (item.richCardLevel && item.bet) ? [item.richCardLevel, item.bet] : []
       }))
       this.form = raw
+      this.selectedRewardType = this.getInitialRewardType(raw)
+      this.ensureSingleRow(this.selectedRewardType)
       this.dialogVisible = true
     },
 
     handleConfirm() {
-      if (this.showType('Prop')) {
-        for (const item of this.form.Prop) {
-          if (!item.propType) { Message.error('请选择道具类型'); return }
-          if (!item.propId) { Message.error('请选择道具名称'); return }
-        }
+      if (this.selectedRewardType === 'Prop') {
+        const item = this.form.Prop[0]
+        if (!item) { Message.error('请先配置道具奖励'); return }
+        if (!item.propType) { Message.error('请选择道具类型'); return }
+        if (!item.propId) { Message.error('请选择道具名称'); return }
       }
-      if (this.showType('RichCard')) {
-        for (const item of this.form.RichCard) {
-          if (!item.slotsType) { Message.error('请选择适用游戏'); return }
-          if (!item.richCardLevel || !item.bet) { Message.error('请选择富裕卡星级和Bet'); return }
+      if (this.selectedRewardType === 'RichCard') {
+        const item = this.form.RichCard[0]
+        if (!item) { Message.error('请先配置富裕卡奖励'); return }
+        if (!item.slotsType) { Message.error('请选择适用游戏'); return }
+        if (!item.richCardLevel || !item.bet) { Message.error('请选择富裕卡星级和Bet'); return }
+      }
+      if (this.selectedRewardType === 'betMoney') {
+        const item = this.form.betMoney[0]
+        if (!item) { Message.error('请先配置投注金奖励'); return }
+        if (!item.method) { Message.error('请选择投注金方式'); return }
+        if (item.amount === '' || item.limit === '' || item.amount === null || item.limit === null ||
+          !Number.isFinite(Number(item.amount)) || !Number.isFinite(Number(item.limit)) ||
+          Number(item.amount) < 0 || Number(item.limit) < 0) {
+          Message.error('投注金数值和上限必须为有效的非负数')
+          return
         }
       }
 
       // 输出干净 JSON，去掉 _richCardSelect 辅助字段
-      const output = {
-        betMoney: this.form.betMoney.map(item => ({ method: item.method, amount: item.amount, limit: item.limit })),
-        Prop: this.form.Prop.map(item => ({
+      const output = emptyReward()
+      if (this.selectedRewardType === 'betMoney') {
+        const item = this.form.betMoney[0]
+        output.betMoney = [{ method: item.method, amount: item.amount, limit: item.limit }]
+      } else if (this.selectedRewardType === 'Prop') {
+        const item = this.form.Prop[0]
+        output.Prop = [{
           propType: item.propType,
           propId: item.propId,
           propName: item.propName,
           expireDays: item.expireDays,
           propNum: item.propNum,
           propLimit: item.propLimit
-        })),
-        RichCard: this.form.RichCard.map(item => ({
+        }]
+      } else if (this.selectedRewardType === 'RichCard') {
+        const item = this.form.RichCard[0]
+        output.RichCard = [{
           slotsType: item.slotsType,
           richCardLevel: item.richCardLevel,
           bet: item.bet,
           rewardNum: item.rewardNum,
           validDays: item.validDays,
           limit: item.limit
-        }))
+        }]
       }
       this.$emit('input', output)
       this.dialogVisible = false
     },
 
-    addBetMoney() {
-      this.form.betMoney.push(newBetMoneyItem())
+    getInitialRewardType(raw) {
+      const enabledTypeSet = new Set(this.availableRewardTypes.map(item => item.value))
+      if (raw.betMoney.length > 0 && enabledTypeSet.has('betMoney')) return 'betMoney'
+      if (raw.Prop.length > 0 && enabledTypeSet.has('Prop')) return 'Prop'
+      if (raw.RichCard.length > 0 && enabledTypeSet.has('RichCard')) return 'RichCard'
+      return this.availableRewardTypes[0] ? this.availableRewardTypes[0].value : ''
     },
-    addProp() {
-      this.form.Prop.push(newPropItem())
+    ensureSingleRow(type) {
+      if (type === 'betMoney' && this.form.betMoney.length === 0) {
+        this.form.betMoney = [newBetMoneyItem()]
+      }
+      if (type === 'Prop' && this.form.Prop.length === 0) {
+        this.form.Prop = [newPropItem()]
+      }
+      if (type === 'RichCard' && this.form.RichCard.length === 0) {
+        this.form.RichCard = [newRichCardItem()]
+      }
     },
-    addRichCard() {
-      this.form.RichCard.push(newRichCardItem())
-    },
-
     onPropTypeChange(row) {
       row.propId = 0
       row.propName = ''
