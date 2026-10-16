@@ -290,7 +290,7 @@
               </el-form-item>
 
               <el-form-item v-if="isPotCoin(editForm.data.itemType)" label="关联游戏:" :required="true">
-                <el-select v-model="editForm.itemExtra.gid" placeholder="请选择" size="mini"  multiple filterable >
+                <el-select v-model="editForm.itemExtra.gid" placeholder="请选择" size="mini"  multiple filterable @change="handlePotCoinGidChange">
                   <el-option v-for="item in TONGITS_POT_COIN_GID_CONFIG" :key="item.value" :label="item.label" :value="item.value" :disabled="item.disabled" />
                 </el-select>
               </el-form-item>
@@ -305,7 +305,7 @@
 
               <el-form-item v-if="isPotCoin(editForm.data.itemType)" label="适用场次:" :required="true">
                 <el-select v-model="editForm.itemExtra.betAmountList" placeholder="请选择" size="mini"  multiple filterable >
-                  <el-option v-for="item in TONGITS_POT_COIN_BETA_MOUNT_CONFIG" :key="item.value" :label="item.label" :value="item.value" :disabled="item.disabled" />
+                  <el-option v-for="item in potCoinBetAmountOptions" :key="item.value" :label="item.label" :value="item.value" :disabled="item.disabled" />
                 </el-select>
               </el-form-item>
             </el-col>
@@ -345,6 +345,7 @@ import {
   TONGITS_POT_COIN_BETA_MOUNT_CONFIG
 } from '@/utils/prop'
 import {getAppId} from "@/utils/app";
+import {getTongitsGameTableMoneyList} from "@/utils/common-game-config";
 
 export default {
   name: 'PropsConfig',
@@ -455,6 +456,10 @@ export default {
       slotBetAmountCfg: new Map(), // slot 下注数值
       slotFreeSpinDetailMap: {}, // free spin 道具詳情展開狀態
       littleGameBetAmountCfg: new Map(),  //小游戏独有的下注额度
+
+      //Tongits游戏底注配置
+      tongitsGameTableMoneyCfg : new Map(),
+      potCoinBetAmountOptions: [],
     }
   },
   computed: {
@@ -466,6 +471,7 @@ export default {
     this.name = store.getters.name
     this.env = store.getters.env || this.env
     this.getSlotBetAmountCfg()
+    this.getTongitsGameTableMoneyList()
   },
   async mounted() {
     await this.getSlotGameConfig()
@@ -590,6 +596,9 @@ export default {
           timeType: time_type
         }
         this.editForm.itemEndDate = editData.expire_time * 1000
+        if (this.isPotCoin(this.editForm.data.itemType)) {
+          this.refreshPotCoinBetAmountOptions(false)
+        }
       }
     },
     getItemTypeName(item_type) {
@@ -1059,6 +1068,19 @@ export default {
           this.errmsg('需要勾选适用场次')
           return false
         }
+        if (this.editForm.itemExtra.gid.some(gid => !this.tongitsGameTableMoneyCfg.has(gid))) {
+          this.errmsg('关联游戏底注尚未加载完成，请稍后重试')
+          return false
+        }
+        const intersection = this.getPotCoinTableMoneyIntersection(this.editForm.itemExtra.gid)
+        if (intersection.length === 0) {
+          this.errmsg('所勾选的关联游戏没有共同适用场次，请修改')
+          return false
+        }
+        if (!this.isSameNumberSet(this.editForm.itemExtra.betAmountList, intersection)) {
+          this.errmsg('适用场次必须是所勾选关联游戏的共同底注，请修改')
+          return false
+        }
       }
       return true
     },
@@ -1141,6 +1163,68 @@ export default {
     //根据道具类型获取道具的子属性
     getSubAttrByPropType(propType){
       return this.ItemSubAttrCfg.filter(item => item.propType === propType)
+    },
+    async getTongitsGameTableMoneyList(){
+      for(const obj of TONGITS_POT_COIN_GID_CONFIG){
+        const tableMoneyList = await getTongitsGameTableMoneyList(obj.value)
+        this.tongitsGameTableMoneyCfg.set(obj.value, tableMoneyList || [])
+      }
+      if (this.editForm.visable && this.isPotCoin(this.editForm.data.itemType)) {
+        this.refreshPotCoinBetAmountOptions(false)
+      }
+    },
+    handlePotCoinGidChange() {
+      this.refreshPotCoinBetAmountOptions(true)
+    },
+    //查找每个游戏底住的共同交集
+    getPotCoinTableMoneyIntersection(gidList) {
+      if (!Array.isArray(gidList) || gidList.length === 0) {
+        return []
+      }
+      let intersection = null
+      for (const gid of gidList) {
+        const list = (this.tongitsGameTableMoneyCfg.get(gid) || []).map(Number)
+        if (intersection === null) {
+          intersection = list
+        } else {
+          intersection = intersection.filter(money => list.includes(money))
+        }
+      }
+      //去重 + 排序 + 返回
+      return Array.from(new Set(intersection || [])).sort((a, b) => a - b)
+    },
+    refreshPotCoinBetAmountOptions(resetSelection) {
+      const gidList = this.editForm.itemExtra.gid || []
+      if (gidList.length === 0) {
+        this.potCoinBetAmountOptions = []
+        if (resetSelection) {
+          this.editForm.itemExtra.betAmountList = []
+        }
+        return
+      }
+      if (gidList.some(gid => !this.tongitsGameTableMoneyCfg.has(gid))) {
+        return
+      }
+      const intersection = this.getPotCoinTableMoneyIntersection(gidList)
+      this.potCoinBetAmountOptions = intersection.map(value => {
+        const found = TONGITS_POT_COIN_BETA_MOUNT_CONFIG.find(item => Number(item.value) === Number(value))
+        if (found) {
+          return found
+        }
+        return { value: value, label: 'bet-' + (value / 1000), disabled: false }
+      })
+      if (resetSelection) {
+        const allow = new Set(intersection.map(Number))
+        this.editForm.itemExtra.betAmountList = (this.editForm.itemExtra.betAmountList || []).filter(value => allow.has(Number(value)))
+      }
+    },
+    isSameNumberSet(left, right) {
+      const a = (left || []).map(Number).sort((x, y) => x - y)
+      const b = (right || []).map(Number).sort((x, y) => x - y)
+      if (a.length !== b.length) {
+        return false
+      }
+      return a.every((value, index) => value === b[index])
     }
   }
 }

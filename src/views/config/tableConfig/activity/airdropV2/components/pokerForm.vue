@@ -58,17 +58,15 @@
                 </el-form-item>
               </el-col>
             </el-row>
-
-
             <el-row :gutter="20">
               <el-col :span="24">
                 <el-form-item label="任务文本：">
                   <el-input v-model="item.taskText" type="textarea" placeholder="请输入" style="max-width: 400px" />
-                  <div style="margin-top: 8px">
-                    <el-button size="mini" type="primary" icon="el-icon-edit-outline" @click="openRichEditor(item, 'taskText')">
-                      打开富文本编辑器
-                    </el-button>
-                  </div>
+<!--                  <div style="margin-top: 8px">-->
+<!--                    <el-button size="mini" type="primary" icon="el-icon-edit-outline" @click="openRichEditor(item, 'taskText')">-->
+<!--                      打开富文本编辑器-->
+<!--                    </el-button>-->
+<!--                  </div>-->
                 </el-form-item>
               </el-col>
             </el-row>
@@ -88,7 +86,7 @@
             </el-row>
             <el-row :gutter="20">
               <el-col :span="24">
-                <el-form-item label="活动界面文本：">
+                <el-form-item label="侧边栏文本：">
                   <el-input v-model="item.sideTitle" type="textarea" placeholder="请输入" style="max-width: 400px" />
                   <div style="color: #E6A23C; font-size: 12px; line-height: 1.4; margin-top: 4px">
                     奖励只有道具的起到作用

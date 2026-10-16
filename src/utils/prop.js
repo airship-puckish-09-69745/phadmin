@@ -40,6 +40,10 @@ export const TONGITS_POT_COIN_BETA_MOUNT_CONFIG = [
   {'value':5000,'label':'bet-5',disabled:false},
 ]
 
+export const TONGITS_POT_BET_LIST_CONFIG =[
+  
+]
+
 //比赛门票ID 关联门票权益配置 开发环境
 export const MATCH_TICKET_RIGHTS_ID_CFG_DEV = {
   1000002: [
@@ -266,6 +270,11 @@ export const CheckPropExpireDays = (propType, expireDays) => {
     case PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW:
       // 新版票券：不能为0、365或负数
       if (expireDays === 0 || expireDays === 365 || expireDays < 0) {
+        return false
+      }
+      break
+    case PROP_TYPE_OPTIONS.PROP_TONGITS_POT_COIN:
+      if (expireDays === 0 || expireDays === 365) {
         return false
       }
       break
