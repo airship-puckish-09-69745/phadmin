@@ -32,6 +32,46 @@ export const getAllMatchGuidesConfig = async() => {
   }
 }
 
+//获取Tongits游戏底注
+export const getTongitsGameTableMoneyList = async(gameId) => {
+  //gameId 转换playmode
+  let playmode = 0
+   switch (gameId) {
+    case 22:
+      playmode = 1  //Tongits 标准玩法
+      break
+    case 28:
+      playmode = 2 //Tongits 癞子玩法
+      break
+    case 145:
+      playmode = 6 //Tongits 1V1玩法
+      break
+   }
+  let tableMoneyList = []
+  const response = await request({
+    url: '/tongitstable/all',
+    method: 'get',
+    data: {
+      PlayMode: playmode
+    }
+  })
+  if (response.RetCode === 0) {
+    const objs =  response.Data || []
+    for (let i = 0; i < objs.length; i++) {
+      const obj = objs[i]
+      if (obj.TableMoney === 0 || obj.Status !== 2) {
+        continue
+      }
+      tableMoneyList.push(obj.TableMoney)
+    }
+    tableMoneyList = Array.from(new Set(tableMoneyList)) // 去重
+    tableMoneyList.sort((x, y) => x - y)
+    console.log('tableMoneyList',tableMoneyList)
+    return tableMoneyList
+  }
+
+  return []
+}
 //验证UID输入：检查是否为纯数字且用英文逗号分隔
 export function validateUidInput(input) {
   if (!input || input.trim() === '') {
