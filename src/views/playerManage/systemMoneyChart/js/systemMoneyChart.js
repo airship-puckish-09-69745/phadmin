@@ -121,6 +121,7 @@ export const systemMoneyChart = {
         246: 'Tala Reyes South Sea Pearls',
         248: 'Mayan Temple',
         250: 'Lapu-Lapu: Light of Mactan',
+        252: 'Lucky Bang',
         253: 'Masskara Fiesta Super Gold',
         254: 'Aswang Fiesta',
         255: 'Bernardo Carpio',
