@@ -150,7 +150,7 @@ function clone(value) {
 }
 
 function emptyReward() {
-  return { rewardType: 0, betMoney: {}, Prop: {}, RichCard: {} }
+  return { rewardType: 0, betMoney: {}, Prop: {}, RichCard: {}}
 }
 
 function newBetMoneyItem() {
@@ -234,7 +234,7 @@ export default {
       propOptionsCache: {},
 
       richCardOptions: [],
-      richCardGameOptions: [],
+      richCardGameOptions: []
     }
   },
   computed: {
@@ -284,9 +284,9 @@ export default {
 
       if (hasConfig(v.betMoney)) {
         if (v.betMoney.method === 'percent') {
-          texts.push(`投注金 ${v.betMoney.amount}%，上限 ${v.betMoney.limit}`)
+          texts.push(`投注金 ${v.betMoney.amount}%，上限 ${v.betMoney.limit / 1000}`)
         } else {
-          texts.push(`固定投注金 ₱${v.betMoney.amount}，上限 ${v.betMoney.limit}`)
+          texts.push(`固定投注金 ₱${v.betMoney.amount / 1000}，上限 ${v.betMoney.limit / 1000}`)
         }
       }
 
@@ -327,17 +327,28 @@ export default {
         Message.error('未配置可用奖励类型')
         return
       }
-
+      // 将父组件传入的数据标准化
       const normalized = normalizeRewardData(this.value)
+      // 投注金回显：固定数值和上限都除以 1000
+      if (hasConfig(normalized.betMoney)) {
+        if (normalized.betMoney.method === 'fixed') {
+          normalized.betMoney.amount = normalized.betMoney.amount / 1000
+        }
+        normalized.betMoney.limit = normalized.betMoney.limit / 1000
+      }
+
+      // 富裕卡回显：将星级和Bet组合成 _richCardSelect 数组，便于级联选择器回显
       if (hasConfig(normalized.RichCard)) {
         normalized.RichCard._richCardSelect = (normalized.RichCard.richCardLevel && normalized.RichCard.bet)
           ? [normalized.RichCard.richCardLevel, normalized.RichCard.bet]
           : []
       }
-
+      // 将已有配置赋值给表单
       this.form = normalized
+      // 恢复当前选中的奖励类型
       this.selectedRewardType = this.getInitialRewardType(normalized)
       this.ensureSelectedConfig(this.selectedRewardType)
+      // 打开弹窗
       this.dialogVisible = true
     },
 
@@ -370,10 +381,11 @@ export default {
       // 约定：未选中的奖励类型保持为空对象 {}
 
       if (this.selectedRewardType === 'betMoney') {
+        const multiple = this.form.betMoney.method === 'fixed' ? 1000 : 1
         output.betMoney = {
           method: this.form.betMoney.method,
-          amount: this.form.betMoney.amount,
-          limit: this.form.betMoney.limit
+          amount: (this.form.betMoney.amount || 0) * multiple,
+          limit: (this.form.betMoney.limit || 0) * 1000
         }
       } else if (this.selectedRewardType === 'Prop') {
         output.Prop = {
@@ -399,6 +411,7 @@ export default {
       this.dialogVisible = false
     },
 
+    // 获取初始奖励类型
     getInitialRewardType(raw) {
       const enabledSet = new Set(this.availableRewardTypes.map(item => item.value))
       const rewardTypeKey = REWARD_TYPE_REVERSE_MAP[raw.rewardType]

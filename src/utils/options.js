@@ -280,7 +280,9 @@ export const ACTIVITY_REWARD_TYPES = {
   // 道具
   PROP: 4,
   // 活动物品
-  ACTIVITY_ITEM: 5
+  ACTIVITY_ITEM: 5,
+  // 富裕卡
+  RICH_CARD: 6
 }
 
 // 活动奖励类型选项
@@ -289,7 +291,8 @@ export const ACTIVITY_REWARD_TYPE_OPTIONS = [
   { 'value': ACTIVITY_REWARD_TYPES.BET_GOLD, 'label': '投注金' },
   { 'value': ACTIVITY_REWARD_TYPES.REBATE_GOLD, 'label': '返水金' },
   { 'value': ACTIVITY_REWARD_TYPES.PROP, 'label': '道具' },
-  { 'value': ACTIVITY_REWARD_TYPES.ACTIVITY_ITEM, 'label': '活动物品' }
+  { 'value': ACTIVITY_REWARD_TYPES.ACTIVITY_ITEM, 'label': '活动物品' },
+  { 'value': ACTIVITY_REWARD_TYPES.RICH_CARD, 'label': '富裕卡' }
 ]
 
 // 场景发放ID（内部用）选项。对应配置： phgames/base/gDefine/market_api.go
