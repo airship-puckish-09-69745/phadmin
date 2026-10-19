@@ -982,7 +982,8 @@ export default {
       rebateScenesCfgs: [
         { 'value': 5, 'label': '没有任何限制的返水金' },
         { 'value': 6, 'label': '有限制倍数的返水金（10倍）' },
-        { 'value': 16, 'label': '没有任何限制的返水金【Tongits免费赛】' }
+        { 'value': 16, 'label': '没有任何限制的返水金【Tongits免费赛】' },
+        { 'value': 52, 'label': 'S6 专属返水金' }
       ],
       // 投注金
       betScenesCfgs: [
