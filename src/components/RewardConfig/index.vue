@@ -140,7 +140,7 @@ const ALL_PROP_TYPE_OPTIONS = [
 const PROP_LABEL_MAP = ALL_PROP_TYPE_OPTIONS.reduce((acc, o) => { acc[o.value] = o.label; return acc }, {})
 
 function emptyReward() {
-  return { betMoney: [], Prop: [], RichCard: [] }
+  return {rewardType: 0, betMoney: {}, Prop: {}, RichCard: {}}
 }
 
 function newBetMoneyItem() {
@@ -322,6 +322,7 @@ export default {
       if (this.selectedRewardType === 'betMoney') {
         const item = this.form.betMoney[0]
         output.betMoney = [{ method: item.method, amount: item.amount, limit: item.limit }]
+        output.rewardType = 2
       } else if (this.selectedRewardType === 'Prop') {
         const item = this.form.Prop[0]
         output.Prop = [{
@@ -332,6 +333,7 @@ export default {
           propNum: item.propNum,
           propLimit: item.propLimit
         }]
+        output.rewardType = 4
       } else if (this.selectedRewardType === 'RichCard') {
         const item = this.form.RichCard[0]
         output.RichCard = [{
@@ -342,6 +344,7 @@ export default {
           validDays: item.validDays,
           limit: item.limit
         }]
+        output.rewardType = 6
       }
       this.$emit('input', output)
       this.dialogVisible = false
