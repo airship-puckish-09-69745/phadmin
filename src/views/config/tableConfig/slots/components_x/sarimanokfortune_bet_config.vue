@@ -10,8 +10,8 @@
           </el-form-item>
 
           <el-form-item label="倍数颜色配置" prop="MultiplierColor" :rules="dataRule(true, { type: 's' })">
-            <el-input v-model="config.MultiplierColor" placeholder="请输入内容,如2,2,2,3,3,5,5">
-              <template slot="append">长度需和公共倍数一致，1彩色，2/3/4/5普通颜色</template>
+            <el-input v-model="config.MultiplierColor" placeholder="请输入内容,如1,2,2,3,3,5,5">
+              <template slot="append">长度需和公共倍数一致，1/2/3/4/5颜色</template>
             </el-input>
           </el-form-item>
 
