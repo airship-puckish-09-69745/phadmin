@@ -400,25 +400,25 @@
                     </el-row>
                   </el-form>
                 </fieldset>
-                <fieldset style="margin-top: 10px">
-                  <legend>排名奖励方式</legend>
-                  <el-col :span="5">
-                    <el-select
-                      v-model="edit.item.extend.rewardWay"
-                      placeholder="请选择奖励方式"
-                      size="mini"
-                    >
-                      <el-option
-                        label="固定奖励"
-                        :value="1"
-                      />
-                      <el-option
-                        label="按有效下注百分比"
-                        :value="2"
-                      />
-                    </el-select>
-                  </el-col>
-                </fieldset>
+<!--                <fieldset style="margin-top: 10px">-->
+<!--                  <legend>排名奖励方式</legend>-->
+<!--                  <el-col :span="5">-->
+<!--                    <el-select-->
+<!--                      v-model="edit.item.extend.rewardWay"-->
+<!--                      placeholder="请选择奖励方式"-->
+<!--                      size="mini"-->
+<!--                    >-->
+<!--                      <el-option-->
+<!--                        label="固定奖励"-->
+<!--                        :value="1"-->
+<!--                      />-->
+<!--                      <el-option-->
+<!--                        label="按有效下注百分比"-->
+<!--                        :value="2"-->
+<!--                      />-->
+<!--                    </el-select>-->
+<!--                  </el-col>-->
+<!--                </fieldset>-->
                 <fieldset style="margin-top: 10px">
                   <legend>排名奖励配置</legend>
                   <div style="margin-bottom: 8px; display: flex; align-items: center; gap: 12px;">
