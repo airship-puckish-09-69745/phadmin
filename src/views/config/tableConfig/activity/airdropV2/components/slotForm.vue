@@ -62,7 +62,7 @@
                 <el-form-item label="任务文本：">
                   <el-input v-model="item.taskText" type="textarea" placeholder="请输入" style="max-width: 400px" />
                   <div style="margin-top: 8px">
-                    <el-button size="small" type="primary" icon="el-icon-edit-outline" @click="openRichEditor(item, 'taskText')">打开富文本编辑器</el-button>
+<!--                    <el-button size="small" type="primary" icon="el-icon-edit-outline" @click="openRichEditor(item, 'taskText')">打开富文本编辑器</el-button>-->
                   </div>
                 </el-form-item>
               </el-col>

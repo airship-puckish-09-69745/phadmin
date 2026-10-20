@@ -1202,6 +1202,9 @@ export default {
       if (Number(activity.startTime) <= 0) return '请填写开始时间'
       if (Number(activity.endTime) <= Number(activity.startTime)) return '结束时间必须晚于开始时间'
       if (!Array.isArray(activity.gameIdList) || !activity.gameIdList.length) return '请至少选择一个参与游戏'
+      if (!String(activity.bgUrl || '').trim()) return `请填写任务背景图`
+      if (!String(activity.userUrl || '').trim()) return `请填写任务用户图`
+      if (!String(activity.zipUtrl || '').trim()) return `请填写任务压缩包`
       if (!Array.isArray(activity.userTypes) || !activity.userTypes.length || activity.userTypes.some(item => ![1, 2, 3, 5].includes(Number(item)))) return '请选择参与用户类型'
       if (new Set(activity.userTypes.map(Number)).size !== activity.userTypes.length) return '参与用户类型不能重复'
       if (activity.userTypes.includes(2) && (activity.userTypes.length !== 1 && !(activity.userTypes.length === 2 && activity.userTypes.includes(5)))) return '全部用户只能单独选择或与用户标签组合'
