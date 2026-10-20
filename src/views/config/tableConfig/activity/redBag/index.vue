@@ -148,6 +148,7 @@ export default {
         'taskCfgData[].propPools.propName': '道具名称',
         'taskCfgData[].propPools.propTime': '道具时长',
         'taskCfgData[].propPools.propNum': '道具数量',
+        'taskCfgData[].rewardCfg': '累计下注道具奖励配置',
 
         // 白名单配置
         whiteList: '白名单',
