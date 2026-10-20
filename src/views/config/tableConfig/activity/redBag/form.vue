@@ -557,11 +557,58 @@ export default {
     getWhiteList() {
       return this.item.whiteList || []
     },
+    getDefaultTaskRewardCfg() {
+      return {
+        rewardType: 0,
+        betMoney: {},
+        Prop: {},
+        RichCard: {}
+      }
+    },
+    buildTaskRewardCfg(taskItem) {
+      if (taskItem && typeof taskItem.rewardCfg === 'string' && taskItem.rewardCfg.trim()) {
+        try {
+          const parsedRewardCfg = JSON.parse(taskItem.rewardCfg)
+          if (parsedRewardCfg && typeof parsedRewardCfg === 'object' && !Array.isArray(parsedRewardCfg)) {
+            return parsedRewardCfg
+          }
+        } catch (e) {
+          console.error('rewardCfg JSON解析失败:', e)
+        }
+      }
+      if (taskItem && taskItem.rewardCfg && typeof taskItem.rewardCfg === 'object' && !Array.isArray(taskItem.rewardCfg)) {
+        return taskItem.rewardCfg
+      }
+      const legacyPropPools = taskItem && taskItem.propPools
+      if (legacyPropPools && typeof legacyPropPools === 'object' && legacyPropPools.propType && legacyPropPools.propId) {
+        return {
+          rewardType: 4,
+          betMoney: {},
+          Prop: {
+            propType: Number(legacyPropPools.propType) || 0,
+            propId: Number(legacyPropPools.propId) || 0,
+            propName: legacyPropPools.propName || '',
+            expireDays: Number(legacyPropPools.propTime) || 1,
+            propNum: Number(legacyPropPools.propNum) || 0,
+            propLimit: 0
+          },
+          RichCard: {}
+        }
+      }
+      return this.getDefaultTaskRewardCfg()
+    },
     // 处理任务配置数据，将 rewardNum 字段 *1000 后返回新数组（用于保存时格式转换）
     getTaskCfgData(cfgData) {
       return cfgData.map(data => {
         const newData = mulFields1000(data, this.fields)
         const result = { ...data, rewardNum: newData.rewardNum }
+        // 累计下注道具任务（taskType=4）统一改为 rewardCfg 提交，兼容历史 propPools 数据
+        if (Number(result.taskType) === 4) {
+          result.rewardCfg = JSON.stringify(this.buildTaskRewardCfg(result))
+          delete result.propPools
+        } else {
+          delete result.rewardCfg
+        }
         // 处理 rewardPools 中的 value1 和 value2（金额字段 * 1000），weight（权重字段 * 100）
         if (result.rewardPools && Array.isArray(result.rewardPools)) {
           result.rewardPools = result.rewardPools.map(pool => ({
@@ -884,6 +931,10 @@ export default {
                 value1: Number(pool.value1) / 1000,
                 value2: Number(pool.value2) / 1000
               }))
+            }
+            // 累计下注道具任务（taskType=4）回显：统一使用 rewardCfg，兼容历史 propPools 字段
+            if (Number(newItem.taskType) === 4) {
+              newItem.rewardCfg = this.buildTaskRewardCfg(newItem)
             }
             return newItem
           })

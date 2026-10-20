@@ -80,7 +80,7 @@
         <el-divider content-position="left">任务配置</el-divider>
         <el-form-item label="任务类型" :required="true" prop="taskType">
           <el-col :span="15">
-            <el-select v-model.number="editItem.taskType" placeholder="请选择" style="width: 250px">
+            <el-select v-model.number="editItem.taskType" placeholder="请选择" style="width: 250px" @change="handleTaskTypeChange">
               <el-option
                 v-for="item in betScenes"
                 :key="item.value"
@@ -168,7 +168,7 @@
             </el-table>
           </el-form-item>
         </div>
-        <div v-if="editItem.taskType !== 1">
+        <div v-if="editItem.taskType !== 1 && editItem.taskType !== 4">
           <!-- 道具配置字段 -->
           <el-divider content-position="left">道具配置</el-divider>
           <el-form-item label="道具配置">
@@ -239,6 +239,16 @@
             </el-table>
           </el-form-item>
         </div>
+        <div v-if="editItem.taskType === 4">
+          <!-- 累计下注道具：奖励配置 -->
+          <el-divider content-position="left">奖励配置</el-divider>
+          <el-form-item label="奖励配置">
+            <RewardConfig
+              v-model="editItem.rewardCfg"
+              :enabled-types="['betMoney', 'Prop', 'RichCard']"
+            />
+          </el-form-item>
+        </div>
 
       </el-form>
       <el-row style="margin-top: 10px">
@@ -253,6 +263,7 @@
 <script>
 import request from '@/utils/request'
 import store from '@/store'
+import RewardConfig from '@/components/RewardConfig/index.vue'
 
 function newTaskCfg() {
   return {
@@ -282,12 +293,22 @@ function newTaskCfg() {
       propName: '', // 道具名称
       propTime: 0, // 可用时间
       propNum: 0 // 道具数量
+    },
+    // 累计下注道具（taskType=4）奖励配置
+    rewardCfg: {
+      rewardType: 0,
+      betMoney: {},
+      Prop: {},
+      RichCard: {}
     }
   }
 }
 
 export default {
   name: 'TaskConfig',
+  components: {
+    RewardConfig
+  },
   props: {
     value: {
       type: Object,
@@ -349,6 +370,48 @@ export default {
       this.isEdit = false
       this.editDialogVisible = true
     },
+    getDefaultRewardCfg() {
+      return {
+        rewardType: 0,
+        betMoney: {},
+        Prop: {},
+        RichCard: {}
+      }
+    },
+    convertLegacyPropPoolsToRewardCfg(propPools) {
+      if (!propPools || typeof propPools !== 'object') {
+        return this.getDefaultRewardCfg()
+      }
+      if (!propPools.propType || !propPools.propId) {
+        return this.getDefaultRewardCfg()
+      }
+      return {
+        rewardType: 4,
+        betMoney: {},
+        Prop: {
+          propType: Number(propPools.propType) || 0,
+          propId: Number(propPools.propId) || 0,
+          propName: propPools.propName || '',
+          expireDays: Number(propPools.propTime) || 1,
+          propNum: Number(propPools.propNum) || 0,
+          propLimit: 0
+        },
+        RichCard: {}
+      }
+    },
+    ensureRewardCfg(editData) {
+      if (editData.rewardCfg && typeof editData.rewardCfg === 'object' && !Array.isArray(editData.rewardCfg)) {
+        return
+      }
+      editData.rewardCfg = this.convertLegacyPropPoolsToRewardCfg(editData.propPools)
+    },
+    handleTaskTypeChange(taskType) {
+      if (Number(taskType) === 4) {
+        this.ensureRewardCfg(this.editItem)
+      } else {
+        this.editItem.rewardCfg = this.getDefaultRewardCfg()
+      }
+    },
     handleEdit(row) {
       this.isEdit = true
       this.editDialogVisible = true
@@ -377,6 +440,9 @@ export default {
             propTime: 0,
             propNum: 0
           }
+        }
+        if (Number(editData.taskType) === 4) {
+          this.ensureRewardCfg(editData)
         }
 
         this.editItem = editData
@@ -501,4 +567,3 @@ export default {
   }
 }
 </script>
-
