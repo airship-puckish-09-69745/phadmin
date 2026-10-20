@@ -38,8 +38,8 @@
         <el-form label-width="100px" size="mini">
           <el-form-item label="投注金方式">
             <el-radio-group v-model="form.betMoney.method">
-              <el-radio label="percent">百分比</el-radio>
-              <el-radio label="fixed">固定数值</el-radio>
+              <el-radio label="1">百分比</el-radio>
+              <el-radio label="2">固定数值</el-radio>
             </el-radio-group>
           </el-form-item>
           <el-form-item label="投注金数值">
@@ -154,7 +154,7 @@ function emptyReward() {
 }
 
 function newBetMoneyItem() {
-  return { method: 'fixed', amount: 0, limit: 0 }
+  return { method: '2', amount: 0, limit: 0 }
 }
 
 function newPropItem() {
@@ -283,7 +283,7 @@ export default {
       const texts = []
 
       if (hasConfig(v.betMoney)) {
-        if (v.betMoney.method === 'percent') {
+        if (v.betMoney.method === '1') {
           texts.push(`投注金 ${v.betMoney.amount}%，上限 ${v.betMoney.limit / 1000}`)
         } else {
           texts.push(`固定投注金 ₱${v.betMoney.amount / 1000}，上限 ${v.betMoney.limit / 1000}`)
@@ -331,7 +331,7 @@ export default {
       const normalized = normalizeRewardData(this.value)
       // 投注金回显：固定数值和上限都除以 1000
       if (hasConfig(normalized.betMoney)) {
-        if (normalized.betMoney.method === 'fixed') {
+        if (normalized.betMoney.method === '2') {
           normalized.betMoney.amount = normalized.betMoney.amount / 1000
         }
         normalized.betMoney.limit = normalized.betMoney.limit / 1000
@@ -381,7 +381,7 @@ export default {
       // 约定：未选中的奖励类型保持为空对象 {}
 
       if (this.selectedRewardType === 'betMoney') {
-        const multiple = this.form.betMoney.method === 'fixed' ? 1000 : 1
+        const multiple = this.form.betMoney.method === '2' ? 1000 : 1
         output.betMoney = {
           method: this.form.betMoney.method,
           amount: (this.form.betMoney.amount || 0) * multiple,
