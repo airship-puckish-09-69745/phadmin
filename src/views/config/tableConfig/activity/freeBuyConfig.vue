@@ -1255,6 +1255,9 @@ export default {
         if (Number(reward.bet) <= 0) return `任务 ${task.taskId} 请填写富裕卡 Bet`
       }
       if (![1, 2].includes(Number(reward.rewardType))) return `任务 ${task.taskId} 的奖励类型无效`
+      if (!String(task.bgUrl || '').trim()) return `任务 ${task.taskId} 请填写任务背景图`
+      if (!String(task.userUrl || '').trim()) return `任务 ${task.taskId} 请填写任务用户图`
+      if (!String(task.zipUrl || '').trim()) return `任务 ${task.taskId} 请填写任务压缩包`
       return ''
     },
     taskKey(task) {
