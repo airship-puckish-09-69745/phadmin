@@ -604,7 +604,7 @@ export default {
         const result = { ...data, rewardNum: newData.rewardNum }
         // 累计下注道具任务（taskType=4）统一改为 rewardCfg 提交，兼容历史 propPools 数据
         if (Number(result.taskType) === 4) {
-          result.rewardCfg = JSON.stringify(this.buildTaskRewardCfg(result))
+          result.rewardCfg = this.buildTaskRewardCfg(result)
           delete result.propPools
         } else {
           delete result.rewardCfg
