@@ -14,6 +14,14 @@
         <!-- ======================== 活动配置 ======================== -->
         <el-tab-pane label="活动配置" name="activity">
           <el-form ref="activityForm" :model="item" label-width="180px" size="small">
+            <el-form-item label="参与活动用户类型：">
+              <UserTypeTag
+                tag-label=""
+                v-model="item.userConfig"
+                :activity-cfg-id="item.id"
+                :activity-id="item.activityId"
+              />
+            </el-form-item>
             <el-row :gutter="20">
               <el-col :span="24">
                 <el-form-item label="活动名称：" required>
@@ -97,13 +105,18 @@
             <!--1. AppId白名单 2. SiteId白名单 3. ABTest开关 4. UID白名单-->
             <WhitelistConfig v-model="item.whitelist" :features="[2, 3]" />
 
-            <!-- 参与活动用户类型 -->
-            <UserTypeUnit v-model="item.userConfig" :activity-cfg-id="item.id" :activity-id="item.activityId" />
           </el-form>
         </el-tab-pane>
 
         <!-- ======================== 奖励配置（Slot - 道具奖励 + 投注金奖励） ======================== -->
         <el-tab-pane label="奖励配置" name="reward">
+          <div style="margin-bottom: 16px">
+            <UserTypeTag
+              v-model="item.userConfig"
+              :activity-cfg-id="item.id"
+              :activity-id="item.activityId"
+            />
+          </div>
 
           <!-- ---------- 道具奖励（进度奖励列表） ---------- -->
           <fieldset style="margin-bottom: 20px">
@@ -259,7 +272,8 @@ import { Message } from 'element-ui'
 import request from '@/utils/request'
 import GameSelector from '@/components/Game/GameSelector.vue'
 import WhitelistConfig from '@/components/WhitelistConfig/index.vue'
-import UserTypeUnit from '@/components/UserType/index.vue'
+import UserTypeTag from '@/components/UserTypeTag/index.vue'
+import { defaultUserTypeConfig, fromLegacyUserConfig, normalizeUserTypeConfig, validateUserTypeConfig } from '@/components/UserTypeTag/config'
 import { ACTIVITY_ID } from '../index.vue'
 import { GetPropConfigListFromCache } from '@/utils/propV2'
 import RichTextEditor from '@/components/RichTextEditor/index.vue'
@@ -275,15 +289,7 @@ function defaultWhitelist() {
 }
 
 function defaultUserConfig() {
-  return {
-    userTypes: [2],
-    userFilterCondition: {
-      registerTimeRange: { min: 0, max: 0 },
-      betTimesRange: { min: 0, max: 0 },
-      userTagConfig: { tagType: 0, tagId: 0, tagValue: 0 }
-    },
-    importedFilename: ''
-  }
+  return defaultUserTypeConfig()
 }
 
 function newProp() {
@@ -320,7 +326,7 @@ function newItem() {
 
 export default {
   name: 'SlotForm',
-  components: { RichTextEditor, GameSelector, WhitelistConfig, UserTypeUnit },
+  components: { RichTextEditor, GameSelector, WhitelistConfig, UserTypeTag },
   props: {
     visible: { type: Boolean, default: false },
     isEdit: { type: Boolean, default: false },
@@ -457,41 +463,12 @@ export default {
       return this.toSafeNumber(slotBetMoney.totalReward) > 0 || this.toSafeNumber(slotBetMoney.taskCondition) > 0 || this.toSafeNumber(slotBetMoney.userMaxReward) > 0
     },
     validateUserConfig() {
-      const userConfig = this.item.userConfig || defaultUserConfig()
-      const userType = Array.isArray(userConfig.userTypes) && userConfig.userTypes.length > 0 ? userConfig.userTypes[0] : 2
-      userConfig.userTypes = [userType]
-      const condition = userConfig.userFilterCondition || defaultUserConfig().userFilterCondition
-      userConfig.userFilterCondition = condition
-      const registerTimeRange = condition.registerTimeRange || { min: 0, max: 0 }
-      const betTimesRange = condition.betTimesRange || { min: 0, max: 0 }
-      const userTagConfig = condition.userTagConfig || { tagType: 0, tagId: 0, tagValue: 0 }
-      if (userType === 4) {
-        if (!registerTimeRange.min || !registerTimeRange.max || registerTimeRange.max < registerTimeRange.min) {
-          Message.error('请选择有效的用户注册时间范围')
-          return false
-        }
-        if (!this.validateNumber(betTimesRange.min, '累计投注次数最小值', { min: 0, max: MAX_COUNT, integer: true })) return false
-        if (!this.validateNumber(betTimesRange.max, '累计投注次数最大值', { min: 0, max: MAX_COUNT, integer: true })) return false
-        if (this.toSafeNumber(betTimesRange.max) < this.toSafeNumber(betTimesRange.min)) {
-          Message.error('累计投注次数最大值不能小于最小值')
-          return false
-        }
+      this.item.userConfig = normalizeUserTypeConfig(this.item.userConfig)
+      const msg = validateUserTypeConfig(this.item.userConfig)
+      if (msg) {
+        Message.error(msg)
+        return false
       }
-      if (userType === 5) {
-        if (!userTagConfig.tagType) {
-          Message.error('请选择标签类型')
-          return false
-        }
-        if (!userTagConfig.tagId) {
-          Message.error('请选择标签子类')
-          return false
-        }
-        if (userTagConfig.tagId === 20000 && !userTagConfig.tagValue) {
-          Message.error('请选择游戏强度')
-          return false
-        }
-      }
-      this.item.userConfig = userConfig
       return true
     },
     onProgressPrizeEnabledChange(enabled) {
@@ -524,17 +501,14 @@ export default {
       if (!whitelist.appIdList) whitelist.appIdList = []
       if (!whitelist.siteIdList) whitelist.siteIdList = []
 
-      const defaultFilterCondition = defaultUserConfig().userFilterCondition
-      const userFilterCondition = this.safeJson(ext.userFilterCondition, defaultFilterCondition)
-      if (!userFilterCondition.registerTimeRange) userFilterCondition.registerTimeRange = { min: 0, max: 0 }
-      if (!userFilterCondition.betTimesRange) userFilterCondition.betTimesRange = { min: 0, max: 0 }
-      if (!userFilterCondition.userTagConfig) userFilterCondition.userTagConfig = { tagType: 0, tagId: 0, tagValue: 0 }
-
-      const userConfig = {
-        userTypes: this.safeJson(ext.userTypes, [2]),
-        userFilterCondition,
-        importedFilename: ext.importedFilename || ''
-      }
+      // 兼容旧格式（userTypes / userFilterCondition / importedFilename）
+      const userConfig = ext.userConfig
+        ? normalizeUserTypeConfig(this.safeJson(ext.userConfig, {}))
+        : fromLegacyUserConfig({
+          userTypes: this.safeJson(ext.userTypes, [2]),
+          userFilterCondition: this.safeJson(ext.userFilterCondition, {}),
+          importedFilename: ext.importedFilename
+        })
 
       const prop = this.normalizePrize(ext.propPools)
       const taskType = this.toSafeNumber(prop.taskType || ext.taskType, 2)
@@ -691,9 +665,7 @@ export default {
         propPools: prop,
         // 投注金奖励：货币字段乘以 1000 存储，已发奖励由后端维护保持原值
         slotBetMoney: slotBetMoney,
-        userTypes: d.userConfig.userTypes,
-        userFilterCondition: d.userConfig.userFilterCondition,
-        importedFilename: d.userConfig.importedFilename || ''
+        userConfig: d.userConfig
       }
       return {
         id: d.id,
