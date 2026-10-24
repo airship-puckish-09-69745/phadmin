@@ -14,14 +14,6 @@
         <!-- ======================== 活动配置 ======================== -->
         <el-tab-pane label="活动配置" name="activity">
           <el-form ref="activityForm" :model="item" label-width="180px" size="small">
-            <el-form-item label="参与活动用户类型：">
-              <UserTypeTag
-                tag-label=""
-                v-model="item.userConfig"
-                :activity-cfg-id="item.id"
-                :activity-id="item.activityId"
-              />
-            </el-form-item>
             <el-row :gutter="20">
               <el-col :span="24">
                 <el-form-item label="活动名称：" required>
@@ -119,6 +111,18 @@
                 />
               </el-col>
             </el-row>
+            <el-row>
+              <el-col :span="24">
+                <el-form-item label="参与活动用户类型：">
+                  <UserTypeTag
+                    tag-label=""
+                    v-model="item.userConfig"
+                    :activity-cfg-id="item.id"
+                    :activity-id="item.activityId"
+                  />
+                </el-form-item>
+              </el-col>
+            </el-row>
 
             <!-- 白名单配置 -->
             <!--1. AppId白名单 2. SiteId白名单 3. ABTest开关 4. UID白名单-->
@@ -128,13 +132,6 @@
 
         <!-- ======================== 奖励配置（Poker - 道具奖励 + 投注金奖励）======================== -->
         <el-tab-pane label="奖励配置" name="reward">
-          <div style="margin-bottom: 16px">
-            <UserTypeTag
-              v-model="item.userConfig"
-              :activity-cfg-id="item.id"
-              :activity-id="item.activityId"
-            />
-          </div>
           <!-- ---------- 道具奖励（进度奖励列表） ---------- -->
           <fieldset style="margin-bottom: 20px">
             <legend style="display: flex; align-items: center; gap: 10px">
