@@ -245,7 +245,7 @@
           <el-form-item label="奖励配置">
             <RewardConfig
               v-model="editItem.rewardCfg"
-              :enabled-types="['betMoney', 'Prop', 'RichCard']"
+              :enabled-types="[4, 6]"
             />
           </el-form-item>
         </div>
