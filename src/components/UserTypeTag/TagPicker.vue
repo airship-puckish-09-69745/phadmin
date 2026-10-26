@@ -75,6 +75,7 @@ const LEVELS = [
   { key: 'tagId', label: '标签' }
 ]
 
+/** 解析标签属性 JSON，失败返回空对象 */
 function parseAttr(attr) {
   try {
     return JSON.parse(attr) || {}
@@ -141,9 +142,11 @@ export default {
     this.fetchGames()
   },
   methods: {
+    /** 把接口返回的标签转换为表格行（含等级选项） */
     toRow(o) {
       const attr = parseAttr(o.tagAttr)
-      const grade = Array.isArray(attr.grade) ? attr.grade : []
+      // 等级来源优先级：grade > avgBetRange
+      const grade = [attr.grade, attr.avgBetRange].find(a => Array.isArray(a) && a.length) || []
       const isBool = grade.length === 0 || grade.every(g => Number(g) === 0)
       const many = o.tagId >= 50010 && o.tagId < 50040
       return {
@@ -152,7 +155,7 @@ export default {
         tagId: o.tagId,
         tagName: o.tagName,
         typeName: TAG_TYPE_NAMES[o.tagType] || `类型${o.tagType}`,
-        gameName: o.tagGid > 0 ? (this.gameNames[o.tagGid] || `游戏${o.tagGid}`) : '通用',
+        gameName: o.tagGid > 0 ? (this.gameNames[o.tagGid] || `游戏${o.tagGid}`) : '用户标签',
         isBool,
         isMany: many,
         gradeOptions: isBool ? [] : grade.map((g, i) => ({
@@ -161,29 +164,36 @@ export default {
         }))
       }
     },
+    /** 标签唯一键：游戏ID_标签ID */
     key(r) {
       return `${r.tagGid || 0}_${r.tagId}`
     },
+    /** 获取行对应的已选标签 */
     getSelected(row) {
       return this.selectedTags.find(t => this.key(t) === this.key(row))
     },
+    /** 行是否已选中 */
     isSelected(row) {
       return !!this.getSelected(row)
     },
+    /** 选中标签时的默认等级值 */
     defaultValues(row) {
       if (row.isBool) return [0]
       if (row.isMany) return [row.gradeOptions.length]
       return [row.gradeOptions[row.gradeOptions.length - 1].value]
     },
+    /** 向外层同步标签数组 */
     emit(list) {
       this.$emit('input', list)
     },
+    /** 勾选/取消单个标签 */
     toggle(row, checked) {
       const rest = this.selectedTags.filter(t => this.key(t) !== this.key(row))
       this.emit(checked
         ? [...rest, { tagType: row.tagType, tagGid: row.tagGid, tagId: row.tagId, tagValues: this.defaultValues(row) }]
         : rest)
     },
+    /** 全选/取消当前展示的所有标签 */
     toggleDisplayed(checked) {
       const displayedKeys = new Set(this.displayRows.map(this.key))
       const rest = this.selectedTags.filter(t => !displayedKeys.has(this.key(t)))
@@ -193,6 +203,7 @@ export default {
       })
       this.emit([...rest, ...added])
     },
+    /** 修改标签的等级值 */
     setValues(row, values) {
       // 非布尔标签至少保留一个等级
       if (!values.length) return
@@ -200,6 +211,7 @@ export default {
         ? { ...t, tagValues: values.slice().sort((a, b) => a - b) }
         : t))
     },
+    /** 行是否满足指定层级的筛选条件 */
     matchFilters(row, levels) {
       return levels.every(l => {
         const f = this.filters[l.key]
@@ -222,13 +234,18 @@ export default {
       })
       return opts
     },
+    /** 某级筛选变化时，重置其后各级筛选 */
     onFilterChange(idx) {
       LEVELS.slice(idx + 1).forEach(l => { this.filters[l.key] = '' })
     },
+    /** 已选行高亮 */
     rowClassName({ row }) {
       return this.isSelected(row) ? 'tag-picker__row--selected' : ''
     },
+    /** 拉取标签配置 */
     fetchTags() {
+      // 不需要展示的 tag_id
+      const hiddenTagIds = [20000]
       this.loading = true
       request({
         url: '/dataProxy/info',
@@ -237,10 +254,12 @@ export default {
       }).then(res => {
         if (res.RetCode !== 0 || !Array.isArray(res.Data)) return
         this.tagList = res.Data
+          .filter(o => !hiddenTagIds.includes(o.tagId))
           .filter(o => !this.tagTypes.length || this.tagTypes.includes(o.tagType))
           .sort((a, b) => a.id - b.id)
       }).finally(() => { this.loading = false })
     },
+    /** 拉取游戏列表，用于展示游戏名 */
     fetchGames() {
       request({ url: '/thirdpartygames/all', method: 'get', data: {}}).then(res => {
         if (res.RetCode !== 0 || !Array.isArray(res.Data)) return

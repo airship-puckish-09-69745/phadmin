@@ -1,4 +1,4 @@
-export const USER_TYPE_VALUES = {
+﻿export const USER_TYPE_VALUES = {
   NEW: 1, // 新用户
   ALL: 2, // 所有用户
   IMPORT: 3, // 导入用户
@@ -30,70 +30,68 @@ export const TAG_TYPE_NAMES = {
   5: 'Slots用户类型'
 }
 
-// 每种用户类型对应一个独立字段，便于后续扩展
+/**
+ * 生成默认配置：每种用户类型对应一个独立字段，tag 直接是标签数组
+ * @param {number} userType 当前选中的用户类型
+ * @returns {object} 默认用户类型配置
+ */
 export function defaultUserTypeConfig(userType = USER_TYPE_VALUES.ALL) {
   return {
     userType,
-    [USER_TYPE_VALUES.NEW]: {},
-    [USER_TYPE_VALUES.ALL]: {},
-    [USER_TYPE_VALUES.IMPORT]: { importedFilename: '' },
-    [USER_TYPE_VALUES.FILTER]: {
+    new: {},
+    all: {},
+    import: { importedFilename: '' },
+    filter: {
       registerTimeRange: { min: 0, max: 0 },
       betTimesRange: { min: 0, max: 0 }
     },
-    [USER_TYPE_VALUES.TAG]: { tags: [] }
+    tag: []
   }
 }
 
+/**
+ * 规范化配置：用默认值补齐缺失字段，保证各字段结构完整
+ * @param {object} raw 原始配置（可为空）
+ * @param {number} fallbackType userType 缺失时使用的类型
+ * @returns {object} 结构完整的新配置对象
+ */
 export function normalizeUserTypeConfig(raw, fallbackType = USER_TYPE_VALUES.ALL) {
   const base = defaultUserTypeConfig(fallbackType)
   const v = raw || {}
-  const result = { ...base, ...v }
-  result.userType = Number(v.userType) || fallbackType
-  Object.keys(base).forEach(k => {
-    if (k === 'userType') return
-    result[k] = { ...base[k], ...(v[k] || {}) }
-  })
-  const filter = result[USER_TYPE_VALUES.FILTER]
-  filter.registerTimeRange = { ...base[USER_TYPE_VALUES.FILTER].registerTimeRange, ...filter.registerTimeRange }
-  filter.betTimesRange = { ...base[USER_TYPE_VALUES.FILTER].betTimesRange, ...filter.betTimesRange }
-  if (!Array.isArray(result[USER_TYPE_VALUES.TAG].tags)) result[USER_TYPE_VALUES.TAG].tags = []
-  return result
-}
-
-// 兼容旧格式：{ userTypes: [n], userFilterCondition, importedFilename }
-export function fromLegacyUserConfig(legacy) {
-  const l = legacy || {}
-  const userType = Array.isArray(l.userTypes) && l.userTypes.length > 0 ? Number(l.userTypes[0]) : USER_TYPE_VALUES.ALL
-  const cond = l.userFilterCondition || {}
-  const cfg = defaultUserTypeConfig(userType)
-  cfg[USER_TYPE_VALUES.IMPORT].importedFilename = l.importedFilename || ''
-  if (cond.registerTimeRange) cfg[USER_TYPE_VALUES.FILTER].registerTimeRange = { ...cond.registerTimeRange }
-  if (cond.betTimesRange) cfg[USER_TYPE_VALUES.FILTER].betTimesRange = { ...cond.betTimesRange }
-  const tag = cond.userTagConfig
-  if (userType === USER_TYPE_VALUES.TAG && tag && tag.tagId) {
-    cfg[USER_TYPE_VALUES.TAG].tags = [{
-      tagType: tag.tagType,
-      tagGid: 0,
-      tagId: tag.tagId,
-      tagValues: tag.tagValue ? [tag.tagValue] : []
-    }]
+  const filter = v.filter || {}
+  return {
+    userType: Number(v.userType) || fallbackType,
+    new: { ...v.new },
+    all: { ...v.all },
+    import: { ...base.import, ...v.import },
+    filter: {
+      ...filter,
+      registerTimeRange: { ...base.filter.registerTimeRange, ...filter.registerTimeRange },
+      betTimesRange: { ...base.filter.betTimesRange, ...filter.betTimesRange }
+    },
+    // 标签为数组，拷贝一份避免与外部共享引用
+    tag: Array.isArray(v.tag) ? v.tag.map(t => ({ ...t })) : []
   }
-  return cfg
 }
 
-// 校验配置，返回错误信息；通过返回空字符串
+/**
+ * 校验配置
+ * @param {object} config 用户类型配置
+ * @returns {string} 错误信息；校验通过返回空字符串
+ */
 export function validateUserTypeConfig(config) {
   const cfg = normalizeUserTypeConfig(config)
+  // 筛选用户：校验注册时间范围与投注次数范围
   if (cfg.userType === USER_TYPE_VALUES.FILTER) {
-    const { registerTimeRange: r, betTimesRange: b } = cfg[USER_TYPE_VALUES.FILTER]
+    const { registerTimeRange: r, betTimesRange: b } = cfg.filter
     if (!r.min || !r.max || r.max < r.min) return '请选择有效的用户注册时间范围'
     const min = Number(b.min)
     const max = Number(b.max)
     if (!Number.isInteger(min) || !Number.isInteger(max) || min < 0 || max < 0) return '累计投注次数必须为非负整数'
     if (max < min) return '累计投注次数最大值不能小于最小值'
   }
-  if (cfg.userType === USER_TYPE_VALUES.TAG && cfg[USER_TYPE_VALUES.TAG].tags.length === 0) {
+  // 标签用户：至少选择一个标签
+  if (cfg.userType === USER_TYPE_VALUES.TAG && cfg.tag.length === 0) {
     return '请至少选择一个用户标签'
   }
   return ''

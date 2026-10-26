@@ -112,7 +112,7 @@
       <!-- 5 标签用户 -->
       <TagPicker
         v-if="isType(USER_TYPE_VALUES.TAG)"
-        :value="tagCfg.tags"
+        :value="config.tag"
         :tag-types="tagTypes"
         @input="onTagsChange"
       />
@@ -173,11 +173,9 @@ export default {
         .filter(o => this.enabledUserTypes.includes(o.value))
         .map(o => ({ ...defaults[o.value], ...o }))
     },
+    // 筛选用户配置
     filterCfg() {
-      return this.config[USER_TYPE_VALUES.FILTER]
-    },
-    tagCfg() {
-      return this.config[USER_TYPE_VALUES.TAG]
+      return this.config.filter
     }
   },
   watch: {
@@ -200,12 +198,15 @@ export default {
     }
   },
   methods: {
+    /** 判断当前是否选中指定用户类型 */
     isType(type) {
       return this.config.userType === type
     },
+    /** 通知外层配置已变化 */
     emitChange() {
       this.$emit('change')
     },
+    /** 切换用户类型；切到导入用户时刷新已导入列表 */
     selectType(type) {
       if (this.config.userType === type) return
       this.config.userType = type
@@ -214,16 +215,19 @@ export default {
         this.$nextTick(this.refreshImportedUserList)
       }
     },
+    /** 标签选择变化：tag 直接保存标签数组 */
     onTagsChange(tags) {
-      this.$set(this.tagCfg, 'tags', tags)
+      this.$set(this.config, 'tag', tags)
       this.emitChange()
     },
+    /** 注册时间变化：转为秒级时间戳，结束时间取当天 23:59:59 */
     onRegisterDateChange(range) {
       const min = range ? Math.floor(range[0] / 1000) : 0
       const max = range ? Math.floor(new Date(range[1]).setHours(23, 59, 59, 0) / 1000) : 0
       this.$set(this.filterCfg, 'registerTimeRange', { min, max })
       this.emitChange()
     },
+    /** 组装导入相关接口的请求参数 */
     buildImportRequestData(extraData = {}) {
       const data = { ...this.importRequestData, ActCfgId: this.activityCfgId, ...extraData }
       if (this.includeActivityId && this.activityId > 0) {
@@ -231,14 +235,17 @@ export default {
       }
       return data
     },
+    /** 已导入用户列表加载完成，记录总数 */
     onImportedUserListLoaded(payload) {
       this.importedUidListCount = Number(payload && payload.total) || 0
     },
+    /** 刷新已导入用户列表 */
     refreshImportedUserList() {
       if (this.showImportUserList && this.$refs.importedUserList) {
         this.$refs.importedUserList.refresh()
       }
     },
+    /** 查询已导入（缓存）的用户数量 */
     getImportedUidCacheCount() {
       if (!this.activityCfgId) return Promise.resolve()
       return request({
@@ -252,6 +259,7 @@ export default {
         }
       })
     },
+    /** 上传前校验：仅允许 CSV 且不超过 10MB */
     handleBeforeUpload(file) {
       if (file.type !== 'text/csv' && !file.name.endsWith('.csv')) {
         Message.error('只能上传 CSV 格式文件')
@@ -263,9 +271,11 @@ export default {
       }
       return true
     },
+    /** 手动触发上传 */
     submitUpload() {
       if (this.$refs.upload) this.$refs.upload.submit()
     },
+    /** 文件上传成功：记录文件名，并调用导入接口写入用户ID */
     async handleUploadSuccess(response) {
       if (this.$refs.upload) this.$refs.upload.clearFiles()
       if (response.RetCode !== 0) {
@@ -273,7 +283,7 @@ export default {
         return
       }
       const uploadedFilename = response.Data
-      this.$set(this.config[USER_TYPE_VALUES.IMPORT], 'importedFilename', uploadedFilename)
+      this.$set(this.config.import, 'importedFilename', uploadedFilename)
       this.emitChange()
       try {
         const importResponse = await request({
@@ -295,6 +305,7 @@ export default {
         if (this.$refs.upload) this.$refs.upload.clearFiles()
       }
     },
+    /** 确认后重置已导入的用户ID */
     delImportedUid() {
       this.$confirm('确定要重置已导入的用户id吗？', '提示', {
         confirmButtonText: '确定',

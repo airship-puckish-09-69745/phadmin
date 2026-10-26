@@ -54,7 +54,7 @@ import {
  *  - mode="dialog"：由父组件通过 :visible.sync 控制弹窗
  *
  * v-model 数据格式（每种类型一个字段，便于扩展）：
- * { userType: 2, 1: {}, 2: {}, 3: { importedFilename }, 4: { registerTimeRange, betTimesRange }, 5: { tags: [{ tagType, tagGid, tagId, tagValues }] } }
+ * { userType: 2, new: {}, all: {}, import: { importedFilename }, filter: { registerTimeRange, betTimesRange }, tag: [{ tagType, tagGid, tagId, tagValues }] }
  * userType：1=新用户 2=所有用户（默认） 3=导入用户 4=筛选用户 5=标签用户
  */
 export default {
@@ -138,26 +138,27 @@ export default {
     detailTexts() {
       const cfg = this.localConfig
       if (cfg.userType === USER_TYPE_VALUES.IMPORT) {
-        return cfg[USER_TYPE_VALUES.IMPORT].importedFilename ? ['已上传导入文件'] : []
+        return cfg.import.importedFilename ? ['已上传导入文件'] : []
       }
       if (cfg.userType === USER_TYPE_VALUES.FILTER) {
-        const { registerTimeRange: r, betTimesRange: b } = cfg[USER_TYPE_VALUES.FILTER]
+        const { registerTimeRange: r, betTimesRange: b } = cfg.filter
         const texts = []
         if (r.min && r.max) texts.push(`注册 ${this.formatDate(r.min)} ~ ${this.formatDate(r.max)}`)
         texts.push(`投注次数 ${b.min}~${b.max}`)
         return texts
       }
       if (cfg.userType === USER_TYPE_VALUES.TAG) {
-        return [`已选 ${cfg[USER_TYPE_VALUES.TAG].tags.length} 个标签`]
+        return [`已选 ${cfg.tag.length} 个标签`]
       }
       return []
     }
   },
   watch: {
+    // 弹窗打开时，用当前值初始化草稿，取消则不影响原值
     dialogVisible(val) {
       if (val) this.draft = this.normalize(this.value)
     },
-    // 默认值或不可用类型回落到允许的类型，并补齐缺失字段
+    // 外部传入的值不规范时（缺字段、类型不可用），自动补齐并回写
     value: {
       immediate: true,
       handler(val) {
@@ -167,22 +168,27 @@ export default {
     }
   },
   methods: {
+    /** 规范化配置，并将不可用的类型回落到默认类型 */
     normalize(raw) {
       const cfg = normalizeUserTypeConfig(raw, this.defaultType)
       if (!this.normalizedEnabledTypes.includes(cfg.userType)) cfg.userType = this.defaultType
       return cfg
     },
+    /** 秒级时间戳格式化为 YYYY-MM-DD */
     formatDate(sec) {
       const d = new Date(sec * 1000)
       const p = n => String(n).padStart(2, '0')
       return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`
     },
+    /** 打开配置弹窗 */
     openDialog() {
       this.dialogVisible = true
     },
+    /** inline 模式下，内容变化即同步给 v-model */
     emitInput() {
       this.$emit('input', this.normalize(this.localConfig))
     },
+    /** 弹窗确认：校验草稿，通过后提交并关闭弹窗 */
     handleConfirm() {
       const msg = validateUserTypeConfig(this.draft)
       if (msg) {

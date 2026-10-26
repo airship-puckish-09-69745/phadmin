@@ -398,7 +398,7 @@ import request from '@/utils/request'
 import GameSelector from '@/components/Game/GameSelector.vue'
 import WhitelistConfig from '@/components/WhitelistConfig/index.vue'
 import UserTypeTag from '@/components/UserTypeTag/index.vue'
-import { defaultUserTypeConfig, fromLegacyUserConfig, normalizeUserTypeConfig, validateUserTypeConfig } from '@/components/UserTypeTag/config'
+import { defaultUserTypeConfig, normalizeUserTypeConfig, validateUserTypeConfig } from '@/components/UserTypeTag/config'
 import { ACTIVITY_ID } from '../index.vue'
 import { PROP_TYPE_OPTIONS } from '@/utils/options'
 import store from '@/store'
@@ -727,15 +727,8 @@ export default {
       if (!whitelist.uidList) whitelist.uidList = []
       if (!whitelist.appIdList) whitelist.appIdList = []
       if (!whitelist.siteIdList) whitelist.siteIdList = []
-
-      // 兼容旧格式（userTypes / userFilterCondition / importedFilename）
-      const userConfig = ext.userConfig
-        ? normalizeUserTypeConfig(this.safeJson(ext.userConfig, {}))
-        : fromLegacyUserConfig({
-          userTypes: this.safeJson(ext.userTypes, [2]),
-          userFilterCondition: this.safeJson(ext.userFilterCondition, {}),
-          importedFilename: ext.importedFilename
-        })
+      // 用户配置：缺失字段由 normalizeUserTypeConfig 补齐
+      const userConfig = normalizeUserTypeConfig(this.safeJson(ext.userConfig, {}))
 
       const prop = this.normalizePrize(ext.propPools)
       const taskType = this.toSafeNumber(prop.taskType || ext.taskType, 1)
@@ -892,8 +885,7 @@ export default {
         // 保存时，根据门票 ID 获取 sceneId
         prop.sceneId = GetMatchTicketRightsId(prop.propId) || 0
       }
-      console.log(prop.sceneId)
-      console.log(111)
+
 
       const taskType = this.toSafeNumber(d.pokerBetMoney.taskType, 2)
       const mult = taskType === 2 ? 1000 : 1
