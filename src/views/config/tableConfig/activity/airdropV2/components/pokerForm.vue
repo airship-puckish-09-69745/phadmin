@@ -116,7 +116,7 @@
                 <el-form-item label="参与活动用户类型：">
                   <UserTypeTag
                     tag-label=""
-                    v-model="item.userConfig"
+                    v-model="item.userTypeCfg"
                     :activity-cfg-id="item.id"
                     :activity-id="item.activityId"
                   />
@@ -418,7 +418,7 @@ function defaultWhitelist() {
   return { appIdList: [], siteIdList: [], abTest: { switch: false, bPercent: 0 }, uidList: [], isOpen: false }
 }
 
-function defaultUserConfig() {
+function defaultuserTypeCfg() {
   return defaultUserTypeConfig()
 }
 function newPokerBetMoneyTier() {
@@ -465,7 +465,7 @@ function newItem() {
     enableBetMoneyPrize: true,
     propPools: newProp(),
     pokerBetMoney: defaultPokerBetMoney(),
-    userConfig: defaultUserConfig()
+    userTypeCfg: defaultuserTypeCfg()
   }
 }
 
@@ -694,9 +694,9 @@ export default {
       }
       tiers.splice(index, 1)
     },
-    validateUserConfig() {
-      this.item.userConfig = normalizeUserTypeConfig(this.item.userConfig)
-      const msg = validateUserTypeConfig(this.item.userConfig)
+    validateuserTypeCfg() {
+      this.item.userTypeCfg = normalizeUserTypeConfig(this.item.userTypeCfg)
+      const msg = validateUserTypeConfig(this.item.userTypeCfg)
       if (msg) {
         Message.error(msg)
         return false
@@ -728,7 +728,7 @@ export default {
       if (!whitelist.appIdList) whitelist.appIdList = []
       if (!whitelist.siteIdList) whitelist.siteIdList = []
       // 用户配置：缺失字段由 normalizeUserTypeConfig 补齐
-      const userConfig = normalizeUserTypeConfig(this.safeJson(ext.userConfig, {}))
+      const userTypeCfg = normalizeUserTypeConfig(this.safeJson(ext.userTypeCfg, {}))
 
       const prop = this.normalizePrize(ext.propPools)
       const taskType = this.toSafeNumber(prop.taskType || ext.taskType, 1)
@@ -766,7 +766,7 @@ export default {
         enableBetMoneyPrize,
         propPools: prop,
         pokerBetMoney,
-        userConfig
+        userTypeCfg
       }
       this.getTaskStat()
       this.$nextTick(() => {
@@ -794,7 +794,7 @@ export default {
       if (!this.item.gameIdList || this.item.gameIdList.length === 0) {
         Message.error('请选择参与活动的游戏'); return false
       }
-      if (!this.validateUserConfig()) return false
+      if (!this.validateuserTypeCfg()) return false
 
       // Task 4: 至少保留一个奖励类型
       if (!this.item.enableProgressPrize && !this.item.enableBetMoneyPrize) {
@@ -933,7 +933,7 @@ export default {
         enableBetMoneyPrize: !!d.enableBetMoneyPrize,
         propPools: prop,
         pokerBetMoney,
-        userConfig: d.userConfig
+        userTypeCfg: d.userTypeCfg
       }
       return {
         id: d.id,

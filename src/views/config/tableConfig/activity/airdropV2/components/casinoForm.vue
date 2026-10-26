@@ -98,7 +98,7 @@
                 <el-form-item label="参与活动用户类型：">
                   <UserTypeTag
                     tag-label=""
-                    v-model="item.userConfig"
+                    v-model="item.userTypeCfg"
                     :activity-cfg-id="item.id"
                     :activity-id="item.activityId"
                     :enabled-user-types = [1,2,3,4]
@@ -293,7 +293,7 @@ import request from '@/utils/request'
 import GameSelector from '@/components/Game/GameSelector.vue'
 import WhitelistConfig from '@/components/WhitelistConfig/index.vue'
 import UserTypeTag from '@/components/UserTypeTag/index.vue'
-import { defaultUserTypeConfig, fromLegacyUserConfig, normalizeUserTypeConfig, validateUserTypeConfig } from '@/components/UserTypeTag/config'
+import { defaultUserTypeConfig, normalizeUserTypeConfig, validateUserTypeConfig } from '@/components/UserTypeTag/config'
 
 import { ACTIVITY_ID } from '../index.vue'
 import { GetPropConfigListFromCache } from '@/utils/propV2'
@@ -309,7 +309,7 @@ function defaultWhitelist() {
   return { appIdList: [], siteIdList: [], abTest: { switch: false, bPercent: 0 }, uidList: [], isOpen: false }
 }
 
-function defaultUserConfig() {
+function defaultuserTypeCfg() {
   return defaultUserTypeConfig()
 }
 
@@ -344,7 +344,7 @@ function newItem() {
     // 投注金奖励（固定一条）
     casinosBetMoney: defaultCasinosBetMoney(),
     // 用户配置
-    userConfig: defaultUserConfig()
+    userTypeCfg: defaultuserTypeCfg()
   }
 }
 
@@ -461,9 +461,9 @@ export default {
       return true
     },
     // 验证用户配置
-    validateUserConfig() {
-      this.item.userConfig = normalizeUserTypeConfig(this.item.userConfig)
-      const msg = validateUserTypeConfig(this.item.userConfig)
+    validateuserTypeCfg() {
+      this.item.userTypeCfg = normalizeUserTypeConfig(this.item.userTypeCfg)
+      const msg = validateUserTypeConfig(this.item.userTypeCfg)
       if (msg) {
         Message.error(msg)
         return false
@@ -502,15 +502,8 @@ export default {
       if (!whitelist.uidList) whitelist.uidList = []
       if (!whitelist.appIdList) whitelist.appIdList = []
       if (!whitelist.siteIdList) whitelist.siteIdList = []
-
-      // 兼容旧格式（userTypes / userFilterCondition / importedFilename）
-      const userConfig = ext.userConfig
-        ? normalizeUserTypeConfig(this.safeJson(ext.userConfig, {}))
-        : fromLegacyUserConfig({
-          userTypes: this.safeJson(ext.userTypes, [2]),
-          userFilterCondition: this.safeJson(ext.userFilterCondition, {}),
-          importedFilename: ext.importedFilename
-        })
+      // 用户配置：缺失字段由 normalizeUserTypeConfig 补齐
+      const userTypeCfg = normalizeUserTypeConfig(this.safeJson(ext.userTypeCfg, {}))
       const rawPropPools = this.safeJson(ext.propPools, defaultPropPools())
       const taskType = rawPropPools.taskType || ext.taskType || 2
 
@@ -558,7 +551,7 @@ export default {
         activityTitle: ext.activityTitle || '',
         propPools,
         casinosBetMoney,
-        userConfig
+        userTypeCfg
       }
     },
     validateData() {
@@ -577,7 +570,7 @@ export default {
       if (!this.item.gameIdList || this.item.gameIdList.length === 0) {
         Message.error('请选择参与活动的游戏'); return false
       }
-      if (!this.validateUserConfig()) return false
+      if (!this.validateuserTypeCfg()) return false
 
       // Task 4: 至少保留一个奖励类型
       if (!this.item.enableProgressPrize && !this.item.enableBetMoneyPrize) {
@@ -654,7 +647,7 @@ export default {
           issuedReward: Math.round(this.toSafeNumber(d.casinosBetMoney.issuedReward) * 1000),
           userMaxReward: Math.round(this.toSafeNumber(d.casinosBetMoney.userMaxReward) * 1000)
         },
-        userConfig: d.userConfig
+        userTypeCfg: d.userTypeCfg
       }
       return {
         id: d.id,
