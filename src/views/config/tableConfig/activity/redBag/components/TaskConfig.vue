@@ -403,13 +403,13 @@ export default {
       if (editData.rewardCfg && typeof editData.rewardCfg === 'object' && !Array.isArray(editData.rewardCfg)) {
         return
       }
-      editData.rewardCfg = this.convertLegacyPropPoolsToRewardCfg(editData.propPools)
+      this.$set(editData, 'rewardCfg', this.convertLegacyPropPoolsToRewardCfg(editData.propPools))
     },
     handleTaskTypeChange(taskType) {
       if (Number(taskType) === 4) {
         this.ensureRewardCfg(this.editItem)
       } else {
-        this.editItem.rewardCfg = this.getDefaultRewardCfg()
+        this.$set(this.editItem, 'rewardCfg', this.getDefaultRewardCfg())
       }
     },
     handleEdit(row) {
@@ -443,6 +443,8 @@ export default {
         }
         if (Number(editData.taskType) === 4) {
           this.ensureRewardCfg(editData)
+        } else if (!editData.rewardCfg) {
+          editData.rewardCfg = this.getDefaultRewardCfg()
         }
 
         this.editItem = editData
