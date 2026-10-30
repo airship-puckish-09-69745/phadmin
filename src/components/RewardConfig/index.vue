@@ -119,7 +119,8 @@
 <script>
 import { Message } from 'element-ui'
 import request from '@/utils/request'
-import { ITEM_TYPE_OPTIONS } from '@/utils/options'
+import { ITEM_TYPE_OPTIONS, PROP_TYPE_OPTIONS } from '@/utils/options'
+import { GetMatchTicketRightsId } from '@/utils/propV2'
 
 // 奖励类型：2=投注金 4=道具 6=富裕卡
 const REWARD_TYPE = { BET_MONEY: 2, PROP: 4, RICH_CARD: 6 }
@@ -150,7 +151,15 @@ function newBetMoneyItem() {
 }
 
 function newPropItem() {
-  return { propType: 0, propId: 0, propName: '', expireDays: 1, propNum: 1, propLimit: 0 }
+  return { propType: 0, propId: 0, propName: '', expireDays: 1, propNum: 1, propLimit: 0, sceneId: 0 }
+}
+
+function isNewTicketProp(propType) {
+  return [
+    PROP_TYPE_OPTIONS.PROP_TYPE_TICKET_NEW,
+    PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW,
+    PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW
+  ].includes(Number(propType))
 }
 
 function newRichCardItem() {
@@ -174,6 +183,11 @@ function normalizeRewardData(rawValue) {
   result.Prop = clone(getLegacySingle(raw.Prop))
   result.RichCard = clone(getLegacySingle(raw.RichCard))
   if (hasConfig(result.Prop)) {
+    const sceneId = Number(result.Prop.sceneId)
+    result.Prop.sceneId = Number.isFinite(sceneId) ? sceneId : 0
+    if (isNewTicketProp(result.Prop.propType) && result.Prop.sceneId <= 0) {
+      result.Prop.sceneId = GetMatchTicketRightsId(result.Prop.propId) || 0
+    }
     const rawExpireDays = result.Prop.expireDays
     if (rawExpireDays === undefined || rawExpireDays === null || rawExpireDays === '') {
       result.Prop.expireDays = 1
@@ -351,6 +365,11 @@ export default {
         const item = this.form.Prop
         if (!item || !item.propType) { Message.error('请选择道具类型'); return }
         if (!item.propId) { Message.error('请选择道具名称'); return }
+        const sceneId = Number(item.sceneId)
+        if (isNewTicketProp(item.propType) && (!Number.isFinite(sceneId) || sceneId <= 0)) {
+          Message.error('门票场景无效，请重新选择道具名称')
+          return
+        }
       }
 
       if (this.selectedRewardType === REWARD_TYPE.RICH_CARD) {
@@ -388,7 +407,8 @@ export default {
           propName: this.form.Prop.propName,
           expireDays: this.form.Prop.expireDays,
           propNum: this.form.Prop.propNum,
-          propLimit: this.form.Prop.propLimit
+          propLimit: this.form.Prop.propLimit,
+          sceneId: isNewTicketProp(this.form.Prop.propType) ? Number(this.form.Prop.sceneId) : 0
         }
       } else if (this.selectedRewardType === REWARD_TYPE.RICH_CARD) {
         output.RichCard = {
@@ -434,6 +454,7 @@ export default {
     onPropTypeChange(row) {
       row.propId = 0
       row.propName = ''
+      row.sceneId = 0
       this.loadPropOptionsForType(row.propType)
     },
 
@@ -441,6 +462,7 @@ export default {
       const options = this.getPropNameOptions(row.propType)
       const found = options.find(option => option.value === row.propId)
       row.propName = found ? found.label : ''
+      row.sceneId = found && isNewTicketProp(row.propType) ? found.sceneId : 0
     },
 
     onRichCardSelectChange(row) {
@@ -468,7 +490,16 @@ export default {
           if ([2, 4, 5].includes(item.item_type)) return true
           return item.expire_time * 1000 > currTime
         })
-        .map(item => ({ value: item.id, label: item.item_name }))
+        .map(item => {
+          if (!isNewTicketProp(propType)) {
+            return { value: item.id, label: item.item_name }
+          }
+          const sceneId = GetMatchTicketRightsId(item.id)
+          return sceneId
+            ? { value: item.id, label: item.show_name || item.item_name, sceneId }
+            : null
+        })
+        .filter(Boolean)
 
       this.$set(this.propOptionsCache, propType, options)
     },
@@ -481,6 +512,10 @@ export default {
       }).then(res => {
         if (res.RetCode === 0 && res.Data && Array.isArray(res.Data.list)) {
           this.propList = res.Data.list
+          this.propOptionsCache = {}
+          if (this.form.Prop && this.form.Prop.propType) {
+            this.loadPropOptionsForType(this.form.Prop.propType)
+          }
         }
       }).catch(() => {})
     },
