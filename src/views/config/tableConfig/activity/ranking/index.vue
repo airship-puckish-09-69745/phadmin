@@ -453,7 +453,7 @@
                       <template slot-scope="scope">
                         <RewardConfig
                           v-model="scope.row.rewardItem"
-                          :enabled-types="['betMoney', 'Prop', 'RichCard']"
+                          :enabled-types="[2, 4, 6]"
                         />
                       </template>
                     </el-table-column>

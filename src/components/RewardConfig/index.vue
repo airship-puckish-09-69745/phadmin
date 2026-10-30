@@ -26,14 +26,14 @@
       append-to-body
       :close-on-click-modal="false"
     >
-      <fieldset class="reward-fieldset">
+      <fieldset v-if="showRewardType" class="reward-fieldset">
         <legend><b>奖励类型</b></legend>
         <el-radio-group v-model="selectedRewardType" @change="ensureSelectedConfig">
           <el-radio v-for="item in availableRewardTypes" :key="item.value" :label="item.value">{{ item.label }}</el-radio>
         </el-radio-group>
       </fieldset>
 
-      <fieldset v-if="selectedRewardType === 'betMoney' && form.betMoney" class="reward-fieldset">
+      <fieldset v-if="selectedRewardType === REWARD_TYPE.BET_MONEY && form.betMoney" class="reward-fieldset">
         <legend><b>投注金</b></legend>
         <el-form label-width="100px" size="mini">
           <el-form-item label="投注金方式">
@@ -51,7 +51,7 @@
         </el-form>
       </fieldset>
 
-      <fieldset v-if="selectedRewardType === 'Prop' && form.Prop" class="reward-fieldset">
+      <fieldset v-if="selectedRewardType === REWARD_TYPE.PROP && form.Prop" class="reward-fieldset">
         <legend><b>道具</b></legend>
         <el-form label-width="100px" size="mini">
           <el-form-item label="道具类型">
@@ -78,7 +78,7 @@
         </el-form>
       </fieldset>
 
-      <fieldset v-if="selectedRewardType === 'RichCard' && form.RichCard" class="reward-fieldset">
+      <fieldset v-if="selectedRewardType === REWARD_TYPE.RICH_CARD && form.RichCard" class="reward-fieldset">
         <legend><b>富裕卡</b></legend>
         <el-form label-width="100px" size="mini">
           <el-form-item label="适用游戏">
@@ -119,19 +119,12 @@
 <script>
 import { Message } from 'element-ui'
 import request from '@/utils/request'
-import { ITEM_TYPE_OPTIONS } from '@/utils/options'
+import { ITEM_TYPE_OPTIONS, PROP_TYPE_OPTIONS } from '@/utils/options'
+import { GetMatchTicketRightsId } from '@/utils/propV2'
 
-const REWARD_TYPE_MAP = {
-  betMoney: 2, // 奖励类型：投注金
-  Prop: 4, // 奖励类型：道具
-  RichCard: 6 // 奖励类型：富裕卡
-}
-
-const REWARD_TYPE_REVERSE_MAP = {
-  2: 'betMoney',
-  4: 'Prop',
-  6: 'RichCard'
-}
+// 奖励类型：2=投注金 4=道具 6=富裕卡
+const REWARD_TYPE = { BET_MONEY: 2, PROP: 4, RICH_CARD: 6 }
+const REWARD_TYPE_LABELS = { 2: '投注金', 4: '道具', 6: '富裕卡' }
 
 const PROP_DAY_VALUES = [1, 3, 7, 30]
 const PROP_DAY_OPTIONS = PROP_DAY_VALUES.map(day => ({ value: day, label: `${day}天` }))
@@ -158,7 +151,15 @@ function newBetMoneyItem() {
 }
 
 function newPropItem() {
-  return { propType: 0, propId: 0, propName: '', expireDays: 1, propNum: 1, propLimit: 0 }
+  return { propType: 0, propId: 0, propName: '', expireDays: 1, propNum: 1, propLimit: 0, sceneId: 0 }
+}
+
+function isNewTicketProp(propType) {
+  return [
+    PROP_TYPE_OPTIONS.PROP_TYPE_TICKET_NEW,
+    PROP_TYPE_OPTIONS.PROP_TYPE_TEXAS_TICKET_NEW,
+    PROP_TYPE_OPTIONS.PROP_TYPE_PUSOY_TICKET_NEW
+  ].includes(Number(propType))
 }
 
 function newRichCardItem() {
@@ -182,6 +183,11 @@ function normalizeRewardData(rawValue) {
   result.Prop = clone(getLegacySingle(raw.Prop))
   result.RichCard = clone(getLegacySingle(raw.RichCard))
   if (hasConfig(result.Prop)) {
+    const sceneId = Number(result.Prop.sceneId)
+    result.Prop.sceneId = Number.isFinite(sceneId) ? sceneId : 0
+    if (isNewTicketProp(result.Prop.propType) && result.Prop.sceneId <= 0) {
+      result.Prop.sceneId = GetMatchTicketRightsId(result.Prop.propId) || 0
+    }
     const rawExpireDays = result.Prop.expireDays
     if (rawExpireDays === undefined || rawExpireDays === null || rawExpireDays === '') {
       result.Prop.expireDays = 1
@@ -192,14 +198,14 @@ function normalizeRewardData(rawValue) {
   }
 
   const rewardType = Number(raw.rewardType)
-  if (REWARD_TYPE_REVERSE_MAP[rewardType]) {
+  if (REWARD_TYPE_LABELS[rewardType]) {
     result.rewardType = rewardType
   } else if (hasConfig(result.betMoney)) {
-    result.rewardType = REWARD_TYPE_MAP.betMoney
+    result.rewardType = REWARD_TYPE.BET_MONEY
   } else if (hasConfig(result.Prop)) {
-    result.rewardType = REWARD_TYPE_MAP.Prop
+    result.rewardType = REWARD_TYPE.PROP
   } else if (hasConfig(result.RichCard)) {
-    result.rewardType = REWARD_TYPE_MAP.RichCard
+    result.rewardType = REWARD_TYPE.RICH_CARD
   }
 
   return result
@@ -213,10 +219,15 @@ export default {
       type: Object,
       default: () => emptyReward()
     },
-    // 可选奖励类型：'betMoney' | 'Prop' | 'RichCard'
+    // 可选奖励类型：2=投注金 4=道具 6=富裕卡
     enabledTypes: {
       type: Array,
-      default: () => ['betMoney']
+      default: () => [2]
+    },
+    // 是否展示奖励类型选择；隐藏时使用第一个可选类型（或已有配置的类型）
+    showRewardType: {
+      type: Boolean,
+      default: true
     },
     // 限制可选道具类型；空数组代表全部
     propTypes: {
@@ -227,7 +238,8 @@ export default {
   data() {
     return {
       dialogVisible: false,
-      selectedRewardType: '',
+      REWARD_TYPE,
+      selectedRewardType: 0,
       form: emptyReward(),
 
       propList: [],
@@ -250,14 +262,10 @@ export default {
       return enabledOptions.filter(item => this.propTypes.includes(item.value))
     },
     availableRewardTypes() {
-      const labels = {
-        betMoney: '投注金',
-        Prop: '道具',
-        RichCard: '富裕卡'
-      }
       return this.enabledTypes
-        .filter(type => labels[type])
-        .map(type => ({ value: type, label: labels[type] }))
+        .map(Number)
+        .filter(type => REWARD_TYPE_LABELS[type])
+        .map(type => ({ value: type, label: REWARD_TYPE_LABELS[type] }))
     },
     propDayTypeOptionsForEdit() {
       if (!this.form.Prop || this.form.Prop.expireDays === undefined || this.form.Prop.expireDays === null) {
@@ -309,17 +317,17 @@ export default {
     }
   },
   mounted() {
-    if (this.showType('Prop')) {
+    if (this.showType(REWARD_TYPE.PROP)) {
       this.fetchPropList()
     }
-    if (this.showType('RichCard')) {
+    if (this.showType(REWARD_TYPE.RICH_CARD)) {
       this.fetchGameAll()
       this.fetchRichCardConfig()
     }
   },
   methods: {
     showType(type) {
-      return this.enabledTypes.includes(type)
+      return this.enabledTypes.map(Number).includes(type)
     },
 
     openDialog() {
@@ -353,19 +361,24 @@ export default {
     },
 
     handleConfirm() {
-      if (this.selectedRewardType === 'Prop') {
+      if (this.selectedRewardType === REWARD_TYPE.PROP) {
         const item = this.form.Prop
         if (!item || !item.propType) { Message.error('请选择道具类型'); return }
         if (!item.propId) { Message.error('请选择道具名称'); return }
+        const sceneId = Number(item.sceneId)
+        if (isNewTicketProp(item.propType) && (!Number.isFinite(sceneId) || sceneId <= 0)) {
+          Message.error('门票场景无效，请重新选择道具名称')
+          return
+        }
       }
 
-      if (this.selectedRewardType === 'RichCard') {
+      if (this.selectedRewardType === REWARD_TYPE.RICH_CARD) {
         const item = this.form.RichCard
         if (!item || !item.slotsType) { Message.error('请选择适用游戏'); return }
         if (!item.richCardLevel || !item.bet) { Message.error('请选择富裕卡星级和Bet'); return }
       }
 
-      if (this.selectedRewardType === 'betMoney') {
+      if (this.selectedRewardType === REWARD_TYPE.BET_MONEY) {
         const item = this.form.betMoney
         if (!item || !item.method) { Message.error('请选择投注金方式'); return }
         if (item.amount === '' || item.limit === '' || item.amount === null || item.limit === null ||
@@ -377,26 +390,27 @@ export default {
       }
 
       const output = emptyReward()
-      output.rewardType = REWARD_TYPE_MAP[this.selectedRewardType] || 0
+      output.rewardType = this.selectedRewardType || 0
       // 约定：未选中的奖励类型保持为空对象 {}
 
-      if (this.selectedRewardType === 'betMoney') {
+      if (this.selectedRewardType === REWARD_TYPE.BET_MONEY) {
         const multiple = this.form.betMoney.method === '2' ? 1000 : 1
         output.betMoney = {
           method: this.form.betMoney.method,
           amount: (this.form.betMoney.amount || 0) * multiple,
           limit: (this.form.betMoney.limit || 0) * 1000
         }
-      } else if (this.selectedRewardType === 'Prop') {
+      } else if (this.selectedRewardType === REWARD_TYPE.PROP) {
         output.Prop = {
           propType: this.form.Prop.propType,
           propId: this.form.Prop.propId,
           propName: this.form.Prop.propName,
           expireDays: this.form.Prop.expireDays,
           propNum: this.form.Prop.propNum,
-          propLimit: this.form.Prop.propLimit
+          propLimit: this.form.Prop.propLimit,
+          sceneId: isNewTicketProp(this.form.Prop.propType) ? Number(this.form.Prop.sceneId) : 0
         }
-      } else if (this.selectedRewardType === 'RichCard') {
+      } else if (this.selectedRewardType === REWARD_TYPE.RICH_CARD) {
         output.RichCard = {
           slotsType: this.form.RichCard.slotsType,
           richCardLevel: this.form.RichCard.richCardLevel,
@@ -414,32 +428,33 @@ export default {
     // 获取初始奖励类型
     getInitialRewardType(raw) {
       const enabledSet = new Set(this.availableRewardTypes.map(item => item.value))
-      const rewardTypeKey = REWARD_TYPE_REVERSE_MAP[raw.rewardType]
-      if (rewardTypeKey && enabledSet.has(rewardTypeKey)) return rewardTypeKey
+      const rewardType = Number(raw.rewardType)
+      if (enabledSet.has(rewardType)) return rewardType
 
-      if (hasConfig(raw.betMoney) && enabledSet.has('betMoney')) return 'betMoney'
-      if (hasConfig(raw.Prop) && enabledSet.has('Prop')) return 'Prop'
-      if (hasConfig(raw.RichCard) && enabledSet.has('RichCard')) return 'RichCard'
+      if (hasConfig(raw.betMoney) && enabledSet.has(REWARD_TYPE.BET_MONEY)) return REWARD_TYPE.BET_MONEY
+      if (hasConfig(raw.Prop) && enabledSet.has(REWARD_TYPE.PROP)) return REWARD_TYPE.PROP
+      if (hasConfig(raw.RichCard) && enabledSet.has(REWARD_TYPE.RICH_CARD)) return REWARD_TYPE.RICH_CARD
 
-      return this.availableRewardTypes[0] ? this.availableRewardTypes[0].value : ''
+      return this.availableRewardTypes[0] ? this.availableRewardTypes[0].value : 0
     },
 
     ensureSelectedConfig(type) {
-      if (type === 'betMoney' && !hasConfig(this.form.betMoney)) {
+      if (type === REWARD_TYPE.BET_MONEY && !hasConfig(this.form.betMoney)) {
         this.form.betMoney = newBetMoneyItem()
       }
-      if (type === 'Prop' && !hasConfig(this.form.Prop)) {
+      if (type === REWARD_TYPE.PROP && !hasConfig(this.form.Prop)) {
         this.form.Prop = newPropItem()
       }
-      if (type === 'RichCard' && !hasConfig(this.form.RichCard)) {
+      if (type === REWARD_TYPE.RICH_CARD && !hasConfig(this.form.RichCard)) {
         this.form.RichCard = newRichCardItem()
       }
-      this.form.rewardType = REWARD_TYPE_MAP[type] || 0
+      this.form.rewardType = type || 0
     },
 
     onPropTypeChange(row) {
       row.propId = 0
       row.propName = ''
+      row.sceneId = 0
       this.loadPropOptionsForType(row.propType)
     },
 
@@ -447,6 +462,7 @@ export default {
       const options = this.getPropNameOptions(row.propType)
       const found = options.find(option => option.value === row.propId)
       row.propName = found ? found.label : ''
+      row.sceneId = found && isNewTicketProp(row.propType) ? found.sceneId : 0
     },
 
     onRichCardSelectChange(row) {
@@ -474,7 +490,16 @@ export default {
           if ([2, 4, 5].includes(item.item_type)) return true
           return item.expire_time * 1000 > currTime
         })
-        .map(item => ({ value: item.id, label: item.item_name }))
+        .map(item => {
+          if (!isNewTicketProp(propType)) {
+            return { value: item.id, label: item.item_name }
+          }
+          const sceneId = GetMatchTicketRightsId(item.id)
+          return sceneId
+            ? { value: item.id, label: item.show_name || item.item_name, sceneId }
+            : null
+        })
+        .filter(Boolean)
 
       this.$set(this.propOptionsCache, propType, options)
     },
@@ -487,6 +512,10 @@ export default {
       }).then(res => {
         if (res.RetCode === 0 && res.Data && Array.isArray(res.Data.list)) {
           this.propList = res.Data.list
+          this.propOptionsCache = {}
+          if (this.form.Prop && this.form.Prop.propType) {
+            this.loadPropOptionsForType(this.form.Prop.propType)
+          }
         }
       }).catch(() => {})
     },
