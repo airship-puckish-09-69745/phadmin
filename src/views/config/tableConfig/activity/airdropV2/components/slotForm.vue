@@ -100,8 +100,6 @@
                     v-model="item.userTypeCfg"
                     :activity-cfg-id="item.id"
                     :activity-id="item.activityId"
-                    :enabled-user-types = [1,2,3,4]
-
                   />
                 </el-form-item>
               </el-col>
