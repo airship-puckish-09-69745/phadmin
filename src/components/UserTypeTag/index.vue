@@ -54,7 +54,7 @@ import {
  *  - mode="dialog"：由父组件通过 :visible.sync 控制弹窗
  *
  * v-model 数据格式（每种类型一个字段，便于扩展）：
- * { userType: 2, new: {}, all: {}, import: { importedFilename }, filter: { registerTimeRange, betTimesRange }, tag: [{ tagType, tagGid, tagId, tagValues }] }
+ * { userType: 2, new: {}, all: {}, import: { importedFilename }, filter: { registerTimeRange, betTimesRange }, tag: [{ tagType, tagGid, tagId, tagValues }], isParticipate: true }
  * userType：1=新用户 2=所有用户（默认） 3=导入用户 4=筛选用户 5=标签用户
  */
 export default {
@@ -77,6 +77,8 @@ export default {
     userTypeOptions: { type: Array, default: null },
     // 限定可选标签类型（tagType），为空则不限制
     tagTypes: { type: Array, default: () => [] },
+    participateActiveText: { type: String, default: '参与活动' },
+    participateInactiveText: { type: String, default: '不参与活动' },
     activityCfgId: { type: Number, default: 0 },
     activityId: { type: Number, default: 0 },
     showImportUserList: { type: Boolean, default: true },
@@ -109,6 +111,8 @@ export default {
         enabledUserTypes: this.normalizedEnabledTypes,
         userTypeOptions: this.userTypeOptions,
         tagTypes: this.tagTypes,
+        participateActiveText: this.participateActiveText,
+        participateInactiveText: this.participateInactiveText,
         activityCfgId: this.activityCfgId,
         activityId: this.activityId,
         showImportUserList: this.showImportUserList,

@@ -15,7 +15,18 @@
       >
         <el-option v-for="opt in levelOptions(idx)" :key="opt.value" :label="opt.label" :value="opt.value"/>
       </el-select>
-      <el-switch active-text="参与活动" inactive-text="不参与活动"/>
+      <div class="tag-picker__participation">
+        <i class="el-icon-s-flag"/>
+        <el-switch
+          :value="isParticipate"
+          :active-text="participateActiveText"
+          :inactive-text="participateInactiveText"
+          active-color="#67c23a"
+          inactive-color="#c0c4cc"
+          class="tag-picker__participation-switch"
+          @change="$emit('participate-change', $event)"
+        />
+      </div>
       <el-radio-group v-model="viewMode" size="small" class="tag-picker__view">
         <el-radio-button label="all">展示全部（{{ rows.length }}）</el-radio-button>
         <el-radio-button label="selected">展示已选（{{ selectedTags.length }}）</el-radio-button>
@@ -91,7 +102,10 @@ export default {
     // 已选标签：[{ tagType, tagGid, tagId, tagValues }]
     value: {type: Array, default: () => []},
     // 限定标签类型；为空则不限制
-    tagTypes: {type: Array, default: () => []}
+    tagTypes: {type: Array, default: () => []},
+    isParticipate: {type: Boolean, default: true},
+    participateActiveText: {type: String, default: '参与活动'},
+    participateInactiveText: {type: String, default: '不参与活动'}
   },
   data() {
     return {
@@ -290,6 +304,26 @@ export default {
 
 .tag-picker__filter {
   width: 150px;
+}
+
+.tag-picker__participation {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0 10px;
+  color: #606266;
+  background: #f5f7fa;
+  border: 1px solid #e4e7ed;
+  border-radius: 16px;
+}
+
+.tag-picker__participation > i {
+  margin-right: 8px;
+  color: #67c23a;
+}
+
+.tag-picker__participation-switch {
+  line-height: 1;
 }
 
 .tag-picker__view {
