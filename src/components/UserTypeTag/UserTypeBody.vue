@@ -1,16 +1,5 @@
 <template>
   <div class="ut-body">
-    <div :class="['ut-switch', { 'is-on': config.participate }]">
-      <i :class="[config.participate ? 'el-icon-circle-check' : 'el-icon-circle-close', 'ut-switch__icon']" />
-      <span class="ut-switch__text">{{ config.participate ? activeText : inactiveText }}</span>
-      <el-switch
-        :value="config.participate"
-        active-color="#13ce66"
-        inactive-color="#c0c4cc"
-        @change="onParticipateChange"
-      />
-    </div>
-
     <!-- 用户类型：单选卡片 -->
     <div class="ut-cards">
       <div
@@ -121,12 +110,23 @@
       </el-form>
 
       <!-- 5 标签用户 -->
-      <TagPicker
-        v-if="isType(USER_TYPE_VALUES.TAG)"
-        :value="config.tag"
-        :tag-types="tagTypes"
-        @input="onTagsChange"
-      />
+      <template v-if="isType(USER_TYPE_VALUES.TAG)">
+        <div :class="['ut-switch', { 'is-on': config.participate }]">
+          <i :class="[config.participate ? 'el-icon-circle-check' : 'el-icon-circle-close', 'ut-switch__icon']" />
+          <span class="ut-switch__text">{{ config.participate ? activeText : inactiveText }}</span>
+          <el-switch
+            :value="config.participate"
+            active-color="#13ce66"
+            inactive-color="#c0c4cc"
+            @change="onParticipateChange"
+          />
+        </div>
+        <TagPicker
+          :value="config.tag"
+          :tag-types="tagTypes"
+          @input="onTagsChange"
+        />
+      </template>
     </div>
   </div>
 </template>
