@@ -13,8 +13,9 @@
         class="tag-picker__filter"
         @change="onFilterChange(idx)"
       >
-        <el-option v-for="opt in levelOptions(idx)" :key="opt.value" :label="opt.label" :value="opt.value" />
+        <el-option v-for="opt in levelOptions(idx)" :key="opt.value" :label="opt.label" :value="opt.value"/>
       </el-select>
+      <el-switch active-text="参与活动" inactive-text="不参与活动"/>
       <el-radio-group v-model="viewMode" size="small" class="tag-picker__view">
         <el-radio-button label="all">展示全部（{{ rows.length }}）</el-radio-button>
         <el-radio-button label="selected">展示已选（{{ selectedTags.length }}）</el-radio-button>
@@ -39,11 +40,11 @@
           />
         </template>
         <template slot-scope="{ row }">
-          <el-checkbox :value="isSelected(row)" @change="toggle(row, $event)" />
+          <el-checkbox :value="isSelected(row)" @change="toggle(row, $event)"/>
         </template>
       </el-table-column>
-      <el-table-column label="标签类型" prop="typeName" width="130" />
-      <el-table-column label="游戏" prop="gameName" width="130" />
+      <el-table-column label="标签类型" prop="typeName" width="130"/>
+      <el-table-column label="游戏" prop="gameName" width="130"/>
       <el-table-column label="标签" min-width="170">
         <template slot-scope="{ row }">
           {{ row.tagName }}
@@ -67,12 +68,12 @@
 
 <script>
 import request from '@/utils/request'
-import { TAG_TYPE_NAMES } from './config'
+import {TAG_TYPE_NAMES} from './config'
 
 const LEVELS = [
-  { key: 'tagType', label: '标签类型' },
-  { key: 'tagGid', label: '游戏' },
-  { key: 'tagId', label: '标签' }
+  {key: 'tagType', label: '标签类型'},
+  {key: 'tagGid', label: '游戏'},
+  {key: 'tagId', label: '标签'}
 ]
 
 /** 解析标签属性 JSON，失败返回空对象 */
@@ -88,16 +89,16 @@ export default {
   name: 'TagPicker',
   props: {
     // 已选标签：[{ tagType, tagGid, tagId, tagValues }]
-    value: { type: Array, default: () => [] },
+    value: {type: Array, default: () => []},
     // 限定标签类型；为空则不限制
-    tagTypes: { type: Array, default: () => [] }
+    tagTypes: {type: Array, default: () => []}
   },
   data() {
     return {
       loading: false,
       tagList: [],
       gameNames: {},
-      filters: { tagType: '', tagGid: '', tagId: '' },
+      filters: {tagType: '', tagGid: '', tagId: ''},
       viewMode: 'all'
     }
   },
@@ -190,7 +191,7 @@ export default {
     toggle(row, checked) {
       const rest = this.selectedTags.filter(t => this.key(t) !== this.key(row))
       this.emit(checked
-        ? [...rest, { tagType: row.tagType, tagGid: row.tagGid, tagId: row.tagId, tagValues: this.defaultValues(row) }]
+        ? [...rest, {tagType: row.tagType, tagGid: row.tagGid, tagId: row.tagId, tagValues: this.defaultValues(row)}]
         : rest)
     },
     /** 全选/取消当前展示的所有标签 */
@@ -208,7 +209,7 @@ export default {
       // 非布尔标签至少保留一个等级
       if (!values.length) return
       this.emit(this.selectedTags.map(t => this.key(t) === this.key(row)
-        ? { ...t, tagValues: values.slice().sort((a, b) => a - b) }
+        ? {...t, tagValues: values.slice().sort((a, b) => a - b)}
         : t))
     },
     /** 行是否满足指定层级的筛选条件 */
@@ -236,10 +237,12 @@ export default {
     },
     /** 某级筛选变化时，重置其后各级筛选 */
     onFilterChange(idx) {
-      LEVELS.slice(idx + 1).forEach(l => { this.filters[l.key] = '' })
+      LEVELS.slice(idx + 1).forEach(l => {
+        this.filters[l.key] = ''
+      })
     },
     /** 已选行高亮 */
-    rowClassName({ row }) {
+    rowClassName({row}) {
       return this.isSelected(row) ? 'tag-picker__row--selected' : ''
     },
     /** 拉取标签配置 */
@@ -250,21 +253,25 @@ export default {
       request({
         url: '/dataProxy/info',
         method: 'get',
-        data: { Path: '/thirdparties/tag/config' }
+        data: {Path: '/thirdparties/tag/config'}
       }).then(res => {
         if (res.RetCode !== 0 || !Array.isArray(res.Data)) return
         this.tagList = res.Data
           .filter(o => !hiddenTagIds.includes(o.tagId))
           .filter(o => !this.tagTypes.length || this.tagTypes.includes(o.tagType))
           .sort((a, b) => a.id - b.id)
-      }).finally(() => { this.loading = false })
+      }).finally(() => {
+        this.loading = false
+      })
     },
     /** 拉取游戏列表，用于展示游戏名 */
     fetchGames() {
-      request({ url: '/thirdpartygames/all', method: 'get', data: {}}).then(res => {
+      request({url: '/thirdpartygames/all', method: 'get', data: {}}).then(res => {
         if (res.RetCode !== 0 || !Array.isArray(res.Data)) return
         const map = {}
-        res.Data.forEach(g => { map[g.Gid] = g.Name })
+        res.Data.forEach(g => {
+          map[g.Gid] = g.Name
+        })
         this.gameNames = map
       })
     }
@@ -280,19 +287,24 @@ export default {
   gap: 8px;
   margin-bottom: 10px;
 }
+
 .tag-picker__filter {
   width: 150px;
 }
+
 .tag-picker__view {
   margin-left: auto;
 }
+
 .tag-picker__id {
   color: #909399;
   font-size: 12px;
 }
+
 .tag-picker >>> .tag-picker__row--selected {
   background: #f0f9eb;
 }
+
 .tag-picker .el-checkbox-group .el-checkbox {
   margin-right: 14px;
 }

@@ -23,7 +23,7 @@
       v-if="mode !== 'inline'"
       :title="title"
       :visible.sync="dialogVisible"
-      width="860px"
+      width="60%"
       append-to-body
       :close-on-click-modal="false"
     >
