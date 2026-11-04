@@ -15,7 +15,6 @@
       >
         <el-option v-for="opt in levelOptions(idx)" :key="opt.value" :label="opt.label" :value="opt.value"/>
       </el-select>
-      <el-switch active-text="参与活动" inactive-text="不参与活动"/>
       <el-radio-group v-model="viewMode" size="small" class="tag-picker__view">
         <el-radio-button label="all">展示全部（{{ rows.length }}）</el-radio-button>
         <el-radio-button label="selected">展示已选（{{ selectedTags.length }}）</el-radio-button>

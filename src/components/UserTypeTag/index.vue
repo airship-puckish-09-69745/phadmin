@@ -3,6 +3,7 @@
     <!-- tag 模式：摘要标签 + 编辑入口 -->
     <div v-if="mode === 'tag'" class="user-type-tag__tags">
       <span class="user-type-tag__label">{{ tagLabel }}</span>
+      <el-tag size="small" :type="localConfig.participate ? 'success' : 'info'" class="user-type-tag__tag">{{ localConfig.participate ? activeText : inactiveText }}</el-tag>
       <el-tag size="small" effect="plain" type="success" class="user-type-tag__tag">{{ typeLabel }}</el-tag>
       <el-tag
         v-for="(text, i) in detailTexts"
@@ -54,7 +55,7 @@ import {
  *  - mode="dialog"：由父组件通过 :visible.sync 控制弹窗
  *
  * v-model 数据格式（每种类型一个字段，便于扩展）：
- * { userType: 2, new: {}, all: {}, import: { importedFilename }, filter: { registerTimeRange, betTimesRange }, tag: [{ tagType, tagGid, tagId, tagValues }] }
+ * { userType: 2, participate: true, new: {}, all: {}, import: { importedFilename }, filter: { registerTimeRange, betTimesRange }, tag: [{ tagType, tagGid, tagId, tagValues }] }
  * userType：1=新用户 2=所有用户（默认） 3=导入用户 4=筛选用户 5=标签用户
  */
 export default {
@@ -71,6 +72,9 @@ export default {
     title: { type: String, default: '参与活动用户类型' },
     tagLabel: { type: String, default: '参与活动用户类型：' },
     disabled: { type: Boolean, default: false },
+    // 参与活动开关的文案，可自定义
+    activeText: { type: String, default: '参与活动' },
+    inactiveText: { type: String, default: '不参与活动' },
     // 允许选择的用户类型，默认全部
     enabledUserTypes: { type: Array, default: () => DEFAULT_ENABLED_USER_TYPES },
     // 自定义类型选项（label/desc/icon 可覆盖）
@@ -106,6 +110,8 @@ export default {
     },
     bodyProps() {
       return {
+        activeText: this.activeText,
+        inactiveText: this.inactiveText,
         enabledUserTypes: this.normalizedEnabledTypes,
         userTypeOptions: this.userTypeOptions,
         tagTypes: this.tagTypes,
