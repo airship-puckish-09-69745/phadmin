@@ -110,12 +110,23 @@
       </el-form>
 
       <!-- 5 标签用户 -->
-      <TagPicker
-        v-if="isType(USER_TYPE_VALUES.TAG)"
-        :value="config.tag"
-        :tag-types="tagTypes"
-        @input="onTagsChange"
-      />
+      <template v-if="isType(USER_TYPE_VALUES.TAG)">
+        <div :class="['ut-switch', { 'is-on': config.participate }]">
+          <i :class="[config.participate ? 'el-icon-circle-check' : 'el-icon-circle-close', 'ut-switch__icon']" />
+          <span class="ut-switch__text">{{ config.participate ? activeText : inactiveText }}</span>
+          <el-switch
+            :value="config.participate"
+            active-color="#13ce66"
+            inactive-color="#c0c4cc"
+            @change="onParticipateChange"
+          />
+        </div>
+        <TagPicker
+          :value="config.tag"
+          :tag-types="tagTypes"
+          @input="onTagsChange"
+        />
+      </template>
     </div>
   </div>
 </template>
@@ -133,6 +144,8 @@ export default {
   props: {
     // 可变的完整配置对象，由外层持有
     config: { type: Object, required: true },
+    activeText: { type: String, default: '参与活动' },
+    inactiveText: { type: String, default: '不参与活动' },
     enabledUserTypes: { type: Array, required: true },
     userTypeOptions: { type: Array, default: null },
     tagTypes: { type: Array, default: () => [] },
@@ -203,6 +216,10 @@ export default {
       return this.config.userType === type
     },
     /** 通知外层配置已变化 */
+    onParticipateChange(val) {
+      this.$set(this.config, 'participate', val)
+      this.emitChange()
+    },
     emitChange() {
       this.$emit('change')
     },
@@ -331,6 +348,28 @@ export default {
 </script>
 
 <style scoped>
+.ut-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: #f4f4f5;
+  color: #909399;
+  transition: all 0.2s;
+}
+.ut-switch.is-on {
+  background: #f0f9eb;
+  color: #67c23a;
+}
+.ut-switch__icon {
+  font-size: 16px;
+}
+.ut-switch__text {
+  font-size: 14px;
+  font-weight: 500;
+}
 .ut-cards {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));

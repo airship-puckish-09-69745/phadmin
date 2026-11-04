@@ -38,6 +38,8 @@ export const TAG_TYPE_NAMES = {
 export function defaultUserTypeConfig(userType = USER_TYPE_VALUES.ALL) {
   return {
     userType,
+    // 是否参与活动
+    participate: true,
     new: {},
     all: {},
     import: { importedFilename: '' },
@@ -61,6 +63,7 @@ export function normalizeUserTypeConfig(raw, fallbackType = USER_TYPE_VALUES.ALL
   const filter = v.filter || {}
   return {
     userType: Number(v.userType) || fallbackType,
+    participate: typeof v.participate === 'boolean' ? v.participate : base.participate,
     new: { ...v.new },
     all: { ...v.all },
     import: { ...base.import, ...v.import },
