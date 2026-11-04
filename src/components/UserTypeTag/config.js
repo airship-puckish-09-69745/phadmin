@@ -45,7 +45,8 @@ export function defaultUserTypeConfig(userType = USER_TYPE_VALUES.ALL) {
       registerTimeRange: { min: 0, max: 0 },
       betTimesRange: { min: 0, max: 0 }
     },
-    tag: []
+    tag: [],
+    isParticipate: true
   }
 }
 
@@ -70,8 +71,16 @@ export function normalizeUserTypeConfig(raw, fallbackType = USER_TYPE_VALUES.ALL
       betTimesRange: { ...base.filter.betTimesRange, ...filter.betTimesRange }
     },
     // 标签为数组，拷贝一份避免与外部共享引用
-    tag: Array.isArray(v.tag) ? v.tag.map(t => ({ ...t })) : []
+    tag: Array.isArray(v.tag) ? v.tag.map(t => ({ ...t })) : [],
+    isParticipate: normalizeBoolean(v.isParticipate, base.isParticipate)
   }
+}
+
+function normalizeBoolean(value, fallback) {
+  if (typeof value === 'boolean') return value
+  if (value === 1 || value === '1' || value === 'true') return true
+  if (value === 0 || value === '0' || value === 'false') return false
+  return fallback
 }
 
 /**

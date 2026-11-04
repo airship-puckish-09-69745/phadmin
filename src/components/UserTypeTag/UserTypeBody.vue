@@ -113,8 +113,12 @@
       <TagPicker
         v-if="isType(USER_TYPE_VALUES.TAG)"
         :value="config.tag"
+        :is-participate="config.isParticipate"
+        :participate-active-text="participateActiveText"
+        :participate-inactive-text="participateInactiveText"
         :tag-types="tagTypes"
         @input="onTagsChange"
+        @participate-change="onParticipationChange"
       />
     </div>
   </div>
@@ -136,6 +140,8 @@ export default {
     enabledUserTypes: { type: Array, required: true },
     userTypeOptions: { type: Array, default: null },
     tagTypes: { type: Array, default: () => [] },
+    participateActiveText: { type: String, default: '参与活动' },
+    participateInactiveText: { type: String, default: '不参与活动' },
     activityCfgId: { type: Number, default: 0 },
     activityId: { type: Number, default: 0 },
     showImportUserList: { type: Boolean, default: true },
@@ -218,6 +224,11 @@ export default {
     /** 标签选择变化：tag 直接保存标签数组 */
     onTagsChange(tags) {
       this.$set(this.config, 'tag', tags)
+      this.emitChange()
+    },
+    /** 标签用户参与状态：同步到完整配置，便于提交及回显 */
+    onParticipationChange(value) {
+      this.$set(this.config, 'isParticipate', value)
       this.emitChange()
     },
     /** 注册时间变化：转为秒级时间戳，结束时间取当天 23:59:59 */
